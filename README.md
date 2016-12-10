@@ -1,20 +1,22 @@
 # This is the public repo for dev.to
 
-The core purpose of this repo is for feedback and discussion about the platform. Issues are available for this purpose. This repo will evolve once we foray further into open source activity. We want the platform to eventually be 95% open source, even the parts that are not extracted for re-use. The plan is to release our whole codebase eventually and keeping a few private APIs available for necessary purposes.
+The purpose of this repo is for feedback and discussion about the platform. This repo will evolve to host our codebase once it is ready. We want the [dev.to](https://dev.to) to eventually be 90%+ open source.
 
-We are not nearly there yet, so for now, let's just use this to discuss features and provide feedback.
+The codebase is not ready yet, so for now, let's just use this to discuss features and provide feedback.
 
 ## Current functionality
 Host technical blog posts and helpful articles for developers. Publishing is fairly simple and uses a markdown editor that is fully copy and paste compatible with Jekyll, including [front matter](https://jekyllrb.com/docs/frontmatter/)
 
-## Feature roadmap
+## Some features on the roadmap
 
-- Comments and upvotes
+- Comments and votes on posts
 - Richer markdown experience
+- Polish up publishing experience
 - Smarter "next article" suggestions, and "related podcats"
 - Other stuff 🤔
 
 ## The road to open source
-The core website is a Rails application. Getting this generally open sourced will be a matter of diligently walking through the code and making it ready. A few things will need to be extracted. We also will extract key features into Ruby gems, likely before the whole codebase is released. The first thing we will probably open source are things related to our markdown editor and parser.
+
+Open sourcing the core codebase will involve just working it to the point where it makes sense. Before then, we will extract some parts as Ruby gems (the site is a Rails app)
 
 Ask about any of this, or suggest anything. We're really excited about opening this all up.
