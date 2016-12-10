@@ -19,4 +19,6 @@ Host technical blog posts and helpful articles for developers. Publishing is fai
 
 Open sourcing the core codebase will involve just working it to the point where it makes sense. Before then, we will extract some parts as Ruby gems (the site is a Rails app)
 
+The first extraction will likely revolve around our markdown renderer. We want to build some custom features into our markdown editor, but it's a work in progress. The placeholder repo for that project is [Super Markdown](https://github.com/thepracticaldev/super-markdown).
+
 Ask about any of this, or suggest anything. We're really excited about opening this all up.
