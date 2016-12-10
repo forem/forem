@@ -1,4 +1,4 @@
-# This is the public repo for dev.to
+# This is the (future) public repo for dev.to
 
 The purpose of this repo is for feedback and discussion about the platform. This repo will evolve to host our codebase once it is ready. We want the [dev.to](https://dev.to) to eventually be 90%+ open source.
 
