@@ -9,7 +9,7 @@ Host technical blog posts and helpful articles for developers. Publishing is fai
 
 ## Some features on the roadmap
 
-- Comments and votes on posts
+- votes (reactions) on posts and enhanced for comments
 - Richer markdown experience
 - Polish up publishing experience
 - Smarter "next article" suggestions, and "related podcats"
