@@ -66,7 +66,7 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 - PostgresSQL: the easiest way to get started with this is to use [Postgres.app](https://postgresapp.com/).
 
 #### Installation steps
-1. `git clone git@github.com:benhalpern/practicaldeveloper.git`
+1. `git clone git@github.com:thepracticaldev/dev.to_core.git`
 2. `bundle install`
 3. `bin/yarn`
 4. `bin/setup`
