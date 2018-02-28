@@ -8,7 +8,7 @@
   />
 </p>
 <p align="center">
- Where programmers share ideas and help each other grow
+ The Human Layer of the Stack
 </p>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
@@ -92,7 +92,7 @@ Current gotchas: potential environment issues with external services need to be 
 ## 🔑 Key App tech/services
 
 - We use **Puma** for the server
-- We rely heavily on edge caching with **Fastly**
+- We [rely heavily on edge caching](https://dev.to/ben/making-devto-insanely-fast) with **Fastly**
 - We use **Cloudinary** for image manipulation/serving
 - We use **Keen** for event storage
 - We use **Airbrake** for error monitoring
@@ -110,6 +110,7 @@ Current gotchas: potential environment issues with external services need to be 
 - We use **CounterCulture** to keep track of association counts (counter caches)
 - We use **Rolify** for role management.
 - We use **Pundit** for authorization.
+- We use Service Workers to proxy traffic
 
 There's more, but that's a decent overview of the key need-to-knows.
 
