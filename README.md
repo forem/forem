@@ -199,7 +199,7 @@ Please note that we squash all pull request. **After a pull request is approved,
 We are using Codeship for CI and CD. Codeship will run a build (in isolated environment for testing) for every push to this repository. Keep in mind that a passing-build does not necessarily mean the project won't run into any issues. Strive to write good tests for any chunk of code you wish to contribute. Only pushes to the `deployment` branch will evoke the CD portion of Codeship after CI passes. Our test suite is not perfect and sometimes a re-rerun is needed.
 
 #### Skipping CI build (Not recommended)
-You can skip CI by adding `--skip-ci` to your commit message. More info [here](https://documentation.codeship.com/general/projects/skipping-builds/).
+If your changes are minor (i.e. updating README), you can skip CI by adding `--skip-ci` to your commit message. More info [here](https://documentation.codeship.com/general/projects/skipping-builds/).
 
 ## CodeClimate and Simplecov
 We are using CodeClimate to track code quality and code coverage. Codeclimate will grade the quality of the code of every PR but not the entirety of the project. If you feel that the current linting rule is unreasonable, feel free to submit a _separate_ PR to change it. Fix any errors that Codeclimate provides and strive to leave code better than you found it.
