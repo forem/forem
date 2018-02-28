@@ -1,0 +1,16 @@
+<a href="/internal/broadcasts/new">Make A New Broadcast</a>
+<h1>Current Broadcasts</h1>
+<hr>
+<% @broadcasts.each do |broadcast| %>
+  <a href="/internal/broadcasts/<%= broadcast.id %>/edit">Edit this broadcast</a>
+  <br>
+  <h3>Title: <%= broadcast.title %></h3>
+  <h4>Broadcast Type: <%= broadcast.type_of %></h4>
+  <br>
+  Content:
+  <br><%= broadcast.processed_html %>
+  <br>
+  <br>
+  Sent?: <%= broadcast.sent ? "Yes" : "No" %>
+  <hr>
+<% end %>

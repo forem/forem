@@ -1,0 +1,41 @@
+<div id="add-email" class="container">
+  <br><br><br><br><br>
+  <% if current_user.unconfirmed_email %>
+    <h2>An email has been sent to you, please confirm!</h2>
+  <% else %>
+    <h1><img alt="<%= current_user.username %> profile image" src="<%= current_user.profile_image_url%>"> Welcome!</h1>
+    <h2>Just add a couple details to get going</h2>
+  <% end %>
+  <%= form_for(current_user, :as => 'user', :url => finish_signup_path(current_user), :html => { role: 'form'}) do |f| %>
+    <% if @show_errors && current_user.errors.any? %>
+      <div id="error_explanation">
+        <% current_user.errors.full_messages.each do |msg| %>
+          <%= msg %><br>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="form-group">
+      <%= f.label :email %>
+      <div class="controls">
+        <%= f.email_field :email, :autofocus => true, :value => current_user.unconfirmed_email, class: 'form-control input-lg', placeholder: 'Example: email@me.com' %>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= f.label :name, "Full Name" %>
+      <div class="controls">
+        <%= f.text_field :name, class: 'form-control input-lg', placeholder: 'Jane Doe' %>
+      </div>
+    </div>
+
+    <!-- <div class="form-group">
+      <%= f.label :password %>
+      <div class="controls">
+        <%= f.password_field :password, placeholder: 'At least 8 characters' %>
+        <p class="help-block">Password will be safely stored.</p>
+      </div>
+    </div> -->
+    <div class="actions">
+      <%= f.submit 'Continue', :class => 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>

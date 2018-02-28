@@ -1,0 +1,122 @@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
+<% if @user.identities.where(provider:'github').empty? %>
+  <div class="field">
+    <label>Action</label>
+    <a href="/users/auth/github" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
+    </a>
+  </div>
+<% end %>
+
+<% if @user.identities.where(provider:'twitter').empty? %>
+  <div class="field">
+    <label>Action</label>
+    <a href="/users/auth/twitter" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
+    </a>
+  </div>
+<% end %>
+<h4>
+  <a href="https://dev.to/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28"style="vertical-align:-7px;margin-right:4px;"/></a> 
+  Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
+</h4>
+<%= form_for(@user) do |f| %>
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field checkbox-label-first">
+    <%= f.label :email_public, "Display email on profile" %>
+    <%= f.check_box :email_public %>
+  </div>
+  <div class="field">
+    <%= f.label :username %>
+    <%= f.text_field :username, maxlength: 30 %>
+  </div>
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <%= f.label :profile_image %>
+  <div class="field">
+    <% if @user.profile_image_url.present? %>
+      <span class="image-present">
+        <img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(50) %>" />
+        <%= f.file_field :profile_image %>
+      </span>
+    <% end %>
+  </div>
+
+  <div class="field checkbox-label-first">
+    <%= f.label :looking_for_work %>
+    <%= f.check_box :looking_for_work %>
+  </div>
+  <div class="field checkbox-label-first">
+    <%= f.label :looking_for_work_publicly, "Display \"looking for work\" on profile"%>
+    <%= f.check_box :looking_for_work_publicly %>
+  </div>
+  <div class="field checkbox-label-first">
+    <%= f.label :contact_consent, "Recruiters can contact me about job opportunities"%>
+    <%= f.check_box :contact_consent %>
+  </div>
+  <div class="field">
+    <%= f.label :website_url %>
+    <%= f.url_field :website_url, maxlength: 64, placeholder: "http://yoursite.com" %>
+  </div>
+  <div class="field">
+    <%= f.label :summary %>
+    <%= f.text_area :summary, placeholder: "a short bio.", maxlength: 200 %>
+  </div>
+  <div class="field">
+    <% @user.bg_color_hex = user_colors(@user)[:bg] if @user.bg_color_hex.blank? %>
+    <%= f.label :bg_color_hex, "background color" %>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+  </div>
+  <div class="field">
+    <% @user.bg_color_hex = user_colors(@user)[:text] if @user.text_color_hex.blank? %>
+    <%= f.label :text_color_hex, "text color" %>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+  </div>
+  <div class="field">
+    <%= f.label :location %>
+    <%= f.text_field :location, maxlength: 64 %>
+  </div>
+  <div class="field">
+    <%= f.label :education %>
+    <%= f.text_field :education, maxlength: 64 %>
+  </div>
+  <div class="field">
+    <%= f.label :employer_name %>
+    <%= f.text_field :employer_name, maxlength: 64 %>
+  </div>
+  <div class="field">
+    <%= f.label :employer_url %>
+    <%= f.text_field :employer_url, maxlength: 64 %>
+  </div>
+  <div class="field">
+    <%= f.label :employment_title %>
+    <%= f.text_field :employment_title, maxlength: 64 %>
+  </div>
+  <div class="field">
+    <%= f.label :mostly_work_with %>
+    <%= f.text_area :mostly_work_with, placeholder: "What tools and languages are you most experienced with? are you specialized or more of a generalist?", maxlength: 640 %>
+  </div>
+  <div class="field">
+    <%= f.label :currently_learning %>
+    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in 2018?", maxlength: 640 %>
+  </div>
+  <div class="field">
+    <%= f.label :currently_hacking_on %>
+    <%= f.text_area :currently_hacking_on, placeholder: "What projects are currently occupying most of your time?", maxlength: 640 %>
+  </div>
+  <div class="field">
+    <%= f.label :available_for %>
+    <%= f.text_area :available_for, placeholder: "What kinds of collaborations or discussions are you available for? what's a good reason to say hey to you these days?", maxlength: 640 %>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>

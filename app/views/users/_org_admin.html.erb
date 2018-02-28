@@ -1,0 +1,102 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
+<div class="settings-org-members">
+  <h3>Organization Members</h3>
+  <% @organization.users.each do |user| %>
+    <div class="settings-org-member-row <%= "settings-org-admin-row" if user.org_admin %>">
+      <a href="<%= user.path %>"><%= user.name %></a>
+      <div class="settings-org-member-actions">
+        <% if user.org_admin && user == current_user %>
+          <button class="settings-org-member settings-org-member-admin-self">you (admin)</button>
+        <% elsif user.org_admin && user != current_user %>
+          <button class="settings-org-member settings-org-member-admin-other">admin</button>
+          <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{user.name}?');" do %>
+            <%= hidden_field_tag 'user_id', user.id %>
+            <button class="settings-org-member settings-org-member-remove" title="Remove from org">revoke admin status</button>
+          <% end %>
+        <% else %>
+          <button class="settings-org-member settings-org-member-admin-self">org member</button>
+          <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{user.name} admin status?');" do %>
+            <%= hidden_field_tag 'user_id', user.id %>
+            <button class="settings-org-member settings-org-member-make-admin">make admin</button>
+          <% end %>
+          <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{user.name} from the organization?');" do %>
+            <%= hidden_field_tag 'user_id', user.id %>
+            <button class="settings-org-member settings-org-member-remove" title="Remove from org">remove from org</button>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  <h3>Grow the team</h3>
+  <h5>Invite teammates by sending them this secret. Keep the code secret and generate a new one regularly.</h5>
+  <input type="text" class="settings-org-secret" id="settings-org-secret" value="<%= @organization.secret %>" readonly>
+  <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
+    <button class="settings-generate-new-secret">Generate New Secret</button>
+  <% end %>
+</div>
+<h3>Organization Details</h3>
+<%= form_for(@organization) do |f| %>
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name, maxlength: 50 %>
+  </div>
+  <%= f.label :profile_image %>
+  <div class="field">
+    <% if @organization.profile_image_url.present? %>
+      <span class="image-present">
+        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url,50)%>" />
+        <%= f.file_field :profile_image %>
+      </span>
+    <% else %>
+      <%= f.file_field :profile_image %>
+    <% end %>
+  </div>
+  <div class="field">
+    <%= f.label :twitter_username, "Twitter Username" %>
+    <%= f.text_field :twitter_username %>
+  </div>
+  <div class="field">
+    <%= f.label :github_username, "Github Username"%>
+    <%= f.text_field :github_username %>
+  </div>
+  <div class="field">
+    <%= f.label :text_color_hex, "Text color (hex)"%>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+  </div>
+  <div class="field">
+    <%= f.label :bg_color_hex, "Background color (hex)"%>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+  </div>
+  <div class="field">
+    <%= f.label :url, "Site url" %>
+    <%= f.url_field :url, maxlength: 64, placeholder: "http://yoursite.com" %>
+  </div>
+  <div class="field">
+    <%= f.label :location %>
+    <%= f.text_field :location, maxlength: 64 %>
+  </div>  
+  <div class="field">
+    <%= f.label :email %>
+    <%= f.text_field :email, maxlength: 64 %>
+  </div> 
+  <div class="field">
+    <%= f.label :company_size, "Company Size" %>
+    <%= f.text_field :company_size, maxlength: 64 %>
+  </div>   
+  <div class="field">
+    <%= f.label :story, "Our Story" %>
+    <%= f.text_area :story, maxlength: 200 %>
+  </div>
+  <div class="field">
+    <%= f.label :tech_stack, "Our Stack" %>
+    <%= f.text_area :tech_stack, maxlength: 200 %>
+  </div>      
+  <div class="field">
+    <%= f.label :summary %>
+    <%= f.text_area :summary, maxlegth: 250 %>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>

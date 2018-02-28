@@ -1,0 +1,50 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://lambda.us-east-1.amazonaws.com/2015-03-31/functions/aws-nodejs-ecma-script-dev-couponCode/invocations
+    body:
+      encoding: UTF-8
+      string: '{"inputNumber":1,"version":"sticker_pack"}'
+    headers:
+      Content-Type:
+      - ''
+      Accept-Encoding:
+      - ''
+      User-Agent:
+      - aws-sdk-ruby3/3.14.0 ruby/2.5.0 x86_64-darwin17 aws-sdk-lambda/1.4.0
+      X-Amz-Date:
+      - 20180220T194923Z
+      X-Amz-Content-Sha256:
+      - e90a3c16abcd660d3078ddaa298ccea331a93956d6a1dfe2005d7ca9476e8eaa
+      Content-Length:
+      - '42'
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 20 Feb 2018 19:49:23 GMT
+      Content-Type:
+      - application/json
+      Content-Length:
+      - '104'
+      Connection:
+      - keep-alive
+      X-Amzn-Requestid:
+      - 265c42da-1677-11e8-80ce-0d13b70af207
+      X-Amzn-Remapped-Content-Length:
+      - '0'
+      X-Amz-Executed-Version:
+      - "$LATEST"
+      X-Amzn-Trace-Id:
+      - root=1-5a8c7bc3-6d41ee52ccfb664e43c490ba;sampled=0
+    body:
+      encoding: UTF-8
+      string: '{"statusCode":200,"body":"{\"message\":818,\"input\":{\"inputNumber\":1,\"version\":\"sticker_pack\"}}"}'
+    http_version: 
+  recorded_at: Tue, 20 Feb 2018 19:49:23 GMT
+recorded_with: VCR 4.0.0

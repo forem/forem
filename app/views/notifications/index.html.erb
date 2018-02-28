@@ -1,0 +1,67 @@
+<% title "Notifications - dev.to" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/notifications"/>
+  <meta name="description" content="Notifications inbox for dev.to">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/notifications" />
+  <meta property="og:title" content="Notifications - dev.to" />
+  <meta property="og:description" content="Notifications inbox for dev.to" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="Notifications - dev.to">
+  <meta name="twitter:description" content="Notifications inbox for dev.to">
+<% end %>
+
+
+
+<div class="user-profile-header tag-header">
+  <div class="tag-or-query-header-container">
+    <% if user_signed_in? %>
+      <h1 class="notifications-header"><img src="<%=asset_path("bell.svg")%>" />Notifications</h1>
+    <% end %>  
+  </div>
+</div>
+
+  <div class="home" id="notifications-container">
+    <div class="side-bar"></div>
+      <div class="articles-list" id="articles-list">
+        <% if user_signed_in? %>
+          <% if @activities.size > 0%>
+            <% cache "notifications-fragment-#{current_user.last_notification_activity}-#{current_user.updated_at.to_s}-#{current_user.id}", expires_in: 15.minutes  do %>
+              <% @activities.each do |group| %>
+                <% cache "notifications-fragment-#{group["is_seen"].to_s}-#{group["id"].to_s}-#{group.to_s.size}-#{@last_user_reaction}-#{@last_user_comment}" do %>
+                  <% if current_user.id == 1 || Rails.env.development? %>
+                      <% if group['verb'] == "Reaction" && group['activity_count'] > 1 %>
+                          <%= render "notifications/aggregated_reactions", group:group %>
+                      <% else %>
+                        <%= render_activity(group, partial_root: '/notifications/activity') %>
+                      <% end %>
+                  <% else %>
+                    <% begin %>
+                      <% if group['verb'] == "Reaction" && group['activity_count'] > 1 %>
+                          <%= render "notifications/aggregated_reactions", group:group %>
+                      <% else %>
+                        <%= render_activity(group, partial_root: '/notifications/activity') %>
+                      <% end %>
+                    <% rescue %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% else %>
+          <div class="content notification-content comment-content">
+            <%= render "notifications/signup_cta_test" %>
+          </div>
+        <% end %>
+    </div>
+    <div class="side-bar sidebar-additional"></div>
+  </div>
+
+  <%= render 'articles/fitvids' %>

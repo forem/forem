@@ -1,0 +1,103 @@
+function buildArticleHTML(article) {
+  if (article && article.type_of == "podcast_episodes") {
+    return '<div class="single-article single-article-small-pic">\
+      <div class="small-pic">\
+       <a href="/'+article.podcast.slug+'" class="small-pic-link-wrapper">\
+         <img src="'+article.podcast.image_url+'" alt="'+article.podcast.title+' image">\
+       </a>\
+       </div>\
+       <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
+        <div class="content">\
+         <h3><span class="tag-identifier">podcast</span>'+article.title+'</h3>\
+        </div>\
+       </a>\
+       <h4><a href="/'+article.podcast.slug+'">'+article.podcast.title+'</a></h4>\
+       </div>';
+  }
+  else if (article) {
+    var container = document.getElementById("index-container");
+    var tagString = ""
+    if(article.tag_list) {
+      article.tag_list.forEach(function(t){
+      tagString = tagString + '<a href="/t/'+t+'"><span class="tag">#'+t+'</span></a>\n'
+      });
+    }
+    var commentsCountHTML = ""
+    if ((article.comments_count || '0') > 0 && article.class_name != "User") {
+      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'"><img src="<%= asset_path("chat.svg") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
+    }
+    var flareTag = ""
+    if (container){
+      var currentTag = JSON.parse(container.dataset.params).tag
+    }
+    if (article.flare_tag && currentTag != article.flare_tag.name) {
+      flareTag = "<span class='tag-identifier' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
+    }
+    if (article.class_name == "PodcastEpisode"){
+      flareTag = "<span class='tag-identifier'>podcast</span>"
+    }
+    if (article.class_name == "User"){
+      flareTag = "<span class='tag-identifier' style='background:#5874d9;color:white;'>person</span>"
+    }
+    var rc = article.positive_reactions_count || article.reactions_count
+    var reactionsCountHTML = ''
+    if ((rc || '0') > 0 && article.class_name != "User") {
+      var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
+    }
+    if ( article.organization && article.tag_list.indexOf("hiring") > -1 && !document.getElementById("organization-index-page") ){
+      var picUrl = article.organization.profile_image_90
+      var profileUsername = article.organization.slug
+    } else {
+      var picUrl = article.user.profile_image_90
+      var profileUsername = article.user.username
+    }
+    var classicHeadline = "";
+    if (article.is_classic) {
+      classicHeadline = '<a href="'+article.path+'" class="article-classic-headline" id="article-classic-headline"><div class="article-classic-headline-inner">Classic from '+article.published_at_month_day+'</div></a>'
+    }
+    var bodyTextSnippet = "";
+    var commentsBlobSnippet = "";
+    var searchSnippetHTML = "";
+    if (article._snippetResult && article._snippetResult.body_text){
+      if (article._snippetResult.body_text.matchLevel != "none"){
+        var firstSnippetChar = article._snippetResult.body_text.value[0];
+        var startingEllipsis = ""
+        if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
+          startingEllipsis = "…"
+        }
+        bodyTextSnippet = startingEllipsis+article._snippetResult.body_text.value + "…"
+      }
+      if (article._snippetResult.comments_blob.matchLevel != "none" && bodyTextSnippet === ""){
+        var firstSnippetChar = article._snippetResult.comments_blob.value[0];
+        var startingEllipsis = ""
+        if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
+          startingEllipsis = "…"
+        }
+        commentsBlobSnippet = startingEllipsis+article._snippetResult.comments_blob.value + "… <i>(comments)</i>"
+      }
+      if ((bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) && article.class_name == "Article"){
+        searchSnippetHTML = '<div class="search-snippet"><span>'+bodyTextSnippet+commentsBlobSnippet+'</span></div>'
+      }
+    }
+    return '<div class="single-article single-article-small-pic">\
+      '+classicHeadline+'\
+      <div class="small-pic">\
+       <a href="/'+profileUsername+'" class="small-pic-link-wrapper">\
+         <img src="'+picUrl+'" alt="'+profileUsername+' profile">\
+       </a>\
+       </div>\
+       <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
+        <div class="content">\
+         <h3>'+flareTag+filterXSS(article.title)+'</h3>\
+         '+searchSnippetHTML+'\
+        </div>\
+       </a>\
+       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+'</a></h4>\
+       <div class="tags">'+tagString+'</div>\
+       '+commentsCountHTML+reactionsCountHTML+'\
+       <button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
+      <img src="<%= asset_path("bookmark.svg") %>" alt="bookmark" class="bm-initial" />\
+      <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="bookmark" class="bm-success" />\
+    </button></div>';
+  }
+}

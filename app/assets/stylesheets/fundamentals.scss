@@ -1,0 +1,29 @@
+#notice {
+  color: green;
+}
+
+
+#error_explanation {
+  width: 100%;
+  border: 2px solid #d94949;
+  padding: 7px;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  h2 {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 5px 5px 15px;
+    font-size: 16px;
+    margin: -7px;
+    margin-bottom: 0px;
+    background-color: #d94949;
+    color: #fff;
+  }
+
+  ul li {
+    font-size: 16px;
+    list-style: square;
+    border-radius:5px;
+  }
+}

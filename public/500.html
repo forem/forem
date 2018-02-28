@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>We're sorry, but something went wrong (500)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+      body {
+       font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+       font-weight: 300;
+    }
+    .dialog{
+      background:rgb(236, 236, 236);
+      border:1px solid rgb(217, 217, 217);
+      text-align:center;
+      padding:20px 0px;
+      margin:5% auto;
+      width:80%;
+      max-width:600px;
+      min-width:315px;
+      color:rgb(44, 46, 50);
+      border-radius:5px;
+      min-height: 600px;
+    }
+    textarea{
+      width:75%;
+      height:100px;
+      border:1px solid rgb(182, 182, 182);
+      border-radius:3px;
+      padding:8px;
+      font-size:14px;
+    }
+    .actions{
+      text-align: center;
+    }
+    .g-recaptcha{
+      display: inline-block;
+      text-align: center;
+      margin: 15px;
+    }
+    input[type="submit"]{
+      width:150px;
+      padding:10px;
+      background:rgb(12, 181, 140);
+      color:white;
+      border:0px;
+      border-radius:3px;
+      font-size:15px;
+      margin-top:5px;
+      cursor:pointer;
+    }
+    img{
+      max-width:100%;
+      height:200px;
+    }
+  </style>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+</head>
+
+<body>
+  <!-- This file lives in public/500.html -->
+  <div class="dialog">
+    <div>
+      <img alt="500 error" src="https://media.giphy.com/media/SX9TFmjF0eChq/200.gif" height="200" />
+      <h1>500 Error</h1>
+      <h2>It's not you, it's me.</h2>
+    </div>
+    <form action="/feedback_messages" accept-charset="UTF-8" method="post">
+      <input name="utf8" type="hidden" value="&#x2713;" />
+      <input name="feedback_message[feedback_type]" type="hidden" value="bug-reports" />
+      <div class="field">
+        <textarea name="feedback_message[message]" placeholder="If you would like to describe the situation that lead to this error, it would be appreciated :)" required></textarea>
+      </div>
+      <div class="g-recaptcha" data-sitekey="6LeKoSQUAAAAAI8RhYb0H8NDt8_4hISOA5sN4Elx"></div>
+      <div class="actions">
+        <input type="submit" name="commit" value="Send Feedback"/>
+      </div>
+    </form>
+
+  </div>
+</body>
+</html>

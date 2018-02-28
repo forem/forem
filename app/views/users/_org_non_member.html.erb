@@ -1,0 +1,65 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
+<h3>Join An Organization</h3>
+<%= form_tag "/users/join_org" do %>
+  <div class="field">
+    <%= label_tag :org_secret, "Secret" %>
+    <%= text_field_tag :org_secret, nil, placeholder: "Provided to you by an org admin" %>
+  </div>
+  <div class="field">
+    <%= submit_tag "Join Organization" %>
+  </div>
+<% end %>
+<br/><br/>
+<hr class="settings-hr" />
+<h3><em>Or</em> Create An Organization</h3>
+
+<%= form_for @organization do |f| %>
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :slug, "Username" %>
+    <%= f.text_field :slug %>
+  </div>
+  <div class="field">
+    <%= f.label :profile_image %>
+    <%= f.file_field :profile_image %>
+  </div>
+  <div class="field">
+    <%= f.label :twitter_username, "Twitter Username" %>
+    <%= f.text_field :twitter_username %>
+  </div>
+  <div class="field">
+    <%= f.label :github_username, "Github Username"%>
+    <%= f.text_field :github_username %>
+  </div>
+  <div class="field">
+    <%= f.label :text_color_hex, "Text color (hex)"%>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+  </div>
+  <div class="field">
+    <%= f.label :bg_color_hex, "Background color (hex)"%>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+  </div>
+  <div class="field">
+    <%= f.label :url, "Site url" %>
+    <%= f.url_field :url, placeholder: "http://yoursite.com" %>
+  </div>
+
+  <div class="field">
+    <%= f.label :summary %>
+    <%= f.text_area :summary %>
+  </div>
+  <div class="field">
+    <%= f.label :proof %>
+    <%= f.text_area :proof, placeholder: "This is just a quick blurb indicating or link that shows that you clearly are associated with this organization." %>
+    <div style="width:560px;max-width:90%;">
+      You must have your organization's permission to submit this form. Dishonesty may result in a permanent ban.
+    </div>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>

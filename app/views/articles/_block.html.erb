@@ -1,0 +1,23 @@
+<div class="block" id="block-index-<%=i%>">
+  <% if show_published %>
+    <script async>
+      <%= block.published_javascript.html_safe %>
+    </script>
+    <style>
+      <%= block.published_css.html_safe %>
+    </style>
+    <div class="block-wrapper-<%=block.id%>">
+      <%= block.published_html.html_safe %>
+    </div>
+  <% else %>
+    <script async>
+      <%= block.processed_javascript.html_safe %>
+    </script>
+    <style>
+      <%= block.processed_css.html_safe %>
+    </style>
+    <div class="block-wrapper-<%=block.id%>">
+      <%= block.processed_html.html_safe %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,113 @@
+function initScrolling() {
+  client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+  articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
+  checkIfNearBottomOfPage();
+}
+
+function checkIfNearBottomOfPage() {
+  var elCheck = document.getElementById("index-container");
+  if (elCheck) {
+    initScrolling.called = true;
+    if (document.getElementsByClassName("single-article").length < 2 || location.search.indexOf("q=") > -1 ) {
+      document.getElementById("loading-articles").style.display = "none"
+      done = true;
+    }
+    else {
+      document.getElementById("loading-articles").style.display = "block"
+    }
+    fetchNextPageIfNearBottom();
+    setInterval(function(){
+      fetchNextPageIfNearBottom();
+    },210)
+  }
+}
+
+function fetchNextPageIfNearBottom() {
+  var elCheck = document.getElementById("index-container") && !document.getElementById("query-wrapper");
+  if (!elCheck) {
+    return;
+  }
+  if ( !done && !fetching && (window.scrollY) > (document.documentElement.scrollHeight - 3700) ) {
+    fetching = true;
+    var el = document.getElementById("index-container");
+    var indexWhich = el.dataset.which;
+    if (indexWhich == "podcast-episodes") {
+      fetchNextPodcastPage(el);
+    } else {
+      algoliaPaginate(el.dataset.algoliaTag);
+    }
+  }
+}
+
+function fetchNextPodcastPage(el){
+  var indexParams = JSON.parse(el.dataset.params);
+  var urlParams = Object.keys(indexParams).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
+  }).join('&');
+  if (urlParams.indexOf("q=") > -1 ) {
+    return;
+  }
+  var endpoint = '/api/podcast_episodes'
+  var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
+  window.fetch(fetchUrl)
+  .then(function(response) {
+    response.json().then(function(articles) {
+      nextPage += 1;
+      insertArticles(articles);
+      if (articles.length == 0) {
+        document.getElementById("loading-articles").style.display = "none"
+        done = true;
+      }
+    });
+  }).catch(function(err) {
+    console.log(err);
+  });
+}
+
+function insertArticles(articles) {
+  var list = document.getElementById("substories");
+  var newArticlesHTML = "";
+  articles.forEach(function(article){
+    var existingEl = document.getElementById("article-link-"+article.id);
+    if ( existingEl &&
+      existingEl.parentElement &&
+      existingEl.parentElement.classList.contains('single-article-small-pic') &&
+      !document.getElementById("video-player-"+article.id)) {
+      existingEl.parentElement.outerHTML = buildArticleHTML(article);
+    } else if(!existingEl) {
+      var newHTML = buildArticleHTML(article)
+      newArticlesHTML += newHTML
+      initializeReadingListIcons();
+    }
+  });
+  var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
+  var newNode = document.createElement("div");
+  newNode.innerHTML = newArticlesHTML;
+  var singleArticles = document.getElementsByClassName("single-article");
+  var lastElement = singleArticles[singleArticles.length - 1];
+  insertAfter(newNode, lastElement);
+  if (nextPage > 0) {
+    fetching = false;
+  }
+}
+
+function algoliaPaginate(tag){
+  var filters = [];
+  if (tag && tag.length > 0) {
+    filters.push(tag);
+  }
+  articlesIndex.search("*", {
+      hitsPerPage: 30,
+      page: nextPage,
+      attributesToHighlight: [],
+      tagFilters: filters,
+  })
+  .then(function searchDone(content) {
+    nextPage += 1;
+    insertArticles(content.hits);
+    if (content.hits.length == 0) {
+      document.getElementById("loading-articles").style.display = "none"
+      done = true;
+    }
+  });
+}

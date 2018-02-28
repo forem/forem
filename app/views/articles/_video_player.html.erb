@@ -1,0 +1,63 @@
+<div <% "itemscope itemtype=\"http://schema.org/VideoObject\"" if meta_tags %> class="video-player-header">
+  <% if meta_tags %>
+    <meta itemprop="uploadDate" content="<%= @article.published_at %>" />
+    <meta itemprop="name" content="<%= @article.title %>" />
+    <meta itemprop="description" content="<%= @article.description %>" />
+    <meta itemprop="thumbnailUrl" content="<%= article.video_thumbnail_url %>" />
+    <meta itemprop="contentUrl" content="<%= article.video_source_url %>" />
+  <% end %>
+  <script src="//content.jwplatform.com/libraries/h2fNvDF4.js" async> </script>
+  <div id="video-player-<%= article.id %>" class="video-player"></div>
+</div>
+
+<script type="text/javaScript" async>
+  function getParameterByName(name, url) {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
+  function timeToSeconds(hms) {
+    if (hms.length <3){
+     return hms
+    } else if (hms.length <6){
+      var a = hms.split(':')
+      return hms = (+a[0]) * 60 + (+a[1])
+    } else {
+      var a = hms.split(':')
+      return hms = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])
+    }
+  }
+
+  var waitingOnJWP<%= article.id %> = setInterval(function(){
+    if (typeof jwplayer !== 'undefined') {
+      clearInterval(waitingOnJWP<%= article.id %>);
+      var playerInstance = jwplayer("video-player-<%= article.id %>");
+      playerInstance.setup({
+          file: "<%= article.video_source_url %>",
+          mediaid: "<%= article.video_code %>",
+          image: "<%= cloudinary(article.video_thumbnail_url, 880) %>",
+          playbackRateControls: true,
+          tracks: [{
+                  file: "<%= article.video_closed_caption_track_url %>",
+                  label: "English",
+                  kind: "captions",
+                  "default": false
+              }]
+      });
+      var time = getParameterByName('t')
+      if (time) {
+        jwplayer().on('ready', function(event){
+           jwplayer().play();
+        });
+        jwplayer().on('firstFrame', function() {
+          jwplayer().seek(timeToSeconds(time))
+        });
+      }
+    }
+  },2)
+</script>

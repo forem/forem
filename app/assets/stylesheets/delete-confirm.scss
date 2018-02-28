@@ -1,0 +1,26 @@
+@import 'variables';
+
+.delete-confirm{
+  padding:150px 10px;
+  min-height:300px;
+  h4{
+    background:$black;
+    padding:5px 8px;
+    color:white;
+    display:inline-block;
+    margin-bottom:0px;
+  }
+  h2{
+    font-size:22px;
+    margin-bottom:40px;
+  }
+  a.delete-link{
+    background:$red;
+    color:white;
+    padding:10px 15px;
+    &:hover{
+      color:white;
+      opacity:0.9;
+    }
+  }
+}

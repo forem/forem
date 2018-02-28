@@ -1,0 +1,4 @@
+web: rails s
+# TODO: MIGRATE from tutorial
+client: sh -c 'rm app/assets/javascripts/generated/* || true && cd client && npm run build:dev:client'
+server: sh -c 'cd client && npm run build:dev:server'

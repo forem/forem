@@ -1,0 +1,47 @@
+<h1>Editing Giveaway</h1>
+
+<header class="giveaway-header" style="background-image:url(https://res.cloudinary.com/practicaldev/image/upload/c_scale,f_auto,fl_progressive,q_80,w_1000/v1487774090/stickers_e0antp.png)">
+</header>
+
+<div class="giveaway-container">
+  <% if !current_user %>
+    <center>
+      <p>* * *</p>
+      <h2>Please sign in</h2>
+      <br/>
+      <a href="/users/auth/twitter?state=sticker-giveaway_sign-in-with-twitter" class="sign-up-link" data-no-instant><span class="sign-up-text"><img src="<%= asset_url("nerd-emoji.png") %>" alt="nerd emoji" /> Sign in with Twitter</span></a>
+      <p>or</p>
+      <a href="/users/auth/github" class="sign-up-link" data-no-instant><span class="sign-up-text github-text"><img src="<%= asset_url("nerd-emoji.png") %>" alt="nerd emoji" /> Sign in with Github</span></a>
+    </center>
+  <% elsif current_user.onboarding_package_requested == false %>
+    <center>
+      <p>* * *</p>
+      <p>
+      It seems you've never requested stickers. </br>
+      Rest assured, we will have events and giveaways in the future for you look forward to.
+      </p>
+      <p>
+        ❤️<br/>
+        Ben & Jess
+      </p>
+    </center>
+  <% elsif current_user.onboarding_package_requested_again == false %>
+    <%= render "form" %>
+  <% else %>
+    <center>
+      <p>* * *</p>
+
+      <h2>
+        Thank you for the support.
+      </h2>
+      <p>
+      Your stickers should arrive soon.
+      </p>
+
+      <p>
+        ❤️<br/>
+        Ben & Jess
+      </p>
+    </center>
+  <% end %>
+</div>

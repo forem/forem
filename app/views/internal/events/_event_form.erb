@@ -1,0 +1,40 @@
+<div>
+    <%= f.label :cover_image %>: 
+    <%= f.file_field :cover_image %>
+</div>
+<div>
+    <%= f.label :title %>
+    <%= f.text_field :title, maxlength: 45, size: 40, required: true %>
+</div>
+<div>
+    <%= f.label :category %>
+    <%= f.select :category, ['AMA', 'Workshop', 'Talk', 'Town Hall'], required: true %>
+
+</div>
+<div>
+<%= f.label :starts_at %>
+<%= f.datetime_select :starts_at, required: true, include_blank: true %> UTC Time Only (5 hours ahead of eastern time)
+</div>
+
+<div>
+<%= f.label :ends_at %>
+<%= f.datetime_select :ends_at, required: true, include_blank: true %> UTC Time Only (5 hours ahead of eastern time)
+</div>    
+<div>
+    <%= f.label :location_name %>
+    <%= f.text_field :location_name, required: true %>
+</div>
+<div>
+    <%= f.label :location_url %>
+    <%= f.text_field :location_url, required: true %>
+</div>
+<div>
+    <%= f.label :description_markdown %>
+    <%= f.text_area :description_markdown, size: "45x10", required: true %>
+</div>
+<div>
+    <%= f.label :publish %>
+    <%= f.check_box :published %>
+<div>
+    <%= f.submit %>
+</div> 

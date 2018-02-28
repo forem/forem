@@ -1,0 +1,76 @@
+<% title "DEV EVENTS" %>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+
+<style>
+  .event {
+    padding: 20px;
+    border: solid 2px #66e2d5;;
+    border-radius: 3px; 
+    margin: 50px auto;
+    box-shadow: 5px 8px 0px #ccfff9;
+    font-size: 18px;
+    max-width: 700px;
+    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  }
+  .event-image {
+    max-width: 43%;
+    float: left;
+    margin-right: 20px;
+  }
+
+  .event-image img {
+    max-width: 100%;
+    border-radius: 3px;
+  }
+  .event .event-details p {
+    margin: 0px
+  }  
+  .event .event-details h3 {
+    margin: 0 0 .5em 0;
+    font-weight: 800;
+  }  
+  
+  @media screen and (max-width: 900px) {
+    .container .body .event .event-image {
+      display: block;
+      max-width: 100%;
+      margin: 0 0 20px;
+    }
+  }
+  .copyx{
+    display: none !important;
+  }
+  .addeventatc {visibility:hidden;}
+</style>
+
+<script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
+
+ <div class="container article">
+  <div style="height:30px">
+  </div>
+  <div class="body">
+    <img src="<%= asset_path 'sustaining-membership.svg' %>" style="height:200px;margin-top:30px;"/>
+    <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
+      UPCOMING <br> EVENTS
+    </h1>
+    <p>We are kicking off our ongoing series of workshops and talks for DEV Sustaining members. Here is the list of initial events designed to cover important topics to help community members level up. Because we have a global community we will be hosting events at varying times so nobody is restricted by time zone. Additionally, <strong>some workshops are repeated multiple times</strong> to further account for this.</p>
+    <p>We have many more planned if you do not see a topic that interests you. Email <a href="mailto:members@dev.to">members@dev.to</a> to request a topic.</p>
+    <p><em>Please note: Talks and workshops require a workshop pass.  You can receive a pass by joining as a Level 3 Sustaining Member ($25 / month) at the <a href="/membership">membership page</a>. If you require financial assistance, please apply for a <a href="/p/scholarships">scholarship</a>.</em></p>
+
+    <% @events.each do |event|%>
+      <%= render 'event', event: event %>
+    <% end %>
+
+    <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
+      PAST <br> EVENTS
+    </h1>
+    
+    <% @past_events.each do |event|%>
+      <%= render 'event', event: event %>
+    <% end %>
+    
+  </div>
+

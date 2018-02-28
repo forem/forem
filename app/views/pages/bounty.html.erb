@@ -1,0 +1,86 @@
+<% title "Reporting Vulnerabilities" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/bounty"/>
+  <meta name="description" content="About The Practical Dev">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby,security">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/bounty" />
+  <meta property="og:title" content="About The Practical Dev Bounty System" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="The Practical Dev Bounty System">
+<% end %>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+<div class="container article">
+  <div class="title">
+    <h1>
+      Reporting Vulnerabilities to dev.to
+    </h1>
+  </div>
+  <div class="body">
+  <p style="min-height:300px">
+    <a href="https://res.cloudinary.com/practicaldev/image/fetch/s--5h06TvlR--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/jl3vwgqxcx37vr45ln2o.png" class="article-body-image-wrapper">
+    <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--5h06TvlR--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/jl3vwgqxcx37vr45ln2o.png" alt="octopus attacking our systems" style="max-width:420px">
+    </a>
+  </p>
+  <p>
+    Found a vulnerability in our systems? Shoot us an email at <a href="mailto:yo@dev.to">yo@dev.to</a>. You'll hear back from us within two weeks at the latest, and we'll let you know a few things:
+  </p>
+  <ul>
+    <li>If it's been reported previously,</li>
+    <li>Whether or not we think it's an issue,</li>
+    <li>And if it's eligible for a reward.</li>
+  </ul>
+  <h4>
+    When submitting a report, we ask that you do NOT attempt any findings on a community member's article or comments as a courtesy to other members.
+    Please create your own article and leave comments on your private draft.
+    We use Ruby on Rails, and your report may affect Rails, Ruby, or other parts of our technology stack.
+    We kindly request your patience before submitting these issues.
+    Not following these rules will void any reward.
+  </h4>
+  <p>
+    Vulnerabilties are assessed via <a href="https://bugcrowd.com/vulnerability-rating-taxonomy">BugCrowd's taxonomy rating</a> and our judgment. We strive to be honest, fair and reasonable based on the current size of our current overall operating budget.
+  </p>
+  <ul>
+    <li>Low risk vulnerabilities will be rewarded with $50 USD.</li>
+    <li>Medium risk vulnerabilities will be rewarded with $100 USD.</li>
+    <li>High risk vulnerabilities will be rewarded with $150 USD.</li>
+  </ul>
+  <p>
+    Thanks to those who have helped us by finding, fixing, and disclosing security issues safely:
+  </p>
+  <ul>
+    <% hunters =  [ 'Shintaro Kobori',
+                    'Mohammad Abdullah',
+                    'Guilherme Scombatti',
+                    'Sajibe Kanti',
+                    'Mustafa Khan',
+                    'Footstep Security',
+                    'Zee Shan',
+                    'Muhammad Muhaddis',
+                    'Ismail Hossain',
+                    'Chakradhar Chiru',
+                    'Vis Patel',
+                    'Ahsan Khan',
+                    'Yeasir Arafat',
+                    'Prial Islam',
+                    'Pritesh Mistry',
+                    'Jerbi Nessim',
+                    'Kishan Kumar',
+                    'Md. Nur A Alam Dipu',
+                    'Aman Mahendra',
+                    'Kaushik Roy',
+                     ] %>
+    <% hunters.shuffle.each do |hunter| %>
+      <li><%= hunter %></li>
+    <%end %>
+  </ul>
+  <br/><br/>
+  </div>
+</div>

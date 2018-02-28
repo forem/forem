@@ -1,0 +1,89 @@
+@import 'variables';
+body {
+  background: $lightest-gray;
+  color: $black;
+  font-family: $helvetica;
+  font-size: 18px;
+  padding:0 !important;
+  margin:0 !important;
+  margin-top:-20px !important;
+  :focus {
+  outline: 0;
+  }
+}
+
+.modal-open{
+  margin: 0;
+  overflow: hidden;
+  overflow-y: hidden;
+}
+
+
+.universal-page-content-wrapper{
+  overflow:hidden;
+  min-height:88vh;
+  visibility: visible;
+  &.stories-index,&.notifications-index,&.stories-search,&.podcast_episodes-index,&.reading_list_items-index,.tags-index{
+    margin-top:60px;
+  }
+}
+
+pre {
+  background-color: #2b2b32;
+  padding: 10px;
+  font-size: 15px;
+}
+
+a {
+  color: $sky-blue;
+  text-decoration:none;
+  &:hover{
+    opacity:0.9;
+  }
+}
+
+div {
+  &.field, &.actions {
+    margin-bottom: 5px;
+  }
+}
+
+#instantclick {
+  display: none;
+}
+
+pre{
+  background:#29292e;
+  border-radius:2px;
+  overflow-x:scroll;
+  font-size:11px;
+  color:#eff0f9;
+  line-height:1.42em;
+  font-size:13px;
+  width:calc(100% - 25px);
+  @media screen and ( min-width: 380px ){
+    font-size:15px;
+  }
+  code{
+    background:#29292e;
+    color:#eff0f9;
+    white-space: pre;
+  }
+
+}
+
+.cta {
+  color: $black;
+  background: $green;
+  font-family: $helvetica-condensed;
+  -webkit-appearance: none;
+  font-stretch:condensed;
+}
+
+button{
+  cursor:pointer;
+}
+
+input[type="submit"]{
+  cursor:pointer;
+};

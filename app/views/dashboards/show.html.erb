@@ -1,0 +1,102 @@
+<% title "Dashboard - DEV" %>
+
+<div class="dashboard-container">
+  <div class="actions">
+    <a class="action <%= 'active' if params[:which] == "organization" || params[:which].blank? %>" href="/dashboard">POSTS (<%= @user.articles_count %>)</a>
+    <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">Followers (<%= @user.followers_count %>)</a>
+    <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">Following (<%= @user.following_users_count %>)</a>
+  </div>
+
+  <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
+    <h1>
+      <a href="/dashboard">MY POSTS</a>
+      <a href="/dashboard/organization" class="active"><%= @user.organization.name.upcase %> POSTS</a>
+    </h1>
+      <% if current_user.can_view_analytics? %>
+        <div class="dashboard-analytics-header" id="dashboard-analytics-header">
+          <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
+        </div>
+      <% end %>
+      <% @articles.each do |article| %>
+        <div class="single-article">
+          <a href="<%= article.current_state_path %>"><h2><%= article.title %></h2></a>
+          <div>
+            <% if !article.published %>
+              <span class="pill cta yellow">DRAFT</span>
+            <% end %>
+            <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
+            <% if article.published && current_user.has_role?(:analytics_beta_tester) %>
+              <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
+            <% end%>
+
+          </div>
+          <%= form_for(article) do |f| %>
+            <input type="hidden" name="destination" value="/dashboard" />
+            AUTHOR: <%= f.select(:user_id, options_for_select(@user.organization.users.map {|x| [x.name, x.id] }, article.user_id )) %>
+            <%= f.submit "SUBMIT AUTHOR CHANGE", class:"cta pill black" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% elsif params[:which] == "user_followers" || params[:which] == "following_users" %>
+      <% @users.each do |user| %>
+      <div class="single-article">
+        <a href="<%= user.path %>" class="block-link">
+          <h2>
+            <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60)%>" />
+            <%= user.name %>
+            <span class="dashboard-username">@<%= user.username %></a>
+          </h2>
+        </a>
+      </div>
+    <% end %>
+  <% elsif @articles.any?%>
+    <% if @user.org_admin && @user.organization %>
+      <h1>
+        <a href="/dashboard" class="active">MY POSTS</a>
+        <a href='/dashboard/organization'><%= @user.organization.name.upcase %> POSTS</a>
+      </h1>
+    <% end %>
+    <% if current_user.can_view_analytics? %>
+      <div class="dashboard-analytics-header" id="dashboard-analytics-header">
+        <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
+      </div>
+    <% end %>
+    <% @articles.each do |article| %>
+      <div class="single-article">
+        <a href="<%= article.current_state_path %>">
+          <h2>
+            <%= article.title %>
+          </h2>
+        </a>
+        <div class="dashboard-actions">
+          <% if article.published %>
+            <a href="<%= article.path %>" class="cta pill">PUBLISHED</a>
+          <% else %>
+            <a href="<%= article.path %>?preview=<%= article.password %>" class="cta pill yellow">DRAFT</a>
+          <% end %>
+          <a href="<%= article.path %>/edit" class="cta pill green">EDIT</a>
+          <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+          <% if article.published && current_user.has_role?(:analytics_beta_tester) %>
+            <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
+          <% end%>
+        </div>  
+      </div>
+    <% end %>
+  <% else %>
+    <div class="no-articles">
+      <h3>This is where you can manage your posts, but you haven't written anything yet.</h3>
+      <a href="/new" class="cta">
+        Write your first post now
+      </a>
+      <%=image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+       :type=>"fetch",
+       :width => 300,
+       :crop => "imagga_scale",
+       :quality => "auto",
+       :flags => "progressive",
+       :fetch_format => "auto",
+       :sign_url => true), class:"sloan", alt:"sloth-mascot") %>
+    </div>
+  <% end %>
+</div>

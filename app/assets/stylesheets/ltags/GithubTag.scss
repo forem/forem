@@ -1,0 +1,298 @@
+.ltag_github-liquid-tag {
+  margin: 1em 0;
+
+  h1 {
+    font-size: 20px;
+    margin: 0;
+
+    @media screen and (min-width: 500px) {
+      line-height: 1.125;
+      word-wrap: break-word;
+      margin-left: -20px;
+      margin-bottom: 10px;
+    }
+
+    a {
+      color: black;
+      font-size: 32px;
+      line-height: 32px;
+    }
+
+    .issue-title {
+      font-weight: normal;
+    }
+
+    .issue-number {
+      font-weight: 300;
+      color: #a3aab1;
+      letter-spacing: -1px;
+    }
+  }
+
+  .github-thread {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    background-color: #fff;
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+    width: 98%;
+
+    @media screen and (min-width: 500px) {
+      width: 90%;
+      margin-left: 50px;
+    }
+
+    .arrow-left-outer {
+      display: none;
+      @media screen and (min-width: 500px) {
+        display: block;
+        width: 0;
+        height: 0;
+        border-width: 8px;
+        border-color: transparent;
+        border-style: solid solid outset;
+        border-right-color: #d1d5da;
+        content: " ";
+        float: left;
+        margin-left: -31px;
+        margin-top: 13px;
+      }
+
+    }
+
+    .arrow-left-inner {
+      display: none;
+      @media screen and (min-width: 500px) {
+        display: block;
+        width: 0;
+        height: 0;
+        border-width: 8px;
+        border-color: transparent;
+        border-style: solid solid outset;
+        border-right-color: #f6f8fa;
+        content: " ";
+        float: left;
+        margin-left: -30px;
+        margin-top: 13px;
+      }
+    }
+
+    .timeline-comment-header {
+      display: flex;
+      background: #f6f8fa;
+      border-bottom: 1px solid #d1d5da;
+      padding: 0px 15px;
+
+      @media screen and (min-width: 500px) {
+        display: block;
+      }
+
+      img.github-liquid-tag-img {
+        min-height: inherit;
+        width: 44px;
+        height: 44px;
+        border-radius: 3px;
+        float: none;
+        padding: 10px 0 10px 12px;
+        margin: inherit;
+
+        @media screen and (min-width: 500px) {
+          float: left;
+          padding: 0;
+          margin-left: -75px;
+        }
+      }
+    }
+
+    .timeline-comment-header-text {
+      padding: 10px 0px;
+
+      a {
+        color: rgb(88, 96, 105);
+      }
+
+      a:hover {
+        color: rgb(88, 96, 105);
+        text-decoration: underline;
+      }
+    }
+
+    .edit-comment-hide {
+      padding: 15px 15px;
+
+      *:first-child {
+        margin-top: 0 !important;
+      }
+      *:last-child {
+        margin-bottom: 0 !important;
+      }
+
+      img {
+        left: inherit;
+      }
+
+      blockquote {
+        color: rgb(106, 115, 125);
+        padding: 0px 1em;
+        border-left: 0.25em solid rgb(223, 226, 229);
+        margin: 16px 0px;
+      }
+
+      kbd {
+        display: inline-block;
+        padding: 3px 5px;
+        font-size: 11px;
+        line-height: 10px;
+        color: #444d56;
+        vertical-align: middle;
+        background-color: #fafbfc;
+        border: solid 1px #c6cbd1;
+        border-bottom-color: #959da5;
+        border-radius: 3px;
+        box-shadow: inset 0 -1px 0 #959da5;
+      }
+
+      p {
+        margin-top: 0px;
+        padding: 0px;
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+
+        a.github-user-link {
+          color: #24292e;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        a.github-user-link:hover {
+          color: #24292e;
+          text-decoration: underline;
+        }
+      }
+      code {
+        border-radius: 3px;
+        padding: 0.2em 5px 0px;
+        margin: 0px;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+        font-size: 85%;
+      }
+
+      pre {
+        width: 100%;
+        margin: 0px;
+        color: black;
+        background-color: #F6F8FA;
+        padding: 0;
+        code {
+          background-color: #F6F8FA;
+          color: black;
+        }
+      }
+
+      .highlight pre {
+        padding: 16px;
+        overflow: auto;
+        font-size: 85%;
+        line-height: 1.45;
+        background-color: #f7f7f7;
+        border-radius: 3px;
+        box-sizing: border-box;;
+      }
+
+      .highlight{
+        font-size: 14px;
+        margin-bottom: 16px;
+      }
+
+      .pl-c {
+        color: #969896;
+      }
+
+      .pl-c1,.pl-s .pl-v {
+        color: #0086b3;
+      }
+
+      .pl-e,.pl-en {
+        color: #795da3;
+      }
+
+      .pl-s .pl-s1,.pl-smi {
+        color: #333;
+      }
+
+      .pl-ent {
+        color: #63a35c;
+      }
+
+      .pl-k {
+        color: #a71d5d;
+      }
+
+      .pl-pds,.pl-s,.pl-s .pl-pse .pl-s1,.pl-sr,.pl-sr .pl-cce,.pl-sr .pl-sra,.pl-sr .pl-sre {
+        color: #183691;
+      }
+
+      .pl-v {
+        color: #ed6a43;
+      }
+
+      .pl-id {
+        color: #b52a1d;
+      }
+
+      .pl-ii {
+        background-color: #b52a1d;
+        color: #f8f8f8;
+      }
+
+      .pl-sr .pl-cce {
+        color: #63a35c;
+        font-weight: bold;
+      }
+
+      .pl-ml {
+        color: #693a17;
+      }
+
+      .pl-mh,.pl-mh .pl-en,.pl-ms {
+        color: #1d3e81;
+        font-weight: bold;
+      }
+
+      .pl-mq {
+        color: #008080;
+      }
+
+      .pl-mi {
+        color: #333;
+        font-style: italic;
+      }
+
+      .pl-mb {
+        color: #333;
+        font-weight: bold;
+      }
+
+      .pl-md {
+        background-color: #ffecec;
+        color: #bd2c00;
+      }
+
+      .pl-mi1 {
+        background-color: #eaffea;
+        color: #55a532;
+      }
+
+      .pl-mdr {
+        color: #795da3;
+        font-weight: bold;
+      }
+
+      .pl-mo {
+        color: #1d3e81;
+      }
+    }
+  }
+}

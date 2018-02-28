@@ -1,0 +1,684 @@
+//= require_tree ./initializers
+//= require_tree ./utilities
+//= require lib/xss
+//= require initializePage
+//= require utilities/getImageForLink
+//= require airbrake-js-client
+//= require serviceworker-companion
+//= require algolia/v3/algoliasearch.min
+//= require fetch
+
+var instantClick
+  , InstantClick = instantClick = function(document, location, $userAgent) {
+  // Internal variables
+  var $isChromeForIOS = $userAgent.indexOf(' CriOS/') > -1
+    , $currentLocationWithoutHash
+    , $urlToPreload
+    , $preloadTimer
+    , $lastTouchTimestamp
+
+  // Preloading-related variables
+    , $history = {}
+    , $xhr
+    , $url = false
+    , $mustRedirect = false
+    , $fetchedBodies = {}
+    , $timing = {}
+    , $isPreloading = false
+    , $isWaitingForCompletion = false
+    , $trackedAssets = []
+
+  // Variables defined by public functions
+    , $preloadOnMousedown
+    , $delayBeforePreload
+    , $eventsCallbacks = {
+        fetch: [],
+        receive: [],
+        wait: [],
+        change: [],
+        restore: []
+      }
+
+
+  ////////// HELPERS //////////
+
+
+  function removeHash(url) {
+    var index = url.indexOf('#')
+    if (index < 0) {
+      return url
+    }
+    return url.substr(0, index)
+  }
+
+  function getLinkTarget(target) {
+    while (target && target.nodeName != 'A') {
+      target = target.parentNode
+    }
+    return target
+  }
+
+  function isBlacklisted(elem) {
+    do {
+      if (!elem.hasAttribute) { // Parent of <html>
+        break
+      }
+      if (elem.hasAttribute('data-instant')) {
+        return false
+      }
+      if (elem.hasAttribute('data-no-instant')) {
+        return true
+      }
+    }
+    while (elem = elem.parentNode)
+    return false
+  }
+
+  function isPreloadable(a) {
+    var domain = location.protocol + '//' + location.host
+
+    if (a.target // target="_blank" etc.
+        || a.hasAttribute('download')
+        || a.href.indexOf(domain + '/') != 0 // Another domain, or no href attribute
+        || (a.href.indexOf('#') > -1
+            && removeHash(a.href) == $currentLocationWithoutHash) // Anchor
+        || isBlacklisted(a)
+       ) {
+      return false
+    }
+    return true
+  }
+
+  function triggerPageEvent(eventType, arg1, arg2, arg3) {
+    var returnValue = false
+    for (var i = 0; i < $eventsCallbacks[eventType].length; i++) {
+      if (eventType == 'receive') {
+        var altered = $eventsCallbacks[eventType][i](arg1, arg2, arg3)
+        if (altered) {
+          /* Update args for the next iteration of the loop. */
+          if ('body' in altered) {
+            arg2 = altered.body
+          }
+          if ('title' in altered) {
+            arg3 = altered.title
+          }
+
+          returnValue = altered
+        }
+      }
+      else {
+        $eventsCallbacks[eventType][i](arg1, arg2, arg3)
+      }
+    }
+    return returnValue
+  }
+
+  function changePage(title, body, newUrl, scrollY, pop) {
+    // NOT TOTALLY SURE THIS WORKS FOR ALL CASES
+    // HACKALICIOUS
+    if (document.getElementById("navigation-butt")) {
+      document.getElementById("navigation-butt").classList.remove('showing')
+    }
+    document.getElementsByTagName("BODY")[0].replaceChild(body, document.getElementById("page-content"))
+
+    var prog = document.getElementById("navigation-progress");
+    prog.classList.remove("showing");
+
+    if (newUrl) {
+      history.pushState(null, null, newUrl.replace("?samepage=true","").replace("&samepage=true",""))
+
+      var hashIndex = newUrl.indexOf('#')
+        , hashElem = hashIndex > -1
+                     && document.getElementById(newUrl.substr(hashIndex + 1))
+        , offset = 0,
+        samePage = newUrl.indexOf("samepage=true") > -1
+
+      if (hashElem) {
+        while (hashElem.offsetParent) {
+          offset += hashElem.offsetTop
+
+          hashElem = hashElem.offsetParent
+        }
+      }
+      if (!samePage){
+        scrollTo(0, offset)
+      }
+
+
+      $currentLocationWithoutHash = removeHash(newUrl)
+    }
+    else {
+      scrollTo(0, scrollY)
+    }
+
+    if ($isChromeForIOS && document.title == title) {
+      /* Chrome for iOS:
+       *
+       * 1. Removes title on pushState, so the title needs to be set after.
+       *
+       * 2. Will not set the title if it's identical when trimmed, so
+       *    appending a space won't do; but a non-breaking space works.
+       */
+      document.title = title + String.fromCharCode(160)
+    }
+    else {
+      document.title = title
+    }
+
+    instantanize()
+    if (pop) {
+      triggerPageEvent('restore')
+    }
+    else {
+      triggerPageEvent('change', false)
+    }
+  }
+
+  function setPreloadingAsHalted() {
+    $isPreloading = false
+    $isWaitingForCompletion = false
+  }
+
+  function removeNoscriptTags(html) {
+    /* Must be done on text, not on a node's innerHTML, otherwise strange
+     * things happen with implicitly closed elements (see the Noscript test).
+     */
+    return html.replace(/<noscript[\s\S]+?<\/noscript>/gi, '')
+  }
+
+
+  ////////// EVENT LISTENERS //////////
+
+
+  function mousedownListener(e) {
+    if ($lastTouchTimestamp > (+new Date - 500)) {
+      return // Otherwise, click doesn't fire
+    }
+
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    preload(a.href)
+  }
+
+  function mouseoverListener(e) {
+    if ($lastTouchTimestamp > (+new Date - 500)) {
+      return // Otherwise, click doesn't fire
+    }
+
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    a.addEventListener('mouseout', mouseoutListener)
+
+    if (!$delayBeforePreload) {
+      preload(a.href)
+    }
+    else {
+      $urlToPreload = a.href
+      $preloadTimer = setTimeout(preload, $delayBeforePreload)
+    }
+    getImageForLink(a);
+  }
+
+  function touchstartListener(e) {
+    $lastTouchTimestamp = +new Date
+    var a = getLinkTarget(e.target)
+
+    if (!a || !isPreloadable(a)) {
+      return
+    }
+
+    if ($preloadOnMousedown) {
+      a.removeEventListener('mousedown', mousedownListener)
+    }
+    else {
+      a.removeEventListener('mouseover', mouseoverListener)
+    }
+    preload(a.href);
+    getImageForLink(a);
+  }
+
+  function clickListener(e) {
+    try{
+      var a = getLinkTarget(e.target)
+
+      if (!a || !isPreloadable(a)) {
+        return
+      }
+
+      if (e.which > 1 || e.metaKey || e.ctrlKey) { // Opening in new tab
+        return
+      }
+      display(a.href);
+      e.preventDefault();
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+
+  function mouseoutListener() {
+    if ($preloadTimer) {
+      clearTimeout($preloadTimer)
+      $preloadTimer = false
+      return
+    }
+
+    if (!$isPreloading || $isWaitingForCompletion) {
+      return
+    }
+    $xhr.abort()
+    setPreloadingAsHalted()
+  }
+
+  function readystatechangeListener() {
+    processXHR($xhr,$url);
+  }
+
+  function processXHR(xhr,url) {
+    if (xhr.readyState < 4) {
+      return
+    }
+    if (xhr.status == 0) {
+      /* Request aborted */
+      return
+    }
+
+    $timing.ready = +new Date - $timing.start
+
+    if (xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
+      var doc = document.implementation.createHTMLDocument('');
+      doc.documentElement.innerHTML = removeNoscriptTags(xhr.responseText)
+      var title = doc.title
+      var body = doc.getElementById("page-content")
+      var alteredOnReceive = triggerPageEvent('receive', url, body, title)
+      if (alteredOnReceive) {
+        if ('body' in alteredOnReceive) {
+          body = alteredOnReceive.body
+        }
+        if ('title' in alteredOnReceive) {
+          title = alteredOnReceive.title
+        }
+      }
+
+      $fetchedBodies[url] = {body:body, title:title};
+      var urlWithoutHash = removeHash(url)
+
+      var elems = doc.head.children
+        , found = 0
+        , elem
+        , data
+
+      for (var i = 0; i < elems.length; i++) {
+        elem = elems[i]
+        if (elem.hasAttribute('data-instant-track')) {
+          data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML
+          for (var j = 0; j < $trackedAssets.length; j++) {
+            if ($trackedAssets[j] == data) {
+              found++
+            }
+          }
+        }
+      }
+      if (found != $trackedAssets.length) {
+        $mustRedirect = true // Assets have changed
+      }
+    }
+    else {
+      $mustRedirect = true // Not an HTML document
+    }
+
+    if ($isWaitingForCompletion && $url === url) {
+      $isWaitingForCompletion = false
+      display($url)
+    }
+  }
+
+  function popstateListener() {
+    var loc = removeHash(location.href)
+    if (loc == $currentLocationWithoutHash) {
+      return
+    }
+
+    if (!(loc in $history)) {
+      location.href = location.href
+      return
+    }
+    $history[$currentLocationWithoutHash] = {
+      body: document.getElementById("page-content"),
+      title: document.title,
+      scrollY: pageYOffset
+    }
+
+    $currentLocationWithoutHash = loc
+    changePage($history[loc].title, $history[loc].body, false, $history[loc].scrollY, true)
+  }
+
+
+  ////////// MAIN FUNCTIONS //////////
+
+
+  function instantanize(isInitializing) {
+    var docBody = document.body;
+    if (docBody) {
+      document.body.addEventListener('touchstart', touchstartListener, true)
+      if ($preloadOnMousedown) {
+        document.body.addEventListener('mousedown', mousedownListener, true)
+      }
+      else {
+        document.body.addEventListener('mouseover', mouseoverListener, true)
+      }
+      document.body.addEventListener('click', clickListener, true)
+    }
+
+    if (!isInitializing) {
+      var scripts = document.body.getElementsByTagName('script')
+        , script
+        , copy
+        , parentNode
+        , nextSibling
+
+      for (var i = 0, j = scripts.length; i < j; i++) {
+        script = scripts[i]
+        if (script.hasAttribute('data-no-instant')) {
+          continue
+        }
+        copy = document.createElement('script')
+        if (script.src) {
+          copy.src = script.src
+        }
+        if (script.innerHTML) {
+          copy.innerHTML = script.innerHTML
+        }
+        parentNode = script.parentNode
+        nextSibling = script.nextSibling
+        parentNode.removeChild(script)
+        parentNode.insertBefore(copy, nextSibling)
+      }
+    }
+  }
+
+  function preload(url, option) {
+    if (!$preloadOnMousedown
+        && 'display' in $timing
+        && +new Date - ($timing.start + $timing.display) < 100) {
+      return
+    }
+    if ($preloadTimer) {
+      clearTimeout($preloadTimer)
+      $preloadTimer = false
+    }
+
+    if (!url) {
+      url = $urlToPreload
+    }
+
+    if ($isPreloading && (url == $url || $isWaitingForCompletion)) {
+      return
+    }
+    $isPreloading = true
+    $isWaitingForCompletion = false
+
+    $mustRedirect = false
+    $timing = {
+      start: +new Date
+    }
+    if (url.indexOf("?") == -1) {
+      var internalUrl = url+"?i=i"
+    }
+    else {
+      var internalUrl = url+"&i=i"
+    }
+    removeExpiredKeys()
+    triggerPageEvent('fetch')
+    if (!$fetchedBodies[url]){
+      if (option === "force") {
+        getURLInfo(url, function () {
+          processXHR(this,url);
+        })
+      }
+      else {
+        $url = url
+        $xhr.open('GET', internalUrl)
+        $xhr.send()
+      }
+    }
+  }
+
+  function removeExpiredKeys(option) {
+    if ( Object.keys($fetchedBodies).length > 16 || option == "force" ) {
+      $fetchedBodies = {};
+    }
+
+  }
+
+  function getURLInfo(url, callback) {
+    var xhr = new XMLHttpRequest();
+    if (url.indexOf("?") == -1) {
+      var internalUrl = url+"?i=i"
+    }
+    else {
+      var internalUrl = url+"&i=i"
+    }
+    xhr.open (
+      "GET",
+      internalUrl,
+      true
+    );
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        // defensive check
+        if (typeof callback == "function") {
+          // apply() sets the meaning of "this" in the callback
+          callback.apply(xhr);
+        }
+      }
+    }
+    // send the request *after* the event handler is defined
+    xhr.send();
+  }
+
+  function display(url) {
+    $url = url;
+    if($fetchedBodies[url]){
+      var body = $fetchedBodies[url]['body'];
+      var title = $fetchedBodies[url]['title'];
+    }
+    else {
+      var prog = document.getElementById("navigation-progress");
+      prog.classList.add("showing");
+    }
+
+    if (!('display' in $timing)) {
+      $timing.display = +new Date - $timing.start
+    }
+    if ($preloadTimer || !$isPreloading) {
+      if ($preloadTimer && $url && $url != url) {
+        location.href = url
+        return
+      }
+      preload(url)
+      triggerPageEvent('wait')
+      $isWaitingForCompletion = true // Must be set *after* calling `preload`
+      return
+    }
+    if ($isWaitingForCompletion) {
+      /* The user clicked on a link while a page was preloading. Either on
+         the same link or on another link. If it's the same link something
+         might have gone wrong (or he could have double clicked, we don't
+         handle that case), so we send him to the page without pjax.
+         If it's another link, it hasn't been preloaded, so we redirect the
+         user to it.
+      */
+      location.href = url
+      return
+    }
+    if ($mustRedirect) {
+      location.href = $url
+      return
+    }
+
+    if (!body) {
+      triggerPageEvent('wait')
+      $isWaitingForCompletion = true
+      return
+    }
+    $history[$currentLocationWithoutHash] = {
+      body: document.getElementById("page-content"),
+      title: document.title,
+      scrollY: pageYOffset
+    }
+    setPreloadingAsHalted()
+    changePage(title, body, $url)
+  }
+
+
+  ////////// PUBLIC VARIABLE AND FUNCTIONS //////////
+
+  var supported = 'pushState' in history
+                  && (!$userAgent.match('Android') || $userAgent.match('Chrome/') || $userAgent.match('Firefox/'))
+                  && location.protocol != "file:"
+
+  /* The (sad) state of Android's AOSP browsers:
+
+     2.3.7: pushState appears to work correctly, but
+            `doc.documentElement.innerHTML = body` is buggy.
+            Update: InstantClick doesn't use that anymore, but it may
+            fail where 3.0 do, this needs testing again.
+
+     3.0:   pushState appears to work correctly (though the address bar is
+            only updated on focus), but
+            `document.documentElement.replaceChild(doc.body, document.body)`
+            throws DOMException: WRONG_DOCUMENT_ERR.
+
+     4.0.2: Doesn't support pushState.
+
+     4.0.4,
+     4.1.1,
+     4.2,
+     4.3:   Claims support for pushState, but doesn't update the address bar.
+
+     4.4:   Works correctly. Claims to be 'Chrome/30.0.0.0'.
+
+     All androids tested with Android SDK's Emulator.
+     Version numbers are from the browser's user agent.
+
+     Because of this mess, the only whitelisted browser on Android is Chrome.
+  */
+
+  function init(preloadingMode) {
+    if ($currentLocationWithoutHash) {
+      /* Already initialized */
+      return
+    }
+    if (!supported) {
+      triggerPageEvent('change', true)
+      return
+    }
+
+    if (preloadingMode == 'mousedown') {
+      $preloadOnMousedown = true
+    }
+    else if (typeof preloadingMode == 'number') {
+      $delayBeforePreload = preloadingMode
+    }
+    $currentLocationWithoutHash = removeHash(location.href)
+    $history[$currentLocationWithoutHash] = {
+      body: document.getElementById("page-content"),
+      title: document.title,
+      scrollY: pageYOffset
+    }
+
+    var elems = document.head.children
+      , elem
+      , data
+    for (var i = 0; i < elems.length; i++) {
+      elem = elems[i]
+      if (elem.hasAttribute('data-instant-track')) {
+        data = elem.getAttribute('href') || elem.getAttribute('src') || elem.innerHTML
+        /* We can't use just `elem.href` and `elem.src` because we can't
+           retrieve `href`s and `src`s from the Ajax response.
+        */
+        $trackedAssets.push(data)
+      }
+    }
+
+    $xhr = new XMLHttpRequest()
+    $xhr.addEventListener('readystatechange', readystatechangeListener)
+
+    instantanize(true)
+
+    triggerPageEvent('change', true)
+
+    addEventListener('popstate', popstateListener)
+  }
+
+  function on(eventType, callback) {
+    $eventsCallbacks[eventType].push(callback)
+  }
+
+
+  ////////////////////
+
+
+  return {
+    supported: supported,
+    init: init,
+    isPreloadable: isPreloadable,
+    preload: preload,
+    removeExpiredKeys: removeExpiredKeys,
+    display: display,
+    on: on
+  }
+
+}(document, location, navigator.userAgent);
+
+
+//FUNCTIONAL CODE FOR PAGE
+
+  function initializeBaseApp() {
+    InstantClick.on('change', function() {
+      initializePage();
+    });
+    InstantClick.init();
+  }
+
+
+  // INITIALIZE/ERROR HANDLING
+
+  function initializeAirbrake() {
+
+    <% if Rails.env.production? %>
+      var airbrake = new airbrakeJs.Client({projectId: 1, projectKey: '<%=ENV["AIRBRAKE_API_KEY"]%>'});
+      airbrake.addFilter(function(notice) {
+        notice.context.environment = "<%= Rails.env %>";
+        return notice;
+      });
+      try {
+        initializeBaseApp()
+      } catch (err) {
+        airbrake.notify(err);
+      }
+    <% else %>
+      initializeBaseApp()
+    <% end %>
+  }
+
+  if (typeof airbrakeJs !== 'undefined') {
+    initializeAirbrake();
+  }
+  else {
+    var waitingOnAirbrake = setInterval(function(){
+      if (typeof airbrakeJs !== 'undefined') {
+        initializeAirbrake();
+        clearInterval(waitingOnAirbrake);
+      }
+    },1);
+  }

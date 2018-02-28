@@ -1,0 +1,339 @@
+<% title "The DEV Sustaining Membership" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/membership"/>
+  <meta name="description" content="dev.to | Membership">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/membership" />
+  <meta property="og:title" content="The DEV Sustaining Membership" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/jlaubn65o81m46jkg5k6.png" />
+  <meta property="og:description" content="Support the DEV Community and get access to exclusive events and features" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="The DEV Sustaining Membership">
+  <meta property="og:description" content="Support the DEV Community and get access to exclusive events and features" />
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/jlaubn65o81m46jkg5k6.png">
+
+<% end %>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+
+<style>
+  body{
+    background: #f2f3ff;
+  }
+  .container .body p{
+    margin:1.2em 0 1.50em;
+    
+  }
+  .container .body h1{
+    margin:1.3em 0 1.50em;
+  }
+  .body .cta{
+    font-size:1.5em;
+    border: 4px solid #3bccbb;
+    border-radius: 3px;
+    vertical-align: 2px;
+    padding: 8px 12px;
+  }
+  .levels-wrapper{
+    position: relative;
+    margin: calc(2vw + 10px) auto;
+  }
+  .membership-levels{
+    width: 86%;
+    max-width: 500px;
+    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size:0.9em;
+    margin:auto;
+  }
+  .single-membership-level{
+    border: 2px solid #918ffa;
+    margin-bottom: 15px;
+    border-radius: 3px;
+    box-shadow: 5px 8px 0px #d7d9f8;
+  }
+  .single-level-header{
+    background: #557de8;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    font-weight: 500;
+  }
+  .container .body .single-level-header img {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    left: auto;
+    vertical-align: -4px;
+  }
+  .single-level-body{
+    padding: 15px;
+  }
+  .single-level-body .img-wrapper{
+    text-align: center;
+  }
+  .container .body .single-level-body img {
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    left: auto;
+  }
+  .enroll-form{
+    margin-top: 10px;
+    padding: 150px 0px;
+    text-align:center;
+    width: calc(100% + 159px);
+    margin-left: -79px;
+    margin-bottom: -102px;
+    font-size:22px;
+    background: #ccfff9 url(<%= asset_path 'triple-unicorn.png' %>) no-repeat center center;
+  }
+
+  .user-amount-wrapper{
+    position:relative;
+    width: 300px;
+    max-width:25%;
+    margin: 0px auto;
+    display: inline-block;
+  }
+  .stripe-button-wrapper{
+    display: inline-block;
+    vertical-align: -7px;
+  }
+  .amount-input{
+    width: calc(100% - 85px);
+    max-width: 130px;
+    padding: 18px;
+    font-size: 20px;
+    padding-left: 80px;
+    border: 1px solid #3bccbb;
+  }
+  .amount-currency-indicator{
+    position: absolute;
+    left: 0;
+    top:0;
+    bottom: 0;
+    width: 60px;
+    text-align:center;
+    padding-top:15px;
+    padding-left: 2px;
+    border-right: 1px solid #3bccbb;
+    color: #1faf9f;
+    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  }
+  input[type=number]::-webkit-inner-spin-button { 
+      display:none;
+  }
+  .credit-card-button{
+    margin-left: 15px;
+  }
+  .signin-container{
+    padding-top:150px;
+    text-align:center;
+
+  }
+  .signin-container .cta{
+    margin: 15px 10px 0px;
+    display: inline-block;
+    min-width: 150px;
+  }
+  #notice{
+    text-align: center;
+    color: red;
+    padding: 5px;
+  }
+</style>
+<div class="container article">
+  <div class="title" style="height:30px;">
+    <% if flash[:error].present? %>
+      <div class="notice error-notice" id="notice">
+        ERROR: <%= sanitize(flash[:error]) %>
+      </div>
+    <% end %>
+  </div>
+  <div class="body">
+    <% cache("membership-shared-area", expires_in: 1.hour) do %>
+      <img src="<%= asset_path 'sustaining-membership.svg' %>" style="height:180px;margin-top:30px;"/>
+      <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
+        The DEV Community<br>Sustaining Membership
+      </h1>
+      <p>
+        Our community is special because of each and every one of you. <br>
+      </p>
+      <p>
+        By contributing at <b>any level</b>, your support will help us continue our work of building a community that is open, kind, and constructive for programmers everywhere.
+      </p>
+      <p>
+        We’ve put together some goodies that are described below and we’ll be expanding these perks over time, so you can expect even more in the long run.
+      </p>
+      <p>
+        Thanks for (at least thinking about) becoming a dev.to sustaining member.  The fact that you’re reading this means a lot to us.
+      </p>
+      <div class="levels-wrapper">
+        <div class="membership-levels">
+          <div class="single-membership-level">
+            <div class="single-level-header">Level 1</div>
+            <div class="single-level-body">
+              Your support is appreciated. For <span style="background-color:#fefa87">$1 a month</span>, you'll get:
+              <ul>
+                <li><strong>Access to beta features </li>
+                <li> Added to our "Wall of Patrons and Scholars" with a link to your profile</strong> </li>
+              </ul>
+              <div class="img-wrapper">
+                <img src="<%= asset_path 'emoji-apple-hands.png' %>" />
+              </div>
+            </div>
+          </div>
+          <div class="single-membership-level">
+            <div class="single-level-header">Level 2</div>
+            <div class="single-level-body">
+              Double digits! For <span style="background-color:#fefa87">$10 a month</span>, you'll get:
+              <ul>
+                <li><strong>An exclusive sticker pack mailed to your door</li>
+                <li>25% off <a href="https://shop.dev.to">The DEV Shop</a> (forever!)</li>
+                <li>Added to our "Wall of Patrons and Scholars" with a link to your profile</strong></li>
+                <li> Access to beta features </li>
+              </ul>
+              <div class="img-wrapper">
+                <img src="<%= asset_path 'emoji-apple-shopping-bags.png' %>" />
+              </div>
+            </div>
+          </div>
+          <div class="single-membership-level">
+            <div class="single-level-header">Level 3</div>
+            <div class="single-level-body">
+              Woohooo! For <span style="background-color:#fefa87">$25 a month</span>, you'll get:
+              <ul>
+                <li> <strong>A <a href="/events">"workshop pass"</a> to all future dev.to workshops!! 
+                <li>Stickers + t-shirt combo pack </strong> </li>
+                <li>25% off <a href="https://shop.dev.to">The DEV Shop</a> (forever!) </li>
+                <li> Added to our "Wall of Patrons and Scholars" with a link to your profile</li>
+                <li> Access to beta features </li>
+              </ul>
+              <div class="img-wrapper">
+                <img src="<%= asset_path 'emoji-apple-backpack.png' %>" />
+              </div>
+            </div>
+          </div>
+          <div class="single-membership-level">
+            <div class="single-level-header">Level 4</div>
+            <div class="single-level-body">
+              When you contribute <span style="background-color:#fefa87"> over $25 a month</span>, your additional support goes toward our diversity/need-based scholarship fund, providing workshop passes to members who cannot afford it. Plus, all the perks from above.
+              <div class="img-wrapper">
+                <img src="<%= asset_path 'emoji-apple-revolving-hearts.png' %>" />
+              </div>
+            </div>
+          </div>
+          <div class="single-membership-level">
+            <div class="single-level-header">Level Triple-Unicorn
+            </div>
+            <div class="single-level-body">
+              For <span style="background-color:#fefa87">$1000 a month</span>, your name will get the featured position on the Wall of Patrons and Scholars, everything described above, monthly private conversations with the DEV leadership, and an actual unicorn. Provided we can find one.
+              <div class="img-wrapper">
+                <img src="<%= asset_path 'emoji-apple-unicorn.png' %>" />
+                <img src="<%= asset_path 'emoji-apple-unicorn.png' %>" />
+                <img src="<%= asset_path 'emoji-apple-unicorn.png' %>" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="notice error-notice" id="js-error" style="text-align:center;color:red">
+    </div>
+    <div id="membership-form-wrapper" style="height:364px;">
+      <!-- Form will render via JS here -->
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <%= render partial: "wall_of_patrons" %>
+  <br>
+</div>
+
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+<script>
+
+  function initializeStripe() {
+    var form = document.getElementById("credit-card-form");
+    if (!form) {
+      return false;
+    }
+    var handler = StripeCheckout.configure({
+      key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+      image: 'https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg',
+      locale: 'auto',
+      token: function(token) {
+        addHidden(form, 'stripe_token', token.id);
+        if (form.amount && form.stripe_token) {
+          form.submit();
+        } else {
+          document.getElementById('js-error').innerHTML = 'Oops, something went wrong. Please refresh the page or contact <a href="mailto:members@dev.to">contact us</a> to get this sorted out.'
+        }
+      }
+    });
+    document.getElementById('custom-stripe-button').addEventListener('click', function(event) {
+      event.preventDefault();
+      if (getAmount() < 100) {
+        document.getElementById('js-error').innerHTML = 'Amount has to be at least 1 dollar.';
+      } else {
+        document.getElementById('js-error').innerHTML = '';
+        addHidden(form, 'amount', document.getElementById('amount-input').value);
+        // Open Checkout with further options:
+        handler.open({
+          description: 'Add Credit Card',
+          amount: getAmount(),
+          email: document.getElementById("member-email-holder").dataset.email,
+          panelLabel: "Add Card",
+          allowRememberMe: false,
+          zipCode: true,
+        });
+      }
+    });
+    // Close Checkout on page navigation:
+    window.addEventListener('popstate', function() {
+      handler.close();
+    });
+  }
+
+  function getAmount() {
+    return document.getElementById('amount-input').value * 100;
+  }
+
+  function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key; // 'the key/name of the attribute/field that is sent to the server
+    input.value = value;
+    theForm.appendChild(input);
+  }
+
+  var dataRequester;
+  if (window.XMLHttpRequest) {
+      dataRequester = new XMLHttpRequest();
+  } else {
+      dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+  dataRequester.onreadystatechange = function() {
+    if (dataRequester.readyState === XMLHttpRequest.DONE && dataRequester.status === 200) {
+      document.getElementById('membership-form-wrapper').innerHTML = dataRequester.response;
+      setTimeout(function(){
+        initializeStripe();
+      },250)
+    }
+  }
+  dataRequester.open('GET', '/p/membership_form', true);
+  dataRequester.send();
+</script>
+

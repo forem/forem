@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <%= favicon_link_tag %>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <title><%= controller_name %></title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <%= javascript_include_tag 'internal' %>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>  </head>
+    <style>
+      .starter-template{padding-top:60px;font-size:1.4em;}
+      .row{
+        margin-top:1vw;
+        border:1px solid gray;
+        padding:1vw;
+        border-radius:3px;
+      }
+      .inner-row form{
+        display:inline-block;
+      }
+      textarea {
+        font-size: 12px; 
+        width: 75%;
+      }
+      .btn{
+        min-width:100px;
+      }
+      .tab{
+        padding-top:10px;
+        padding-bottom:10px;
+        border-bottom:10px solid white;
+      }
+      .tab-current{
+        border-bottom:10px solid rgb(193, 209, 224);
+      }
+      .tab-current .btn{
+        opacity:0.9;
+      }
+      .row-plain{
+        padding:0;
+        border:0;
+      }
+      .featured-bg{
+        background:#bbffd2
+      }
+      .approved-bg{
+        background:#92e8ae;
+        border: 12px solid #ff9900;
+        a{
+          color:white !important;
+        }
+      }
+      .highlighted-bg{
+        background:#2effa8 !important;
+        border:20px solid black;
+      }
+      .highlighted-border{
+        border:20px solid black;
+      }
+
+    </style>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Internal DEV</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="<%= "active" if controller_name == "comments"%>"><a href="/internal/comments">comments</a></li>
+            <li class="<%= "active" if controller_name == "articles"%>"><a href="/internal/articles">articles</a></li>
+            <li class="<%= "active" if controller_name == "users"%>"><a href="/internal/users">users</a></li>
+            <li class="<%= "active" if controller_name == "members"%>"><a href="/internal/members">members</a></li>
+            <li class="<%= "active" if controller_name == "dogfood"%>"><a href="/internal/dogfood">dog food</a></li>
+            <li class="<%= "active" if controller_name == "tags"%>"><a href="/internal/tags">tags</a></li>
+            <li class="<%= "active" if controller_name == "welcome"%>"><a href="/internal/welcome">welcome</a></li>
+            <li class="<%= "active" if controller_name == "broadcasts"%>"><a href="/internal/broadcasts">broadcasts</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <% flash.each do |type, message| %>
+        <div class="alert alert-danger">
+          <button class="close"data-dismiss="alert">X</button>
+          <%= message %>
+        </div>
+        <% end %>
+        <%= yield %>
+      </div>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

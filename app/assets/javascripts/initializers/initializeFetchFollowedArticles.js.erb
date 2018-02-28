@@ -1,0 +1,43 @@
+function initializeFetchFollowedArticles() {
+  if ( document.getElementById("featured-story-marker") && checkUserLoggedIn() ) {
+    algoliaFollowedArticles();
+  }
+}
+  
+function insertArticle(article,parent,insertPlace) {
+  if (article){
+    var newItem = document.createElement("DIV");
+    newItem.innerHTML = buildArticleHTML(article)
+    parent.insertBefore(newItem, insertPlace);
+    initializeReadingListIcons();
+  }
+}
+
+function algoliaFollowedArticles(){
+    var user = userData();
+    if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
+      var followedUsersArray = [];
+      if (user.followed_user_ids){
+        followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});
+      }
+      var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+      var index = client.initIndex('ordered_articles_<%= Rails.env %>');
+      index.search("*", {
+          hitsPerPage: 20,
+          page: "0",
+          attributesToHighlight: [],
+          tagFilters: [user.followed_tag_names.concat(followedUsersArray)],
+      })
+      .then(function searchDone(content) {
+        var insertPlace = document.getElementById("article-index-hidden-div");
+        if (insertPlace) {
+          var parent = insertPlace.parentNode;
+          content.hits.forEach(function(article){
+            if ( !document.getElementById("article-link-"+article.id) ) {
+              insertArticle(article,parent,insertPlace);
+            }
+          });
+        }
+      });
+    }
+}

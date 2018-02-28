@@ -1,0 +1,17 @@
+
+
+<% if @article.collection.present? && @article.collection.articles.size > 1 %>
+  <div class="article-collection-wrapper article-collection-wrapper-<%= position %>">
+    <p>Part of a series</p>
+    <div class="article-collection">
+      <% @article.collection.articles.order("collection_position ASC").each_with_index do |article,i| %>
+          <a
+            href="<%= article.path if article.published %>"
+            class="<%= collection_link_class(@article,article) %>"
+            data-preload-image="<%=cloud_cover_url(article.main_image) %>"
+          >
+          </a>
+      <% end %>
+    </div>
+  </div>
+<% end %>

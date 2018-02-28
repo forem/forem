@@ -1,0 +1,62 @@
+<% title "Reading List - dev.to" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/readinglist"/>
+  <meta name="description" content="Notifications inbox for dev.to">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/readinglist" />
+  <meta property="og:title" content="Reading List - dev.to" />
+  <meta property="og:description" content="My Reading List on dev.to" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="Reading List - dev.to">
+  <meta name="twitter:description" content="Reading List for dev.to">
+<% end %>
+
+<div class="user-profile-header tag-header readinglist-header">
+  <div class="tag-or-query-header-container">
+    <h1 class="notifications-header"><img src="<%=asset_path("emoji/emoji-one-bookmark.png")%>" /> My Reading List</h1>
+  </div>
+</div>
+
+  <div class="home" id="notifications-container">
+    <div class="side-bar" style="margin-top:12px" id="sidebar">
+      <div class="fixed-sidebar">
+        <div class="sidebar-nav">
+          <div class="widget sidebar-nav-block">
+            <div class="sidebar-nav-element sidebar-nav-readinglist">
+              <a class="sidebar-nav-link" href="/readinglist">
+                <img src="<%=asset_path("emoji/emoji-one-bookmark.png")%>" /> MY READING LIST
+                <span id="reading-list-count"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="widget" id="tag-filter-widget">
+          <header>
+            &lt;FILTER BY TAG&gt;
+          </header>
+          <div class="widget-body body-scrollable" id="tag-filters" style="margin-bottom:16px;">
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="articles-list" id="articles-list">
+        <% if user_signed_in? %>
+          <div class="substories" id="substories">
+          </div>
+        <% else %>
+          <script>
+            window.location.href = "/enter"
+          </script>
+          <br/><br/>
+          <a href="/enter" style="color:blue;">Sign in</a> to see your reading list
+        <% end %>
+      </div>
+    </div>
+    <div class="side-bar sidebar-additional"></div>
+  </div>

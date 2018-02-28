@@ -1,0 +1,70 @@
+<% title "Now" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/now"/>
+  <meta name="description" content="dev.to | Get started now">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+<% end %>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+
+<style>
+  .cta-button{
+    padding:15px;
+    display:block;
+    margin: auto;
+    text-align:center;
+    border-radius: 5px;
+    font-weight:600;
+    font-size:2em;
+    line-height:1.2em;
+    margin-bottom:0.4em;
+  }
+  .cta-button:hover{
+    opacity:0.92;
+    color: black;
+  }
+</style>
+<div class="container article">
+  <div style="text-align:center;margin-bottom:15px;height:315px;">
+    <img src="<%= asset_path('clock.png') %>" />
+  </div>
+  <div class="title" style="text-align:center">
+    <h1 style="font-weight:600">
+      The Best Time is Now
+    </h1>
+  </div>
+  <div class="body">
+    <p>
+      One of the most common things we hear developers say they <em>wished they were doing more of</em>, is <b>writing about their work</b> and <b>sharing</b> it with others. <a href="https://dev.to">dev.to</a> is fundamentally built to help facilitate that process. It's well established that writing and sharing your work is just about the best thing you can do to help your own understanding and boost your career prospects.
+    </p>
+    <p>
+      As the saying goes, "The best time to plant a tree was 20 years ago. The second best time is now." In order to help you take the leap, we've created some templates for your first DEV post. You're welcome to post about anything related to software development, but you may want to start with one of these templates.
+    </p>  
+    <p>
+      Simply click one of these blue buttons to launch a ready-made template in our new article editor.  Have fun!
+    </p>
+    <p>
+      <a href="/new/til" class="cta cta-button">Today I Learned</a>
+      What new concept have you learned recently? (it doesn't have to be <em>today</em>) There may be some other devs out there who could benefit from a bit of knowledge share. <a href="https://dev.to/shriharshmishra/today-i-learned-some-vim-tricks-5d3">Here's an example</a>
+    </p>
+    <p>
+      <a href="/new/inthirtyseconds" class="cta cta-button">X In 30 Seconds</a>
+      Flex your ability to explain something simply and briefly. Can you cover a topic in only one paragraph? Give it a shot. <a href="https://dev.to/ross/reduxjs-in-30-seconds-5hj">Here's an example</a>.
+    </p>
+    <p>
+      <a href="/new/lettertomyself" class="cta cta-button">Letter to My Past Self</a>
+      Now that you've made some progress in your journey, what realization have you made that could have saved you from some struggle earlier in your career? <a href="https://dev.to/mohanarpit/letter-to-my-21-years-self-481">Here's an example</a>
+    </p>
+    <p>
+      The <a href="https://dev.to">dev.to</a> editor uses <em>Markdown</em> syntax. <a href="/p/editor_guide">Here's the guide</a>. Thanks so much for being a caring member of the DEV community. We're all in this together. 
+    </p>
+    <center>
+      ❤️
+    </center>
+    <br/>
+  </div>
+</div>

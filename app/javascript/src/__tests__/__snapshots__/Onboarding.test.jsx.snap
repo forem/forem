@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Onboarding /> allows user to interact properly 1`] = `
+FindWrapper {
+  "0": VNode {
+    "attributes": Object {
+      "className": "close-button",
+      "onClick": [Function],
+    },
+    "children": Array [
+      VNode {
+        "attributes": Object {
+          "alt": "cancel button",
+          "src": "",
+        },
+        "children": Array [],
+        "key": undefined,
+        "nodeName": "img",
+      },
+    ],
+    "key": undefined,
+    "nodeName": "button",
+  },
+  "1": VNode {
+    "attributes": Object {
+      "className": "button cta",
+      "onClick": [Function],
+    },
+    "children": Array [
+      " BACK ",
+    ],
+    "key": undefined,
+    "nodeName": "button",
+  },
+  "2": VNode {
+    "attributes": Object {
+      "className": "button cta",
+      "onClick": [Function],
+    },
+    "children": Array [
+      "NEXT",
+    ],
+    "key": undefined,
+    "nodeName": "button",
+  },
+  "length": 3,
+}
+`;
+
+exports[`<Onboarding /> display if  there is current user 1`] = `
+Object {
+  "allTags": Array [],
+  "pageNumber": 1,
+  "showOnboarding": true,
+  "userData": Object {
+    "followed_tag_names": Array [
+      Object {
+        "bg_color_hex": "#000000",
+        "id": 715,
+        "name": "discuss",
+        "text_color_hex": "#ffffff",
+      },
+      Object {
+        "bg_color_hex": "#f7df1e",
+        "id": 6,
+        "name": "javascript",
+        "text_color_hex": "#000000",
+      },
+    ],
+  },
+}
+`;

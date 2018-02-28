@@ -1,0 +1,27 @@
+<div class="article-actions" id="article-reaction-actions">
+
+  <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
+    <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
+  </button>
+  <button id="reaction-butt-unicorn" class="article-reaction-butt unicorn-reaction-button" data-category="unicorn" alt="unicorn-emoji" title="unicorn">
+    <img src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
+  </button>
+  <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
+    <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
+  </button>
+  <div class="article-share-action-block">
+    <button id="article-show-more-button" class="dropbtn">
+      <img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" />
+    </button>
+    <div class="dropdown-content">
+      <div>
+        <div class="dropdown-link-row">
+          <img src="<%= asset_path("link.svg") %>" /><input value="https://dev.to<%= @article.path %>" onClick="this.setSelectionRange(0, this.value.length)"/>
+        </div>
+        <div class="dropdown-link-row"><a href="https://twitter.com/intent/tweet?text=<%= @article.title %> https://dev.to<%= @article.path %>">Share to Twitter</a></div>
+        <div class="dropdown-link-row"><a href="/report-abuse">Report Abuse</a></div>
+      </div>
+    </div>
+  </div>
+
+</div>

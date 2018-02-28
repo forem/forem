@@ -1,0 +1,211 @@
+<% title @article.title %>
+
+<% if @article.processed_html.include? "interactive-code-wrapper" %>
+  <style>
+    <%= Rails.application.assets['codemirror.css'].to_s.html_safe %>
+  </style>
+<% end %>
+
+<% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
+<%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', defer: true %>
+<script defer>
+  var waitingOnPostscribe = setInterval(function() {
+    if (typeof(postscribe) === "function") {
+      clearInterval(waitingOnPostscribe);
+      var els = document.getElementsByClassName("ltag_gist-liquid-tag");
+      for (var i = 0; i < els.length; i++) {
+        var current = els[i];
+        postscribe(current, current.firstElementChild.outerHTML, { beforeWrite: function(context) {
+          return function(text) {
+            if (context.childElementCount > 3) {
+              return "";
+            }
+            return text;
+          }
+        }(current)});
+      }
+    }
+  }, 500)
+</script>
+<% end %>
+
+<%= content_for :page_meta do %>
+  <% if @article.canonical_url.present? %>
+    <link rel="canonical" href="<%= @article.canonical_url %>"/>
+  <% else %>
+    <link rel="canonical" href="https://dev.to<%=@article.path%>"/>
+  <% end %>
+  <meta name="description" content="<%=@article.description || "An article from the community" %>">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to<%=@article.path%>" />
+  <meta property="og:title" content="<%=@article.title %>" />
+  <meta property="og:description" content="<%=@article.description || "An article from the community" %>" />
+  <meta property="og:site_name" content="The Practical Dev" />
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
+  <meta name="twitter:title" content="<%=@article.title %>">
+  <meta name="twitter:description" content="<%=@article.description || "An article from the community" %>">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
+  <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
+<% end %>
+<% if params[:preview] %>
+  <a href="<%=@article.path %>/edit" class="unpublished">
+    Unpublished Post. This URL is public but secret, so share at your own discretion. <em>Click to edit.</em>
+  </a>
+<% end %>
+
+<div
+    class="container article"
+    id="article-show-container"
+    data-author-id="<%= @article.user_id %>"
+    data-live="<%= @article.live_now %>"
+    data-path="<%= @article.path %>"
+  >
+  <section itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
+    <meta itemprop="url" content="https://dev.to<%=@article.path%>">
+    <meta itemprop="image" content="<%= cloud_social_image(@article) %>">
+    <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+      <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+        <meta itemprop="url" content="<%= asset_path "android-icon-192x192.png" %>">
+        <meta itemprop="width" content="192">
+        <meta itemprop="height" content="192">
+      </div>
+      <meta itemprop="name" content="The DEV Community">
+    </div>
+    <header>
+      <% if @article.video.present? %>
+        <%= render "articles/video_player", meta_tags: true, article: @article  %>
+      <% elsif @article.main_image.present? %>
+          <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%=cloud_cover_url(@article.main_image)%>)">
+          </div>
+      <% else %>
+        <div class="blank-space"></div>
+      <% end %>
+    </header>
+    <div class="title" id="main-title">
+      <% if @organization %>
+        <a href="<%= @organization.path %>" class="org-branded-title-link">
+          <div class="org-branded-title">
+            <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic"/> <%= @organization.name%>
+          </div>
+        </a>
+      <% end %>
+      <h1 class="<%= @article.title_length_classification %>" itemprop="name headline">
+        <%= @article.title %>
+      </h1>
+      <h3>
+        <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <meta itemprop="url" content="https://dev.to/<%=@user.username%>">
+          <a href="/<%= @user.username %>" class="author">
+            <img class="profile-pic" src="<%= ProfileImage.new(@user).get(50)%>" alt="<%= @user.username %> profile image"/>
+            <span itemprop="name"><%= @user.name %></span>
+          </a>
+        </span>
+        <% if @user.twitter_username.present? %>
+          <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg "twitter" %></a>
+        <% end %>
+        <% if @user.github_username.present? %>
+          <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
+        <% end %>
+        <span class="published-at" itemprop="datePublished"><%= @article.published_at.strftime("%b %d, %Y") if @article.published_at %></span>
+        <% if @second_user.present? %>
+          <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
+        <% end %>
+        <% if @third_user.present? %>
+          <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+        <% end %>
+        <% if should_show_updated_on?(@article) %>
+          <span class="published-at updated-at"><em>Updated on <span itemprop="dateModified"><%= @article.edited_at.strftime("%b %d, %Y") if @article.edited_at %></span> </em></span>
+        <% elsif should_show_crossposted_on?(@article) %>
+          <span class="published-at updated-at"><em>Crossposted from <a href="<%= @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.feed_source_url) %></a> on <span class="posted-date-inline"><%= @article.crossposted_at.strftime("%b %d, %Y") if @article.crossposted_at %></span></em></span>
+        <% end %>
+        <span class="action-space" id="action-space"></span>
+      </h3>
+      <% if @article.job_opportunity.present? %>
+        <div class="tags" style="margin-bottom: 10px;">
+          <a class="tag" target="_blank" style="color:white;background:#0eb268;" href="https://www.google.com/maps/place/<%= JobOpportunity.last.location_given %>">
+            <%= @article.job_opportunity.location_city %>
+          </a>
+          <span class="tag" style="color:white;background:#0b82c6;">
+            <%= @article.job_opportunity.remoteness_in_words %>
+          </span>
+        </div>
+      <% end %>
+      <div class="tags">
+        <% @article.cached_tag_list_array.each do |tag| %>
+          <a class="tag" href="/t/<%= tag %>" style="background-color:<%=tag_colors(tag)[:background] %>;color:<%=tag_colors(tag)[:color] %>">#<%= tag %></a>
+        <% end %>
+      </div>
+    </div>
+    <%= render "articles/collection", position: "top" %>
+    <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
+      <%= @article.processed_html.html_safe %>
+    </div>
+    <%= render "articles/collection", position: "bottom" %>
+    <%= render 'articles/actions' %>
+  </section>
+  <% if @article.body_markdown && @article.body_markdown.size > 900 %>
+    <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", :expires_in => 100.hours) do %>
+      <%= render 'articles/about_author' %>
+    <% end %>
+  <% end %>
+  <%= render 'articles/org_branding' %>
+  <% if @article.show_comments %>
+    <div class="comments-container-container" style="background:<%= org_bg_or_white(@article.organization) %>">
+      <div
+        class="comments-container"
+        id="comments-container"
+        data-commentable-id="<%= @article.id %>"
+        data-commentable-type="Article">
+        <%= render "/comments/form",
+            commentable: @article,
+            commentable_type: "Article" %>
+        <div class="comment-trees" id="comment-trees-container">
+          <% Comment.rooted_on(@article.id,"Article").order("score DESC").limit(@comments_to_show_count).each do |comment| %>
+            <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+              <%= render("/comments/comment",
+                    comment:comment,
+                    commentable: @article,
+                    is_view_root: true) %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="show-comments-footer">
+        <%= render 'articles/comments_actions' %>
+      </div>
+    </div>
+  <% end %>
+</div>
+<% cache("article-bottom-content-#{@article.id}", :expires_in => 12.hours) do %>
+  <%= render 'articles/bottom_content' %>
+<% end %>
+</div>
+
+<% if hasVid(@article) %>
+  <%= render 'articles/fitvids' %>
+<% end %>
+<% if @article.processed_html.include? 'class="twitter-tweet"' %>
+  <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<% end %>
+<% if @article.processed_html.include? "instagram-media" %>
+  <script async defer src="//platform.instagram.com/en_US/embeds.js"></script>
+<% end %>
+
+
+
+<% if @article.processed_html.include?("interactive-code-wrapper") && @article.user.username == "ben" %>
+  <%= render 'articles/klipse_script' %>
+<% end %>
+
+<% cache("article-show-scripts", expires_in: 6.hours) do %>
+  <script async>
+    <%= TweetTag.script.html_safe %>
+    <%= YoutubeTag.script.html_safe %>
+    <%= PodcastTag.script.html_safe %>
+    <%= GistTag.script.html_safe %>
+  </script>
+<% end %>

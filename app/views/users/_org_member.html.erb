@@ -1,0 +1,14 @@
+<div class="settings-org-members">
+  <h3><%= @user.organization.name %></h3>
+  <% @user.organization.users.each do |user| %>
+    <div class="settings-org-member-row">
+      <a href="<%= user.path %>"><%= user.name %></a>
+    </div>  
+  <% end %>
+</div>  
+<h3>Danger zone</h3>
+<%= form_tag "/users/leave_org", onsubmit: "return confirm('Are you sure you want to leave this organization?');" do %>
+  <div class="field">
+    <%= submit_tag "Leave Organization", class:"danger-button" %>
+  </div>
+<% end %>

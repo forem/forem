@@ -1,0 +1,48 @@
+<% title "DEV Sponsors" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/sponsors"/>
+  <meta name="description" content="dev.to | Sponsors">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+<% end %>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+
+<style>
+  .container .body h4 img {
+    top: 10px;
+    display: inline;
+    left: 0;
+  }  
+}   
+</style>
+
+<div class="container article">
+  <div class="title" style="height:20px;">
+  </div>
+  <div class="body" style="text-align:center;">
+    <h1 style="font-size:3em;font-weight:600;margin-bottom:5px;">
+      THANK YOU
+    </h1>
+    <p style="margin:5px 5px;"><em>for supporting our community</em></p>    
+    <h4><img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>"><span style="background-color: #fefa87; padding:3px;">Gold Sponsors</span><img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>"></h4>
+    <div id="gold-sponsors">
+      <div>
+        <a href="https://triplebyte.com/?ref=devto_feb18"><img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/4gzjkt7itjsg7fjtrf9o.png", 300)%>"></a>
+        <p><a href="https://triplebyte.com/?ref=devto_feb18">TripleByte</a> is a remarkably efficient job placement platform. So much about about landing at a great engineering org is having people in your corner during the process. TripleByte qualifies you through a series of their own interviews in order to champion for you. You'll understand once you take <a href="https://triplebyte.com/?ref=devto_feb18">the quiz</a>. It's a wonderful blind-spot-exposing experience.</p>
+      </div>
+      <div>
+        <a href="http://goto.algolia.com/l/139121/2018-01-31/287fnc"><img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ehfv4m28il0uevcgxj47.png", 300) %>" /></a>
+        <p><a href="http://goto.algolia.com/l/139121/2018-01-31/287fnc">Algolia</a>'s core product is extremely low-latency search which we make great use of on dev.to in a variety of ways. It powers our core search as well as the customization of your home feed based on the tags you follow. We have plans to integrate it elsewhere, as well. It has become one of the critical pieces of infrastructure for our whole offering — which, as you may know, is all about performance. <a href="http://goto.algolia.com/l/139121/2018-01-31/287fnc">Plus it's free to try</a>.</p>
+      </div>
+      <div>
+        <a href="http://bit.ly/2BGczat"><img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/e2aqkikvkskee8jrvrpy.png", 300) %>"></a>
+        <p><a href="http://bit.ly/2BGczat">Nylas</a> provides email, calendar, and contact sync APIs that can power pretty much any app that deals with these services. They are a strong engineering team who have <a href="https://dev.to/nylas/billions-of-emails-synced-with-python-61a">written about their feats</a> here on dev.to. Check out their work, it's fantastic. PS, Nylas wanted us to tell you that they're <a href="http://bit.ly/2npL4h0">hiring</a>, and they'd love to identify some candidates from the community.</p>
+      </div>
+     </div>
+    <h5> Interested in sponsoring dev.to? Email peter@dev.to </h5>      
+  </div>
+</div>

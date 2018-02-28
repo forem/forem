@@ -1,0 +1,72 @@
+<% if current_user.scholar %>
+  <h2>Scholarship</h2>
+  <h3>
+    Congratulations on your DEV scholarship! Your scholarship ends
+    <%= current_user.workshop_expiration.nil? ? "never" : current_user.workshop_expiration.strftime("%b %d, %Y") %>.
+    <br>
+    <br>
+      <a href="/events">See our events for the month!</a>
+  </h3>
+<% end %>
+
+<h2>Languages</h2>
+<h3>Select which languages you'd prefer to see in your feed <span style="color:#e05252">(beta)</span></h3>
+<h4 style="font-weight:400">
+  This setting which languages you are more likely to see throughout the site, but you may still see other languages, especially english.
+</h4>
+
+<%= form_for(@user) do |f| %>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :prefer_language_en %>
+      <%= f.label :prefer_language_en, "English" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :prefer_language_ja %>
+      <%= f.label :prefer_language_ja, "Japanese" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :prefer_language_es %>
+      <%= f.label :prefer_language_es, "Spanish" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :prefer_language_fr %>
+      <%= f.label :prefer_language_fr, "French" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :prefer_language_it %>
+      <%= f.label :prefer_language_it, "Italian" %>
+    </div>
+  </div>  
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+
+<% end %>
+
+<h3>
+  This feature is in beta and will improve over time. Another way to tailor your feed is to discover and follow members who write in your preferred language.
+</h3>
+
+<% if Flipflop.display_sponsors? %>
+  <h2>Sponsors</h2>
+  <h4 style="font-weight:400">
+    You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence unubtrusive, but feel free to use this setting if you wish.
+  </h4>
+
+  <%= form_for(@user) do |f| %>
+    <div class="checkbox-field">
+      <div class="sub-field">
+        <%= f.check_box :display_sponsors %>
+        <%= f.label :display_sponsors, "Display Sponsors" %>
+      </div>
+    </div>
+    <div class="field">
+      <label></label>
+      <%= f.hidden_field :tab, value: @tab %>
+      <%= f.submit "SUBMIT", class: "cta" %>
+    </div>
+  <% end %>
+<% end %>

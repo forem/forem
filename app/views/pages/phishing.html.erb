@@ -1,0 +1,45 @@
+<% title "Gone Phishing" %>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+<div class="container article" style="text-align:center">
+  <% if @user %>
+    <div class="title">
+      <h1 style="margin-bottom:10px">
+        👋
+        <br />
+        Thanks for being an awesome dev.to member!
+      </h1>
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/10qt5wk76dg8c5utqr2a.png" width="100%" />
+      <h2 style="font-weight:400"> This is a demonstration of the target="_blank" vulnerability that Facebook hasn't fixed. <a href="https://dev.to/ben/the-targetblank-vulnerability-by-example">Here's</a> how we did it. </h2>
+      <h4> And if you have a moment, our UX team would love to ask you a few questions.<br />Please <a href="https://calendly.com/rachel-94/dev">sign up for a time slot</a>.</h4>
+      <h4 style="font-weight:400">Sorry if this was annoying. <br />You can <a href="javascript:goBack();">click here and go back to Facebook</a> if you're mad 😛</h4>
+    </div>
+    </div>
+  <% else %>
+    <div class="title" style="text-align:center">
+      <h1 style="text-align:center"> Greetings from dev.to 🖖 </h1>
+      <h2 style="font-weight:400"> We're a community of developers <br />(and we suspect you might be one too.)
+      <br />
+      <h2> Join us in sharing & discovering great ideas, having debates, and making friends.</h2>
+      <br />
+      <h2 style="border:none; border-radius: 3px; display:inline; padding: 5px 10px; background-color:#00c673; "><a href="/enter?state=facebook-fish" style="color:white">Sign Up</a></h2>
+      <br />
+      <br />
+      <h2 style="font-style: italic; font-weight:400">..and in case you were wondering:</h2>
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/10qt5wk76dg8c5utqr2a.png" width="100%" />
+      <h2 style="font-weight:400"> This is a demonstration of the target="_blank" vulnerability that Facebook hasn't fixed. <a href="https://dev.to/ben/the-targetblank-vulnerability-by-example">Here's</a> how we did it.</h2>
+      <h4 style="font-weight:400">Also, sorry if this was annoying. <br />You can <a href="javascript:goBack();">click here and go back to Facebook</a> if you're mad 😛</h4>
+      <br />
+    </div>
+  <% end %>
+
+</div>
+
+
+<script>
+function goBack() {
+    window.history.back();
+}
+</script>

@@ -1,0 +1,70 @@
+<% if @comment.errors.any? %>
+<div id="error_explanation">
+  <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+  <ul>
+    <% @comment.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+    <% end %>
+  </ul>
+</div>
+<br><br><br><br>
+<% end %>
+
+<%= form_for(@comment, authenticity_token: false) do |f| %>
+  <input type="hidden" name="authenticity_token" value="NOTHING" id="new_comment_authenticity_token">
+  <% unless @comment.persisted? %>
+    <%= f.hidden_field :commentable_id, value: commentable.id %>
+    <%= f.hidden_field :commentable_type, value: commentable_type %>
+    <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
+  <% end %>  
+  <div class="field" id="textarea-wrapper">
+    <%= f.text_area :body_markdown,
+      placeholder: "Add to the discussion",
+      onfocus: "handleFocus(event)",
+      onblur: "handleBlur(event)",
+      onkeyup: "handleKeyUp(event)",
+      id: "text-area",
+      readonly: !user_signed_in?,
+      autofocus: @comment.persisted?,
+      required: true %>
+  </div>
+    <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
+    </div>
+  <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
+    <img class="icon-image" src="<%= asset_path('info.svg') %>" />
+  </a>
+  <% if user_signed_in? %>
+    <div class="editor-image-upload">
+      <input type="file" id="image-upload-main"  name="file" accept="image/*" style="display:none">
+      <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
+        <img class="icon-image" src="<%= asset_path('image-upload.svg') %>" />
+      </button>
+      <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
+      <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
+      <input class="uploaded-image" id="uploaded-image-main" />
+    </div>
+  <% end %>  
+  <div class="actions" id="submit-wrapper">
+    <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)" %>
+  </div>
+<% end %>
+
+<script async>
+  if (document.getElementById("edit_comment_<%= @comment.id if @comment %>")){
+    document.getElementById("edit_comment_<%= @comment.id if @comment %>").onsubmit = function(e) {
+      e.preventDefault();
+      document.getElementById("submit-button").classList.add("submitting");
+      document.getElementById("text-area").classList.add("submitting");
+      var form = this;
+      var waitingOnCSRF = setInterval(function(){
+        var metaTag = document.querySelector("meta[name='csrf-token']")
+        if (metaTag) {
+          clearInterval(waitingOnCSRF);
+          authToken = metaTag.getAttribute("content");
+          document.getElementById("new_comment_authenticity_token").value = authToken;
+          form.submit();
+        }
+      },1);
+    }
+  }
+</script>

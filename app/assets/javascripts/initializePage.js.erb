@@ -1,0 +1,60 @@
+function initializePage(){
+  initializeLocalStorageRender();
+  initializeStylesheetAppend();
+  initializeFetchFollowedArticles();
+  callInitalizers();
+}
+
+function callInitalizers(){
+  initializeLocalStorageRender();
+  initializeBodyData();
+  var waitingForDataLoad = setInterval(function(){
+    if (document.getElementsByTagName('body')[0].getAttribute('data-loaded') == "true") {
+      clearInterval(waitingForDataLoad);
+      if (document.getElementsByTagName('body')[0].getAttribute('data-user-status') == "logged-in") {
+        initializeBaseUserData();
+      }
+      initializeReadingListPage();
+      initializeAllFollowButts();
+      initializeReadingListIcons();
+      initializeSponsorshipVisibility();
+      if ( document.getElementById("sidebar-additional") ) {
+        document.getElementById("sidebar-additional").classList.add("showing");
+      }
+    }
+  },1)
+  initializeBaseTracking();
+  initializeTouchDevice();
+  initializeKeyListeners();
+  initializeCommentsPage();
+  initEditorResize();
+  initLeaveEditorWarning();
+  initializeArticleReactions();
+  initNotifications();
+  initializeSplitTestTracking();
+  initializeNavSearchListener();
+  initializePreloads();
+  initializeStylesheetAppend();
+  initializeAnalytics();
+  initializeCommentDropdown();
+  initializeSettings();
+  if (!initializeLiveArticle.called){
+    initializeLiveArticle();
+  }
+
+  initializeDrawerSliders();
+
+  function freezeScrolling(event){
+    event.preventDefault();
+  }
+
+  nextPage = 0;
+  fetching = false;
+  done = false;
+  setTimeout(function(){
+    done = false;
+  },300);
+  if(!initScrolling.called) {
+    initScrolling();
+  }
+}

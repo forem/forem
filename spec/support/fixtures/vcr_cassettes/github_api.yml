@@ -1,0 +1,187 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/facebook/react/issues/9218
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.7.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 30 Nov 2017 16:20:18 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4992'
+      X-Ratelimit-Reset:
+      - '1512059540'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      Etag:
+      - W/"4aab88b09690a2c1bfd81e59e0fc5d1a"
+      Last-Modified:
+      - Tue, 21 Nov 2017 13:28:29 GMT
+      X-Oauth-Scopes:
+      - ''
+      X-Accepted-Oauth-Scopes:
+      - repo
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Runtime-Rack:
+      - '0.078019'
+      X-Github-Request-Id:
+      - EEEA:63E0:1110BE8:234E58B:5A202FC2
+    body:
+      encoding: ASCII-8BIT
+      string: '{"url":"https://api.github.com/repos/facebook/react/issues/9218","repository_url":"https://api.github.com/repos/facebook/react","labels_url":"https://api.github.com/repos/facebook/react/issues/9218/labels{/name}","comments_url":"https://api.github.com/repos/facebook/react/issues/9218/comments","events_url":"https://api.github.com/repos/facebook/react/issues/9218/events","html_url":"https://github.com/facebook/react/issues/9218","id":215281877,"number":9218,"title":"[Feature]
+        granular forceUpdate ","user":{"login":"thysultan","id":810601,"avatar_url":"https://avatars2.githubusercontent.com/u/810601?v=4","gravatar_id":"","url":"https://api.github.com/users/thysultan","html_url":"https://github.com/thysultan","followers_url":"https://api.github.com/users/thysultan/followers","following_url":"https://api.github.com/users/thysultan/following{/other_user}","gists_url":"https://api.github.com/users/thysultan/gists{/gist_id}","starred_url":"https://api.github.com/users/thysultan/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/thysultan/subscriptions","organizations_url":"https://api.github.com/users/thysultan/orgs","repos_url":"https://api.github.com/users/thysultan/repos","events_url":"https://api.github.com/users/thysultan/events{/privacy}","received_events_url":"https://api.github.com/users/thysultan/received_events","type":"User","site_admin":false},"labels":[],"state":"closed","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":13,"created_at":"2017-03-19T18:00:55Z","updated_at":"2017-10-04T19:11:09Z","closed_at":"2017-10-04T18:53:07Z","author_association":"NONE","body":"When
+        `forceUpdate` is called on a long list at the very least the whole list must
+        be traversed. For example with the following list `arr = [1, 2, 3, 4, 5, 6]`
+        and if we where to push 7 `arr.push(7)` the reconciler will go through elements
+        1 - 6 and then add a 7 at the end of that list. The suggestion to add support
+        for the following forceUpdate signature.\r\n\r\n```js\r\nforceUpdate(a: {function|number},
+        b: number?)\r\n```\r\nWhere when passed as an integer `a` is the start index
+        and `b` the number of items to traverse similar to how `str.substr()` works.\r\n\r\nWhen
+        the function encounters a number as the `a` argument it changes the start
+        index of where to start when reconciling the components children and when
+        the `b` argument is set it changes the end index of where to end the traversal
+        of the components children. So with the above mentioned example if i wanted
+        to optimize the reconciliation process for append updates i could do the following.\r\n\r\n```js\r\nthis.forceUpdate(arr.length);\r\n```\r\nand
+        to target an update in the middle of the list of up to 3 items.\r\n\r\n```js\r\nthis.forceUpdate(arr.length/2,
+        3);\r\n```\r\n\r\nThis will allow for very precise O(1) updates when you know
+        ahead of time how the data will change. \r\n\r\nPossible `setState` counter-part.\r\n\r\n```js\r\nsetState(a:
+        {function|Object}, b: (function|number)?, c: {number})\r\n\r\n// usage\r\nsetState({arr:
+        [...]}, this.state.arr.length);\r\n```","closed_by":{"login":"gaearon","id":810438,"avatar_url":"https://avatars0.githubusercontent.com/u/810438?v=4","gravatar_id":"","url":"https://api.github.com/users/gaearon","html_url":"https://github.com/gaearon","followers_url":"https://api.github.com/users/gaearon/followers","following_url":"https://api.github.com/users/gaearon/following{/other_user}","gists_url":"https://api.github.com/users/gaearon/gists{/gist_id}","starred_url":"https://api.github.com/users/gaearon/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/gaearon/subscriptions","organizations_url":"https://api.github.com/users/gaearon/orgs","repos_url":"https://api.github.com/users/gaearon/repos","events_url":"https://api.github.com/users/gaearon/events{/privacy}","received_events_url":"https://api.github.com/users/gaearon/received_events","type":"User","site_admin":false}}'
+    http_version: 
+  recorded_at: Thu, 30 Nov 2017 16:20:18 GMT
+- request:
+    method: post
+    uri: https://api.github.com/markdown
+    body:
+      encoding: UTF-8
+      string: '{"text":"When `forceUpdate` is called on a long list at the very least
+        the whole list must be traversed. For example with the following list `arr
+        = [1, 2, 3, 4, 5, 6]` and if we where to push 7 `arr.push(7)` the reconciler
+        will go through elements 1 - 6 and then add a 7 at the end of that list. The
+        suggestion to add support for the following forceUpdate signature.\r\n\r\n```js\r\nforceUpdate(a:
+        {function|number}, b: number?)\r\n```\r\nWhere when passed as an integer `a`
+        is the start index and `b` the number of items to traverse similar to how
+        `str.substr()` works.\r\n\r\nWhen the function encounters a number as the
+        `a` argument it changes the start index of where to start when reconciling
+        the components children and when the `b` argument is set it changes the end
+        index of where to end the traversal of the components children. So with the
+        above mentioned example if i wanted to optimize the reconciliation process
+        for append updates i could do the following.\r\n\r\n```js\r\nthis.forceUpdate(arr.length);\r\n```\r\nand
+        to target an update in the middle of the list of up to 3 items.\r\n\r\n```js\r\nthis.forceUpdate(arr.length/2,
+        3);\r\n```\r\n\r\nThis will allow for very precise O(1) updates when you know
+        ahead of time how the data will change. \r\n\r\nPossible `setState` counter-part.\r\n\r\n```js\r\nsetState(a:
+        {function|Object}, b: (function|number)?, c: {number})\r\n\r\n// usage\r\nsetState({arr:
+        [...]}, this.state.arr.length);\r\n```"}'
+    headers:
+      Accept:
+      - application/vnd.github.raw
+      User-Agent:
+      - Octokit Ruby Gem 4.7.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 30 Nov 2017 16:20:18 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4991'
+      X-Ratelimit-Reset:
+      - '1512059540'
+      X-Commonmarker-Version:
+      - 0.17.4
+      Access-Control-Expose-Headers:
+      - ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Runtime-Rack:
+      - '0.049768'
+      X-Github-Request-Id:
+      - EEEB:63E0:1110C04:234E5B8:5A202FC2
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <p>When <code>forceUpdate</code> is called on a long list at the very least the whole list must be traversed. For example with the following list <code>arr = [1, 2, 3, 4, 5, 6]</code> and if we where to push 7 <code>arr.push(7)</code> the reconciler will go through elements 1 - 6 and then add a 7 at the end of that list. The suggestion to add support for the following forceUpdate signature.</p>
+        <div class="highlight highlight-source-js"><pre><span class="pl-en">forceUpdate</span>(a<span class="pl-k">:</span> {<span class="pl-k">function</span>|number}, b: number?)</pre></div>
+        <p>Where when passed as an integer <code>a</code> is the start index and <code>b</code> the number of items to traverse similar to how <code>str.substr()</code> works.</p>
+        <p>When the function encounters a number as the <code>a</code> argument it changes the start index of where to start when reconciling the components children and when the <code>b</code> argument is set it changes the end index of where to end the traversal of the components children. So with the above mentioned example if i wanted to optimize the reconciliation process for append updates i could do the following.</p>
+        <div class="highlight highlight-source-js"><pre><span class="pl-c1">this</span>.<span class="pl-en">forceUpdate</span>(<span class="pl-smi">arr</span>.<span class="pl-c1">length</span>);</pre></div>
+        <p>and to target an update in the middle of the list of up to 3 items.</p>
+        <div class="highlight highlight-source-js"><pre><span class="pl-c1">this</span>.<span class="pl-en">forceUpdate</span>(<span class="pl-smi">arr</span>.<span class="pl-c1">length</span><span class="pl-k">/</span><span class="pl-c1">2</span>, <span class="pl-c1">3</span>);</pre></div>
+        <p>This will allow for very precise O(1) updates when you know ahead of time how the data will change.</p>
+        <p>Possible <code>setState</code> counter-part.</p>
+        <div class="highlight highlight-source-js"><pre><span class="pl-en">setState</span>(a<span class="pl-k">:</span> {<span class="pl-k">function</span>|Object}, b: (<span class="pl-k">function</span>|number)?, c: {number})
+
+        <span class="pl-c"><span class="pl-c">//</span> usage</span>
+        setState({arr<span class="pl-k">:</span> [<span class="pl-k">...</span>]}, <span class="pl-c1">this</span>.<span class="pl-smi">state</span>.<span class="pl-smi">arr</span>.<span class="pl-c1">length</span>);</pre></div>
+    http_version: 
+  recorded_at: Thu, 30 Nov 2017 16:20:18 GMT
+recorded_with: VCR 3.0.3

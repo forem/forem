@@ -1,0 +1,56 @@
+<% if user_signed_in? %>
+  <%= javascript_pack_tag 'sendbird', defer: true %>
+<% end %>
+<% title "DEV LIVE" %>
+  <link rel="canonical" href="https://dev.to/live"/>
+  <meta name="description" content="DEV LIVE">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/live" />
+  <meta property="og:title" content="DEV LIVE" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/bqzj1pwho9e0jicqo44s.png" />
+  <meta property="og:description" content="DEV Live Events" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="DEV LIVE">
+  <meta property="og:description" content="DEV Live Events" />
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bqzj1pwho9e0jicqo44s.png">
+
+<style>
+  <% cache "live-page-css", expires_in: 1.hour do %>
+    <%= Rails.application.assets['live.css'].to_s.html_safe %>
+  <% end %>
+</style>
+
+<% if current_user&.has_role?(:super_admin) || (Flipflop.live_is_live? && current_user&.workshop_eligible?) %>
+<div class="live-container">
+  <div class="live-video">
+    <script src="//player.dacast.com/js/player.js" width="1500" height="800" id="<%= ENV["DACAST_STREAM_CODE"]%>" player="jw7" jwurl="juQPHW/th8VUHaO/2KkeVlAdGN9ksJZog2z6SH+TyMU=" class="dacast-video"></script>
+  </div>
+  <div class="live-chat-wrapper">
+    <div id="sb_chat" class="live-chat" data-sendbird-app-id="<%= ENV["SENDBIRD_APP_ID"] %>" data-sendbird-livechat-url="<%= ENV["SENDBIRD_LIVECHAT_URL"] %>"></div>
+  </div>
+</div>
+<div class="live-under-message">DEV Live is in beta. If you are having issues, you may need to try another browser or contact <a href="mailto:members@dev.to">members@dev.to</a> for support. ❤️</div>
+<% elsif Flipflop.live_starting_soon? %>
+  <div class="live-upcoming-info">
+    <h1 style="text-align: center"><span style="display: inline-block">DEV LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; vertical-align: text-top;" %></span></h1>
+    <h4 style="text-align: center">
+      <i>Our  event is starting soon! Check back very shortly.
+    </h4>
+  </div>
+<% elsif Flipflop.live_is_live? %>
+  <div class="live-upcoming-info">
+    <h1 style="text-align: center">We're currently <span style="display: inline-block">L I V E <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; vertical-align: text-top;" %></span></h1>
+    <h4 style="text-align: center">
+      <i>Our current event is available for <br> <a href="/membership">members with workshop passes</a> or for <a href="/p/scholarships">scholars</a>.
+    </h4>
+  </div>
+<% else %>
+  <div class="live-upcoming-info">
+    <h1>Nothing is live right now. Check out the <a href="/events">Events Page</a> for a full schedule.</h1>
+  </div>
+<% end %>

@@ -1,0 +1,17 @@
+<% cache("wall-of-patrons", expires_in: 3.hours) do %>
+  <style>
+    .wall-container{
+      width: 94%;
+      max-width: 750px;
+      margin:auto;
+    }
+  </style>
+
+  <div class="wall-container" style="text-align:center;">
+    <h1> Wall of Patrons and Scholars</h1>
+    <% @members.each do |member| %>
+      <a href="/<%= member.username %>"><img style="width:70px; margin:5px; border-radius:100%;" src="<%= ProfileImage.new(member).get %>" alt="" class="featured-profile-pic"></a>  
+    <% end %>
+    <p><em>Thank you for being a dev.to sustaining member!</em></p>  
+  </div>
+<% end %>

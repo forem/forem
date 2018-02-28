@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<OnboardingWelcomeThread /> renders correctly 1`] = `
+<div>
+  <p>
+    Got a question? 
+    <strong
+      class="yellow"
+    >
+      Start a discussion
+    </strong>
+    .
+  </p>
+  <p>
+    Got a blog post? 
+    <strong
+      class="yellow"
+    >
+      Publish it
+    </strong>
+    .
+  </p>
+  <p>
+    Not sure what to say? 
+    <strong
+      class="yellow"
+    >
+      Fill out your profile
+    </strong>
+     or just poke around and read.
+  </p>
+  <p>
+    Like something you read? 
+    <strong
+      class="yellow"
+    >
+      Follow the author
+    </strong>
+     for more from them.
+  </p>
+  <p>
+    See you around!  
+    <span
+      aria-label="Victory hand"
+      role="img"
+    >
+      ✌️
+    </span>
+     
+  </p>
+</div>
+`;

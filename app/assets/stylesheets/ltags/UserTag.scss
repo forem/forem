@@ -1,0 +1,116 @@
+@import 'variables';
+.ltag__user__link {
+  color: #111111 !important;
+  &:active {
+    opacity: 0.7;
+  }
+  &.profile-image-link{
+    &:hover {
+      opacity: 1.0;
+    }
+    &:active {
+      opacity: 1.0;
+    }
+  }
+}
+.ltag__user {
+  font-family: $helvetica;
+  border:1px solid $light-medium-gray;
+  box-shadow: $shadow;
+  border-radius:3px;
+  display: block;
+  margin: 0.95em 0 1.2em;
+  position:relative;
+  overflow:hidden;
+  @media screen and (min-width: 760px) {
+    margin: 0.95em auto;
+    width:620px;
+  }
+  .slanty-accent{
+    background:$light-medium-gray;
+    width: calc(40px + 3vw);
+    position:absolute;
+    left:-10px;
+    top:0px;
+    bottom: 0px;
+    transform: skewX(-7deg);
+    @media screen and (min-width: 760px) {
+      width: 80px;
+    }
+  }
+  .ltag__user__pic {
+    display: inline-block;
+    padding: calc(0.6vw + 8px);
+    padding-right: 8px;
+    img {
+      width: calc(5vw + 30px);
+      height: calc(5vw + 30px);
+      margin: auto auto !important;
+      border-radius: 50%;
+    }
+  }
+  .ltag__user__content {
+    display: inline-block;
+    vertical-align: top;
+    padding: calc(0.5vw + 6px);
+    padding-left: 0;
+    width: calc(100% - 8vw - 60px);
+    h2 {
+      margin: 0;
+      padding: 0;
+      font-weight: 500;
+      .follow-action-button {
+        visibility: hidden;
+        min-height: 25px;
+        background: white;
+        display: inline-block;
+        color: $green;
+        border: 2px solid $green;
+        border-radius: 5px;
+        font-size: 0.6em;
+        vertical-align: 0.1em;
+        padding: 2px 20px;
+        cursor: pointer;
+        &.following-butt {
+          background: $green;
+          color: white;
+        }
+        &:hover {
+          border: 2px solid darken($green, 5%);
+        }
+        &.showing {
+          visibility: visible;
+        }
+      }
+    }
+    .ltag__user__summary {
+      margin: 0.5em 0;
+      padding: 0;
+      font-size: 0.889em;
+      margin-bottom: 0;
+      line-height: 1.2em;
+      opacity: 0.85;
+    }
+    .ltag__user__taglist {
+      margin: 1em 0px;
+      padding: 0px;
+      line-height: 1;
+      font-size: 0.8em;
+      opacity: 0.7;
+      a {
+        color: $black;
+        margin-right: 1em;
+        display: inline-block;
+        height: 30px;
+      }
+      img {
+        display: inline-block !important;
+        width: 1em !important;
+        height: 1em !important;
+        margin-right: 2px;
+        vertical-align: -0.1em;
+        left: 0px;
+      }
+    }
+  }
+}

@@ -1,0 +1,104 @@
+function initializeReadingListPage(){
+  if ( getCurrentPage("reading_list_items-index") && checkUserLoggedIn() ) {
+    var params = getQueryParams(document.location.search);
+    var tag = filterXSS(params.t || "");
+    getArticles(tag);
+  }
+}
+
+
+
+function getArticles(tag){
+    var user = userData();
+    var substoriesDiv = document.getElementById("substories");
+    var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+    var index = client.initIndex('ordered_articles_<%= Rails.env %>');
+    var algoliaIndexes = user.reading_list_ids.map(function(id){return "articles-"+id});
+    var resultDivs = []
+    var tags = {}
+    index.getObjects(algoliaIndexes, function(err, content) {
+      content.results.forEach(function(story){
+        if (story) {
+          if (tag == "" || story.tag_list.indexOf(tag) > -1){
+            resultDivs.push(buildArticleHTML(story));
+          }
+          story.tag_list.forEach(function(tag){
+            if (tags[tag]){
+              tags[tag] = tags[tag]+1;
+            } else {
+              tags[tag] = 1;
+            }
+          })
+        }
+      })
+      substoriesDiv.innerHTML = resultDivs.join("");
+      renderTags(tags)
+      if ( resultDivs.length == 0) {
+        var message = "<div style='text-align:left;margin-top:20px;'>This is where to find your bookmarked posts, but it looks like you have not bookmarked anything.</div>"
+        substoriesDiv.innerHTML = message;
+      }
+      initializeReadingListIcons();
+    });
+}
+
+function renderTags(tags){
+  var sortedTags = [];
+  for (var tag in tags) {
+      sortedTags.push([tag, tags[tag]]);
+  }
+  sortedTags.sort(function(a, b) {
+      return b[1] - a[1];
+  });
+  var tagDivs = []
+  sortedTags.forEach(function(tag){
+    var html = '<button class="query-filter-button" data-tag="'+tag[0]+'">#'+tag[0]+' ('+tag[1]+')</button>'
+    tagDivs.push(html)
+  })
+  document.getElementById("tag-filters").innerHTML = tagDivs.join("");
+  var params = getQueryParams(document.location.search);
+  var tag = filterXSS(params.t || "");
+  tagFilters(tag);
+}
+
+function getQueryParams(qs) {
+  qs = qs.split('+').join(' ');
+
+  var params = {},
+      tokens,
+      re = /[?&]?([^=]+)=([^&]*)/g;
+
+  while (tokens = re.exec(qs)) {
+      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+  }
+
+  return params;
+}
+
+
+function tagFilters(tag){
+  var filterButts = document.getElementsByClassName("query-filter-button");
+  
+  for(var i = 0; i < filterButts.length; i++) {
+    filterButts[i].classList.remove("selected");
+    if (tag == filterButts[i].dataset.tag){
+      filterButts[i].classList.add("selected");
+    }
+    filterButts[i].onclick = function(e){
+      var tag = e.target.dataset.tag;
+      window.scrollTo(0, 0);
+      window.history.replaceState(null, null, "/readinglist?t="+tag);
+      var className = e.target.className;
+      for(var i = 0; i < filterButts.length; i++) {
+        filterButts[i].classList.remove("selected");
+      }
+      if (className.indexOf("selected") == -1 ) {
+        e.target.classList.add("selected");
+        window.history.replaceState(null, null, "/readinglist?t="+tag);
+        getArticles(tag);
+      } else{
+        window.history.replaceState(null, null, "/readinglist");
+        getArticles("");
+      }
+    }
+  }
+}

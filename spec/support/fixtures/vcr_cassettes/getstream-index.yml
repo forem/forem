@@ -1,0 +1,279 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://us-east-api.getstream.io/api/v1.0/feed/notifications/1/?api_key=h59mvgpc5f4s&limit=60
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZSI6ImZlZWQiLCJhY3Rpb24iOiJyZWFkIiwiZmVlZF9pZCI6Im5vdGlmaWNhdGlvbnMxIn0.dh-WqKn6ZKl0n0rlFdBimZi8hxHUOsnAmXfYNSgBRBg
+      Stream-Auth-Type:
+      - jwt
+      Content-Type:
+      - application/json
+      X-Stream-Client:
+      - stream-ruby-client-2.4.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Headers:
+      - x-requested-with, content-type, accept, origin, authorization, x-csrftoken,
+        x-stream-client, stream-auth-type
+      Access-Control-Allow-Methods:
+      - GET, POST, PUT, PATCH, DELETE, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '86400'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 19 Dec 2017 20:43:09 GMT
+      Server:
+      - nginx
+      X-Ratelimit-Limit:
+      - '2000'
+      X-Ratelimit-Remaining:
+      - '1999'
+      X-Ratelimit-Reset:
+      - '1513716240'
+      Content-Length:
+      - '37279'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"results":[{"activities":[{"actor":"User:83","foreign_id":"Reaction:1343","id":"e7ccb900-e4fa-11e7-8080-80005837d80c","object":"Reaction:1343","origin":null,"target":"Article_49","time":"2017-12-19T20:26:34.000000","verb":"Reaction"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T20:26:34.874587","group":"Reaction_Reaction:1343_Article_49_2017-12-19-%h","id":"e8522c95-e4fa-11e7-8080-80015d84d5a4.Reaction_Reaction:1343_Article_49_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T20:26:34.874587","verb":"Reaction"},{"activities":[{"actor":"User:83","foreign_id":"Reaction:1342","id":"e7ccb900-e4fa-11e7-8080-800069d7e30c","object":"Reaction:1342","origin":null,"target":"Article_49","time":"2017-12-19T20:26:34.000000","verb":"Reaction"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T20:26:34.730352","group":"Reaction_Reaction:1342_Article_49_2017-12-19-%h","id":"e83c2a63-e4fa-11e7-8080-80016ca58c39.Reaction_Reaction:1342_Article_49_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T20:26:34.730352","verb":"Reaction"},{"activities":[{"actor":"User:11","foreign_id":"Comment:172","id":"2e1c1b00-e4ef-11e7-8080-8001151db06e","object":"Comment:172","origin":null,"target":"comment_2017-12-19
+        14:02:38 -0500","time":"2017-12-19T19:02:38.000000","verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T19:02:39.002715","group":"Comment_Comment:172_comment_2017-12-19
+        14:02:38 -0500_2017-12-19-%h","id":"2eb51b91-e4ef-11e7-8080-80007b6d8293.Comment_Comment:172_comment_2017-12-19
+        14:02:38 -0500_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T19:02:39.002715","verb":"Comment"},{"activities":[{"actor":"User:38","foreign_id":"Comment:119","id":"2197c280-e4ef-11e7-8080-80016dade8c0","object":"Comment:119","origin":null,"target":"comment_2017-12-19
+        14:02:17 -0500","time":"2017-12-19T19:02:17.000000","verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T19:02:18.059119","group":"Comment_Comment:119_comment_2017-12-19
+        14:02:17 -0500_2017-12-19-%h","id":"22395e59-e4ef-11e7-8080-800148f3ccf3.Comment_Comment:119_comment_2017-12-19
+        14:02:17 -0500_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T19:02:18.059119","verb":"Comment"},{"activities":[{"actor":"User:16","foreign_id":"Comment:98","id":"1d6ba500-e4ef-11e7-8080-80000fcdc73e","object":"Comment:98","origin":null,"target":"comment_2017-12-19
+        14:02:10 -0500","time":"2017-12-19T19:02:10.000000","verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T19:02:10.605285","group":"Comment_Comment:98_comment_2017-12-19
+        14:02:10 -0500_2017-12-19-%h","id":"1dc800f8-e4ef-11e7-8080-8000148866fc.Comment_Comment:98_comment_2017-12-19
+        14:02:10 -0500_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T19:02:10.605285","verb":"Comment"},{"activities":[{"actor":"User:29","foreign_id":"Comment:22","id":"0cbb2f00-e4ef-11e7-8080-800021d71004","object":"Comment:22","origin":null,"target":"comment_2017-12-19
+        14:01:42 -0500","time":"2017-12-19T19:01:42.000000","verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T19:01:42.842286","group":"Comment_Comment:22_comment_2017-12-19
+        14:01:42 -0500_2017-12-19-%h","id":"0d3bb4d4-e4ef-11e7-8080-80013b05b437.Comment_Comment:22_comment_2017-12-19
+        14:01:42 -0500_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T19:01:42.842286","verb":"Comment"},{"activities":[{"actor":"User:36","foreign_id":"Comment:10","id":"5bb49480-e4ee-11e7-8080-80001bf4e718","object":"Comment:10","origin":null,"target":"comment_2017-12-19
+        13:56:45 -0500","time":"2017-12-19T18:56:45.000000","verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-19T18:56:45.381682","group":"Comment_Comment:10_comment_2017-12-19
+        13:56:45 -0500_2017-12-19-%h","id":"5beed1f6-e4ee-11e7-8080-80010dc215a9.Comment_Comment:10_comment_2017-12-19
+        13:56:45 -0500_2017-12-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-19T18:56:45.381682","verb":"Comment"},{"activities":[{"actor":"User:14","foreign_id":"Comment:173","id":"d48ebf00-d780-11e7-8080-800154adde21","object":"Comment:173","origin":null,"target":"comment_2017-12-02
+        11:49:58 -0500","time":"2017-12-02T16:49:58.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-02T16:49:58.000000","group":"Comment_Comment:173_comment_2017-12-02
+        11:49:58 -0500_2017-12-02-%h","id":"d48ebf00-d780-11e7-8080-80016ea9b06e.Comment_Comment:173_comment_2017-12-02
+        11:49:58 -0500_2017-12-02-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-02T16:49:58.000000","verb":"Comment"},{"activities":[{"actor":"User:27","foreign_id":"Comment:166","id":"d2c4fb80-d780-11e7-8080-800066bb554f","object":"Comment:166","origin":null,"target":"comment_2017-12-02
+        11:49:55 -0500","time":"2017-12-02T16:49:55.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-02T16:49:55.000000","group":"Comment_Comment:166_comment_2017-12-02
+        11:49:55 -0500_2017-12-02-%h","id":"d2c4fb80-d780-11e7-8080-800048c60561.Comment_Comment:166_comment_2017-12-02
+        11:49:55 -0500_2017-12-02-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-02T16:49:55.000000","verb":"Comment"},{"activities":[{"actor":"User:59","foreign_id":"Comment:83","id":"c17bef00-d780-11e7-8080-800139c2e7fe","object":"Comment:83","origin":null,"target":"comment_2017-12-02
+        11:49:26 -0500","time":"2017-12-02T16:49:26.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-02T16:49:26.000000","group":"Comment_Comment:83_comment_2017-12-02
+        11:49:26 -0500_2017-12-02-%h","id":"c17bef00-d780-11e7-8080-80000dd7609f.Comment_Comment:83_comment_2017-12-02
+        11:49:26 -0500_2017-12-02-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-02T16:49:26.000000","verb":"Comment"},{"activities":[{"actor":"User:64","foreign_id":"Comment:22","id":"b4f79680-d780-11e7-8080-800021d71004","object":"Comment:22","origin":null,"target":"comment_2017-12-02
+        11:49:05 -0500","time":"2017-12-02T16:49:05.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-02T16:49:05.000000","group":"Comment_Comment:22_comment_2017-12-02
+        11:49:05 -0500_2017-12-02-%h","id":"b4f79680-d780-11e7-8080-8001166de126.Comment_Comment:22_comment_2017-12-02
+        11:49:05 -0500_2017-12-02-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-02T16:49:05.000000","verb":"Comment"},{"activities":[{"actor":"User:310","foreign_id":"Comment:259","id":"d8b9dd00-d77e-11e7-8080-80006f7fcbaa","object":"Comment:259","origin":null,"target":"comment_2017-12-02
+        11:35:46 -0500","time":"2017-12-02T16:35:46.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-12-02T16:35:46.000000","group":"Comment_Comment:259_comment_2017-12-02
+        11:35:46 -0500_2017-12-02-%h","id":"d8b9dd00-d77e-11e7-8080-800054843b1c.Comment_Comment:259_comment_2017-12-02
+        11:35:46 -0500_2017-12-02-%h","is_read":false,"is_seen":false,"updated_at":"2017-12-02T16:35:46.000000","verb":"Comment"},{"activities":[{"actor":"User:36","foreign_id":"Comment:157","id":"fc099180-ce3a-11e7-8080-80015896e166","object":"Comment:157","origin":null,"target":"comment_2017-11-20
+        16:37:20 -0500","time":"2017-11-20T21:37:19.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-20T21:37:19.000000","group":"Comment_Comment:157_comment_2017-11-20
+        16:37:20 -0500_2017-11-20-%h","id":"fc099180-ce3a-11e7-8080-800048f07435.Comment_Comment:157_comment_2017-11-20
+        16:37:20 -0500_2017-11-20-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-20T21:37:19.000000","verb":"Comment"},{"activities":[{"actor":"User:6","foreign_id":"Comment:8","id":"b8af2300-ce3a-11e7-8080-8001000d018f","object":"Comment:8","origin":null,"target":"comment_2017-11-20
+        16:35:27 -0500","time":"2017-11-20T21:35:26.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-20T21:35:26.000000","group":"Comment_Comment:8_comment_2017-11-20
+        16:35:27 -0500_2017-11-20-%h","id":"b8af2300-ce3a-11e7-8080-80015112e8c3.Comment_Comment:8_comment_2017-11-20
+        16:35:27 -0500_2017-11-20-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-20T21:35:26.000000","verb":"Comment"},{"activities":[{"actor":"User:54","foreign_id":"Comment:178","id":"7a1c7e80-c4b2-11e7-8080-800006e4c5ce","object":"Comment:178","origin":null,"target":"comment_2017-11-08
+        13:27:30 -0500","time":"2017-11-08T18:27:29.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-08T18:27:29.000000","group":"Comment_Comment:178_comment_2017-11-08
+        13:27:30 -0500_2017-11-08-%h","id":"7a1c7e80-c4b2-11e7-8080-800176f873d0.Comment_Comment:178_comment_2017-11-08
+        13:27:30 -0500_2017-11-08-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-08T18:27:29.000000","verb":"Comment"},{"activities":[{"actor":"User:58","foreign_id":"Comment:47","id":"55c0a200-c4b2-11e7-8080-80014b85decb","object":"Comment:47","origin":null,"target":"comment_2017-11-08
+        13:26:29 -0500","time":"2017-11-08T18:26:28.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-08T18:26:28.000000","group":"Comment_Comment:47_comment_2017-11-08
+        13:26:29 -0500_2017-11-08-%h","id":"55c0a200-c4b2-11e7-8080-80011c4afe05.Comment_Comment:47_comment_2017-11-08
+        13:26:29 -0500_2017-11-08-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-08T18:26:28.000000","verb":"Comment"},{"activities":[{"actor":"User:54","foreign_id":"Comment:16","id":"4e00fd80-c4b2-11e7-8080-800105da5e5f","object":"Comment:16","origin":null,"target":"comment_2017-11-08
+        13:26:15 -0500","time":"2017-11-08T18:26:15.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-08T18:26:15.000000","group":"Comment_Comment:16_comment_2017-11-08
+        13:26:15 -0500_2017-11-08-%h","id":"4e00fd80-c4b2-11e7-8080-8000581fa843.Comment_Comment:16_comment_2017-11-08
+        13:26:15 -0500_2017-11-08-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-08T18:26:15.000000","verb":"Comment"},{"activities":[{"actor":"User:30","foreign_id":"Comment:178","id":"783ab880-c3e9-11e7-8080-800006e4c5ce","object":"Comment:178","origin":null,"target":"comment_2017-11-07
+        13:28:37 -0500","time":"2017-11-07T18:28:37.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-07T18:28:37.000000","group":"Comment_Comment:178_comment_2017-11-07
+        13:28:37 -0500_2017-11-07-%h","id":"783ab880-c3e9-11e7-8080-8001360e7b40.Comment_Comment:178_comment_2017-11-07
+        13:28:37 -0500_2017-11-07-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-07T18:28:37.000000","verb":"Comment"},{"activities":[{"actor":"User:33","foreign_id":"Comment:77","id":"56d9cc80-c3e9-11e7-8080-800123f917c7","object":"Comment:77","origin":null,"target":"comment_2017-11-07
+        13:27:42 -0500","time":"2017-11-07T18:27:41.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-11-07T18:27:41.000000","group":"Comment_Comment:77_comment_2017-11-07
+        13:27:42 -0500_2017-11-07-%h","id":"56d9cc80-c3e9-11e7-8080-80006348e734.Comment_Comment:77_comment_2017-11-07
+        13:27:42 -0500_2017-11-07-%h","is_read":false,"is_seen":false,"updated_at":"2017-11-07T18:27:41.000000","verb":"Comment"},{"activities":[{"actor":"User:40","foreign_id":"Comment:120","id":"652a7c00-b500-11e7-8080-8001015be16c","object":"Comment:120","origin":null,"target":"comment_2017-10-19
+        15:04:56 -0400","time":"2017-10-19T19:04:56.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-19T19:04:56.000000","group":"Comment_Comment:120_comment_2017-10-19
+        15:04:56 -0400_2017-10-19-%h","id":"652a7c00-b500-11e7-8080-80017e520418.Comment_Comment:120_comment_2017-10-19
+        15:04:56 -0400_2017-10-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-19T19:04:56.000000","verb":"Comment"},{"activities":[{"actor":"User:78","foreign_id":"Comment:41","id":"50e67f00-b500-11e7-8080-800072428119","object":"Comment:41","origin":null,"target":"comment_2017-10-19
+        15:04:22 -0400","time":"2017-10-19T19:04:22.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-19T19:04:22.000000","group":"Comment_Comment:41_comment_2017-10-19
+        15:04:22 -0400_2017-10-19-%h","id":"50e67f00-b500-11e7-8080-80010110ffed.Comment_Comment:41_comment_2017-10-19
+        15:04:22 -0400_2017-10-19-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-19T19:04:22.000000","verb":"Comment"},{"activities":[{"actor":"User:3","foreign_id":"Reaction:1150","id":"ccf38380-b2c2-11e7-8080-80015b1ede7c","object":"Reaction:1150","origin":null,"target":"Article_49","time":"2017-10-16T22:38:59.000000","to":["notifications:1"],"verb":"Reaction"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T22:38:59.000000","group":"Reaction_Reaction:1150_Article_49_2017-10-16-%h","id":"ccf38380-b2c2-11e7-8080-80000488eeed.Reaction_Reaction:1150_Article_49_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T22:38:59.000000","verb":"Reaction"},{"activities":[{"actor":"User:3","foreign_id":"Reaction:561","id":"1f33a500-b2c1-11e7-8080-80007ad6b18a","object":"Reaction:561","origin":null,"target":"Article_49","time":"2017-10-16T22:26:58.000000","to":["notifications:1"],"verb":"Reaction"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T22:26:58.000000","group":"Reaction_Reaction:561_Article_49_2017-10-16-%h","id":"1f33a500-b2c1-11e7-8080-8000681ed1c7.Reaction_Reaction:561_Article_49_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T22:26:58.000000","verb":"Reaction"},{"activities":[{"actor":"User:18","foreign_id":"Comment:160","id":"aed04980-b216-11e7-8080-80014dc77f23","object":"Comment:160","origin":null,"target":"comment_2017-10-15
+        22:06:55 -0400","time":"2017-10-16T02:06:55.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T02:06:55.000000","group":"Comment_Comment:160_comment_2017-10-15
+        22:06:55 -0400_2017-10-16-%h","id":"aed04980-b216-11e7-8080-800060964b32.Comment_Comment:160_comment_2017-10-15
+        22:06:55 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T02:06:55.000000","verb":"Comment"},{"activities":[{"actor":"User:78","foreign_id":"Comment:149","id":"a972ff00-b216-11e7-8080-80001d193dd5","object":"Comment:149","origin":null,"target":"comment_2017-10-15
+        22:06:47 -0400","time":"2017-10-16T02:06:46.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T02:06:46.000000","group":"Comment_Comment:149_comment_2017-10-15
+        22:06:47 -0400_2017-10-16-%h","id":"a972ff00-b216-11e7-8080-8001188c9d26.Comment_Comment:149_comment_2017-10-15
+        22:06:47 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T02:06:46.000000","verb":"Comment"},{"activities":[{"actor":"User:50","foreign_id":"Comment:99","id":"93653e80-b216-11e7-8080-8000641fea35","object":"Comment:99","origin":null,"target":"comment_2017-10-15
+        22:06:09 -0400","time":"2017-10-16T02:06:09.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T02:06:09.000000","group":"Comment_Comment:99_comment_2017-10-15
+        22:06:09 -0400_2017-10-16-%h","id":"93653e80-b216-11e7-8080-800166a2271b.Comment_Comment:99_comment_2017-10-15
+        22:06:09 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T02:06:09.000000","verb":"Comment"},{"activities":[{"actor":"User:33","foreign_id":"Comment:97","id":"92cca800-b216-11e7-8080-800166343fbe","object":"Comment:97","origin":null,"target":"comment_2017-10-15
+        22:06:08 -0400","time":"2017-10-16T02:06:08.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T02:06:08.000000","group":"Comment_Comment:97_comment_2017-10-15
+        22:06:08 -0400_2017-10-16-%h","id":"92cca800-b216-11e7-8080-80010ef08c5e.Comment_Comment:97_comment_2017-10-15
+        22:06:08 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T02:06:08.000000","verb":"Comment"},{"activities":[{"actor":"User:12","foreign_id":"Comment:94","id":"9102e480-b216-11e7-8080-8001451680f3","object":"Comment:94","origin":null,"target":"comment_2017-10-15
+        22:06:06 -0400","time":"2017-10-16T02:06:05.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T02:06:05.000000","group":"Comment_Comment:94_comment_2017-10-15
+        22:06:06 -0400_2017-10-16-%h","id":"9102e480-b216-11e7-8080-800057293fa6.Comment_Comment:94_comment_2017-10-15
+        22:06:06 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T02:06:05.000000","verb":"Comment"},{"activities":[{"actor":"User:58","foreign_id":"Comment:68","id":"86484f80-b216-11e7-8080-80006fe02a67","object":"Comment:68","origin":null,"target":"comment_2017-10-15
+        22:05:47 -0400","time":"2017-10-16T02:05:47.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T02:05:47.000000","group":"Comment_Comment:68_comment_2017-10-15
+        22:05:47 -0400_2017-10-16-%h","id":"86484f80-b216-11e7-8080-8001292d2832.Comment_Comment:68_comment_2017-10-15
+        22:05:47 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T02:05:47.000000","verb":"Comment"},{"activities":[{"actor":"User:68","foreign_id":"Comment:6","id":"40d75280-b215-11e7-8080-800070a7e09f","object":"Comment:6","origin":null,"target":"comment_2017-10-15
+        21:56:41 -0400","time":"2017-10-16T01:56:41.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-16T01:56:41.000000","group":"Comment_Comment:6_comment_2017-10-15
+        21:56:41 -0400_2017-10-16-%h","id":"40d75280-b215-11e7-8080-8000049c1443.Comment_Comment:6_comment_2017-10-15
+        21:56:41 -0400_2017-10-16-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-16T01:56:41.000000","verb":"Comment"},{"activities":[{"actor":"User:36","foreign_id":"Comment:200","id":"c69dd280-b202-11e7-8080-800165c86f3b","object":"Comment:200","origin":null,"target":"comment_2017-10-15
+        19:44:25 -0400","time":"2017-10-15T23:44:25.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:44:25.000000","group":"Comment_Comment:200_comment_2017-10-15
+        19:44:25 -0400_2017-10-15-%h","id":"c69dd280-b202-11e7-8080-800173ecfbad.Comment_Comment:200_comment_2017-10-15
+        19:44:25 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:44:25.000000","verb":"Comment"},{"activities":[{"actor":"User:42","foreign_id":"Comment:134","id":"a3732300-b202-11e7-8080-80003cca32fa","object":"Comment:134","origin":null,"target":"comment_2017-10-15
+        19:43:26 -0400","time":"2017-10-15T23:43:26.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:43:26.000000","group":"Comment_Comment:134_comment_2017-10-15
+        19:43:26 -0400_2017-10-15-%h","id":"a3732300-b202-11e7-8080-800018e5879b.Comment_Comment:134_comment_2017-10-15
+        19:43:26 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:43:26.000000","verb":"Comment"},{"activities":[{"actor":"User:65","foreign_id":"Comment:129","id":"a0783280-b202-11e7-8080-8001772ebbfc","object":"Comment:129","origin":null,"target":"comment_2017-10-15
+        19:43:22 -0400","time":"2017-10-15T23:43:21.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:43:21.000000","group":"Comment_Comment:129_comment_2017-10-15
+        19:43:22 -0400_2017-10-15-%h","id":"a0783280-b202-11e7-8080-80011a3a0b01.Comment_Comment:129_comment_2017-10-15
+        19:43:22 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:43:21.000000","verb":"Comment"},{"activities":[{"actor":"User:66","foreign_id":"Comment:105","id":"93f3da00-b202-11e7-8080-80011dea7f0a","object":"Comment:105","origin":null,"target":"comment_2017-10-15
+        19:43:00 -0400","time":"2017-10-15T23:43:00.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:43:00.000000","group":"Comment_Comment:105_comment_2017-10-15
+        19:43:00 -0400_2017-10-15-%h","id":"93f3da00-b202-11e7-8080-80006bf62691.Comment_Comment:105_comment_2017-10-15
+        19:43:00 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:43:00.000000","verb":"Comment"},{"activities":[{"actor":"User:58","foreign_id":"Comment:58","id":"7a529280-b202-11e7-8080-80002f9bf97b","object":"Comment:58","origin":null,"target":"comment_2017-10-15
+        19:42:18 -0400","time":"2017-10-15T23:42:17.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:42:17.000000","group":"Comment_Comment:58_comment_2017-10-15
+        19:42:18 -0400_2017-10-15-%h","id":"7a529280-b202-11e7-8080-8001647af25c.Comment_Comment:58_comment_2017-10-15
+        19:42:18 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:42:17.000000","verb":"Comment"},{"activities":[{"actor":"User:41","foreign_id":"Comment:50","id":"76267500-b202-11e7-8080-80017aa75669","object":"Comment:50","origin":null,"target":"comment_2017-10-15
+        19:42:11 -0400","time":"2017-10-15T23:42:10.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:42:10.000000","group":"Comment_Comment:50_comment_2017-10-15
+        19:42:11 -0400_2017-10-15-%h","id":"76267500-b202-11e7-8080-80001261cb86.Comment_Comment:50_comment_2017-10-15
+        19:42:11 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:42:10.000000","verb":"Comment"},{"activities":[{"actor":"User:53","foreign_id":"Comment:13","id":"6313a500-b202-11e7-8080-80005b23563a","object":"Comment:13","origin":null,"target":"comment_2017-10-15
+        19:41:39 -0400","time":"2017-10-15T23:41:38.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-15T23:41:38.000000","group":"Comment_Comment:13_comment_2017-10-15
+        19:41:39 -0400_2017-10-15-%h","id":"6313a500-b202-11e7-8080-800128a7607b.Comment_Comment:13_comment_2017-10-15
+        19:41:39 -0400_2017-10-15-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-15T23:41:38.000000","verb":"Comment"},{"activities":[{"actor":"User:81","foreign_id":"Follow:1","id":"cb894780-b085-11e7-8080-80002a2ebc3f","object":"User:1","origin":null,"target":"follow_2017-10-13
+        22:17:15 -0400","time":"2017-10-14T02:17:15.000000","to":["notifications:1"],"verb":"Follow"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-14T02:17:15.000000","group":"Follow_User:1_follow_2017-10-13
+        22:17:15 -0400_2017-10-14-%h","id":"cb894780-b085-11e7-8080-80004a6ee593.Follow_User:1_follow_2017-10-13
+        22:17:15 -0400_2017-10-14-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-14T02:17:15.000000","verb":"Follow"},{"activities":[{"actor":"User:20","foreign_id":"Comment:153","id":"3db1ba80-a9fc-11e7-8080-8001158cf1bf","object":"Comment:153","origin":null,"target":"comment_2017-10-05
+        14:37:29 -0400","time":"2017-10-05T18:37:29.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T18:37:29.000000","group":"Comment_Comment:153_comment_2017-10-05
+        14:37:29 -0400_2017-10-05-%h","id":"3db1ba80-a9fc-11e7-8080-80006ac9a5f3.Comment_Comment:153_comment_2017-10-05
+        14:37:29 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T18:37:29.000000","verb":"Comment"},{"activities":[{"actor":"User:32","foreign_id":"Comment:154","id":"3db1ba80-a9fc-11e7-8080-8000605f266b","object":"Comment:154","origin":null,"target":"comment_2017-10-05
+        14:37:30 -0400","time":"2017-10-05T18:37:29.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T18:37:29.000000","group":"Comment_Comment:154_comment_2017-10-05
+        14:37:30 -0400_2017-10-05-%h","id":"3db1ba80-a9fc-11e7-8080-80004ee94120.Comment_Comment:154_comment_2017-10-05
+        14:37:30 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T18:37:29.000000","verb":"Comment"},{"activities":[{"actor":"User:46","foreign_id":"Comment:145","id":"3b4f6080-a9fc-11e7-8080-800172c96135","object":"Comment:145","origin":null,"target":"comment_2017-10-05
+        14:37:26 -0400","time":"2017-10-05T18:37:25.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T18:37:25.000000","group":"Comment_Comment:145_comment_2017-10-05
+        14:37:26 -0400_2017-10-05-%h","id":"3b4f6080-a9fc-11e7-8080-80013d5cb455.Comment_Comment:145_comment_2017-10-05
+        14:37:26 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T18:37:25.000000","verb":"Comment"},{"activities":[{"actor":"User:24","foreign_id":"Comment:43","id":"1fe45580-a9fc-11e7-8080-80015b16e7bc","object":"Comment:43","origin":null,"target":"comment_2017-10-05
+        14:36:39 -0400","time":"2017-10-05T18:36:39.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T18:36:39.000000","group":"Comment_Comment:43_comment_2017-10-05
+        14:36:39 -0400_2017-10-05-%h","id":"1fe45580-a9fc-11e7-8080-80014b2e7975.Comment_Comment:43_comment_2017-10-05
+        14:36:39 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T18:36:39.000000","verb":"Comment"},{"activities":[{"actor":"User:11","foreign_id":"Comment:33","id":"1d81fb80-a9fc-11e7-8080-8001586e0a11","object":"Comment:33","origin":null,"target":"comment_2017-10-05
+        14:36:35 -0400","time":"2017-10-05T18:36:35.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T18:36:35.000000","group":"Comment_Comment:33_comment_2017-10-05
+        14:36:35 -0400_2017-10-05-%h","id":"1d81fb80-a9fc-11e7-8080-800027585e1d.Comment_Comment:33_comment_2017-10-05
+        14:36:35 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T18:36:35.000000","verb":"Comment"},{"activities":[{"actor":"User:28","foreign_id":"Comment:169","id":"94b49100-a9f6-11e7-8080-80012877e856","object":"Comment:169","origin":null,"target":"comment_2017-10-05
+        13:56:58 -0400","time":"2017-10-05T17:56:58.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T17:56:58.000000","group":"Comment_Comment:169_comment_2017-10-05
+        13:56:58 -0400_2017-10-05-%h","id":"94b49100-a9f6-11e7-8080-80003663c3ed.Comment_Comment:169_comment_2017-10-05
+        13:56:58 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T17:56:58.000000","verb":"Comment"},{"activities":[{"actor":"User:72","foreign_id":"Comment:150","id":"8f574680-a9f6-11e7-8080-8000634dc68c","object":"Comment:150","origin":null,"target":"comment_2017-10-05
+        13:56:49 -0400","time":"2017-10-05T17:56:49.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T17:56:49.000000","group":"Comment_Comment:150_comment_2017-10-05
+        13:56:49 -0400_2017-10-05-%h","id":"8f574680-a9f6-11e7-8080-80002f38b8d1.Comment_Comment:150_comment_2017-10-05
+        13:56:49 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T17:56:49.000000","verb":"Comment"},{"activities":[{"actor":"User:45","foreign_id":"Comment:108","id":"836b8480-a9f6-11e7-8080-800116f01298","object":"Comment:108","origin":null,"target":"comment_2017-10-05
+        13:56:29 -0400","time":"2017-10-05T17:56:29.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T17:56:29.000000","group":"Comment_Comment:108_comment_2017-10-05
+        13:56:29 -0400_2017-10-05-%h","id":"836b8480-a9f6-11e7-8080-8000185e941a.Comment_Comment:108_comment_2017-10-05
+        13:56:29 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T17:56:29.000000","verb":"Comment"},{"activities":[{"actor":"User:34","foreign_id":"Comment:68","id":"78b0ef80-a9f6-11e7-8080-80006fe02a67","object":"Comment:68","origin":null,"target":"comment_2017-10-05
+        13:56:11 -0400","time":"2017-10-05T17:56:11.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T17:56:11.000000","group":"Comment_Comment:68_comment_2017-10-05
+        13:56:11 -0400_2017-10-05-%h","id":"78b0ef80-a9f6-11e7-8080-800152d64edc.Comment_Comment:68_comment_2017-10-05
+        13:56:11 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T17:56:11.000000","verb":"Comment"},{"activities":[{"actor":"User:64","foreign_id":"Comment:185","id":"3a620300-a9eb-11e7-8080-80003ab617c4","object":"Comment:185","origin":null,"target":"comment_2017-10-05
+        12:35:42 -0400","time":"2017-10-05T16:35:42.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:35:42.000000","group":"Comment_Comment:185_comment_2017-10-05
+        12:35:42 -0400_2017-10-05-%h","id":"3a620300-a9eb-11e7-8080-80013477341a.Comment_Comment:185_comment_2017-10-05
+        12:35:42 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:35:42.000000","verb":"Comment"},{"activities":[{"actor":"User:78","foreign_id":"Comment:164","id":"346c2200-a9eb-11e7-8080-800078086bf4","object":"Comment:164","origin":null,"target":"comment_2017-10-05
+        12:35:32 -0400","time":"2017-10-05T16:35:32.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:35:32.000000","group":"Comment_Comment:164_comment_2017-10-05
+        12:35:32 -0400_2017-10-05-%h","id":"346c2200-a9eb-11e7-8080-80016d2e2cfc.Comment_Comment:164_comment_2017-10-05
+        12:35:32 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:35:32.000000","verb":"Comment"},{"activities":[{"actor":"User:75","foreign_id":"Comment:156","id":"3209c800-a9eb-11e7-8080-80007ea88f03","object":"Comment:156","origin":null,"target":"comment_2017-10-05
+        12:35:29 -0400","time":"2017-10-05T16:35:28.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:35:28.000000","group":"Comment_Comment:156_comment_2017-10-05
+        12:35:29 -0400_2017-10-05-%h","id":"3209c800-a9eb-11e7-8080-80003dba86fc.Comment_Comment:156_comment_2017-10-05
+        12:35:29 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:35:28.000000","verb":"Comment"},{"activities":[{"actor":"User:60","foreign_id":"Comment:103","id":"23bbac00-a9eb-11e7-8080-80003b03c839","object":"Comment:103","origin":null,"target":"comment_2017-10-05
+        12:35:05 -0400","time":"2017-10-05T16:35:04.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:35:04.000000","group":"Comment_Comment:103_comment_2017-10-05
+        12:35:05 -0400_2017-10-05-%h","id":"23bbac00-a9eb-11e7-8080-8000592e7f89.Comment_Comment:103_comment_2017-10-05
+        12:35:05 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:35:04.000000","verb":"Comment"},{"activities":[{"actor":"User:5","foreign_id":"Comment:39","id":"12729f80-a9eb-11e7-8080-80012825c9f5","object":"Comment:39","origin":null,"target":"comment_2017-10-05
+        12:34:35 -0400","time":"2017-10-05T16:34:35.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:34:35.000000","group":"Comment_Comment:39_comment_2017-10-05
+        12:34:35 -0400_2017-10-05-%h","id":"12729f80-a9eb-11e7-8080-80012e2ca059.Comment_Comment:39_comment_2017-10-05
+        12:34:35 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:34:35.000000","verb":"Comment"},{"activities":[{"actor":"User:68","foreign_id":"Comment:35","id":"11417280-a9eb-11e7-8080-80006a110105","object":"Comment:35","origin":null,"target":"comment_2017-10-05
+        12:34:33 -0400","time":"2017-10-05T16:34:33.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:34:33.000000","group":"Comment_Comment:35_comment_2017-10-05
+        12:34:33 -0400_2017-10-05-%h","id":"11417280-a9eb-11e7-8080-800142a184ee.Comment_Comment:35_comment_2017-10-05
+        12:34:33 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:34:33.000000","verb":"Comment"},{"activities":[{"actor":"User:64","foreign_id":"Comment:142","id":"02f25700-a9e9-11e7-8080-80000085ca1c","object":"Comment:142","origin":null,"target":"comment_2017-10-05
+        12:19:50 -0400","time":"2017-10-05T16:19:50.000000","to":["notifications:1"],"verb":"Comment"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T16:19:50.000000","group":"Comment_Comment:142_comment_2017-10-05
+        12:19:50 -0400_2017-10-05-%h","id":"02f25700-a9e9-11e7-8080-80013c9ee43f.Comment_Comment:142_comment_2017-10-05
+        12:19:50 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T16:19:50.000000","verb":"Comment"},{"activities":[{"actor":"User:83","foreign_id":"Mention:40","id":"f7fbe000-a970-11e7-8080-800141111602","object":"Comment:344","origin":null,"target":"mention_2017-10-04
+        22:00:32 -0400","time":"2017-10-05T02:00:32.000000","to":["notifications:1"],"verb":"Mention"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T02:00:32.000000","group":"Mention_Comment:344_mention_2017-10-04
+        22:00:32 -0400_2017-10-05-%h","id":"f7fbe000-a970-11e7-8080-800051e9b325.Mention_Comment:344_mention_2017-10-04
+        22:00:32 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T02:00:32.000000","verb":"Mention"},{"activities":[{"actor":"User:83","foreign_id":"Mention:39","id":"558f2d00-a96f-11e7-8080-80002cd999f0","object":"Comment:343","origin":null,"target":"mention_2017-10-04
+        21:48:50 -0400","time":"2017-10-05T01:48:50.000000","to":["notifications:1"],"verb":"Mention"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T01:48:50.000000","group":"Mention_Comment:343_mention_2017-10-04
+        21:48:50 -0400_2017-10-05-%h","id":"558f2d00-a96f-11e7-8080-80004d1c9020.Mention_Comment:343_mention_2017-10-04
+        21:48:50 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T01:48:50.000000","verb":"Mention"},{"activities":[{"actor":"User:83","foreign_id":"Mention:38","id":"06e19300-a96f-11e7-8080-80017eb806a9","object":"Comment:342","origin":null,"target":"mention_2017-10-04
+        21:46:38 -0400","time":"2017-10-05T01:46:38.000000","to":["notifications:1"],"verb":"Mention"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T01:46:38.000000","group":"Mention_Comment:342_mention_2017-10-04
+        21:46:38 -0400_2017-10-05-%h","id":"06e19300-a96f-11e7-8080-80004fc77569.Mention_Comment:342_mention_2017-10-04
+        21:46:38 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T01:46:38.000000","verb":"Mention"},{"activities":[{"actor":"User:83","foreign_id":"Mention:37","id":"422f9200-a96e-11e7-8080-80013a7fe86f","object":"Comment:341","origin":null,"target":"mention_2017-10-04
+        21:41:08 -0400","time":"2017-10-05T01:41:08.000000","to":["notifications:1"],"verb":"Mention"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T01:41:08.000000","group":"Mention_Comment:341_mention_2017-10-04
+        21:41:08 -0400_2017-10-05-%h","id":"422f9200-a96e-11e7-8080-80011fc5c712.Mention_Comment:341_mention_2017-10-04
+        21:41:08 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T01:41:08.000000","verb":"Mention"},{"activities":[{"actor":"User:83","foreign_id":"Mention:36","id":"ac940280-a96d-11e7-8080-8001420af4c7","object":"Comment:340","origin":null,"target":"mention_2017-10-04
+        21:36:57 -0400","time":"2017-10-05T01:36:57.000000","to":["notifications:1"],"verb":"Mention"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T01:36:57.000000","group":"Mention_Comment:340_mention_2017-10-04
+        21:36:57 -0400_2017-10-05-%h","id":"ac940280-a96d-11e7-8080-800039d84008.Mention_Comment:340_mention_2017-10-04
+        21:36:57 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T01:36:57.000000","verb":"Mention"},{"activities":[{"actor":"User:83","foreign_id":"Mention:35","id":"b2d4af80-a96a-11e7-8080-800106a6024e","object":"Comment:339","origin":null,"target":"mention_2017-10-04
+        21:15:39 -0400","time":"2017-10-05T01:15:39.000000","to":["notifications:1"],"verb":"Mention"}],"activity_count":1,"actor_count":1,"created_at":"2017-10-05T01:15:39.000000","group":"Mention_Comment:339_mention_2017-10-04
+        21:15:39 -0400_2017-10-05-%h","id":"b2d4af80-a96a-11e7-8080-8000526d16b4.Mention_Comment:339_mention_2017-10-04
+        21:15:39 -0400_2017-10-05-%h","is_read":false,"is_seen":false,"updated_at":"2017-10-05T01:15:39.000000","verb":"Mention"}],"next":"/api/v1.0/feed/notifications/1/?api_key=h59mvgpc5f4s\u0026id_lt=b2d4af80-a96a-11e7-8080-8000526d16b4.Mention_Comment%3A339_mention_2017-10-04+21%3A15%3A39+-0400_2017-10-05-%25h\u0026limit=60","duration":"74.67ms","unseen":86,"unread":100}
+
+'
+    http_version: 
+  recorded_at: Tue, 19 Dec 2017 20:43:09 GMT
+- request:
+    method: get
+    uri: https://us-east-api.getstream.io/api/v1.0/feed/notifications/297/?api_key=h59mvgpc5f4s&limit=60
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Authorization:
+      - eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyZXNvdXJjZSI6ImZlZWQiLCJhY3Rpb24iOiJyZWFkIiwiZmVlZF9pZCI6Im5vdGlmaWNhdGlvbnMyOTcifQ.Zr2k56Gy3ByetRTaqFGIsr00cXdIOtWgPgOpE7r_p1w
+      Stream-Auth-Type:
+      - jwt
+      Content-Type:
+      - application/json
+      X-Stream-Client:
+      - stream-ruby-client-2.4.5
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Headers:
+      - x-requested-with, content-type, accept, origin, authorization, x-csrftoken,
+        x-stream-client, stream-auth-type
+      Access-Control-Allow-Methods:
+      - GET, POST, PUT, PATCH, DELETE, OPTIONS
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Max-Age:
+      - '86400'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Tue, 19 Dec 2017 21:41:13 GMT
+      Server:
+      - nginx
+      X-Ratelimit-Limit:
+      - '2000'
+      X-Ratelimit-Remaining:
+      - '1999'
+      X-Ratelimit-Reset:
+      - '1513719720'
+      Content-Length:
+      - '67'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"results":[],"next":"","duration":"9.97ms","unseen":0,"unread":0}
+
+'
+    http_version: 
+  recorded_at: Tue, 19 Dec 2017 21:41:13 GMT
+recorded_with: VCR 3.0.3

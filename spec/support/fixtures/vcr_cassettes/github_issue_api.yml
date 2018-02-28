@@ -1,0 +1,84 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/9%23issue-195721413
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      User-Agent:
+      - Octokit Ruby Gem 4.7.0
+      Content-Type:
+      - application/json
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Server:
+      - GitHub.com
+      Date:
+      - Thu, 30 Nov 2017 17:23:02 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4986'
+      X-Ratelimit-Reset:
+      - '1512063233'
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP
+      Etag:
+      - W/"4044c19e54d5fdd9ed06c7af4b9c1e0c"
+      Last-Modified:
+      - Tue, 21 Nov 2017 18:47:01 GMT
+      X-Oauth-Scopes:
+      - ''
+      X-Accepted-Oauth-Scopes:
+      - repo
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Security-Policy:
+      - default-src 'none'
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Runtime-Rack:
+      - '0.087276'
+      X-Github-Request-Id:
+      - F43B:63E2:10B6B39:28A9DD1:5A203E76
+    body:
+      encoding: ASCII-8BIT
+      string: '{"url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/9","repository_url":"https://api.github.com/repos/thepracticaldev/dev.to","labels_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/9/labels{/name}","comments_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/9/comments","events_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/9/events","html_url":"https://github.com/thepracticaldev/dev.to/issues/9","id":195721413,"number":9,"title":"Interactive
+        code snippets","user":{"login":"viebel","id":955710,"avatar_url":"https://avatars1.githubusercontent.com/u/955710?v=4","gravatar_id":"","url":"https://api.github.com/users/viebel","html_url":"https://github.com/viebel","followers_url":"https://api.github.com/users/viebel/followers","following_url":"https://api.github.com/users/viebel/following{/other_user}","gists_url":"https://api.github.com/users/viebel/gists{/gist_id}","starred_url":"https://api.github.com/users/viebel/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/viebel/subscriptions","organizations_url":"https://api.github.com/users/viebel/orgs","repos_url":"https://api.github.com/users/viebel/repos","events_url":"https://api.github.com/users/viebel/events{/privacy}","received_events_url":"https://api.github.com/users/viebel/received_events","type":"User","site_admin":false},"labels":[],"state":"closed","locked":false,"assignee":{"login":"benhalpern","id":3102842,"avatar_url":"https://avatars0.githubusercontent.com/u/3102842?v=4","gravatar_id":"","url":"https://api.github.com/users/benhalpern","html_url":"https://github.com/benhalpern","followers_url":"https://api.github.com/users/benhalpern/followers","following_url":"https://api.github.com/users/benhalpern/following{/other_user}","gists_url":"https://api.github.com/users/benhalpern/gists{/gist_id}","starred_url":"https://api.github.com/users/benhalpern/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/benhalpern/subscriptions","organizations_url":"https://api.github.com/users/benhalpern/orgs","repos_url":"https://api.github.com/users/benhalpern/repos","events_url":"https://api.github.com/users/benhalpern/events{/privacy}","received_events_url":"https://api.github.com/users/benhalpern/received_events","type":"User","site_admin":false},"assignees":[{"login":"benhalpern","id":3102842,"avatar_url":"https://avatars0.githubusercontent.com/u/3102842?v=4","gravatar_id":"","url":"https://api.github.com/users/benhalpern","html_url":"https://github.com/benhalpern","followers_url":"https://api.github.com/users/benhalpern/followers","following_url":"https://api.github.com/users/benhalpern/following{/other_user}","gists_url":"https://api.github.com/users/benhalpern/gists{/gist_id}","starred_url":"https://api.github.com/users/benhalpern/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/benhalpern/subscriptions","organizations_url":"https://api.github.com/users/benhalpern/orgs","repos_url":"https://api.github.com/users/benhalpern/repos","events_url":"https://api.github.com/users/benhalpern/events{/privacy}","received_events_url":"https://api.github.com/users/benhalpern/received_events","type":"User","site_admin":false}],"milestone":null,"comments":24,"created_at":"2016-12-15T05:40:09Z","updated_at":"2017-10-18T18:44:45Z","closed_at":"2017-10-18T18:44:45Z","author_association":"NONE","body":"`Dev.to`
+        looks awesome.\r\nCongrats!\r\n\r\nI was thinking of an integration of the
+        [klipse plugin](https://github.com/viebel/klipse) into dev.to to allow blog
+        writers to have interactive code snippets in javascript, ruby, python, scheme
+        or ocaml.\r\n\r\nAnd write cool blog posts like:\r\n\r\n- http://blog.jrheard.com/procedural-dungeon-generation-drunkards-walk-in-clojurescript\r\n-
+        http://exupero.org/hazard/post/islands/\r\n- http://untangled.io/immutable-js-an-introduction-with-examples-written-for-humans/\r\n\r\nWhat
+        do you say?\r\n","closed_by":{"login":"benhalpern","id":3102842,"avatar_url":"https://avatars0.githubusercontent.com/u/3102842?v=4","gravatar_id":"","url":"https://api.github.com/users/benhalpern","html_url":"https://github.com/benhalpern","followers_url":"https://api.github.com/users/benhalpern/followers","following_url":"https://api.github.com/users/benhalpern/following{/other_user}","gists_url":"https://api.github.com/users/benhalpern/gists{/gist_id}","starred_url":"https://api.github.com/users/benhalpern/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/benhalpern/subscriptions","organizations_url":"https://api.github.com/users/benhalpern/orgs","repos_url":"https://api.github.com/users/benhalpern/repos","events_url":"https://api.github.com/users/benhalpern/events{/privacy}","received_events_url":"https://api.github.com/users/benhalpern/received_events","type":"User","site_admin":false}}'
+    http_version: 
+  recorded_at: Thu, 30 Nov 2017 17:23:02 GMT
+recorded_with: VCR 3.0.3

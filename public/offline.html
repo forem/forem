@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>You are not connected to the Internet</title>
+  <meta property="og:url" content="https://dev.to/offline.html" />
+  <meta property="og:title" content="Looks like you've lost your Internet connection" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/qe1hvc8slxp6bepk9rzc.png" />
+  <meta property="og:description" content="Maybe you could go outside and get some fresh air." />
+  <meta property="og:site_name" content="The DEV Community" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="Looks like you've lost your Internet connection">
+  <meta name="twitter:description" content="Maybe you could go outside and get some fresh air.">
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/qe1hvc8slxp6bepk9rzc.png">
+
+  <style>
+    body{
+      text-align:center;
+      color:white;
+      background: #050505;
+      font-size:calc(1em + 0.3vw);
+    }
+    .container{
+      width:92%;
+      max-width:666px;
+      margin:4vh auto;
+    }
+    img{
+      max-width:100%;
+    }
+    h1{
+      font-weight:400;
+      margin:0;
+      padding:1em 0px;
+    }
+    img.devlogo{
+      height:calc(40px + 2vh);
+    }
+    @media screen and (min-width: 950px) {
+      img.wires{
+        height:298px;
+      }
+    }
+    a{
+      color:white;
+    }
+  </style>
+  <script>
+    async function findImage(filename) {
+        // Get a list of all of the caches for this origin
+        const cacheNames = await caches.keys();
+        let result = '';
+
+        for (const name of cacheNames) {
+          // Open the cache
+          const cache = await caches.open(name);
+          // Get a list of entries. Each item is a Request object
+          for (const request of await cache.keys()) {
+            // If the request URL matches, add the response to the result
+            if (request.url.includes(filename)) {
+              result = request.url;
+            }
+          }
+        }
+        return result;
+      }
+      findImage('devword')
+        .then((imageURL) => {
+          document.querySelector('.devlogo').src = imageURL;
+        });
+      findImage('wires')
+          .then((imageURL) => {
+            document.querySelector('.wires').src = imageURL;
+          });
+  </script>
+</head>
+
+<body>
+  <!-- This file lives in public/offline.html -->
+  <div class="container">
+    <div>
+      <a href="/"><img class="devlogo" src=""/></a>
+      <h1>It looks like you've lost your Internet connection.</h1>
+      <img class="wires" src="" />
+      <p>But you probably already knew that.</p>
+      <p>
+        Either way, it's a good opportunity to show you this cool offline page made with service workers, indicating just how cutting-edge we are over here at <a href="/">dev.to</a>.
+      </p>
+      <p>This must be frustrating, but to put it in context, Trump's still president, so a poor Internet connection can't be so bad, right? On the other hand, you don't have access to the Internet, so maybe he's been impeached by now, for all you know.
+      <p>Have a nice day either way. Maybe you can go play outside, some fresh air could do you good. <3</p>
+    </div>
+  </div>
+</body>
+</html>

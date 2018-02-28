@@ -1,0 +1,17 @@
+#instagram-liquid-tag {
+  background: rgb(255, 255, 255);
+  border: 1px solid rgb(219, 219, 219);
+  margin: 1px 1px 12px;
+  max-width: 450px;
+  width: calc(100% - 2px);
+  border-radius: 4px;
+  box-shadow: none;
+  display: block;
+  padding: 0px;
+}
+
+.instagram-position {
+  position: relative;
+  max-width: 460px;
+  margin: 0 auto;
+}

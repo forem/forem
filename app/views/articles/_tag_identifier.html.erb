@@ -1,0 +1,6 @@
+
+<% if FlareTag.new(story).tag && @tag != FlareTag.new(story).tag.name %>
+  <span class="tag-identifier black-identifier" style="background:<%= FlareTag.new(story).tag.bg_color_hex %>;color:<%= FlareTag.new(story).tag.text_color_hex %>">#<%= FlareTag.new(story).tag.name %></span><%= story.title %>
+<% else %>
+  <%= story.title %>
+<% end %>

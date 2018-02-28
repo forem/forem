@@ -1,0 +1,8 @@
+<div class="field-unit__label">
+  <%= f.label field.attribute %>
+</div>
+<div class="field-unit__field">
+  <%= image_tag field.url, style: "background-color:#d9d9d9;max-width:100px" if field.url %>
+  <br/>
+  <%= f.file_field field.attribute %>
+</div>

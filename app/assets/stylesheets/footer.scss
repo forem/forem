@@ -1,0 +1,26 @@
+@import 'variables';
+
+footer{
+  background: darken($tan,1%);
+  margin-bottom:-60px;
+  padding:80px 0px 100px;
+  box-shadow: 0 -1px 4px 0 rgba(0, 0, 0, 0.15);
+  .container{
+    background: darken($tan,1%);
+    width:92%;
+    margin:auto;
+    max-width:800px;
+    box-shadow: none;
+    border: none;
+    font-weight: 500;
+    a{
+      color: $black;
+      display:inline-block;
+      margin-right: 12px;
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+  }
+}
+

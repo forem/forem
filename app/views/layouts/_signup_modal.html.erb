@@ -1,0 +1,44 @@
+<% if rand(2) == 1 %>
+  <% version = "07112017-sloth-full-description" %>
+  <div class="global-signup-modal split-test-tracking-div" id="global-signup-modal" style="display:none" data-version="<%= version %>">
+    <div class="global-signup-modal--bg" id="global-signup-modal-bg">
+      <button class="close-modal-button">
+        <%=image_tag("/assets/cancel.svg", class:"search-icon", alt:"close-button")%>
+      </button>
+    </div>
+    <div class="global-signup-modal--inner-a">
+      <%=image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+       :type=>"fetch",
+       :width => 300,
+       :crop => "imagga_scale",
+       :quality => "auto",
+       :flags => "progressive",
+       :fetch_format => "auto",
+       :sign_url => true), class:"sloan", alt:"sloth-mascot") %>
+      <h1>Join our DEV Community :)</h1>
+      <p>
+        We’re a place for programmers to stay up-to-date, learn new skills, and share ideas.
+      </p>
+      <a onclick='<%=track_split_version("/users/auth/twitter?state=signup-modal_#{version}",version) %>' href="/users/auth/twitter?state=signup-modal_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
+      <a onclick='<%=track_split_version("/users/auth/github?state=signup-modal_#{version}",version) %>' href="/users/auth/github?state=signup-modal_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> GitHub</a>
+      <p>
+        <em>We’ll never post without your permission.</em>
+      </p>
+    </div>
+  </div>
+<% else %>
+  <% version = "07112017-sign-in-first" %>
+  <div class="global-signup-modal split-test-tracking-div" id="global-signup-modal" style="display:none" data-version="<%= version %>">
+    <div class="global-signup-modal--bg" id="global-signup-modal-bg">
+      <button class="close-modal-button">
+        <%=image_tag("/assets/cancel.svg", class:"search-icon", alt:"close-button")%>
+      </button>
+    </div>
+    <div class="global-signup-modal--inner-b">
+      <h1>Sign in first 🤓</h1>
+      <a onclick='<%=track_split_version("/users/auth/twitter?state=signup-modal_#{version}",version) %>' href="/users/auth/twitter?state=signup-modal_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
+      <a onclick='<%=track_split_version("/users/auth/github?state=signup-modal_#{version}",version) %>' href="/users/auth/github?state=signup-modal_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> GitHub</a>
+      <img class="heart" src="<%= asset_path("emoji/emoji-one-heart") %>" />
+    </div>
+  </div>
+<% end %>

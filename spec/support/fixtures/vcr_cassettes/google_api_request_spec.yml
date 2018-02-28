@@ -1,0 +1,159 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://www.googleapis.com/oauth2/v4/token
+    body:
+      encoding: ASCII-8BIT
+      string: grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkZXYtdG8tYW5hbHl0aWMtYXBpLW1hYy10ZXN0QGRldnRvLTE3NTQxOS5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsImF1ZCI6Imh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL29hdXRoMi92NC90b2tlbiIsImV4cCI6MTUxOTIyOTAxOSwiaWF0IjoxNTE5MjI4ODk5LCJzY29wZSI6Imh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL2F1dGgvYW5hbHl0aWNzLnJlYWRvbmx5In0.V8CSfSS7sKfoE5857jE9WDrGFHF1CyRr3cZpdUv9MjaaTcPRSLuNxB8yrxRP_7hNmlRgx_KdUzBgDJp3M_9tU4rZgFaIC7-bctvz_0rqbnMqSTniHYNGo7w__zO0bRaTpR3ILOfoxCQLcVC-tA4eCIMzRCznkY0VAaoLM7K-hnwQz6fCqSF31fmOwzAdVBPi5qnMETogh_7SiHn4WNUYI0FQf5SFLhcCbBZtORcbANe9hXp9po2P-VTBqs6u9dAZw5kZ2c1l5zbzrjYp5VcYl1XQFQTxP2zgMxhpX3k1UH9ObggOMUxvASyLbPZ7viOPKRlFxkAAHPTN2N1FYbpVeA
+    headers:
+      User-Agent:
+      - Faraday v0.12.2
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Pragma:
+      - no-cache
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Date:
+      - Wed, 21 Feb 2018 16:02:39 GMT
+      Vary:
+      - Origin
+      - X-Origin
+      Content-Type:
+      - application/json; charset=UTF-8
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - 1; mode=block
+      Server:
+      - GSE
+      Alt-Svc:
+      - hq=":443"; ma=2592000; quic=51303431; quic=51303339; quic=51303338; quic=51303337;
+        quic=51303335,quic=":443"; ma=2592000; v="41,39,38,37,35"
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        {
+         "access_token": "ya29.c.EllpBUMfpWKijz8MnzGf0wHPJJvnizl_qAJUJWZopcxDJpQaIz2oVBCsXWG9jjQMytHWwZNT4T_-abbA0FiADWb0df3kBRc8L6AY31S8cqs8XX2EGr4jPZROmA",
+         "token_type": "Bearer",
+         "expires_in": 3600
+        }
+    http_version: 
+  recorded_at: Wed, 21 Feb 2018 16:02:39 GMT
+- request:
+    method: post
+    uri: https://analyticsreporting.googleapis.com/v4/reports:batchGet
+    body:
+      encoding: UTF-8
+      string: '{"reportRequests":[{"dateRanges":[{"endDate":"today","startDate":"2012-01-01"}],"filtersExpression":"ga:pagePath==/username1/death-be-not-proud-1l62","metrics":[{"expression":"ga:pageviews"}],"viewId":"114994105"},{"dateRanges":[{"endDate":"today","startDate":"2012-01-01"}],"filtersExpression":"ga:pagePath==/username1/death-be-not-proud-3k0b","metrics":[{"expression":"ga:pageviews"}],"viewId":"114994105"}]}'
+    headers:
+      User-Agent:
+      - |-
+        unknown/0.0.0 google-api-ruby-client/0.19.8 Mac OS X/10.13.3
+         (gzip)
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip,deflate
+      Date:
+      - Wed, 21 Feb 2018 16:02:39 GMT
+      Content-Type:
+      - application/json
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=UTF-8
+      Vary:
+      - Origin
+      - Referer
+      - X-Origin
+      Content-Encoding:
+      - gzip
+      Date:
+      - Wed, 21 Feb 2018 16:02:42 GMT
+      Server:
+      - ESF
+      Cache-Control:
+      - private
+      X-Xss-Protection:
+      - 1; mode=block
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Content-Type-Options:
+      - nosniff
+      Alt-Svc:
+      - hq=":443"; ma=2592000; quic=51303431; quic=51303339; quic=51303338; quic=51303337;
+        quic=51303335,quic=":443"; ma=2592000; v="41,39,38,37,35"
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: |
+        {
+          "reports": [
+            {
+              "columnHeader": {
+                "metricHeader": {
+                  "metricHeaderEntries": [
+                    {
+                      "name": "ga:pageviews",
+                      "type": "INTEGER"
+                    }
+                  ]
+                }
+              },
+              "data": {
+                "totals": [
+                  {
+                    "values": [
+                      "0"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "columnHeader": {
+                "metricHeader": {
+                  "metricHeaderEntries": [
+                    {
+                      "name": "ga:pageviews",
+                      "type": "INTEGER"
+                    }
+                  ]
+                }
+              },
+              "data": {
+                "totals": [
+                  {
+                    "values": [
+                      "0"
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+    http_version: 
+  recorded_at: Wed, 21 Feb 2018 16:02:42 GMT
+recorded_with: VCR 4.0.0

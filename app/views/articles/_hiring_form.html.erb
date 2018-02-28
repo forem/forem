@@ -1,0 +1,89 @@
+<script src="https://cdn.jsdelivr.net/npm/places.js@1.4.15"></script>
+<div id="hiring-form" class="hiring-form">
+  <%= f.fields_for @article.job_opportunity || JobOpportunity.new do |jo| %>
+    <h2>Where is your office located?</h2>
+    <%= jo.text_field :location_given, class: "article-form-input", placeholder: "Start typing a city, e.g. Boston" %>
+    <h2>Where is the work done?</h2>
+    <div class="filter-buttons">
+      <%= jo.radio_button(:remoteness, "on_premise", checked: true) %>
+      <%= jo.label :remoteness_on_premise, 'In Office' %>
+      <%= jo.radio_button(:remoteness, "fully_remote") %>
+      <%= jo.label :remoteness_fully_remote, 'Fully Remote' %>
+      <%= jo.radio_button(:remoteness, "remote_optional") %>
+      <%= jo.label :remoteness_remote_optional, 'Remote Optional' %>
+      <%= jo.radio_button(:remoteness, "on_premise_flexible") %>
+      <%= jo.label :remoteness_on_premise_flexible, 'Mostly in Office but Flexible' %>
+    </div>  
+    <%= jo.hidden_field :location_city %>
+    <%= jo.hidden_field :location_postal_code %>
+    <%= jo.hidden_field :location_country_code %>
+    <%= jo.hidden_field :location_lat %>
+    <%= jo.hidden_field :location_long %>
+  <% end %>
+  <h2>Give the listing descriptive a title</h2>
+  <%= f.text_field :title, placeholder: "e.g. Apple is Hiring a Junior Frontend Developer" %>
+  <h2>What tags go along with this post?</h2>
+  <% @article.tag_list = "hiring" if @article.tag_list.blank? %>
+  <%= f.text_field :tag_list, placeholder: "e.g. javascript, react, webdev" %>
+  <div class="tags-to-choose">
+    <% Tag.where(supported:true).order("hotness_score").each do |tag| %>
+      <button style="background-color:<%= tag.bg_color_hex %>;color:<%= tag.text_color_hex %>" onclick="handleTagClick(event);return false;" ><%= tag.name %></button>
+    <% end %>
+  </div>
+  <h2>Now, tell us all about the role</h2>
+  <h3>This is a chance to tell us about what you're looking for and why working at your company is so great. By the way, this is a <a href="/p/markdown_basics">markdown</a> form. It's very flexible. We've started you with a template.</h3>
+</div>
+
+<script>
+
+  function handleTagClick(event){
+    event.preventDefault();
+    var input = document.getElementById("article_tag_list");
+    var trimmedVal = input.value.trim();
+    console.log(trimmedVal);
+    var array = trimmedVal.split(",");
+    console.log(array);
+    if (array.length > 3){
+      return;
+    }
+    else if (trimmedVal[trimmedVal.length - 1] == ","){
+      input.value = trimmedVal + " "+event.target.innerHTML;
+    }
+    else if (trimmedVal.length == 0){
+      input.value = event.target.innerHTML;
+    }
+    else {
+      input.value = input.value + ", "+event.target.innerHTML;
+    }
+  }
+  function assignVal(id,val){
+    if (val && id){
+      document.getElementById(id).value = val;
+    }
+  }
+  
+  function loadPlaces(){
+    var placesAutocomplete = places({
+      apiKey: "187d0a3aa899266317f68f888fc9f41d",
+      type: "city",
+      container: document.querySelector('#article_job_opportunity_location_given'),
+    });
+    placesAutocomplete.on('change', function(event){
+    var info = event.suggestion;
+    assignVal("article_job_opportunity_location_given",info.value);
+    assignVal("article_job_opportunity_location_lat",info.latlng.lat);
+    assignVal("article_job_opportunity_location_long",info.latlng.lng);
+    assignVal("article_job_opportunity_location_city",info.hit.locale_names[0]);
+    assignVal("article_job_opportunity_location_postal_code",info.postcode);
+    assignVal("article_job_opportunity_location_country_code",info.countryCode);
+    });
+  }
+
+  var waitingOnPlaces = setInterval(function(){
+    if ( places ) {
+      loadPlaces();
+      clearInterval(waitingOnPlaces);
+    }
+  },3)
+
+</script>

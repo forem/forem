@@ -1,0 +1,40 @@
+<% title "DEV EVENTS"%>
+<header>
+  <div class="blank-space"></div>
+</header>
+
+<style>
+  .container .event {
+    text-align: center;
+    padding: 20px;
+    border: solid 2px #66e2d5;;
+    border-radius: 3px; 
+    margin: 50px auto;
+    box-shadow: 5px 8px 0px #ccfff9;
+    font-size: 18px;
+    max-width: 700px;
+    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  }
+
+  .container .event-image {
+    max-width: 43%;
+    float: left;
+    margin-right: 20px;
+  }
+
+  .container .event-image img {
+    max-width: 100%;
+    border-radius: 3px;
+  }
+</style>
+
+
+<script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
+
+<div class="container article">
+  <div style="height:30px">
+  </div>
+  <div class="body">
+    <%= render 'event', event: @event %>
+  </div>
+</div>

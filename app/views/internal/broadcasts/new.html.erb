@@ -1,0 +1,6 @@
+<h1>Make a new broadcast:</h1>
+<%= form_for([:internal, @broadcast], method: :post) do %>
+  <%= render "form" %>
+  <%= submit_tag "Create Broadcast" %>
+<% end %>
+<hr>

@@ -1,0 +1,57 @@
+<div class="sidebar-nav" id="sidebar-nav">
+  <% if user_signed_in? %>
+    <div class="sidebar-profile-snapshot">
+      <a class="sidebar-profile-snapshot-inner" id="sidebar-profile-snapshot-inner" href="#">
+        <div class="sidebar-profile-pic" id="sidebar-profile-pic">
+        </div>
+        <div class="sidebar-profile-content">
+          <div class="sidebar-profile-name" id="sidebar-profile-name">
+          </div>
+          <div class="sidebar-profile-username" id="sidebar-profile-username">
+          </div>
+        </div>
+      </a>  
+    </div>
+  <% end %>
+  <% if user_signed_in? %>
+    <div class="widget sidebar-nav-block">
+      <div class="sidebar-nav-element sidebar-nav-readinglist">
+        <a class="sidebar-nav-link" href="/readinglist">
+          <img src="<%=asset_path("emoji/emoji-one-bookmark.png")%>" /> MY READING LIST
+          <span id="reading-list-count"></span>
+        </a>
+      </div>
+    </div>
+  <% end %>
+  <div class="widget sidebar-nav-block sidebar-tag-block">
+    <div class="sidebar-nav-header sidebar-nav-header-middle">
+        &lt;<%= user_signed_in? ? "MY" : "DEV" %> TAGS&gt;
+    </div>
+    <div class="sidebar-nav-block-inner">
+    <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
+      <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= 'showing' unless user_signed_in? %>">
+        <% if user_signed_in? %>
+          <div class="sidebar-nav-subheader tag-separator" id="tag-separator">Other Popular Tags</div>
+        <% end %>
+        <% Tag.where(supported:true).order("hotness_score DESC").limit(20).each do |tag| %>
+          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag.name %>">
+            <a class="sidebar-nav-link" href="/t/<%= tag.name %>">
+              <span class="sidebar-nav-tag-text" style="color:<%= tag.text_color_hex %>;background:<%= tag.bg_color_hex %>;" >
+                #<%= tag.name %>
+              </span>
+            </a>
+            <a class="follow-action-button sidebar-nav-link-follow cta"
+              href="#" id="sidebar-nav-link-follow-<%= tag.name %>"
+              data-info='{"id":<%= tag.id%>,"className":"Tag", "style":"small"}'>
+                +
+            </a>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <div class="sidebar-nav-subheader">
+      <a href="/tags">View all-time top tags</a>
+    </div>
+
+  </div>  
+</div>

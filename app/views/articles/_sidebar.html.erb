@@ -1,0 +1,315 @@
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div class="sidebar-bg" id="sidebar-bg-left"></div>
+  <div class="side-bar">
+    <% if @user && @user.class.name == "User" %>
+      <div class="user-sidebar">
+        <% if @user.employment_title.present? || @user.location.present? || @user.education.present? || @user.looking_for_work_publicly.present? || @user.email_public.present? %>
+        <div class="widget">
+          <header>
+            &lt;ABOUT&gt;
+          </header>
+          <div class="widget-body">
+            <% if @user.email_public %>
+              <div class="row">
+                <div class="key">
+                  📭
+                </div>
+                <div class="value">
+                  <a href="mailto:<%= @user.email %>"><%= @user.email %></a>
+                </div>
+              </div>
+            <% end %>
+            <% if @user.employer_name.present? %>
+              <div class="row">
+                <div class="key">
+                  💼
+                </div>
+                <div class="value">
+                  <% if @user.employment_title.present? %>
+                    <span><%= @user.employment_title %> at </span>
+                  <% end %>
+                  <% if @user.employer_url.present? %>
+                    <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+                  <% else %>
+                    <%= @user.employer_name %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+            <% if @user.location.present? %>
+              <div class="row">
+                <div class="key">
+                  📍
+                </div>
+                <div class="value">
+                  <%= @user.location %>
+                </div>
+              </div>
+            <% end %>
+            <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
+              <div class="row">
+                <div class="key">
+                  🔎
+                </div>
+                <div class="value">
+                  I'm looking for work!
+                </div>
+              </div>
+            <% end %>
+            <% if @user.education.present? %>
+              <div class="row">
+                <div class="key">
+                  🏫
+                </div>
+                <div class="value">
+                  <%= @user.education %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <% end %>
+        <% if @user.mostly_work_with.present? %>
+          <div class="widget">
+            <header>
+              &lt;MY TOOLBOX&gt;
+            </header>
+            <div class="widget-body">
+              <%= sanitized_sidebar @user.mostly_work_with %>
+            </div>
+          </div>
+        <% end %>
+        <% if @user.currently_learning.present? %>
+          <div class="widget">
+            <header>
+              &lt;LEARNING&gt;
+            </header>
+            <div class="widget-body">
+              <%= sanitized_sidebar @user.currently_learning %>
+            </div>
+          </div>
+        <% end %>
+        <% if @user.currently_hacking_on.present? %>
+          <div class="widget">
+            <header>
+              &lt;HACKING ON&gt;
+            </header>
+            <div class="widget-body">
+              <%= sanitized_sidebar @user.currently_hacking_on %>
+            </div>
+          </div>
+        <% end %>
+        <% if @user.available_for.present? %>
+          <div class="widget">
+            <header>
+              &lt;AVAILABLE FOR&gt;
+            </header>
+            <div class="widget-body">
+              <%= sanitized_sidebar @user.available_for %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% elsif @user && @user.class.name == "Organization" %>
+        <% if @organization.location.present? || @organization.company_size.present? || @organization.email.present? %>
+          <div class="user-sidebar">
+            <div class="widget">
+              <header>
+                &lt;ABOUT&gt;
+              </header>
+              <div class="widget-body">
+                <% if @organization.location.present? %>
+                  <div class="row">
+                    <div class="key">  
+                      📍  
+                    </div>
+                    <div class="value">
+                      <%= @organization.location %>
+                    </div>                              
+                  </div>
+                <% end %>
+                <% if @organization.company_size.present? %>
+                  <div class="row">
+                    <div class="key">  
+                      👥  
+                    </div>
+                    <div class="value">
+                      <%= @organization.company_size %>
+                    </div>                              
+                  </div>
+                <% end %>
+                <% if @organization.email.present? %>
+                  <div class="row">
+                    <div class="key">
+                      📭
+                    </div>
+                    <div class="value">
+                      <a href="mailto:<%= @organization.email %>"><%= @organization.email %></a>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div> 
+        <% end %>
+        <% if @organization.story.present? %>
+          <div class="widget">
+            <header>
+              &lt;OUR STORY&gt;
+            </header>
+            <div class="widget-body">
+              <%= sanitized_sidebar @organization.story %>
+            </div>
+          </div>
+        <% end %>
+        <% if @organization.tech_stack.present? %>
+          <div class="widget">
+            <header>
+              &lt;OUR STACK&gt;
+            </header>
+            <div class="widget-body">
+              <%= sanitized_sidebar @organization.tech_stack %>
+            </div>
+          </div>
+        <% end %>              
+    <% elsif @query %>    
+      <div class="widget">
+        <header>
+          &lt;FILTERS&gt;
+        </header>
+        <div class="widget-body" style="margin-bottom:16px;">
+          <button class="query-filter-button" data-filter="class_name:Article">POSTS</button>
+          <button class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</button>
+          <button class="query-filter-button" data-filter="class_name:User">PEOPLE</button>
+        </div>  
+      </div>   
+    <% elsif @tag %>
+      <% if @tag_model && @tag_model.short_summary.present? %>
+        <div class="widget">
+          <header>
+            <#<%= @tag.upcase %> 👋>
+          </header>
+          <div class="widget-body">
+            <%= @tag_model.short_summary.html_safe %>
+          </div>  
+        </div>
+      <% end %>
+      <% if @tag_model && @tag_model.rules_html.present? %>
+        <div class="widget">
+          <header>
+            &lt;SUBMISSION GUIDELINES&gt;
+          </header>
+          <%= @tag_model.rules_html.html_safe %>
+        </div>
+      <% end %>
+    <% elsif @podcast_index && @podcasts %>
+      <div class="widget podcast-pic-widget">
+        <header>
+          &lt;ALL SHOWS&gt;
+        </header>
+        <div class="widget-body">
+          <% @podcasts.each do |podcast| %>
+            <a href="/<%= podcast.slug %>">
+              <span class="podcast-pic" id="podcast-pic-<%=podcast.slug %>">
+                <img src="<%= cl_image_path(podcast.image_url,
+                :type=>"fetch",
+                :crop => "fill",
+                :width => 100,
+                :height => 100,
+                :flags => "progressive",
+                :quality => "auto",
+                :fetch_format => "auto",
+                :sign_url => true) %>"
+                alt="<%= podcast.title %>" />
+                <div class="podcast-name">
+                  <div class="podcast-name-inner">
+                    <%= podcast.title %>
+                  </div>
+                </div>
+              </span>
+            </a>
+          <% end %>
+        </div>
+      </div>
+    <% elsif @podcast %>
+    <% else %>
+      <%= render "articles/sidebar_nav" %>
+      <% if Flipflop.display_sponsors? %>
+        <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
+          <header>
+            &lt;COMMUNITY SPONSORS<span class="emoji">
+              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
+            </span>&gt;
+          </header>
+          <div class="widget-body">
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="https://triplebyte.com/?ref=devto_feb18" target="_blank" data-details="triplebyte__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/r50i600z08ty2sjwey4o.png", 300) %>" />
+              </a>
+              <div class="sponsor-tagline">
+                Make your job search O(1), not O(n) — Triplebyte
+                <a class="partner-link sponsor-learn-more" href="https://triplebyte.com/?ref=devto_feb18" target="_blank" data-details="triplebyte__learn-more">
+                  Learn More 
+                </a>
+              </div>
+            </div>
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ehfv4m28il0uevcgxj47.png", 300) %>" />
+              </a>
+              <div class="sponsor-tagline">
+                Fast & relevant search API, now with free read operations
+                <a class="partner-link sponsor-learn-more" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__learn-more">
+                  Learn More
+                </a>
+              </div>
+            </div>
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="http://bit.ly/2BGczat" target="_blank" data-details="nylas__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/e2aqkikvkskee8jrvrpy.png", 300) %>" />
+              </a>
+              <div class="sponsor-tagline">
+                Sync data from any inbox in the world with the Nylas APIs
+                <a class="partner-link sponsor-learn-more" href="http://bit.ly/2BGczat" target="_blank" data-details="nylas__learn-more">
+                  Learn More
+                </a>
+              </div>
+            </div>
+            <div class="sponsors-love-message">
+              We are grateful for wonderful sponsors who help sustain the dev community.
+            </div>
+            <div class="sponsor-footer">
+              <p>
+                <a href="/sponsorship-info">Sponsorship Info/Policy</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+      <div class="widget">
+        <header>
+          &lt;KEY LINKS&gt;
+        </header>
+        <div class="widget-body">
+          <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" class="social-icon" /></a>
+          <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" class="social-icon" /></a>
+          <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" class="social-icon" /></a>
+          <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" class="social-icon" /></a>
+          <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" class="social-icon" /></a>
+        </div>
+        <div class="side-footer">
+          <a href="/about">About</a>
+          <a href="/membership">Sustaining Membership</a>
+          <a href="/events">Events</a>
+          <a href="/sponsors">Sponsors</a>
+          <a href="https://shop.dev.to/">DEV Shop</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Use</a>
+          <a href="/contact">Contact</a>
+          <a href="/faq">FAQ</a>
+          <a href="/code-of-conduct">Code of Conduct</a>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<% title "DEV Scholarships" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/p/scholarships"/>
+  <meta name="description" content="Scholarships for DEV workshops">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/p/scholarships" />
+  <meta property="og:title" content="Scholarships for DEV workshops" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" />
+  <meta property="og:description" content="Apply for scholarships to DEV workshops" />
+  <meta property="og:site_name" content="The DEV Community" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="Scholarships for DEV workshops">
+  <meta name="twitter:description" content="Apply for scholarships to DEV workshops">
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+<% end %>
+
+<!-- <p id="notice"><%#= notice %></p> -->
+<header>
+  <div class="blank-space"></div>
+</header>
+<div class="container article">
+  <div class="title" style="height:30px">
+  </div>
+  <h1 style="text-align:center">
+    The DEV Scholarship
+  </h1>
+  <div class="body">
+    <p>
+      This scholarship is for anyone interested in attending DEV workshops but does not have the means to be a level 3 <a href="/membership">sustaining member</a>.
+    </p>
+    <p>  
+      Scholarship recipients will receive full access to all DEV workshops for one year. These workshops are taught by experts from the community and range from beginner to advanced topics. <a href="/events">Check out our upcoming sessions</a>.
+    </p>
+    <% if current_user && current_user.scholar %>
+      <h4 style="text-align: center">
+        Congratulations on your DEV scholarship!
+        <% if current_user.workshop_expiration %>
+          Your scholarship will end on
+          <%= current_user.workshop_expiration.strftime("%b %d, %Y") %>.
+        <% end %>
+      </h4>
+    <% else %>
+      <p>
+        We encourage you to <b>apply below</b> and if within your means, to become a level 1 or 2 sustaining member.
+      </p>
+      <div class="typeform-widget" data-url="https://jes31.typeform.com/to/AJhky6" style="width: 100%; height: 500px; margin-bottom: 80px;"></div> <script> (function() { var qs,js,q,s,d=document, gi=d.getElementById, ce=d.createElement, gt=d.getElementsByTagName, id="typef_orm", b="https://embed.typeform.com/"; if(!gi.call(d,id)) { js=ce.call(d,"script"); js.id=id; js.src=b+"embed.js"; q=gt.call(d,"script")[0]; q.parentNode.insertBefore(js,q) } })() </script> <div style="font-family: Sans-Serif;font-size: 12px;color: #999;opacity: 0.5; padding-top: 5px;"></div>
+    <% end %>
+  </div>
+</div>

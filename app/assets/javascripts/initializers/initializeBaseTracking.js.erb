@@ -1,0 +1,71 @@
+function initializeBaseTracking() {
+  var wait = 0;
+  var waitingOnGA = setInterval(function(){
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    wait++;
+    if(window.ga && ga.create){
+      ga('create', '<%= ENV["GA_TRACKING_ID"] %>', 'auto');
+      ga('send', 'pageview', location.pathname + location.search);
+      clearInterval(waitingOnGA);
+    }
+    if (wait > 60 ) {
+      clearInterval(waitingOnGA);
+      cromulent();
+    }
+  },25)
+  facebookTrackingScript();
+}
+
+//This function is cromulent
+function cromulent() {
+  var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  var screenW = window.screen.availWidth;
+  var screenH = window.screen.availHeight;
+  var dataBody = {
+      path: location.pathname + location.search,
+      user_language: navigator.language,
+  		referrer: document.referrer,
+  		user_agent: navigator.userAgent,
+      viewport_size: h+"x"+w,
+      screen_resolution: screenH+"x"+screenW,
+      document_title: document.title,
+      document_encoding: document.characterSet,
+      document_path: location.pathname + location.search,
+	  }
+  window.fetch('/cromulent',{
+    method: 'POST',
+    headers: {Accept: 'application/json'},
+    body: JSON.stringify(dataBody),
+    credentials: 'same-origin'
+  }).then(function() { console.log("hello") });
+}
+
+function facebookTrackingScript() {
+  if(typeof fbq === 'undefined') {
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '<%= ENV["FACEBOOK_PIXEL_ID"] %>');
+    fbTrack();
+  }
+  else {
+    fbTrack();
+  }
+}
+
+function fbTrack() {
+  fbq('track', 'PageView');
+  if (document.location.search.indexOf("newly-registered-user=true") > -1) {
+    fbq('track', 'CompleteRegistration');
+    history.replaceState(null, document.title, window.location.href.replace("?newly-registered-user=true",""))
+  }
+}

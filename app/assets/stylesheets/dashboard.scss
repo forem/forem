@@ -1,0 +1,196 @@
+@import 'variables';
+.dashboard-container{
+  padding-top:80px;
+  padding-bottom:80px;
+  width:800px;
+  max-width:96%;
+  margin:auto;
+  h1{
+    font-size:30px;
+    font-family: $helvetica-condensed;
+    font-stretch:condensed;
+    padding-bottom: 20px;
+    a{
+      padding: 0px 20px;
+      border-radius: 3px;
+      margin-right: 18px;
+      display: inline-block;
+      color: $black;
+      &.active{
+        background: $black;
+        color:white;
+      }
+    }
+  }
+  .actions{
+    text-align:center;
+    padding:10px 0px;
+    .action{
+      width:calc(90% - 26px);
+      margin:7px 3px;
+      color:$black;
+      padding:10px 0px;
+      border-radius:3px;
+      min-width:115px;
+      display:inline-block;
+      transition: background-color 250ms ease;
+      font-family: $helvetica-condensed;
+      font-stretch:condensed;
+      font-size: 1.2em;
+      &.active{
+        background: $purple;
+      }
+      @media screen and ( min-width: 600px ){
+        width:calc(25% - 16px);
+      }
+    }
+  }
+  .dashboard-analytics-header{
+    background: $green;
+    color:white;
+    margin:10px auto;
+    font-size:calc(1.2em + 1.5vw);
+    padding: 30px 5px;
+    padding-left: calc(1em + 1vw);
+    opacity:0.3;
+    font-family: $helvetica-condensed;
+    font-stretch:condensed;
+    border-radius: 3px;
+    img{
+      width: calc(0.9em + 1.3vw);
+      height: calc(0.9em + 1.3vw);
+      margin-right: 0.5em;
+      vertical-align: calc(-0.25vw - 2px);
+    }
+    &.loaded{
+      opacity:1;
+    }
+  }
+
+  .single-article{
+    border: 1px solid $light-medium-gray;
+    box-shadow: $shadow;
+    padding:5px 15px;
+    margin-bottom:13px;
+    border-radius:3px;
+    position:relative;
+    background: white;
+    a{
+      color: $black;
+      &.block-link{
+        display:block;
+      }
+    }
+    h2{
+      font-weight:400;
+      margin-bottom:5px;
+      margin-top:8px;
+      font-size:36px;
+      width: 100%;
+      img{
+        height: 40px;
+        width: 40px;
+        border-radius: 80px;
+        vertical-align: -8px;
+      }
+      .dashboard-username{
+        color: $medium-gray;
+        font-size: 0.6em;
+        vertical-align:0.16em;
+      }
+    }
+    h4{
+      margin-top:0px;
+      margin-bottom:9px;
+      margin-left:2px;
+      font-weight:300;
+      font-size:16px;
+      color:rgb(67, 78, 87);
+    }
+    .dashboard-actions{
+      padding: 8px 0px;
+    }
+    .pill{
+      background:$bold-blue;
+      padding:2px 14px;
+      border-radius:3px;
+      color:white;
+      margin-right:5px;
+      font-size:13px;
+      &.yellow{
+        background:$yellow;
+        color:$black;
+      }
+      &.green{
+        background: $green;
+        color: $black;
+      }
+      &.red{
+        background:$red;
+      }
+      &.black{
+        background: $black;
+      }
+    }
+    .dashboard-pageviews-indicator{
+      background:$green;
+      display:inline-block;
+      border:1px solid darken($green,5%);
+      min-width:90px;
+      text-align:center;
+      opacity:0.4;
+      &.loaded{
+      opacity:1;
+      }
+    }
+    form{
+      padding: 10px 0px;
+      font-size: 15px;
+      font-family: $helvetica-condensed;
+      font-stretch:condensed;
+      select{
+        margin: 0px 4px;
+        vertical-align:2px;
+      }
+      input[type="submit"]{
+        border:0px;
+        font-size: 15px;
+      }
+    }
+    .single-article__details{
+      margin: 10px 0px;
+      .user{
+        color: $medium-gray;
+      }
+      .tag{
+        margin-left: 10px;
+      }
+    }
+  }
+  .no-articles{
+    text-align:center;
+    background:white;
+    padding: 2vw 3vw 6vw;
+    box-shadow: $shadow;
+    border-radius: 3px;
+    min-height: 620px;
+    h3{
+      font-size:28px;
+      font-weight:400;
+    }
+    a{
+      display:block;
+      border: 3px solid $black;
+      font-size:2.2em;
+      padding: 0.4em 0.2em;
+      border-radius:3px;
+      width: 90%;
+      max-width: 500px;
+      margin:auto;
+    }
+    img{
+      width: 90%;
+      max-width: 270px;
+    }
+  }
+}

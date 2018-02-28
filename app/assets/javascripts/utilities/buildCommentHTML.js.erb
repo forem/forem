@@ -1,0 +1,63 @@
+function buildCommentHTML(comment) {
+  var depthClass = ""
+  var githubIcon = ""
+  var twitterIcon = ""
+  if (comment.depth == 0 ){
+    depthClass = "root";
+  }
+  else if (comment.depth < 3) {
+    depthClass="child"
+  } else {
+    depthClass="child flat-node"
+  }
+  if (comment.user.twitter_username && comment.user.twitter_username.length > 0) {
+    twitterIcon = '<a href="http://twitter.com/'+comment.user.twitter_username+'"><%= image_tag("twitter-logo.svg", class:"icon-img") %></a>'
+  }
+  if (comment.user.github_username && comment.user.github_username.length > 0) {
+    githubIcon = '<a href="http://github.com/'+comment.user.github_username+'"><%= image_tag("github-logo.svg", class:"icon-img") %></a>'
+  }
+
+  return '<style>'+comment.css+'</style>\
+          <div class="comment-hash-marker" id="'+comment.id_code+'"></div>\
+          <div id="comment-node-'+comment.id+'" class="single-comment-node '+depthClass+' comment-deep-'+comment.depth+'" "\
+          data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="true">\
+          <div class="inner-comment comment-created-via-fetch">\
+            <div class="details">\
+              <a href="/'+comment.user.username+'">\
+                <img class="profile-pic" src="'+comment.user.profile_pic+'">\
+                <span class="comment-username"><span class="comment-username-inner">'+comment.user.name+'</span></span>\
+              </a>\
+                '+twitterIcon+'\
+                '+githubIcon+'\
+              <div class="comment-date">\
+                <a href="'+comment.url+'">'+comment.readable_publish_date+'</a>\
+              </div>\
+              <button class="dropbtn">\
+                <%= image_tag("chevron-down.svg", class: "dropdown-icon") %>\
+              </button>\
+              <div class="dropdown">\
+                  <div class="dropdown-content">\
+                    <a href="'+comment.url+'">\
+                      Permalink\
+                    </a>\
+                    <a href="/report-abuse">Report Abuse</a>\
+                  </div>\
+              </div>\
+            </div>\
+            <div class="body">\
+              '+comment.body_html+'\
+              <button class="reaction-button reacted" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
+                <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart outline button">\
+              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>">\
+              <span class="reactions-count" id="reactions-count-'+comment.id+'">1</span></button>\
+            </div>\
+            <div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'">\
+              <span class="current-user-actions" style="display: inline-block;">\
+                <a data-no-instant="" href="'+comment.url+'/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>\
+                <a href="'+comment.url+'/edit" class="edit-butt" rel="nofollow">EDIT</a>\
+              </span>\
+                <a href="#" class="toggle-reply-form" rel="nofollow">REPLY</a>\
+            </div>\
+          </div>\
+      </div>'
+}

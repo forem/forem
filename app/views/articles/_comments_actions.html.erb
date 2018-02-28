@@ -1,0 +1,11 @@
+<div style="color:<%=org_text_or_blue(@article.organization) %>">
+  <% if @comments_to_show_count && @article.comments_count > @comments_to_show_count %>
+    <a class="full-discussion-button"
+      href="<%= @article.path %>/comments"
+      style="background:<%=org_text_or_blue(@article.organization) %>;color:<%=org_bg_or_white(@article.organization) %>"
+    >
+      VIEW FULL DISCUSSION (<%= @article.comments_count %> COMMENTS)
+    </a>
+  <% end %>
+    <%= render "articles/conduct_and_abuse_actions", page:"articles_show" %>
+</div>

@@ -1,0 +1,46 @@
+// Mixin
+@mixin keyframes($name) {
+  @-webkit-keyframes  #{$name}  { @content; }
+  @-moz-keyframes     #{$name}  { @content; }
+  @-o-keyframes       #{$name}  { @content; }
+  @-ms-keyframes      #{$name}  { @content; }
+  @keyframes          #{$name}  { @content; }
+}
+
+@mixin transform-scale($size) {
+  -webkit-transform:  scale($size);
+  -moz-transform:     scale($size);
+  -ms-transform:      scale($size);
+  -o-transform:       scale($size);
+  transform:          scale($size);
+}
+
+@mixin animation($animation...) {
+  -webkit-animation:  $animation;
+  -moz-animation:     $animation;
+  -o-animation:       $animation;
+  -ms-animation:      $animation;
+  animation:          $animation;
+}
+
+@mixin animation-delay($delay) {
+  -webkit-animation-delay:  $delay;
+  -moz-animation-delay:     $delay;
+  -o-animation-delay:       $delay;
+  -ms-animation-delay:      $delay;
+  animation-delay:          $delay;
+}
+
+// Spinner
+@include keyframes(sb-loader) {
+  0%, 80%, 100% {
+    @include transform-scale(0)
+  }
+  40% {
+    @include transform-scale(1.0)
+  }
+}
+
+@mixin sb-ani-spinner() {
+  @include animation(sb-loader 1.4s infinite ease-in-out both);
+}

@@ -1,0 +1,47 @@
+<h1>All Tags</h1>
+<h2>
+    <% if params[:state] == "supported" %>
+        <a href="/internal/tags">View All</a>
+    <% else %>
+        <a href="/internal/tags?state=supported">View Supported only</a>
+    <% end %>
+</h2>
+<hr/><hr/>
+<% @tags.each do |tag| %>
+    <div>
+        <h2><%= tag.name %></h2>
+        <p>count: <%= tag.taggings_count %></p>
+        <br/>
+        <%= form_for [:internal, tag] do |f| %>
+            <div>
+                <%= f.label :supported %>
+                <%= f.check_box :supported %>
+            </div>
+            <div>
+                <%= f.label :pretty_name %>
+                <%= f.text_field :pretty_name %>
+            <div>
+            <div>
+                <%= f.label :short_summary %>
+                <%= f.text_field :short_summary %>
+            <div>
+            <div>
+                <%= f.label :rules_markdown %>
+                <%= f.text_area :rules_markdown %>
+            <div>
+            </div>
+                <%= f.label :bg_color_hex %>
+                <%= f.text_field :bg_color_hex %>
+            <div>
+            </div>
+                <%= f.label :text_color_hex %>
+                <%= f.text_field :text_color_hex %>
+            <div>
+            </div>
+            <div>
+                <%= f.submit %>
+            </div>    
+        <% end %>
+    </div>
+    <hr/>
+<% end %>

@@ -1,0 +1,23 @@
+<h1>Sustaining Member/Scholars</h1>
+
+<a href="/internal/members" style="padding:10px; <%= "background:#89ffba" if params[:state].blank? %>;">Members and Scholars</a> |
+<a href="/internal/members?state=by-members" style="padding:10px; <%= " background:#89ffba" if params[:state] == "by-members" %>;">Members Only</a> |
+<a href="/internal/members?state=by-scholars" style="padding:10px; <%= " background:#89ffba" if params[:state] == "by-scholars" %>;">Scholars Only</a>
+
+<% @users.each do |user| %>
+  <div class="row" style="border: 2px solid <%= user.scholar ? "blue" : "orange" %>">
+    <h2>
+      <%= user.name %> <a href="/<%= user.username %>" target="_blank">@<%= user.username %></a>
+      | <a href="/admin/users/<%= user.id %>">Go to admin page</a>
+    </h2>
+    <hr/>
+    <% if user.scholar %>
+      Scholar
+      | Workshop pass expires: <%= user.workshop_expiration ? user.workshop_expiration.strftime("%b %d, %Y") : "never" %>
+    <% else %>
+      Member
+      | $<%= user.monthly_dues / 100 %>
+    <% end %>
+  </div>
+<% end %>
+<br>

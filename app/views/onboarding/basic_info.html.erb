@@ -1,0 +1,13 @@
+<div class="onboarding-container container">
+
+  <h1>Thanks for signing up</h1>
+  <h2>A couple things to get started</h2>
+  <%= form_for @user do |f| %>
+    <%= f.email_field :email, placeholder: "Email Address" %>
+    <%= f.text_area :summary,
+      placeholder: "Short personal summary: Job, programming languages, etc.",
+      maxlength: 200 %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  <% end %>
+
+</div>

@@ -1,0 +1,114 @@
+<% if @root_comment.present? %>
+  <% title truncate(strip_tags(@root_comment.processed_html), length: 100) + " — DEV" %>
+<% else %>
+  <% title "Discussion of "+ @commentable.title + " — DEV" %>
+<% end %>
+
+<%= content_for :page_meta do %>
+  <meta name="description" content="<%=@commentable.description || "An article from the community" %>">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Discussion of <%=@commentable.title %>" />
+  <meta property="og:description" content="<%=@commentable.description || "A DEV Comment" %>" />
+  <meta property="og:site_name" content="The DEV Community" />
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
+  <meta name="twitter:title" content="<%=@commentable.title %>">
+  <meta name="twitter:description" content="<%=@commentable.description || "A DEV Comment" %>">
+  <% if @root_comment.present? %>
+    <link rel="canonical" href="https://dev.to<%=@root_comment.path%>"/>
+    <meta property="og:url" content="https://dev.to<%=@root_comment.path%>" />
+    <meta property="og:title" content="<%=truncate(strip_tags(@root_comment.processed_html), length: 50)%> — DEV" />
+    <meta name="twitter:title" content="<%=truncate(strip_tags(@root_comment.processed_html), length: 50)%> — DEV">
+  <% else %>
+    <link rel="canonical" href="https://dev.to<%=@commentable.path%>/comments"/>
+    <meta property="og:url" content="https://dev.to<%=@commentable.path%>/comments" />
+    <meta property="og:title" content="[Discussion] <%=@commentable.title %> — DEV" />
+    <meta name="twitter:title" content="[Discussion] <%=@commentable.title %> — DEV">
+  <% end %>
+  <% if @commentable.class.name == "Article" %>
+    <meta property="og:image" content="<%= cloud_social_image(@commentable) %>" />
+    <meta name="twitter:image:src" content="<%= cloud_social_image(@commentable) %>">
+  <% end %>
+<% end %>
+
+  <% if @root_comment %>
+    <div class="single-comment-header"></div>
+  <% else %>
+    <div class="article-header">
+      <a href="<%=@commentable.path%>" class="header-link">
+        <% if @commentable.main_image.present? %>
+          <div class="picture" style="background-image:url(<%=cloud_cover_url(@commentable.main_image)%>)"></div>
+        <% else %>
+          <div class="blank-comment-space"></div>
+        <% end %>
+        <h3 id="comments-header"><%= @commentable.title %></h3>
+        <h4>
+          <%= @commentable.user.name %>
+          <span class="published-at"><%= "on "+@commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
+        </h4>
+      </a>
+      <% if @commentable.processed_html.present? %>
+        <% if @commentable.processed_html.size < 350 %>
+          <div class="body">
+            <%= sanitized_article_body(@commentable.processed_html.html_safe) %>
+          </div>
+        <% else %>
+          <div class="body">
+            <%= truncate(strip_tags(@commentable.processed_html), length:150).html_safe %> <a href="<%=@commentable.path %>"><span class="read-more">[Read Full]</span></a>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+<div class="comments-container comments-dedicated-page-container"
+      id="comments-container"
+      data-commentable-id="<%= @commentable.id %>"
+      data-commentable-type="<%= @commentable.class.name %>">
+  <% if @root_comment %>
+    <div class="top-level-actions">
+      <h3>re: <%= @commentable.title %> <a href="<%=@commentable.path%>">VIEW POST</a></h3>
+      <span class="comment-action-buttons">
+        <% unless @root_comment.is_root? %>
+          <a href="<%= @root_comment.parent.path %>">VIEW PARENT COMMENT</a>
+        <% end %>
+        <a href="<%=@commentable.path%>/comments">VIEW FULL DISCUSSION</a>
+      </span>
+
+    </div>
+  <% else %>
+    <%= render "form",
+        commentable: @commentable,
+        commentable_type: "Article"
+     %>
+  <% end %>
+  <div class="comment-trees" id="comment-trees-container">
+    <% if @root_comment.present? %>
+      <div class="root-comment">
+        <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
+          <%= render("comment", comment:@root_comment, commentable:@commentable, is_view_root: true) %>
+        <% end %>
+      </div>
+    <% else %>
+      <% Comment.rooted_on(@commentable.id,@commentable_type).order("score DESC").each do |comment| %>
+        <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+          <%= render("comment", comment:comment, commentable:@commentable, is_view_root: false) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+  <center style="margin:30px 0px 22px;">
+    <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
+  </center>
+</div>
+<% if hasVid(@commentable) %>
+  <%= render 'articles/fitvids' %>
+<% end %>
+
+<script async>
+  <%= TweetTag.script.html_safe %>
+  <%= YoutubeTag.script.html_safe %>
+  <%= PodcastTag.script.html_safe %>
+  <%= GistTag.script.html_safe %>
+</script>

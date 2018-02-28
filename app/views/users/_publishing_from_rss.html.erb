@@ -1,0 +1,46 @@
+<h3>Publishing to dev.to from RSS</h3>
+<p>
+  If you already have a workflow where you publish to your own blog or to a platform like Medium, you are welcome to cross-post to dev.to. Add your RSS feed URL to make the process easier.
+</p>
+<p>
+  Posts will land in your <a href="/dashboard">dashboard</a> as drafts, and then you can publish from there (or give dev.to admins permission to do so).
+</p>
+<p>
+  Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
+</p>
+<p>
+  Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter. Contact <a href="mailto:yo@dev.to">yo@dev.to</a> if you encounter issues.
+</p>
+<p>
+  Medium RSS feeds are located at <strong>https://medium.com/feed/@YOUR_USERNAME</strong>
+</p>
+<p>
+  By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.
+</p>  
+<h3>Add your feed below:</h3>
+<%= form_for(@user) do |f| %>
+  <div class="field">
+    <%= f.label :feed_url, "RSS Feed URL" %>
+    <%= f.url_field :feed_url, placeholder: "https://www.your-site-here.com/feed/" %>
+  </div>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :feed_admin_publish_permission %>
+      <%= f.label :feed_admin_publish_permission, "Give admins permission to press publish" %>
+    <div class="field-explainer">
+      Your posts will always show up in your dashboard as drafts. You can publish from there, but if you check this box, the dev.to admins have permission to clean up formatting issues and mark a post as published.</div>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :feed_mark_canonical %>
+      <%= f.label :feed_mark_canonical, "Mark the RSS source as canonical URL by default" %>
+    <div class="field-explainer">
+      If you check this box, the post will automatically mark the feed source as the canonical URL.
+    </div>
+    </div>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>

@@ -1,0 +1,177 @@
+<% if @comment %>
+  <h2 style="font-size:25px;"><%= link_to(@comment.user.name, "https://dev.to/#{@comment.user.username}") %> replied to you on dev.to</h2>
+  <table><tr><td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
+    <% unless @comment.is_root? %>
+      <%= truncate(strip_tags(@comment.parent_or_root_article.processed_html.html_safe), length: 80) %>
+    <% end %>
+  </td></tr><tr><td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
+    <h2 style="font-size:22px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable.title %></em></h2>
+    <%= @comment.processed_html.html_safe %>
+        <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@comment.path%>'>read & reply</a> <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@comment.commentable.path%>'>read original post</a>
+  </td></tr></table>
+<% elsif @follower %>
+  <h2 style="font-size:25px;"><a href="https://dev.to/<%= @follower.username %>"><%= @follower.name %></a> just followed you!</h2>
+  <h3 style="font-weight:300">You now have <%= pluralize(@user.followers_count, 'follower')  %>.</h3>
+  <p>
+    When someone follows you on <a href="https://dev.to">dev.to</a>, your posts will be prioritized on their home page. This allows people to create a reading experience more tailored to their interests, while still getting exposure to the broader featured content.
+  </p>
+<% elsif @unread_notifications_count %>
+  <h3 style="font-weight:300">You're popular!</h3>
+  <p>
+    <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;font-size:33px;" href='https://dev.to/notifications'>Read my notifications</a>
+  </p>
+<% elsif @mentioner %>
+  <h2 style="font-size:25px;"><a href="https://dev.to/<%= @mentioner.username %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!</h2>
+  <table><tr><td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
+
+  </td></tr><tr><td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
+    <%= @mentionable.processed_html.html_safe %>
+        <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@mention.mentionable.path%>'>read & reply</a>
+  </td></tr></table>
+<% elsif @subscription_type %>
+  <img src="<%= asset_path 'sustaining-membership.svg' %>" style="height:200px; display: block; margin-left: auto; margin-right: auto;"/>
+  <% if @subscription_type == "triple_unicorn_member" %>
+    <p>
+      Whoa! You’re the best, and so generous. We tip our hats to you.
+    </p>
+    <p>
+      As a triple-unicorn, you have full access to all dev.to workshops! We’ll be releasing our workshop schedule Early February.
+    </p>
+    <p>
+      You’ll see your name at the featured position on our ‘Wall of Patrons and Scholars’ within the next few days, and you can claim your swag pack now by visiting your <a href="https://dev.to/settings/membership">settings page</a>.
+    </p>
+    <p>
+      We’ll be in touch to schedule a time for all of us to chat together, and we’ll also be putting together some additional goodies.
+    </p>
+    <p>
+      Thank you again for supporting The DEV Community. Your membership means a lot to us, and all the recipients of our scholarship fund. You went above and beyond on this one.
+    </p>
+  <% elsif @subscription_type == "level_4_member" %>
+    <p>
+    Thank you for becoming a DEV sustaining member.  Your support means the world to us.
+    </p>
+    <p>
+    As part of your membership, you’ll have early access to beta features on the site. For instance, post analytics have now been added to your <a href="https://dev.to/dashboard/">dashboard</a>.
+    </p>
+    <p>
+    On your <a href="https://dev.to/settings/membership">membership settings page</a>, you’ll find the coupon that you’ll use to request your exclusive sticker pack and t-shirt combo.
+    </p>
+    <p>
+    Your name will appear on our “Wall of Patrons and Scholars” soon, and you’ll also be receiving full access to all dev.to workshops! We’ll be releasing our first workshop schedule in early February.
+    </p>
+    <p>
+    Above all, thank you for supporting The DEV Community. Your additional contribution means so much to us, and to all the recipients of our scholarship fund. You really went above and beyond on this one.
+    </p>
+    <p>
+    With sincere gratitude...
+    </p>
+    <p>
+    ❤️
+    <br/>
+    PBJ
+    </p>
+    <p>
+      PS — feel free to reply to this email with any questions.
+    </p>
+  <% elsif @subscription_type == "level_3_member" %>
+    <p>
+    Thank you for becoming a DEV sustaining member.  Your support means the world to us.
+    </p>
+    <p>
+    As part of your membership, you’ll have early access to beta features on the site. For instance, post analytics have now been added to your <a href="https://dev.to/dashboard/">dashboard</a>.
+    </p>
+    <p>
+    On your membership <a href="https://dev.to/settings/membership">settings page</a>, you’ll find the coupon that you’ll use to request your exclusive sticker pack and t-shirt combo.
+    </p>
+    <p>
+    Your name will appear on our “Wall of Patrons and Scholars” soon, and you’ll also be receiving full access to all dev.to workshops! We’ll be releasing our first workshop schedule in early February.
+    </p>
+    <p>
+    Feel free to reply to this email with any questions :)
+    </p>
+    <p>
+    Thanks again! ❤️
+    <br/>
+    PBJ
+    </p>
+  <% elsif @subscription_type == "level_2_member" %>
+    <p>
+    Thank you for becoming a DEV sustaining member.  Your support means the world to us.
+    </p>
+    <p>
+    As part of your membership, you’ll have early access to beta features on the site. For instance, post analytics have now been added to your <a href="https://dev.to/dashboard/">dashboard</a>.
+    </p>
+    <p>
+    On your <a href="https://dev.to/settings/membership">membership settings</a> page, you’ll find the coupon that you’ll use to request your exclusive sticker pack.  Within the next few days, you’ll be appearing on our ‘Wall of Patrons and Scholars.’
+    </p>
+    <p>
+    Feel free to reply to this email with any questions :)
+    </p>
+    <p>
+    Thanks again! ❤️
+    <br/>
+    PBJ
+    </p>
+  <% elsif @subscription_type == "level_1_member" %>
+    <p>
+    Thank you for becoming a DEV sustaining member.  Your support means the world to us.
+    </p>
+    <p>
+    As part of your membership, you’ll have early access to beta features on the site. For instance, post analytics have now been added to your <a href="https://dev.to/dashboard/">dashboard</a>.
+    </p>
+    <p>
+    Within the next few days, you’ll also appear on our ‘Wall of Patrons and Scholars.’
+    </p>
+    <p>
+    Feel free to reply to this email with any questions :)
+    </p>
+    <p>
+    Thanks again! ❤️
+    <br/>
+    PBJ
+    </p>
+  <% end %>
+  <h2 style="font-size:25px;">Thank you so much for your support.</h2>
+  <p>
+    Visit <a href="https://dev.to/settings/membership">Your membership settings page</a> for all details.
+  </p>
+<% elsif @update_subscription %>
+  <img src="<%= asset_path 'sustaining-membership.svg' %>" style="height:200px; display: block; margin-left: auto; margin-right: auto;"/>
+  <p>
+  Your DEV sustaining membership monthly contribution amount has been updated.  Be sure to check your <a href="https://dev.to/settings/membership">membership settings</a> page to see the most up-to-date information.
+  </p>
+  <p>
+  Thank you so much for the support, and please email members@dev.to with any questions.
+  </p>
+<% elsif @cancel_subscription %>
+  <p>
+  Your DEV sustaining membership has been cancelled.  Thank you so much for your support to date.
+  </p>
+  <p>
+  If you have any feedback that can help us improve the membership experience, please feel free to reply to this email.
+  <p>
+  </p>
+  <p>
+  Thanks again,
+  <br/>
+  PBJ
+  </p>
+<% elsif @scholarship_awarded %>
+   <img src="https://thepracticaldev.s3.amazonaws.com/i/nn3vxwwm23p1hu67wbzt.png" style="height:220px; display: block; margin-left: auto; margin-right: auto;"/>
+   <p>Congratulations!</p>
+   <p>
+    We’ve received your DEV scholarship application and are excited to provide you with a workshop pass for
+    the year. You’ll get full access to all DEV talks and workshops by visiting <a href="https://dev.to/live">dev.to/live</a> during an event. See <a href="https://dev.to/events">our events</a> page
+    to check out the latest schedule. We appreciate your dedication to programming and hope you’ll benefit from these additional
+    resources.
+   </p>
+
+  <p>
+    Thanks again for applying and if within your means, please consider <a href="https://dev.to/membership">becoming a level 1 or 2 sustaining member.</a>
+  </p>
+  <p>
+    Best,
+    <br>
+    PBJ
+  </p>
+<% end %>

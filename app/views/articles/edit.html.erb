@@ -1,0 +1,11 @@
+<% title "Edit Article - DEV" %>
+
+  <% if params[:beta_form] %>
+    <%= render 'react_form' %>
+  <% else %>
+    <% if @article.body_html && @article.body_html.size > 10 %>
+      <%= render 'inline_form' %>
+    <% else %>
+      <%= render 'articles/markdown_form' %>
+    <% end %>
+  <% end %>

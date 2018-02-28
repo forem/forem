@@ -1,0 +1,361 @@
+<%= form_for(@article, html: {id:"article_markdown_form"}) do |f| %>
+  <% if @article.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</h2>
+
+      <ul>
+      <% @article.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <span id="error_explanation_anchor"></span>
+  <% if is_hiring_form?(@tag, @article) %>
+    <div class="job-listing-header">
+      <h5>< beta ❤️ ></h5>
+      <h1>The #Hiring Tag</h1>
+      <h3>Fill out this form to share your company's job opportunity.</h3>
+    </div>
+  <% end %>
+  <div class="container article markdown-editor" id="markdown-editor">
+    <% unless is_hiring_form?(@tag, @article) %>
+      <div class="top-buttons">
+        <button id="help-butt" class="editor-button help-butt">HELP</button>
+        <button id="markdownbutt" class="editor-button markdown-butt active">MARKDOWN</button>
+        <button id="previewbutt" class="editor-button">PREVIEW</button>
+        <button id="article-submit" class="editor-button submit">SAVE POST</button>
+      </div>
+    <% end %>
+    <div id="markdown-editor-main" class="editor-view">
+      <% if is_hiring_form?(@tag, @article) %>
+        <%= render 'articles/hiring_form', f:f %>
+      <% else %>
+        <% if current_user.organization %>
+          <div class="org-publish-check-wrapper" style="color:<%=current_user.organization.text_color_hex%>;background:<%=current_user.organization.bg_color_hex%>">
+            Publish under the <%= current_user.organization.name %> organization?
+            <%= f.check_box :publish_under_org, {checked: @article.organization_id.present?} %>
+          </div>
+        <% end %>
+        <% if @tag && @tag.submission_rules_headsup.present? %>
+          <div class="org-publish-check-wrapper">
+            <center>
+              <b><em><%= @tag.submission_rules_headsup %></em></b>
+            </center>
+          </div>
+        <% end %>
+      <% end %>
+      <div class="editor-main">
+        <div class="textarea-header">
+          <div class="editor-image-upload">
+            <input type="file" id="image-upload"  name="file" accept="image/*" style="display:none">
+            <button id="image-upload-button">Upload Image</button>
+            <label id="image-upload-file-label">(or paste URL directly into editor)</label>
+            <input type="submit" id='image-upload-submit' value="Upload" style="display:none">
+            <input id="uploaded-image" style="display:none" />
+          </div>
+        </div>
+        <%= f.text_area :body_markdown %>
+        <% if is_hiring_form?(@tag, @article) %>
+          <% if current_user.organization %>
+            <div class="hiring-form-toggle">
+              <label class="switch">
+                <%= f.check_box :publish_under_org, {checked: @article.organization_id.present?} %>
+                <span class="slider"></span>
+              </label>
+              Publish under the <%= current_user.organization.name %> organization account?
+            </div>
+          <% end %>
+          <div class="form-submit-buttons">
+            <%= f.submit 'SAVE AS DRAFT', name: "submit_button", class: "draft-version" %>
+            <%= f.submit 'PUBLISH', name: "submit_button" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<% if true %>
+  <style>
+    <%= Rails.application.assets['github.css'].to_s.html_safe %>
+  </style>
+<% end %>
+
+
+<div id="article-preview" class="editor-view editor-article-view hidden">
+  <div class="container article" style="padding-bottom: 50px;">
+    <header id="image_area">
+      <div id="image_preview" style="margin-top:-50px">
+        <div class="image" id="main_image"></div>
+      </div>
+      <div class="blank-space" style="margin-top:-50px" id="blank_space">
+      </div>
+    </header>
+    <div class="title">
+      <h1 id="article_title" >
+      </h1>
+      <h3>
+        <a href="/<%= @user.username %>">
+          <img class="profile-pic" src="<%= cloudinary(@user.profile_image_url,50)%>" alt="<%= @user.username %> profile" />
+          By <%= @user.name %>
+        </a>
+        <% if @user.twitter_username.present? %>
+          <a href="http://twitter.com/<%= @user.twitter_username %>"><%= icon("twitter","20") %></a>
+        <% end %>
+        <% if @user.github_username.present? %>
+          <a href="http://github.com/<%= @user.github_username %>"><%= icon("github","20") %></a>
+        <% end %>
+        <span class="published-at"><%= "on "+@article.published_at.strftime("%B %d, %Y") if @article.published_at %></span>
+      </h3>
+      <div class="tags">
+      </div>
+    </div>
+    <div class="body" id="article_body" name="article[body]">
+    </div>
+    <%= render 'articles/about_author' %>
+  </div>
+</div>
+
+<div id="editor-help" class="editor-view editor-article-view hidden">
+  <%= render "pages/editor_guide_text" %>
+</div>
+
+
+<%= javascript_include_tag 'lib/js-yaml', async:true %>
+<%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', async:true %>
+<script>
+  var html,parsed;
+
+  function removeExistingErrorExplanation() {
+    var existingErrors = document.getElementById('error_explanation');
+    if (existingErrors) {
+      existingErrors.parentNode.removeChild(existingErrors);
+    }
+  }
+
+  function markdown() {
+    var articleContent = document.getElementById("article_body_markdown").value;
+    var cleanedArticleContent = cleanFrontMatterVariableNames(articleContent);
+    document.getElementById("article_body_markdown").value = cleanedArticleContent;
+    loadYamlFront(cleanedArticleContent);
+  }
+
+  function cleanFrontMatterVariableNames(rawText) {
+    var cleanedText = rawText;
+    var frontMatterVariableNames = [
+      'title: ',
+      'published: ',
+      'cover_image: ',
+      'description: ',
+      'tags: ',
+      'canonical_url: '
+    ]
+    frontMatterVariableNames.forEach(function (variableName) {
+      if (cleanedText.indexOf(variableName) == -1) {
+        cleanedText = cleanedText.replace(
+          variableName.replace(/ /g, ''),
+          variableName
+        );
+      }
+    })
+    return cleanedText;
+  }
+
+  function loadYamlFront(text) {
+    try {
+      parsed = jsyaml.loadFront(text);
+    }
+    catch(e) {
+      if (text.indexOf('title: "') === -1){
+        var correctedText = addQuotesToTitle(text);
+        document.getElementById("article_body_markdown").value = correctedText;
+      }
+    }
+    // html = converter.makeHtml(parsed.__content);
+  }
+
+  function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function addQuotesToTitle(text) {
+    var correctedText = text;
+    correctedText =  correctedText.replace(/title\:\s(.*)\n/m, function (match, p1) {
+      return "title: \"" + p1 + "\"\n"
+    })
+    return correctedText;
+  }
+
+  document.getElementById("previewbutt").onclick = function(e) {
+    e.preventDefault();
+    e.target.classList.add("loading");
+    markdown();
+
+    function successCb(response) {
+      removeExistingErrorExplanation();
+      document.getElementById("article_title").innerHTML = htmlEntities(filterXSS(response.title));
+      document.getElementById("article_body").innerHTML = response.processed_html;
+      activateButton(e.target,"article-preview");
+
+      if(!parsed.cover_image || parsed.cover_image.length < 0) {
+        document.getElementById("image_preview").className = ' hidden';
+        document.getElementById("blank_space").className = "blank-space";
+      } else {
+        document.getElementById("image_preview").className = "";
+        document.getElementById("blank_space").className = "blank-space hidden";
+        document.getElementById("main_image").style["background-image"] = 'url('+parsed.cover_image+')';
+      }
+      setTimeout(function(){
+        <%= TweetTag.script.html_safe %>
+          <%= YoutubeTag.script.html_safe %>
+          <%= PodcastTag.script.html_safe %>
+          <%= GistTag.special_script.html_safe %>
+      },150)
+    }
+
+    function errorCb(response) {
+      removeExistingErrorExplanation();
+      document.getElementById("previewbutt").className = "";
+      var errors = Object.values(response);
+      var div = document.createElement('div')
+      var h2 = document.createElement('h2')
+      var ul = document.createElement('ul')
+      div.id = 'error_explanation'
+      h2.innerHTML = `${errors.length} error prohibited this article from being previewed:`
+      for (var i = 0; i < errors.length; i++ ) {
+        var newLi = document.createElement('li');
+        newLi.innerHTML = errors[i];
+        ul.appendChild(newLi);
+      }
+      div.appendChild(h2)
+      div.appendChild(ul)
+      var referenceNode = document.getElementById("error_explanation_anchor");
+      referenceNode.parentNode.insertBefore(div, referenceNode.nextSibling);
+     }
+
+    var body = JSON.stringify({
+      utf8: "✓",
+      article_body: document.getElementById("article_body_markdown").value,
+    })
+
+    getCsrfToken()
+      .then(sendFetch("article-preview", body))
+      .then(function (response) {
+        if (response.status === 200) {
+          response.json().then(successCb)
+        } else {
+          response.json().then(errorCb)
+        }
+      })
+      .catch(function (error) {
+        errorCb(["It seems like something went wrong with your browser. Please copy your work and refresh the page."]);
+      });
+  }
+
+  function activateButton(button, viewID) {
+    var butts = document.getElementsByClassName("editor-button");
+    for(var i = 0; i < butts.length; i++) {
+      butts[i].classList.remove("active");
+      butts[i].classList.remove("loading");
+    }
+    var views = document.getElementsByClassName("editor-view");
+    for(var i = 0; i < views.length; i++) {
+      views[i].classList.add("hidden");
+    }
+    button.classList.add("active");
+    document.getElementById(viewID).classList.remove("hidden");
+  }
+
+  document.getElementById("help-butt").onclick = function(e){
+    e.preventDefault();
+    activateButton(e.target,"editor-help");
+  }
+
+  document.getElementById("markdownbutt").onclick = function(e){
+    e.preventDefault();
+    activateButton(e.target,"markdown-editor-main");
+  }
+
+  document.getElementById("article_body_markdown").onkeydown = function(e){
+    var ctl = document.getElementById('article_body_markdown');
+    var ctlvalue = ctl.value;
+    if(e.keyCode == 9){
+      e.preventDefault();
+      var position = ctl.selectionStart;
+      ctl.value = [ctlvalue.slice(0, position), "    ", ctlvalue.slice(position)].join('');
+      ctl.setSelectionRange(position+4, position+4);
+    }
+  }
+
+  document.getElementById('image-upload-button').onclick = function (e) {
+    e.preventDefault();
+    document.getElementById('image-upload').click();
+  }
+
+  document.getElementById('image-upload').onchange = function (e) {
+    var image = document.getElementById('image-upload').files;
+    if (image.length > 0) {
+      document.getElementById('image-upload-file-label').style = 'color:#888888';
+      document.getElementById('image-upload-file-label').innerHTML = "Uploading...";
+      document.getElementById('uploaded-image').style = 'display:none';
+      document.getElementById('image-upload-submit').value = "uploading";
+      setTimeout(function(){
+        document.getElementById('image-upload-submit').click(function(){
+        });
+      },50)
+    }
+  }
+
+  function uploadImageCb(response) {
+    var address = document.getElementById('uploaded-image');
+    address.value = response.link;
+    address.style.display = "";
+    address.select();
+    var uploadedMessage = 'Uploaded! Paste into editor';
+    document.getElementById('image-upload-file-label').innerHTML = uploadedMessage;
+    document.getElementById('image-upload-file-label').style.color = '#00c673';
+    document.getElementById('image-upload-submit').style.display = 'none';
+  }
+
+  function generateUploadFormdata(image) {
+    var token = document.querySelector("meta[name='csrf-token']").content;
+    var formData = new FormData();
+    formData.append('authenticity_token', token);
+    formData.append('image', image[0]);
+    return formData;
+  }
+
+  document.getElementById('image-upload-submit').onclick = function (e) {
+    e.preventDefault();
+    var image = document.getElementById('image-upload').files;
+    if (image.length > 0) {
+      getCsrfToken()
+        .then(sendFetch("image-upload", generateUploadFormdata(image)))
+        .then(function (response) {
+          if (response.status === 200) {
+            return response.json().then(uploadImageCb);
+          } else {
+            document.getElementById('image-upload-file-label').innerHTML = "Invalid file!";
+            document.getElementById('image-upload-file-label').style.color = '#e05252';
+            document.getElementById('image-upload-submit').style.display = 'none';
+          }
+        })
+        .catch(function (err) {
+          // there's currently no error handling
+        })
+    }
+  }
+
+  document.getElementsByClassName("submit")[0].onclick = function (e) {
+    var butts = document.getElementsByClassName("editor-button");
+    for(var i = 0; i < butts.length; i++) {
+      butts[i].classList.add("disabled");
+      butts[i].classList.remove("loading");
+    }
+    var subButt = document.getElementById("article-submit")
+    subButt.classList.remove("disabled");
+    subButt.classList.add("loading");
+    markdown();
+  }
+</script>

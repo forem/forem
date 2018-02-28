@@ -1,0 +1,396 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="//d79i1fxsrar4t.cloudfront.net/jquery.liveaddress/3.4/jquery.liveaddress.min.js"></script>
+<script>
+  var liveaddress = jQuery.LiveAddress({
+    key: "<%= ENV['SMARTY_STREETS_WEB_KEY'] %>",
+    target: "US|International",
+    addresses: [{
+      address1: '#user_shipping_address',
+      address2: '#user_shipping_address_line_2',
+      locality: '#user_shipping_city',
+      administrative_area: '#user_shipping_state',
+      postal_code: '#user_shipping_postal_code',
+      country: '#user_shipping_country'
+      }]
+  });
+
+  liveaddress.on("OriginalInputSelected", function(event, data, previousHandler) {
+    $('#user_shipping_validated').attr('checked', false);
+    previousHandler(event, data);
+  });
+
+  liveaddress.on("AddressWasValid", function(event, data, previousHandler) {
+    $('#user_shipping_validated').attr('checked', true);
+    previousHandler(event, data);
+  });
+</script>
+
+<%= form_for(@user, url: '/giveaways/freestickers') do |f| %>
+  <% if @errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@errors.size, "issue") %> prohibited your form from being submitted:</h2>
+
+      <ul>
+      <% @errors.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <h2>Shipping Information</h2>
+  <% if @user.email.blank? %>
+    <div class="field">
+      <%= f.label :email, "Email" %><br>
+      <%= f.text_field :email %>
+    </div>
+  <% end %>
+  <div class="field">
+    <%= f.label :shipping_name, "Name (for shipping)" %><br>
+    <%= f.text_field :shipping_name %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_company, "Company (for shipping if applicable)" %><br>
+    <%= f.text_field :shipping_company %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_address, "Address" %><br>
+    <%= f.text_field :shipping_address %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_address_line_2, "Address Line 2" %><br>
+    <%= f.text_field :shipping_address_line_2 %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_city, "City" %><br>
+    <%= f.text_field :shipping_city %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_state, "State/Province" %><br>
+    <%= f.text_field :shipping_state %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_country, "Country" %><br>
+    <%= f.select :shipping_country,
+      options_for_select(
+            [["United States", "US"],
+           ["-----", ""],
+           ["Afghanistan", "AF"],
+           ["Åland Islands", "AX"],
+           ["Albania", "AL"],
+           ["Algeria", "DZ"],
+           ["American Samoa", "AS"],
+           ["Andorra", "AD"],
+           ["Angola", "AO"],
+           ["Anguilla", "AI"],
+           ["Antarctica", "AQ"],
+           ["Antigua and Barbuda", "AG"],
+           ["Argentina", "AR"],
+           ["Armenia", "AM"],
+           ["Aruba", "AW"],
+           ["Australia", "AU"],
+           ["Austria", "AT"],
+           ["Azerbaijan", "AZ"],
+           ["Bahamas", "BS"],
+           ["Bahrain", "BH"],
+           ["Bangladesh", "BD"],
+           ["Barbados", "BB"],
+           ["Belarus", "BY"],
+           ["Belgium", "BE"],
+           ["Belize", "BZ"],
+           ["Benin", "BJ"],
+           ["Bermuda", "BM"],
+           ["Bhutan", "BT"],
+           ["Bolivia", "BO"],
+           ["Bonaire", "BQ"],
+           ["Bosnia and Herzegovina", "BA"],
+           ["Botswana", "BW"],
+           ["Bouvet Island", "BV"],
+           ["Brazil", "BR"],
+           ["BIO Territory", "IO"],
+           ["Brunei Darussalam", "BN"],
+           ["Bulgaria", "BG"],
+           ["Burkina Faso", "BF"],
+           ["Burundi", "BI"],
+           ["Cambodia", "KH"],
+           ["Cameroon", "CM"],
+           ["Canada", "CA"],
+           ["Cape Verde", "CV"],
+           ["Cayman Islands", "KY"],
+           ["Central African Republic", "CF"],
+           ["Chad", "TD"],
+           ["Chile", "CL"],
+           ["China", "CN"],
+           ["Christmas Island", "CX"],
+           ["Cocos (Keeling) Islands", "CC"],
+           ["Colombia", "CO"],
+           ["Comoros", "KM"],
+           ["Congo", "CG"],
+           ["Congo", "CD"],
+           ["Cook Islands", "CK"],
+           ["Costa Rica", "CR"],
+           ["Côte d'Ivoire", "CI"],
+           ["Croatia", "HR"],
+           ["Cuba", "CU"],
+           ["Curaçao", "CW"],
+           ["Cyprus", "CY"],
+           ["Czech Republic", "CZ"],
+           ["Denmark", "DK"],
+           ["Djibouti", "DJ"],
+           ["Dominica", "DM"],
+           ["Dominican Republic", "DO"],
+           ["Ecuador", "EC"],
+           ["Egypt", "EG"],
+           ["El Salvador", "SV"],
+           ["Equatorial Guinea", "GQ"],
+           ["Eritrea", "ER"],
+           ["Estonia", "EE"],
+           ["Ethiopia", "ET"],
+           ["Falkland Islands", "FK"],
+           ["Faroe Islands", "FO"],
+           ["Fiji", "FJ"],
+           ["Finland", "FI"],
+           ["France", "FR"],
+           ["French Guiana", "GF"],
+           ["French Polynesia", "PF"],
+           ["French S Territories", "TF"],
+           ["Gabon", "GA"],
+           ["Gambia", "GM"],
+           ["Georgia", "GE"],
+           ["Germany", "DE"],
+           ["Ghana", "GH"],
+           ["Gibraltar", "GI"],
+           ["Greece", "GR"],
+           ["Greenland", "GL"],
+           ["Grenada", "GD"],
+           ["Guadeloupe", "GP"],
+           ["Guam", "GU"],
+           ["Guatemala", "GT"],
+           ["Guernsey", "GG"],
+           ["Guinea", "GN"],
+           ["Guinea-Bissau", "GW"],
+           ["Guyana", "GY"],
+           ["Haiti", "HT"],
+           ["Heard McDonald Islands", "HM"],
+           ["Holy See", "VA"],
+           ["Honduras", "HN"],
+           ["Hong Kong", "HK"],
+           ["Hungary", "HU"],
+           ["Iceland", "IS"],
+           ["India", "IN"],
+           ["Indonesia", "ID"],
+           ["Iran", "IR"],
+           ["Iraq", "IQ"],
+           ["Ireland", "IE"],
+           ["Isle of Man", "IM"],
+           ["Israel", "IL"],
+           ["Italy", "IT"],
+           ["Jamaica", "JM"],
+           ["Japan", "JP"],
+           ["Jersey", "JE"],
+           ["Jordan", "JO"],
+           ["Kazakhstan", "KZ"],
+           ["Kenya", "KE"],
+           ["Kiribati", "KI"],
+           ["Korea, People's Republic", "KP"],
+           ["Korea, Republic of", "KR"],
+           ["Kuwait", "KW"],
+           ["Kyrgyzstan", "KG"],
+           ["Lao", "LA"],
+           ["Latvia", "LV"],
+           ["Lebanon", "LB"],
+           ["Lesotho", "LS"],
+           ["Liberia", "LR"],
+           ["Libya", "LY"],
+           ["Liechtenstein", "LI"],
+           ["Lithuania", "LT"],
+           ["Luxembourg", "LU"],
+           ["Macao", "MO"],
+           ["Macedonia", "MK"],
+           ["Madagascar", "MG"],
+           ["Malawi", "MW"],
+           ["Malaysia", "MY"],
+           ["Maldives", "MV"],
+           ["Mali", "ML"],
+           ["Malta", "MT"],
+           ["Marshall Islands", "MH"],
+           ["Martinique", "MQ"],
+           ["Mauritania", "MR"],
+           ["Mauritius", "MU"],
+           ["Mayotte", "YT"],
+           ["Mexico", "MX"],
+           ["Micronesia", "FM"],
+           ["Moldova, Republic of", "MD"],
+           ["Monaco", "MC"],
+           ["Mongolia", "MN"],
+           ["Montenegro", "ME"],
+           ["Montserrat", "MS"],
+           ["Morocco", "MA"],
+           ["Mozambique", "MZ"],
+           ["Myanmar", "MM"],
+           ["Namibia", "NA"],
+           ["Nauru", "NR"],
+           ["Nepal", "NP"],
+           ["Netherlands", "NL"],
+           ["New Caledonia", "NC"],
+           ["New Zealand", "NZ"],
+           ["Nicaragua", "NI"],
+           ["Niger", "NE"],
+           ["Nigeria", "NG"],
+           ["Niue", "NU"],
+           ["Norfolk Island", "NF"],
+           ["Northern Mariana Islands", "MP"],
+           ["Norway", "NO"],
+           ["Oman", "OM"],
+           ["Pakistan", "PK"],
+           ["Palau", "PW"],
+           ["Palestinian Territory", "PS"],
+           ["Panama", "PA"],
+           ["Papua New Guinea", "PG"],
+           ["Paraguay", "PY"],
+           ["Peru", "PE"],
+           ["Philippines", "PH"],
+           ["Pitcairn", "PN"],
+           ["Poland", "PL"],
+           ["Portugal", "PT"],
+           ["Puerto Rico", "PR"],
+           ["Qatar", "QA"],
+           ["Réunion", "RE"],
+           ["Romania", "RO"],
+           ["Russian Federation", "RU"],
+           ["Rwanda", "RW"],
+           ["Saint Barthélemy", "BL"],
+           ["Saint Helena", "SH"],
+           ["Saint Kitts and Nevis", "KN"],
+           ["Saint Lucia", "LC"],
+           ["Saint Martin (French part)", "MF"],
+           ["Saint Pierre and Miquelon", "PM"],
+           ["Saint Vincent, Grenadines", "VC"],
+           ["Samoa", "WS"],
+           ["San Marino", "SM"],
+           ["Sao Tome and Principe", "ST"],
+           ["Saudi Arabia", "SA"],
+           ["Senegal", "SN"],
+           ["Serbia", "RS"],
+           ["Seychelles", "SC"],
+           ["Sierra Leone", "SL"],
+           ["Singapore", "SG"],
+           ["Sint Maarten (Dutch part)", "SX"],
+           ["Slovakia", "SK"],
+           ["Slovenia", "SI"],
+           ["Solomon Islands", "SB"],
+           ["Somalia", "SO"],
+           ["South Africa", "ZA"],
+           ["South Georgia", "GS"],
+           ["South Sudan", "SS"],
+           ["Spain", "ES"],
+           ["Sri Lanka", "LK"],
+           ["Sudan", "SD"],
+           ["Suriname", "SR"],
+           ["Svalbard and Jan Mayen", "SJ"],
+           ["Swaziland", "SZ"],
+           ["Sweden", "SE"],
+           ["Switzerland", "CH"],
+           ["Syrian Arab Republic", "SY"],
+           ["Taiwan, Province of China", "TW"],
+           ["Tajikistan", "TJ"],
+           ["Tanzania", "TZ"],
+           ["Thailand", "TH"],
+           ["Timor-Leste", "TL"],
+           ["Togo", "TG"],
+           ["Tokelau", "TK"],
+           ["Tonga", "TO"],
+           ["Trinidad and Tobago", "TT"],
+           ["Tunisia", "TN"],
+           ["Turkey", "TR"],
+           ["Turkmenistan", "TM"],
+           ["Turks and Caicos Isl", "TC"],
+           ["Tuvalu", "TV"],
+           ["Uganda", "UG"],
+           ["Ukraine", "UA"],
+           ["United Arab Emirates", "AE"],
+           ["United Kingdom", "GB"],
+           ["United States", "US"],
+           ["United States Minor", "UM"],
+           ["Uruguay", "UY"],
+           ["Uzbekistan", "UZ"],
+           ["Vanuatu", "VU"],
+           ["Venezuela", "VE"],
+           ["Viet Nam", "VN"],
+           ["Virgin Islands, British", "VG"],
+           ["Virgin Islands, U.S.", "VI"],
+           ["Wallis and Futuna", "WF"],
+           ["Western Sahara", "EH"],
+           ["Yemen", "YE"],
+           ["Zambia", "ZM"],
+           ["Zimbabwe", "ZW"]], @user.shipping_country )  %>
+  </div>
+  <div class="field">
+    <%= f.label :shipping_postal_code, "Zip Number/Postal Code" %><br>
+    <%= f.text_field :shipping_postal_code %>
+  </div>
+  <div style="display: none">
+    <%= f.label :shipping_validated, "validate" %>
+    <%= f.check_box :shipping_validated %>
+  </div>
+  <h2>T-shirt size</h2>
+  <div class="field">
+    <%= f.label :shirt_gender, "Style" %><br>
+    <%= f.select :shirt_gender,
+              options_for_select(
+                [['Unisex', 'unisex'],
+                ['Women\'s', 'womens']], @user.shirt_gender ) %>
+  </div>
+  <div class="field">
+    <%= f.label :shirt_size, "Size" %><br>
+    <%= f.select :shirt_size,
+                options_for_select(
+                  [['Small', 's'],
+                  ['Medium', 'm'],
+                  ['Large', 'l'],
+                  ['Extra Large', 'xl'],
+                  ['2XL', '2xl'],
+                  ['3XL', '3xl']], @user.shirt_size ) %>
+  </div>
+  <h2>A bit about you</h2>
+  <h3>(This is sort of our "I'm not a robot" test)</h3>
+  <div class="field">
+    <%= f.label :top_languages, "Favorite programming languages" %><br>
+    <%= f.text_field :top_languages %>
+  </div>
+  <div class="field">
+    <%= f.label :specialty, "Specialty (web development, sysadmin, etc.)" %><br>
+    <%= f.text_field :specialty %>
+  </div>
+  <div class="field">
+    <%= f.label :experience_level, "Programming Experience Level" %><br>
+    <%= f.select :experience_level,
+                options_for_select(
+                  [['0 (Complete Newbie)', '0'],
+                  ['1', '1'],
+                  ['2', '2'],
+                  ['3 (Junior Developer)', '3'],
+                  ['4', '4'],
+                  ['5', '5'],
+                  ['6', '6'],
+                  ['7 (Experienced Developer)', '7'],
+                  ['8', '8'],
+                  ['9', '9'],
+                  ['10 (Senior Developer)', '10']],
+                  @user.experience_level) %>
+  </div>
+  <div class="field">
+    <%= f.label :tabs_or_spaces, "Tabs or spaces" %><br>
+    <%= f.select :tabs_or_spaces,
+                      options_for_select(
+                        [['Tabs', 'tabs'],
+                        ['Spaces', 'spaces']],
+                      @user.tabs_or_spaces) %>
+
+  </div>
+  <div class="actions">
+    <%= f.submit "Submit" %>
+  </div>
+  <p style="font-size:0.7em;line-height:1.3em">
+    All dev.to users who submit this form will receive a "welcome package" -- there is no element of chance or skill in this promotion.  Additionally, there is no purchase necessary, and this offer is void if/where prohibited.  Please note that there is a limit of 1 per person, and all entrants will go through a spam filtration procedure.  Contact yo@dev.to with any questions, or to inquire about an alternative means of entry for this promotion.
+  </p>
+<% end %>

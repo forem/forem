@@ -1,0 +1,6 @@
+<h1>Edit broadcast:</h1>
+<%= form_for([:internal, @broadcast], method: :patch) do %>
+  <%= render "form" %>
+  <%= submit_tag "Update Broadcast" %>
+<% end %>
+<hr>

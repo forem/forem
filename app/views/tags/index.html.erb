@@ -1,0 +1,41 @@
+<% title "Tags on dev.to" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/about"/>
+  <meta name="description" content="Tags to follow on dev.to">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/about" />
+  <meta property="og:title" content="Tags to follow on dev.to" />
+  <meta property="og:image" content="http://i.imgur.com/B4JNl1w.png" />
+  <meta property="og:description" content="The Practical Dev is great!" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="About The Practical Dev">
+  <meta name="twitter:description" content="The Practical Dev is great!">
+  <meta name="twitter:image:src" content="http://i.imgur.com/B4JNl1w.png">
+<% end %>
+
+<div class="user-profile-header tag-header">
+  <div class="tag-or-query-header-container">
+    <p>&nbsp</p>
+    <h1>Top 100 Tags</h1>
+  </div>
+</div>
+
+<div class="home tag-home">
+  <div class="side-bar"></div>
+    <div class="articles-list" id="articles-list">
+      <% @tags.each do |tag| %>
+        <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
+            <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
+              <h2>#<%= tag.name %></h2>
+            </a>
+        </div>
+      <% end %>
+  </div>
+  <div class="side-bar sidebar-additional"></div>
+</div>

@@ -1,0 +1,54 @@
+  <div class="single-article single-article-small-pic">
+    <% if story.video.present? %>
+      <%= render "articles/video_player", meta_tags: false, article: story %>
+    <% end %>
+    <% if @organization_article_index %>
+      <div id="organization-index-page"></div>
+    <% end %>
+    <a href="<%=story.user.path%>" class="small-pic-link-wrapper">
+      <div class="small-pic" >
+        <% if story.cached_tag_list_array.include?("hiring") && story.organization_id.present? && !@organization_article_index %>
+          <img src="<%= ProfileImage.new(story.organization).get(90) %>" alt="<%= story.organization.username %> profile" />
+        <% else %>
+          <img src="<%= ProfileImage.new(story.user).get(90) %>" alt="<%= story.user.username %> profile" />
+        <% end %>
+      </div>
+    </a>
+    <a href="<%=story.path%>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%=cloud_cover_url(story.main_image) %>" id="article-link-<%=story.id%>">
+      <div class="content">
+        <h3>
+            <%= render "articles/tag_identifier", story: story, tag: @tag %>
+        </h3>
+      </div>
+    </a>
+    <h4>
+      <a href="<%=story.user.path%>"><%= story.user.name %></a>
+    </h4>
+    <div class="tags">
+      <% story.cached_tag_list_array.each do |tag| %>
+        <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
+      <% end %>
+    </div>
+      <% if story.comments_count > 0 %>
+        <div class="article-engagement-count comments-count">
+          <a href="<%=story.path%>">
+            <img src="<%= asset_path("chat.svg") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
+          </a>
+        </div>
+      <% end %>
+    <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
+      <a href="<%=story.path%>">
+          <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="heart" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
+          <%= story.positive_reactions_count %>
+        </span>
+      </a>
+    </div>
+    <button
+      class="article-engagement-count bookmark-engage"
+      data-reactable-id="<%= story.id %>"
+      aria-label="Add to reading list"
+      title="Add to reading list">
+      <img src="<%= asset_path("bookmark.svg") %>" alt="bookmark" class="bm-initial" />
+      <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="bookmark" class="bm-success" />
+    </button>
+  </div>

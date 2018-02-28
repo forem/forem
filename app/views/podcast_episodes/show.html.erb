@@ -1,0 +1,122 @@
+<% title @episode.title %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/<%=@podcast.slug %>/<%=@episode.slug %>"/>
+  <meta name="description" content="<%=truncate(strip_tags(@episode.body), length: 140) %>">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/<%=@podcast.slug %>/<%=@episode.slug %>" />
+  <meta property="og:title" content="<%=@episode.title %>" />
+  <meta property="og:description" content="<%=truncate(strip_tags(@episode.body), length: 140) %>" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:creator" content="@software_daily">
+  <meta name="twitter:title" content="<%=@episode.title %>">
+  <meta name="twitter:description" content="<%=truncate(strip_tags(@episode.body), length: 140) %>" />
+
+  <% if @episode.social_image.present? %>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image" content="<%= @episode.social_image_url %>">
+    <meta name="twitter:image:src" content="<%= @episode.social_image_url %>">
+  <% else %>
+    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="<%= @episode.image_url || @podcast.image_url %>">
+    <meta name="twitter:image:src" content="<%= @episode.image_url || @podcast.image_url %>">
+  <% end %>
+
+<% end %>
+
+
+<%= render "podcast_episodes/podcast_bar" %>
+
+
+<div class="podcast-episode-container">
+  <div class="hero">
+    <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
+                                                                         :type=>"fetch",
+                                                                         :quality => "auto",
+                                                                         :sign_url => true,
+                                                                         :flags => "progressive",
+                                                                         :fetch_format => "jpg") %>)">
+      <h2>
+        <a href="/<%= @podcast.slug %>">
+          <img alt="<%= @podcast.title %>" src="<%=cloudinary(@podcast.image_url,width=60,quality=80) %>" /><%= @podcast.title %>
+        </a>
+      </h2>
+      <% if @episode.title.size > 60 %>
+        <h1 class="smaller"><%= @episode.title %></h1>
+      <% else %>
+        <h1><%= @episode.title %></h1>
+      <% end %>
+    </div>
+    <div id="record-<%= @episode.slug%>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>">
+      <div class="record" id="record">
+        <%=cl_image_tag(@podcast.image_url,
+         :type=>"fetch",
+         :crop => "fill",
+         :width => 420,
+         :height => 420,
+         :quality => "auto",
+         :sign_url => true,
+         :flags => "progressive",
+         :fetch_format => "auto",
+         :class => "main-image")
+          %>
+        <img alt="Play Button" class="butt play-butt" src="<%= image_path('playbutt.png') %>"/>
+        <img alt="Pause Button" class="butt pause-butt" src="<%= image_path('pausebutt.png') %>"/>
+        <div class="status-message" id="status-message-<%= @episode.slug %>">
+          play
+        </div>
+      </div>
+    </div>
+  </div>
+        <% if !@episode.podcast.status_notice.empty? %>
+          <center>
+            <h1 style="color: #e05252;">
+              <%= @episode.podcast.status_notice %>
+            </h1>
+              <p>
+                <a href="<%= @episode.media_url %>">Click here to download/listen</a>
+              </p>
+          </center>
+      <% end %>
+  <%= render "podcast_episodes/subscribe_buttons" %>
+  <div class="container">
+    <div class="body">
+      <% if @episode.podcast.feed_url.include?("soundcloud") %>
+        <%= simple_format((@episode.processed_html || @episode.body).html_safe, sanitize: true) %>
+      <% else %>
+        <%= sanitize (@episode.processed_html || "").html_safe,
+          tags: %w(strong em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup cite center small),
+          attributes: %w(href strong em class ref rel src title alt colspan height width size rowspan span value start data-conversation data-lang id)
+        %>
+      <% end %>
+      <p style="font-size:16px;">
+        <a href="<%= @episode.website_url %>">Episode source</a>
+      </p>
+    </div>
+    <div class="comments-container-container">
+      <div
+        class="comments-container"
+        id="comments-container"
+        data-commentable-id="<%= @episode.id %>"
+        data-commentable-type="PodcastEpisode">
+        <%= render "/comments/form",
+            commentable: @episode,
+            commentable_type: "PodcastEpisode" %>
+        <div class="comment-trees" id="comment-trees-container">
+          <% Comment.rooted_on(@episode.id,"PodcastEpisode").order("score DESC").limit(12).each do |comment| %>
+            <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+              <%= render("/comments/comment",
+                    comment:comment,
+                    commentable: @episode,
+                    is_view_root: true) %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<% title "About The Practical Dev" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/p/information"/>
+  <meta name="description" content="All information about The Practical Dev">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/p/information" />
+  <meta property="og:title" content="All information about The Practical Dev" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" />
+  <meta property="og:description" content="The DEV Community is great!" />
+  <meta property="og:site_name" content="The DEV Community" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="All information about The Practical Dev">
+  <meta name="twitter:description" content="The DEV Community is great!">
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+<% end %>
+
+<style>
+  .key-links{
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  }
+  .social-links{
+    text-align: center;
+    padding: 40px 0px;
+  }
+  .social-links img {
+    width: 35px; 
+    height: 35px;
+    margin: 5px 10px;
+  }
+</style>
+
+<!-- <p id="notice"><%#= notice %></p> -->
+<header>
+  <div class="blank-space"></div>
+</header>
+<div class="container article">
+  <div class="title">
+    <h1>
+      More information about dev.to(👋)
+    </h1>
+  </div>
+  <div class="body">
+    <ul class="key-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/membership">Sustaining Membership</a></li>
+      <li><a href="https://shop.dev.to/">DEV Shop</a></li>
+      <li><a href="/sponsors">Sponsors</a></li>
+      <li><a href="/Events">Events</a></li>
+      <li><a href="/privacy">Privacy Policy</a></li>
+      <li><a href="/terms">Terms of Use</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/security">Vulnerabilities/Bug Bounty</a></li>
+      <li><a href="/code-of-conduct">Code of Conduct</a></li>
+    </ul>    
+  </div>
+  <div class="social-links">
+    <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" /></a>
+    <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" /></a>
+    <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" /></a>
+    <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" /></a>
+    <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" /></a>  
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<h3>Pin a few of your GitHub repos to your profile</h3>
+<% if @client %>
+  <div class="github-repos">
+    <% @client.repositories.each do |repo| %>
+      <% if (user_repo = GithubRepo.find_by_name(repo.name)) && user_repo.featured %>
+        <div class="github-repo-row github-repo-row-selected">
+          <div class="github-repo-row-name">
+            <%= repo.name %> <%= "<span class='github-repo-fork'>fork</span>".html_safe if repo.fork %>
+            <%= form_for(user_repo) do |f| %>
+              <button class="cta">Remove</button>
+            <% end %>
+          </div>
+        </div>
+      <% else %>
+        <div class="github-repo-row">
+            <div class="github-repo-row-name">
+              <%= repo.name %> <%= "<span class='github-repo-fork'>fork</span>".html_safe if repo.fork %>
+              <%= form_for(GithubRepo.new) do |f| %>
+                <%= f.hidden_field :github_id_code, value: repo.id %>
+                <button class="cta">Select</button>
+              <% end %>
+            </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="field">
+    <a href="/users/auth/github" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
+    </a>
+  </div>
+<% end %>

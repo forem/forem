@@ -1,0 +1,45 @@
+class ArticleDecorator < ApplicationDecorator
+  delegate_all
+
+  def current_state_path
+    published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
+  end
+
+  def processed_canonical_url
+    if canonical_url.present?
+      canonical_url.to_s.strip
+    else
+      url
+    end
+  end
+
+  def comments_to_show_count
+    cached_tag_list_array.include?("discuss") ? 75 : 25
+  end
+
+  def cached_tag_list_array
+    (cached_tag_list || "").split(", ")
+  end
+
+  def url
+    "https://dev.to#{path}"
+  end
+
+  def liquid_tags_used
+    MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  end
+
+  def title_length_classification
+    if article.title.size > 105
+      "longest"
+    elsif article.title.size > 80
+      "longer"
+    elsif article.title.size > 60
+      "long"
+    elsif article.title.size > 22
+      "medium"
+    else
+      "short"
+    end
+  end
+end

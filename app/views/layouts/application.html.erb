@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <% title = yield(:title) %>
+  <title><%= title || 'The DEV Community' %></title>
+  <% if is_internal_navigation? %>
+    <style>
+      .universal-page-content-wrapper{
+        visibility: hidden;
+      }
+    </style>
+  <% else %>
+    <meta name="last-updated" content="<%= Time.now %>">
+    <meta name="user-signed-in" content="<%= user_signed_in? %>">
+    <%= render "layouts/styles" %>
+    <style>
+      .home {
+          position: relative;
+          overflow: hidden;
+          text-align: center;
+          min-height: 440px;
+          margin: auto;
+          max-width: 1250px;
+      }
+      @media screen and (min-width: 950px){
+        .home {
+            margin-top: 22px;
+        }
+      }
+    </style>
+    <% if core_pages? %>
+      <%= javascript_include_tag 'base', defer: true %>
+      <% if user_signed_in? %>
+        <%= javascript_pack_tag 'pack', defer: true %>
+      <% end %>
+    <% end %>
+    <% if !core_pages? %>
+      <%= stylesheet_link_tag 'application', media: 'all' %>
+      <% if render_js? %>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <%= javascript_include_tag 'application' %>
+      <% end %>
+    <% end %>
+
+    <% if view_class == "users users-signout_confirm" %>
+      <%= javascript_include_tag 'application' %>
+    <% end %>
+    <%= yield(:page_meta) %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <%= favicon_link_tag %>
+    <link rel="apple-touch-icon" href="<%= asset_path "apple-icon.png" %>">
+    <link rel="apple-touch-icon" sizes="152x152" href="<%= asset_path "apple-icon-152x152.png" %>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<%= asset_path "apple-icon-180x180.png" %>">
+    <link rel="apple-touch-icon" sizes="167x167" href="<%= asset_path "apple-icon-167x167.png" %>">
+    <link href="<%= asset_path "android-icon-192x192.png" %>" rel="icon" sizes="192x192" />
+    <link href="<%= asset_path "android-icon-128x128.png" %>" rel="icon" sizes="128x128" />
+    <meta name="apple-mobile-web-app-title" content="dev.to">
+    <meta name="application-name" content="dev.to">
+    <meta property="fb:pages" content="568966383279687" />
+    <meta name="theme-color" content="#000000"/>
+    <% if view_class.include? "users-signout_confirm" %>
+      <%= csrf_meta_tags %>
+    <% end %>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The DEV Community"/>
+  <% end %>
+</head>
+<body data-user-status="<%= user_logged_in_status %>">
+  <% unless is_internal_navigation? %>
+    <div id="audiocontent">
+      <%= yield(:audio) %>
+    </div>
+  <% end %>
+  <% cache("application-top-bar--#{user_signed_in?}--#{is_internal_navigation?}", :expires_in => 100.hours) do %>
+    <%= render "layouts/top_bar" unless is_internal_navigation? %>
+  <% end %>
+  <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+    <div id="page-content-inner">
+      <%= yield %>
+    </div>
+    <% unless @query.present? %>
+      <script async>
+        document.getElementById("nav-search").value = ""
+      </script>
+    <% end %>
+  </div>
+  <% unless is_internal_navigation? %>
+    <%= render "layouts/footer" %>
+    <%= render "layouts/signup_modal" unless user_signed_in? %>
+    <div id="live-article-indicator" class="live-article-indicator"></div>
+    <%= image_tag("twitter-logo.svg", class:"icon-img", style:"display:none") %>
+    <%= image_tag("github-logo.svg", class:"icon-img", style:"display:none") %>
+  <% end %>
+</body>
+</html>

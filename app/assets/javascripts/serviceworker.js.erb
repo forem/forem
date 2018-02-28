@@ -1,0 +1,111 @@
+var CACHE_VERSION = 'v2.4.2';
+var CACHE_NAME = CACHE_VERSION + ':sw-cache::';
+var REQUESTS_LIMIT = 70;
+
+function onInstall(event) {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(function prefill(cache) {
+      return cache.addAll([
+        '<%= asset_path "base.js" %>',
+        '<%= asset_path "minimal.css" %>',
+        '/offline.html',
+        '<%= asset_path "devword.png" %>',
+        '<%= asset_path "wires.png" %>',
+      ]).then(function () {
+        console.log("WORKER: Install completed");
+      });
+    })
+  );
+}
+
+function onActivate(event) {
+  console.log('[Serviceworker]', "Activating!", event);
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.filter(function(cacheName) {
+          // Return true if you want to remove this cache,
+          return cacheName.indexOf(CACHE_NAME) !== 0;
+        }).map(function(cacheName) {
+          return caches.delete(cacheName);
+        })
+      );
+    })
+  );
+}
+
+function onFetch(event) {
+  if ( requestBlackListed(event.request) ) { return; }
+  event.respondWith(
+    caches.match(event.request).then(function (cached) {
+      if (cached && shouldReturnStraightFromCache(event.request.url)) {
+        return cached;
+      }
+      return fetch(event.request)
+        .then(fetchedFromNetwork)
+        .catch(function fallback() {
+           return cached || caches.match('/offline.html');
+         })
+      }
+    )
+  );
+
+  function requestBlackListed(request){
+    var url = new URL(request.url);
+    var test = (event.request.method !== 'GET' ||
+                event.request.url.match(/\/notifications(\?|\/)/) ||
+                url.host.indexOf("facebook") > -1 ||
+                url.host.indexOf("google") > -1 )
+    return test
+  }
+
+  function shouldReturnStraightFromCache(url) {
+    return (url === "<%= asset_path "base.js" %>" ||
+                url === "<%= asset_path "minimal.css" %>" ||
+                url.indexOf(".self-") > -1 ||
+                (url.indexOf("search?") > -1 && url.indexOf("&i=i") > -1) ||
+                url.indexOf("readinglist?i=i") > -1 ||
+                url.indexOf("res.cloudinary") > -1 ||
+                url.indexOf("freetls.fastly.net") > -1)
+  }
+
+  function fetchedFromNetwork(response) {
+    var cacheCopy = response.clone();
+    caches
+      .open(CACHE_NAME + 'pages')
+      .then(function add(cache) {
+        if ( shouldReturnStraightFromCache(event.request.url) ) {
+          cache.put(event.request, cacheCopy);
+        }
+        garbageCollect(cache);
+      })
+    return response;
+  }
+
+  function garbageCollect(cache) {
+    cache.keys().then(function count(keys) {
+      if (keys.length > REQUESTS_LIMIT) {
+        cache.delete(keys[0]);
+        cache.delete(keys[1]);
+        cache.delete(keys[2]);
+        cache.delete(keys[3]);
+        cache.delete(keys[4]);
+        cache.delete(keys[5]);
+        cache.delete(keys[6]);
+        cache.delete(keys[7]);
+        cache.delete(keys[8]);
+        cache.delete(keys[9]);
+        cache.delete(keys[10]);
+      }
+    })
+  }
+
+  function unableToResolve () {
+    console.log('WORKER: fetch request failed in both cache and network.');
+    return caches.match('/offline.html')
+  }
+};
+
+self.addEventListener('install', onInstall);
+self.addEventListener('activate', onActivate);
+self.addEventListener('fetch', onFetch);

@@ -1,0 +1,347 @@
+require "rails_helper"
+
+RSpec.describe Article, type: :model do
+  def build_and_validate_article(*args)
+    article = build(:article, *args)
+    article.validate
+    article
+  end
+
+  let(:user) { create(:user) }
+  let(:article) { create(:article, user_id: user.id) }
+
+  it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
+  it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id) }
+  it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
+  it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
+  it { is_expected.to validate_presence_of(:title) }
+  it { is_expected.to validate_length_of(:title).is_at_most(128) }
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:organization) }
+  it { is_expected.to belong_to(:collection) }
+  it { is_expected.to have_many(:comments) }
+  it { is_expected.to have_many(:reactions) }
+  it { is_expected.to have_many(:notifications) }
+  it { is_expected.to validate_presence_of(:user_id) }
+
+  context "if published" do
+    before { allow(subject).to receive(:published?).and_return(true) }
+    it { is_expected.to validate_presence_of(:slug) }
+  end
+
+  it "assigns published date if included in frontmatter" do
+    expect(create(:article, with_date: true).published_at).not_to be_nil
+  end
+
+  it "reject future dates" do
+    expect(build(:article, with_date: true, date: "01/01/2020").valid?).to be(false)
+  end
+
+  it "has proper username" do
+    expect(article.username).to eq(article.user.username)
+  end
+
+  it "persists with valid data" do
+    article.save
+    expect(article.persisted?).to eq(true)
+  end
+
+  it "does not persist with invalid data" do
+    bad_body = "hey hey hey hey hey hey"
+    expect(build(:article, body_markdown: bad_body).valid?).to eq(false)
+  end
+
+  it "does not persist with invalid publish scoped data" do
+    article = Article.create(title: "hey",
+                             body_html: "hey hey hey hey hey hey",
+                             published: true)
+    expect(article.persisted?).to eq(false)
+  end
+
+  describe "#published_at" do
+    let(:not_published_article) { build(:article, published: false) }
+
+    before do
+      not_published_article.validate
+    end
+
+    it "does not have a published_at if not published" do
+      expect(not_published_article.published_at).to be_nil
+    end
+
+    it "does have a published_at if published" do
+      article.validate
+      expect(article.published_at).not_to be_nil
+    end
+
+    it "does not have crossposted_at if not published_from_feed" do
+      expect(article.crossposted_at).to be_nil
+    end
+
+    it "does have crossposted_at if not published_from_feed" do
+      article.published_from_feed = true
+      article.save
+      expect(article.crossposted_at).not_to be_nil
+    end
+  end
+
+  describe "featured_number" do
+    it "is updated if approved when already true" do
+      article.body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
+      article.save
+      article.approved = true
+      article.save
+      sleep(1)
+      article.body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHellos"
+      article.approved = true
+      article.save!
+      expect(article.featured_number).not_to eq(article.updated_at.to_i)
+    end
+  end
+
+  describe "#slug" do
+    let(:title) { "hey This' is$ a SLUG" }
+    let(:article0) { build(:article, title: title, published: false) }
+    let(:article1) { build(:article, title: title, published: false) }
+
+    before do
+      article0.validate
+    end
+
+    context "when unpublished" do
+      it "creates proper slug with this-is-the-slug format" do
+        expect(article0.slug).to match /(.*-){4,}/
+      end
+
+      it "modifies slug on create if proposed slug already exists on the user" do
+        article1.validate
+        expect(article1.slug).not_to start_with(article0.slug)
+      end
+    end
+
+    context "when published" do
+      before { article0.update(published: true) }
+
+      it "creates proper slug with this-is-the-slug format" do
+        expect(article0.slug).to start_with("hey-this-is-a-slug")
+      end
+
+      it "does not change slug if the article was edited" do
+        article0.update(title: "New title.")
+        expect(article0.slug).to start_with("hey-this-is-a-slug")
+      end
+    end
+  end
+
+  context "when provided with body_markdown" do
+    let(:test_article) { build(:article, title: title) }
+    let(:title) { "Talk About It, Justify It" }
+    let(:slug) { "talk-about-it-justify-it" }
+
+    before { test_article.validate }
+
+    describe "#title" do
+      it "produces a proper title" do
+        expect(test_article.title).to eq(title)
+      end
+    end
+
+    describe "#slug" do
+      it "produces a proper slug similar to the title" do
+        expect(test_article.slug).to start_with(slug)
+      end
+    end
+
+    describe "#tag" do
+      it "parses tags" do
+        expect(test_article.tag_list.length).to be > 0
+      end
+
+      it "accepts an empty tag list and returns empty array" do
+        expect(build_and_validate_article(with_tags: false).tag_list).to eq([])
+      end
+
+      it "rejects if there are more than 4 tags" do
+        five_tags = "one, two, three, four, five"
+        expect(build(:article, tags: five_tags).valid?).to be(false)
+      end
+    end
+
+    describe "#canonical_url" do
+      let(:article_with_canon_url) { build(:article, with_canonical_url: true) }
+
+      before do
+        article_with_canon_url.validate
+      end
+
+      it "parses does not assign canonical_url" do
+        expect(article.canonical_url).to eq(nil)
+      end
+
+      it "parses canonical_url if canonical_url is present" do
+        expect(article_with_canon_url.canonical_url).not_to be_nil
+      end
+
+      it "parses does not remove canonical_url" do
+        initial_link = article_with_canon_url.canonical_url
+        article_with_canon_url.body_markdown = build(:article).body_markdown
+        article_with_canon_url.validate
+        expect(article_with_canon_url.canonical_url).to eq(initial_link)
+      end
+    end
+  end
+
+  it "detects no liquid tag if not used" do
+    expect(article.decorate.liquid_tags_used).to eq([])
+  end
+
+  it "returns article title length classification" do
+    article.title = "0" * 106
+    expect(article.decorate.title_length_classification).to eq("longest")
+    article.title = "0" * 81
+    expect(article.decorate.title_length_classification).to eq("longer")
+    article.title = "0" * 61
+    expect(article.decorate.title_length_classification).to eq("long")
+    article.title = "0" * 23
+    expect(article.decorate.title_length_classification).to eq("medium")
+    article.title = "0" * 20
+    expect(article.decorate.title_length_classification).to eq("short")
+  end
+
+  it "returns stripped canonical url" do
+    article.canonical_url = " http://google.com "
+    expect(article.decorate.processed_canonical_url).to eq("http://google.com")
+  end
+
+  it "gets search indexed" do
+    article = create(:article)
+    article.index!
+  end
+
+  it "detects liquid tags used" do
+    article = build_and_validate_article(with_tweet_tag: true)
+    expect(article.decorate.liquid_tags_used).to eq([TweetTag])
+  end
+
+  it "fixes the issue with --- hr tags" do
+    article = build_and_validate_article(with_hr_issue: true)
+    expect(article.processed_html.include?("<hr")).to be(true)
+  end
+
+  describe "#body_text" do
+    it "return a sanitized processed_html" do
+      article.validate
+      expect(article.body_text).to eq(
+        ActionView::Base.full_sanitizer.sanitize(article.processed_html),
+      )
+    end
+  end
+
+  it "has a valid search_score" do
+    expect(article.search_score).to be_a(Integer)
+  end
+
+  describe "#index_id" do
+    it "returns proper string" do
+      article.validate
+      expect(article.index_id).to eq("articles-#{article.id}")
+    end
+  end
+
+  describe "::filter_excluded_tags" do
+    before do
+      create(:article, tags: "hiring")
+    end
+
+    it "exlude #hiring when no argument is given" do
+      expect(described_class.filter_excluded_tags.length).to be(0)
+    end
+
+    it "filters #hiring articles when argument is 'hiring'" do
+      # this is not checking for newest article
+      expect(described_class.filter_excluded_tags("hiring").length).to be(1)
+    end
+
+    it "filters the tag it is asked to filter" do
+      create(:article, tags: "filter")
+      expect(described_class.filter_excluded_tags("filter").length).to be(1)
+    end
+  end
+
+  describe "#flare_tag" do
+    it "returns nil if there is no flare tag" do
+      expect(FlareTag.new(article).tag).to be nil
+    end
+
+    it "returns a flare tag if there is a flare tag in the list" do
+      valid_article = create(:article, tags: "ama")
+      expect(FlareTag.new(valid_article).tag.name).to eq("ama")
+    end
+  end
+
+  describe "#flare_tag_hash" do
+    let (:tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
+    let (:valid_article) { create(:article, tags: tag.name) }
+
+    it "returns nil if an article doesn't have a flare tag" do
+      expect(FlareTag.new(article).tag_hash).to be nil
+    end
+
+    it "returns a hash with the flare tag's name" do
+      expect(FlareTag.new(valid_article).tag_hash.values.include?("ama")).to be true
+    end
+
+    it "returns a hash with the flare tag's bg_color_hex" do
+      expect(FlareTag.new(valid_article).tag_hash.values.include?("#f3f3f3")).to be true
+    end
+
+    it "returns a hash with the flare tag's text_color_hex" do
+      expect(FlareTag.new(valid_article).tag_hash.values.include?("#cccccc")).to be true
+    end
+  end
+
+  describe "before save" do
+    # before do
+    #   article = create(:article, user_id: user.id)
+    # end
+    it "assigns path on save" do
+      article = create(:article, user_id: user.id)
+      expect(article.path).to eq("/#{article.username}/#{article.slug}")
+    end
+    it "assigns cached_user_name on save" do
+      article = create(:article, user_id: user.id)
+      expect(article.cached_user_name).to eq(article.cached_user_name)
+    end
+    it "assigns cached_user_username on save" do
+      article = create(:article, user_id: user.id)
+      expect(article.cached_user_username).to eq(article.user_username)
+    end
+  end
+
+  it "updates main_image_background_hex_color" do
+    article.save
+    expect(article.update_main_image_background_hex_without_delay).to eq(true)
+  end
+
+  it "detects detect_human_language" do
+    article.save
+    article.detect_human_language
+    expect(article.language).not_to be_empty
+  end
+
+  it "returns class name" do
+    expect(article.class_name).to eq("Article")
+  end
+
+  it "does not show year in readable time if not current year" do
+    time_now = Time.now
+    article.published_at = time_now
+    expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
+  end
+
+  it "shows year in readable time if not current year" do
+    article.published_at = 1.years.ago
+    last_year = 1.year.ago.year % 100
+    expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+  end
+end

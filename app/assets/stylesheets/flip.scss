@@ -1,0 +1,78 @@
+/* Flip */
+@import 'variables';
+
+.flip {
+  margin: auto;
+  width: 96%;
+  max-width:1200px;
+  padding-top:100px;
+  margin-bottom:100px;
+  min-height:500px;
+}
+body{
+}
+
+.flip h1 {
+  color:#666666;
+  font-size: 229%;
+  line-height: 44.928px;
+  margin: 30px 0;
+}
+
+.flip th.name, .flip th.description, .flip th.status {
+  visibility: hidden;
+}
+
+.flip td.name {
+  font-family: Monaco, sans-serif;
+  font-weight: bold;
+}
+
+.flip td.name, .flip td.description {
+  vertical-align: top;
+}
+
+.flip th {
+  font-weight: normal;
+  text-align: left;
+  vertical-align: top;
+}
+
+.flip th .description {
+  font-weight: normal;
+  display: block;
+  font-size: 80%;
+}
+
+.flip th, .flip td {
+  padding: 5px 10px;
+  width: 160px;
+  height: 40px;
+}
+
+.flip td.off, .flip td.on, .flip td.pass {
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.flip td.off {
+  background-color: #fbb;
+}
+
+.flip td.on {
+  background-color: #cfc;
+}
+
+.flip td.pass {
+  background-color: #eef;
+}
+
+.flip form {
+  display: inline;
+}
+
+.flip form input[type=submit] {
+  font-size: 80%;
+  padding: 2px 5px;
+  margin: 0;
+}

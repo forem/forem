@@ -1,0 +1,389 @@
+function initializeCommentsPage() {
+  if (document.getElementById('comments-container')) {
+    toggleCodeOfConduct();
+    var commentableId = document.getElementById('comments-container').dataset.commentableId;
+    var commentableType = document.getElementById('comments-container').dataset.commentableType;
+    var ajaxReq;
+    if (window.XMLHttpRequest) {
+      ajaxReq = new XMLHttpRequest();
+    } else {
+      ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
+    }
+    ajaxReq.onreadystatechange = function () {
+      if (ajaxReq.readyState === XMLHttpRequest.DONE) {
+        var responseObj = JSON.parse(ajaxReq.response);
+        var reactions = responseObj.reactions;
+        var allNodes = document.getElementsByClassName('single-comment-node');
+        var positiveReactionCounts = responseObj.positive_reaction_counts;
+        for (var i = 0; i < reactions.length; i++) {
+          var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
+          if (buttForComment) {
+            buttForComment.classList.add('reacted');
+          }
+        }
+        for (var i = 0; i < positiveReactionCounts.length; i++) {
+          var buttForComment = document.getElementById('button-for-comment-' + positiveReactionCounts[i].id);
+          if (buttForComment) {
+            if (positiveReactionCounts[i].count > 0) {
+              if (!document.getElementById('reactions-count-' + positiveReactionCounts[i].id)) {
+                buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + positiveReactionCounts[i].id + "'>" + positiveReactionCounts[i].count + '</span>';
+              } else {
+                document.getElementById('reactions-count-' + positiveReactionCounts[i].id).innerHTML = positiveReactionCounts[i].count;
+              }
+            }
+          }
+        }
+
+        for (var i = 0; i < allNodes.length; i++) {
+          if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
+            allNodes[i].dataset.currentUserComment = "true";
+            var userActionsEl = allNodes[i].children[0].children[2].children[0];
+            if (userActionsEl) {
+              userActionsEl.className = 'current-user-actions';
+              userActionsEl.style.display = 'inline-block';
+              document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
+            }
+          }
+        }
+        addRelevantButtonsToArticle(responseObj);
+      }
+    };
+    var timeString = (Date.now()).toString();
+    ajaxReq.open("GET", getReactionsPath()+"?commentable_id="+commentableId+"&commentable_type="+commentableType, true);
+    ajaxReq.send();
+
+    var butts = document.getElementsByClassName('reaction-button');
+    for (var i = 0; i < butts.length; i++) {
+      var butt = butts[i];
+      butt.onclick = function (event) {
+        event.preventDefault();
+        var thisButt = this;
+        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+        if (userStatus === 'logged-out') {
+          showModal('react-to-comment');
+          return;
+        }
+
+        thisButt.classList.add('reacted');
+
+        function successCb(response) {
+          var reactionCountSpan = thisButt.children[2];
+          if (response.result === 'create') {
+            thisButt.classList.add('reacted');
+            if (reactionCountSpan) {
+              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
+            }
+          } else {
+            thisButt.classList.remove('reacted');
+            if (reactionCountSpan) {
+              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
+            }
+          }
+        }
+        var formData = new FormData();
+        formData.append('reactable_type', 'Comment');
+        formData.append('reactable_id', thisButt.dataset.commentId);
+        getCsrfToken()
+          .then(sendFetch('reaction-creation', formData))
+          .then(function (response) {
+            if (response.status === 200) {
+              response.json().then(successCb);
+            }
+          });
+      };
+    }
+    var replyButts = document.getElementsByClassName('toggle-reply-form');
+    for (var i = 0; i < replyButts.length; i++) {
+      var butt = replyButts[i];
+      butt.onclick = function(event) {
+        event.preventDefault();
+        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+        if (userStatus == 'logged-out') {
+          showModal('reply-to-comment');
+          return;
+        }
+        var actionNode = this.parentNode;
+        var parentId = actionNode.dataset.commentId;
+        document.getElementById("button-for-comment-"+actionNode.dataset.commentId).style.zIndex = "5";
+        var waitingOnCSRF = setInterval(function () {
+          var metaTag = document.querySelector("meta[name='csrf-token']");
+          if (metaTag) {
+            clearInterval(waitingOnCSRF);
+            actionNode.innerHTML = formHTML(commentableId, commentableType, parentId);
+            setTimeout(function () {
+              actionNode.getElementsByTagName('textarea')[0].focus();
+            }, 30);
+          }
+        }, 1);
+        // document.getElementById('textarea-for-'+parentId).focus();
+        return false;
+      };
+    }
+    var editButts = document.getElementsByClassName('edit-butt');
+    for (var i = 0; i < editButts.length; i++) {
+      var butt = editButts[i];
+      butt.onclick = function () {
+        // event.preventDefault();
+        // alert("edit clicked!")
+      };
+    }
+    if (document.getElementById('new_comment')) {
+      document.getElementById('new_comment').onsubmit = handleCommentSubmit;
+    }
+  }
+}
+
+function toggleCodeOfConduct() {
+  var user = userData();
+  if (!user){
+    return;
+  }
+  var codeOfConduct = user.checked_code_of_conduct
+  var commentCount = user.number_of_comments
+  var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox')
+  if (checkboxWrapper && !codeOfConduct && commentCount < 1) {
+    checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
+                                  <label for="checked_code_of_conduct"/>I\'ve read the <a href="https://dev.to/code-of-conduct">code of conduct</a></label>'
+  }
+}
+
+function cancel(event, el) {
+  event.preventDefault();
+  replaceActionButts(el.parentNode.parentNode.parentNode.parentNode);
+  initializeCommentsPage();
+}
+
+function replaceActionButts(el) {
+  var loggedInActionButts = "";
+  var wrapper = el.getElementsByClassName("actions")[0]
+  if ( el.dataset.currentUserComment == "true"){
+    loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
+                            <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
+  }
+  wrapper.innerHTML = '<span class="current-user-actions">'+loggedInActionButts+'</span><a href="#" class="toggle-reply-form">REPLY</a>';
+}
+
+function addRelevantButtonsToArticle(responseObj) {
+  var articleContainer = document.getElementById('article-show-container');
+  if (articleContainer) {
+    if (parseInt(articleContainer.dataset.authorId) == responseObj.current_user.id) {
+      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/edit">EDIT <span class="post-word">POST</span></a>';
+    }
+  }
+}
+
+function formHTML(commentableId, commentableType, parentId) {
+  var authToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
+  var user = userData();
+  var codeOfConductHTML = ""
+  if (user && !user.codeOfConduct && user.commentCount < 1){
+    codeOfConductHTML =   '<div class="code-of-conduct sub-comment-code-of-conduct" style="display:block" id="toggle-code-of-conduct-checkbox">\
+                            <input class="checkbox" type="checkbox" name="checked_code_of_conduct" required />\
+                            <label for="checked_code_of_conduct">I\'ve read the <a href="https://dev.to/code-of-conduct">code of conduct</a></label>\
+                          </div>'
+  }
+  var randomIdNumber = Math.floor(Math.random() * 1991)
+  return '<form class="new_comment" onsubmit="handleCommentSubmit.bind(this)(event)" id="new-comment-' + parentId + '" action="/comments" accept-charset="UTF-8" method="post" data-comment-id="'+parentId+'">\
+            <input name="utf8" type="hidden" value="&#x2713;" />\
+            <input type="hidden" name="authenticity_token" value="' + authToken + '">\
+            <input value="' + commentableId + '" type="hidden" name="comment[commentable_id]" id="comment_commentable_id" />\
+            <input value="' + commentableType + '" type="hidden" name="comment[commentable_type]" id="comment_commentable_type" />\
+            <input value="' + parentId + '" type="hidden" name="comment[parent_id]" id="comment_parent_id" />\
+            <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required></textarea>\
+                '+codeOfConductHTML+'\
+            <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
+              <img class="icon-image" src="<%= asset_path('info.svg') %>" />\
+            </a>\
+            <div class="editor-image-upload">\
+              <input type="file" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
+              <button  title="Upload Image" class="image-upload-button" id="image-upload-button-' + randomIdNumber + '" onclick="handleImageUpload(event,'+ randomIdNumber + ')">\
+                <img class="icon-image" src="<%= asset_path("image-upload.svg") %>" />\
+              </button>\
+              <label  class="image-upload-file-label" id="image-upload-file-label-' + randomIdNumber + '"></label>\
+              <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
+              <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
+            </div>\
+            <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
+            <input type="submit" name="commit" value="SUBMIT" />\
+          </form>';
+}
+
+function handleCommentSubmit(event) {
+  event.preventDefault();
+  var form = event.target;
+  form.classList.add('submitting');
+  var parentComment = document.getElementById("comment-node-"+event.target.dataset.commentId);
+  getCsrfToken()
+    .then(sendFetch('comment-creation', this))
+    .then(function (response) {
+      if (response.status === 200) {
+        response.json().then(function(newComment){
+          var newNode = document.createElement('div');
+          if (newComment.status == "comment already exists") {
+            return false;
+          }
+          if (newComment.status == "errors") {
+            alert("There was a problem submitting this comment.")
+            return false;
+          }
+          newNode.innerHTML = buildCommentHTML(newComment);
+          var docBody = document.getElementsByTagName('body')[0]
+
+          var userData = JSON.parse(docBody.getAttribute('data-user'))
+          userData.checked_code_of_conduct = true;
+
+          docBody.dataset.user = JSON.stringify(userData);
+
+          var checkbox = form.getElementsByClassName('code-of-conduct')[0]
+          if (checkbox) {
+            checkbox.innerHTML = ""
+          }
+
+          var mainCommentsForm = document.getElementById("new_comment");
+          if (parentComment) {
+            replaceActionButts(parentComment);
+            if (newComment.depth > 2) {
+              parentComment.getElementsByClassName("toggle-reply-form")[0].innerHTML = ""
+            }
+            var actionsNode = parentComment.getElementsByClassName("inner-comment")[0];
+            actionsNode.parentNode.insertBefore(newNode, actionsNode.nextSibling);
+          }
+
+          else if (mainCommentsForm) {
+            var mainCommentsForm = document.getElementById("new_comment");
+            var textArea = document.getElementById("text-area");
+            mainCommentsForm.classList.remove("submitting");
+            textArea.value = "";
+            textArea.classList = "";
+            var container = document.getElementById("comment-trees-container");
+            container.insertBefore(newNode, container.firstChild);
+          }
+          else if (document.getElementById("notifications-container")) {
+            var newDiv = document.createElement("span")
+            newDiv.innerHTML = '<div class="reply-sent-notice">Reply sent — <a href="'+newComment.url+'">Check it out</a></div>'
+            form.replaceWith(newDiv);
+          }
+          else {
+            window.location.replace(newComment.url)
+          }
+          initializeCommentsPage();
+          initializeCommentDropdown();
+        })
+      }
+      return false;
+    });
+  return false;
+}
+
+function handleFocus(event) {
+  var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+  var area = event.target;
+  if (userStatus == 'logged-out') {
+    event.preventDefault();
+    showModal('reply-to-comment');
+    area.blur();
+    setTimeout(function () {
+      area.blur();
+      showModal('reply-to-comment');
+    }, 100);
+  } else {
+    handleSizeChange(event);
+  }
+}
+
+function handleBlur(event) {
+  setTimeout(function () {
+    var el = document.getElementById('text-area');
+    if (el.value.length == 0) {
+      el.className = '';
+    }
+  }, 100);
+}
+
+function handleKeyUp(event) {
+  handleSizeChange(event);
+}
+
+function handleSizeChange(event) {
+  var lines = event.target.value.split(/\r*\n/);
+  var lineCount = lines.length;
+  if (lineCount > 11) {
+    document.getElementById('text-area').className = 'embiggened-max';
+  } else if (lineCount > 6) {
+    document.getElementById('text-area').className = 'embiggened-more';
+  } else {
+    document.getElementById('text-area').className = 'embiggened';
+  }
+}
+
+function validateField(event) {
+  if (document.getElementById('text-area')) {
+    var commentField = document.getElementById('text-area').value;
+    if (commentField == '') {
+      event.preventDefault();
+    }
+  }
+}
+
+function generateUploadFormdata(image) {
+  var token = document.querySelector("meta[name='csrf-token']").content;
+  var formData = new FormData();
+  formData.append('authenticity_token', token);
+  formData.append('image', image[0]);
+  return formData;
+}
+
+function handleImageUpload(event, randomIdNumber) {
+  var commentableId = document.getElementById('comments-container').dataset.commentableId;
+  event.preventDefault();
+  document.getElementById('image-upload-'+ randomIdNumber).click();
+  document.getElementById('image-upload-'+ randomIdNumber).onchange = function (e) {
+    var image = document.getElementById('image-upload-'+ randomIdNumber).files;
+    if (image.length > 0) {
+      document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#888888';
+      document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Uploading...";
+      document.getElementById("image-upload-submit-" + randomIdNumber).value = "uploading";
+      setTimeout(function(){
+        document.getElementById("image-upload-submit-" + randomIdNumber).click(function(){});
+      },50)
+    }
+  }
+
+  document.getElementById("image-upload-submit-" + randomIdNumber).onclick = function (e) {
+    e.preventDefault();
+    var image = document.getElementById('image-upload-' + randomIdNumber).files;
+    if (image.length > 0) {
+      getCsrfToken()
+        .then(sendFetch("image-upload", generateUploadFormdata(image)))
+        .then(function (response) {
+          if (response.status === 200) {
+            response.json().then(
+              function uploadImageCb(json) {
+                var address = document.getElementById("uploaded-image-" + randomIdNumber);
+                var button = document.getElementById("image-upload-button-" + randomIdNumber);
+                var messageContainer = document.getElementById("image-upload-file-label-" + randomIdNumber)
+                // button.style.display = "none";
+                messageContainer.style.display = "none";
+                address.value = json.link;
+                address.classList.add("showing");
+                address.select();
+
+                var uploadedMessage = 'Uploaded! Paste into editor';
+                messageContainer.innerHTML = uploadedMessage;
+                messageContainer.style.color = '#00c673';
+                messageContainer.style.position = "relative"
+                messageContainer.style.top = "5px";
+              }
+            );
+          } else {
+            document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Invalid file!";
+            document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
+            document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
+          }
+        })
+        .catch(function (err) {
+          // there's currently no error handling
+        })
+    }
+  }
+}

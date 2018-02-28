@@ -1,0 +1,4 @@
+  <% if @user.has_role?(:switch_between_orgs) %>
+    <h1 style="color:#00cc44">Hey Mary 👋</h1>
+    <%= render "users/org_non_member" %>
+  <% end %>

@@ -1,0 +1,29 @@
+<% if user_signed_in? && current_user.monthly_dues == 0 %>
+  <div id="member-email-holder" data-email="<%= current_user.email %>"></div>
+  <%= form_tag "/membership-action", id: "credit-card-form", class:"enroll-form" do %>
+    <div class="user-amount-wrapper">
+      <%= number_field_tag :input_amount, 25, class: "amount-input", step: "any", min: "1", id: "amount-input" %>
+      <div class="amount-currency-indicator">$</div>
+    </div>
+    <div class="stripe-button-wrapper" id="stripe-button-wrapper">
+      <button id="custom-stripe-button" class="credit-card-button cta" type="button">ENROLL</button>
+    </div>
+  <% end %>
+<% elsif user_signed_in? %>
+  <div class="signin-container">
+    <h2>Manage your membership <a href="/settings/membership">here</a> ✌️</h2>
+  </div>
+<% else %>
+  <div class="signin-container">
+    <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />
+    <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />
+    <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />               
+    <h2>Sign in to get your membership </h2>
+    <a href="/users/auth/twitter?state=membership-cta" class="cta cta-button" data-no-instant>
+      TWITTER
+    </a>
+    <a href="/users/auth/github?state=membership-cta" class="cta cta-button" data-no-instant>
+      GITHUB
+    </a>              
+  </div>
+<% end %> 

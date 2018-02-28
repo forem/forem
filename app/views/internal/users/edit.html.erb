@@ -1,0 +1,23 @@
+<h1><a href="<%= @user.path %>"><%= @user.name %></a></h1>
+<h2>@<%= @user.username %></h2>
+<h4><%= @user.comments.size %> comments</h4>
+<h4><%= @user.articles.size %> articles</h4>
+<h4><%= @user.reactions.size %> reactions</h4>
+<h4>Joined <%= @user.created_at.to_formatted_s(:long_ordinal) %></h4>
+<% if @user.banned %>
+  <h1 style="color:red">User is banned</h1>
+  <% @user.notes.each do |note| %>
+    <b><%= note.reason %></b> | <%= note.content %>
+  <% end %>
+<% else %>
+  <div class="row">
+    <% if @user.comments.where("created_at < ?", 7.days.ago).empty? %>
+      <%= form_for([:internal, @user],confirm: "Are you absolutely sure?") do %>
+        <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
+      <% end %>
+      <em>This is extremely destructive. Do not do it lightly</em>
+    <% else %>
+      <em>You cannot take admin action from this view because this is not a newish user. For safety.</em>
+    <% end %>
+  </div>
+<% end %>

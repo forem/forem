@@ -1,0 +1,57 @@
+<% if user_signed_in? %>
+  <div class="menu logged-in" id="loggedinmenu">
+    <div id="user-profile-link-placeholder">
+      <div class="option">
+        ...
+      </div>
+    </div>
+    <a href="/dashboard">
+      <div class="option">
+        Dashboard
+      </div>
+    </a>
+    <a href="/new">
+      <div class="option">
+        Write a Post
+      </div>
+    </a>
+    <a href="/settings">
+      <div class="option">
+        Settings
+      </div>
+    </a>
+    <a href="/p/information">
+      <div class="option">
+        Key Links
+      </div>
+    </a>    
+    <a href="/signout_confirm" data-no-instant>
+      <div class="option">
+        Sign Out
+      </div>
+    </a>
+  </div>
+<% else %>
+  <div class="menu logged-out" id="loggedoutmenu">
+    <a href="/enter" data-no-instant>
+      <div class="header">
+        Sign In/Up
+      </div>
+    </a>
+    <a href="/users/auth/twitter?state=navbar_basic" data-no-instant>
+      <div class="option">
+        Via Twitter
+      </div>
+    </a>
+    <a href="/users/auth/github?state=navbar_basic" data-no-instant>
+      <div class="option">
+        Via Github
+      </div>
+    </a>
+    <a href="/p/information">
+      <div class="option">
+        All about dev.to
+      </div>
+    </a>
+  </div>
+<% end %>

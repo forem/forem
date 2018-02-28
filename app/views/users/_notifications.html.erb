@@ -1,0 +1,36 @@
+<h3>Email Notification Settings</h3>
+<%= form_for(@user) do |f| %>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :email_newsletter %>
+      <%= f.label :email_newsletter, "Send me periodic newsletter emails" %>
+    </div>
+    <% if current_user.a_sustaining_member? %>
+      <div class="sub-field">
+        <%= f.check_box :email_membership_newsletter %>
+        <%= f.label :email_membership_newsletter, "Send me membership newsletter emails" %>
+      </div>
+    <% end %>
+    <div class="sub-field">
+      <%= f.check_box :email_comment_notifications %>
+      <%= f.label :email_comment_notifications, "Send me an email when someone replies to me in a comment thread" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :email_follower_notifications %>
+      <%= f.label :email_follower_notifications, "Send me an email when someone new follows me" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :email_mention_notifications %>
+      <%= f.label :email_mention_notifications, "Send me an email when someone mentions me" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :email_unread_notifications %>
+      <%= f.label :email_unread_notifications, "Send me occasional reminders that I have unread notifications on dev.to" %>
+    </div>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>

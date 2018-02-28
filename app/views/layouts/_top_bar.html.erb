@@ -1,0 +1,29 @@
+<div class="navigation-progress" id="navigation-progress">
+</div>
+<div class="top-bar" id="top-bar">
+  <nav>
+    <a href="/" class="logo-link" id="logo-link" aria-label="DEV Home"><%= inline_svg("devplain.svg", class: "logo", size: '20% * 20%') %></a>
+      <div class="nav-search-form" id="nav-search-form">
+        <%= form_tag( '/search', :method => :get, id: "site-search-form" ) do %>
+          <%= text_field_tag :q, nil, placeholder: "search", id: "nav-search", autocomplete: :off %>
+        <% end %>
+      </div>
+      <a href="/new" id="write-link" class="cta nav-link write">WRITE A POST</a>
+      <a href="/notifications" id="notifications-link" class="nav-link notifications-icon" aria-label="Notifications">
+        <%=inline_svg("bell.svg", size: '100% * 100%')%>
+        <div class="notifications-number" id="notifications-number"></div>
+      </a>
+      <div class="navbar-menu-wrapper" id="navbar-menu-wrapper">
+        <button class="navigation-butt" id="navigation-butt" aria-label="Navigation">
+          <% if user_signed_in? %>
+            <img class="nav-profile-image" id="nav-profile-image"/>
+          <% else %>
+            <%= inline_svg("menu.svg", class: "bars", size: '20% * 20%') %>
+          <% end %>
+        </button>
+        <div class="menubg" id="menubg"></div>
+        <%= render "layouts/nav_menu" %>
+      </div>
+    </a>
+  </nav>
+</div>
