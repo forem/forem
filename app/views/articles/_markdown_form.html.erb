@@ -40,7 +40,7 @@
         <% if @tag && @tag.submission_rules_headsup.present? %>
           <div class="org-publish-check-wrapper">
             <center>
-              <b><em><%= @tag.submission_rules_headsup %></em></b>
+              <b><em><%= @tag.submission_rules_headsup.html_safe %></em></b>
             </center>
           </div>
         <% end %>
