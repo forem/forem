@@ -166,6 +166,8 @@ class Article < ApplicationRecord
       delay.remove_from_index!
       index = Algolia::Index.new("searchables_#{Rails.env}")
       index.delay.delete_object("articles-#{id}")
+      index = Algolia::Index.new("ordered_articles_#{Rails.env}")
+      index.delay.delete_object("articles-#{id}")
     end
   end
 
