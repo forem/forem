@@ -40,6 +40,7 @@ class CacheBuster
     bust(article.path + "/?i=i")
     bust(article.path + "/comments")
     bust(article.path + "?preview=" + article.password)
+    bust(article.path + "?preview=" + article.password + "?i=i")
     if article.organization.present?
       bust("/#{article.organization.slug}")
     end
