@@ -1045,6 +1045,19 @@
         color: $black;
       }
     }
+    .search-partner-mention{
+      display: none;
+      text-align:center;
+      margin-top:15px;
+      width:98%;
+      img{
+        margin-top:12px;
+        width:180px;
+      }
+      &.showing{
+        display: block;
+      }
+    }
   }
   .loading-articles{
     padding:calc(3vw + 15px) 0px 60px;

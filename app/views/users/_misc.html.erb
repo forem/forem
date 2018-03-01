@@ -50,23 +50,21 @@
   This feature is in beta and will improve over time. Another way to tailor your feed is to discover and follow members who write in your preferred language.
 </h3>
 
-<% if Flipflop.display_sponsors? %>
-  <h2>Sponsors</h2>
-  <h4 style="font-weight:400">
-    You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence unubtrusive, but feel free to use this setting if you wish.
-  </h4>
+<h2>Sponsors</h2>
+<h4 style="font-weight:400">
+  You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence unobtrusive, but feel free to use this setting if you wish.
+</h4>
 
-  <%= form_for(@user) do |f| %>
-    <div class="checkbox-field">
-      <div class="sub-field">
-        <%= f.check_box :display_sponsors %>
-        <%= f.label :display_sponsors, "Display Sponsors" %>
-      </div>
+<%= form_for(@user) do |f| %>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :display_sponsors %>
+      <%= f.label :display_sponsors, "Display Sponsors" %>
     </div>
-    <div class="field">
-      <label></label>
-      <%= f.hidden_field :tab, value: @tab %>
-      <%= f.submit "SUBMIT", class: "cta" %>
-    </div>
-  <% end %>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
 <% end %>

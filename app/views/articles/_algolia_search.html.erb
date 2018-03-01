@@ -44,6 +44,10 @@
         filterButts[i].classList.add("selected");
       }
       filterButts[i].onclick = function(e){
+        if (e.target.classList.contains("my-posts-query-button") && !checkUserLoggedIn()) {
+          showModal("search-my-posts");
+          return;
+        }
         var filters = e.target.dataset.filter;
         window.history.replaceState(null, null, "/search?q="+query+"&filters="+filters);
         var className = e.target.className;
@@ -64,7 +68,7 @@
   }
 
   function search(query, index, filters) {
-    index.search(query, {
+    var searchObj = {
           hitsPerPage: 60,
           page: "0",
           queryType: "prefixNone",
@@ -82,8 +86,14 @@
         attributesToHighlight: [],
         exactOnSingleWordQuery: "none",
         attributesToSnippet: ['body_text:19','comments_blob:8'],
-        filters: filters
-      })
+      }
+    if (filters === "MY_POSTS" && userData()) {
+      searchObj["tagFilters"] = [['user_'+userData()['id']]]
+    } else {
+      searchObj["filters"] = filters
+    }
+    console.log(searchObj)
+    index.search("*", searchObj)
       .then(function searchDone(content) {
         var resultDivs = []
         content.hits.forEach(function(story, i){

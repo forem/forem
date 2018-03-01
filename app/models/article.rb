@@ -90,7 +90,11 @@ class Article < ApplicationRecord
         FlareTag.new(self).tag_hash
       end
       tags do
-        tag_list
+        [tag_list,
+        "user_#{user_id}",
+        "username_#{user&.username}",
+        "lang_#{language || 'en'}",
+        ("organization_#{organization_id}" if organization)].flatten.compact
       end
       searchableAttributes ["unordered(title)",
                             "body_text",
