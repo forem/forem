@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
   # before_action :require_http_auth if ENV["APP_NAME"] == "dev_stage"
 
   before_action :ensure_signup_complete
-  before_action :skip_devise_tracking
 
   #before_action :customize_params
 
@@ -94,11 +93,7 @@ class ApplicationController < ActionController::Base
     logger.info "**CSRF CHECK** Any valid token? #{any_authenticity_token_valid?}"
     logger.info "Skipped unverified request", planned_unverified_request: logger_data
   end
-
-  def skip_devise_tracking
-    request.env["devise.skip_trackable"] = true
-  end
-
+  
   def set_no_cache_header
     response.headers["Cache-Control"] = "no-cache, no-store"
     response.headers["Pragma"] = "no-cache"

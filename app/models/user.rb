@@ -24,7 +24,7 @@ class User < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
 
-  devise :omniauthable, :trackable, :rememberable,
+  devise :omniauthable, :rememberable,
         :registerable, :database_authenticatable, :confirmable
   validates :email,
             uniqueness: { allow_blank: true, case_sensitive: false },
