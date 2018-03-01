@@ -8,9 +8,9 @@ RSpec.describe "Editor", type: :request do
         expect(response).not_to render_template(:markdown_form)
       end
 
-      it "asks the stray-user to 'Join the club'" do
+      it "asks the stray-user to 'Sign In or Create Your Account'" do
         get "/new"
-        expect(response.body).to include("Join the club")
+        expect(response.body).to include("Sign In or Create Your Account")
       end
     end
   end

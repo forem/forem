@@ -431,8 +431,7 @@
   text-align:center;
   h1{
     font-size:45px;
-    font-weight:300;
-    font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
+    font-weight:800;
   }
   h2{
     font-weight:300;
@@ -449,7 +448,6 @@
     font-size:30px;
   }
   p{
-    font-family: Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
     font-size:20px;
     line-height:25px;
   }
@@ -462,12 +460,16 @@
     .sign-up-link{
       padding:14px 0px;
       margin:2%;
-      border:4px solid rgb(130, 113, 195);
+      border:3px solid $purple;
+      background: $purple;
+      font-family: $helvetica-condensed;
       display:inline-block;
       text-align:center;
       width:250px;
+      border-radius: 100px;
+      color: $bold-blue;
       img{
-        vertical-align:-4px;
+        vertical-align:-3px;
       }
     }
   }
