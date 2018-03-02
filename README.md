@@ -72,7 +72,7 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 4. `bin/setup`
 6. Set up your environment variables/secrets
     - Create a `config/application.yml` file to store development secrets. This is a personal file that is ignored in git.
-    - Copy `config/sample_application.yml` in order to create a valid `application.yml`
+    - Copy [`config/sample_application.yml`](config/sample_application.yml) in order to create a valid `application.yml`
     - If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged.
     - You can start the app in development with basic placeholder keys, but you will need to provide your own valid keys for a lot of app behavior (such as logging in via oauth).
 
