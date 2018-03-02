@@ -25,9 +25,9 @@
     <% end %>
     <b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b> <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a>
     <% article.tag_list.each do |tag| %>
-			<a href='/t/#{t}'>#<%= tag %></a>
+			<a href='/t/<%= tag %>'>#<%= tag %></a>
     <% end %>
-    <a href="<%= article.user&.path %>">@<%= article.user&.username %></a> ❤️ <%= article.positive_reactions_count %> | 💬 <%= article.comments_count %>
+    <a href="<%= article.user&.path %>">@<%= article.user&.username %></a> ❤️ <%= article.positive_reactions_count %> | 💬 <%= article.comments_count %> | ID: <%= article.id %>
     <br/><br/>
     <div class="inner-row">
 			<form action="/internal/articles/<%= article.id %>" accept-charset="UTF-8" method="post">
