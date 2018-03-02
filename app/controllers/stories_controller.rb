@@ -165,7 +165,7 @@ class StoriesController < ApplicationController
       return
     end
     comment_count = params[:view] == "comments" ? 250 : 8
-    @comments = @user.comments.
+    @comments = @user.comments.where(deleted: false).
       order("created_at DESC").includes(:commentable).limit(comment_count)
     @stories = ArticleDecorator.decorate_collection(@user.
       articles.where(published: true).
