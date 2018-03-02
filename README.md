@@ -70,9 +70,8 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 2. `bundle install`
 3. `bin/yarn`
 4. `bin/setup`
-6. Set up your environment variables/secrets with the either of the following two methods:
-    - A. create a `config/application.yml` file and paste secret keys in it.
-    - B. Use [Torus](http://torus.sh/) to wrap around the whole app. Refer to the [wiki](https://github.com/thepracticaldev/dev.to_private/wiki/Torus) if you are interested. *Please bear in mind that usage of Torus is experimental*.
+6. Set up your environment variables/secrets
+    - Take a look at `sample_application.yml` to help you create your own  `application.yml` in `config/`.
     - If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged.
 
 #### Starting the application
@@ -135,20 +134,13 @@ The following technologies are used for testing:
   - **Rspec**
   - **Capybara** with **selenium-webdriver**
     - **chromedriver-helper** for standard JS testing.
-    - **Capybara-webkit** for headless JS testing.(not in use)
   - **`rack_session_access`**
   - **Warden**
   - **guard-rspec** for automated testing
 
-#### Installing Capybara-webkit
-**This is currently commented out in the Gemfile, but if you want to experiment with it** Follow the instruction of installing Qt [here](https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit) then `bundle install` normally.
-
 #### When should I use `login_via_session_as(:user)` vs `login_as(:user)`?
 - `login_as(:user)` uses Warden's stubbing actions to make the application think that a user is signed in but without all of the overhead of actually signing them in. Recommended for view test.
 - `login_via_session_as(:user)` uses `rack_session_access` to modify application's session. It is integrated with Devise so current_user won't be nil. Recommended for feature test.
-
-## Environment Variables
-You need to keep your personal `config/application.yml` up-to-date in order to properly set up your environment variables. We have some "shared" environment variables, but you may need "personal" environment variables for one reason or another (such as a private Algolia instance, possibly). It is important to keep people up-to-date on changes to this protocol, as it is not checked into git. It is also important to use secure ways of passing these keys around. We currently use LastPass to store this.
 
 ## Previewing emails in development
 You can modify the test in `/test/mailers/previews`

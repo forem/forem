@@ -70,7 +70,6 @@ gem "rolify", "~> 5.2"
 gem "rouge", "~> 3.1"
 gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4", group: :doc
-gem "selenium-webdriver", "~> 3.9"
 gem "serviceworker-rails", "~> 0.5"
 gem "share_meow_client", "~> 0.1"
 gem "skylight", "~> 1.5"
@@ -127,6 +126,7 @@ group :test do
   gem "rack_session_access", "~> 0.1"
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
+  gem "selenium-webdriver", "~> 3.9"
   gem "shoulda-matchers", "~> 3.1", require: false
   gem "simplecov", "~> 0.15", require: false
   gem "sinatra", "~> 2.0"
