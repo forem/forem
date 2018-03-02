@@ -71,8 +71,10 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 3. `bin/yarn`
 4. `bin/setup`
 6. Set up your environment variables/secrets
-    - Take a look at `sample_application.yml` to help you create your own  `application.yml` in `config/`.
+    - Create a `config/application.yml` file to store development secrets. This is a personal file that is ignored in git.
+    - Copy `config/sample_application.yml` in order to create a valid `application.yml`
     - If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged.
+    - You can start the app in development with basic placeholder keys, but you will need to provide your own valid keys for a lot of app behavior (such as logging in via oauth).
 
 #### Starting the application
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
