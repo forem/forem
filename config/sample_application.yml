@@ -1,0 +1,122 @@
+# This is a sample application.yml
+#
+# If you wish to use this, please copy this file and rename it  to application.yml
+# For questions or concerns, please submit an issue!
+
+################################################
+############## Basic configuration #############
+################################################
+
+# App damain + Protocol setting for development
+APP_DOMAIN: "localhost:3000"
+APP_PROTOCOL: "http://"
+
+# Default staff account's id
+DEVTO_USER_ID: "1"
+
+# Service timeout length
+SERVICE_TIMEOUT: "100000"
+
+# Production related config that can be ignored
+DEPLOYMENT_SIGNATURE: "PLACEHOLDER"
+
+################################################
+############## 3rd Party Services ##############
+################################################
+
+# It's best if you have the following configured
+# for more development experience
+
+# Github for github related access
+GITHUB_KEY: "REPLACE ME"
+GITHUB_SECRET: "REPLACE ME"
+GITHUB_TOKEN: "REPLACE ME"
+
+# Twitter for normal twitter access
+TWITTER_ACCESS_TOKEN: "REPLACE ME"
+TWITTER_ACCESS_TOKEN_SECRET: "REPLACE ME"
+TWITTER_KEY: "REPLACE ME"
+TWITTER_SECRET: "REPLACE ME"
+
+################################################
+######### Optional 3rd Party Services ##########
+################################################
+
+# They are very optional
+
+# Airbrake for error tracking
+AIRBRAKE_API_KEY: "REPLACE ME"
+AIRBRAKE_PROJECT_ID: "REPLACE ME"
+
+# Algolish for search
+ALGOLIASEARCH_API_KEY: "REPLACE ME"
+ALGOLIASEARCH_APPLICATION_ID: "REPLACE ME"
+ALGOLIASEARCH_SEARCH_ONLY_KEY: "REPLACE ME"
+
+# AWS for images storages
+AWS_DEFAULT_REGION: "REPLACE ME"
+AWS_SDK_KEY: "REPLACE ME"
+AWS_SDK_SECRET: "REPLACE ME"
+
+# Buffer for ????
+BUFFER_ACCESS_TOKEN: "REPLACE ME"
+BUFFER_FACEBOOK_ID: "REPLACE ME"
+BUFFER_LINKEDIN_ID: "REPLACE ME"
+BUFFER_PROFILE_ID: "REPLACE ME"
+BUFFER_TWITTER_ID: "REPLACE ME"
+
+# Cloudinary for image resizing and cache??
+CLOUDINARY_API_KEY: "REPLACE ME"
+CLOUDINARY_API_SECRET: "REPLACE ME"
+CLOUDINARY_CLOUD_NAME: "REPLACE ME"
+CLOUDINARY_SECURE: "REPLACE ME"
+
+# Dacast for streaming
+DACAST_STREAM_CODE: "REPLACE ME"
+
+# Google analytic
+GA_SERVICE_ACCOUNT_JSON: "REPLACE ME"
+GA_TRACKING_ID: "REPLACE ME"
+GA_VIEW_ID: "REPLACE ME"
+
+# JW player for videos on the site
+JWPLAYER_API_KEY: "REPLACE ME"
+JWPLAYER_API_SECRET: "REPLACE ME"
+
+# Keen for ????
+KEEN_API_URL: "REPLACE ME"
+KEEN_PROJECT_ID: "REPLACE ME"
+KEEN_READ_KEY: "REPLACE ME"
+KEEN_WRITE_KEY: "REPLACE ME"
+
+# Mailchimp for mails duh
+MAILCHIMP_API_KEY: "REPLACE ME"
+MAILCHIMP_NEWSLETTER_ID: "REPLACE ME"
+MAILCHIMP_SUSTAINING_MEMBERS_ID: "REPLACE ME"
+
+# Google recaptcha?
+RECAPTCHA_SECRET: "REPLACE ME"
+RECAPTCHA_SITE: "REPLACE ME"
+
+# Sendbird For live stream chat
+SENDBIRD_APP_ID: "REPLACE ME"
+SENDBIRD_LIVECHAT_URL: "REPLACE ME"
+
+# Sharemeow is a text-shot service
+# more information here https://github.com/producthunt/ShareMeow
+SHARE_MEOW_BASE_URL: "REPLACE ME"
+SHARE_MEOW_SECRET_KEY: "REPLACE ME"
+
+# Slack for customer alerts
+SLACK_CHANNEL: "REPLACE ME"
+SLACK_WEBHOOK_URL: "REPLACE ME"
+
+# Stream for notifications
+STREAM_RAILS_KEY: "REPLACE ME"
+STREAM_RAILS_SECRET: "REPLACE ME"
+STREAM_URL: "REPLACE ME"
+
+# Stripe for payment system
+STRIPE_PUBLISHABLE_KEY: "REPLACE ME"
+STRIPE_SECRET_KEY: "REPLACE ME"
+

@@ -20,11 +20,11 @@
   <a href="https://app.codeship.com/projects/229274">
     <img src="https://app.codeship.com/projects/6c96c1d0-3db5-0135-649e-1a9b211ca261/status?branch=master" alt="Codeship Status for thepracticaldev/dev.to_private"/>
   </a>
-  <a href="https://codeclimate.com/repos/59725eaf1b8ee602a600022c/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/0d30b78a07e7eec482f7/maintainability" />
+  <a href="https://codeclimate.com/repos/5a9720ab6f8db3029200792a/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/607170a91196c15668e5/maintainability" />
   </a>
-  <a href="https://codeclimate.com/repos/59725eaf1b8ee602a600022c/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/0d30b78a07e7eec482f7/test_coverage" />
+  <a href="https://codeclimate.com/repos/5a9720ab6f8db3029200792a/test_coverage">
+    <img src="https://api.codeclimate.com/v1/badges/607170a91196c15668e5/test_coverage" />
   </a>
 </p>
 
