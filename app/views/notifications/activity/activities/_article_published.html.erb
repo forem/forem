@@ -33,7 +33,7 @@
       </button>
       <button class="reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(activity['object'], current_user, "readinglist") ? "reacted" : "" %>" data-reactable-id="<%=activity['object'].id%>" data-category="readinglist" data-reactable-type="Article">
         <span class="reaction-button-text">SAVE</span>
-        <img class="reacted-emoji reaction-button-reacted-emoji" src="<%= asset_path("readinglist-button.svg") %>"/>
+        <img class="reacted-emoji reaction-button-reacted-emoji" src="<%= asset_path("readinglist-button.png") %>"/>
       </button>
     </div>
   <% end %>
