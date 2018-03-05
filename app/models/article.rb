@@ -363,7 +363,7 @@ class Article < ApplicationRecord
   end
 
   def set_last_comment_at
-    self.last_comment_at = Time.now if published && last_comment_at.blank?
+    self.last_comment_at = Time.now if published && last_comment_at < 30.days.ago
   end
 
   def title_to_slug
