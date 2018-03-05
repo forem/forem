@@ -171,6 +171,7 @@ class Comment < ApplicationRecord
   end
 
   def remove_from_feed
+    super
     if ancestors.empty? && user != commentable.user
       [User.find(commentable.user.id)&.touch(:last_notification_activity)]
     elsif ancestors

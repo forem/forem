@@ -55,6 +55,7 @@ class Reaction < ApplicationRecord
   end
 
   def remove_from_feed
+    super
     User.find(reactable.user.id)&.touch(:last_notification_activity)
   end
 
