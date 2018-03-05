@@ -16,7 +16,7 @@
       <div class="navbar-menu-wrapper" id="navbar-menu-wrapper">
         <button class="navigation-butt" id="navigation-butt" aria-label="Navigation">
           <% if user_signed_in? %>
-            <img class="nav-profile-image" id="nav-profile-image"/>
+            <div class="nav-profile-image-wrapper"><img class="nav-profile-image" id="nav-profile-image"/>
           <% else %>
             <%= inline_svg("menu.svg", class: "bars", size: '20% * 20%') %>
           <% end %>

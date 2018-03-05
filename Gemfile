@@ -40,6 +40,7 @@ gem "fog", "~> 1.41"
 gem "front_matter_parser", "~> 0.1"
 gem "gibbon", "~> 2.2"
 gem "google-api-client", "~> 0.19"
+gem "html_truncator", "~>0.2"
 gem "httparty", "~> 0.16"
 gem "inline_svg", "~> 0.12"
 gem "jbuilder", "~> 2.7"
@@ -87,6 +88,7 @@ gem "uglifier", "~> 3.2"
 gem "validate_url", "~> 1.0"
 gem "webpacker", "~> 3.2"
 
+
 group :development do
   gem "brakeman", "~> 3.7", require: false
   gem "bullet", "~> 5.7"
@@ -106,7 +108,6 @@ group :development, :test do
   gem "faker", "~> 1.8"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.21"
-  gem "rack-mini-profiler", "~> 0.10"
   gem "rspec-rails", "~> 3.7"
   gem "rspec-retry", "~> 0.5"
   gem "rubocop", "~> 0.52", require: false

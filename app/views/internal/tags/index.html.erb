@@ -1,15 +1,24 @@
-<h1>All Tags</h1>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"></script>
+<style>
+  textarea{
+    height: 140px;
+  }
+</style>
+
+<h1>Tags</h1>
 <h2>
-    <% if params[:state] == "supported" %>
-        <a href="/internal/tags">View All</a>
-    <% else %>
-        <a href="/internal/tags?state=supported">View Supported only</a>
-    <% end %>
+    
+        <a href="/internal/tags"
+            style="<%= 'background: yellow' if params[:state].blank? %>">All</a> |
+        <a href="/internal/tags?state=supported"
+            style="<%= 'background: yellow' if params[:state] == "supported" %>">Supported</a> |
+        <a href="/internal/tags?state=unsupported"
+            style="<%= 'background: yellow' if params[:state] == "unsupported" %>">Unsupported</a> |
 </h2>
 <hr/><hr/>
 <% @tags.each do |tag| %>
     <div>
-        <h2><%= tag.name %></h2>
+        <h1><a href="/t/<%= tag.name %>" style="background:<%= tag.bg_color_hex %>;color:<%= tag.text_color_hex %>;">#<%= tag.name %></a></h1>
         <p>count: <%= tag.taggings_count %></p>
         <br/>
         <%= form_for [:internal, tag] do |f| %>
@@ -27,15 +36,21 @@
             <div>
             <div>
                 <%= f.label :rules_markdown %>
+                <br/>
                 <%= f.text_area :rules_markdown %>
+            <div>
+            <div>
+                <%= f.label :wiki_body_markdown %>
+                <br/>
+                <%= f.text_area :wiki_body_markdown %>
             <div>
             </div>
                 <%= f.label :bg_color_hex %>
-                <%= f.text_field :bg_color_hex %>
+                <%= f.text_field :bg_color_hex, class: "jscolor {hash:true}", required: true %>
             <div>
             </div>
                 <%= f.label :text_color_hex %>
-                <%= f.text_field :text_color_hex %>
+                <%= f.text_field :text_color_hex, class: "jscolor {hash:true}", required: true %>
             <div>
             </div>
             <div>

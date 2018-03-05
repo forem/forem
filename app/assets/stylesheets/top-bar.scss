@@ -129,12 +129,21 @@
         -webkit-appearance: none;
       }
     }
-    .nav-profile-image{
+    .nav-profile-image-wrapper{
       height: 33px;
       width: 33px;
       background: $dark-gray;
-      border-radius: 3px;
       margin-top:-5px;
+      border-radius: 100%;
+      border: 0;
+      overflow: hidden;
+      img{
+        height: 35px;
+        width: 35px;
+        border-radius: 100%;
+        margin-top:-1px;
+        margin-left:-1px;
+      }
     }
     .bars{
       height:22px;

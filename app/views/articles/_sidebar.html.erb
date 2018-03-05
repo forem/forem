@@ -207,7 +207,23 @@
           <header>
             &lt;SUBMISSION GUIDELINES&gt;
           </header>
-          <%= @tag_model.rules_html.html_safe %>
+          <div class="widget-body">
+            <%= @tag_model.rules_html.html_safe %>
+          </div>
+          <p><center><a class="cta cta-button" href="/new/<%= @tag %>"
+            style="background:<%= @tag_model.bg_color_hex %>;color:<%= @tag_model.text_color_hex %>;">
+            WRITE A POST
+          </a></center></p>
+        </div>
+      <% end %>
+      <% if @tag_model && @tag_model.wiki_body_html.present? %>
+        <div class="widget">
+          <header>
+            &lt;ABOUT <%= @tag.upcase %>&gt;
+          </header>
+          <div class="widget-body">
+            <%= @tag_model.wiki_body_html.html_safe %>
+          </div>
         </div>
       <% end %>
     <% elsif @podcast_index && @podcasts %>

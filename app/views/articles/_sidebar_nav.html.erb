@@ -17,7 +17,7 @@
     <div class="widget sidebar-nav-block">
       <div class="sidebar-nav-element sidebar-nav-readinglist">
         <a class="sidebar-nav-link" href="/readinglist">
-          <img src="<%=asset_path("emoji/emoji-one-bookmark.png")%>" /> MY READING LIST
+          <img src="<%=asset_path("readinglist-button.svg")%>" /> MY READING LIST
           <span id="reading-list-count"></span>
         </a>
       </div>
@@ -25,7 +25,11 @@
   <% end %>
   <div class="widget sidebar-nav-block sidebar-tag-block">
     <div class="sidebar-nav-header sidebar-nav-header-middle">
-        &lt;<%= user_signed_in? ? "MY" : "DEV" %> TAGS&gt;
+        <% if user_signed_in? %>
+          &lt;MY TAGS&gt;
+        <% else %>
+          &lt;DESIGN YOUR EXPERIENCE&gt;
+        <% end %>
     </div>
     <div class="sidebar-nav-block-inner">
     <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
@@ -33,17 +37,17 @@
         <% if user_signed_in? %>
           <div class="sidebar-nav-subheader tag-separator" id="tag-separator">Other Popular Tags</div>
         <% end %>
-        <% Tag.where(supported:true).order("hotness_score DESC").limit(20).each do |tag| %>
-          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag.name %>">
-            <a class="sidebar-nav-link" href="/t/<%= tag.name %>">
-              <span class="sidebar-nav-tag-text" style="color:<%= tag.text_color_hex %>;background:<%= tag.bg_color_hex %>;" >
-                #<%= tag.name %>
+        <% Tag.where(supported:true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
+          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+            <a class="sidebar-nav-link" href="/t/<%= tag_array.second %>">
+              <span class="sidebar-nav-tag-text" >
+                #<%= tag_array.second %>
               </span>
             </a>
             <a class="follow-action-button sidebar-nav-link-follow cta"
-              href="#" id="sidebar-nav-link-follow-<%= tag.name %>"
-              data-info='{"id":<%= tag.id%>,"className":"Tag", "style":"small"}'>
-                +
+              href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+              data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+                + FOLLOW
             </a>
           </div>
         <% end %>

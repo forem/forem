@@ -37,7 +37,9 @@
 
 <% if @featured_articles && @featured_articles.any? %>
   <h1>Manually Featured Articles</h1>
-  <%= render "individual_article", articles: @featured_articles %>
+  <% @featured_articles.each do |article| %>
+    <%= render "individual_article", article: article %>
+  <% end %>
 <% end %>
 
 
@@ -46,7 +48,9 @@
   <%= paginate @articles %>
 </div>
 
-<%= render "individual_article", articles: @articles %>
+<% @articles.each do |article| %>
+  <%= render "individual_article", article: article %>
+<% end %>
 
 <div class="row" style="font-size:1.5em;border:0px">
   <%= paginate @articles %>

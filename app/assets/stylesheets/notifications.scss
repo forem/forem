@@ -150,7 +150,6 @@
             background: transparent;
             border:0px;
             margin-top:5px;
-            font-size:22px;
             margin-left:-5px;
             margin-right:3px;
             height:30px;
@@ -161,9 +160,33 @@
             .reacted-emoji{
               display:none;
             }
+            &.readinglist-button{
+              background: darken($purple, 26%);
+              color: white;
+              font-family: $helvetica-condensed;
+              height: auto;
+              width: auto;
+              padding: 3px 7px;
+              display: inline-block;
+              vertical-align: 5px;
+              font-size: 17px;
+              border-radius: 3px;
+              float:right;
+              img{
+                opacity:1;
+              }
+              &.reacted{
+                vertical-align:0px;
+                padding: 3px 7px 1px;
+              }
+            }
             &.reacted {
+              background: transparent;
               .reacted-emoji{
                 display:inline;
+              }
+              .reaction-button-text{
+                display: none;
               }
               img{
                 display:none;

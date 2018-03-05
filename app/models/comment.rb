@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   has_ancestry
+  include AlgoliaSearch
   belongs_to :commentable, polymorphic: true
   counter_culture :commentable
   belongs_to :user
@@ -19,7 +20,7 @@ class Comment < ApplicationRecord
   after_create   :after_create_checks
   after_save     :calculate_score
   after_save     :bust_cache
-  before_destroy :bust_cache
+  before_destroy :before_destroy_actions
   after_create   :send_email_notification
   after_create   :create_first_reaction
   after_create   :send_to_moderator
@@ -29,6 +30,84 @@ class Comment < ApplicationRecord
 
   include StreamRails::Activity
   as_activity
+
+  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+    add_index "ordered_comments",
+                  id: :index_id,
+                  per_environment: true,
+                  enqueue: :trigger_delayed_index do
+      attributes :id, :user_id, :commentable_id, :commentable_type, :id_code_generated, :path,
+        :id_code, :readable_publish_date, :parent_id, :positive_reactions_count
+      attribute :body_html do
+        HTML_Truncator.truncate(processed_html,
+          500, :ellipsis => '<a class="comment-read-more" href="'+path+'">... Read Entire Comment</a>')
+      end
+      attribute :url do
+        path
+      end
+      attribute :css do
+        custom_css
+      end
+      attribute :tag_list do
+        commentable.tag_list
+      end
+      attribute :root_path do
+        root&.path
+      end
+      attribute :parent_path do
+        parent&.path
+      end
+      attribute :heart_ids do
+        reactions.where(category:"like").pluck(:user_id)
+      end
+      attribute :user do
+        { username: user.username,
+          name: user.name,
+          id: user.id,
+          profile_pic: ProfileImage.new(user).get(90),
+          profile_image_90: ProfileImage.new(user).get(90),
+          github_username: user.github_username,
+          twitter_username: user.twitter_username
+        }
+      end
+      attribute :commentable do
+        { path: commentable&.path,
+          title: commentable&.title,
+          tag_list: commentable&.tag_list,
+          id: commentable&.id
+        }
+      end
+      tags do
+        [commentable.tag_list,
+          "user_#{user_id}",
+          "commentable_#{commentable_type}_#{commentable_id}"].flatten.compact
+      end
+      ranking ["desc(created_at)"]
+    end
+  end
+
+  def self.trigger_delayed_index(record, remove)
+    if remove
+      record.delay.remove_from_index! if (record && record.persisted?)
+    else
+      if record.deleted == false
+        record.delay.index!
+      else
+        record.remove_algolia_index
+      end
+    end
+  end
+
+  def remove_algolia_index
+    remove_from_index!
+    index = Algolia::Index.new("ordered_comments_#{Rails.env}")
+    index.delete_object("comments-#{id}")
+  end
+
+  def index_id
+    "comments-#{id}"
+  end
+
 
   def self.rooted_on(commentable_id, commentable_type)
     includes(:user, :commentable).
@@ -214,6 +293,12 @@ class Comment < ApplicationRecord
   end
   handle_asynchronously :create_first_reaction
 
+  def before_destroy_actions
+    bust_cache
+    remove_algolia_index
+    reactions.destroy_all
+  end
+
   def bust_cache
     expire_root_fragment
     CacheBuster.new.bust("#{commentable.path}") if commentable
@@ -224,6 +309,7 @@ class Comment < ApplicationRecord
   def async_bust
     expire_root_fragment
     commentable.touch
+    commentable.touch(:last_comment_at)
     CacheBuster.new.bust_comment(self)
     commentable.index!
   end

@@ -77,6 +77,7 @@ class CommentsController < ApplicationController
                       body_html: @comment.processed_html,
                       id: @comment.id,
                       id_code: @comment.id_code_generated,
+                      newly_created: true,
                       user: {
                         id: current_user.id,
                         username: current_user.username,

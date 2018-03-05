@@ -102,14 +102,14 @@ function initializeCommentsPage() {
           showModal('reply-to-comment');
           return;
         }
-        var actionNode = this.parentNode;
+        var actionNode = event.target.parentNode;
         var parentId = actionNode.dataset.commentId;
         document.getElementById("button-for-comment-"+actionNode.dataset.commentId).style.zIndex = "5";
         var waitingOnCSRF = setInterval(function () {
           var metaTag = document.querySelector("meta[name='csrf-token']");
           if (metaTag) {
             clearInterval(waitingOnCSRF);
-            actionNode.innerHTML = formHTML(commentableId, commentableType, parentId);
+            actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
             setTimeout(function () {
               actionNode.getElementsByTagName('textarea')[0].focus();
             }, 30);
@@ -147,12 +147,6 @@ function toggleCodeOfConduct() {
   }
 }
 
-function cancel(event, el) {
-  event.preventDefault();
-  replaceActionButts(el.parentNode.parentNode.parentNode.parentNode);
-  initializeCommentsPage();
-}
-
 function replaceActionButts(el) {
   var loggedInActionButts = "";
   var wrapper = el.getElementsByClassName("actions")[0]
@@ -170,42 +164,6 @@ function addRelevantButtonsToArticle(responseObj) {
       document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/edit">EDIT <span class="post-word">POST</span></a>';
     }
   }
-}
-
-function formHTML(commentableId, commentableType, parentId) {
-  var authToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
-  var user = userData();
-  var codeOfConductHTML = ""
-  if (user && !user.codeOfConduct && user.commentCount < 1){
-    codeOfConductHTML =   '<div class="code-of-conduct sub-comment-code-of-conduct" style="display:block" id="toggle-code-of-conduct-checkbox">\
-                            <input class="checkbox" type="checkbox" name="checked_code_of_conduct" required />\
-                            <label for="checked_code_of_conduct">I\'ve read the <a href="https://dev.to/code-of-conduct">code of conduct</a></label>\
-                          </div>'
-  }
-  var randomIdNumber = Math.floor(Math.random() * 1991)
-  return '<form class="new_comment" onsubmit="handleCommentSubmit.bind(this)(event)" id="new-comment-' + parentId + '" action="/comments" accept-charset="UTF-8" method="post" data-comment-id="'+parentId+'">\
-            <input name="utf8" type="hidden" value="&#x2713;" />\
-            <input type="hidden" name="authenticity_token" value="' + authToken + '">\
-            <input value="' + commentableId + '" type="hidden" name="comment[commentable_id]" id="comment_commentable_id" />\
-            <input value="' + commentableType + '" type="hidden" name="comment[commentable_type]" id="comment_commentable_type" />\
-            <input value="' + parentId + '" type="hidden" name="comment[parent_id]" id="comment_parent_id" />\
-            <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required></textarea>\
-                '+codeOfConductHTML+'\
-            <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
-              <img class="icon-image" src="<%= asset_path('info.svg') %>" />\
-            </a>\
-            <div class="editor-image-upload">\
-              <input type="file" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
-              <button  title="Upload Image" class="image-upload-button" id="image-upload-button-' + randomIdNumber + '" onclick="handleImageUpload(event,'+ randomIdNumber + ')">\
-                <img class="icon-image" src="<%= asset_path("image-upload.svg") %>" />\
-              </button>\
-              <label  class="image-upload-file-label" id="image-upload-file-label-' + randomIdNumber + '"></label>\
-              <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
-              <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
-            </div>\
-            <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
-            <input type="submit" name="commit" value="SUBMIT" />\
-          </form>';
 }
 
 function handleCommentSubmit(event) {

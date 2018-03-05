@@ -143,6 +143,15 @@ class Article < ApplicationRecord
     end
   end
 
+  def self.active_discuss_threads(tag)
+    where(published:true).
+      where("published_at > ?", 7.days.ago).
+      tagged_with(["discuss", tag]).
+      order("last_comment_at DESC").
+      limit(8).
+      pluck(:path, :title, :comments_count, :created_at)
+  end
+
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
   end
@@ -350,6 +359,10 @@ class Article < ApplicationRecord
 
   def set_crossposted_at
     self.crossposted_at = Time.now if published && crossposted_at.blank? && published_from_feed
+  end
+
+  def set_last_comment_at
+    self.last_comment_at = Time.now if published && last_comment_at.blank?
   end
 
   def title_to_slug

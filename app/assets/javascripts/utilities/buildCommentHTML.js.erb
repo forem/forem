@@ -2,10 +2,12 @@ function buildCommentHTML(comment) {
   var depthClass = ""
   var githubIcon = ""
   var twitterIcon = ""
-  if (comment.depth == 0 ){
+  var customClass = ""
+  if (!comment.newly_created) {
+    depthClass="child flat-node"
+  } else if (comment.depth == 0 ){
     depthClass = "root";
-  }
-  else if (comment.depth < 3) {
+  } else if (comment.depth < 3) {
     depthClass="child"
   } else {
     depthClass="child flat-node"
@@ -16,12 +18,15 @@ function buildCommentHTML(comment) {
   if (comment.user.github_username && comment.user.github_username.length > 0) {
     githubIcon = '<a href="http://github.com/'+comment.user.github_username+'"><%= image_tag("github-logo.svg", class:"icon-img") %></a>'
   }
+  if (comment.newly_created) {
+    customClass = "comment-created-via-fetch"
+  }
 
   return '<style>'+comment.css+'</style>\
           <div class="comment-hash-marker" id="'+comment.id_code+'"></div>\
           <div id="comment-node-'+comment.id+'" class="single-comment-node '+depthClass+' comment-deep-'+comment.depth+'" "\
-          data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="true">\
-          <div class="inner-comment comment-created-via-fetch">\
+          data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="'+comment.newly_created+'">\
+          <div class="inner-comment '+customClass+'">\
             <div class="details">\
               <a href="/'+comment.user.username+'">\
                 <img class="profile-pic" src="'+comment.user.profile_pic+'">\
@@ -46,18 +51,44 @@ function buildCommentHTML(comment) {
             </div>\
             <div class="body">\
               '+comment.body_html+'\
-              <button class="reaction-button reacted" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
-                <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart outline button">\
-              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>">\
-              <span class="reactions-count" id="reactions-count-'+comment.id+'">1</span></button>\
+              '+reactions(comment)+'\
             </div>\
-            <div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'">\
-              <span class="current-user-actions" style="display: inline-block;">\
+            '+actions(comment)+'\
+          </div>\
+      </div>'
+}
+
+function actions(comment) {
+  if (comment.newly_created) {
+    return '<div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'">\
+              <span class="current-user-actions" style="display: '+ (comment.newly_created ? 'inline-block' : 'none') +';">\
                 <a data-no-instant="" href="'+comment.url+'/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>\
                 <a href="'+comment.url+'/edit" class="edit-butt" rel="nofollow">EDIT</a>\
               </span>\
                 <a href="#" class="toggle-reply-form" rel="nofollow">REPLY</a>\
-            </div>\
-          </div>\
-      </div>'
+            </div>';
+  } else {
+    return '<div class="actions" data-comment-id="'+comment.id+'" data-path="'+comment.url+'" data-commentable-id="'+comment.commentable.id+'">\
+                <a href="'+comment.url+'" class="toggle-reply-form" rel="nofollow">VIEW/REPLY</a>\
+            </div>';
+  }
+}
+
+function reactions(comment) {
+  if (comment.newly_created) {
+    return '<button class="reaction-button reacted" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
+              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
+              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>">\
+              <span class="reactions-count" id="reactions-count-'+comment.id+'">1</span></button>';
+  } else {
+    if (comment.heart_ids.indexOf(userData().id) > -1) {
+      var reactedClass = "reacted";
+    } else {
+      var reactedClass = ""
+    }
+    return '<button style="background:white" class="reaction-button '+ reactedClass +'" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
+              <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
+              <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>">\
+              <span class="reactions-count" id="reactions-count-'+comment.id+'">'+comment.positive_reactions_count+'</span></button>';
+  }
 }

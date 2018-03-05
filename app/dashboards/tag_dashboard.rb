@@ -73,7 +73,6 @@ class TagDashboard < Administrate::BaseDashboard
     :supported,
     :alias_for,
     :wiki_body_markdown,
-    :wiki_body_html,
     :rules_markdown,
     :short_summary,
     :requires_approval,

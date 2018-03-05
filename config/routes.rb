@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   namespace :internal do
     resources :comments
-    resources :articles, except: [:show]
+    resources :articles
     resources :tags
     resources :welcome, only: [:index, :create]
     resources :broadcasts
@@ -207,6 +207,7 @@ Rails.application.routes.draw do
   get "/:username/comment/:id_code/edit" => 'comments#edit'
   get "/:username/comment/:id_code/delete_confirm" => 'comments#delete_confirm'
 
+  get "/:username/:slug/:view" => 'stories#show', constraints: { view: /moderate/}
   get "/:username/:slug/edit" => 'articles#edit'
   get "/:username/:slug/delete_confirm" => 'articles#delete_confirm'
   get "/:username/:view" => 'stories#index', constraints: { view: /comments|moderate|admin/}
