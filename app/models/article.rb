@@ -347,6 +347,7 @@ class Article < ApplicationRecord
     set_published_date
     set_featured_number
     set_crossposted_at
+    set_last_comment_at
   end
 
   def set_published_date
