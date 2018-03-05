@@ -24,7 +24,7 @@ function buildArticleHTML(article) {
     }
     var commentsCountHTML = ""
     if ((article.comments_count || '0') > 0 && article.class_name != "User") {
-      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'"><img src="<%= asset_path("chat.svg") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
+      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'"><img src="<%= asset_path("comments-bubble.svg") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
     }
     var flareTag = ""
     if (container){
@@ -42,7 +42,7 @@ function buildArticleHTML(article) {
     var rc = article.positive_reactions_count || article.reactions_count
     var reactionsCountHTML = ''
     if ((rc || '0') > 0 && article.class_name != "User") {
-      var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
+      var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("reactions-stack.svg") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
     }
     if ( article.organization && article.tag_list.indexOf("hiring") > -1 && !document.getElementById("organization-index-page") ){
       var picUrl = article.organization.profile_image_90
@@ -96,8 +96,8 @@ function buildArticleHTML(article) {
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+'\
        <button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
-      <img src="<%= asset_path("bookmark.svg") %>" alt="bookmark" class="bm-initial" />\
-      <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="bookmark" class="bm-success" />\
+       <span class="bm-success"><img src="<%= asset_path("readinglist-button.svg") %>" alt="bookmark" /> SAVED</span>\
+       <span class="bm-initial">SAVE</span>\
     </button></div>';
   }
 }

@@ -180,7 +180,7 @@
         float:left;
         width:calc(100% - 75px);
         padding:calc(1vw + 7px) 9px;
-        padding-bottom:94px;
+        padding-bottom:110px;
         h3{
           margin:0px;
           font-size:21px;
@@ -206,7 +206,7 @@
         @media screen and ( min-width: 430px ){
           width:calc(100% - 88px);
           padding-right:0px;
-          padding-bottom:104px;
+          padding-bottom:124px;
           h3{
             margin:0px;
             font-size:27px;
@@ -236,12 +236,12 @@
         display:inline-block;
         left:62px;
         position:absolute;
-        bottom:65px;
+        bottom:80px;
         a{
           color: #666666;
         }
         @media screen and ( min-width: 430px ){
-          bottom:74px;
+          bottom:90px;
           left:72px;
           font-size:17px;
         }
@@ -262,7 +262,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        bottom:48px;
+        bottom:63px;
         color: $black;
         a{
           display:inline-block;
@@ -275,7 +275,7 @@
         }
         @media screen and ( min-width: 430px ){
           left:72px;
-          bottom:58px;
+          bottom:72px;
           font-size:16px;
         }
 
@@ -334,7 +334,7 @@
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
           border-bottom:1px solid darken($lightest-gray,4%);
-          padding-bottom:90px;
+          padding-bottom:105px;
           border-radius:3px;
           h3{
             font-size:calc(1.7vw + 22px);
@@ -352,7 +352,7 @@
             display:inline-block;
           }
           @media screen and ( min-width: 430px ){
-            padding-bottom:106px;
+            padding-bottom:120px;
           }
         }
         &:hover{
@@ -364,12 +364,12 @@
     }
     .featured-profile-button{
       float:left;
-      margin-top:-88px;
+      margin-top:-104px;
       z-index:10;
       left:12px;
       position:absolute;
       @media screen and ( min-width: 430px ){
-        margin-top:-108px;
+        margin-top:-124px;
       }
     }
     img.featured-profile-pic{
@@ -386,7 +386,7 @@
     }
     .featured-user-name{
       font-weight:bold;
-      margin-top:-87px;
+      margin-top:-101px;
       position:absolute;
       z-index:10;
       left:62px;
@@ -401,12 +401,12 @@
       @media screen and ( min-width: 430px ){
         left:72px;
         font-size:18px;
-        margin-top:-106px;
+        margin-top:-120px;
       }
     }
     .featured-tags{
       font-size:15px;
-      margin-top:-66px !important;
+      margin-top:-78px !important;
       bottom:auto !important;
       position:absolute;
       max-width:76%;
@@ -426,63 +426,78 @@
         font-size:16px !important;
         left:72px;
         bottom:auto;
-        margin-top:-82px !important;
+        margin-top:-94px !important;
       }
     }
     .article-engagement-count{
       font-size:13px;
       font-weight:bold;
       position:absolute;
-      bottom:10px;
+      bottom:12px;
       font-weight:400;
       padding:3px 6px;
       background: transparent;
       border:0;
       -webkit-appearance:none;
+      font-family: $helvetica-condensed;
+      color: $medium-gray;
+      a{
+        &:hover{
+          opacity:1;
+        }
+        color: $medium-gray;
+      }
       img{
-        width:16px;
+        height:18px;
         border:0px;
         vertical-align:-4px;
         margin-right:7px;
       }
       &.comments-count {
-      left:73px;
+        left:93px;
       }
       &.reactions-count {
-        left:10px;
-        img{
-          margin-bottom:1px;
-          opacity:0.8;
-        }
+        left:20px;
       }
       &.bookmark-engage {
-        right: 7px;
+        right: 12px;
         border: 2px solid transparent;
         border-radius: 3px;
         text-align:center;
-        bottom:8px;
-        img{
-          width:28px;
-          margin-right: auto;
-          &.bm-success{
-            display:none;
-          }
+        bottom:12px;
+        // border: 2px solid darken($purple, 30%);
+        background: darken($purple, 26%);
+        color: white;
+        letter-spacing: 1px;
+        &:hover{
+          background: darken($purple, 30%);
         }
+        img{
+          height:18px;
+          margin-right: 0px;
+          vertical-align:-3px;
+        }
+        .bm-success{
+          display:none;
+        }       
         &.selected{
-          img.bm-initial{
+          color: darken($purple, 33%);
+          background: transparent;
+          padding-right: 0px;
+          .bm-initial{
             display:none;
           }
-          img.bm-success{
+          .bm-success{
             display:block;
           }
         }
       }
       &.featured-engagement-count{
-        margin-top:-35px;
+        margin-top:-38px;
         bottom: auto;
         z-index:10;
         &.bookmark-engage {
-          margin-top:-46px;
+          margin-top:-39px;
         }
       }
       .engagement-count-number{
@@ -493,7 +508,8 @@
       @media screen and ( min-width: 430px ){
         font-size:15px;
         img{
-          width:18px;
+          height:20px;
+          min-width:26px;
           vertical-align:-5px;
         }
         &.featured-engagement{
@@ -628,13 +644,16 @@
         }
         .sidebar-profile-pic{
           display:inline-block;
-          width:66px;
-          height:66px;
+          width:50px;
+          height:50px;
           vertical-align:top;
           overflow:hidden;
           background: $tan;
+          border-radius: 100%;
+          margin: 8px 5px 8px 12px;
           img{
             width:100%;
+            border-radius: 100%;
           }
         }
         .sidebar-profile-content{
@@ -666,7 +685,7 @@
         }
         .sidebar-nav-header{
           padding:15px 10px;
-          font-size: 1.1em;
+          font-size: 1.3em;
           font-family: $helvetica-condensed;
           font-stretch:condensed;
           font-weight: 800;
@@ -682,6 +701,7 @@
           padding:10px;
           font-weight:500;
           font-size:0.9em;
+          background: darken($light-gray, 4%);
           a{
             color:$black;
           }
@@ -695,31 +715,39 @@
         .sidebar-nav-element{
           color:$black;
           display:block;
-          font-family: "Lucida Console", Monaco, monospace, sans-serif;
+          // font-family: "Lucida Console", Monaco, monospace, sans-serif;
           position:relative;
           &.sidebar-nav-readinglist{
-            background: $purple;
             font-family: $helvetica-condensed;
             font-stretch:condensed;
-            &:hover{
-              background:darken($purple, 3%);
-            }
+            font-size:1.1em;
           }
           &:hover{
             background:$light-gray;
+          }
+          @media screen and ( min-width: 950px ){
+            .sidebar-nav-link-follow{
+              display: none;
+            }
+            &:hover{
+              .sidebar-nav-link-follow{
+                display: block;
+              }
+            }
           }
           img {
             width: 30px;
             height: 30px;
             border: 0px;
-            vertical-align: -7px;
+            vertical-align: -8px;
             margin-right: 4px;
           }
           a.sidebar-nav-link{
             color:$black;
-            padding:10px;
+            padding:5px;
             display:inline-block;
-            width:100%;
+            width:calc(100% - 10px);
+            font-weight: 500;
             .sidebar-nav-tag-text{
               border-radius: 3px;
               padding: 3px 8px;
@@ -728,15 +756,13 @@
           a.sidebar-nav-link-follow{
             position:absolute;
             color:$black;
-            right:9px;
-            top:5px;
-            width:31px;
-            height:31px;
+            right:5px;
+            top:2px;
             text-align:center;
-            border-radius:100px;
+            border-radius:3px;
             font-weight:900;
-            line-height:28px;
-            font-size:1.3em;
+            font-size:0.8em;
+            padding: 2px 8px;
           }
         }
       }
@@ -761,6 +787,9 @@
       &.sponsorship-widget{
         display: none;
         text-align:center;
+        header{
+          font-size:1.1em;
+        }
       }
       &.showing{
         display: block;
@@ -808,12 +837,15 @@
           }
         }
       }
+      hr{
+        opacity:0.2;
+      }
       header{
         width:100%;
         margin:auto;
         padding-bottom:5px;
         font-weight:800;
-        font-size: 1.1em;
+        font-size: 1.3em;
         padding-bottom:10px;
         font-family: $helvetica-condensed;
         font-stretch:condensed;
@@ -832,8 +864,8 @@
       .widget-body{
         margin-top:9px;
         &.body-scrollable{
-          height: calc(100vh - 500px);
-          max-height: 385px;
+          height: calc(100vh - 300px);
+          max-height: 500px;
           overflow-y: scroll;
         }
         &.signup-cta-widget-body{
@@ -877,7 +909,7 @@
         }
         .sponsor-footer{
           font-size:0.77em;
-          margin-top:110px;
+          margin-top:106px;
           margin:auto;
           margin-bottom:18px;
           width:96%;
@@ -931,14 +963,22 @@
         border: 0px;
         display:block;
         padding: 6px 8px;
-        width: calc(100% - 16px);
+        width: 100%;
         text-align:left;
         border-radius: 0px;
         &:hover{
-          background: lighten($purple, 7%);
+          background: lighten($yellow, 15%);
         }
         &.selected{
-          background: $purple;
+          background: lighten($yellow, 2%);
+        }
+        &.query-type-filter-button{
+          &:hover{
+            background: $light-green;
+          }
+          &.selected{
+            background: darken($light-green,10%);
+          }
         }
       }
       p{
@@ -1018,16 +1058,18 @@
         // background:red;
       }
       .discuss-list-comment-count{
-        background:$bold-blue;
-        color:white;
-        font-size:0.7em;
-        padding:2px 6px;
-        vertical-align:1px;
-        border-radius:5px;
-        opacity:0.95;
+        font-size: 0.7em;
+        color: $medium-gray;
+        margin-top: 2px;
+        img {
+          width: 20px;
+          vertical-align: -3px;
+          border: 0px;
+        }
         &.discuss-list-comment-count-brand-new {
           background:$yellow;
           color:$black;
+          font-size:1.1em;
         }
       }
       &::before {

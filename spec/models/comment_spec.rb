@@ -149,6 +149,10 @@ RSpec.describe Comment, type: :model do
     expect(child_comment.parent_or_root_article).to eq(comment)
   end
 
+  it "properly indexes" do
+    comment.index!
+  end
+
   describe "#parent_user" do
     it "returns the root article's user if no parent comment" do
       expect(comment.parent_user).to eq(user)
@@ -169,6 +173,7 @@ RSpec.describe Comment, type: :model do
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
   end
+  
 
   describe "#custom_css" do
     it "returns nothing when no ltag was used" do

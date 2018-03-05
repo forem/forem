@@ -19,7 +19,7 @@ function initializeUserSidebar(user) {
       renderedTagsCount++
       tagHTML = tagHTML + '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">\
                             <a class="sidebar-nav-link" href="/t/'+t.name+'">\
-                            <span class="sidebar-nav-tag-text" style="color:'+t.text_color_hex+';background:'+t.bg_color_hex+';">#'+t.name+'</span>\
+                            <span class="sidebar-nav-tag-text">#'+t.name+'</span>\
                             </a>\
                             </div>';
       if (document.getElementById("default-sidebar-element-"+t.name)){

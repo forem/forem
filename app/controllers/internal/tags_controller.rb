@@ -5,6 +5,8 @@ class Internal::TagsController < Internal::ApplicationController
   def index
     if params[:state] == "supported"
       @tags = Tag.where(supported: true).order("taggings_count DESC").limit(120)
+    elsif params[:state] == "unsupported"
+      @tags = Tag.where(supported: false).order("taggings_count DESC").limit(120)
     else
       @tags = Tag.order("taggings_count DESC").limit(120)
     end
@@ -12,7 +14,7 @@ class Internal::TagsController < Internal::ApplicationController
 
   def update
     @tag = Tag.find(params[:id])
-    @tag.update(tag_params)
+    @tag.update!(tag_params)
     redirect_to(action: :index)
   end  
 

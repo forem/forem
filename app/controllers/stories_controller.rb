@@ -197,6 +197,13 @@ class StoriesController < ApplicationController
     end
   end
 
+  def redirect_if_show_view_param
+    if params[:view] == "moderate"
+      redirect_to "/internal/articles/#{@article.id}"
+    end
+  end
+
+
   def handle_article_show
     @article_show = true
     @comment = Comment.new
@@ -210,6 +217,7 @@ class StoriesController < ApplicationController
     unless user_signed_in?
       response.headers["Surrogate-Control"] = "max-age=10000, stale-while-revalidate=30, stale-if-error=86400"
     end
+    redirect_if_show_view_param; return if performed?
     render template: "articles/show"
   end
 

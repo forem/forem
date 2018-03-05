@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180213165354) do
+ActiveRecord::Schema.define(version: 20180304151124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 20180213165354) do
     t.string "video_code"
     t.string "video_source_url"
     t.string "video_thumbnail_url"
+    t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["published_at"], name: "index_articles_on_published_at"

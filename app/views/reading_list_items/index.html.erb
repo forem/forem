@@ -19,27 +19,27 @@
 
 <div class="user-profile-header tag-header readinglist-header">
   <div class="tag-or-query-header-container">
-    <h1 class="notifications-header"><img src="<%=asset_path("emoji/emoji-one-bookmark.png")%>" /> My Reading List</h1>
+    <h1 class="notifications-header"><img src="<%=asset_path("readinglist-button.svg")%>" /> My Reading List</h1>
   </div>
 </div>
 
-  <div class="home" id="notifications-container">
+  <div class="home">
     <div class="side-bar" style="margin-top:12px" id="sidebar">
       <div class="fixed-sidebar">
         <div class="sidebar-nav">
           <div class="widget sidebar-nav-block">
             <div class="sidebar-nav-element sidebar-nav-readinglist">
               <a class="sidebar-nav-link" href="/readinglist">
-                <img src="<%=asset_path("emoji/emoji-one-bookmark.png")%>" /> MY READING LIST
+                <img src="<%=asset_path("readinglist-button.svg")%>" /> MY READING LIST
                 <span id="reading-list-count"></span>
               </a>
             </div>
           </div>
         </div>
         <div class="widget" id="tag-filter-widget">
-          <header>
-            &lt;FILTER BY TAG&gt;
-          </header>
+          <button class="query-filter-button query-type-filter-button" data-type="posts">Posts</button>
+          <button class="query-filter-button query-type-filter-button" data-type="comments">Comments</button>
+          <hr/>
           <div class="widget-body body-scrollable" id="tag-filters" style="margin-bottom:16px;">
           </div>
         </div>
@@ -47,7 +47,9 @@
     </div>
       <div class="articles-list" id="articles-list">
         <% if user_signed_in? %>
-          <div class="substories" id="substories">
+          <div class="comments-container" id="comments-container">
+            <div class="substories" id="substories" data-tabs="{}">
+            </div>
           </div>
         <% else %>
           <script>

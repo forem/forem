@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'v2.4.4';
+var CACHE_VERSION = 'v2.4.5';
 var CACHE_NAME = CACHE_VERSION + ':sw-cache::';
 var REQUESTS_LIMIT = 70;
 
@@ -11,6 +11,12 @@ function onInstall(event) {
         '/offline.html',
         '<%= asset_path "devword.png" %>',
         '<%= asset_path "wires.png" %>',
+        '<%= asset_path "comments-bubble.svg" %>',
+        '<%= asset_path "reactions-stack.svg" %>',
+        '<%= asset_path "readinglist-button.svg" %>',
+        '<%= asset_path "emoji/emoji-one-heart.png" %>',
+        '<%= asset_path "emoji/emoji-one-unicorn.png" %>',
+        '<%= asset_path "emoji/emoji-one-bookmark.png" %>',
       ]).then(function () {
         console.log("WORKER: Install completed");
       });

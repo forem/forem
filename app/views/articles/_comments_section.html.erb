@@ -5,14 +5,14 @@
       <div class="breadcrumb"><a href="<%= @user.path %>">View All Activity</a></div>
       <h2>
         <% if @user.comments_count > 250 %>
-          <img class="emoji-img" src="<%= asset_path("chat.svg") %>"/> Last 250 Comments
+          <img class="emoji-img" src="<%= asset_path("comments-bubble.svg") %>"/> Last 250 Comments
         <% else %>
-          <img class="emoji-img" src="<%= asset_path("chat.svg") %>"/> All <%= @user.comments_count %> Comments
+          <img class="emoji-img" src="<%= asset_path("comments-bubble.svg") %>"/> All <%= @user.comments_count %> Comments
         <% end %>
       </h2>
       <% else %>
         <h2>
-          <img class="emoji-img" src="<%= asset_path("chat.svg") %>"/> Recent Comments
+          <img class="emoji-img" src="<%= asset_path("comments-bubble.svg") %>"/> Recent Comments
         </h2>
       <% end %>
     <% end %>
