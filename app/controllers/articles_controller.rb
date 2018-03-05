@@ -96,7 +96,7 @@ class ArticlesController < ApplicationController
         handle_org_assignment
         handle_hiring_tag
         if @article.published
-          Notification.send_all(@article, "Published") if @article.previous_changes.include?("published_at")
+          Notification.send_all(@article, "Published") if @article.previous_changes.include?("published")
           path = @article.path
         else
           Notification.remove_all(@article, "Published")

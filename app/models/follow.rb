@@ -45,6 +45,7 @@ class Follow < ApplicationRecord
   end
 
   def remove_from_feed
+    super
     if followable_type == "User"
       User.find(followable.id)&.touch(:last_notification_activity)
     end
