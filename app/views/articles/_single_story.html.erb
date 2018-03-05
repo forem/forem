@@ -32,13 +32,13 @@
       <% if story.comments_count > 0 %>
         <div class="article-engagement-count comments-count">
           <a href="<%=story.path%>">
-            <img src="<%= asset_path("comments-bubble.svg") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
+            <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
           </a>
         </div>
       <% end %>
     <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
       <a href="<%=story.path%>">
-          <img src="<%= asset_path("reactions-stack.svg") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
+          <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
           <%= story.positive_reactions_count %>
         </span>
       </a>
@@ -48,7 +48,7 @@
       data-reactable-id="<%= story.id %>"
       aria-label="Save to reading list"
       title="Save to reading list">
-      <span class="bm-success"><img src="<%= asset_path("readinglist-button.svg") %>" alt="bookmark" /> SAVED</span>
+      <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
       <span class="bm-initial">SAVE</span>
     </button>
   </div>

@@ -231,14 +231,14 @@
           </div>
           <% if @featured_story.comments_count > 0 %>
             <div class="article-engagement-count comments-count featured-engagement-count">
-              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("comments-bubble.svg") %>" alt="chat" />
+              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
                 <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
               </a>
             </div>
           <% end %>
           <% if @featured_story.positive_reactions_count > 0 %>
             <div class="article-engagement-count reactions-count featured-engagement-count" data-reaction-count data-reactable-id="<%= @featured_story.id %>">
-              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("reactions-stack.svg") %>" alt="heart" /><span id="engagement-count-number-<%= @featured_story.id %>" class="engagement-count-number">
+              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-<%= @featured_story.id %>" class="engagement-count-number">
                   <%= @featured_story.positive_reactions_count %>
                 </span>
               </a>
@@ -249,7 +249,7 @@
             data-reactable-id="<%= @featured_story.id %>"
             aria-label="Add to reading list"
             title="Add to reading list" >
-            <span class="bm-success"><img src="<%= asset_path("readinglist-button.svg") %>" alt="bookmark" /> SAVED</span>
+            <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
             <span class="bm-initial">SAVE</span>
           </button>
         </div>
