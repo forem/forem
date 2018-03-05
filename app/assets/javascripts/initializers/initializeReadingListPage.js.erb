@@ -53,7 +53,7 @@ function getComments(){
   var substories = document.getElementById("substories");
   var tabsObj = JSON.parse(substories.dataset.tabs);
   commentsIndex.search("*", {
-      hitsPerPage: 100,
+      hitsPerPage: 45,
       attributesToHighlight: [],
       tagFilters: [algoliaIds,tabsObj["t"]],
   })
