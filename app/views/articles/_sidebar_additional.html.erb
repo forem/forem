@@ -156,6 +156,7 @@
               where(published:true).
               tagged_with("explainlikeimfive").
               order("last_comment_at DESC").
+              where("published_at > ?", 5.days.ago).
               limit(3).
               pluck(:path,:title,:comments_count, :created_at).
               each do |plucked_article| %>
