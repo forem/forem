@@ -1,3 +1,0 @@
-# Core Values
-
-#### TODO

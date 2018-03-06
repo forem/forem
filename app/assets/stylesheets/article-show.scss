@@ -757,6 +757,20 @@ header{
     }
   }
 }
+.showpage-signin-cta{
+  background: $yellow;
+  width: 660px;
+  max-width:90%;
+  margin: auto;
+  text-align: center;
+  padding: 8px 5px;
+  margin-bottom: 8px;
+  a{
+    color: $black;
+    text-decoration: underline;
+    display: inline-block;
+  }
+}
 
 .show-comments-header{
   width:800px;

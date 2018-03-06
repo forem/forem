@@ -1,5 +1,1 @@
-<div class="devise-container">
-  <h1>Identify yourself <%= image_tag "emoji/apple-nerd-face.png", style: "width: 55px; vertical-align: text-top;" %></h1>
-  <a href="/users/auth/twitter?state=enter_page/<%= params[:state] %>" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
-  <a href="/users/auth/github?state=enter_page/<%= params[:state] %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> Github</a>
-</div>
+<%= render "registration_form" %>
