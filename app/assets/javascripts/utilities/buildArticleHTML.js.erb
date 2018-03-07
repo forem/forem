@@ -79,6 +79,18 @@ function buildArticleHTML(article) {
         searchSnippetHTML = '<div class="search-snippet"><span>'+bodyTextSnippet+commentsBlobSnippet+'</span></div>'
       }
     }
+    var saveButton = '';
+    if (article.class_name === "Article") {
+      var saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
+                        <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>\
+                        <span class="bm-initial">SAVE</span>\
+                      </button>'
+    } else if (article.class_name === "User") {
+      var saveButton = '<button style="width: 122px" class="article-engagement-count bookmark-engage follow-action-button"\
+                       data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
+                       &nbsp;\
+                      </button>'
+    }
     return '<div class="single-article single-article-small-pic">\
       '+classicHeadline+'\
       <div class="small-pic">\
@@ -95,9 +107,6 @@ function buildArticleHTML(article) {
        <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+'\
-       <button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
-       <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>\
-       <span class="bm-initial">SAVE</span>\
-    </button></div>';
+       '+saveButton+'</div>';
   }
 }

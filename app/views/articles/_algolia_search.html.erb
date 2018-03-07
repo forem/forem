@@ -92,7 +92,6 @@
     } else {
       searchObj["filters"] = filters
     }
-    console.log(searchObj)
     index.search(query, searchObj)
       .then(function searchDone(content) {
         var resultDivs = []
@@ -101,6 +100,7 @@
         })
         document.getElementById("substories").innerHTML = resultDivs.join("");
         initializeReadingListIcons();
+        initializeAllFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
         if (content.hits.length == 0) {
           document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
