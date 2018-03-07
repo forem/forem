@@ -497,6 +497,10 @@
             display:block;
           }
         }
+        &.following-butt{
+          background: transparent;
+          color: darken($purple, 33%);
+        }
       }
       &.featured-engagement-count{
         margin-top:-38px;

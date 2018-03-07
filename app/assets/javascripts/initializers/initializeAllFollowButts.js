@@ -112,7 +112,7 @@ function assignState(butt, newState) {
   butt.classList.add('showing');
   if (newState === 'follow') {
     butt.dataset.verb = 'unfollow';
-    butt.classList.add('following-butt');
+    butt.classList.remove('following-butt');
     addFollowText(butt, style);
   } else if (newState === 'login') {
     addFollowText(butt, style);
@@ -122,7 +122,7 @@ function assignState(butt, newState) {
   } else {
     butt.dataset.verb = 'follow';
     addFollowingText(butt, style);
-    butt.classList.remove('following-butt');
+    butt.classList.add('following-butt');
   }
 }
 
