@@ -169,7 +169,8 @@
     catch(e) {
       if (text.indexOf('title: "') === -1){
         var correctedText = addQuotesToTitle(text);
-        document.getElementById("article_body_markdown").value = correctedText;
+        parsed = jsyaml.loadFront(correctedText);
+        // document.getElementById("article_body_markdown").value = correctedText;
       }
     }
     // html = converter.makeHtml(parsed.__content);
