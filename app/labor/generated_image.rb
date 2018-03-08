@@ -14,21 +14,31 @@ class GeneratedImage
 
   def generated
     img = she_coded_image_path(article) if article.cached_tag_list_array.include? "shecoded"
+    img = they_coded_image_path(article) if article.cached_tag_list_array.include? "theycoded"
     img = discuss_image_path(article) if article.cached_tag_list_array.include? "discuss"
     img || default_social_image(article)
   end
 
   def she_coded_image_path(article)
     user_name = article.user.name.length >= 15 ? article.user.name.split(" ").first : article.user.name
-    she_coded_font_size = user_name.length >= 10 ? 50 : 60
+    she_coded_font_size = user_name.length >= 13 ? 38 : 52
     path = cl_image_path(article.user.profile_image_url || "http://41orchard.com/wp-content/uploads/2011/12/Robot-Chalkboard-Decal.gif",
       sign_url: true, type: "fetch", transformation: [
-        { height: 150, width: 150, radius: "max", crop: "imagga_scale" },
+        { height: 133, width: 133, radius: "max", crop: "imagga_scale" },
         { underlay: "nevertheless-she-coded-08_vbwnoc", x: "280", y: "10" },
-        { overlay: "text:NixieOne.ttf_#{she_coded_font_size}_normal_normal_normal_left_FFFFFF_2:Nevertheless%252C%0A#{user_name}%20Coded", color: "#FFFFFF", gravity: "east", x: "50", y: "-10", bo: "FFFFFF_2" },
-      # font is Nixie One.
-      # Since there isn't a bold version I had to add a stroke onto the text.
-      # It's 1.25pt on the "nevertheless" and 2pt on the "she coded", #FFFFFF.
+        { overlay: "text:NixieOne.ttf_#{she_coded_font_size}_normal_normal_normal_left_FFFFFF_2:Nevertheless%252C%0A#{user_name}%20Coded", color: "#FFFFFF", gravity: "west", x: "230", y: "-5", w: "150", bo: "FFFFFF_2" },
+    ])
+    "#{path}?shecoded&t=#{Time.now.to_i}"
+  end
+
+  def they_coded_image_path(article)
+    user_name = article.user.name.length >= 15 ? article.user.name.split(" ").first : article.user.name
+    she_coded_font_size = user_name.length >= 13 ? 38 : 52
+    path = cl_image_path("http://41orchard.com/wp-content/uploads/2011/12/Robot-Chalkboard-Decal.gif",
+      sign_url: true, type: "fetch", transformation: [
+        { height: 133, width: 133, radius: "max", crop: "imagga_scale" },
+        { underlay: "they-coded_jjrvze", x: "280", y: "10" },
+        { overlay: "text:NixieOne.ttf_#{she_coded_font_size}_normal_normal_normal_left_FFFFFF_2:Nevertheless%252C%0A#{user_name}%20Coded", color: "#FFFFFF", gravity: "west", x: "230", y: "-5", w: "150", bo: "FFFFFF_2" },
     ])
     "#{path}?shecoded&t=#{Time.now.to_i}"
   end
