@@ -10,10 +10,11 @@ class MarkdownFixer
     end
 
     def add_quotes_to_title(markdown)
-      # Andy: hacky way of checking for a quotation mark in the beginning
-      return markdown if markdown[0..12].include?("\"")
-      markdown.gsub("title: ", "title: \"").
-        gsub("\npublished: ", "\"\npublished: ")
+      markdown.gsub(/title:\s?(.*?)\n/m) do
+        # $1 is the captured group (.*?)
+        captured = $1.gsub(/(?<![\\])["]/, "\\\"")
+        "title: \"#{captured}\"\n"
+      end
     end
 
     # This turns --- into ------- after the first two,
