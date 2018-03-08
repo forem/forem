@@ -105,47 +105,47 @@
         </div>
       <% end %>
       <% if Flipflop.she_coded? %>
-      <div class="widget">
-        <header>
-          <#SHECODED>
-        </header>
-        <div class="widget-body">
-          <div class="widget-link-list">
-            <% Article.
-              where(published: true).
-              tagged_with("shecoded").
-              order("created_at DESC").
-              limit(20).
-              pluck(:path, :title, :comments_count, :created_at).
-              each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-            <% end %>
-          </div>
-          <p><center><a class="cta cta-button" href="/new/shecoded">TELL YOUR STORY</a></center></p>
-        </div>
-      </div>
-      <% else %>
-          <div class="widget">
-            <header>
-              <#DISCUSS>
-            </header>
-            <div class="widget-body">
-              <div class="widget-link-list">
-                <% Article.
-                  where(published:true).
-                  where("published_at > ?", 2.days.ago).
-                  tagged_with("discuss").
-                  order("last_comment_at DESC").
-                  limit(8).
-                  pluck(:path, :title, :comments_count, :created_at).
-                  each do |plucked_article| %>
-                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-                <% end %>
-              </div>
-              <p><center><a class="cta cta-button" href="/new/discuss">START A DISCUSSION</a></center></p>
+        <div class="widget">
+          <header>
+            <#SHECODED>
+          </header>
+          <div class="widget-body">
+            <div class="widget-link-list">
+              <% Article.
+                where(published: true, approved: true).
+                tagged_with(["shecoded", "theycoded"], any: true).
+                order("published_at DESC").
+                limit(50).
+                pluck(:path, :title, :comments_count, :created_at).
+                each do |plucked_article| %>
+                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+              <% end %>
             </div>
+            <p><center><a class="cta cta-button" href="/t/shecoded" style="color: white; background: #8a62b4;">VIEW ALL #SHECODED</a></center></p>
+            <p><center><a class="cta cta-button" href="/new/shecoded" style="color: white; background: #8a62b4;">SUBMIT YOUR STORY</a></center></p>
           </div>
-        <% end %>
+        </div>
+      <% end %>
+        <div class="widget">
+          <header>
+            <#DISCUSS>
+          </header>
+          <div class="widget-body">
+            <div class="widget-link-list">
+              <% Article.
+                where(published:true).
+                where("published_at > ?", 2.days.ago).
+                tagged_with("discuss").
+                order("last_comment_at DESC").
+                limit(8).
+                pluck(:path, :title, :comments_count, :created_at).
+                each do |plucked_article| %>
+                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+              <% end %>
+            </div>
+            <p><center><a class="cta cta-button" href="/new/discuss">START A DISCUSSION</a></center></p>
+          </div>
+        </div>
       <div class="widget">
         <header>
           <#EXPLAINLIKEIMFIVE>
