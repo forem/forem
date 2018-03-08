@@ -10,10 +10,22 @@ class MarkdownFixer
     end
 
     def add_quotes_to_title(markdown)
-      markdown.gsub(/title:\s?(.*?)\n/m) do
+      markdown.gsub(/title:\s?(.*?)\n/m) do |target|
         # $1 is the captured group (.*?)
-        captured = $1.gsub(/(?<![\\])["]/, "\\\"")
-        "title: \"#{captured}\"\n"
+        captured_title = $1
+        # The query below checks if the whole title is wrapped in
+        # either single or double quotes.
+        match = captured_title.scan(/(^".*"$|^'.*'$)/)
+        if match.empty?
+          # Double quotes that aren't already escaped will get esacped.
+          # Then the whole title get warped in double quotes.
+          parsed_title = captured_title.gsub(/(?<![\\])["]/, "\\\"")
+          "title: \"#{parsed_title}\"\n"
+        else
+          # if the title comes pre-warped in either single or doublequotes,
+          # no more processing is done
+          target
+        end
       end
     end
 
