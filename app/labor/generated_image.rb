@@ -34,7 +34,7 @@ class GeneratedImage
   def they_coded_image_path(article)
     user_name = article.user.name.length >= 15 ? article.user.name.split(" ").first : article.user.name
     she_coded_font_size = user_name.length >= 13 ? 38 : 52
-    path = cl_image_path("http://41orchard.com/wp-content/uploads/2011/12/Robot-Chalkboard-Decal.gif",
+    path = cl_image_path(article.user.profile_image_url || "http://41orchard.com/wp-content/uploads/2011/12/Robot-Chalkboard-Decal.gif",
       sign_url: true, type: "fetch", transformation: [
         { height: 133, width: 133, radius: "max", crop: "imagga_scale" },
         { underlay: "they-coded_jjrvze", x: "280", y: "10" },
