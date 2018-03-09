@@ -14,7 +14,9 @@
         </p>
       </div>
       <div class="profile-image">
-        <img src="<%= ProfileImage.new(@organization).get %>" alt="<%= @organization.name %>" />
+        <a href="/<%=@organization.slug%>">
+          <img src="<%= ProfileImage.new(@organization).get %>" alt="<%= @organization.name %>" style="border-color:<%=user_colors(@organization)[:text] %>;background:<%=user_colors(@organization)[:text] %>"/>
+        </a>
       </div>
     </div>
   </div>
