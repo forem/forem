@@ -68,7 +68,7 @@
       text-align:center;
       z-index:10;
       @media screen and ( min-width:700px ){
-        right:71px;
+        right:73px;
       }
       img{
         margin-top:10px;
@@ -177,9 +177,11 @@
       padding-left:28px;
       padding-right:6px;
       border-bottom-left-radius:8px;
+      background: transparent;
+      border: 0;
       cursor:pointer;
       @media screen and ( min-width: 700px ){
-        padding-right:25px;
+        padding-right:33px;
       }
     }
     .menubg{
