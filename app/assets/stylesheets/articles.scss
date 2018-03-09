@@ -731,9 +731,31 @@
             font-family: $helvetica-condensed;
             font-stretch:condensed;
             font-size:1.1em;
-          }
-          &:hover{
-            background:$light-gray;
+            .sidebar-nav-link{
+              &:hover{
+                background: $light-purple;
+              }
+            }
+            .readinglist-sidebar-subcat{
+              font-weight: bold;
+              font-size: 0.78em;
+              font-family: $helvetica;
+              padding-bottom: 10px;
+              a{
+                color: $medium-gray;
+                padding: 7px 13px;
+                display: inline-block;
+                &:hover{
+                  background: darken($light-green, 5%);
+                  color: $dark-gray;
+                }
+              }
+              .separator{
+                border-left: 2px solid $light-medium-gray;
+                padding:4px 0px;
+                margin: 0px 4px;
+              }
+            }
           }
           @media screen and ( min-width: 950px ){
             .sidebar-nav-link-follow{
@@ -1167,5 +1189,17 @@
     border-radius: 3px;
     border: 2px solid $black;
     background-color:rgb(102, 226, 213);
+  }
+}
+
+.load-more-cta{
+  margin: 35px auto;
+  border: 0px;
+  font-size: 20px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  display: none;
+  &.showing {
+    display:block;
   }
 }
