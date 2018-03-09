@@ -732,18 +732,26 @@
             font-stretch:condensed;
             font-size:1.1em;
             .sidebar-nav-link{
+              padding-top:14px;
+              padding-bottom: 14px;
+              padding-left: 18px;
+              display: block;
               &:hover{
                 background: $light-purple;
               }
+            }
+            &:hover{
+              background: white;
             }
             .readinglist-sidebar-subcat{
               font-weight: bold;
               font-size: 0.78em;
               font-family: $helvetica;
               padding-bottom: 10px;
+              padding-left:8px;
               a{
                 color: $medium-gray;
-                padding: 7px 13px;
+                padding: 7px 12px;
                 display: inline-block;
                 &:hover{
                   background: darken($light-green, 5%);
@@ -795,6 +803,9 @@
             font-weight:900;
             font-size:0.8em;
             padding: 2px 8px;
+          }
+          &:hover{
+            background: $light-gray;
           }
         }
       }
