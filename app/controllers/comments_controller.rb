@@ -51,7 +51,6 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    csrf_logger_info("comment creation")
     unless current_user
       redirect_to "/"
       return

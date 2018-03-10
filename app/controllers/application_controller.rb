@@ -73,27 +73,6 @@ class ApplicationController < ActionController::Base
     request.referer.start_with?(ENV["APP_PROTOCOL"].to_s + ENV["APP_DOMAIN"].to_s)
   end
 
-  def csrf_logger_info(action)
-    sent_via_ajax = request.headers["X-CSRF-token"] ? true : false
-    logger_data = {
-      action: action,
-      sent_via_ajax: sent_via_ajax,
-      csrf_token: request.x_csrf_token,
-      form_token: form_authenticity_param,
-      any_authenticity_token_valid: any_authenticity_token_valid?,
-      valid_request_origin: valid_request_origin?,
-      valid_authenticity_token_form_token: valid_authenticity_token?(session, form_authenticity_param),
-      valid_authenticity_token_header_token: valid_authenticity_token?(session, request.x_csrf_token),
-      request_authenticity_tokens: request_authenticity_tokens,
-      current_user_id: current_user&.id,
-    }
-    logger.info "** SESSION STATE RIGHT NOW [#{current_user&.id}] #{session.to_hash} **"
-    logger.info "** SESSION STATE RIGHT NOW :: Any valid token? #{any_authenticity_token_valid?} **"
-    logger.info "** SESSION STATE RIGHT NOW --------------- **"
-    logger.info "**CSRF CHECK** Any valid token? #{any_authenticity_token_valid?}"
-    logger.info "Skipped unverified request", planned_unverified_request: logger_data
-  end
-  
   def set_no_cache_header
     response.headers["Cache-Control"] = "no-cache, no-store"
     response.headers["Pragma"] = "no-cache"

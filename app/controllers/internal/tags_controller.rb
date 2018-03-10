@@ -1,6 +1,5 @@
 class Internal::TagsController < Internal::ApplicationController
   layout 'internal'
-  skip_before_action :verify_authenticity_token
 
   def index
     if params[:state] == "supported"

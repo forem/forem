@@ -7,10 +7,10 @@ function initializeReadingListPage(){
     document.getElementById('substories').dataset.tabs = '{"v": "'+(params.v || '')+'", "t": "'+(params.t || '')+'" }'
     postCommentFilter();
     getArticles("***onlytags***");
-  }
-  document.getElementById("load-more-cta").onclick = function(event) {
-    event.target.classList.remove("showing");
-    getArticles("");
+    document.getElementById("load-more-cta").onclick = function(event) {
+      event.target.classList.remove("showing");
+      getArticles("");
+    }
   }
 }
 

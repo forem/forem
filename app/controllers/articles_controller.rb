@@ -53,7 +53,6 @@ class ArticlesController < ApplicationController
   end
 
   def preview
-    csrf_logger_info("article preview")
     begin
       fixed_body_markdown = MarkdownFixer.fix_for_preview(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
