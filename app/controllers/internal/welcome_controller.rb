@@ -1,6 +1,5 @@
 class Internal::WelcomeController < Internal::ApplicationController
   layout "internal"
-  skip_before_action :verify_authenticity_token
 
   def index
     @daily_threads = Article.where("title LIKE 'Welcome Thread - %'")
