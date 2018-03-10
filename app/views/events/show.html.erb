@@ -4,30 +4,35 @@
 </header>
 
 <style>
-  .container .event {
-    text-align: center;
-    padding: 20px;
-    border: solid 2px #66e2d5;;
-    border-radius: 3px; 
-    margin: 50px auto;
-    box-shadow: 5px 8px 0px #ccfff9;
-    font-size: 18px;
-    max-width: 700px;
-    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+
+  .container .body .event {
+    border: none;
+    box-shadow: none;
+    margin-top: 0px;
+  }
+  .container .body .event h3 {
+    display: none;
   }
 
-  .container .event-image {
-    max-width: 43%;
-    float: left;
-    margin-right: 20px;
+  .container .body h1 {
+    margin-bottom: 10px;
+    text-align: left;
   }
 
-  .container .event-image img {
-    max-width: 100%;
-    border-radius: 3px;
+  .container .event .event-description {
+    text-align: justify;
   }
+  .container .event .event-details {
+    font-size: 1.3em;
+  }  
+  .addeventatc {
+    border: solid 1px #66e2d5;
+  }
+  .addeventatc:hover {
+    border: 1px solid #557de8;
+  }
+
 </style>
-
 
 <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
 
@@ -35,6 +40,8 @@
   <div style="height:30px">
   </div>
   <div class="body">
+    <h1 style="padding-left: 20px; font-weight: 500;"><%= @event.category %>: <%= @event.title %></h1>
     <%= render 'event', event: @event %>
+    <h3 style="text-align: center"><span style="background-color: yellow; padding: 5px"><a href="/events"> All EVENTS </a></span></h3>
   </div>
 </div>

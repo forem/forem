@@ -1,9 +1,54 @@
+<style>
+  .container .event {
+    text-align: justify;
+    padding: 20px;
+    border: solid 2px #66e2d5;;
+    border-radius: 3px; 
+    margin: 50px auto;
+    box-shadow: 5px 8px 0px #ccfff9;
+    font-size: 18px;
+    max-width: 700px;
+    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  }
+
+  .container .event-image {
+    max-width: 43%;
+    float: left;
+    margin-right: 20px;
+  }
+
+  .container .event-image img {
+    max-width: 100%;
+    border-radius: 3px;
+    left: 1px;
+  }
+  .event .event-details p {
+    margin: 0px
+  }  
+  .event .event-details h3 {
+    margin: 0 0 .5em 0;
+    font-weight: 800;
+  }  
+  
+  @media screen and (max-width: 900px) {
+    .container .body .event .event-image {
+      display: block;
+      max-width: 100%;
+      margin: 0 0 20px;
+    }
+  }
+  .copyx{
+    display: none !important;
+  }
+  .addeventatc {visibility:hidden;}  
+</style>
+
 <div class="event">
   <div class="event-image">
     <img src="<%= event.cover_image %>">
   </div>
   <div class="event-details" >
-    <h3><%= event.category %>: <%= event.title %></h3>
+    <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
     <p>
       <% if !event.cover_image.present? %>
         Date: <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').strftime("%b %d %Y") %>

@@ -17,4 +17,9 @@ RSpec.describe Event, type: :model do
     event.ends_at = Time.now - 50000
     expect(event).not_to be_valid
   end
+
+  it "creates slug for published events" do
+    event.published = true
+    expect(event).to be_valid
+  end
 end
