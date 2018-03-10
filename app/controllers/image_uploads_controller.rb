@@ -3,7 +3,6 @@ class ImageUploadsController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def create
-    csrf_logger_info("image upload")
     uploader = ArticleImageUploader.new
     uploader.store!(params[:image])
     link = uploader.url

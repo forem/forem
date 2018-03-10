@@ -1,10 +1,10 @@
 class GaEventsController < ApplicationController
   skip_before_action :verify_authenticity_token
   def create
-    # unless valid_request_origin?
-    #   render body: nil
-    #   return
-    # end
+    unless valid_request_origin?
+      render body: nil
+      return
+    end
     json = JSON.parse(request.raw_post)
     user_id = user_signed_in? ? current_user.id : nil
     client_id = "#{ip[0..12]}_#{json['user_agent']}_#{user_id}"

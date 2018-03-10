@@ -61,7 +61,6 @@ class ReactionsController < ApplicationController
   end
 
   def create
-    csrf_logger_info("reaction creation")
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     reaction = Reaction.where(
       user_id: current_user.id,

@@ -1,6 +1,5 @@
 class Internal::BroadcastsController < Internal::ApplicationController
   layout "internal"
-  skip_before_action :verify_authenticity_token
 
   def create
     @broadcast = Broadcast.new(broadcast_params)

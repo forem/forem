@@ -1,6 +1,5 @@
 class Internal::CommentsController < Internal::ApplicationController
   layout 'internal'
-  skip_before_action :verify_authenticity_token
 
   def index
     if params[:state]&.start_with?("toplast-")
