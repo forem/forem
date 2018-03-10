@@ -5,7 +5,9 @@ class Event < ApplicationRecord
   validates :title, length: { maximum: 45 }
   validates :location_url, url: { allow_blank: true, schemes: ["https", "http"] }
   validate :end_time_after_start
+  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/
   after_save :bust_cache
+  before_validation :create_slug
 
   scope :in_the_future_and_published, -> {
     where("starts_at > ?", Time.now).
@@ -29,6 +31,17 @@ class Event < ApplicationRecord
     elsif ends_at < starts_at
       errors.add(:ends_at, "must be after start date")
     end
+  end
+
+  def create_slug
+    if slug.blank? && title.present? && published
+      self.slug = title_to_slug
+    end
+  end
+
+  def title_to_slug
+    downcase = (id.to_s + "-" + category + "-" + title).to_s.downcase
+    downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + starts_at.strftime("%m-%d-%Y")
   end
 
   def bust_cache
