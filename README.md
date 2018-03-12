@@ -12,7 +12,7 @@ Host technical blog posts and helpful articles for developers. Publishing is fai
 - Votes (reactions) on posts and enhancements for comments
 - Richer markdown experience
 - Polish up publishing experience
-- Smarter "next article" suggestions, and "related podcats"
+- Smarter "next article" suggestions, and "related podcasts"
 - Other stuff 🤔
 
 ## The road to open source
