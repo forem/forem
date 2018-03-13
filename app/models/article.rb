@@ -114,6 +114,9 @@ class Article < ApplicationRecord
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
         :readable_publish_date
+      attribute :published_at_int do
+        published_at.to_i
+      end
       attribute :user do
         { username: user.username,
           name: user.name,

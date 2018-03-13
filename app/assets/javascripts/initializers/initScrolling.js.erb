@@ -105,12 +105,22 @@ function algoliaPaginate(tag){
   if (tag && tag.length > 0) {
     filters.push(tag);
   }
-  articlesIndex.search("*", {
+
+  var searchObj = {
       hitsPerPage: 15,
       page: nextPage,
       attributesToHighlight: [],
       tagFilters: filters,
-  })
+  }
+
+  var homeEl = document.getElementById("index-container");
+  if (homeEl.dataset.feed === "base-feed") {
+  } else if (homeEl.dataset.feed === "latest") {
+  } else {
+    searchObj["filters"] = ('published_at_int > ' + homeEl.dataset.articlesSince);
+  }
+
+  articlesIndex.search("*", searchObj)
   .then(function searchDone(content) {
     nextPage += 1;
     insertArticles(content.hits);
