@@ -1,7 +1,7 @@
 function initializeReadingListPage(){
   if ( getCurrentPage("reading_list_items-index") && checkUserLoggedIn() ) {
     client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
-    articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
+    readinglistIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
     commentsIndex = client.initIndex('ordered_comments_<%= Rails.env %>');
     var params = getQueryParams(document.location.search);
     document.getElementById('substories').dataset.tabs = '{"v": "'+(params.v || '')+'", "t": "'+(params.t || '')+'" }'
@@ -22,7 +22,7 @@ function getArticles(tag, num){
     var algoliaIds = user.reading_list_ids.map(function(id){return "articles-"+id});
     var resultDivs = []
     var tags = {}
-    articlesIndex.getObjects(algoliaIds, function(err, content) {
+    readinglistIndex.getObjects(algoliaIds, function(err, content) {
       var results = num ? content.results.slice(0, num) : content.results ;
       results.forEach(function(story, i){
         if (story) {

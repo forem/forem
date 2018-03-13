@@ -1,8 +1,9 @@
 class HexComparer
 
-  attr_accessor :hexes
-  def initialize(hexes)
+  attr_accessor :hexes, :amount
+  def initialize(hexes, amount=1)
     @hexes = hexes
+    @amount = amount
   end
 
   def order
@@ -23,26 +24,26 @@ class HexComparer
       "#%02x%02x%02x" % rgb
     rescue
       smallest
-    end    
+    end
   end
 
-  def accent
-    if brightness(1.14).size == 7
-      brightness(1.14)
-    elsif brightness(1.08).size == 7
-      brightness(1.08)
-    elsif brightness(1.06).size == 7
-      brightness(1.06)
-    elsif brightness(0.96).size == 7
-      brightness(0.96)
-    elsif brightness(0.9).size == 7
-      brightness(0.9)
-    elsif brightness(0.8).size == 7
-      brightness(0.8)
-    elsif brightness(0.7).size == 7
-      brightness(0.7)
-    elsif brightness(0.6).size == 7
-      brightness(0.6)
+  def accent()
+    if brightness(1.14 ** amount).size == 7
+      brightness(1.14 ** amount)
+    elsif brightness(1.08 ** amount).size == 7
+      brightness(1.08 ** amount)
+    elsif brightness(1.06 ** amount).size == 7
+      brightness(1.06 ** amount)
+    elsif brightness(0.96 ** amount).size == 7
+      brightness(0.96 ** amount)
+    elsif brightness(0.9 ** amount).size == 7
+      brightness(0.9 ** amount)
+    elsif brightness(0.8 ** amount).size == 7
+      brightness(0.8 ** amount)
+    elsif brightness(0.7 ** amount).size == 7
+      brightness(0.7 ** amount)
+    elsif brightness(0.6 ** amount).size == 7
+      brightness(0.6 ** amount)
     end
   end
   

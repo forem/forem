@@ -34,6 +34,21 @@ function initializeDrawerSliders() {
       slideSidebar("right","outOfView");
       slideSidebar("left","outOfView");
     });
+    listenForNarrowMenuClick();
+  }
+}
 
+function listenForNarrowMenuClick(event) {
+  var navLinks = document.getElementsByClassName("narrow-nav-menu");
+  for (var i = 0; i < navLinks.length; i++) {
+    document.getElementById("narrow-nav-menu").classList.remove("showing");
+  }
+  document.getElementById("narrow-feed-butt").onclick = function(){
+    document.getElementById("narrow-nav-menu").classList.add("showing");
+  }
+  for (var i = 0; i < navLinks.length; i++) {
+    navLinks[i].onclick = function(event){
+      document.getElementById("narrow-nav-menu").classList.remove("showing");
+    }
   }
 }

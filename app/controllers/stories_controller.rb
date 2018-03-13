@@ -82,25 +82,28 @@ class StoriesController < ApplicationController
       redirect_to "/t/#{@tag_model.alias_for}"
       return
     end
+    @stories = Article.where(published: true).
+      includes(:user).
+      limited_column_select.
+      page(@page).
+      per(8).
+      filter_excluded_tags(@tag)
+
     if @tag_model && @tag_model.requires_approval
-      @stories = ArticleDecorator.decorate_collection(Article.
-        where(published: true, approved: true).
-        order("#{@tag_model.requires_approval ? "featured_number" : "hotness_score"} DESC").
-        includes(:user).
-        limited_column_select.
-        page(@page).
-        per(8).
-        filter_excluded_tags(@tag))
-    else
-      @stories = ArticleDecorator.decorate_collection(Article.
-        where(published: true).
-        order("hotness_score DESC").
-        includes(:user).
-        limited_column_select.
-        page(@page).
-        per(user_signed_in? ? 4 : 10).
-        filter_excluded_tags(@tag))
+      @stories = @stories.where(approved: true)
     end
+
+    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+      @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
+        order("positive_reactions_count DESC")
+    elsif params[:timeframe] == "latest"
+      @stories = @stories.order("published_at DESC")
+    else
+      @stories = @stories.order("hotness_score DESC")
+    end
+
+    @stories = @stories.decorate
+
     @featured_story = Article.new
     @article_index = true
     set_surrogate_key_header "articles-#{@tag}", @stories.map(&:record_key)
@@ -112,17 +115,25 @@ class StoriesController < ApplicationController
     @home_page = true
     @page = (params[:page] || 1).to_i
     num_articles = user_signed_in? ? 3 : 15
-    @stories = ArticleDecorator.decorate_collection(Article.where(published: true, featured: true).
-      order("hotness_score DESC").
+    @stories = Article.where(published: true).
       includes(:user).
       limited_column_select.
       page(@page).
       per(num_articles).
-      filter_excluded_tags(params[:tag]))
-    @featured_story = Article.where(published: true, featured: true).
-      where.not(main_image: nil).
-      limited_column_select.
-      order("hotness_score DESC").first&.decorate || Article.new
+      filter_excluded_tags(params[:tag])
+    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+      @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
+        order("positive_reactions_count DESC")
+      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
+    elsif params[:timeframe] == "latest"
+      @stories = @stories.order("published_at DESC").
+        where("featured_number > ?", 1449999999)
+      @featured_story = Article.new
+    else
+      @stories = @stories.where(featured: true).order("hotness_score DESC")
+      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
+    end
+    @stories = @stories.decorate
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").
@@ -203,7 +214,6 @@ class StoriesController < ApplicationController
     end
   end
 
-
   def handle_article_show
     @article_show = true
     @comment = Comment.new
@@ -261,4 +271,5 @@ class StoriesController < ApplicationController
       find_by_slug(params[:slug])&.
       decorate
   end
+
 end

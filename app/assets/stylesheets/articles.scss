@@ -13,7 +13,7 @@
     margin-top:22px;
   }
   &.sub-home{
-    margin-top:25px;
+    margin-top:39px;
     .side-bar{
       @media screen and ( min-width: 950px ){
         margin-top:12px;
@@ -83,6 +83,9 @@
         &.on-page-nav-butt-right{
           right: 3%;
         }
+        @media screen and ( min-width: 950px ){
+          display:none;
+        }
       }
       .on-page-nav-label{
         position:absolute;
@@ -92,10 +95,55 @@
         font-stretch:condensed;
         top:18px;
         font-weight:600;
+        &.sub-home-nav{
+          top:12px;
+        }
+        .wide-nav-links{
+          display: none;
+        }
+        @media screen and ( min-width: 650px ){
+          .narrow-nav-select{
+            display: none;
+          }
+          .wide-nav-links{
+            display: block;
+          }
+        }
+        @media screen and ( min-width: 950px ){
+          top:9px;
+          &.sub-home-nav{
+            top:8px;
+          }
+        }
       }
-
-      @media screen and ( min-width: 950px ){
-        display:none;
+      .separator{
+        border-left: 2px solid $light-medium-gray;
+        display: inline-block;
+        margin: 0px 7px;
+        height:15px;
+      }
+      .nav-chronofiter-link{
+        display: inline-block;
+        padding: 2px 8px;
+        font-size:0.95em;
+        &.selected{
+          background: $purple;
+          box-shadow: 3px 4px 0px darken($purple, 6%);
+        }
+        &:hover{
+          opacity:1;
+        }
+      }
+      .narrow-nav-select{
+        button {
+          all: unset;
+          background: transparent;
+          border:0;
+          font-family: $helvetica-condensed;
+          font-stretch:condensed;
+          font-weight:600;
+          cursor: pointer;
+        }
       }
     }
     a{
@@ -1202,6 +1250,35 @@
     background-color:rgb(102, 226, 213);
   }
 }
+
+.narrow-nav-menu{
+  position:absolute;
+  top:40px;
+  left: 0;
+  right:0;
+  background: white;
+  z-index:500;
+  font-family: $helvetica-condensed;
+  font-stretch:condensed;
+  font-weight:600;
+  box-shadow: 0px 20px 50px rgba(0,0,0,0.3);
+  padding: 5px 0px 15px;
+  display: none;
+  font-size: 1.1em;
+  a{
+    display: block;
+    text-align: center;
+    color: $black;
+    padding: 20px 0px;
+    &.selected {
+      background: $purple;
+    }
+  }
+  &.showing {
+    display: block;
+  }
+}
+
 
 .load-more-cta{
   margin: 35px auto;

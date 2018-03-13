@@ -216,5 +216,17 @@ module ApplicationHelper
               },
             ]
     colors[user.id % 10]
-  end  
+  end
+
+  def timeframe_check(given_timeframe)
+    params[:timeframe] == given_timeframe
+  end
+
+  def list_path
+    if params[:tag].present?
+      "/t/#{params[:tag]}"
+    else
+      ""
+    end
+  end
 end
