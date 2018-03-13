@@ -39,8 +39,7 @@ function algoliaFollowedArticles(){
         searchObj["filters"] = ('published_at_int > ' + homeEl.dataset.articlesSince);
         articlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
       }
-
-      index.search("*", searchObj)
+      articlesIndex.search("*", searchObj)
       .then(function searchDone(content) {
         var insertPlace = document.getElementById("article-index-hidden-div");
         if (insertPlace) {

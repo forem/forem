@@ -8,15 +8,6 @@ function checkIfNearBottomOfPage() {
   if (elCheck) {
     client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
     
-    var homeEl = document.getElementById("index-container");
-    if (homeEl.dataset.feed === "base-feed") {
-      articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
-    } else if (homeEl.dataset.feed === "latest") {
-      articlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
-    } else {
-      articlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
-    }
-
     initScrolling.called = true;
     if (document.getElementsByClassName("single-article").length < 2 || location.search.indexOf("q=") > -1 ) {
       document.getElementById("loading-articles").style.display = "none"
@@ -115,12 +106,15 @@ function algoliaPaginate(tag){
 
   var homeEl = document.getElementById("index-container");
   if (homeEl.dataset.feed === "base-feed") {
+    paginationArticlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
   } else if (homeEl.dataset.feed === "latest") {
+    paginationArticlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
   } else {
     searchObj["filters"] = ('published_at_int > ' + homeEl.dataset.articlesSince);
+    paginationArticlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
   }
 
-  articlesIndex.search("*", searchObj)
+  paginationArticlesIndex.search("*", searchObj)
   .then(function searchDone(content) {
     nextPage += 1;
     insertArticles(content.hits);
