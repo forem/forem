@@ -194,7 +194,9 @@
 <div class="home <%= "sub-home" if (@user || @tag || @query)%>" id="index-container"
   data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
   data-algolia-tag="<%= @user ? "#{@user.class.name.downcase}_#{@user.id}" : nil || @tag %>"
-  data-feed="<%= params[:timeframe] || "base-feed"%>">
+  data-feed="<%= params[:timeframe] || "base-feed"%>"
+  data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
+  >
   <%= render "articles/sidebar" %>
   <div class="articles-list" id="articles-list">
     <% if @home_page || @tag %>

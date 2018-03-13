@@ -23,21 +23,24 @@ function algoliaFollowedArticles(){
       var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
       var index = client.initIndex('ordered_articles_<%= Rails.env %>');
       
+      var searchObj = {
+          hitsPerPage: 20,
+          page: "0",
+          attributesToHighlight: [],
+          tagFilters: [user.followed_tag_names.concat(followedUsersArray)],
+      }
+      
       var homeEl = document.getElementById("index-container");
       if (homeEl.dataset.feed === "base-feed") {
         articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
       } else if (homeEl.dataset.feed === "latest") {
         articlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
       } else {
+        searchObj["filters"] = ('published_at_int > ' + homeEl.dataset.articlesSince);
         articlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
       }
-      
-      index.search("*", {
-          hitsPerPage: 20,
-          page: "0",
-          attributesToHighlight: [],
-          tagFilters: [user.followed_tag_names.concat(followedUsersArray)],
-      })
+
+      index.search("*", searchObj)
       .then(function searchDone(content) {
         var insertPlace = document.getElementById("article-index-hidden-div");
         if (insertPlace) {
