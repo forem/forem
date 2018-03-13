@@ -192,9 +192,14 @@ Rails.application.routes.draw do
 
   get "/tag/:tag" => 'stories#index'
   get "/t/:tag" => 'stories#index'
+  get "/t/:tag/top/:timeframe" => 'stories#index'
+  get "/t/:tag/:timeframe" => 'stories#index', constraints: { timeframe: /latest/}
 
   get "/getting-started" => "onboarding#index"
 
+  get "/top/:timeframe" => 'stories#index'
+
+  get "/:timeframe" => 'stories#index', constraints: { timeframe: /latest/}
 
   get "/:username/:slug/comments/new/:parent_id_code" => 'comments#new'
   get "/:username/:slug/comments/new" => 'comments#new'

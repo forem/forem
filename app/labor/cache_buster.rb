@@ -45,23 +45,61 @@ class CacheBuster
     if article.organization.present?
       bust("/#{article.organization.slug}")
     end
+    bust_home_pages(article)
+    bust_tag_pages(article)
+
+    if article.collection
+      article.collection.articles.each do |a|
+        bust(a.path)
+      end
+    end
+  end
+
+  def bust_home_pages(article)
     if article.featured_number.to_i > Time.now.to_i
       bust("/")
       bust("?i=i")
     end
-    begin
+    [[1.week.ago, "week"],[1.month.ago, "month"],[1.year.ago, "year"],[5.years.ago, "infinity"]].each do |timeframe|
+      if Article.where(published: true).where("published_at > ?", timeframe[0]).
+          order("positive_reactions_count DESC").limit(4).pluck(:id).include?(article.id)
+        bust("/top/#{timeframe[1]}")
+        bust("/top/#{timeframe[1]}?i=i")
+        bust("/top/#{timeframe[1]}/?i=i")
+      end
+      if Article.where(published: true).where("published_at > ?", timeframe[0]).
+          order("hotness_score DESC").limit(3).pluck(:id).include?(article.id)
+        bust("/")
+        bust("?i=i")
+      end
+    end
+    if article.published && article.published_at > 1.hour.ago
+      bust("/latest")
+      bust("/latest?i=i")
+    end
+  end
+
+  def bust_tag_pages(article)
+    return unless article.published
+    article.tag_list.each do |tag|
       if article.published_at.to_i > 3.minutes.ago.to_i
-        article.tag_list.each do |tag|
-          bust("/t/#{tag}")
+        bust("/t/#{tag}/latest")
+        bust("/t/#{tag}/latest?i=i")
+      end
+      [[1.week.ago, "week"],[1.month.ago, "month"],[1.year.ago, "year"],[5.years.ago, "infinity"]].
+        each do |timeframe|
+        if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
+            order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+          bust("/top/#{timeframe[1]}")
+          bust("/top/#{timeframe[1]}?i=i")
+          bust("/top/#{timeframe[1]}/?i=i")
+        end
+        if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
+            order("hotness_score DESC").limit(3).pluck(:id).include?(article.id)
+          bust("/")
+          bust("?i=i")
         end
       end
-      if article.collection
-        article.collection.articles.each do |a|
-          bust(a.path)
-        end
-      end
-    rescue
-      puts "Tag issue"
     end
   end
 end

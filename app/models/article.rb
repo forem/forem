@@ -57,7 +57,7 @@ class Article < ApplicationRecord
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url)
+    :video_thumbnail_url, :video_closed_caption_track_url, :published_at)
   }
 
   scope :limited_columns_internal_select, -> {
@@ -80,7 +80,7 @@ class Article < ApplicationRecord
                 :featured, :published, :published_at, :featured_number,
                 :comments_count, :reactions_count, :positive_reactions_count,
                 :path, :class_name, :user_name, :user_username, :comments_blob,
-                :body_text, :tag_keywords_for_search, :search_score
+                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date
       attribute :user do
         { username: user.username,
           name: user.name,
@@ -112,7 +112,8 @@ class Article < ApplicationRecord
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
-        :tag_list, :positive_reactions_count, :id, :hotness_score
+        :tag_list, :positive_reactions_count, :id, :hotness_score,
+        :readable_publish_date
       attribute :user do
         { username: user.username,
           name: user.name,
@@ -129,6 +130,12 @@ class Article < ApplicationRecord
         ("organization_#{organization_id}" if organization)].flatten.compact
       end
       ranking ["desc(hotness_score)"]
+      add_replica "ordered_articles_by_positive_reactions_count", inherit: true, per_environment: true do
+        ranking ["desc(positive_reactions_count)"]
+      end
+      add_replica "ordered_articles_by_published_at", inherit: true, per_environment: true do
+        ranking ["desc(published_at)"]
+      end
     end
   end
 
@@ -143,13 +150,23 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.active_discuss_threads(tag)
-    where(published:true).
-      where("published_at > ?", 7.days.ago).
-      tagged_with(["discuss", tag]).
-      order("last_comment_at DESC").
-      limit(8).
-      pluck(:path, :title, :comments_count, :created_at)
+  def self.active_discuss_threads(tag=nil, time_ago=nil)
+    stories = where(published:true).
+      limit(8)
+    if time_ago == "latest"
+      stories = stories.order("published_at DESC")
+    elsif time_ago
+      stories = stories.order("comments_count DESC").
+        where("published_at > ?", time_ago)
+    else
+      stories = stories.order("last_comment_at DESC").
+        where("published_at > ?", (tag.present? ? 5 : 2).days.ago)
+    end
+
+    stories = stories.tagged_with(["discuss", tag]) if tag
+    stories = stories.tagged_with("discuss") unless tag
+
+    stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
   def body_text
@@ -264,9 +281,9 @@ class Article < ApplicationRecord
 
   def readable_publish_date
     if published_at && published_at.year == Time.now.year
-      published_at.strftime("%b %e")
+      published_at&.strftime("%b %e")
     else
-      published_at.strftime("%b %e '%y")
+      published_at&.strftime("%b %e '%y")
     end
   end
 

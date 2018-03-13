@@ -104,7 +104,7 @@ function buildArticleHTML(article) {
          '+searchSnippetHTML+'\
         </div>\
        </a>\
-       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+'</a></h4>\
+       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+'・'+article.readable_publish_date+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+'\
        '+saveButton+'</div>';

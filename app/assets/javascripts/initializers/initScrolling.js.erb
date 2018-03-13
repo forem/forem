@@ -1,18 +1,27 @@
 function initScrolling() {
-  client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
-  articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
   checkIfNearBottomOfPage();
 }
 
 function checkIfNearBottomOfPage() {
   var elCheck = document.getElementById("index-container");
+  
   if (elCheck) {
+    client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+    
+    var homeEl = document.getElementById("index-container");
+    if (homeEl.dataset.feed === "base-feed") {
+      articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
+    } else if (homeEl.dataset.feed === "latest") {
+      articlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
+    } else {
+      articlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
+    }
+
     initScrolling.called = true;
     if (document.getElementsByClassName("single-article").length < 2 || location.search.indexOf("q=") > -1 ) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;
-    }
-    else {
+    } else {
       document.getElementById("loading-articles").style.display = "block"
     }
     fetchNextPageIfNearBottom();
@@ -97,7 +106,7 @@ function algoliaPaginate(tag){
     filters.push(tag);
   }
   articlesIndex.search("*", {
-      hitsPerPage: 30,
+      hitsPerPage: 15,
       page: nextPage,
       attributesToHighlight: [],
       tagFilters: filters,

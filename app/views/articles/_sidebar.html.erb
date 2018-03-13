@@ -257,81 +257,83 @@
       </div>
     <% elsif @podcast %>
     <% else %>
-      <%= render "articles/sidebar_nav" %>
-      <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
-        <header>
-          &lt;COMMUNITY SPONSORS<span class="emoji">
-            <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
-          </span>&gt;
-        </header>
-        <div class="widget-body">
-          <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://www.manifold.co/?utm_campaign=dev.to_march&utm_source=dev.to&utm_medium=sponsorship" target="_blank" data-details="manifold__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/hsdm15wphp83rh0o5ees.png", 300) %>" style="margin-bottom:8px;" />
-            </a>
-            <div class="sponsor-tagline" style="display:inline;">
-              The marketplace for independent developer services
-              <a class="partner-link sponsor-learn-more" href="https://www.manifold.co/?utm_campaign=dev.to_march&utm_source=dev.to&utm_medium=sponsorship" target="_blank" data-details="manifold__learn-more">
-                Learn More
+      <% cache("main-sidebar-nav--#{user_signed_in?}", :expires_in => 5.days) do %>
+        <%= render "articles/sidebar_nav" %>
+        <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
+          <header>
+            &lt;COMMUNITY SPONSORS<span class="emoji">
+              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
+            </span>&gt;
+          </header>
+          <div class="widget-body">
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="https://www.manifold.co/?utm_campaign=dev.to_march&utm_source=dev.to&utm_medium=sponsorship" target="_blank" data-details="manifold__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/hsdm15wphp83rh0o5ees.png", 300) %>" style="margin-bottom:8px;" />
               </a>
-            </div>
-          </div>          
-          <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://triplebyte.com/?ref=devto_mar18_hp" target="_blank" data-details="triplebyte__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/r50i600z08ty2sjwey4o.png", 300) %>" />
-            </a>
-            <div class="sponsor-tagline">
-              Do one coding quiz, get multiple job offers
-              <a class="partner-link sponsor-learn-more" href="https://triplebyte.com/?ref=devto_mar18_hp" target="_blank" data-details="triplebyte__learn-more">
-                Learn More 
+              <div class="sponsor-tagline" style="display:inline;">
+                The marketplace for independent developer services
+                <a class="partner-link sponsor-learn-more" href="https://www.manifold.co/?utm_campaign=dev.to_march&utm_source=dev.to&utm_medium=sponsorship" target="_blank" data-details="manifold__learn-more">
+                  Learn More
+                </a>
+              </div>
+            </div>          
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="https://triplebyte.com/?ref=devto_mar18_hp" target="_blank" data-details="triplebyte__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/r50i600z08ty2sjwey4o.png", 300) %>" />
               </a>
+              <div class="sponsor-tagline">
+                Do one coding quiz, get multiple job offers
+                <a class="partner-link sponsor-learn-more" href="https://triplebyte.com/?ref=devto_mar18_hp" target="_blank" data-details="triplebyte__learn-more">
+                  Learn More 
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="sidebar-sponsor">
-            <a class="partner-link" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ehfv4m28il0uevcgxj47.png", 300) %>" />
-            </a>
-            <div class="sponsor-tagline">
-              Fast & relevant search API, now with free read operations
-              <a class="partner-link sponsor-learn-more" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__learn-more">
-                Learn More
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ehfv4m28il0uevcgxj47.png", 300) %>" />
               </a>
+              <div class="sponsor-tagline">
+                Fast & relevant search API, now with free read operations
+                <a class="partner-link sponsor-learn-more" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__learn-more">
+                  Learn More
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="sponsors-love-message">
-            We are grateful for wonderful sponsors who help sustain the dev community.
-          </div>
-          <div class="sponsor-footer">
-            <p>
-              <a href="/sponsorship-info">Sponsorship Info/Policy</a>
-            </p>
+            <div class="sponsors-love-message">
+              We are grateful for wonderful sponsors who help sustain the dev community.
+            </div>
+            <div class="sponsor-footer">
+              <p>
+                <a href="/sponsorship-info">Sponsorship Info/Policy</a>
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="widget">
-        <header>
-          &lt;KEY LINKS&gt;
-        </header>
-        <div class="widget-body">
-          <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" class="social-icon" /></a>
-          <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" class="social-icon" /></a>
-          <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" class="social-icon" /></a>
-          <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" class="social-icon" /></a>
-          <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" class="social-icon" /></a>
+        <div class="widget">
+          <header>
+            &lt;KEY LINKS&gt;
+          </header>
+          <div class="widget-body">
+            <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" class="social-icon" /></a>
+            <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" class="social-icon" /></a>
+            <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" class="social-icon" /></a>
+            <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" class="social-icon" /></a>
+            <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" class="social-icon" /></a>
+          </div>
+          <div class="side-footer">
+            <a href="/about">About</a>
+            <a href="/membership">Sustaining Membership</a>
+            <a href="/events">Events</a>
+            <a href="/sponsors">Sponsors</a>
+            <a href="https://shop.dev.to/">DEV Shop</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Use</a>
+            <a href="/contact">Contact</a>
+            <a href="/faq">FAQ</a>
+            <a href="/code-of-conduct">Code of Conduct</a>
+          </div>
         </div>
-        <div class="side-footer">
-          <a href="/about">About</a>
-          <a href="/membership">Sustaining Membership</a>
-          <a href="/events">Events</a>
-          <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/">DEV Shop</a>
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Use</a>
-          <a href="/contact">Contact</a>
-          <a href="/faq">FAQ</a>
-          <a href="/code-of-conduct">Code of Conduct</a>
-        </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </div>

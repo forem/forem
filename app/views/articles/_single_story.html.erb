@@ -22,7 +22,8 @@
       </div>
     </a>
     <h4>
-      <a href="<%=story.user.path%>"><%= story.user.name %></a>
+      <a href="<%=story.user.path%>"><%= story.user.name %>・<%= story.readable_publish_date %></a>
+      
     </h4>
     <div class="tags">
       <% story.cached_tag_list_array.each do |tag| %>
