@@ -171,6 +171,24 @@ class Article < ApplicationRecord
 
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
+  
+  def self.active_eli5(time_ago)
+    stories = where(published:true).
+      tagged_with("explainlikeimfive")
+
+    if time_ago == "latest"
+      stories = stories.order("published_at DESC").limit(3)
+    elsif time_ago
+      stories = stories.order("comments_count DESC").
+        where("published_at > ?", time_ago).
+        limit(6)
+    else
+      stories = stories.order("last_comment_at DESC").
+        where("published_at > ?", 5.days.ago).
+        limit(3)
+    end
+    stories.pluck(:path, :title, :comments_count, :created_at)
+  end
 
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
