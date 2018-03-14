@@ -266,14 +266,21 @@
 
   function initializeStripe() {
     var form = document.getElementById("credit-card-form");
+
     if (!form) {
       return false;
     }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      openStripeForm();
+    })
+
     var handler = StripeCheckout.configure({
       key: '<%= Rails.configuration.stripe[:publishable_key] %>',
       image: 'https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg',
       locale: 'auto',
-      token: function(token) {
+      token: function (token) {
         addHidden(form, 'stripe_token', token.id);
         if (form.amount && form.stripe_token) {
           form.submit();
@@ -282,8 +289,13 @@
         }
       }
     });
-    document.getElementById('custom-stripe-button').addEventListener('click', function(event) {
-      event.preventDefault();
+
+    document.getElementById('custom-stripe-button').addEventListener('click', function(e) {
+      e.preventDefault();
+      openStripeForm();
+    });
+
+    function openStripeForm() {
       if (getAmount() < 100) {
         document.getElementById('js-error').innerHTML = 'Amount has to be at least 1 dollar.';
       } else {
@@ -299,7 +311,7 @@
           zipCode: true,
         });
       }
-    });
+    }
     // Close Checkout on page navigation:
     window.addEventListener('popstate', function() {
       handler.close();
