@@ -137,7 +137,7 @@ class Article < ApplicationRecord
         ranking ["desc(positive_reactions_count)"]
       end
       add_replica "ordered_articles_by_published_at", inherit: true, per_environment: true do
-        ranking ["desc(published_at)"]
+        ranking ["desc(published_at_int)"]
       end
     end
   end
