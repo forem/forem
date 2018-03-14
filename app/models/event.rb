@@ -2,7 +2,7 @@ class Event < ApplicationRecord
   mount_uploader :cover_image, CoverImageUploader
   before_validation :evaluate_markdown
 
-  validates :title, length: { maximum: 45 }
+  validates :title, length: { maximum: 90 }
   validates :location_url, url: { allow_blank: true, schemes: ["https", "http"] }
   validate :end_time_after_start
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/

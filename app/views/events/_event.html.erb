@@ -1,14 +1,14 @@
 <style>
   .container .event {
-    text-align: justify;
     padding: 20px;
     border: solid 2px #66e2d5;;
     border-radius: 3px; 
     margin: 50px auto;
     box-shadow: 5px 8px 0px #ccfff9;
-    font-size: 18px;
+    font-size: 17px;
     max-width: 700px;
     font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    line-height: 145%;
   }
 
   .container .event-image {
@@ -23,11 +23,16 @@
     left: 1px;
   }
   .event .event-details p {
-    margin: 0px
+    margin: 5px;
   }  
+
+  .event .event-description p {
+    text-align: justify;
+  }
   .event .event-details h3 {
     margin: 0 0 .5em 0;
     font-weight: 800;
+    font-size: 1.11em;
   }  
   
   @media screen and (max-width: 900px) {
@@ -54,7 +59,7 @@
         Date: <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').strftime("%b %d %Y") %>
         <br>
       <% end %>
-      Time: <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %> - <%= event.ends_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %> EST
+      Time: <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %> - <%= event.ends_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %> EDT
       <br>
       Location: <a href="<%= event.location_url %>"><%= event.location_name %></a> 
     </p>

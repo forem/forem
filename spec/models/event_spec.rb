@@ -3,15 +3,15 @@ require 'rails_helper'
 RSpec.describe Event, type: :model do
   let(:event) { create(:event) }
 
-  it "rejects title with over 45 characters" do
-    event.title = Faker::Lorem.characters(46)
+  it "rejects title with over 90 characters" do
+    event.title = Faker::Lorem.characters(100)
     expect(event).not_to be_valid
   end
 
   it "rejects invalid http url" do
     event.location_url = "dev.to"
     expect(event).not_to be_valid
-  end 
+  end
 
   it "rejects ends times that are earlier than start times" do
     event.ends_at = Time.now - 50000
