@@ -16,7 +16,7 @@ class StripeSubscriptionsController < ApplicationController
   rescue Stripe::CardError, Stripe::InvalidRequestError => e
     logger.error("Stripe Error - #{e.message} - #{current_user.email}")
     message = if e.message.include?("This customer has no attached payment source")
-                "Something went wrong! Please try again or contact members@dev.to"
+                "Something went wrong! Please try again or contact members@dev.to."
               else
                 e.message
               end
