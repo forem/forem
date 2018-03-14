@@ -4,7 +4,7 @@
 </div>
 <div>
     <%= f.label :title %>
-    <%= f.text_field :title, maxlength: 45, size: 40, required: true %>
+    <%= f.text_field :title, maxlength: 90, size: 40, required: true %>
 </div>
 <div>
     <%= f.label :category %>
@@ -13,12 +13,12 @@
 </div>   
 <div>
 <%= f.label :starts_at %>
-<%= f.datetime_select :starts_at, required: true, include_blank: true %> UTC Time Only (5 hours ahead of eastern time)
+<%= f.datetime_select :starts_at, required: true, include_blank: true %> UTC Time Only (4 hours ahead of eastern time)
 </div>
 
 <div>
 <%= f.label :ends_at %>
-<%= f.datetime_select :ends_at, required: true, include_blank: true %> UTC Time Only (5 hours ahead of eastern time)
+<%= f.datetime_select :ends_at, required: true, include_blank: true %> UTC Time Only (4 hours ahead of eastern time)
 </div>    
 <div>
     <%= f.label :location_name %>
