@@ -9,13 +9,12 @@ class AuthorizationService
   def get_user
     identity = build_identity
     return signed_in_resource if user_identity_exists(identity)
-
     user = proper_user(identity)
-    if user.nil?
-      user = build_user(identity)
-    else
-      user = update_user(user)
-    end
+    user = if user.nil?
+             build_user(identity)
+           else
+             update_user(user)
+           end
     set_identity(identity, user)
     user.skip_confirmation!
     user
@@ -32,12 +31,12 @@ class AuthorizationService
     end
   end
 
-  def should_see_onboarding
-    cta_variant != nil &&
-              (cta_variant == "navbar_basic" ||
-                cta_variant&.include?("notifications") ||
-                cta_variant&.include?("welcome-widget") ||
-                cta_variant&.include?("in-feed-cta"))
+  def see_onboarding?
+    !cta_variant.nil? &&
+      (cta_variant == "navbar_basic" ||
+        cta_variant&.include?("notifications") ||
+        cta_variant&.include?("welcome-widget") ||
+        cta_variant&.include?("in-feed-cta"))
   end
 
   def build_identity
@@ -47,19 +46,19 @@ class AuthorizationService
     identity.auth_data_dump = auth
     identity.save
     identity
-  end  
+  end
 
   def build_user(identity)
     user = User.where("#{identity.provider}_username" => auth.info.nickname).first
     if user.nil?
       user = User.new(
         name: auth.extra.raw_info.name,
-        remote_profile_image_url: (auth.info.image || "").gsub("_normal",""),
+        remote_profile_image_url: (auth.info.image || "").gsub("_normal", ""),
         github_username: (auth.info.nickname if auth.provider == "github"),
         signup_cta_variant: cta_variant,
         email: auth.info.email || "",
         twitter_username: (auth.info.nickname if auth.provider == "twitter"),
-        password: Devise.friendly_token[0,20]
+        password: Devise.friendly_token[0, 20],
       )
       if user.name.blank?
         user.name = auth.info.nickname
@@ -68,11 +67,7 @@ class AuthorizationService
       user.remember_me!
       user.remember_me = true
       add_social_identity_data(user)
-      if should_see_onboarding
-        user.saw_onboarding = false
-      else
-        user.saw_onboarding = true
-      end
+      user.saw_onboarding = !see_onboarding?
       user.save!
     end
     user
@@ -90,7 +85,7 @@ class AuthorizationService
     add_social_identity_data(user)
     user.save
     user
-  end  
+  end
 
   def proper_user(identity)
     if signed_in_resource
@@ -112,16 +107,5 @@ class AuthorizationService
   def user_identity_exists(identity)
     signed_in_resource &&
       Identity.where(provider: identity.provider, user_id: signed_in_resource.id).any?
-  end
-
-  def add_social_identity_data(user)
-    return unless auth && auth.provider && auth.extra && auth.extra.raw_info
-    if auth.provider == "twitter"
-      user.twitter_created_at = auth.extra.raw_info.created_at
-      user.twitter_followers_count = auth.extra.raw_info.followers_count.to_i
-      user.twitter_following_count = auth.extra.raw_info.friends_count.to_i
-    else
-      user.github_created_at = auth.extra.raw_info.created_at
-    end
   end
 end

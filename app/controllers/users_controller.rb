@@ -73,8 +73,9 @@ class UsersController < ApplicationController
     user = User.find(params[:user_id])
     raise unless current_user.organization_id == user.organization_id
     user.update(org_admin: true)
+    user.add_role :analytics_beta_tester if user.organization.approved
     redirect_to "/settings/organization",
-      notice: "That user is now an admin."
+      notice: "#{user.name} is now an admin."
   end
 
   def remove_org_admin
@@ -84,15 +85,16 @@ class UsersController < ApplicationController
     raise unless current_user.organization_id == user.organization_id
     user.update(org_admin: false)
     redirect_to "/settings/organization",
-      notice: "That user is no longer an admin."
+      notice: "#{user.name} is no longer an admin."
   end
 
   def remove_from_org
     raise unless current_user.org_admin
     raise if current_user.id == params[:user_id]
-    User.find(params[:user_id]).update(organization_id: nil)
+    user = User.find(params[:user_id])
+    user.update(organization_id: nil)
     redirect_to "/settings/organization",
-      notice: "That user is no longer an admin."
+      notice: "#{user.name} is no longer part of your organization."
   end
 
   def signout_confirm; end
