@@ -1,14 +1,23 @@
 class GithubReposController < ApplicationController
   def create
     @client = create_octokit_client
-    @repo = GithubRepo.find_or_create(github_repo_params[:url], fetched_repo_params)
-    redirect_to "/settings/integrations", notice: "GitHub repo added"
+    @repo = GithubRepo.find_or_create(fetched_repo_params)
+    if @repo.valid?
+      redirect_to "/settings/integrations", notice: "GitHub repo added"
+    else
+      redirect_to "/settings/integrations",
+        error: "There was an error adding your Github repo"
+    end
   end
 
   def update
     @repo = GithubRepo.find(params[:id])
-    @repo.update(featured: false)
-    redirect_to "/settings/integrations", notice: "GitHub repo added"
+    if @repo.update(featured: false)
+      redirect_to "/settings/integrations", notice: "GitHub repo added"
+    else
+      redirect_to "/settings/integrations",
+        error: "There was an error removing your Github repo"
+    end
   end
 
   private

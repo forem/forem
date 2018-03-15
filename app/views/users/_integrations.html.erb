@@ -2,7 +2,7 @@
 <% if @client %>
   <div class="github-repos">
     <% @client.repositories.each do |repo| %>
-      <% if (user_repo = GithubRepo.find_by_name(repo.name)) && user_repo.featured %>
+      <% if (user_repo = GithubRepo.find_by(github_id_code: repo.id)) && user_repo.featured %>
         <div class="github-repo-row github-repo-row-selected">
           <div class="github-repo-row-name">
             <%= repo.name %> <%= "<span class='github-repo-fork'>fork</span>".html_safe if repo.fork %>

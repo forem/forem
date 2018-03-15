@@ -29,14 +29,14 @@ class UsersController < ApplicationController
     @user = current_user
     @tab_list = tab_list(@user)
     @tab = params["user"]["tab"] || "profile"
-      if @user.update(user_params)
-        RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
-        notice = "Your profile was successfully updated."
-        follow_hiring_tag(@user)
-        redirect_to "/settings/#{@tab}", notice: notice
-      else
-        render :edit
-      end
+    if @user.update(user_params)
+      RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
+      notice = "Your profile was successfully updated."
+      follow_hiring_tag(@user)
+      redirect_to "/settings/#{@tab}", notice: notice
+    else
+      render :edit
+    end
   end
 
   def onboarding_update
