@@ -5,7 +5,7 @@ RSpec.describe "GithubRepos", type: :request do
   let(:repo) { build(:github_repo, user_id: user.id) }
   let(:my_ocktokit_client) { instance_double(Octokit::Client) }
   let(:stubbed_github_repos) do
-    [OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url))]
+    [OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: Faker::Internet.url))]
   end
 
   before do
