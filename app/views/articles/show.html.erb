@@ -110,7 +110,7 @@
         <% if @user.github_username.present? %>
           <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
         <% end %>
-        <span class="published-at" itemprop="datePublished"><%= @article.published_at.strftime("%b %d, %Y") if @article.published_at %></span>
+        <span class="published-at" itemprop="datePublished"><%= @article.readable_publish_date if @article.published_at %></span>
         <% if @second_user.present? %>
           <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
         <% end %>
@@ -120,7 +120,7 @@
         <% if should_show_updated_on?(@article) %>
           <span class="published-at updated-at"><em>Updated on <span itemprop="dateModified"><%= @article.edited_at.strftime("%b %d, %Y") if @article.edited_at %></span> </em></span>
         <% elsif should_show_crossposted_on?(@article) %>
-          <span class="published-at updated-at"><em>Crossposted from <a href="<%= @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.feed_source_url) %></a> on <span class="posted-date-inline"><%= @article.crossposted_at.strftime("%b %d, %Y") if @article.crossposted_at %></span></em></span>
+          <span class="published-at updated-at"><em>Originally published at <a href="<%= @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.feed_source_url) %></a> on <span class="posted-date-inline"><%= @article.published_at.strftime("%b %d, %Y") if @article.crossposted_at %></span></em></span>
         <% end %>
         <span class="action-space" id="action-space"></span>
       </h3>
