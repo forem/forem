@@ -6,12 +6,13 @@
     <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">Followers (<%= @user.followers_count %>)</a>
     <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">Following (<%= @user.following_users_count %>)</a>
   </div>
-
+<% if @user.org_admin && @user.organization %>
+  <h1>
+    <a href="/dashboard" class=<%= "active" if params[:which].blank? %>>MY POSTS</a>
+    <a href="/dashboard/organization" class=<%= "active" if params[:which] == "organization" %>><%= @user.organization.name.upcase %> POSTS</a>
+  </h1>
+<% end %>
   <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
-    <h1>
-      <a href="/dashboard">MY POSTS</a>
-      <a href="/dashboard/organization" class="active"><%= @user.organization.name.upcase %> POSTS</a>
-    </h1>
       <% if current_user.can_view_analytics? %>
         <div class="dashboard-analytics-header" id="dashboard-analytics-header">
           <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
@@ -27,8 +28,7 @@
             <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
             <% if article.published && current_user.has_role?(:analytics_beta_tester) %>
               <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
-            <% end%>
-
+            <% end %>
           </div>
           <%= form_for(article) do |f| %>
             <input type="hidden" name="destination" value="/dashboard" />
@@ -50,13 +50,7 @@
         </a>
       </div>
     <% end %>
-  <% elsif @articles.any?%>
-    <% if @user.org_admin && @user.organization %>
-      <h1>
-        <a href="/dashboard" class="active">MY POSTS</a>
-        <a href='/dashboard/organization'><%= @user.organization.name.upcase %> POSTS</a>
-      </h1>
-    <% end %>
+  <% elsif @articles.any? %>
     <% if current_user.can_view_analytics? %>
       <div class="dashboard-analytics-header" id="dashboard-analytics-header">
         <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
@@ -79,7 +73,7 @@
           <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
           <% if article.published && current_user.has_role?(:analytics_beta_tester) %>
             <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
-          <% end%>
+          <% end %>
         </div>  
       </div>
     <% end %>

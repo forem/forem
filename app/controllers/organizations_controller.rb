@@ -8,7 +8,8 @@ class OrganizationsController < ApplicationController
     @organization = Organization.new(organization_params)
     if @organization.save
       current_user.update(organization_id: @organization.id, org_admin: true)
-      redirect_to "/settings/organization", notice: "Your organization was successfully created and you are an admin."
+      redirect_to "/settings/organization", notice:
+        "Your organization was successfully created and you are an admin."
     else
       @tab = "switch-organizations" if @user.has_role?(:switch_between_orgs)
       render template: "users/edit"
@@ -23,9 +24,9 @@ class OrganizationsController < ApplicationController
     raise unless @user.org_admin
     @organization = @user.organization
     if @organization.update(organization_params)
-      redirect_to "/settings/organization", notice: 'Your organization was successfully updated.'
+      redirect_to "/settings/organization", notice: "Your organization was successfully updated."
     else
-      render template: 'users/edit'
+      render template: "users/edit"
     end
   end
 
@@ -34,7 +35,7 @@ class OrganizationsController < ApplicationController
     @organization = current_user.organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
-    redirect_to "/settings/organization", notice: 'Your org secret was updated'
+    redirect_to "/settings/organization", notice: "Your org secret was updated"
   end
 
   private
@@ -55,12 +56,12 @@ class OrganizationsController < ApplicationController
                                           :text_color_hex,
                                           :twitter_username,
                                           :github_username).
-                                          transform_values do |value|
-                                            if value.class.name == "String"
-                                              ActionController::Base.helpers.strip_tags(value)
-                                            else
-                                              value
-                                            end
-                                          end
+      transform_values do |value|
+        if value.class.name == "String"
+          ActionController::Base.helpers.strip_tags(value)
+        else
+          value
+        end
+      end
   end
 end

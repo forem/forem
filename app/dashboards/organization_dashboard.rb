@@ -30,7 +30,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     users: Field::HasMany,
-
+    approved: Field::Boolean,
   }
 
   # COLLECTION_ATTRIBUTES
@@ -42,7 +42,8 @@ class OrganizationDashboard < Administrate::BaseDashboard
     :profile_image,
     :name,
     :url,
-    :twitter_username
+    :twitter_username,
+    :approved,
   ]
 
   # SHOW_PAGE_ATTRIBUTES
@@ -70,6 +71,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     :state,
     :zip_code,
     :country,
+    :approved,
   ]
 
   def display_resource(organization)
