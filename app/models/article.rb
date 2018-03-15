@@ -57,7 +57,7 @@ class Article < ApplicationRecord
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url, :published_at)
+    :video_thumbnail_url, :video_closed_caption_track_url, :published_at, :crossposted_at)
   }
 
   scope :limited_columns_internal_select, -> {
@@ -301,10 +301,11 @@ class Article < ApplicationRecord
   end
 
   def readable_publish_date
+    relevant_date = crossposted_at.present? ? crossposted_at : published_at
     if published_at && published_at.year == Time.now.year
-      published_at&.strftime("%b %e")
+      relevant_date&.strftime("%b %e")
     else
-      published_at&.strftime("%b %e '%y")
+      relevant_date&.strftime("%b %e '%y")
     end
   end
 
