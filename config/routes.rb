@@ -76,6 +76,7 @@ Rails.application.routes.draw do
   resources :github_repos, only: [:create, :update]
   resources :buffered_articles, only: [:index]
   resources :events, only: [:index, :show]
+  resources :additional_content_boxes, only: [:index]
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   # resources :users

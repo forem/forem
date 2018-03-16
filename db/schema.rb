@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180304151124) do
+ActiveRecord::Schema.define(version: 20180316174324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20180304151124) do
     t.string "video_source_url"
     t.string "video_thumbnail_url"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
+    t.boolean "boosted", default: false
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["published_at"], name: "index_articles_on_published_at"
@@ -363,6 +364,7 @@ ActiveRecord::Schema.define(version: 20180304151124) do
     t.datetime "updated_at", null: false
     t.string "url"
     t.string "zip_code"
+    t.string "tag_line"
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
@@ -615,6 +617,7 @@ ActiveRecord::Schema.define(version: 20180304151124) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
+    t.boolean "permit_adjacent_sponsors", default: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

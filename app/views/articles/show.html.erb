@@ -180,7 +180,14 @@
     </div>
   <% end %>
 </div>
-<% cache("article-bottom-content-#{@article.id}", :expires_in => 12.hours) do %>
+<% cache("article-bottom-content-#{@article.cached_tag_list_array.sort}", :expires_in => 6.hours) do %>
+  <% if @classic_article %>
+    <%= render "additional_content_boxes/article_box",
+      article: @classic_article,
+      classification: "Classic Post from #{@classic_article.readable_publish_date}",
+      follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
+  <% end %>
+  <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
   <%= render 'articles/bottom_content' %>
 <% end %>
 </div>
