@@ -30,9 +30,16 @@ RSpec.describe MarkdownFixer do
     end
 
     it "handles complex title" do
-      legacy_title = %(Book review: "#{sample_title}", part 1 I'm #deep)
-      expected_title = "\"Book review: \\\"#{sample_title}\\\", part 1 I'm #deep\""
+      legacy_title = %(Book review: "#{sample_title}", part 1 I'm #testing)
+      expected_title = "\"Book review: \\\"#{sample_title}\\\", part 1 I'm #testing\""
       test = described_class.fix_all(create_sample_markdown(legacy_title))
+      expect(test).to eq create_sample_markdown(expected_title)
+    end
+
+    it "handles title with \r\n" do
+      title = "\"hmm\"\r\n"
+      expected_title = "\"hmm\"\n"
+      test = described_class.fix_all(create_sample_markdown(title))
       expect(test).to eq create_sample_markdown(expected_title)
     end
   end
