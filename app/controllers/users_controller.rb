@@ -182,6 +182,7 @@ class UsersController < ApplicationController
                     prefer_language_fr
                     prefer_language_it
                     display_sponsors
+                    permit_adjacent_sponsors
                     feed_admin_publish_permission]
     accessible << %i[password password_confirmation] unless params[:user][:password].blank?
     params.require(:user).

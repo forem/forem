@@ -52,14 +52,18 @@
 
 <h2>Sponsors</h2>
 <h4 style="font-weight:400">
-  You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence unobtrusive, but feel free to use this setting if you wish.
+  You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence constructive to the community, but feel free to use this setting if you wish.
 </h4>
 
 <%= form_for(@user) do |f| %>
   <div class="checkbox-field">
     <div class="sub-field">
       <%= f.check_box :display_sponsors %>
-      <%= f.label :display_sponsors, "Display Sponsors" %>
+      <%= f.label :display_sponsors, "Display Sponsors (When browsing)" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :permit_adjacent_sponsors %>
+      <%= f.label :permit_adjacent_sponsors, "Permit Nearby Sponsors (When publishing)" %>
     </div>
   </div>
   <div class="field">

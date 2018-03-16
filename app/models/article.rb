@@ -67,7 +67,7 @@ class Article < ApplicationRecord
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
     :published_from_feed, :crossposted_at, :published_at, :featured_number,
-    :live_now, :last_buffered, :facebook_last_buffered, :created_at
+    :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown
     )
   }
 
@@ -329,7 +329,7 @@ class Article < ApplicationRecord
   end
 
   def evaluate_front_matter(front_matter)
-    token_msg = "From the DEV community. Sharing ideas that makes us all better developers."
+    token_msg = body_text[0..80] + "..."
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
@@ -402,7 +402,7 @@ class Article < ApplicationRecord
   end
 
   def set_last_comment_at
-    self.last_comment_at = Time.now if published && last_comment_at < 30.days.ago
+    self.last_comment_at = published_at.present? if published_at.present? && last_comment_at.blank?
   end
 
   def title_to_slug

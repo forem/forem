@@ -1,0 +1,17 @@
+<% if @boosted_article %>
+  <%= render "additional_content_boxes/article_box",
+    article: @boosted_article,
+    classification: "From one of our Community Sponsors",
+    follow_cue: @boosted_article.organization.tag_line || @boosted_article.organization.summary %>
+<% elsif @alt_classic %>
+  <%= render "additional_content_boxes/article_box",
+    article: @alt_classic,
+    classification: "Classic Post from #{@alt_classic.readable_publish_date}",
+    follow_cue: "Follow <a href='#{@alt_classic.user.path}'>@#{@alt_classic.user.username}</a> to see more of their posts in your feed." %>
+<% end %>
+<% if @for_user_article %>
+  <%= render "additional_content_boxes/article_box",
+    article: @for_user_article,
+    classification: "One More You Might Like",
+    follow_cue: "Follow <a href='#{@for_user_article.user.path}'>@#{@for_user_article.user.username}</a> to see more of their posts in your feed." %>
+<% end %>

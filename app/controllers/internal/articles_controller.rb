@@ -53,6 +53,22 @@ class Internal::ArticlesController < Internal::ApplicationController
         page(params[:page]).
         limited_columns_internal_select.
         per(50)
+    when "classic-candidate"
+      @articles = Article.where("positive_reactions_count > ?", ClassicArticle.new.minimum_reaction_count).
+        includes(:user).
+        order("positive_reactions_count DESC").
+        where(featured: false).
+        page(params[:page]).
+        per(100).
+        limited_columns_internal_select
+    when "classic"
+      @articles = Article.where("positive_reactions_count > ?", ClassicArticle.new.minimum_reaction_count).
+        includes(:user).
+        order("positive_reactions_count DESC").
+        where(featured: true).
+        page(params[:page]).
+        per(100).
+        limited_columns_internal_select
     else #MIX
       @articles = Article.
         where(published: true).
@@ -96,6 +112,7 @@ class Internal::ArticlesController < Internal::ApplicationController
   def article_params
     params.require(:article).permit(:featured,
                                     :social_image,
+                                    :body_markdown,
                                     :approved,
                                     :live_now,
                                     :main_image_background_hex_color,

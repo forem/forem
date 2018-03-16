@@ -1,6 +1,16 @@
 function initializeSponsorshipVisibility() {
-  var el = document.getElementById("sponsorship-widget");
+  var el = document.getElementById("sponsorship-widget") || document.getElementById("partner-content-display");
   var user = userData();
+  if (el) {
+    setTimeout(function(){
+      if (window.ga) {
+        if (document.querySelectorAll('[data-partner-seen]').length === 0) {
+          ga('send', 'event', 'view', 'sponsor displayed on page', el.dataset.details, null);
+          el.dataset.partnerSeen = "true";
+        }
+      }
+    }, 400)
+  }
   if (el && user && user.display_sponsors){
     el.classList.add("showing");
     setTimeout(function(){

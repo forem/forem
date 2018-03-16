@@ -43,6 +43,7 @@ class OrganizationsController < ApplicationController
   def organization_params
     params.require(:organization).permit(:name,
                                           :summary,
+                                          :tag_line,
                                           :slug,
                                           :url,
                                           :proof,

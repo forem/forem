@@ -1,0 +1,30 @@
+      <h2><a href="<%= article.path %>" class="<%= 'partner-link' if organization %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a></h2>
+      <div class="content-author">
+        <a href="<%= article.user.path %>"> 
+          <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(50)%>" alt="<%= article.user.username %> profile image"/>
+          <span><%= article.user.name %></span>
+        </a>
+      </div>
+      <p>
+        <a href="<%= article.path %>" class="<%= 'partner-link' if organization %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
+          <%= article.description %>
+        </a>
+        <div class="engagement-count">
+          <% if article.positive_reactions_count > 0 %>
+            <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /> <%= article.positive_reactions_count %>
+          <% end %>
+          <% if article.comments_count > 0 %>
+            <img src="<%= asset_path("comments-bubble.png") %>" alt="Reactions" class="comments-bubble"/> <%= article.comments_count %>
+          <% end %>
+        </div>
+      </p>
+      <a href="<%= article.path %>" class="cta<%= ' partner-link' if organization %>" data-details="<%= organization&.slug %>__<%= article.slug %>">READ POST</a>
+      <button
+        class="article-engagement-count bookmark-engage<%= ' partner-link' if organization %>"
+        data-reactable-id="<%= article.id %>"
+        aria-label="Save to reading list"
+        data-details="<%= organization&.slug %>__<%= article.slug %>"
+        title="Save to reading list">
+        <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
+        <span class="bm-initial">SAVE FOR LATER</span>
+      </button>

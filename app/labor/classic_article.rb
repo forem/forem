@@ -1,35 +1,53 @@
 class ClassicArticle
-  attr_accessor :user
-  def initialize(user)
-    @user = user
+  attr_accessor :input, :not_ids
+  def initialize(input=nil, options={})
+    @input = input
+    @not_ids = options[:not_ids]
   end
 
   def get
-    possible_articles = []
-    5.times do
-      possible_articles << cached_qualifying_article
+    if rand(5) == 1
+      random_high_quality_article
+    else
+      qualifying_articles(random_supported_tag_names).where.not(id: not_ids).compact.sample ||
+        random_high_quality_article
     end
-    possible_articles.compact.sample
   end
 
-  def cached_qualifying_article
-    Rails.cache.fetch("classic-article-for-tag-#{random_supported_tag_name}_#{rand(0..1)}", expires_in: 45.minutes) do
-      Article.tagged_with(random_supported_tag_name).
+  def qualifying_articles(tag_names)
+    tag_name = tag_names.sample
+    Rails.cache.fetch("classic-article-for-tag-#{tag_name}}", expires_in: 45.minutes) do
+      articles = Article.tagged_with(tag_name).
+        includes(:user).
         where(published: true, featured: true).
         where("positive_reactions_count > ?", minimum_reaction_count).
         where("published_at > ?", 10.months.ago).
-        order("RANDOM()").
-        first
+        order("RANDOM()")
     end
   end
 
-  def random_supported_tag_name
-    user.decorate.cached_followed_tags.where(supported: true).where.not(name: "ama").sample&.name
+  def random_high_quality_article
+    Article.where(published: true, featured: true).
+      where("positive_reactions_count > ?", 75).
+      includes(:user).
+      order("RANDOM()").
+      where.not(id: not_ids).
+      first
+  end
+
+  def random_supported_tag_names
+    if input.class.name == "User"
+      input.decorate.cached_followed_tags.where(supported: true).where.not(name: "ama").pluck(:name)
+    elsif input.class.name == "Article"
+      Tag.where(supported: true, name: input.decorate.cached_tag_list_array).where.not(name: "ama").pluck(:name)
+    else
+      ["discuss"]
+    end
   end
 
   def minimum_reaction_count
     if Rails.env.production?
-      36
+      45
     else
       1
     end

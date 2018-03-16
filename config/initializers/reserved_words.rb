@@ -10,6 +10,7 @@
   "users",
   "settings",
   "about",
+  "additional_content_boxes",
   "features",
   "privacy",
   "terms",
