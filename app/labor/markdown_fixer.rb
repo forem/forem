@@ -10,7 +10,7 @@ class MarkdownFixer
     end
 
     def add_quotes_to_title(markdown)
-      markdown.gsub(/title:\s?(.*?)\n/m) do |target|
+      markdown.gsub(/title:\s?(.*?)(\r\n|\n)/m) do |target|
         # $1 is the captured group (.*?)
         captured_title = $1
         # The query below checks if the whole title is wrapped in
