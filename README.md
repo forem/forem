@@ -70,6 +70,12 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 2. `bundle install`
 3. `bin/yarn`
 4. `bin/setup`
+5. Either seed the data from `seed.rb` or [download our development data from google Drive.](https://drive.google.com/file/d/1DawdTT26NyQDF5o9WZXmew8Rbp027ksl/view?usp=sharing) (~100 MB)
+	- __`seed.rb:`__ Uncomment the code, and run `bin/rails db:seed`
+	- __`Downloaded data:`__
+		1. Run `psql --help` to get your `[USERNAME]` at the botom of the log.
+		2. Run `psql -u [USERNAME] PracticalDeveloper_development < 100mb.dump` If you're using a different database name, replace `PracticalDeveloper_development` with your database name.
+		3. Once done, you can delete `100mb.dump`.
 6. Set up your environment variables/secrets
     - Create a `config/application.yml` file to store development secrets. This is a personal file that is ignored in git.
     - Copy [`config/sample_application.yml`](config/sample_application.yml) in order to create a valid `application.yml`
@@ -79,14 +85,14 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 #### Starting the application
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
 
-- Run `bin/startup` to start the server, Webpack, and our job runner `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the hood.
+- Run __`bin/startup`__ to start the server, Webpack, and our job runner `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the hood.
 - `alias start="bin/startup"` makes this even faster. 😊
-- If you're using `pry` for debugging in Rails, note that using `foreman` and `pry` together works, but it's not as clean as `bin/rails server`.
+- If you're using __`pry`__ for debugging in Rails, note that using `foreman` and `pry` together works, but it's not as clean as `bin/rails server`.
 
-Here are some singleton commands you may need, usually in a separate instance/tab of your Terminal.
+Here are some singleton commands you may need, usually in a separate instance/tab of your shell.
 
-- Running the job server -- this is for mostly for notifications and emails: `bin/rails jobs:work`
-- Clearing jobs (in case you don't want to wait for the backlog of jobs): `bin/rails jobs:clear`
+- Running the job server (if using `bin/rails server`) -- this is for mostly for notifications and emails: __`bin/rails jobs:work`__
+- Clearing jobs (in case you don't want to wait for the backlog of jobs): __`bin/rails jobs:clear`__
 
 Current gotchas: potential environment issues with external services need to be worked out.
 
