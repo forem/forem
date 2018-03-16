@@ -24,6 +24,11 @@ class ArticleApiIndexService
   private
 
   def username_articles
+    num = if @state == "all"
+            1000
+          else
+            30
+          end
     if user = User.find_by_username(username)
       user.articles.
         where(published: true).
