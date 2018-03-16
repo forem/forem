@@ -167,7 +167,7 @@ class Onboarding extends Component {
     const onclick = this.handleNextButton;
     return (
       <button className="button cta" onClick={this.handleNextButton}>
-        {this.state.pageNumber < 3 ? 'NEXT' : <a href="/welcome">LET'S GO</a>}
+        {this.state.pageNumber < 3 ? 'NEXT' : <a href="/welcome" data-no-instant>LET'S GO</a>}
       </button>
     );
   }

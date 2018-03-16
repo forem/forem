@@ -23,7 +23,6 @@ class OrganizationDashboard < Administrate::BaseDashboard
     city: Field::String,
     state: Field::String,
     zip_code: Field::String,
-    country: Field::String,
     bg_color_hex: Field::String,
     text_color_hex: Field::String,
     country: Field::String,
