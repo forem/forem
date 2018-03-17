@@ -402,7 +402,7 @@ class Article < ApplicationRecord
   end
 
   def set_last_comment_at
-    self.last_comment_at = published_at.present? if published_at.present? && last_comment_at.blank?
+    self.last_comment_at = published_at if published_at.present? && last_comment_at.blank?
   end
 
   def title_to_slug
