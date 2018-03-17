@@ -28,7 +28,7 @@ class ClassicArticle
 
   def random_high_quality_article
     Article.where(published: true, featured: true).
-      where("positive_reactions_count > ?", 75).
+      where("positive_reactions_count > ?", minimum_hq_reaction_count).
       includes(:user).
       order("RANDOM()").
       where.not(id: not_ids).
@@ -48,6 +48,14 @@ class ClassicArticle
   def minimum_reaction_count
     if Rails.env.production?
       45
+    else
+      1
+    end
+  end
+
+  def minimum_hq_reaction_count
+    if Rails.env.production?
+      75
     else
       1
     end
