@@ -6,12 +6,12 @@
 <% elsif @alt_classic %>
   <%= render "additional_content_boxes/article_box",
     article: @alt_classic,
-    classification: "Classic Post from #{@alt_classic.readable_publish_date}",
+    classification: "Classic DEV Post from #{@alt_classic.readable_publish_date}",
     follow_cue: "Follow <a href='#{@alt_classic.user.path}'>@#{@alt_classic.user.username}</a> to see more of their posts in your feed." %>
 <% end %>
 <% if @for_user_article %>
   <%= render "additional_content_boxes/article_box",
     article: @for_user_article,
-    classification: "One More You Might Like",
+    classification: "Another Post You Might Like",
     follow_cue: "Follow <a href='#{@for_user_article.user.path}'>@#{@for_user_article.user.username}</a> to see more of their posts in your feed." %>
 <% end %>

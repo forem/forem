@@ -90,32 +90,42 @@
     color: $black;
   }
   .content-classification{
-    margin: 30px 20px 0px;
-    font-weight: bold;
+    margin: 20px 20px -5px;
     text-align: left;
-    font-size:0.78em;
+    font-size:0.8em;
+    @media screen and ( min-width: 680px ){
+      margin: 30px 20px 0px;
+    }
     .content-classification-text{
-      background: lighten($yellow, 12%);
+      background: lighten($yellow, 16%);
+      border: 1px solid darken($yellow, 15%);
+      box-shadow: 3px 4px 0px darken($yellow, 15%);
       display: inline-block;
-      padding: 6px 25px;
+      padding: 3px 25px;
+      font-family: $helvetica-condensed;
+      color: $dark-gray;
     }
   }
   .main-content-display{
     padding:20px 0px;
-    width: calc(90% - 60px);
+    width: calc(98% - 60px);
     padding: 30px;
-    margin-bottom: 60px;
+    margin-bottom: 10px;
     @media screen and ( min-width: 680px ){
       float: left;
-      width: calc(97% - 365px);
+      width: calc(97% - 345px);
       border-right: 2px solid $light-medium-gray;
       margin-left: 3%;
       margin-top:10px;
-      padding: 15px 45px 35px 15px;
+      padding: 15px 25px 35px 15px;
+      margin-bottom: 60px;
     }
     h2{
       margin:0px auto 10px;
-      font-size:2.2em;
+      font-size:1.55em;
+      @media screen and ( min-width: 680px ){
+        font-size:2.3em;
+      }
     }
     .content-author{
       
@@ -133,11 +143,15 @@
       margin-bottom: 30px;
     }
     .cta{
-      padding: 7px 20px;
-      font-size: 1.2em;
+      padding: 7px 9px;
       margin-top: 10px;
       margin-right: 3px;
       display: inline-block;
+      font-size: 0.95em;
+      @media screen and ( min-width: 680px ){
+        font-size: 1.2em;
+        padding: 7px 20px;
+      }
     }
     .engagement-count{
       font-family: $helvetica-condensed;
@@ -160,9 +174,13 @@
       color: white;
       letter-spacing: 1px;
       border: 0px;
-      font-size: 1.2em;
-      padding: 7px 16px;
+      padding: 7px 8px;
       margin-top: 10px;
+      font-size: 0.95em;
+      @media screen and ( min-width: 680px ){
+        font-size: 1.2em;
+        padding: 7px 16px;
+      }
       .bm-success{
         display: none;
       }
@@ -188,7 +206,7 @@
       display: block;
     }
     float: left;
-    width: 300px;
+    width: 280px;
     text-align:center;
     padding:20px 0px;
     .profile-pic-wrapper{
