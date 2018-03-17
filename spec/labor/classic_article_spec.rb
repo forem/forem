@@ -19,13 +19,6 @@ RSpec.describe ClassicArticle do
     expect(described_class.new(user).get).to eq nil
   end
 
-  it "does not return article if user does not follow" do
-    create(:reaction, user_id: user.id, reactable_id: article.id)
-    create(:reaction, user_id: user.id, reactable_id: article.id, category:"thinking")
-    create(:reaction, user_id: user.id, reactable_id: article.id, category:"unicorn")
-    expect(described_class.new(user).get).to eq nil
-  end
-
   it "returns single article if multiple qualify" do
     user.follow(tag)
     create(:reaction, user_id: user.id, reactable_id: article.id)
