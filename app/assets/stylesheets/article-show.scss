@@ -758,13 +758,17 @@ header{
   }
 }
 .showpage-signin-cta{
-  background: $yellow;
+  background: lighten($yellow, 16%);
+  border: 1px solid darken($yellow, 15%);
+  box-shadow: 5px 6px 0px darken($yellow, 15%);
   width: 660px;
   max-width:90%;
   margin: auto;
   text-align: center;
-  padding: 8px 5px;
-  margin-bottom: 8px;
+  padding: 25px 8px;
+  font-size: 1.05em;
+  line-height: 1.3em;
+  margin-bottom: 30px;
   a{
     color: $black;
     text-decoration: underline;

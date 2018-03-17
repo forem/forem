@@ -25,7 +25,7 @@
   </div>
 </div>
 <% unless user_signed_in? %>
-  <div class="showpage-signin-cta cta">
+  <div class="showpage-signin-cta cta" id="showpage-signin-cta">
     <a href="/">dev.to</a> is a community of <%= number_with_delimiter User.all.size %> amazing humans who code.
     <a href="/enter">Register now</a>.
   </div>
