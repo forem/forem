@@ -12,6 +12,9 @@ function initializeBaseTracking() {
     wait++;
     if (window.ga && ga.create) {
       ga('create', '<%= ENV["GA_TRACKING_ID"] %>', 'auto');
+      if (!checkUserLoggedIn()) {
+        ga('require', '<%= ENV["GA_OPTIMIZE_ID"] %>');
+      }
       ga('send', 'pageview', location.pathname + location.search);
       clearInterval(waitingOnGA);
     }
