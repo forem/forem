@@ -35,14 +35,14 @@ class ArticleApiIndexService
         includes(:user).
         order("published_at DESC").
         page(page).
-        per(30)
+        per(num)
     elsif organization = Organization.find_by_slug(username)
       organization.articles.
         where(published: true).
         includes(:user).
         order("published_at DESC").
         page(page).
-        per(30)
+        per(num)
     else
       not_found
     end
