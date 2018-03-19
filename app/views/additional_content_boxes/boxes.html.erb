@@ -16,5 +16,5 @@
     article: @for_user_article,
     classification: "for_user_article",
     classification_text: "Another Post You Might Like",
-    follow_cue: @boosted_article.organization&.tag_line || "Follow <a href='#{@for_user_article.user.path}'>@#{@for_user_article.user.username}</a> to see more of their posts in your feed." %>
+    follow_cue: @for_user_article.organization&.tag_line || "Follow <a href='#{@for_user_article.user.path}'>@#{@for_user_article.user.username}</a> to see more of their posts in your feed." %>
 <% end %>

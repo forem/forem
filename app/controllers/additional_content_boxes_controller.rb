@@ -5,7 +5,9 @@ class AdditionalContentBoxesController < ApplicationController
     @article = Article.find(articles_ids[0])
     @for_user_article = ClassicArticle.
       new(current_user || @article, {not_ids: articles_ids}).get
-    if (!user_signed_in? || current_user&.display_sponsors) && @article.user.permit_adjacent_sponsors
+    if (!user_signed_in? || current_user&.display_sponsors) &&
+        @article.user.permit_adjacent_sponsors && 
+        rand(2) == 1
       @boosted_article = BoostedArticle.
         new(current_user, @article, {not_ids: (articles_ids+[@for_user_article])}).get
     end
