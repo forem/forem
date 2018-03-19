@@ -122,8 +122,10 @@
 </div>
 
 
-<%= javascript_include_tag 'lib/js-yaml', async:true %>
-<%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', async:true %>
+<%= javascript_include_tag 'lib/js-yaml', async: true %>
+<%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', async: true %>
+<%= javascript_include_tag 'https://embed.runkit.com', async: true %>
+
 <script>
   var html,parsed;
 
@@ -212,6 +214,7 @@
           <%= YoutubeTag.script.html_safe %>
           <%= PodcastTag.script.html_safe %>
           <%= GistTag.special_script.html_safe %>
+          <%= RunkitTag.special_script.html_safe %>
       },150)
     }
 
