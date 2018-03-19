@@ -1,13 +1,19 @@
   <div class="container show-page-content-display"
     data-details="<%= article.organization&.slug %>__<%= article.slug %>"
-    id="<%= article.organization ? "partner-content-display" : "classic_article_#{article.id}"  %>">
+    id="<%= classification == "boosted" ? "partner-content-display" : "classic_article_#{article.id}"  %>">
     <div class="content-classification">
-      <span class="content-classification-text"><%= classification %></span>
+      <span class="content-classification-text"><%= classification_text %></span>
     </div>
     <div class="main-content-display">
-      <%= render "additional_content_boxes/article_content_area", article: article, organization: article.organization %>
+      <%= render "additional_content_boxes/article_content_area",
+        article: article,
+        classification: classification,
+        organization: article.organization %>
     </div>
     <div class="secondary-content-display">
-      <%= render "additional_content_boxes/article_followable_area", followable: article.organization || article.user, follow_cue: follow_cue %>
+      <%= render "additional_content_boxes/article_followable_area",
+        followable: article.organization || article.user,
+        classification: classification,
+        follow_cue: follow_cue %>
     </div>
   </div>

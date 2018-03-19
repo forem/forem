@@ -13,17 +13,24 @@ function initializeSponsorshipVisibility() {
   }
   if (el && user && user.display_sponsors){
     el.classList.add("showing");
-    setTimeout(function(){
-      if (window.ga) {
-        var links = document.getElementsByClassName("partner-link");
-        for(var i = 0; i < links.length; i++) {
-          links[i].onclick = function(event){
-            ga('send', 'event', 'click', 'click sponsor link', event.target.dataset.details, null);
-          }
-        }
-      }
-    },400)
+    listenForSponsorClick();
   } else if (el && user) {
     el.classList.remove("showing");
+  } else if (el) {
+    el.classList.add("showing");
+    listenForSponsorClick();
   }
+}
+
+function listenForSponsorClick() {
+  setTimeout(function(){
+    if (window.ga) {
+      var links = document.getElementsByClassName("partner-link");
+      for(var i = 0; i < links.length; i++) {
+        links[i].onclick = function(event){
+          ga('send', 'event', 'click', 'click sponsor link', event.target.dataset.details, null);
+        }
+      }
+    }
+ },400)
 }
