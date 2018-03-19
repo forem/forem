@@ -7,26 +7,30 @@
 <% end %>
 
 <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
-<%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', defer: true %>
-<script defer>
-  var waitingOnPostscribe = setInterval(function() {
-    if (typeof(postscribe) === "function") {
-      clearInterval(waitingOnPostscribe);
-      var els = document.getElementsByClassName("ltag_gist-liquid-tag");
-      for (var i = 0; i < els.length; i++) {
-        var current = els[i];
-        postscribe(current, current.firstElementChild.outerHTML, { beforeWrite: function(context) {
-          return function(text) {
-            if (context.childElementCount > 3) {
-              return "";
+  <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', defer: true %>
+  <script defer>
+    var waitingOnPostscribe = setInterval(function() {
+      if (typeof(postscribe) === "function") {
+        clearInterval(waitingOnPostscribe);
+        var els = document.getElementsByClassName("ltag_gist-liquid-tag");
+        for (var i = 0; i < els.length; i++) {
+          var current = els[i];
+          postscribe(current, current.firstElementChild.outerHTML, { beforeWrite: function(context) {
+            return function(text) {
+              if (context.childElementCount > 3) {
+                return "";
+              }
+              return text;
             }
-            return text;
-          }
-        }(current)});
+          }(current)});
+        }
       }
-    }
-  }, 500)
-</script>
+    }, 500)
+  </script>
+<% end %>
+
+<% if @article.processed_html.include? "runkit-element" %>
+  <%= javascript_include_tag 'https://embed.runkit.com' %>
 <% end %>
 
 <%= content_for :page_meta do %>
@@ -215,5 +219,6 @@
     <%= YoutubeTag.script.html_safe %>
     <%= PodcastTag.script.html_safe %>
     <%= GistTag.script.html_safe %>
+    <%= RunkitTag.script.html_safe %>
   </script>
 <% end %>

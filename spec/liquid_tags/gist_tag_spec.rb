@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe GistTag, type: :liquid_template do
   describe "#link" do
@@ -24,9 +24,9 @@ RSpec.describe GistTag, type: :liquid_template do
     end
 
     it "rejects invalid gist url" do
-      expect {
+      expect do
         generate_new_liquid("really_long_invalid_id")
-      }.to raise_error(StandardError)
+      end.to raise_error(StandardError)
     end
   end
 end
