@@ -1,4 +1,4 @@
-      <h2><a href="<%= article.path %>" class="<%= 'partner-link' if organization %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a></h2>
+      <h2><a href="<%= article.path %>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a></h2>
       <div class="content-author">
         <a href="<%= article.user.path %>"> 
           <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(50)%>" alt="<%= article.user.username %> profile image"/>
@@ -6,7 +6,7 @@
         </a>
       </div>
       <p>
-        <a href="<%= article.path %>" class="<%= 'partner-link' if organization %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
+        <a href="<%= article.path %>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
           <%= article.description %>
         </a>
         <div class="engagement-count">
@@ -18,13 +18,13 @@
           <% end %>
         </div>
       </p>
-      <a href="<%= article.path %>" class="cta<%= ' partner-link' if organization %>" data-details="<%= organization&.slug %>__<%= article.slug %>">READ POST</a>
+      <a href="<%= article.path %>" class="cta<%= ' partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">READ POST</a>
       <button
-        class="article-engagement-count bookmark-engage<%= ' partner-link' if organization %>"
+        class="article-engagement-count bookmark-engage<%= ' partner-link' if classification == "boosted" %>"
         data-reactable-id="<%= article.id %>"
         aria-label="Save to reading list"
-        data-details="<%= organization&.slug %>__<%= article.slug %>"
+        data-details="<%= organization&.slug %>__<%= article.slug %>__SAVE"
         title="Save to reading list">
-        <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
-        <span class="bm-initial">SAVE FOR LATER</span>
+        <span class="bm-success" data-details="<%= organization&.slug %>__<%= article.slug %>__SAVE"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
+        <span class="bm-initial" data-details="<%= organization&.slug %>__<%= article.slug %>__SAVE">SAVE FOR LATER</span>
       </button>

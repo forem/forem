@@ -13,12 +13,22 @@
   </div>
 <% else %>
   <div class="profile-pic-wrapper">
-      <a href="<%= followable.path %>" />
-    <img class="profile-image" src="<%= ProfileImage.new(followable).get(200) %>" style="border: 4px solid <%= followable.bg_color_hex %>" />
+      <a href="<%= followable.path %>"
+        class="<%= ' partner-link' if classification == "boosted" %>"
+        data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"/>
+    <img class="profile-image"
+      src="<%= ProfileImage.new(followable).get(200) %>"
+      data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"
+      style="border: 4px solid <%= followable.bg_color_hex %>" />
   </div>
   <div class="org-name">
-    <a href="<%= followable.path %>" /><%= followable.name %></a>
+    <a href="<%= followable.path %>"
+      class="<%= ' partner-link' if classification == "boosted" %>"
+      data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE" /><%= followable.name %></a>
   </div>
 <% end %>
-<button class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(followable)[:text] %>;background-color:<%=user_colors(followable)[:bg] %>" data-info='{"id":<%= followable.id%>,"className":"<%= followable.class.name %>"}'>&nbsp;</button>
+<button class="cta follow-action-button user-profile-follow-button"
+  style="color:<%= user_colors(followable)[:text] %>;background-color:<%=user_colors(followable)[:bg] %>"
+  data-info='{"id":<%= followable.id%>,"className":"<%= followable.class.name %>"}'
+  >&nbsp;</button>
 <div class="org-summary"><%= follow_cue&.html_safe || followable.summary %></div>

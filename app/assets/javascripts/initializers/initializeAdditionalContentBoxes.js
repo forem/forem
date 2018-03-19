@@ -10,6 +10,7 @@ function initializeAdditionalContentBoxes() {
           el.innerHTML = html;
           initializeReadingListIcons();
           initializeAllFollowButts();
+          initializeSponsorshipVisibility();
         })
       } else {
         // there's currently no errorCb.
