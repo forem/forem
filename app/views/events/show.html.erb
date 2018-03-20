@@ -1,4 +1,31 @@
-<% title "DEV EVENTS"%>
+<%= content_for :page_meta do %>
+  <% title "#{@event.title} - DEV" %>
+  <link rel="canonical" href="https://dev.to/<%= @event.slug %>"/>
+  <meta name="description" content="dev.to | Events">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/<%= @event.slug %>" />
+  <meta property="og:title" content="<%= @event.title %>" />
+  <% if @event.cover_image.present? %>
+    <meta property="og:image" content="<%= @event.cover_image_url %>" />
+  <% else %>
+    <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" />
+  <% end %>
+  <meta property="og:description" content="<%=truncate(strip_tags(@event.description_html), length: 140) %>" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="<%=truncate(strip_tags(@event.title), length: 70) %>">
+  <meta property="og:description" content="<%=truncate(strip_tags(@event.description_html), length: 140) %>" />
+  <% if @event.cover_image.present? %>
+    <meta name="twitter:image:src" content="<%= @event.cover_image_url %>">
+  <% else %>
+    <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+  <% end %>
+<% end %>
+
 <header>
   <div class="blank-space"></div>
 </header>
