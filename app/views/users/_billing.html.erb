@@ -1,5 +1,10 @@
   <!-- cached at: <%= Time.now %> -->
   <h3>Billing Details</h3>
+  <% if current_user.monthly_dues == 0 %>
+    <div class="default-billing-message">You will be billed monthly based on your use of <a href="/membership">premium features. 🔒</a></div>
+  <% else %>
+    <div class="default-billing-message"> You will be billed monthly for your dev.to sustaining membership. To make adjustments, visit your <a href="settings/membership">membership settings</a>.</div>  
+  <% end %>
   <% if current_user.stripe_id_code.blank? %>
     <%= form_tag stripe_subscriptions_path, id: "credit-card-form" do %>
       <article>
@@ -8,7 +13,6 @@
             <p><%= flash[:error] %></p>
           </div>
         <% end %>
-        <div class="default-billing-message">You will be billed monthly based on your use of <a href="/membership">premium features. 🔒</a></div>
       </article>
       <div class="stripe-button-wrapper" id="stripe-button-wrapper">
         <button id="custom-stripe-button" class="credit-card-button">+ Add Credit Card</button>
