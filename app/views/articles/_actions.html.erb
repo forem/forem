@@ -26,7 +26,7 @@
 </div>
 <% unless user_signed_in? %>
   <div class="showpage-signin-cta cta" id="showpage-signin-cta">
-    <a href="/">dev.to</a> is a community of <%= number_with_delimiter User.all.size %> amazing humans who code.
-    <a href="/enter">Register now</a>.
+    <a href="/">dev.to</a> is where software developers publish and get feedback.
+    <span style="display:block;margin-top:15px;"><a href="/enter">And signing up takes six seconds</a>.</span>
   </div>
 <% end %>
