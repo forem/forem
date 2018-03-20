@@ -4,6 +4,7 @@ module Admin
       user = User.find(params[:id])
       UserRoleService.new(user).check_for_roles(params[:user])
       if user.errors.messages.blank? && user.update(user_params)
+        flash[:notice] = "User successfully updated"
         redirect_to "/admin/users/#{params[:id]}"
       else
         render_with_errors(user)

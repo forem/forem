@@ -1,19 +1,21 @@
 module Admin
   class CommentsController < Admin::ApplicationController
-    # To customize the behavior of this controller,
-    # simply overwrite any of the RESTful actions. For example:
-    #
-    # def index
-    #   super
-    #   @resources = Comment.all.paginate(10, params[:page])
-    # end
+    def update
+      comment = Comment.find(params[:id])
+      if comment.update(comment_params)
+        flash[:notice] = "Comment successfully updated"
+        redirect_to "/admin/comments/#{comment.id}"
+      else
+        flash.now[:error] = comment.errors.full_messages
+        render :new, locals: { page: Administrate::Page::Form.new(dashboard, comment) }
+      end
+    end
 
-    # Define a custom finder by overriding the `find_resource` method:
-    # def find_resource(param)
-    #   Comment.find_by!(slug: param)
-    # end
+    private
 
-    # See https://administrate-docs.herokuapp.com/customizing_controller_actions
-    # for more information
+    def comment_params
+      accessible = %i[user_id body_markdown deleted]
+      params.require(:comment).permit(accessible)
+    end
   end
 end
