@@ -1,4 +1,20 @@
-<% title "DEV EVENTS" %>
+<%= content_for :page_meta do %>
+  <% title "DEV EVENTS" %>
+  <link rel="canonical" href="https://dev.to/events"/>
+  <meta name="description" content="dev.to | Events">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/events" />
+  <meta property="og:title" content="dev.to | Events" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg" />
+  <meta property="og:description" content="Talks and workshops designed to help community members level up." />
+  <meta property="og:site_name" content="The Practical Dev" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="dev.to | Events">
+  <meta property="og:description" content="Talks and workshops designed to help community members level up." />
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg">
+<% end %>
 
 <header>
   <div class="blank-space"></div>
@@ -14,9 +30,10 @@
     <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
       UPCOMING <br> EVENTS
     </h1>
-    <p>We are kicking off our ongoing series of workshops and talks for DEV Sustaining members. Here is the list of initial events designed to cover important topics to help community members level up. Because we have a global community we will be hosting events at varying times so nobody is restricted by time zone. Additionally, <strong>some workshops are repeated multiple times</strong> to further account for this.</p>
-    <p>We have many more planned if you do not see a topic that interests you. Email <a href="mailto:members@dev.to">members@dev.to</a> to request a topic.</p>
-    <p><em>Please note: Talks and workshops require a workshop pass.  You can receive a pass by joining as a Level 3 Sustaining Member ($25 / month) at the <a href="/membership">membership page</a>. If you require financial assistance, please apply for a <a href="/p/scholarships">scholarship</a>.</em></p>
+    <p>DEV Events is a series of ongoing talks and workshops designed to cover important topics to help community members level up. Because we have a global community we will be hosting events at varying times so nobody is restricted by time zone. Additionally, <strong>some workshops are repeated multiple times</strong> to further account for this.</p>
+    <p>We have many more planned if you do not see a topic that interests you. Email <a href="mailto:members@dev.to">members@dev.to</a> to request a topic. And if you're interested in speaking, please <a href="https://dev.to/jess/would-you-like-to-give-a-dev-talkworkshop--31c6">apply to our CFP</a>.</p>
+
+    <p><em>Please note: Talks and workshops require a workshop pass, unless otherwise indicated.  You can receive a pass by joining as a Level 3 Sustaining Member ($25 / month) at the <a href="/membership">membership page</a>. If you require financial assistance, please apply for a <a href="/p/scholarships">scholarship</a>.</em></p>
 
     <% @events.each do |event|%>
       <%= render 'event', event: event %>
