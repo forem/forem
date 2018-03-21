@@ -17,6 +17,7 @@ class AuthorizationService
            end
     set_identity(identity, user)
     user.skip_confirmation!
+    flag_spam_user(user) if account_less_than_a_week_old?(identity)
     user
   end
 
@@ -107,5 +108,19 @@ class AuthorizationService
   def user_identity_exists(identity)
     signed_in_resource &&
       Identity.where(provider: identity.provider, user_id: signed_in_resource.id).any?
+  end
+
+  def account_less_than_a_week_old?(identity)
+    range = (Time.now.beginning_of_day - 1.week)..(Time.now)
+    range.cover? Time.parse(identity.auth_data_dump.extra.raw_info.created_at)
+  end
+
+  def flag_spam_user(user)
+    SlackBot.ping(
+      "Potential spam user! https://dev.to/#{user.username}",
+      channel: "abuse-reports",
+      username: "spam_account_checker_bot",
+      icon_emoji: ":exclamation:",
+    )
   end
 end
