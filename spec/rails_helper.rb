@@ -138,7 +138,7 @@ RSpec.configure do |config|
   raw_info.verified = true
   raw_info.followers_count = 100
   raw_info.friends_count = 1000
-  raw_info.created_at = Time.now
+  raw_info.created_at = "2017-06-08T13:09:47+0000"
 
   extra_info = Hashie::Mash.new
   extra_info.raw_info = raw_info
