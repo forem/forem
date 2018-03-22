@@ -10,10 +10,10 @@
         <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@comment.path%>'>read & reply</a> <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@comment.commentable.path%>'>read original post</a>
   </td></tr></table>
 <% elsif @follower %>
-  <h2 style="font-size:25px;"><a href="https://dev.to/<%= @follower.username %>"><%= @follower.name %></a> just followed you!</h2>
-  <h3 style="font-weight:300">You now have <%= pluralize(@user.followers_count, 'follower')  %>.</h3>
+  <h2 style="font-size:32px;"><a href="https://dev.to/<%= @follower.username %>"><%= @follower.name %></a> just followed you!</h2>
+  <h3 style="font-weight:600">You now have <%= pluralize(@user.followers_count, 'follower')  %>.</h3>
   <p>
-    When someone follows you on <a href="https://dev.to">dev.to</a>, your posts will be prioritized on their home page. This allows people to create a reading experience more tailored to their interests, while still getting exposure to the broader featured content.
+    When someone follows you on <a href="https://dev.to">dev.to</a>, your posts will be prioritized in their feed and notifications. The perks of popularity I suppose.
   </p>
 <% elsif @unread_notifications_count %>
   <h3 style="font-weight:300">You're popular!</h3>
