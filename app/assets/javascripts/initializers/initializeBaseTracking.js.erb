@@ -16,6 +16,9 @@ function initializeBaseTracking() {
         ga('require', '<%= ENV["GA_OPTIMIZE_ID"] %>');
       }
       ga('send', 'pageview', location.pathname + location.search);
+      if (document.location.search.indexOf('newly-registered-user=true') > -1) {
+        ga('send', 'event', 'registration', 'New user registration', location.pathname, null);
+      }
       clearInterval(waitingOnGA);
     }
     if (wait > 60) {
