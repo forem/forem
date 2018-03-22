@@ -43,11 +43,11 @@ class UsersController < ApplicationController
     current_user.saw_onboarding = true
     if current_user.save!
       respond_to do |format|
-        format.json { render json: { outcome: 'onboarding closed' } }
+        format.json { render json: { outcome: "onboarding closed" } }
       end
     else
       respond_to do |format|
-        format.json { render json: { outcome: 'onboarding opened' } }
+        format.json { render json: { outcome: "onboarding opened" } }
       end
     end
   end

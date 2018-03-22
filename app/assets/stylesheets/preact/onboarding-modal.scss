@@ -97,6 +97,7 @@
       padding-left: calc(3% + 2px);
       max-width: 730px;
       float:left;
+      font-size: calc(0.8em + 6px);
     }
     
     .tags-slide {
@@ -107,6 +108,10 @@
       height: 40vh;
       overflow-x: hidden;
       overflow-y: auto;
+      font-size: calc(0.77em + 6px);
+      @media screen and (min-width: 900px) {
+        font-size: 27px;
+      }
       .col-1{
         float: left;
         width: 50%;
@@ -165,6 +170,9 @@
         font-weight:900;
         line-height:26px;
         font-size:1.1em;
+        @media screen and (min-width: 900px) {
+          top: 6px;
+        }
         &.following-butt {
           font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
           top:8px;
@@ -176,6 +184,65 @@
       }
     }
 
+  }
+
+  .onboarding-user-container{
+    margin-top: calc(0.5vw + 8px);
+    text-align: left;
+    .onboarding-user-cta{
+      font-size: 0.9em;
+      color: $black;
+      margin: 20px auto 25px;
+    }
+    .onboarding-user-list{
+      color: $black;
+      font-size: 0.7em;
+      overflow: scroll;
+      border: 1px solid darken($purple, 20%);
+      box-shadow: 4px 5px 0px darken($purple, 20%);
+      .onboarding-user-list-body{
+        height: calc(39vh - 20px);
+        overflow: scroll;
+      }
+      .onboarding-user-list-row{
+        padding: 10px 0px;
+        img{
+          height: 33px;
+          width: 33px;
+          border-radius: 50%;
+          display: inline-block;
+          vertical-align: -0.5em;
+          margin-right: 10px;
+        }
+        &:nth-child(odd){
+          background: $light-gray;
+        }
+        &.onboarding-user-list-header{
+          background: $purple;
+          font-size:1.1em;
+          font-weight: bold;
+        }
+        .onboarding-user-list-key{
+          width: calc(100% - 80px);
+          display: inline-block;
+          padding-left: 10px;
+        }
+        .onboarding-user-list-checkbox{
+          width: 70px;
+          display: inline-block;
+          text-align: center;
+          button{
+            border: 0px;
+            background: transparent;
+            font-size:1.1em;
+            &.checked{
+              background: $green;
+              color: white;
+            }
+          }
+        }
+      }
+    }
   }
 
   .modal-footer {
@@ -203,7 +270,7 @@
       cursor: pointer;
       display: inline-block;
       font-size: calc(1vw + 20px);
-      padding: 4px 6px;
+      padding: 4px 10px;
       a {
         color: black;
       }
