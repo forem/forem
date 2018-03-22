@@ -16,6 +16,8 @@ module ApplicationHelper
     controller_name == "articles" ||
       controller_name == "podcast_episodes" ||
       controller_name == "events" ||
+      controller_name == "tags" ||
+      controller_name == "registrations" ||
       controller_name == "users" ||
       controller_name == "pages" ||
       controller_name == "dashboards"||

@@ -52,7 +52,10 @@
     </style>
   <% elsif view_class.include? "registrations"%>
     <style>
-      <%= Rails.application.assets['signin.css'].to_s.html_safe %>
+      <%= Rails.application.assets['top-bar.css'].to_s.html_safe %>
+      <%= Rails.application.assets['scaffolds.css'].to_s.html_safe %>
+      <%= Rails.application.assets['article_form.css'].to_s.html_safe %>
+      <%= Rails.application.assets['footer.css'].to_s.html_safe %>
     </style>
   <% elsif view_class.include? "users-index"%>
     <style>
