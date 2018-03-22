@@ -242,7 +242,7 @@ class Onboarding extends Component {
   }
 
   handleNextHover() {
-    if (this.state.pageNumber === 2) {
+    if (this.state.pageNumber === 2 && this.state.users.length === 0) {
       this.getUsersToFollow();
     }
   }
