@@ -1,6 +1,7 @@
 import { h, render, Component } from 'preact';
 import OnboardingWelcome from './components/OnboardingWelcome';
 import OnboardingFollowTags from './components/OnboardingFollowTags';
+import OnboardingFollowUsers from './components/OnboardingFollowUsers';
 import OnboardingWelcomeThread from './components/OnboardingWelcomeThread';
 import cancelSvg from '../../assets/images/cancel.svg';
 
@@ -11,13 +12,19 @@ class Onboarding extends Component {
     this.handleBackButton = this.handleBackButton.bind(this);
     this.closeOnboarding = this.closeOnboarding.bind(this);
     this.handleFollowTag = this.handleFollowTag.bind(this);
+    this.handleNextHover = this.handleNextHover.bind(this);
     this.updateUserData = this.updateUserData.bind(this);
     this.getUserTags = this.getUserTags.bind(this);
+    this.handleCheckAllUsers = this.handleCheckAllUsers.bind(this);
+    this.handleCheckUser = this.handleCheckUser.bind(this);
+    this.getUsersToFollow = this.getUsersToFollow.bind(this);
     this.state = {
       pageNumber: 1,
       showOnboarding: false,
       userData: null,
       allTags: [],
+      users: [],
+      checkedUsers: [],
     };
   }
 
@@ -45,9 +52,45 @@ class Onboarding extends Component {
         const updatedJSON = checkFollowingStatus(followedTagNames, json);
         this.setState({ allTags: updatedJSON });
       })
-      .catch((huh) => {
-        console.log(huh);
+      .catch((error) => {
+        console.log(error);
       });
+  }
+
+  getUsersToFollow() {
+    fetch('/api/users?state=follow_suggestions', {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+      .then(response => response.json())
+      .then((json) => {
+        this.setState({ users: json, checkedUsers: json });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  handleBulkFollowUsers(users) {
+    if (this.state.checkedUsers.length > 0) {
+      const csrfToken = document.querySelector("meta[name='csrf-token']").content;
+
+      const formData = new FormData();
+      formData.append('users', JSON.stringify(users));
+
+      fetch('/api/follows', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+        },
+        body: formData,
+        credentials: 'same-origin',
+      }).then(() => {
+      });
+    }
   }
 
   updateUserData() {
@@ -97,10 +140,35 @@ class Onboarding extends Component {
       });
   }
 
+
+  handleCheckAllUsers() {
+    if (this.state.checkedUsers.length < 50) {
+      this.setState({ checkedUsers: this.state.users.slice() });
+    } else {
+      this.setState({ checkedUsers: [] });
+    }
+  }
+
+  handleCheckUser(user) {
+    const newCheckedUsers = this.state.checkedUsers.slice();
+    if (this.state.checkedUsers.indexOf(user) > -1) {
+      const index = newCheckedUsers.indexOf(user);
+      newCheckedUsers.splice(index, 1);
+    } else {
+      newCheckedUsers.push(user);
+    }
+    this.setState({ checkedUsers: newCheckedUsers });
+  }
+
   handleNextButton() {
-    if (this.state.pageNumber < 3) {
+
+    if (this.state.pageNumber === 2 && this.state.users.length === 0) {
+      this.getUsersToFollow();
+    }
+
+    if (this.state.pageNumber < 4) {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
-    } else if (this.state.pageNumber === 3) {
+    } else if (this.state.pageNumber === 4) {
       this.closeOnboarding();
     }
   }
@@ -112,6 +180,7 @@ class Onboarding extends Component {
   }
 
   closeOnboarding() {
+    this.handleBulkFollowUsers(this.state.checkedUsers);
     const csrfToken = document.querySelector("meta[name='csrf-token']").content;
     document.getElementsByTagName('body')[0].classList.remove('modal-open');
     const formData = new FormData();
@@ -150,6 +219,15 @@ class Onboarding extends Component {
       );
     } else if (this.state.pageNumber === 3) {
       return (
+        <OnboardingFollowUsers
+          users={this.state.users}
+          checkedUsers={this.state.checkedUsers}
+          handleCheckUser={this.handleCheckUser}
+          handleCheckAllUsers={this.handleCheckAllUsers}
+        />
+      );
+    } else if (this.state.pageNumber === 4) {
+      return (
         <OnboardingWelcomeThread />
       );
     }
@@ -163,11 +241,17 @@ class Onboarding extends Component {
     }
   }
 
+  handleNextHover() {
+    if (this.state.pageNumber === 2) {
+      this.getUsersToFollow();
+    }
+  }
+
   renderNextButton() {
     const onclick = this.handleNextButton;
     return (
-      <button className="button cta" onClick={this.handleNextButton}>
-        {this.state.pageNumber < 3 ? 'NEXT' : <a href="/welcome" data-no-instant>LET'S GO</a>}
+      <button className="button cta" onClick={this.handleNextButton} onMouseOver={this.handleNextHover}>
+        {this.state.pageNumber < 4 ? 'NEXT' : "LET'S GO"}
       </button>
     );
   }
@@ -176,7 +260,8 @@ class Onboarding extends Component {
     const messages = {
       1: 'WELCOME!',
       2: 'FOLLOW TAGS!',
-      3: 'GET INVOLVED!',
+      3: 'FOLLOW SOME DEVS!',
+      4: 'GET INVOLVED!',
     };
     return messages[this.state.pageNumber];
   }

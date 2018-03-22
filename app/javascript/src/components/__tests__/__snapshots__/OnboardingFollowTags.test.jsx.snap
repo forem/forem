@@ -10,7 +10,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     >
       What topics are you interested in?
     </strong>
-     Here are a few tags to follow (There are plenty more you can choose from later)
+     Here are a few tags to follow (There are plenty more you can choose from at any time)
   </p>
   <div
     class="tags-col-container"

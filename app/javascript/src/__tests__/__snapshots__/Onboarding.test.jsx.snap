@@ -36,6 +36,7 @@ FindWrapper {
     "attributes": Object {
       "className": "button cta",
       "onClick": [Function],
+      "onMouseOver": [Function],
     },
     "children": Array [
       "NEXT",
@@ -50,6 +51,7 @@ FindWrapper {
 exports[`<Onboarding /> display if  there is current user 1`] = `
 Object {
   "allTags": Array [],
+  "checkedUsers": Array [],
   "pageNumber": 1,
   "showOnboarding": true,
   "userData": Object {
@@ -68,5 +70,6 @@ Object {
       },
     ],
   },
+  "users": Array [],
 }
 `;

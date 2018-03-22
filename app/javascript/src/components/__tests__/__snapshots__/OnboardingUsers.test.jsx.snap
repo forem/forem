@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<OnboardingUsers /> when given users to follow renders correctly 1`] = `
+<div
+  class="onboarding-user-container"
+>
+  <div
+    class="onboarding-user-cta"
+  >
+    Here are some folks from the community you might want to follow 
+    <span
+      class="yellow"
+    >
+      based on your interests
+    </span>
+  </div>
+  <div
+    class="onboarding-user-list"
+  >
+    <div
+      class="onboarding-user-list-header onboarding-user-list-row"
+    >
+      <div
+        class="onboarding-user-list-key"
+      >
+        Follow All
+      </div>
+      <div
+        class="onboarding-user-list-checkbox"
+      >
+        <button
+          class="checked"
+          id="onboarding-user-follow-all-btn"
+          onClick={[Function]}
+        >
+          ✓
+        </button>
+      </div>
+    </div>
+    <div
+      class="onboarding-user-list-body"
+    >
+      <div
+        class="onboarding-user-list-row"
+      >
+        <div
+          class="onboarding-user-list-key"
+        >
+          <img
+            alt="Ben Halpern"
+            src="ben.jpg"
+          />
+          Ben Halpern
+        </div>
+        <div
+          class="onboarding-user-list-checkbox"
+        >
+          <button
+            onClick={[Function]}
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <div
+        class="onboarding-user-list-row"
+      >
+        <div
+          class="onboarding-user-list-key"
+        >
+          <img
+            alt="Krusty the Clown"
+            src="clown.jpg"
+          />
+          Krusty the Clown
+        </div>
+        <div
+          class="onboarding-user-list-checkbox"
+        >
+          <button
+            onClick={[Function]}
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <div
+        class="onboarding-user-list-row"
+      >
+        <div
+          class="onboarding-user-list-key"
+        >
+          <img
+            alt="dev.to staff"
+            src="dev.jpg"
+          />
+          dev.to staff
+        </div>
+        <div
+          class="onboarding-user-list-checkbox"
+        >
+          <button
+            onClick={[Function]}
+          >
+            +
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

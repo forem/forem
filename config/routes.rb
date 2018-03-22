@@ -42,11 +42,13 @@ Rails.application.routes.draw do
       resources :comments
       resources :podcast_episodes
       resources :reactions, only: [:create]
+      resources :users, only: [:index]
       resources :tags, only: [:index] do
         collection do
           get "/onboarding", to: "tags#onboarding"
         end
       end
+      resources :follows, only: [:create]
     end
   end
 

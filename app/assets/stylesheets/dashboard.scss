@@ -178,7 +178,7 @@
       font-size:28px;
       font-weight:400;
     }
-    a{
+    a.big{
       display:block;
       border: 3px solid $black;
       font-size:2.2em;
@@ -191,6 +191,7 @@
     img{
       width: 90%;
       max-width: 270px;
+      min-height: 350px;
     }
   }
 }

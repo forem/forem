@@ -80,7 +80,7 @@
   <% else %>
     <div class="no-articles">
       <h3>This is where you can manage your posts, but you haven't written anything yet.</h3>
-      <a href="/new" class="cta">
+      <a href="/new" class="cta big">
         Write your first post now
       </a>
       <%=image_tag(cl_image_path(asset_path("/assets/sloan.png"),
@@ -91,6 +91,8 @@
        :flags => "progressive",
        :fetch_format => "auto",
        :sign_url => true), class:"sloan", alt:"sloth-mascot") %>
+       <br/>
+      <h3>Also check out the <a href="/welcome" data-no-instant>Welcome Thread</a> to introduce yourself!</h3>
     </div>
   <% end %>
 </div>

@@ -17,6 +17,7 @@
   "latest",
   "contact",
   "merch",
+  "onboarding_update",
   "rlygenerator",
   "orlygenerator",
   "rlyslack",
