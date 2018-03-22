@@ -38,11 +38,11 @@ class Onboarding extends Component {
     fetch('/api/tags/onboarding')
       .then(response => response.json())
       .then((json) => {
-        const followedTagNames = JSON.parse(document.body.getAttribute('data-user')).followed_tag_names.sort();
+        const followedTagNames = JSON.parse(document.body.getAttribute('data-user')).followed_tag_names;
         function checkFollowingStatus(followedTags, jsonTags) {
           const newJSON = jsonTags;
           jsonTags.map((tag, index) => {
-            if (tag.name === followedTags[index]) {
+            if (followedTags.includes(tag.name)) {
               newJSON[index].following = true;
             } else { newJSON[index].following = false; }
             return newJSON;

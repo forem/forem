@@ -105,12 +105,15 @@
     }
 
     .tags-col-container {
-      height: 40vh;
       overflow-x: hidden;
       overflow-y: auto;
       font-size: calc(0.77em + 6px);
       @media screen and (min-width: 900px) {
+        height: 36vh;
         font-size: 27px;
+      }
+      @media screen and (max-width: 768px) {
+        height: 30vh;
       }
       .col-1{
         float: left;
@@ -122,7 +125,6 @@
           margin: 0 auto;
         }
       }
-
       .col-2 {
         float: left;
         width:50%;

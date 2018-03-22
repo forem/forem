@@ -3,5 +3,5 @@ json.array! @tags.each do |tag|
   json.name             tag.name
   json.bg_color_hex     tag.bg_color_hex
   json.text_color_hex   tag.text_color_hex
-  json.following       nil
+  json.following        nil
 end
