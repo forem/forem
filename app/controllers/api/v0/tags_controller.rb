@@ -13,7 +13,6 @@ module Api
       end
 
       def onboarding
-        # Andy: Alphabetized by names
         tag_names = %w[
           beginners
           career
