@@ -33,7 +33,7 @@ class UserFollowSuggester
     Article.
       tagged_with(user.decorate.cached_followed_tag_names, any: true).
       where(published: true).
-      where("positive_reactions_count > ?", 1).pluck(:user_id).
+      where("positive_reactions_count > ?", article).pluck(:user_id).
       each_with_object(Hash.new(0)) { |value, counts| counts[value] += 1 }.
       sort_by { |_key, value| value }.
       map { |arr| arr[0] }
@@ -41,5 +41,9 @@ class UserFollowSuggester
 
   def offset_number
     Rails.env.production? ? 250 : 0
+  end
+
+  def article
+    Rails.env.production? ? 15 : 0
   end
 end
