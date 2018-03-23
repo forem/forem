@@ -7,9 +7,11 @@ class DashboardsController < ApplicationController
               current_user
             end
     if params[:which] == "following_users"
-      @follows = @user.follows_by_type("User").order("created_at DESC").includes(:followable).limit(500)
+      @follows = @user.follows_by_type("User").
+        order("created_at DESC").includes(:followable).limit(80)
     elsif params[:which] == "user_followers"
-      @follows = Follow.where(followable_id: @user.id).includes(:follower).order("created_at DESC").limit(500)
+      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
+        includes(:follower).order("created_at DESC").limit(80)
     elsif @user&.organization && @user.org_admin && params[:which] == "organization"
       @articles = @user.organization.articles.order("created_at DESC").decorate
     elsif @user

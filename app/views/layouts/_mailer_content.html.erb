@@ -10,8 +10,13 @@
         <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@comment.path%>'>read & reply</a> <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@comment.commentable.path%>'>read original post</a>
   </td></tr></table>
 <% elsif @follower %>
+<<<<<<< HEAD
+  <% if Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ?", 24.hours.ago).size > 1 %>
+    <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">You have <%= Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ?", 24.hours.ago).size %> new DEV followers in the past day!</h3>
+=======
   <% if Follow.where(followable_id: @user.id).where("created_at > ?", 24.hours.ago).size > 1 %>
     <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">You have <%= Follow.where(followable_id: @user.id).where("created_at > ?", 24.hours.ago).size %> new DEV followers in the past day!</h3>
+>>>>>>> 62c2790e23c4ce18a1199e4a3b6c9ef2e7d830c7
   <% end %>
 
   <h2 style="font-size:32px;"><a href="https://dev.to/<%= @follower.username %>"><%= @follower.name %></a> just followed you 🤗</h2>
