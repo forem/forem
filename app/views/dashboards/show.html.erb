@@ -39,7 +39,8 @@
       <% end %>
     </div>
   <% elsif params[:which] == "user_followers" || params[:which] == "following_users" %>
-      <% @users.each do |user| %>
+      <% @follows.each do |follow| %>
+      <% user = params[:which] == "user_followers" ? follow.follower : follow.followable %>
       <div class="single-article">
         <a href="<%= user.path %>" class="block-link">
           <h2>
