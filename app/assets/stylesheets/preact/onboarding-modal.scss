@@ -107,6 +107,7 @@
     .tags-col-container {
       overflow-x: hidden;
       overflow-y: auto;
+      text-align:left;
       font-size: calc(0.77em + 6px);
       @media screen and (min-width: 900px) {
         height: 36vh;
@@ -115,50 +116,47 @@
       @media screen and (max-width: 768px) {
         height: 30vh;
       }
-      .col-1{
-        float: left;
-        width: 50%;
-        text-align:left;
-        @media screen and (max-width: 900px) {
-          float: none;
-          width: 100%;
-          margin: 0 auto;
-        }
-      }
-      .col-2 {
-        float: left;
-        width:50%;
-        text-align: left;
-        @media screen and (max-width: 900px) {
-          display: none;
-        }
-      }
     }
 
     .onboarding-tag-container {
       background:$black;
       color:white;
-      display:block;
+      display:inline-block;
       font-family: "Lucida Console", Monaco, monospace, sans-serif;
       position:relative;
       opacity:0.8;
-      width: 90%;
+      width: 44%;
+      margin-right: 3%;
       border-radius: 50px;
       margin-top: calc(0.2vw + 3px);
       font-size: .75em;
-      border: 4px solid white;
+      border: 6px solid white;
+      @media screen and (max-width: 900px) {
+        width: 92%;
+        margin-right: 0%;
+        font-size: .7em;
+      }
       &:hover{
         opacity:92;
       }
       &.followed-tag{
         opacity:1;
-        border: 4px solid $green;
+        border: 6px solid $green;
+        box-shadow: 2px 2px 0px $green;
+        a.onboarding-tag-link-follow{
+          background: $green;
+          color: white;
+        }
       }
       a.onboarding-tag-link{ 
         color:white;
         padding:7px 14px;
         display:inline-block;
         width:100%;
+        @media screen and (max-width: 900px) {
+          text-align: left;
+        }
+
       }
       a.onboarding-tag-link-follow {
         position:absolute;
@@ -254,7 +252,6 @@
       float: left;
       width: 50%;
       height: 100%;
-      text-align:left;
     }
 
     .modal-footer-right {
