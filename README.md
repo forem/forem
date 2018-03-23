@@ -70,13 +70,7 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 2. `bundle install`
 3. `bin/yarn`
 4. `bin/setup`
-5. Either seed the data from `seed.rb` or [download our development data from google Drive.](https://drive.google.com/file/d/1DawdTT26NyQDF5o9WZXmew8Rbp027ksl/view?usp=sharing) (~100 MB)
-	- __`seed.rb:`__ Uncomment the code, and run `bin/rails db:seed`
-	- __`Downloaded data:`__
-		1. Run `psql --help` to get your `[USERNAME]` at the botom of the log.
-		2. Run `psql -u [USERNAME] PracticalDeveloper_development < 100mb.dump` If you're using a different database name, replace `PracticalDeveloper_development` with your database name.
-		3. Once done, you can delete `100mb.dump`.
-6. Set up your environment variables/secrets
+5. Set up your environment variables/secrets
     - Create a `config/application.yml` file to store development secrets. This is a personal file that is ignored in git.
     - Copy [`config/sample_application.yml`](config/sample_application.yml) in order to create a valid `application.yml`
     - If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged.
