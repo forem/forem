@@ -761,18 +761,21 @@ header{
   background: lighten($yellow, 16%);
   border: 1px solid darken($yellow, 15%);
   box-shadow: 5px 6px 0px darken($yellow, 15%);
-  width: 640px;
+  width: 680px;
   max-width:88%;
   margin: auto;
   text-align: center;
-  padding: 30px 12px;
-  font-size: 1.09em;
+  padding: 40px 5%;
+  font-size: 1.11em;
   line-height: 1.33em;
   margin-bottom: 30px;
   a{
     color: $black;
     text-decoration: underline;
     display: inline-block;
+    &.primary-cta-link{
+      font-size: 1.35em;
+    }
   }
 }
 
