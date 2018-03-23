@@ -367,6 +367,7 @@ a.header-link{
     }
   }
   .comment-deep-3{
+    margin-top: -5px;
     padding:2px 0px 2px calc(0.9vw + 7px);
     button{
       margin-bottom:3px;
@@ -702,6 +703,14 @@ a.header-link{
     font-stretch:condensed;
     width: calc(100% - 74px);
     margin-left: 58px;
+    a.thread-indication{
+      color: lighten($medium-gray, 22%);
+      font-size: 0.8em;
+      cursor: default;
+      &:hover{
+        opacity:1;
+      }
+    }
     .current-user-actions{
       .hidden{
         display:none;

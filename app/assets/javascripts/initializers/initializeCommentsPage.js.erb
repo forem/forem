@@ -97,27 +97,31 @@ function initializeCommentsPage() {
       var butt = replyButts[i];
       butt.onclick = function(event) {
         event.preventDefault();
-        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
-        if (userStatus == 'logged-out') {
-          showModal('reply-to-comment');
-          return;
-        }
-        var actionNode = event.target.parentNode;
-        var parentId = actionNode.dataset.commentId;
-        document.getElementById("button-for-comment-"+actionNode.dataset.commentId).style.zIndex = "5";
-        var waitingOnCSRF = setInterval(function () {
-          var metaTag = document.querySelector("meta[name='csrf-token']");
-          if (metaTag) {
-            clearInterval(waitingOnCSRF);
-            actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
-            setTimeout(function () {
-              actionNode.getElementsByTagName('textarea')[0].focus();
-            }, 30);
+        if (event.target.classList.contains("thread-indication")){
+          return false;
+        } else {
+          var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+          if (userStatus == 'logged-out') {
+            showModal('reply-to-comment');
+            return;
           }
-        }, 1);
-        // document.getElementById('textarea-for-'+parentId).focus();
+          var actionNode = event.target.parentNode;
+          var parentId = actionNode.dataset.commentId;
+          document.getElementById("button-for-comment-"+actionNode.dataset.commentId).style.zIndex = "5";
+          var waitingOnCSRF = setInterval(function () {
+            var metaTag = document.querySelector("meta[name='csrf-token']");
+            if (metaTag) {
+              clearInterval(waitingOnCSRF);
+              actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
+              setTimeout(function () {
+                actionNode.getElementsByTagName('textarea')[0].focus();
+              }, 30);
+            }
+          }, 1);
+          // document.getElementById('textarea-for-'+parentId).focus();
+        };
         return false;
-      };
+      }
     }
     var editButts = document.getElementsByClassName('edit-butt');
     for (var i = 0; i < editButts.length; i++) {
