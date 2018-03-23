@@ -83,18 +83,18 @@
 .show-page-content-display {
   vertical-align:top;
   font-family: $helvetica;
-  margin:40px auto;
+  margin:20px auto;
   position: relative;
   overflow:hidden;
   a{
     color: $black;
   }
   .content-classification{
-    margin: 20px 20px -5px;
+    margin: 15px 20px -8px;
     text-align: left;
     font-size:0.8em;
     @media screen and ( min-width: 680px ){
-      margin: 30px 20px 0px;
+      margin: 15px 20px 0px;
     }
     .content-classification-text{
       background: lighten($yellow, 16%);
@@ -116,15 +116,14 @@
       width: calc(97% - 345px);
       border-right: 2px solid $light-medium-gray;
       margin-left: 3%;
-      margin-top:10px;
       padding: 15px 25px 35px 15px;
-      margin-bottom: 60px;
+      margin-bottom: 35px;
     }
     h2{
       margin:0px auto 10px;
       font-size:1.55em;
       @media screen and ( min-width: 680px ){
-        font-size:2.3em;
+        font-size:2.2em;
       }
     }
     .content-author{
