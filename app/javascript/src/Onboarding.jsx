@@ -67,7 +67,9 @@ class Onboarding extends Component {
     })
       .then(response => response.json())
       .then((json) => {
-        this.setState({ users: json, checkedUsers: json });
+        if (this.state.users.length === 0) {
+          this.setState({ users: json, checkedUsers: json });
+        }
       })
       .catch((error) => {
         console.log(error);
