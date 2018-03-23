@@ -26,7 +26,6 @@ class OnboardingSingleTag extends Component {
           className="onboarding-tag-link-follow"
           href="#"
           id={`onboarding-tag-link-follow-${this.props.tag.name}`}
-          style={`color:${this.props.tag.text_color_hex}; border-color:${this.props.tag.text_color_hex}`}
           onClick={this.onClick}
         >
           {this.props.tag.following ? '✓' : '+'}

@@ -26,6 +26,18 @@ module Api
           python
           security
           webdev
+          css
+          php
+          opensource
+          ruby
+          swift
+          testing
+          devops
+          vim
+          kotlin
+          rust
+          elixir
+          scala
         ]
         @tags = []
         tag_names.each do |tag_name|

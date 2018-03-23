@@ -16,81 +16,71 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     class="tags-col-container"
   >
     <div
-      class="col-1"
+      class="onboarding-tag-container"
+      id="onboarding-tag-container-discuss"
+      style="background: #000000"
     >
-      <div
-        class="onboarding-tag-container"
-        id="onboarding-tag-container-discuss"
-        style="background: #000000"
+      <a
+        class="onboarding-tag-link"
+        href="#"
+        onClick={[Function]}
+        style="color:#ffffff"
       >
-        <a
-          class="onboarding-tag-link"
-          href="#"
-          onClick={[Function]}
-          style="color:#ffffff"
-        >
-          discuss
-        </a>
-        <a
-          class="onboarding-tag-link-follow"
-          href="#"
-          id="onboarding-tag-link-follow-discuss"
-          onClick={[Function]}
-          style="color:#ffffff; border-color:#ffffff"
-        >
-          +
-        </a>
-      </div>
-      <div
-        class="onboarding-tag-container"
-        id="onboarding-tag-container-javascript"
-        style="background: #f7df1e"
+        discuss
+      </a>
+      <a
+        class="onboarding-tag-link-follow"
+        href="#"
+        id="onboarding-tag-link-follow-discuss"
+        onClick={[Function]}
       >
-        <a
-          class="onboarding-tag-link"
-          href="#"
-          onClick={[Function]}
-          style="color:#000000"
-        >
-          javascript
-        </a>
-        <a
-          class="onboarding-tag-link-follow"
-          href="#"
-          id="onboarding-tag-link-follow-javascript"
-          onClick={[Function]}
-          style="color:#000000; border-color:#000000"
-        >
-          +
-        </a>
-      </div>
-      <div
-        class="onboarding-tag-container"
-        id="onboarding-tag-container-javascript"
-        style="background: #f7df1e"
-      >
-        <a
-          class="onboarding-tag-link"
-          href="#"
-          onClick={[Function]}
-          style="color:#000000"
-        >
-          javascript
-        </a>
-        <a
-          class="onboarding-tag-link-follow"
-          href="#"
-          id="onboarding-tag-link-follow-javascript"
-          onClick={[Function]}
-          style="color:#000000; border-color:#000000"
-        >
-          +
-        </a>
-      </div>
+        +
+      </a>
     </div>
     <div
-      class="col-2"
-    />
+      class="onboarding-tag-container"
+      id="onboarding-tag-container-javascript"
+      style="background: #f7df1e"
+    >
+      <a
+        class="onboarding-tag-link"
+        href="#"
+        onClick={[Function]}
+        style="color:#000000"
+      >
+        javascript
+      </a>
+      <a
+        class="onboarding-tag-link-follow"
+        href="#"
+        id="onboarding-tag-link-follow-javascript"
+        onClick={[Function]}
+      >
+        +
+      </a>
+    </div>
+    <div
+      class="onboarding-tag-container"
+      id="onboarding-tag-container-javascript"
+      style="background: #f7df1e"
+    >
+      <a
+        class="onboarding-tag-link"
+        href="#"
+        onClick={[Function]}
+        style="color:#000000"
+      >
+        javascript
+      </a>
+      <a
+        class="onboarding-tag-link-follow"
+        href="#"
+        id="onboarding-tag-link-follow-javascript"
+        onClick={[Function]}
+      >
+        +
+      </a>
+    </div>
   </div>
 </div>
 `;
