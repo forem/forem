@@ -180,9 +180,9 @@ class Onboarding extends Component {
   }
 
   closeOnboarding() {
+    document.getElementsByTagName('body')[0].classList.remove('modal-open');
     this.handleBulkFollowUsers(this.state.checkedUsers);
     const csrfToken = document.querySelector("meta[name='csrf-token']").content;
-    document.getElementsByTagName('body')[0].classList.remove('modal-open');
     const formData = new FormData();
     formData.append('saw_onboarding', true);
 
