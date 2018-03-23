@@ -27,6 +27,9 @@ class Follow < ApplicationRecord
   after_save :touch_user
   after_create :send_email_notification
 
+  validates :followable_id, uniqueness: { scope: [:followable_type, :follower_id] }
+
+
   def activity_actor
     follower
   end
