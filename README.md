@@ -178,9 +178,6 @@ ben/feature/renderer-cookies
 niko/hotfix/dockerfile-base-image
 andy-and-niko/issue/#132-broken-link
 ```
-#### Workflow
-- [Here's](https://github.com/thepracticaldev/dev.to_private/wiki/Product-Workflow) a guide to our workflow using ZenHub.
-- Note: if you're working on a task with no associated issue, create an issue. We do this so there's transparency and also to prevent anyone from unknowingly doing the same task.
 
 #### Pull request guideline
 - Keep the pull request small; a pull request should try it's very best to address only a single concern.
