@@ -1,5 +1,6 @@
 class DashboardsController < ApplicationController
   before_action :set_no_cache_header
+  before_action :authenticate_user!
   def show
     @user = if params[:username] && current_user_is_admin?
               User.find_by_username(params[:username])
