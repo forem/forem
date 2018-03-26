@@ -1,5 +1,10 @@
 <div class="article-actions" id="article-reaction-actions">
-
+  <% unless user_signed_in? %>
+    <div class="showpage-reaction-cta cta" id="showpage-reaction-cta">
+      Did you find this post useful? Show some love!
+      <div class="down-arrow"> </div>
+    </div>
+  <% end %>
   <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
     <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
   </button>
