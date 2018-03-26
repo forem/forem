@@ -6,6 +6,8 @@ class User < ApplicationRecord
   include AlgoliaSearch
   include Storext.model
 
+  acts_as_taggable_on :tags
+
   acts_as_followable
   acts_as_follower
 
