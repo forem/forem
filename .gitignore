@@ -37,3 +37,6 @@ latest.dump
 /public/packs
 /public/packs-test
 /node_modules
+
+# Ignore storybook static site generation
+storybook-static/

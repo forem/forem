@@ -10,7 +10,9 @@
   },
   "scripts": {
     "test": "jest app/javascript/ --coverage",
-    "test:watch": "jest app/javascript/ --coverage --watch"
+    "test:watch": "jest app/javascript/ --coverage --watch",
+    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook",
+    "build-storybook": "build-storybook -c app/javascript/.storybook"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,11 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to_private#readme",
   "devDependencies": {
+    "@storybook/addon-actions": "^3.3.15",
+    "@storybook/addon-links": "^3.3.15",
+    "@storybook/addons": "^3.3.15",
+    "@storybook/react": "^3.3.15",
+    "babel-core": "^6.26.0",
     "babel-jest": "^22.1.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-preact": "^1.1.0",
@@ -35,6 +42,7 @@
     "eslint-plugin-react": "^7.4.0",
     "jest": "^22.1.2",
     "jest-fetch-mock": "^1.4.0",
+    "preact-compat": "^3.18.0",
     "preact-render-spy": "^1.2.1",
     "preact-render-to-json": "^3.6.6",
     "webpack-dev-server": "^2.9.1"
