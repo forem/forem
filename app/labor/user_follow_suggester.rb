@@ -18,8 +18,10 @@ class UserFollowSuggester
         order("comments_count DESC").limit(25).offset(rand(0..offset_number)).to_a
       group_5 = User.order("reputation_modifier DESC").offset(rand(0..offset_number)).limit(15).to_a
       group_6 = User.order("comments_count DESC").offset(rand(0..offset_number)).limit(15).to_a
-      users = (group_1 + group_2 + group_3 + group_4 + group_5 + group_6 - [user]).
-        uniq.shuffle.first(50)
+      group_7 = User.tagged_with(user.decorate.cached_followed_tag_names, any: true).limit(15).to_a
+
+      users = ((group_1 + group_2 + group_3 + group_4 + group_5 + group_6 - [user]).
+        shuffle.first(50) + group_7).uniq
     else
       group_1 = User.order("reputation_modifier DESC").offset(rand(0..offset_number)).limit(100).to_a
       group_2 = User.where("articles_count > ?", 5).
@@ -35,7 +37,7 @@ class UserFollowSuggester
     Article.
       tagged_with(user.decorate.cached_followed_tag_names, any: true).
       where(published: true).
-      where("positive_reactions_count > ?", article).pluck(:user_id).
+      where("positive_reactions_count > ? AND published_at > ?", article, 7.months.ago).pluck(:user_id).
       each_with_object(Hash.new(0)) { |value, counts| counts[value] += 1 }.
       sort_by { |_key, value| value }.
       map { |arr| arr[0] }
