@@ -757,6 +757,26 @@ header{
     }
   }
 }
+
+.showpage-reaction-cta{
+  width: 390px;
+  max-width:78%;
+  margin: 30px auto;
+  padding: 20px 10px;
+  position:relative;
+  box-shadow: 3px 4px 0px darken($green, 25%);
+  display: none;
+  .down-arrow{
+    position: absolute;
+    bottom: -20px;
+    left: 30px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 27px solid $green;
+  }
+}
 .showpage-signin-cta{
   background: lighten($yellow, 16%);
   border: 1px solid darken($yellow, 15%);
