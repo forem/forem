@@ -16,13 +16,13 @@ RSpec.describe EmailLogic do
       end
 
       it "provides top 3 articles" do
-        3.times { create(:article, positive_reactions_count: 20) }
+        3.times { create(:article, positive_reactions_count: 40) }
         h = described_class.new(user).analyze
         expect(h.articles_to_send.length).to eq(3)
       end
 
       it "marks as not ready if there isn't atleast 3 articles" do
-        2.times { create(:article, positive_reactions_count: 20) }
+        2.times { create(:article, positive_reactions_count: 40) }
         h = described_class.new(user).analyze
         expect(h.should_receive_email?).to eq(false)
       end
@@ -34,7 +34,7 @@ RSpec.describe EmailLogic do
         user.follow(author)
         3.times { create(:article, user_id: author.id, positive_reactions_count: 20) }
         10.times do
-          Ahoy::Message.create(mailer: "DigestMailer#daily_digest",
+          Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                                user_id: user.id, sent_at: Time.now.utc)
         end
       end
@@ -48,11 +48,11 @@ RSpec.describe EmailLogic do
     context "when a user's open_percentage is high" do
       before do
         10.times do
-          Ahoy::Message.create(mailer: "DigestMailer#daily_digest", user_id: user.id,
+          Ahoy::Message.create(mailer: "DigestMailer#digest_email", user_id: user.id,
                                sent_at: Time.now.utc, opened_at: Time.now.utc)
           author = create(:user)
           user.follow(author)
-          3.times { create(:article, user_id: author.id, positive_reactions_count: 20) }
+          3.times { create(:article, user_id: author.id, positive_reactions_count: 40) }
         end
       end
 
