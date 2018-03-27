@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180316174324) do
+ActiveRecord::Schema.define(version: 20180321170500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -618,6 +618,7 @@ ActiveRecord::Schema.define(version: 20180316174324) do
     t.string "website_url"
     t.datetime "workshop_expiration"
     t.boolean "permit_adjacent_sponsors", default: true
+    t.boolean "email_digest_periodic", default: true, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

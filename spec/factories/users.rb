@@ -16,6 +16,7 @@ FactoryBot.define do
     confirmed_at       { Time.now }
     saw_onboarding     { true }
     signup_cta_variant { "navbar_basic" }
+    email_digest_periodic { false }
 
     trait :super_admin do
       after(:build) { |user| user.add_role(:super_admin) }
