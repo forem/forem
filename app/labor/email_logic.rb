@@ -34,6 +34,7 @@ class EmailLogic
                  @user.followed_articles.
                    where("published_at > ?", fresh_date).
                    where(published: true).
+                   where.not(user_id: @user.id).
                    where("positive_reactions_count > ?", 15).
                    order("positive_reactions_count DESC").
                    limit(6)
@@ -41,6 +42,7 @@ class EmailLogic
                  Article.
                    where("published_at > ?", fresh_date).
                    where(published: true).
+                   where.not(user_id: @user.id).
                    where("positive_reactions_count > ?", 30).
                    order("positive_reactions_count DESC").
                    limit(6)
