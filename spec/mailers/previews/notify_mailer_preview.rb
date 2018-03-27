@@ -31,4 +31,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   def scholarship_awarded_email
     NotifyMailer.scholarship_awarded_email(User.last)
   end
+
+  def digest_email
+    NotifyMailer.digest_email(User.last, Article.all)
+  end
 end

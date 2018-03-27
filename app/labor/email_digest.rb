@@ -17,7 +17,7 @@ class EmailDigest
       user_email_heuristic = EmailLogic.new(user).analyze
       next unless user_email_heuristic.should_receive_email?
       articles = user_email_heuristic.articles_to_send
-      DigestMailer.daily_digest(user, articles).deliver
+      DigestMailer.digest_email(user, articles).deliver
     end
   end
 

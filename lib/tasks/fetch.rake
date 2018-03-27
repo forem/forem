@@ -61,3 +61,7 @@ end
 task :github_repo_fetch_all => :environment do
   GithubRepo.update_to_latest
 end
+
+task :send_email_digest => :environment do
+  EmailDigest.send_periodic_digest_email
+end

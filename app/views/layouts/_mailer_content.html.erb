@@ -178,4 +178,18 @@
     <br>
     PBJ
   </p>
+<% elsif @digest_email %>
+   <h2>
+      Your Personal DEV Digest
+   </h2>
+   <h4>Recent posts you might find valuable based on who you follow ❤️</h4>
+   <% @articles.each do |article| %>
+    <ul>
+      <li>
+        <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff"><%= article.title %></a> <%= truncate(article.description, length: 80) %>
+      </li>
+    </ul>
+   <% end %>
+
+   <center style="margin-top:50px;"><em>Thanks for being a valued member of the community.</em> 👩‍💻👨‍💻</center>
 <% end %>
