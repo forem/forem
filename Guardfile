@@ -36,7 +36,7 @@ rspec_options = {
   # fast but no coverage
   cmd: "bin/spring rspec -p",
   #############################
-  failed_mode: :none,
+  failed_mode: :focus,
   bundler_env: :clean_env
 }
 

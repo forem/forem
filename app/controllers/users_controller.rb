@@ -154,6 +154,7 @@ class UsersController < ApplicationController
                     website_url
                     summary
                     email_newsletter
+                    email_digest_periodic
                     email_membership_newsletter
                     email_comment_notifications
                     email_mention_notifications

@@ -3,12 +3,16 @@
   <div class="checkbox-field">
     <div class="sub-field">
       <%= f.check_box :email_newsletter %>
-      <%= f.label :email_newsletter, "Send me periodic newsletter emails" %>
+      <%= f.label :email_newsletter, "Send me weekly newsletter emails" %>
+    </div>
+    <div class="sub-field">
+      <%= f.check_box :email_digest_periodic %>
+      <%= f.label :email_digest_periodic, "Send me a periodic digest of top posts from my tags" %>
     </div>
     <% if current_user.a_sustaining_member? %>
       <div class="sub-field">
         <%= f.check_box :email_membership_newsletter %>
-        <%= f.label :email_membership_newsletter, "Send me membership newsletter emails" %>
+        <%= f.label :email_membership_newsletter, "Send me sustaining membership newsletter emails" %>
       </div>
     <% end %>
     <div class="sub-field">
