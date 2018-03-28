@@ -7,7 +7,7 @@ class DigestMailer < ApplicationMailer
             end
     @articles = articles.first(6)
     @digest_email = true
-    mail(from: "yo@dev.to", to: @user.email, subject: "#{@articles.first.title} #{random_emoji} and #{@articles.size - 1} #{email_end_phrase}") do |format|
+    mail(from: "DEV Digest <yo@dev.to>", to: @user.email, subject: "#{@articles.first.title} #{random_emoji} and #{@articles.size - 1} #{email_end_phrase}") do |format|
       format.html { render "layouts/mailer" }
     end
   end
