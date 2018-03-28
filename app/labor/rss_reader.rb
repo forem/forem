@@ -109,7 +109,7 @@ class RssReader
     cleaned_item_content = HtmlCleaner.new.clean_html(get_content(item))
     cleaned_item_content = thorough_parsing(cleaned_item_content, feed.url)
     ReverseMarkdown.convert(cleaned_item_content, github_flavored: true).
-      gsub("```\n\n```", "").gsub("&nbsp;", " ")
+      gsub("```\n\n```", "").gsub(/&nbsp;|\u00A0/, " ")
   end
 
   def thorough_parsing(content, feed_url)
