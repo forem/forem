@@ -163,11 +163,9 @@ class Onboarding extends Component {
   }
 
   handleNextButton() {
-
     if (this.state.pageNumber === 2 && this.state.users.length === 0) {
       this.getUsersToFollow();
     }
-
     if (this.state.pageNumber < 4) {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
     } else if (this.state.pageNumber === 4) {

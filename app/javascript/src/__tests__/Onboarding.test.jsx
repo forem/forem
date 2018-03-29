@@ -82,12 +82,30 @@ describe('<Onboarding />', () => {
         text_color_hex: '#000000',
       }],
     });
+    const usersState = [
+      {
+        id: 1,
+        name: 'Ben Halpern',
+        profile_image_url: 'ben.jpg',
+      },
+      {
+        id: 2,
+        name: 'Krusty the Clown',
+        profile_image_url: 'clown.jpg',
+      },
+      {
+        id: 3,
+        name: 'dev.to staff',
+        profile_image_url: 'dev.jpg',
+      },
+    ];
     document.body.setAttribute('data-user', dataUser);
     const meta = document.createElement('meta');
     meta.setAttribute('name', 'csrf-token');
     document.body.appendChild(meta);
     fetch.mockResponseOnce(fakeResponse);
     const context = deep(<Onboarding />, { depth: 3 });
+    context.setState({ users: usersState });
     context.rerender();
     context.find('.button').simulate('click');
     // going to page two
