@@ -17,7 +17,7 @@ class AuthorizationService
            end
     set_identity(identity, user)
     user.skip_confirmation!
-    flag_spam_user(user) if account_less_than_a_week_old?(identity)
+    flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
     user
   end
 
@@ -110,9 +110,13 @@ class AuthorizationService
       Identity.where(provider: identity.provider, user_id: signed_in_resource.id).any?
   end
 
-  def account_less_than_a_week_old?(identity)
+  def account_less_than_a_week_old?(user, logged_in_identity)
+    user_identity_age = user.github_created_at ||
+      user.twitter_created_at ||
+      Time.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
+    # last one is a fallback in case both are nil
     range = (Time.now.beginning_of_day - 1.week)..(Time.now)
-    range.cover? Time.parse(identity.auth_data_dump.extra.raw_info.created_at)
+    range.cover?(user_identity_age)
   end
 
   def flag_spam_user(user)
