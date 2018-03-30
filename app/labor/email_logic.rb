@@ -41,7 +41,7 @@ class EmailLogic
                else
                  Article.
                    where("published_at > ?", fresh_date).
-                   where(published: true).
+                   where(published: true, featured: true).
                    where.not(user_id: @user.id).
                    where("positive_reactions_count > ?", 30).
                    order("positive_reactions_count DESC").
