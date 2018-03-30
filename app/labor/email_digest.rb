@@ -13,7 +13,7 @@ class EmailDigest
   end
 
   def send_periodic_digest_email
-    @users.each do |user|
+    @users.find_each do |user|
       user_email_heuristic = EmailLogic.new(user).analyze
       next unless user_email_heuristic.should_receive_email?
       articles = user_email_heuristic.articles_to_send
