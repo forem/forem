@@ -1,0 +1,32 @@
+<% unless user_signed_in? %>
+  <div class="comment-hash-marker" id="cta-comment-marker"></div>
+  <div class="single-comment-node root comment-deep-0"
+    id="cta-comment-register-now-node">
+    <div class="inner-comment" style="box-shadow: 5px 5px 0px #4e57ef;border:1px solid #4e57ef;">
+      <div class="details">
+        <img class="profile-pic" src="<%= ProfileImage.new(User.first).get(50)%>" />
+        <span class="comment-username">
+          <span class="comment-username-inner">
+            <%= User.first.name %>
+          </span>
+        </span>
+        <span class="op-marker">FOUNDER</span>
+      </div>
+      <div class="body">
+        <p>
+          Dear <b>lurker</b>, this message is for <b><em>you</em></b>.
+        </p>
+        <p>
+          Please consider creating an account on <a href="https://dev.to">dev.to</a>. It literally takes a few seconds and <b><em>we'd appreciate the support so much</em></b>. ❤️
+        </p>
+        <button class="reaction-button" title="heart">
+          <%= image_tag "favorite-heart-outline-button.svg" %>
+          <span class="reactions-count">1,337</span>
+        </button>
+      </div>
+      <div class="actions">
+        <a href="/enter" id="cta-comment-register-now-link" rel="nofollow">REGISTER NOW</a>
+      </div>
+    </div>
+  </div>
+<% end %>
