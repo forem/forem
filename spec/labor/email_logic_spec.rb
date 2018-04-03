@@ -16,7 +16,7 @@ RSpec.describe EmailLogic do
       end
 
       it "provides top 3 articles" do
-        3.times { create(:article, positive_reactions_count: 40) }
+        3.times { create(:article, positive_reactions_count: 40, featured: true) }
         h = described_class.new(user).analyze
         expect(h.articles_to_send.length).to eq(3)
       end
