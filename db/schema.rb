@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180321170500) do
-
+ActiveRecord::Schema.define(version: 20180328194253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,6 +44,7 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.boolean "automatically_renew", default: false
     t.text "body_html"
     t.text "body_markdown"
+    t.boolean "boosted", default: false
     t.string "cached_tag_list"
     t.string "cached_user_name"
     t.string "cached_user_username"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.integer "job_opportunity_id"
     t.string "language"
     t.datetime "last_buffered"
+    t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_invoiced_at"
     t.decimal "lat", precision: 10, scale: 6
     t.boolean "live_now", default: false
@@ -105,8 +106,6 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.string "video_code"
     t.string "video_source_url"
     t.string "video_thumbnail_url"
-    t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
-    t.boolean "boosted", default: false
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["published_at"], name: "index_articles_on_published_at"
@@ -141,6 +140,12 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
+  end
+
+  create_table "chat_channels", force: :cascade do |t|
+    t.string "channel_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "collections", id: :serial, force: :cascade do |t|
@@ -216,19 +221,19 @@ ActiveRecord::Schema.define(version: 20180321170500) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.string "title"
     t.string "category"
-    t.datetime "starts_at"
+    t.string "cover_image"
+    t.datetime "created_at", null: false
+    t.text "description_html"
+    t.text "description_markdown"
     t.datetime "ends_at"
     t.string "location_name"
     t.string "location_url"
-    t.string "cover_image"
-    t.text "description_markdown"
-    t.text "description_html"
     t.boolean "published"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "slug"
+    t.datetime "starts_at"
+    t.string "title"
+    t.datetime "updated_at", null: false
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -319,6 +324,17 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.integer "user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.bigint "chat_channel_id", null: false
+    t.datetime "created_at", null: false
+    t.string "message_html", null: false
+    t.string "message_markdown", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "notes", id: :serial, force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
@@ -358,13 +374,13 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.string "state"
     t.string "story"
     t.text "summary"
+    t.string "tag_line"
     t.string "tech_stack"
     t.string "text_color_hex"
     t.string "twitter_username"
     t.datetime "updated_at", null: false
     t.string "url"
     t.string "zip_code"
-    t.string "tag_line"
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
@@ -410,9 +426,9 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.text "status_notice", default: ""
     t.string "title"
     t.string "twitter_username"
+    t.boolean "unique_website_url?", default: true
     t.datetime "updated_at", null: false
     t.string "website_url"
-    t.boolean "unique_website_url?", default: true
   end
 
   create_table "reactions", id: :serial, force: :cascade do |t|
@@ -534,6 +550,7 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.string "education"
     t.string "email", default: "", null: false
     t.boolean "email_comment_notifications", default: true
+    t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true
     t.boolean "email_membership_newsletter", default: false
     t.boolean "email_mention_notifications", default: true
@@ -573,6 +590,7 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.boolean "onboarding_package_requested_again", default: false
     t.boolean "org_admin", default: false
     t.integer "organization_id"
+    t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
     t.integer "reactions_count", default: 0, null: false
@@ -617,8 +635,6 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
-    t.boolean "permit_adjacent_sponsors", default: true
-    t.boolean "email_digest_periodic", default: true, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"
@@ -632,4 +648,6 @@ ActiveRecord::Schema.define(version: 20180321170500) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
+  add_foreign_key "messages", "chat_channels"
+  add_foreign_key "messages", "users"
 end
