@@ -26,6 +26,9 @@
   <a href="https://codeclimate.com/repos/5a9720ab6f8db3029200792a/test_coverage">
     <img src="https://api.codeclimate.com/v1/badges/607170a91196c15668e5/test_coverage" />
   </a>
+  <a href="https://www.skylight.io/app/applications/K9H5IV3RqKGu">
+    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" />
+  </a>
 </p>
 
 ## Introduction and Contribution Guideline
