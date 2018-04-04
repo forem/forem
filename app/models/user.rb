@@ -11,18 +11,19 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many    :articles
-  has_many    :reactions
   belongs_to  :organization, optional: true
-  has_many    :comments
-  has_many    :identities
+  has_many    :articles
   has_many    :collections
-  has_many    :tweets
-  has_many    :notifications
-  has_many    :mentions
+  has_many    :comments
   has_many    :email_messages, class_name: "Ahoy::Message"
-  has_many    :notes
   has_many    :github_repos
+  has_many    :identities
+  has_many    :mentions
+  has_many    :messages
+  has_many    :notes
+  has_many    :notifications
+  has_many    :reactions
+  has_many    :tweets
 
   mount_uploader :profile_image, ProfileImageUploader
 

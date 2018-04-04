@@ -28,4 +28,7 @@ Flipflop.configure do
   feature :she_coded,
     default: false,
     description: "Toggle #shecoded sidebar"
+  feature :sendbird,
+    default: true,
+    description: "Toggle between Sendbird and our custom chat"
 end

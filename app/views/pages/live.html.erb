@@ -1,5 +1,9 @@
 <% if user_signed_in? %>
-  <%= javascript_pack_tag 'sendbird', defer: true %>
+  <% if (Flipflop.sendbird?) %>
+    <%= javascript_pack_tag 'sendbird', defer: true %>
+  <% else %>
+    <%= javascript_pack_tag 'chat', defer: true %>
+  <% end %>
 <% end %>
 <% title "DEV LIVE" %>
   <link rel="canonical" href="https://dev.to/live"/>
@@ -31,7 +35,11 @@
     <script src="//player.dacast.com/js/player.js" width="1500" height="800" id="<%= ENV["DACAST_STREAM_CODE"]%>" player="jw7" jwurl="juQPHW/th8VUHaO/2KkeVlAdGN9ksJZog2z6SH+TyMU=" class="dacast-video"></script>
   </div>
   <div class="live-chat-wrapper">
-    <div id="sb_chat" class="live-chat" data-sendbird-app-id="<%= ENV["SENDBIRD_APP_ID"] %>" data-sendbird-livechat-url="<%= ENV["SENDBIRD_LIVECHAT_URL"] %>"></div>
+  <% if (Flipflop.sendbird?) %>
+      <div id="sb_chat" class="live-chat" data-sendbird-app-id="<%= ENV["SENDBIRD_APP_ID"] %>" data-sendbird-livechat-url="<%= ENV["SENDBIRD_LIVECHAT_URL"] %>"></div>
+    <% else %>
+      <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>"</div>
+    <% end %>
   </div>
 </div>
 <div class="live-under-message">DEV Live is in beta. If you are having issues, you may need to try another browser or contact <a href="mailto:members@dev.to">members@dev.to</a> for support. ❤️</div>

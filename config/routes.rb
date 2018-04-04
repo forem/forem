@@ -57,6 +57,8 @@ Rails.application.routes.draw do
     resources :reads, only: [:create]
   end
 
+  resources :messages, only: [:create]
+  resources :chat_channels, only: [:show]
   resources :articles, only: [:update,:create,:destroy]
   resources :comments, only:[:create,:update,:destroy]
   resources :users, only:[:update]
