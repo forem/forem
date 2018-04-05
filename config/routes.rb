@@ -38,10 +38,18 @@ Rails.application.routes.draw do
 
   namespace :api, defaults: {format: 'json'} do
     scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
-      resources :articles
+      resources :articles, only: [:index, :show] do
+        collection do
+          get "/onboarding", to: "articles#onboarding"
+        end
+      end
       resources :comments
       resources :podcast_episodes
-      resources :reactions, only: [:create]
+      resources :reactions, only: [:create] do
+        collection do
+          post "/onboarding", to: "reactions#onboarding"
+        end
+      end
       resources :users, only: [:index]
       resources :tags, only: [:index] do
         collection do

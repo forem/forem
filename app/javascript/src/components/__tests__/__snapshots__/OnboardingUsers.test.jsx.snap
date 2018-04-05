@@ -8,11 +8,11 @@ exports[`<OnboardingUsers /> when given users to follow renders correctly 1`] = 
     class="onboarding-user-cta"
   >
     Here are some folks from the community you might want to follow 
-    <span
+    <strong
       class="yellow"
     >
-      based on your interests
-    </span>
+      based on your interests.
+    </strong>
   </div>
   <div
     class="onboarding-user-list"

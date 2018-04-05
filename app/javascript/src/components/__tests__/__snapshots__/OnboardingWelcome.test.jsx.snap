@@ -15,9 +15,8 @@ exports[`<OnboardingWelcome /> renders correctly 1`] = `
     <strong
       class="yellow"
     >
-      Let's get started
+      Let's get started.
     </strong>
-    .
   </p>
 </div>
 `;

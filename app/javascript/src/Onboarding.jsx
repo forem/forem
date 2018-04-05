@@ -4,6 +4,7 @@ import OnboardingFollowTags from './components/OnboardingFollowTags';
 import OnboardingFollowUsers from './components/OnboardingFollowUsers';
 import OnboardingWelcomeThread from './components/OnboardingWelcomeThread';
 import cancelSvg from '../../assets/images/cancel.svg';
+import OnboardingArticles from './components/OnboardingArticles';
 
 class Onboarding extends Component {
   constructor() {
@@ -17,6 +18,8 @@ class Onboarding extends Component {
     this.getUserTags = this.getUserTags.bind(this);
     this.handleCheckAllUsers = this.handleCheckAllUsers.bind(this);
     this.handleCheckUser = this.handleCheckUser.bind(this);
+    this.handleSaveAllArticles = this.handleSaveAllArticles.bind(this);
+    this.handleSaveArticle = this.handleSaveArticle.bind(this);
     this.getUsersToFollow = this.getUsersToFollow.bind(this);
     this.state = {
       pageNumber: 1,
@@ -25,6 +28,10 @@ class Onboarding extends Component {
       allTags: [],
       users: [],
       checkedUsers: [],
+      followRequestSent: false,
+      articles: [],
+      savedArticles: [],
+      saveRequestSent: false,
     };
   }
 
@@ -76,8 +83,29 @@ class Onboarding extends Component {
       });
   }
 
+  getSuggestedArticles() {
+    const followedTags = [];
+    for (let i = 0; i < this.state.allTags.length; i += 1) {
+      if (this.state.allTags[i].following) {
+        followedTags.push(this.state.allTags[i].name);
+      }
+    }
+
+    fetch(`/api/articles/onboarding?tag_list=${followedTags.join(',')}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+      .then(response => response.json())
+      .then((json) => {
+        this.setState({ articles: json, savedArticles: json });
+      });
+  }
+
   handleBulkFollowUsers(users) {
-    if (this.state.checkedUsers.length > 0) {
+    if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
       const csrfToken = document.querySelector("meta[name='csrf-token']").content;
 
       const formData = new FormData();
@@ -90,7 +118,32 @@ class Onboarding extends Component {
         },
         body: formData,
         credentials: 'same-origin',
-      }).then(() => {
+      }).then((response) => {
+        if (response.ok) {
+          this.setState({ followRequestSent: true });
+        }
+      });
+    }
+  }
+
+  handleBulkSaveArticles(articles) {
+    if (this.state.savedArticles.length > 0 && !this.state.saveRequestSent) {
+      const csrfToken = document.querySelector("meta[name='csrf-token']").content;
+
+      const formData = new FormData();
+      formData.append('articles', JSON.stringify(articles));
+
+      fetch('/api/reactions/onboarding', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+        },
+        body: formData,
+        credentials: 'same-origin',
+      }).then((response) => {
+        if (response.ok) {
+          this.setState({ saveRequestSent: true });
+        }
       });
     }
   }
@@ -122,8 +175,6 @@ class Onboarding extends Component {
       credentials: 'same-origin',
     })
       .then((response) => {
-        // change allTags state
-        // this.setState({ allTags: [] });
         return response.json().then((json) => {
           this.setState({
             allTags: this.state.allTags.map((currentTag) => {
@@ -144,7 +195,7 @@ class Onboarding extends Component {
 
 
   handleCheckAllUsers() {
-    if (this.state.checkedUsers.length < 50) {
+    if (this.state.checkedUsers.length < this.state.users.length) {
       this.setState({ checkedUsers: this.state.users.slice() });
     } else {
       this.setState({ checkedUsers: [] });
@@ -162,13 +213,47 @@ class Onboarding extends Component {
     this.setState({ checkedUsers: newCheckedUsers });
   }
 
-  handleNextButton() {
+  handleSaveAllArticles() {
+    if (this.state.savedArticles.length < this.state.articles.length) {
+      this.setState({ savedArticles: this.state.articles.slice() });
+    } else {
+      this.setState({ savedArticles: [] });
+    }
+  }
+
+  handleSaveArticle(article) {
+    const newSavedArticles = this.state.savedArticles.slice();
+    if (this.state.savedArticles.indexOf(article) > -1) {
+      const index = newSavedArticles.indexOf(article);
+      newSavedArticles.splice(index, 1);
+    } else {
+      newSavedArticles.push(article);
+    }
+    this.setState({ savedArticles: newSavedArticles });
+  }
+
+  handleNextHover() {
     if (this.state.pageNumber === 2 && this.state.users.length === 0) {
       this.getUsersToFollow();
+      this.getSuggestedArticles();
     }
-    if (this.state.pageNumber < 4) {
+  }
+
+  handleNextButton() {
+    if (this.state.pageNumber === 2 &&
+        this.state.users.length === 0 &&
+        this.state.articles.length === 0) {
+      this.getUsersToFollow();
+      this.getSuggestedArticles();
+    }
+    if (this.state.pageNumber < 5) {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
-    } else if (this.state.pageNumber === 4) {
+      if (this.state.pageNumber === 4 && this.state.checkedUsers.length > 0) {
+        this.handleBulkFollowUsers(this.state.checkedUsers);
+      } else if (this.state.pageNumber === 5 && this.state.savedArticles.length > 0) {
+        this.handleBulkSaveArticles(this.state.savedArticles);
+      }
+    } else if (this.state.pageNumber === 5) {
       this.closeOnboarding();
     }
   }
@@ -181,7 +266,6 @@ class Onboarding extends Component {
 
   closeOnboarding() {
     document.getElementsByTagName('body')[0].classList.remove('modal-open');
-    this.handleBulkFollowUsers(this.state.checkedUsers);
     const csrfToken = document.querySelector("meta[name='csrf-token']").content;
     const formData = new FormData();
     formData.append('saw_onboarding', true);
@@ -228,6 +312,15 @@ class Onboarding extends Component {
       );
     } else if (this.state.pageNumber === 4) {
       return (
+        <OnboardingArticles
+          articles={this.state.articles}
+          savedArticles={this.state.savedArticles}
+          handleSaveAllArticles={this.handleSaveAllArticles}
+          handleSaveArticle={this.handleSaveArticle}
+        />
+      );
+    } else if (this.state.pageNumber === 5) {
+      return (
         <OnboardingWelcomeThread />
       );
     }
@@ -241,17 +334,15 @@ class Onboarding extends Component {
     }
   }
 
-  handleNextHover() {
-    if (this.state.pageNumber === 2 && this.state.users.length === 0) {
-      this.getUsersToFollow();
-    }
-  }
-
   renderNextButton() {
-    const onclick = this.handleNextButton;
     return (
-      <button className="button cta" onClick={this.handleNextButton} onMouseOver={this.handleNextHover}>
-        {this.state.pageNumber < 4 ? 'NEXT' : "LET'S GO"}
+      <button
+        className="button cta"
+        onClick={this.handleNextButton}
+        onMouseOver={this.handleNextHover}
+        onFocus={this.handleNextHover}
+      >
+        {this.state.pageNumber < 5 ? 'NEXT' : "LET'S GO"}
       </button>
     );
   }
@@ -261,7 +352,8 @@ class Onboarding extends Component {
       1: 'WELCOME!',
       2: 'FOLLOW TAGS!',
       3: 'FOLLOW SOME DEVS!',
-      4: 'GET INVOLVED!',
+      4: 'SAVE SOME POSTS!',
+      5: 'GET INVOLVED!',
     };
     return messages[this.state.pageNumber];
   }

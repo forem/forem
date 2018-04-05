@@ -117,14 +117,17 @@ describe('<Onboarding />', () => {
     // going to page four
     context.find('.button').at(1).simulate('click');
     expect(context.state('pageNumber')).toEqual(4);
-    fetch.mockResponse(JSON.stringify({ outcome: 'onboarding closed' }));
-    // going back to page three
-    context.find('.button').at(0).simulate('click');
-    expect(context.state('pageNumber')).toEqual(3);
-    // going back to page four
+    // going to page five
     context.find('.button').at(1).simulate('click');
+    expect(context.state('pageNumber')).toEqual(5);
+    fetch.mockResponse(JSON.stringify({ outcome: 'onboarding closed' }));
+    // going back to page four
+    context.find('.button').at(0).simulate('click');
     expect(context.state('pageNumber')).toEqual(4);
-    // evaluting the button text on page 4
+    // going back to page five
+    context.find('.button').at(1).simulate('click');
+    expect(context.state('pageNumber')).toEqual(5);
+    // evaluting the button text on page five
     expect(context.find('[onClick]').at(2).text()).toEqual("LET'S GO");
     context.find('.button').at(1).simulate('click');
     // clicking the final button
