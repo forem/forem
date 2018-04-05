@@ -30,11 +30,21 @@ class OnboardingUsers extends Component {
         </div>
       );
     });
+    const renderLoadingOrList = () => {
+      if (this.props.users.length === 0) {
+        return (
+          <div className="onboarding-user-loading">
+            Loading...
+          </div>
+        );
+      }
+      return followList;
+    };
 
     return (
       <div className="onboarding-user-container">
         <div className="onboarding-user-cta">
-          Here are some folks from the community you might want to follow <span class="yellow">based on your interests</span>
+          Here are some folks from the community you might want to follow <strong className="yellow">based on your interests.</strong>
         </div>
         <div className="onboarding-user-list">
           <div className="onboarding-user-list-header onboarding-user-list-row">
@@ -47,7 +57,9 @@ class OnboardingUsers extends Component {
               </button>
             </div>
           </div>
-          <div className="onboarding-user-list-body">{followList}</div>
+          <div className="onboarding-user-list-body">
+            {renderLoadingOrList()}
+          </div>
         </div>
       </div>
     );

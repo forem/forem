@@ -42,6 +42,9 @@
   .yellow{
     background: $yellow;
   }
+  .purple{
+    background: $purple;
+  }
 
   .modal-header {
     height: 10%;
@@ -194,15 +197,56 @@
       color: $black;
       margin: 20px auto 25px;
     }
+    .onboarding-article-container{
+      color: $black;
+      .onboarding-article-header{
+        padding: 5px 10px 5px 5px;
+        background: $purple;
+        font-size: 1.1em;
+        font-weight: bold;
+        border: 1px solid darken($purple, 20%);
+        box-shadow: 4px 5px 0px darken($purple, 20%);
+      }
+      .onboarding-article-header-checkbox{
+        width: 80%;
+        display: inline-block;
+        text-align: center;
+        .onboarding-article-save-all-btn{
+          border: 2px solid transparent;
+          border-radius: 3px;
+          text-align: center;
+          float: right;
+          font-size: 0.75em;
+          background: inherit;
+          color: $black;
+          &:hover {
+            background: darken($purple, 10%);
+          }
+          &.saved {
+            background: darken($purple, 26%);
+            color: $white;
+              &:hover {
+                background: darken($purple, 30%);
+              }
+          }
+        }
+      }
+    }
     .onboarding-user-list{
       color: $black;
       font-size: 0.7em;
-      overflow: scroll;
       border: 1px solid darken($purple, 20%);
       box-shadow: 4px 5px 0px darken($purple, 20%);
       .onboarding-user-list-body{
         height: calc(39vh - 20px);
-        overflow: scroll;
+        overflow-y: scroll;
+        .onboarding-user-loading {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 15%;
+          color: $medium-gray;
+        }
       }
       .onboarding-user-list-row{
         padding: 10px 0px;
@@ -213,6 +257,21 @@
           display: inline-block;
           vertical-align: -0.5em;
           margin-right: 10px;
+        }
+        .onboarding-article-engagement {
+          font-size: 16px;
+          font-weight: bold;
+          font-family: $helvetica-condensed;
+          color: $medium-gray;
+          img {
+            height: 20px;
+            min-width: 27px;
+            width: initial;
+            vertical-align: -5px;
+            margin-right: 3px;
+            border-radius: initial;
+            padding-left: 7px;
+          }
         }
         &:nth-child(odd){
           background: $light-gray;
@@ -226,6 +285,24 @@
           width: calc(100% - 80px);
           display: inline-block;
           padding-left: 10px;
+          h3 {
+            -webkit-margin-before: 0.2em;
+            -webkit-margin-after: 0.3em;
+            font-size: 30px;
+          }
+          &.article {
+            width: calc(100% - 100px);
+            span {
+              // article author's name
+              color: $medium-gray;
+            }
+            p {
+              // article description
+              -webkit-margin-before: 0.5em;
+              -webkit-margin-start: 10px;
+              font-size: 0.85em;
+            }
+          }
         }
         .onboarding-user-list-checkbox{
           width: 70px;
@@ -233,11 +310,55 @@
           text-align: center;
           button{
             border: 0px;
+            border-radius: 3px;
             background: transparent;
             font-size:1.1em;
             &.checked{
               background: $green;
               color: white;
+              &:hover {
+              background: darken($green, 10%);
+              }
+              &:active {
+                background: darken($green, 20%);
+              }
+            }
+            &:hover {
+              background: darken($purple, 10%);
+            }
+            &:active {
+              background: darken($purple, 20%);
+            }
+            &.article{
+              &:hover{
+                background: darken($purple, 10%);
+              }
+              &:active {
+                background: darken($purple, 20%);
+              }
+              &.save-single{
+                background: darken($purple, 2%);
+                font-size: 0.8em;
+                font-family: $helvetica-condensed;
+                width: inherit;
+                height: 35px;
+                &:hover {
+                  background: darken($purple, 10%);
+                }
+                &:active {
+                background: darken($purple, 20%);
+                }
+              }
+            &.saved {
+              background: darken($purple, 26%);
+              color: white;
+              &:hover {
+                background: darken($purple, 35%);
+              }
+              &:active {
+                background: darken($purple, 50%);
+              }
+            }
             }
           }
         }
@@ -273,6 +394,12 @@
       padding: 4px 10px;
       a {
         color: black;
+      }
+      &:hover {
+        background: darken($green, 20%);
+      }
+      &:active {
+        background: darken($green, 35%);
       }
     }
   }

@@ -19,6 +19,20 @@ module Api
         @article = Article.includes(:user).find(params[:id]).decorate
         not_found unless @article.published
       end
+
+      def onboarding
+        tag_list = params[:tag_list].split(",")
+        @articles = []
+        4.times do
+          @articles << ClassicArticle.new.get(tag_list)
+        end
+        Article.tagged_with(tag_list, any: true).
+          order("published_at DESC").
+          where("positive_reactions_count > ? OR comments_count > ?", 10, 3).limit(15).each do |article|
+            @articles << article
+          end
+        @articles = @articles.uniq
+      end
     end
   end
 end

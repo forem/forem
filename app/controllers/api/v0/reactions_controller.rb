@@ -18,6 +18,19 @@ module Api
         render json: { reaction: @reaction.to_json }
       end
 
+      def onboarding
+        verify_authenticity_token
+        reactable_ids = JSON.parse(params[:articles]).map { |article| article["id"] }
+        reactable_ids.each do |article_id|
+          Reaction.delay.create(
+            user_id: current_user.id,
+            reactable_id: article_id,
+            reactable_type: "Article",
+            category: "readinglist",
+          )
+        end
+      end
+
       private
 
       def valid_user
