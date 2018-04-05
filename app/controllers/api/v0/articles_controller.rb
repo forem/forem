@@ -31,7 +31,7 @@ module Api
           where("positive_reactions_count > ? OR comments_count > ?", 10, 3).limit(15).each do |article|
             @articles << article
           end
-        @articles = @articles.uniq
+        @articles = @articles.uniq.sample(6)
       end
     end
   end
