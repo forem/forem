@@ -19,7 +19,7 @@ class DigestMailer < ApplicationMailer
   end
 
   def random_emoji
-    ["🤓","🎉","🙈","🔥","💬","👋","👏","🐶","🦁","🦊","🐙","🦄","❤️","😇"].shuffle.take(3).join
+    ["🤓","🎉","🙈","🔥","💬","👋","👏","🐶","🦁","🐙","🦄","❤️","😇"].shuffle.take(3).join
   end
 
   def email_end_phrase
@@ -29,7 +29,7 @@ class DigestMailer < ApplicationMailer
       "other posts you might like",
       "other posts you should read",
       "other articles picked for you",
-      "more wonderful posts"
+      "more wonderful posts",
     ].sample
   end
 end
