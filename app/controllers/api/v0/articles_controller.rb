@@ -21,7 +21,11 @@ module Api
       end
 
       def onboarding
-        tag_list = params[:tag_list].split(",")
+        tag_list = if params[:tag_list].present?
+          params[:tag_list].split(",")
+        else
+          ["career","discuss","productivity"]
+        end
         @articles = []
         4.times do
           @articles << ClassicArticle.new.get(tag_list)
