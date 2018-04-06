@@ -16,7 +16,11 @@ function markNotificationsAsRead() {
       }
       xmlhttp.onreadystatechange = function () {
       };
+
+      var csrfToken = document.querySelector("meta[name='csrf-token']").content;
+
       xmlhttp.open('Post', '/notifications/reads', true);
+      xmlhttp.setRequestHeader('X-CSRF-Token', csrfToken);
       xmlhttp.send();
     }
   }, 120);

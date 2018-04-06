@@ -1,5 +1,4 @@
 class Notifications::ReadsController < ApplicationController
-  skip_before_action :verify_authenticity_token
   skip_before_action :ensure_signup_complete
   def create
     result = ""
