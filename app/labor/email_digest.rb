@@ -17,9 +17,11 @@ class EmailDigest
       user_email_heuristic = EmailLogic.new(user).analyze
       next unless user_email_heuristic.should_receive_email?
       articles = user_email_heuristic.articles_to_send
-      DigestMailer.digest_email(user, articles).deliver
-    rescue
-      puts "Email issue"
+      begin
+        DigestMailer.digest_email(user, articles).deliver
+      rescue StandardError
+        puts "Email issue"
+      end
     end
   end
 

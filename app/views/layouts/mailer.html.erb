@@ -8,7 +8,11 @@
       </tr>
       <tr>
         <td style="padding:3% 12% 2% 4%;font-size:16px;line-height:22px;color:#7d7d7d">
-          Don't want to get emails like this? Adjust your email settings at <a href="https://dev.to/settings/notifications">dev.to/settings/notifications</a>
+          <%if @unsubscribe %>
+            <%= link_to "Unsubscribe", email_subscriptions_unsubscribe_url(ut: @unsubscribe) %> | <a href="https://dev.to/settings/notifications">Adjust your email settings</a>
+          <% else %>
+            Don't want to get emails like this? Adjust your email settings at <a href="https://dev.to/settings/notifications">dev.to/settings/notifications</a>
+          <% end %>
           <br/><br/>
           <% if @user.twitter_username.blank? %>
             Reminder: You used <b>GitHub</b> to authenticate your account, so use that to sign in if prompted.
