@@ -91,6 +91,7 @@ Rails.application.routes.draw do
   resources :additional_content_boxes, only: [:index]
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
+  get "email_subscriptions/unsubscribe"
   # resources :users
 
   ### Subscription vanity url

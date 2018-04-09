@@ -7,6 +7,7 @@ class NotifyMailer < ApplicationMailer
       comment.parent_user
     end
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_comment_notifications)
     @comment = comment
     mail(to: @user.email, subject: "#{@comment.user.name} replied to your #{@comment.parent_type}") do |format|
       format.html { render "layouts/mailer" }
@@ -22,6 +23,7 @@ class NotifyMailer < ApplicationMailer
     end
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
     @follower = follow.follower
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
     mail(to: @user.email, subject: "#{@follower.name} just followed you on dev.to") do |format|
       format.html { render 'layouts/mailer' }
@@ -35,6 +37,7 @@ class NotifyMailer < ApplicationMailer
     @mentioner = User.find(mention.mentionable.user_id)
     @mentionable = mention.mentionable
     @mention = mention
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
 
     mail(to: @user.email, subject: "#{@mentioner.name} just mentioned you!") do |format|
       format.html { render 'layouts/mailer' }
@@ -50,6 +53,7 @@ class NotifyMailer < ApplicationMailer
     end
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
     @unread_notifications_count = NotificationCounter.new(@user).unread_notification_count
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
     mail(to: @user.email, subject: "🔥 You have #{@unread_notifications_count} unread notifications on dev.to") do |format|
       format.html { render 'layouts/mailer' }
       format.text { render plain: "Visit https://dev.to/notifications to read all of your notifications" }
