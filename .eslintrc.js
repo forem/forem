@@ -1,9 +1,10 @@
 module.exports = {
-  "extends": "airbnb-base/legacy",
-  "env": {
-    "browser": true,
+  extends: ['airbnb-base/legacy', 'prettier'],
+  parserOptions: {
+    ecmaVersion: 6,
   },
-  "plugins": [
-    "ignore-erb"
-  ]
+  env: {
+    browser: true,
+  },
+  plugins: ['ignore-erb'],
 };
