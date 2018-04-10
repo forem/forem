@@ -1,20 +1,21 @@
 .unsubscribed {
   background: #66e2d5;
-  color: white;
+  color: #0c3d38;
   margin: 100px auto;
   padding: 40px 10px;
 
-  @media screen and (min-width: 550px) {
+  @media screen and (min-width: 645px) {
     margin: 100px auto;
-    width: 450px;
+    width: 565px;
     padding: 40px;
   }
 }
 
 .unsubscribed__title {
   font-weight: 600;
+  font-size: 26px;
 }
 
 .unsubscribed__message {
-  font-weight: 300;
+  font-weight: 400;
 }
