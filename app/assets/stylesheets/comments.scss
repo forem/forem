@@ -711,6 +711,14 @@ a.header-link{
         opacity:1;
       }
     }
+    a.register-now-cta{
+      font-size:1.4em;
+      background: $green;
+      color: $black;
+      padding: 3px 10px;
+      margin-right:5px;
+      line-height:1.8em;
+    }
     .current-user-actions{
       .hidden{
         display:none;

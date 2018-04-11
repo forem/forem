@@ -2,30 +2,32 @@
   <div class="comment-hash-marker" id="cta-comment-marker"></div>
   <div class="single-comment-node root comment-deep-0"
     id="cta-comment-register-now-node">
-    <div class="inner-comment" style="box-shadow: 5px 5px 0px #4e57ef;border:1px solid #4e57ef;">
+    <div class="inner-comment" style="box-shadow: 8px 8px 0px #4e57ef;border:4px solid #4e57ef;margin: 20px auto;">
       <div class="details">
-        <img class="profile-pic" src="<%= ProfileImage.new(User.first).get(50)%>" />
+        <a href="<%= User.first.path %>">
+          <img class="profile-pic" src="<%= ProfileImage.new(User.first).get(50)%>" />
+          </a>
         <span class="comment-username">
           <span class="comment-username-inner">
-            <%= User.first.name %>
+            <a href="<%= User.first.path %>"><%= User.first.name %></a>
           </span>
         </span>
-        <span class="op-marker">FOUNDER</span>
+        <span class="op-marker">DEV.TO FOUNDER</span>
       </div>
       <div class="body">
         <p>
-          Dear <b>lurker</b>, this message is for <b><em>you</em></b>.
+          Hey there, we see you aren't signed in.
         </p>
         <p>
           Please consider creating an account on <a href="https://dev.to">dev.to</a>. It literally takes a few seconds and <b><em>we'd appreciate the support so much</em></b>. ❤️
         </p>
-        <button class="reaction-button" title="heart">
+        <button class="reaction-button" title="heart" style="margin-top: 10px;margin-bottom: -10px;">
           <%= image_tag "favorite-heart-outline-button.svg" %>
           <span class="reactions-count">1,337</span>
         </button>
       </div>
       <div class="actions">
-        <a href="/enter" id="cta-comment-register-now-link" rel="nofollow">REGISTER NOW</a>
+        <a href="/enter" id="cta-comment-register-now-link" class="register-now-cta" rel="nofollow">REGISTER NOW</a>
       </div>
     </div>
   </div>

@@ -38,7 +38,8 @@ function initializeCommentsPage() {
           if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
             allNodes[i].dataset.currentUserComment = "true";
             var userActionsEl = allNodes[i].children[0].children[2].children[0];
-            if (userActionsEl) {
+            var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
+            if (userActionsEl && buttEl) {
               userActionsEl.className = 'current-user-actions';
               userActionsEl.style.display = 'inline-block';
               document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
