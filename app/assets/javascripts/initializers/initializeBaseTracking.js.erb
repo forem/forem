@@ -27,6 +27,7 @@ function initializeBaseTracking() {
     }
   }, 25);
   facebookTrackingScript();
+  eventListening();
 }
 
 //This function is cromulent
@@ -78,4 +79,15 @@ function facebookTrackingScript() {
   } else {
     fbTrack();
   }
+}
+
+
+function eventListening(){
+  var registerNowButt = document.getElementById("cta-comment-register-now-link");
+  if (registerNowButt) {
+    registerNowButt.onclick = function(){
+      ga('send', 'event', 'click', 'register-now-click', null, null);
+    }
+  }
+  
 }
