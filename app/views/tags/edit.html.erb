@@ -1,0 +1,79 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"></script>
+<style>
+  .widget header{
+    color: <%= HexComparer.new([@tag.bg_color_hex || "#0000000",@tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+  }
+  .slanty-accent{
+    background-color: <%= HexComparer.new([@tag.bg_color_hex || "#ffffff"]).accent %>
+  }
+  .tag-edit-tag {
+    text-align: center;
+    color: <%= @tag.text_color_hex %>;
+  }
+</style>
+<br>
+<br>
+<br> 
+  <div class="user-profile-header tag-header" style="background-color:<%=@tag.bg_color_hex %>;color:<%=@tag.text_color_hex %>;">
+    <div class="slanty-accent"></div>
+    <div class="tag-or-query-header-container tag-edit-tag">
+        <h1> Editing: <a href="/t/<%= @tag.name %>" style="color: <%= @tag.text_color_hex %>;text-decoration: underline;"><%= @tag.name %></a> </h1>
+        <p><code style="background-color: #D2D2D2; color: black; padding: 5px; border-radius: 5px;"><%= @tag.name %></code> is the name of the tag used in Markdown.</p>
+    </div>
+  </div>
+
+  
+  <%= form_tag("/tag/#{@tag.id}", method: :patch, class: "tag-edit-form") do %>
+    <div class="tag-edit-container">
+      <% if flash[:success] %>
+        <p class="tag-edit-flash-success">
+          <%= flash[:success] %>
+        </p>
+      <% elsif flash[:error] %>
+          <ul class="tag-edit-flash-error">
+        <% flash[:error].each do |message| %>
+            <li><%= message %></li>
+        <% end %>
+          </ul>
+      <% end %>
+      <h4>
+        <a target="_blank" href="https://thepracticaldev.s3.amazonaws.com/i/47bnwguw2rv8npa85egm.png">
+          Click here to see an example of attributes.
+        </a>
+      </h4>
+      <div class="tag-form-field">
+        <%= label_tag :pretty_name %>
+        <br>
+        <%= text_field_tag "tag[pretty_name]", @tag.pretty_name, placeholder: "This is the name at the top of the show page.", class: "tag-form-text-field" %>
+      </div>
+      <div class="tag-form-field">
+        <%= label_tag :bg_color_hex %>
+        <br>
+        <%= text_field_tag "tag[bg_color_hex]", @tag.bg_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field jscolor {hash:true, required:false}" %>
+      </div>
+      <div class="tag-form-field">
+        <%= label_tag :text_color_hex %>
+        <br>
+        <%= text_field_tag "tag[text_color_hex]", @tag.text_color_hex, placeholder: "Click for color picker", class: "tag-form-text-field jscolor {hash:true, required:false}" %>
+      </div>
+      <div class="tag-form-field">
+        <%= label_tag :short_summary %>
+        <br>
+        <%= text_area_tag "tag[short_summary]", @tag.short_summary, placeholder: "", class: "tag-form-text-field tag-area-text" %>
+      </div>
+      <div class="tag-form-field">
+        <%= label_tag :rules_markdown %>
+        <br>
+        <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: "", class: "tag-form-text-field tag-area-text" %>
+      </div>
+      <div class="tag-form-field">
+        <%= label_tag :wiki_body_markdown %>
+        <br>
+        <%= text_area_tag "tag[wiki_body_markdown]", @tag.wiki_body_markdown, placeholder: "", class: "tag-form-text-field tag-area-text" %>
+      </div>
+      <div class="tag-form-field">
+        <%= submit_tag "Save Changes", class: "tag-edit-submit" %>
+      </div>
+    </div>
+<% end %>
+

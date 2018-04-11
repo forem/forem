@@ -15,7 +15,7 @@ RSpec/DescribeClass:
 AllCops:
   Exclude:
     - db/schema.rb
-  TargetRubyVersion: 2.3.4
+  TargetRubyVersion: 2.5.0
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.

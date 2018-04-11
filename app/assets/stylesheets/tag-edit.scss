@@ -1,0 +1,39 @@
+  .tag-edit-form {
+    margin-bottom: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tag-edit-container {
+    margin-top: 5em;
+    max-width: 50%;
+  }
+  .tag-form-text-field {
+    height: 2em;
+    width: 20.5em;
+    text-align: left;
+    overflow-wrap: break-word;
+    font-size: 1em;
+  }
+  .tag-area-text {
+    height: 4em;
+  }
+  .tag-edit-submit {
+    margin-top: 5px;
+    background-color: #557de8;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 16px;
+  }
+  .tag-edit-flash-success {
+    color: white;
+    background: #388019;
+    padding: 15px;
+  }
+  .tag-edit-flash-error {
+    color: white;
+    background: #ff0000;
+    padding: 15px 15px 15px 40px;
+  }
+

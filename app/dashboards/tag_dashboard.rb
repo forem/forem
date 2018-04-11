@@ -11,6 +11,7 @@ class TagDashboard < Administrate::BaseDashboard
     id: Field::Number,
     name: Field::String,
     supported: Field::Boolean,
+    tag_moderator_ids: TagModeratorsField,
     wiki_body_markdown: Field::Text,
     wiki_body_html: Field::Text,
     rules_markdown: Field::Text,
@@ -48,6 +49,7 @@ class TagDashboard < Administrate::BaseDashboard
     :id,
     :name,
     :supported,
+    :tag_moderator_ids,
     :alias_for,
     :wiki_body_markdown,
     :wiki_body_html,
@@ -71,6 +73,7 @@ class TagDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = [
     :name,
     :supported,
+    :tag_moderator_ids,
     :alias_for,
     :wiki_body_markdown,
     :rules_markdown,
