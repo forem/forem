@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-    omniauth_callbacks: 'omniauth_callbacks',
+    omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
     registrations: "registrations" }
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
-    get '/enter' => 'registrations#new', :as => :new_user_registration_path
+    get "/enter" => "registrations#new", :as => :new_user_registration_path
   end
 
   namespace :admin do
@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   end
 
 
-  namespace :api, defaults: {format: 'json'} do
+  namespace :api, defaults: {format: "json"} do
     scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
       resources :articles, only: [:index, :show] do
         collection do
@@ -97,7 +97,7 @@ Rails.application.routes.draw do
   ### Subscription vanity url
   post "membership-action" => "stripe_subscriptions#create"
 
-  get '/async_info/base_data', controller: 'async_info#base_data', defaults: { format: :json }
+  get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
   get "/hello-goodbye-to-the-go-go-go", to: redirect("ben/hello-goodbye-to-the-go-go-go")
   get "/dhh-on-the-future-of-rails", to: redirect("ben/dhh-on-the-future-of-rails")
@@ -174,7 +174,7 @@ Rails.application.routes.draw do
 
   match "/delayed_job_admin" => DelayedJobWeb, :anchor => false, via: [:get, :post]
 
-  match '/users/:id/finish_signup' => 'users#finish_signup', via: [:get, :patch], :as => :finish_signup
+  match "/users/:id/finish_signup" => "users#finish_signup", via: [:get, :patch], :as => :finish_signup
 
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
@@ -187,51 +187,53 @@ Rails.application.routes.draw do
 
   # for testing rails mailers
   if !Rails.env.production?
-    get '/rails/mailers' => "rails/mailers#index"
-    get '/rails/mailers/*path' => "rails/mailers#preview"
+    get "/rails/mailers" => "rails/mailers#index"
+    get "/rails/mailers/*path" => "rails/mailers#preview"
   end
 
-  get "/new" => 'articles#new'
-  get "/new/:template" => 'articles#new'
+  get "/new" => "articles#new"
+  get "/new/:template" => "articles#new"
 
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
 
-  get "/feed" => "articles#feed", :as => "feed", :defaults => { :format => 'rss' }
-  get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { :format => 'rss' }
-  get "/rss" => "articles#feed", :defaults => { :format => 'rss' }
+  get "/feed" => "articles#feed", :as => "feed", :defaults => { :format => "rss" }
+  get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { :format => "rss" }
+  get "/rss" => "articles#feed", :defaults => { :format => "rss" }
 
-  get "/amp/:slug" => 'articles#amp'
-  get "/amp/:username/:slug" => 'articles#amp', :constraints => { username: /@[\S]*/}
+  get "/amp/:slug" => "articles#amp"
+  get "/amp/:username/:slug" => "articles#amp", :constraints => { username: /@[\S]*/}
 
-  get "/tag/:tag" => 'stories#index'
-  get "/t/:tag" => 'stories#index'
-  get "/t/:tag/top/:timeframe" => 'stories#index'
-  get "/t/:tag/:timeframe" => 'stories#index', constraints: { timeframe: /latest/}
+  get "/tag/:tag" => "stories#index"
+  get "/t/:tag" => "stories#index"
+  get "/t/:tag/edit", to: "tags#edit"
+  patch "/tag/:id", to: "tags#update"
+  get "/t/:tag/top/:timeframe" => "stories#index"
+  get "/t/:tag/:timeframe" => "stories#index", constraints: { timeframe: /latest/}
 
   get "/getting-started" => "onboarding#index"
 
-  get "/top/:timeframe" => 'stories#index'
+  get "/top/:timeframe" => "stories#index"
 
-  get "/:timeframe" => 'stories#index', constraints: { timeframe: /latest/}
+  get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/}
 
-  get "/:username/:slug/comments/new/:parent_id_code" => 'comments#new'
-  get "/:username/:slug/comments/new" => 'comments#new'
-  get "/:username/:slug/comments" => 'comments#index'
-  get "/:username/:slug/comments/:id_code" => 'comments#index'
-  get "/:username/:slug/comments/:id_code/edit" => 'comments#edit'
-  get "/:username/:slug/comments/:id_code/delete_confirm" => 'comments#delete_confirm'
+  get "/:username/:slug/comments/new/:parent_id_code" => "comments#new"
+  get "/:username/:slug/comments/new" => "comments#new"
+  get "/:username/:slug/comments" => "comments#index"
+  get "/:username/:slug/comments/:id_code" => "comments#index"
+  get "/:username/:slug/comments/:id_code/edit" => "comments#edit"
+  get "/:username/:slug/comments/:id_code/delete_confirm" => "comments#delete_confirm"
 
-  get "/:username/comment/:id_code" => 'comments#index'
-  get "/:username/comment/:id_code/edit" => 'comments#edit'
-  get "/:username/comment/:id_code/delete_confirm" => 'comments#delete_confirm'
+  get "/:username/comment/:id_code" => "comments#index"
+  get "/:username/comment/:id_code/edit" => "comments#edit"
+  get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
 
-  get "/:username/:slug/:view" => 'stories#show', constraints: { view: /moderate/}
-  get "/:username/:slug/edit" => 'articles#edit'
-  get "/:username/:slug/delete_confirm" => 'articles#delete_confirm'
-  get "/:username/:view" => 'stories#index', constraints: { view: /comments|moderate|admin/}
-  get "/:username/:slug" => 'stories#show'
-  get "/:username" => 'stories#index'
+  get "/:username/:slug/:view" => "stories#show", constraints: { view: /moderate/}
+  get "/:username/:slug/edit" => "articles#edit"
+  get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
+  get "/:username/:view" => "stories#index", constraints: { view: /comments|moderate|admin/}
+  get "/:username/:slug" => "stories#show"
+  get "/:username" => "stories#index"
 
-  root 'stories#index'
+  root "stories#index"
 end

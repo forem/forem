@@ -244,8 +244,7 @@ class Comment < ApplicationRecord
   end
 
   def wrap_timestamps_if_video_present!
-    return if commentable_type == 'PodcastEpisode'
-    return unless commentable.video.present?
+    return unless commentable_type != "PodcastEpisode" && commentable.video.present?
     self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) {|s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>"}
   end
 

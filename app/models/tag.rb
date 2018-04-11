@@ -1,12 +1,14 @@
 class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
+  resourcify
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
-  validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-
+  validates :text_color_hex,
+    format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
+  validates :bg_color_hex,
+    format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
 
   validate :validate_alias
   before_validation :evaluate_markdown
@@ -16,6 +18,10 @@ class Tag < ActsAsTaggableOn::Tag
 
   def submission_template_customized(param_0 = nil)
     submission_template.gsub("PARAM_0", param_0)
+  end
+
+  def tag_moderator_ids
+    User.with_role(:tag_moderator, self).map(&:id).sort
   end
 
   private
@@ -49,7 +55,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def pound_it
-    text_color_hex&.prepend("#") unless text_color_hex&.starts_with?("#")
-    bg_color_hex&.prepend("#") unless bg_color_hex&.starts_with?("#")
+    text_color_hex&.prepend("#") unless text_color_hex&.starts_with?("#") || text_color_hex.blank?
+    bg_color_hex&.prepend("#") unless bg_color_hex&.starts_with?("#") || bg_color_hex.blank?
   end
 end

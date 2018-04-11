@@ -1,8 +1,6 @@
 class UserRoleService
   def initialize(user)
     @user = user
-    @bannable = nil
-    @warnable = nil
   end
 
   def check_for_roles(params)
@@ -13,6 +11,22 @@ class UserRoleService
       warnable?(params)
     end
     new_roles?(params)
+  end
+
+  def update_tag_moderators(user_ids, tag)
+    users = user_ids.map { |id| User.find(id) }
+    # Andy: Don't have to worry about comparing old and new values.
+    tag.tag_moderator_ids.each do |id|
+      User.find(id).remove_role(:tag_moderator, tag)
+      puts "removed #{id}"
+    end
+    users.each do |user|
+      user.add_role(:tag_moderator, tag)
+      puts "added #{user.id}"
+    end
+  rescue ActiveRecord::RecordNotFound
+    tag.errors[:moderator_ids] << ": user #{id} was not found"
+    return false
   end
 
   private
@@ -32,29 +46,22 @@ class UserRoleService
   def bannable?(params)
     if params[:banned] == "0" && !params[:reason_for_ban].blank?
       @user.errors[:banned] << "was not checked but had the reason filled out"
-      @bannable = false
     elsif params[:banned] == "1" && params[:reason_for_ban].blank?
       @user.errors[:reason_for_ban] << "can't be blank if banned is checked"
-      @bannable = false
     elsif params[:banned] == "1"
       ban(params[:reason_for_ban])
-      @bannable = true
     else
       unban
-      @bannable = true
     end
   end
 
   def warnable?(params)
     if params[:warned] == "0" && !params[:reason_for_warning].blank?
       @user.errors[:warned] << "was not checked but had the reason filled out"
-      @warnable = false
     elsif params[:warned] == "1" && params[:reason_for_warning].blank?
       @user.errors[:reason_for_warning] << "can't be blank if warned is checked"
-      @warnable = false
     elsif params[:warned] == "1"
       give_warning(params[:reason_for_warning])
-      @warnable = true
     end
   end
 
@@ -80,10 +87,16 @@ class UserRoleService
     @user.remove_role :banned
   end
 
+  # Andy: Only give warning method b/c no need to remove warnings
   def give_warning(content)
     @user.add_role :warned
     create_or_update_note("warned", content)
   end
 
-  # Andy: no need to remove a warning from a user
+
+  def validate_user_ids(user_ids)
+    user_ids.each do |id|
+      User.find(id)
+    end
+  end
 end

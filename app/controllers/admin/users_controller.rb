@@ -7,16 +7,11 @@ module Admin
         flash[:notice] = "User successfully updated"
         redirect_to "/admin/users/#{params[:id]}"
       else
-        render_with_errors(user)
+        render :new, locals: { page: Administrate::Page::Form.new(dashboard, user) }
       end
     end
 
     private
-
-    def render_with_errors(user)
-      flash.now[:notice] = user.errors.full_messages
-      render :new, locals: { page: Administrate::Page::Form.new(dashboard, user) }
-    end
 
     def user_params
       accessible = %i[name
