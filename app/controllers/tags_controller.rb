@@ -1,5 +1,6 @@
 class TagsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
+  before_action :authenticate_user!, only: %i(edit update)
 
   def index
     @tags_index = true
@@ -26,7 +27,8 @@ class TagsController < ApplicationController
   private
 
   def check_authorization
-    raise unless current_user.has_role?(:super_admin) || current_user.has_role?(:tag_moderator, @tag)
+    raise "UNAUTHORIZED" unless current_user.has_role?(:super_admin) ||
+        current_user.has_role?(:tag_moderator, @tag)
   end
 
   def convert_empty_string_to_nil
