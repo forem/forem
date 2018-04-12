@@ -24,6 +24,7 @@ class UserRoleService
       user.add_role(:tag_moderator, tag)
       puts "added #{user.id}"
     end
+    return true
   rescue ActiveRecord::RecordNotFound
     tag.errors[:moderator_ids] << ": user #{id} was not found"
     return false
@@ -92,7 +93,6 @@ class UserRoleService
     @user.add_role :warned
     create_or_update_note("warned", content)
   end
-
 
   def validate_user_ids(user_ids)
     user_ids.each do |id|
