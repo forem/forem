@@ -153,9 +153,9 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.active_discuss_threads(tag=nil, time_ago=nil)
+  def self.active_threads(tags=["discuss"], time_ago=nil, number=10)
     stories = where(published:true).
-      limit(8)
+      limit(number)
     if time_ago == "latest"
       stories = stories.order("published_at DESC")
     elsif time_ago
@@ -166,8 +166,7 @@ class Article < ApplicationRecord
         where("published_at > ?", (tag.present? ? 5 : 2).days.ago)
     end
 
-    stories = stories.tagged_with(["discuss", tag]) if tag
-    stories = stories.tagged_with("discuss") unless tag
+    stories = stories.tagged_with(tags)
 
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
