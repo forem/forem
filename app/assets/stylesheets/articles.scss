@@ -860,7 +860,7 @@
     }
     .widget{
       width:calc(100% - 30px);
-      padding:14px 12px;
+      padding:10px 12px;
       margin-bottom:15px;
       position:relative;
       overflow:hidden;
@@ -934,12 +934,17 @@
       header{
         width:100%;
         margin:auto;
-        padding-bottom:5px;
         font-weight:800;
-        font-size: 1.3em;
+        font-size: 1.2em;
         padding-bottom:10px;
         font-family: $helvetica-condensed;
         font-stretch:condensed;
+        a{
+          color: $black;
+          &:hover{
+            text-decoration: underline;
+          }
+        }
         .emoji{
           margin-right:3px;
           margin-left:5px;
@@ -1130,11 +1135,19 @@
         }
       }
       .cta-button{
-        padding:5px 18px;
-        border-radius:3px;
-        margin-top:12px;
-        font-weight: bold;
-        display:inline-block;
+        margin-top:8px;
+        padding:17px 5px 8px;
+        margin-left: 3px;
+        font-size:0.93em;
+        color: $sky-blue;
+        background: white;
+        display:block;
+        width:92%;
+        border-top: 3px solid $light-gray;
+        &:hover{
+          text-decoration: underline;
+          opacity:1;
+        }
       }
     }
     .widget-link-list__item {
