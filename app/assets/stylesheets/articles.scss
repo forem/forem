@@ -1144,6 +1144,11 @@
         display:block;
         width:92%;
         border-top: 3px solid $light-gray;
+        &.login-cta-button{
+          padding:10px 5px;
+          border-top:0px;
+          color: $black;
+        }
         &:hover{
           text-decoration: underline;
           opacity:1;
