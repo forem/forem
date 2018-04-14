@@ -49,7 +49,9 @@ class Internal::UsersController < Internal::ApplicationController
       comment.destroy!
     end
     user.articles.each &:destroy!
+    user.remove_from_index!
     user.save!
+    user.update!(old_username: nil)
   rescue => e
     flash[:error] = e.message
   end
