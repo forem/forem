@@ -3,6 +3,7 @@ class MessagesController < ApplicationController
 
   def create
     @message = Message.new(message_params)
+    authorize @message
     success = false
 
     if @message.save
@@ -29,6 +30,7 @@ class MessagesController < ApplicationController
 
   def create_pusher_payload(new_message)
     {
+      user_id: new_message.user.id,
       username: new_message.user.username,
       message: new_message.message_markdown,
       timestamp: new_message.timestamp,

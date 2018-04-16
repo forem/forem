@@ -1,6 +1,7 @@
 // High level class
 .chatchannel {
   height: inherit;
+  max-height: inherit;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -9,7 +10,7 @@
 
 .chatchannel__messages {
   font-size: 15px;
-  padding: 10px;
+  padding: 10px 0px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -17,6 +18,29 @@
   overflow-y: scroll;
   overflow-x: hidden;
   text-align: left;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.chatchannel__alerts {
+  position: relative;
+}
+
+.chatalert__default {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  height: 25px;
+  justify-content: center;
+  position: absolute;
+  top: -25px;
+  width: 100%;
+  font-size: 13px;
+}
+
+.chatalert__default--hidden {
+  display: none;
 }
 
 .chatchannel__form {
@@ -29,11 +53,16 @@
 // Chatmessage
 .chatmessage {
   display: inline-block;
-  margin-bottom: 3px;
+  padding: 3px 10px;
+
+  &:hover {
+    background: #e3e3e3;
+  }
+
 }
 
 .chatmessage__username {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .chatmessage__divider {
