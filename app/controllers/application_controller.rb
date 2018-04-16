@@ -39,7 +39,10 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!
     unless current_user
-      redirect_to "/enter"
+      respond_to do |format|
+        format.html { redirect_to "/enter" }
+        format.json { render json: { error: "Please sign in" }, status: 401 }
+      end
     end
   end
 
@@ -99,7 +102,13 @@ class ApplicationController < ActionController::Base
   private
 
   def user_not_authorized
-    flash[:alert] = "You are not authorized to perform this action."
-    redirect_to(request.referrer || root_path)
+    respond_to do |format|
+      format.html do
+        flash[:alert] = "You are not authorized to perform this action."
+        redirect_to(request.referrer || root_path)
+      end
+
+      format.json { render json: { error: "Not authorized" }, status: 401 }
+    end
   end
 end

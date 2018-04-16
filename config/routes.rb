@@ -92,6 +92,7 @@ Rails.application.routes.draw do
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
+  post "chat_channels/:id/moderate" => "chat_channels#moderate"
   # resources :users
 
   ### Subscription vanity url
