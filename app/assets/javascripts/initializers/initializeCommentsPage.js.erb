@@ -176,11 +176,21 @@ function handleCommentSubmit(event) {
   var form = event.target;
   form.classList.add('submitting');
   var parentComment = document.getElementById("comment-node-"+event.target.dataset.commentId);
+
+  var body = JSON.stringify({
+    comment: {
+      body_markdown: form.getElementsByTagName("textarea")[0].value,
+      commentable_id: form.querySelector("#comment_commentable_id").value,
+      commentable_type: form.querySelector("#comment_commentable_type").value,
+      parent_id: form.querySelector("#comment_parent_id") ? form.querySelector("#comment_parent_id").value : null,
+    }
+  });
+
   getCsrfToken()
-    .then(sendFetch('comment-creation', this))
+    .then(sendFetch('comment-creation', body))
     .then(function (response) {
       if (response.status === 200) {
-        response.json().then(function(newComment){
+        response.json().then(function(newComment) {
           var newNode = document.createElement('div');
           if (newComment.status == "comment already exists") {
             return false;
