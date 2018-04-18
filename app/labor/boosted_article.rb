@@ -1,5 +1,4 @@
 class BoostedArticle
-
   attr_accessor :user, :article, :tags, :not_ids
   def initialize(user, article, options)
     @user = user

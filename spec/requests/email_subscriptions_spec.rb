@@ -7,7 +7,7 @@ RSpec.describe "EmailSubscriptions", type: :request do
     Rails.application.message_verifier(:unsubscribe).generate(
       user_id: user_id,
       email_type: :email_mention_notifications,
-      expires_at: Time.now + 2.days,
+      expires_at: Time.now + 31.days,
     )
   end
 
@@ -30,9 +30,9 @@ RSpec.describe "EmailSubscriptions", type: :request do
 
     it "won't work if it's past expireation date" do
       token = generate_token(user.id)
-      Timecop.freeze(Date.today + 3) do
-        expect { get email_subscriptions_unsubscribe_url(ut: token) }.
-          to raise_error(ActionController::RoutingError)
+      Timecop.freeze(Date.today + 32) do
+        get email_subscriptions_unsubscribe_url(ut: token)
+        expect(response).to render_template("invalid_token")
       end
     end
   end
