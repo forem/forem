@@ -23,7 +23,7 @@
         <div class="dropdown-link-row">
           <img src="<%= asset_path("link.svg") %>" /><input value="https://dev.to<%= @article.path %>" onClick="this.setSelectionRange(0, this.value.length)"/>
         </div>
-        <div class="dropdown-link-row"><a href="https://twitter.com/intent/tweet?text=<%= @article.title %> https://dev.to<%= @article.path %>">Share to Twitter</a></div>
+        <div class="dropdown-link-row"><a href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> https://dev.to<%= @article.path %>'>Share to Twitter</a></div>
         <div class="dropdown-link-row"><a href="/report-abuse">Report Abuse</a></div>
       </div>
     </div>
