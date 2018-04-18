@@ -16,7 +16,7 @@
     <%= f.hidden_field :commentable_id, value: commentable.id %>
     <%= f.hidden_field :commentable_type, value: commentable_type %>
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
-  <% end %>  
+  <% end %>
   <div class="field" id="textarea-wrapper">
     <%= f.text_area :body_markdown,
       placeholder: "Add to the discussion",
@@ -43,7 +43,7 @@
       <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
       <input class="uploaded-image" id="uploaded-image-main" />
     </div>
-  <% end %>  
+  <% end %>
   <div class="actions" id="submit-wrapper">
     <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)" %>
   </div>

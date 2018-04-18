@@ -16,7 +16,7 @@ function getCsrfToken() {
           return notice;
         });
         airbrake.notify("Could no locate CSRF metatag" + JSON.stringify(localStorage.current_user));
-        reject("Could not locate CSRF meta tag on the page.");
+        return reject("Could not locate CSRF meta tag on the page.");
       }
     }, 5);
   });
