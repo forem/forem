@@ -6,7 +6,7 @@ class ApplicationMailer < ActionMailer::Base
     Rails.application.message_verifier(:unsubscribe).generate(
       user_id: id,
       email_type: email_type.to_sym,
-      expires_at: Time.now + 2.days,
+      expires_at: Time.now + 31.days,
     )
   end
 end

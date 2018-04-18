@@ -7,7 +7,7 @@ class EmailSubscriptionsController < ApplicationController
       user.update(verified_params[:email_type] => false)
       @email_type = preferred_email_name(verified_params[:email_type])
     else
-      not_found
+      render "invalid_token"
     end
   rescue ActiveSupport::MessageVerifier::InvalidSignature
     not_found
