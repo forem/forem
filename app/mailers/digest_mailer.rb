@@ -23,13 +23,26 @@ class DigestMailer < ApplicationMailer
   end
 
   def email_end_phrase
+    # "more trending DEV posts" won the previous split test
+    # Included more often as per explore-exploit algorithm
     [
-      "more posts picked just for you",
+      "more trending DEV posts",
+      "more trending DEV posts",
+      "more trending DEV posts",
+      "more trending DEV posts",
+      "more trending DEV posts",
+      "more trending DEV posts",
+      "more trending DEV posts",
+      "more trending DEV posts",
       "more trending DEV posts",
       "other posts you might like",
-      "other posts you should read",
-      "other articles picked for you",
-      "more wonderful posts",
+      "other DEV posts you might like",
+      "other trending DEV posts",
+      "other top DEV posts",
+      "more top DEV posts",
+      "more top reads from the community",
+      "more top DEV posts based on your interests",
+      "more trending DEV posts picked for you",
     ].sample
   end
 end
