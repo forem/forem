@@ -228,6 +228,9 @@ function handleCommentSubmit(event) {
             mainCommentsForm.classList.remove("submitting");
             textArea.value = "";
             textArea.classList = "";
+            var preview = document.getElementById("preview-div");
+            preview.classList.add("preview-toggle");
+            preview.innerHTML = "";
             var container = document.getElementById("comment-trees-container");
             container.insertBefore(newNode, container.firstChild);
           }

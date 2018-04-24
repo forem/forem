@@ -155,6 +155,7 @@ Rails.application.routes.draw do
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
+  post "comments/preview" => "comments#preview"
   get "/freestickers" => "giveaways#new"
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")

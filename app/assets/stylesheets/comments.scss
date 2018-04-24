@@ -125,7 +125,7 @@ a.header-link{
     position: absolute;
     left:calc(0.2vw + 43px);
     bottom:0px;
-    width:calc(100% - 145px);
+    width: initial;
     text-align:left;
     .uploaded-image {
       vertical-align:11px;
@@ -248,9 +248,57 @@ a.header-link{
       &.embiggened-max{
         height:calc(30vw + 18px);
       }
+      &.preview-loading{
+        background: white url(image_path('loading-ellipsis.svg')) no-repeat center center;
+        background-size: 50px;
+      }
+    }
+    .preview-toggle {
+      display: none;
+    }
+    .comment-preview-div {
+      padding: 10px 20px 2px;
+      min-height:calc(13vw + 6px);
+      text-align: left;
+      font-size: 19px;
+      font-family: $helvetica;
+      background: lighten($yellow, 19%);
+      box-shadow: $shadow;
+      width: calc(100% - 80px);
+      margin: 19px auto 8px;
+      border: 2px solid $yellow;
+      p.loading-message{
+        opacity:0.6;
+      }
+      pre {
+        overflow-x: auto;
+      }
     }
     .actions{
       text-align:right;
+
+      .comment-action-button {
+        font-family: $helvetica-condensed;
+        font-stretch:condensed;
+        color:white;
+        border:0px;
+        font-size:13px;
+        font-weight:500;
+        margin-top:3px;
+        padding:5px 12px;
+        border-radius:3px;
+        cursor:pointer;
+        appearance: none;
+      }
+
+      .comment-action-preview {
+        background: $dark-gray;
+        z-index: 10;
+      }
+    }
+    .reply-actions {
+      margin-bottom: 0;
+      padding-bottom: 0;
     }
     .code-of-conduct {
       display: block;
@@ -272,17 +320,6 @@ a.header-link{
     input[type="submit"]{
       margin-right:19px;
       background: $bold-blue;
-      font-family: $helvetica-condensed;
-      font-stretch:condensed;
-      color:white;
-      border:0px;
-      font-size:13px;
-      font-weight:500;
-      margin-top:3px;
-      padding:5px 12px;
-      border-radius:3px;
-      cursor:pointer;
-      appearance: none;
     }
     &.submitting{
       input[type="submit"]{
@@ -677,7 +714,7 @@ a.header-link{
     height:20px;
   }
   .editor-image-upload{
-    width:calc(100% - 150px);
+    width: initial;
     text-align:left;
     .uploaded-image {
       width: calc( 93% - 54px);
@@ -747,6 +784,7 @@ a.header-link{
       input[type="submit"]{
         padding:5px 8px;
         margin-bottom:5px;
+        margin-right:7px;
       }
 
       .cancel{

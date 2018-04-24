@@ -1,7 +1,8 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [ :update, :destroy]
+  before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
-  before_action :raise_banned, only: [:create,:update]
+  before_action :raise_banned, only: %i[create update]
+  before_action :authenticate_user!, only: %i[preview create]
 
   # GET /comments
   # GET /comments.json
@@ -16,7 +17,7 @@ class CommentsController < ApplicationController
 
     if @podcast
       @user = @podcast
-      @commentable = @user.podcast_episodes.find_by_slug(params[:slug]) or not_found
+      (@commentable = @user.podcast_episodes.find_by_slug(params[:slug])) || not_found
     else
       @user = User.find_by_username(params[:username]) ||
         Organization.find_by_slug(params[:username]) ||
@@ -51,10 +52,6 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    unless current_user
-      redirect_to "/"
-      return
-    end
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
     @comment = Comment.new(comment_params)
     @comment.user_id = current_user.id
@@ -101,7 +98,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     raise unless @comment.user_id == current_user.id
-    if @comment.update(comment_update_params.merge({ edited_at: DateTime.now }))
+    if @comment.update(comment_update_params.merge(edited_at: DateTime.now))
       Mention.create_all(@comment)
       redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
     else
@@ -125,29 +122,43 @@ class CommentsController < ApplicationController
   end
 
   def delete_confirm
-    unless current_user && Comment.where(id: params[:id_code].to_i(26), user_id: current_user.id ).first
+    unless current_user && Comment.where(id: params[:id_code].to_i(26), user_id: current_user.id).first
       @comment = Comment.find(params[:id_code].to_i(26))
       redirect_to @comment.path
       return
     end
-    @comment = Comment.where(id: params[:id_code].to_i(26), user_id: current_user.id ).first
+    @comment = Comment.where(id: params[:id_code].to_i(26), user_id: current_user.id).first
+  end
+
+  def preview
+    begin
+      fixed_body_markdown = MarkdownFixer.fix_for_preview(comment_params[:body_markdown])
+      parsed_markdown = MarkdownParser.new(fixed_body_markdown)
+      processed_html = parsed_markdown.finalize
+    rescue StandardError => e
+      processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
+    end
+    respond_to do |format|
+      format.json { render json: { processed_html: processed_html }, status: 200 }
+    end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_comment
-      @comment = Comment.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def comment_params
-      params.require(:comment).permit(:body_markdown,
-                                      :commentable_id,
-                                      :commentable_type,
-                                      :parent_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_comment
+    @comment = Comment.find(params[:id])
+  end
 
-    def comment_update_params
-      params.require(:comment).permit(:body_markdown)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def comment_params
+    params.require(:comment).permit(:body_markdown,
+                                    :commentable_id,
+                                    :commentable_type,
+                                    :parent_id)
+  end
+
+  def comment_update_params
+    params.require(:comment).permit(:body_markdown)
+  end
 end

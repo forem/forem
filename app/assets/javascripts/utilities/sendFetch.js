@@ -61,6 +61,18 @@ function sendFetch(switchStatement, body) {
           credentials: 'same-origin',
         });
       };
+    case 'comment-preview':
+      return function(csrfToken) {
+        return window.fetch('/comments/preview', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken,
+          },
+          body: body,
+          credentials: 'same-origin',
+        });
+      };
     default:
       console.log('A wrong switchStatement was used.');
       break;
