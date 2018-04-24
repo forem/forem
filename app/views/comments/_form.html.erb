@@ -26,7 +26,9 @@
       id: "text-area",
       readonly: !user_signed_in?,
       autofocus: @comment.persisted?,
-      required: true %>
+      required: true
+    %>
+    <div class="preview-toggle comment-preview-div" id="preview-div"></div>
   </div>
     <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
     </div>
@@ -45,7 +47,8 @@
     </div>
   <% end %>
   <div class="actions" id="submit-wrapper">
-    <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)" %>
+    <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
+    <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)", class:"comment-action-button" %>
   </div>
 <% end %>
 

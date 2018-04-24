@@ -9,6 +9,10 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
                           </div>'
   }
   var randomIdNumber = Math.floor(Math.random() * 1991)
+
+  var previewDiv = '<div class="preview-toggle comment-preview-div body"></div>'
+  var previewButton = '<button id="preview-button" class="comment-action-button comment-action-preview" onclick="handleCommentPreview(event)">PREVIEW</button>'
+
   return '<form class="new_comment" onsubmit="handleCommentSubmit.bind(this)(event)" id="new-comment-' + parentId + '" action="/comments" accept-charset="UTF-8" method="post" data-comment-id="'+parentId+'">\
             <input name="utf8" type="hidden" value="&#x2713;" />\
             <input type="hidden" name="authenticity_token" value="' + authToken + '">\
@@ -16,6 +20,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <input value="' + commentableType + '" type="hidden" name="comment[commentable_type]" id="comment_commentable_type" />\
             <input value="' + parentId + '" type="hidden" name="comment[parent_id]" id="comment_parent_id" />\
             <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required></textarea>\
+            '+previewDiv+'\
                 '+codeOfConductHTML+'\
             <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
               <img class="icon-image" src="<%= asset_path('info.svg') %>" />\
@@ -29,8 +34,11 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
               <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
               <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
             </div>\
-            <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
-            <input type="submit" name="commit" value="SUBMIT" />\
+            <div class="actions reply-actions">\
+              <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
+              '+previewButton+'\
+              <input type="submit" class="comment-action-button" name="commit" value="SUBMIT" />\
+            </div>\
           </form>';
 }
 

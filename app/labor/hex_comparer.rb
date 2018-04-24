@@ -1,14 +1,14 @@
 class HexComparer
 
   attr_accessor :hexes, :amount
-  def initialize(hexes, amount=1)
+  def initialize(hexes, amount = 1)
     @hexes = hexes
     @amount = amount
   end
 
   def order
     hexes.sort
-  end  
+  end
 
   def smallest
     order.first

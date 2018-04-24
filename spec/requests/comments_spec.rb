@@ -62,4 +62,28 @@ RSpec.describe "Comments", type: :request do
       end
     end
   end
+
+  describe "POST /comments/preview" do
+    it "returns 401 if user is not logged in" do
+      post "/comments/preview", params: { comment: { body_markdown: "hi"}}, headers: { HTTP_ACCEPT: "application/json" }
+      expect(response).to have_http_status(401)
+    end
+
+    context "when logged-in" do
+      before do
+        login_as user
+        post "/comments/preview",
+          params: { comment: { body_markdown: "hi" } },
+          headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 200 on good request" do
+        expect(response).to have_http_status(200)
+      end
+
+      it "returns json" do
+        expect(response.content_type).to eq("application/json")
+      end
+    end
+  end
 end
