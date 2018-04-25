@@ -33,11 +33,20 @@ class UserFollowSuggester
     users
   end
 
+  def sidebar_suggestions(given_tag)
+    user_ids = Article.tagged_with([given_tag], any: true).
+    where("published = ? AND positive_reactions_count > ? AND published_at > ?",
+      true, 15, 7.months.ago).
+      pluck(:user_id)
+    User.where(id: user_ids).order("reputation_modifier DESC").limit(3).to_a
+  end
+
   def tagged_article_user_ids
     Article.
       tagged_with(user.decorate.cached_followed_tag_names, any: true).
       where(published: true).
-      where("positive_reactions_count > ? AND published_at > ?", article, 7.months.ago).pluck(:user_id).
+      where("positive_reactions_count > ? AND published_at > ?", article, 7.months.ago).
+      pluck(:user_id).
       each_with_object(Hash.new(0)) { |value, counts| counts[value] += 1 }.
       sort_by { |_key, value| value }.
       map { |arr| arr[0] }
