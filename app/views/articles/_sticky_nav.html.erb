@@ -42,6 +42,7 @@
       includes(:user).
       where("positive_reactions_count > ? OR comments_count > ?", (Rails.env.production? ? 20 : -1 ), (Rails.env.production? ? 8 : -1 )).
       where(published: true).
+      where.not(id: @article.id).
       where("featured_number > ?", 5.days.ago.to_i).
       order("RANDOM()").
       limit(8).
