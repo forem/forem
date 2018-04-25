@@ -36,7 +36,7 @@ class GithubIssue < ApplicationRecord
       issue.category = "issue"
     else
       repo, issue_id = url.gsub(/.*github\.com\/repos\//, "").split("/issues/comments/")
-      issue.issue_serialized = client.issue_comment(repo, issue_id)
+      issue.issue_serialized = client.issue_comment(repo, issue_id).to_hash
       issue.category = "issue_comment"
     end
     issue.processed_html = get_html(client, issue)
