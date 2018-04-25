@@ -8,4 +8,6 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
   document.addEventListener('DOMContentLoaded', () => resolve());
 });
 
-render(<SidebarWidget />, document.getElementById('sidebarWidget__pack'));
+if (document.getElementById('widget-00001') === null) {
+  render(<SidebarWidget />, document.getElementById('sidebarWidget__pack'));
+}
