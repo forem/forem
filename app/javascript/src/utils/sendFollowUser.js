@@ -16,7 +16,7 @@ export default function sendFollowUser(user, successCb, failureCb) {
   })
     .then(response => response.json())
     .then(json => {
-      console.log(`in fetch request: ${  json.outcome}`);
+      console.log(`in fetch request: ${json.outcome}`);
       successCb(json.outcome);
       // json is followed or unfollowed
     })

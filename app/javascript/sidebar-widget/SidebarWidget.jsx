@@ -59,7 +59,7 @@ class SidebarWidget extends Component {
   render() {
     const users = this.state.suggestedUsers.map(user => (
       <SidebarUser key={user.id} user={user} followUser={this.followUser} />
-      ));
+    ));
     return (
       <div className="widget-suggested-follows-container">
         <header>{'<WHO TO FOLLOW>'}</header>
