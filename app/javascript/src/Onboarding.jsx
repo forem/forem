@@ -164,7 +164,6 @@ class Onboarding extends Component {
     formData.append('followable_type', 'Tag');
     formData.append('followable_id', tag.id);
     formData.append('verb', (tag.following ? 'unfollow' : 'follow'));
-    formData.append('authenticity_token', csrfToken);
 
     fetch('/follows', {
       method: 'POST',
