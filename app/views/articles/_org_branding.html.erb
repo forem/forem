@@ -1,21 +1,21 @@
 <% if @organization && @organization.bg_color_hex.present? %>
-  <div class="org-branding" style="background:<%= @organization.bg_color_hex %>;color:<%= @organization.text_color_hex %>">
+  <div class="org-branding">
     <div class="inner">
       <div class="content">
-        <div class="name"><a href="/<%=@organization.slug%>" style="color:<%= @organization.text_color_hex %>;"><%= @organization.name %></a></div>
+        <div class="name"><a href="/<%=@organization.slug%>"><%= @organization.name %></a></div>
         <div class="summary"><%= @organization.summary %></div>
         <p class="social">
           <% if @organization.twitter_username.present? %>
-            <a href="https://twitter.com/<%= @organization.twitter_username %>" target="_blank" rel="noopener" style="color:<%= @organization.text_color_hex %>;">@<%= @organization.twitter_username %></a>
+            <a href="https://twitter.com/<%= @organization.twitter_username %>" target="_blank" rel="noopener" >@<%= @organization.twitter_username %></a>
           <% end %>
           <% if @organization.website_url.present? %>
-            <a href="<%= @organization.website_url %>" target="_blank" rel="noopener" style="color:<%= @organization.text_color_hex %>;"><%= beautified_url @organization.website_url %></a>
+            <a href="<%= @organization.website_url %>" target="_blank" rel="noopener"><%= beautified_url @organization.website_url %></a>
           <% end %>
         </p>
       </div>
       <div class="profile-image">
         <a href="/<%=@organization.slug%>">
-          <img src="<%= ProfileImage.new(@organization).get %>" alt="<%= @organization.name %>" style="border-color:<%=user_colors(@organization)[:text] %>;background:<%=user_colors(@organization)[:text] %>"/>
+          <img src="<%= ProfileImage.new(@organization).get %>" alt="<%= @organization.name %>" />
         </a>
       </div>
     </div>

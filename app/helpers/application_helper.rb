@@ -131,11 +131,6 @@ module ApplicationHelper
     org.bg_color_hex
   end
 
-  def org_text_or_blue(org)
-    return "#557de8" unless (org && org.text_color_hex)
-    org.text_color_hex
-  end
-
   def sanitized_article_body(processed_html)
     ActionController::Base.helpers.sanitize processed_html.html_safe,
       tags: %w(button strong em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4 h5 h6 blockquote time div span i em u b ul ol li dd dl dt q code pre img sup sub cite center br small hr video source figcaption add ruby rp rt),

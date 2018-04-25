@@ -1,0 +1,65 @@
+<% if @article.published %>
+  <% @actor = @article.organization || @article.user %>
+  <style>
+    .primary-sticky-nav-author{
+      border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+      box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+    }
+    .primary-sticky-nav-author a{
+      color: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+    }
+    .primary-sticky-nav-author button{
+      background-color: <%= user_colors(@actor)[:bg] %> !important;
+      color: <%= user_colors(@actor)[:text] %> !important;
+    }
+  </style>
+
+
+  <div class="primary-sticky-nav">
+    <div class="primary-sticky-nav-element primary-sticky-nav-author">
+      <a href="<%= @actor.path %>"><img src="<%= @actor.profile_image %>" /></a>
+      <span class="primary-sticky-nav-author-name">
+        <a href="<%= @actor.path %>">
+          <%= @actor.name %>
+        </a>
+      </span>
+        <div class="primary-sticky-nav-author-summary">
+          <% if @actor.tag_line.present? %>
+            <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
+          <% else %>
+            Member since <%= @actor.created_at.strftime("%b %e, %Y") %>
+          <% end %>
+        </div>
+      <div class="primary-sticky-nav-author-follow">
+        <%= follow_button(@actor) %>
+      </div>
+    </div>
+    
+    <div class="primary-sticky-nav-title">
+      Trending on dev.to
+    </div>
+    <% Article.tagged_with((@article.cached_tag_list_array + ["career","productivity","discuss"]), any: true).
+      includes(:user).
+      where("positive_reactions_count > ? OR comments_count > ?", (Rails.env.production? ? 17 : -1 ), (Rails.env.production? ? 7 : -1 )).
+      where(published: true).
+      where("featured_number > ?", 1449999999).
+      order("published_at DESC").
+      limit(8).
+      each do |article| %>
+      <a class="primary-sticky-nav-element" href="<%= article.path %>">
+        <img src="<%= article.user.profile_image %>" class="primary-sticky-nav-profile-image" />
+        <%= article.title %>
+        <div class="primary-sticky-nav-element-details">
+          <% article.decorate.cached_tag_list_array.each do |tag| %>
+            <span>#<%= tag %></span>
+          <% end %>
+        </div>
+      </a>
+    <% end %>
+    <% if 1==2 %>
+      <a class="primary-sticky-nav-element sticky-join-cta" href="/enter">
+        <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/240/apple/129/waving-hand-sign_1f44b.png" /> Join the DEV Community
+      </a>
+    <% end %>
+  </div>
+<% end %>
