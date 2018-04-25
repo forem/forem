@@ -19,11 +19,12 @@
       color: $black;
     }
     img{
-      width: 32px;
-      height: 32px;
+      width: 35px;
+      height: 35px;
       border-radius: 360px;
       margin-right: 5px;
-      vertical-align: -8px;
+      vertical-align: -9px;
+
     }
     .primary-sticky-nav-author-name{
       font-size:1.3em;
@@ -48,15 +49,16 @@
     }
   }
   .primary-sticky-nav-profile-image{
-    width: 20px;
+    height: 23px;
+    width: 23px;
     border-radius: 100px;
-    vertical-align: -4px;
+    vertical-align: -5px;
   }
   .primary-sticky-nav-title{
     padding-top:25px;
     margin-left: 10px;
     font-weight: bold;
-    font-size:1.1em;
+    font-size:1.32em;
   }
   .primary-sticky-nav-element{
     display: block;
@@ -68,7 +70,7 @@
     margin-left: 10px;
     border: 1px solid $light-medium-gray;
     box-shadow: 3px 4px 0px $light-medium-gray;
-    color: $dark-gray;
+    color: $black;
     width: 262px;
     border-radius: 3px;
     &.sticky-join-cta{
@@ -78,7 +80,8 @@
       border: 1px solid darken($yellow, 15%);
       box-shadow: 5px 6px 0px darken($yellow, 15%);
       img{
-        width: 19px;
+        width: 22px;
+        height: 22px;
         margin-left: 3px;
         margin-right: 2px;
         vertical-align: -3px;
@@ -91,7 +94,7 @@
     }
     .primary-sticky-nav-element-details{
       margin-top:9px;
-      font-size: 0.7em;
+      font-size: 0.8em;
       color: $medium-gray;
     }
     &:hover{

@@ -17,7 +17,7 @@
 
   <div class="primary-sticky-nav">
     <div class="primary-sticky-nav-element primary-sticky-nav-author">
-      <a href="<%= @actor.path %>"><img src="<%= @actor.profile_image %>" /></a>
+      <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" /></a>
       <span class="primary-sticky-nav-author-name">
         <a href="<%= @actor.path %>">
           <%= @actor.name %>
@@ -47,7 +47,7 @@
       limit(8).
       each do |article| %>
       <a class="primary-sticky-nav-element" href="<%= article.path %>">
-        <img src="<%= article.user.profile_image %>" class="primary-sticky-nav-profile-image" />
+        <img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-profile-image" />
         <%= article.title %>
         <div class="primary-sticky-nav-element-details">
           <% article.decorate.cached_tag_list_array.each do |tag| %>
