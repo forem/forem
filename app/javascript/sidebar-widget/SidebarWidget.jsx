@@ -61,7 +61,7 @@ class SidebarWidget extends Component {
       <SidebarUser key={user.id} user={user} followUser={this.followUser} />
     ));
     return (
-      <div className="widget-suggested-follows-container">
+      <div className="widget-suggested-follows-container" id="widget-00001">
         <header>{'<WHO TO FOLLOW>'}</header>
         <div className="widget-body">{users}</div>
       </div>
