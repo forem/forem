@@ -181,7 +181,8 @@ class Onboarding extends Component {
       body: formData,
       credentials: 'same-origin',
     })
-      .then(response => response.json().then(json => {
+      .then(response =>
+        response.json().then(json => {
           this.setState({
             allTags: this.state.allTags.map(currentTag => {
               const newTag = currentTag;
@@ -192,7 +193,8 @@ class Onboarding extends Component {
               // add in optimistic rendering
             }),
           });
-        }))
+        }),
+      )
       .catch(error => {
         console.log(error);
       });
