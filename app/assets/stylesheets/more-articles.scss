@@ -5,6 +5,9 @@
   text-align:center;
   font-family: $helvetica;
   margin:40px auto;
+  @media screen and ( min-width: 1250px ){
+    margin-left: 25px;
+  }
   a{
     color:rgb(19, 19, 19);
   }
@@ -86,6 +89,10 @@
   margin:20px auto;
   position: relative;
   overflow:hidden;
+  @media screen and ( min-width: 1250px ){
+    margin-left: 25px;
+  }
+
   a{
     color: $black;
   }

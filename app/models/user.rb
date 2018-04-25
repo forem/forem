@@ -75,6 +75,7 @@ class User < ApplicationRecord
   after_create :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
+  after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
   before_validation :set_username
   before_validation :downcase_email
@@ -123,6 +124,10 @@ class User < ApplicationRecord
     else
       record.delay.index!
     end
+  end
+
+  def tag_line
+    summary
   end
 
   def index_id
@@ -314,6 +319,9 @@ class User < ApplicationRecord
   def core_profile_details_changed?
     saved_change_to_username? ||
       saved_change_to_name? ||
+      saved_change_to_summary? ||
+      saved_change_to_bg_color_hex? ||
+      saved_change_to_text_color_hex? ||
       saved_change_to_profile_image? ||
       saved_change_to_github_username? ||
       saved_change_to_twitter_username?

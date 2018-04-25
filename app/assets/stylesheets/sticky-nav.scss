@@ -1,0 +1,103 @@
+@import 'variables';
+
+.primary-sticky-nav {
+  display: none;
+  @media screen and ( min-width: 1250px ){
+    display: block;
+    position: fixed;
+    left: calc(50% + 298px);
+    top: 74px;
+    bottom: 30px;
+    width: 310px;
+    display: flex;
+    flex-flow: column wrap;
+    overflow: hidden;
+    z-index: 100;
+  }
+  .primary-sticky-nav-author{
+    a{
+      color: $black;
+    }
+    img{
+      width: 32px;
+      height: 32px;
+      border-radius: 360px;
+      margin-right: 5px;
+      vertical-align: -8px;
+    }
+    .primary-sticky-nav-author-name{
+      font-size:1.3em;
+      font-weight: bold;
+    }
+    .primary-sticky-nav-author-summary{
+      font-weight: 400;
+      color: $medium-gray;
+      padding: 10px 0px 5px;
+      font-style: italic;
+      font-size:0.9em;
+    }
+    .primary-sticky-nav-author-follow{
+      padding-top:8px;
+      button{
+        width:135px;
+        font-size:1.1em;
+        border:0px;
+        border-radius:3px;
+        padding: 4px 3px;
+      }
+    }
+  }
+  .primary-sticky-nav-profile-image{
+    width: 20px;
+    border-radius: 100px;
+    vertical-align: -4px;
+  }
+  .primary-sticky-nav-title{
+    padding-top:25px;
+    margin-left: 10px;
+    font-weight: bold;
+    font-size:1.1em;
+  }
+  .primary-sticky-nav-element{
+    display: block;
+    padding: 10px 13px;
+    font-size:0.9em;
+    font-weight: bold;
+    background: white;
+    margin-top: 10px;
+    margin-left: 10px;
+    border: 1px solid $light-medium-gray;
+    box-shadow: 3px 4px 0px $light-medium-gray;
+    color: $dark-gray;
+    width: 262px;
+    border-radius: 3px;
+    &.sticky-join-cta{
+      margin-top: 12px;
+      padding: 16px 13px;
+      background: lighten($yellow, 16%);
+      border: 1px solid darken($yellow, 15%);
+      box-shadow: 5px 6px 0px darken($yellow, 15%);
+      img{
+        width: 19px;
+        margin-left: 3px;
+        margin-right: 2px;
+        vertical-align: -3px;
+      }
+      &:hover{
+        background: lighten($yellow, 12%);
+        border: 1px solid darken($yellow, 12%);
+        box-shadow: 5px 6px 0px darken($yellow, 12%);
+      }
+    }
+    .primary-sticky-nav-element-details{
+      margin-top:9px;
+      font-size: 0.7em;
+      color: $medium-gray;
+    }
+    &:hover{
+      color: $black;
+      border: 1px solid darken($light-medium-gray, 15%);
+      box-shadow: 3px 4px 0px darken($light-medium-gray, 15%);
+    }
+  }
+}

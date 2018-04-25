@@ -55,12 +55,20 @@ header{
     margin-top:60px;
     z-index:2;
     padding-top: 42%;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    @media screen and ( min-width: 880px ){
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+    }
   }
   .category-banner{
     height:250px;
     background: #45525c;
+  }
+}
+
+.home .container{
+  @media screen and ( min-width: 1250px ){
+    margin-left: 25px;
   }
 }
 
@@ -70,7 +78,8 @@ header{
   background:white;
   box-shadow: $shadow;
   margin:60px auto 20px;
-  @media screen and ( min-width: 880px ){
+  text-align: left;
+  @media screen and ( min-width: 1250px ){
     margin-top:80px;
     border-radius: 3px;
   }
@@ -839,6 +848,9 @@ header{
   margin-top:20px;
   margin-bottom:0px;
   padding-bottom:20px;
+  a{
+    color: $black;
+  }
   .inner{
     width:800px;
     max-width:calc(100% - 40px);
@@ -861,10 +873,10 @@ header{
       padding-top:5px;
       padding-right:10px;
       padding-bottom:8px;
-      font-weight:300;
+      font-weight:400;
       font-size:0.9em;
       @media screen and ( min-width: 520px ){
-        font-size:18px;
+        font-size:17px;
       }
     }
     .social{
