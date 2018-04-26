@@ -9,13 +9,10 @@ module Api
         end
         if params[:state] == "follow_suggestions"
           @users = UserFollowSuggester.new(current_user).suggestions
+        elsif params[:state] == "sidebar_suggestions"
+          given_tag = params[:tag]
+          @users = UserFollowSuggester.new(current_user).sidebar_suggestions(given_tag)
         end
-      end
-
-      def sidebar_suggestions
-        given_tag = params[:tag]
-        @users = UserFollowSuggester.new(nil).sidebar_suggestions(given_tag)
-        render "index.json.jbuilder"
       end
 
       def less_than_one_day_old?(user)
