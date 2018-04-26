@@ -276,8 +276,8 @@ class StoriesController < ApplicationController
 
   def assign_sticky_nav
     return unless @article
-    reaction_count_num = Rails.env.production? ? 20 : -1
-    comment_count_num = Rails.env.production? ? 8 : -2
+    reaction_count_num = Rails.env.production? ? 15 : -1
+    comment_count_num = Rails.env.production? ? 7 : -2
     tag_articles = []
     more_articles = []
     tag_articles = Article.tagged_with(@article.cached_tag_list_array, any: true).
@@ -289,9 +289,9 @@ class StoriesController < ApplicationController
       order("RANDOM()").
       limit(12)
     if tag_articles.size < 11
-      more_articles = Article.tagged_with((["career","productivity","discuss"]), any: true).
+      more_articles = Article.tagged_with((["career","productivity","discuss","explainlikeimfive"]), any: true).
         includes(:user).
-        where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
+        where("comments_count > ?", comment_count_num).
         where(published: true).
         where.not(id: @article.id).
         where("featured_number > ?", 5.days.ago.to_i).
