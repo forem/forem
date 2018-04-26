@@ -45,10 +45,17 @@ class SidebarWidget extends Component {
   }
 
   followUser(user) {
+    const updatedUser = user;
+    const updatedSuggestedUsers = this.state.suggestedUsers;
+    const userIndex = this.state.suggestedUsers.indexOf(user);
+
+    const followBtn = document.getElementById(
+      `widget-list-item__follow-button-${updatedUser.username}`,
+    );
+    followBtn.innerText = updatedUser.following ? '+ FOLLOW' : '✓ FOLLOWING';
+
+    updatedSuggestedUsers[userIndex] = updatedUser;
     const toggleFollowState = newFollowState => {
-      const updatedUser = user;
-      const updatedSuggestedUsers = this.state.suggestedUsers;
-      const userIndex = this.state.suggestedUsers.indexOf(user);
       updatedUser.following = newFollowState === 'followed';
       updatedSuggestedUsers[userIndex] = updatedUser;
       this.setState({ suggestedUsers: updatedSuggestedUsers });
