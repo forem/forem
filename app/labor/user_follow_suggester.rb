@@ -35,10 +35,10 @@ class UserFollowSuggester
 
   def sidebar_suggestions(given_tag)
     user_ids = Article.tagged_with([given_tag], any: true).
-    where("published = ? AND positive_reactions_count > ? AND published_at > ?",
-      true, 15, 7.months.ago).
-      pluck(:user_id)
-    User.where(id: user_ids).order("reputation_modifier DESC").limit(3).to_a
+      where("published = ? AND positive_reactions_count > ? AND published_at > ? AND user_id != ?",
+        true, 15, 7.months.ago, user.id).pluck(:user_id)
+    user.following_by_type("User").where.not(id: user_ids).
+      order("reputation_modifier DESC").limit(3).to_a
   end
 
   def tagged_article_user_ids
