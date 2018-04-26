@@ -1,4 +1,4 @@
-<% cache "base_inline_styles_#{@story_show.to_s}_#{@article_index.to_s}_#{@home_page.to_s}_#{@article_show.to_s}_#{view_class.to_s}_#{@notifications_index}_#{core_pages?.to_s}_#{@tags_index}_#{ENV["DEPLOYMENT_SIGNATURE"].to_s}x_xs", :expires_in => 6.hours do %>
+<% cache "base_inline_styles_#{@story_show.to_s}_#{@article_index.to_s}_#{@home_page.to_s}_#{@article_show.to_s}_#{view_class.to_s}_#{@notifications_index}_#{core_pages?.to_s}_#{@tags_index}_#{ENV["DEPLOYMENT_SIGNATURE"].to_s}x_xs__", :expires_in => 6.hours do %>
   <% if @story_show %>
     <style>
       <% Rails.application.config.assets.compile = true %>
@@ -10,7 +10,7 @@
         <%= Rails.application.assets['more-articles.css'].to_s.html_safe %>
         <%= Rails.application.assets["ltags/LiquidTags.scss"].to_s.html_safe %>
         <%= Rails.application.assets["syntax.css"].to_s.html_safe %>
-        <%= Rails.application.assets["primary-sticky-nav.css"].to_s.html_safe %>
+        <%= Rails.application.assets["sticky-nav.css"].to_s.html_safe %>
       <% else %>
         <%= Rails.application.assets['article-show.css'].to_s.html_safe %>
         <%= Rails.application.assets['podcast-episodes-show.css'].to_s.html_safe %>
