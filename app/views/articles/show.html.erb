@@ -131,12 +131,16 @@
         </h3>
         <% if @article.job_opportunity.present? %>
           <div class="tags" style="margin-bottom: 10px;">
-            <a class="tag" target="_blank" style="color:white;background:#0eb268;" href="https://www.google.com/maps/place/<%= JobOpportunity.last.location_given %>">
-              <%= @article.job_opportunity.location_city %>
-            </a>
-            <span class="tag" style="color:white;background:#0b82c6;">
-              <%= @article.job_opportunity.remoteness_in_words %>
-            </span>
+            <% if @article.job_opportunity.location_city.present? %>
+              <a class="tag" target="_blank" style="color:white;background:#0eb268;" href="https://www.google.com/maps/place/<%= JobOpportunity.last.location_given %>">
+                <%= @article.job_opportunity.location_city %>
+              </a>
+            <% end %>
+            <% if @article.job_opportunity.remoteness_in_words.present? %>
+              <span class="tag" style="color:white;background:#0b82c6;">
+                <%= @article.job_opportunity.remoteness_in_words %>
+              </span>
+            <% end %>
           </div>
         <% end %>
         <div class="tags">
