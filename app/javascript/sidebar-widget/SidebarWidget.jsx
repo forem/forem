@@ -54,7 +54,6 @@ class SidebarWidget extends Component {
     );
     followBtn.innerText = updatedUser.following ? '+ FOLLOW' : '✓ FOLLOWING';
 
-    updatedSuggestedUsers[userIndex] = updatedUser;
     const toggleFollowState = newFollowState => {
       updatedUser.following = newFollowState === 'followed';
       updatedSuggestedUsers[userIndex] = updatedUser;
