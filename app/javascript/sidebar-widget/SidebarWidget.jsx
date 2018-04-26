@@ -28,13 +28,16 @@ class SidebarWidget extends Component {
   }
 
   getSuggestedUsers() {
-    fetch(`/api/users/sidebar_suggestions?tag=${this.state.tagInfo.name}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+    fetch(
+      `/api/users?state=sidebar_suggestions&tag=${this.state.tagInfo.name}`,
+      {
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
       },
-      credentials: 'same-origin',
-    })
+    )
       .then(response => response.json())
       .then(json => {
         this.setState({ suggestedUsers: json });
