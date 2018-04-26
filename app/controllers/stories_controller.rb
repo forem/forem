@@ -218,6 +218,7 @@ class StoriesController < ApplicationController
     @article_show = true
     @comment = Comment.new
     assign_article_and_user_and_organization
+    assign_sticky_nav
     handle_possible_redirect; return if performed?
     not_found unless @article
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 75 : 25
@@ -271,6 +272,33 @@ class StoriesController < ApplicationController
       articles.
       find_by_slug(params[:slug])&.
       decorate
+  end
+
+  def assign_sticky_nav
+    return unless @article
+    reaction_count_num = Rails.env.production? ? 20 : -1
+    comment_count_num = Rails.env.production? ? 8 : -2
+    tag_articles = []
+    more_articles = []
+    tag_articles = Article.tagged_with(@article.cached_tag_list_array, any: true).
+      includes(:user).
+      where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
+      where(published: true).
+      where.not(id: @article.id).
+      where("featured_number > ?", 5.days.ago.to_i).
+      order("RANDOM()").
+      limit(12)
+    if tag_articles.size < 11
+      more_articles = Article.tagged_with((["career","productivity","discuss"]), any: true).
+        includes(:user).
+        where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
+        where(published: true).
+        where.not(id: @article.id).
+        where("featured_number > ?", 5.days.ago.to_i).
+        order("RANDOM()").
+        limit(10 - tag_articles.size)
+    end
+    @sticky_articles = (tag_articles + more_articles).sample(8)
   end
 
 end
