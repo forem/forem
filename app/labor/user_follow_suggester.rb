@@ -34,11 +34,19 @@ class UserFollowSuggester
   end
 
   def sidebar_suggestions(given_tag)
-    user_ids = Article.tagged_with([given_tag], any: true).
-      where("published = ? AND positive_reactions_count > ? AND published_at > ? AND user_id != ?",
-        true, 15, 7.months.ago, user.id).pluck(:user_id)
-    user.following_by_type("User").where.not(id: user_ids).
-      order("reputation_modifier DESC").limit(3).to_a
+    # Rails.cache.fetch("tag-#{given_tag}_user-#{user.id}-#{user.last_followed_at}/tag-follow-sugggestions", expires_in: 120.hours) do
+    #   user_ids = Article.tagged_with([given_tag], any: true).
+    #     where(
+    #       "published = ? AND positive_reactions_count > ? AND published_at > ? AND user_id != ?",
+    #       true, 15, 7.months.ago, user.id
+    #     ).where.not(user_id: user.following_by_type("User").pluck(:id)).pluck(:id)
+    #   group_one = User.select(:id, :name, :username, :profile_image).where(id: user_ids).
+    #     order("reputation_modifier DESC").to_a
+    #   group_two = User.select(:id, :name, :username, :profile_image).where(id: user_ids).
+    #     order("RANDOM()").to_a
+    #   group_one + group_two
+    # end
+    User.where(id: [1..50])
   end
 
   def tagged_article_user_ids
