@@ -65,6 +65,15 @@ class Organization < ApplicationRecord
     SecureRandom.hex(50)
   end
 
+  def resave_articles
+    articles.each do |article|
+      CacheBuster.new.bust(article.path)
+      CacheBuster.new.bust(article.path + "?i=i")
+      article.save
+    end
+  end
+
+
   private
 
   def remove_at_from_usernames

@@ -287,8 +287,8 @@ class StoriesController < ApplicationController
       where.not(id: @article.id).
       where("featured_number > ?", 5.days.ago.to_i).
       order("RANDOM()").
-      limit(12)
-    if tag_articles.size < 11
+      limit(8)
+    if tag_articles.size < 6
       more_articles = Article.tagged_with((["career","productivity","discuss","explainlikeimfive"]), any: true).
         includes(:user).
         where("comments_count > ?", comment_count_num).

@@ -325,6 +325,8 @@ class Article < ApplicationRecord
     bust_cache
     remove_algolia_index
     reactions.destroy_all
+    user.delay.resave_articles
+    organization.delay.resave_articles if organization
   end
 
   def evaluate_front_matter(front_matter)
@@ -389,7 +391,11 @@ class Article < ApplicationRecord
   end
 
   def set_published_date
-    self.published_at = Time.now if published && published_at.blank?
+    if published && published_at.blank?
+      self.published_at = Time.now
+      user.delay.resave_articles #tack-on functionality HACK
+      organization.delay.resave_articles if organization #tack-on functionality HACK
+    end
   end
 
   def set_featured_number

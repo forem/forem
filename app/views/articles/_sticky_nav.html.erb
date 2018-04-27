@@ -1,16 +1,16 @@
 <% if @article.published %>
   <% @actor = @article.organization || @article.user %>
   <style>
-    .primary-sticky-nav-author{
+    .primary-sticky-nav-author,.primary-sticky-nav-author-element{
       border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
       box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-    }
-    .primary-sticky-nav-author a{
-      color: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
     }
     .primary-sticky-nav-author button{
       background-color: <%= user_colors(@actor)[:bg] %> !important;
       color: <%= user_colors(@actor)[:text] %> !important;
+      <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
+        border: 1px solid <%= user_colors(@actor)[:text] %> !important;
+      <% end %>
     }
   </style>
 
@@ -34,9 +34,32 @@
         <%= follow_button(@actor) %>
       </div>
     </div>
+    <% if @actor.articles.where(published: true).where.not(id: @article.id).any? %>
+          <div class="primary-sticky-nav-title">
+        <% if @actor.username.size < 18 %>
+          More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
+        <% else %>
+          More from<br/><a href="<%= @actor.path %>">@<%= @actor.username %></a>
+        <% end %>
+      </div>
+
+      <% @actor.articles.where(published: true).
+        where.not(id: @article.id).order("published_at DESC").
+        limit(2).each do |article| %>
+        <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
+          <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+          <%= article.title %>
+          <div class="primary-sticky-nav-element-details">
+            <% article.decorate.cached_tag_list_array.each do |tag| %>
+              <span>#<%= tag %></span>
+            <% end %>
+          </div>
+        </a>
+      <% end %>
+    <% end %>
     <% if sticky_articles %>
       <div class="primary-sticky-nav-title">
-        Trending on dev.to
+        <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/129/fire_1f525.png"/> Trending on <a href="https://dev.to">dev.to</a>
       </div>
       <% sticky_articles.each do |article| %>
         <a class="primary-sticky-nav-element" href="<%= article.path %>">

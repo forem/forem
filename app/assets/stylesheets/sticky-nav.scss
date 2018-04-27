@@ -6,8 +6,8 @@
     display: block;
     position: fixed;
     left: calc(50% + 298px);
-    top: 74px;
-    bottom: 30px;
+    top: 84px;
+    bottom: 20px;
     width: 310px;
     display: flex;
     flex-flow: column wrap;
@@ -54,10 +54,18 @@
     vertical-align: -5px;
   }
   .primary-sticky-nav-title{
-    padding-top:25px;
-    margin-left: 10px;
+    padding: 8px 0px 10px;
+    margin-left: 15px;
     font-weight: bold;
-    font-size:1.32em;
+    img{
+      width: 19px;
+      height: 19px;
+      vertical-align: -1px;
+    }
+    a{
+      color: $black;
+      display: inline-block;
+    }
   }
   .primary-sticky-nav-element{
     display: block;
@@ -65,10 +73,10 @@
     font-size:0.9em;
     font-weight: bold;
     background: white;
-    margin-top: 10px;
+    margin-bottom: 10px;
     margin-left: 10px;
-    border: 1px solid $light-medium-gray;
-    box-shadow: 3px 4px 0px $light-medium-gray;
+    border: 1px solid darken($light-medium-gray, 5%);
+    box-shadow: 3px 4px 0px darken($light-medium-gray, 5%);
     color: $black;
     width: 262px;
     border-radius: 3px;
