@@ -25,6 +25,7 @@ class Follow < ApplicationRecord
     ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count",
   }
   after_save :touch_user
+  after_save :touch_user_followed_at
   after_create :send_email_notification
 
   validates :followable_id, uniqueness: { scope: [:followable_type, :follower_id] }
@@ -54,13 +55,17 @@ class Follow < ApplicationRecord
     end
   end
 
-
   private
 
   def touch_user
     follower.touch
   end
   handle_asynchronously :touch_user
+
+  def touch_user_followed_at
+    follower.touch(:last_followed_at)
+  end
+  handle_asynchronously :touch_user_followed_at
 
   def send_email_notification
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications
