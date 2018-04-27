@@ -32,7 +32,7 @@ class SidebarUser extends Component {
             {this.props.user.following ? '✓ FOLLOWING' : '+ FOLLOW'}
           </button>
         </div>
-        <hr />
+        {this.props.index === 2 ? <br /> : <hr />}
       </div>
     );
   }
@@ -41,6 +41,7 @@ class SidebarUser extends Component {
 SidebarUser.propTypes = {
   followUser: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
 };
 
 export default SidebarUser;
