@@ -260,6 +260,15 @@ class User < ApplicationRecord
     monthly_dues.positive?
   end
 
+  def resave_articles
+    articles.each do |article|
+      CacheBuster.new.bust(article.path)
+      CacheBuster.new.bust(article.path + "?i=i")
+      article.save
+    end
+  end
+
+
   private
 
   def send_welcome_notification
@@ -325,14 +334,6 @@ class User < ApplicationRecord
       saved_change_to_profile_image? ||
       saved_change_to_github_username? ||
       saved_change_to_twitter_username?
-  end
-
-  def resave_articles
-    articles.each do |article|
-      CacheBuster.new.bust(article.path)
-      CacheBuster.new.bust(article.path + "?i=i")
-      article.save
-    end
   end
 
   def conditionally_validate_summary
