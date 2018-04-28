@@ -582,13 +582,20 @@
       max-width:1050px;
       margin:auto;
       margin-bottom:15px;
-      height:56.25vw;
+      height:52.5vw;
       margin-bottom:-5px;
+      overflow-y: hidden;
       @media screen and ( min-width: 750px ){
-        height:421px;
+        height:396px;
       }
       @media screen and ( min-width: 950px ){
-        height:340px;
+        height:calc(52.5vw - 172px);
+      }
+      @media screen and ( min-width: 1120px ){
+        height:calc(52.5vw - 314px);
+      }
+      @media screen and ( min-width: 1240px ){
+        height: 339px;
       }
 
     }

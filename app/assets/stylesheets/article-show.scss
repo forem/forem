@@ -33,14 +33,14 @@
   margin:auto;
   margin-bottom:15px;
   height:56.25vw;
-  margin-top:61px;
-  border-top-left-radius:3px;
-  border-top-right-radius:3px;
   overflow:hidden;
   @media screen and ( min-width: 880px ){
     height:492px;
   }
-
+  @media screen and ( min-width: 950px ){
+    border-top-left-radius:2px;
+    border-top-right-radius:2px;
+  }
 }
 header{
   padding:0px 0px;
@@ -54,7 +54,7 @@ header{
     background-size: cover;
     z-index:2;
     padding-top: 42%;
-    @media screen and ( min-width: 880px ){
+    @media screen and ( min-width: 950px ){
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
     }
@@ -80,9 +80,11 @@ header{
   text-align: left;
   border: 1px solid darken($light-medium-gray, 2%);
   box-shadow: 3px 4px 0px darken($light-medium-gray, 2%);
+  @media screen and ( min-width: 950px ){
+    border-radius: 3px;
+  }
   @media screen and ( min-width: 1250px ){
     margin-top:80px;
-    border-radius: 3px;
   }
   &.article{
     position:relative;
