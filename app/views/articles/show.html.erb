@@ -173,10 +173,12 @@
               commentable: @article,
               commentable_type: "Article" %>
           <div class="comment-trees" id="comment-trees-container">
-            <% cache "comment_root_#{user_signed_in?}", expires_in: 1.hours do %>
-              <%= render "comments/login_cta_comment" %>
-            <% end %>
-            <% Comment.rooted_on(@article.id,"Article").order("score DESC").limit(@comments_to_show_count).each do |comment| %>
+            <% Comment.rooted_on(@article.id,"Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
+              <% if i == 3 %>
+                <% cache "comment_root_#{user_signed_in?}", expires_in: 1.hours do %>
+                  <%= render "comments/login_cta_comment" %>
+                <% end %>
+              <% end %>
               <% cache ["comment_root_#{user_signed_in?}", comment] do %>
                 <%= render("/comments/comment",
                       comment:comment,

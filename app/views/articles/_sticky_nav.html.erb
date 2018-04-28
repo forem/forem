@@ -34,7 +34,7 @@
         <%= follow_button(@actor) %>
       </div>
     </div>
-    <% if @actor.articles.where(published: true).where.not(id: @article.id).any? %>
+    <% if @user_stickies && @user_stickies.any? %>
           <div class="primary-sticky-nav-title">
         <% if @actor.username.size < 18 %>
           More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
@@ -43,9 +43,7 @@
         <% end %>
       </div>
 
-      <% @actor.articles.where(published: true).
-        where.not(id: @article.id).order("published_at DESC").
-        limit(2).each do |article| %>
+      <% @user_stickies.each do |article| %>
         <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
           <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
           <%= article.title %>

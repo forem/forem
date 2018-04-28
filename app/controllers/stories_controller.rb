@@ -280,7 +280,9 @@ class StoriesController < ApplicationController
     comment_count_num = Rails.env.production? ? 7 : -2
     tag_articles = []
     more_articles = []
-    tag_articles = Article.tagged_with(@article.cached_tag_list_array, any: true).
+    article_tags = @article.cached_tag_list_array
+    article_tags.delete("discuss")
+    tag_articles = Article.tagged_with(article_tags, any: true).
       includes(:user).
       where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
       where(published: true).
@@ -298,6 +300,12 @@ class StoriesController < ApplicationController
         order("RANDOM()").
         limit(10 - tag_articles.size)
     end
+
+    @user_stickies = (@organization || @user).articles.
+        where(published: true).
+        tagged_with(article_tags, any: true).
+        where.not(id: @article.id).order("published_at DESC").
+        limit(2)
     @sticky_articles = (tag_articles + more_articles).sample(8)
   end
 

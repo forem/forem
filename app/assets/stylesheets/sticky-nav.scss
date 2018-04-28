@@ -34,7 +34,7 @@
       color: $medium-gray;
       padding: 10px 0px 5px;
       font-style: italic;
-      font-size:0.9em;
+      font-size:0.88em;
     }
     .primary-sticky-nav-author-follow{
       padding-top:8px;
@@ -43,7 +43,7 @@
         font-size:1.1em;
         border:0px;
         border-radius:3px;
-        padding: 4px 3px;
+        padding: 3px;
       }
     }
   }
@@ -54,7 +54,7 @@
     vertical-align: -5px;
   }
   .primary-sticky-nav-title{
-    padding: 8px 0px 10px;
+    padding: 8px 0px 9px;
     margin-left: 15px;
     font-weight: bold;
     img{
@@ -75,8 +75,8 @@
     background: white;
     margin-bottom: 10px;
     margin-left: 10px;
-    border: 1px solid darken($light-medium-gray, 5%);
-    box-shadow: 3px 4px 0px darken($light-medium-gray, 5%);
+    border: 1px solid darken($light-medium-gray, 13%);
+    box-shadow: 3px 4px 0px darken($light-medium-gray, 13%);
     color: $black;
     width: 262px;
     border-radius: 3px;
@@ -106,8 +106,8 @@
     }
     &:hover{
       color: $black;
-      border: 1px solid darken($light-medium-gray, 15%);
-      box-shadow: 3px 4px 0px darken($light-medium-gray, 15%);
+      border: 1px solid darken($light-medium-gray, 17%);
+      box-shadow: 3px 4px 0px darken($light-medium-gray, 17%);
     }
   }
 }

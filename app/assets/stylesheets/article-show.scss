@@ -52,12 +52,11 @@ header{
     max-width:1024px;
     background: transparent no-repeat top center;
     background-size: cover;
-    margin-top:60px;
     z-index:2;
     padding-top: 42%;
     @media screen and ( min-width: 880px ){
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
     }
   }
   .category-banner{
@@ -79,6 +78,8 @@ header{
   box-shadow: $shadow;
   margin:60px auto 20px;
   text-align: left;
+  border: 1px solid darken($light-medium-gray, 2%);
+  box-shadow: 3px 4px 0px darken($light-medium-gray, 2%);
   @media screen and ( min-width: 1250px ){
     margin-top:80px;
     border-radius: 3px;
