@@ -286,7 +286,7 @@ class StoriesController < ApplicationController
       includes(:user).
       where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
       where(published: true).
-      where.not(id: @article.id).
+      where.not(id: @article.id, user_id: @article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
       order("RANDOM()").
       limit(8)
@@ -295,7 +295,7 @@ class StoriesController < ApplicationController
         includes(:user).
         where("comments_count > ?", comment_count_num).
         where(published: true).
-        where.not(id: @article.id).
+        where.not(id: @article.id, user_id: @article.user_id).
         where("featured_number > ?", 5.days.ago.to_i).
         order("RANDOM()").
         limit(10 - tag_articles.size)
