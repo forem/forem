@@ -234,7 +234,7 @@ a.header-link{
       resize:none;
       border-radius:3px;
       border:1px solid rgb(232, 229, 229);
-      height:55px;
+      height:75px;
       font-size:16px;
       padding:6px;
       transition: height 0.3s ease;
@@ -750,10 +750,13 @@ a.header-link{
     }
     a.register-now-cta{
       font-size:1.4em;
-      background : rgb(254, 250, 135);
+      background: lighten($yellow, 12%);
+      border: 1px solid darken($yellow, 15%);
+      box-shadow: 5px 6px 0px darken($yellow, 15%);
       color: $black;
-      padding: 3px 10px;
-      margin-right:5px;
+      padding: 5px 10px;
+      margin-right:8px;
+      vertical-align: 20px;
       line-height:1.8em;
     }
     .current-user-actions{
