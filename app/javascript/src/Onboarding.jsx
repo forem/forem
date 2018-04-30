@@ -44,14 +44,18 @@ class Onboarding extends Component {
   getUserTags() {
     fetch('/api/tags/onboarding')
       .then(response => response.json())
-      .then((json) => {
-        const followedTagNames = JSON.parse(document.body.getAttribute('data-user')).followed_tag_names;
+      .then(json => {
+        const followedTagNames = JSON.parse(
+          document.body.getAttribute('data-user'),
+        ).followed_tag_names;
         function checkFollowingStatus(followedTags, jsonTags) {
           const newJSON = jsonTags;
           jsonTags.map((tag, index) => {
             if (followedTags.includes(tag.name)) {
               newJSON[index].following = true;
-            } else { newJSON[index].following = false; }
+            } else {
+              newJSON[index].following = false;
+            }
             return newJSON;
           });
           return newJSON;
@@ -59,7 +63,7 @@ class Onboarding extends Component {
         const updatedJSON = checkFollowingStatus(followedTagNames, json);
         this.setState({ allTags: updatedJSON });
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }
@@ -73,12 +77,12 @@ class Onboarding extends Component {
       credentials: 'same-origin',
     })
       .then(response => response.json())
-      .then((json) => {
+      .then(json => {
         if (this.state.users.length === 0) {
           this.setState({ users: json, checkedUsers: json });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }
@@ -99,14 +103,15 @@ class Onboarding extends Component {
       credentials: 'same-origin',
     })
       .then(response => response.json())
-      .then((json) => {
+      .then(json => {
         this.setState({ articles: json, savedArticles: json });
       });
   }
 
   handleBulkFollowUsers(users) {
     if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
-      const csrfToken = document.querySelector("meta[name='csrf-token']").content;
+      const csrfToken = document.querySelector("meta[name='csrf-token']")
+        .content;
 
       const formData = new FormData();
       formData.append('users', JSON.stringify(users));
@@ -118,7 +123,7 @@ class Onboarding extends Component {
         },
         body: formData,
         credentials: 'same-origin',
-      }).then((response) => {
+      }).then(response => {
         if (response.ok) {
           this.setState({ followRequestSent: true });
         }
@@ -128,7 +133,8 @@ class Onboarding extends Component {
 
   handleBulkSaveArticles(articles) {
     if (this.state.savedArticles.length > 0 && !this.state.saveRequestSent) {
-      const csrfToken = document.querySelector("meta[name='csrf-token']").content;
+      const csrfToken = document.querySelector("meta[name='csrf-token']")
+        .content;
 
       const formData = new FormData();
       formData.append('articles', JSON.stringify(articles));
@@ -140,7 +146,7 @@ class Onboarding extends Component {
         },
         body: formData,
         credentials: 'same-origin',
-      }).then((response) => {
+      }).then(response => {
         if (response.ok) {
           this.setState({ saveRequestSent: true });
         }
@@ -149,7 +155,9 @@ class Onboarding extends Component {
   }
 
   updateUserData() {
-    this.setState({ userData: JSON.parse(document.body.getAttribute('data-user')) });
+    this.setState({
+      userData: JSON.parse(document.body.getAttribute('data-user')),
+    });
     if (this.state.userData.saw_onboarding === true) {
       this.setState({ showOnboarding: false });
     } else {
@@ -163,8 +171,7 @@ class Onboarding extends Component {
     const formData = new FormData();
     formData.append('followable_type', 'Tag');
     formData.append('followable_id', tag.id);
-    formData.append('verb', (tag.following ? 'unfollow' : 'follow'));
-    formData.append('authenticity_token', csrfToken);
+    formData.append('verb', tag.following ? 'unfollow' : 'follow');
 
     fetch('/follows', {
       method: 'POST',
@@ -174,10 +181,10 @@ class Onboarding extends Component {
       body: formData,
       credentials: 'same-origin',
     })
-      .then((response) => {
-        return response.json().then((json) => {
+      .then(response =>
+        response.json().then(json => {
           this.setState({
-            allTags: this.state.allTags.map((currentTag) => {
+            allTags: this.state.allTags.map(currentTag => {
               const newTag = currentTag;
               if (currentTag.name === tag.name) {
                 newTag.following = json.outcome === 'followed';
@@ -186,13 +193,12 @@ class Onboarding extends Component {
               // add in optimistic rendering
             }),
           });
-        });
-      })
-      .catch((error) => {
+        }),
+      )
+      .catch(error => {
         console.log(error);
       });
   }
-
 
   handleCheckAllUsers() {
     if (this.state.checkedUsers.length < this.state.users.length) {
@@ -240,9 +246,11 @@ class Onboarding extends Component {
   }
 
   handleNextButton() {
-    if (this.state.pageNumber === 2 &&
-        this.state.users.length === 0 &&
-        this.state.articles.length === 0) {
+    if (
+      this.state.pageNumber === 2 &&
+      this.state.users.length === 0 &&
+      this.state.articles.length === 0
+    ) {
       this.getUsersToFollow();
       this.getSuggestedArticles();
     }
@@ -250,7 +258,10 @@ class Onboarding extends Component {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
       if (this.state.pageNumber === 4 && this.state.checkedUsers.length > 0) {
         this.handleBulkFollowUsers(this.state.checkedUsers);
-      } else if (this.state.pageNumber === 5 && this.state.savedArticles.length > 0) {
+      } else if (
+        this.state.pageNumber === 5 &&
+        this.state.savedArticles.length > 0
+      ) {
         this.handleBulkSaveArticles(this.state.savedArticles);
       }
     } else if (this.state.pageNumber === 5) {
@@ -279,12 +290,12 @@ class Onboarding extends Component {
       credentials: 'same-origin',
     })
       .then(response => response.json())
-      .then((json) => {
+      .then(json => {
         this.setState({ showOnboarding: json.outcome === 'onboarding opened' });
         // console.log('this is special')
         // console.log(this.state)
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       });
   }
@@ -320,16 +331,17 @@ class Onboarding extends Component {
         />
       );
     } else if (this.state.pageNumber === 5) {
-      return (
-        <OnboardingWelcomeThread />
-      );
+      return <OnboardingWelcomeThread />;
     }
   }
 
   renderBackButton() {
     if (this.state.pageNumber > 1) {
       return (
-        <button className="button cta" onClick={this.handleBackButton}> BACK </button>
+        <button className="button cta" onClick={this.handleBackButton}>
+          {' '}
+          BACK{' '}
+        </button>
       );
     }
   }
@@ -375,16 +387,15 @@ class Onboarding extends Component {
             </div>
             <div className="modal-body">
               <div className="sloan-bar">
-                <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png" className="sloan-img"/>
+                <img
+                  src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+                  className="sloan-img"
+                />
               </div>
-              <div className="body-message">
-                {this.toggleOnboardingSlide()}
-              </div>
+              <div className="body-message">{this.toggleOnboardingSlide()}</div>
             </div>
             <div className="modal-footer">
-              <div className="modal-footer-left">
-                {this.renderBackButton()}
-              </div>
+              <div className="modal-footer-left">{this.renderBackButton()}</div>
               <div className="modal-footer-center" />
               <div className="modal-footer-right">
                 {this.renderNextButton()}
