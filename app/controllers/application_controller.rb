@@ -53,6 +53,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     location = request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
     context_param = resource.created_at > 40.seconds.ago ? "?newly-registered-user=true" : "?returning-user=true"
+    logger.info("SIGN_IN_FULL_URL: #{location + context_param}")
     location + context_param
   end
 
