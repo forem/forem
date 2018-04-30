@@ -1,0 +1,52 @@
+@import 'variables';
+
+.sidebar-additional{
+  .widget{
+    .widget-suggested-follows-container{
+      .widget-body{
+        .widget-list-item__suggestions{
+          .widget-list-item__close-button{
+            float: right;
+            width: 24px;
+            height: 19px;
+            margin: 3px;
+          }
+          .widget-list-item__content{
+            max-width: 180px;
+            margin-left: 60px;
+            margin-right: 20px;
+            min-height: 55px;
+            a{
+              display: block;
+              padding: 5px 0px;
+              font-size: 18px;
+              color: $black;
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+            img{
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              position: absolute;
+              top: unset;
+              left: 15px;
+            }
+            .widget-list-item__follow-button{
+              border: 2px solid transparent;
+              border-radius: 3px;
+              padding: 2px 8px;
+              text-align: center;
+              background-color: $green;
+              color: $black;
+              font-family: $helvetica-condensed;
+              font-weight: 900;
+              font-size: 0.8em;
+            }
+          }
+        }
+      }
+    }
+  }
+}

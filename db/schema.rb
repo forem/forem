@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180328194253) do
+ActiveRecord::Schema.define(version: 20180427160903) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -571,6 +571,7 @@ ActiveRecord::Schema.define(version: 20180328194253) do
     t.datetime "github_created_at"
     t.string "github_username"
     t.jsonb "language_settings", default: {}, null: false
+    t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
     t.datetime "last_sign_in_at"
