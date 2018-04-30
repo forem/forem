@@ -13,7 +13,7 @@ class CouponGenerator
   private
 
   def lambda_generated_code
-    response = FunctionCaller.new("aws-nodejs-ecma-script-dev-couponCode",
+    response = FunctionCaller.new("blackbox-production-couponCode",
       { inputNumber: id, version: version }.to_json).call
     response.to_s(36)
   end

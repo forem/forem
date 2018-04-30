@@ -1,7 +1,7 @@
 class BlackBox
   def self.article_hotness_score(article)
     return (article.featured_number|| 10000)/10000 unless Rails.env.production?
-    FunctionCaller.new("aws-nodejs-ecma-script-dev-articleHotness",
+    FunctionCaller.new("blackbox-production-articleHotness",
       {article: article, user: article.user}.to_json).call
   end
 
@@ -17,7 +17,7 @@ class BlackBox
     #accepts comment or article as story
     return 0 unless Rails.env.production?
     return 100 unless story.user
-    FunctionCaller.new("aws-nodejs-ecma-script-dev-spamScore",
+    FunctionCaller.new("blackbox-production-spamScore",
       {story: story, user: story.user}.to_json).call
   end
 
