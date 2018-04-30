@@ -57,6 +57,8 @@
           </div>
         </div>
       <% end %>
+        <%= javascript_pack_tag "sidebarWidget", defer: true %>
+        <div id="sidebarWidget__pack" data-tag-info="<%= @tag_model.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>" />
     <% elsif @query %>
     <% elsif @podcast_index %>
     <% else %>

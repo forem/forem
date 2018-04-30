@@ -50,7 +50,11 @@ Rails.application.routes.draw do
           post "/onboarding", to: "reactions#onboarding"
         end
       end
-      resources :users, only: [:index]
+      resources :users, only: [:index] do
+        collection do
+          get "/sidebar_suggestions", to: "users#sidebar_suggestions"
+        end
+      end
       resources :tags, only: [:index] do
         collection do
           get "/onboarding", to: "tags#onboarding"
