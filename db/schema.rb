@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20180427160903) do
     t.boolean "automatically_renew", default: false
     t.text "body_html"
     t.text "body_markdown"
+    t.jsonb "boost_states", default: {}, null: false
     t.boolean "boosted", default: false
     t.string "cached_tag_list"
     t.string "cached_user_name"
@@ -106,6 +107,7 @@ ActiveRecord::Schema.define(version: 20180427160903) do
     t.string "video_code"
     t.string "video_source_url"
     t.string "video_thumbnail_url"
+    t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["published_at"], name: "index_articles_on_published_at"
