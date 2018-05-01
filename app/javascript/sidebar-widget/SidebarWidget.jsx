@@ -74,6 +74,7 @@ class SidebarWidget extends Component {
         index={index}
       />
     ));
+
     if (this.state.suggestedUsers.length > 0) {
       return (
         <div className="widget" id="widget-00001">
@@ -83,9 +84,8 @@ class SidebarWidget extends Component {
           </div>
         </div>
       );
-    } 
-      return <div />;
-    
+    }
+    return <div />;
   }
 }
 
