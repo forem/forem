@@ -226,6 +226,27 @@
           </div>
         </div>
       <% end %>
+      <% if @tag == "javascript" %>
+        <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
+          <header>
+            &lt;<a href="/sponsors" style="color:black">COMMUNITY SPONSOR</a><span class="emoji">
+              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
+            </span>&gt;
+          </header>
+          <div class="widget-body">
+            <div class="sidebar-sponsor">
+              <a class="partner-link" href="https://www.jwplayer.com/plans/?utm_source=dev.to" target="_blank" data-details="pusher__image">
+                <img src="https://thepracticaldev.s3.amazonaws.com/i/lc2gkdj9dbmkul4z26g0.png" style="margin-bottom:8px;" />
+              </a>
+              <div class="sponsor-tagline" style="display:inline;">
+                The Most Powerful & Flexible JavaScript Video API.
+                <a class="partner-link sponsor-learn-more" href="https://www.jwplayer.com/plans/?utm_source=dev.to" target="_blank" data-details="pusher__learn-more">
+                  Learn More
+                </a>
+              </div>
+            </div>
+          </div>
+        <% end %>
     <% elsif @podcast_index && @podcasts %>
       <div class="widget podcast-pic-widget">
         <header>
