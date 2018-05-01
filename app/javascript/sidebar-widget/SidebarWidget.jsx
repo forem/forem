@@ -74,12 +74,18 @@ class SidebarWidget extends Component {
         index={index}
       />
     ));
-    return (
-      <div className="widget-suggested-follows-container" id="widget-00001">
-        <header>{'<WHO TO FOLLOW>'}</header>
-        <div className="widget-body">{users}</div>
-      </div>
-    );
+
+    if (this.state.suggestedUsers.length > 0) {
+      return (
+        <div className="widget" id="widget-00001">
+          <div className="widget-suggested-follows-container">
+            <header>{'<WHO TO FOLLOW>'}</header>
+            <div className="widget-body">{users}</div>
+          </div>
+        </div>
+      );
+    }
+    return <div />;
   }
 }
 

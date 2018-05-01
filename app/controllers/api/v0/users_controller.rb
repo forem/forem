@@ -3,7 +3,7 @@ module Api
     class UsersController < ApplicationController
       def index
         if !user_signed_in? || less_than_one_day_old?(current_user)
-          usernames = ["ben", "jess", "peter", "maestromac", "andy", "lianafelt"]
+          usernames = ["ben", "jess", "peter", "maestromac", "andy", "liana"]
           @users = User.where(username: usernames)
           return
         end
