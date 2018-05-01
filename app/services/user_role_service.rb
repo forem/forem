@@ -38,7 +38,7 @@ class UserRoleService
     if params[:scholar] == "1"
       @user.add_role(:workshop_pass)
       @user.update(workshop_expiration: params[:workshop_expiration])
-      NotifyMailer.delay.scholarship_awarded_email(@user) if params[:scholar_email] == "1"
+      ScholarshipMailer.delay.scholarship_awarded_email(@user) if params[:scholar_email] == "1"
     else
       @user.remove_role(:workshop_pass)
     end

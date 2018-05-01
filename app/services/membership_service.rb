@@ -91,14 +91,14 @@ class MembershipService
   end
 
   def send_welcome_email
-    NotifyMailer.delay.new_membership_subscription_email(user, user.roles.last.name)
+    MembershipMailer.delay.new_membership_subscription_email(user, user.roles.last.name)
   end
 
   def send_update_email
-    NotifyMailer.delay.subscription_update_confirm_email(user)
+    MembershipMailer.delay.subscription_update_confirm_email(user)
   end
 
   def send_cancellation_email
-    NotifyMailer.delay.subscription_cancellation_email(user)
+    MembershipMailer.delay.subscription_cancellation_email(user)
   end
 end
