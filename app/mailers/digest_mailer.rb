@@ -1,16 +1,16 @@
 class DigestMailer < ApplicationMailer
+  default from: "DEV Digest <yo@dev.to>"
+
   def digest_email(user, articles)
-    @user = if Rails.env.development?
-              User.first
-            else
-              user
-            end
+    @user = user
     @articles = articles.first(6)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
-    @digest_email = true
-    mail(from: "DEV Digest <yo@dev.to>", to: @user.email, subject: "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}") do |format|
-      format.html { render "layouts/mailer" }
-    end
+    subject = generate_title(@articles)
+    mail(to: @user.email, subject: subject)
+  end
+
+  def generate_title(articles)
+    "#{adjusted_title(articles.first)} + #{articles.size - 1} #{email_end_phrase} #{random_emoji}"
   end
 
   def adjusted_title(article)
