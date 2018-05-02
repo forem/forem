@@ -12,6 +12,7 @@
     </div>
     <div class="secondary-content-display">
       <%= render "additional_content_boxes/article_followable_area",
+        article: article,
         followable: article.organization || article.user,
         classification: classification,
         follow_cue: follow_cue %>

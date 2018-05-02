@@ -4,6 +4,7 @@ class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
   include AlgoliaSearch
+  include Storext.model
 
   acts_as_taggable_on :tags
 
@@ -63,12 +64,21 @@ class Article < ApplicationRecord
   scope :limited_columns_internal_select, -> {
     select(:path, :title, :id, :featured, :approved, :published,
     :comments_count, :positive_reactions_count, :cached_tag_list,
-    :main_image, :main_image_background_hex_color, :updated_at,
+    :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
     :published_from_feed, :crossposted_at, :published_at, :featured_number,
-    :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown
+    :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
+    :email_digest_eligible
     )
+  }
+
+  scope :boosted_via_additional_articles, -> {
+    where("boost_states ->> 'boosted_additional_articles' = 'true'")
+  }
+
+  scope :boosted_via_dev_digest_email, -> {
+    where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
@@ -141,6 +151,12 @@ class Article < ApplicationRecord
       end
     end
   end
+
+  store_attributes :boost_states do
+    boosted_additional_articles Boolean, default: false
+    boosted_dev_digest_email Boolean, default: false
+  end
+
 
   def self.filter_excluded_tags(tag = nil)
     if tag == "hiring"

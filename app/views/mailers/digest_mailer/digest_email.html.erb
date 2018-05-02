@@ -2,13 +2,20 @@
   DEV Digest
 </h1>
 <h4 style="text-align: center;">Recent posts you might find valuable based on your interests ❤️</h4>
-<% @articles.each do |article| %>
-  <ul>
-    <li>
+<ul>
+  <% @articles.each do |article| %>
+    <li style="margin:18px auto">
       <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:1.06em;"><%= article.title.strip %></a> <%= truncate(article.description, length: 80) %>
-  </li>
-  </ul>
-<% end %>
+    </li>
+  <% end %>
+  <% if @boosted_article && @user.display_sponsors %>
+    <h4 style="background:#e3fffc;display:inline-block;margin:0;">And sponsor-boosted</h4>
+    <li style="margin:18px auto">
+      <a href="https://dev.to<%= @boosted_article.path %>?booster_org=<%= @boosted_article.organization&.slug || "generic" %>" style="font-weight: bold;color:#0045ff;font-size:1.06em;"><%= @boosted_article.title.strip %></a> <%= truncate(@boosted_article.description, length: 80) %>
+    </li>
+  <% end %>
+</ul>
+
 
 <center style="margin-top:50px;">
   <em>

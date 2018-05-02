@@ -1,12 +1,12 @@
-      <h2><a href="<%= article.path %>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a></h2>
+      <h2><a href="<%= article.path + article.decorate.internal_utm_params %>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a></h2>
       <div class="content-author">
-        <a href="<%= article.user.path %>"> 
+        <a href="<%= article.user.path + article.decorate.internal_utm_params %>"> 
           <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(50)%>" alt="<%= article.user.username %> profile image"/>
           <span><%= article.user.name %></span>
         </a>
       </div>
       <p>
-        <a href="<%= article.path %>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
+        <a href="<%= article.path + article.decorate.internal_utm_params%>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
           <%= article.description %>
         </a>
         <div class="engagement-count">
@@ -18,7 +18,7 @@
           <% end %>
         </div>
       </p>
-      <a href="<%= article.path %>" class="cta<%= ' partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">READ POST</a>
+      <a href="<%= article.path + article.decorate.internal_utm_params%>" class="cta<%= ' partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">READ POST</a>
       <button
         class="article-engagement-count bookmark-engage<%= ' partner-link' if classification == "boosted" %>"
         data-reactable-id="<%= article.id %>"

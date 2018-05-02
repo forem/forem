@@ -3,7 +3,7 @@
     article: @boosted_article,
     classification: "boosted",
     classification_text: "From one of our Community Sponsors",
-    follow_cue: @boosted_article.organization.tag_line || @boosted_article.organization.summary %>
+    follow_cue: @boosted_article.organization&.tag_line || @boosted_article.organization&.tag_line %>
 <% elsif @alt_classic %>
   <%= render "additional_content_boxes/article_box",
     article: @alt_classic,

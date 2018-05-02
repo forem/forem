@@ -69,6 +69,22 @@ class Internal::ArticlesController < Internal::ApplicationController
         page(params[:page]).
         per(100).
         limited_columns_internal_select
+    when "boosted-additional-articles"
+      @articles = Article.
+        includes(:user).
+        order("published_at DESC").
+        boosted_via_additional_articles.
+        page(params[:page]).
+        per(100).
+        limited_columns_internal_select
+    when "boosted-dev-digest"
+      @articles = Article.
+        includes(:user).
+        order("published_at DESC").
+        boosted_via_dev_digest_email.
+        page(params[:page]).
+        per(100).
+        limited_columns_internal_select
     else #MIX
       @articles = Article.
         where(published: true).
@@ -97,6 +113,9 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.featured = article_params[:featured].to_s == "true"
     article.approved = article_params[:approved].to_s == "true"
     article.live_now = article_params[:live_now].to_s == "true"
+    article.email_digest_eligible = article_params[:email_digest_eligible].to_s == "true"
+    article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
+    article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
     article.update!(article_params)
     if article.live_now
       Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false)
@@ -115,6 +134,9 @@ class Internal::ArticlesController < Internal::ApplicationController
                                     :body_markdown,
                                     :approved,
                                     :live_now,
+                                    :email_digest_eligible,
+                                    :boosted_additional_articles,
+                                    :boosted_dev_digest_email,
                                     :main_image_background_hex_color,
                                     :featured_number)
   end
