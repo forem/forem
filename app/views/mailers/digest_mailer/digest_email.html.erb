@@ -1,0 +1,40 @@
+<h1 style="text-align: center;">
+  DEV Digest
+</h1>
+<h4 style="text-align: center;">Recent posts you might find valuable based on your interests ❤️</h4>
+<% @articles.each do |article| %>
+  <ul>
+    <li>
+      <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:1.06em;"><%= article.title.strip %></a> <%= truncate(article.description, length: 80) %>
+  </li>
+  </ul>
+<% end %>
+
+<center style="margin-top:50px;">
+  <em>
+    <% if @user.follows.size == 0 %>
+      <b>
+        DEV Digest is a new periodic email featuring the best posts from our community of developers.
+      </b>
+      <br/><br/>
+      Your digest is not yet customized. Follow the people and technologies on <a href="https://dev.to" style="text-decoration: none;">dev.to</a> that interest you in order to receive the most relevant posts in your inbox.
+    <% else %>
+      <% tip_rand = rand(5) %>
+      <% if tip_rand == 0 %>
+        Thanks for being a valued member of the community.
+      <% elsif tip_rand == 1 %>
+        Follow the authors you want to see more of!
+      <% elsif tip_rand == 2 %>
+        And there's so much more dev goodness to discover.
+      <% elsif tip_rand == 3 %>
+        You're a better dev today than you were yesterday.
+      <% elsif tip_rand == 4 %>
+        <% if @user.articles.where(published: true).any? %>
+          Can't wait to see <b>your</b> next DEV post!
+        <% else %>
+          Can't wait to see <b>your</b> first DEV post!
+        <% end %>
+      <% end %>
+    <% end %>
+  </em>
+</center>
