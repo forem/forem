@@ -26,6 +26,12 @@ RSpec.describe EmailLogic do
         h = described_class.new(user).analyze
         expect(h.should_receive_email?).to eq(false)
       end
+      it "marks as not ready if there isn't at least 3 email-digest-eligible articles" do
+        2.times { create(:article, positive_reactions_count: 40) }
+        2.times { create(:article, positive_reactions_count: 40, email_digest_eligible: false) }
+        h = described_class.new(user).analyze
+        expect(h.should_receive_email?).to eq(false)
+      end
     end
 
     context "when a user's open_percentage is low " do

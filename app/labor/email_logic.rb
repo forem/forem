@@ -33,7 +33,7 @@ class EmailLogic
     articles = if user_has_followings?
                  @user.followed_articles.
                    where("published_at > ?", fresh_date).
-                   where(published: true).
+                   where(published: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("positive_reactions_count > ?", 15).
                    order("positive_reactions_count DESC").

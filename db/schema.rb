@@ -8,9 +8,9 @@
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
-# It's strongly recommended that you check this file into your version control system.
+# It's strongly recommended that you check this file into your version control system. ❤️
 
-ActiveRecord::Schema.define(version: 20180427160903) do
+ActiveRecord::Schema.define(version: 20180502160428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20180427160903) do
     t.datetime "crossposted_at"
     t.string "description"
     t.datetime "edited_at"
+    t.boolean "email_digest_eligible", default: true
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
     t.integer "featured_number"

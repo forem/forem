@@ -29,6 +29,8 @@
   <a href="/internal/articles?state=spam" style="padding:10px;<%= "background:#89ffba" if params[:state] == "spam" %>">Spam?</a>
   <a href="/internal/articles?state=classic" style="padding:10px;<%= "background:#89ffba" if params[:state] == "classic" %>">Classic</a>
   <a href="/internal/articles?state=classic-candidate" style="padding:10px;<%= "background:#89ffba" if params[:state] == "classic-candidate" %>">Classic Candidate</a>
+  <a href="/internal/articles?state=boosted-additional-articles" style="padding:10px;<%= "background:#89ffba" if params[:state] == "boosted-additional-articles" %>">Boosted (Additional articles)</a>
+  <a href="/internal/articles?state=boosted-dev-digest" style="padding:10px;<%= "background:#89ffba" if params[:state] == "boosted-dev-digest" %>">Boosted (DEV Digest)</a>
 </h3>
 <br/>
   <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>

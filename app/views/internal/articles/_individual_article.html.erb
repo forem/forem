@@ -37,9 +37,13 @@
 			&nbsp Featured: <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %>>
 			&nbsp Approved: <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %>>
 			&nbsp Live Now: <input name="article[live_now]" type="checkbox" <%= "checked" if article.live_now %>>
-			&nbsp Image BG color: <input name="article[main_image_background_hex_color]" value="<%= article.main_image_background_hex_color %>" id="featured_number_<%= article.id %>"><br/><br/>
+			&nbsp Email Digest Eligible: <input name="article[email_digest_eligible]" type="checkbox" <%= "checked" if article.email_digest_eligible %>>
+			&nbsp Image BG color: <input name="article[main_image_background_hex_color]" value="<%= article.main_image_background_hex_color %>" id="featured_number_<%= article.id %>">
 			Social Image: <input name="article[social_image]" value="<%= article.social_image %>" id="featured_number_<%= article.id %>">
-			
+			<br/><br/>
+			Boosted (Additional articles): <input name="article[boosted_additional_articles]" type="checkbox" <%= "checked" if article.boosted_additional_articles %>>
+			&nbsp Boosted (DEV Digest): <input name="article[boosted_dev_digest_email]" type="checkbox" <%= "checked" if article.boosted_dev_digest_email %>>
+
 			<% if params[:state]&.include?("classic") %>
 				<br/><br>
 				<textarea cols="70" rows="6" wrap="hard" name="article[body_markdown]" /><%= article.body_markdown %></textarea>         
@@ -47,6 +51,18 @@
 			
 			&nbsp &nbsp <button class="btn btn-primary">SUBMIT</button>
 		</form>
+
+		<% if article.boosted_dev_digest_email %>
+			<br/><br/>
+			<% phrase = "#{article.path}?booster_org=#{article.organization&.slug || "generic"}" %>
+			<b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at:nil).size %> EMAILS</b>
+			<br/>
+			<b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at:nil).where("sent_at > ?", 1.week.ago).size %> EMAILS IN THE PAST WEEK</b>
+			<br/></br/>
+			<b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at:nil).where.not(opened_at:nil).size %> OPENED EMAILS</b>
+			<br/>
+			<b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at:nil).where.not(opened_at:nil).where("sent_at > ?", 1.week.ago).size %> OPENED EMAILS IN THE PAST WEEK</b>
+		<% end %>
 	</div>
 
 	<% unless params[:state]&.include?("classic") %>
