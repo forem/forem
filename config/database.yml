@@ -23,7 +23,7 @@ default: &default
   connect_timeout: 2
   checkout_timeout: 2
   variables:
-      statement_timeout: 2500
+      statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 2500 %>
       
 development:
   <<: *default
