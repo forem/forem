@@ -9,3 +9,44 @@
       <%= render 'articles/markdown_form' %>
     <% end %>
   <% end %>
+
+<% if @user.has_role?(:super_admin) %>
+  <center>
+    <%= stylesheet_link_tag 's3_direct_upload', media: 'all' %>
+    <% if @article.video %>
+      <h2>Video uploaded - <%= @article.video_code %></h2>
+      <%= render "articles/video_player", meta_tags: false, article: @article  %>
+    <% else %>
+      <h2>Upload Video 📹</h2>
+      <%= s3_uploader_form callback_url: "/articles/#{@article.id}",
+                          callback_method: "PUT",
+                          callback_param: "article[video]",
+                          key: "video-upload__#{SecureRandom.hex}",
+                          key_starts_with: "video-upload__",
+                          acl: "public-read",
+                          max_file_size: 500.megabytes,
+                          id: "s3-uploader",
+                          class: "upload-form",
+                          data: {:key => :val} do %>
+        <%= file_field_tag :file %>
+        <script id="template-upload" type="text/x-tmpl">
+        <div id="file-{%=o.unique_id%}" class="upload">
+          {%=o.name%}
+          <div class="progress"><div class="bar" style="width: 0%"></div></div>
+          <br/><br/><br/>
+        </div>
+        </script>
+      <% end %>
+    </center>
+    <br/><br/><br/>
+<% end %>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <%= javascript_include_tag 's3_direct_upload' %>
+  <script>
+    setTimeout(function(){
+      $("#s3-uploader").S3Uploader({
+        additional_data: {authenticity_token:"<%= form_authenticity_token %>"}
+      })
+    }, 1000)
+  </script>
+<% end %>
