@@ -85,28 +85,29 @@ class ArticlesController < ApplicationController
     @user = @article.user || current_user
     @article.tag_list = []
     @article.main_image = nil
-    respond_to do |format|
-      edited_at_date = if @article.user == current_user && @article.published
-                         DateTime.now
-                       else
-                         @article.edited_at
-                       end
-      if @article.update(article_params.merge(edited_at: edited_at_date))
-        handle_org_assignment
-        handle_hiring_tag
-        if @article.published
-          Notification.send_all(@article, "Published") if @article.previous_changes.include?("published")
-          path = @article.path
-        else
-          Notification.remove_all(@article, "Published")
-          path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
-        end
-        format.html { redirect_to (params[:destination] || path), notice: "Article was successfully updated." }
-        format.json { render :show, status: :ok, location: @article }
+    edited_at_date = if @article.user == current_user && @article.published
+                        DateTime.now
+                      else
+                        @article.edited_at
+                      end
+    if @article.update(article_params.merge(edited_at: edited_at_date))
+      handle_org_assignment
+      handle_hiring_tag
+      assign_video_attributes
+      if @article.published
+        Notification.send_all(@article, "Published") if @article.previous_changes.include?("published")
+        path = @article.path
       else
-        format.html { render :edit }
-        format.json { render json: @article.errors, status: :unprocessable_entity }
+        Notification.remove_all(@article, "Published")
+        path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
+      if params[:article][:video]
+        render action: "video_upload"
+        return
+      end
+      redirect_to (params[:destination] || path)
+    else
+      render :edit
     end
   end
 
@@ -181,7 +182,19 @@ class ArticlesController < ApplicationController
     params[:article][:published] = true if params[:submit_button] == "PUBLISH"
     params.require(:article).
       permit(:title, :body_html, :body_markdown, :user_id, :main_image, :published,
-          :description, :allow_small_edits, :allow_big_edits, :tag_list, :publish_under_org)
+          :description, :allow_small_edits, :allow_big_edits, :tag_list, :publish_under_org,
+          :video, :video_code, :video_source_url, :video_thumbnail_url)
+  end
+
+  def assign_video_attributes
+    if params[:article][:video]
+      @article.video = params[:article][:video]
+      @article.video_code = @article.video.split("dev-to-input-v0/")[1]
+      @article.video_source_url = "https://dw71fyauz7yz9.cloudfront.net/#{@article.video_code}/#{@article.video_code}.m3u8"
+      @article.video_thumbnail_url = "https://dw71fyauz7yz9.cloudfront.net/#{@article.video_code}/thumbs-#{@article.video_code}-00001.png"
+      @article.save
+
+    end
   end
 
   def job_opportunity_params

@@ -70,6 +70,7 @@ gem "redcarpet", "~> 3.4"
 gem "reverse_markdown", "~> 1.0"
 gem "rolify", "~> 5.2"
 gem "rouge", "~> 3.1"
+gem "s3_direct_upload"
 gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4", group: :doc
 gem "serviceworker-rails", "~> 0.5"
