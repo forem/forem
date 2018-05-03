@@ -33,17 +33,24 @@ class RunkitTag < Liquid::Block
 
   def self.script
     <<~JAVASCRIPT
-      var targets = document.getElementsByClassName("runkit-element");
-      if (targets.length > 0) {
-        for (var i = 0; i < targets.length; i++) {
-          var content = targets[i].innerHTML;
-          targets[i].innerHTML = "";
-          var notebook = RunKit.createNotebook({
-            element: targets[i],
-            source: content,
-          });
+      var checkRunkit = setInterval(function() {
+        if(typeof(RunKit) !== 'undefined') {
+          var targets = document.getElementsByClassName("runkit-element");
+          if (targets.length > 0) {
+            for (var i = 0; i < targets.length; i++) {
+              var content = targets[i].innerHTML;
+              if(/^(\<iframe src)/.test(content) === false) {
+                targets[i].innerHTML = "";
+                var notebook = RunKit.createNotebook({
+                  element: targets[i],
+                  source: content,
+                });
+              }
+            }
+          }
+          clearInterval(checkRunkit);
         }
-      }
+      }, 200);
     JAVASCRIPT
   end
 end
