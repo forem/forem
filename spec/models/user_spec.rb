@@ -9,15 +9,17 @@ RSpec.describe User, type: :model do
   let(:org)             { create(:organization) }
 
   it { is_expected.to have_many(:articles) }
-  it { is_expected.to have_many(:reactions) }
-  it { is_expected.to have_many(:comments) }
-  it { is_expected.to have_many(:identities) }
+  it { is_expected.to have_many(:badge_achievements) }
+  it { is_expected.to have_many(:badges).through(:badge_achievements) }
   it { is_expected.to have_many(:collections) }
-  it { is_expected.to have_many(:tweets) }
-  it { is_expected.to have_many(:notifications) }
-  it { is_expected.to have_many(:mentions) }
+  it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
+  it { is_expected.to have_many(:identities) }
+  it { is_expected.to have_many(:mentions) }
   it { is_expected.to have_many(:notes) }
+  it { is_expected.to have_many(:notifications) }
+  it { is_expected.to have_many(:reactions) }
+  it { is_expected.to have_many(:tweets) }
   it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
   it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
   it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
