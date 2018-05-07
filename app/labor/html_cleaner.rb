@@ -15,9 +15,6 @@ class HtmlCleaner
       end
     end
 
-    doc.css("pre br").each do |br|
-      br.replace "\n"
-    end
     doc.css('figure').each do |el|
       el.name = 'p'
     end
