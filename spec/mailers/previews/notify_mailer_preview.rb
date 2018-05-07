@@ -15,4 +15,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   def new_mention_email
     NotifyMailer.new_mention_email(Mention.last)
   end
+
+  def video_upload_complete_email
+    NotifyMailer.video_upload_complete_email(Article.last)
+  end
 end

@@ -31,6 +31,7 @@ class Article < ApplicationRecord
   # validates :description, length: { in: 10..170, if: :published? }
   validates :body_markdown, uniqueness: { scope: :user_id }
   validate :validate_tag
+  validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
 
   before_validation :evaluate_markdown
   before_validation :create_slug
