@@ -11,7 +11,12 @@ class VideoStatesController < ApplicationController
       logger.info "VIDEO STATES: #{request_json}"
     rescue
     end
-    @article = Article.find_by_video_code(params[:input][:key])
+    request_json = JSON.parse(request.raw_post, {symbolize_names: true})
+    puts request_json
+    message_json = JSON.parse(request_json[:message], {symbolize_names: true})
+    puts message_json
+    puts "***"
+    @article = Article.find_by_video_code(message_json[:input][:key])
     @article.update(video_state: "COMPLETED") #Only is called on completion
     NotifyMailer.video_upload_complete_email(@article).deliver
     render json: { message: "Video state updated" }
