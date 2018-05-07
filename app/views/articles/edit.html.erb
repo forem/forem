@@ -16,6 +16,14 @@
     <% if @article.video %>
       <h2>Video uploaded - <%= @article.video_code %></h2>
       <%= render "articles/video_player", meta_tags: false, article: @article  %>
+      <h2>Thumbnail:</h2>
+      <img width="300" src="<%= cloudinary(@article.video_thumbnail_url, 880) %>" />
+      <h2>Change thumbnail:</h2>
+      <%= form_for(@article) do |f| %>
+        <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
+        <%= f.submit %>
+      <% end %>
+      <br/>Video is in beta ❤️<br/><br/><br/>
     <% else %>
       <h2>Upload Video 📹</h2>
       <%= s3_uploader_form callback_url: "/articles/#{@article.id}",
