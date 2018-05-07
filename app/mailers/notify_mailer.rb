@@ -35,4 +35,10 @@ class NotifyMailer < ApplicationMailer
     subject = "🔥 You have #{@unread_notifications_count} unread notifications on dev.to"
     mail(to: @user.email, subject: subject)
   end
+
+  def video_upload_complete_email(article)
+    @article = article
+    @user = @article.user
+    mail(to: @user.email, subject: "Your video upload is complete")
+  end
 end

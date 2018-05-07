@@ -13,11 +13,15 @@
 <% if @user.has_role?(:super_admin) %>
   <center>
     <%= stylesheet_link_tag 's3_direct_upload', media: 'all' %>
-    <% if @article.video %>
+    <% if @article.video_state == "PROGRESSING" %>
+      <h2>Video Transcoding In Progress</h2>
+      <img src="https://media.giphy.com/media/xf20D8HzvTQzu/giphy.gif" />
+      <br/><br/><br/><br/>
+    <% elsif @article.video_state == "COMPLETED" %>
       <h2>Video uploaded - <%= @article.video_code %></h2>
       <%= render "articles/video_player", meta_tags: false, article: @article  %>
       <h2>Thumbnail:</h2>
-      <img width="300" src="<%= cloudinary(@article.video_thumbnail_url, 880) %>" />
+      <img style="max-width:100%" src="<%= cloudinary(@article.video_thumbnail_url, 880) %>" />
       <h2>Change thumbnail:</h2>
       <%= form_for(@article) do |f| %>
         <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>

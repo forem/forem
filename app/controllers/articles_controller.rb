@@ -189,6 +189,7 @@ class ArticlesController < ApplicationController
   def assign_video_attributes
     if params[:article][:video]
       @article.video = params[:article][:video]
+      @article.video_state = "PROGRESSING"
       @article.video_code = @article.video.split("dev-to-input-v0/")[1]
       @article.video_source_url = "https://dw71fyauz7yz9.cloudfront.net/#{@article.video_code}/#{@article.video_code}.m3u8"
       @article.video_thumbnail_url = "https://dw71fyauz7yz9.cloudfront.net/#{@article.video_code}/thumbs-#{@article.video_code}-00001.png"
