@@ -5,6 +5,12 @@ class VideoStatesController < ApplicationController
       render json: { message: "invalid_user" }, :status => 422
       return
     end
+    begin
+      logger.info "VIDEO STATES: #{params}"
+      request_json = JSON.parse(request.raw_post, {symbolize_names: true})
+      logger.info "VIDEO STATES: #{request_json}"
+    rescue
+    end
     @article = Article.find_by_video_code(params[:input][:key])
     @article.update(video_state: "COMPLETED") #Only is called on completion
     NotifyMailer.video_upload_complete_email(@article).deliver
