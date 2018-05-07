@@ -13,6 +13,8 @@ class User < ApplicationRecord
 
   belongs_to  :organization, optional: true
   has_many    :articles
+  has_many    :badge_achievements
+  has_many    :badges, through: :badge_achievements
   has_many    :collections
   has_many    :comments
   has_many    :email_messages, class_name: "Ahoy::Message"

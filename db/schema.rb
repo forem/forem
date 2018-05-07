@@ -116,6 +116,27 @@ ActiveRecord::Schema.define(version: 20180502174301) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
+  create_table "badge_achievements", force: :cascade do |t|
+    t.bigint "badge_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "rewarder_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["badge_id"], name: "index_badge_achievements_on_badge_id"
+    t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
+    t.index ["user_id"], name: "index_badge_achievements_on_user_id"
+  end
+
+  create_table "badges", force: :cascade do |t|
+    t.string "badge_image"
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.string "slug", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["title"], name: "index_badges_on_title", unique: true
+  end
+
   create_table "blocks", id: :serial, force: :cascade do |t|
     t.text "body_html"
     t.text "body_markdown"
@@ -652,6 +673,8 @@ ActiveRecord::Schema.define(version: 20180502174301) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
+  add_foreign_key "badge_achievements", "badges"
+  add_foreign_key "badge_achievements", "users"
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
 end
