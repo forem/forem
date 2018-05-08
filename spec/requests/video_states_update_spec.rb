@@ -11,7 +11,7 @@ RSpec.describe "VideoStatesUpdate", type: :request do
   describe "POST /video_states" do
     it "updates video state" do
       post "/video_states?key=#{@user.secret}", params: {
-        message: "{\"input\":{\"key\":\"DUMMY_VID_CODE\"}}"}.to_json
+        Message: "{\"input\":{\"key\":\"DUMMY_VID_CODE\"}}"}.to_json
       expect(Article.last.video_state).to eq("COMPLETED")
     end
     it "rejects non-authorized users" do
