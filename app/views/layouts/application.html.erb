@@ -86,8 +86,10 @@
     <% end %>
   </div>
   <% unless is_internal_navigation? %>
-    <%= render "layouts/footer" %>
-    <%= render "layouts/signup_modal" unless user_signed_in? %>
+    <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ENV["DEPLOYMENT_SIGNATURE"].to_s}", :expires_in => 200.hours) do %>
+      <%= render "layouts/footer" %>
+      <%= render "layouts/signup_modal" unless user_signed_in? %>
+    <% end %>
     <div id="live-article-indicator" class="live-article-indicator"></div>
     <%= image_tag("twitter-logo.svg", class:"icon-img", style:"display:none") %>
     <%= image_tag("github-logo.svg", class:"icon-img", style:"display:none") %>

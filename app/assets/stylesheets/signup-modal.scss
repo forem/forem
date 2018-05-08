@@ -30,42 +30,6 @@
       }
     }
   }
-  .global-signup-modal--inner-b{
-    font-family: $helvetica;
-    position:fixed;
-    top:calc(15% - 33px);
-    left:calc(15% - 33px);
-    right:calc(15% - 33px);
-    bottom:calc(15% - 33px);
-    background:white;
-    z-index:899902;
-    text-align:center;
-    font-size:calc(2vw + 20px);
-    box-shadow:0px 0px 100px 20px rgba(0,0,0,0.3);
-    border-radius:8px;
-    padding:calc(4vw + 24px) calc(1vw + 10px);
-    h1{
-      font-size:1.4em;
-      font-weight:400;
-    }
-    a{
-      display:inline-block;
-      margin:calc(3vw + 5px) 10px;
-      border:1px solid #b5b5b5;
-      border-radius:8px;
-      padding: calc(1vw + 4px) calc(3vw + 10px);
-      img{
-        width:calc(1.1vw + 23px);
-        height:calc(1.1vw + 23px);
-        vertical-align: -3px;
-      }
-    }
-    .heart{
-      display:block;
-      margin:auto;
-      width:40px;
-    }
-  }
   .global-signup-modal--inner-a{
     font-family: $helvetica;
     position:fixed;
@@ -76,18 +40,17 @@
     background:white;
     z-index:899902;
     text-align:center;
-    font-size:calc(2vw + 20px);
+    font-size:calc(0.8vw + 15px);
     box-shadow:0px 0px 100px 20px rgba(0,0,0,0.3);
     border-radius:8px;
     padding:calc(1vw + 24px) calc(1vw + 10px);
     h1{
-      font-size:.8em;
       font-weight:600;
       margin-top:0px;
-      margin-bottom:5px;
+      margin-bottom:18px;
     }
     p{
-      font-size: .5em;
+      font-size: .73em;
       max-width: 75%;
       text-align: center;
       margin:auto;
@@ -95,17 +58,19 @@
     a{
       display:inline-block;
       margin:calc(2vw + 5px) 10px;
-      border:1px solid #b5b5b5;
-      border-radius:8px;
+      border-radius:100px;
       padding: calc(.5vw + 4px) calc(1.5vw + 10px);
+      background: $purple;
+      color: $bold-blue;
       img{
-        width:calc(1.1vw + 23px);
-        height:calc(1.1vw + 23px);
-        vertical-align: -3px;
+        width:calc(1vw + 18px);
+        height:calc(1vw + 18px);
+        vertical-align: calc(-0.1em - 2px);
       }
     }
     .sloan{
       height: calc(7vw + 80px);
+      margin-top: calc(6vh - 10px);
     }
   }
 }
