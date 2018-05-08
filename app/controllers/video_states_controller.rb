@@ -13,7 +13,7 @@ class VideoStatesController < ApplicationController
     end
     request_json = JSON.parse(request.raw_post, {symbolize_names: true})
     puts request_json
-    message_json = JSON.parse(request_json[:message], {symbolize_names: true})
+    message_json = JSON.parse(request_json[:Message], {symbolize_names: true})
     puts message_json
     puts "***"
     @article = Article.find_by_video_code(message_json[:input][:key])
