@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507191509) do
+ActiveRecord::Schema.define(version: 20180508200948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -45,7 +45,6 @@ ActiveRecord::Schema.define(version: 20180507191509) do
     t.text "body_html"
     t.text "body_markdown"
     t.jsonb "boost_states", default: {}, null: false
-    t.boolean "boosted", default: false
     t.string "cached_tag_list"
     t.string "cached_user_name"
     t.string "cached_user_username"
@@ -62,11 +61,8 @@ ActiveRecord::Schema.define(version: 20180507191509) do
     t.boolean "featured", default: false
     t.integer "featured_number"
     t.string "feed_source_url"
-    t.string "github_path"
     t.integer "hotness_score", default: 0
     t.string "ids_for_suggested_articles", default: "[]"
-    t.integer "image_jpg_quality", default: 90
-    t.text "intro_html"
     t.integer "job_opportunity_id"
     t.string "language"
     t.datetime "last_buffered"
@@ -85,7 +81,6 @@ ActiveRecord::Schema.define(version: 20180507191509) do
     t.string "path"
     t.integer "positive_reactions_count", default: 0, null: false
     t.text "processed_html"
-    t.string "programming_category"
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
@@ -97,8 +92,6 @@ ActiveRecord::Schema.define(version: 20180507191509) do
     t.text "slug"
     t.string "social_image"
     t.integer "spaminess_rating", default: 0
-    t.integer "sponsor_id"
-    t.boolean "sponsor_showing", default: false
     t.integer "third_user_id"
     t.string "title"
     t.datetime "updated_at", null: false
@@ -190,9 +183,6 @@ ActiveRecord::Schema.define(version: 20180507191509) do
 
   create_table "comments", id: :serial, force: :cascade do |t|
     t.string "ancestry"
-    t.boolean "article_conversion_inquiry", default: false
-    t.boolean "article_conversion_lost", default: false
-    t.boolean "article_conversion_won", default: false
     t.text "body_html"
     t.text "body_markdown"
     t.integer "commentable_id"
@@ -202,7 +192,6 @@ ActiveRecord::Schema.define(version: 20180507191509) do
     t.boolean "edited", default: false
     t.datetime "edited_at"
     t.string "id_code"
-    t.integer "link_id"
     t.integer "markdown_character_count"
     t.integer "positive_reactions_count", default: 0, null: false
     t.text "processed_html"

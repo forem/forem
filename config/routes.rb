@@ -207,9 +207,6 @@ Rails.application.routes.draw do
   get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { :format => "rss" }
   get "/rss" => "articles#feed", :defaults => { :format => "rss" }
 
-  get "/amp/:slug" => "articles#amp"
-  get "/amp/:username/:slug" => "articles#amp", :constraints => { username: /@[\S]*/}
-
   get "/tag/:tag" => "stories#index"
   get "/t/:tag" => "stories#index"
   get "/t/:tag/edit", to: "tags#edit"
