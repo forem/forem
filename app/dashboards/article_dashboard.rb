@@ -17,7 +17,6 @@ class ArticleDashboard < Administrate::BaseDashboard
     title: Field::String,
     body_html: Field::Text,
     body_markdown: Field::Text,
-    intro_html: Field::Text,
     slug: Field::String,
     canonical_url: Field::String,
     created_at: Field::DateTime,
