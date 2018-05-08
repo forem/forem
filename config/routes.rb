@@ -80,7 +80,6 @@ Rails.application.routes.draw do
   resources :followed_articles, only: [:index]
   resources :follows, only: [:index,:show,:create]
   resources :giveaways, only: [:create,:update]
-  resources :csv_exports, only: [:index]
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
