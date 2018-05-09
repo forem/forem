@@ -1,0 +1,74 @@
+<style>
+  .reaction-button{
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-color: white;
+    margin: 100px 40px;
+    border-radius:200px;
+  }
+  .reaction-button img {
+    position: absolute;
+    top: 0;
+    width: 60px;
+    left: 0;
+  }
+  .reaction-button .reacted-emoji {
+    display: none;
+  }
+  .reaction-button.reacted .reacted-emoji {
+    display: block;
+  }
+</style>
+
+<div class="container" style="text-align: center">
+  <h2>MODERATE: <a href="<%= @moderatable.path %>"><%= @moderatable.title %></a></h2>
+
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
+    <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>"/>
+  </button>
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.class.name %>">
+    <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
+  </button>
+  <p style="width: 80%;margin:50px auto">
+    Negative reactions are private. Use the :thumbsdown: to move something "down" for any reason. The :vomit: is for clear code of conduct violations.
+  </p>
+</div>
+
+<script defer>
+  setTimeout(function(){
+    var butts = document.getElementsByClassName('reaction-button');
+    for (var i = 0; i < butts.length; i++) {
+      var butt = butts[i];
+      butt.onclick = function (event) {
+        event.preventDefault();
+        var thisButt = this;
+        thisButt.classList.add('reacted');
+
+        function successCb(response) {
+          if (response.result === 'create') {
+            thisButt.classList.add('reacted');
+          } else {
+            thisButt.classList.remove('reacted');
+          }
+        }
+
+        var formData = new FormData();
+        formData.append('reactable_type', thisButt.dataset.reactableType);
+        formData.append('category', thisButt.dataset.category);
+        formData.append('reactable_id', thisButt.dataset.reactableId);
+
+        getCsrfToken()
+          .then(sendFetch('reaction-creation', formData))
+          .then(function (response) {
+            if (response.status === 200) {
+              response.json().then(successCb);
+            }
+          });
+      };
+    }
+  }, 200)
+</script>

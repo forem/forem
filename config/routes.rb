@@ -220,6 +220,7 @@ Rails.application.routes.draw do
 
   get "/:timeframe" => "stories#index", constraints: { timeframe: /latest/}
 
+  #Lagacy comment format (might still be floating around app, and external links)
   get "/:username/:slug/comments/new/:parent_id_code" => "comments#new"
   get "/:username/:slug/comments/new" => "comments#new"
   get "/:username/:slug/comments" => "comments#index"
@@ -227,11 +228,15 @@ Rails.application.routes.draw do
   get "/:username/:slug/comments/:id_code/edit" => "comments#edit"
   get "/:username/:slug/comments/:id_code/delete_confirm" => "comments#delete_confirm"
 
+  #Proper link format
   get "/:username/comment/:id_code" => "comments#index"
   get "/:username/comment/:id_code/edit" => "comments#edit"
   get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
+  get "/:username/comment/:id_code/mod" => "moderations#comment"
+
 
   get "/:username/:slug/:view" => "stories#show", constraints: { view: /moderate/}
+  get "/:username/:slug/mod" => "moderations#article"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
   get "/:username/:view" => "stories#index", constraints: { view: /comments|moderate|admin/}
