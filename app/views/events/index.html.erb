@@ -33,8 +33,6 @@
     <p>DEV Events is a series of ongoing talks and workshops designed to cover important topics to help community members level up. Because we have a global community we will be hosting events at varying times so nobody is restricted by time zone. Additionally, <strong>some workshops are repeated multiple times</strong> to further account for this.</p>
     <p>We have many more planned if you do not see a topic that interests you. Email <a href="mailto:members@dev.to">members@dev.to</a> to request a topic. And if you're interested in speaking, please <a href="https://dev.to/jess/would-you-like-to-give-a-dev-talkworkshop--31c6">apply to our CFP</a>.</p>
 
-    <p><em>Please note: Talks and workshops require a workshop pass, unless otherwise indicated.  You can receive a pass by joining as a Level 3 Sustaining Member ($25 / month) at the <a href="/membership">membership page</a>. If you require financial assistance, please apply for a <a href="/p/scholarships">scholarship</a>.</em></p>
-
     <% @events.each do |event|%>
       <%= render 'event', event: event %>
     <% end %>
