@@ -21,6 +21,7 @@ module ApplicationHelper
       controller_name == "users" ||
       controller_name == "pages" ||
       controller_name == "dashboards"||
+      controller_name == "moderations"||
       controller_name == "stories" ||
       controller_name == "comments" ||
       controller_name == "notifications" ||
