@@ -1,0 +1,48 @@
+
+<style>
+  form.upload-form{
+    background:#fdf9f3;
+    max-width: 590px;
+    margin:20px auto;
+    padding: 40px 10px;
+    border: 2px solid #4e57ef;
+    box-shadow: 4px 5px 0px #4e57ef;
+  }
+</style>
+<center style="margin-top:200px">
+  <%= stylesheet_link_tag 's3_direct_upload', media: 'all' %>
+  <h1>🎥 Upload Video File 🙌</h1>
+  <%= s3_uploader_form callback_url: "/videos",
+                      callback_method: "POST",
+                      callback_param: "article[video]",
+                      key: "video-upload__#{SecureRandom.hex}",
+                      key_starts_with: "video-upload__",
+                      acl: "public-read",
+                      max_file_size: 500.megabytes,
+                      id: "s3-uploader",
+                      class: "upload-form",
+                      data: {:key => :val} do %>
+    <%= file_field_tag :file %>
+    <script id="template-upload" type="text/x-tmpl">
+    <div id="file-{%=o.unique_id%}" class="upload">
+      {%=o.name%}
+      <div class="progress"><div class="bar" style="width: 0%"></div></div>
+      <br/><br/><br/>
+    </div>
+    </script>
+  <% end %>
+  <div style="margin:50px auto;max-width:80%;font-size:0.86em;">
+    <p>
+      Video is beta. Max 500mb, email <a href="mailto:ben@dev.to">ben@dev.to</a> if you have any problems.
+    </p>
+  </div>
+</center>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<%= javascript_include_tag 's3_direct_upload' %>
+<script>
+  setTimeout(function(){
+    $("#s3-uploader").S3Uploader({
+      additional_data: {authenticity_token:"<%= form_authenticity_token %>"}
+    })
+  }, 1000)
+</script>

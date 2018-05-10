@@ -14,6 +14,8 @@
   "features",
   "privacy",
   "terms",
+  "videos",
+  "video_states",
   "latest",
   "contact",
   "merch",

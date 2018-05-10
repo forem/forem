@@ -57,6 +57,11 @@
         <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
       </div>
     <% end %>
+    <% if current_user.has_role?(:video_permission) %>
+      <a class="cta" style="display:block;text-align:center;font-size:1.8em;border-radius:3px;margin:20px auto;padding: 10px 20px; max-width: 400px;background:#4e57ef;color:white" href="/videos/new" data-no-instant>
+        Upload a Video (beta ❤️)
+      </a>
+    <% end %>
     <% @articles.each do |article| %>
       <div class="single-article">
         <a href="<%= article.current_state_path %>">

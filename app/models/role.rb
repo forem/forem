@@ -25,6 +25,7 @@ class Role < ApplicationRecord
                 level_2_member
                 level_1_member
                 workshop_pass
+                video_permission
               ),
             }
   scopify
