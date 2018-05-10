@@ -1,64 +1,37 @@
 <% title "Edit Article - DEV" %>
 
-  <% if params[:beta_form] %>
-    <%= render 'react_form' %>
-  <% else %>
-    <% if @article.body_html && @article.body_html.size > 10 %>
-      <%= render 'inline_form' %>
-    <% else %>
-      <%= render 'articles/markdown_form' %>
-    <% end %>
-  <% end %>
-
-<% if @user.has_role?(:super_admin) %>
-  <center>
-    <%= stylesheet_link_tag 's3_direct_upload', media: 'all' %>
+<% if @article.video.present? %>
+  <div style="text-align:center;padding-top:100px;margin:auto;max-width:880px">
     <% if @article.video_state == "PROGRESSING" %>
-      <h2>Video Transcoding In Progress</h2>
-      <img src="https://media.giphy.com/media/xf20D8HzvTQzu/giphy.gif" />
-      <br/><br/><br/><br/>
+        <h1 style="color:#062144">⏳ Video Transcoding In Progress ⏳</h1>
+        <img src="https://media.giphy.com/media/xf20D8HzvTQzu/giphy.gif" style="border-radius:12px" />
+        <div style="max-width:376px;margin:18px auto 0px;font-size:0.8em;">
+          <p>
+            You'll get an email when it's finished. Contact <a href="mailto:ben@dev.to">ben@dev.to</a> if the email never comes, or if anything else is broken. 😱
+          </p>
+          <p>
+            This is an unpublished article with a video. Publish it as usual when the video is done processing.
+          </p>
+        </div>
     <% elsif @article.video_state == "COMPLETED" %>
       <h2>Video uploaded - <%= @article.video_code %></h2>
       <%= render "articles/video_player", meta_tags: false, article: @article  %>
-      <h2>Thumbnail:</h2>
-      <img style="max-width:100%" src="<%= cloudinary(@article.video_thumbnail_url, 880) %>" />
-      <h2>Change thumbnail:</h2>
+      <h2>Change preview image:</h2>
       <%= form_for(@article) do |f| %>
         <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
         <%= f.submit %>
       <% end %>
       <br/>Video is in beta ❤️<br/><br/><br/>
-    <% else %>
-      <h2>Upload Video 📹</h2>
-      <%= s3_uploader_form callback_url: "/articles/#{@article.id}",
-                          callback_method: "PUT",
-                          callback_param: "article[video]",
-                          key: "video-upload__#{SecureRandom.hex}",
-                          key_starts_with: "video-upload__",
-                          acl: "public-read",
-                          max_file_size: 500.megabytes,
-                          id: "s3-uploader",
-                          class: "upload-form",
-                          data: {:key => :val} do %>
-        <%= file_field_tag :file %>
-        <script id="template-upload" type="text/x-tmpl">
-        <div id="file-{%=o.unique_id%}" class="upload">
-          {%=o.name%}
-          <div class="progress"><div class="bar" style="width: 0%"></div></div>
-          <br/><br/><br/>
-        </div>
-        </script>
-      <% end %>
-    </center>
-    <br/><br/><br/>
+    <% end %>
+  </div>
+<% end %>
+
+<% if params[:beta_form] %>
+  <%= render 'react_form' %>
+<% else %>
+  <% if @article.body_html && @article.body_html.size > 10 %>
+    <%= render 'inline_form' %>
+  <% else %>
+    <%= render 'articles/markdown_form' %>
   <% end %>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <%= javascript_include_tag 's3_direct_upload' %>
-  <script>
-    setTimeout(function(){
-      $("#s3-uploader").S3Uploader({
-        additional_data: {authenticity_token:"<%= form_authenticity_token %>"}
-      })
-    }, 1000)
-  </script>
 <% end %>

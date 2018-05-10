@@ -31,6 +31,7 @@ class Article < ApplicationRecord
   # validates :description, length: { in: 10..170, if: :published? }
   validates :body_markdown, uniqueness: { scope: :user_id }
   validate :validate_tag
+  validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
 
   before_validation :evaluate_markdown
@@ -377,6 +378,12 @@ class Article < ApplicationRecord
       if tag.length > 20
         errors.add(:tag, "\"#{tag}\" is too long (maximum is 16 characters)")
       end
+    end
+  end
+
+  def validate_video
+    if published && video_state == "PROGRESSING"
+      return errors.add(:published, "cannot be set to true if video is still processing")
     end
   end
 

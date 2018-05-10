@@ -69,6 +69,9 @@
       data-live="<%= @article.live_now %>"
       data-path="<%= @article.path %>"
     >
+    <% if @article.video_state == "PROGRESSING" %>
+      <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
+    <% end %>
     <section itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
       <meta itemprop="url" content="https://dev.to<%=@article.path%>">
       <meta itemprop="image" content="<%= cloud_social_image(@article) %>">

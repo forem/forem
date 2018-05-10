@@ -1,1 +1,0 @@
-location.reload();
