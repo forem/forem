@@ -158,7 +158,6 @@ class Article < ApplicationRecord
     boosted_dev_digest_email Boolean, default: false
   end
 
-
   def self.filter_excluded_tags(tag = nil)
     if tag == "hiring"
       tagged_with("hiring")
@@ -187,10 +186,9 @@ class Article < ApplicationRecord
 
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
-  
+
   def self.active_eli5(time_ago)
-    stories = where(published:true).
-      tagged_with("explainlikeimfive")
+    stories = where(published: true).tagged_with("explainlikeimfive")
 
     if time_ago == "latest"
       stories = stories.order("published_at DESC").limit(3)
