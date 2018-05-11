@@ -25,6 +25,7 @@
   "rlyslack",
   "rlyweb",
   "rly",
+  "social_previews",
   "code-of-conduct",
   "report-abuse",
   "infiniteloop",

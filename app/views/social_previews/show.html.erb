@@ -1,0 +1,96 @@
+<% accent_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
+<% color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(1.4) %>
+<% dark_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.7) %>
+<style>
+  body{
+    background: white;
+    margin:0;
+    padding:0;
+  }
+  .preview-div-wrapper{
+    overflow: hidden;
+    position:relative;
+  }
+  .circle{
+    border-radius: 1000px;
+    background: <%= accent_color %>;
+    position: absolute;
+  }
+  .circle1{
+    height: 40vw;
+    width: 40vw;
+    right: -<%= rand(2..15) %>vw;
+    bottom: -<%= rand(2..15) %>vw;
+  }
+  .circle2{
+    height: 30vw;
+    width: 30vw;
+    left: <%= rand(2..16) %>vw;
+    bottom: 0vw;
+  }
+  .circle3{
+    height: 24vw;
+    width: 24vw;
+    left: -8vw;
+    top: -<%= rand(2..6) %>vw;
+  }
+  .preview-div{
+    background: #fff;
+    border: 0.25vw solid <%= dark_color %>;
+    box-shadow: 0.8vw 1vw 0px <%= dark_color %>;
+    width: 88vw;
+    height: 44vw;
+    margin: 2.5vw auto 5vw;
+    overflow: hidden;
+    position:relative;
+  }
+  h1{
+    color: <%= dark_color %>;
+    width: 92%;
+    margin: 2vw auto;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  }
+  .preview-user {
+    font-size: 3.5vw;
+    position: absolute;
+    background: <%= accent_color %>;
+    left: 1.5vw;
+    bottom: 1.5vw;
+    padding: 1vw 3vw;
+    padding-left: 1.2vw;
+    font-weight: 500;
+    border-radius: 100vw;
+  }
+  .preview-user img {
+    border-radius: 100vw;
+    height: 5vw;
+    width: 5vw;
+    vertical-align: -1.3vw;
+    border: 0.25vw solid <%= dark_color %>;
+  }
+  .preview-dev-logo{
+    position:absolute;
+    bottom: 2.1vw;
+    right: 2.1vw;
+    text-align:right;
+  }
+  .logo{
+    height:6vw;
+    fill: <%= dark_color %>;
+  }
+</style>
+<div class="preview-div-wrapper">
+  <div class="circle circle1"></div>
+  <div class="circle circle2"></div>
+  <div class="circle circle3"></div>
+  <div class="preview-div">
+    <h1 style="font-size:<%= 15 - (((@article.title.size**0.89)+85)/16)%>vw;"><%= @article.title %><h1>
+    <div class="preview-user">
+      <img src="<%= ProfileImage.new(@article.user).get(90) %>" />
+      <%= truncate @article.user.name, length: 25 %>・<%= @article.readable_publish_date %>
+    </div>
+    <div class="preview-dev-logo">
+      <%= inline_svg("devplain.svg", class: "logo", size: '9vw * 9vw') %>
+    </div>
+  </div>
+</div>

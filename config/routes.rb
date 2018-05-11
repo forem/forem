@@ -94,6 +94,7 @@ Rails.application.routes.draw do
   resources :additional_content_boxes, only: [:index]
   resources :videos, only: [:create, :new]
   resources :video_states, only: [:create]
+  resources :social_previews, only: [:show]
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
