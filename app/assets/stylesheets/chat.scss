@@ -1,3 +1,5 @@
+@import 'variables';
+
 // High level class
 .chat {
   display: flex;
@@ -5,10 +7,7 @@
 }
 
 .chat__channels {
-  width: 125px;
-  border: 1px solid #c9c9c9;
-  border-right: none;
-  background: #ededed;
+  width: 276px;
   height: inherit;
 }
 
@@ -27,7 +26,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid #c9c9c9;
+  border: 1px solid $outline-color;
+  box-shadow: $bold-shadow;
 }
 
 .activechatchannel__messages {
@@ -67,7 +67,7 @@
 }
 
 .activechatchannel__form {
-  border-top: 1px solid #c9c9c9;
+  border-top: 1px solid $outline-color;
   background: #ededed;
   width: 100%;
   height: 70px;
@@ -92,8 +92,7 @@
 }
 
 .chatchanneltab {
-  height: 30px;
-  width: 100%;
+  width: 95%;
   margin-bottom: 5px;
   border: none;
   border-left: 8px solid transparent;
@@ -102,16 +101,20 @@
   text-transform: uppercase;
   font-size: 14px;
   font-weight: 500;
+  padding: 10px;
+  border: 1px solid transparent;
 }
 
 .chatchanneltab--active {
   background: white;
-  border-left: 8px solid black;
+  border: 1px solid $dark-purple;
+  box-shadow: 3px 3px 0px $dark-purple;
 }
 
 .chatchanneltab--inactive {
   &:hover {
-    background: #e3e3e3;
+    border: 1px solid $outline-color;
+    box-shadow: $bold-shadow;
   }
 }
 
@@ -169,19 +172,21 @@
 
 .messagecomposer__input {
   border-radius: 3px;
-  border: 1px solid #c9c9c9;
-  font-size: 13px;
+  border: 1px solid $outline-color;
+  font-size: 14px;
   margin: 10px;
-  padding: 6px;
+  padding: 5px;
   resize: none;
   flex-grow: 1;
 }
 
 .messagecomposer__submit {
   margin: 10px 10px 10px 0;
-  border: 1px solid black;
   border-radius: 3px;
-  background: #66e2d5;
-  font-weight: 500px;
-  width: 50px;
+  background: $dark-purple;
+  font-weight: 600px;
+  font-family: $helvetica-condensed;
+  width: 80px;
+  color: white;
+  font-size: 18px;
 }

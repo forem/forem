@@ -30,6 +30,7 @@
   "report-abuse",
   "infiniteloop",
   "faq",
+  "chat",
   "one-of-us",
   "swagnets",
   "security",

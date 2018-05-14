@@ -1,6 +1,6 @@
 @import 'variables';
 .user-profile-header{
-  padding:calc(1.8vw + 15px) 0px;
+  padding:calc(1.4vw + 8px) 0px;
   font-family: $helvetica;
   position:relative;
   overflow:hidden;
@@ -11,6 +11,9 @@
   border-radius: 3px;
   @media screen and ( min-width: 950px ){
     max-width:98%;
+  }
+  @media screen and ( min-width: 1240px ){
+    padding: 25px 0px 11px;
   }
   &.tag-header{
     // padding-left:calc(2vw + 12px);
