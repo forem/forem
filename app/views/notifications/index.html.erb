@@ -19,7 +19,7 @@
 
 
 
-<div class="user-profile-header tag-header">
+<div class="user-profile-header tag-header" style="background: transparent;padding:0px;margin:22px auto 0px">
   <div class="tag-or-query-header-container">
     <% if user_signed_in? %>
       <h1 class="notifications-header"><img src="<%=asset_path("bell.svg")%>" />Notifications</h1>
@@ -27,7 +27,7 @@
   </div>
 </div>
 
-  <div class="home" id="notifications-container">
+  <div class="home" id="notifications-container" style="margin-top:0px;">
     <div class="side-bar"></div>
       <div class="articles-list" id="articles-list">
         <% if user_signed_in? %>
