@@ -39,7 +39,7 @@
         <% if (Flipflop.sendbird?) %>
           <div id="sb_chat" class="live-chat" data-sendbird-app-id="<%= ENV["SENDBIRD_APP_ID"] %>" data-sendbird-livechat-url="<%= ENV["SENDBIRD_LIVECHAT_URL"] %>"></div>
         <% else %>
-          <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>"></div>
+          <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= {showChannelsList:false}.to_json %>">
         <% end %>
       </div>
     </div>

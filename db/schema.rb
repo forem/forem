@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 20180508200948) do
   end
 
   create_table "chat_channels", force: :cascade do |t|
+    t.string "channel_name"
     t.string "channel_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

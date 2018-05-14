@@ -16,13 +16,20 @@ class MessagesController < ApplicationController
       end
 
       if success
-        render json: ["Message created"], status: 201
+        render json: { status: "success", message: "Message created" }, status: 201
       else
-        result = "Message created but could not trigger Pusher"
-        render json: [result, @message.to_json], status: 201
+        error_message = "Message created but could not trigger Pusher"
+        render json: { status: "error", message: error_message }, status: 201
       end
     else
-      render json: e.message, status: 401
+      render json: {
+        status: "error",
+        message: {
+          chat_channel_id: @message.chat_channel_id,
+          message: @message.errors.full_messages,
+          type: "error",
+        },
+      }, status: 401
     end
   end
 
@@ -31,14 +38,30 @@ class MessagesController < ApplicationController
   def create_pusher_payload(new_message)
     {
       user_id: new_message.user.id,
+      chat_channel_id: new_message.chat_channel.id,
       username: new_message.user.username,
-      message: new_message.message_markdown,
+      message: new_message.message_html,
       timestamp: new_message.timestamp,
       color: new_message.user.bg_color_hex,
     }.to_json
   end
 
   def message_params
-    params.require(:message).permit(:message_html, :user_id, :chat_channel_id)
+    params.require(:message).permit(:message_markdown, :user_id, :chat_channel_id)
+  end
+
+  def user_not_authorized
+    respond_to do |format|
+      format.json do
+        render json: {
+          status: "error",
+          message: {
+            chat_channel_id: message_params[:chat_channel_id],
+            message: "You can not do that because you are banned",
+            type: "error",
+          },
+        }, status: 401
+      end
+    end
   end
 end

@@ -1,0 +1,23 @@
+import { h } from 'preact';
+import PropTypes from 'prop-types';
+
+const ErrorMessage = ({ message }) => {
+  const errorStyle = { color: 'darksalmon', 'font-size': '13px' };
+  return (
+    <div className="chatmessage">
+      <span className="chatmessage__message" style={errorStyle}>
+        {'Sorry '}
+        <span className="chatmessage__currentuser">
+          {`@${window.currentUser.username}`}
+        </span>
+        {` ${message}`}
+      </span>
+    </div>
+  );
+};
+
+ErrorMessage.propTypes = {
+  message: PropTypes.string.isRequired,
+};
+
+export default ErrorMessage;

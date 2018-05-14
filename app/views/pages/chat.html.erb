@@ -1,0 +1,24 @@
+<% if user_signed_in? %>
+  <%= javascript_pack_tag 'chat', defer: true %>
+<% end %>
+<% title "DEV Chat" %>
+<link rel="canonical" href="https://dev.to/chat"/>
+<meta name="description" content="DEV Chat">
+
+<style>
+  .inner-content {
+    height: 500px;
+    margin: 0px 50px;
+    margin-top: 150px;
+    margin-bottom: 150px;
+    max-width: 1250px;
+  }
+
+  .live-chat {
+    height: 500px;
+  }
+</style>
+
+<div class="inner-content">
+  <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= {showChannelsList:true}.to_json %>">
+</div>

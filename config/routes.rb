@@ -148,6 +148,7 @@ Rails.application.routes.draw do
   get "/infiniteloop" => "pages#infinite_loop"
   get "/faq" => "pages#faq"
   get "/live" => "pages#live"
+  get "/chat" => "pages#chat"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
