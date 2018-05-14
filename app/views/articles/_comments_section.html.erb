@@ -1,19 +1,24 @@
 <% cache("user-profile-comments-#{@user.updated_at}-#{@user.id}-#{@comments.first&.id}-#{@comments.size}", :expires_in => 1.day) do %>
+  <style>
+    .index-comments header {
+      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>
+    }
+  </style>
   <div class="index-comments">
     <% if @comments.any? %>
       <% if params[:view] == "comments" %>
       <div class="breadcrumb"><a href="<%= @user.path %>">View All Activity</a></div>
-      <h2>
+      <header>
         <% if @user.comments_count > 250 %>
-          <img class="emoji-img" src="<%= asset_path("comments-bubble.svg") %>"/> Last 250 Comments
+          Last 250 Comments
         <% else %>
-          <img class="emoji-img" src="<%= asset_path("comments-bubble.svg") %>"/> All <%= @user.comments_count %> Comments
+          All <%= @user.comments_count %> Comments
         <% end %>
-      </h2>
+      </header>
       <% else %>
-        <h2>
-          <img class="emoji-img" src="<%= asset_path("comments-bubble.svg") %>"/> Recent Comments
-        </h2>
+        <header>
+          Recent Comments
+        </header>
       <% end %>
     <% end %>
     <% @comments.each do |comment| %>

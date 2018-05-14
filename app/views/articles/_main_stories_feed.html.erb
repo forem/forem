@@ -4,7 +4,7 @@
   <% num_showing += 1 %>
   <% break if (num_showing == 3 && user_signed_in?) && @home_page %>
   <% if !user_signed_in? && i == 4 %>
-    <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta" style="background-color: #FBFD8B">
+    <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
         <div class="cta-container" id="cta-content">
           <h2>
             <% if @tag.blank? %>

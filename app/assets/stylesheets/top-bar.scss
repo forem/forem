@@ -16,9 +16,10 @@
   -webkit-backface-visibility: hidden;
   z-index:1000;
   font-size:17px;
-  height:40px;
+  height:48px;
   background:$tan;
   position:fixed;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.13);
   nav{
     max-width:99%;
@@ -32,7 +33,7 @@
     }
     .nav-link{
       position:absolute;
-      top:13px;
+      top:17px;
       width:120px;
       height:30px;
       border-radius:2px;
@@ -45,7 +46,7 @@
       width:111px;
       padding: 3px 0px;
       height: auto;
-      top:7px;
+      top:12px;
       text-align:center;
       font-weight:bold;
       border-radius: 3px;
@@ -61,7 +62,7 @@
     }
     .notifications-icon{
       right:50px;
-      top:0px;
+      top:5px;
       width:22px;
       height:41px;
       display:block;
@@ -76,7 +77,7 @@
       }
       .notifications-number{
         position:absolute;
-        top:3px;
+        top:2px;
         left:11px;
         background:$red;
         padding:2px 7px;
@@ -100,7 +101,7 @@
     }
     .nav-search-form{
       position:absolute;
-      top:5px;
+      top:7px;
       left:calc(50px + 5vw);
       width: calc(55vw - 30px);
       @media screen and ( min-width: 350px ){
@@ -123,7 +124,7 @@
         width: calc(100% - 12px);
         border-radius:3px;
         border:0px;
-        padding:6px;
+        padding:8px;
         font-size:0.9em;
         background:#e8e7e7;
         -webkit-appearance: none;
@@ -133,7 +134,7 @@
       height: 33px;
       width: 33px;
       background: $dark-gray;
-      margin-top:-5px;
+      margin-top:-6px;
       border-radius: 100%;
       border: 0;
       overflow: hidden;
@@ -171,7 +172,7 @@
       all: unset;
       position:absolute;
       right:0px;
-      top:3px;
+      top:8px;
       padding-top:6px;
       padding-bottom:6px;
       padding-left:28px;
@@ -197,12 +198,12 @@
       right:-3px;
       padding:30px 10px;
       text-align:left;
-      background:rgb(255, 255, 255);
+      background: $tan;
       border: 1px solid rgb(219,222,225);
       border-top:0px;
       display:none;
       width:calc(100vw - 20px);
-      top: 37px;
+      top: 45px;
       @media screen and ( min-width: 380px ){
         position: fixed;
         width: 230px;
@@ -233,7 +234,7 @@
           font-weight:500;
         }
         &:hover{
-          background:$light-purple;
+          background:darken($tan,2%);
         }
       }
       a{
@@ -249,9 +250,10 @@
   .logo{
     width:33px;
     height:21px;
-    padding:5px 8px 4px 10px;
-    margin-top:5px;
+    padding:7px 8px 6px 10px;
+    margin-top:7px;
     fill:white;
+    border-radius: 3px;
     // border-right:1px solid #a5a6a8;
     // border-left:1px solid #a5a6a8;
     background:$black;

@@ -75,16 +75,15 @@ header{
   width:880px;
   max-width:100%;
   background:white;
-  box-shadow: $shadow;
-  margin:60px auto 20px;
+  margin:68px auto 20px;
   text-align: left;
   border: 1px solid darken($light-medium-gray, 2%);
-  box-shadow: 3px 4px 0px darken($light-medium-gray, 2%);
+  box-shadow: $bold-shadow;
   @media screen and ( min-width: 950px ){
     border-radius: 3px;
   }
   @media screen and ( min-width: 1250px ){
-    margin-top:80px;
+    margin-top:72px;
   }
   &.article{
     position:relative;

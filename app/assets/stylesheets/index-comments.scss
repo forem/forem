@@ -5,8 +5,8 @@
   padding-bottom:calc(0.6vw + 5px);
   background:white;
   border-radius:3px;
-  border:1px solid #e6e6e5;
-  box-shadow: $shadow;
+  border:1px solid $outline-color;
+  box-shadow: $bold-shadow;
   margin:auto;
   margin-top:8px;
   width:94%;
@@ -27,19 +27,13 @@
       font-size:0.85em;
     }
   }
-  h2{
-    .emoji-img{
-      height: 21px;
-      width: 22px;
-    }
-    padding:calc(0.5vw + 3px) 0px;
-    padding-left:13px;
+  header{
+    padding:calc(1vw + 3px) 13px 0.5vw;
     margin:0;
-    font-size:21px;
-    font-family: $helvetica-condensed;
-    font-stretch:condensed;
+    font-size:17px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     @media screen and ( min-width: 430px ){
-      font-size:29px;
+      font-size:19px;
     }
   }
   a{

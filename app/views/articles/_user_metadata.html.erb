@@ -1,0 +1,107 @@
+<style>
+  .user-metadata-details-inner a {
+    color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.95) %>
+  }
+</style>
+<div class="user-metadata-details">
+  <div class="user-metadata-details-inner">
+    <% if @organization %>
+      <% if @organization.location.present? %>
+        <div class="row">
+          <div class="key">  
+            headquarters
+          </div>
+          <div class="value">
+            <%= @organization.location %>
+          </div>                              
+        </div>
+      <% end %>
+      <% if @organization.company_size.present? %>
+        <div class="row">
+          <div class="key">  
+            employees
+          </div>
+          <div class="value">
+            <%= @organization.company_size %>
+          </div>                              
+        </div>
+      <% end %>
+      <% if @organization.email.present? %>
+        <div class="row">
+          <div class="key">
+            support_email
+          </div>
+          <div class="value">
+            <a href="mailto:<%= @organization.email %>"><%= @organization.email %></a>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <% if @user.email_public %>
+        <div class="row">
+          <div class="key">
+            email
+          </div>
+          <div class="value">
+            <a href="mailto:<%= @user.email %>"><%= @user.email %></a>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.employer_name.present? %>
+        <div class="row">
+          <div class="key">
+            work
+          </div>
+          <div class="value">
+            <% if @user.employment_title.present? %>
+              <span><%= @user.employment_title %> at </span>
+            <% end %>
+            <% if @user.employer_url.present? %>
+              <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+            <% else %>
+              <%= @user.employer_name %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.location.present? %>
+        <div class="row">
+          <div class="key">
+            location
+          </div>
+          <div class="value">
+            <%= @user.location %>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
+        <div class="row">
+          <div class="key">
+            work_status
+          </div>
+          <div class="value">
+            I'm looking for work!
+          </div>
+        </div>
+      <% end %>
+      <% if @user.education.present? %>
+        <div class="row">
+          <div class="key">
+            education
+          </div>
+          <div class="value">
+            <%= @user.education %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+    <div class="row">
+      <div class="key">
+        joined
+      </div>
+      <div class="value">
+        <%= @user.created_at.strftime("%b %e, %Y") %>
+      </div>
+    </div>
+  </div>
+</div>

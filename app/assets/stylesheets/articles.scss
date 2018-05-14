@@ -11,10 +11,10 @@
   max-width:1250px;
   text-align: left;
   @media screen and ( min-width: 950px ){
-    margin-top:22px;
+    margin-top:26px;
   }
   &.sub-home{
-    margin-top:39px;
+    margin-top:10px;
     .side-bar{
       @media screen and ( min-width: 950px ){
         margin-top:12px;
@@ -25,9 +25,9 @@
     padding:40px 0px;
     font-size:1.2em;
     background: white;
-    box-shadow: $shadow;
+    box-shadow: $bold-shadow;
     border-radius:3px;
-    border:1px solid #e6e6e5;
+    border:1px solid $outline-color;;
     width:94%;
     margin:auto;
     margin-top:12px;
@@ -67,7 +67,7 @@
       float:left;
     }
     .on-page-nav-controls{
-      height:55px;
+      height:45px;
       position:relative;
       opacity:0.85;
       .on-page-nav-butt{
@@ -127,9 +127,12 @@
         display: inline-block;
         padding: 2px 8px;
         font-size:0.95em;
+        border-radius: 2px;
+        border: 1px solid transparent;
         &.selected{
           background: $purple;
-          box-shadow: 3px 4px 0px darken($purple, 6%);
+          border: 1px solid $dark-purple;
+          box-shadow: 3px 4px 0px $dark-purple;
         }
         &:hover{
           opacity:1;
@@ -158,16 +161,14 @@
       text-align:left;
       background:$white;
       transition: opacity .35s ease-in;
-      box-shadow: $shadow;
+      border: 1px solid $outline-color;
+      box-shadow: $bold-shadow;
       border-radius:3px;
       width:94%;
       margin:auto;
       position:relative;
       @media screen and ( min-width: 950px ){
         width:100%;
-      }
-      &:hover{
-        background:$lightest-gray;
       }
       &.active{
         opacity:0.66;
@@ -347,7 +348,7 @@
       h3{
         margin:15px auto;
         font-size:32px;
-        font-weight:400;
+        font-weight:500;
         width:94%;
         margin-top:-14px;
         padding-top:20px;
@@ -362,7 +363,13 @@
       }
       &.big-article {
         padding:0px;
-        margin:auto;
+        margin:10px auto 0px;
+        @media screen and ( min-width: 650px ){
+          margin:15px auto 0px;
+        }
+        @media screen and ( min-width: 950px ){
+          margin:10px auto 0px;
+        }
         .picture{
           width:100%;
           margin:auto;
@@ -387,7 +394,7 @@
           border-radius:3px;
           h3{
             font-size:calc(1.7vw + 22px);
-            font-weight:400;
+            font-weight:500;
             width:calc(100% - 20px);
             margin-left:12px;
             margin-bottom:8px;
@@ -402,11 +409,6 @@
           }
           @media screen and ( min-width: 430px ){
             padding-bottom:120px;
-          }
-        }
-        &:hover{
-          .content-wrapper{
-            background:$light-gray !important;
           }
         }
       }
@@ -603,7 +605,7 @@
   @media screen and ( max-width: 949px ){
     .sidebar-wrapper{
       position:fixed;
-      top:40px;
+      top:48px;
       left:0;
       bottom:0;
       z-index:100;
@@ -696,7 +698,8 @@
         margin-bottom:14px;
         border-radius:3px;
         width: calc(100% - 3px);
-        box-shadow: $shadow;
+        border: 1px solid $outline-color;
+        box-shadow: $bold-shadow;
         // background:red;
         .sidebar-profile-snapshot-inner{
           display:inline-block;
@@ -751,10 +754,8 @@
         }
         .sidebar-nav-header{
           padding:15px 10px;
-          font-size: 1.3em;
-          font-family: $helvetica-condensed;
-          font-stretch:condensed;
-          font-weight: 800;
+          font-size: 0.9em;
+          font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
           &.sidebar-nav-header-middle{
             padding-top:10px;
           }
@@ -876,19 +877,19 @@
       display:block;
       color: $black;
       border-radius:3px;
-      box-shadow: $shadow;
+      border: 1px solid $outline-color;
+      box-shadow: $bold-shadow;
       &:hover{
         opacity:1;
       }
       &.signin-cta-widget{
-        background: $yellow;
+        background: lighten($purple, 3%);
+        border: 1px solid  darken($bold-blue, 5%);
+        box-shadow: 5px 6px 0px darken($bold-blue, 15%);
       }
       &.sponsorship-widget{
         display: none;
         text-align:center;
-        header{
-          font-size:1.1em;
-        }
       }
       &.showing{
         display: block;
@@ -943,10 +944,8 @@
         width:100%;
         margin:auto;
         font-weight:800;
-        font-size: 1.2em;
-        padding-bottom:10px;
-        font-family: $helvetica-condensed;
-        font-stretch:condensed;
+        font-size: 0.9em;
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         a{
           color: $black;
           &:hover{
@@ -954,10 +953,9 @@
           }
         }
         .emoji{
-          margin-right:3px;
-          margin-left:5px;
+          margin-right:6px;
           display:inline-block;
-          vertical-align:-2px;
+          vertical-align:-4px;
           img{
             width:18px;
             border:0px;
@@ -967,6 +965,9 @@
       }
       .widget-body{
         margin-top:9px;
+        font-size:0.9em;
+        line-height: 1.2em;
+        padding-bottom:5px;
         &.body-scrollable{
           height: calc(100vh - 300px);
           max-height: 500px;
@@ -1050,7 +1051,7 @@
         .widget-footer{
           color:$medium-gray;
           font-size:0.9em;
-          padding:5px 0px;
+          padding:5px 0px 0px;
           img{
             height: 15px;
             width: 15px;
@@ -1144,18 +1145,19 @@
       }
       .cta-button{
         margin-top:8px;
-        padding:17px 5px 8px;
-        margin-left: 3px;
+        padding:8px 0px;
         font-size:0.93em;
         color: $sky-blue;
         background: white;
         display:block;
         width:92%;
-        border-top: 3px solid $light-gray;
+        text-align: left;
         &.login-cta-button{
-          padding:10px 5px;
           border-top:0px;
           color: $black;
+          font-size:1.2em;
+          width:100%;
+          background: lighten($purple, 3%);
         }
         &:hover{
           text-decoration: underline;
@@ -1175,7 +1177,7 @@
         // background:red;
       }
       .discuss-list-comment-count{
-        font-size: 0.7em;
+        font-size: 0.8em;
         color: $medium-gray;
         margin-top: 2px;
         img {
@@ -1186,7 +1188,7 @@
         &.discuss-list-comment-count-brand-new {
           background:$yellow;
           color:$black;
-          font-size:1.1em;
+          font-size:1.2em;
         }
       }
       &::before {
@@ -1246,6 +1248,9 @@
 }
 
 .feed-cta {
+  background: lighten($purple, 3%) !important;
+  border: 1px solid  darken($bold-blue, 5%) !important;
+  box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
   .cta-container {
     padding: calc(1vw + 7px) 9px;
     margin-bottom: 15px;
@@ -1254,20 +1259,22 @@
     text-align: center;
     margin-right: 9px;
     padding-right: 9px;
-    background-color: rgb(251, 253, 139);
-    font-size: 1.2em;
+    font-size: 1.3em;
   }
 
   .button-container {
+    margin-top:40px;
     text-align: center;
     margin-right: 9px;
     padding-right: 9px;
   }
   .cta-button {
     text-align: center;
-    margin: 10px;
-    width:100px;
-    padding: 3px 10px;
+    margin: 5px;
+    width:95px;
+    padding: 3px 8px;
+    font-size:1.15em;
+    display: inline-block;
     height: auto;
     text-align:center;
     font-weight:bold;
@@ -1279,7 +1286,7 @@
 
 .narrow-nav-menu{
   position:absolute;
-  top:40px;
+  top:48px;
   left: 0;
   right:0;
   background: white;

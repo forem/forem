@@ -72,11 +72,19 @@
     <%= f.url_field :url, maxlength: 64, placeholder: "http://yoursite.com" %>
   </div>
   <div class="field">
+    <%= f.label :tag_line %>
+    <%= f.text_field :tag_line, maxlegth: 60 %>
+  </div>
+  <div class="field">
+    <%= f.label :summary %>
+    <%= f.text_area :summary, maxlegth: 250 %>
+  </div>
+  <div class="field">
     <%= f.label :location %>
     <%= f.text_field :location, maxlength: 64 %>
   </div>  
   <div class="field">
-    <%= f.label :email %>
+    <%= f.label :email, "Support Email" %>
     <%= f.text_field :email, maxlength: 64 %>
   </div> 
   <div class="field">
@@ -91,14 +99,6 @@
     <%= f.label :tech_stack, "Our Stack" %>
     <%= f.text_area :tech_stack, maxlength: 200 %>
   </div>      
-  <div class="field">
-    <%= f.label :tag_line %>
-    <%= f.text_area :tag_line, maxlegth: 60 %>
-  </div>
-  <div class="field">
-    <%= f.label :summary %>
-    <%= f.text_area :summary, maxlegth: 250 %>
-  </div>
   <div class="field">
     <label></label>
     <%= f.submit "SUBMIT", class: "cta" %>

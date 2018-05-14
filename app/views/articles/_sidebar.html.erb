@@ -3,76 +3,10 @@
   <div class="side-bar">
     <% if @user && @user.class.name == "User" %>
       <div class="user-sidebar">
-        <% if @user.employment_title.present? || @user.location.present? || @user.education.present? || @user.looking_for_work_publicly.present? || @user.email_public.present? %>
-        <div class="widget">
-          <header>
-            &lt;ABOUT&gt;
-          </header>
-          <div class="widget-body">
-            <% if @user.email_public %>
-              <div class="row">
-                <div class="key">
-                  📭
-                </div>
-                <div class="value">
-                  <a href="mailto:<%= @user.email %>"><%= @user.email %></a>
-                </div>
-              </div>
-            <% end %>
-            <% if @user.employer_name.present? %>
-              <div class="row">
-                <div class="key">
-                  💼
-                </div>
-                <div class="value">
-                  <% if @user.employment_title.present? %>
-                    <span><%= @user.employment_title %> at </span>
-                  <% end %>
-                  <% if @user.employer_url.present? %>
-                    <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-                  <% else %>
-                    <%= @user.employer_name %>
-                  <% end %>
-                </div>
-              </div>
-            <% end %>
-            <% if @user.location.present? %>
-              <div class="row">
-                <div class="key">
-                  📍
-                </div>
-                <div class="value">
-                  <%= @user.location %>
-                </div>
-              </div>
-            <% end %>
-            <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
-              <div class="row">
-                <div class="key">
-                  🔎
-                </div>
-                <div class="value">
-                  I'm looking for work!
-                </div>
-              </div>
-            <% end %>
-            <% if @user.education.present? %>
-              <div class="row">
-                <div class="key">
-                  🏫
-                </div>
-                <div class="value">
-                  <%= @user.education %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </div>
-        <% end %>
         <% if @user.mostly_work_with.present? %>
           <div class="widget">
             <header>
-              &lt;MY TOOLBOX&gt;
+              skills/languages
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.mostly_work_with %>
@@ -82,7 +16,7 @@
         <% if @user.currently_learning.present? %>
           <div class="widget">
             <header>
-              &lt;LEARNING&gt;
+              learning/trying
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.currently_learning %>
@@ -92,7 +26,7 @@
         <% if @user.currently_hacking_on.present? %>
           <div class="widget">
             <header>
-              &lt;HACKING ON&gt;
+              projects and hacks
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.currently_hacking_on %>
@@ -102,7 +36,7 @@
         <% if @user.available_for.present? %>
           <div class="widget">
             <header>
-              &lt;AVAILABLE FOR&gt;
+              available for
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.available_for %>
@@ -111,47 +45,6 @@
         <% end %>
       </div>
     <% elsif @user && @user.class.name == "Organization" %>
-        <% if @organization.location.present? || @organization.company_size.present? || @organization.email.present? %>
-          <div class="user-sidebar">
-            <div class="widget">
-              <header>
-                &lt;ABOUT&gt;
-              </header>
-              <div class="widget-body">
-                <% if @organization.location.present? %>
-                  <div class="row">
-                    <div class="key">  
-                      📍  
-                    </div>
-                    <div class="value">
-                      <%= @organization.location %>
-                    </div>                              
-                  </div>
-                <% end %>
-                <% if @organization.company_size.present? %>
-                  <div class="row">
-                    <div class="key">  
-                      👥  
-                    </div>
-                    <div class="value">
-                      <%= @organization.company_size %>
-                    </div>                              
-                  </div>
-                <% end %>
-                <% if @organization.email.present? %>
-                  <div class="row">
-                    <div class="key">
-                      📭
-                    </div>
-                    <div class="value">
-                      <a href="mailto:<%= @organization.email %>"><%= @organization.email %></a>
-                    </div>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-          </div> 
-        <% end %>
         <% if @organization.story.present? %>
           <div class="widget">
             <header>
@@ -195,7 +88,7 @@
       <% if @tag_model && @tag_model.short_summary.present? %>
         <div class="widget">
           <header>
-            <#<%= @tag.upcase %> 👋>
+            #<%= @tag %> 👋
           </header>
           <div class="widget-body">
             <%= @tag_model.short_summary.html_safe %>
@@ -205,21 +98,20 @@
       <% if @tag_model && @tag_model.rules_html.present? %>
         <div class="widget">
           <header>
-            &lt;SUBMISSION GUIDELINES&gt;
+            submission guidelines
           </header>
           <div class="widget-body">
             <%= @tag_model.rules_html.html_safe %>
+            <a class="cta cta-button" href="/new/<%= @tag %>" >
+              WRITE A POST
+            </a>
           </div>
-          <p><center><a class="cta cta-button" href="/new/<%= @tag %>"
-            style="background:<%= @tag_model.bg_color_hex %>;color:<%= @tag_model.text_color_hex %>;">
-            WRITE A POST
-          </a></center></p>
         </div>
       <% end %>
       <% if @tag_model && @tag_model.wiki_body_html.present? %>
         <div class="widget">
           <header>
-            &lt;ABOUT <%= @tag.upcase %>&gt;
+            about #<%= @tag %>
           </header>
           <div class="widget-body">
             <%= @tag_model.wiki_body_html.html_safe %>
@@ -229,9 +121,10 @@
       <% if @tag == "javascript" %>
         <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
           <header>
-            &lt;<a href="/sponsors" style="color:black">COMMUNITY SPONSOR</a><span class="emoji">
+            <a href="/sponsors">community sponsors</a>
+            <span class="emoji">
               <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
-            </span>&gt;
+            </span>
           </header>
           <div class="widget-body">
             <div class="sidebar-sponsor">
@@ -285,9 +178,10 @@
         <%= render "articles/sidebar_nav" %>
         <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
           <header>
-            &lt;<a href="/sponsors" style="color:black">COMMUNITY SPONSORS</a><span class="emoji">
+            <a href="/sponsors">community sponsors</a>
+            <span class="emoji">
               <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
-            </span>&gt;
+            </span>
           </header>
           <div class="widget-body">
             <div class="sidebar-sponsor">

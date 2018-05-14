@@ -90,71 +90,76 @@
 <% if @user %>
   <style>
     .widget header{
-      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.8) %>;
+      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
     }
-    .slanty-accent{
-      background-color: <%= HexComparer.new([user_colors(@user)[:bg]]).accent %>;
-    }
+    <% if user_colors(@user)[:bg].downcase.start_with?("#fff") %>
+      .user-profile-follow-button {
+        border: 1px solid <%= user_colors(@user)[:text] %> !important;
+      }
+    <% end %>
   </style>
   <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntityOfPage">
     <meta itemprop="url" content="https://dev.to/<%=@user.username%>">
     <div class="user-profile-header-container">
-      <div class="slanty-accent"></div>
       <div class="profile-pic-wrapper">
-        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%=user_colors(@user)[:text] %>;background:<%=user_colors(@user)[:text] %>"/>
+        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%=user_colors(@user)[:bg] %>;background:<%=user_colors(@user)[:bg] %>"/>
       </div>
       <div class="profile-details">
-        <h1 style="color:<%=user_colors(@user)[:text] %>"><span itemprop="name"><%= @user.name %></span>
+        <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>"><span itemprop="name"><%= @user.name %></span>
           <span class="user-profile-follow-button-wrapper">
-            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:bg] %>;background-color:<%=user_colors(@user)[:text] %>" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
+            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>
         </h1>
-        <p style="color:<%= user_colors(@user)[:text] %>" itemprop="description"><%= @user.summary %></p>
+        <p class="profile-description" itemprop="description">
+          <%= @user.summary.present? ? @user.summary : ["undefined is not a bio","404 bio not found"].sample  %>
+        </p>
+        <style>
+          .profile-details .social .icon-img path{
+            fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
+          }
+        </style>
+        <p class="social">
+          <% if @user.twitter_username.present? %>
+            <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
+              <%= inline_svg("twitter-logo.svg", class:"icon-img") %>
+            </a>
+          <% end %>
+          <% if @user.github_username.present? %>
+            <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
+              <%= inline_svg("github-logo.svg", class:"icon-img") %>
+            </a>
+          <% end %>
+          <% if @user.website_url.present? %>
+            <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
+              <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
+            </a>
+          <% end %>
+        </p>
       </div>
-      <p class="social <%= "all-three-present" if (@user.twitter_username.present? && @user.github_username.present? && @user.website_url.present?)%> <%= "no-description" if @user.summary.blank? %>">
-        <% if @user.twitter_username.present? %>
-          <a style="color:<%= user_colors(@user)[:text] %>" href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener"><%= icon("twitter","22") %>
-            <span class="social-anchor"><%= @user.twitter_username %></span>
-          </a>
-        <% end %>
-        <% if @user.github_username.present? %>
-          <a style="color:<%= user_colors(@user)[:text] %>" href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener"><%= icon("github","22") %>
-            <span class="social-anchor"><%= @user.github_username %></span>
-          </a>
-        <% end %>
-        <% if @user.website_url.present? %>
-          <a style="color:<%= user_colors(@user)[:text] %>" href="<%= @user.website_url %>" target="_blank" rel="noopener">
-            <%= icon("link","22") %>
-            <span class="social-anchor"><%= beautified_url(@user.website_url)%></span>
-          </a>
-        <% end %>
-      </p>
     </div>
+    <%= render "articles/user_metadata" %>
   </div>
 <% elsif @tag %>
   <style>
-    .widget header{
-      color: <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.8) %>
-    }
-    .slanty-accent{
-      background-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"]).accent %>
+    .tag-header{
+      border: 2px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
+      box-shadow: 5px 6px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
     }
   </style>  
-  <div class="user-profile-header tag-header" style="background-color:<%=@tag_model.bg_color_hex %>;color:<%=@tag_model.text_color_hex %>;">
-    <div class="slanty-accent"></div>
+  <div class="user-profile-header tag-header">
     <div class="tag-or-query-header-container">
-      <% if @tag_model && @tag_model.pretty_name.present? %>
-        <h1> <%= @tag_model.pretty_name %> </h1>
-      <% else %>
-        <h1> <%= @tag %> </h1>
-      <% end %>
-      <% if @tag_model %>
-        <div class="tag-action-buttons">
-          <span class="user-profile-follow-button-wrapper">
-            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%=@tag_model.bg_color_hex %>;background-color:<%=@tag_model.text_color_hex %>" data-info='{"id":<%= @tag_model.id%>,"className":"Tag"}'>&nbsp;</button>
-          </span>
-        </div>
-      <% end %>
+      <h1>
+        <% if @tag_model && @tag_model.pretty_name.present? %>
+          <%= @tag_model.pretty_name %>
+        <% else %>
+          <%= @tag %> 
+        <% end %>
+        <% if @tag_model %>
+            <span class="user-profile-follow-button-wrapper">
+              <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%=@tag_model.text_color_hex %>;background-color:<%=@tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id%>,"className":"Tag"}'>&nbsp;</button>
+            </span>
+        <% end %>
+      </h1>
     </div>
   </div>
 <% elsif @query %>
@@ -202,13 +207,11 @@
     <% if @home_page || @tag %>
       <% if @tag_model && @tag_model.supported %>
         <style>
-          .nav-chronofiter-link,.narrow-nav-select button {
-            color: <%= @tag_model.text_color_hex %> !important;
-          }
           .nav-chronofiter-link.selected {
-            background: <%= @tag_model.text_color_hex %> !important;
-            color: <%= @tag_model.bg_color_hex %> !important;
+            background: <%= @tag_model.bg_color_hex %> !important;
+            color: <%= @tag_model.text_color_hex %> !important;
             box-shadow: 3px 4px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
+            border: 1px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
           }
           .narrow-nav-menu a.selected {
             color: <%= @tag_model.text_color_hex %> !important;
