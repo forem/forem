@@ -1,0 +1,85 @@
+<% accent_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).biggest %>
+<% color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(1.4) %>
+<% dark_color = HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.7) %>
+<style>
+  body{
+    background: white;
+    margin:0;
+    padding:0;
+  }
+  .preview-div-wrapper{
+    overflow: hidden;
+    position:relative;
+  }
+  .circle{
+    border-radius: 1000px;
+    background: <%= accent_color %>;
+    position: absolute;
+  }
+  .circle1{
+    height: 40vw;
+    width: 40vw;
+    right: -<%= rand(2..15) %>vw;
+    bottom: -<%= rand(2..15) %>vw;
+  }
+  .circle2{
+    height: 30vw;
+    width: 30vw;
+    left: <%= rand(2..16) %>vw;
+    bottom: 0vw;
+  }
+  .circle3{
+    height: 24vw;
+    width: 24vw;
+    left: -8vw;
+    top: -<%= rand(2..6) %>vw;
+  }
+  .preview-div{
+    background: #fff;
+    border: 0.25vw solid <%= dark_color %>;
+    box-shadow: 0.8vw 1vw 0px <%= dark_color %>;
+    width: 88vw;
+    height: 44vw;
+    margin: 2.5vw auto 5vw;
+    overflow: hidden;
+    position:relative;
+  }
+  h1{
+    color: <%= dark_color %>;
+    width: 92%;
+    margin: 10vw auto 1vw;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 8vw;
+  }
+  h1 img{
+    border-radius: 100vw;
+    height: 15vw;
+    width: 15vw;
+    vertical-align: -4.3vw;
+    border: 0.55vw solid <%= dark_color %>;
+  }
+  .preview-dev-logo{
+    position:absolute;
+    bottom: 2.1vw;
+    right: 2.1vw;
+    text-align:right;
+  }
+  .logo{
+    height:6vw;
+    fill: <%= dark_color %>;
+  }
+</style>
+<div class="preview-div-wrapper">
+  <div class="circle circle1"></div>
+  <div class="circle circle2"></div>
+  <div class="circle circle3"></div>
+  <div class="preview-div">
+    <h1>
+      <img src="<%= ProfileImage.new(@user).get(90) %>" />
+      <%= @user.name %>
+    <h1>
+    <div class="preview-dev-logo">
+      <%= inline_svg("devplain.svg", class: "logo", size: '9vw * 9vw') %>
+    </div>
+  </div>
+</div>

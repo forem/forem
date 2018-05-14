@@ -94,12 +94,17 @@ Rails.application.routes.draw do
   resources :additional_content_boxes, only: [:index]
   resources :videos, only: [:create, :new]
   resources :video_states, only: [:create]
-  resources :social_previews, only: [:show]
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "chat_channels/:id/moderate" => "chat_channels#moderate"
   # resources :users
+
+  get "/social_previews/article/:id" => "social_previews#article"
+  get "/social_previews/user/:id" => "social_previews#user"
+  get "/social_previews/organization/:id" => "social_previews#organization"
+  get "/social_previews/tag/:id" => "social_previews#tag"
+
 
   ### Subscription vanity url
   post "membership-action" => "stripe_subscriptions#create"

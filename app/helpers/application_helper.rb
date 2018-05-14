@@ -154,7 +154,7 @@ module ApplicationHelper
   end
 
   def user_colors_style(user)
-    "background-color:#{user_colors(user)[:bg]};color:#{user_colors(user)[:text]}"
+    "border: 2px solid #{HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88)}; box-shadow: 5px 6px 0px #{user_colors(user)[:bg]}"
   end
 
   def user_colors(user)

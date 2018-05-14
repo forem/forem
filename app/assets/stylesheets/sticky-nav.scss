@@ -6,7 +6,7 @@
     display: block;
     position: fixed;
     left: calc(50% + 298px);
-    top: 84px;
+    top: 80px;
     bottom: 20px;
     width: 310px;
     display: flex;
@@ -75,8 +75,8 @@
     background: white;
     margin-bottom: 10px;
     margin-left: 10px;
-    border: 1px solid darken($light-medium-gray, 13%);
-    box-shadow: 3px 4px 0px darken($light-medium-gray, 13%);
+    border: 1px solid $outline-color;
+    box-shadow: $bold-shadow;
     color: $black;
     width: 262px;
     border-radius: 3px;

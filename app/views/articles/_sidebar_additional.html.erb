@@ -5,9 +5,9 @@
       <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
         <a class="widget" href="<%= repo.url %>" target="_blank">
           <header>
-            <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span> <%= repo.name %>
+            <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %>
           </header>
-          <div class="widget-body" style="font-size:0.85em;">
+          <div class="widget-body">
             <%= repo.description %>
             <div class="widget-footer">
               <% if repo.fork %>
@@ -21,31 +21,12 @@
           </div>
         </a>
       <% end %>
-      <% if Reaction.for_display(@user).size > 0 %>
-        <div class="widget">
-          <header>
-            &lt;RECENT REACTIONS&gt;
-          </header>
-          <div class="widget-body">
-            <% Reaction.for_display(@user).each do |reaction| %>
-              <div class="row">
-                <div class="key">
-                  <%= image_tag(ReactionImage.new(reaction.category).path, style:"height:22px;width:22px;border:0px;vertical-align:5px;") %>
-                </div>
-                <div class="value" style="padding:5px 2px 0px 10px;">
-                  <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
     <% elsif @user && @user.class.name == "Organization" %>
     <% elsif @tag  %>
       <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
-            <#DISCUSS>
+            #discuss
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -71,13 +52,12 @@
             DEV.TO(GETHER)
           </header>
           <div class="widget-body">
-            <p style="margin-bottom: 12px;">Join thousands of software developers leveling up their code and careers.</p>
-            <center style="margin-bottom: 12px;">
+            <center style="margin-bottom: 2px;">
               <a href="/users/auth/twitter?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-                LOG IN WITH TWITTER
+                SIGN IN VIA TWITTER
               </a>
               <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-                LOG IN WITH GITHUB
+                SIGN IN VIA GITHUB
               </a>
             </center>
           </div>
@@ -115,7 +95,7 @@
       <% if Article.active_help.any? %>
         <div class="widget">
           <header>
-            <a href="/t/help"><#HELP></a>
+            <a href="/t/help">#help</a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -161,7 +141,7 @@
       <% end %>
       <div class="widget">
         <header>
-          <a href="/t/discuss"><#DISCUSS></a>
+          <a href="/t/discuss">#discuss</a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -175,7 +155,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/explainlikeimfive"><#EXPLAINLIKEIMFIVE></a>
+          <a href="/t/explainlikeimfive">#explainlikeimfive</a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -189,7 +169,7 @@
       </div>
       <div class="widget" id="podcast-widget">
         <header>
-          <a href="/pod">&lt;LATEST PODCASTS&gt;</pod>
+          <a href="/pod">latest podcasts</pod>
         </header>
         <div class="widget-body">
             <% @podcast_episodes.each do |ep| %>
