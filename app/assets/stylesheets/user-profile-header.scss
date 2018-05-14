@@ -9,6 +9,9 @@
   margin: 30px auto 20px;
   background: white;
   border-radius: 3px;
+  @media screen and ( min-width: 950px ){
+    max-width:98%;
+  }
   &.tag-header{
     // padding-left:calc(2vw + 12px);
     h1{
@@ -97,13 +100,13 @@
       color:rgb(97, 97, 97);
     }
     .notifications-header{
-      font-size:calc(28px + 0.2vw);
+      font-size:calc(26px + 0.2vw);
       padding-bottom:13px;
-      font-weight:500;
+      font-weight:600;
       img{
-        width: calc(30px + 0.2vw);
+        width: calc(27px + 0.2vw);
         margin-right: 9px;
-        vertical-align:-4px;
+        vertical-align:-3px;
       }
     }
     .profile-pic-wrapper{

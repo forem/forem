@@ -4,7 +4,7 @@ RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
     it "renders page with proper sidebar" do
       get "/"
-      expect(response.body).to include("KEY LINKS")
+      expect(response.body).to include("key links")
     end
   end
   describe "GET query page" do

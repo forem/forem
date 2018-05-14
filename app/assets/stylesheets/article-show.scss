@@ -77,8 +77,11 @@ header{
   background:white;
   margin:68px auto 20px;
   text-align: left;
-  border: 1px solid darken($light-medium-gray, 2%);
   box-shadow: $bold-shadow;
+
+  @media screen and ( min-width: 880px ){
+    border: 1px solid darken($light-medium-gray, 2%);
+  }
   @media screen and ( min-width: 950px ){
     border-radius: 3px;
   }
