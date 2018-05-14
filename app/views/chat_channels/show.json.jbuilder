@@ -1,3 +1,4 @@
+
 json.messages @chat_channel.messages.order("created_at DESC").limit(50).reverse do |message|
   json.user_id message.user.id
   json.username message.user.username
@@ -5,3 +6,7 @@ json.messages @chat_channel.messages.order("created_at DESC").limit(50).reverse 
   json.timestamp message.timestamp
   json.color message.user.bg_color_hex
 end
+
+json.key_format! camelize: :lower
+
+json.chat_channel_id @chat_channel.id

@@ -23,22 +23,23 @@ class ChatChannelsController < ApplicationController
         banned_user.add_role :banned
         banned_user.messages.each(&:destroy!)
         Pusher.trigger(@chat_channel.id, "user-banned", { userId: banned_user.id }.to_json)
-        render json: { success: "banned!" }, status: 200
+        render json: { status: "success", message: "banned!" }, status: 200
       else
-        render json: { error: "username not found" }, status: 400
+        render json: { status: "error", message: "username not found" }, status: 400
       end
     when "/unban"
       banned_user = User.find_by_username(command[1])
       if banned_user
         banned_user.remove_role :banned
-        render json: { success: "unbanned!" }, status: 200
+        render json: { status: "success", message: "unbanned!" }, status: 200
       else
-        render json: { error: "username not found" }, status: 400
+        render json: { status: "error", message: "username not found" }, status: 400
       end
     when "/clearchannel"
       @chat_channel.clear_channel
+      render json: { status: "success", message: "cleared!" }, status: 200
     else
-      render json: { error: "invalid command" }, status: 400
+      render json: { status: "error", message: "invalid command" }, status: 400
     end
   end
 

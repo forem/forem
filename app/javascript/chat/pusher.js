@@ -6,7 +6,7 @@ export default function setupPusher(key, callbackObjects) {
     encrypted: true,
   });
 
-  const channel = pusher.subscribe('1');
+  const channel = pusher.subscribe(callbackObjects.channelId.toString());
   channel.bind('message-created', callbackObjects.messageCreated);
   channel.bind('channel-cleared', callbackObjects.channelCleared);
   channel.bind('user-banned', callbackObjects.redactUserMessages);

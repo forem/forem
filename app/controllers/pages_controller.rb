@@ -38,7 +38,15 @@ class PagesController < ApplicationController
     end
   end
 
-  def live; end
+  def live
+    @chat_channels = [ChatChannel.find_by_channel_name("Workshop")].to_json
+  end
+
+  def chat
+    workshop = ChatChannel.find_by_channel_name("General")
+    meta = ChatChannel.find_by_channel_name("Meta")
+    @chat_channels = [workshop, meta].to_json
+  end
 
   private # helpers
 

@@ -1,5 +1,5 @@
-export function getAllMessages(successCb, failureCb) {
-  fetch('/chat_channels/1', {
+export function getAllMessages(channelId, successCb, failureCb) {
+  fetch(`/chat_channels/${channelId}`, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   })
@@ -8,7 +8,7 @@ export function getAllMessages(successCb, failureCb) {
     .catch(failureCb);
 }
 
-export function sendMessage(message, successCb, failureCb) {
+export function sendMessage(activeChannelId, message, successCb, failureCb) {
   fetch('/messages', {
     method: 'POST',
     headers: {
@@ -18,9 +18,9 @@ export function sendMessage(message, successCb, failureCb) {
     },
     body: JSON.stringify({
       message: {
-        message_html: message,
+        message_markdown: message,
         user_id: window.currentUser.id,
-        chat_channel_id: '1',
+        chat_channel_id: activeChannelId,
       },
     }),
     credentials: 'same-origin',
@@ -30,8 +30,13 @@ export function sendMessage(message, successCb, failureCb) {
     .catch(failureCb);
 }
 
-export function conductModeration(message, successCb, failureCb) {
-  fetch('/chat_channels/1/moderate', {
+export function conductModeration(
+  activeChannelId,
+  message,
+  successCb,
+  failureCb,
+) {
+  fetch(`/chat_channels/${activeChannelId}/moderate`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

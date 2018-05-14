@@ -7,7 +7,7 @@ RSpec.describe "Messages", type: :request do
   describe "POST /messages" do
     let(:new_message) do
       {
-        message_html: "hi",
+        message_markdown: "hi",
         user_id: user.id,
         chat_channel_id: chat_channel.id,
       }

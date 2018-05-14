@@ -1,5 +1,27 @@
 // High level class
-.chatchannel {
+.chat {
+  display: flex;
+  height: inherit;
+}
+
+.chat__channels {
+  width: 125px;
+  border: 1px solid #c9c9c9;
+  border-right: none;
+  background: #ededed;
+  height: inherit;
+}
+
+.chat__channels--hidden {
+  display: none;
+}
+
+.chat__activechat {
+  flex-grow: 1;
+  height: inherit;
+}
+
+.activechatchannel {
   height: inherit;
   max-height: inherit;
   display: flex;
@@ -8,7 +30,7 @@
   border: 1px solid #c9c9c9;
 }
 
-.chatchannel__messages {
+.activechatchannel__messages {
   font-size: 15px;
   padding: 10px 0px;
   display: flex;
@@ -20,9 +42,10 @@
   text-align: left;
   overflow-wrap: break-word;
   word-wrap: break-word;
+  overscroll-behavior-y: contain;
 }
 
-.chatchannel__alerts {
+.activechatchannel__alerts {
   position: relative;
 }
 
@@ -43,7 +66,7 @@
   display: none;
 }
 
-.chatchannel__form {
+.activechatchannel__form {
   border-top: 1px solid #c9c9c9;
   background: #ededed;
   width: 100%;
@@ -61,8 +84,65 @@
 
 }
 
+.chatchannels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: inherit;
+}
+
+.chatchanneltab {
+  height: 30px;
+  width: 100%;
+  margin-bottom: 5px;
+  border: none;
+  border-left: 8px solid transparent;
+  background: inherit;
+  text-align: start;
+  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.chatchanneltab--active {
+  background: white;
+  border-left: 8px solid black;
+}
+
+.chatchanneltab--inactive {
+  &:hover {
+    background: #e3e3e3;
+  }
+}
+
+@keyframes example {
+  // animation-name: example;
+  // animation-duration: 4s;
+  // animation-iteration-count: infinite;
+  from {
+    border-left: 8px solid transparent;
+  }
+  to {
+    border-left: 8px solid #ffb6c1;
+  }
+}
+
+.chatchannels__channelslist {
+  padding: 10px 0;
+  flex-grow: 1;
+}
+
+.chatchannels__misc {
+  height: 70px;
+  border-top: 1px solid #c9c9c9
+}
+
 .chatmessage__username {
   font-weight: 600;
+}
+
+.chatmessage__username--link {
+  color: inherit;
 }
 
 .chatmessage__divider {
@@ -71,6 +151,13 @@
 
 .chatmessage__message {
 
+}
+
+.chatmessage__currentuser {
+  background: black;
+  color: white;
+  padding: 1px 5px;
+  border-radius: 2px;
 }
 
 // Messagecomposer
@@ -87,7 +174,7 @@
   margin: 10px;
   padding: 6px;
   resize: none;
-  width: 80%;
+  flex-grow: 1;
 }
 
 .messagecomposer__submit {
@@ -96,4 +183,5 @@
   border-radius: 3px;
   background: #66e2d5;
   font-weight: 500px;
+  width: 50px;
 }

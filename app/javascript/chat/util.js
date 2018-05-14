@@ -40,11 +40,17 @@ export function setupObserver(callback) {
 }
 
 export function hideMessages(messages, userId) {
-  const newMessages = messages.map((message) => {
-    if (message.user_id === userId) {
-      return Object.assign({ hidden: true }, message);
-    }
-    return message;
-  });
-  return newMessages;
+  const cleanedMessages = Object.keys(messages).reduce(
+    (accumulator, channelId) => {
+      const newMessages = messages[channelId].map(message => {
+        if (message.user_id === userId) {
+          return Object.assign({ type: 'hidden' }, message);
+        }
+        return message;
+      });
+      return { ...accumulator, [channelId]: newMessages };
+    },
+    {},
+  );
+  return cleanedMessages;
 }
