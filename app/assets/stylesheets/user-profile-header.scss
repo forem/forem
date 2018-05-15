@@ -12,7 +12,7 @@
   @media screen and ( min-width: 950px ){
     max-width:98%;
   }
-  @media screen and ( min-width: 1240px ){
+  @media screen and ( min-width: 1100px ){
     padding: 25px 0px 11px;
   }
   &.tag-header{
@@ -138,7 +138,7 @@
       float:left;
       width:calc(100% - (13vw + 95px));
       padding-top: calc(2px + 2.7vw);
-      @media screen and ( min-width: 1240px ){
+      @media screen and ( min-width: 1100px ){
         min-height: 270px;
       }
       h1{
@@ -165,6 +165,7 @@
         width: 94%;
         font-size:0.9em;
         margin-top:12px;
+        max-width:550px;
         @media screen and ( min-width: 430px ){
           font-size:0.97em;
           margin-top:0px;
@@ -197,7 +198,7 @@
             height:28px;
             margin-right: 8px;
           }
-          @media screen and ( min-width: 1240px ){
+          @media screen and ( min-width: 1100px ){
             margin:1px;
             margin-right: 5px;
             width:30px;
@@ -209,25 +210,29 @@
     }
   }
   .user-profile-header-container{
-    @media screen and ( min-width: 1240px ){
+    @media screen and ( min-width: 1100px ){
       width: calc( 100% - 400px);
       margin-left: 6%;
     }
   }
   .user-metadata-details{
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    @media screen and ( min-width: 1240px ){
+    width: 97%;
+    @media screen and ( min-width: 1100px ){
       position: absolute;
       right: 0px;
       top: 0px;
       bottom: 0px;
-      width: 360px;
+      width: 350px;
     }
     .user-metadata-details-inner{
-      padding: 15px 0px;
-      font-size: 1.2em;
+      padding: 8px 0px;
       margin-left: 5%;
-      @media screen and ( min-width: 1240px ){
+      @media screen and ( min-width: 430px ){
+        font-size: 1.15em;
+        padding: 15px 0px;
+      }
+      @media screen and ( min-width: 1100px ){
         position: absolute;
         top: 45%;
         transform: translateY(-45%);
@@ -239,6 +244,7 @@
         display: inline-block;
         padding-left: 20px;
         width: 320px;
+        max-width:92%;
       }
       .key{
         font-size: 0.7em;
