@@ -42,8 +42,13 @@ class MessagesController < ApplicationController
       username: new_message.user.username,
       message: new_message.message_html,
       timestamp: new_message.timestamp,
-      color: new_message.user.bg_color_hex,
+      color: darker_user_color(new_message),
     }.to_json
+  end
+
+  def darker_user_color(new_message)
+    HexComparer.new([new_message.user.bg_color_hex || "#000000",
+                     new_message.user.text_color_hex || "#000000"]).brightness(0.9)
   end
 
   def message_params
