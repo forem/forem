@@ -30,7 +30,6 @@ class ArticleDashboard < Administrate::BaseDashboard
     allow_big_edits: Field::Boolean,
     featured_number: Field::Number,
     password: Field::String,
-    programming_category: Field::String,
     published_at: Field::DateTime,
     social_image: Field::String,
     collection: Field::BelongsTo,
