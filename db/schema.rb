@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508200948) do
+ActiveRecord::Schema.define(version: 20180516173047) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -294,7 +294,7 @@ ActiveRecord::Schema.define(version: 20180508200948) do
     t.boolean "featured", default: false
     t.boolean "fork", default: false
     t.integer "github_id_code"
-    t.text "info_hash", default: "--- []\n"
+    t.text "info_hash", default: "--- {}\n"
     t.string "language"
     t.string "name"
     t.integer "priority", default: 0

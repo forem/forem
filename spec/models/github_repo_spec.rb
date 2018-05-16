@@ -37,15 +37,14 @@ RSpec.describe GithubRepo, type: :model do
     let(:repo_without_github_id) do
       create(:github_repo, user_id: user.id, url: url_of_repos_without_github_id)
     end
-    let(:stubbed_github_repos) do
-      [OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url)),
-       OpenStruct.new(repo.attributes.merge(id: rand(10000), html_url: url_of_repos_without_github_id))]
+    let(:stubbed_github_repo) do
+      OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url))
     end
 
     before do
       repo.save
       allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
-      allow(my_ocktokit_client).to receive(:repositories) { stubbed_github_repos }
+      allow(my_ocktokit_client).to receive(:repo) { stubbed_github_repo }
     end
 
     it "updates all repo" do
@@ -53,15 +52,6 @@ RSpec.describe GithubRepo, type: :model do
       Timecop.freeze(Date.today + 3) do
         described_class.update_to_latest
         expect(old_updated_at).not_to eq(GithubRepo.find(repo.id).updated_at)
-      end
-    end
-
-    it "uses repo's url as reference if id isn't provided" do
-      repo_without_github_id.update_columns(github_id_code: nil)
-      old_updated_at = repo_without_github_id.updated_at
-      Timecop.freeze(Date.today + 3) do
-        described_class.update_to_latest
-        expect(old_updated_at).not_to eq(GithubRepo.find(repo_without_github_id.id).updated_at)
       end
     end
   end

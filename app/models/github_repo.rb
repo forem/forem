@@ -1,6 +1,7 @@
 class GithubRepo < ApplicationRecord
   belongs_to :user
 
+  serialize :info_hash, Hash
   validates :name, :url, :github_id_code, presence: true
   validates :url, uniqueness: true
   validates :github_id_code, uniqueness: true
@@ -16,21 +17,10 @@ class GithubRepo < ApplicationRecord
   end
 
   def self.update_to_latest
-    # TODO: this is a very intensive process. Definitely not a good approach on the long run.
     where("updated_at < ?", 1.day.ago).find_each do |repo|
       user_token = User.find_by_id(repo.user_id).identities.where(provider: "github").last.token
       client = Octokit::Client.new(access_token: user_token)
-
-      fetched_repo = if repo[:github_id_code]
-                       client.repositories.select do |fresh_repo|
-                         fresh_repo.id == repo[:github_id_code]
-                       end.first
-                     else
-                       client.repositories.select do |fresh_repo|
-                         fresh_repo.html_url == repo[:url]
-                       end.first
-                     end
-
+      fetched_repo = client.repo(repo.info_hash[:full_name])
       repo.update!(
         github_id_code: fetched_repo.id,
         name: fetched_repo.name,
