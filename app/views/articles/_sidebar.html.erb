@@ -43,6 +43,17 @@
             </div>
           </div>
         <% end %>
+        <div class="sidebar-data">
+          <div>
+            <%= pluralize @user.articles.where(published: true).size, "Post" %> Published
+          </div>
+          <div>
+            <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written
+          </div>
+          <div>
+            <%= pluralize @user.decorate.cached_followed_tags.size, "Tag" %> Followed
+          </div>
+        </div>
       </div>
     <% elsif @user && @user.class.name == "Organization" %>
         <% if @organization.story.present? %>
@@ -142,7 +153,11 @@
           </div>
         </div>
       <% end %>
-
+        <div class="sidebar-data">
+          <div>
+            <%= pluralize Article.tagged_with(@tag).where(published: true).size, "Post" %> Published
+          </div>
+        </div>
     <% elsif @podcast_index && @podcasts %>
       <div class="widget podcast-pic-widget">
         <header>

@@ -1,4 +1,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
+  <style>
+    .primary-sticky-nav-author,.primary-sticky-nav-author-element{
+      border: 1px solid <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
+      box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
+    }
+    .primary-sticky-nav-author button{
+      background-color: <%= user_colors(@organization)[:bg] %> !important;
+      color: <%= user_colors(@organization)[:text] %> !important;
+      <% if user_colors(@organization)[:bg].downcase == "#ffffff" %>
+        border: 1px solid <%= user_colors(@organization)[:text] %> !important;
+      <% end %>
+    }
+  </style>
 <div class="settings-org-members">
   <h3>Organization Members</h3>
   <% @organization.users.each do |user| %>
@@ -99,6 +112,40 @@
     <%= f.label :tech_stack, "Our Stack" %>
     <%= f.text_area :tech_stack, maxlength: 200 %>
   </div>      
+  <% if @organization.approved %>
+    <h2>Call-to-action box</h2>
+    <div class="field">
+      <%= f.label "Button Text" %>
+      <%= f.text_field :cta_button_text, maxlength: 12 %>
+    </div>
+    <div class="field">
+      <%= f.label "Button Link" %>
+      <%= f.text_field :cta_button_url %>
+    </div>
+    <div class="field">
+      <%= f.label "Body text" %>
+      <%= f.text_area :cta_body_markdown, maxlength: 140 %>
+    </div>
+    <% if @organization.approved_and_filled_out_cta? %>
+      <div class="field">
+        Preview of Widget:
+        <div class="org-widget-preview">
+          <div class="primary-sticky-nav">
+            <div class="primary-sticky-nav-element primary-sticky-nav-author primary-sticky-nav-org">
+              <div class="primary-sticky-nav-org-summary">
+                <!-- Markdown -->
+                <%# @organization.cta_body_markdown %>
+                <%= @organization.cta_processed_html.html_safe %>
+                <button class="cta primary-sticky-nav-org-button">
+                  <%= @organization.cta_button_text.upcase || "LEARN MORE" %>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
   <div class="field">
     <label></label>
     <%= f.submit "SUBMIT", class: "cta" %>

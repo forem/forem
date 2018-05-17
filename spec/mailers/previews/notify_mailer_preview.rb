@@ -19,4 +19,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   def video_upload_complete_email
     NotifyMailer.video_upload_complete_email(Article.last)
   end
+
+  def new_badge_email
+    NotifyMailer.new_badge_email(BadgeAchievement.first)
+  end
 end

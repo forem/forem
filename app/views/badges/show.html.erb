@@ -1,0 +1,14 @@
+<header>
+  <div class="blank-space"></div>
+</header>
+<div class="container article">
+  <h1 style="text-align: center"><%= @badge.title %></h1>
+  <div class="body" style="text-align: center">
+    <p>
+      <img src="<%= @badge.badge_image_url %>" style="height: 250px" />
+    </p>
+    <p>
+      <%= @badge.description %>
+    </p>
+  </div>
+</div>

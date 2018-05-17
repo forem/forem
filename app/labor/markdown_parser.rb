@@ -22,6 +22,17 @@ class MarkdownParser
     attributes: attribute_whitelist
   end
 
+  def evaluate_limited_markdown
+    return if @content.blank?
+    renderer = HtmlRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    tag_whitelist = %w(strong i u b em p br)
+    attribute_whitelist = %w(href strong em ref rel src title alt class)
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+    tags: tag_whitelist,
+    attributes: attribute_whitelist
+  end
+
   def tags_used
     return [] unless @content.present?
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)

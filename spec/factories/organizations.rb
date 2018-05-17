@@ -10,5 +10,6 @@ FactoryBot.define do
     twitter_username   { "org#{rand(10_000)}" }
     bg_color_hex       { Faker::Color.hex_color }
     text_color_hex     { Faker::Color.hex_color }
+    proof              { Faker::Hipster.sentence }
   end
 end

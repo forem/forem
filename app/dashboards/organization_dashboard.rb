@@ -31,6 +31,9 @@ class OrganizationDashboard < Administrate::BaseDashboard
     updated_at: Field::DateTime,
     users: Field::HasMany,
     approved: Field::Boolean,
+    cta_button_text: Field::String,
+    cta_button_url: Field::String,
+    cta_body_markdown: Field::Text,
   }
 
   # COLLECTION_ATTRIBUTES
@@ -73,6 +76,9 @@ class OrganizationDashboard < Administrate::BaseDashboard
     :zip_code,
     :country,
     :approved,
+    :cta_button_text,
+    :cta_button_url,
+    :cta_body_markdown,
   ]
 
   def display_resource(organization)

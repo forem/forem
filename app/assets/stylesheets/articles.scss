@@ -70,6 +70,12 @@
       height:45px;
       position:relative;
       opacity:0.85;
+      &.user-nav-controls{
+        margin-top:-12px;
+        @media screen and ( min-width: 950px ){
+          display:none;
+        }
+      }
       .on-page-nav-butt{
         position:absolute;
         top: 14px;
@@ -755,7 +761,7 @@
         .sidebar-nav-header{
           padding:15px 10px;
           font-size: 0.9em;
-          font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+          font-family: $monospace;
           &.sidebar-nav-header-middle{
             padding-top:10px;
           }

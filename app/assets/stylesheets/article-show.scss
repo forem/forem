@@ -11,16 +11,18 @@
   position:relative;
   padding:calc(10px + 1.3vw) 10px;
   color:white;
-  z-index:8;
   font-family: $helvetica;
-  margin-top:60px;
-  margin-bottom:-60px;
   @media screen and ( min-width: 380px ){
     font-size:1.2em;
+    line-height: 1.5em;
   }
   &:hover{
     opacity:0.92;
     color:white;
+  }
+  em{
+    display: inline-block;
+    font-weight: bold;
   }
 }
 .blank-space{

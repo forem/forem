@@ -62,7 +62,7 @@ module ApplicationHelper
 
   def cloudinary(url,width=nil,quality=80,format="jpg")
     if Rails.env.development? && (url.blank? || !url.include?("http"))
-      url = "http://www.lawyersweekly.com.au/images/LW_Media_Library/594partner-profile-pic-An.jpg"
+      return url
     end
     if url && url.size > 0
       if width
@@ -154,67 +154,11 @@ module ApplicationHelper
   end
 
   def user_colors_style(user)
-    "border: 2px solid #{HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88)}; box-shadow: 5px 6px 0px #{user_colors(user)[:bg]}"
+    "border: 2px solid #{user.decorate.darker_color}; box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
   end
 
   def user_colors(user)
-    if user.bg_color_hex.blank?
-      {
-        bg: assigned_color(user)[:bg],
-        text: assigned_color(user)[:text]
-      }
-    else
-      {
-        bg: user.bg_color_hex || assigned_color(user)[:bg],
-        text: user.text_color_hex || assigned_color(user)[:text]
-      }
-    end
-  end
-
-  def assigned_color(user)
-    colors = [
-              {
-                bg: "#093656",
-                text: "#ffffff"
-              },
-              {
-                bg: "#19063A",
-                text: "#dce9f3"
-              },
-              {
-                bg: "#0D4D4B",
-                text: "#fdf9f3"
-              },
-              {
-                bg: "#61122f",
-                text: "#ffffff"
-              },
-              {
-                bg: "#edebf6",
-                text:" #070126"
-              },
-              {
-                bg: "#080E3B",
-                text: "#ffffff"
-              },
-              {
-                bg: "#010C1F",
-                text: "#aebcd5"
-              },
-              {
-                bg: "#d7dee2",
-                text: "#022235"
-              },
-              {
-                bg: "#161616",
-                text: "#66e2d5"
-              },
-              {
-                bg: "#1c0bba",
-                text: "#c9d2dd"
-              },
-            ]
-    colors[user.id % 10]
+    user.decorate.enriched_colors
   end
 
   def timeframe_check(given_timeframe)

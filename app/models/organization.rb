@@ -33,10 +33,15 @@ class Organization < ApplicationRecord
                                      message: "Integer only. No sign allowed.",
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
+  validates :cta_button_url,
+    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }, if: :approved
+  validates :cta_button_text, length: { maximum: 12 }
+  validates :cta_body_markdown, length: { maximum: 140 }
   before_save :remove_at_from_usernames
   after_save  :bust_cache
   before_save :generate_secret
   before_validation :downcase_slug
+  before_validation :evaluate_markdown, if: :approved
 
   validate :unique_slug_including_users
 
@@ -73,8 +78,15 @@ class Organization < ApplicationRecord
     end
   end
 
+  def approved_and_filled_out_cta?
+    approved && cta_body_markdown? && cta_button_text? && cta_button_url?
+  end
 
   private
+
+  def evaluate_markdown
+    self.cta_processed_html = MarkdownParser.new(cta_body_markdown).evaluate_limited_markdown
+  end
 
   def remove_at_from_usernames
     self.twitter_username = twitter_username.gsub("@","") if twitter_username

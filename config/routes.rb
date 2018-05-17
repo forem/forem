@@ -222,6 +222,8 @@ Rails.application.routes.draw do
   get "/t/:tag/top/:timeframe" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index", constraints: { timeframe: /latest/}
 
+  get "/badge/:slug" => "badges#show"
+
   get "/getting-started" => "onboarding#index"
 
   get "/top/:timeframe" => "stories#index"
