@@ -40,23 +40,31 @@ class OrganizationsController < ApplicationController
 
   private
 
+  def permitted_params
+    accessible = %i[
+      name
+      summary
+      tag_line
+      slug
+      url
+      proof
+      profile_image
+      location
+      company_size
+      tech_stack
+      email
+      story
+      bg_color_hex
+      text_color_hex
+      twitter_username
+      github_username
+    ]
+    approved_params = %i(cta_button_text cta_button_url cta_body_markdown)
+    @organization&.approved ? accessible + approved_params : accessible
+  end
+
   def organization_params
-    params.require(:organization).permit(:name,
-                                          :summary,
-                                          :tag_line,
-                                          :slug,
-                                          :url,
-                                          :proof,
-                                          :profile_image,
-                                          :location,
-                                          :company_size,
-                                          :tech_stack,
-                                          :email,
-                                          :story,
-                                          :bg_color_hex,
-                                          :text_color_hex,
-                                          :twitter_username,
-                                          :github_username).
+    params.require(:organization).permit(permitted_params).
       transform_values do |value|
         if value.class.name == "String"
           ActionController::Base.helpers.strip_tags(value)

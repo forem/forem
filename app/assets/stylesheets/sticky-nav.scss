@@ -18,7 +18,7 @@
     a{
       color: $black;
     }
-    img{
+    .primary-sticky-nav-author-top-profile-image{
       width: 35px;
       height: 35px;
       border-radius: 360px;
@@ -109,5 +109,39 @@
       border: 1px solid darken($light-medium-gray, 17%);
       box-shadow: 3px 4px 0px darken($light-medium-gray, 17%);
     }
+  }
+}
+
+.primary-sticky-nav-org{
+  position:relative;
+  .sticky-box-connector{
+    position:absolute;
+    top: - 10px;
+    height: 10px;
+    width: 5px;
+    background: $outline-color;
+    left: 15px;
+    &.sticky-box-right-connector{
+      left: auto;
+      right: 15px;
+    }
+  }
+  .primary-sticky-nav-org-summary{
+    font-weight: 400;
+    color: $medium-gray;
+    padding: 0px 0px 5px;
+    font-size:0.88em;
+    p{
+      margin:5px 0px;
+    }
+  }
+  button{
+    min-width:135px;
+    font-size:1.1em;
+    border:0px;
+    border-radius:3px;
+    padding: 3px;
+    display: block;
+    margin-top:18px;
   }
 }

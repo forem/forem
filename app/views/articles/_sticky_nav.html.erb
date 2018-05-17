@@ -1,81 +1,101 @@
-<% if @article.published %>
-  <% @actor = @article.organization || @article.user %>
-  <style>
-    .primary-sticky-nav-author,.primary-sticky-nav-author-element{
-      border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-      box-shadow: 3px 3px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-    }
-    .primary-sticky-nav-author button{
-      background-color: <%= user_colors(@actor)[:bg] %> !important;
-      color: <%= user_colors(@actor)[:text] %> !important;
-      <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
-        border: 1px solid <%= user_colors(@actor)[:text] %> !important;
-      <% end %>
-    }
-  </style>
 
+<% @actor = @article.organization || @article.user %>
+<style>
+  .primary-sticky-nav-author,.primary-sticky-nav-author-element{
+    border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+    box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+  }
+  .primary-sticky-nav-author button{
+    background-color: <%= user_colors(@actor)[:bg] %> !important;
+    color: <%= user_colors(@actor)[:text] %> !important;
+    <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
+      border: 1px solid <%= user_colors(@actor)[:text] %> !important;
+    <% end %>
+  }
+  .primary-sticky-nav-author button a{
+    background-color: <%= user_colors(@actor)[:bg] %> !important;
+    color: <%= user_colors(@actor)[:text] %> !important;
+    <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
+      border: 1px solid <%= user_colors(@actor)[:text] %> !important;
+    <% end %>
+  }
+  .sticky-box-connector{
+    background: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+  }
+</style>
 
-  <div class="primary-sticky-nav">
-    <div class="primary-sticky-nav-element primary-sticky-nav-author">
-      <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" /></a>
-      <span class="primary-sticky-nav-author-name">
-        <a href="<%= @actor.path %>">
-          <%= @actor.name %>
-        </a>
-      </span>
-        <div class="primary-sticky-nav-author-summary">
-          <% if @actor.tag_line.present? %>
-            <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
-          <% else %>
-            Member since <%= @actor.created_at.strftime("%b %e, %Y") %>
-          <% end %>
-        </div>
-      <div class="primary-sticky-nav-author-follow">
-        <%= follow_button(@actor) %>
-      </div>
-    </div>
-    <% if @user_stickies && @user_stickies.any? %>
-          <div class="primary-sticky-nav-title">
-        <% if @actor.username.size < 18 %>
-          More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
+<div class="primary-sticky-nav">
+  <div class="primary-sticky-nav-element primary-sticky-nav-author">
+    <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-author-top-profile-image" /></a>
+    <span class="primary-sticky-nav-author-name">
+      <a href="<%= @actor.path %>">
+        <%= @actor.name %>
+      </a>
+    </span>
+      <div class="primary-sticky-nav-author-summary">
+        <% if @actor.tag_line.present? %>
+          <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
         <% else %>
-          More from<br/><a href="<%= @actor.path %>">@<%= @actor.username %></a>
+          Member since <%= @actor.created_at.strftime("%b %e, %Y") %>
         <% end %>
       </div>
-
-      <% @user_stickies.each do |article| %>
-        <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
-          <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
-          <%= article.title %>
-          <div class="primary-sticky-nav-element-details">
-            <% article.decorate.cached_tag_list_array.each do |tag| %>
-              <span>#<%= tag %></span>
-            <% end %>
-          </div>
-        </a>
-      <% end %>
-    <% end %>
-    <% if sticky_articles %>
-      <div class="primary-sticky-nav-title">
-        <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/129/fire_1f525.png"/> Trending on <a href="https://dev.to">dev.to</a>
-      </div>
-      <% sticky_articles.each do |article| %>
-        <a class="primary-sticky-nav-element" href="<%= article.path %>">
-          <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
-          <%= article.title %>
-          <div class="primary-sticky-nav-element-details">
-            <% article.decorate.cached_tag_list_array.each do |tag| %>
-              <span>#<%= tag %></span>
-            <% end %>
-          </div>
-        </a>
-      <% end %>
-      <% if 1==2 %>
-        <a class="primary-sticky-nav-element sticky-join-cta" href="/enter">
-          <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/240/apple/129/waving-hand-sign_1f44b.png" /> Join the DEV Community
-        </a>
-      <% end %>
-
-    <% end %>
+    <div class="primary-sticky-nav-author-follow">
+      <%= follow_button(@actor) %>
+    </div>
   </div>
-<% end %>
+  <% if @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
+    <div class="primary-sticky-nav-element primary-sticky-nav-author primary-sticky-nav-org">
+      <div class="sticky-box-connector"></div>
+      <div class="sticky-box-connector sticky-box-right-connector"></div>
+      <div class="primary-sticky-nav-org-summary">
+        <%= @actor.cta_processed_html.html_safe %>
+        <button class="cta primary-sticky-nav-org-button">
+          <%= link_to @actor.cta_button_text.upcase || "LEARN MORE", @actor.cta_button_url %>
+        </button>
+      </div>
+    </div>
+  <% end %>
+  <% if @user_stickies && @user_stickies.any? %>
+        <div class="primary-sticky-nav-title">
+      <% if @actor.username.size < 18 %>
+        More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
+      <% else %>
+        More from<br/><a href="<%= @actor.path %>">@<%= @actor.username %></a>
+      <% end %>
+    </div>
+
+    <% @user_stickies.each do |article| %>
+      <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
+        <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+        <%= article.title %>
+        <div class="primary-sticky-nav-element-details">
+          <% article.decorate.cached_tag_list_array.each do |tag| %>
+            <span>#<%= tag %></span>
+          <% end %>
+        </div>
+      </a>
+    <% end %>
+  <% end %>
+  <% if sticky_articles %>
+    <div class="primary-sticky-nav-title">
+      <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/129/fire_1f525.png"/> Trending on <a href="https://dev.to">dev.to</a>
+    </div>
+    <% sticky_articles.each do |article| %>
+      <a class="primary-sticky-nav-element" href="<%= article.path %>">
+        <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+        <%= article.title %>
+        <div class="primary-sticky-nav-element-details">
+          <% article.decorate.cached_tag_list_array.each do |tag| %>
+            <span>#<%= tag %></span>
+          <% end %>
+        </div>
+      </a>
+    <% end %>
+    <% if 1 == 2 %>
+      <a class="primary-sticky-nav-element sticky-join-cta" href="/enter">
+        <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/240/apple/129/waving-hand-sign_1f44b.png" /> Join the DEV Community
+      </a>
+    <% end %>
+
+  <% end %>
+</div>

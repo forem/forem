@@ -111,7 +111,7 @@
           </span>
         </h1>
         <p class="profile-description" itemprop="description">
-          <%= @user.summary.present? ? @user.summary : ["undefined is not a bio","404 bio not found"].sample  %>
+          <%= @user.summary.present? ? @user.summary : ["404 bio not found"].sample  %>
         </p>
         <style>
           .profile-details .social .icon-img path{
@@ -262,14 +262,22 @@
             <% end %>
           </div>
         </div>
-        <% if @home_page %>
-          <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-            <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
-          </button>
-          <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
-            <img src="<%= asset_path 'lightning.svg' %>" alt="right-sidebar-nav">
-          </button>
-        <% end %>
+        <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
+          <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
+        </button>
+        <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
+          <img src="<%= asset_path 'lightning.svg' %>" alt="right-sidebar-nav">
+        </button>
+      </div>
+    <% end %>
+    <% if @user && @user.class.name == "User" %>
+      <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
+        <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
+          <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
+        </button>
+        <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
+          <img style="height:28px;width:28px;margin-top:-3px;" src="<%= asset_path 'ribbon.svg' %>" alt="right-sidebar-nav">
+        </button>
       </div>
     <% end %>
     <% if @user.blank? && @tag.blank? && @featured_story.id %>

@@ -12,18 +12,19 @@
 <br/><br/>
 <hr class="settings-hr" />
 <h3><em>Or</em> Create An Organization</h3>
+<sub><em>Starred fields are required</em></sub>
 
 <%= form_for @organization do |f| %>
   <div class="field">
-    <%= f.label :name %>
+    <%= f.label "Name *" %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :slug, "Username" %>
+    <%= f.label :slug, "Username *" %>
     <%= f.text_field :slug %>
   </div>
   <div class="field">
-    <%= f.label :profile_image %>
+    <%= f.label "Profile Image *" %>
     <%= f.file_field :profile_image %>
   </div>
   <div class="field">
@@ -36,23 +37,23 @@
   </div>
   <div class="field">
     <%= f.label :text_color_hex, "Text color (hex)"%>
-    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+    <%= text_field_tag "organization[text_color_hex]", nil, placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
     <%= f.label :bg_color_hex, "Background color (hex)"%>
-    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+    <%= text_field_tag "organization[bg_color_hex]", nil, placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
-    <%= f.label :url, "Site url" %>
+    <%= f.label :url, "Website url *" %>
     <%= f.url_field :url, placeholder: "http://yoursite.com" %>
   </div>
 
   <div class="field">
-    <%= f.label :summary %>
+    <%= f.label "Summary *" %>
     <%= f.text_area :summary %>
   </div>
   <div class="field">
-    <%= f.label :proof %>
+    <%= f.label "Proof *" %>
     <%= f.text_area :proof, placeholder: "This is just a quick blurb indicating or link that shows that you clearly are associated with this organization." %>
     <div style="width:560px;max-width:90%;">
       You must have your organization's permission to submit this form. Dishonesty may result in a permanent ban.

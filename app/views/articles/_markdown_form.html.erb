@@ -93,6 +93,13 @@
       </div>
     </header>
     <div class="title">
+      <% if current_user.organization %>
+        <a href="<%= current_user.organization.path %>" class="org-branded-title-link">
+          <div class="org-branded-title" id="org-branded-title">
+            <img src="<%= ProfileImage.new(current_user.organization).get(50) %>" class="org-pic"/> <%= current_user.organization.name%>
+          </div>
+        </a>
+      <% end %>
       <h1 id="article_title" >
       </h1>
       <h3>
@@ -113,7 +120,10 @@
     </div>
     <div class="body" id="article_body" name="article[body]">
     </div>
-    <%= render 'articles/about_author' %>
+    <%= render "articles/about_author" %>
+    <% if current_user.organization %>
+      <%= render "articles/org_branding", organization: current_user.organization %>
+    <% end %>
   </div>
 </div>
 
@@ -199,6 +209,9 @@
       removeExistingErrorExplanation();
       document.getElementById("article_title").innerHTML = htmlEntities(filterXSS(response.title));
       document.getElementById("article_body").innerHTML = response.processed_html;
+      <% if current_user.organization %>
+      toggleOrgElements(document.getElementById('article_publish_under_org').checked);
+      <% end %>
       activateButton(e.target,"article-preview");
 
       if(!parsed.cover_image || parsed.cover_image.length < 0) {
@@ -362,4 +375,24 @@
     subButt.classList.add("loading");
     markdown();
   }
+
+<% if current_user.organization %>
+  document.getElementById('article_publish_under_org').onclick = function(event){
+    toggleOrgElements(event.target.checked);
+  }
+
+  function toggleOrgElements(checkedState) {
+    var orgBrandAbout = document.getElementById('org-branding');
+    var orgBrandTitle = document.getElementById('org-branded-title');
+    if (checkedState) {
+      orgBrandAbout.style.display = 'block';
+      orgBrandTitle.style.display = 'block';
+    } else {
+      orgBrandAbout.style.display = 'none';
+      orgBrandTitle.style.display = 'none';
+    }
+  }
+
+<% end %>
+  // add event listener for clicking out of page
 </script>

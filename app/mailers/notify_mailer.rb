@@ -41,4 +41,11 @@ class NotifyMailer < ApplicationMailer
     @user = @article.user
     mail(to: @user.email, subject: "Your video upload is complete")
   end
+
+  def new_badge_email(badge_achievement)
+    @badge_achievement = badge_achievement
+    @user = @badge_achievement.user
+    @badge = @badge_achievement.badge
+    mail(to: @user.email, subject: "You just got a badge")
+  end
 end

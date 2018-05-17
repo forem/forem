@@ -40,11 +40,14 @@ function initializeDrawerSliders() {
 
 function listenForNarrowMenuClick(event) {
   var navLinks = document.getElementsByClassName("narrow-nav-menu");
+  var narrowFeedButt = document.getElementById("narrow-feed-butt");
   for (var i = 0; i < navLinks.length; i++) {
     document.getElementById("narrow-nav-menu").classList.remove("showing");
   }
-  document.getElementById("narrow-feed-butt").onclick = function(){
-    document.getElementById("narrow-nav-menu").classList.add("showing");
+  if (narrowFeedButt) {
+    narrowFeedButt.onclick = function(){
+      document.getElementById("narrow-nav-menu").classList.add("showing");
+    }
   }
   for (var i = 0; i < navLinks.length; i++) {
     navLinks[i].onclick = function(event){

@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516173047) do
+ActiveRecord::Schema.define(version: 20180516184437) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -114,6 +115,7 @@ ActiveRecord::Schema.define(version: 20180516173047) do
     t.bigint "badge_id", null: false
     t.datetime "created_at", null: false
     t.integer "rewarder_id"
+    t.text "rewarding_context_message"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["badge_id"], name: "index_badge_achievements_on_badge_id"
@@ -375,6 +377,10 @@ ActiveRecord::Schema.define(version: 20180516173047) do
     t.string "company_size"
     t.string "country"
     t.datetime "created_at", null: false
+    t.text "cta_body_markdown"
+    t.string "cta_button_text"
+    t.string "cta_button_url"
+    t.text "cta_processed_html"
     t.string "email"
     t.string "github_username"
     t.string "jobs_email"
@@ -547,6 +553,7 @@ ActiveRecord::Schema.define(version: 20180516173047) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
+    t.integer "badge_achievements_count", default: 0, null: false
     t.boolean "banned", default: false
     t.text "base_cover_letter"
     t.string "bg_color_hex"
@@ -564,6 +571,7 @@ ActiveRecord::Schema.define(version: 20180516173047) do
     t.boolean "display_sponsors", default: true
     t.string "education"
     t.string "email", default: "", null: false
+    t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
     t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true

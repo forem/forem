@@ -242,10 +242,10 @@
         padding: 15px 0px;
       }
       .row{
-        padding: 8px 0px;
+        padding: calc(5px + 0.2vw) 0px;
         display: inline-block;
-        padding-left: 20px;
-        width: 320px;
+        padding-left: 18px;
+        width: 300px;
         max-width:92%;
       }
       .key{

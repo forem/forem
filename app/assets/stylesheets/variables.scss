@@ -13,6 +13,7 @@ $lightest-gray: #f9f9fa;
 $light-gray: #f5f6f7;
 $light-medium-gray:#dbdbdb;
 $medium-gray:#666666;
+$dark-medium-gray:#444444;
 $dark-gray:#333333;
 $red:#ff0000;
 $yellow: #fefa87;
@@ -21,6 +22,7 @@ $off-white: #fffffe;
 $bold-blue: #0045ff;
 
 $helvetica: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$monospace: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 $helvetica-condensed: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
 
 $outline-color: darken($light-medium-gray, 2%);

@@ -10,13 +10,14 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
 
   it "user creates an organization" do
     visit "settings/organization"
-    fill_in "Name", with: "Organization Name"
-    fill_in "Username", with: "Organization"
+    fill_in "organization[name]", with: "Organization Name"
+    fill_in "organization[slug]", with: "Organization"
     attach_file("organization_profile_image", "#{Rails.root}/app/assets/images/android-icon-36x36.png")
     fill_in "Text color (hex)", with: "#ffffff"
     fill_in "Background color (hex)", with: "#000000"
-    fill_in "Site url", with: "http://company.com"
-    fill_in "Summary", with: "Summary"
+    fill_in "organization[url]", with: "http://company.com"
+    fill_in "organization[summary]", with: "Summary"
+    fill_in "organization[proof]", with: "Proof"
     click_button "SUBMIT"
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end

@@ -14,12 +14,15 @@
                 <span class="widget-accent">fork</span>
               <% end %>
               <%= repo.language %>
-              <% if repo.stargazers_count > 0%>
+              <% if repo.stargazers_count > 0 %>
                 <img src="<%= asset_path("star.svg") %>" /> <%= repo.stargazers_count %>
               <% end %>
             </div>
           </div>
         </a>
+      <% end %>
+      <% if @user.badge_achievements_count > 0 %>
+        <%= render "articles/badges_area" %>
       <% end %>
     <% elsif @user && @user.class.name == "Organization" %>
     <% elsif @tag  %>

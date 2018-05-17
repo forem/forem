@@ -55,11 +55,6 @@
   <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
   <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
 <% end %>
-<% if params[:preview] %>
-  <a href="<%=@article.path %>/edit" class="unpublished">
-    Unpublished Post. This URL is public but secret, so share at your own discretion. <em>Click to edit.</em>
-  </a>
-<% end %>
 
 <div class="home">
   <div
@@ -84,6 +79,11 @@
         <meta itemprop="name" content="The DEV Community">
       </div>
       <header>
+        <% if !@article.published %>
+          <a href="<%=@article.path %>/edit" class="unpublished">
+            Unpublished Post. This URL is public but secret, so share at your own discretion. <em style="display: inline-block;">Click to edit.</em>
+          </a>
+        <% end %>
         <% if @article.video.present? %>
           <%= render "articles/video_player", meta_tags: true, article: @article  %>
         <% elsif @article.main_image.present? %>
@@ -164,7 +164,7 @@
         <%= render 'articles/about_author' %>
       <% end %>
     <% end %>
-    <%= render 'articles/org_branding' %>
+    <%= render 'articles/org_branding', organization: @organization %>
     <% if @article.show_comments %>
       <div class="comments-container-container">
         <div
