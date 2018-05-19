@@ -30,7 +30,6 @@ class Follow < ApplicationRecord
 
   validates :followable_id, uniqueness: { scope: [:followable_type, :follower_id] }
 
-
   def activity_actor
     follower
   end
@@ -42,10 +41,6 @@ class Follow < ApplicationRecord
 
   def activity_object
     followable
-  end
-
-  def activity_target
-    return "follow_#{Time.now}"
   end
 
   def remove_from_feed
@@ -76,5 +71,4 @@ class Follow < ApplicationRecord
     end
   end
   handle_asynchronously :send_email_notification
-
 end
