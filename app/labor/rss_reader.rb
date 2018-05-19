@@ -173,9 +173,7 @@ class RssReader
   def clean_relative_path!(html_doc, url)
     html_doc.css("img").each do |img_tag|
       path = img_tag.attributes["src"].value
-      if path[0] == "/"
-        img_tag.attributes["src"].value = url + path
-      end
+      img_tag.attributes["src"].value = URI.join(url, path).to_s if path.start_with? "/"
     end
   end
 
