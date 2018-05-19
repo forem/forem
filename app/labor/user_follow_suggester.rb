@@ -6,28 +6,11 @@ class UserFollowSuggester
   end
 
   def suggestions
-    user_ids = tagged_article_user_ids
     if user.decorate.cached_followed_tag_names.any?
-      group_1 = User.where(id: user_ids).
-        order("reputation_modifier DESC").offset(rand(0..offset_number)).limit(15).to_a
-      group_2 = User.where(id: user_ids).
-        order("twitter_following_count DESC").offset(rand(0..offset_number)).limit(15).to_a
-      group_3 = User.where(id: user_ids).
-        order("articles_count DESC").limit(20).offset(rand(0..offset_number)).to_a
-      group_4 = User.where(id: user_ids).
-        order("comments_count DESC").limit(25).offset(rand(0..offset_number)).to_a
-      group_5 = User.order("reputation_modifier DESC").offset(rand(0..offset_number)).limit(15).to_a
-      group_6 = User.order("comments_count DESC").offset(rand(0..offset_number)).limit(15).to_a
-      group_7 = User.tagged_with(user.decorate.cached_followed_tag_names, any: true).limit(15).to_a
-
-      users = ((group_1 + group_2 + group_3 + group_4 + group_5 + group_6 - [user]).
-        shuffle.first(50) + group_7).uniq
+      users = ((recent_producers(1) + recent_producers(4) + recent_commenters - [user]).
+        shuffle.first(55) + tagged_producers).uniq
     else
-      group_1 = User.order("reputation_modifier DESC").offset(rand(0..offset_number)).limit(100).to_a
-      group_2 = User.where("articles_count > ?", 5).
-        order("twitter_following_count DESC").offset(rand(0..offset_number)).limit(100).to_a
-      group_3 = User.order("comments_count DESC").offset(rand(0..offset_number)).limit(100).to_a
-      users = (group_1 + group_2 + group_3 - [user]).
+      users = (recent_commenters(4, 30) + recent_top_producers - [user]).
         uniq.shuffle.first(50)
     end
     users
@@ -49,22 +32,45 @@ class UserFollowSuggester
     end
   end
 
-  def tagged_article_user_ids
+  def tagged_article_user_ids(num_weeks=1)
     Article.
       tagged_with(user.decorate.cached_followed_tag_names, any: true).
       where(published: true).
-      where("positive_reactions_count > ? AND published_at > ?", article, 7.months.ago).
+      where("positive_reactions_count > ? AND published_at > ?",
+        article_reaction_count, num_weeks.weeks.ago).
       pluck(:user_id).
       each_with_object(Hash.new(0)) { |value, counts| counts[value] += 1 }.
       sort_by { |_key, value| value }.
       map { |arr| arr[0] }
   end
 
-  def offset_number
-    Rails.env.production? ? 250 : 0
+  def recent_producers(num_weeks=1)
+    User.where(id: tagged_article_user_ids(num_weeks)).order("updated_at DESC").limit(50).to_a
   end
 
-  def article
-    Rails.env.production? ? 15 : 0
+  def recent_top_producers
+    User.where("articles_count > ? AND comments_count > ?",
+      established_user_article_count, established_user_comment_count).
+      order("updated_at DESC").limit(50).to_a
+  end
+
+  def recent_commenters(num_coumments=2,limit=8)
+    User.where("comments_count > ?", num_coumments).order("updated_at DESC").limit(limit).to_a
+  end
+
+  def tagged_producers
+    User.tagged_with(user.decorate.cached_followed_tag_names, any: true).limit(15).to_a
+  end
+
+  def established_user_article_count
+    Rails.env.production? ? 4 : -1
+  end
+
+  def established_user_comment_count
+    Rails.env.production? ? 4 : -1
+  end
+
+  def article_reaction_count
+    Rails.env.production? ? 14 : -1
   end
 end
