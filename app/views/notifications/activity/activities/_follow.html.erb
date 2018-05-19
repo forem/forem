@@ -7,7 +7,7 @@
 <% end %>
 <% cache "activity-follow-button-#{activity['actor'].path}-#{activity['actor'].name}" do %>
   <div class="content notification-content comment-content">
-      <a href="<%= activity['actor'].path %>"><%= activity['actor'].name %></a> followed you
+      <a href="<%= activity['actor'].path %>"><%= activity['actor'].name %></a> followed you!
       <%= follow_button(activity['actor'], "follow-back") %>
   </div>
 <% end %>

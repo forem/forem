@@ -31,20 +31,24 @@
     <div class="side-bar"></div>
       <div class="articles-list" id="articles-list">
         <% if user_signed_in? %>
-          <% if @activities.size > 0%>
+          <% if @activities.size > 0 %>
             <% cache "notifications-fragment-#{current_user.last_notification_activity}-#{current_user.updated_at.to_s}-#{current_user.id}", expires_in: 15.minutes  do %>
               <% @activities.each do |group| %>
                 <% cache "notifications-fragment-#{group["is_seen"].to_s}-#{group["id"].to_s}-#{group.to_s.size}-#{@last_user_reaction}-#{@last_user_comment}" do %>
                   <% if current_user.id == 1 || Rails.env.development? %>
                       <% if group['verb'] == "Reaction" && group['activity_count'] > 1 %>
-                          <%= render "notifications/aggregated_reactions", group:group %>
+                        <%= render "notifications/aggregated_reactions", group: group %>
+                      <% elsif group['verb'] == "Follow" && group['activity_count'] > 1 %>
+                        <%= render "notifications/aggregated_follows", group: group %>
                       <% else %>
                         <%= render_activity(group, partial_root: '/notifications/activity') %>
                       <% end %>
                   <% else %>
                     <% begin %>
                       <% if group['verb'] == "Reaction" && group['activity_count'] > 1 %>
-                          <%= render "notifications/aggregated_reactions", group:group %>
+                        <%= render "notifications/aggregated_reactions", group: group %>
+                      <% elsif group['verb'] == "Follow" && group['activity_count'] > 1 %>
+                        <%= render "notifications/aggregated_follows", group: group %>
                       <% else %>
                         <%= render_activity(group, partial_root: '/notifications/activity') %>
                       <% end %>

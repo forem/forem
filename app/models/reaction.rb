@@ -34,7 +34,7 @@ class Reaction < ApplicationRecord
     self.includes(:reactable).
       where(reactable_type: "Article", user_id: user.id).
       where("created_at > ?", 5.days.ago).
-      select('distinct on (reactable_id) *').
+      select("distinct on (reactable_id) *").
       take(15)
   end
 
@@ -50,7 +50,7 @@ class Reaction < ApplicationRecord
 
   def activity_notify
     return if user_id == reactable.user_id
-    return if points < 0
+    return if points.negative?
     [StreamNotifier.new(reactable.user.id).notify]
   end
 

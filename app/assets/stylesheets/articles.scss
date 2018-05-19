@@ -13,6 +13,9 @@
   @media screen and ( min-width: 950px ){
     margin-top:26px;
   }
+  @media screen and ( min-width: 2650px ){
+    max-width: 1300px;
+  }
   &.sub-home{
     margin-top:10px;
     .side-bar{
@@ -230,6 +233,18 @@
         }
         &:hover{
           opacity:0.9;
+        }
+      }
+      .tiny-pic{
+        display: inline-block;
+        height: 30px;
+        width: 30px;
+        img{
+          height:100%;
+          width:100%;
+          &.round{
+            border-radius: 30px;
+          }
         }
       }
       .content{
