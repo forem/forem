@@ -32,7 +32,8 @@ module Api
         end
         Article.tagged_with(tag_list, any: true).
           order("published_at DESC").
-          where("positive_reactions_count > ? OR comments_count > ?", 10, 3).limit(15).each do |article|
+          where("positive_reactions_count > ? OR comments_count > ? AND published = ?", 10, 3, true).
+          limit(15).each do |article|
             @articles << article
           end
         @articles = @articles.uniq.sample(6)
