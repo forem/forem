@@ -64,7 +64,7 @@ class MarkdownParser
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
     html = markdown.render(escaped_content)
-    sanitized_content = sanitized_article_body(html)
+    sanitized_content = sanitize_rendered_markdown(html)
     begin
       parsed_liquid = Liquid::Template.parse(sanitized_content)
     rescue StandardError => e

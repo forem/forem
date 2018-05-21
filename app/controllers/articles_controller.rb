@@ -86,10 +86,10 @@ class ArticlesController < ApplicationController
     @article.tag_list = []
     @article.main_image = nil
     edited_at_date = if @article.user == current_user && @article.published
-                        DateTime.now
-                      else
-                        @article.edited_at
-                      end
+                       Time.now
+                     else
+                       @article.edited_at
+                     end
     if @article.update(article_params.merge(edited_at: edited_at_date))
       handle_org_assignment
       handle_hiring_tag
