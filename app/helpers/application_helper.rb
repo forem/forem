@@ -23,6 +23,7 @@ module ApplicationHelper
       controller_name == "dashboards"||
       controller_name == "moderations"||
       controller_name == "videos"||
+      controller_name == "badges"||
       controller_name == "stories" ||
       controller_name == "comments" ||
       controller_name == "notifications" ||
