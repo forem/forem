@@ -2,17 +2,17 @@ class CodepenTag < LiquidTagBase
   def initialize(tag_name, link, tokens)
     super
     @link = parse_link(link)
-    @height = 500
+    @height = 600
   end
 
   def render(context)
-    html = <<~HTML
+    html = <<-HTML
       <iframe height="#{@height}"
         src="#{@link}?height=500&default-tab=result&embed-version=2"
-        scrolling="yes"
+        scrolling="no"
         frameborder="no"
         allowtransparency="true"
-        style="width: 100%">
+        style="width: 100%;">
       </iframe>
     HTML
     finalize_html(html)

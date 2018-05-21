@@ -15,36 +15,36 @@ class GithubTag < LiquidTagBase
   end
 
   def render(context)
-    contentJSON = @content.issue_serialized
+    content_json = @content.issue_serialized
     body = @content.processed_html
-    username = contentJSON[:user][:login]
-    user_html_url = contentJSON[:user][:html_url]
-    user_avatar_url = contentJSON[:user][:avatar_url]
-    date = Date.parse(contentJSON[:created_at].to_s).strftime('%b %d, %Y')
-    date_link = contentJSON[:html_url]
+    username = content_json[:user][:login]
+    user_html_url = content_json[:user][:html_url]
+    user_avatar_url = content_json[:user][:avatar_url]
+    date = Date.parse(content_json[:created_at].to_s).strftime("%b %d, %Y")
+    date_link = content_json[:html_url]
     title = generate_title
-    html = '' \
-    "<div class=\"ltag_github-liquid-tag\"> "\
-      "#{title}" \
-      "<div class=\"github-thread\"> " \
-        "<div class=\"timeline-comment-header\"> " \
-          "<a href=\"#{user_html_url}\"> " \
-            "<img class=\"github-liquid-tag-img\" src=\"#{user_avatar_url}\" alt=\"#{username} avatar\"> " \
-          "</a> " \
-          "<span class=\"arrow-left-outer\"></span> " \
-          "<span class=\"arrow-left-inner\"></span> " \
-          "<div class=\"timeline-comment-header-text\"> " \
-            "<strong> " \
-              "<a href=\"#{user_html_url}\">#{username}</a> " \
-            "</strong> commented on <a href=\"#{date_link}\">#{date}</a> <span class=\"timestamp\"></span> " \
-          "</div> " \
-        "</div> " \
-        "<div class=\"edit-comment-hide\"> " \
-          "#{body.chomp} " \
-        "</div> " \
-      "</div> " \
-    "</div>"
-
+    html = <<-HTML
+      <div class="ltag_github-liquid-tag">
+      #{title}
+      <div class="github-thread">
+        <div class="timeline-comment-header">
+          <a href="#{user_html_url}">
+            <img class="github-liquid-tag-img" src="#{user_avatar_url}" alt="#{username} avatar">
+          </a>
+          <span class="arrow-left-outer"></span>
+          <span class="arrow-left-inner"></span>
+          <div class="timeline-comment-header-text">
+            <strong>
+              <a href="#{user_html_url}">#{username}</a>
+            </strong> commented on <a href="#{date_link}">#{date}</a> <span class="timestamp"></span>
+          </div>
+        </div>
+        <div class="edit-comment-hide">
+          #{body.chomp}
+        </div>
+      </div>
+    </div>
+    HTML
     finalize_html(html)
   end
 
@@ -52,7 +52,7 @@ class GithubTag < LiquidTagBase
 
   def parse_link(link)
     link = ActionController::Base.helpers.strip_tags(link)
-    link_no_space = link.delete(' ')
+    link_no_space = link.delete(" ")
     if valid_link?(link_no_space)
       generate_api_link(link_no_space)
     else
@@ -69,10 +69,10 @@ class GithubTag < LiquidTagBase
   end
 
   def generate_title
-    contentJSON = @content.issue_serialized
-    title = contentJSON[:title]
-    number = contentJSON[:number]
-    link = contentJSON[:html_url]
+    content_json = @content.issue_serialized
+    title = content_json[:title]
+    number = content_json[:number]
+    link = content_json[:html_url]
     return unless title
     "<h1> " \
       "<a href=\"#{link}\">" \

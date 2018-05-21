@@ -52,7 +52,7 @@
       <% if @commentable.processed_html.present? %>
         <% if @commentable.processed_html.size < 350 %>
           <div class="body">
-            <%= sanitized_article_body(@commentable.processed_html.html_safe) %>
+            <%= sanitize_rendered_markdown(@commentable.processed_html.html_safe) %>
           </div>
         <% else %>
           <div class="body">
