@@ -8,8 +8,9 @@ class Message < ApplicationRecord
   before_validation :evaluate_markdown
   before_validation :evaluate_channel_permission
 
-  def timestamp
-    created_at.strftime("%H:%M:%S")
+  def preferred_user_color
+    color_options = [user.bg_color_hex || "#000000", user.text_color_hex || "#000000"]
+    HexComparer.new(color_options).brightness(0.9)
   end
 
   private

@@ -11,12 +11,12 @@
     "preact"
   ],
   "env": {
-        "test": {
-            "plugins": [
-              "transform-es2015-modules-commonjs",
-              ["transform-react-jsx", { "pragma":"h" }],
-              "transform-class-properties"
-            ]
+    "test": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+        ["transform-react-jsx", { "pragma":"h" }],
+        "transform-class-properties"
+      ]
     }
   },
   "plugins": [

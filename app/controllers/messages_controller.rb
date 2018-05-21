@@ -40,15 +40,11 @@ class MessagesController < ApplicationController
       user_id: new_message.user.id,
       chat_channel_id: new_message.chat_channel.id,
       username: new_message.user.username,
+      profile_image_url: ProfileImage.new(new_message.user).get(90),
       message: new_message.message_html,
-      timestamp: new_message.timestamp,
-      color: darker_user_color(new_message),
+      timestamp: new_message.created_at,
+      color: new_message.preferred_user_color,
     }.to_json
-  end
-
-  def darker_user_color(new_message)
-    HexComparer.new([new_message.user.bg_color_hex || "#000000",
-                     new_message.user.text_color_hex || "#000000"]).brightness(0.9)
   end
 
   def message_params
