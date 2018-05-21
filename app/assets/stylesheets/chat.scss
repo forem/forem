@@ -7,7 +7,7 @@
 }
 
 .chat__channels {
-  width: 276px;
+  width: 160px;
   height: inherit;
 }
 
@@ -33,15 +33,11 @@
 .activechatchannel__messages {
   font-size: 15px;
   padding: 10px 0px;
-  display: flex;
-  flex-direction: column;
   flex-grow: 1;
   height: 300px;
   overflow-y: scroll;
   overflow-x: hidden;
   text-align: left;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
   overscroll-behavior-y: contain;
 }
 
@@ -75,8 +71,9 @@
 
 // Chatmessage
 .chatmessage {
-  display: inline-block;
   padding: 3px 10px;
+  display: flex;
+  // justify-content: space-between;
 
   &:hover {
     background: #e3e3e3;
@@ -89,6 +86,7 @@
   flex-direction: column;
   justify-content: space-between;
   height: inherit;
+  width: inherit;
 }
 
 .chatchanneltab {
@@ -140,23 +138,43 @@
   border-top: 1px solid #c9c9c9
 }
 
-.chatmessage__username {
+.chatmessage__body {
+  flex-grow: 1;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.chatmessage__timestamp {
+  font-size: 11px;
+  color: lightgray;
+  min-width: 95px;
+}
+
+.chatmessagebody__profileimage {
+  height: 18px;
+  width: 18px;
+  margin-right: 3px;
+  border-radius: 20px;
+  vertical-align: bottom;
+}
+
+.chatmessagebody__username {
   font-weight: 600;
 }
 
-.chatmessage__username--link {
+.chatmessagebody__username--link {
   color: inherit;
 }
 
-.chatmessage__divider {
+.chatmessagebody__divider {
 
 }
 
-.chatmessage__message {
-
+.chatmessagebody__message {
 }
 
-.chatmessage__currentuser {
+.chatmessagebody__currentuser {
   background: black;
   color: white;
   padding: 1px 5px;

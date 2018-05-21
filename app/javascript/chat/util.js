@@ -54,3 +54,15 @@ export function hideMessages(messages, userId) {
   );
   return cleanedMessages;
 }
+
+export function adjustTimestamp(timestamp) {
+  let time = new Date(timestamp);
+  const options = {
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  };
+  time = new Intl.DateTimeFormat('en-US', options).format(time);
+  return time;
+}

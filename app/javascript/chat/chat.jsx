@@ -1,27 +1,26 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { conductModeration, getAllMessages, sendMessage } from './actions';
-import { hideMessages, scrollToBottom, setupObserver } from './util';
+import {
+  hideMessages,
+  scrollToBottom,
+  setupObserver,
+} from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
 import Message from './message';
 import setupPusher from './pusher';
 
-class Chat extends Component {
+export default class Chat extends Component {
+  static propTypes = {
+    pusherKey: PropTypes.number.isRequired,
+    chatChannels: PropTypes.array.isRequired,
+    chatOptions: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
-    this.handleFailure = this.handleFailure.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
-    this.handleSubmitOnClick = this.handleSubmitOnClick.bind(this);
-    this.handleSuccess = this.handleSuccess.bind(this);
-    this.observerCallback = this.observerCallback.bind(this);
-    this.receiveAllMessages = this.receiveAllMessages.bind(this);
-    this.receiveNewMessage = this.receiveNewMessage.bind(this);
-    this.clearChannel = this.clearChannel.bind(this);
-    this.redactUserMessages = this.redactUserMessages.bind(this);
-    this.handleSwitchChannel = this.handleSwitchChannel.bind(this);
     const chatChannels = JSON.parse(this.props.chatChannels);
     const chatOptions = JSON.parse(this.props.chatOptions);
     this.state = {
@@ -34,6 +33,7 @@ class Chat extends Component {
       chatChannels,
       activeChannelId: chatChannels[0].id,
       showChannelsList: chatOptions.showChannelsList,
+      showTimestamp: chatOptions.showTimestamp,
     };
   }
 
@@ -50,7 +50,7 @@ class Chat extends Component {
     }
   }
 
-  setupChannel(channelId) {
+  setupChannel = channelId => {
     getAllMessages(channelId, this.receiveAllMessages);
     setupPusher(this.props.pusherKey, {
       channelId,
@@ -58,9 +58,9 @@ class Chat extends Component {
       channelCleared: this.clearChannel,
       redactUserMessages: this.redactUserMessages,
     });
-  }
+  };
 
-  observerCallback(entries) {
+  observerCallback = entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         this.setState({ scrolled: false, showAlert: false });
@@ -68,15 +68,15 @@ class Chat extends Component {
         this.setState({ scrolled: true });
       }
     });
-  }
+  };
 
-  receiveAllMessages(res) {
+  receiveAllMessages = res => {
     const { chatChannelId, messages } = res;
     const newMessages = { ...this.state.messages, [chatChannelId]: messages };
     this.setState({ messages: newMessages });
-  }
+  };
 
-  receiveNewMessage(message) {
+  receiveNewMessage = message => {
     const receivedChatChannelId = message.chat_channel_id;
     const newMessages = this.state.messages[receivedChatChannelId].slice();
     newMessages.push(message);
@@ -94,31 +94,38 @@ class Chat extends Component {
         [receivedChatChannelId]: newMessages,
       },
     });
-  }
+  };
 
-  redactUserMessages(res) {
+  redactUserMessages = res => {
     // This is shallow clone. This might cause a problem
     const clonedMessages = Object.assign({}, this.state.messages);
     const newMessages = hideMessages(clonedMessages, res.userId);
     this.setState({ messages: newMessages });
-  }
+  };
 
-  clearChannel(res) {
+  clearChannel = res => {
     const newMessages = { ...this.state.messages, [res.chat_channel_id]: [] };
     this.setState({ messages: newMessages });
-  }
+  };
 
-  handleKeyDown(e) {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      if (e.target.value.length > 0) {
+  handleKeyDown = e => {
+    const enterPressed = e.keyCode === 13;
+    const targetValue = e.target.value;
+    const messageIsEmpty = targetValue.length === 0;
+    const shiftPressed = e.shiftKey;
+
+    if (enterPressed) {
+      if(messageIsEmpty) {
+        e.preventDefault();
+      } else if (!messageIsEmpty && !shiftPressed) {
+        e.preventDefault();
         this.handleMessageSubmit(e.target.value);
         e.target.value = '';
       }
     }
-  }
+  };
 
-  handleMessageSubmit(message) {
+  handleMessageSubmit = message => {
     // should check if user has the priviledge
     if (message[0] === '/') {
       conductModeration(
@@ -135,50 +142,51 @@ class Chat extends Component {
         this.handleFailure,
       );
     }
-  }
+  };
 
-  handleSwitchChannel(e) {
+  handleSwitchChannel = e => {
     e.preventDefault();
     this.setState({
       activeChannelId: e.target.dataset.channelId,
       scrolled: false,
       showAlert: false,
     });
-  }
+  };
 
-  handleSubmitOnClick(e) {
+  handleSubmitOnClick = e => {
     e.preventDefault();
     const message = document.getElementById('messageform').value;
     if (message.length > 0) {
       this.handleMessageSubmit(message);
       document.getElementById('messageform').value = '';
     }
-  }
+  };
 
-  handleSuccess(response) {
+  handleSuccess = response => {
     if (response.status === 'error') {
       this.receiveNewMessage(response.message);
     }
-  }
+  };
 
-  handleFailure(err) {
+  handleFailure = err => {
     console.error(err);
-  }
+  };
 
-  renderMessage() {
-    const { activeChannelId, messages } = this.state;
+  renderMessage = () => {
+    const { activeChannelId, messages, showTimestamp } = this.state;
     return messages[activeChannelId].map(message => (
       <Message
         user={message.username}
+        profileImageUrl={message.profile_image_url}
         message={message.message}
-        timeStamp={message.timestamp}
+        timestamp={showTimestamp ? message.timestamp : null}
         color={message.color}
         type={message.type}
       />
     ));
-  }
+  };
 
-  renderChatChannels() {
+  renderChatChannels = () => {
     if (this.state.showChannelsList) {
       return (
         <div className="chat__channels">
@@ -191,27 +199,25 @@ class Chat extends Component {
       );
     }
     return '';
-  }
+  };
 
-  renderActiveChatChannel() {
-    return (
-      <div className="activechatchannel">
-        <div className="activechatchannel__messages" id="messagelist">
-          {this.renderMessage()}
-          <div id="messagelist__sentinel" />
-        </div>
-        <div className="activechatchannel__alerts">
-          <Alert showAlert={this.state.showAlert} />
-        </div>
-        <div className="activechatchannel__form">
-          <Compose
-            handleKeyDown={this.handleKeyDown}
-            handleSubmitOnClick={this.handleSubmitOnClick}
-          />
-        </div>
+  renderActiveChatChannel = () => (
+    <div className="activechatchannel">
+      <div className="activechatchannel__messages" id="messagelist">
+        {this.renderMessage()}
+        <div id="messagelist__sentinel" />
       </div>
-    );
-  }
+      <div className="activechatchannel__alerts">
+        <Alert showAlert={this.state.showAlert} />
+      </div>
+      <div className="activechatchannel__form">
+        <Compose
+          handleKeyDown={this.handleKeyDown}
+          handleSubmitOnClick={this.handleSubmitOnClick}
+        />
+      </div>
+    </div>
+  );
 
   render() {
     return (
@@ -222,11 +228,3 @@ class Chat extends Component {
     );
   }
 }
-
-Chat.propTypes = {
-  pusherKey: PropTypes.number.isRequired,
-  chatChannels: PropTypes.array.isRequired,
-  chatOptions: PropTypes.object.isRequired,
-};
-
-export default Chat;

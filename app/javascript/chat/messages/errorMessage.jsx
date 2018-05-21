@@ -5,9 +5,9 @@ const ErrorMessage = ({ message }) => {
   const errorStyle = { color: 'darksalmon', 'font-size': '13px' };
   return (
     <div className="chatmessage">
-      <span className="chatmessage__message" style={errorStyle}>
+      <span className="chatmessage__body" style={errorStyle}>
         {'Sorry '}
-        <span className="chatmessage__currentuser">
+        <span className="chatmessagebody__currentuser">
           {`@${window.currentUser.username}`}
         </span>
         {` ${message}`}

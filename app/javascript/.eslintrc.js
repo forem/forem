@@ -1,4 +1,5 @@
 module.exports = {
+  parser: 'babel-eslint',
   extends: ['airbnb', 'prettier'],
   parserOptions: {
     ecmaVersion: 2017,
@@ -12,7 +13,7 @@ module.exports = {
     jest: true,
     browser: true,
   },
-  plugins: ['import'],
+  plugins: ['import', 'babel'],
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
