@@ -9,7 +9,7 @@ class BufferedArticlesController < ApplicationController
   def buffered_article_urls
     if Rails.env.production?
       Article.
-        where("last_buffered > ?", 24.hours.ago).
+        where("last_buffered > ? OR published_at > ?", 24.hours.ago, 20.minutes.ago).
         map { |a| "https://dev.to#{a.path}" }
     else
       Article.all.map { |a| "https://dev.to#{a.path}" }

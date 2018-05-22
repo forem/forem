@@ -1,23 +1,23 @@
 <%= content_for :page_meta do %>
   <% if @user %>
-    <% title "#{@user.name} - DEV" %>
+    <% title "#{@user.name} - DEV Profile" %>
     <link rel="canonical" href="https://dev.to/<%= @user.username %>"/>
     <meta name="description" content="<%= @user.summary %>">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://dev.to/<%= @user.username %>" />
-    <meta property="og:title" content="<%= @user.name %> — The Practical Dev" />
-    <meta property="og:image" content="<%= @user.profile_image_url %>" >
+    <meta property="og:title" content="<%= @user.name %> —  - DEV Profile" />
+    <meta property="og:image" content="<%= GeneratedImage.new(@user).social_image %>" >
     <meta property="og:description" content="<%= @user.summary %>" />
-    <meta property="og:site_name" content="The Practical Dev" />
+    <meta property="og:site_name" content="The DEV Community" />
     
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@ThePracticalDev">
     <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
-    <meta name="twitter:title" content="<%= @user.name %> — The Practical Dev">
+    <meta name="twitter:title" content="<%= @user.name %> — DEV Profile">
     <meta name="twitter:description" content="<%= @user.summary %>">
-    <meta name="twitter:image:src" content="<%= @user.profile_image_url %>" >
+    <meta name="twitter:image:src" content="<%= GeneratedImage.new(@user).social_image %>" >
     <%= auto_discovery_link_tag(:rss, "https://dev.to/feed/#{@user.username}", {title: "The Practical Dev RSS Feed"}) %>
   <% elsif @tag.present? %>
     <% title "#{@tag}#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? } - The DEV Community" %>
@@ -29,17 +29,17 @@
     <meta property="og:url" content="https://dev.to/<%= @tag %>" />
     <meta property="og:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community" />
     <meta property="og:description" content="<%= @tag %> content on dev.to" />
-    <meta property="og:site_name" content="The Practical Dev" />
+    <meta property="og:site_name" content="The DEV Community" />
 
     <meta name="twitter:site" content="@ThePracticalDev">
     <meta name="twitter:creator" content="@<%=@tag %>">
     <meta name="twitter:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community">
     <meta name="twitter:description" content="<%= @tag %> content on dev.to">
 
-    <% if @tag_model && @tag_model.social_image.present? %>
+    <% if @tag_model %>
       <meta name="twitter:card" content="summary_large_image">
-      <meta property="og:image" content="<%= @tag_model.social_image_url %>" >
-      <meta name="twitter:image:src" content="<%= @tag_model.social_image_url %>" >
+      <meta property="og:image" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
+      <meta name="twitter:image:src" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
     <% else %>
       <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
       <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
@@ -54,7 +54,7 @@
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="DEV => Search Results" />
-    <meta property="og:title" content="The Practical Dev" />
+    <meta property="og:title" content="The DEV Community" />
       <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
     <meta property="og:description" content="Where programmers share ideas and help each other grow." />
     <meta property="og:site_name" content="The DEV Community" />

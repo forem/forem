@@ -461,6 +461,7 @@ class Article < ApplicationRecord
 
   def async_bust
     CacheBuster.new.bust_article(self)
+    HTTParty.get GeneratedImage.new(self).social_image
   end
   handle_asynchronously :async_bust
 end
