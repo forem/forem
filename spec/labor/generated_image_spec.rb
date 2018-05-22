@@ -14,25 +14,11 @@ RSpec.describe GeneratedImage do
     expect(GeneratedImage.new(article).social_image).to eq(article.main_image)
   end
 
-  it 'should return the she coded path if it is there and no social or main' do
-    article.main_image = nil
-    article.social_image = nil
-    article.cached_tag_list = "shecoded, hello, goodbye"
-    expect(GeneratedImage.new(article).social_image.include? "shecoded").to eq(true)
-  end
-
-  it 'should return discuss image path if the other criteria is not met' do
+  it 'should return article social image' do
     article.main_image = nil
     article.social_image = nil
     article.cached_tag_list = "discuss, hello, goodbye"
-    expect(GeneratedImage.new(article).social_image.include? "discuss").to eq(true)
-  end
-
-  it 'should return a default image if the rest are not present' do
-    article.main_image = nil
-    article.social_image = nil
-    article.cached_tag_list = "heyhahahaha, hello, goodbye"
-    expect(GeneratedImage.new(article).social_image.include? "default").to eq(true)
+    expect(GeneratedImage.new(article).social_image.include? "article/#{article.id}").to eq(true)
   end
 
   it "creates various generated images of different title lengths" do

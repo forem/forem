@@ -44,10 +44,23 @@
     overflow: hidden;
     position:relative;
   }
+  .preview-info-header{
+    color: black;
+    margin: 2vw auto 0vw;
+    font-family:  "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 3.5vw;
+    width: 92%;
+  }
+  .preview-info-header img {
+    height: 2.5vw;
+    vertical-align: -0.15vw;
+    margin-left: 1vw;
+    margin-right: 0.5vw;
+  }
   h1{
     color: <%= dark_color %>;
     width: 92%;
-    margin: 2vw auto;
+    margin: 1vw auto;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   }
   .preview-user {
@@ -84,7 +97,18 @@
   <div class="circle circle2"></div>
   <div class="circle circle3"></div>
   <div class="preview-div">
-    <h1 style="font-size:<%= 15 - (((@article.title.size**0.89)+85)/16)%>vw;"><%= @article.title %><h1>
+    <% font_size = 15 - (((@article.title.size**0.89)+85)/16) %>
+    <% if @article.tag_list.include?("discuss") %>
+      <% font_size = 13.5 - (((@article.title.size**0.89)+85)/16) %>
+      <div class="preview-info-header">
+        <% if @article.comments_count > 0 %>
+          #discuss <img src="<%= asset_path "comments-bubble.png" %>" /><%= @article.comments_count %>
+        <% else %>
+          New Discussion!
+        <% end %>
+      </div>
+    <% end %>
+    <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %><h1>
     <div class="preview-user">
       <img src="<%= ProfileImage.new(@article.user).get(90) %>" />
       <%= truncate @article.user.name, length: 25 %>・<%= @article.readable_publish_date %>
