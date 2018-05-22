@@ -29,7 +29,7 @@
 <% end %>
 </style>
 
-<% if current_user&.has_role?(:super_admin) || (Flipflop.live_is_live? && current_user&.workshop_eligible?) %>
+<% if (user_signed_in? && Flipflop.live_is_live?) || current_user&.has_role?(:super_admin) %>
   <div class="live-container">
     <div class="live-component">
       <div class="live-video">
@@ -54,10 +54,9 @@
   </div>
 <% elsif Flipflop.live_is_live? %>
   <div class="live-upcoming-info">
-    <h1 style="text-align: center">We're currently <span style="display: inline-block">L I V E <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; vertical-align: text-top;" %></span></h1>
-    <h4 style="text-align: center">
-      <i>Our current event is available for <br> <a href="/membership">members with workshop passes</a> or for <a href="/p/scholarships">scholars</a>.
-    </h4>
+    <h1 style="text-align: center;font-size:3.5em;margin:-100px auto">DEV is <span style="display: inline-block">LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; vertical-align: text-top;" %></span></h1>
+    <%= render "devise/registrations/registration_form" %>
+
   </div>
 <% else %>
   <div class="live-upcoming-info">
