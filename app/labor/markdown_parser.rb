@@ -197,6 +197,7 @@ class MarkdownParser
     Liquid::Template.register_tag("codepen", CodepenTag)
     Liquid::Template.register_tag("gist", GistTag)
     Liquid::Template.register_tag("instagram", InstagramTag)
+    Liquid::Template.register_tag("speakerdeck", SpeakerdeckTag)
     Liquid::Template.register_tag("replit", ReplitTag)
     Liquid::Template.register_tag("runkit", RunkitTag)
     Liquid::Template.register_tag("youtube", YoutubeTag)
