@@ -12,13 +12,21 @@ module Internal
       @event = Event.create!(event_params)
       redirect_to(action: :index)
     rescue ActiveRecord::RecordInvalid => error
-      flash[:alert] = error.message
+      flash[:danger] = error.message
       redirect_to(action: :index)
     end
 
     def update
       @event = Event.find(params[:id])
-      @event.update(event_params)
+      if @event.update(event_params)
+        CacheBuster.new.bust "/live_articles"
+        flash[:success] = "#{@event.title} was successfully updated"
+        redirect_to "/internal/events"
+      else
+        flash[:danger] = @event.errors.full_messages
+        @events = Event.order("starts_at ASC")
+        render "index.html.erb"
+      end
     end
 
     private
@@ -33,7 +41,10 @@ module Internal
                                   :cover_image,
                                   :location_url,
                                   :description_markdown,
-                                  :published)
+                                  :published,
+                                  :host_name,
+                                  :profile_image,
+                                  :live_now)
     end
   end
 end

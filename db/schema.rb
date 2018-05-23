@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180516184437) do
+ActiveRecord::Schema.define(version: 20180522195341) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -243,8 +243,11 @@ ActiveRecord::Schema.define(version: 20180516184437) do
     t.text "description_html"
     t.text "description_markdown"
     t.datetime "ends_at"
+    t.string "host_name"
+    t.boolean "live_now", default: false
     t.string "location_name"
     t.string "location_url"
+    t.string "profile_image"
     t.boolean "published"
     t.string "slug"
     t.datetime "starts_at"

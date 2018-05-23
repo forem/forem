@@ -106,7 +106,7 @@
 
       <div class="starter-template">
         <% flash.each do |type, message| %>
-        <div class="alert alert-danger">
+        <div class="alert alert-<%= type %>">
           <button class="close"data-dismiss="alert">X</button>
           <%= message %>
         </div>

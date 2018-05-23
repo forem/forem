@@ -2,9 +2,21 @@
     <%= f.label :cover_image %>: 
     <%= f.file_field :cover_image %>
 </div>
+<br>
+<div>
+<img src="<%= event.profile_image_url %>" style="width: 25%;">
+<br>
+    <%= f.label :profile_image %> (for live notification): 
+    <%= f.file_field :profile_image %>
+</div>
+<br>
 <div>
     <%= f.label :title %>
     <%= f.text_field :title, maxlength: 90, size: 40, required: true %>
+</div>
+<div>
+    <%= f.label :host_name %>
+    <%= f.text_field :host_name, size: 40, required: true %>
 </div>
 <div>
     <%= f.label :category %>
@@ -36,5 +48,10 @@
     <%= f.label :publish %>
     <%= f.check_box :published %>
 <div>
+<div>
+    <%= f.label :live_now %>
+    <%= f.check_box :live_now %>
+</div>
     <%= f.submit %>
 </div> 
+<hr>
