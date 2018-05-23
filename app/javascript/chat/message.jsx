@@ -2,37 +2,29 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { adjustTimestamp } from './util';
 import ErrorMessage from './messages/errorMessage';
-import Hiddenmessage from './messages/hiddenMessage';
 
 const Message = ({
   user,
   message,
   color,
   type,
+  messageColor,
   timestamp,
   profileImageUrl,
 }) => {
   const spanStyle = { color };
+  const messageStyle = { color: messageColor };
 
   if (type === 'error') {
     return <ErrorMessage message={message} />;
-  } else if (type === 'hidden') {
-    return (
-      <Hiddenmessage
-        user={user}
-        color={color}
-        profileImageUrl={profileImageUrl}
-      />
-    );
   }
-
   const re = new RegExp(`@${window.currentUser.username}`);
   const match = re.exec(message);
   let messageArea;
 
   if (match) {
     messageArea = (
-      <span className="chatmessagebody__message">
+      <span className="chatmessagebody__message" style={messageStyle}>
         {message.substr(0, match.index)}
         <span className="chatmessagebody__currentuser">
           {`@${window.currentUser.username}`}
@@ -41,7 +33,11 @@ const Message = ({
       </span>
     );
   } else {
-    messageArea = <span className="chatmessagebody__message">{message}</span>;
+    messageArea = (
+      <span className="chatmessagebody__message" style={messageStyle}>
+        {message}
+      </span>
+    );
   }
 
   return (
@@ -81,6 +77,7 @@ Message.propTypes = {
   user: PropTypes.string.isRequired,
   color: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
+  messageColor: PropTypes.string,
   type: PropTypes.string,
   timestamp: PropTypes.string,
   profileImageUrl: PropTypes.string,
@@ -90,6 +87,7 @@ Message.defaultProps = {
   type: 'normalMessage',
   timestamp: null,
   profileImageUrl: '',
+  messageColor: 'black',
 };
 
 export default Message;
