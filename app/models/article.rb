@@ -84,6 +84,7 @@ class Article < ApplicationRecord
   }
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+    attribute :title
     add_index "searchables",
                   id: :index_id,
                   per_environment: true,
