@@ -202,7 +202,7 @@ export default class Chat extends Component {
     <div className="activechatchannel">
       <div className="activechatchannel__messages" id="messagelist">
         {this.renderMessage()}
-        <div id="messagelist__sentinel" />
+        <div className="messagelist__sentinel" id="messagelist__sentinel" />
       </div>
       <div className="activechatchannel__alerts">
         <Alert showAlert={this.state.showAlert} />

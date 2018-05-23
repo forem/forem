@@ -37,7 +37,9 @@ export function scrollToBottom() {
 
 export function setupObserver(callback) {
   const sentinel = document.querySelector('#messagelist__sentinel');
-  const somethingObserver = new IntersectionObserver(callback);
+  const somethingObserver = new IntersectionObserver(callback, {
+    threshold: [0, 1],
+  });
   somethingObserver.observe(sentinel);
 }
 
