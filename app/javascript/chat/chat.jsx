@@ -1,11 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { conductModeration, getAllMessages, sendMessage } from './actions';
-import {
-  hideMessages,
-  scrollToBottom,
-  setupObserver,
-} from './util';
+import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
@@ -115,7 +111,7 @@ export default class Chat extends Component {
     const shiftPressed = e.shiftKey;
 
     if (enterPressed) {
-      if(messageIsEmpty) {
+      if (messageIsEmpty) {
         e.preventDefault();
       } else if (!messageIsEmpty && !shiftPressed) {
         e.preventDefault();
@@ -179,6 +175,7 @@ export default class Chat extends Component {
         user={message.username}
         profileImageUrl={message.profile_image_url}
         message={message.message}
+        messageColor={message.messageColor}
         timestamp={showTimestamp ? message.timestamp : null}
         color={message.color}
         type={message.type}

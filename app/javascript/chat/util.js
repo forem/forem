@@ -1,3 +1,5 @@
+import 'intersection-observer';
+
 export function getUserDataAndCsrfToken() {
   const promise = new Promise((resolve, reject) => {
     let i = 0;
@@ -44,7 +46,10 @@ export function hideMessages(messages, userId) {
     (accumulator, channelId) => {
       const newMessages = messages[channelId].map(message => {
         if (message.user_id === userId) {
-          return Object.assign({ type: 'hidden' }, message);
+          const messageClone = Object.assign({ type: 'hidden' }, message);
+          messageClone.message = '<message removed>';
+          messageClone.messageColor = 'lightgray';
+          return messageClone;
         }
         return message;
       });
