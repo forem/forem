@@ -14,7 +14,7 @@ function initializeLiveArticle() {
           return;
         }
       }
-      if( article.path && window.location.href.indexOf(article.path) == -1) {
+      if( article.path && window.location.href.indexOf(article.path) == -1 && window.location.href.indexOf("/live") == -1) {
         el.innerHTML = liveIndicator(article);
         document.getElementById("live-exit-button").onclick = function(event){
           event.preventDefault();
@@ -43,7 +43,7 @@ function liveIndicator(article) {
           <a href="'+article.path+'" class="live-link" id="live-link"><div class="live-article-indicator-inner" id="live-article-indicator-inner">\
             <div class="live-pre-header"><span class="pulsating-circle"></span>Live Now</div>\
             <div class="live-article-title">'+article.title+'</div>\
-            <div class="live-user">'+article.user.name+'</div>\
+            <div class="live-user"><img src="'+article.user.profile_pic+'" />'+article.user.name+'</div>\
             <div class="live-tags">'+tagsHTML+'</div>\
           </div></a>'
 }

@@ -206,10 +206,11 @@
 }
 .live-article-indicator-inner{
   padding:10px 20px;
-  background: $yellow;
-  border: 4px solid $black;
+  background: white;
+  border: 2px solid $dark-purple;
+  box-shadow: 5px 5px 0px $dark-purple;
   border-radius: 3px;
-  max-width:300px;
+  max-width:calc(22vw + 96px);
   min-width:200px;
   display:none;
   @media screen and ( min-width: 1410px ){
@@ -220,17 +221,28 @@
   }
   .live-pre-header{
     font-size:1em;
-    margin-top:7px;
-    margin-left:30px;
+    margin-top:2px;
+    margin-left:25px;
     margin-bottom:15px;
     font-weight:800;
     font-family: $helvetica-condensed;
     font-stretch:condensed;
   }
   .live-article-title{
-    font-size:1.6em;
+    font-size:1.4em;
     font-weight:600;
     margin: 5px 0px;
+  }
+  .live-user{
+    font-weight: bold;
+    color:$dark-medium-gray;
+    img{
+      height: 27px;
+      width: 27px;
+      border-radius: 100px;
+      margin-right: 6px;
+      vertical-align: -6px;
+    }
   }
   .live-tags{
     margin: 8px 0px;
@@ -273,21 +285,21 @@
 
 .pulsating-circle {
   position: absolute;
-  left: 25px;
-  top: 27px;
+  left: 24px;
+  top: 25px;
   transform: translateX(-50%) translateY(-50%);
-  width: 30px;
-  height: 30px;
+  width: 22px;
+  height: 22px;
   
   &:before {
     content: '';
     position: relative;
     display: block;
-    width: 300%;
-    height: 300%;
+    width: 150%;
+    height: 150%;
     box-sizing: border-box;
-    margin-left: -100%;
-    margin-top: -100%;
+    margin-left: -25%;
+    margin-top: -25%;
     border-radius: 45px;
     background-color: $dark-purple;
     animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;

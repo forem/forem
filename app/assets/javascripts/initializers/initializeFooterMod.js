@@ -1,11 +1,12 @@
 function initializeFooterMod() {
+  var footerContainer = document.getElementById("footer-container");
   if (
-    document.getElementById('page-content').className.indexOf('stories-show') > -1
+    footerContainer && document.getElementById('page-content').className.indexOf('stories-show') > -1
   ) {
     document
       .getElementById('footer-container')
       .classList.remove('centered-footer');
-  } else {
+  } else if (footerContainer) {
     document
       .getElementById('footer-container')
       .classList.add('centered-footer');

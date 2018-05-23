@@ -1,13 +1,15 @@
 class Event < ApplicationRecord
   mount_uploader :cover_image, CoverImageUploader
-  before_validation :evaluate_markdown
+  mount_uploader :profile_image, ProfileImageUploader
 
   validates :title, length: { maximum: 90 }
   validates :location_url, url: { allow_blank: true, schemes: ["https", "http"] }
   validate :end_time_after_start
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/
   after_save :bust_cache
+
   before_validation :create_slug
+  before_validation :evaluate_markdown
 
   scope :in_the_future_and_published, -> {
     where("starts_at > ?", Time.now).
