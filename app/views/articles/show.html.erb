@@ -40,7 +40,7 @@
     <link rel="canonical" href="https://dev.to<%=@article.path%>"/>
   <% end %>
   <meta name="description" content="<%=@article.description || "An article from the community" %>">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="software development, inclusive, community,engineering,<%= @article.cached_tag_list %>">
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="https://dev.to<%=@article.path%>" />
