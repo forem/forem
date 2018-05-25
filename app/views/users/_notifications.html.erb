@@ -28,6 +28,10 @@
       <%= f.label :email_mention_notifications, "Send me an email when someone mentions me" %>
     </div>
     <div class="sub-field">
+      <%= f.check_box :email_badge_notifications %>
+      <%= f.label :email_badge_notifications, "Send me an email when I receive a badge" %>
+    </div>
+    <div class="sub-field">
       <%= f.check_box :email_unread_notifications %>
       <%= f.label :email_unread_notifications, "Send me occasional reminders that I have unread notifications on dev.to" %>
     </div>
