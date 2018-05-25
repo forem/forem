@@ -30,6 +30,8 @@ module Api
           php
           opensource
           ruby
+          cpp
+          dotnet
           swift
           testing
           devops

@@ -159,6 +159,7 @@ class UsersController < ApplicationController
                     email_comment_notifications
                     email_mention_notifications
                     email_follower_notifications
+                    email_badge_notifications
                     email_unread_notifications
                     bg_color_hex
                     text_color_hex
