@@ -31,7 +31,7 @@ class GithubTag
       raise_error if repo_details.length > 2
       user_name = repo_details[0]
       repo_name = repo_details[1]
-      client = Octokit::Client.new(access_token: Identity.where(provider: "github").last(250).sample)
+      client = Octokit::Client.new(access_token: Identity.where(provider: "github").last(250).sample.token)
       @readme_html = client.readme user_name + "/" + repo_name, :accept =>
       "application/vnd.github.html"
       @readme = client.readme user_name + "/" + repo_name
