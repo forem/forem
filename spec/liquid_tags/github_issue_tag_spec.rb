@@ -5,11 +5,11 @@ vcr_option = {
   allow_playback_repeats: "true",
 }
 
-RSpec.describe GithubTag, vcr: vcr_option do
+RSpec.describe GithubTag::GithubIssueTag, vcr: vcr_option do
   describe "#id" do
     let(:github_link) { "https://github.com/facebook/react/issues/9218" }
 
-    setup { Liquid::Template.register_tag("github", described_class) }
+    setup { Liquid::Template.register_tag("github", GithubTag) }
 
     def generate_github_issue(link)
       Liquid::Template.parse("{% github #{link} %}")
