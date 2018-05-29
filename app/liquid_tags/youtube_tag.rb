@@ -21,12 +21,17 @@ class YoutubeTag < LiquidTagBase
   private
 
   def parse_id(input)
+    input = translate_url(input) if input.include?("watch?v=")
     input_no_space = input.delete(' ')
     if valid_id?(input_no_space)
       input_no_space
     else
       raise StandardError, 'Invalid Youtube Id'
     end
+  end
+
+  def translate_url(input)
+    input.split("watch?v=")[1].split("\"")[0]
   end
 
   def valid_id?(id)

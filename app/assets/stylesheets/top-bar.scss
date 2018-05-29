@@ -22,10 +22,11 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow:0 2px 4px 0 rgba(0, 0, 0, 0.13);
   nav{
-    max-width:99%;
+    max-width:100%;
     width:1250px;
     margin:auto;
     position:relative;
+    background:$tan;
     a{
       &:active{
         opacity:0.8;
@@ -103,6 +104,7 @@
       position:absolute;
       top:7px;
       left:calc(50px + 5vw);
+      bottom: 0px;
       width: calc(55vw - 30px);
       @media screen and ( min-width: 350px ){
         width: calc(61vw - 38px);
@@ -196,13 +198,13 @@
     .menu{
       position:absolute;
       right:-3px;
-      padding:30px 10px;
+      padding:5px 10px;
       text-align:left;
       background: $tan;
       border: 1px solid rgb(219,222,225);
       border-top:0px;
       display:none;
-      width:calc(100vw - 20px);
+      width:calc(100vw - 18px);
       top: 45px;
       @media screen and ( min-width: 380px ){
         position: fixed;
