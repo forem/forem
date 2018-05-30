@@ -84,6 +84,7 @@ class User < ApplicationRecord
   before_validation :check_for_username_change
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+    attribute :name
     add_index "searchables",
                   id: :index_id,
                   per_environment: true,
