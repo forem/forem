@@ -63,5 +63,12 @@ task :github_repo_fetch_all => :environment do
 end
 
 task :send_email_digest => :environment do
+  return if Time.now.wday < 3
   EmailDigest.send_periodic_digest_email
 end
+
+task :award_badges => :environment do
+  BadgeRewarder.new.award_yearly_club_badges
+end
+
+
