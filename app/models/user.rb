@@ -82,6 +82,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
+  before_validation :unescape_summary
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -273,6 +274,11 @@ class User < ApplicationRecord
 
 
   private
+
+  def unescape_summary
+    return unless summary.present?
+    self.summary = CGI.unescapeHTML(summary)
+  end
 
   def send_welcome_notification
     Broadcast.send_welcome_notification(id)
