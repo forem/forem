@@ -13,13 +13,13 @@ class BoostedArticle
         includes(:user).
         includes(:organization).
         where.not(id: not_ids, organization_id: nil).
-        tagged_with(tags, any: true).sample
+        tagged_with(tags + article.boosted_additional_tags.split, any: true).sample
     else
       Article.boosted_via_dev_digest_email.
         includes(:user).
         includes(:organization).
         where.not(id: not_ids, organization_id: nil).
-        tagged_with(tags, any: true).sample
+        tagged_with(tags + article.boosted_additional_tags.split, any: true).sample
     end
   end
 end

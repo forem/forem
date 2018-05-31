@@ -158,6 +158,7 @@ class Article < ApplicationRecord
   store_attributes :boost_states do
     boosted_additional_articles Boolean, default: false
     boosted_dev_digest_email Boolean, default: false
+    boosted_additional_tags String, default: ""
   end
 
   def self.filter_excluded_tags(tag = nil)
