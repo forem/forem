@@ -20,18 +20,24 @@ class GithubRepo < ApplicationRecord
     where("updated_at < ?", 1.day.ago).find_each do |repo|
       user_token = User.find_by_id(repo.user_id).identities.where(provider: "github").last.token
       client = Octokit::Client.new(access_token: user_token)
-      fetched_repo = client.repo(repo.info_hash[:full_name])
-      repo.update!(
-        github_id_code: fetched_repo.id,
-        name: fetched_repo.name,
-        description: fetched_repo.description,
-        language: fetched_repo.language,
-        fork: fetched_repo.fork,
-        bytes_size: fetched_repo.size,
-        watchers_count: fetched_repo.watchers,
-        stargazers_count: fetched_repo.stargazers_count,
-        info_hash: fetched_repo.to_hash,
-      )
+      begin
+        fetched_repo = client.repo(repo.info_hash[:full_name])
+        repo.update!(
+          github_id_code: fetched_repo.id,
+          name: fetched_repo.name,
+          description: fetched_repo.description,
+          language: fetched_repo.language,
+          fork: fetched_repo.fork,
+          bytes_size: fetched_repo.size,
+          watchers_count: fetched_repo.watchers,
+          stargazers_count: fetched_repo.stargazers_count,
+          info_hash: fetched_repo.to_hash,
+        )
+      rescue => e
+        if e.message.include?("404 - Not Found")
+          repo.destroy
+        end
+      end
     end
   end
 
