@@ -47,8 +47,8 @@ class GithubTag
       readme = Nokogiri::HTML(readme_html)
       readme.css("img").each do |img_tag|
         path = img_tag.attributes["src"].value
-        if path[0,4] != "http"
-          img_tag.attributes["src"].value = url.gsub(/\/README.md/,"") + path
+        if path[0, 4] != "http"
+          img_tag.attributes["src"].value = url.gsub(/\/README.md/, "") + "/" + path
         end
       end
       readme.to_html

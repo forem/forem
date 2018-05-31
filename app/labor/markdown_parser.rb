@@ -48,7 +48,7 @@ class MarkdownParser
   def prefix_all_images(html, width = 880)
     doc = Nokogiri::HTML.fragment(html)
     doc.css("img").each do |img|
-      if img.attr("src")
+      if img.attr("src") && check_image_rehost_whitelist(img.attr("src"))
         src = img.attr("src")
         img["src"] = img_of_size(src, width)
       end
@@ -84,6 +84,11 @@ class MarkdownParser
     bad_xss.each do |xss_attempt|
       raise if markdown.include?(xss_attempt)
     end
+  end
+
+  def check_image_rehost_whitelist(src)
+    # GitHub camo image won't parse but should be safe to host direct
+    !src.start_with?("https://camo.githubusercontent.com/")
   end
 
   def remove_nested_linebreak_in_list(html)
