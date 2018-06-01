@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180522195341) do
+ActiveRecord::Schema.define(version: 20180601195848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -161,10 +161,23 @@ ActiveRecord::Schema.define(version: 20180522195341) do
     t.string "type_of"
   end
 
+  create_table "chat_channel_memberships", force: :cascade do |t|
+    t.bigint "chat_channel_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "last_opened_at", default: "2017-01-01 05:00:00"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["chat_channel_id"], name: "index_chat_channel_memberships_on_chat_channel_id"
+    t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
+    t.index ["user_id"], name: "index_chat_channel_memberships_on_user_id"
+  end
+
   create_table "chat_channels", force: :cascade do |t|
     t.string "channel_name"
     t.string "channel_type", null: false
     t.datetime "created_at", null: false
+    t.datetime "last_message_at", default: "2017-01-01 05:00:00"
+    t.string "slug"
     t.datetime "updated_at", null: false
   end
 
@@ -676,6 +689,8 @@ ActiveRecord::Schema.define(version: 20180522195341) do
 
   add_foreign_key "badge_achievements", "badges"
   add_foreign_key "badge_achievements", "users"
+  add_foreign_key "chat_channel_memberships", "chat_channels"
+  add_foreign_key "chat_channel_memberships", "users"
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
 end

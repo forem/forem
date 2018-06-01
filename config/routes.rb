@@ -154,6 +154,9 @@ Rails.application.routes.draw do
   get "/faq" => "pages#faq"
   get "/live" => "pages#live"
   get "/chat" => "pages#chat"
+  get "/chat/:slug" => "pages#chat"
+  get "/m" => "pages#chat"
+  get "/m/:slug" => "pages#chat"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
