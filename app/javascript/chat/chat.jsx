@@ -27,7 +27,7 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
       chatChannels,
-      activeChannelId: chatChannels[0].id,
+      activeChannelId: chatOptions.activeChannelId,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
     };
@@ -147,6 +147,7 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
     });
+    window.history.replaceState(null, null, "/chat/"+e.target.dataset.channelName);
   };
 
   handleSubmitOnClick = e => {

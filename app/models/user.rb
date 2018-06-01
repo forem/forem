@@ -26,6 +26,8 @@ class User < ApplicationRecord
   has_many    :notifications
   has_many    :reactions
   has_many    :tweets
+  has_many    :chat_channel_memberships
+  has_many    :chat_channels, through: :chat_channel_memberships
 
   mount_uploader :profile_image, ProfileImageUploader
 

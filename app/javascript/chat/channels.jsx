@@ -7,13 +7,21 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel }) => {
       parseInt(activeChannelId, 10) === channel.id
         ? 'chatchanneltab--active'
         : 'chatchanneltab--inactive';
+    const name = channel.channel_type === "direct" ? '@'+channel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '') : channel.channel_name
     return (
       <button
-        className={`chatchanneltab ${otherClassname}`}
+        className='chatchanneltabbutton'
         onClick={handleSwitchChannel}
         data-channel-id={channel.id}
+        data-channel-name={name}
       >
-        {channel.channel_name}
+        <span className={`chatchanneltab ${otherClassname}`}
+          onClick={handleSwitchChannel}
+          data-channel-id={channel.id}
+          data-channel-name={name}
+        >
+          {name}
+        </span>
       </button>
     );
   });

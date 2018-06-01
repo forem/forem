@@ -88,32 +88,37 @@
   height: inherit;
   width: inherit;
 }
-
+.chatchanneltabbutton{
+  width: 92%;
+  border: none;
+  background: transparent;
+  &:hover {
+    .chatchanneltab--inactive {
+      border: 1px solid $outline-color;
+      box-shadow: $bold-shadow;
+    }
+  }
+}
 .chatchanneltab {
+  display:inline-block;
   width: 95%;
   margin-bottom: 5px;
-  border: none;
   border-left: 8px solid transparent;
   background: inherit;
   text-align: start;
-  text-transform: uppercase;
   font-size: 14px;
   font-weight: 500;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid transparent;
-}
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;}
 
 .chatchanneltab--active {
   background: white;
   border: 1px solid $dark-purple;
   box-shadow: 3px 3px 0px $dark-purple;
-}
-
-.chatchanneltab--inactive {
-  &:hover {
-    border: 1px solid $outline-color;
-    box-shadow: $bold-shadow;
-  }
 }
 
 @keyframes example {

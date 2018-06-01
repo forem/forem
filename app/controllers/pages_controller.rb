@@ -43,9 +43,13 @@ class PagesController < ApplicationController
   end
 
   def chat
-    workshop = ChatChannel.find_by_channel_name("General")
-    meta = ChatChannel.find_by_channel_name("Meta")
-    @chat_channels = [workshop, meta].to_json
+    @chat_channels = current_user.chat_channels.order("last_message_at DESC")
+    slug =  if params[:slug] && params[:slug].start_with?("@")
+                      [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
+                    else
+                      params[:slug]
+                    end
+    @active_channel = ChatChannel.find_by_slug(slug) || @chat_channels.first
   end
 
   private # helpers
