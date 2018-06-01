@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { conductModeration, getAllMessages, sendMessage } from './actions';
+import { conductModeration, getAllMessages, sendMessage, sendOpen } from './actions';
 import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
 import Channels from './channels';
@@ -54,6 +54,11 @@ export default class Chat extends Component {
       channelCleared: this.clearChannel,
       redactUserMessages: this.redactUserMessages,
     });
+    sendOpen(
+      this.state.activeChannelId,
+      this.handleChannelOpenSuccess,
+      null,
+    );
   };
 
   observerCallback = entries => {
@@ -83,8 +88,22 @@ export default class Chat extends Component {
       this.state.activeChannelId === receivedChatChannelId
         ? { showAlert: this.state.scrolled }
         : {};
+    const newChannelsObj = this.state.chatChannels.map(channel => {
+      if (receivedChatChannelId === channel["id"]){
+        channel["last_message_at"] = new Date();
+      }
+      return channel;
+    });
+    if (receivedChatChannelId === this.state.activeChannelId) {
+      sendOpen(
+        receivedChatChannelId,
+        this.handleChannelOpenSuccess,
+        null,
+      );
+    }
     this.setState({
       ...newShowAlert,
+      chatChannels: newChannelsObj,
       messages: {
         ...this.state.messages,
         [receivedChatChannelId]: newMessages,
@@ -148,6 +167,11 @@ export default class Chat extends Component {
       showAlert: false,
     });
     window.history.replaceState(null, null, "/chat/"+e.target.dataset.channelName);
+    sendOpen(
+      e.target.dataset.channelId,
+      this.handleChannelOpenSuccess,
+      null,
+    );
   };
 
   handleSubmitOnClick = e => {
@@ -163,6 +187,16 @@ export default class Chat extends Component {
     if (response.status === 'error') {
       this.receiveNewMessage(response.message);
     }
+  };
+
+  handleChannelOpenSuccess = response => {
+    const newChannelsObj = this.state.chatChannels.map(channel => {
+      if (parseInt(response.channel) === channel["id"]){
+        channel["last_opened_at"] = new Date();
+      }
+      return channel;
+    });
+    this.setState({ chatChannels: newChannelsObj });
   };
 
   handleFailure = err => {
@@ -216,6 +250,8 @@ export default class Chat extends Component {
       </div>
     </div>
   );
+
+  
 
   render() {
     return (

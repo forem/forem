@@ -98,6 +98,7 @@ Rails.application.routes.draw do
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "chat_channels/:id/moderate" => "chat_channels#moderate"
+  post "chat_channels/:id/open" => "chat_channels#open"
   # resources :users
 
   get "/social_previews/article/:id" => "social_previews#article"

@@ -12,6 +12,13 @@ class ChatChannelsController < ApplicationController
     end
   end
 
+  def open
+    @chat_channel = ChatChannel.find(params[:id])
+    raise unless @chat_channel.has_member?(current_user)
+    @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first.touch(:last_opened_at)
+    render json: { status: "success", channel: params[:id] }, status: 200
+  end
+
   def moderate
     @chat_channel = ChatChannel.find(params[:id])
     authorize @chat_channel

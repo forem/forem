@@ -30,6 +30,22 @@ export function sendMessage(activeChannelId, message, successCb, failureCb) {
     .catch(failureCb);
 }
 
+export function sendOpen(activeChannelId, successCb, failureCb) {
+  fetch(`/chat_channels/${activeChannelId}/open`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({}),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
 export function conductModeration(
   activeChannelId,
   message,
