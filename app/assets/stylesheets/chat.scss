@@ -121,6 +121,21 @@
   box-shadow: 3px 3px 0px $dark-purple;
 }
 
+.chatchanneltabindicator{
+  display: inline-block;
+  background: white;
+  border: 2px solid $light-medium-gray;
+  padding: 5px;
+  border-radius: 100px;
+  vertical-align: -2px;
+  margin-right: 3px;
+}
+
+.chatchanneltabindicator--new{
+  background: $yellow;
+  border: 2px solid $black;
+}
+
 @keyframes example {
   // animation-name: example;
   // animation-duration: 4s;
@@ -157,11 +172,11 @@
 }
 
 .chatmessagebody__profileimage {
-  height: 18px;
-  width: 18px;
-  margin-right: 3px;
+  height: 23px;
+  width: 23px;
+  margin-right: 6px;
   border-radius: 20px;
-  vertical-align: bottom;
+  vertical-align: -5px;
 }
 
 .chatmessagebody__username {

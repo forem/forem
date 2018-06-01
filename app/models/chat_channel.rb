@@ -1,4 +1,6 @@
 class ChatChannel < ApplicationRecord
+  attr_accessor :current_user
+
   has_many :messages
   has_many :chat_channel_memberships
   has_many :users, through: :chat_channel_memberships
@@ -16,6 +18,11 @@ class ChatChannel < ApplicationRecord
 
   def has_member?(user)
     users.include?(user)
+  end
+
+  def last_opened_at(user = nil)
+    user ||= current_user
+    chat_channel_memberships.where(user_id: user.id).pluck(:last_opened_at).first
   end
 
   def self.create_with_users(users, channel_type = "direct", contrived_name = "New Channel")
