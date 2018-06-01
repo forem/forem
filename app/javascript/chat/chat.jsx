@@ -167,6 +167,7 @@ export default class Chat extends Component {
       showAlert: false,
     });
     window.history.replaceState(null, null, "/chat/"+e.target.dataset.channelName);
+    document.getElementById("messageform").focus();
     sendOpen(
       e.target.dataset.channelId,
       this.handleChannelOpenSuccess,
