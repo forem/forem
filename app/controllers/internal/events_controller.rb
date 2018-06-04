@@ -3,17 +3,24 @@ module Internal
     layout "internal"
     def index
       @events = Event.order("starts_at ASC")
-      @event = Event.new(location_name: "dev.to/live",
+    end
+
+    def new
+      @event = Event.new(
+        location_name: "dev.to/live",
         location_url: "https://dev.to",
-        description_markdown: "*Description* *Pre-requisites:* *Bio*" )
+        description_markdown: "*Description* *Pre-requisites:* *Bio*"
+      )
     end
 
     def create
-      @event = Event.create!(event_params)
-      redirect_to(action: :index)
-    rescue ActiveRecord::RecordInvalid => error
-      flash[:danger] = error.message
-      redirect_to(action: :index)
+      @event = Event.new(event_params)
+      if @event.save!
+        redirect_to(action: :index)
+      else
+        flash[:danger] = @event.errors.full_messages
+        render "new.html.erb"
+      end
     end
 
     def update

@@ -4,14 +4,7 @@
   }
 </style>
 
-<h1> Create Event</h1>
-
-<%= form_for @event, url: {controller:"events", action: "create"} do |f| %>
-  <%= render 'event_form', f:f, event: @event  %>
-<% end %>
-
-<br>
-<br>
+<h1><a href="/internal/events/new">Create New Event</a></h1>
 
 <div class="event-list">
   <h1> Upcoming Events </h1>

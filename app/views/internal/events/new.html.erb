@@ -1,0 +1,8 @@
+<h1><a href="/internal/events">See All Events</a></h1>
+
+<h1>Create New Event</h1>
+<hr>
+
+<%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
+  <%= render "event_form", f: f, event: @event %>
+<% end %>
