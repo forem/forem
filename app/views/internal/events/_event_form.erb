@@ -25,12 +25,12 @@
 </div>   
 <div>
 <%= f.label :starts_at %>
-<%= f.datetime_select :starts_at, required: true, include_blank: true %> UTC Time Only (4 hours ahead of eastern time)
+<%= f.datetime_select :starts_at, required: true, include_blank: true, start_year: Date.today.year, end_year: Date.today.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
 </div>
 
 <div>
 <%= f.label :ends_at %>
-<%= f.datetime_select :ends_at, required: true, include_blank: true %> UTC Time Only (4 hours ahead of eastern time)
+<%= f.datetime_select :ends_at, required: true, include_blank: true, start_year: Date.today.year, end_year: Date.today.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
 </div>    
 <div>
     <%= f.label :location_name %>
@@ -42,6 +42,7 @@
 </div>
 <div>
     <%= f.label :description_markdown %>
+    <br>
     <%= f.text_area :description_markdown, size: "45x10", required: true %>
 </div>
 <div>
