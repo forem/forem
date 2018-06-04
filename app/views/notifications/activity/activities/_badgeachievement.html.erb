@@ -11,7 +11,7 @@
   <% end %>
   <p style="width: 90%;margin: 8px auto">
     <em>
-      <%= activity['actor'].rewarding_context_message %>
+      <%= activity['actor'].rewarding_context_message.html_safe %>
     </em>
   </p>
   <a href="/<%= activity['object'].username %>">

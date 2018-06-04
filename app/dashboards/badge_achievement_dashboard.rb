@@ -13,6 +13,7 @@ class BadgeAchievementDashboard < Administrate::BaseDashboard
     name_of_user: NameOfUserField,
     badge: Field::BelongsTo,
     rewarder: Field::BelongsTo.with_options(class_name: "User"),
+    rewarding_context_message_markdown: Field::String,
     rewarding_context_message: Field::String,
     id: Field::Number,
     rewarder_id: UserIdField,
@@ -50,7 +51,7 @@ class BadgeAchievementDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
     :user_id,
-    :rewarding_context_message,
+    :rewarding_context_message_markdown,
     :badge,
     :rewarder_id,
   ].freeze

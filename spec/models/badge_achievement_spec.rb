@@ -18,4 +18,12 @@ RSpec.describe BadgeAchievement, type: :model do
       BadgeAchievement.create!(user_id: user.id, badge_id: badge.id, rewarder_id: create(:user).id)
     end.to raise_error
   end
+
+  it "turns rewarding_context_message_markdown into rewarding_context_message HTML" do
+    achievement = BadgeAchievement.create(user_id: user.id,
+      badge_id: badge.id,
+      rewarder_id: create(:user).id,
+      rewarding_context_message_markdown: "Hello [Yoho](/hey)")
+      expect(achievement.rewarding_context_message.include?("</a>"))
+  end
 end
