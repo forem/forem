@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180601195848) do
+ActiveRecord::Schema.define(version: 20180604200603) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 20180601195848) do
     t.datetime "created_at", null: false
     t.integer "rewarder_id"
     t.text "rewarding_context_message"
+    t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["badge_id"], name: "index_badge_achievements_on_badge_id"

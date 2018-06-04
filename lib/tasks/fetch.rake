@@ -69,6 +69,7 @@ end
 
 task :award_badges => :environment do
   BadgeRewarder.new.award_yearly_club_badges
+  BadgeRewarder.new.award_beloved_comment_badges
 end
 
 
