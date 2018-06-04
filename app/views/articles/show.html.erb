@@ -52,8 +52,10 @@
   <meta name="twitter:title" content="<%=@article.title %>">
   <meta name="twitter:description" content="<%=@article.description || "An article from the community" %>">
   <meta name="twitter:card" content="summary_large_image">
-  <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
-  <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
+  <% if @article.published %>
+    <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
+    <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
+  <% end %>
 <% end %>
 
 <div class="home">
