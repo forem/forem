@@ -37,7 +37,7 @@ class Bufferizer
 
   def twitter_buffer_text
     twit_name = @article.user.twitter_username
-    if twit_name.present? && @text.size < 230
+    if twit_name.present? && @text.size < 245
       "#{@text}\n{ author: @#{twit_name} }\nhttps://dev.to#{@article.path}"
     else
       "#{@text} https://dev.to#{@article.path}"
