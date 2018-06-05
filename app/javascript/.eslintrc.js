@@ -22,4 +22,13 @@ module.exports = {
       },
     ],
   },
+  plugins: ['import'],
+  rules: {
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: ['**/*.test.js', '**/*.test.jsx', '**/*.stories.jsx'],
+      },
+    ],
+  },
 };
