@@ -71,7 +71,7 @@
 				<input type="hidden" name="social_channel" value="twitter" />
 				<input type="hidden" name="article_id" value="<%= article.id %>" />
 				<p> Twitter </p>
-				<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="230" /><%= article.title %></textarea>         
+				<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>         
 				<% if article.last_buffered %>
 						<button class="btn btn-danger" style="font-size:1em;">🙈 TWEETED <%= time_ago_in_words(article.last_buffered) %> ago</button>
 				<% else %>
