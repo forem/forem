@@ -44,4 +44,13 @@ class ChatChannel < ApplicationRecord
       ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
     end
   end
+
+  def adjusted_slug(user = nil)
+    user ||= current_user
+    if channel_type == "direct"
+      "@"+slug.gsub("/#{user.username}","").gsub("#{user.username}/","")
+    else
+      slug
+    end
+  end
 end

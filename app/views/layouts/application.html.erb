@@ -75,6 +75,7 @@
   <% cache("application-top-bar--#{user_signed_in?}--#{is_internal_navigation?}", :expires_in => 100.hours) do %>
     <%= render "layouts/top_bar" unless is_internal_navigation? %>
   <% end %>
+  <div id="message-notice"></div>
   <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
     <div id="page-content-inner">
       <%= yield %>

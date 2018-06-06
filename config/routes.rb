@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   end
 
   resources :messages, only: [:create]
-  resources :chat_channels, only: [:show]
+  resources :chat_channels, only: [:index, :show]
   resources :articles, only: [:update,:create,:destroy]
   resources :comments, only:[:create,:update,:destroy]
   resources :users, only:[:update]
@@ -97,8 +97,11 @@ Rails.application.routes.draw do
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
-  post "chat_channels/:id/moderate" => "chat_channels#moderate"
-  post "chat_channels/:id/open" => "chat_channels#open"
+  post "/chat_channels/:id/moderate" => "chat_channels#moderate"
+  post "/chat_channels/:id/open" => "chat_channels#open"
+  get "/chat" => "chat_channels#index"
+  get "/chat/:slug" => "chat_channels#index"
+
   # resources :users
 
   get "/social_previews/article/:id" => "social_previews#article"
@@ -154,10 +157,6 @@ Rails.application.routes.draw do
   get "/infiniteloop" => "pages#infinite_loop"
   get "/faq" => "pages#faq"
   get "/live" => "pages#live"
-  get "/chat" => "pages#chat"
-  get "/chat/:slug" => "pages#chat"
-  get "/m" => "pages#chat"
-  get "/m/:slug" => "pages#chat"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")

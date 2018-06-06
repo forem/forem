@@ -1,14 +1,28 @@
 @import 'variables';
 
 // High level class
+.chat-page-header{
+  background: $green;
+  text-align: center;
+  padding: 5px;
+  margin-top: -25px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  font-size:0.8em;
+  font-weight: bold;
+}
+
 .chat {
   display: flex;
   height: inherit;
 }
 
 .chat__channels {
-  width: 160px;
+  width: 80px;
   height: inherit;
+  @media screen and ( min-width: 550px ){
+    width: 160px;
+  }
 }
 
 .chat__channels--hidden {
@@ -89,9 +103,10 @@
   width: inherit;
 }
 .chatchanneltabbutton{
-  width: 92%;
+  width: 93%;
   border: none;
   background: transparent;
+  padding:0;
   &:hover {
     .chatchanneltab--inactive {
       border: 1px solid $outline-color;
@@ -101,19 +116,22 @@
 }
 .chatchanneltab {
   display:inline-block;
-  width: 95%;
+  width: 90%;
   margin-bottom: 5px;
-  border-left: 8px solid transparent;
   background: inherit;
   text-align: start;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 500;
   padding: 8px;
   border: 1px solid transparent;
   border-radius: 3px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;}
+  text-overflow: ellipsis;
+  @media screen and ( min-width: 550px ){
+    font-size: 13px;
+  }
+}
 
 .chatchanneltab--active {
   background: white;
@@ -125,27 +143,15 @@
   display: inline-block;
   background: white;
   border: 2px solid $light-medium-gray;
-  padding: 5px;
+  padding: 0.3em;
   border-radius: 100px;
-  vertical-align: -2px;
+  vertical-align: -0.05em;
   margin-right: 3px;
 }
 
 .chatchanneltabindicator--new{
   background: $yellow;
   border: 2px solid $black;
-}
-
-@keyframes example {
-  // animation-name: example;
-  // animation-duration: 4s;
-  // animation-iteration-count: infinite;
-  from {
-    border-left: 8px solid transparent;
-  }
-  to {
-    border-left: 8px solid #ffb6c1;
-  }
 }
 
 .chatchannels__channelslist {

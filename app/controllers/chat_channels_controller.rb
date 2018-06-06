@@ -1,6 +1,15 @@
 class ChatChannelsController < ApplicationController
   before_action :authenticate_user!, only: [:moderate]
 
+  def index
+    if params[:state] == "unopened"
+      render_unopened_json_response
+      return
+    else
+      render_channels_html
+    end
+  end
+
   def show
     @chat_channel = ChatChannel.includes(:messages).find_by(id: params[:id])
     if @chat_channel
@@ -15,7 +24,8 @@ class ChatChannelsController < ApplicationController
   def open
     @chat_channel = ChatChannel.find(params[:id])
     raise unless @chat_channel.has_member?(current_user)
-    @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first.touch(:last_opened_at)
+    membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
+    membership.update(last_opened_at: 1.seconds.from_now, has_unopened_messages: false)
     render json: { status: "success", channel: params[:id] }, status: 200
   end
 
@@ -54,5 +64,31 @@ class ChatChannelsController < ApplicationController
 
   def chat_channel_params
     params.require(:chat_channel).permit(:command)
+  end
+
+  def render_unopened_json_response
+    if current_user.has_role?(:super_admin) || Rails.env.development?
+      @chat_channels_memberships = current_user.
+      chat_channel_memberships.
+      where(has_unopened_messages: true).order("updated_at DESC")
+    else
+      @chat_channels_memberships = []
+    end
+    render "index.json"
+  end
+
+  def render_channels_html
+      @chat_channels = current_user.chat_channels.
+        order("last_message_at DESC").
+        includes(:chat_channel_memberships)
+      @chat_channels.each do |channel|
+        channel.current_user = current_user
+      end
+      slug =  if params[:slug] && params[:slug].start_with?("@")
+                        [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
+                      else
+                        params[:slug]
+                      end
+      @active_channel = ChatChannel.find_by_slug(slug) || @chat_channels.first
   end
 end

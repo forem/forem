@@ -162,12 +162,15 @@ export default class Chat extends Component {
   handleSwitchChannel = e => {
     e.preventDefault();
     this.setState({
-      activeChannelId: e.target.dataset.channelId,
+      activeChannelId: parseInt(e.target.dataset.channelId),
       scrolled: false,
       showAlert: false,
     });
-    window.history.replaceState(null, null, "/chat/"+e.target.dataset.channelName);
+    window.history.replaceState(null, null, "/chat/"+e.target.dataset.channelSlug);
     document.getElementById("messageform").focus();
+    if (window.ga && ga.create) {
+      ga('send', 'pageview', location.pathname + location.search);
+    }
     sendOpen(
       e.target.dataset.channelId,
       this.handleChannelOpenSuccess,
@@ -258,7 +261,9 @@ export default class Chat extends Component {
     return (
       <div className="chat">
         {this.renderChatChannels()}
-        <div className="chat__activechat">{this.renderActiveChatChannel()}</div>
+        <div className="chat__activechat">
+          {this.renderActiveChatChannel()}
+        </div>
       </div>
     );
   }

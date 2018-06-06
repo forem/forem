@@ -19,7 +19,7 @@ module ApplicationHelper
       controller_name == "registrations" ||
       controller_name == "users" ||
       controller_name == "pages" ||
-
+      controller_name == "chat_channels" ||
       controller_name == "dashboards"||
       controller_name == "moderations"||
       controller_name == "videos"||
