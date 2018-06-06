@@ -3,6 +3,7 @@
     color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.95) %>
   }
 </style>
+
 <div class="user-metadata-details">
   <div class="user-metadata-details-inner">
     <% if @organization %>
@@ -37,6 +38,11 @@
         </div>
       <% end %>
     <% else %>
+      <% if @user.email_public && @user.employer_name.present? && @user.location.present? && @user.education.present? %>
+        <style>
+          .user-profile-header {min-height: 410px;}
+        </style>
+      <% end %>
       <% if @user.email_public %>
         <div class="row">
           <div class="key">
