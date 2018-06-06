@@ -42,6 +42,7 @@
   justify-content: space-between;
   border: 1px solid $outline-color;
   box-shadow: $bold-shadow;
+  background: white;
 }
 
 .activechatchannel__messages {
@@ -90,7 +91,7 @@
   // justify-content: space-between;
 
   &:hover {
-    background: #e3e3e3;
+    background: $light-gray;
   }
 
 }
@@ -175,6 +176,7 @@
   font-size: 11px;
   color: lightgray;
   min-width: 95px;
+  padding-top: 4px;
 }
 
 .chatmessagebody__profileimage {
