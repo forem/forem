@@ -332,6 +332,14 @@ class Article < ApplicationRecord
     end
   end
 
+  def async_score_calc
+    update_column(:hotness_score, BlackBox.article_hotness_score(self))
+    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
+    index! if published && tag_list.exclude?("hiring")
+  end
+  handle_asynchronously :async_score_calc
+
+
   private
 
   # def send_to_moderator
@@ -453,13 +461,6 @@ class Article < ApplicationRecord
     self.hotness_score = 1000 if hotness_score.blank?
     self.spaminess_rating = 0 if new_record?
   end
-
-  def async_score_calc
-    update_column(:hotness_score, BlackBox.article_hotness_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if published && tag_list.exclude?("hiring")
-  end
-  handle_asynchronously :async_score_calc
 
   def async_bust
     CacheBuster.new.bust_article(self)

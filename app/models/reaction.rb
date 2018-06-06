@@ -71,6 +71,7 @@ class Reaction < ApplicationRecord
 
   def update_reactable
     if reactable_type == "Article"
+      reactable.async_score_calc
       reactable.index!
       CacheBuster.new.bust "/reactions/logged_out_reaction_counts?article_id=#{reactable_id}"
     elsif reactable_type == "Comment"

@@ -41,22 +41,7 @@ class PagesController < ApplicationController
   def live
     @chat_channels = [ChatChannel.find_by_channel_name("Workshop")].to_json
   end
-
-  def chat
-    @chat_channels = current_user.chat_channels.
-      order("last_message_at DESC").
-      includes(:chat_channel_memberships)
-    @chat_channels.each do |channel|
-      channel.current_user = current_user
-    end
-    slug =  if params[:slug] && params[:slug].start_with?("@")
-                      [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
-                    else
-                      params[:slug]
-                    end
-    @active_channel = ChatChannel.find_by_slug(slug) || @chat_channels.first
-  end
-
+  
   private # helpers
 
   def latest_published_welcome_thread

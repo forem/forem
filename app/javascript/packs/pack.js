@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import Onboarding from '../src/Onboarding';
 import { getUserData } from '../src/utils/getUserData';
+import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 
 HTMLDocument.prototype.ready = new Promise(resolve => {
   if (document.readyState !== 'loading') {
@@ -22,12 +23,13 @@ function renderPage() {
   if (shouldShowOnboarding()) {
     setTimeout(() => {
       render(<Onboarding />, document.getElementById('top-bar'));
-    }, 500);
+    }, 580);
   }
 }
 
 document.ready.then(
   getUserData().then(() => {
     renderPage();
+    getUnopenedChannels();
   }),
 );
