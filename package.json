@@ -11,8 +11,8 @@
   "scripts": {
     "test": "jest app/javascript/ --coverage",
     "test:watch": "jest app/javascript/ --coverage --watch",
-    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook",
-    "build-storybook": "build-storybook -c app/javascript/.storybook",
+    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
+    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "precommit": "lint-staged"
   },
   "lint-staged": {
@@ -47,7 +47,7 @@
     "@storybook/addons": "^3.4.6",
     "@storybook/react": "^3.4.6",
     "babel-core": "^6.26.0",
-    "babel-eslint": "8",
+    "babel-eslint": "^8.2.2",
     "babel-jest": "^22.1.0",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-react-jsx": "^6.24.1",

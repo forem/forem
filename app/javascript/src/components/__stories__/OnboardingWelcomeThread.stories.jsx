@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { storiesOf } from '@storybook/react';
-import GlobalModalWrapper from './GlobalModalWrapper';
+import { globalModalDecorator } from '../__stories__/story-decorators';
 import OnboardingWelcomeThread from '../OnboardingWelcomeThread';
 
 storiesOf('OnboardingWelcomeThread', module)
-  .addDecorator(storyFn => <GlobalModalWrapper>{storyFn()}</GlobalModalWrapper>)
+  .addDecorator(globalModalDecorator)
   .add('Default', () => <OnboardingWelcomeThread />);
