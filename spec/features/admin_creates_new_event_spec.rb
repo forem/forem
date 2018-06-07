@@ -9,7 +9,7 @@ feature "Admin creates new event" do
   end
 
   before do
-    visit "/internal/events/new"
+    visit "/internal/events"
   end
 
   def select_date_and_time(year, month, date, hour, min, field_name)
@@ -28,7 +28,7 @@ feature "Admin creates new event" do
     click_button("Create Event")
   end
 
-  it "loads /internal/events/new" do
+  it "loads /internal/events" do
     expect(page).to have_content("Create New Event")
   end
 

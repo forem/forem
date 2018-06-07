@@ -4,16 +4,26 @@
   }
 </style>
 
-<h1><a href="/internal/events/new">Create New Event</a></h1>
+<h1>Create New Event</h1>
+<hr>
+
+<div class="event-form">
+  <%= form_for @event, url: { controller: "events", action: "create" } do |f| %>
+    <%= render "event_form", f: f, event: @event %>
+  <% end %>
+</div>
+
 
 <div class="event-list">
   <h1> Upcoming Events </h1>
   <% @events.each do |event| %>
     <% if event.starts_at.future? %>
       <img src="<%= event.cover_image_url %>">
-      <%= form_for [:internal, event] do |f| %>
-        <%= render 'event_form', f:f, event: event  %>
-      <% end %>
+      <div class="event-form">
+        <%= form_for [:internal, event] do |f| %>
+          <%= render 'event_form', f:f, event: event  %>
+        <% end %>
+      </div>
     <% end %>
   <% end %>
   <br>
@@ -21,9 +31,11 @@
   <% @events.each do |event| %>
     <% if !event.starts_at.future? %>
       <img src="<%= event.cover_image_url %>">
-      <%= form_for [:internal, event] do |f| %>
-        <%= render 'event_form', f:f, event: event  %>
-      <% end %>
+      <div class="event-form">
+        <%= form_for [:internal, event] do |f| %>
+          <%= render 'event_form', f:f, event: event  %>
+        <% end %>
+      </div>
     <% end %>
     <br>
   <% end %>
