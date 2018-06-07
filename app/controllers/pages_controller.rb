@@ -39,9 +39,10 @@ class PagesController < ApplicationController
   end
 
   def live
-    @chat_channels = [ChatChannel.find_by_channel_name("Workshop")].to_json
+    @active_channel = ChatChannel.find_by_channel_name("Workshop")
+    @chat_channels = [@active_channel].to_json
   end
-  
+
   private # helpers
 
   def latest_published_welcome_thread
