@@ -105,9 +105,9 @@ class Reaction < ApplicationRecord
 
   def assign_points
     base_points = if category == "vomit"
-                    -25.0
+                    -50.0
                   elsif category == "thumbsdown"
-                    -5.0
+                    -10.0
                   else
                     1.0
                   end
