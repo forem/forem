@@ -32,8 +32,9 @@
 <% if (user_signed_in? && Flipflop.live_is_live?) || current_user&.has_role?(:super_admin) %>
   <div class="live-container">
     <div class="live-component">
-      <div class="live-video">
-        <script src="//player.dacast.com/js/player.js" width="1920" height="1080" id="<%= ENV["DACAST_STREAM_CODE"]%>" player="jw7" jwurl="juQPHW/th8VUHaO/2KkeVlAdGN9ksJZog2z6SH+TyMU=" class="dacast-video"></script>
+      <div>
+        <!--<script src="//player.dacast.com/js/player.js" width="1920" height="1080" id="<%= ENV["DACAST_STREAM_CODE"]%>" player="jw7" jwurl="juQPHW/th8VUHaO/2KkeVlAdGN9ksJZog2z6SH+TyMU=" class="dacast-video"></script>-->
+        <iframe class="live-video" src="//iframe.dacast.com/b/105417/c/465464" width="1920" height="1080" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
       </div>
       <div class="live-chat-wrapper">
         <% if (Flipflop.sendbird?) %>
