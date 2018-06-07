@@ -215,7 +215,9 @@ class User < ApplicationRecord
   end
 
   def trusted
-    has_role? :trusted
+    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+      has_role? :trusted
+    end
   end
 
   def reason_for_ban

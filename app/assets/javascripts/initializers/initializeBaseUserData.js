@@ -4,6 +4,7 @@ function initializeBaseUserData(){
   document.getElementById("user-profile-link-placeholder").innerHTML = userProfileLinkHTML;
   document.getElementById("nav-profile-image").src = user.profile_image_90;
   initializeUserSidebar(user);
+  addRelevantButtonsToArticle(user);
 }
 
 function initializeUserSidebar(user) {
@@ -36,4 +37,24 @@ function initializeUserProfileContent(user) {
   document.getElementById("sidebar-profile-name").innerHTML =  user.name
   document.getElementById("sidebar-profile-username").innerHTML = '@'+user.username
   document.getElementById("sidebar-profile-snapshot-inner").href = "/"+user.username;
+}
+
+function addRelevantButtonsToArticle(user) {
+  var articleContainer = document.getElementById('article-show-container');
+  if (articleContainer) {
+    if (parseInt(articleContainer.dataset.authorId) == user.id) {
+      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/edit">EDIT <span class="post-word">POST</span></a>';
+    } else if (user.trusted) {
+      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/mod">MODERATE <span class="post-word">POST</span></a>';
+    }
+  }
+  var commentsContainer = document.getElementById('comments-container');
+  if (commentsContainer) {
+    var modButts = document.getElementsByClassName('mod-actions');
+    for (var i = 0; i < modButts.length; i++) {
+      var butt = modButts[i];
+      butt.className = 'mod-actions';
+      butt.style.display = 'inline-block';
+    }
+  }
 }
