@@ -213,7 +213,7 @@
   }
   .user-profile-header-container{
     @media screen and ( min-width: 1100px ){
-      width: calc( 100% - 400px);
+      width: calc( 100% - 420px);
       margin-left: 6%;
     }
   }
@@ -225,7 +225,7 @@
       right: 0px;
       top: 0px;
       bottom: 0px;
-      width: 350px;
+      width: 370px;
     }
     .user-metadata-details-inner{
       padding: 8px 0px;
@@ -244,8 +244,8 @@
       .row{
         padding: calc(5px + 0.2vw) 0px;
         display: inline-block;
-        padding-left: 18px;
-        width: 300px;
+        padding-left: 16px;
+        width: 322px;
         max-width:92%;
       }
       .key{
@@ -256,8 +256,8 @@
       }
       .value{
         display: inline-block;
-        font-size: 0.9em;
-        margin-bottom: 5px;
+        font-size: 0.85em;
+        margin-bottom: 4px;
       }
     }
   }
