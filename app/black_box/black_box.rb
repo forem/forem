@@ -2,8 +2,9 @@ class BlackBox
   def self.article_hotness_score(article)
     return (article.featured_number|| 10000)/10000 unless Rails.env.production?
     reaction_points = article.reactions.sum(:points)
+    recency_bonus = article.published_at > 12.hours.ago ? 50 : 0
     FunctionCaller.new("blackbox-production-articleHotness",
-      {article: article, user: article.user}.to_json).call + reaction_points
+      {article: article, user: article.user}.to_json).call + reaction_points + recency_bonus
   end
 
   def self.comment_quality_score(comment)
