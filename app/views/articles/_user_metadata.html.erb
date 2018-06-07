@@ -38,9 +38,15 @@
         </div>
       <% end %>
     <% else %>
-      <% if @user.email_public && @user.employer_name.present? && @user.location.present? && @user.education.present? %>
+      <% if @user.email_public &&
+          @user.employer_name.present? &&
+          @user.location.present? &&
+          @user.education.present? &&
+          @user.education.size > 25 && 
+          @user.summary.to_s.size < 145
+          %>
         <style>
-          .user-profile-header {min-height: 410px;}
+          .user-profile-header {min-height: 398px;}
         </style>
       <% end %>
       <% if @user.email_public %>
