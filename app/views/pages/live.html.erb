@@ -39,7 +39,7 @@
         <% if (Flipflop.sendbird?) %>
           <div id="sb_chat" class="live-chat" data-sendbird-app-id="<%= ENV["SENDBIRD_APP_ID"] %>" data-sendbird-livechat-url="<%= ENV["SENDBIRD_LIVECHAT_URL"] %>"></div>
         <% else %>
-          <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= {showChannelsList:false, showTimestamp: false}.to_json %>">
+          <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= {showChannelsList:false, showTimestamp: false, activeChannelId: @active_channel.id}.to_json %>">
         <% end %>
       </div>
     </div>
@@ -47,11 +47,16 @@
   <div class="live-under-message">DEV Live is in beta. If you are having issues, you may need to try another browser or contact <a href="mailto:members@dev.to">members@dev.to</a> for support. ❤️</div>
 <% elsif Flipflop.live_starting_soon? %>
   <div class="live-upcoming-info">
-    <h1 style="text-align: center"><span style="display: inline-block">DEV LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; vertical-align: text-top;" %></span></h1>
+    <h1 style="text-align: center"><span style="display: inline-block">DEV LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; height: 50px; vertical-align: text-top;" %></span></h1>
     <h4 style="text-align: center">
       <i>Our  event is starting soon! Check back very shortly.
     </h4>
   </div>
+  <script>
+    setTimeout(function(){
+      window.location.reload(1);
+    }, 2500);
+  </script>
 <% elsif Flipflop.live_is_live? %>
   <div class="live-upcoming-info">
     <h1 style="text-align: center;font-size:3.5em;margin:-100px auto">DEV is <span style="display: inline-block">LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; vertical-align: text-top;" %></span></h1>
