@@ -46,7 +46,6 @@ function initializeCommentsPage() {
             }
           }
         }
-        addRelevantButtonsToArticle(responseObj);
       }
     };
     var timeString = (Date.now()).toString();
@@ -160,15 +159,6 @@ function replaceActionButts(el) {
                             <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
   }
   wrapper.innerHTML = '<span class="current-user-actions">'+loggedInActionButts+'</span><a href="#" class="toggle-reply-form">REPLY</a>';
-}
-
-function addRelevantButtonsToArticle(responseObj) {
-  var articleContainer = document.getElementById('article-show-container');
-  if (articleContainer) {
-    if (parseInt(articleContainer.dataset.authorId) == responseObj.current_user.id) {
-      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/edit">EDIT <span class="post-word">POST</span></a>';
-    }
-  }
 }
 
 function handleCommentSubmit(event) {

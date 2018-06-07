@@ -47,6 +47,7 @@ class AsyncInfoController < ApplicationController
             checked_code_of_conduct: @user.checked_code_of_conduct,
             number_of_comments: @user.comments.count,
             display_sponsors: @user.display_sponsors,
+            trusted: @user.trusted
           }.to_json
         }
       end
