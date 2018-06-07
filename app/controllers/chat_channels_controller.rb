@@ -23,7 +23,10 @@ class ChatChannelsController < ApplicationController
 
   def open
     @chat_channel = ChatChannel.find(params[:id])
-    raise unless @chat_channel.has_member?(current_user)
+    unless @chat_channel.has_member?(current_user)
+      render json: { status: "success", channel: params[:id] }, status: 200
+      return
+    end
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.seconds.from_now, has_unopened_messages: false)
     render json: { status: "success", channel: params[:id] }, status: 200
