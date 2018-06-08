@@ -8,10 +8,10 @@ module Api
           return
         end
         if params[:state] == "follow_suggestions"
-          @users = UserFollowSuggester.new(current_user).suggestions
+          @users = Suggester::Users::Recent.new(current_user).suggest
         elsif params[:state] == "sidebar_suggestions"
           given_tag = params[:tag]
-          @users = UserFollowSuggester.new(current_user).sidebar_suggestions(given_tag).sample(3)
+          @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
         end
       end
 

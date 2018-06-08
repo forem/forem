@@ -23,7 +23,7 @@ class FollowedArticlesController < ApplicationController
     else
       @articles = []
     end
-    classic_article = ClassicArticle.new(current_user).get
+    classic_article = Suggester::Articles::Classic.new(current_user).get
     response.headers["Cache-Control"] = "public, max-age=150"
     render json: {
                     articles: @articles,

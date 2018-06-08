@@ -54,7 +54,8 @@ class Internal::ArticlesController < Internal::ApplicationController
         limited_columns_internal_select.
         per(50)
     when "classic-candidate"
-      @articles = Article.where("positive_reactions_count > ?", ClassicArticle.new.minimum_reaction_count).
+      @articles = Article.where("positive_reactions_count > ?",
+                                Suggester::Articles::Classic::MIN_REACTION_COUNT).
         includes(:user).
         order("positive_reactions_count DESC").
         where(featured: false).
@@ -62,7 +63,8 @@ class Internal::ArticlesController < Internal::ApplicationController
         per(100).
         limited_columns_internal_select
     when "classic"
-      @articles = Article.where("positive_reactions_count > ?", ClassicArticle.new.minimum_reaction_count).
+      @articles = Article.where("positive_reactions_count > ?",
+                                Suggester::Articles::Classic::MIN_REACTION_COUNT).
         includes(:user).
         order("positive_reactions_count DESC").
         where(featured: true).
