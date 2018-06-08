@@ -28,7 +28,7 @@ module Api
         end
         @articles = []
         4.times do
-          @articles << ClassicArticle.new.get(tag_list)
+          @articles << Suggester::Articles::Classic.new.get(tag_list)
         end
         Article.tagged_with(tag_list, any: true).
           order("published_at DESC").
