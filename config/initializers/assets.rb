@@ -7,7 +7,7 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.paths << Emoji.images_path
 
 # Yarn node_moduless
-Rails.application.config.assets.paths << Rails.root.join('node_modules')
+Rails.application.config.assets.paths << Rails.root.join('node_modules', 'javascript')
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
@@ -25,8 +25,10 @@ Rails.application.config.assets.precompile += %w( favicon.ico )
 Rails.application.config.assets.precompile += %w( minimal.css )
 Rails.application.config.assets.precompile += %w( s3_direct_upload.css )
 Rails.application.config.assets.precompile += %w( base.js )
-Rails.application.config.assets.precompile += %w( pack.js )
-Rails.application.config.assets.precompile += %w( chat.js )
+Rails.application.config.assets.precompile += %w( packs/pack.js )
+Rails.application.config.assets.precompile += %w( packs/chat.js )
+Rails.application.config.assets.precompile += %w( packs/pack.js )
+Rails.application.config.assets.precompile += %w( packs/chat.js )
 Rails.application.config.assets.precompile += %w( s3_direct_upload.js )
 
 Rails.application.config.assets.precompile += %w( lib/xss.js )

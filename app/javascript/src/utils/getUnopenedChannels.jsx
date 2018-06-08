@@ -1,20 +1,43 @@
 import { h, render, Component } from 'preact';
+import setupPusher from './pusher';
+
+
 
 class UnopenedChannelNotice extends Component {
   constructor(props) {
     super(props);
-    this.state = { visible: true }
-    this.handleClick = this.handleClick.bind(this);
+    const unopenedChannels = this.props.unopenedChannels;
+    const visible = unopenedChannels.length > 0 ? true : false;
+    this.state = {
+      visible: visible,
+      unopenedChannels }
   }
 
-  handleClick() {
+  componentDidMount() {
+    setupPusher(this.props.pusherKey, {
+      channelId: `message-notifications-${window.currentUser.id}`,
+      messageCreated: this.receiveNewMessage,
+    });
+  }
+
+  receiveNewMessage = e => {
+    let channels = this.state.unopenedChannels;
+    const newObj = {adjusted_slug: e.chat_channel_adjusted_slug}
+    if(channels.filter(obj => obj.adjusted_slug === newObj.adjusted_slug).length === 0 &&
+      newObj.adjusted_slug != `@${window.currentUser.username}`) {
+      channels.push(newObj);
+    }
+    this.setState({visible: channels.length > 0, unopenedChannels: channels})
+  }
+
+  handleClick = e => {
     this.setState({visible: false})
   }
   render() {
     if (this.state.visible) {
-      const channels = this.props.channels.map(channel => {
+      const channels = this.state.unopenedChannels.map(channel => {
         return <a
-          href={"/chat/"+channel.adjusted_slug}
+          href={"/💌/"+channel.adjusted_slug}
           style={{
           background: "#66e2d5",
           color: "black",
@@ -53,7 +76,7 @@ class UnopenedChannelNotice extends Component {
 }
 
 export default function getUnopenedChannels(user, successCb) {
-  if (location.pathname.startsWith("/chat")) {
+  if (location.pathname.startsWith("/💌")) {
     return
   }
   fetch('/chat_channels?state=unopened', {
@@ -62,11 +85,7 @@ export default function getUnopenedChannels(user, successCb) {
   })
     .then(response => response.json())
     .then(json => {
-      if (json.length > 0) {
-        render(<UnopenedChannelNotice channels={json} />, document.getElementById('message-notice'));
-      } else {
-        render(null, document.getElementById('message-notice'));
-      }
+      render(<UnopenedChannelNotice unopenedChannels={json} pusherKey={document.body.dataset.pusherKey} />, document.getElementById('message-notice'));
     })
     .catch(error => {
       console.log(error);
