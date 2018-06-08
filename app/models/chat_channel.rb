@@ -10,7 +10,7 @@ class ChatChannel < ApplicationRecord
 
   def clear_channel
     messages.each(&:destroy!)
-    notification_channels = chat_channel_memberships.pluck(:user_id).map { |id| "message-notifications-#{id}"}
+    notification_channels = chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
     Pusher.trigger(notification_channels, "channel-cleared", { chat_channel_id: id }.to_json)
     true
   rescue Pusher::Error => e

@@ -42,7 +42,7 @@ class ChatChannelsController < ApplicationController
       if banned_user
         banned_user.add_role :banned
         banned_user.messages.each(&:destroy!)
-        notification_channels = @chat_channel.chat_channel_memberships.pluck(:user_id).map { |id| "message-notifications-#{id}"}
+        notification_channels = @chat_channel.chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
         Pusher.trigger(notification_channels, "user-banned", { userId: banned_user.id }.to_json)
         render json: { status: "success", message: "banned!" }, status: 200
       else
