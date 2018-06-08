@@ -361,7 +361,7 @@ class Article < ApplicationRecord
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
       self.tag_list = []
-      self.tag_list.add(front_matter["tags"], parser: TagParser)
+      self.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
     end
     self.published = front_matter["published"] if ["true","false"].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if self.published
