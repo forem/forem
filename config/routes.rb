@@ -99,8 +99,8 @@ Rails.application.routes.draw do
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
-  get "/chat" => "chat_channels#index"
-  get "/chat/:slug" => "chat_channels#index"
+  get "/💌" => "chat_channels#index"
+  get "/💌/:slug" => "chat_channels#index"
 
   # resources :users
 
