@@ -15,7 +15,7 @@ class UnopenedChannelNotice extends Component {
 
   componentDidMount() {
     setupPusher(this.props.pusherKey, {
-      channelId: `message-notifications-${window.currentUser.id}`,
+      channelId: `private-message-notifications-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
     });
   }
