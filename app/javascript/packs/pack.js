@@ -36,4 +36,4 @@ document.ready.then(
     renderPage();
     getUnopenedChannels();
   }),
-);
+); 
