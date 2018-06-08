@@ -5,15 +5,20 @@ class DigestMailer < ApplicationMailer
     @user = user
     @articles = articles.first(6)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
-    @boosted_article = BoostedArticle.new(@user,
+    @boosted_article = Suggester::Articles::Boosted.new(
+      @user,
       @articles.first,
-      {not_ids: @articles.pluck(:id)}).get("dev_digest_email")
-    subject = generate_title(@articles)
+      not_ids: @articles.pluck(:id),
+      area: "dev_digest_email",
+    ).suggest
+    subject = generate_title
     mail(to: @user.email, subject: subject)
   end
 
-  def generate_title(articles)
-    "#{adjusted_title(articles.first)} + #{articles.size - 1} #{email_end_phrase} #{random_emoji}"
+  private
+
+  def generate_title
+    "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
   end
 
   def adjusted_title(article)
