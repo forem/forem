@@ -45,10 +45,12 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-  def adjusted_slug(user = nil)
+  def adjusted_slug(user = nil, caller_type="reciever")
     user ||= current_user
-    if channel_type == "direct"
+    if channel_type == "direct" && caller_type == "reciever"
       "@"+slug.gsub("/#{user.username}","").gsub("#{user.username}/","")
+    elsif caller_type == "sender"
+      "@"+user.username
     else
       slug
     end

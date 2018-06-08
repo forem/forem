@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import Onboarding from '../src/Onboarding';
-import { getUserData } from '../src/utils/getUserData';
+import { getUserDataAndCsrfToken } from '../chat/util';
 import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 
 HTMLDocument.prototype.ready = new Promise(resolve => {
@@ -28,7 +28,11 @@ function renderPage() {
 }
 
 document.ready.then(
-  getUserData().then(() => {
+  getUserDataAndCsrfToken().then(currentUser => {
+    window.currentUser = currentUser;
+    window.csrfToken = document.querySelector(
+      "meta[name='csrf-token']",
+    ).content;
     renderPage();
     getUnopenedChannels();
   }),
