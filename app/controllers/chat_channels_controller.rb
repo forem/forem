@@ -42,7 +42,8 @@ class ChatChannelsController < ApplicationController
       if banned_user
         banned_user.add_role :banned
         banned_user.messages.each(&:destroy!)
-        Pusher.trigger(@chat_channel.id, "user-banned", { userId: banned_user.id }.to_json)
+        notification_channels = @chat_channel.chat_channel_memberships.pluck(:user_id).map { |id| "message-notifications-#{id}"}
+        Pusher.trigger(notification_channels, "user-banned", { userId: banned_user.id }.to_json)
         render json: { status: "success", message: "banned!" }, status: 200
       else
         render json: { status: "error", message: "username not found" }, status: 400

@@ -10,7 +10,7 @@ class MessagesController < ApplicationController
       begin
         message_json = create_pusher_payload(@message)
         notification_channels = @message.chat_channel.chat_channel_memberships.pluck(:user_id).map { |id| "message-notifications-#{id}"}
-        Pusher.trigger([@message.chat_channel.id] + notification_channels, "message-created", message_json)
+        Pusher.trigger(notification_channels, "message-created", message_json)
         success = true
       rescue Pusher::Error => e
         logger.info "PUSHER ERROR: #{e.message}"
@@ -46,6 +46,7 @@ class MessagesController < ApplicationController
       message: new_message.message_html,
       timestamp: new_message.created_at,
       color: new_message.preferred_user_color,
+      reception_method: "pushed"
     }.to_json
   end
 
