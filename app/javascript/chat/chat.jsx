@@ -34,22 +34,12 @@ export default class Chat extends Component {
   }
 
   componentDidMount() {
-    this.state.chatChannels.forEach(channel => {
+    this.state.chatChannels.slice(0, 3).forEach(channel => {
       this.setupChannel(channel.id);
     });
     setupObserver(this.observerCallback);
-  }
-
-  componentDidUpdate() {
-    if (!this.state.scrolled) {
-      scrollToBottom();
-    }
-  }
-
-  setupChannel = channelId => {
-    getAllMessages(channelId, this.receiveAllMessages);
     setupPusher(this.props.pusherKey, {
-      channelId,
+      channelId: `message-notifications-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
       channelCleared: this.clearChannel,
       redactUserMessages: this.redactUserMessages,
@@ -59,6 +49,18 @@ export default class Chat extends Component {
       this.handleChannelOpenSuccess,
       null,
     );
+  }
+
+  componentDidUpdate() {
+    if (!this.state.scrolled) {
+      scrollToBottom();
+    }
+  }
+
+  setupChannel = channelId => {
+    if (this.state.messages[channelId].length === 0 || this.state.messages[channelId][0].reception_method === 'pushed'){
+      getAllMessages(channelId, this.receiveAllMessages);
+    }
   };
 
   observerCallback = entries => {
@@ -161,6 +163,7 @@ export default class Chat extends Component {
 
   handleSwitchChannel = e => {
     e.preventDefault();
+    this.setupChannel(e.target.dataset.channelId);
     this.setState({
       activeChannelId: parseInt(e.target.dataset.channelId),
       scrolled: false,
