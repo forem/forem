@@ -102,7 +102,7 @@ Rails.application.routes.draw do
   get "/💌" => "chat_channels#index"
   get "/💌/:slug" => "chat_channels#index"
 
-  post "/pusher/auth" => "chat_channels#index"
+  post "/pusher/auth" => "pusher#auth"
 
   # resources :users
 
