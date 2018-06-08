@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 
-RSpec.describe TagParser do
+RSpec.describe ActsAsTaggableOn::TagParser do
   let(:tag0){create(:tag, name:"things")}
   let(:tag1){create(:tag,name: "peter")}
 
@@ -12,7 +12,7 @@ RSpec.describe TagParser do
 
 
   def create_tag_parser(tag_arr)
-    TagParser.new(tag_arr).parse
+    described_class.new(tag_arr).parse
   end
   describe "#parse" do
     it "removes spaces" do

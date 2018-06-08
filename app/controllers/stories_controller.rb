@@ -223,7 +223,7 @@ class StoriesController < ApplicationController
     assign_second_and_third_user
     not_found if permission_denied?
     set_surrogate_key_header @article.record_key
-    @classic_article = ClassicArticle.new(@article).get
+    @classic_article = Suggester::Articles::Classic.new(@article).get
     unless user_signed_in?
       response.headers["Surrogate-Control"] = "max-age=10000, stale-while-revalidate=30, stale-if-error=86400"
     end
