@@ -6,7 +6,7 @@ import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
 import Message from './message';
-import setupPusher from './pusher';
+import setupPusher from '../src/utils/pusher';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -166,7 +166,7 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
     });
-    window.history.replaceState(null, null, "/chat/"+e.target.dataset.channelSlug);
+    window.history.replaceState(null, null, "/💌/"+e.target.dataset.channelSlug);
     document.getElementById("messageform").focus();
     if (window.ga && ga.create) {
       ga('send', 'pageview', location.pathname + location.search);
