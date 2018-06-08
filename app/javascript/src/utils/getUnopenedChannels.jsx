@@ -21,6 +21,9 @@ class UnopenedChannelNotice extends Component {
   }
 
   receiveNewMessage = e => {
+    if (location.pathname.startsWith("/💌") || location.pathname.startsWith("/%F0%9F%92%8C")) {
+      return
+    }
     let channels = this.state.unopenedChannels;
     const newObj = {adjusted_slug: e.chat_channel_adjusted_slug}
     if(channels.filter(obj => obj.adjusted_slug === newObj.adjusted_slug).length === 0 &&
@@ -76,7 +79,7 @@ class UnopenedChannelNotice extends Component {
 }
 
 export default function getUnopenedChannels(user, successCb) {
-  if (location.pathname.startsWith("/💌")) {
+  if (location.pathname.startsWith("/💌") || location.pathname.startsWith("/%F0%9F%92%8C")) {
     return
   }
   fetch('/chat_channels?state=unopened', {
