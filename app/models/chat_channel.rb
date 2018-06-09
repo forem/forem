@@ -10,8 +10,7 @@ class ChatChannel < ApplicationRecord
 
   def clear_channel
     messages.each(&:destroy!)
-    notification_channels = chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
-    Pusher.trigger(notification_channels, "channel-cleared", { chat_channel_id: id }.to_json)
+    Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
     true
   rescue Pusher::Error => e
     logger.info "PUSHER ERROR: #{e.message}"
@@ -45,6 +44,15 @@ class ChatChannel < ApplicationRecord
       ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
     end
   end
+
+  def pusher_channels
+    if channel_type == "invite_only"
+      "presence-channel-#{id}"
+    else
+      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
+    end
+  end
+
 
   def adjusted_slug(user = nil, caller_type="reciever")
     user ||= current_user

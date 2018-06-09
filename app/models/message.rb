@@ -32,7 +32,7 @@ class Message < ApplicationRecord
   # handle_asynchronously :update_all_has_unopened_messages_statuses
 
   def evaluate_markdown
-    self.message_html = message_markdown
+    self.message_html = MarkdownParser.new(message_markdown).evaluate_inline_markdown
   end
 
   def evaluate_channel_permission

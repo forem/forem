@@ -170,6 +170,17 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
+  code {
+    background:$lightest-gray;
+    padding:0.1em 0.3em 0px;
+    border-radius:2px;
+    color:#333842;
+    font-size:0.95em;
+    vertical-align:0.05em;
+    max-width:100%;
+    line-height:1.4em;
+    font-family: $monospace;
+  }
 }
 
 .chatmessage__timestamp {
