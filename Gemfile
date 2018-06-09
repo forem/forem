@@ -89,6 +89,7 @@ gem "twitter", "~> 6.2"
 gem "uglifier", "~> 3.2"
 gem "validate_url", "~> 1.0"
 gem "webpacker", "~> 3.2"
+gem 'webpush', "~> 0.3"
 
 
 group :development do

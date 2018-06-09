@@ -21,7 +21,7 @@ class UnopenedChannelNotice extends Component {
   }
 
   receiveNewMessage = e => {
-    if (location.pathname.startsWith("/💌") || location.pathname.startsWith("/%F0%9F%92%8C")) {
+    if (location.pathname.startsWith("/gether") || location.pathname.startsWith("/%F0%9F%92%8C")) {
       return
     }
     let channels = this.state.unopenedChannels;
@@ -40,7 +40,7 @@ class UnopenedChannelNotice extends Component {
     if (this.state.visible) {
       const channels = this.state.unopenedChannels.map(channel => {
         return <a
-          href={"/💌/"+channel.adjusted_slug}
+          href={"/gether/"+channel.adjusted_slug}
           style={{
           background: "#66e2d5",
           color: "black",
@@ -70,7 +70,7 @@ class UnopenedChannelNotice extends Component {
             fontSize: "24px",
             verticalAlign: "-4px",
             display: "inline-block",
-            marginRight: "3px"}}>💌</span> New Message from {channels}
+            marginRight: "3px"}}>gether</span> New Message from {channels}
           <span style={{ color: "#fefa87"}}>(beta testing)</span>
         </div>
       );
@@ -79,7 +79,7 @@ class UnopenedChannelNotice extends Component {
 }
 
 export default function getUnopenedChannels(user, successCb) {
-  if (location.pathname.startsWith("/💌") || location.pathname.startsWith("/%F0%9F%92%8C")) {
+  if (location.pathname.startsWith("/gether") || location.pathname.startsWith("/%F0%9F%92%8C")) {
     return
   }
   fetch('/chat_channels?state=unopened', {

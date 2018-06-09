@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { conductModeration, getAllMessages, sendMessage, sendOpen } from './actions';
-import { hideMessages, scrollToBottom, setupObserver } from './util';
+import { hideMessages, scrollToBottom, setupObserver, setupNotifications, getNotificationState } from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
@@ -30,6 +30,7 @@ export default class Chat extends Component {
       activeChannelId: chatOptions.activeChannelId,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
+      notificationsPermission: null
     };
   }
 
@@ -59,6 +60,7 @@ export default class Chat extends Component {
       this.handleChannelOpenSuccess,
       null,
     );
+    this.setState({notificationsPermission: getNotificationState()});
   }
 
   componentDidUpdate() {
@@ -179,7 +181,7 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
     });
-    window.history.replaceState(null, null, "/💌/"+e.target.dataset.channelSlug);
+    window.history.replaceState(null, null, "/gether/"+e.target.dataset.channelSlug);
     document.getElementById("messageform").focus();
     if (window.ga && ga.create) {
       ga('send', 'pageview', location.pathname + location.search);
@@ -205,6 +207,16 @@ export default class Chat extends Component {
       this.receiveNewMessage(response.message);
     }
   };
+
+  triggerNotificationRequest = e => {
+    const context = this;
+    Notification.requestPermission(function (permission) {
+      if (permission === "granted") {
+        context.setState({notificationsPermission: "granted"});
+        setupNotifications();
+      }
+    });
+  }
 
   handleChannelOpenSuccess = response => {
     const newChannelsObj = this.state.chatChannels.map(channel => {
@@ -237,13 +249,25 @@ export default class Chat extends Component {
 
   renderChatChannels = () => {
     if (this.state.showChannelsList) {
+      const notificationsPermission = this.state.notificationsPermission;
+      let notificationsButton = "";
+      let notificationsState = "";
+      if (notificationsPermission === "waiting-permission") {
+        notificationsButton = <div><button class="chat__notificationsbutton " onClick={this.triggerNotificationRequest}>Turn on Notifications</button></div>;
+      } else if (notificationsPermission === "granted") {
+        notificationsState = <div class="chat_chatconfig chat_chatconfig--on">Notificatins On</div>
+      } else if (notificationsPermission === "denied") {
+        notificationsState = <div class="chat_chatconfig chat_chatconfig--off">Notificatins Off</div>
+      }
       return (
         <div className="chat__channels">
+          {notificationsButton}
           <Channels
             activeChannelId={this.state.activeChannelId}
             chatChannels={this.state.chatChannels}
             handleSwitchChannel={this.handleSwitchChannel}
           />
+          {notificationsState}
         </div>
       );
     }
