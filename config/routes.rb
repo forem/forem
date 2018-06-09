@@ -94,13 +94,15 @@ Rails.application.routes.draw do
   resources :additional_content_boxes, only: [:index]
   resources :videos, only: [:create, :new]
   resources :video_states, only: [:create]
+  resources :push_notification_subscriptions, only: [:create]
+  
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
-  get "/💌" => "chat_channels#index"
-  get "/💌/:slug" => "chat_channels#index"
+  get "/gether" => "chat_channels#index"
+  get "/gether/:slug" => "chat_channels#index"
 
   post "/pusher/auth" => "pusher#auth"
 

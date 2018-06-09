@@ -80,6 +80,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_channels_html
+      return unless current_user
       @chat_channels = current_user.chat_channels.
         order("last_message_at DESC").
         includes(:chat_channel_memberships)

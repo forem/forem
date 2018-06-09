@@ -11,6 +11,7 @@ class MessagesController < ApplicationController
       begin
         message_json = create_pusher_payload(@message)
         Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
+        @message.delay.send_push
         success = true
       rescue Pusher::Error => e
         logger.info "PUSHER ERROR: #{e.message}"

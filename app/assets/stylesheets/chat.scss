@@ -17,12 +17,53 @@
   height: inherit;
 }
 
+.chat__notificationsbutton{
+  border: 0px;
+  font-size: 12px;
+  padding: 15px 0px;
+  width: 100%;
+  color: darken($green, 30%);
+  font-weight: bold;
+  width: 95%;
+  border-radius: 3px;
+  border: 1px solid darken($green, 30%);
+  box-shadow: 3px 3px 0px darken($green, 30%);
+  background: lighten($green,30%);
+  &:hover{
+    background: lighten($green, 20%);
+  }
+}
+
 .chat__channels {
   width: 80px;
   height: inherit;
+  position: relative;
   @media screen and ( min-width: 550px ){
     width: 160px;
   }
+}
+
+.chat_chatconfig{
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 6px;
+  font-size:12px;
+  padding: 3px 12px;
+  display: inline-block;
+  border-radius: 3px;
+  background: $lightest-gray;
+  border: 1px solid $light-medium-gray;
+  font-weight: bold;
+  cursor: default;
+}
+
+.chat_chatconfig--on{
+  color: $green;
+}
+
+.chat_chatconfig--off{
+  color: $red;
 }
 
 .chat__channels--hidden {
@@ -158,6 +199,8 @@
 .chatchannels__channelslist {
   padding: 10px 0;
   flex-grow: 1;
+  overflow: scroll;
+  padding-bottom: 25px;
 }
 
 .chatchannels__misc {

@@ -1,4 +1,4 @@
-var CACHE_VERSION = 'v2.4.8';
+var CACHE_VERSION = 'v2.5.0';
 var CACHE_NAME = CACHE_VERSION + ':sw-cache::';
 var REQUESTS_LIMIT = 70;
 
@@ -56,6 +56,7 @@ function onFetch(event) {
     )
   );
 
+
   function requestBlackListed(request){
     var url = new URL(request.url);
     var test = (event.request.method !== 'GET' ||
@@ -112,6 +113,22 @@ function onFetch(event) {
   }
 };
 
+function onPush(event) {
+  var title = "👋 New Message";
+  var body; body = event.data.text()
+  var tag = "push-simple-demo-notification-tag";
+  var icon = '<%= image_path "devlogo-pwa-128.png" %>';
+  event.waitUntil(
+      self.registration.showNotification(title, {
+          body: body,
+          icon: icon,
+          tag: tag
+      })
+    );
+  };
+
+
 self.addEventListener('install', onInstall);
 self.addEventListener('activate', onActivate);
 self.addEventListener('fetch', onFetch);
+self.addEventListener("push", onPush);
