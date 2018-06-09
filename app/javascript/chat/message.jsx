@@ -18,28 +18,14 @@ const Message = ({
   if (type === 'error') {
     return <ErrorMessage message={message} />;
   }
-  const re = new RegExp(`@${window.currentUser.username}`);
-  const match = re.exec(message);
-  let messageArea;
 
-  if (match) {
-    messageArea = (
-      <span className="chatmessagebody__message" style={messageStyle}>
-        {message.substr(0, match.index)}
-        <span className="chatmessagebody__currentuser">
-          {`@${window.currentUser.username}`}
-        </span>
-        {message.substr(match.index + match[0].length)}
-      </span>
+  const messageArea = (
+      <span
+        className="chatmessagebody__message"
+        style={messageStyle}
+        dangerouslySetInnerHTML={{__html: message}}
+      ></span>
     );
-  } else {
-    messageArea = (
-      <span className="chatmessagebody__message" style={messageStyle}>
-        {message}
-      </span>
-    );
-  }
-
   return (
     <div className="chatmessage">
       <div className="chatmessage__body">

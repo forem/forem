@@ -2,7 +2,7 @@ json.messages @chat_channel.messages.order("created_at DESC").limit(50).reverse 
   json.user_id message.user.id
   json.username message.user.username
   json.profile_image_url ProfileImage.new(message.user).get(90)
-  json.message message.message_markdown
+  json.message message.message_html
   json.timestamp message.created_at
   json.color message.preferred_user_color
 end
