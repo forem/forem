@@ -10,8 +10,7 @@ class MessagesController < ApplicationController
     if @message.save
       begin
         message_json = create_pusher_payload(@message)
-        notification_channels = @message.chat_channel.chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
-        Pusher.trigger(notification_channels, "message-created", message_json)
+        Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
         success = true
       rescue Pusher::Error => e
         logger.info "PUSHER ERROR: #{e.message}"
