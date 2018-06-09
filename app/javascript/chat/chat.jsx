@@ -34,8 +34,18 @@ export default class Chat extends Component {
   }
 
   componentDidMount() {
-    this.state.chatChannels.slice(0, 3).forEach(channel => {
-      this.setupChannel(channel.id);
+    this.state.chatChannels.forEach((channel, index) => {
+      if ( index < 6 ) {
+        this.setupChannel(channel.id);
+      }
+      if (channel.channel_type === "invite_only") {
+        setupPusher(this.props.pusherKey, {
+          channelId: `presence-channel-${channel.id}`,
+          messageCreated: this.receiveNewMessage,
+          channelCleared: this.clearChannel,
+          redactUserMessages: this.redactUserMessages,
+        });
+      }
     });
     setupObserver(this.observerCallback);
     setupPusher(this.props.pusherKey, {
