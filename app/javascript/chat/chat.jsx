@@ -1,11 +1,12 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { conductModeration, getAllMessages, sendMessage, sendOpen } from './actions';
+import { conductModeration, getAllMessages, sendMessage, sendOpen, getAdditionalChannels, getContent } from './actions';
 import { hideMessages, scrollToBottom, setupObserver, setupNotifications, getNotificationState } from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
 import Message from './message';
+import Content from './content';
 import setupPusher from '../src/utils/pusher';
 
 export default class Chat extends Component {
@@ -30,7 +31,8 @@ export default class Chat extends Component {
       activeChannelId: chatOptions.activeChannelId,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
-      notificationsPermission: null
+      notificationsPermission: null,
+      activeContent: null
     };
   }
 
@@ -39,14 +41,13 @@ export default class Chat extends Component {
       if ( index < 6 ) {
         this.setupChannel(channel.id);
       }
-      if (channel.channel_type === "invite_only") {
-        setupPusher(this.props.pusherKey, {
-          channelId: `presence-channel-${channel.id}`,
-          messageCreated: this.receiveNewMessage,
-          channelCleared: this.clearChannel,
-          redactUserMessages: this.redactUserMessages,
-        });
-      }
+      setupPusher(this.props.pusherKey, {
+        channelId: `presence-channel-${channel.id}`,
+        messageCreated: this.receiveNewMessage,
+        channelCleared: this.clearChannel,
+        redactUserMessages: this.redactUserMessages,
+        liveCoding: this.liveCoding
+      });
     });
     setupObserver(this.observerCallback);
     setupPusher(this.props.pusherKey, {
@@ -61,6 +62,8 @@ export default class Chat extends Component {
       null,
     );
     this.setState({notificationsPermission: getNotificationState()});
+    getAdditionalChannels(this.loadAdditionalChannels);
+    document.getElementById("messageform").focus();
   }
 
   componentDidUpdate() {
@@ -69,11 +72,23 @@ export default class Chat extends Component {
     }
   }
 
+  liveCoding = e => {
+    if (this.state.activeContent === {type_of: "code_editor"}) {
+      return 
+    }
+    this.setState({activeContent: {type_of: "code_editor"}})
+  }
+
+  loadAdditionalChannels = channels => {
+    this.setState({chatChannels: channels});
+  }
+
   setupChannel = channelId => {
     if (this.state.messages[channelId].length === 0 || this.state.messages[channelId][0].reception_method === 'pushed'){
       getAllMessages(channelId, this.receiveAllMessages);
     }
   };
+  
 
   observerCallback = entries => {
     entries.forEach(entry => {
@@ -156,7 +171,9 @@ export default class Chat extends Component {
 
   handleMessageSubmit = message => {
     // should check if user has the priviledge
-    if (message[0] === '/') {
+    if (message.startsWith('/code')) {
+      this.setState({activeContent: {type_of: "code_editor"}})
+    } else if (message[0] === '/') {
       conductModeration(
         this.state.activeChannelId,
         message,
@@ -180,8 +197,9 @@ export default class Chat extends Component {
       activeChannelId: parseInt(e.target.dataset.channelId),
       scrolled: false,
       showAlert: false,
+      activeContent: null
     });
-    window.history.replaceState(null, null, "/gether/"+e.target.dataset.channelSlug);
+    window.history.replaceState(null, null, "/connect/"+e.target.dataset.channelSlug);
     document.getElementById("messageform").focus();
     if (window.ga && ga.create) {
       ga('send', 'pageview', location.pathname + location.search);
@@ -218,6 +236,26 @@ export default class Chat extends Component {
     });
   }
 
+  triggerActiveContent = e => {
+    const target = e.target
+    if (e.target.dataset.content && e.target.dataset.content != "exit") {
+      e.preventDefault();
+      this.setState({activeContent: {type_of: "loading"}})
+      getContent('/api/'+target.dataset.content, this.setActiveContent, null)
+    }
+    else if (target.tagName.toLowerCase() === 'a' && target.href.startsWith('https://dev.to/')) {
+      e.preventDefault();
+      getContent(`/api/articles/by_path?url=${target.href.split('https://dev.to')[1]}`, this.setActiveContent, null)
+    } else if (target.dataset.content === "exit") {
+      e.preventDefault();
+      this.setState({activeContent: null})
+    }
+  }
+
+  setActiveContent = response => {
+    this.setState({activeContent: response});
+  }
+
   handleChannelOpenSuccess = response => {
     const newChannelsObj = this.state.chatChannels.map(channel => {
       if (parseInt(response.channel) === channel["id"]){
@@ -232,17 +270,19 @@ export default class Chat extends Component {
     console.error(err);
   };
 
-  renderMessage = () => {
+  renderMessages = () => {
     const { activeChannelId, messages, showTimestamp } = this.state;
     return messages[activeChannelId].map(message => (
       <Message
         user={message.username}
+        userID={message.user_id}
         profileImageUrl={message.profile_image_url}
         message={message.message}
         messageColor={message.messageColor}
         timestamp={showTimestamp ? message.timestamp : null}
         color={message.color}
         type={message.type}
+        onContentTrigger={this.triggerActiveContent}
       />
     ));
   };
@@ -276,19 +316,27 @@ export default class Chat extends Component {
 
   renderActiveChatChannel = () => (
     <div className="activechatchannel">
-      <div className="activechatchannel__messages" id="messagelist">
-        {this.renderMessage()}
-        <div className="messagelist__sentinel" id="messagelist__sentinel" />
+      <div className="activechatchannel__conversation">
+        <div className="activechatchannel__messages" id="messagelist">
+          {this.renderMessages()}
+          <div className="messagelist__sentinel" id="messagelist__sentinel" />
+        </div>
+        <div className="activechatchannel__alerts">
+          <Alert showAlert={this.state.showAlert} />
+        </div>
+        <div className="activechatchannel__form">
+          <Compose
+            handleSubmitOnClick={this.handleSubmitOnClick}
+            handleKeyDown={this.handleKeyDown}
+          />
+        </div>
       </div>
-      <div className="activechatchannel__alerts">
-        <Alert showAlert={this.state.showAlert} />
-      </div>
-      <div className="activechatchannel__form">
-        <Compose
-          handleKeyDown={this.handleKeyDown}
-          handleSubmitOnClick={this.handleSubmitOnClick}
+      <Content
+        resource={this.state.activeContent}
+        onExit={this.triggerActiveContent}
+        activeChannelId={this.state.activeChannelId}
+        pusherKey={this.props.pusherKey}
         />
-      </div>
     </div>
   );
 

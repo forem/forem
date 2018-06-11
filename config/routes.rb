@@ -50,7 +50,7 @@ Rails.application.routes.draw do
           post "/onboarding", to: "reactions#onboarding"
         end
       end
-      resources :users, only: [:index] do
+      resources :users, only: [:index, :show] do
         collection do
           get "/sidebar_suggestions", to: "users#sidebar_suggestions"
         end
@@ -101,8 +101,8 @@ Rails.application.routes.draw do
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
-  get "/gether" => "chat_channels#index"
-  get "/gether/:slug" => "chat_channels#index"
+  get "/connect" => "chat_channels#index"
+  get "/connect/:slug" => "chat_channels#index"
 
   post "/pusher/auth" => "pusher#auth"
 

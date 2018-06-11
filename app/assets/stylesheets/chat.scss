@@ -79,11 +79,18 @@
   height: inherit;
   max-height: inherit;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   border: 1px solid $outline-color;
   box-shadow: $bold-shadow;
   background: white;
+}
+
+.activechatchannel__conversation{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-grow: 3;
 }
 
 .activechatchannel__messages {
@@ -135,6 +142,36 @@
     background: $light-gray;
   }
 
+}
+
+.activechatchannel__activecontent{
+  border-left: 2px solid $outline-color;
+  padding: 13px;
+  min-width: 290px;
+  margin-left: -180px;
+  background: white;
+  flex-basis: 80%;
+  z-index: 200;
+  position: relative;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  @media screen and ( min-width: 1000px ){
+    margin-left: initial;
+    min-width: 0px;
+    padding: 18px;
+    max-width:480px;
+  }
+}
+
+.activechatchannel__activecontentexitbutton{
+  border:  0px;
+  font-size: 36px;
+  color: $medium-gray;
+  padding:0px;
+  background: transparent;
+  position: absolute;
+  left: 6px;
+  top:-4px;
 }
 
 .chatchannels {
@@ -293,4 +330,47 @@
 
 .messagelist__sentinel {
   height: 5px;
+}
+
+.chatcodeeditor{
+  position: absolute;
+  top: 40px;
+  left: 0px;
+  right: 24px;
+  bottom: 0px;
+}
+
+.CodeMirror{
+  padding: 12px;
+  font-size:0.9em;
+}
+
+.cursorelement{
+  border-left: 3px solid $red;
+  animation: blinker 1s linear infinite;
+  padding: 0px;
+  z-index: 0;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.chat .container {
+  box-shadow: 0px 0px 0px #ffffff !important;
+  border: 0px !important;
+  margin-top: 8px !important;
+  .title{
+    width:95%;
+    font-size:18px;
+    h1{
+      font-size:28px !important;
+    }
+  }
+  .body {
+    font-size:20px;
+    width:96%;
+  }
 }

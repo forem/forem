@@ -2,6 +2,7 @@ export function getAllMessages(channelId, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}`, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    credentials: 'same-origin',
   })
     .then(response => response.json())
     .then(successCb)
@@ -71,6 +72,16 @@ export function conductModeration(
     .catch(failureCb);
 }
 
+export function getAdditionalChannels(successCb, failureCb) {
+  fetch(`/chat_channels?state=additional`, {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
 
 export function sendKeys(subscription, successCb, failureCb) {
   fetch(`/push_notification_subscriptions`, {
@@ -83,6 +94,17 @@ export function sendKeys(subscription, successCb, failureCb) {
     body: JSON.stringify({
       subscription: subscription
     }),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
+export function getContent(url, successCb, failureCb) {
+  fetch(`${url}`, {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
     .then(response => response.json())
