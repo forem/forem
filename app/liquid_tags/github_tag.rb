@@ -32,3 +32,5 @@ class GithubTag < LiquidTagBase
     @rendered
   end
 end
+
+Liquid::Template.register_tag("github", GithubTag)

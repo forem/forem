@@ -169,3 +169,4 @@ class PodcastTag < LiquidTagBase
     raise StandardError, 'Invalid podcast link'
   end
 end
+Liquid::Template.register_tag("podcast", PodcastTag)

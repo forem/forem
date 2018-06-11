@@ -1,21 +1,14 @@
-# registering all liquid tags
+# Our custom Liquid tags are registered to Liquid::Template at the bottom of
+# each files. Each Liquid tags will need to be loaded/required before the main
+# Liquid gem is evoked, hence the need for the fix below.
+#
+# Because files are eagerloaded in production, this fix is only
+# applicable in development (and test, when needed)
 
-# dynamic
-Liquid::Template.register_tag("devcomment", CommentTag)
-Liquid::Template.register_tag("github", GithubTag)
-Liquid::Template.register_tag("link", LinkTag)
-Liquid::Template.register_tag("podcast", PodcastTag)
-Liquid::Template.register_tag("tweet", TweetTag)
-Liquid::Template.register_tag("twitter", TweetTag)
-Liquid::Template.register_tag("user", UserTag)
-
-# static
-Liquid::Template.register_tag("codepen", CodepenTag)
-Liquid::Template.register_tag("gist", GistTag)
-Liquid::Template.register_tag("instagram", InstagramTag)
-Liquid::Template.register_tag("speakerdeck", SpeakerdeckTag)
-Liquid::Template.register_tag("glitch", GlitchTag)
-Liquid::Template.register_tag("replit", ReplitTag)
-Liquid::Template.register_tag("runkit", RunkitTag)
-Liquid::Template.register_tag("youtube", YoutubeTag)
-Liquid::Template.register_filter(UrlDecodeFilter)
+if Rails.env.development? || Rails.env.test?
+  Rails.application.config.to_prepare do
+    Dir.glob(Rails.root.join("app/liquid_tags/*.rb")).sort.each do |filename|
+      require_dependency filename
+    end
+  end
+end
