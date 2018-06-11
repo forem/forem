@@ -257,11 +257,12 @@ export default class Chat extends Component {
     const target = e.target
     if (e.target.dataset.content && e.target.dataset.content != "exit") {
       e.preventDefault();
-      this.setState({activeContent: {type_of: "loading"}})
+      this.setState({activeContent: {type_of: "loading-user"}})
       getContent('/api/'+target.dataset.content, this.setActiveContent, null)
     }
     else if (target.tagName.toLowerCase() === 'a' && target.href.startsWith('https://dev.to/')) {
       e.preventDefault();
+      this.setState({activeContent: {type_of: "loading-post"}})
       getContent(`/api/articles/by_path?url=${target.href.split('https://dev.to')[1]}`, this.setActiveContent, null)
     } else if (target.dataset.content === "exit") {
       e.preventDefault();
@@ -271,6 +272,9 @@ export default class Chat extends Component {
 
   setActiveContent = response => {
     this.setState({activeContent: response});
+    setTimeout(function() {
+      document.getElementById("chat_activecontent").scrollTop = 0;
+    }, 10);
   }
 
   handleChannelOpenSuccess = response => {

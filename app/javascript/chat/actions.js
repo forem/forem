@@ -102,7 +102,7 @@ export function sendKeys(subscription, successCb, failureCb) {
 }
 
 export function getContent(url, successCb, failureCb) {
-  fetch(`${url}`, {
+  fetch(`https://dev.to${url}`, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     credentials: 'same-origin',
