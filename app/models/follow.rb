@@ -27,6 +27,7 @@ class Follow < ApplicationRecord
   after_save :touch_user
   after_save :touch_user_followed_at
   after_create :send_email_notification
+  after_create :create_chat_channel
 
   validates :followable_id, uniqueness: { scope: [:followable_type, :follower_id] }
 
@@ -61,6 +62,13 @@ class Follow < ApplicationRecord
     follower.touch(:last_followed_at)
   end
   handle_asynchronously :touch_user_followed_at
+
+  def create_chat_channel
+    if followable_type == "User" && followable.following?(follower)
+      ChatChannel.create_with_users([followable, follower])
+    end
+  end
+  handle_asynchronously :create_chat_channel
 
   def send_email_notification
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications

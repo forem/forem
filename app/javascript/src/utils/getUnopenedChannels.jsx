@@ -50,8 +50,9 @@ class UnopenedChannelNotice extends Component {
           borderRadius: "3px"}}>{channel.adjusted_slug}</a>
       });
       return (
-        <div
+        <a
           onClick={this.handleClick}
+          href={"/connect/"+this.state.unopenedChannels[0].adjusted_slug}
           style={{
           position: 'fixed',
           zIndex: '200',
@@ -68,7 +69,7 @@ class UnopenedChannelNotice extends Component {
           padding: '12px 5px 3px'}}>
           New Message from {channels}
           <span style={{ color: "#fefa87"}}>(beta)</span>
-        </div>
+        </a>
       );
     }
   }
