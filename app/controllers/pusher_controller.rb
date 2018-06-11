@@ -20,7 +20,7 @@ class PusherController < ApplicationController
   end
 
   def valid_presence_channel
-    id = params[:channel_name].split("presence-channel-")[1]
+    id = params[:channel_name].split("presence-channel-")[1].split("-")[0]
     channel = ChatChannel.find(id)
     channel.has_member?(current_user)
   end

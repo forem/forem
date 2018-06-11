@@ -4,13 +4,15 @@ class ChatChannelsController < ApplicationController
   def index
     if params[:state] == "unopened"
       render_unopened_json_response
+    elsif params[:state] == "additional"
+      render_additional_json_response
     else
       render_channels_html
     end
   end
 
   def show
-    @chat_channel = ChatChannel.includes(:messages).find_by(id: params[:id])
+    @chat_channel = current_user.chat_channels.includes(:messages).find_by(id: params[:id])
     if @chat_channel
       @chat_channel
     else
@@ -71,7 +73,7 @@ class ChatChannelsController < ApplicationController
   def render_unopened_json_response
     if current_user.has_role?(:super_admin) || Rails.env.development?
       @chat_channels_memberships = current_user.
-      chat_channel_memberships.
+      chat_channel_memberships.includes(:chat_channel).
       where(has_unopened_messages: true).order("updated_at DESC")
     else
       @chat_channels_memberships = []
@@ -79,19 +81,26 @@ class ChatChannelsController < ApplicationController
     render "index.json"
   end
 
+  def render_additional_json_response
+    @chat_channels_memberships = current_user.
+      chat_channel_memberships.includes(:chat_channel).limit(50).order("updated_at DESC")
+    render "index.json"
+  end
+
   def render_channels_html
-      return unless current_user
-      @chat_channels = current_user.chat_channels.
-        order("last_message_at DESC").
-        includes(:chat_channel_memberships)
-      @chat_channels.each do |channel|
-        channel.current_user = current_user
-      end
-      slug =  if params[:slug] && params[:slug].start_with?("@")
-                        [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
-                      else
-                        params[:slug]
-                      end
-      @active_channel = ChatChannel.find_by_slug(slug) || @chat_channels.first
+    return unless current_user
+    @chat_channels = current_user.chat_channels.
+      order("last_message_at DESC").
+      limit(25)
+    @chat_channels.each do |channel|
+      channel.current_user = current_user
+    end
+    slug =  if params[:slug] && params[:slug].start_with?("@")
+                      [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
+                    else
+                      params[:slug]
+                    end
+    @active_channel = ChatChannel.find_by_slug(slug) || @chat_channels.first
+    # @twilio_token = TwilioToken.new(current_user).get
   end
 end

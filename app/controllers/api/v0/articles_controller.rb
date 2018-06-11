@@ -16,8 +16,12 @@ module Api
       end
 
       def show
-        @article = Article.includes(:user).find(params[:id]).decorate
-        not_found unless @article.published
+        if params[:id] == "by_path"
+          @article = Article.includes(:user).find_by_path(params[:url])&.decorate
+        else
+          @article = Article.includes(:user).find(params[:id])&.decorate
+        end
+        not_found unless @article&.published
       end
 
       def onboarding

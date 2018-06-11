@@ -5,6 +5,12 @@ RSpec.describe "ChatChannels", type: :request do
   let(:test_subject) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
 
+  before do
+    sign_in user
+    chat_channel.add_users([user])
+  end
+
+
   describe "GET /chat_channels/:id" do
     context "when request is valid" do
       before do
