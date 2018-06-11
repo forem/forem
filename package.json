@@ -80,6 +80,7 @@
   "dependencies": {
     "@rails/webpacker": "^3.5.3",
     "@webscopeio/react-textarea-autocomplete": "^2.2.0",
+    "codemirror": "^5.38.0",
     "intersection-observer": "^0.5.0",
     "preact": "^8.2.5",
     "prop-types": "^15.6.0",

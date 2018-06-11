@@ -12,8 +12,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_channel = current_user.chat_channels.includes(:messages).find_by(id: params[:id])
-    if @chat_channel
+    @chat_channel = ChatChannel.find_by_id(params[:id])
+    if @chat_channel.present? && (@chat_channel.channel_type == "open" || @chat_channel.has_member?(current_user))
       @chat_channel
     else
       message = "The chat channel you are looking for is either invalid or does not exist"
@@ -74,7 +74,8 @@ class ChatChannelsController < ApplicationController
     if current_user.has_role?(:super_admin) || Rails.env.development?
       @chat_channels_memberships = current_user.
       chat_channel_memberships.includes(:chat_channel).
-      where(has_unopened_messages: true).order("updated_at DESC")
+      where(chat_channels: {channel_type: "direct"}, has_unopened_messages: true).
+      order("chat_channel_memberships.updated_at DESC")
     else
       @chat_channels_memberships = []
     end
@@ -83,7 +84,7 @@ class ChatChannelsController < ApplicationController
 
   def render_additional_json_response
     @chat_channels_memberships = current_user.
-      chat_channel_memberships.includes(:chat_channel).limit(50).order("updated_at DESC")
+      chat_channel_memberships.includes(:chat_channel).limit(200).order("updated_at DESC")
     render "index.json"
   end
 

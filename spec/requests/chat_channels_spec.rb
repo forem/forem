@@ -27,7 +27,7 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     context "when request is invalid" do
-      before { get "/chat_channels/1" }
+      before { get "/chat_channels/1200" }
 
       it "returns proper error message" do
         expect(response.body).to include("invalid")

@@ -66,12 +66,8 @@ class UnopenedChannelNotice extends Component {
           fontSize: '15px',
           opacity: '0.94',
           padding: '12px 5px 3px'}}>
-          <span style={{
-            fontSize: "24px",
-            verticalAlign: "-4px",
-            display: "inline-block",
-            marginRight: "3px"}}>gether</span> New Message from {channels}
-          <span style={{ color: "#fefa87"}}>(beta testing)</span>
+          New Message from {channels}
+          <span style={{ color: "#fefa87"}}>(beta)</span>
         </div>
       );
     }
