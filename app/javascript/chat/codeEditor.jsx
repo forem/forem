@@ -1,6 +1,10 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import setupPusher from '../src/utils/pusher';
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/jsx/jsx';
+import 'codemirror/mode/ruby/ruby';
 
 export default class CodeEditor extends Component {
 

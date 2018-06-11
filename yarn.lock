@@ -319,7 +319,7 @@
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/@twilio/sip.js/-/sip.js-0.7.7.tgz#cff50f66f9b295d46f219737b72780c7d0e6df52"
 
-"@twilio/webrtc@github:twilio/twilio-webrtc.js#2.0.1-rc1":
+"@twilio/webrtc@twilio/twilio-webrtc.js#2.0.1-rc1":
   version "2.0.1-rc1"
   resolved "https://codeload.github.com/twilio/twilio-webrtc.js/tar.gz/3532058a5083e69b6ce1ae2984dd59ad5c864f29"
 
@@ -2375,6 +2375,10 @@ coa@~1.0.1:
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
+
+codemirror@^5.38.0:
+  version "5.38.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.38.0.tgz#26a9551446e51dbdde36aabe60f72469724fd332"
 
 collection-visit@^1.0.0:
   version "1.0.0"

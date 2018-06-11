@@ -1,12 +1,12 @@
 <% if user_signed_in? %>
 <% end %>
-<% title "DEV Chat" %>
-<link rel="canonical" href="https://dev.to/chat"/>
-<meta name="description" content="DEV Chat">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.js"></script>
+<% title "DEV Connect" %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/connect"/>
+  <meta name="description" content="DEV Connect">
+<% end %>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/mode/javascript/javascript.min.js"></script>
 
 <% if user_signed_in? %>
   <%= javascript_pack_tag 'chat', defer: true %>
@@ -23,7 +23,7 @@
     }
   </style>
   <div class="inner-content">
-    <div class="chat-page-header">DEV Chat is Beta —— Post any thoughts in the "Meta" channel</div>
+    <div class="chat-page-header">DEV Connect is Beta —— Post any thoughts in the "Meta" channel</div>
     <div
       id="chat"
       class="live-chat"

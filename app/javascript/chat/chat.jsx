@@ -41,13 +41,23 @@ export default class Chat extends Component {
       if ( index < 6 ) {
         this.setupChannel(channel.id);
       }
-      setupPusher(this.props.pusherKey, {
-        channelId: `presence-channel-${channel.id}`,
-        messageCreated: this.receiveNewMessage,
-        channelCleared: this.clearChannel,
-        redactUserMessages: this.redactUserMessages,
-        liveCoding: this.liveCoding
-      });
+      if (channel.channel_type === "open") {
+        setupPusher(this.props.pusherKey, {
+          channelId: `open-channel-${channel.id}`,
+          messageCreated: this.receiveNewMessage,
+          channelCleared: this.clearChannel,
+          redactUserMessages: this.redactUserMessages,
+          liveCoding: null
+        });
+      } else {
+        setupPusher(this.props.pusherKey, {
+          channelId: `presence-channel-${channel.id}`,
+          messageCreated: this.receiveNewMessage,
+          channelCleared: this.clearChannel,
+          redactUserMessages: this.redactUserMessages,
+          liveCoding: this.liveCoding
+        });
+      }
     });
     setupObserver(this.observerCallback);
     setupPusher(this.props.pusherKey, {
@@ -62,7 +72,9 @@ export default class Chat extends Component {
       null,
     );
     this.setState({notificationsPermission: getNotificationState()});
-    getAdditionalChannels(this.loadAdditionalChannels);
+    if (this.state.showChannelsList) {
+      getAdditionalChannels(this.loadAdditionalChannels);
+    }
     document.getElementById("messageform").focus();
   }
 
@@ -81,10 +93,12 @@ export default class Chat extends Component {
 
   loadAdditionalChannels = channels => {
     this.setState({chatChannels: channels});
+    this.setupChannel(this.state.activeChannelId);
   }
 
   setupChannel = channelId => {
-    if (this.state.messages[channelId].length === 0 || this.state.messages[channelId][0].reception_method === 'pushed'){
+    if (!this.state.messages[channelId] || this.state.messages[channelId].length === 0 ||
+      this.state.messages[channelId][0].reception_method === 'pushed'){
       getAllMessages(channelId, this.receiveAllMessages);
     }
   };
@@ -108,6 +122,9 @@ export default class Chat extends Component {
 
   receiveNewMessage = message => {
     const receivedChatChannelId = message.chat_channel_id;
+    if (!this.state.messages[receivedChatChannelId]) {
+      return
+    }
     const newMessages = this.state.messages[receivedChatChannelId].slice();
     newMessages.push(message);
     if (newMessages.length > 150) {
@@ -272,6 +289,9 @@ export default class Chat extends Component {
 
   renderMessages = () => {
     const { activeChannelId, messages, showTimestamp } = this.state;
+    if (!messages[activeChannelId]) {
+      return
+    }
     return messages[activeChannelId].map(message => (
       <Message
         user={message.username}
