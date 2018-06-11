@@ -474,6 +474,7 @@ GEM
     hashdiff (0.3.7)
     hashie (3.5.7)
     heapy (0.1.3)
+    hkdf (0.3.0)
     html_truncator (0.4.2)
       nokogiri (~> 1.5)
     http (3.0.0)
@@ -840,6 +841,10 @@ GEM
       msgpack (~> 1.0)
     timecop (0.9.1)
     trollop (2.1.2)
+    twilio-ruby (5.10.3)
+      faraday (~> 0.9)
+      jwt (>= 1.5, <= 2.5)
+      nokogiri (>= 1.6, < 2.0)
     twitter (6.2.0)
       addressable (~> 2.3)
       buftok (~> 0.2.0)
@@ -885,6 +890,9 @@ GEM
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
+    webpush (0.3.2)
+      hkdf (~> 0.2)
+      jwt
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
@@ -1016,6 +1024,7 @@ DEPENDENCIES
   therubyracer (~> 0.12)
   timber (~> 2.6)
   timecop (~> 0.9)
+  twilio-ruby (~> 5.10.3)
   twitter (~> 6.2)
   uglifier (~> 3.2)
   validate_url (~> 1.0)
@@ -1023,6 +1032,7 @@ DEPENDENCIES
   web-console (~> 3.5)
   webmock (~> 3.3)
   webpacker (~> 3.2)
+  webpush (~> 0.3)
 
 RUBY VERSION
    ruby 2.5.0p0

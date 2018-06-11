@@ -47,6 +47,8 @@ class CacheBuster
     end
     bust_home_pages(article)
     bust_tag_pages(article)
+    bust("/api/articles/#{article.id}")
+    bust("/api/articles/by_path?url=#{article.path}")
 
     if article.collection
       article.collection.articles.each do |a|

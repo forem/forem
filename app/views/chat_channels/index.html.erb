@@ -3,6 +3,10 @@
 <% title "DEV Chat" %>
 <link rel="canonical" href="https://dev.to/chat"/>
 <meta name="description" content="DEV Chat">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/mode/javascript/javascript.min.js"></script>
 
 <% if user_signed_in? %>
   <%= javascript_pack_tag 'chat', defer: true %>
@@ -25,7 +29,9 @@
       class="live-chat"
       data-pusher-key="<%= ENV["PUSHER_KEY"] %>"
       data-chat-channels="<%= @chat_channels.to_json(methods: :last_opened_at) %>"
-      data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel.id }.to_json %>">
+      data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel.id }.to_json %>"
+      data-twilio-token="<%= @twilio_token %>"
+    >
     </div>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
@@ -34,3 +40,6 @@
   footer {display: none}
   #page-content {max-height:100vh}
 </style>
+<script>
+  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes %>);
+</script>

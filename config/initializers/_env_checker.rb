@@ -64,6 +64,8 @@ keys = [
   "TWITTER_ACCESS_TOKEN_SECRET",
   "TWITTER_KEY",
   "TWITTER_SECRET",
+  "VAPID_PUBLIC_KEY",
+  "VAPID_PRIVATE_KEY"
 ].freeze
 
 missing = []
