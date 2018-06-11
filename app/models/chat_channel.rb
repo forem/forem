@@ -34,7 +34,12 @@ class ChatChannel < ApplicationRecord
     else
       slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100000).to_s(26)
     end
-    channel = create(channel_type: channel_type, channel_name: contrived_name, slug: slug)
+    channel = create(
+      channel_type: channel_type,
+      channel_name: contrived_name,
+      slug: slug,
+      last_message_at: 1.week.ago,
+    )
     channel.add_users(users)
     channel
   end
