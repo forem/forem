@@ -1,2 +1,14 @@
-ReverseMarkdown::Converters.register :pre, ReverseMarkdown::Converters::CustomPre.new
-ReverseMarkdown::Converters.register :Text, ReverseMarkdown::Converters::CustomText.new
+# This eagerload our custom ReverseMarkdown::Converters and allows it to be autoreloaded
+# in develpment.
+#
+# Because files are eagerloaded in production, this fix is only
+# applicable in development (and test, when needed)
+
+if Rails.env.development? || Rails.env.test?
+  Rails.application.config.to_prepare do
+    Dir.glob(Rails.root.join("app/lib/reverse_markdown/converters/*.rb")).sort.each do |filename|
+      puts "=== loading #{filename} ==="
+      require_dependency filename
+    end
+  end
+end

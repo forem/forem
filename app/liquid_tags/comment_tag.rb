@@ -70,3 +70,5 @@ class CommentTag < LiquidTagBase
     raise StandardError, 'Invalid comment ID or comment does not exist'
   end
 end
+
+Liquid::Template.register_tag("devcomment", CommentTag)

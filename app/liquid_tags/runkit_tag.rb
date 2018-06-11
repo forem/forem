@@ -54,3 +54,5 @@ class RunkitTag < Liquid::Block
     JAVASCRIPT
   end
 end
+
+Liquid::Template.register_tag("runkit", RunkitTag)

@@ -36,3 +36,5 @@ class CodepenTag < LiquidTagBase
     raise StandardError, "Invalid CodePen URL"
   end
 end
+
+Liquid::Template.register_tag("codepen", CodepenTag)

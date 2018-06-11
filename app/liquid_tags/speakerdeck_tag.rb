@@ -44,3 +44,5 @@ class SpeakerdeckTag < LiquidTagBase
     !!(id =~ /\A[a-z\d]*\Z/i)
   end
 end
+
+Liquid::Template.register_tag("speakerdeck", SpeakerdeckTag)
