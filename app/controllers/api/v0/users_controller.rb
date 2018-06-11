@@ -15,6 +15,10 @@ module Api
         end
       end
 
+      def show
+        @user = User.find(params[:id])
+      end
+
       def less_than_one_day_old?(user)
         range = (Time.now.beginning_of_day - 1.day)..(Time.now)
         user_identity_age = user.github_created_at ||

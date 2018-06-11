@@ -1,4 +1,6 @@
 import 'intersection-observer';
+import { sendKeys } from './actions';
+
 
 export function getUserDataAndCsrfToken() {
   const promise = new Promise((resolve, reject) => {
@@ -72,4 +74,36 @@ export function adjustTimestamp(timestamp) {
   };
   time = new Intl.DateTimeFormat('en-US', options).format(time);
   return time;
+}
+
+
+export function setupNotifications() {
+  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
+    serviceWorkerRegistration.pushManager.getSubscription()
+      .then(function(subscription) {
+        if (subscription) {
+          return subscription;
+        }
+        return serviceWorkerRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: window.vapidPublicKey
+        });
+      }).then(function(subscription) {
+        sendKeys(subscription.toJSON(), null, null)
+      });
+  });
+}
+
+export function getNotificationState() {
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    return "not-supported"
+  }  else if (Notification.permission === "granted") {
+    setupNotifications();
+    return "granted"
+  }  else if (Notification.permission !== 'denied') {
+    return "waiting-permission"
+  } else {
+    return "denied"
+  }
 }

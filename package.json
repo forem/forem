@@ -84,6 +84,7 @@
     "preact": "^8.2.5",
     "prop-types": "^15.6.0",
     "pusher-js": "^4.2.2",
-    "sendbird": "^3.0.52"
+    "sendbird": "^3.0.52",
+    "twilio-video": "^1.10.0"
   }
 }

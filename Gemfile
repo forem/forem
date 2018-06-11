@@ -85,10 +85,12 @@ gem "stream_rails", "~> 2.5"
 gem "stripe", "~> 3.9"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
+gem 'twilio-ruby', '~> 5.10.3'
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 3.2"
 gem "validate_url", "~> 1.0"
 gem "webpacker", "~> 3.2"
+gem 'webpush', "~> 0.3"
 
 
 group :development do

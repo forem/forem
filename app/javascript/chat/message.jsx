@@ -5,12 +5,14 @@ import ErrorMessage from './messages/errorMessage';
 
 const Message = ({
   user,
+  userID,
   message,
   color,
   type,
   messageColor,
   timestamp,
   profileImageUrl,
+  onContentTrigger,
 }) => {
   const spanStyle = { color };
   const messageStyle = { color: messageColor };
@@ -26,14 +28,22 @@ const Message = ({
         dangerouslySetInnerHTML={{__html: message}}
       ></span>
     );
+
   return (
     <div className="chatmessage">
-      <div className="chatmessage__body">
-        <a href={`/${user}`} target="_blank">
+      <div className="chatmessage__body" onClick={onContentTrigger}>
+        <a 
+          href={`/${user}`}
+          target="_blank"
+          data-content={`users/${userID}`}
+          onClick={onContentTrigger}
+        >
           <img
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}
+            data-content={`users/${userID}`}
+            onClick={onContentTrigger}
           />
         </a>
         <span className="chatmessagebody__username" style={spanStyle}>
@@ -41,6 +51,8 @@ const Message = ({
             className="chatmessagebody__username--link"
             href={`/${user}`}
             target="_blank"
+            data-content={`users/${userID}`}
+            onClick={onContentTrigger}
           >
             {user}
           </a>
@@ -61,12 +73,14 @@ const Message = ({
 
 Message.propTypes = {
   user: PropTypes.string.isRequired,
+  userID: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
   messageColor: PropTypes.string,
   type: PropTypes.string,
   timestamp: PropTypes.string,
   profileImageUrl: PropTypes.string,
+  onContentTrigger: PropTypes.func,
 };
 
 Message.defaultProps = {
