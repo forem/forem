@@ -23,3 +23,5 @@ class GlitchTag < LiquidTagBase
     input_no_space = input.delete(" ")
   end
 end
+
+Liquid::Template.register_tag("glitch", GlitchTag)

@@ -3,3 +3,5 @@ module UrlDecodeFilter
     input
   end
 end
+
+Liquid::Template.register_filter(UrlDecodeFilter)

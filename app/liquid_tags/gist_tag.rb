@@ -40,3 +40,5 @@ class GistTag < LiquidTagBase
     link.include?("gist.github.com")
   end
 end
+
+Liquid::Template.register_tag("gist", GistTag)

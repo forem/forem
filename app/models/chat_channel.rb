@@ -1,4 +1,5 @@
 class ChatChannel < ApplicationRecord
+  include AlgoliaSearch
   attr_accessor :current_user
 
   has_many :messages
@@ -6,7 +7,16 @@ class ChatChannel < ApplicationRecord
   has_many :users, through: :chat_channel_memberships
 
   validates :channel_type, presence: true, inclusion: { in: %w(open invite_only direct) }
+  validates :status, presence: true, inclusion: { in: %w(active inactive) }
   validates :slug, uniqueness: true, presence: true
+
+  algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
+    attribute :id, :viewable_by, :slug, :channel_type,
+      :channel_name, :channel_users, :last_message_at, :status
+    searchableAttributes [:channel_name,:channel_slug]
+    attributesForFaceting ["filterOnly(viewable_by)","filterOnly(status)"]
+    ranking ["desc(last_message_at)"]
+  end
 
   def clear_channel
     messages.each(&:destroy!)
@@ -34,8 +44,20 @@ class ChatChannel < ApplicationRecord
     else
       slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100000).to_s(26)
     end
-    channel = create(channel_type: channel_type, channel_name: contrived_name, slug: slug)
-    channel.add_users(users)
+
+    if channel = ChatChannel.find_by_slug(slug)
+      channel.status = "active"
+      channel.save
+    else
+      channel = create(
+        channel_type: channel_type,
+        channel_name: contrived_name,
+        slug: slug,
+        last_message_at: 1.week.ago,
+        status: "active",
+      )
+      channel.add_users(users)
+    end
     channel
   end
 
@@ -48,6 +70,8 @@ class ChatChannel < ApplicationRecord
   def pusher_channels
     if channel_type == "invite_only"
       "presence-channel-#{id}"
+    elsif channel_type == "open"
+      "open-channel-#{id}"
     else
       chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
     end
@@ -63,5 +87,23 @@ class ChatChannel < ApplicationRecord
     else
       slug
     end
+  end
+
+  def viewable_by
+    chat_channel_memberships.pluck(:user_id)
+  end
+
+  def channel_users
+    pics_obj = {}
+    chat_channel_memberships.includes(:user).each do |m|
+      pics_obj[m.user.username] = {
+        profile_image: ProfileImage.new(m.user).get(90),
+        darker_color: m.user.decorate.darker_color,
+        name: m.user.name,
+        last_opened_at: m.last_opened_at,
+        username: m.user.username,
+      }
+    end
+    pics_obj
   end
 end

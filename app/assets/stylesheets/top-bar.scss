@@ -44,7 +44,7 @@
       display:none;
     }
     .write{
-      width:111px;
+      width:100px;
       padding: 3px 0px;
       height: auto;
       top:12px;
@@ -54,11 +54,49 @@
       border: 2px solid $black;
       @media screen and ( min-width: 560px ){
         display:block;
-        right:100px;
+        right:140px;
       }
       @media screen and ( min-width: 700px ){
         display:block;
-        right:120px;
+        right:165px;
+      }
+    }
+    .connect-icon{
+      width:29px;
+      height:48px;
+      display:block;
+      text-align:center;
+      z-index:10;
+      top:1px;
+      right:90px;
+      @media screen and ( min-width:700px ){
+        right:110px;
+      }
+      img{
+        margin-top:6px;
+        height:33px;
+      }
+      .connect-number{
+        position:absolute;
+        top:6px;
+        left:17px;
+        background:$green;
+        padding:2px 7px;
+        border-radius:8px;
+        color:white;
+        display:none;
+        font-size:1.05em;
+        &.showing{
+          display:block;
+        }
+      }
+      &:hover{
+        img{
+          opacity:0.9;
+        }
+        .connect-number{
+          background:$green;
+        }
       }
     }
     .notifications-icon{
@@ -80,7 +118,7 @@
         position:absolute;
         top:2px;
         left:11px;
-        background:$red;
+        background:$dark-purple;
         padding:2px 7px;
         border-radius:8px;
         color:white;
@@ -95,7 +133,7 @@
           opacity:0.9;
         }
         .notifications-number{
-          background:#e92525;
+          background:$dark-purple;
         }
       }
 
@@ -105,9 +143,12 @@
       top:7px;
       left:calc(50px + 5vw);
       bottom: 0px;
-      width: calc(55vw - 30px);
+      width: calc(55vw - 63px);
       @media screen and ( min-width: 350px ){
-        width: calc(61vw - 38px);
+        width: calc(61vw - 75px);
+      }
+      @media screen and ( min-width: 450px ){
+        width: calc(61vw - 45px);
       }
       @media screen and ( min-width: 560px ){
         width: calc(45vw - 30px);

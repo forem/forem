@@ -25,7 +25,7 @@
     document.activeElement.blur();
     document.getElementById("nav-search").value = search_query
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
-    var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+    var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>');
     var index = client.initIndex('searchables_<%= Rails.env %>');
     if (document.getElementById("query-wrapper")) {
       search(query, index, filters);

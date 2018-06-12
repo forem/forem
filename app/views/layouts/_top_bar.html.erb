@@ -9,6 +9,10 @@
         <% end %>
       </div>
       <a href="/new" id="write-link" class="cta nav-link write">WRITE A POST</a>
+      <a href="/connect" id="connect-link" class="nav-link connect-icon" aria-label="Connect">
+        <%=inline_svg("connect.svg", size: '100% * 100%')%>
+        <div class="connect-number" id="connect-number"></div>
+      </a>
       <a href="/notifications" id="notifications-link" class="nav-link notifications-icon" aria-label="Notifications">
         <%=inline_svg("bell.svg", size: '100% * 100%')%>
         <div class="notifications-number" id="notifications-number"></div>

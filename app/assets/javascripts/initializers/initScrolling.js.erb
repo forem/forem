@@ -6,7 +6,8 @@ function checkIfNearBottomOfPage() {
   var elCheck = document.getElementById("index-container");
   
   if (elCheck) {
-    client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+    var publicSearchKey = '<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>'
+    client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
     
     initScrolling.called = true;
     if (document.getElementsByClassName("single-article").length < 2 || location.search.indexOf("q=") > -1 ) {
