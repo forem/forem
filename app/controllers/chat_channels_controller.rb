@@ -4,16 +4,14 @@ class ChatChannelsController < ApplicationController
   def index
     if params[:state] == "unopened"
       render_unopened_json_response
-    elsif params[:state] == "additional"
-      render_additional_json_response
     else
       render_channels_html
     end
   end
 
   def show
-    @chat_channel = current_user.chat_channels.includes(:messages).find_by(id: params[:id])
-    if @chat_channel
+    @chat_channel = ChatChannel.find_by_id(params[:id])
+    if @chat_channel.present? && (@chat_channel.channel_type == "open" || @chat_channel.has_member?(current_user))
       @chat_channel
     else
       message = "The chat channel you are looking for is either invalid or does not exist"
@@ -30,6 +28,7 @@ class ChatChannelsController < ApplicationController
     end
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.seconds.from_now, has_unopened_messages: false)
+    @chat_channel.index!
     render json: { status: "success", channel: params[:id] }, status: 200
   end
 
@@ -71,36 +70,42 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_unopened_json_response
-    if current_user.has_role?(:super_admin) || Rails.env.development?
+    if current_user
       @chat_channels_memberships = current_user.
       chat_channel_memberships.includes(:chat_channel).
-      where(has_unopened_messages: true).order("updated_at DESC")
+      where(chat_channels: {channel_type: "direct"}, has_unopened_messages: true).
+      order("chat_channel_memberships.updated_at DESC")
     else
       @chat_channels_memberships = []
     end
     render "index.json"
   end
 
+
   def render_additional_json_response
     @chat_channels_memberships = current_user.
-      chat_channel_memberships.includes(:chat_channel).limit(50).order("updated_at DESC")
+      chat_channel_memberships.includes(:chat_channel).limit(200).order("updated_at DESC")
     render "index.json"
   end
-
+  
   def render_channels_html
     return unless current_user
-    @chat_channels = current_user.chat_channels.
-      order("last_message_at DESC").
-      limit(25)
-    @chat_channels.each do |channel|
-      channel.current_user = current_user
-    end
     slug =  if params[:slug] && params[:slug].start_with?("@")
                       [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
                     else
                       params[:slug]
                     end
-    @active_channel = ChatChannel.find_by_slug(slug) || @chat_channels.first
+    @active_channel = ChatChannel.find_by_slug(slug)
+    @active_channel.current_user = current_user if @active_channel
+    generate_algolia_search_key
     # @twilio_token = TwilioToken.new(current_user).get
+  end
+
+  def generate_algolia_search_key
+    current_user_id = current_user.id
+    params = {filters: "viewable_by:#{current_user_id} AND status: active"}
+    @secured_algolia_key = Algolia.generate_secured_api_key(
+      ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params,
+    )
   end
 end

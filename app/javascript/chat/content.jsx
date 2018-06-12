@@ -14,7 +14,7 @@ export default class Content extends Component {
       return ""
     } else {
       return (
-        <div className="activechatchannel__activecontent">
+        <div className="activechatchannel__activecontent" id="chat_activecontent">
           <button
             class="activechatchannel__activecontentexitbutton"
             onClick={this.props.onExit}
@@ -28,12 +28,18 @@ export default class Content extends Component {
 }
 
 function display(props) {
-  if (props.resource.type_of === "loading") {
+  if (props.resource.type_of === "loading-user") {
     return <div style={{height: "210px",
                       width: "210px",
                       margin:" 15px auto",
                       display: "block",
                       borderRadius: "500px",
+                      backgroundColor: "#f5f6f7"}}></div>
+  } else if (props.resource.type_of === "loading-user") {
+    return <div style={{height: "25px",
+                      width: "96%",
+                      margin:" 8px auto",
+                      display: "block",
                       backgroundColor: "#f5f6f7"}}></div>
   } else if (props.resource.type_of === "user") {
       return <div><img
@@ -43,13 +49,14 @@ function display(props) {
                       margin:" 15px auto",
                       display: "block",
                       borderRadius: "500px"}} />
-                <h1 style={{textAlign: "center"}}>{props.resource.name}</h1>
+                <h1 style={{textAlign: "center"}}>
+                  <a href={"/"+props.resource.username}>{props.resource.name}</a>
+                </h1>
                 <div style={{fontStyle: "italic"}}>
                   {props.resource.summary}
                 </div>
              </div>
   } else if (props.resource.type_of === "article") {
-    console.log(props.resource)
     return (
             <div class="container">
               <div class="title">
@@ -57,7 +64,7 @@ function display(props) {
                 <h3>
                   <a href={'/'+props.resource.user.username} class="author">
                     <img class="profile-pic" src={props.resource.user.profile_image_90} alt={props.resource.user.username}/>
-                    <span itemprop="name">{props.resource.user.name}</span>
+                    <span>{props.resource.user.name}</span>
                   </a>
                 </h3>
               </div>

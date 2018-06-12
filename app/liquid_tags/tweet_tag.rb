@@ -95,3 +95,6 @@ class TweetTag < LiquidTagBase
     /^\d{10,20}$/ === id
   end
 end
+
+Liquid::Template.register_tag("tweet", TweetTag)
+Liquid::Template.register_tag("twitter", TweetTag)

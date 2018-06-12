@@ -25,3 +25,5 @@ class ReplitTag < LiquidTagBase
     id.length > 1 && !(id !~ /[a-zA-Z0-9\/]/)
   end
 end
+
+Liquid::Template.register_tag("replit", ReplitTag)

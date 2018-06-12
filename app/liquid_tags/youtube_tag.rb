@@ -38,3 +38,5 @@ class YoutubeTag < LiquidTagBase
     id.length == 11 && !(id !~ /[a-zA-Z0-9_-]{11}/)
   end
 end
+
+Liquid::Template.register_tag("youtube", YoutubeTag)

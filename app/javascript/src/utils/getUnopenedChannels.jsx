@@ -18,10 +18,17 @@ class UnopenedChannelNotice extends Component {
       channelId: `private-message-notifications-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
     });
+    const component = this;
+    document.getElementById("connect-link").onclick = function(){
+      //Hack, should probably be its own component in future
+      document.getElementById("connect-number").classList.remove("showing");
+      component.setState({visible: false});
+    }
   }
 
   receiveNewMessage = e => {
-    if (location.pathname.startsWith("/connect") || location.pathname.startsWith("/%F0%9F%92%8C")) {
+    console.log(location.pathname)
+    if (location.pathname.startsWith("/connect")) {
       return
     }
     let channels = this.state.unopenedChannels;
@@ -31,6 +38,14 @@ class UnopenedChannelNotice extends Component {
       channels.push(newObj);
     }
     this.setState({visible: channels.length > 0, unopenedChannels: channels})
+
+    const number = document.getElementById("connect-number")
+    number.classList.add("showing")
+    number.innerHTML = channels.length
+    const component = this;
+    setTimeout(function(){
+      component.setState({visible: false});
+    }, 7500)
   }
 
   handleClick = e => {
@@ -44,42 +59,40 @@ class UnopenedChannelNotice extends Component {
           style={{
           background: "#66e2d5",
           color: "black",
+          border: "1px solid black",
           padding: "2px 7px",
           display: "inline-block",
           margin: "3px 6px",
           borderRadius: "3px"}}>{channel.adjusted_slug}</a>
       });
       return (
-        <div
+        <a
           onClick={this.handleClick}
+          href={"/connect/"+this.state.unopenedChannels[0].adjusted_slug}
           style={{
           position: 'fixed',
           zIndex: '200',
           top: '44px',
           right: 0,
           left: 0,
-          background: '#333333',
+          background: '#66e2d5',
           borderBottom: '1px solid black',
-          color: 'white',
+          color: 'black',
           fontWeight: 'bold',
           textAlign: 'center',
-          fontSize: '15px',
+          fontSize: '17px',
           opacity: '0.94',
-          padding: '12px 5px 3px'}}>
-          <span style={{
-            fontSize: "24px",
-            verticalAlign: "-4px",
-            display: "inline-block",
-            marginRight: "3px"}}>gether</span> New Message from {channels}
-          <span style={{ color: "#fefa87"}}>(beta testing)</span>
-        </div>
+          padding: '19px 5px 14px'}}>
+          New Message from {channels}
+        </a>
       );
     }
   }
 }
 
 export default function getUnopenedChannels(user, successCb) {
-  if (location.pathname.startsWith("/connect") || location.pathname.startsWith("/%F0%9F%92%8C")) {
+  render(<UnopenedChannelNotice unopenedChannels={[]} pusherKey={document.body.dataset.pusherKey} />, document.getElementById('message-notice'));
+  if (location.pathname.startsWith("/connect")) {
     return
   }
   fetch('/chat_channels?state=unopened', {
@@ -88,7 +101,11 @@ export default function getUnopenedChannels(user, successCb) {
   })
     .then(response => response.json())
     .then(json => {
-      render(<UnopenedChannelNotice unopenedChannels={json} pusherKey={document.body.dataset.pusherKey} />, document.getElementById('message-notice'));
+      if (json.length > 0) {
+        const number = document.getElementById("connect-number")
+        number.classList.add("showing")
+        number.innerHTML = json.length
+      }
     })
     .catch(error => {
       console.log(error);
