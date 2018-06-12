@@ -72,15 +72,23 @@ export function conductModeration(
     .catch(failureCb);
 }
 
-export function getAdditionalChannels(successCb, failureCb) {
-  fetch(`/chat_channels?state=additional`, {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    credentials: 'same-origin',
+export function getChannels(query,retrievalID, props, successCb, failureCb) {
+  const client = algoliasearch(props.algoliaId, props.algoliaKey);
+  const index = client.initIndex(props.algoliaIndex);
+  index.search(query,{
+    hitsPerPage: 100,
   })
-    .then(response => response.json())
-    .then(successCb)
-    .catch(failureCb);
+  .then(function(content) {
+    let channels = content.hits
+    if (retrievalID === null || content.hits.filter(e => e.id === retrievalID).length === 1) {
+      successCb(channels)
+    } else {
+      index.getObjects([`${retrievalID}`], function(err, content) {
+        channels.unshift(content.results[0]);
+        successCb(channels);
+      });
+    }
+  });
 }
 
 export function sendKeys(subscription, successCb, failureCb) {

@@ -324,6 +324,10 @@ class User < ApplicationRecord
     if username_changed?
       self.old_old_username = old_username
       self.old_username = username_was
+      chat_channels.find_each do |c|
+        c.slug = c.slug.gsub(username_was, username)
+        c.save
+      end
     end
   end
 

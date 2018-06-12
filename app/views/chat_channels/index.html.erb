@@ -1,5 +1,4 @@
-<% if user_signed_in? %>
-<% end %>
+
 <% title "DEV Connect" %>
 <%= content_for :page_meta do %>
   <link rel="canonical" href="https://dev.to/connect"/>
@@ -12,24 +11,27 @@
   <%= javascript_pack_tag 'chat', defer: true %>
   <style>
   .inner-content {
-    height: calc(100vh - 115px);
+    height: calc(100vh - 121px);
     margin: 100px auto;
     width: 96%;
     max-width: 1240px;
   }
 
     .live-chat {
-      height: calc(100vh - 115px);
+      height: calc(100vh - 121px);
     }
   </style>
   <div class="inner-content">
-    <div class="chat-page-header">DEV Connect is Beta —— Post any thoughts in the "Meta" channel</div>
+    <div class="chat-page-header">DEV Connect is Beta (Work in Progress ❤️)</div>
     <div
       id="chat"
       class="live-chat"
       data-pusher-key="<%= ENV["PUSHER_KEY"] %>"
-      data-chat-channels="<%= @chat_channels.to_json(methods: :last_opened_at) %>"
-      data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel.id }.to_json %>"
+      data-algolia-id="<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>"
+      data-algolia-key="<%= @secured_algolia_key %>"
+      data-algolia-index="<%= "SecuredChatChannel_#{Rails.env}" %>"
+      data-chat-channels="<%= [] %>"
+      data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>"
       data-twilio-token="<%= @twilio_token %>"
     >
     </div>

@@ -13,7 +13,7 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
 document.ready.then(
   getUserDataAndCsrfToken().then(currentUser => {
     if (document.getElementById('chat')) {
-      const { chatChannels, pusherKey, chatOptions } = document.getElementById(
+      const { chatChannels, pusherKey, chatOptions, algoliaKey, algoliaId, algoliaIndex } = document.getElementById(
         'chat',
       ).dataset;
       window.currentUser = currentUser;
@@ -25,6 +25,9 @@ document.ready.then(
           pusherKey={pusherKey}
           chatChannels={chatChannels}
           chatOptions={chatOptions}
+          algoliaId={algoliaId}
+          algoliaKey={algoliaKey}
+          algoliaIndex={algoliaIndex}
         />,
         document.getElementById('chat'),
       );

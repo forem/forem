@@ -40,7 +40,6 @@ export default class CodeEditor extends Component {
   }
   
   liveCoding = e => {
-    console.log("live coding")
     if (e.keyPressed === true || e.value.length > 0) {
       let cm = document.querySelector(".CodeMirror").CodeMirror
       const cursorCoords = e.cursorPos
@@ -51,7 +50,6 @@ export default class CodeEditor extends Component {
       cm.setBookmark(e.cursorPos, { widget: cursorElement });
     } else {
       let cm = document.querySelector(".CodeMirror").CodeMirror
-      console.log("NEW LIVE CODING")
       channel.trigger('client-livecode', {
         value: cm.getValue(),
         cursorPos: cm.getCursor(),
@@ -61,7 +59,9 @@ export default class CodeEditor extends Component {
 
   render() {
 
-    return <div id="codeeditor" className="chatcodeeditor"></div>
+    return <div id="codeeditor" className="chatcodeeditor">
+      <div className="chatcodeeditor__header">Experimental (WIP)</div>
+    </div>
 
   }
 

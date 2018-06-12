@@ -43,6 +43,14 @@
   }
 }
 
+.chat__channels input {
+  width: 96%;
+  border-radius: 3px;
+  border: 1px solid $light-medium-gray;
+  box-sizing: border-box;
+  padding: 5px;
+}
+
 .chat_chatconfig{
   position: absolute;
   bottom: 0px;
@@ -218,19 +226,34 @@
   box-shadow: 3px 3px 0px $dark-purple;
 }
 
+.chatchanneltab--new {
+  background: lighten($yellow, 10%);
+}
+
 .chatchanneltabindicator{
   display: inline-block;
-  background: white;
+  background: $light-medium-gray;
   border: 2px solid $light-medium-gray;
-  padding: 0.3em;
+  min-height: 0.3em;
+  min-width: 0.3em;
   border-radius: 100px;
-  vertical-align: -0.05em;
+  // vertical-align: -0.05em;
   margin-right: 3px;
+  img {
+    height: 20px;
+    width: 20px;
+    border-radius: 100px;
+    vertical-align: -7px;
+    border: 3px solid $light-medium-gray;
+  }
 }
 
 .chatchanneltabindicator--new{
   background: $yellow;
   border: 2px solid $black;
+  img {
+    border: 3px solid $yellow;
+  }
 }
 
 .chatchannels__channelslist {
@@ -338,6 +361,13 @@
   left: 0px;
   right: 24px;
   bottom: 0px;
+}
+.chatcodeeditor__header{
+  position: absolute;
+  top: -27px;
+  left: 35px;
+  font-family: $monospace;
+  color: $dark-gray;
 }
 
 .CodeMirror{

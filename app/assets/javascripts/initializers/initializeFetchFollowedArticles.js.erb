@@ -20,7 +20,8 @@ function algoliaFollowedArticles(){
       if (user.followed_user_ids){
         followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});
       }
-      var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"] %>');
+      var publicSearchKey = '<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>'
+      var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
       var index = client.initIndex('ordered_articles_<%= Rails.env %>');
       
       var searchObj = {
