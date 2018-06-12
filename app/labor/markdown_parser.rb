@@ -34,7 +34,7 @@ class MarkdownParser
 
   def evaluate_inline_markdown
     return if @content.blank?
-    renderer = HtmlRouge.new(hard_wrap: true, filter_html: false)
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     ActionController::Base.helpers.sanitize(markdown.render(@content).html_safe,
       tags: %w(strong i u b em code a), attributes: ["href"])
