@@ -49,7 +49,9 @@ function display(props) {
                       margin:" 15px auto",
                       display: "block",
                       borderRadius: "500px"}} />
-                <h1 style={{textAlign: "center"}}>{props.resource.name}</h1>
+                <h1 style={{textAlign: "center"}}>
+                  <a href={"/"+props.resource.username}>{props.resource.name}</a>
+                </h1>
                 <div style={{fontStyle: "italic"}}>
                   {props.resource.summary}
                 </div>
@@ -62,7 +64,7 @@ function display(props) {
                 <h3>
                   <a href={'/'+props.resource.user.username} class="author">
                     <img class="profile-pic" src={props.resource.user.profile_image_90} alt={props.resource.user.username}/>
-                    <span itemprop="name">{props.resource.user.name}</span>
+                    <span>{props.resource.user.name}</span>
                   </a>
                 </h3>
               </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180609191539) do
+ActiveRecord::Schema.define(version: 20180612214259) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -180,6 +180,7 @@ ActiveRecord::Schema.define(version: 20180609191539) do
     t.datetime "created_at", null: false
     t.datetime "last_message_at", default: "2017-01-01 05:00:00"
     t.string "slug"
+    t.string "status", default: "active"
     t.datetime "updated_at", null: false
   end
 

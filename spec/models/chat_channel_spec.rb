@@ -17,5 +17,4 @@ RSpec.describe ChatChannel, type: :model do
     expect(chat_channel.users.size).to eq(2)
     expect(chat_channel.has_member?(User.first)).to eq(true)
   end
-
 end
