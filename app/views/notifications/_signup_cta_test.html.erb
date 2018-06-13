@@ -5,9 +5,9 @@
     <hr/>
     Authenticate via
     <center>
-    <a onclick='<%=track_split_version("/users/auth/twitter?state=notifications-cue_#{version}",version) %>' href="/users/auth/twitter?state=notifications-cue_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
+    <a href="/users/auth/twitter?callback_url=https://dev.to" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
     or
-    <a onclick='<%=track_split_version("/users/auth/github?state=notifications-cue_#{version}", version) %>' href="/users/auth/github?state=notifications-cue_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> GitHub</a>
+    <a href="/users/auth/github?state=notifications-cue_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> GitHub</a>
     </center>
   </div>
 <% else %>
@@ -21,9 +21,9 @@
       Create your account to customize your feed and start participating.
     </p>
     <center>
-      <a onclick='<%=track_split_version("/users/auth/twitter?state=signup-modal_#{version}",version) %>' href="/users/auth/twitter?state=notifications-cue_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
+      <a href="/users/auth/twitter?callback_url=https://dev.to" class="sign-up-link" data-no-instant><%= image_tag("twitter-logo.svg", class:"icon-img", alt: "twitter logo") %> Twitter</a>
       or
-      <a onclick='<%=track_split_version("/users/auth/github?state=signup-modal_#{version}", version) %>' href="/users/auth/github?state=notifications-cue_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> GitHub</a>
+      <a href="/users/auth/github?state=notifications-cue_<%= version %>" class="sign-up-link" data-no-instant><%= image_tag("github-logo.svg", class:"icon-img", alt: "github logo") %> GitHub</a>
     </center>
       <%=image_tag(cl_image_path(asset_path("/assets/sloan.png"),
        :type=>"fetch",
