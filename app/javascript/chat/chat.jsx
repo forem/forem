@@ -98,20 +98,25 @@ export default class Chat extends Component {
       this.setupChannel(this.state.activeChannelId);
       this.setState({
         chatChannels: channels,
+        scrolled: false,
         activeChannel: this.filterForActiveChannel(channels, this.state.activeChannelId)
       });
     } if (this.state.activeChannelId) {
       this.setupChannel(this.state.activeChannelId);
       this.setState({
-        chatChannels: channels
+        scrolled: false,
+        chatChannels: channels,
       });
     } else {
-      this.setState({chatChannels: channels});
+      this.setState({
+        chatChannels: channels,
+        scrolled: false,
+      });
       const channel = channels[0]
       const channelSlug = channel.channel_type === 'direct' ?
         '@'+channel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '') :
         channel.slug
-      this.triggerSwitchChannel(channel.id, channelSlug)
+      this.triggerSwitchChannel(channel.id, channelSlug);
     }
     channels.forEach((channel, index) => {
       if ( index < 3 ) {
@@ -157,7 +162,7 @@ export default class Chat extends Component {
   receiveAllMessages = res => {
     const { chatChannelId, messages } = res;
     const newMessages = { ...this.state.messages, [chatChannelId]: messages };
-    this.setState({ messages: newMessages });
+    this.setState({ messages: newMessages, scrolled: false });
   };
 
   receiveNewMessage = message => {
@@ -288,7 +293,6 @@ export default class Chat extends Component {
       this.handleChannelOpenSuccess,
       null,
     );
-    
   }
 
   handleSubmitOnClick = e => {
