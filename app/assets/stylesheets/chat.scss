@@ -7,14 +7,14 @@
   width: 96%;
   max-width: 1240px;
   height: calc(100vh - 155px);
-  @media screen and ( min-width: 375px ){
+  @media screen and ( min-width: 400px ){
     height: calc(100vh - 121px);
   }
 }
 .live-chat{
   height: calc(100vh - 155px);
   overflow-y: hidden;
-  @media screen and ( min-width: 375px ){
+  @media screen and ( min-width: 400px ){
     height: calc(100vh - 121px);
   }
 }
@@ -35,7 +35,7 @@
   display: flex;
   height: calc(100vh - 162px);
   padding-right: 3px;
-  @media screen and ( min-width: 375px ){
+  @media screen and ( min-width: 400px ){
     height: calc(100vh - 128px);
   }
 }
