@@ -64,7 +64,6 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
           style={{border:`1px solid ${channelColor}`, boxShadow: `3px 3px 0px ${channelColor}`}}
         >
           {content}
-=======
           <span 
             data-channel-slug={modififedSlug}
             className={"chatchanneltabindicator chatchanneltabindicator--" + newMessagesIndicatorClass}

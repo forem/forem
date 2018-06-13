@@ -65,6 +65,11 @@
 
 .chat__channels--expanded{
   width: 180px;
+  @media screen and ( min-width: 1000px ){
+    .chat__channelstogglebutt{
+      display: none;
+    }
+  }
 }
 
 .chat__channelstogglebutt{
@@ -75,9 +80,6 @@
   -webkit-appearance: none;
   font-size: 18px;
   font-weight: bold;
-  img{
-    width: 100%;
-  }
 }
 
 .chat__channels input {
@@ -88,6 +90,9 @@
   padding: 8px;
   margin-left: 2px;
   font-size: 14px;
+  @media screen and ( min-width: 1000px ){
+  width: calc(100% - 12px);
+  }
 }
 
 .chat_chatconfig{
