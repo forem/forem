@@ -7,10 +7,12 @@ class MessagesController < ApplicationController
     authorize @message
     success = false
 
+    if @message.valid?
+      message_json = create_pusher_payload(@message)
+      Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
+    end
     if @message.save
       begin
-        message_json = create_pusher_payload(@message)
-        Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
         @message.delay.send_push
         success = true
       rescue Pusher::Error => e

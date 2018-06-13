@@ -62,6 +62,10 @@ class Message < ApplicationRecord
   end
 
   def evaluate_channel_permission
+    if chat_channel_id.blank?
+      errors.add(:base, "Must be part of channel.")
+      return
+    end
     channel = ChatChannel.find(chat_channel_id)
     return if channel.channel_type == "open"
     if channel.has_member?(user)
