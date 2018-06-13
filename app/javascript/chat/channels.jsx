@@ -53,6 +53,7 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
 
     return (
       <button
+        key={channel.id}
         className='chatchanneltabbutton'
         onClick={handleSwitchChannel}
         data-channel-id={channel.id}
