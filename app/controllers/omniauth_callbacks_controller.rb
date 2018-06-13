@@ -4,7 +4,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # raise env["omniauth.auth"].to_yaml
     class_eval %Q{
       def #{provider}
-        cta_variant = request.env["omniauth.params"]['state']
+        cta_variant = request.env["omniauth.params"]['state'].to_s
         @user = AuthorizationService.new(request.env["omniauth.auth"], current_user, cta_variant).get_user
         if @user.persisted?
           remember_me(@user)
