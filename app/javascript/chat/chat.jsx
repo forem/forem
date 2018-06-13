@@ -492,7 +492,7 @@ export default class Chat extends Component {
                       </div>
     }
     return (
-      <div className="chat">
+      <div className={"chat chat--" + (this.state.expanded ? "expanded" : "contracted")}>
         {this.renderChatChannels()}
         <div className="chat__activechat">
           {this.renderActiveChatChannel(channelHeader)}
