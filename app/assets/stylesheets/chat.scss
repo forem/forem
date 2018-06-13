@@ -1,6 +1,23 @@
 @import 'variables';
 
-// High level class
+// High level classes
+.chat-page-wrapper{
+  height: calc(100vh - 121px);
+  margin: 100px auto;
+  width: 96%;
+  max-width: 1240px;
+  height: calc(100vh - 155px);
+  @media screen and ( min-width: 375px ){
+    height: calc(100vh - 121px);
+  }
+}
+.live-chat{
+  height: calc(100vh - 155px);
+  overflow-y: hidden;
+  @media screen and ( min-width: 375px ){
+    height: calc(100vh - 121px);
+  }
+}
 .chat-page-header{
   background: $green;
   text-align: center;
@@ -12,9 +29,15 @@
   font-weight: bold;
 }
 
+
+//chat
 .chat {
   display: flex;
-  height: inherit;
+  height: calc(100vh - 162px);
+  padding-right: 3px;
+  @media screen and ( min-width: 375px ){
+    height: calc(100vh - 128px);
+  }
 }
 
 .chat__notificationsbutton{
@@ -35,20 +58,36 @@
 }
 
 .chat__channels {
-  width: 80px;
+  width: 45px;
   height: inherit;
   position: relative;
-  @media screen and ( min-width: 550px ){
-    width: 160px;
+}
+
+.chat__channels--expanded{
+  width: 180px;
+}
+
+.chat__channelstogglebutt{
+  width: 26px;
+  height: 38px;
+  background: transparent;
+  border: 0px;
+  -webkit-appearance: none;
+  font-size: 18px;
+  font-weight: bold;
+  img{
+    width: 100%;
   }
 }
 
 .chat__channels input {
-  width: 96%;
+  width: calc(100% - 37px);
   border-radius: 3px;
   border: 1px solid $light-medium-gray;
   box-sizing: border-box;
-  padding: 5px;
+  padding: 8px;
+  margin-left: 2px;
+  font-size: 14px;
 }
 
 .chat_chatconfig{
@@ -277,6 +316,7 @@
   color: $medium-gray;
   padding: 10px;
   opacity:0.8;
+  padding-bottom: 70px;
 }
 
 .chatchannels__config{
@@ -304,6 +344,7 @@
   position: absolute;
   bottom: 42px;
   padding: 12px 10px;
+  min-width: 150px;
   left: 0;
   right: 0;
   background: $lightest-gray;

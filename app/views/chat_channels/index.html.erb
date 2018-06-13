@@ -9,19 +9,7 @@
 
 <% if user_signed_in? %>
   <%= javascript_pack_tag 'chat', defer: true %>
-  <style>
-  .inner-content {
-    height: calc(100vh - 121px);
-    margin: 100px auto;
-    width: 96%;
-    max-width: 1240px;
-  }
-
-    .live-chat {
-      height: calc(100vh - 121px);
-    }
-  </style>
-  <div class="inner-content">
+  <div class="chat-page-wrapper">
     <div class="chat-page-header">DEV Connect is Beta (Work in Progress ❤️)</div>
     <div
       id="chat"
