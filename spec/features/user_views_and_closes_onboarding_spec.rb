@@ -75,7 +75,7 @@
 #     end
 
 #     it "with Twitter" do
-#       # in_feed_link = find_link(href: "/users/auth/twitter?callback_url=https://dev.to")
+#       # in_feed_link = find_link(href: "/users/auth/twitter?callback_url=https://dev.to/users/auth/twitter/callback")
 #       # in_feed_link.click
 #       # expect(find(".global-modal-inner")).to have_content("WELCOME!")
 #     end
