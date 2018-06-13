@@ -2,17 +2,12 @@
 
 // High level classes
 .chat-page-wrapper{
-  height: calc(100vh - 121px);
-  margin: 100px auto;
+  margin: 100px auto 0px;
   width: 96%;
   max-width: 1240px;
-  height: calc(100vh - 155px);
-  @media screen and ( min-width: 400px ){
-    height: calc(100vh - 121px);
-  }
 }
 .live-chat{
-  height: calc(100vh - 155px);
+  height: calc(100vh - 220px);
   overflow-y: hidden;
   @media screen and ( min-width: 400px ){
     height: calc(100vh - 121px);
@@ -33,10 +28,17 @@
 //chat
 .chat {
   display: flex;
-  height: calc(100vh - 162px);
+  height: calc(100vh - 227px);
   padding-right: 3px;
   @media screen and ( min-width: 400px ){
     height: calc(100vh - 128px);
+  }
+}
+
+.chat--expanded{
+  min-width: 500px;
+  @media screen and ( min-width: 500px ){
+    min-width: 300px;
   }
 }
 
@@ -61,10 +63,17 @@
   width: 45px;
   height: inherit;
   position: relative;
+  overflow: hidden;
 }
 
 .chat__channels--expanded{
-  width: 180px;
+  width: 200px;
+  @media screen and ( min-width: 400px ){
+    width: 160px;
+  }
+  @media screen and ( min-width: 1000px ){
+    width: 200px;
+  }
   @media screen and ( min-width: 1000px ){
     .chat__channelstogglebutt{
       display: none;
@@ -83,15 +92,16 @@
 }
 
 .chat__channels input {
-  width: calc(100% - 37px);
+  width: calc(100% - 43px);
   border-radius: 3px;
   border: 1px solid $light-medium-gray;
   box-sizing: border-box;
   padding: 8px;
   margin-left: 2px;
   font-size: 14px;
+  -webkit-appearance: none;
   @media screen and ( min-width: 1000px ){
-  width: calc(100% - 12px);
+    width: calc(100% - 13px);
   }
 }
 
@@ -123,8 +133,8 @@
 }
 
 .chat__activechat {
-  flex-grow: 1;
   height: inherit;
+  width: calc(100% - 45px);
 }
 
 .activechatchannel {
@@ -240,13 +250,14 @@
   flex-direction: column;
   justify-content: space-between;
   height: inherit;
-  width: inherit;
+  width: 99%;
 }
 .chatchanneltabbutton{
   width: 93%;
   border: none;
   background: transparent;
-  padding:0;
+  padding:3px 0px;
+  margin-bottom: -5px 0;
   &:hover {
     .chatchanneltab--inactive {
       border: 1px solid $outline-color;
@@ -262,7 +273,7 @@
   text-align: start;
   font-size: 11px;
   font-weight: 500;
-  padding: 8px;
+  padding: 3px;
   border: 1px solid transparent;
   border-radius: 3px;
   white-space: nowrap;
@@ -270,6 +281,7 @@
   text-overflow: ellipsis;
   @media screen and ( min-width: 550px ){
     font-size: 13px;
+    padding: 8px;
   }
 }
 
