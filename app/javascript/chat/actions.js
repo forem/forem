@@ -75,17 +75,25 @@ export function conductModeration(
 export function getChannels(query,retrievalID, props, successCb, failureCb) {
   const client = algoliasearch(props.algoliaId, props.algoliaKey);
   const index = client.initIndex(props.algoliaIndex);
+  console.log("first")
+  console.log(query)
   index.search(query,{
-    hitsPerPage: 100,
+    hitsPerPage: 30,
   })
   .then(function(content) {
+  console.log("second")
+  console.log(query)
     let channels = content.hits
     if (retrievalID === null || content.hits.filter(e => e.id === retrievalID).length === 1) {
-      successCb(channels)
+      console.log("third-1")
+      console.log(query)
+      successCb(channels, query)
     } else {
       index.getObjects([`${retrievalID}`], function(err, content) {
+        console.log("third-2")
+        console.log(query)
         channels.unshift(content.results[0]);
-        successCb(channels);
+        successCb(channels, query);
       });
     }
   });

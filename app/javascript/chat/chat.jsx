@@ -26,6 +26,7 @@ export default class Chat extends Component {
       showAlert: false,
       chatChannels,
       activeChannelId: chatOptions.activeChannelId,
+      activeChannel: null,
       showChannelsList: chatOptions.showChannelsList,
       showTimestamp: chatOptions.showTimestamp,
       notificationsPermission: null,
@@ -63,7 +64,9 @@ export default class Chat extends Component {
         null,
       );
     }
-    this.setState({notificationsPermission: getNotificationState()});
+    this.setState({
+      notificationsPermission: getNotificationState(),
+    });
     if (this.state.showChannelsList) {
       getChannels('', this.state.activeChannelId, this.props, this.loadChannels);
     }
@@ -85,17 +88,29 @@ export default class Chat extends Component {
     this.setState({activeContent: {type_of: "code_editor"}})
   }
 
-  loadChannels = channels => {
-    this.setState({chatChannels: channels});
-    if (this.state.activeChannelId) {
+  filterForActiveChannel = (channels, id) => {
+    return channels.filter(channel => channel.id === parseInt(id))[0]
+  }
+
+  loadChannels = (channels, query) => {
+    if (this.state.activeChannelId && query.length === 0) {
       this.setupChannel(this.state.activeChannelId);
+      this.setState({
+        chatChannels: channels,
+        activeChannel: this.filterForActiveChannel(channels, this.state.activeChannelId)
+      });
+    } if (this.state.activeChannelId) {
+      this.setupChannel(this.state.activeChannelId);
+      this.setState({
+        chatChannels: channels
+      });
     } else {
+      this.setState({chatChannels: channels});
       const channel = channels[0]
       const channelSlug = channel.channel_type === 'direct' ?
         '@'+channel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '') :
         channel.slug
       this.triggerSwitchChannel(channel.id, channelSlug)
-      this.setupChannel(channel.id)
     }
     channels.forEach((channel, index) => {
       if ( index < 3 ) {
@@ -242,18 +257,24 @@ export default class Chat extends Component {
   };
 
   handleSwitchChannel = e => {
+
     e.preventDefault();
-    this.triggerSwitchChannel(e.target.dataset.channelId, e.target.dataset.channelSlug);
+    let target = e.target;
+    if (!target.dataset.channelId) {
+      target = target.parentElement
+    }
+    this.triggerSwitchChannel(target.dataset.channelId, target.dataset.channelSlug);
   };
 
   triggerSwitchChannel = (id, slug) => {
-    this.setupChannel(id);
     this.setState({
+      activeChannel: this.filterForActiveChannel(this.state.chatChannels, id),
       activeChannelId: parseInt(id),
       scrolled: false,
       showAlert: false,
       activeContent: null
     });
+    this.setupChannel(id);
     window.history.replaceState(null, null, "/connect/"+slug);
     if (!this.state.isMobileDevice) {
       document.getElementById("messageform").focus();
@@ -333,9 +354,17 @@ export default class Chat extends Component {
   };
 
   renderMessages = () => {
-    const { activeChannelId, messages, showTimestamp } = this.state;
+    const { activeChannelId, messages, showTimestamp, activeChannel } = this.state;
     if (!messages[activeChannelId]) {
       return
+    }
+    if (messages[activeChannelId].length === 0 && activeChannel ) {
+      const channelUsername = activeChannel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '')
+      return <div className="chatmessage" style={{color: "grey"}}>
+        <div className="chatmessage__body">
+          You and <a href={"/"+channelUsername} style={{color:activeChannel.channel_users[channelUsername].darker_color}} >@{channelUsername}</a> are connected because follow each other. All interactions <em><b>must</b></em> abide by the <a href="/code-of-conduct">code of conduct</a>.
+        </div>
+      </div>
     }
     return messages[activeChannelId].map(message => (
       <Message
@@ -384,9 +413,10 @@ export default class Chat extends Component {
     return '';
   };
 
-  renderActiveChatChannel = () => (
+  renderActiveChatChannel = (channelHeader) => (
     <div className="activechatchannel">
       <div className="activechatchannel__conversation">
+        {channelHeader}
         <div className="activechatchannel__messages" id="messagelist">
           {this.renderMessages()}
           <div className="messagelist__sentinel" id="messagelist__sentinel" />
@@ -398,6 +428,7 @@ export default class Chat extends Component {
           <Compose
             handleSubmitOnClick={this.handleSubmitOnClick}
             handleKeyDown={this.handleKeyDown}
+            activeChannelId={this.state.activeChannelId}
           />
         </div>
       </div>
@@ -413,11 +444,27 @@ export default class Chat extends Component {
   
 
   render() {
+    let channelHeader = ''
+    let channelHeaderInner = ''
+    const currentChannel = this.state.activeChannel
+    if (currentChannel) {
+      let channelHeaderInner = ''
+      if (currentChannel.channel_type === "direct") {
+        const username = currentChannel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '');
+        channelHeaderInner = <a href={'/'+username}>@{username}</a>
+      }
+      else {
+        channelHeaderInner = currentChannel.channel_name;
+      }
+      channelHeader = <div className="activechatchannel__header">
+                        {channelHeaderInner}
+                      </div>
+    }
     return (
       <div className="chat">
         {this.renderChatChannels()}
         <div className="chat__activechat">
-          {this.renderActiveChatChannel()}
+          {this.renderActiveChatChannel(channelHeader)}
         </div>
       </div>
     );

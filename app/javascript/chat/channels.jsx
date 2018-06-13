@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import ConfigImage from 'images/three-dots.svg';
 
 const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel }) => {
   const channels = chatChannels.map(channel => {
@@ -36,6 +37,8 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel }) => {
           <span 
             data-channel-slug={modififedSlug}
             className={"chatchanneltabindicator chatchanneltabindicator--" + newMessagesIndicatorClass}
+            data-channel-id={channel.id}
+            data-channel-slug={modififedSlug}
           >
           {indicatorPic}
           </span> {name} 
@@ -43,10 +46,24 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel }) => {
       </button>
     );
   });
-
+  let channelsListFooter = ""
+  if (channels.length === 30) {
+    channelsListFooter = <div className="chatchannels__channelslistfooter">You may connect devs you mutually follow. Use the filter to discover all your channels.</div>
+  }
+  console.log(ConfigImage)
   return (
     <div className="chatchannels">
-      <div className="chatchannels__channelslist">{channels}</div>
+      <div className="chatchannels__channelslist">
+        {channels}
+        {channelsListFooter}
+      </div>
+      <div className="chatchannels__config">
+        <img src={ConfigImage} style={{height: "18px"}}/>
+        <div className="chatchannels__configmenu">
+          <a href="/settings">DEV Settings</a>
+          <a href="/report-abuse">Report Abuse</a>
+        </div>
+      </div>
     </div>
   );
 };
