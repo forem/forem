@@ -85,8 +85,6 @@ export function getChannels(query,retrievalID, props, successCb, failureCb) {
   console.log(query)
     let channels = content.hits
     if (retrievalID === null || content.hits.filter(e => e.id === retrievalID).length === 1) {
-      console.log("third-1")
-      console.log(query)
       successCb(channels, query)
     } else {
       index.getObjects([`${retrievalID}`], function(err, content) {

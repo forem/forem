@@ -31,6 +31,7 @@ export default class Chat extends Component {
       showTimestamp: chatOptions.showTimestamp,
       notificationsPermission: null,
       activeContent: null,
+      expanded: window.innerWidth > 600,
       isMobileDevice: typeof window.orientation !== "undefined",
     };
   }
@@ -385,6 +386,10 @@ export default class Chat extends Component {
       getChannels(e.target.value, null, this.props, this.loadChannels);
   }
 
+  toggleExpand = () => {
+    this.setState({expanded: !this.state.expanded})
+  }
+
   renderChatChannels = () => {
     if (this.state.showChannelsList) {
       const notificationsPermission = this.state.notificationsPermission;
@@ -397,18 +402,40 @@ export default class Chat extends Component {
       } else if (notificationsPermission === "denied") {
         notificationsState = <div class="chat_chatconfig chat_chatconfig--off">Notificatins Off</div>
       }
-      return (
-        <div className="chat__channels">
-          {notificationsButton}
-          <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
-          <Channels
-            activeChannelId={this.state.activeChannelId}
-            chatChannels={this.state.chatChannels}
-            handleSwitchChannel={this.handleSwitchChannel}
-          />
-          {notificationsState}
-        </div>
-      );
+      if (this.state.expanded) {
+        return (
+          <div className="chat__channels chat__channels--expanded">
+            {notificationsButton}
+            <button class="chat__channelstogglebutt" onClick={this.toggleExpand}>{"<"}</button>
+            <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
+            <Channels
+              activeChannelId={this.state.activeChannelId}
+              chatChannels={this.state.chatChannels}
+              handleSwitchChannel={this.handleSwitchChannel}
+              expanded={this.state.expanded}
+            />
+            {notificationsState}
+          </div>
+        )
+      } else {
+        return (
+          <div className="chat__channels">
+            {notificationsButton}
+            <button
+              class="chat__channelstogglebutt"
+              onClick={this.toggleExpand}
+              style={{width: "100%"}}
+              >{">"}</button>
+            <Channels
+              activeChannelId={this.state.activeChannelId}
+              chatChannels={this.state.chatChannels}
+              handleSwitchChannel={this.handleSwitchChannel}
+              expanded={this.state.expanded}
+            />
+            {notificationsState}
+          </div>
+        )
+      }
     }
     return '';
   };
