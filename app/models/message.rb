@@ -17,7 +17,7 @@ class Message < ApplicationRecord
   end
 
   def determine_user_validity
-    raise unless chat_channel.has_member?(user) || chat_channel.channel_type == "open"
+    raise unless chat_channel.status == "active" && (chat_channel.has_member?(user) || chat_channel.channel_type == "open")
   end
 
   def send_push

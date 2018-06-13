@@ -5,10 +5,11 @@ export default class Chat extends Component {
   static propTypes = {
     handleKeyDown: PropTypes.func.isRequired,
     handleSubmitOnClick: PropTypes.func.isRequired,
+    activeChannelId: PropTypes.number
   };
 
-  shouldComponentUpdate() {
-    return false;
+  shouldComponentUpdate(nextProps) {
+    return this.props.activeChannelId != nextProps.activeChannelId;
   }
 
   render() {
