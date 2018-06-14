@@ -87,16 +87,18 @@ class ChatChannelsController < ApplicationController
       chat_channel_memberships.includes(:chat_channel).limit(200).order("updated_at DESC")
     render "index.json"
   end
-  
+
   def render_channels_html
     return unless current_user
-    slug =  if params[:slug] && params[:slug].start_with?("@")
-                      [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
-                    else
-                      params[:slug]
-                    end
-    @active_channel = ChatChannel.find_by_slug(slug)
-    @active_channel.current_user = current_user if @active_channel
+    if params[:slug]
+      slug =  if params[:slug] && params[:slug].start_with?("@")
+                        [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
+                      else
+                        params[:slug]
+                      end
+      @active_channel = ChatChannel.find_by_slug(slug)
+      @active_channel.current_user = current_user if @active_channel
+    end
     generate_algolia_search_key
     # @twilio_token = TwilioToken.new(current_user).get
   end

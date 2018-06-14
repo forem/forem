@@ -44,7 +44,7 @@
       display:none;
     }
     .write{
-      width:110px;
+      width:100px;
       padding: 3px 0px;
       height: auto;
       top:12px;
@@ -54,11 +54,11 @@
       border: 2px solid $black;
       @media screen and ( min-width: 560px ){
         display:block;
-        right:105px;
+        right:140px;
       }
       @media screen and ( min-width: 700px ){
         display:block;
-        right:120px;
+        right:165px;
       }
     }
     .connect-icon{
@@ -69,7 +69,6 @@
       z-index:10;
       top:1px;
       right:90px;
-      display: none;
       @media screen and ( min-width:700px ){
         right:110px;
       }
