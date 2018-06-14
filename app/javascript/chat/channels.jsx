@@ -6,7 +6,14 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
   const channels = chatChannels.map((channel, index) => {
     if (!channel) { return}
     const isActive = parseInt(activeChannelId, 10) === channel.id
-    const lastOpened = channel.last_opened_at ? channel.last_opened_at : channel.channel_users[window.currentUser.username].last_opened_at
+    let lastOpened = channel.last_opened_at
+    if (!lastOpened) {
+      if (channel.channel_users[window.currentUser.username]) {
+        lastOpened = channel.channel_users[window.currentUser.username].last_opened_at
+      } else {
+        lastOpened = new Date();
+      }
+    }
     const isUnopened = (new Date(channel.last_message_at) > new Date(lastOpened)) && channel.messages_count > 0;
     
     const otherClassname =

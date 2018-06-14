@@ -109,9 +109,9 @@ class ChatChannel < ApplicationRecord
   def channel_users
     pics_obj = {}
     chat_channel_memberships.
-      order("last_opened_at DESC").limit(5).includes(:user).each do |m|
+      order("last_opened_at DESC").limit(80).includes(:user).each_with_index do |m, i|
       pics_obj[m.user.username] = {
-        profile_image: ProfileImage.new(m.user).get(90),
+        profile_image: i < 11 ? ProfileImage.new(m.user).get(90) : nil,
         darker_color: m.user.decorate.darker_color,
         name: m.user.name,
         last_opened_at: m.last_opened_at,
