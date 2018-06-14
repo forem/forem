@@ -4,6 +4,7 @@ import ConfigImage from 'images/three-dots.svg';
 
 const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded, filterQuery, channelsLoaded }) => {
   const channels = chatChannels.map((channel, index) => {
+    if (!channel) { return}
     const isActive = parseInt(activeChannelId, 10) === channel.id
     const lastOpened = channel.last_opened_at ? channel.last_opened_at : channel.channel_users[window.currentUser.username].last_opened_at
     const isUnopened = (new Date(channel.last_message_at) > new Date(lastOpened)) && channel.messages_count > 0;
