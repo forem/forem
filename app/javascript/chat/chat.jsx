@@ -25,6 +25,8 @@ export default class Chat extends Component {
       scrolled: false,
       showAlert: false,
       chatChannels,
+      filterQuery: '',
+      channelsLoaded: false,
       activeChannelId: chatOptions.activeChannelId,
       activeChannel: null,
       showChannelsList: chatOptions.showChannelsList,
@@ -33,6 +35,7 @@ export default class Chat extends Component {
       activeContent: null,
       expanded: window.innerWidth > 600,
       isMobileDevice: typeof window.orientation !== "undefined",
+      subscribedPusherChannels: []
     };
   }
 
@@ -42,22 +45,11 @@ export default class Chat extends Component {
         this.setupChannel(channel.id);
       }
       if (channel.channel_type === "open") {
-        setupPusher(this.props.pusherKey, {
-          channelId: `open-channel-${channel.id}`,
-          messageCreated: this.receiveNewMessage,
-          channelCleared: this.clearChannel,
-          redactUserMessages: this.redactUserMessages,
-          liveCoding: null
-        });
+        this.subscribePusher(`open-channel-${channel.id}`)
       }
     });
     setupObserver(this.observerCallback);
-    setupPusher(this.props.pusherKey, {
-      channelId: `private-message-notifications-${window.currentUser.id}`,
-      messageCreated: this.receiveNewMessage,
-      channelCleared: this.clearChannel,
-      redactUserMessages: this.redactUserMessages,
-    });
+    this.subscribePusher(`private-message-notifications-${window.currentUser.id}`)
     if (this.state.activeChannelId) {
       sendOpen(
         this.state.activeChannelId,
@@ -83,14 +75,48 @@ export default class Chat extends Component {
   }
 
   liveCoding = e => {
-    if (this.state.activeContent === {type_of: "code_editor"}) {
-      return 
+    if (this.state.activeContent != {type_of: "code_editor"}) {
+      this.setState({activeContent: {type_of: "code_editor"}})
     }
-    this.setState({activeContent: {type_of: "code_editor"}})
+    if (document.querySelector(".CodeMirror")) {
+      let cm = document.querySelector(".CodeMirror").CodeMirror
+      if (cm && e.context === 'initializing-live-code-channel') {
+        window.pusher.channel(e.channel).trigger('client-livecode', {
+          value: cm.getValue(),
+          cursorPos: cm.getCursor(),
+        });
+      } else if (cm && e.keyPressed === true || e.value.length > 0) {
+        const cursorCoords = e.cursorPos
+        const cursorElement = document.createElement('span');
+        cursorElement.classList.add("cursorelement")
+        cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
+        cm.setValue(e.value);
+        cm.setBookmark(e.cursorPos, { widget: cursorElement });
+      }
+    }
   }
+
 
   filterForActiveChannel = (channels, id) => {
     return channels.filter(channel => channel.id === parseInt(id))[0]
+  }
+
+  subscribePusher = channelName => {
+    if (this.state.subscribedPusherChannels.includes(channelName)){
+      return
+    } else {
+      setupPusher(this.props.pusherKey, {
+        channelId: channelName,
+        messageCreated: this.receiveNewMessage,
+        channelCleared: this.clearChannel,
+        redactUserMessages: this.redactUserMessages,
+        channelError: this.channelError,
+        liveCoding: this.liveCoding,
+      });
+      let subscriptions = this.state.subscribedPusherChannels;
+      subscriptions.push(channelName);
+      this.setState({subscribedPusherChannels:subscriptions})
+    }
   }
 
   loadChannels = (channels, query) => {
@@ -99,6 +125,7 @@ export default class Chat extends Component {
       this.setState({
         chatChannels: channels,
         scrolled: false,
+        channelsLoaded: true,
         activeChannel: this.filterForActiveChannel(channels, this.state.activeChannelId)
       });
     } if (this.state.activeChannelId) {
@@ -106,10 +133,13 @@ export default class Chat extends Component {
       this.setState({
         scrolled: false,
         chatChannels: channels,
+        channelsLoaded: true,
+        filterQuery: query
       });
-    } else {
+    } else if (channels.length > 0) {
       this.setState({
         chatChannels: channels,
+        channelsLoaded: true,
         scrolled: false,
       });
       const channel = channels[0]
@@ -117,19 +147,15 @@ export default class Chat extends Component {
         '@'+channel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '') :
         channel.slug
       this.triggerSwitchChannel(channel.id, channelSlug);
+    } else {
+      this.setState({channelsLoaded: true})
     }
     channels.forEach((channel, index) => {
       if ( index < 3 ) {
         this.setupChannel(channel.id);
       }
       if (channel.channel_type === "invite_only"){
-        setupPusher(this.props.pusherKey, {
-          channelId: `presence-channel-${channel.id}`,
-          messageCreated: this.receiveNewMessage,
-          channelCleared: this.clearChannel,
-          redactUserMessages: this.redactUserMessages,
-          liveCoding: this.liveCoding
-        });
+        this.subscribePusher(`presence-channel-${channel.id}`)
       }
     });
   }
@@ -139,13 +165,7 @@ export default class Chat extends Component {
       this.state.messages[channelId][0].reception_method === 'pushed'){
       getAllMessages(channelId, this.receiveAllMessages);
     }
-    setupPusher(this.props.pusherKey, {
-      channelId: `presence-channel-${channelId}`,
-      messageCreated: this.receiveNewMessage,
-      channelCleared: this.clearChannel,
-      redactUserMessages: this.redactUserMessages,
-      liveCoding: this.liveCoding
-    });
+    this.subscribePusher(`presence-channel-${channelId}`)
   };
   
 
@@ -158,6 +178,12 @@ export default class Chat extends Component {
       }
     });
   };
+
+  channelError = error => {
+    this.setState({
+      subscribedPusherChannels: [],
+    })
+  }
 
   receiveAllMessages = res => {
     const { chatChannelId, messages } = res;
@@ -416,6 +442,8 @@ export default class Chat extends Component {
               activeChannelId={this.state.activeChannelId}
               chatChannels={this.state.chatChannels}
               handleSwitchChannel={this.handleSwitchChannel}
+              channelsLoaded={this.state.channelsLoaded}
+              filterQuery={this.state.filterQuery}
               expanded={this.state.expanded}
             />
             {notificationsState}
