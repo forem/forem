@@ -49,6 +49,7 @@ class UnopenedChannelNotice extends Component {
   }
 
   handleClick = e => {
+    document.getElementById("connect-number").classList.remove("showing");
     this.setState({visible: false})
   }
   render() {
