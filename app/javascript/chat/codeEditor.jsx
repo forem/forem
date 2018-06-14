@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import setupPusher from '../src/utils/pusher';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/jsx/jsx';
@@ -10,10 +9,6 @@ export default class CodeEditor extends Component {
 
   componentDidMount() {
     const editor = document.getElementById("codeeditor");
-    const channel = setupPusher(this.props.pusherKey, {
-      channelId: `presence-channel-${this.props.activeChannelId}`,
-      liveCoding: this.liveCoding,
-    });
     const myCodeMirror = CodeMirror(editor, {
       mode:  "javascript",
       theme: "material",
@@ -21,9 +16,10 @@ export default class CodeEditor extends Component {
     });
     myCodeMirror.setSize("100%", "100%");
     //Initial trigger:
+    const channel = window.pusher.channel(`presence-channel-${this.props.activeChannelId}`)
     channel.trigger('client-livecode', {
-      value: myCodeMirror.getValue(),
-      cursorPos: myCodeMirror.getCursor(),
+      context: 'initializing-live-code-channel',
+      channel: `presence-channel-${this.props.activeChannelId}`
     });
     //Coding trigger:
     myCodeMirror.on('keyup', cm => {
@@ -37,24 +33,6 @@ export default class CodeEditor extends Component {
 
   shouldComponentUpdate() {
     return false;
-  }
-  
-  liveCoding = e => {
-    if (e.keyPressed === true || e.value.length > 0) {
-      let cm = document.querySelector(".CodeMirror").CodeMirror
-      const cursorCoords = e.cursorPos
-      const cursorElement = document.createElement('span');
-      cursorElement.classList.add("cursorelement")
-      cursorElement.style.height = `${(cursorCoords.bottom - cursorCoords.top)}px`;
-      cm.setValue(e.value);
-      cm.setBookmark(e.cursorPos, { widget: cursorElement });
-    } else {
-      let cm = document.querySelector(".CodeMirror").CodeMirror
-      channel.trigger('client-livecode', {
-        value: cm.getValue(),
-        cursorPos: cm.getCursor(),
-      });
-    }
   }
 
   render() {

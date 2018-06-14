@@ -329,6 +329,17 @@
   overflow-x: hidden;
 }
 
+.chatchannels__channelslistheader{
+  background: lighten($purple, 5%);
+  border: 1px solid darken($purple, 20%);
+  font-size: 12px;
+  color: $dark-purple;
+  box-sizing: border-box;
+  padding: 5px;
+  width: 98%;
+  border-radius: 3px;
+}
+
 .chatchannels__channelslistfooter{
   font-size: 12px;
   color: $medium-gray;

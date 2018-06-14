@@ -2,11 +2,11 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from 'images/three-dots.svg';
 
-const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded }) => {
-  const channels = chatChannels.map(channel => {
+const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded, filterQuery, channelsLoaded }) => {
+  const channels = chatChannels.map((channel, index) => {
     const isActive = parseInt(activeChannelId, 10) === channel.id
     const lastOpened = channel.last_opened_at ? channel.last_opened_at : channel.channel_users[window.currentUser.username].last_opened_at
-    const isUnopened = new Date(channel.last_message_at) > new Date(lastOpened);
+    const isUnopened = (new Date(channel.last_message_at) > new Date(lastOpened)) && channel.messages_count > 0;
     
     const otherClassname =
       isActive
@@ -50,7 +50,6 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
         content = name
       }
     }
-
     return (
       <button
         key={channel.id}
@@ -73,9 +72,19 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
   if (channels.length === 30) {
     channelsListFooter = <div className="chatchannels__channelslistfooter">You may connect devs you mutually follow. Use the filter to discover all your channels.</div>
   }
+  let topNotice = ''
+  if (expanded &&
+    filterQuery.length === 0 &&
+    channelsLoaded &&
+    (channels.length === 0 || channels[0].messages_count === 0) ) {
+      topNotice = <div className="chatchannels__channelslistheader">
+        👋 Welcome to <b>DEV Connect</b>! You can may chat with anyone you mutually follow. 
+      </div>
+  }
   return (
     <div className="chatchannels">
       <div className="chatchannels__channelslist">
+        {topNotice}
         {channels}
         {channelsListFooter}
       </div>
