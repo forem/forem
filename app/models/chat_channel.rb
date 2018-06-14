@@ -13,8 +13,8 @@ class ChatChannel < ApplicationRecord
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
     attribute :id, :viewable_by, :slug, :channel_type,
       :channel_name, :channel_users, :last_message_at, :status,
-      :messages_count
-    searchableAttributes [:channel_name,:channel_slug]
+      :messages_count, :channel_human_names
+    searchableAttributes [:channel_name, :channel_slug, :channel_human_names]
     attributesForFaceting ["filterOnly(viewable_by)","filterOnly(status)"]
     ranking ["desc(last_message_at)"]
   end
@@ -99,9 +99,17 @@ class ChatChannel < ApplicationRecord
     messages.size
   end
 
+  def channel_human_names
+    chat_channel_memberships.
+      order("last_opened_at DESC").limit(20).includes(:user).map do |m|
+        m.user.name
+      end
+  end
+
   def channel_users
     pics_obj = {}
-    chat_channel_memberships.includes(:user).each do |m|
+    chat_channel_memberships.
+      order("last_opened_at DESC").limit(5).includes(:user).each do |m|
       pics_obj[m.user.username] = {
         profile_image: ProfileImage.new(m.user).get(90),
         darker_color: m.user.decorate.darker_color,
