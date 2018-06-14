@@ -78,7 +78,17 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
     channelsLoaded &&
     (channels.length === 0 || channels[0].messages_count === 0) ) {
       topNotice = <div className="chatchannels__channelslistheader">
-        👋 Welcome to <b>DEV Connect</b>! You can may chat with anyone you mutually follow. 
+        👋 Welcome to <b>DEV Connect</b>! You may message anyone you mutually follow. 
+      </div>
+  }
+  let configFooter = ''
+  if (expanded) {
+    configFooter = <div className="chatchannels__config">
+        <img src={ConfigImage} style={{height: "18px"}}/>
+        <div className="chatchannels__configmenu">
+          <a href="/settings">DEV Settings</a>
+          <a href="/report-abuse">Report Abuse</a>
+        </div>
       </div>
   }
   return (
@@ -88,13 +98,7 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
         {channels}
         {channelsListFooter}
       </div>
-      <div className="chatchannels__config">
-        <img src={ConfigImage} style={{height: "18px"}}/>
-        <div className="chatchannels__configmenu">
-          <a href="/settings">DEV Settings</a>
-          <a href="/report-abuse">Report Abuse</a>
-        </div>
-      </div>
+      {configFooter}
     </div>
   );
 };
