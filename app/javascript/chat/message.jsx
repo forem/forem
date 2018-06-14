@@ -31,7 +31,7 @@ const Message = ({
 
   return (
     <div className="chatmessage">
-      <div className="chatmessage__body" onClick={onContentTrigger}>
+      <div className="chatmessage__profilepic">
         <a 
           href={`/${user}`}
           target="_blank"
@@ -46,6 +46,8 @@ const Message = ({
             onClick={onContentTrigger}
           />
         </a>
+      </div>
+      <div className="chatmessage__body" onClick={onContentTrigger}>
         <span className="chatmessagebody__username" style={spanStyle}>
           <a
             className="chatmessagebody__username--link"
@@ -57,16 +59,17 @@ const Message = ({
             {user}
           </a>
         </span>
-        <span className="chatmessagebody__divider">: </span>
-        {messageArea}
+        {timestamp ? (
+          <span className="chatmessage__timestamp">
+            {`${adjustTimestamp(timestamp)}`}
+          </span>
+        ) : (
+          <span />
+        )}
+        <div className="chatmessage__bodytext">
+          {messageArea}
+        </div>
       </div>
-      {timestamp ? (
-        <span className="chatmessage__timestamp">
-          {`${adjustTimestamp(timestamp)}`}
-        </span>
-      ) : (
-        <span />
-      )}
     </div>
   );
 };

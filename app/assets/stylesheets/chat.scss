@@ -408,20 +408,29 @@
     font-family: $monospace;
   }
 }
+.chatmessage__bodytext{
+  margin: 3px 1px 4px;
+}
 
 .chatmessage__timestamp {
   font-size: 11px;
-  color: lightgray;
-  min-width: 95px;
-  padding-top: 4px;
+  color: darken($light-medium-gray, 6%);
+  min-width: 85px;
+  text-align:right;
+  padding-left: 4px;
+  vertical-align: 1px;
 }
 
 .chatmessagebody__profileimage {
-  height: 23px;
-  width: 23px;
+  height: 25px;
+  width: 25px;
   margin-right: 6px;
   border-radius: 20px;
-  vertical-align: -5px;
+  vertical-align: -3px;
+  @media screen and ( min-width: 400px ){
+    height: 31px;
+    width: 31px;
+  }
 }
 
 .chatmessagebody__username {
