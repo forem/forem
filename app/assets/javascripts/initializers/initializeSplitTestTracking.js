@@ -29,7 +29,7 @@ function trackOutboundLink(url, versionString) {
       'hitCallback': function () { document.location = url; }
     });
   } else {
-    // Andy: send without tracking any of user's information
+    // Direct properly without tracking any of user's information
     window.location = url;
   }
 }

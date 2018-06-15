@@ -55,7 +55,7 @@ class MembershipService
 
   def find_or_create_plan
     Stripe::Plan.retrieve("membership-#{monthly_dues}")
-    # Andy: using rescue because not finding a plan errors out instead returning of nil
+    # Using rescue because not finding a plan errors out instead returning of nil
   rescue Stripe::InvalidRequestError
     Stripe::Plan.create(
       id: "membership-#{monthly_dues}",

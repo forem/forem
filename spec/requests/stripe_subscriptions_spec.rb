@@ -14,7 +14,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
 
   describe "POST StripeSubscriptions#create" do
     context "when a valid request is made" do
-      # Andy: Amount is a string here because Stripe returns a string when form is submitted
+      # Amount is a string here because Stripe returns a string when form is submitted
       before do
         post "/stripe_subscriptions", params: {
           amount: "12",

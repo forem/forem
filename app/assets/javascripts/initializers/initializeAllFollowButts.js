@@ -89,7 +89,7 @@ function handleOptimisticButtRender(butt) {
   } else if (butt.dataset.verb === 'login') {
     showModal('follow-button');
   } else {
-    // Andy: this should handle following tags/users
+    // Handles actual following of tags/users
     assignState(butt, butt.dataset.verb);
     handleFollowButtPress(butt);
   }

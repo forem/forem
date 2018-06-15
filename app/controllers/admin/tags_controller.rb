@@ -13,7 +13,7 @@ module Admin
     private
 
     def convert_empty_string_to_nil
-      # Andy: nil plays nicely with our hex colors, whereas empty string doesn't
+      # nil plays nicely with our hex colors, whereas empty string doesn't
       params[:tag][:text_color_hex] = nil if params[:tag][:text_color_hex] == ""
       params[:tag][:bg_color_hex] = nil if params[:tag][:bg_color_hex] == ""
     end

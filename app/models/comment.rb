@@ -193,7 +193,7 @@ class Comment < ApplicationRecord
     nil
   end
 
-  # Andy: Administrate field
+  # Administrate field
   def name_of_user
     user.name
   end

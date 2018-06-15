@@ -20,7 +20,7 @@ class UserRoleService
       tag.errors[:moderator_ids] << ": user id #{id} was not found"
     end
     return false if !tag.errors[:moderator_ids].blank?
-    # Andy: Don't have to worry about comparing old and new values.
+    # Don't have to worry about comparing old and new values.
     tag.tag_moderator_ids.each do |id|
       User.find(id).remove_role(:tag_moderator, tag)
     end
@@ -88,7 +88,7 @@ class UserRoleService
     @user.remove_role :banned
   end
 
-  # Andy: Only give warning method b/c no need to remove warnings
+  # Only give warning method b/c no need to remove warnings
   def give_warning(content)
     @user.add_role :warned
     create_or_update_note("warned", content)
