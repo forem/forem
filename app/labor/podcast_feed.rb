@@ -56,7 +56,7 @@ class PodcastFeed
   end
 
   def existing_episode(item, podcast)
-    # Andy: presence returns nil if the query is an empty array, otherwise returns the array
+    # presence returns nil if the query is an empty array, otherwise returns the array
     PodcastEpisode.where(media_url: item.enclosure.url).presence ||
       PodcastEpisode.where(title: item.title).presence ||
       PodcastEpisode.where(guid: item.guid.to_s).presence ||
@@ -71,7 +71,7 @@ class PodcastFeed
                      item.enclosure.url
                    end
   rescue
-    # Andy: podcast episode must have a media_url
+    # podcast episode must have a media_url
     ep.media_url = item.enclosure.url
     if podcast.status_notice.empty?
       podcast.update(status_notice: "This podcast may not be playable in the browser")

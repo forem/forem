@@ -1,6 +1,6 @@
 class ProfileImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::BombShelter
-  # Andy: adds resolution size to images of 4096x4096
+  # Adds resolution size limit to images of 4096x4096
 
   def store_dir
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"

@@ -2,7 +2,7 @@ class Internal::MembersController < Internal::ApplicationController
   layout "internal"
 
   def index
-    # Andy: with_role and with_any_role returns an array and not an ActiveRecord collection
+    # with_role and with_any_role return an array and not an ActiveRecord collection
     @users = case params[:state]
              when "by-scholars"
                User.with_role(:workshop_pass).sort_by(&:name)

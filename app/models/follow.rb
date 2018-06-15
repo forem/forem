@@ -17,7 +17,7 @@ class Follow < ApplicationRecord
       "following_orgs_count"
     when "ActsAsTaggableOn::Tag"
       "following_tags_count"
-    # Andy: Add more whens if we add more follow types
+    # add more whens if we add more follow types
     end
   }, column_names: {
     ["follows.followable_type = ?", "User"] => "following_users_count",

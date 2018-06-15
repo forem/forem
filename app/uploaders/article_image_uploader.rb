@@ -1,6 +1,6 @@
 class ArticleImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::BombShelter
-  # Andy: adds resolution size to images of 4096x4096
+  # Adds resolution size limit to images of 4096x4096
 
   def store_dir
     "i/"

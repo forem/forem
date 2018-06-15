@@ -45,7 +45,7 @@ class Article < ApplicationRecord
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
   # after_save        :send_to_moderator
-  # Andy: turned off for now
+  # turned off for now
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
@@ -344,7 +344,7 @@ class Article < ApplicationRecord
 
   # def send_to_moderator
   #   ModerationService.new.send_moderation_notification(self) if published
-  #   Andy: turned off for now
+  #   turned off for now
   # end
 
   def before_destroy_actions
