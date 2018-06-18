@@ -20,8 +20,20 @@
       data-algolia-index="<%= "SecuredChatChannel_#{Rails.env}" %>"
       data-chat-channels="<%= [] %>"
       data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>"
-      data-twilio-token="<%= @twilio_token %>"
     >
+      <div class="chat" id="chat_placeholder">
+        <div class="chat__channels chat__channels--expanded">
+            <button class="chat__channelstogglebutt" onClick={this.toggleExpand}><</button>
+            <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
+        </div>
+        <div class="chat__activechat">
+          <div class="activechatchannel">
+            <div class="activechatchannel__conversation">
+              <div class="activechatchannel__header"><span>&nbsp;</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 <% else %>
   <%= render "devise/registrations/registration_form" %>

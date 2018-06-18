@@ -100,7 +100,6 @@ class ChatChannelsController < ApplicationController
       @active_channel.current_user = current_user if @active_channel
     end
     generate_algolia_search_key
-    # @twilio_token = TwilioToken.new(current_user).get
   end
 
   def generate_algolia_search_key
