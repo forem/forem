@@ -2,7 +2,13 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from 'images/three-dots.svg';
 
-const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded, filterQuery, channelsLoaded }) => {
+const Channels = ({ activeChannelId,
+    chatChannels,
+    handleSwitchChannel,
+    expanded,
+    filterQuery,
+    channelsLoaded,
+    incomingVideoCallChannelIds }) => {
   const channels = chatChannels.map((channel, index) => {
     if (!channel) { return}
     const isActive = parseInt(activeChannelId, 10) === channel.id
@@ -58,6 +64,10 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
         content = name
       }
     }
+    let callIndicator = ''
+    if (incomingVideoCallChannelIds && incomingVideoCallChannelIds.includes(channel.id)) {
+      callIndicator = <span className='chatchanneltabindicator chatchanneltabindicator--phone'>📞</span>
+    }
     return (
       <button
         key={channel.id}
@@ -71,6 +81,7 @@ const Channels = ({ activeChannelId, chatChannels, handleSwitchChannel, expanded
           data-channel-slug={modififedSlug}
           style={{border:`1px solid ${channelColor}`, boxShadow: `3px 3px 0px ${channelColor}`}}
         >
+          {callIndicator}
           {content}
         </span>
       </button>
