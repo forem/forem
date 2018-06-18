@@ -94,6 +94,7 @@ Rails.application.routes.draw do
   resources :additional_content_boxes, only: [:index]
   resources :videos, only: [:create, :new]
   resources :video_states, only: [:create]
+  resources :twilio_tokens, only: [:show]
   resources :push_notification_subscriptions, only: [:create]
   
   get "/notifications/:username" => "notifications#index"
