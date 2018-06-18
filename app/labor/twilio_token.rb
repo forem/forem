@@ -1,17 +1,16 @@
 class TwilioToken
-  attr_accessor :user
+  attr_accessor :user, :room_name
 
-  def initialize(user)
+  def initialize(user, room_name)
     @user = user
+    @room_name = room_name
   end
 
   def get
-    require 'twilio-ruby'
-
     # Replace with ENV vars
-    account_sid = 'AC1403f2c95cd4912bcb13e1fdc893aef1'
-    api_key = 'SK02d79fd84d84df170adce9a95f826c0d'
-    api_secret = 'MQC9HvLDMbwyQTJNs3x1IHNodidq2Zqf'
+    account_sid = ENV["TWILIO_ACCOUNT_SID"]
+    api_key = ENV["TWILIO_VIDEO_API_KEY"]
+    api_secret = ENV["TWILIO_VIDEO_API_SECRET"]
 
     token = Twilio::JWT::AccessToken.new(
       account_sid,
@@ -22,7 +21,7 @@ class TwilioToken
     )
 
     grant = Twilio::JWT::AccessToken::VideoGrant.new
-    grant.room = 'DailyStandup'
+    grant.room = room_name
     token.add_grant(grant)
 
     token.to_jwt

@@ -13,13 +13,15 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
 document.ready.then(
   getUserDataAndCsrfToken().then(currentUser => {
     if (document.getElementById('chat')) {
-      const { chatChannels, pusherKey, chatOptions, algoliaKey, algoliaId, algoliaIndex } = document.getElementById(
+      const { chatChannels, pusherKey, chatOptions, algoliaKey, algoliaId, algoliaIndex, twilioToken } = document.getElementById(
         'chat',
       ).dataset;
       window.currentUser = currentUser;
       window.csrfToken = document.querySelector(
         "meta[name='csrf-token']",
       ).content;
+      const renderTarget = document.getElementById('chat');
+      const placeholder = document.getElementById('chat_placeholder')
       const root = render(
         <Chat
           pusherKey={pusherKey}
@@ -29,8 +31,9 @@ document.ready.then(
           algoliaKey={algoliaKey}
           algoliaIndex={algoliaIndex}
         />,
-        document.getElementById('chat'),
+        renderTarget, renderTarget.firstChild
       );
+      renderTarget.removeChild(placeholder);
       window.InstantClick.on('change', () => {
         render('', document.body, root);
       });
