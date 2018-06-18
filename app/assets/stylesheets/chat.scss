@@ -137,6 +137,49 @@
   width: calc(100% - 45px);
 }
 
+.chat__videocall{
+  height: 480px;
+  width: 640px;
+  position:fixed;
+  background: $black;
+  border-radius: 12px;
+  left: 250px;
+  top: 200px;
+  cursor: grab;
+  &:active{
+    cursor: grabbing;
+  }
+  video{
+    border-radius: 12px;
+    width: 100%;
+    height: 100%;
+  }
+  .chat__localvideoscren{
+    height: 120px;
+    width: 160px;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.4);
+    video{
+      border-radius: 5px
+    }
+  }
+}
+
+.chat__videocallexitbutton{
+  border:  0px;
+  font-size: 20px;
+  color: $medium-gray;
+  padding:1px 6px 2px;
+  border-radius:6px;
+  background: rgba(0, 0, 0, 0.1);
+  position: absolute;
+  left: 3px;
+  top: 3px;
+}
+
 .activechatchannel {
   height: inherit;
   max-height: inherit;
@@ -213,6 +256,18 @@
     background: $light-gray;
   }
 
+}
+
+.activechatchannel__incomingcall{
+  border: 2px solid $green;
+  box-shadow: 6px 6px 0px $green;
+  padding: 20px;
+  margin: 10px;
+  background: lighten($green, 28%);
+  font-size: 28px;
+  font-weight: bold;
+  cursor:pointer;
+  animation: pulser 0.5s linear infinite;
 }
 
 .activechatchannel__activecontent{
@@ -319,6 +374,11 @@
   img {
     border: 3px solid $yellow;
   }
+}
+
+.chatchanneltabindicator--phone{
+  background: $green;
+  padding: 0px 8px;
 }
 
 .chatchannels__channelslist {
@@ -517,6 +577,14 @@
 @keyframes blinker {
   50% {
     opacity: 0;
+  }
+}
+
+@keyframes pulser {
+  50% {
+    opacity: 0.8;
+    box-shadow: 2px 2px 0px $green;
+    padding: 18px;
   }
 }
 

@@ -109,6 +109,17 @@ export function sendKeys(subscription, successCb, failureCb) {
     .catch(failureCb);
 }
 
+export function getTwilioToken(videoChannelName, successCb, failureCb) {
+  fetch(`/twilio_tokens/${videoChannelName}`, {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
 export function getContent(url, successCb, failureCb) {
   fetch(`https://dev.to${url}`, {
     Accept: 'application/json',

@@ -55,7 +55,6 @@ class Message < ApplicationRecord
       not(user_id: user_id).
       update_all(has_unopened_messages: true)
   end
-  handle_asynchronously :update_all_has_unopened_messages_statuses
 
   def evaluate_markdown
     self.message_html = MarkdownParser.new(message_markdown).evaluate_inline_markdown
