@@ -300,6 +300,11 @@ export default class Chat extends Component {
       } else {
         alert("Calls are only currently available in direct channels");
       }
+    } else if (message.startsWith('/github')) {
+      const args = message.split('/github ')[1].trim()
+      let newActiveContent = this.state.activeContent
+      newActiveContent[this.state.activeChannelId] = {type_of: "github", args: args }
+      this.setState({activeContent: newActiveContent})
     } else if (message[0] === '/') {
       conductModeration(
         this.state.activeChannelId,
@@ -545,6 +550,7 @@ export default class Chat extends Component {
         onExit={this.triggerActiveContent}
         activeChannelId={this.state.activeChannelId}
         pusherKey={this.props.pusherKey}
+        githubToken={this.props.githubToken}
         />
     </div>
   );

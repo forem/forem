@@ -18,6 +18,7 @@
       data-algolia-id="<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>"
       data-algolia-key="<%= @secured_algolia_key %>"
       data-algolia-index="<%= "SecuredChatChannel_#{Rails.env}" %>"
+      data-github-token="<%= @github_token %>"
       data-chat-channels="<%= [] %>"
       data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>"
     >

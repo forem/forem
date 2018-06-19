@@ -130,3 +130,14 @@ export function getContent(url, successCb, failureCb) {
     .then(successCb)
     .catch(failureCb);
 }
+
+export function getJSONContents(url, successCb, failureCb) {
+  fetch(url, {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
