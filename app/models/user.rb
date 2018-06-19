@@ -39,6 +39,7 @@ class User < ApplicationRecord
             length: { maximum: 50 },
             email: true,
             allow_blank: true
+  validates :name, length: { maximum: 100 }
   validates :username,
             presence: true,
             uniqueness: { case_sensitive: false },
