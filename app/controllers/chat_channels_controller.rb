@@ -99,6 +99,7 @@ class ChatChannelsController < ApplicationController
       @active_channel = ChatChannel.find_by_slug(slug)
       @active_channel.current_user = current_user if @active_channel
     end
+    generate_github_token
     generate_algolia_search_key
   end
 
@@ -108,5 +109,9 @@ class ChatChannelsController < ApplicationController
     @secured_algolia_key = Algolia.generate_secured_api_key(
       ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params,
     )
+  end
+
+  def generate_github_token
+    @github_token = Identity.where(user_id: current_user.id, provider: "github").first&.token
   end
 end

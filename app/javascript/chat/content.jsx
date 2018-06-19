@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import CodeEditor from './codeEditor';
+import GithubRepo from './githubRepo';
 
 export default class Content extends Component {
   static propTypes = {
@@ -72,6 +73,13 @@ function display(props) {
               <div dangerouslySetInnerHTML={{__html: props.resource.body_html}} ></div>
               </div>
             </div>)
+  } else if (props.resource.type_of === "github") {
+    return <GithubRepo
+              activeChannelId={props.activeChannelId}
+              pusherKey={props.pusherKey}
+              githubToken={props.githubToken}
+              resource={props.resource}
+            />
   } else if (props.resource.type_of === "code_editor") {
     return <CodeEditor
               activeChannelId={props.activeChannelId}
