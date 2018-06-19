@@ -1,10 +1,10 @@
-# The DEV Community 👩‍💻👨‍💻
+<center><h1>The DEV Community 👩‍💻👨‍💻</h1></center>
 
 <p align="center">
   <img
     alt="DEV"
     src="https://thepracticaldev.s3.amazonaws.com/i/d3o5l9yiqfv1z24cn1yp.png"
-    height=300px
+    height=200px
   />
 </p>
 <p align="center">
@@ -34,13 +34,11 @@
 ## Introduction and Contribution Guideline
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. Most importantly, all contributors must abide by the [code of conduct](https://dev.to/code-of-conduct).
 
-With your help, we can build out the DEV Community platform to be more stable and better serve the users. The platform is built on [Ruby on Rails](http://rubyonrails.org/). When in doubt, try to do things "The Rails Way", but it is an evolving codebase and we will learn from all new contributions in order to evolve.
-
-Before we can make the codebase fully open source, we must ensure we discover any possible vulnerabilities that could be exposed by eyes on the code, but in the long run we think that openness can do nothing but help in this way.
+With your help, we can build out the DEV Community platform to be more stable and better serve the community. We are a [Ruby on Rails](http://rubyonrails.org/). When in doubt, try to do things "The Rails Way", but it is an evolving codebase and we will learn from all new contributions in order to evolve.
 
 ### How to contribute
 
-When in doubt, ask! We are doing this for the first time and we may not be clear about everything. Creating an issue to ask about how to do something in the open is a great decision. We will try to create clear issues, but communication is the most important thing and it's hard! You may communicate _through_ a pull request. It's a fine approach, but it could result in going down the wrong path. The earlier we talk about something the better.
+When in doubt, ask! This is a new process and we need to learn from pain points.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
@@ -50,15 +48,11 @@ When in doubt, ask! We are doing this for the first time and we may not be clear
 
 ### Clean code with tests
 
-Even though some of the existing code is poorly written or not tested as well as it could be, we have much more scrutiny for these things going forward, as the transition from team-only development to open development makes clean code more important than ever in order to avoid communication breakdown. Good luck writing the best code of your life!
-
-### Non-code contributions
-
-Improving documentation and wikis is very valuable, as is participating in any discussions about approaches or features.
+Even though some of the existing code is poorly written or untested, we must have more scrutiny for code going forward. We test with [rspec](http://rspec.info/), let us know if you have any questions about this!
 
 ### The bottom line
 
-If a process could be improved, don't hesitate to bring it up, but there are always tradeoffs and we are humans. Mistakes happen and opinions may not always line up. Shaming anyone trying to contribute is not allowed.
+We are all humans trying to work together to improve things for the community. Always be kind and appreciate the need for tradeoffs. ❤️
 
 # Getting Started
 #### Prerequisite
@@ -77,6 +71,7 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
     - Copy [`config/sample_application.yml`](config/sample_application.yml) in order to create a valid `application.yml`
     - You'll need to get your own free API keys for a few services in order to get your development environment running. [**Follow this wiki to get them.**](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development)
     - If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged. The wiki above should handle all the necessary keys for basic development.
+    - You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 5. Run `bin/setup`
 
 
