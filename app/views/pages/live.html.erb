@@ -1,9 +1,5 @@
 <% if user_signed_in? %>
-  <% if (Flipflop.sendbird?) %>
-    <%= javascript_pack_tag 'sendbird', defer: true %>
-  <% else %>
-    <%= javascript_pack_tag 'chat', defer: true %>
-  <% end %>
+  <%= javascript_pack_tag 'chat', defer: true %>
 <% end %>
 <% title "DEV LIVE" %>
 <link rel="canonical" href="https://dev.to/live"/>
@@ -37,11 +33,7 @@
         <iframe class="live-video" src="//iframe.dacast.com/b/105417/c/465464" width="1920" height="1080" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
       </div>
       <div class="live-chat-wrapper">
-        <% if (Flipflop.sendbird?) %>
-          <div id="sb_chat" class="live-chat" data-sendbird-app-id="<%= ENV["SENDBIRD_APP_ID"] %>" data-sendbird-livechat-url="<%= ENV["SENDBIRD_LIVECHAT_URL"] %>"></div>
-        <% else %>
-          <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= {showChannelsList:false, showTimestamp: false, activeChannelId: @active_channel.id}.to_json %>">
-        <% end %>
+        <div id="chat" class="live-chat" data-pusher-key="<%= ENV["PUSHER_KEY"] %>" data-chat-channels="<%= @chat_channels %>" data-chat-options="<%= {showChannelsList:false, showTimestamp: false, activeChannelId: @active_channel.id}.to_json %>">
       </div>
     </div>
   </div>
