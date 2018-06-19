@@ -137,7 +137,6 @@ TWILIO_ACCOUNT_SID: "REPLACEME"
 TWILIO_VIDEO_API_KEY: "REPLACEME"
 TWILIO_VIDEO_API_SECRET: "REPLACEME"
 
-
-#For browser webpush notifications (webpush gem)
-VAPID_PUBLIC_KEY: "REPLACEME"
-VAPID_PRIVATE_KEY: "REPLACEME"
+#For browser webpush notifications (webpush gem) (totally random base64 nums)
+VAPID_PUBLIC_KEY: "dGhpcyBpcyBkZXYudG8gdGVzdCBkYXRh"
+VAPID_PRIVATE_KEY: "VGhpcyBpcyBtb3JlIHRlc3QgZGF0YQ=="
