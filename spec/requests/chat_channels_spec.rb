@@ -11,6 +11,18 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
 
+  describe "GET /connect" do
+    context "logged in" do
+      before do
+        get "/connect"
+      end
+
+      it "has proper content" do
+        expect(response.body).to include("DEV Connect is Beta ")
+      end
+    end
+  end
+
   describe "GET /chat_channels/:id" do
     context "when request is valid" do
       before do
@@ -69,4 +81,16 @@ RSpec.describe "ChatChannels", type: :request do
       end
     end
   end
+
+  describe "POST /chat_channels/:id/open" do
+    it "returns success" do
+      post "/chat_channels/#{chat_channel.id}/open"
+      expect(response.body).to include("success")
+    end
+
+    it "marks chat_channel_membership as opened" do
+      post "/chat_channels/#{chat_channel.id}/open"
+      expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
+    end
+end
 end
