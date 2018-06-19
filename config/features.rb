@@ -31,4 +31,7 @@ Flipflop.configure do
   feature :sendbird,
     default: true,
     description: "Toggle between Sendbird and our custom chat"
+  feature :upcoming_events,
+    default: true,
+    description: "Toggle upcoming events in sidebar"
 end
