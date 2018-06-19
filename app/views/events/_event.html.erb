@@ -2,7 +2,7 @@
   .container .event {
     padding: 20px;
     border: solid 2px #66e2d5;;
-    border-radius: 3px; 
+    border-radius: 3px;
     margin: 50px auto;
     box-shadow: 5px 8px 0px #ccfff9;
     font-size: 17px;
@@ -24,7 +24,7 @@
   }
   .event .event-details p {
     margin: 5px;
-  }  
+  }
 
   .event .event-description p {
     text-align: justify;
@@ -33,8 +33,8 @@
     margin: 0 0 .5em 0;
     font-weight: 800;
     font-size: 1.11em;
-  }  
-  
+  }
+
   @media screen and (max-width: 900px) {
     .container .body .event .event-image {
       display: block;
@@ -45,7 +45,7 @@
   .copyx{
     display: none !important;
   }
-  .addeventatc {visibility:hidden;}  
+  .addeventatc {visibility:hidden;}
 </style>
 
 <div class="event">
@@ -55,18 +55,16 @@
   <div class="event-details" >
     <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
     <p>
-      <% if !event.cover_image.present? %>
-        Date: <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').strftime("%b %d %Y") %>
-        <br>
-      <% end %>
-      Time: <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %> - <%= event.ends_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %> EDT
+      Date: <span class="utc-date"><%= event.starts_at %></span>
       <br>
-      Location: <a href="<%= event.location_url %>"><%= event.location_name %></a> 
+      Time: <span class="utc-time"><%= event.starts_at %></span> - <span class="utc-time"><%= event.ends_at %></span>
+      <br>
+      Location: <a href="<%= event.location_url %>"><%= event.location_name %></a>
     </p>
     <div title="Add to Calendar" class="addeventatc">
         Add to Calendar
-        <span class="start"><%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y") %> <%= event.starts_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %></span>
-        <span class="end"><%= event.ends_at.in_time_zone('Eastern Time (US & Canada)').strftime("%m/%d/%Y") %> <%= event.ends_at.in_time_zone('Eastern Time (US & Canada)').to_formatted_s(:time) %></span>
+        <span class="start utc"><%= event.starts_at %></span>
+        <span class="end utc"><%= event.ends_at %></span>
         <span class="timezone">America/New_York</span>
         <span class="title"><%= event.title %></span>
         <span class="organizer">The DEV Community</span>
@@ -77,20 +75,19 @@
         <span class="description">
           <%= event.description_html.html_safe %>
           ------
-          
-          Link to attend - <%= event.location_url%> 
+          Link to attend - <%= event.location_url%>
         </span>
       </div>
   </div>
   <div class="event-description">
     <%= event.description_html.html_safe %>
-  </div>            
+  </div>
 </div>
 
-  <script defer>
-    window.addeventasync = function(){
-      addeventatc.register('button-dropdown-click', function(obj){
-          ga('send', 'event', 'click', 'Add Event To Calendar', 'User: <%= user_signed_in? %>');
-      });
-    }
-  </script>
+<script defer>
+  window.addeventasync = function(){
+    addeventatc.register('button-dropdown-click', function(obj){
+        ga('send', 'event', 'click', 'Add Event To Calendar', 'User: <%= user_signed_in? %>');
+    });
+  }
+</script>
