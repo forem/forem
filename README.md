@@ -72,12 +72,13 @@ If a process could be improved, don't hesitate to bring it up, but there are alw
 1. `git clone git@github.com:thepracticaldev/dev.to_core.git`
 2. `bundle install`
 3. `bin/yarn`
-4. `bin/setup`
-5. Set up your environment variables/secrets
+4. Set up your environment variables/secrets
     - Create a `config/application.yml` file to store development secrets. This is a personal file that is ignored in git.
     - Copy [`config/sample_application.yml`](config/sample_application.yml) in order to create a valid `application.yml`
-    - You'll need to get your own free API keys for a few services. [**Follow this wiki to get them.**](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development)
+    - You'll need to get your own free API keys for a few services in order to get your development environment running. [**Follow this wiki to get them.**](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development)
     - If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged. The wiki above should handle all the necessary keys for basic development.
+5. Run `bin/setup`
+
 
 #### Starting the application
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
