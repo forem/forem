@@ -1,0 +1,60 @@
+<style>
+.notefield{
+  width: 100%;
+  resize: none;
+  font-size: 18px;
+  height: 100px;
+  border-radius: 3px;
+}
+.blankmessage{
+  font-style: italic;
+}
+</style>
+
+<h2>
+  Report #<%= feedback_message.id %> - Submitted on: <%= feedback_message.to_eastern_strftime(feedback_message.created_at) %>
+  <hr>
+  Reporter:
+  <% if feedback_message.reporter_id? %>
+    <%= feedback_message.reporter.name %>
+  <a href="<%= feedback_message.reporter.path %>">@<%= feedback_message.reporter.username %></a>
+  --
+  Email: <a href="mailto:<%= feedback_message.reporter.email %>"><%= feedback_message.reporter.email %></a>
+  <% else %>
+    Anonymous
+  <% end %>
+</h2>
+<h3>
+  Reported URL (new tab):
+  <br>
+  <a href="<%= feedback_message.reported_url %>" target="_blank"><%= feedback_message.reported_url %></a>
+</h3>
+<h3>Category: <%= feedback_message.category %></h3>
+<h3>
+  Message: 
+</h3>
+<p>
+  <% if feedback_message.message.blank? %>
+    <span class="blankmessage">No message was left.</span>
+  <% else %>
+    <%= feedback_message.message %>
+  <% end %>
+</p>
+<hr>
+  <h3>
+    Status:  <%= f.select :status, ['Open', 'Closed', 'Resolved'] %>
+  </h3>
+  <h3>Note:</h3>
+  <%= f.fields_for :note do |note| %>
+    <%= note.hidden_field :reason, value: feedback_message.feedback_type %>
+    <%= note.text_area :content, value: feedback_message.note&.content, placeholder: "Leave some notes about the status and context of this report.", class: "notefield" %>
+  <% end %>
+  <%= f.hidden_field :reviewer_id, value: current_user.id %>
+  <% if feedback_message.reviewer_id %>
+    <h4>Last reviewed by: <%= feedback_message.reviewer.name %></h4>
+    <h4>Last reviewed on: <%= feedback_message.to_eastern_strftime(feedback_message.last_reviewed_at) %></h4>
+  <% else %>
+    <h4>Last reviewed by: No one yet</h4>
+  <% end %>
+  <br>
+<button class="btn btn-primary" type="submit">SUBMIT</button>

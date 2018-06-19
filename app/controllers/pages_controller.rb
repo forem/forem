@@ -24,6 +24,13 @@ class PagesController < ApplicationController
     render "membership_form", layout: false
   end
 
+  def report_abuse
+    @feedback_message = FeedbackMessage.new(
+      reported_url: params[:reported_url] || params[:url] || request.referrer,
+    )
+    render "pages/report-abuse"
+  end
+
   def rlyweb
     set_surrogate_key_header "rlyweb"
   end

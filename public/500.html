@@ -55,7 +55,7 @@
   </style>
   <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
-
+  
 <body>
   <!-- This file lives in public/500.html -->
   <div class="dialog">
@@ -67,6 +67,8 @@
     <form action="/feedback_messages" accept-charset="UTF-8" method="post">
       <input name="utf8" type="hidden" value="&#x2713;" />
       <input name="feedback_message[feedback_type]" type="hidden" value="bug-reports" />
+      <input type="hidden" name="feedback_message[reported_url]" value="">
+      <input type="hidden" name="feedback_message[category]" value="bug">
       <div class="field">
         <textarea name="feedback_message[message]" placeholder="If you would like to describe the situation that lead to this error, it would be appreciated :)" required></textarea>
       </div>

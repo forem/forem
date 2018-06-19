@@ -22,13 +22,14 @@ class User < ApplicationRecord
   has_many    :identities
   has_many    :mentions
   has_many    :messages
-  has_many    :notes
+  has_many    :notes, as: :noteable
   has_many    :notifications
   has_many    :reactions
   has_many    :tweets
   has_many    :chat_channel_memberships
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :notification_subscriptions
+  has_many    :feedback_messages
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -224,12 +225,12 @@ class User < ApplicationRecord
 
   def reason_for_ban
     return if notes.where(reason: "banned").blank?
-    Note.find_by(user_id: id, reason: "banned").content
+    Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
   end
 
   def reason_for_warning
     return if notes.where(reason: "warned").blank?
-    Note.find_by(user_id: id, reason: "warned").content
+    Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
   end
 
   def scholar

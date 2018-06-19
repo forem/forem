@@ -48,4 +48,15 @@ class NotifyMailer < ApplicationMailer
     @badge = @badge_achievement.badge
     mail(to: @user.email, subject: "You just got a badge")
   end
+
+  def new_report_email(report)
+    @feedback_message = report
+    @user = report.reporter
+    mail(to: @user.email, subject: "Thank you for your report")
+  end
+
+  def reporter_resolution_email(report)
+    @feedback_message = report
+    @user = report.reporter
+  end
 end

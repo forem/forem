@@ -1,0 +1,24 @@
+.dialog{
+  background: rgb(236, 236, 236);
+  border: 1px solid rgb(217, 217, 217);
+  text-align: center;
+  padding: 20px 30px;
+  margin: 20vh auto;
+  max-width: 60%;
+  height: 100%;
+  color: rgb(44, 46, 50);
+  border-radius: 5px;
+  @media screen and (max-width: 321px) {
+    h1,h2,h3,h4,h5,h6{
+      font-size: 15px;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    h3{
+      word-break: break-all;
+    }
+  }
+}
+.blankmessage{
+  font-style: italic;
+}

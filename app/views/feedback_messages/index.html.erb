@@ -1,25 +1,6 @@
-<style>
-    body {
-     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-     font-weight: 300;
-  }
-  .dialog{
-    background:rgb(236, 236, 236);
-    border:1px solid rgb(217, 217, 217);
-    text-align:center;
-    padding:20px 0px;
-    margin:10% auto;
-    width:80%;
-    max-width:600px;
-    color:rgb(44, 46, 50);
-    border-radius:5px;
-  }
-</style>
-
-
 <div class="dialog">
   <div>
-    <h1>Thank you.</h1>
-    <h2><a href="/">Return to home page</a></h2>
+    <h2>Thank you for your report. You can view the <br><a href="<%= @feedback_message.path %>">status of your report here.</a></h2>
+    <h3><a href="/">Return to home page</a></h3>
   </div>
 </div>
