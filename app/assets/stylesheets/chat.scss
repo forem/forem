@@ -300,6 +300,29 @@
   top:-4px;
 }
 
+.activecontent__githubrepo{
+}
+
+.activecontent__githubrepoheader{
+  padding-left: 30px;
+  padding-bottom: 3px;
+  min-height: 30px;
+  margin-top:-2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activecontent__githubrepofiles{
+  border-bottom: 1px solid $light-medium-gray;
+  font-size:0.8em;
+}
+
+.activecontent__githubrepofilerow{
+  padding: 4px 2px;
+  border-top: 1px solid $light-medium-gray;
+}
+
 .chatchannels {
   display: flex;
   flex-direction: column;

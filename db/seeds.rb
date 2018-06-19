@@ -18,7 +18,7 @@ end
 
 p "2/7 Creating users"
 roles = %i(level_1_member level_2_member level_3_member level_4_member workshop_pass)
-80.times do |i|
+40.times do |i|
   begin
     identity_attributes = { provider: "twitter",
                             uid: "#{i}",
@@ -123,7 +123,7 @@ Tag.create!(
 )
 
 p "4/7 Creating articles"
-150.times do
+80.times do
   # begin
     four_tags_string = "discuss, meta, git, changelog"
     valid_markdown = "---\ntitle:  #{Faker::Book.title} #{rand(5000)}\npublished: true\ncover_image: #{Faker::Avatar.image}\ntags: #{four_tags_string}\n---\n#{Faker::Hipster.paragraph(4)}"
@@ -142,11 +142,11 @@ end
 # Create comments
 
 p "5/7 Creating comments"
-200.times do
+120.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
     user_id: User.order("RANDOM()").first.id,
-    commentable_id: Article.order("RANDOM()").first.id,
+    commentable_id: Article.where("id > ?", 30).order("RANDOM()").first.id,
     commentable_type: "Article",
   }
   Comment.create!(attributes)
@@ -164,7 +164,6 @@ podcast_objects = [
 
 podcast_objects.each do |attributes|
   podcast = Podcast.create!(attributes)
-  PodcastFeed.new.get_episodes(podcast, 4)
 end
 
 p "7/7 Creating Broadcasts"
