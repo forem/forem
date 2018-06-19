@@ -272,10 +272,22 @@ ActiveRecord::Schema.define(version: 20180612214259) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
-    t.string "category_selection"
+    t.string "category"
+    t.datetime "created_at"
     t.string "feedback_type"
+    t.datetime "last_reviewed_at"
     t.text "message"
-    t.integer "user_id"
+    t.boolean "offender_email_sent?", default: false
+    t.integer "offender_id"
+    t.string "reported_url"
+    t.boolean "reporter_email_sent?", default: false
+    t.integer "reporter_id"
+    t.integer "reviewer_id"
+    t.string "slug"
+    t.string "status", default: "Open"
+    t.datetime "updated_at"
+    t.boolean "victim_email_sent?", default: false
+    t.integer "victim_id"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
@@ -373,9 +385,10 @@ ActiveRecord::Schema.define(version: 20180612214259) do
   create_table "notes", id: :serial, force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
+    t.integer "noteable_id"
+    t.string "noteable_type"
     t.string "reason"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
   end
 
   create_table "notifications", id: :serial, force: :cascade do |t|

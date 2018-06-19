@@ -89,14 +89,10 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li class="<%= "active" if controller_name == "comments"%>"><a href="/internal/comments">comments</a></li>
-            <li class="<%= "active" if controller_name == "articles"%>"><a href="/internal/articles">articles</a></li>
-            <li class="<%= "active" if controller_name == "users"%>"><a href="/internal/users">users</a></li>
-            <li class="<%= "active" if controller_name == "members"%>"><a href="/internal/members">members</a></li>
-            <li class="<%= "active" if controller_name == "dogfood"%>"><a href="/internal/dogfood">dog food</a></li>
-            <li class="<%= "active" if controller_name == "tags"%>"><a href="/internal/tags">tags</a></li>
-            <li class="<%= "active" if controller_name == "welcome"%>"><a href="/internal/welcome">welcome</a></li>
-            <li class="<%= "active" if controller_name == "broadcasts"%>"><a href="/internal/broadcasts">broadcasts</a></li>
+            <% controller_names = %w(comments articles users members dogfood tags welcome broadcasts reports) %>
+            <% controller_names.each do |name| %>
+              <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
+            <% end %>
           </ul>
         </div><!--/.nav-collapse -->
       </div>

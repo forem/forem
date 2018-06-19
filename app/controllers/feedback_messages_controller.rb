@@ -3,23 +3,24 @@ class FeedbackMessagesController < ApplicationController
 
   def create
     flash.clear
-    @feedback = FeedbackMessage.new(feedback_message_params.merge(user_id: current_user&.id))
-    if authorize_send?
+    @feedback_message = FeedbackMessage.new(
+      feedback_message_params.merge(reporter_id: current_user&.id))
+    if recaptcha_verified? && @feedback_message.save
       send_slack_message
-      @feedback.save
-      render :index
+      NotifyMailer.new_report_email(@feedback_message).deliver if @feedback_message.reporter_id?
+      redirect_to @feedback_message.path
     elsif feedback_message_params[:feedback_type] == "bug-reports"
-      flash.now[:notice] = "Make sure the forms are filled 🤖 "
+      flash[:notice] = "Make sure the forms are filled 🤖 "
       render file: "public/500.html", status: 500, layout: false
     else
-      flash.now[:notice] = "Make sure the forms are filled 🤖 "
+      flash[:notice] = "Make sure the forms are filled 🤖 "
       @previous_message = feedback_message_params[:message]
       render "pages/report-abuse.html.erb"
     end
   end
 
-  def authorize_send?
-    recaptcha_verified? && form_filled?
+  def show
+    @feedback_message = FeedbackMessage.find_by(slug: params[:slug])
   end
 
   private
@@ -40,7 +41,7 @@ class FeedbackMessagesController < ApplicationController
   def generate_message
     <<~HEREDOC
       #{generate_user_detail}
-      Category: #{feedback_message_params[:category_selection]}
+      Category: #{feedback_message_params[:category]}
       Message: #{feedback_message_params[:message]}
       URL: #{params[:url]}
     HEREDOC
@@ -50,20 +51,11 @@ class FeedbackMessagesController < ApplicationController
     return "" unless current_user
     <<~HEREDOC
       *Logged in user:*
-      username: #{current_user.username}
-      email: #{current_user.email}
+      username: #{current_user.username} - https://dev.to/#{current_user.username}
+      email: <mailto:#{current_user.email}|#{current_user.email}>
       twitter: #{current_user.twitter_username}
       github: #{current_user.github_username}
     HEREDOC
-  end
-
-  def form_filled?
-    if feedback_message_params[:feedback_type] == "abuse-reports"
-      feedback_message_params[:category_selection].present?
-    else
-      feedback_message_params[:message].present? ||
-        feedback_message_params[:category_selection].present?
-    end
   end
 
   def emoji_for_feedback(feedback_type)
@@ -78,6 +70,6 @@ class FeedbackMessagesController < ApplicationController
   end
 
   def feedback_message_params
-    params[:feedback_message].permit(:message, :feedback_type, :category_selection)
+    params[:feedback_message].permit(:message, :feedback_type, :category, :reported_url)
   end
 end

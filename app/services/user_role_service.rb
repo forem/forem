@@ -67,10 +67,11 @@ class UserRoleService
   end
 
   def create_or_update_note(reason, content)
-    note = Note.find_by(user_id: @user.id, reason: reason)
+    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
     if note.nil?
       Note.create(
-        user_id: @user.id,
+        noteable_id: @user.id,
+        noteable_type: "User",
         reason: reason,
         content: content,
       )

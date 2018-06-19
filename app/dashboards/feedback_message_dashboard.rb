@@ -12,7 +12,7 @@ class FeedbackMessageDashboard < Administrate::BaseDashboard
     id: Field::Number,
     message: Field::Text,
     feedback_type: Field::String,
-    category_selection: Field::String,
+    category: Field::String,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -34,7 +34,7 @@ class FeedbackMessageDashboard < Administrate::BaseDashboard
     :id,
     :message,
     :feedback_type,
-    :category_selection,
+    :category,
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -44,7 +44,7 @@ class FeedbackMessageDashboard < Administrate::BaseDashboard
     :user,
     :message,
     :feedback_type,
-    :category_selection,
+    :category,
   ].freeze
 
   # Overwrite this method to customize how feedback messages are displayed

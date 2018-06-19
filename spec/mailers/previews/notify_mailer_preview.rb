@@ -23,4 +23,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   def new_badge_email
     NotifyMailer.new_badge_email(BadgeAchievement.first)
   end
+
+  def new_report_email
+    NotifyMailer.new_report_email(FeedbackMessage.first)
+  end
 end

@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     end
     resources :members, only: [:index]
     resources :events
+    resources :feedback_messages, only: [:update]
+    resources :reports, only: [:index, :update], controller: "feedback_messages"
     mount Flipflop::Engine => "/features"
   end
 
@@ -72,10 +74,11 @@ Rails.application.routes.draw do
   resources :messages, only: [:create]
   resources :chat_channels, only: [:index, :show]
   resources :articles, only: [:update,:create,:destroy]
-  resources :comments, only:[:create,:update,:destroy]
-  resources :users, only:[:update]
-  resources :reactions, only: [:index,:create]
+  resources :comments, only: [:create,:update,:destroy]
+  resources :users, only: [:update]
+  resources :reactions, only: [:index, :create]
   resources :feedback_messages, only: [:create]
+  get "/reports/:slug", to: "feedback_messages#show"
   resources :organizations, only: [:update, :create]
   resources :followed_articles, only: [:index]
   resources :follows, only: [:index,:show,:create]
@@ -158,7 +161,7 @@ Rails.application.routes.draw do
   get "/rlyweb" => "pages#rlyweb"
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
-  get "/report-abuse" => "pages#report-abuse"
+  get "/report-abuse" => "pages#report_abuse"
   get "/infiniteloop" => "pages#infinite_loop"
   get "/faq" => "pages#faq"
   get "/live" => "pages#live"

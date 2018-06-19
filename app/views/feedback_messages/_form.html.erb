@@ -1,31 +1,51 @@
-<%= form_for FeedbackMessage.new do |f| %>
+<style>
+  .reportedurlfield{
+    max-width: 99%;
+    border-radius: 3px;
+    font-size: 18px;
+    background-color: white;
+    padding: 2px;
+    border: 1px solid black;
+  }
+  .messagefield{
+    width: 100%;
+    resize: none;
+    font-size: 18px;
+    height: 100px;
+    border-radius: 3px;
+  }
+</style>
+<%= form_for feedback_message do |f| %>
   <input name="utf8" type="hidden" value="&#x2713;" />
   <%= f.hidden_field :feedback_type, value:"abuse-reports" %>
-  <input name="url" type="hidden" value="<%= request.referrer %>" />
   <div class="field">
     <ul style="list-style-type:none; margin-left:0px;">
       <li>
-        <%= f.radio_button :category_selection, "rude or vulgar", required: 'required' %>
-        <%= label_tag(:category_selection_rude, "Rude or vulgar") %>
+        <%= f.radio_button :category, "rude or vulgar", required: 'required' %>
+        <%= label_tag(:category_rude, "Rude or vulgar") %>
       </li>
       <li>
-        <%= f.radio_button :category_selection, "harassment" %>
-        <%= label_tag(:category_selection_harassment, "Harassment or hate speech") %>
+        <%= f.radio_button :category, "harassment" %>
+        <%= label_tag(:category_harassment, "Harassment or hate speech") %>
       </li>
       <li>
-        <%= f.radio_button :category_selection, "spam" %>
-        <%= label_tag(:category_selection_spam, "Spam or copyright issue") %>
+        <%= f.radio_button :category, "spam" %>
+        <%= label_tag(:category_spam, "Spam or copyright issue") %>
       </li>
       <li>
-        <%= f.radio_button :category_selection, "other" %>
-        <%= label_tag(:category_selection_other, "Other") %>
+        <%= f.radio_button :category, "other" %>
+        <%= label_tag(:category_other, "Other") %>
       </li>
     </ul>
+      Reported URL:
+      <%= f.text_field :reported_url, class: "reportedurlfield", value: feedback_message.reported_url, style: "width:100%;font-size: 18px; border-radius:3px;", required: true %>
     <p style="margin-bottom:0px;">
-      <%= f.text_area :message, style:"width:100%;resize:none;font-size:18px;height:100px;border-radius:3px;", placeholder:"Please provide any additional information, such as an URL, that will help us understand and handle the situation.", value: @previous_message %>
+      <%= f.label :message %>:
+      <%= f.text_area :message, class: "messagefield", placeholder:"Please provide any additional information or context that will help us understand and handle the situation.", value: @previous_message %>
     </p>
   </div>
-
+<div>
+</div>
   <div class="actions">
     <% if flash[:notice] %>
    <div class="notice" id="notice">
@@ -33,6 +53,6 @@
    </div>
    <% end %>
      <%= recaptcha_tags site_key: ENV['RECAPTCHA_SITE'] %>
-    <input type="submit" name="commit" value="Send Feedback" style="color:white;background:#424874;margin-top:50px;margin-bottom:25px;border:0px;cursor:pointer;padding:5px 14px;font-size:18px;border-radius:3px;" />
+    <input type="submit" name="commit" value="Send Feedback" style="margin-top: 40px;" />
   </div>
 <% end %>
