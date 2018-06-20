@@ -8,8 +8,6 @@ class ApplicationController < ActionController::Base
 
   # before_action :require_http_auth if ENV["APP_NAME"] == "dev_stage"
 
-  before_action :ensure_signup_complete
-
   #before_action :customize_params
 
   def require_http_auth
@@ -20,15 +18,6 @@ class ApplicationController < ActionController::Base
 
   def not_found
     raise ActionController::RoutingError.new("Not Found")
-  end
-
-  def ensure_signup_complete
-    return if controller_name == "users" || controller_name == "onboarding" || params[:confirmation_token].present?
-    return if !request.get?
-    if current_user && current_user.email.blank?
-      redirect_to "/getting-started"
-      return
-    end
   end
 
   def efficient_current_user_id

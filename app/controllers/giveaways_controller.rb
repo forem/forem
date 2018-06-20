@@ -1,6 +1,5 @@
 class GiveawaysController < ApplicationController
   # GET /giveaways/new
-  skip_before_action :ensure_signup_complete
 
   def new
     @user = current_user

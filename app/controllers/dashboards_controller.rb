@@ -17,8 +17,6 @@ class DashboardsController < ApplicationController
       @articles = @user.organization.articles.order("created_at DESC").decorate
     elsif @user
       @articles = @user.articles.order("created_at DESC").decorate
-    else
-      redirect_to "/enter"
     end
   end
 end

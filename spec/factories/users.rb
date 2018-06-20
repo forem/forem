@@ -26,6 +26,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:banned) }
     end
 
+    trait :video_permission do
+      after(:build) { |user| user.add_role :video_permission }
+    end
+
     trait :ignore_after_callback do
       after(:build) do |user|
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}

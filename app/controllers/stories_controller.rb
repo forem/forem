@@ -2,8 +2,6 @@ class StoriesController < ApplicationController
   before_action :authenticate_user!, except: [:index,:search,:show, :feed, :new]
   before_action :set_cache_control_headers, only: [:index, :search, :show]
 
-  skip_before_action :ensure_signup_complete
-
   def index
     return handle_user_or_organization_or_podcast_index if params[:username]
     return handle_tag_index if params[:tag]

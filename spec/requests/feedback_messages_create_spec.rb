@@ -34,7 +34,7 @@ RSpec.describe "feedback_messages", type: :request do
     end
 
     context "when a logged in user submits report" do
-      let!(:user)        { create(:user) }
+      let(:user)         { create(:user) }
       let(:mail_message) { instance_double(Mail::Message, deliver: true) }
 
       before do

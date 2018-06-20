@@ -21,9 +21,14 @@
   <% end %>  
   <% if current_user.email.blank? %>
     <div class="finish-notice">
-      Provide email to complete your profile
+      Confirm your email to complete your profile
       <div class="small">
-        while you're at it, go ahead and fill everything out.<br/>connect your <%= (@user.twitter_username.blank?) ? "twitter":"github" %> account as well to complete your identity.
+        while you're at it, go ahead and fill everything out.<br/>
+        <% if @user.twitter_username.blank? %>
+          connect your twitter account as well to complete your identity.
+        <% elsif @user.github_username.blank? %>
+          connect your github account as well to complete your identity.
+        <% end %>
       </div>
     </div>
   <% end %>
