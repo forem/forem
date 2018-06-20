@@ -46,7 +46,55 @@ RSpec.describe "Pages", type: :request do
   describe "GET /sponsorship-info" do
     it "has proper headline" do
       get "/sponsorship-info"
-      expect(response.body).to include ("Sponsorship Information")
+      expect(response.body).to include("Sponsorship Information")
+    end
+  end
+
+  describe "GET /live" do
+    let(:user) { create(:user) }
+
+    context "when nothing is live" do
+      it "shows the correct message" do
+        get "/live"
+        expect(response.body).to include("Nothing is live right now")
+      end
+    end
+
+    context "when live is starting soon" do
+      before do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:live_starting_soon, true)
+        get "/live"
+      end
+
+      it "shows the correct message" do
+        expect(response.body).to include("Our event is starting soon")
+      end
+    end
+
+    context "when live is live" do
+      before(:all) do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:live_is_live, true)
+        create(:chat_channel, :workshop)
+      end
+
+      it "shows a sign in page for logged out users" do
+        get "/live"
+        expect(response.body).to include("Sign In or Create Your Account")
+      end
+
+      it "shows the video for logged in users" do
+        login_as user
+        get "/live"
+        expect(response.body).to include("<iframe class=\"live-video\"")
+      end
+
+      it "shows the chat for logged in users" do
+        login_as user
+        get "/live"
+        expect(response.body).to include("<div id=\"chat\"")
+      end
     end
   end
 end 
