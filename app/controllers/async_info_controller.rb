@@ -1,5 +1,4 @@
 class AsyncInfoController < ApplicationController
-  skip_before_action :ensure_signup_complete
   include Devise::Controllers::Rememberable
 
   def base_data

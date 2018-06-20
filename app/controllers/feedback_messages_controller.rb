@@ -43,7 +43,7 @@ class FeedbackMessagesController < ApplicationController
       #{generate_user_detail}
       Category: #{feedback_message_params[:category]}
       Message: #{feedback_message_params[:message]}
-      URL: #{params[:url]}
+      URL: #{params[:reported_url]}
     HEREDOC
   end
 
