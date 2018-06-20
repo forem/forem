@@ -89,7 +89,7 @@ const Channels = ({ activeChannelId,
   });
   let channelsListFooter = ""
   if (channels.length === 30) {
-    channelsListFooter = <div className="chatchannels__channelslistfooter">You may connect devs you mutually follow. Use the filter to discover all your channels.</div>
+    channelsListFooter = <div className="chatchannels__channelslistfooter">You may connect with any dev you mutually follow. Use the filter to discover all your channels.</div>
   }
   let topNotice = ''
   if (expanded &&
