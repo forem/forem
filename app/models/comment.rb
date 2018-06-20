@@ -27,11 +27,13 @@ class Comment < ApplicationRecord
   before_save    :set_markdown_character_count
   before_create  :adjust_comment_parent_based_on_depth
   before_validation :evaluate_markdown
+  validate  :permissions
 
   include StreamRails::Activity
   as_activity
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+    attribute :id
     add_index "ordered_comments",
                   id: :index_id,
                   per_environment: true,
@@ -336,5 +338,11 @@ class Comment < ApplicationRecord
   def set_markdown_character_count
     # body_markdown is actually markdown, but that's a separate issue to be fixed soon
     self.markdown_character_count = body_markdown.size
+  end
+
+  def permissions
+    if commentable_type == "Article" && !commentable.published
+      errors.add(:commentable_id, "is not valid.")
+    end
   end
 end

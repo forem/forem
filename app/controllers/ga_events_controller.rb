@@ -1,18 +1,16 @@
 class GaEventsController < ApplicationController
-  skip_before_action :verify_authenticity_token
+
+  # This controller is for tracking activity when GA script fails
+  # IP is scrambled as to not be persisted to limit fingerprinting abilities on our end.
+
   def create
-    unless valid_request_origin?
-      render body: nil
-      return
-    end
     json = JSON.parse(request.raw_post)
     user_id = user_signed_in? ? current_user.id : nil
-    client_id = "#{ip[0..12]}_#{json['user_agent']}_#{user_id}"
+    client_id = "#{scrambled_ip[0..12]}_#{json['user_agent']}_#{user_id}"
     tracker = Staccato.tracker(ENV["GA_TRACKING_ID"], client_id)
     tracker.pageview(
       path: json["path"],
       user_id: user_id,
-      user_ip: ip,
       user_language: json["user_language"],
       referrer: (json["referrer"] if json["referrer"] && !json["referrer"].start_with?("https://dev.to")),
       user_agent: json["user_agent"],
@@ -28,7 +26,14 @@ class GaEventsController < ApplicationController
     render body: nil
   end
 
-  def ip
-    request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
+  def scrambled_ip
+    crypt = ActiveSupport::MessageEncryptor.new(todays_key)
+    crypt.encrypt_and_sign(request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip)
+  end
+
+  def todays_key
+    Rails.cache.fetch("daily_random_key", expires_in: 48.hours) do
+      SecureRandom.random_bytes(32)
+    end
   end
 end

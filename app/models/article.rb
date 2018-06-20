@@ -33,6 +33,14 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
+  validates :cached_tag_list, length: { maximum: 64 }
+  validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  validates :video, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
+  validates :video_thumbnail_url, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
+  validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
   before_validation :evaluate_markdown
   before_validation :create_slug
@@ -394,6 +402,9 @@ class Article < ApplicationRecord
   def validate_video
     if published && video_state == "PROGRESSING"
       return errors.add(:published, "cannot be set to true if video is still processing")
+    end
+    if video.present? && !user.has_role?(:video_permission)
+      return errors.add(:video, "cannot be added member without permission")
     end
   end
 

@@ -2,10 +2,10 @@ require "rails_helper"
 
 RSpec.describe Comment, type: :model do
   let(:user)        { create(:user) }
-  let(:article)     { create(:article, user_id: user.id) }
+  let(:article)     { create(:article, user_id: user.id, published: true) }
   let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
   let(:comment_2)   { create(:comment, user_id: user.id, commentable_id: article.id) }
-  let(:child_comment) { create(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id) }
+  let(:child_comment) { build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id) }
 
   it "gets proper generated ID code" do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
@@ -46,8 +46,9 @@ RSpec.describe Comment, type: :model do
   end
 
   it "adds timestamp url if commentable has video and timestamp" do
-    article.video = "video"
-    article.save
+    article.video = "https://video.com"
+    article.user.add_role(:video_permission)
+    article.save!
     comment.body_markdown = "I like the part at 4:30"
     comment.save
     expect(comment.processed_html.include?(">4:30</a>")).to eq(true)
@@ -173,7 +174,6 @@ RSpec.describe Comment, type: :model do
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
   end
-  
 
   describe "#custom_css" do
     it "returns nothing when no ltag was used" do
@@ -184,6 +184,14 @@ RSpec.describe Comment, type: :model do
       text = "{% devcomment #{comment.id_code_generated} %}"
       ltag_comment = create(:comment, commentable_id: create(:article).id, body_markdown: text)
       expect(ltag_comment.custom_css).not_to eq("")
+    end
+  end
+  
+  describe "validity" do
+    it "is invalid if commentable is unpublished article" do
+      article.update_column(:published, false)
+      comment = build(:comment, user_id: user.id, commentable_id: article.id)
+      expect(comment).not_to be_valid
     end
   end
 

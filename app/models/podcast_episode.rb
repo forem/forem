@@ -26,6 +26,7 @@ class PodcastEpisode < ApplicationRecord
   before_validation :prefix_all_images
 
   algoliasearch per_environment: true do
+    attribute :id
     add_index "searchables",
                   id: :index_id,
                   per_environment: true do

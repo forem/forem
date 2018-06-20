@@ -1,10 +1,6 @@
 class PagesController < ApplicationController
   before_action :set_cache_control_headers, only: [:rlyweb, :now, :events, :membership]
 
-  def phishing
-    @user = current_user
-  end
-
   def now
     set_surrogate_key_header "now_page"
   end

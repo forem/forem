@@ -21,17 +21,21 @@ function initializeBaseTracking() {
       }
       clearInterval(waitingOnGA);
     }
-    if (wait > 60) {
+    if (wait > 85) {
       clearInterval(waitingOnGA);
-      cromulent();
+      fallbackActivityRecording();
     }
   }, 25);
   facebookTrackingScript();
   eventListening();
 }
 
-//This function is cromulent
-function cromulent() {
+function fallbackActivityRecording() {
+  var tokenMeta = document.querySelector("meta[name='csrf-token']")
+  if (!tokenMeta) {
+    return
+  }
+  var csrfToken = tokenMeta.getAttribute('content')
   var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
   var screenW = window.screen.availWidth;
@@ -47,9 +51,12 @@ function cromulent() {
     document_encoding: document.characterSet,
     document_path: location.pathname + location.search,
   };
-  window.fetch('/cromulent', {
+  window.fetch('/fallback_activity_recorder', {
     method: 'POST',
-    headers: { Accept: 'application/json' },
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': csrfToken,
+    },
     body: JSON.stringify(dataBody),
     credentials: 'same-origin'
   });

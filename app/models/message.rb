@@ -4,10 +4,10 @@ class Message < ApplicationRecord
 
   validates :message_html, presence: true
   validates :message_markdown, presence: true, length: { maximum: 600 }
+  validate :channel_permission
 
   before_save       :determine_user_validity
   before_validation :evaluate_markdown
-  before_validation :evaluate_channel_permission
   after_create      :update_chat_channel_last_message_at
   after_create      :update_all_has_unopened_messages_statuses
 
@@ -60,10 +60,9 @@ class Message < ApplicationRecord
     self.message_html = MarkdownParser.new(message_markdown).evaluate_inline_markdown
   end
 
-  def evaluate_channel_permission
+  def channel_permission
     if chat_channel_id.blank?
       errors.add(:base, "Must be part of channel.")
-      return
     end
     channel = ChatChannel.find(chat_channel_id)
     return if channel.channel_type == "open"

@@ -10,6 +10,7 @@ class Mention < ApplicationRecord
                                   :mentionable_type] }
   validates :mentionable_id, presence: true
   validates :mentionable_type, presence: true
+  validate :permission
   after_create :send_email_notification
 
   class << self
@@ -19,14 +20,16 @@ class Mention < ApplicationRecord
       @notifiable = notifiable
       doc = Nokogiri::HTML(notifiable.processed_html)
       usernames = []
+      mentions = []
       doc.css(".comment-mentioned-user").each do |link|
         username = link.text.gsub("@","").downcase
         if user = User.find_by_username(link.text.gsub("@","").downcase)
           usernames << username
-          create_mention(user)
+          mentions << create_mention(user)
         end
       end
       delete_removed_mentions(usernames)
+      mentions
     end
     handle_asynchronously :create_all
 
@@ -70,4 +73,10 @@ class Mention < ApplicationRecord
     end
   end
   handle_asynchronously :send_email_notification
+
+  def permission
+    if !mentionable.valid?
+      errors.add(:mentionable_id, "is not valid.")
+    end
+  end
 end
