@@ -2,6 +2,7 @@ class Broadcast < ApplicationRecord
   has_many :notifications, as: :notifiable
 
   validates :title, :type_of, :processed_html, presence: true
+  validates :type_of, inclusion: { in: %w(Announcement Onboarding) }
 
   def self.send_welcome_notification(user_id)
     welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")

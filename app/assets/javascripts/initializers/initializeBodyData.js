@@ -1,11 +1,6 @@
 
 function initializeBodyData() {
-  if (checkUserLoggedIn()) {
-    fetchBaseData();
-  }
-  else {
-    document.getElementsByTagName('body')[0].dataset.loaded = "true";
-  }
+  fetchBaseData();
 }
 
 function fetchBaseData() {
@@ -30,14 +25,16 @@ function fetchBaseData() {
         meta.name = "csrf-token";
         meta.content = json.token;
         document.getElementsByTagName('head')[0].appendChild(meta);
-        document.getElementsByTagName('body')[0].dataset.user = json.user;
         document.getElementsByTagName('body')[0].dataset.loaded = "true";
-        browserStoreCache("set",json.user)
-        setTimeout(function(){
-          if (typeof ga === "function") {
-            ga('set', 'userId', JSON.parse(json.user).id);
-          }
-        },400)
+        if (checkUserLoggedIn()) {
+          document.getElementsByTagName('body')[0].dataset.user = json.user;
+          browserStoreCache("set",json.user)
+          setTimeout(function(){
+            if (typeof ga === "function") {
+              ga('set', 'userId', JSON.parse(json.user).id);
+            }
+          },400)
+        }
       }
     };
   var timeString = (Date.now()).toString();

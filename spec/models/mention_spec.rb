@@ -61,4 +61,11 @@ RSpec.describe Mention, type: :model do
     expect(Mention.all.size).to eq(1)
   end
 
+  it "can only be createdwith valid mentionable" do
+    comment_2 = create(:comment, body_markdown: "Hello @#{user.username}, you are cool.", commentable_id: article.id, user_id:user.id)
+    comment_2.update_column(:body_markdown, "")
+    Mention.create_all_without_delay(comment_2)
+    expect(Mention.all.size).to eq(0)
+  end
+
 end

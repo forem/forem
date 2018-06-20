@@ -169,7 +169,6 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
-  get "/phishing" => "pages#phishing"
   get "/now" => "pages#now"
   get "/membership" => "pages#membership"
   get "/events" => "events#index"
@@ -185,9 +184,7 @@ Rails.application.routes.draw do
   get "/scholarships", to: redirect("/p/scholarships")
   get "/memberships", to: redirect("/membership")
 
-  # For Google analytics tracking, but we don't want to
-  # tip the trackers
-  post "/cromulent" => "ga_events#create"
+  post "/fallback_activity_recorder" => "ga_events#create"
 
   scope "p" do
     %w(rly rlyweb welcome twitter_moniter editor_guide information markdown_basics scholarships wall_of_patrons membership_form badges).each do |action|

@@ -6,9 +6,9 @@ vcr_option = {
 }
 
 RSpec.describe "GaEvents", type: :request, vcr: vcr_option do
-  describe "POST /cromulent" do
-    it "posts to cromulent" do
-      post "/cromulent", params: {
+  describe "POST /fallback_activity_recorder" do
+    it "posts to fallback_activity_recorder" do
+      post "/fallback_activity_recorder", params: {
         path: "/ben", user_language: "en"
       }.to_json
       expect(response.body).to eq("")

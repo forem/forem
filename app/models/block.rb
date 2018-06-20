@@ -1,6 +1,10 @@
 class Block < ApplicationRecord
   attr_accessor :publish_now
 
+  belongs_to :user
+
+  validate :permissions
+
   before_save :process_html
   before_save :process_javascript
   before_save :process_css
@@ -27,5 +31,11 @@ class Block < ApplicationRecord
     scoped_scss = ".block-wrapper-#{id} { #{input_css}}"
     se = Sass::Engine.new(scoped_scss, :syntax => :scss)
     self.processed_css = se.render
+  end
+
+  def permissions
+    if !user || !user.has_role?(:super_admin)
+      errors.add(:commentable_id, "is not valid.")
+    end
   end
 end

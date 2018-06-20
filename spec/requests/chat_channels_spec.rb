@@ -92,5 +92,5 @@ RSpec.describe "ChatChannels", type: :request do
       post "/chat_channels/#{chat_channel.id}/open"
       expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
     end
-end
+  end
 end

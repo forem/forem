@@ -16,6 +16,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
+  it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(64) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:organization) }
   it { is_expected.to belong_to(:collection) }
@@ -23,6 +24,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
   it { is_expected.to validate_presence_of(:user_id) }
+  it { is_expected.to_not allow_value("foo").for(:main_image_background_hex_color)}
 
   context "if published" do
     before { allow(subject).to receive(:published?).and_return(true) }
@@ -191,6 +193,24 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#video" do
+    it "must be a url" do
+      article.user.add_role(:video_permission)
+      article.video = "hey"
+      expect(article).not_to be_valid
+      article.video = "http://hey.com"
+      expect(article).to be_valid
+    end
+
+    it "must belong to permissioned user" do
+      article.video = "http://hey.com"
+      expect(article).not_to be_valid
+      article.user.add_role(:video_permission)
+      expect(article).to be_valid
+    end
+  end
+
+
   it "detects no liquid tag if not used" do
     expect(article.decorate.liquid_tags_used).to eq([])
   end
@@ -216,6 +236,11 @@ RSpec.describe Article, type: :model do
   it "gets search indexed" do
     article = create(:article)
     article.index!
+  end
+
+  it "removes from search index" do
+    article = create(:article)
+    article.remove_algolia_index
   end
 
   it "detects liquid tags used" do
@@ -315,6 +340,22 @@ RSpec.describe Article, type: :model do
     it "assigns cached_user_username on save" do
       article = create(:article, user_id: user.id)
       expect(article.cached_user_username).to eq(article.user_username)
+    end
+  end
+
+  describe "validations" do
+    it "must have url for main image if present" do
+      article.main_image_background_hex_color = "hello"
+      expect(article.valid?).to eq(false)
+      article.main_image_background_hex_color = "#fff000"
+      expect(article.valid?).to eq(true)
+    end
+
+    it "must have true hex for image background" do
+      article.main_image = "hello"
+      expect(article.valid?).to eq(false)
+      article.main_image = "https://image.com/image.png"
+      expect(article.valid?).to eq(true)
     end
   end
 
