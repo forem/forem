@@ -67,16 +67,26 @@ RSpec.describe "Pages", type: :request do
         get "/live"
       end
 
+      after do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:live_starting_soon, false)
+      end
+
       it "shows the correct message" do
         expect(response.body).to include("Our event is starting soon")
       end
     end
 
     context "when live is live" do
-      before(:all) do
+      before do
         test_strategy = Flipflop::FeatureSet.current.test!
         test_strategy.switch!(:live_is_live, true)
         create(:chat_channel, :workshop)
+      end
+
+      after do
+        test_strategy = Flipflop::FeatureSet.current.test!
+        test_strategy.switch!(:live_is_live, false)
       end
 
       it "shows a sign in page for logged out users" do
