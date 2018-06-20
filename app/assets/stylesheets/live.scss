@@ -34,12 +34,15 @@
       @media screen and ( min-width: 760px ){
         width:300px;
         .live-chat{
-          height: calc(100vh - 134px);
+          height: 910px;
           max-height:920px;
         }
       }
       @media screen and ( min-width: 1200px ){
         width:400px;
+        .live-chat{
+          height: calc(100vh - 112px);
+        }
       }
     }
   }
