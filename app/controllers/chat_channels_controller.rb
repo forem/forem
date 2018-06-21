@@ -1,31 +1,25 @@
 class ChatChannelsController < ApplicationController
   before_action :authenticate_user!, only: [:moderate]
+  after_action :verify_authorized
 
   def index
     if params[:state] == "unopened"
+      authorize ChatChannel
       render_unopened_json_response
     else
+      skip_authorization
       render_channels_html
     end
   end
 
   def show
-    @chat_channel = ChatChannel.find_by_id(params[:id])
-    if @chat_channel.present? && (@chat_channel.channel_type == "open" || @chat_channel.has_member?(current_user))
-      @chat_channel
-    else
-      message = "The chat channel you are looking for is either invalid or does not exist"
-      render json: { error: message },
-             status: 401
-    end
+    @chat_channel = ChatChannel.find_by_id(params[:id]) || not_found
+    authorize @chat_channel
   end
 
   def open
     @chat_channel = ChatChannel.find(params[:id])
-    unless @chat_channel.has_member?(current_user)
-      render json: { status: "success", channel: params[:id] }, status: 200
-      return
-    end
+    authorize @chat_channel
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.seconds.from_now, has_unopened_messages: false)
     @chat_channel.index!
@@ -80,7 +74,6 @@ class ChatChannelsController < ApplicationController
     end
     render "index.json"
   end
-
 
   def render_additional_json_response
     @chat_channels_memberships = current_user.

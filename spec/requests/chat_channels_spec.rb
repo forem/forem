@@ -38,14 +38,8 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     context "when request is invalid" do
-      before { get "/chat_channels/1200" }
-
       it "returns proper error message" do
-        expect(response.body).to include("invalid")
-      end
-
-      it "returns 401" do
-        expect(response.status).to eq(401)
+        expect { get "/chat_channels/1200" }.to raise_error(ActionController::RoutingError)
       end
     end
   end
