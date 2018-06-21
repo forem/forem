@@ -183,6 +183,7 @@ Rails.application.routes.draw do
   get "/scholarship", to: redirect("/p/scholarships")
   get "/scholarships", to: redirect("/p/scholarships")
   get "/memberships", to: redirect("/membership")
+  get "/shop", to: redirect("https://shop.dev.to/")
 
   post "/fallback_activity_recorder" => "ga_events#create"
 

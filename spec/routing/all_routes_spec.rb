@@ -29,4 +29,13 @@ RSpec.describe "all routes", type: :routing do
       username: "ben",
     )
   end
+
+  context "redirected routes" do
+    include RSpec::Rails::RequestExampleGroup
+
+    it "redirects /shop to shop.dev.to" do
+      get "/shop"
+      expect(response).to redirect_to("https://shop.dev.to/")
+    end
+  end
 end
