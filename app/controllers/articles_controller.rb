@@ -1,24 +1,26 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
-  before_action :authenticate_user!, except: [:feed, :new]
-  before_action :set_article, only: [:edit, :update, :destroy]
-  before_action :raise_banned, only: [:new, :create, :update]
-  before_action :set_cache_control_headers, only: [:feed]
+  before_action :authenticate_user!, except: %i[feed new]
+  before_action :set_article, only: %i[edit update destroy]
+  before_action :raise_banned, only: %i[new create update]
+  before_action :set_cache_control_headers, only: %i[feed]
+  after_action :verify_authorized
 
   def feed
+    skip_authorization
     @page = params[:page].to_i
     if params[:username]
       if @user = User.find_by_username(params[:username])
         @articles = Article.where(published: true, user_id: @user.id).
           includes(:user).
           select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
-          order('published_at DESC').
+          order("published_at DESC").
           page(@page).per(15)
       elsif @user = Organization.find_by_slug(params[:username])
         @articles = Article.where(published: true, organization_id: @user.id).
           includes(:user).
           select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
-          order('published_at DESC').
+          order("published_at DESC").
           page(@page).per(15)
       else
         render body: nil
@@ -28,7 +30,7 @@ class ArticlesController < ApplicationController
       @articles = Article.where(published: true, featured: true).
         includes(:user).
         select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
-        order('published_at DESC').
+        order("published_at DESC").
         page(@page).per(15)
     end
     set_surrogate_key_header "feed", @articles.map(&:record_key)
@@ -37,14 +39,19 @@ class ArticlesController < ApplicationController
   end
 
   def new
-    authorize Article
     @user = current_user
     @tag = Tag.find_by_name(params[:template])
-    if @tag && @tag.submission_template.present? && @user
-      @article = Article.new(body_markdown:@tag.submission_template_customized(@user.name),processed_html:"")
-    else
-      @article = Article.new(body_markdown:"---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",processed_html:"")
-    end
+    @article = if @tag&.submission_template.present? && @user
+                 authorize Article
+                 Article.new(body_markdown: @tag.submission_template_customized(@user.name),
+                             processed_html: "")
+               else
+                 skip_authorization
+                 Article.new(
+                   body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
+                   processed_html: "",
+                 )
+               end
   end
 
   def edit
@@ -53,6 +60,7 @@ class ArticlesController < ApplicationController
   end
 
   def preview
+    authorize Article
     begin
       fixed_body_markdown = MarkdownFixer.fix_for_preview(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
@@ -108,28 +116,19 @@ class ArticlesController < ApplicationController
 
   def delete_confirm
     @article = current_user.articles.find_by_slug(params[:slug])
+    authorize @article
   end
 
   def destroy
-    if current_user == @article.user
-      @article.destroy
-      respond_to do |format|
-        format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
-        format.json { head :no_content }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to "/dashboard", notice: "Unauthorized attempt" }
-        format.json { head :no_content }
-      end
+    authorize @article
+    @article.destroy!
+    respond_to do |format|
+      format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
+      format.json { head :no_content }
     end
   end
 
   private
-
-  def user_not_authorized
-    redirect_to @article ? @article.path : "/"
-  end
 
   def handle_org_assignment
     if @user.organization_id.present? && article_params[:publish_under_org].to_i == 1
@@ -175,10 +174,7 @@ class ArticlesController < ApplicationController
 
   def article_params
     params[:article][:published] = true if params[:submit_button] == "PUBLISH"
-    params.require(:article).
-      permit(:title, :body_html, :body_markdown, :user_id, :main_image, :published,
-          :description, :allow_small_edits, :allow_big_edits, :tag_list, :publish_under_org,
-          :video, :video_code, :video_source_url, :video_thumbnail_url)
+    params.require(:article).permit(policy(Article).permitted_attributes)
   end
 
   def job_opportunity_params

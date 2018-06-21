@@ -22,6 +22,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:super_admin) }
     end
 
+    trait :admin do
+      after(:build) { |user| user.add_role(:admin) }
+    end
+
     trait :banned do
       after(:build) { |user| user.add_role(:banned) }
     end

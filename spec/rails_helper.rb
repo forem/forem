@@ -17,6 +17,9 @@ require "rspec/retry"
 require "algolia/webmock"
 require "approvals/rspec"
 require "shoulda/matchers"
+require "pundit/rspec"
+require "pundit/matchers"
+
 
 WebMock.disable_net_connect!(allow_localhost: true)
 

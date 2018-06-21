@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   include EnforceAdmin
 
   include Pundit
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   # before_action :require_http_auth if ENV["APP_NAME"] == "dev_stage"
 
@@ -86,18 +85,5 @@ class ApplicationController < ActionController::Base
 
   def touch_current_user
     current_user.touch
-  end
-
-  private
-
-  def user_not_authorized
-    respond_to do |format|
-      format.html do
-        flash[:alert] = "You are not authorized to perform this action."
-        redirect_to(request.referrer || root_path)
-      end
-
-      format.json { render json: { error: "Not authorized" }, status: 401 }
-    end
   end
 end

@@ -44,6 +44,10 @@ module PracticalDeveloper
     # to implement access control for the Flipflop dashboard.
     config.flipflop.dashboard_access_filter = -> { head :forbidden unless current_user.has_any_role?(:super_admin) }
 
+    # Globally handle Pundit::NotAuthorizedError by serving 404
+    config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
+
+    # After-initialize checker to add routes to reserved words
     config.after_initialize do
       Rails.application.reload_routes!
       top_routes = []
