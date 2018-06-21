@@ -1,12 +1,13 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
-  before_action :raise_banned, only: %i[create update]
   before_action :authenticate_user!, only: %i[preview create]
+  after_action :verify_authorized
 
   # GET /comments
   # GET /comments.json
   def index
+    skip_authorization
     @on_comments_page = true
     @comment = Comment.new
     @podcast = Podcast.find_by_slug(params[:username])
@@ -44,7 +45,7 @@ class CommentsController < ApplicationController
   # GET /comments/1/edit
   def edit
     @comment = Comment.find(params[:id_code].to_i(26))
-    not_found unless current_user && current_user.id == @comment.user_id
+    authorize @comment
     @parent_comment = @comment.parent
     @commentable = @comment.commentable
   end
@@ -52,8 +53,9 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
+    authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
-    @comment = Comment.new(comment_params)
+    @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
     if @comment.save
       if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
@@ -97,8 +99,8 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1
   # PATCH/PUT /comments/1.json
   def update
-    raise unless @comment.user_id == current_user.id
-    if @comment.update(comment_update_params.merge(edited_at: DateTime.now))
+    authorize @comment
+    if @comment.update(permitted_attributes(@comment).merge(edited_at: DateTime.now))
       Mention.create_all(@comment)
       redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
     else
@@ -110,7 +112,7 @@ class CommentsController < ApplicationController
   # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
-    raise unless @comment.user_id == current_user.id
+    authorize @comment
     @commentable_path = @comment.commentable.path
     if @comment.is_childless?
       @comment.destroy
@@ -122,17 +124,15 @@ class CommentsController < ApplicationController
   end
 
   def delete_confirm
-    unless current_user && Comment.where(id: params[:id_code].to_i(26), user_id: current_user.id).first
-      @comment = Comment.find(params[:id_code].to_i(26))
-      redirect_to @comment.path
-      return
-    end
-    @comment = Comment.where(id: params[:id_code].to_i(26), user_id: current_user.id).first
+    @comment = Comment.find(params[:id_code].to_i(26))
+    authorize @comment
   end
 
   def preview
+    skip_authorization
     begin
-      fixed_body_markdown = MarkdownFixer.fix_for_preview(comment_params[:body_markdown])
+      permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
+      fixed_body_markdown = MarkdownFixer.fix_for_preview(permitted_body_markdown)
       parsed_markdown = MarkdownParser.new(fixed_body_markdown)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
@@ -148,17 +148,5 @@ class CommentsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
-  end
-
-  # Never trust parameters from the scary internet, only allow the white list through.
-  def comment_params
-    params.require(:comment).permit(:body_markdown,
-                                    :commentable_id,
-                                    :commentable_type,
-                                    :parent_id)
-  end
-
-  def comment_update_params
-    params.require(:comment).permit(:body_markdown)
   end
 end
