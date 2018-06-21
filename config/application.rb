@@ -43,5 +43,19 @@ module PracticalDeveloper
     # Replace with a lambda or method name defined in ApplicationController
     # to implement access control for the Flipflop dashboard.
     config.flipflop.dashboard_access_filter = -> { head :forbidden unless current_user.has_any_role?(:super_admin) }
+
+    config.after_initialize do
+      Rails.application.reload_routes!
+      top_routes = []
+      Rails.application.routes.routes.each do |route|
+        route = route.path.spec.to_s
+        unless route.starts_with?('/:')
+          route = route.split('/')[1]
+          route = route.split('(')[0] if route && route.include?('(')
+          top_routes << route
+        end
+      end
+      ::RESERVED_WORDS = [RESERVED_WORDS + top_routes].flatten.compact.uniq
+    end
   end
 end
