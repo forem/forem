@@ -3,7 +3,7 @@
     <meta itemprop="uploadDate" content="<%= @article.published_at %>" />
     <meta itemprop="name" content="<%= @article.title %>" />
     <meta itemprop="description" content="<%= @article.description %>" />
-    <meta itemprop="thumbnailUrl" content="<%= article.video_thumbnail_url %>" />
+    <meta itemprop="thumbnailUrl" content="<%= cloudinary(article.video_thumbnail_url, 880) %>" />
     <meta itemprop="contentUrl" content="<%= article.video_source_url %>" />
   <% end %>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async> </script>

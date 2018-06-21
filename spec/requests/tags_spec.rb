@@ -22,7 +22,7 @@ RSpec.describe "Tags", type: :request do
 
     it "does not allow users who are not tag moderators" do
       sign_in unauthorized_user
-      expect { get "/t/#{tag}/edit" }.to raise_error("UNAUTHORIZED")
+      expect { get "/t/#{tag}/edit" }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "allows super admins" do
@@ -43,7 +43,7 @@ RSpec.describe "Tags", type: :request do
       end
 
       it "does not allow moderators of one tag to edit another tag" do
-        expect { get "/t/#{another_tag}/edit" }.to raise_error("UNAUTHORIZED")
+        expect { get "/t/#{another_tag}/edit" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
@@ -63,7 +63,7 @@ RSpec.describe "Tags", type: :request do
 
     it "does not allow unauthorized users" do
       sign_in unauthorized_user
-      expect { patch "/tag/#{tag.id}" }.to raise_error("UNAUTHORIZED")
+      expect { patch "/tag/#{tag.id}" }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "allows super admins" do
@@ -93,7 +93,7 @@ RSpec.describe "Tags", type: :request do
 
       it "does not allow moderators of one tag to edit another tag" do
         expect { patch("/tag/#{another_tag.id}", params: valid_params) }.
-          to raise_error("UNAUTHORIZED")
+          to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end
