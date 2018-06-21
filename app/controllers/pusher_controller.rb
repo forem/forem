@@ -7,7 +7,7 @@ class PusherController < ApplicationController
       })
       render json: response
     else
-      render text: 'Forbidden', status: '403'
+      render json: { text: 'Forbidden', status: '403' }
     end
   end
 
@@ -20,6 +20,7 @@ class PusherController < ApplicationController
   end
 
   def valid_presence_channel
+    return false unless params[:channel_name].include?("presence-channel-")
     id = params[:channel_name].split("presence-channel-")[1].split("-")[0]
     channel = ChatChannel.find(id)
     channel.has_member?(current_user)
