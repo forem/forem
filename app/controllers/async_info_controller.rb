@@ -1,5 +1,6 @@
 class AsyncInfoController < ApplicationController
   include Devise::Controllers::Rememberable
+  # No pundit policy. All actions are unrestricted.
 
   def base_data
     flash.discard(:notice)
