@@ -58,8 +58,8 @@ gem "pry", "~> 0.11"
 gem "pry-rails", "~> 0.3"
 gem "puma", "~> 3.11"
 gem "puma_worker_killer", "~> 0.1"
-gem "pusher", "~> 1.3"
 gem "pundit", "~> 1.1"
+gem "pusher", "~> 1.3"
 gem "rack-host-redirect", "~> 1.3"
 gem "rack-timeout", "~> 0.4"
 gem "rails", "~> 5.1"
@@ -85,13 +85,12 @@ gem "stream_rails", "~> 2.5"
 gem "stripe", "~> 3.9"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
-gem 'twilio-ruby', '~> 5.10.3'
+gem "twilio-ruby", "~> 5.10.3"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 3.2"
 gem "validate_url", "~> 1.0"
 gem "webpacker", "~> 3.2"
-gem 'webpush', "~> 0.3"
-
+gem "webpush", "~> 0.3"
 
 group :development do
   gem "brakeman", "~> 3.7", require: false
@@ -129,6 +128,7 @@ group :test do
   gem "factory_bot_rails", "~> 4.8"
   gem "fake_stripe", "~> 0.1"
   gem "launchy", "~> 2.4"
+  gem "pundit-matchers", "~> 1.6"
   gem "rack_session_access", "~> 0.1"
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false

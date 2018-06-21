@@ -10,7 +10,6 @@ RSpec.describe "ChatChannels", type: :request do
     chat_channel.add_users([user])
   end
 
-
   describe "GET /connect" do
     context "logged in" do
       before do
@@ -52,19 +51,21 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "POST /chat_channels/:id/moderate" do
-    it "returns 401 unless user is logged in" do
-      post "/chat_channels/#{chat_channel.id}/moderate",
+    it "raises NotAuthorizedError if user is not logged in" do
+      expect do
+        post "/chat_channels/#{chat_channel.id}/moderate",
         params: { chat_channel: { command: "/ban huh" } },
         headers: { HTTP_ACCEPT: "application/json" }
-      expect(response.status).to eq(401)
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "returns 401 if user is logged in but not authorized" do
+    it "raises NotAuthorizedError if user is logged in but not authorized" do
       sign_in user
-      post "/chat_channels/#{chat_channel.id}/moderate",
-        params: { chat_channel: { command: "/ban huh" } },
-        headers: { HTTP_ACCEPT: "application/json" }
-      expect(response.status).to eq(401)
+      expect do
+        post "/chat_channels/#{chat_channel.id}/moderate",
+          params: { chat_channel: { command: "/ban huh" } },
+          headers: { HTTP_ACCEPT: "application/json" }
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
 
     context "when user is logged-in and authorized" do

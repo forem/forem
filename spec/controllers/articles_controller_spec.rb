@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe ArticlesController, type: :controller do
+  let(:user) { create(:user) }
+
   describe "GET #feed" do
     it "works" do
       get :feed, format: :rss
@@ -11,6 +13,8 @@ RSpec.describe ArticlesController, type: :controller do
   end
 
   describe "GET #new" do
+    before { sign_in user }
+
     context "with authorized user" do
       it "returns a new article" do
         get :new
