@@ -21,12 +21,12 @@
     <%= auto_discovery_link_tag(:rss, "https://dev.to/feed/#{@user.username}", {title: "The Practical Dev RSS Feed"}) %>
   <% elsif @tag.present? %>
     <% title "#{@tag}#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? } - The DEV Community" %>
-    <link rel="canonical" href="https://dev.to/<%= @tag %>"/>
+    <link rel="canonical" href="https://dev.to/t/<%= @tag %>"/>
     <meta name="description" content="<%= @tag %> content on dev.to">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://dev.to/<%= @tag %>" />
+    <meta property="og:url" content="https://dev.to/t/<%= @tag %>" />
     <meta property="og:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community" />
     <meta property="og:description" content="<%= @tag %> content on dev.to" />
     <meta property="og:site_name" content="The DEV Community" />
