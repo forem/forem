@@ -28,6 +28,14 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).not_to be_valid
     end
 
+    it "does not allow reaction on unpublished article" do
+      reaction = build(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
+      expect(reaction).to be_valid
+      article.update_column(:published, false)
+      reaction = build(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
+      expect(reaction).not_to be_valid
+    end
+
     context "if user is trusted" do
       before { user.add_role(:trusted) }
 

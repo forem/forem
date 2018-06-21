@@ -10,7 +10,7 @@ class Reaction < ApplicationRecord
   validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
   validates :user_id, uniqueness: {:scope => [:reactable_id, :reactable_type, :category]}
-  validate  :user_permissions
+  validate  :permissions
 
   before_save :assign_points
   after_save :update_reactable
@@ -79,6 +79,7 @@ class Reaction < ApplicationRecord
       CacheBuster.new.bust "/reactions/logged_out_reaction_counts?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
     end
     CacheBuster.new.bust user.path
+    occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
 
@@ -114,9 +115,19 @@ class Reaction < ApplicationRecord
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
-  def user_permissions
+  def permissions
     if category == "vomit" || category == "thumbsdown"
       errors.add(:category, "is not valid.") unless user.has_role?(:trusted)
+    end
+    if reactable_type == "Article" && !reactable.published
+      errors.add(:reactable_id, "is not valid.")
+    end
+  end
+
+  def occasionally_sync_reaction_counts
+    # Fixes any out-of-sync positive_reactions_count
+    if rand(6) == 1 || reactable.positive_reactions_count.negative?
+      reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
     end
   end
 end
