@@ -7,14 +7,12 @@ RSpec.describe "Videos", type: :request do
   describe "GET /videos/new" do
     context "when not authorized" do
       it "redirects non-logged in users" do
-        get "/videos/new"
-        is_expected.to redirect_to("/enter")
+        expect { get "/videos/new"}.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "redirects logged in users" do
         login_as unauthorized_user
-        get "/videos/new"
-        is_expected.to redirect_to("/enter")
+        expect { get "/videos/new"}.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
@@ -30,14 +28,12 @@ RSpec.describe "Videos", type: :request do
   describe "POST /videos" do
     context "when not authorized" do
       it "redirects non-logged in users" do
-        post "/videos"
-        is_expected.to redirect_to("/enter")
+        expect { post "/videos"}.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "redirects logged in users" do
         login_as unauthorized_user
-        post "/videos"
-        is_expected.to redirect_to("/enter")
+        expect { post "/videos"}.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
