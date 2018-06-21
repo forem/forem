@@ -39,10 +39,10 @@ RSpec.describe "Comments", type: :request do
 
   describe "GET /:username/:slug/comments/:id_code/edit" do
     context "when not logged-in" do
-      it "returns not_found " do
+      it "returns unauthorized error" do
         expect do
           get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
-        end.to raise_error(ActionController::RoutingError)
+        end.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 

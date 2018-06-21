@@ -7,7 +7,7 @@ RSpec.describe "Badges", type: :request do
   describe "GET /badge/:slug" do
     it "shows the badge" do
       get "/badge/#{badge.slug}"
-      expect(response.body).to include badge.title
+      expect(response.body).to include CGI.escapeHTML(badge.title)
     end
   end
 end
