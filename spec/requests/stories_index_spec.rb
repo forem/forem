@@ -26,6 +26,17 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}"
       expect(response.body).to include(tag.name)
     end
+    it "rendewrs page with top/week etc." do
+      tag = create(:tag)
+      get "/t/#{tag.name}/top/week"
+      expect(response.body).to include(tag.name)
+      get "/t/#{tag.name}/top/month"
+      expect(response.body).to include(tag.name)
+      get "/t/#{tag.name}/top/year"
+      expect(response.body).to include(tag.name)
+      get "/t/#{tag.name}/top/infinity"
+      expect(response.body).to include(tag.name)
+    end
     it "renders tag after alias change" do
       tag = create(:tag)
       tag_2 = create(:tag, alias_for: tag.name)

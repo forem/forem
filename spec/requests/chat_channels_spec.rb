@@ -74,6 +74,11 @@ RSpec.describe "ChatChannels", type: :request do
           params: { chat_channel: { command: "/ban #{test_subject.username}" } }
         expect(response.status).to eq(200)
       end
+      it "enforces chat_channel_params" do
+        post "/chat_channels/#{chat_channel.id}/moderate",
+          params: { chat_channel: { command: "/unban #{test_subject.username}" } }
+        expect(response.status).to eq(200)
+      end
     end
   end
 
