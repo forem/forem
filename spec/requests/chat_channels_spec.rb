@@ -4,6 +4,8 @@ RSpec.describe "ChatChannels", type: :request do
   let(:user) { create(:user) }
   let(:test_subject) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
+  let(:invite_channel) { create(:chat_channel, channel_type: "invite_only") }
+  let(:direct_channel) { create(:chat_channel, channel_type: "direct", slug: "hello/#{user.username}") }
 
   before do
     sign_in user
@@ -19,6 +21,31 @@ RSpec.describe "ChatChannels", type: :request do
       it "has proper content" do
         expect(response.body).to include("DEV Connect is Beta ")
       end
+    end
+
+    context "logged in, visiting existing channel" do
+      before do
+        invite_channel.add_users [user]
+        sign_in user
+        get "/connect/#{invite_channel.slug}"
+      end
+
+      it "has proper content" do
+        expect(response.body).to include("DEV Connect is Beta ")
+      end
+    end
+  end
+
+  describe "get /chat_channels?state=unopened" do
+    it "returns unopened channels" do
+      direct_channel.add_users [user]
+      user.chat_channel_memberships.each do |m|
+        m.has_unopened_messages = true
+        m.save
+      end
+      sign_in user
+      get "/chat_channels?state=unopened"
+      expect(response.body).to include(direct_channel.slug)
     end
   end
 
