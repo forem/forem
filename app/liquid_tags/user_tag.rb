@@ -9,14 +9,14 @@ class UserTag < LiquidTagBase
   def render(context)
     # looks like link liquid tag
     <<-HTML
-    <style>
-      .ltag__user .follow-action-button{
-        background-color: #{user_colors(@user)[:bg]} !important;
-        color: #{user_colors(@user)[:text]} !important;
-        border-color: #{ user_colors(@user)[:bg].downcase == '#ffffff' ? user_colors(@user)[:text] : user_colors(@user)[:bg] } !important;
-      }
-    </style>
-    <div class="ltag__user" style="border-color:#{@user.decorate.darker_color};box-shadow: 3px 3px 0px #{@user.decorate.darker_color}">
+    <div class="ltag__user ltag__user__id__#{@user.id}" style="border-color:#{@user.decorate.darker_color};box-shadow: 3px 3px 0px #{@user.decorate.darker_color}">
+      <style>
+        .ltag__user__id__#{@user.id} .follow-action-button{
+          background-color: #{user_colors(@user)[:bg]} !important;
+          color: #{user_colors(@user)[:text]} !important;
+          border-color: #{ user_colors(@user)[:bg].downcase == '#ffffff' ? user_colors(@user)[:text] : user_colors(@user)[:bg] } !important;
+        }
+      </style>
       <a href="/#{@user.username}" class="ltag__user__link profile-image-link">
         <div class="ltag__user__pic">
           <img src="#{ProfileImage.new(@user).get(150)}" alt="#{@user.username} image"/>
