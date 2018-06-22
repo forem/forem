@@ -89,14 +89,7 @@ class StoriesController < ApplicationController
       @stories = @stories.where(approved: true)
     end
 
-    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
-      @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("positive_reactions_count DESC")
-    elsif params[:timeframe] == "latest"
-      @stories = @stories.order("published_at DESC")
-    else
-      @stories = @stories.order("hotness_score DESC")
-    end
+    @stories = stories_by_timeframe 
 
     @stories = @stories.decorate
 
@@ -268,6 +261,17 @@ class StoriesController < ApplicationController
       articles.
       find_by_slug(params[:slug])&.
       decorate
+  end
+
+  def stories_by_timeframe
+    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+      @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
+        order("positive_reactions_count DESC")
+    elsif params[:timeframe] == "latest"
+      @stories.order("published_at DESC")
+    else
+      @stories.order("hotness_score DESC")
+    end
   end
 
   def assign_sticky_nav
