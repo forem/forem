@@ -75,12 +75,6 @@ class ChatChannelsController < ApplicationController
     render "index.json"
   end
 
-  def render_additional_json_response
-    @chat_channels_memberships = current_user.
-      chat_channel_memberships.includes(:chat_channel).limit(200).order("updated_at DESC")
-    render "index.json"
-  end
-
   def render_channels_html
     return unless current_user
     if params[:slug]

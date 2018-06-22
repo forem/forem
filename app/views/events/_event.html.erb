@@ -50,7 +50,7 @@
 
 <div class="event">
   <div class="event-image">
-    <img src="<%= event.cover_image %>">
+    <img src="<%= cloudinary event.cover_image, 500 %>">
   </div>
   <div class="event-details" >
     <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
