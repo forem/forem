@@ -7,13 +7,13 @@ RSpec.describe "AdditionalContentBoxes", type: :request do
       suggestion.update_column(:published, true)
       article = create(:article)
       get "/additional_content_boxes?article_id=#{article.id}"
-      expect(response.body).to include(suggestion.title)
+      expect(response.body).to include CGI.escapeHTML(suggestion.title)
     end
     it "returns no article if not published/featured" do
       suggestion = create(:article)
       article = create(:article)
       get "/additional_content_boxes?article_id=#{article.id}"
-      expect(response.body).to_not include(suggestion.title)
+      expect(response.body).to_not include CGI.escapeHTML(suggestion.title)
     end
   end
 end
