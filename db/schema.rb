@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180612214259) do
+ActiveRecord::Schema.define(version: 20180622173538) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -596,7 +596,6 @@ ActiveRecord::Schema.define(version: 20180612214259) do
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
-    t.boolean "banned", default: false
     t.text "base_cover_letter"
     t.string "bg_color_hex"
     t.boolean "checked_code_of_conduct", default: false
