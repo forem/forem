@@ -1,35 +1,27 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[show update destroy finish_signup]
-  before_action :set_no_cache_header, except: [:index]
-
-  def index
-    #Soft internal deprecation. Should be removed at some point.
-    return redirect_to "/" unless current_user
-    @users = case params[:user_board].downcase
-             when "following" then current_user.following_users
-             when "followers" then current_user.user_followers
-             end
-  end
+  before_action :set_no_cache_header
+  after_action :verify_authorized, except: [:signout_confirm]
 
   # GET /settings/@tab
   def edit
-    @user = current_user
-    @tab_list = tab_list(@user)
-    unless @user
-      redirect_to "/enter"
-      return
+    unless current_user
+      skip_authorization
+      return redirect_to "/enter"
     end
+    @user = current_user
+    @tab_list = @user.settings_tab_list
     @tab = params["tab"]
+    authorize @user
     handle_settings_tab
-    # authorize! :update, @user
   end
 
   # PATCH/PUT /users/:id.:format
   def update
     @user = current_user
-    @tab_list = tab_list(@user)
+    @tab_list = @user.settings_tab_list
     @tab = params["user"]["tab"] || "profile"
-    if !@user.banned && @user.update(user_params)
+    authorize @user
+    if @user.update(user_params)
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       follow_hiring_tag(@user)
@@ -41,6 +33,7 @@ class UsersController < ApplicationController
 
   def onboarding_update
     current_user.saw_onboarding = true
+    authorize User
     if current_user.save!
       respond_to do |format|
         format.json { render json: { outcome: "onboarding closed" } }
@@ -53,6 +46,7 @@ class UsersController < ApplicationController
   end
 
   def join_org
+    authorize User
     if @organization = Organization.find_by_secret(params[:org_secret])
       current_user.update(organization_id: @organization.id)
       redirect_to "/settings/organization",
@@ -63,15 +57,15 @@ class UsersController < ApplicationController
   end
 
   def leave_org
+    authorize User
     current_user.update(organization_id: nil, org_admin: nil)
     redirect_to "/settings/organization",
       notice: "You have left your organization."
   end
 
   def add_org_admin
-    raise unless current_user.org_admin
     user = User.find(params[:user_id])
-    raise unless current_user.organization_id == user.organization_id
+    authorize user
     user.update(org_admin: true)
     user.add_role :analytics_beta_tester if user.organization.approved
     redirect_to "/settings/organization",
@@ -79,39 +73,22 @@ class UsersController < ApplicationController
   end
 
   def remove_org_admin
-    raise unless current_user.org_admin
-    raise if current_user.id == params[:user_id]
     user = User.find(params[:user_id])
-    raise unless current_user.organization_id == user.organization_id
+    authorize user
     user.update(org_admin: false)
     redirect_to "/settings/organization",
       notice: "#{user.name} is no longer an admin."
   end
 
   def remove_from_org
-    raise unless current_user.org_admin
-    raise if current_user.id == params[:user_id]
     user = User.find(params[:user_id])
+    authorize user
     user.update(organization_id: nil)
     redirect_to "/settings/organization",
       notice: "#{user.name} is no longer part of your organization."
   end
 
   def signout_confirm; end
-
-  # GET/PATCH /users/:id/finish_signup
-  def finish_signup
-    # authorize! :update, @user
-    if request.patch? && params[:user] # && params[:user][:email]
-      if @user.update(user_params)
-        # @user.skip_reconfirmation!
-        sign_in(@user, bypass: true)
-        redirect_to "/", notice: "Your profile was successfully updated."
-      else
-        @show_errors = true
-      end
-    end
-  end
 
   def follow_hiring_tag(user)
     return unless user.looking_for_work?
@@ -134,17 +111,13 @@ class UsersController < ApplicationController
       @customer = Stripe::Customer.retrieve(current_user.stripe_id_code) if current_user.stripe_id_code
     when "membership"
       if current_user.monthly_dues.zero?
-      redirect_to "/membership"
+        redirect_to "/membership"
         return
       end
     end
   end
 
   private
-
-  def set_user
-    @user = User.find(params[:id])
-  end
 
   def user_params
     accessible = %i[name

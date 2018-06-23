@@ -99,7 +99,7 @@ Rails.application.routes.draw do
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]
   resources :push_notification_subscriptions, only: [:create]
-  
+
   get "/notifications/:username" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
@@ -193,11 +193,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get "/:user_board" => "users#index", :constraints => { user_board: /following|followers|leaderboard/}
-
   match "/delayed_job_admin" => DelayedJobWeb, :anchor => false, via: [:get, :post]
-
-  match "/users/:id/finish_signup" => "users#finish_signup", via: [:get, :patch], :as => :finish_signup
 
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
