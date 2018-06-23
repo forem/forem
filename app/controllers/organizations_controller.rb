@@ -4,7 +4,7 @@ class OrganizationsController < ApplicationController
   def create
     @tab = "organization"
     @user = current_user
-    @tab_list = tab_list(@user)
+    @tab_list = @user.settings_tab_list
     @organization = Organization.new(organization_params)
     if @organization.save
       current_user.update(organization_id: @organization.id, org_admin: true)
@@ -20,7 +20,7 @@ class OrganizationsController < ApplicationController
   def update
     @user = current_user
     @tab = "organization"
-    @tab_list = tab_list(@user)
+    @tab_list = @user.settings_tab_list
     raise unless @user.org_admin
     @organization = @user.organization
     if @organization.update(organization_params)

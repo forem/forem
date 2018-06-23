@@ -44,7 +44,7 @@ RSpec.describe "UserOrganization", type: :request do
     user.update(organization_id: organization.id)
     user2 = create(:user, organization_id: organization.id, org_admin: true)
     expect { post "/users/add_org_admin", params: { user_id: user2.id } }.
-      to raise_error RuntimeError
+      to raise_error Pundit::NotAuthorizedError
   end
 
   it "removes org admin" do
@@ -58,6 +58,6 @@ RSpec.describe "UserOrganization", type: :request do
     user.update(organization_id: organization.id)
     user2 = create(:user, organization_id: organization.id, org_admin: true)
     expect { post "/users/remove_org_admin", params: { user_id: user2.id } }.
-      to raise_error RuntimeError
+      to raise_error Pundit::NotAuthorizedError
   end
 end

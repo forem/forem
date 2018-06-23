@@ -20,7 +20,6 @@ require "shoulda/matchers"
 require "pundit/rspec"
 require "pundit/matchers"
 
-
 WebMock.disable_net_connect!(allow_localhost: true)
 
 # Add additional requires below this line. Rails is not loaded until this point!

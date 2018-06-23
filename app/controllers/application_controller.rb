@@ -75,19 +75,6 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def tab_list(user)
-    tab_list = ["Profile",
-                "Integrations",
-                "Notifications",
-                "Publishing from RSS",
-                "Organization",
-                "Billing"]
-    tab_list << "Membership" if user&.monthly_dues&.positive? && user&.stripe_id_code
-    tab_list << "Switch Organizations" if user&.has_role?(:switch_between_orgs)
-    tab_list << "Misc"
-    tab_list
-  end
-
   def touch_current_user
     current_user.touch
   end

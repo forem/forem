@@ -89,7 +89,7 @@ class StoriesController < ApplicationController
       @stories = @stories.where(approved: true)
     end
 
-    @stories = stories_by_timeframe 
+    @stories = stories_by_timeframe
 
     @stories = @stories.decorate
 
