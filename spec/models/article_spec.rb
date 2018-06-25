@@ -210,6 +210,61 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "queries" do
+    it "returns article plucked objects that match keyword query" do
+      create(:search_keyword,
+        google_result_path: article.path,
+        google_position: 8,
+        google_volume: 2000,
+        google_difficulty: 10)
+      article.update(featured: true)
+      articles = Article.seo_boostable
+      expect(articles.flatten[0]).to eq(article.path)
+    end
+    it "returns keyword articles by tag" do
+      create(:search_keyword,
+        google_result_path: article.path,
+        google_position: 8,
+        google_volume: 2000,
+        google_difficulty: 10)
+      article.update(featured: true)
+      articles = Article.seo_boostable(article.tags.first)
+      expect(articles.flatten[0]).to eq(article.path)
+    end
+    it "does not return articles when none match based on tag" do
+      create(:search_keyword,
+        google_result_path: article.path,
+        google_position: 8,
+        google_volume: 2000,
+        google_difficulty: 10)
+      article.update(featured: true)
+      articles = Article.seo_boostable("woozle-wozzle-20000")
+      expect(articles.size).to eq(0)
+    end
+    it "does not return keywords that don't match criteria plucked objects that match keyword query" do
+      create(:search_keyword,
+        google_result_path: article.path,
+        google_position: 33, #too high position
+        google_volume: 2000,
+        google_difficulty: 10)
+      articles = Article.seo_boostable
+      expect(articles.size).to eq(0)
+    end
+    it "does not return unpublished articles" do
+      create(:search_keyword,
+        google_result_path: article.path,
+        google_position: 8,
+        google_volume: 2000,
+        google_difficulty: 10)
+      articles = Article.seo_boostable
+      article.update(published: false)
+      expect(articles.size).to eq(0)
+    end
+    it "returns empty relation if no articles match" do
+      articles = Article.seo_boostable
+      expect(articles.size).to eq(0)
+    end
+  end
 
   it "detects no liquid tag if not used" do
     expect(article.decorate.liquid_tags_used).to eq([])
@@ -385,4 +440,5 @@ RSpec.describe Article, type: :model do
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
+  
 end

@@ -27,4 +27,13 @@ RSpec.describe BadgeRewarder do
     expect(user.badge_achievements.size).to eq(1)
     expect(user_other.badge_achievements.size).to eq(0)
   end
+
+  it "rewards top seven badge to users" do
+    badge = create(:badge, title: "Top 7")
+    user = create(:user)
+    user_other = create(:user)
+    third_other = create(:user)
+    BadgeRewarder.new.reward_top_seven_badges([user.username, user_other.username])
+    expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
+  end
 end
