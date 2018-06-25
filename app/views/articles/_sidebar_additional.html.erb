@@ -45,6 +45,25 @@
         <%= javascript_pack_tag "sidebarWidget", defer: true %>
         <div id="sidebarWidget__pack" data-tag-info="<%= @tag_model.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
         </div>
+      <% else %>
+        <% cache("seo-boostable-posts-for-tag#{@tag}", :expires_in => 18.hours) do %>
+          <% @boostable_posts = Article.seo_boostable(@tag) %>
+          <% if @boostable_posts.any? %>
+            <div class="widget">
+              <header>
+                trending guides/resources
+              </header>
+              <div class="widget-body">
+                <div class="widget-link-list">
+                  <% @boostable_posts.first(8).
+                    each do |plucked_article| %>
+                      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
       <% end %>
     <% elsif @query %>
     <% elsif @podcast_index %>
@@ -185,22 +204,43 @@
             <a class="cta cta-button" href="/new/explainlikeimfive">ASK FOR AN EXPLANATION</a>
         </div>
       </div>
-      <div class="widget" id="podcast-widget">
-        <header>
-          <a href="/pod">latest podcasts</pod>
-        </header>
-        <div class="widget-body">
-            <% @podcast_episodes.each do |ep| %>
-              <div class="widget-podcast-ep">
-                <a href="<%= ep.path %>"><%= ep.title %>
-                <div class="widget-podcast-title">
-                  <a href="<%= ep.podcast.path %>"><%= ep.podcast.title %>
+      <% if user_signed_in? %>
+        <div class="widget" id="podcast-widget">
+          <header>
+            <a href="/pod">latest podcasts</pod>
+          </header>
+          <div class="widget-body">
+              <% @podcast_episodes.each do |ep| %>
+                <div class="widget-podcast-ep">
+                  <a href="<%= ep.path %>"><%= ep.title %>
+                  <div class="widget-podcast-title">
+                    <a href="<%= ep.podcast.path %>"><%= ep.podcast.title %>
+                  </div>
+                </div>
+              <% end %>
+              <a class="cta cta-button" href="/pod">VIEW ALL</a>
+          </div>
+        </div>
+      <% else %>
+        <% cache("seo-boostable-posts-homepage", :expires_in => 18.hours) do %>
+          <% @boostable_posts = Article.seo_boostable %>
+          <% if @boostable_posts.any? %>
+            <div class="widget">
+              <header>
+                trending guides/resources
+              </header>
+              <div class="widget-body">
+                <div class="widget-link-list">
+                  <% @boostable_posts.first(12).
+                    each do |plucked_article| %>
+                      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+                  <% end %>
                 </div>
               </div>
-            <% end %>
-            <a class="cta cta-button" href="/pod">VIEW ALL</a>
-        </div>
-      </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
     <% end %>
   </div>
 </div>

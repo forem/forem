@@ -22,4 +22,14 @@ class BadgeRewarder
       # ID 3 is the proper ID in prod. We should change in future to ENV var.
     end
   end
+
+  def reward_top_seven_badges(usernames)
+    User.where(username: usernames).each do |user|
+      BadgeAchievement.create(
+        user_id: user.id,
+        badge_id: Badge.find_by_slug("top-7").id,
+        rewarding_context_message_markdown: "Congrats!!!")
+      user.save
+    end
+  end
 end
