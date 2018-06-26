@@ -81,7 +81,7 @@ Rails.application.routes.draw do
   get "/reports/:slug", to: "feedback_messages#show"
   resources :organizations, only: [:update, :create]
   resources :followed_articles, only: [:index]
-  resources :follows, only: [:index,:show,:create]
+  resources :follows, only: [:show,:create] 
   resources :giveaways, only: [:create,:update]
   resources :image_uploads, only: [:create]
   resources :blocks

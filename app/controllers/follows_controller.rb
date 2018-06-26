@@ -1,6 +1,8 @@
 class FollowsController < ApplicationController
+  after_action :verify_authorized
 
   def show
+    skip_authorization
     unless current_user
       render plain: "not-logged-in"
       return
@@ -13,20 +15,21 @@ class FollowsController < ApplicationController
   end
 
   def create
-    if params[:followable_type] == "Organization"
-      followable = Organization.find(params[:followable_id])
-    elsif params[:followable_type] == "Tag"
-      followable = Tag.find(params[:followable_id])
-    else
-      followable = User.find(params[:followable_id])
-    end
-    if params[:verb] == "unfollow"
-      current_user.stop_following(followable)
-      @result = "unfollowed"
-    else
-      current_user.follow(followable)
-      @result = "followed"
-    end
+    authorize Follow
+    followable = if params[:followable_type] == "Organization"
+                   Organization.find(params[:followable_id])
+                 elsif params[:followable_type] == "Tag"
+                   Tag.find(params[:followable_id])
+                 else
+                   User.find(params[:followable_id])
+                 end
+    @result = if params[:verb] == "unfollow"
+                current_user.stop_following(followable)
+                "unfollowed"
+              else
+                current_user.follow(followable)
+                "followed"
+              end
     current_user.save
     current_user.touch
     render json: { outcome: @result }

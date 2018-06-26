@@ -1,4 +1,5 @@
 class PagesController < ApplicationController
+  # No authorization required for entirely public controller
   before_action :set_cache_control_headers, only: [:rlyweb, :now, :events, :membership]
 
   def now

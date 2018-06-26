@@ -1,7 +1,9 @@
 class ImageUploadsController < ApplicationController
   before_action :authenticate_user!
+  after_action :verify_authorized
 
   def create
+    authorize :image_upload
     uploader = ArticleImageUploader.new
     uploader.store!(params[:image])
     link = uploader.url
