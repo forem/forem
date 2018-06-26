@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :github_repo do
+    user
     name               { Faker::Book.title }
     url                { Faker::Internet.url }
     description        { Faker::Book.title }

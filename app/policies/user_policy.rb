@@ -31,6 +31,10 @@ class UserPolicy < ApplicationPolicy
     user.org_admin && not_self? && within_the_same_org?
   end
 
+  def dashboard_show?
+    current_user? || user_is_admin?
+  end
+
   private
 
   def within_the_same_org?
@@ -39,5 +43,13 @@ class UserPolicy < ApplicationPolicy
 
   def not_self?
     user != record
+  end
+
+  def current_user?
+    user == record
+  end
+
+  def user_is_admin?
+    user.has_role? :super_admin
   end
 end

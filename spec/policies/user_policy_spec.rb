@@ -14,7 +14,7 @@ RSpec.describe UserPolicy do
   context "when user is signed-in" do
     let(:user) { other_user }
 
-    it { is_expected.to permit_actions(%i[edit update onboarding_update join_org leave_org]) }
+    it { is_expected.to permit_actions(%i[edit update onboarding_update join_org leave_org dashboard_show]) }
 
     context "with banned status" do
       before { user.add_role(:banned) }
@@ -27,7 +27,6 @@ RSpec.describe UserPolicy do
     let(:org) { build(:organization) }
     let(:other_org) { build(:organization) }
     let(:user) { build(:user, org_admin: true, organization: org) }
-
 
     context "with other_user as org_member of same org" do
       let(:other_user) { build(:user, organization: org) }

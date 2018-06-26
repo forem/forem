@@ -1,5 +1,8 @@
 class GithubReposController < ApplicationController
+  after_action :verify_authorized
+
   def create
+    authorize GithubRepo
     @client = create_octokit_client
     @repo = GithubRepo.find_or_create(fetched_repo_params)
     if @repo.valid?
@@ -12,6 +15,7 @@ class GithubReposController < ApplicationController
 
   def update
     @repo = GithubRepo.find(params[:id])
+    authorize @repo
     if @repo.update(featured: false)
       redirect_to "/settings/integrations", notice: "GitHub repo added"
     else
@@ -31,7 +35,7 @@ class GithubReposController < ApplicationController
 
   def fetched_repo_params
     fetched_repo = @client.repositories.select do |repo|
-      repo.id == github_repo_params[:github_id_code].to_i
+      repo.id == permitted_attributes(GithubRepo)[:github_id_code].to_i
     end.first
     {
       github_id_code: fetched_repo.id,
@@ -47,9 +51,5 @@ class GithubReposController < ApplicationController
       featured: true,
       info_hash: fetched_repo.to_hash,
     }
-  end
-
-  def github_repo_params
-    params.require(:github_repo).permit(:github_id_code)
   end
 end

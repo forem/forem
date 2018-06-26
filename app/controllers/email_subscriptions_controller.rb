@@ -1,4 +1,5 @@
 class EmailSubscriptionsController < ApplicationController
+  # No need to authorize this because its implicit when unsubbing
   def unsubscribe
     verified_params = Rails.application.message_verifier(:unsubscribe).verify(params[:ut])
 

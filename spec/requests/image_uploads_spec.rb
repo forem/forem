@@ -6,7 +6,7 @@ RSpec.describe "ImageUploads", type: :request do
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
 
     context "when not logged-in" do
-      it "redirects to /enter" do
+      it "responds with 401" do
         post "/image_uploads", headers: headers
         expect(response).to have_http_status(401)
       end

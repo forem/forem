@@ -1,4 +1,5 @@
 class FeedbackMessagesController < ApplicationController
+  # No authorization required for entirely public controller
   skip_before_action :verify_authenticity_token
 
   def create
@@ -42,19 +43,18 @@ class FeedbackMessagesController < ApplicationController
     <<~HEREDOC
       #{generate_user_detail}
       Category: #{feedback_message_params[:category]}
-      Message: #{feedback_message_params[:message]}
-      URL: #{params[:reported_url]}
+      *_Reported URL: #{feedback_message_params[:reported_url]}_*
+      -----
+      *Message:* #{feedback_message_params[:message]}
     HEREDOC
   end
 
   def generate_user_detail
-    return "" unless current_user
+    return "*Anonymous report:*" unless current_user
     <<~HEREDOC
       *Logged in user:*
-      username: #{current_user.username} - https://dev.to/#{current_user.username}
+      reporter: #{current_user.username} - https://dev.to/#{current_user.username}
       email: <mailto:#{current_user.email}|#{current_user.email}>
-      twitter: #{current_user.twitter_username}
-      github: #{current_user.github_username}
     HEREDOC
   end
 
