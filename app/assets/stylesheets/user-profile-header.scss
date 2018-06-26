@@ -158,6 +158,10 @@
           font-size:70px;
           margin-top:0px;
         }
+        > span:nth-child(1) {
+          word-break: break-word;
+          display: block;
+        }
       }
       p.profile-description{
         padding:0px 0px;
