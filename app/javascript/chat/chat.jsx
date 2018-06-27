@@ -291,7 +291,7 @@ export default class Chat extends Component {
   };
 
   handleChannelScroll = e => {
-    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 24) {
+    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 23) {
       return
     }
     this.setState({fetchingPaginatedChannels: true})
