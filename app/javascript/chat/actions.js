@@ -76,7 +76,7 @@ export function getChannels(query,retrievalID, props, paginationNumber, successC
   const client = algoliasearch(props.algoliaId, props.algoliaKey);
   const index = client.initIndex(props.algoliaIndex);
   index.search(query,{
-    hitsPerPage: 24,
+    hitsPerPage: 30 + paginationNumber,
     page: paginationNumber
   })
   .then(function(content) {
