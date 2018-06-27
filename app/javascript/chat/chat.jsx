@@ -174,16 +174,17 @@ export default class Chat extends Component {
   }
 
   loadPaginatedChannels = (channels) => {
-    const currentChannelIds = this.state.chatChannels.map((channel, index) => {
+    const currentChannels = this.state.chatChannels;
+    const currentChannelIds = currentChannels.map((channel, index) => {
       return channel.id
     })
-    let newChannels = this.state.chatChannels
+    let newChannels = currentChannels
     channels.forEach((channel, index) => {
       if (!currentChannelIds.includes(channel.id)) {
         newChannels.push(channel)
       }
     });
-    if (this.state.channelPaginationNum === 10) {
+    if (currentChannels.length === newChannels.length && this.state.channelPaginationNum > 3) {
       return
     }
     this.setState({
@@ -294,13 +295,12 @@ export default class Chat extends Component {
   };
 
   handleChannelScroll = e => {
-    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 20) {
+    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 30) {
       return
     }
-    this.setState({fetchingPaginatedChannels: true})
     const target = e.target;
-    if((target.scrollTop + target.offsetHeight + 600) > target.scrollHeight)
-    {
+    if((target.scrollTop + target.offsetHeight + 1800) > target.scrollHeight) {
+      this.setState({fetchingPaginatedChannels: true})
       getChannels(
         this.state.filterQuery,
         this.state.activeChannelId,
@@ -456,7 +456,6 @@ export default class Chat extends Component {
   setActiveContent = response => {
     let newActiveContent = this.state.activeContent
     newActiveContent[this.state.activeChannelId] = response
-    console.log(newActiveContent)
     this.setState({activeContent: newActiveContent});
     setTimeout(function() {
       document.getElementById("chat_activecontent").scrollTop = 0;
