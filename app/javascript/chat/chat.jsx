@@ -183,6 +183,9 @@ export default class Chat extends Component {
         newChannels.push(channel)
       }
     });
+    if (this.state.channelPaginationNum === 10) {
+      return
+    }
     this.setState({
       chatChannels: newChannels,
       fetchingPaginatedChannels: false,
@@ -291,12 +294,12 @@ export default class Chat extends Component {
   };
 
   handleChannelScroll = e => {
-    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 23) {
+    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 20) {
       return
     }
     this.setState({fetchingPaginatedChannels: true})
     const target = e.target;
-    if((target.scrollTop + target.offsetHeight + 500) > target.scrollHeight)
+    if((target.scrollTop + target.offsetHeight + 600) > target.scrollHeight)
     {
       getChannels(
         this.state.filterQuery,
