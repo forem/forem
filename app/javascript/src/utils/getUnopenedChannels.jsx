@@ -27,7 +27,6 @@ class UnopenedChannelNotice extends Component {
   }
 
   receiveNewMessage = e => {
-    console.log(location.pathname)
     if (location.pathname.startsWith("/connect")) {
       return
     }
@@ -37,12 +36,20 @@ class UnopenedChannelNotice extends Component {
       newObj.adjusted_slug != `@${window.currentUser.username}`) {
       channels.push(newObj);
     }
-    this.setState({visible: channels.length > 0, unopenedChannels: channels})
+    this.setState({
+      visible: (channels.length > 0 && e.user_id != window.currentUser.id),
+      unopenedChannels: channels
+    })
 
     const number = document.getElementById("connect-number")
     number.classList.add("showing")
     number.innerHTML = channels.length
     const component = this;
+    if (channels.length === 0) {
+      number.classList.remove("showing")
+    } else {
+      document.getElementById("connect-link").href = `/connect/${channels[0].adjusted_slug}`
+    }
     setTimeout(function(){
       component.setState({visible: false});
     }, 7500)
@@ -102,10 +109,12 @@ export default function getUnopenedChannels(user, successCb) {
   })
     .then(response => response.json())
     .then(json => {
+      const number = document.getElementById("connect-number")
       if (json.length > 0) {
-        const number = document.getElementById("connect-number")
         number.classList.add("showing")
         number.innerHTML = json.length
+      } else {
+        number.classList.remove("showing")
       }
     })
     .catch(error => {
