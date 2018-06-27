@@ -112,7 +112,7 @@ const Channels = ({ activeChannelId,
   }
   return (
     <div className="chatchannels">
-      <div className="chatchannels__channelslist">
+      <div className="chatchannels__channelslist" id="chatchannels__channelslist">
         {topNotice}
         {channels}
         {channelsListFooter}

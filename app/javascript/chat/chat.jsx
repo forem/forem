@@ -29,6 +29,8 @@ export default class Chat extends Component {
       chatChannels,
       filterQuery: '',
       channelsLoaded: false,
+      channelPaginationNum: 0,
+      fetchingPaginatedChannels: false,
       activeChannelId: chatOptions.activeChannelId,
       activeChannel: null,
       showChannelsList: chatOptions.showChannelsList,
@@ -65,13 +67,13 @@ export default class Chat extends Component {
       notificationsPermission: getNotificationState(),
     });
     if (this.state.showChannelsList) {
-      getChannels('', this.state.activeChannelId, this.props, this.loadChannels);
+      getChannels('', this.state.activeChannelId, this.props, this.state.channelPaginationNum, this.loadChannels);
     }
     if (!this.state.isMobileDevice) {
       document.getElementById("messageform").focus();
     }
+    document.getElementById('chatchannels__channelslist').addEventListener('scroll', this.handleChannelScroll);
   }
-
   componentDidUpdate() {
     if (!this.state.scrolled) {
       scrollToBottom();
@@ -134,6 +136,7 @@ export default class Chat extends Component {
         chatChannels: channels,
         scrolled: false,
         channelsLoaded: true,
+        channelPaginationNum: 0,
         activeChannel: this.filterForActiveChannel(channels, this.state.activeChannelId)
       });
     } if (this.state.activeChannelId) {
@@ -142,12 +145,14 @@ export default class Chat extends Component {
         scrolled: false,
         chatChannels: channels,
         channelsLoaded: true,
+        channelPaginationNum: 0,
         filterQuery: query
       });
     } else if (channels.length > 0) {
       this.setState({
         chatChannels: channels,
         channelsLoaded: true,
+        channelPaginationNum: 0,
         scrolled: false,
       });
       const channel = channels[0]
@@ -166,6 +171,23 @@ export default class Chat extends Component {
         this.subscribePusher(`presence-channel-${channel.id}`)
       }
     });
+  }
+
+  loadPaginatedChannels = (channels) => {
+    const currentChannelIds = this.state.chatChannels.map((channel, index) => {
+      return channel.id
+    })
+    let newChannels = this.state.chatChannels
+    channels.forEach((channel, index) => {
+      if (!currentChannelIds.includes(channel.id)) {
+        newChannels.push(channel)
+      }
+    });
+    this.setState({
+      chatChannels: newChannels,
+      fetchingPaginatedChannels: false,
+      channelPaginationNum: this.state.channelPaginationNum + 1
+    })
   }
 
   setupChannel = channelId => {
@@ -267,6 +289,23 @@ export default class Chat extends Component {
     const newMessages = { ...this.state.messages, [res.chat_channel_id]: [] };
     this.setState({ messages: newMessages });
   };
+
+  handleChannelScroll = e => {
+    if (this.state.fetchingPaginatedChannels || this.state.chatChannels.length < 24) {
+      return
+    }
+    this.setState({fetchingPaginatedChannels: true})
+    const target = e.target;
+    if((target.scrollTop + target.offsetHeight + 500) > target.scrollHeight)
+    {
+      getChannels(
+        this.state.filterQuery,
+        this.state.activeChannelId,
+        this.props,
+        this.state.channelPaginationNum,
+        this.loadPaginatedChannels);
+    }
+  }
 
   handleKeyDown = e => {
     const enterPressed = e.keyCode === 13;
@@ -464,7 +503,7 @@ export default class Chat extends Component {
   };
 
   triggerChannelFilter = e => {
-      getChannels(e.target.value, null, this.props, this.loadChannels);
+      getChannels(e.target.value, null, this.props, 0, this.loadChannels);
   }
 
   toggleExpand = () => {
