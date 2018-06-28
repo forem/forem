@@ -78,12 +78,8 @@ class StoriesController < ApplicationController
       redirect_to "/t/#{@tag_model.alias_for}"
       return
     end
-    @stories = Article.where(published: true).
-      includes(:user).
-      limited_column_select.
-      page(@page).
-      per(8).
-      filter_excluded_tags(@tag)
+
+    @stories = article_finder(8)
 
     if @tag_model && @tag_model.requires_approval
       @stories = @stories.where(approved: true)
@@ -103,12 +99,8 @@ class StoriesController < ApplicationController
     @home_page = true
     @page = (params[:page] || 1).to_i
     num_articles = user_signed_in? ? 3 : 15
-    @stories = Article.where(published: true).
-      includes(:user).
-      limited_column_select.
-      page(@page).
-      per(num_articles).
-      filter_excluded_tags(params[:tag])
+    @stories = article_finder(num_articles)
+
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
@@ -272,6 +264,15 @@ class StoriesController < ApplicationController
       @stories.order("hotness_score DESC")
     end
   end
+
+  def article_finder(num_articles)
+    Article.where(published: true).
+    includes(:user).
+    limited_column_select.
+    page(@page).
+    per(num_articles). 
+    filter_excluded_tags(params[:tag]) 
+  end 
 
   def assign_sticky_nav
     return unless @article
