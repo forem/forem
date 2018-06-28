@@ -20,7 +20,7 @@
     <meta name="twitter:image:src" content="<%= GeneratedImage.new(@user).social_image %>" >
     <%= auto_discovery_link_tag(:rss, "https://dev.to/feed/#{@user.username}", {title: "The Practical Dev RSS Feed"}) %>
   <% elsif @tag.present? %>
-    <% title "#{@tag}#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? } - The DEV Community" %>
+    <% title "#{@tag}#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? }" %>
     <link rel="canonical" href="https://dev.to/t/<%= @tag %>"/>
     <meta name="description" content="<%= @tag %> content on dev.to">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
@@ -47,7 +47,7 @@
     <% end %>
 
   <% elsif @query.present? %>
-    <% title "DEV => Search Results" %>
+    <% title "Search Results" %>
     <link rel="canonical" href="https://dev.to/search"/>
     <meta name="description" content="Where programmers share ideas and help each other grow.">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
@@ -67,7 +67,11 @@
   <% elsif @podcast_index %>
     <%= render "podcast_episodes/meta" %>
   <% else %>
-    <% title "The DEV Community#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? }" %>
+  <% if params[:timeframe].present? %>
+    <% title "DEV Community  👩‍💻👨‍💻 - top posts this #{params[:timeframe]}" %>
+  <% else %>
+    <% title "DEV Community  👩‍💻👨‍💻 - Where software engineers connect, build their resumes, and grow." %>
+  <% end %>
     <link rel="canonical" href="https://dev.to<%= request.path %>"/>
     <meta name="description" content="Where programmers share ideas and help each other grow.">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">

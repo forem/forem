@@ -2,8 +2,8 @@
 xml.instruct! :xml, :version => "1.0"
 xml.rss :version => "2.0" do
   xml.channel do
-    xml.title @user ? @user.name : "The DEV Community"
-    xml.author @user ? @user.name : "The DEV Community"
+    xml.title @user ? @user.name : "DEV Community"
+    xml.author @user ? @user.name : "DEV Community"
     xml.description  @user ? @user.summary : "Where programmers share ideas and help each other grow."
     xml.link @user ? "https://dev.to" + @user.path : "https://dev.to"
     xml.language "en"
