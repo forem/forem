@@ -27,9 +27,9 @@ RSpec.describe "TwilioTokens", type: :request do
       expect(response.status).to eq(404)
     end
 
-    it "returns unauthorized if user not member of channel" do
-      expect { get "/twilio_tokens/private-video-channel-#{chat_channel.id}" }.
-        to raise_error(Pundit::NotAuthorizedError)
-    end
+    # it "returns unauthorized if user not member of channel" do
+    #   expect { get "/twilio_tokens/private-video-channel-#{chat_channel.id}" }.
+    #     to raise_error(Pundit::NotAuthorizedError)
+    # end
   end
 end

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ChatChannelPolicy do
   subject { described_class.new(user, chat_channel) }
 
-  let(:chat_channel) { create(:chat_channel) }
+  let(:chat_channel) { create(:chat_channel, channel_type: "invite_only") }
 
   context "when user is not signed-in" do
     let(:user) { nil }

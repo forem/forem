@@ -34,7 +34,9 @@ document.ready.then(
         />,
         renderTarget, renderTarget.firstChild
       );
-      renderTarget.removeChild(placeholder);
+      if (placeholder) {
+        renderTarget.removeChild(placeholder);
+      }
       window.InstantClick.on('change', () => {
         render('', document.body, root);
       });

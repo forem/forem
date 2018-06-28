@@ -74,7 +74,9 @@ export default class Chat extends Component {
     if (!this.state.isMobileDevice) {
       document.getElementById("messageform").focus();
     }
-    document.getElementById('chatchannels__channelslist').addEventListener('scroll', this.handleChannelScroll);
+    if (document.getElementById('chatchannels__channelslist')) {
+      document.getElementById('chatchannels__channelslist').addEventListener('scroll', this.handleChannelScroll);
+    }
   }
   componentDidUpdate() {
     if (!this.state.scrolled) {

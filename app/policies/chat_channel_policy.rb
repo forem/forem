@@ -9,7 +9,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def show?
-    user_part_of_channel
+    user_part_of_channel_or_open
   end
 
   def open?
