@@ -28,6 +28,7 @@ export default class Chat extends Component {
       showAlert: false,
       chatChannels,
       filterQuery: '',
+      channelTypeFilter: 'all',
       channelsLoaded: false,
       channelPaginationNum: 0,
       fetchingPaginatedChannels: false,
@@ -67,7 +68,8 @@ export default class Chat extends Component {
       notificationsPermission: getNotificationState(),
     });
     if (this.state.showChannelsList) {
-      getChannels('', this.state.activeChannelId, this.props, this.state.channelPaginationNum, this.loadChannels);
+      const filters = this.state.channelTypeFilter === 'all' ? {} : {filters: 'channel_type:'+this.state.channelTypeFilter};
+      getChannels('', this.state.activeChannelId, this.props, this.state.channelPaginationNum, filters, this.loadChannels);
     }
     if (!this.state.isMobileDevice) {
       document.getElementById("messageform").focus();
@@ -301,11 +303,13 @@ export default class Chat extends Component {
     const target = e.target;
     if((target.scrollTop + target.offsetHeight + 1800) > target.scrollHeight) {
       this.setState({fetchingPaginatedChannels: true})
+      const filters = this.state.channelTypeFilter === 'all' ? {} : {filters: 'channel_type:'+this.state.channelTypeFilter};
       getChannels(
         this.state.filterQuery,
         this.state.activeChannelId,
         this.props,
         this.state.channelPaginationNum,
+        filters,
         this.loadPaginatedChannels);
     }
   }
@@ -472,6 +476,14 @@ export default class Chat extends Component {
     this.setState({ chatChannels: newChannelsObj });
   };
 
+  triggerChannelTypeFilter = e => {
+    const type = e.target.dataset.channelType;
+    this.setState({channelTypeFilter: type})
+    const filters = type === 'all' ? {} : {filters: 'channel_type:'+type};
+    console.log(filters)
+    getChannels(this.state.filterQuery, null, this.props, 0, filters, this.loadChannels);
+  }
+
   handleFailure = err => {
     console.error(err);
   };
@@ -505,7 +517,8 @@ export default class Chat extends Component {
   };
 
   triggerChannelFilter = e => {
-      getChannels(e.target.value, null, this.props, 0, this.loadChannels);
+      const filters = this.state.channelTypeFilter === 'all' ? {} : {filters: 'channel_type:'+this.state.channelTypeFilter};
+      getChannels(e.target.value, null, this.props, 0, filters, this.loadChannels);
   }
 
   toggleExpand = () => {
@@ -530,6 +543,17 @@ export default class Chat extends Component {
             {notificationsButton}
             <button className="chat__channelstogglebutt" onClick={this.toggleExpand}>{"<"}</button>
             <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
+            <div className='chat__channeltypefilter'>
+              <button data-channel-type='all' onClick={this.triggerChannelTypeFilter} className={`chat__channeltypefilterbutton chat__channeltypefilterbutton--${this.state.channelTypeFilter === 'all' ? 'active' : 'inactive'}`}>
+                all
+              </button>
+              <button data-channel-type='direct' onClick={this.triggerChannelTypeFilter} className={`chat__channeltypefilterbutton chat__channeltypefilterbutton--${this.state.channelTypeFilter === 'direct' ? 'active' : 'inactive'}`}>
+                direct
+              </button>
+              <button data-channel-type='invite_only' onClick={this.triggerChannelTypeFilter} className={`chat__channeltypefilterbutton chat__channeltypefilterbutton--${this.state.channelTypeFilter === 'invite_only' ? 'active' : 'inactive'}`}>
+                group
+              </button>
+            </div>
             <Channels
               activeChannelId={this.state.activeChannelId}
               chatChannels={this.state.chatChannels}

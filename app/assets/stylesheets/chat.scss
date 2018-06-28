@@ -105,6 +105,26 @@
   }
 }
 
+.chat__channeltypefilter{
+  padding: 3px 0px 3px;
+}
+
+.chat__channeltypefilterbutton{
+  background: transparent;
+  border: 0px;
+  font-size: 14px;
+  padding: 4px 8px 2px;
+  font-family: $monospace;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  display: inline-block;
+  border-bottom: 1px solid $light-medium-gray;
+}
+
+.chat__channeltypefilterbutton--active {
+  background: lighten($green, 18%);
+}
+
 .chat_chatconfig{
   position: absolute;
   bottom: 0px;
@@ -405,7 +425,7 @@
 }
 
 .chatchannels__channelslist {
-  padding: 10px 0;
+  padding: 3px 0 10px;
   flex-grow: 1;
   overflow: scroll;
   padding-bottom: 25px;
