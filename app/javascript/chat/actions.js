@@ -75,11 +75,7 @@ export function conductModeration(
 export function getChannels(query,retrievalID, props, paginationNumber, additionalFilters, successCb, failureCb) {
   const client = algoliasearch(props.algoliaId, props.algoliaKey);
   const index = client.initIndex(props.algoliaIndex);
-<<<<<<< HEAD
   let filters = {...{
-=======
-  index.search(query,{
->>>>>>> b8d2c0033e7046bb5e13d456f89a2a6f328c209a
     hitsPerPage: 30 + paginationNumber,
     page: paginationNumber
   }, ...additionalFilters};
