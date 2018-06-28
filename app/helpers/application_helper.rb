@@ -35,8 +35,13 @@ module ApplicationHelper
   end
 
   def title(page_title)
-    content_for(:title){ page_title }
-    page_title
+    derived_title = if page_title.include?("DEV")
+      page_title
+    else
+      page_title + " - DEV Community 👩‍💻👨‍💻"
+    end
+    content_for(:title){ derived_title }
+    derived_title
   end
 
   def icon(name, pixels = "20")
