@@ -35,6 +35,10 @@ class UserPolicy < ApplicationPolicy
     current_user? || user_is_admin?
   end
 
+  def moderation_routes?
+    user.has_role?(:trusted) && !user.banned
+  end
+
   private
 
   def within_the_same_org?
@@ -47,9 +51,5 @@ class UserPolicy < ApplicationPolicy
 
   def current_user?
     user == record
-  end
-
-  def user_is_admin?
-    user.has_role? :super_admin
   end
 end

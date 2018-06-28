@@ -217,6 +217,10 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
+  def is_admin?
+    has_role?(:super_admin)
+  end
+
   def trusted
     Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
@@ -246,6 +250,10 @@ class User < ApplicationRecord
     has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
   end
 
+  def is_org_admin?(organization)
+    user.org_admin && user.organization_id == organization.id
+  end
+
   def unique_including_orgs
     errors.add(:username, "is taken.") if Organization.find_by_slug(username)
   end
@@ -264,7 +272,7 @@ class User < ApplicationRecord
   handle_asynchronously :subscribe_to_mailchimp_newsletter
 
   def can_view_analytics?
-    has_any_role?(:super_admin, :admin, :analytics_beta_tester)
+    has_any_role?(:super_admin, :analytics_beta_tester)
   end
 
   def a_sustaining_member?
@@ -291,6 +299,7 @@ class User < ApplicationRecord
     tab_list << "Misc"
     tab_list
   end
+
 
 
   private

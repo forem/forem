@@ -54,10 +54,10 @@ class ApplicationPolicy
   end
 
   def user_is_admin?
-    user.has_any_role?(:super_admin, :admin)
+    user.has_role?(:super_admin)
   end
 
   def user_is_banned?
-    user.has_role?(:banned)
+    user.banned
   end
 end

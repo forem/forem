@@ -43,12 +43,6 @@ RSpec.describe ArticlePolicy do
     end
   end
 
-  context "when user is an admin" do
-    let(:user) { build(:user, :admin) }
-
-    it { is_expected.to permit_actions(%i[update new create delete_confirm destroy preview]) }
-  end
-
   context "when user is a super_admin" do
     let(:user) { build(:user, :super_admin) }
 

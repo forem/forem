@@ -36,4 +36,5 @@ RSpec.describe BadgeRewarder do
     BadgeRewarder.new.reward_top_seven_badges([user.username, user_other.username])
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
+
 end

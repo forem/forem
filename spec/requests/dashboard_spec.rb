@@ -69,7 +69,7 @@ RSpec.describe "Dashboards", type: :request do
         user.follow second_user
         login_as user
         get "/dashboard/following_users"
-        expect(response.body).to include second_user.name
+        expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
     end
   end
@@ -87,7 +87,7 @@ RSpec.describe "Dashboards", type: :request do
         second_user.follow user
         login_as user
         get "/dashboard/user_followers"
-        expect(response.body).to include second_user.name
+        expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
     end
   end

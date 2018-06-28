@@ -1,11 +1,13 @@
 class OrganizationsController < ApplicationController
   before_action :authenticate_user!, except: [:show]
+  after_action :verify_authorized
 
   def create
     @tab = "organization"
     @user = current_user
     @tab_list = @user.settings_tab_list
     @organization = Organization.new(organization_params)
+    authorize @organization
     if @organization.save
       current_user.update(organization_id: @organization.id, org_admin: true)
       redirect_to "/settings/organization", notice:
@@ -21,8 +23,9 @@ class OrganizationsController < ApplicationController
     @user = current_user
     @tab = "organization"
     @tab_list = @user.settings_tab_list
-    raise unless @user.org_admin
     @organization = @user.organization
+    authorize @organization
+
     if @organization.update(organization_params)
       redirect_to "/settings/organization", notice: "Your organization was successfully updated."
     else
@@ -33,6 +36,7 @@ class OrganizationsController < ApplicationController
   def generate_new_secret
     raise unless current_user.org_admin
     @organization = current_user.organization
+    authorize @organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
     redirect_to "/settings/organization", notice: "Your org secret was updated"

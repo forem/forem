@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
   let(:article)         { create(:article,user_id:user.id) }
   let(:tag)             { create(:tag) }
   let(:org)             { create(:organization) }
+  let (:second_org)     { create(:organization) }
 
   it { is_expected.to have_many(:articles) }
   it { is_expected.to have_many(:badge_achievements) }
@@ -308,14 +309,27 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "organization admin privileges" do
+    it "recognizes an org admin" do
+      user.update(organization: org, org_admin: true)
+      expect(user.is_org_admin?(org)).to be true
+    end
+
+    it "forbids an incorrect org admin" do
+      user.update(organization: org, org_admin: true)
+      expect(user.is_org_admin?(second_org)).to be false
+      expect(second_user.is_org_admin?(org)).to be false
+    end
+
+    it "responds to nil" do
+      expect(user.is_org_admin?(nil)).to be false
+      expect(second_user.is_org_admin?(nil)).to be false
+    end
+  end
+
   describe "#can_view_analytics?" do
     it "returns true for users with :super_admin role" do
       user.add_role(:super_admin)
-      expect(user.can_view_analytics?).to be true
-    end
-
-    it "returns true for users with :admin role" do
-      user.add_role(:admin)
       expect(user.can_view_analytics?).to be true
     end
 

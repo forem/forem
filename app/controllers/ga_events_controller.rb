@@ -1,4 +1,5 @@
 class GaEventsController < ApplicationController
+  # No authorization required for entirely public controller
 
   # This controller is for tracking activity when GA script fails
   # IP is scrambled as to not be persisted to limit fingerprinting abilities on our end.

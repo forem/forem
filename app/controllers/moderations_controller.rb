@@ -1,20 +1,15 @@
 class ModerationsController < ApplicationController
-
-  before_action :check_trusted
+  after_action :verify_authorized
 
   def article
+    authorize(User, :moderation_routes?)
     @moderatable = Article.find_by_slug(params[:slug])
     render template: "moderations/mod"
   end
 
   def comment
+    authorize(User, :moderation_routes?)
     @moderatable = Comment.find(params[:id_code].to_i(26))
     render template: "moderations/mod"
-  end
-
-  private
-
-  def check_trusted
-    not_found unless current_user&.has_role?(:trusted)
   end
 end

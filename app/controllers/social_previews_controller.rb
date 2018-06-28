@@ -1,4 +1,5 @@
 class SocialPreviewsController < ApplicationController
+  # No authorization required for entirely public controller
 
   def article
     @article = Article.find(params[:id])
@@ -20,5 +21,4 @@ class SocialPreviewsController < ApplicationController
     @tag = Tag.find(params[:id]) || not_found
     render layout: false
   end
-
 end

@@ -40,8 +40,4 @@ class CommentPolicy < ApplicationPolicy
   def user_is_author?
     record.user_id == user.id
   end
-
-  def user_is_banned?
-    user.has_role?(:banned)
-  end
 end

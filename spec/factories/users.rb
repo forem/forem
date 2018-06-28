@@ -26,6 +26,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:admin) }
     end
 
+    trait :trusted do
+      after(:build) { |user| user.add_role(:trusted) }
+    end
+
     trait :banned do
       after(:build) { |user| user.add_role(:banned) }
     end
@@ -39,6 +43,10 @@ FactoryBot.define do
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
         # user.class.skip_callback(:validates, :after_create)
       end
+    end
+
+    trait :analytics do
+      after(:build) { |user| user.add_role(:analytics_beta_tester) }
     end
 
     after(:create) do |user|
