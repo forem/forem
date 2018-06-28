@@ -49,7 +49,7 @@ class PagesController < ApplicationController
   def live
     @active_channel = ChatChannel.find_by_channel_name("Workshop")
     @chat_channels = [@active_channel].to_json(
-      only: [:channel_name,:channel_type,:last_message_at,:slug, :status])
+      only: [:channel_name,:channel_type,:last_message_at,:slug, :status, :id])
   end
 
   private # helpers
