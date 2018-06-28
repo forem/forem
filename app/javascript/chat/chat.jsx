@@ -175,6 +175,7 @@ export default class Chat extends Component {
         this.subscribePusher(`presence-channel-${channel.id}`)
       }
     });
+    document.getElementById('chatchannels__channelslist').scrollTop = 0;
   }
 
   loadPaginatedChannels = (channels) => {
@@ -481,9 +482,11 @@ export default class Chat extends Component {
 
   triggerChannelTypeFilter = e => {
     const type = e.target.dataset.channelType;
-    this.setState({channelTypeFilter: type})
+    this.setState({
+      channelTypeFilter: type,
+      fetchingPaginatedChannels: false,
+    })
     const filters = type === 'all' ? {} : {filters: 'channel_type:'+type};
-    console.log(filters)
     getChannels(this.state.filterQuery, null, this.props, 0, filters, this.loadChannels);
   }
 
