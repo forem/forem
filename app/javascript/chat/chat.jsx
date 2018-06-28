@@ -139,6 +139,7 @@ export default class Chat extends Component {
         scrolled: false,
         channelsLoaded: true,
         channelPaginationNum: 0,
+        filterQuery: '',
         activeChannel: this.state.activeChannel || this.filterForActiveChannel(channels, this.state.activeChannelId)
       });
     } else if (this.state.activeChannelId) {
@@ -155,6 +156,7 @@ export default class Chat extends Component {
         chatChannels: channels,
         channelsLoaded: true,
         channelPaginationNum: 0,
+        filterQuery: query || '',
         scrolled: false,
       });
       const channel = channels[0]
