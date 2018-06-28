@@ -1,6 +1,6 @@
-include CloudinaryHelper
-
 class User < ApplicationRecord
+  include CloudinaryHelper
+
   attr_accessor :scholar_email
   rolify
   include AlgoliaSearch
@@ -56,15 +56,15 @@ class User < ApplicationRecord
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
-              message: "%{value} is not a valid shirt style" },
+                           message: "%{value} is not a valid shirt style" },
               allow_blank: true
   validates :shirt_size,
               inclusion: { in: %w(xs s m l xl 2xl 3xl 4xl),
-              message: "%{value} is not a valid size" },
+                           message: "%{value} is not a valid size" },
               allow_blank: true
   validates :tabs_or_spaces,
               inclusion: { in: %w(tabs spaces),
-              message: "%{value} is not a valid answer" },
+                           message: "%{value} is not a valid answer" },
               allow_blank: true
   validates :shipping_country,
               length: { in: 2..2 },
@@ -87,7 +87,6 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_validation :unescape_summary
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -129,7 +128,7 @@ class User < ApplicationRecord
 
   def self.trigger_delayed_index(record, remove)
     if remove
-      record.delay.remove_from_index! if (record && record.persisted?)
+      record.delay.remove_from_index! if record&.persisted?
     else
       record.delay.index!
     end
@@ -146,28 +145,29 @@ class User < ApplicationRecord
   def estimate_default_language!
     identity = identities.where(provider: "twitter").first
     if email.end_with?(".jp")
-      self.update(:estimated_default_language => "ja", :prefer_language_ja => true)
+      update(estimated_default_language: "ja", prefer_language_ja: true)
     elsif identity
       lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
-      self.update(:estimated_default_language => lang, "prefer_language_#{lang}" => true)
+      update(:estimated_default_language => lang,
+             "prefer_language_#{lang}" => true)
     end
   end
   handle_asynchronously :estimate_default_language!
 
   def calculate_score
-    score = (articles.where(featured:true).size*100) + (comments.sum(:score))
-    self.update_column(:score, score)
+    score = (articles.where(featured: true).size * 100) + comments.sum(:score)
+    update_column(:score, score)
   end
 
   def path
-    "/"+username.to_s
+    "/" + username.to_s
   end
 
   def followed_articles
     Article.tagged_with(cached_followed_tag_names, any: true).union(
       Article.where(
         user_id: cached_following_users_ids,
-      )
+      ),
     ).where(language: cached_preferred_langs, published: true)
   end
 
@@ -203,8 +203,14 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tag_names", expires_in: 100.hours) do
-      Tag.where(id:Follow.where(follower_id:id,followable_type:"ActsAsTaggableOn::Tag").pluck(:followable_id)).pluck(:name)
+    cache_name = "user-#{id}-#{updated_at}/followed_tag_names"
+    Rails.cache.fetch(cache_name, expires_in: 100.hours) do
+      Tag.where(
+        id: Follow.where(
+          follower_id: id,
+          followable_type: "ActsAsTaggableOn::Tag",
+        ).pluck(:followable_id),
+      ).pluck(:name)
     end
   end
 
@@ -300,14 +306,7 @@ class User < ApplicationRecord
     tab_list
   end
 
-
-
   private
-
-  def unescape_summary
-    return unless summary.present?
-    self.summary = CGI.unescapeHTML(summary)
-  end
 
   def send_welcome_notification
     Broadcast.send_welcome_notification(id)
@@ -322,9 +321,9 @@ class User < ApplicationRecord
 
   def set_temp_username
     self.username = if temp_name_exists?
-      temp_username + "_" + rand(100).to_s
-    else
-      temp_username
+                      temp_username + "_" + rand(100).to_s
+                    else
+                      temp_username
     end
   end
 
@@ -335,7 +334,7 @@ class User < ApplicationRecord
   def temp_username
     if twitter_username
       twitter_username.downcase.gsub(/[^0-9a-z_]/i, "").gsub(/ /, "")
-    elsif  github_username
+    elsif github_username
       github_username.downcase.gsub(/[^0-9a-z_]/i, "").gsub(/ /, "")
     end
   end

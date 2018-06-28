@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     @tab_list = @user.settings_tab_list
     @tab = params["user"]["tab"] || "profile"
     authorize @user
-    if @user.update(user_params)
+    if @user.update(permitted_attributes(@user))
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       follow_hiring_tag(@user)
@@ -115,59 +115,5 @@ class UsersController < ApplicationController
         return
       end
     end
-  end
-
-  private
-
-  def user_params
-    accessible = %i[name
-                    email
-                    username
-                    profile_image
-                    website_url
-                    summary
-                    email_newsletter
-                    email_digest_periodic
-                    email_membership_newsletter
-                    email_comment_notifications
-                    email_mention_notifications
-                    email_follower_notifications
-                    email_badge_notifications
-                    email_unread_notifications
-                    bg_color_hex
-                    text_color_hex
-                    employer_name
-                    employer_url
-                    employment_title
-                    currently_learning
-                    available_for
-                    mostly_work_with
-                    currently_hacking_on
-                    location
-                    email_public
-                    education
-                    looking_for_work
-                    looking_for_work_publicly
-                    contact_consent
-                    feed_url
-                    feed_mark_canonical
-                    prefer_language_en
-                    prefer_language_ja
-                    prefer_language_es
-                    prefer_language_fr
-                    prefer_language_it
-                    display_sponsors
-                    permit_adjacent_sponsors
-                    feed_admin_publish_permission]
-    accessible << %i[password password_confirmation] unless params[:user][:password].blank?
-    params.require(:user).
-      permit(accessible).
-      transform_values do |value|
-        if value.class.name == "String"
-          ActionController::Base.helpers.strip_tags(value)
-        else
-          value
-        end
-      end
   end
 end

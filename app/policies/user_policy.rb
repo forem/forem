@@ -39,6 +39,50 @@ class UserPolicy < ApplicationPolicy
     user.has_role?(:trusted) && !user.banned
   end
 
+  def permitted_attributes
+    %i[available_for
+       bg_color_hex
+       contact_consent
+       currently_hacking_on
+       currently_learning
+       display_sponsors
+       education
+       email
+       email_badge_notifications
+       email_comment_notifications
+       email_digest_periodic
+       email_follower_notifications
+       email_membership_newsletter
+       email_mention_notifications
+       email_newsletter
+       email_public
+       email_unread_notifications
+       employer_name
+       employer_url
+       employment_title
+       feed_admin_publish_permission
+       feed_mark_canonical
+       feed_url
+       location
+       looking_for_work
+       looking_for_work_publicly
+       mostly_work_with
+       name
+       permit_adjacent_sponsors
+       password
+       password_confirmation
+       prefer_language_en
+       prefer_language_es
+       prefer_language_fr
+       prefer_language_it
+       prefer_language_ja
+       profile_image
+       summary
+       text_color_hex
+       username
+       website_url]
+  end
+
   private
 
   def within_the_same_org?
