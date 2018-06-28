@@ -139,9 +139,9 @@ export default class Chat extends Component {
         scrolled: false,
         channelsLoaded: true,
         channelPaginationNum: 0,
-        activeChannel: this.filterForActiveChannel(channels, this.state.activeChannelId)
+        activeChannel: this.state.activeChannel || this.filterForActiveChannel(channels, this.state.activeChannelId)
       });
-    } if (this.state.activeChannelId) {
+    } else if (this.state.activeChannelId) {
       this.setupChannel(this.state.activeChannelId);
       this.setState({
         scrolled: false,
