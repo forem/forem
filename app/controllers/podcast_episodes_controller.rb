@@ -1,7 +1,6 @@
 class PodcastEpisodesController < ApplicationController
-
-  before_action :require_http_auth, only: [:edit,:update,:admin]
-  before_action :set_cache_control_headers, only: [:index, :show]
+  # No authorization required for entirely public controller
+  before_action :set_cache_control_headers, only: [:index]
 
   def index
     @podcast_index = true

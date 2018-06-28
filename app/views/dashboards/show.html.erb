@@ -3,8 +3,8 @@
 <div class="dashboard-container">
   <div class="actions">
     <a class="action <%= 'active' if params[:which] == "organization" || params[:which].blank? %>" href="/dashboard">POSTS (<%= @user.articles_count %>)</a>
-    <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">Followers (<%= @user.followers_count %>)</a>
-    <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">Following (<%= @user.following_users_count %>)</a>
+    <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">FOLLOWERS (<%= @user.followers_count %>)</a>
+    <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">FOLLOWING (<%= @user.following_users_count %>)</a>
   </div>
 <% if @user.org_admin && @user.organization %>
   <h1>
@@ -26,7 +26,7 @@
               <span class="pill cta yellow">DRAFT</span>
             <% end %>
             <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
-            <% if article.published && current_user.has_role?(:analytics_beta_tester) %>
+            <% if article.published && current_user.can_view_analytics? %>
               <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
             <% end %>
           </div>
@@ -77,7 +77,7 @@
           <% end %>
           <a href="<%= article.path %>/edit" class="cta pill green">EDIT</a>
           <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
-          <% if article.published && current_user.has_role?(:analytics_beta_tester) %>
+          <% if article.published && current_user.can_view_analytics? %>
             <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
           <% end %>
         </div>  

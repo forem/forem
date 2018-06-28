@@ -30,10 +30,4 @@ class BlockPolicy < ApplicationPolicy
   def permitted_attributes
     %i[input_html input_css input_javascript featured index_position publish_now]
   end
-
-  private
-
-  def user_is_admin?
-    user.has_role? :super_admin
-  end
 end

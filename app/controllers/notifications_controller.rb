@@ -4,7 +4,7 @@ class NotificationsController < ApplicationController
   def index
     if user_signed_in?
       @notifications_index = true
-      @user = if params[:username] && current_user_is_admin?
+      @user = if params[:username] && current_user.is_admin?
         User.find_by_username(params[:username])
       else
         current_user

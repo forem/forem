@@ -1,13 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
-  include EnforceAdmin
-
   include Pundit
-
-  # before_action :require_http_auth if ENV["APP_NAME"] == "dev_stage"
-
-  #before_action :customize_params
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|

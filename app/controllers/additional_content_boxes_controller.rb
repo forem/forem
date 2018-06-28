@@ -1,4 +1,5 @@
 class AdditionalContentBoxesController < ApplicationController
+  # No authorization required for entirely public controller
   def index
     article_ids = params[:article_id].split(",")
     @article = Article.find(article_ids[0])

@@ -1,6 +1,8 @@
 class BlocksController < ApplicationController
   before_action :set_block, only: [:show, :edit, :update, :destroy]
+
   after_action :verify_authorized
+
 
   # GET /blocks
   # GET /blocks.json
@@ -78,4 +80,5 @@ class BlocksController < ApplicationController
   def set_block
     @block = Block.find(params[:id])
   end
+
 end

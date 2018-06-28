@@ -1,4 +1,9 @@
 class Internal::ApplicationController < ApplicationController
-  include EnforceAdmin
-  before_action :require_super_admin
+    before_action :authorize_admin
+
+    private
+
+    def authorize_admin
+      authorize :admin, :show?
+    end
 end

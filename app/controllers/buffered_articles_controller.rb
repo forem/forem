@@ -1,4 +1,5 @@
 class BufferedArticlesController < ApplicationController
+  # No authorization required for entirely public controller
   def index
     @article_urls = buffered_article_urls
     render json: {

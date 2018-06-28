@@ -23,7 +23,7 @@ RSpec.describe "Moderations", type: :request do
     it "returns 404 if user trusted not trusted" do
       expect do
         get article.path + "/mod"
-      end.to raise_error(ActionController::RoutingError)
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 
@@ -36,7 +36,7 @@ RSpec.describe "Moderations", type: :request do
     it "returns 404 if user trusted not trusted" do
       expect do
         get comment.path + "/mod"
-      end.to raise_error(ActionController::RoutingError)
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "AdditionalContentBoxes", type: :request do
+
   let(:regular_article) { create(:article) }
 
   describe "GET /additional_content_boxes" do

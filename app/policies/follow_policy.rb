@@ -1,5 +1,5 @@
 class FollowPolicy < ApplicationPolicy
   def create?
-    !user.banned
+    !user_is_banned?
   end
 end

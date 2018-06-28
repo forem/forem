@@ -3,26 +3,12 @@ class Internal::BroadcastsController < Internal::ApplicationController
 
   def create
     @broadcast = Broadcast.new(broadcast_params)
-    if @broadcast.save
-      # custom notifications not in use yet
-      # if @broadcast.sent && @broadcast.type_of == "Announcement"
-      #   # only send new notifications for announcements
-      #   # onboarding notifications are automated
-      #   Notification.send_all(@broadcast, @broadcast.type_of)
-      # end
-    end
     redirect_to "/internal/broadcasts"
   end
 
   def update
     @broadcast = Broadcast.find(params[:id])
     @broadcast.update(broadcast_params)
-    # if @broadcast.save
-    #   if @broadcast.sent && @broadcast.type_of == "Announcement"
-    #    # see create action comments
-    #     Notification.send_all(@broadcast, @broadcast.type_of)
-    #   end
-    # end
     redirect_to "/internal/broadcasts"
   end
 

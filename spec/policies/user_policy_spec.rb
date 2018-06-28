@@ -19,7 +19,7 @@ RSpec.describe UserPolicy do
     context "with banned status" do
       before { user.add_role(:banned) }
 
-      it { is_expected.to forbid_actions(%i[join_org]) }
+      it { is_expected.to forbid_actions(%i[join_org moderation_routes]) }
     end
   end
 
@@ -51,5 +51,17 @@ RSpec.describe UserPolicy do
 
       it { is_expected.to forbid_actions(%i[remove_org_admin]) }
     end
+  end
+
+  context "when user is trusted" do
+    let(:user) { build(:user, :trusted) }
+
+    it { is_expected.to permit_actions(%i[moderation_routes]) }
+  end
+
+  context "when user is not trusted" do
+    let(:user) { build(:user) }
+
+    it { is_expected.to forbid_actions(%i[moderation_routes]) }
   end
 end
