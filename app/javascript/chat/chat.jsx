@@ -303,6 +303,7 @@ export default class Chat extends Component {
     const target = e.target;
     if((target.scrollTop + target.offsetHeight + 1800) > target.scrollHeight) {
       this.setState({fetchingPaginatedChannels: true})
+      
       const filters = this.state.channelTypeFilter === 'all' ? {} : {filters: 'channel_type:'+this.state.channelTypeFilter};
       getChannels(
         this.state.filterQuery,
