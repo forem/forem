@@ -87,6 +87,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
+  before_destroy :remove_from_algolia_index
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -454,5 +455,9 @@ class User < ApplicationRecord
   def search_score
     score = (((articles_count + comments_count + reactions_count) * 10) + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
+  end
+
+  def remove_from_algolia_index
+    remove_from_index!
   end
 end
