@@ -50,6 +50,22 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /membership" do
+    it "has proper headline" do
+      get "/membership"
+      expect(response.body).to include("Sustaining Membership")
+    end
+  end
+
+  describe "GET /welcome" do
+    it "has proper headline" do
+      get "/welcome"
+
+      expect(response.body).to include("You are being <a")
+    end
+  end
+
+
   describe "GET /live" do
     let(:user) { create(:user) }
 
