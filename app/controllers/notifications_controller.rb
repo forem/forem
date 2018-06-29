@@ -18,7 +18,7 @@ class NotificationsController < ApplicationController
   private
 
   def cached_activities
-    return feed_activities if Rails.env.development?
+    return feed_activities unless Rails.env.production?
     Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",
       expires_in: 5.hours) do
       feed_activities
@@ -26,6 +26,7 @@ class NotificationsController < ApplicationController
   end
 
   def feed_activities
+    return [] if Rails.env.test?
     feed = StreamRails.feed_manager.get_notification_feed(@user.id)
     results = feed.get(limit: 45)["results"]
     @enricher.enrich_aggregated_activities(results)

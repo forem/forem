@@ -115,6 +115,8 @@ RSpec.configure do |config|
 
     stub_request(:post, /us-east-api.stream-io-api.com\/api\/v1.0\/feed\/user/)
       .to_return(status: 200, body: '{}', headers: {})
+
+    stub_request(:get, /us-east-api.stream-io-api.com\/api/).to_rack(FakeStream)
   end
 
   # Stub Stream.io

@@ -38,6 +38,7 @@ class UnreadNotificationsEmailer
   end
 
   def user_activities
+    return [] if Rails.env.test?
     feed = StreamRails.feed_manager.get_notification_feed(user.id)
     results = feed.get["results"]
     StreamRails::Enrich.new.enrich_aggregated_activities(results)
