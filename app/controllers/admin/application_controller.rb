@@ -7,6 +7,7 @@
 module Admin
   class ApplicationController < Administrate::ApplicationController
     include Pundit
+    protect_from_forgery with: :exception, prepend: true
     before_action :authorize_admin
 
     def order
