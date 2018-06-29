@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Tags", type: :request do
+RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
       get "/tags"
@@ -22,7 +22,8 @@ RSpec.describe "Tags", type: :request do
 
     it "does not allow users who are not tag moderators" do
       sign_in unauthorized_user
-      expect { get "/t/#{tag}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+      get "/t/#{tag}/edit"
+      expect(response).to have_http_status(:not_found)
     end
 
     it "allows super admins" do
@@ -43,7 +44,8 @@ RSpec.describe "Tags", type: :request do
       end
 
       it "does not allow moderators of one tag to edit another tag" do
-        expect { get "/t/#{another_tag}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+        get "/t/#{another_tag}/edit"
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -63,7 +65,8 @@ RSpec.describe "Tags", type: :request do
 
     it "does not allow unauthorized users" do
       sign_in unauthorized_user
-      expect { patch "/tag/#{tag.id}" }.to raise_error(Pundit::NotAuthorizedError)
+      patch "/tag/#{tag.id}"
+      expect(response).to have_http_status(:not_found)
     end
 
     it "allows super admins" do
@@ -92,8 +95,8 @@ RSpec.describe "Tags", type: :request do
       end
 
       it "does not allow moderators of one tag to edit another tag" do
-        expect { patch("/tag/#{another_tag.id}", params: valid_params) }.
-          to raise_error(Pundit::NotAuthorizedError)
+        patch("/tag/#{another_tag.id}", params: valid_params)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
