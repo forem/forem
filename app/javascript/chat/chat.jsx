@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { conductModeration, getAllMessages, sendMessage, sendOpen, getChannels, getContent } from './actions';
+import { conductModeration, getAllMessages, sendMessage, sendOpen, getChannels, getContent, getChannelInvites, sendChannelInviteAction } from './actions';
 import { hideMessages, scrollToBottom, setupObserver, setupNotifications, getNotificationState } from './util';
 import Alert from './alert';
 import Channels from './channels';
@@ -8,6 +8,7 @@ import Compose from './compose';
 import Message from './message';
 import Content from './content';
 import Video from './video';
+import View from './view';
 
 import setupPusher from '../src/utils/pusher';
 
@@ -42,7 +43,9 @@ export default class Chat extends Component {
       isMobileDevice: typeof window.orientation !== "undefined",
       subscribedPusherChannels: [],
       activeVideoChannelId: null,
-      incomingVideoCallChannelIds: []
+      incomingVideoCallChannelIds: [],
+      nonChatView: null,
+      inviteChannels: []
     };
   }
 
@@ -77,7 +80,9 @@ export default class Chat extends Component {
     if (document.getElementById('chatchannels__channelslist')) {
       document.getElementById('chatchannels__channelslist').addEventListener('scroll', this.handleChannelScroll);
     }
+    getChannelInvites(this.handleChannelInvites,null);
   }
+
   componentDidUpdate() {
     if (!this.state.scrolled) {
       scrollToBottom();
@@ -320,6 +325,10 @@ export default class Chat extends Component {
     }
   }
 
+  handleChannelInvites = response => {
+    this.setState({inviteChannels: response})
+  }
+
   handleKeyDown = e => {
     const enterPressed = e.keyCode === 13;
     const targetValue = e.target.value;
@@ -446,21 +455,26 @@ export default class Chat extends Component {
   }
 
   triggerActiveContent = e => {
+    e.preventDefault();
+    e.stopPropagation();
     const target = e.target
     let newActiveContent = this.state.activeContent
-    if (e.target.dataset.content && e.target.dataset.content != "exit") {
-      e.preventDefault();
+    if (target.dataset.content === 'channel-details') {
+      newActiveContent[this.state.activeChannelId] = {
+        type_of: "channel-details",
+        channel: this.state.activeChannel
+      }
+    } else if (target.dataset.content && target.dataset.content.startsWith('users/')) {
       newActiveContent[this.state.activeChannelId] = {type_of: "loading-user"}
       getContent('/api/'+target.dataset.content, this.setActiveContent, null)
     } else if (target.tagName.toLowerCase() === 'a' && target.href.startsWith('https://dev.to/')) {
-      e.preventDefault();
       newActiveContent[this.state.activeChannelId] = {type_of: "loading-post"}
       getContent(`/api/articles/by_path?url=${target.href.split('https://dev.to')[1]}`, this.setActiveContent, null)
     } else if (target.dataset.content === "exit") {
-      e.preventDefault();
       newActiveContent[this.state.activeChannelId] = null
     }
-      this.setState({activeContent: newActiveContent})
+    this.setState({activeContent: newActiveContent})
+    return false;
   }
 
   setActiveContent = response => {
@@ -482,6 +496,20 @@ export default class Chat extends Component {
     this.setState({ chatChannels: newChannelsObj });
   };
 
+  handleInvitationAccept = e => {
+    const id = e.target.dataset.content
+    sendChannelInviteAction(id, 'accept', this.handleChannelInviteResult, null)
+  }
+
+  handleInvitationDecline = e => {
+    const id = e.target.dataset.content
+    sendChannelInviteAction(id, 'decline', this.handleChannelInviteResult, null)
+  }
+
+  handleChannelInviteResult = response => {
+    this.setState({inviteChannels: response})
+  }
+
   triggerChannelTypeFilter = e => {
     const type = e.target.dataset.channelType;
     this.setState({
@@ -490,6 +518,14 @@ export default class Chat extends Component {
     })
     const filters = type === 'all' ? {} : {filters: 'channel_type:'+type};
     getChannels(this.state.filterQuery, null, this.props, 0, filters, this.loadChannels);
+  }
+
+  triggerNonChatView = e => {
+    this.setState({nonChatView: e.target.dataset.content})
+  }
+
+  triggerExitView = () => {
+    this.setState({nonChatView: null})
   }
 
   handleFailure = err => {
@@ -538,6 +574,7 @@ export default class Chat extends Component {
       const notificationsPermission = this.state.notificationsPermission;
       let notificationsButton = "";
       let notificationsState = "";
+      let invitesButton = ''
       if (notificationsPermission === "waiting-permission") {
         notificationsButton = <div><button className="chat__notificationsbutton " onClick={this.triggerNotificationRequest}>Turn on Notifications</button></div>;
       } else if (notificationsPermission === "granted") {
@@ -545,12 +582,18 @@ export default class Chat extends Component {
       } else if (notificationsPermission === "denied") {
         notificationsState = <div className="chat_chatconfig chat_chatconfig--off">Notificatins Off</div>
       }
+      if (this.state.inviteChannels.length > 0) {
+        invitesButton = <div class='chat__channelinvitationsindicator'><button onClick={this.triggerNonChatView} data-content='invitations'>
+                          New Invitations!
+                        </button></div>
+      }
       if (this.state.expanded) {
         return (
           <div className="chat__channels chat__channels--expanded">
             {notificationsButton}
             <button className="chat__channelstogglebutt" onClick={this.toggleExpand}>{"<"}</button>
             <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
+            {invitesButton}
             <div className='chat__channeltypefilter'>
               <button data-channel-type='all' onClick={this.triggerChannelTypeFilter} className={`chat__channeltypefilterbutton chat__channeltypefilterbutton--${this.state.channelTypeFilter === 'all' ? 'active' : 'inactive'}`}>
                 all
@@ -619,8 +662,8 @@ export default class Chat extends Component {
         </div>
       </div>
       <Content
+        onTriggerContent={this.triggerActiveContent}
         resource={this.state.activeContent[this.state.activeChannelId]}
-        onExit={this.triggerActiveContent}
         activeChannelId={this.state.activeChannelId}
         pusherKey={this.props.pusherKey}
         githubToken={this.props.githubToken}
@@ -638,10 +681,10 @@ export default class Chat extends Component {
       let channelHeaderInner = ''
       if (currentChannel.channel_type === "direct") {
         const username = currentChannel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '');
-        channelHeaderInner = <a href={'/'+username}>@{username}</a>
+        channelHeaderInner = <a href={'/'+username} onClick={this.triggerActiveContent} data-content={`users/by_username?url=${username}`}>@{username}</a>
       }
       else {
-        channelHeaderInner = currentChannel.channel_name;
+        channelHeaderInner = <a href={'/'+currentChannel.adjusted_slug} onClick={this.triggerActiveContent} data-content='channel-details'>{currentChannel.channel_name}</a>;
       }
       channelHeader = <div className="activechatchannel__header">
                         {channelHeaderInner}
@@ -654,11 +697,21 @@ export default class Chat extends Component {
     } else if (this.state.incomingVideoCallChannelIds.includes(this.state.activeChannelId) ) {
       incomingCall = <div className="activechatchannel__incomingcall" onClick={this.answerVideoCall}>👋 Incoming Video Call </div>
     }
+    let nonChatView = ''
+    if (this.state.nonChatView) {
+      nonChatView = <View
+                      channels={this.state.inviteChannels}
+                      onViewExit={this.triggerExitView}
+                      onAcceptInvitation={this.handleInvitationAccept}
+                      onDeclineInvitation={this.handleInvitationDecline}
+                      />
+    }
     return (
-      <div className={"chat chat--" + (this.state.expanded ? "expanded" : "contracted")}>
+      <div className={"chat chat--" + (this.state.expanded ? "expanded" : "contracted")} data-no-instant>
         {this.renderChatChannels()}
         <div className="chat__activechat">
           {vid}
+          {nonChatView}
           {this.renderActiveChatChannel(channelHeader, incomingCall)}
         </div>
       </div>

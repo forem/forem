@@ -5,6 +5,13 @@ class ChatChannel < ApplicationRecord
   has_many :messages
   has_many :chat_channel_memberships
   has_many :users, through: :chat_channel_memberships
+  
+  has_many :active_memberships, -> { where status: "active" }, class_name: 'ChatChannelMembership'
+  has_many :pending_memberships, -> { where status: "pending" }, class_name: 'ChatChannelMembership'
+  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: 'ChatChannelMembership'
+  has_many :active_users, :through => :active_memberships, class_name: "User", :source => :user
+  has_many :pending_users, :through => :pending_memberships, class_name: "User", :source => :user
+  has_many :rejected_users, :through => :rejected_memberships, class_name: "User", :source => :user
 
   validates :channel_type, presence: true, inclusion: { in: %w(open invite_only direct) }
   validates :status, presence: true, inclusion: { in: %w(active inactive) }
@@ -28,7 +35,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def has_member?(user)
-    users.include?(user)
+    active_users.include?(user)
   end
 
   def last_opened_at(user = nil)
@@ -79,7 +86,6 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-
   def adjusted_slug(user = nil, caller_type="reciever")
     user ||= current_user
     if channel_type == "direct" && caller_type == "reciever"
@@ -92,7 +98,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def viewable_by
-    chat_channel_memberships.pluck(:user_id)
+    active_memberships.pluck(:user_id)
   end
 
   def messages_count
@@ -100,15 +106,16 @@ class ChatChannel < ApplicationRecord
   end
 
   def channel_human_names
-    chat_channel_memberships.
-      order("last_opened_at DESC").limit(20).includes(:user).map do |m|
+    active_memberships.
+      order("last_opened_at DESC").limit(5).includes(:user).map do |m|
         m.user.name
       end
   end
 
   def channel_users
+    # Purely for algolia indexing
     pics_obj = {}
-    chat_channel_memberships.
+    active_memberships.
       order("last_opened_at DESC").limit(80).includes(:user).each_with_index do |m, i|
       pics_obj[m.user.username] = {
         profile_image: i < 11 ? ProfileImage.new(m.user).get(90) : nil,

@@ -72,7 +72,8 @@ Rails.application.routes.draw do
   end
 
   resources :messages, only: [:create]
-  resources :chat_channels, only: [:index, :show]
+  resources :chat_channels, only: [:index, :show, :create, :update]
+  resources :chat_channel_memberships, only: [ :create, :update]
   resources :articles, only: [:update,:create,:destroy]
   resources :comments, only: [:create,:update,:destroy]
   resources :users, only: [:update]

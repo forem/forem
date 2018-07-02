@@ -6,6 +6,9 @@ class ChatChannelsController < ApplicationController
     if params[:state] == "unopened"
       authorize ChatChannel
       render_unopened_json_response
+    elsif params[:state] == "pending"
+      authorize ChatChannel
+      render_pending_json_response
     else
       skip_authorization
       render_channels_html
@@ -15,6 +18,27 @@ class ChatChannelsController < ApplicationController
   def show
     @chat_channel = ChatChannel.find_by_id(params[:id]) || not_found
     authorize @chat_channel
+  end
+
+  def create
+    authorize ChatChannel
+    @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
+    if @chat_channel.valid?
+      render json: { status: "success", chat_channel: @chat_channel.to_json(only: [:channel_name,:slug]) }, status: 200
+    else
+      render json: { errors: @chat_channel.errors.full_messages }
+    end
+  end
+
+  def update
+    @chat_channel = ChatChannel.find(params[:id])
+    authorize @chat_channel
+    ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
+    if @chat_channel.valid?
+      render json: { status: "success", chat_channel: @chat_channel.to_json(only: [:channel_name,:slug]) }, status: 200
+    else
+      render json: { errors: @chat_channel.errors.full_messages }
+    end
   end
 
   def open
@@ -60,7 +84,7 @@ class ChatChannelsController < ApplicationController
   private
 
   def chat_channel_params
-    params.require(:chat_channel).permit(:command)
+    params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
   end
 
   def render_unopened_json_response
@@ -74,6 +98,19 @@ class ChatChannelsController < ApplicationController
     end
     render "index.json"
   end
+
+  def render_pending_json_response
+    if current_user
+      @chat_channels_memberships = current_user.
+      chat_channel_memberships.includes(:chat_channel).
+      where(status: "pending").
+      order("chat_channel_memberships.updated_at DESC")
+    else
+      @chat_channels_memberships = []
+    end
+    render "index.json"
+  end
+
 
   def render_channels_html
     return unless current_user

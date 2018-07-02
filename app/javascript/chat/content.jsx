@@ -2,11 +2,12 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import CodeEditor from './codeEditor';
 import GithubRepo from './githubRepo';
+import ChannelDetails from './channelDetails';
+import UserDetails from './userDetails';
 
 export default class Content extends Component {
   static propTypes = {
     resource: PropTypes.object,
-    onExit: PropTypes.func,
     activeChannelId: PropTypes.number,
     pusherKey: PropTypes.string,
   };
@@ -15,10 +16,12 @@ export default class Content extends Component {
       return ""
     } else {
       return (
-        <div className="activechatchannel__activecontent" id="chat_activecontent">
+        <div
+          className="activechatchannel__activecontent" id="chat_activecontent"
+          onClick={this.props.onTriggerContent}
+          >
           <button
             class="activechatchannel__activecontentexitbutton"
-            onClick={this.props.onExit}
             data-content="exit"
             >×</button>
             {display(this.props)}
@@ -43,20 +46,7 @@ function display(props) {
                       display: "block",
                       backgroundColor: "#f5f6f7"}}></div>
   } else if (props.resource.type_of === "user") {
-      return <div><img
-                    src={props.resource.profile_image}
-                    style={{height: "210px",
-                      width: "210px",
-                      margin:" 15px auto",
-                      display: "block",
-                      borderRadius: "500px"}} />
-                <h1 style={{textAlign: "center"}}>
-                  <a href={"/"+props.resource.username}>{props.resource.name}</a>
-                </h1>
-                <div style={{fontStyle: "italic"}}>
-                  {props.resource.summary}
-                </div>
-             </div>
+    return <UserDetails user={props.resource} />
   } else if (props.resource.type_of === "article") {
     return (
             <div class="container">
@@ -79,6 +69,11 @@ function display(props) {
               pusherKey={props.pusherKey}
               githubToken={props.githubToken}
               resource={props.resource}
+            />
+  } else if (props.resource.type_of === "channel-details") {
+    return <ChannelDetails
+              channel={props.resource.channel}
+              activeChannelId={props.activeChannelId}
             />
   } else if (props.resource.type_of === "code_editor") {
     return <CodeEditor

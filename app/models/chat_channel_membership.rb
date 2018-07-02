@@ -4,6 +4,7 @@ class ChatChannelMembership < ApplicationRecord
 
   validates :user_id, presence: true, uniqueness: { scope: :chat_channel_id }
   validates :chat_channel_id, presence: true, uniqueness: { scope: :user_id }
+  validates :status, inclusion: { in: %w{active inactive pending rejected left_channel} }
   validate  :permission
 
   private

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180624230435) do
+ActiveRecord::Schema.define(version: 20180629201047) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20180624230435) do
     t.datetime "created_at", null: false
     t.boolean "has_unopened_messages", default: false
     t.datetime "last_opened_at", default: "2017-01-01 05:00:00"
+    t.string "status", default: "active"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["chat_channel_id"], name: "index_chat_channel_memberships_on_chat_channel_id"
