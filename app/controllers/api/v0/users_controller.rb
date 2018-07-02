@@ -16,7 +16,11 @@ module Api
       end
 
       def show
-        @user = User.find(params[:id])
+        if params[:id] == "by_username"
+          @user = User.find_by_username(params[:url])
+        else
+          @user = User.find(params[:id])
+        end
       end
 
       def less_than_one_day_old?(user)

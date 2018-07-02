@@ -188,6 +188,25 @@
   }
 }
 
+.chatNonChatView{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  padding: 80px 7%;
+  background: white;
+}
+
+.chatNonChatView_exitbutton{
+  position: absolute;
+  left: 4%;
+  top: 60px;
+  font-size:25px;
+  background: white;
+  border:0px;
+}
+
 .chat__videocallexitbutton{
   border:  0px;
   font-size: 20px;
@@ -341,6 +360,18 @@
 .activecontent__githubrepofilerow{
   padding: 4px 2px;
   border-top: 1px solid $light-medium-gray;
+}
+
+.chat__channelinvitationsindicator button {
+  background: $green;
+  text-align: center;
+  padding: 10px 0px;
+  display: block;
+  border-radius: 3px;
+  margin: 3px 0px;
+  border: 0px;
+  width: 93%;
+  font-size: 0.9em;
 }
 
 .chatchannels {

@@ -14,20 +14,20 @@ RSpec.describe ChatChannelPolicy do
   context "when user is not a part of channel" do
     let(:user) { build(:user) }
     it { is_expected.to permit_actions(%i[index]) }
-    it { is_expected.to forbid_actions(%i[show open moderate]) }
+    it { is_expected.to forbid_actions(%i[show open moderate update]) }
   end
 
   context "when user is a part of channel" do
     let(:user) { create(:user) }
     before { chat_channel.add_users [user] }
     it { is_expected.to permit_actions(%i[index show open]) }
-    it { is_expected.to forbid_actions(%i[moderate]) }
+    it { is_expected.to forbid_actions(%i[moderate update]) }
   end
 
   context "when user is an admin but not part of channel" do
     let(:user) { create(:user) }
     before { user.add_role(:super_admin) }
-    it { is_expected.to permit_actions(%i[index moderate]) }
+    it { is_expected.to permit_actions(%i[index moderate update]) }
     it { is_expected.to forbid_actions(%i[show open]) }
   end
 end

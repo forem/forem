@@ -49,6 +49,29 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "get /chat_channels?state=pending" do
+    it "returns pending channels" do
+      pending_membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id,
+        user_id:user.id, status: "pending")
+      sign_in user
+      get "/chat_channels?state=pending"
+      expect(response.body).to include(invite_channel.slug)
+    end
+    it "returns no pending channels if no invites" do
+      sign_in user
+      get "/chat_channels?state=pending"
+      expect(response.body).not_to include(invite_channel.slug)
+    end
+    it "returns no pending channels if not pending" do
+      pending_membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id,
+        user_id:user.id, status: "rejected")
+      sign_in user
+      get "/chat_channels?state=pending"
+      expect(response.body).not_to include(invite_channel.slug)
+    end
+  end
+
+
   describe "GET /chat_channels/:id" do
     context "when request is valid" do
       before do
@@ -68,6 +91,48 @@ RSpec.describe "ChatChannels", type: :request do
       it "returns proper error message" do
         expect { get "/chat_channels/1200" }.to raise_error(ActionController::RoutingError)
       end
+    end
+  end
+
+  describe "POST /chat_channels" do
+    it "creates chat_channel for current user" do
+      post "/chat_channels",
+      params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channel" } },
+      headers: { HTTP_ACCEPT: "application/json" }
+      expect(ChatChannel.last.slug).to eq("hello-channel")
+      expect(ChatChannel.last.active_users).to include(user)
+    end
+    it "returns errors if channel is invalid" do
+      #slug should be taken
+      post "/chat_channels",
+      params: { chat_channel: { channel_name: "HEy hey hoho", slug: chat_channel.slug } },
+      headers: { HTTP_ACCEPT: "application/json" }
+      expect(response.body).to include("Slug has already been taken")
+    end
+  end
+
+  describe "PUT /chat_channels/:id" do
+    it "updates channel for valid user" do
+      user.add_role(:super_admin)
+      put "/chat_channels/#{chat_channel.id}",
+      params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
+      headers: { HTTP_ACCEPT: "application/json" }
+      expect(ChatChannel.last.slug).to eq("hello-channelly")
+    end
+    it "dissallows invalid users" do
+      expect do
+        put "/chat_channels/#{chat_channel.id}",
+        params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
+        headers: { HTTP_ACCEPT: "application/json" }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+    it "returns errors if channel is invalid" do
+      #slug should be taken
+      user.add_role(:super_admin)
+      put "/chat_channels/#{chat_channel.id}",
+      params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
+      headers: { HTTP_ACCEPT: "application/json" }
+      expect(response.body).to include("Slug has already been taken")
     end
   end
 
