@@ -1,7 +1,9 @@
 class StripeActiveCardsController < ApplicationController
+  before_action :authenticate_user!
   before_action :touch_current_user
 
   def create
+    authorize :stripe_active_card
     customer = find_or_create_customer
     if customer.sources.create(source: stripe_params[:stripe_token])
       logger.info("Stripe Add New Card Success - #{current_user.username}")
@@ -15,7 +17,8 @@ class StripeActiveCardsController < ApplicationController
   end
 
   def update
-    customer = find_or_create_customer
+    authorize :stripe_active_card
+    customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
     card = customer.sources.retrieve(params[:id])
     customer.default_source = card.id
     if customer.save
@@ -33,7 +36,8 @@ class StripeActiveCardsController < ApplicationController
   end
 
   def destroy
-    customer = find_or_create_customer
+    authorize :stripe_active_card
+    customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
     if customer.subscriptions.count.zero? || customer.sources.all(object: "card").count > 1
       customer.sources.retrieve(params[:id]).delete
       customer.save
@@ -47,7 +51,7 @@ class StripeActiveCardsController < ApplicationController
 
   def find_or_create_customer
     if current_user.stripe_id_code.present?
-      customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
+      Stripe::Customer.retrieve(current_user.stripe_id_code)
     else
       customer = Stripe::Customer.create(
         email: current_user.email,

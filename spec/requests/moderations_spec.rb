@@ -10,33 +10,39 @@ RSpec.describe "Moderations", type: :request do
            user_id: user.id)
   end
 
-  before do
-    sign_in user
-  end
-
-  describe "GET moderations article" do
-    it "returns 200 if user trusted" do
-      user.add_role :trusted
-      get article.path + "/mod"
-      expect(response).to have_http_status(200)
-    end
-    it "returns 404 if user trusted not trusted" do
-      expect do
+  describe "GET /mod on articles" do
+    context "when user is trusted" do
+      it "responds with 200" do
+        user.add_role :trusted
+        sign_in user
         get article.path + "/mod"
-      end.to raise_error(Pundit::NotAuthorizedError)
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "when user is not trusted", proper_status: true do
+      it "responds with 404" do
+        get article.path + "/mod"
+        expect(response).to have_http_status(404)
+      end
     end
   end
 
   describe "GET moderations comment" do
-    it "returns 200 if user trusted" do
-      user.add_role :trusted
-      get comment.path + "/mod"
-      expect(response).to have_http_status(200)
-    end
-    it "returns 404 if user trusted not trusted" do
-      expect do
+    context "when user is trusted" do
+      it "responds with 200" do
+        user.add_role :trusted
+        sign_in user
         get comment.path + "/mod"
-      end.to raise_error(Pundit::NotAuthorizedError)
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context "when user is not trusted", proper_status: true do
+      it "responds with 404" do
+        get comment.path + "/mod"
+        expect(response).to have_http_status(404)
+      end
     end
   end
 end

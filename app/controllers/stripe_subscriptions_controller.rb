@@ -3,6 +3,7 @@ class StripeSubscriptionsController < ApplicationController
   before_action :touch_current_user
 
   def create
+    authorize :stripe_subscription
     amount = stripe_params[:amount]
     customer = find_or_create_customer
     if customer &&
@@ -24,8 +25,9 @@ class StripeSubscriptionsController < ApplicationController
   end
 
   def update
+    authorize :stripe_subscription
     amount = stripe_params[:amount]
-    customer = find_or_create_customer
+    customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
     if MembershipService.new(customer, current_user, amount).update_subscription
       logger.info("Stripe Update Subscription Success - #{current_user.username}")
       redirect_to "/settings/membership", notice:
@@ -40,7 +42,8 @@ class StripeSubscriptionsController < ApplicationController
   end
 
   def destroy
-    customer = find_or_create_customer
+    authorize :stripe_subscription
+    customer = Stripe::Customer.retrieve(current_user.stripe_id_code)
     if MembershipService.new(customer, current_user, nil).unsubscribe_customer
       logger.info("Stripe Cancel Subscription Success - #{current_user.username}")
       redirect_to "/settings", notice:
@@ -51,6 +54,8 @@ class StripeSubscriptionsController < ApplicationController
         "There was a problem updating your plan." }
     end
   end
+
+  private
 
   def find_or_create_customer
     if current_user.stripe_id_code.present?
@@ -64,8 +69,6 @@ class StripeSubscriptionsController < ApplicationController
     end
     customer
   end
-
-  private
 
   def stripe_params
     params[:amount] = convert_amount_to_cent
