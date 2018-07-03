@@ -101,7 +101,7 @@ export default class ChannelDetails extends Component {
                     {searchedUsers}
                     <h2>Pending Invites:</h2>
                     {pendingInvites}
-                    <div>Channels can have a maximum of 128 members, including outstanding invites. All functionality is early beta. Contact us if you need help with anything or to have any restrictions lifted.</div>
+                    <div style={{marginTop: "10px"}}>All functionality is early beta. Contact us if you need help with anything.</div>
                    </div>
     }
     return  <div>
