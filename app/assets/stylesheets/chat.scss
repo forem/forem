@@ -54,6 +54,7 @@
   border: 1px solid darken($green, 30%);
   box-shadow: 3px 3px 0px darken($green, 30%);
   background: lighten($green,30%);
+  margin-bottom: 5px;
   &:hover{
     background: lighten($green, 20%);
   }

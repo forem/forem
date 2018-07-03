@@ -21,14 +21,13 @@ class Message < ApplicationRecord
   end
 
   def send_push
-    return unless chat_channel.channel_type == "direct"
     reciever_ids = chat_channel.chat_channel_memberships.
       where.not(user_id: user.id).pluck(:user_id)
     PushNotificationSubscription.where(user_id: reciever_ids).each do |sub|
-      p sub
+      return if should_send_push?(sub)
       Webpush.payload_send(
         endpoint: sub.endpoint,
-        message: message_html,
+        message: ActionView::Base.full_sanitizer.sanitize(message_html),
         p256dh: sub.p256dh_key,
         auth: sub.auth_key,
         ttl: 24 * 60 * 60,
@@ -72,5 +71,10 @@ class Message < ApplicationRecord
     else
       errors.add(:base, "You are not a participant of this chat channel.")
     end
+  end
+
+  def should_send_push?(sub)
+    membership = sub.user.chat_channel_memberships.order("last_opened_at DESC").first
+    membership.last_opened_at > 40.seconds.ago
   end
 end

@@ -96,7 +96,9 @@ export function setupNotifications() {
 
 export function getNotificationState() {
   //Not yet ready
-  return "dont-ask"
+  if (!window.location.href.includes('ask-for-notifications')){
+    return "dont-ask"
+  }
 
   // Let's check if the browser supports notifications
   if (!("Notification" in window)) {
