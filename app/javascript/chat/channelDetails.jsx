@@ -43,7 +43,6 @@ export default class ChannelDetails extends Component {
   triggerInvite = e => {
     const component = this;
     const id = e.target.dataset.content;
-    console.log(e.target)
     e.target.style.display = 'none'
     fetch(`/chat_channel_memberships`, {
       method: 'POST',
