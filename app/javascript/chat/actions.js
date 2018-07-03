@@ -164,7 +164,9 @@ export function sendChannelInviteAction(id, action, successCb, failureCb) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      user_action: action,
+      chat_channel_membership: {
+        user_action: action,
+      }
     }),
     credentials: 'same-origin',
   })

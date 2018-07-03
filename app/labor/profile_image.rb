@@ -1,4 +1,5 @@
 class ProfileImage
+  include CloudinaryHelper
   attr_accessor :resource, :image_link, :backup_link
 
   def initialize(resource)
@@ -8,7 +9,7 @@ class ProfileImage
   end
 
   def get(width = 120)
-    CloudinaryHelper.cl_image_path(get_link,
+    cl_image_path(get_link,
                                    type: "fetch",
                                    crop: "fill",
                                    width: width,
