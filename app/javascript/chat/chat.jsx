@@ -354,14 +354,10 @@ export default class Chat extends Component {
       newActiveContent[this.state.activeChannelId] = {type_of: "code_editor"}
       this.setState({activeContent: newActiveContent})
     } else if (message.startsWith('/call')) {
-      if (this.state.activeChannel.channel_type === 'direct') {
         this.setState({activeVideoChannelId: this.state.activeChannelId})
         window.pusher.channel(`presence-channel-${this.state.activeChannelId}`).trigger('client-initiatevideocall', {
           channelId: this.state.activeChannelId
         });
-      } else {
-        alert("Calls are only currently available in direct channels");
-      }
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim()
       let newActiveContent = this.state.activeContent
@@ -675,7 +671,6 @@ export default class Chat extends Component {
   
 
   render() {
-    console.log(this.state.activeChannel)
     let channelHeader = <div className="activechatchannel__header">&nbsp;</div>
     let channelHeaderInner = ''
     const currentChannel = this.state.activeChannel

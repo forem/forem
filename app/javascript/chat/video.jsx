@@ -12,7 +12,8 @@ export default class Video extends Component {
       pageX: null,
       pageY: null,
       token: null,
-      room: null
+      room: null,
+      participants: []
     }
   }
   componentDidMount() {
@@ -29,6 +30,7 @@ export default class Video extends Component {
       {
         name:`private-video-channel-${this.props.activeChannelId}`,
         audio: true,
+        type: 'peer-to-peer',
         video: { width: 640 }
       }).then(function(room) {
       component.setState({token: response.token, room: room})
@@ -36,13 +38,19 @@ export default class Video extends Component {
         let localMediaContainer = document.getElementById('videolocalscreen');
         localMediaContainer.appendChild(track.attach());
       });
-
+      let roomParticipants = []
       room.participants.forEach(participant => {
         component.triggerRemoteJoin(participant);
+        roomParticipants.push(participant);
       });
-
+      component.setState({participants: roomParticipants})
       room.on('participantConnected', function(participant) {
         component.triggerRemoteJoin(participant);
+        let roomParticipants = []
+        room.participants.forEach(participant => {
+          roomParticipants.push(participant);
+        });
+        component.setState({participants: roomParticipants})
         room.on('participantDisconnected', function(participant) {
           component.props.onExit()
         });
@@ -54,7 +62,7 @@ export default class Video extends Component {
   }
 
   triggerRemoteJoin = (participant) => {
-    document.getElementById('videoremotescreen').innerHTML = ""
+    // document.getElementById('videoremotescreen').innerHTML = ""
     participant.on('trackAdded', track => {
       document.getElementById('videoremotescreen').appendChild(track.attach());
     });
@@ -90,7 +98,7 @@ export default class Video extends Component {
           onDrag={this.handleDrag}
           style={{left:this.state.leftPx+'px', top: this.state.topPx+'px'}}
           >
-        <div id="videoremotescreen"></div>
+        <div id="videoremotescreen" class={'chat__remotevideoscreen-'+this.state.participants.length}></div>
         <div className="chat__localvideoscren" id="videolocalscreen"></div>
         <button className="chat__videocallexitbutton" onClick={this.props.onExit}>
           ×
