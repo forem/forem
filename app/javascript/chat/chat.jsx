@@ -452,9 +452,11 @@ export default class Chat extends Component {
   }
 
   triggerActiveContent = e => {
-    e.preventDefault();
-    e.stopPropagation();
     const target = e.target
+    if (target.dataset.content || (target.href && target.href.startsWith('https://dev.to/'))) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     let newActiveContent = this.state.activeContent
     if (target.dataset.content === 'channel-details') {
       newActiveContent[this.state.activeChannelId] = {
