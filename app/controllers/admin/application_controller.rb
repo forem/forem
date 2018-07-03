@@ -20,7 +20,6 @@ module Admin
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
 
-
     private
 
     def authorize_admin

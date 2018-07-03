@@ -14,13 +14,19 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     it "creates chat channel invitation" do
       user.add_role(:super_admin)
       mems_num = ChatChannelMembership.all.size
-      post "/chat_channel_memberships", params: {user_id: second_user.id, chat_channel_id: chat_channel.id}
+      post "/chat_channel_memberships", params: {
+        chat_channel_membership: {
+          user_id: second_user.id, chat_channel_id: chat_channel.id}
+        }
       expect(ChatChannelMembership.all.size).to eq(mems_num + 1)
       expect(ChatChannelMembership.last.status).to eq("pending")
     end
     it "denies chat channel invitation to non-authorized user" do
       expect do
-        post "/chat_channel_memberships", params: {user_id: second_user.id, chat_channel_id: chat_channel.id}
+        post "/chat_channel_memberships", params: {
+          chat_channel_membership: {
+            user_id: second_user.id, chat_channel_id: chat_channel.id}
+          }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -28,24 +34,29 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "PUT /chat_channel_memberships/:id" do
     before do
       user.add_role(:super_admin)
-      post "/chat_channel_memberships", params: {user_id: second_user.id, chat_channel_id: chat_channel.id}
+      post "/chat_channel_memberships", params: {
+        chat_channel_membership: {user_id: second_user.id, chat_channel_id: chat_channel.id}}
     end
     it "accepts chat channel invitation" do
       membership = ChatChannelMembership.last
       sign_in second_user
-      put "/chat_channel_memberships/#{membership.id}", params: {user_action: "accept"}
+      put "/chat_channel_memberships/#{membership.id}", params: {
+        chat_channel_membership: {
+          user_action: "accept"}}
       expect(ChatChannelMembership.find(membership.id).status).to eq("active")
     end
     it "rejects chat channel invitation" do
       membership = ChatChannelMembership.last
       sign_in second_user
-      put "/chat_channel_memberships/#{membership.id}", params: {user_action: "reject"}
+      put "/chat_channel_memberships/#{membership.id}", params: {
+        chat_channel_membership: {user_action: "reject"}}
       expect(ChatChannelMembership.find(membership.id).status).to eq("rejected")
     end
     it "disallows non-logged-user" do
       membership = ChatChannelMembership.last
       expect do
-        put "/chat_channel_memberships/#{membership.id}", params: {user_action: "accept"}
+        put "/chat_channel_memberships/#{membership.id}", params: {
+          chat_channel_membership: {user_action: "accept"}}
         expect(ChatChannelMembership.find(membership.id).status).to eq("active")
       end.to raise_error(Pundit::NotAuthorizedError)
     end

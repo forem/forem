@@ -9,9 +9,11 @@ class ChatChannel < ApplicationRecord
   has_many :active_memberships, -> { where status: "active" }, class_name: 'ChatChannelMembership'
   has_many :pending_memberships, -> { where status: "pending" }, class_name: 'ChatChannelMembership'
   has_many :rejected_memberships, -> { where status: "rejected" }, class_name: 'ChatChannelMembership'
+  has_many :mod_memberships, -> { where role: "mod" }, class_name: 'ChatChannelMembership'
   has_many :active_users, :through => :active_memberships, class_name: "User", :source => :user
   has_many :pending_users, :through => :pending_memberships, class_name: "User", :source => :user
   has_many :rejected_users, :through => :rejected_memberships, class_name: "User", :source => :user
+  has_many :mod_users, :through => :mod_memberships, class_name: "User", :source => :user
 
   validates :channel_type, presence: true, inclusion: { in: %w(open invite_only direct) }
   validates :status, presence: true, inclusion: { in: %w(active inactive) }
@@ -20,7 +22,7 @@ class ChatChannel < ApplicationRecord
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
     attribute :id, :viewable_by, :slug, :channel_type,
       :channel_name, :channel_users, :last_message_at, :status,
-      :messages_count, :channel_human_names
+      :messages_count, :channel_human_names, :channel_mod_ids, :pending_usernames
     searchableAttributes [:channel_name, :channel_slug, :channel_human_names]
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
     ranking ["desc(last_message_at)"]
@@ -114,17 +116,30 @@ class ChatChannel < ApplicationRecord
 
   def channel_users
     # Purely for algolia indexing
-    pics_obj = {}
+    obj = {}
     active_memberships.
       order("last_opened_at DESC").limit(80).includes(:user).each_with_index do |m, i|
-      pics_obj[m.user.username] = {
-        profile_image: i < 11 ? ProfileImage.new(m.user).get(90) : nil,
-        darker_color: m.user.decorate.darker_color,
-        name: m.user.name,
-        last_opened_at: m.last_opened_at,
-        username: m.user.username,
-      }
+      obj[m.user.username] = user_obj(m, i)
     end
-    pics_obj
+    obj
+  end
+
+  def pending_usernames
+    pending_users.pluck(:username)
+  end
+
+  def channel_mod_ids
+    mod_users.pluck(:id)
+  end
+
+  def user_obj(m, i)
+    {
+      profile_image: i < 11 ? ProfileImage.new(m.user).get(90) : nil,
+      darker_color: m.user.decorate.darker_color,
+      name: m.user.name,
+      last_opened_at: m.last_opened_at,
+      username: m.user.username,
+      id: m.user_id,
+    }
   end
 end

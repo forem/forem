@@ -81,6 +81,7 @@ export default class Chat extends Component {
       document.getElementById('chatchannels__channelslist').addEventListener('scroll', this.handleChannelScroll);
     }
     getChannelInvites(this.handleChannelInvites,null);
+    
   }
 
   componentDidUpdate() {
@@ -674,6 +675,7 @@ export default class Chat extends Component {
   
 
   render() {
+    console.log(this.state.activeChannel)
     let channelHeader = <div className="activechatchannel__header">&nbsp;</div>
     let channelHeaderInner = ''
     const currentChannel = this.state.activeChannel
