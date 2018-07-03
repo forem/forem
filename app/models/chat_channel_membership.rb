@@ -14,5 +14,8 @@ class ChatChannelMembership < ApplicationRecord
     if chat_channel.channel_type == "direct" && chat_channel.slug.split("/").exclude?(user.username)
       errors.add(:user_id, "is not allowed in chat")
     end
+    if chat_channel.users.size > 128
+      errors.add(:base, "too many members in channel")
+    end
   end
 end
