@@ -24,7 +24,7 @@ class Message < ApplicationRecord
     reciever_ids = chat_channel.chat_channel_memberships.
       where.not(user_id: user.id).pluck(:user_id)
     PushNotificationSubscription.where(user_id: reciever_ids).each do |sub|
-      return if should_send_push?(sub)
+      return if no_push_necessary?(sub)
       Webpush.payload_send(
         endpoint: sub.endpoint,
         message: ActionView::Base.full_sanitizer.sanitize(message_html),
@@ -73,7 +73,7 @@ class Message < ApplicationRecord
     end
   end
 
-  def should_send_push?(sub)
+  def no_push_necessary?(sub)
     membership = sub.user.chat_channel_memberships.order("last_opened_at DESC").first
     membership.last_opened_at > 40.seconds.ago
   end

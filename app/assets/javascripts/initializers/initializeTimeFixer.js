@@ -12,6 +12,7 @@ function initializeTimeFixer() {
     var options = {
       hour: 'numeric',
       minute: 'numeric',
+      timeZoneName: 'short'
     };
     time = new Intl.DateTimeFormat('en-US', options).format(time);
     return time;
@@ -20,7 +21,7 @@ function initializeTimeFixer() {
   function updateLocalTime(times) {
     var localTime;
     for (var i = 0; i < times.length; i++) {
-      localTime = convertUtcTime(times[i].innerHTML);
+      localTime = convertUtcTime(times[i].dataset.datetime);
       times[i].innerHTML = localTime;
     }
   }
@@ -38,7 +39,7 @@ function initializeTimeFixer() {
   function updateLocalDate(dates) {
     var localDate;
     for (var i = 0; i < dates.length; i++) {
-      localDate = convertUtcDate(dates[i].innerHTML);
+      localDate = convertUtcDate(dates[i].dataset.datetime);
       dates[i].innerHTML = localDate;
     }
   }

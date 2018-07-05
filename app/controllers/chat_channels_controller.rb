@@ -91,7 +91,7 @@ class ChatChannelsController < ApplicationController
     if current_user
       @chat_channels_memberships = current_user.
       chat_channel_memberships.includes(:chat_channel).
-      where(has_unopened_messages: true).
+      where("has_unopened_messages = ? OR status = ?", true, "pending").
       order("chat_channel_memberships.updated_at DESC")
     else
       @chat_channels_memberships = []

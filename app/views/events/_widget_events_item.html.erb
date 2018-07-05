@@ -1,5 +1,10 @@
 <div class="widget-events-item">
-    <a href="/events/<%= event.slug %>" style="color: #000000; font-weight:500"><span class="utc-date"><%= event.starts_at %></span> - <%= event.title %> (<%= event.category %>)</a>
+    <a href="/events/<%= event.slug %>" style="color: #000000; font-weight:500">
+      <span class="utc-date" data-datetime="<%= event.starts_at.strftime("%d %B %Y %H:%M UTC") %>">
+        &nbsp;
+      </span>
+      <%= event.title %> (<%= event.category %>)</a>
   <br>
   <br>
 </div>
+

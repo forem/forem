@@ -55,9 +55,10 @@
   <div class="event-details" >
     <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
     <p>
-      Date: <span class="utc-date"><%= event.starts_at %></span>
+      Date: <span class="utc-date" data-datetime="<%= event.starts_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
       <br>
-      Time: <span class="utc-time"><%= event.starts_at %></span> - <span class="utc-time"><%= event.ends_at %></span>
+      Time: <span class="utc-time" data-datetime="<%= event.starts_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
+       - <span class="utc-time" data-datetime="<%= event.ends_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
       <br>
       Location: <a href="<%= event.location_url %>"><%= event.location_name %></a>
     </p>
