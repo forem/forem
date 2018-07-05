@@ -453,6 +453,15 @@ export default class Chat extends Component {
 
   triggerActiveContent = e => {
     const target = e.target
+    if (
+      //Trying to open in new tab
+            e.ctrlKey || 
+            e.shiftKey || 
+            e.metaKey || // apple
+            (e.button && e.button == 1) // middle click, >IE9 + everyone else
+        ) {
+        return;
+    }
     if (target.dataset.content || (target.href && target.href.startsWith('https://dev.to/'))) {
       e.preventDefault();
       e.stopPropagation();

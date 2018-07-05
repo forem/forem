@@ -92,8 +92,8 @@ export default class ChannelDetails extends Component {
       searchedUsers = this.state.searchedUsers.map((user) => {
         return <div><a href={user.path} target='_blank'>{user.title}</a> <button onClick={this.triggerInvite} data-content={user.id}>Invite</button></div>
       })
-      pendingInvites = channel.pending_usernames.map((username) => {
-        return <div><a href={'/'+username} target='_blank'>@{username}</a></div>
+      pendingInvites = channel.pending_users_select_fields.map((user) => {
+        return <div><a href={'/'+user.username} target='_blank' data-content={'users/'+user.id}>@{user.username} - {user.name}</a></div>
       })
       modSection = <div>
                     <h2>Invite Members</h2>
