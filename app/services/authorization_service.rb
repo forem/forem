@@ -122,7 +122,7 @@ class AuthorizationService
   def flag_spam_user(user)
     SlackBot.ping(
       "Potential spam user! https://dev.to/#{user.username}",
-      channel: "abuse-reports",
+      channel: "potential-spam",
       username: "spam_account_checker_bot",
       icon_emoji: ":exclamation:",
     )
