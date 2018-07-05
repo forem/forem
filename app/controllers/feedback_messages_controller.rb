@@ -43,7 +43,8 @@ class FeedbackMessagesController < ApplicationController
     <<~HEREDOC
       #{generate_user_detail}
       Category: #{feedback_message_params[:category]}
-      *_Reported URL: #{feedback_message_params[:reported_url]}_*
+      Internal Report: https://dev.to/internal/reports
+      *_ Reported URL: #{feedback_message_params[:reported_url]} _*
       -----
       *Message:* #{feedback_message_params[:message]}
     HEREDOC
