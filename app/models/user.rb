@@ -73,7 +73,7 @@ class User < ApplicationRecord
   validates :website_url, :employer_name, :employer_url,
             :employment_title, :education, :location,
             length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for,
+  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, :mentee_description, :mentor_description,
             length: { maximum: 500 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
@@ -296,6 +296,7 @@ class User < ApplicationRecord
 
   def settings_tab_list
     tab_list = ["Profile",
+                "Mentorship",
                 "Integrations",
                 "Notifications",
                 "Publishing from RSS",

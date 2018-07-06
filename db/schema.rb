@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180703142743) do
+ActiveRecord::Schema.define(version: 20180705194536) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -658,9 +658,12 @@ ActiveRecord::Schema.define(version: 20180703142743) do
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
     t.datetime "membership_started_at"
+    t.text "mentee_description"
+    t.text "mentor_description"
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
+    t.boolean "offering_mentorship"
     t.string "old_old_username"
     t.string "old_username"
     t.datetime "onboarding_package_form_submmitted_at"
@@ -682,6 +685,7 @@ ActiveRecord::Schema.define(version: 20180703142743) do
     t.boolean "saw_onboarding", default: true
     t.integer "score", default: 0
     t.string "secret"
+    t.boolean "seeking_mentorship"
     t.string "shipping_address"
     t.string "shipping_address_line_2"
     t.string "shipping_city"

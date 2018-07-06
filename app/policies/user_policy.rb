@@ -66,8 +66,11 @@ class UserPolicy < ApplicationPolicy
        location
        looking_for_work
        looking_for_work_publicly
+       mentee_description
+       mentor_description
        mostly_work_with
        name
+       offering_mentorship
        permit_adjacent_sponsors
        password
        password_confirmation
@@ -77,6 +80,7 @@ class UserPolicy < ApplicationPolicy
        prefer_language_it
        prefer_language_ja
        profile_image
+       seeking_mentorship
        summary
        text_color_hex
        username
