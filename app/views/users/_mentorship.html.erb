@@ -1,0 +1,28 @@
+<h2>This is currently a <strong>*beta program*</strong> for community members to help one another.</h2>
+<p>If you're interested in participating as a mentor, mentee, or both, please indicate below and we will be in contact via email.</p>
+
+<%= form_for(@user) do |f| %>
+  <h3>Offering Help:</h3>
+  <div class="field checkbox-label-first">
+    <%= f.label :offering_mentorship, "I'd like to be a mentor!"%>
+    <%= f.check_box :offering_mentorship %>
+  </div>
+  <div class="field">
+    <%= f.label :mentor_description, "How can you help?" %>
+    <%= f.text_area :mentor_description, placeholder: "Languages, subject preference, career advice, etc.", maxlength: 500 %>
+  </div>
+  <h3>Seeking Help:</h3>
+  <div class="field checkbox-label-first">
+    <%= f.label :seeking_mentorship, "I'm looking for a mentor!"%>
+    <%= f.check_box :seeking_mentorship %>
+  </div>
+  <div class="field">
+    <%= f.label :mentee_description, "How can we help?" %>
+    <%= f.text_area :mentee_description, placeholder: "Languages, subject preference, career advice, etc.", maxlength: 500 %>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>
