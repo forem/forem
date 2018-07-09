@@ -1,14 +1,15 @@
 class NotificationsController < ApplicationController
+  # No authorization required for entirely public controller
   before_action :create_enricher
 
   def index
     if user_signed_in?
       @notifications_index = true
       @user = if params[:username] && current_user.is_admin?
-        User.find_by_username(params[:username])
-      else
-        current_user
-      end
+                User.find_by_username(params[:username])
+              else
+                current_user
+              end
       @activities = cached_activities
       @last_user_reaction = @user.reactions.pluck(:id).last
       @last_user_comment = @user.comments.pluck(:id).last

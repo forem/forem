@@ -1,4 +1,5 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  # Don't need a policy for this since this is our sign up/in route
   include Devise::Controllers::Rememberable
   def self.provides_callback_for(provider)
     # raise env["omniauth.auth"].to_yaml
