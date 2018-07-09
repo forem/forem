@@ -468,7 +468,7 @@ class User < ApplicationRecord
     return if chat_channels.empty? ||
         chat_channels.where(channel_type: "direct").empty?
     empty_dm_channels = chat_channels.where(channel_type: "direct").
-      messages.select { |chat_channel| chat_channel.messages.empty? }
+      select { |chat_channel| chat_channel.messages.empty? }
     empty_dm_channels.destroy_all
   end
 
