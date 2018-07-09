@@ -13,22 +13,22 @@ class User < ApplicationRecord
 
   belongs_to  :organization, optional: true
   has_many    :articles
-  has_many    :badge_achievements
+  has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
-  has_many    :collections
+  has_many    :collections, dependent: :destroy
   has_many    :comments
   has_many    :email_messages, class_name: "Ahoy::Message"
-  has_many    :github_repos
-  has_many    :identities
-  has_many    :mentions
+  has_many    :github_repos, dependent: :destroy
+  has_many    :identities, dependent: :destroy
+  has_many    :mentions, dependent: :destroy
   has_many    :messages
   has_many    :notes, as: :noteable
-  has_many    :notifications
-  has_many    :reactions
-  has_many    :tweets
-  has_many    :chat_channel_memberships
+  has_many    :notifications, dependent: :destroy
+  has_many    :reactions, dependent: :destroy
+  has_many    :tweets, dependent: :destroy
+  has_many    :chat_channel_memberships, dependent: :destroy
   has_many    :chat_channels, through: :chat_channel_memberships
-  has_many    :notification_subscriptions
+  has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -88,6 +88,8 @@ class User < ApplicationRecord
   before_validation :downcase_email
   before_validation :check_for_username_change
   before_destroy :remove_from_algolia_index
+  before_destroy :destroy_empty_dm_channels
+  before_destroy :destroy_follows
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -460,5 +462,19 @@ class User < ApplicationRecord
 
   def remove_from_algolia_index
     remove_from_index!
+  end
+
+  def destroy_empty_dm_channels
+    return if chat_channels.empty? ||
+        chat_channels.where(channel_type: "direct").empty?
+    empty_dm_channels = chat_channels.where(channel_type: "direct").
+      messages.select { |chat_channel| chat_channel.messages.empty? }
+    empty_dm_channels.destroy_all
+  end
+
+  def destroy_follows
+    follower_relationships = Follow.where(followable_id: id, followable_type: "User")
+    follower_relationships.destroy_all
+    follows.destroy_all
   end
 end
