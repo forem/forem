@@ -49,7 +49,7 @@ function initializeCommentsPage() {
       }
     };
     var timeString = (Date.now()).toString();
-    ajaxReq.open("GET", getReactionsPath()+"?commentable_id="+commentableId+"&commentable_type="+commentableType, true);
+    ajaxReq.open("GET", "/reactions?commentable_id="+commentableId+"&commentable_type="+commentableType, true);
     ajaxReq.send();
 
     var butts = document.getElementsByClassName('reaction-button');

@@ -14,9 +14,7 @@ class ApplicationController < ActionController::Base
   end
 
   def efficient_current_user_id
-    if session["warden.user.user.key"].present?
-      session["warden.user.user.key"].flatten[0]
-    end
+    session["warden.user.user.key"].flatten[0] if session["warden.user.user.key"].present?
   end
 
   def authenticate_user!

@@ -204,8 +204,6 @@ Rails.application.routes.draw do
     constraints: { which: /organization|user_followers|following_users|reading/}
   get "/dashboard/:username" => "dashboards#show"
 
-  get "/reactions/logged_out_reaction_counts" => "reactions#logged_out_reaction_counts"
-
   # for testing rails mailers
   if !Rails.env.production?
     get "/rails/mailers" => "rails/mailers#index"
@@ -248,7 +246,6 @@ Rails.application.routes.draw do
   get "/:username/comment/:id_code/edit" => "comments#edit"
   get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
   get "/:username/comment/:id_code/mod" => "moderations#comment"
-
 
   get "/:username/:slug/:view" => "stories#show", constraints: { view: /moderate/}
   get "/:username/:slug/mod" => "moderations#article"
