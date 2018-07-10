@@ -56,7 +56,7 @@ class Reaction < ApplicationRecord
 
   def remove_from_feed
     super
-    User.find(reactable.user.id)&.touch(:last_notification_activity)
+    User.find_by(id: reactable.user.id)&.touch(:last_notification_activity)
   end
 
   def self.cached_any_reactions_for?(reactable, user, category)
