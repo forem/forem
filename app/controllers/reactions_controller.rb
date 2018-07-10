@@ -1,7 +1,9 @@
 class ReactionsController < ApplicationController
-  before_action :set_cache_control_headers, only: [:logged_out_reaction_counts]
+  before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+  after_action :verify_authorized
 
   def index
+    skip_authorization
     if params[:article_id]
       article = Article.cached_find(params[:article_id])
       reactions = if efficient_current_user_id.present?
@@ -16,7 +18,7 @@ class ReactionsController < ApplicationController
       {
         current_user: { id: efficient_current_user_id },
         article_reaction_counts: Reaction.count_for_reactable(article),
-        reactions: reactions,
+        reactions: reactions
       }.to_json
     else
       comments = Comment.where(
@@ -30,37 +32,14 @@ class ReactionsController < ApplicationController
         {
           current_user: { id: current_user&.id },
           positive_reaction_counts: reaction_counts,
-          reactions: reactions,
+          reactions: reactions
         }.to_json
     end
-  end
-
-  def logged_out_reaction_counts
-    if params[:article_id]
-      article = Article.cached_find(params[:article_id])
-      render json:
-      {
-        current_user: { id: nil },
-        article_reaction_counts: Reaction.count_for_reactable(article),
-        reactions: [],
-      }.to_json
-    else
-      comments = Comment.where(
-        commentable_id: params[:commentable_id],
-        commentable_type: params[:commentable_type],
-      ).select([:id, :positive_reactions_count])
-      reaction_counts = comments.map { |c| { id: c.id, count: c.positive_reactions_count } }
-      render json:
-        {
-          current_user: { id: nil },
-          positive_reaction_counts: reaction_counts,
-          reactions: [],
-        }.to_json
-    end
-    set_surrogate_key_header params.to_s
+    set_surrogate_key_header params.to_s unless current_user
   end
 
   def create
+    authorize Reaction
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     reaction = Reaction.where(
       user_id: current_user.id,
