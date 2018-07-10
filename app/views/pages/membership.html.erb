@@ -286,6 +286,7 @@
           form.submit();
         } else {
           document.getElementById('js-error').innerHTML = 'Oops, something went wrong. Please refresh the page or contact <a href="mailto:members@dev.to">contact us</a> to get this sorted out.'
+          return false;
         }
       }
     });
@@ -298,6 +299,7 @@
     function openStripeForm() {
       if (getAmount() < 100) {
         document.getElementById('js-error').innerHTML = 'Amount has to be at least 1 dollar.';
+        return false;
       } else {
         document.getElementById('js-error').innerHTML = '';
         addHidden(form, 'amount', document.getElementById('amount-input').value);
