@@ -64,7 +64,7 @@ class Mention < ApplicationRecord
 
   def remove_from_feed
     super
-    User.find(user.id)&.touch(:last_notification_activity)
+    User.find_by(id: user.id)&.touch(:last_notification_activity)
   end
 
   def send_email_notification

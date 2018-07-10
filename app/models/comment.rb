@@ -175,14 +175,14 @@ class Comment < ApplicationRecord
   def remove_from_feed
     super
     if ancestors.empty? && user != commentable.user
-      [User.find(commentable.user.id)&.touch(:last_notification_activity)]
+      [User.find_by(id: commentable.user.id)&.touch(:last_notification_activity)]
     elsif ancestors
       user_ids = ancestors.map { |comment| comment.user.id }
       user_ids = user_ids.uniq.reject { |uid| uid == commentable.user.id }
       user_ids = user_ids.uniq.reject { |uid| uid == self.user_id }
       # filters out article author and duplicate users
       user_ids.map do |id|
-        User.find(id)&.touch(:last_notification_activity)
+        User.find_by(id: id)&.touch(:last_notification_activity)
       end
     end
   end

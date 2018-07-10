@@ -73,7 +73,6 @@ class Notification < ApplicationRecord
 
   def remove_from_feed
     super
-    User.find(user_id)&.touch(:last_notification_activity)
+    User.find_by(id: user_id)&.touch(:last_notification_activity)
   end
-
 end

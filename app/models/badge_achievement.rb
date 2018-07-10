@@ -48,7 +48,7 @@ class BadgeAchievement < ApplicationRecord
   def remove_from_feed
     super
     if user.class.name == "User"
-      User.find(user.id)&.touch(:last_notification_activity)
+      User.find_by(id: user.id)&.touch(:last_notification_activity)
     end
   end
 

@@ -3,9 +3,9 @@ class ChatChannel < ApplicationRecord
   attr_accessor :current_user
 
   has_many :messages
-  has_many :chat_channel_memberships
+  has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
-  
+
   has_many :active_memberships, -> { where status: "active" }, class_name: 'ChatChannelMembership'
   has_many :pending_memberships, -> { where status: "pending" }, class_name: 'ChatChannelMembership'
   has_many :rejected_memberships, -> { where status: "rejected" }, class_name: 'ChatChannelMembership'
