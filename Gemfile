@@ -1,5 +1,13 @@
+# rubocop:disable LineLength
 source "https://rubygems.org"
 ruby "2.5.1"
+
+# Enforce git to transmitted via https.
+# workaround until bundler 2.0 is released.
+git_source(:github) do |repo_name|
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  "https://github.com/#{repo_name}.git"
+end
 
 group :production do
   gem "rails_12factor", "~> 0.0"
@@ -16,7 +24,7 @@ gem "algoliasearch-rails", "~> 1.20"
 gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
 gem "autoprefixer-rails", "~> 6.7"
-gem "aws-sdk-lambda" # Installing just Lambda, if we need more we can install aws-sdk gem
+gem "aws-sdk-lambda", "~> 1.5" # Just Lambda. For more, install aws-sdk gem
 gem "bourbon", "~> 1.4"
 gem "buffer", github: "bufferapp/buffer-ruby"
 gem "carrierwave", "~> 1.2"
@@ -40,7 +48,7 @@ gem "fog", "~> 1.41"
 gem "front_matter_parser", "~> 0.1"
 gem "gibbon", "~> 2.2"
 gem "google-api-client", "~> 0.19"
-gem "html_truncator", "~>0.2"
+gem "html_truncator", "~> 0.4"
 gem "httparty", "~> 0.16"
 gem "inline_svg", "~> 0.12"
 gem "jbuilder", "~> 2.7"
@@ -70,7 +78,7 @@ gem "redcarpet", "~> 3.4"
 gem "reverse_markdown", "~> 1.0"
 gem "rolify", "~> 5.2"
 gem "rouge", "~> 3.1"
-gem "s3_direct_upload"
+gem "s3_direct_upload", "~> 0.1"
 gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4", group: :doc
 gem "serviceworker-rails", "~> 0.5"
@@ -82,14 +90,14 @@ gem "sprockets-es6", "~> 0.9"
 gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stream_rails", "~> 2.5"
-gem "stripe", "~> 3.9"
+gem "stripe", "~> 3.15"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
-gem "twilio-ruby", "~> 5.10.3"
+gem "twilio-ruby", "~> 5.10"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 3.2"
 gem "validate_url", "~> 1.0"
-gem "webpacker", "~> 3.2"
+gem "webpacker", "~> 3.5"
 gem "webpush", "~> 0.3"
 
 group :development do
@@ -109,13 +117,13 @@ group :development, :test do
   gem "capybara", "~> 2.18"
   gem "derailed", "~> 0.1"
   gem "faker", "~> 1.8"
-  gem "fix-db-schema-conflicts", "~> 3.0"
+  gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.21"
   gem "rspec-rails", "~> 3.7"
-  gem "rspec-retry", "~> 0.5"
-  gem "rubocop", "~> 0.52", require: false
-  gem "rubocop-rspec", "~> 1.22"
+  gem "rspec-retry", "~> 0.6"
+  gem "rubocop", "~> 0.57", require: false
+  gem "rubocop-rspec", "~> 1.27"
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
   gem "vcr", "~> 4.0"
@@ -124,21 +132,22 @@ end
 group :test do
   gem "approvals", "~> 0.0"
   gem "chromedriver-helper", "~> 1.2"
-  gem "database_cleaner", "~> 1.6"
-  gem "factory_bot_rails", "~> 4.8"
+  gem "database_cleaner", "~> 1.7"
+  gem "factory_bot_rails", "~> 4.10"
   gem "fake_stripe", "~> 0.1"
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
-  gem "rack_session_access", "~> 0.1"
+  gem "rack_session_access", "~> 0.2"
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
-  gem "selenium-webdriver", "~> 3.9"
+  gem "selenium-webdriver", "~> 3.12"
   gem "shoulda-matchers", "~> 3.1", require: false
-  gem "simplecov", "~> 0.15", require: false
+  gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
   gem "stackprof", "~> 0.2", require: false
-  gem "stripe-ruby-mock", "~> 2.5.0", require: "stripe_mock"
-  gem "test-prof", "~> 0.4"
+  gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock"
+  gem "test-prof", "~> 0.5"
   gem "timecop", "~> 0.9"
-  gem "webmock", "~> 3.3"
+  gem "webmock", "~> 3.4"
 end
+# rubocop:enable LineLength
