@@ -13,6 +13,14 @@ GIT
       yajl-ruby
 
 GIT
+  remote: https://github.com/stympy/faker.git
+  revision: 00be118fc07fe19309b87d1863c12941ad161651
+  branch: master
+  specs:
+    faker (1.8.7)
+      i18n (>= 0.7)
+
+GIT
   remote: https://github.com/thepracticaldev/acts_as_follower.git
   revision: 288690cd99bc470eaee493fce5bfa9fe23157692
   branch: master
@@ -265,8 +273,6 @@ GEM
       capybara
       sinatra
       webmock
-    faker (1.8.7)
-      i18n (>= 0.7)
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.12.2)
@@ -952,7 +958,7 @@ DEPENDENCIES
   email_validator (~> 1.6)
   factory_bot_rails (~> 4.10)
   fake_stripe (~> 0.1)
-  faker (~> 1.8)
+  faker!
   fastly (~> 1.13)
   fastly-rails (~> 0.8)
   feedjira (~> 2.1)

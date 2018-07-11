@@ -116,7 +116,7 @@ group :development, :test do
   gem "byebug", "~> 8.2"
   gem "capybara", "~> 2.18"
   gem "derailed", "~> 0.1"
-  gem "faker", "~> 1.8"
+  gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.21"
