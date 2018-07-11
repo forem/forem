@@ -108,7 +108,7 @@ config.webpacker.check_yarn_integrity = false
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
-  config.action_mailer.default_url_options = { host: config.app_domain }
+  config.action_mailer.default_url_options = { host: ENV["APP_PROTOCOL"] + ENV["APP_DOMAIN"] }
   ActionMailer::Base.smtp_settings = {
     :address        => 'smtp.sendgrid.net',
     :port           => '587',
