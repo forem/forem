@@ -9,7 +9,11 @@ module Redcarpet
         # Probably not the best fix but it does it's job of preventing
         # a nested links.
         return nil if /<a\s.+\/a>/.match?(content)
-        %(<a href="#{link}">#{content}</a>)
+        link_attributes = ""
+        @options[:link_attributes]&.each do |attribute, value|
+          link_attributes += %( #{attribute}="#{value}")
+        end
+        %(<a href="#{link}"#{link_attributes}>#{content}</a>)
       end
     end
   end

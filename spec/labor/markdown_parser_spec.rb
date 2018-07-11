@@ -22,6 +22,19 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(inline_code)).to include(inline_code[1..-2])
   end
 
+  context "when provided with a link in inline code" do
+    inline_code = "[dev.to](https://dev.to)"
+    let(:evaluated_markdown) { described_class.new(inline_code).evaluate_inline_markdown }
+
+    it "renders with target _blank" do
+      expect(evaluated_markdown).to include("target=\"_blank\"")
+    end
+
+    it "avoids the traget _blank vulnerability" do
+      expect(evaluated_markdown).to include("noopener", "noreferrer")
+    end
+  end
+
   context "when provided with an @username" do
     it "links to a user if user exist" do
       username = create(:user).username
