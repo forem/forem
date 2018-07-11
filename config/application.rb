@@ -59,7 +59,7 @@ module PracticalDeveloper
           top_routes << route
         end
       end
-      ::RESERVED_WORDS = [RESERVED_WORDS + top_routes].flatten.compact.uniq
+      ReservedWords.all = [ReservedWords::BASE_WORDS + top_routes].flatten.compact.uniq
     end
   end
 end

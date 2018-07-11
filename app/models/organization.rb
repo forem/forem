@@ -24,7 +24,7 @@ class Organization < ApplicationRecord
             uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
             length: { in: 2..18 },
-            exclusion: { in: RESERVED_WORDS,
+            exclusion: { in: ReservedWords.all,
                          message: "%{value} is reserved." }
   validates :url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :secret, uniqueness: { allow_blank: true }
