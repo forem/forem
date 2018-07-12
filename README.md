@@ -12,10 +12,10 @@
 </p>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.5.0-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.5.1-green.svg" alt="ruby version"/>
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.1.4-brightgreen.svg" alt="rails version"/>
+    <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
   </a>
   <a href="https://app.codeship.com/projects/229274">
     <img src="https://app.codeship.com/projects/6c96c1d0-3db5-0135-649e-1a9b211ca261/status?branch=master" alt="Codeship Status for thepracticaldev/dev.to_private"/>
