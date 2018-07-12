@@ -675,11 +675,6 @@ GEM
       loofah (~> 2.2, >= 2.2.2)
     rails-observers (0.1.5)
       activemodel (>= 4.0)
-    rails_12factor (0.0.3)
-      rails_serve_static_assets
-      rails_stdout_logging
-    rails_serve_static_assets (0.0.5)
-    rails_stdout_logging (0.0.5)
     railties (5.1.6)
       actionpack (= 5.1.6)
       activesupport (= 5.1.6)
@@ -1004,7 +999,6 @@ DEPENDENCIES
   rails-assets-airbrake-js-client (~> 0.9)!
   rails-controller-testing (~> 1.0)
   rails-observers (~> 0.1)
-  rails_12factor (~> 0.0)
   rb-fsevent (~> 0.10)
   recaptcha (~> 4.6)
   redcarpet (~> 3.4)
