@@ -14,14 +14,14 @@ class BadgeAchievement < ApplicationRecord
   before_validation :render_rewarding_context_message_html
 
   def render_rewarding_context_message_html
-    if rewarding_context_message_markdown.present?
-      parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
-      html = parsed_markdown.finalize
-      final_html = ActionController::Base.helpers.sanitize html,
-        tags: %w(strong em i b u a code),
-        attributes: %w(href name)
-      self.rewarding_context_message = final_html
-    end
+    return if rewarding_context_message_markdown.blank?
+
+    parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
+    html = parsed_markdown.finalize
+    final_html = ActionController::Base.helpers.sanitize html,
+      tags: %w(strong em i b u a code),
+      attributes: %w(href name)
+    self.rewarding_context_message = final_html
   end
 
   def name_of_user
