@@ -35,7 +35,7 @@
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. Most importantly, all contributors must abide by the [code of conduct](https://dev.to/code-of-conduct).
 
-With your help, we can build out the DEV Community platform to be more stable and better serve the community. We are a [Ruby on Rails](http://rubyonrails.org/). When in doubt, try to do things "The Rails Way", but it is an evolving codebase and we will learn from all new contributions in order to evolve.
+With your help, we can build out the DEV Community platform to be more stable and better serve the community. We are a [Ruby on Rails](http://rubyonrails.org/) app. When in doubt, try to do things "The Rails Way", but it is an evolving codebase and we will learn from all new contributions in order to evolve.
 
 ### How to contribute
 
