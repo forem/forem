@@ -42,7 +42,7 @@ class MarkdownParser
     renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     ActionController::Base.helpers.sanitize(markdown.render(@content).html_safe,
-      tags: %w(strong i u b em code a), attributes: %w(href rel target))
+      tags: %w(strong i u b em code a br pre), attributes: %w(href rel target))
   end
 
   def tags_used

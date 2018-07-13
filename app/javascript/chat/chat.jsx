@@ -462,7 +462,7 @@ export default class Chat extends Component {
         ) {
         return;
     }
-    if (target.dataset.content || (target.href && target.href.startsWith('https://dev.to/'))) {
+    if (target.dataset.content) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -475,9 +475,9 @@ export default class Chat extends Component {
     } else if (target.dataset.content && target.dataset.content.startsWith('users/')) {
       newActiveContent[this.state.activeChannelId] = {type_of: "loading-user"}
       getContent('/api/'+target.dataset.content, this.setActiveContent, null)
-    } else if (target.tagName.toLowerCase() === 'a' && target.href.startsWith('https://dev.to/')) {
+    } else if (target.dataset.content && target.dataset.content.startsWith('articles/')) {
       newActiveContent[this.state.activeChannelId] = {type_of: "loading-post"}
-      getContent(`/api/articles/by_path?url=${target.href.split('https://dev.to')[1]}`, this.setActiveContent, null)
+      getContent('/api/'+target.dataset.content, this.setActiveContent, null)
     } else if (target.dataset.content === "exit") {
       newActiveContent[this.state.activeChannelId] = null
     }
