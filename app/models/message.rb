@@ -57,7 +57,23 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    self.message_html = MarkdownParser.new(message_markdown).evaluate_inline_markdown
+    html = MarkdownParser.new(message_markdown).evaluate_inline_markdown
+    html = append_rich_links(html)
+    self.message_html = html
+  end
+
+  def append_rich_links(html)
+    doc = Nokogiri::HTML(html)
+    rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
+    doc.css("a").each do |a|
+      if a["href"].include?("//#{ENV["APP_DOMAIN"]}/") && article = Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
+        html = html + "<a style='color: #0a0a0a' href='#{article.path}'
+          target='_blank' data-content='articles/#{article.id}'>
+          <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>
+          #{article.title} 👉</h1></a>".html_safe
+      end
+    end
+    html
   end
 
   def channel_permission

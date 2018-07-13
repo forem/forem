@@ -48,8 +48,13 @@ function display(props) {
   } else if (props.resource.type_of === "user") {
     return <UserDetails user={props.resource} />
   } else if (props.resource.type_of === "article") {
+    let coverImage = '';
+    if (props.resource.cover_image) {
+      coverImage = <header><div class="image image-final" style={{marginTop: '20px', backgroundImage:`url(${props.resource.cover_image}`}}></div></header>
+    }
     return (
             <div class="container">
+              {coverImage}
               <div class="title">
                 <h1>{props.resource.title}</h1>
                 <h3>

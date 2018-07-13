@@ -123,7 +123,7 @@ export function getTwilioToken(videoChannelName, successCb, failureCb) {
 }
 
 export function getContent(url, successCb, failureCb) {
-  fetch(`https://dev.to${url}`, {
+  fetch(url, {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     credentials: 'same-origin',

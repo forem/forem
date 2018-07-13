@@ -4,7 +4,7 @@
 .chat-page-wrapper{
   margin: 100px auto 0px;
   width: 96%;
-  max-width: 1240px;
+  max-width: 1440px;
 }
 .live-chat{
   height: calc(100vh - 220px);
@@ -74,11 +74,12 @@
   }
   @media screen and ( min-width: 1000px ){
     width: 200px;
-  }
-  @media screen and ( min-width: 1000px ){
     .chat__channelstogglebutt{
       display: none;
     }
+  }
+  @media screen and ( min-width: 1300px ){
+    width: 280px;
   }
 }
 
@@ -357,6 +358,12 @@
     padding: 18px;
     max-width:480px;
   }
+  @media screen and ( min-width: 1300px ){
+    margin-left: initial;
+    min-width: 0px;
+    padding: 18px;
+    max-width:620px;
+  }
 }
 
 .activechatchannel__activecontentexitbutton{
@@ -561,6 +568,9 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
+  pre{
+    background:$lightest-gray;
+  }
   code {
     background:$lightest-gray;
     padding:0.1em 0.3em 0px;
