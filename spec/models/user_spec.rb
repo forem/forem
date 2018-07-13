@@ -58,6 +58,81 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
+    it "accepts valid http facebook url" do
+      user.facebook_url = "http://facebook.com/thepracticaldev"
+      expect(user).to be_valid
+    end
+
+    it "accepts valid https facebook url" do
+      user.facebook_url = "https://facebook.com/thepracticaldev"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid facebook url" do
+      user.facebook_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid http behance url" do
+      user.behance_url = "http://behance.net/jess"
+      expect(user).to be_valid
+    end
+
+    it "accepts valid https behance url" do
+      user.behance_url = "https://behance.net/jess"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid behance url" do
+      user.behance_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid http stackoverflow url" do
+      user.stackoverflow_url = "http://stackoverflow.com/jess"
+      expect(user).to be_valid
+    end
+
+    it "accepts valid https stackoverflow url" do
+      user.stackoverflow_url = "https://stackoverflow.com/jess"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid stackoverflow url" do
+      user.stackoverflow_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid http linkedin url" do
+      user.linkedin_url = "http://linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
+    it "accepts valid https linkedin url" do
+      user.linkedin_url = "https://linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid linkedin url" do
+      user.stackoverflow_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid http dribbble url" do
+      user.dribbble_url = "http://dribbble.com/jess"
+      expect(user).to be_valid
+    end
+
+    it "accepts valid https dribbble url" do
+      user.dribbble_url = "https://dribbble.com/jess"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid dribbble url" do
+      user.dribbble_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
     it "changes old_username if old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"

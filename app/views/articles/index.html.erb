@@ -133,11 +133,39 @@
               <%= inline_svg("github-logo.svg", class:"icon-img") %>
             </a>
           <% end %>
-          <% if @user.website_url.present? %>
-            <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
-              <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
-            </a>
+          <% if @user.class.name == "User" %>
+            <% if @user.facebook_url.present? %>
+              <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("facebook-logo.svg", class:"icon-img") %>
+              </a>
+            <% end %>
+            <% if @user.linkedin_url.present? %>
+              <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("linkedin_icon.svg", class:"icon-img") %>
+              </a>
+            <% end %>
+            <% if @user.behance_url.present? %>
+              <a href="<%= @user.behance_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("behance_icon.svg", class:"icon-img") %>
+              </a>
+            <% end %>
+            <% if @user.stackoverflow_url.present? %>
+              <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("stackoverflow-logo.svg", class:"icon-img") %>
+              </a>
+            <% end %>
+            <% if @user.dribbble_url.present? %>
+              <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("dribbble_icon.svg", class:"icon-img") %>
+              </a>
+            <% end %>
+            <% if @user.website_url.present? %>
+              <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
+              </a>
+            <% end %>
           <% end %>
+
         </p>
       </div>
     </div>
