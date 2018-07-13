@@ -41,11 +41,13 @@ class UserPolicy < ApplicationPolicy
 
   def permitted_attributes
     %i[available_for
+       behance_url
        bg_color_hex
        contact_consent
        currently_hacking_on
        currently_learning
        display_sponsors
+       dribbble_url
        education
        email
        email_badge_notifications
@@ -60,12 +62,15 @@ class UserPolicy < ApplicationPolicy
        employer_name
        employer_url
        employment_title
+       facebook_url
        feed_admin_publish_permission
        feed_mark_canonical
        feed_url
+       linkedin_url
        location
        looking_for_work
        looking_for_work_publicly
+       medium_url
        mentee_description
        mentor_description
        mostly_work_with
@@ -81,6 +86,7 @@ class UserPolicy < ApplicationPolicy
        prefer_language_ja
        profile_image
        seeking_mentorship
+       stackoverflow_url
        summary
        text_color_hex
        username

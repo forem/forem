@@ -115,6 +115,27 @@
     <%= f.label :available_for %>
     <%= f.text_area :available_for, placeholder: "What kinds of collaborations or discussions are you available for? what's a good reason to say hey to you these days?", maxlength: 640 %>
   </div>
+  <p><strong>Links</strong></p>
+  <div class="field">
+    <%= f.label :facebook_url %>
+    <%= f.text_field :facebook_url  %>
+  </div>
+  <div class="field">
+    <%= f.label :stackoverflow_url %>
+    <%= f.url_field :stackoverflow_url %>
+  </div>
+  <div class="field">
+    <%= f.label :linkedin_url %>
+    <%= f.url_field :linkedin_url %>
+  </div>      
+  <div class="field">
+    <%= f.label :behance_url %>
+    <%= f.url_field :behance_url %>
+  </div>
+  <div class="field">
+    <%= f.label :dribbble_url %>
+    <%= f.url_field :dribbble_url %>
+  </div>               
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>

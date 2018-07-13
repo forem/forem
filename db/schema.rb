@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180705194536) do
+ActiveRecord::Schema.define(version: 20180707162348) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -611,6 +611,7 @@ ActiveRecord::Schema.define(version: 20180705194536) do
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
     t.text "base_cover_letter"
+    t.string "behance_url"
     t.string "bg_color_hex"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
@@ -624,6 +625,7 @@ ActiveRecord::Schema.define(version: 20180705194536) do
     t.string "currently_hacking_on"
     t.string "currently_learning"
     t.boolean "display_sponsors", default: true
+    t.string "dribbble_url"
     t.string "education"
     t.string "email", default: "", null: false
     t.boolean "email_badge_notifications", default: true
@@ -640,6 +642,7 @@ ActiveRecord::Schema.define(version: 20180705194536) do
     t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.integer "experience_level"
+    t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
     t.boolean "feed_mark_canonical", default: false
     t.string "feed_url"
@@ -654,6 +657,7 @@ ActiveRecord::Schema.define(version: 20180705194536) do
     t.datetime "last_notification_activity"
     t.datetime "last_sign_in_at"
     t.inet "last_sign_in_ip"
+    t.string "linkedin_url"
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
@@ -703,6 +707,7 @@ ActiveRecord::Schema.define(version: 20180705194536) do
     t.string "signup_refer_code"
     t.string "signup_referring_site"
     t.string "specialty"
+    t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
     t.string "tabs_or_spaces"
