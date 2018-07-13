@@ -3,8 +3,9 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def index
     @feedback_type = params[:state] || "abuse-reports"
+    @status = params[:status] || "Open"
     @feedback_messages = FeedbackMessage.
-      where(feedback_type: @feedback_type).
+      where(feedback_type: @feedback_type, status: @status).
       order("created_at DESC").
       page(params[:page] || 1).per(25)
   end
