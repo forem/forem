@@ -47,7 +47,7 @@
   <h3>Note:</h3>
   <%= f.fields_for :note do |note| %>
     <%= note.hidden_field :reason, value: feedback_message.feedback_type %>
-    <%= note.text_area :content, value: feedback_message.note&.content, placeholder: "Leave some notes about the status and context of this report.", class: "notefield" %>
+    <%= note.text_area :content, value: feedback_message.note&.content, placeholder: "Leave some notes about the status and context of this report.", class: "notefield", required: true %>
   <% end %>
   <%= f.hidden_field :reviewer_id, value: current_user.id %>
   <% if feedback_message.reviewer_id %>
