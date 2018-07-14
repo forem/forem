@@ -2,7 +2,7 @@ json.type_of            "article"
 json.id                 @article.id
 json.title              @article.title
 json.description        @article.description
-json.cover_image        @article.main_image
+json.cover_image        cloud_cover_url @article.main_image
 json.published_at       @article.published_at
 json.social_image       cloud_social_image(@article)
 json.tag_list           @article.tag_list
