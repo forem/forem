@@ -377,6 +377,59 @@
   top:-4px;
 }
 
+.activechatchannel__activeArticle{
+  position: absolute;
+  top: 38px; left: 0; right: 0; bottom: 0;
+  border-top: 1px solid $light-medium-gray !important;
+}
+
+.chat .activechatchannel__activeArticle .container {
+  position: absolute;
+  top: 0px; left: 0; right: 0; bottom: 30px;
+  overflow-y: scroll;
+  border-radius: 0px;
+  margin-top: 0px !important;
+  pre{
+    width:97%;
+    margin-left:-3%;
+    padding-left:4%;
+    padding-right:7%;
+  }
+}
+
+.activechatchannel__activeArticleActions{
+  position:absolute;
+  bottom:0;
+  left:0px;
+  right:0px;
+  padding: 19px;
+  background: white;
+  z-index: 20;
+  border-top: 1px solid $light-medium-gray;
+  button {
+    border: 1px solid $light-medium-gray;
+    padding: 3px 20px;
+    border-radius: 3px;
+    margin-right: 15px;
+    &.active {
+      border: 2px solid $black;
+      padding: 2px 19px;
+      background-color:$green;
+      &.unicorn-reaction-button{
+        background-color:$purple;
+      }
+      &.readinglist-reaction-button{
+        background: lighten($bold-blue, 32%);
+      }
+      }
+    img {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+
 .activecontent__githubrepo{
 }
 

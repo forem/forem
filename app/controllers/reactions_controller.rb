@@ -60,7 +60,7 @@ class ReactionsController < ApplicationController
       )
       @result = "create"
     end
-    render json: { result: @result }
+    render json: { result: @result, category: params[:category] || "like" }
   end
 
   def cached_user_positive_reactions(user)
