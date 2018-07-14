@@ -4,6 +4,7 @@ import CodeEditor from './codeEditor';
 import GithubRepo from './githubRepo';
 import ChannelDetails from './channelDetails';
 import UserDetails from './userDetails';
+import Article from './article';
 
 export default class Content extends Component {
   static propTypes = {
@@ -48,26 +49,7 @@ function display(props) {
   } else if (props.resource.type_of === "user") {
     return <UserDetails user={props.resource} />
   } else if (props.resource.type_of === "article") {
-    let coverImage = '';
-    if (props.resource.cover_image) {
-      coverImage = <header><div class="image image-final" style={{marginTop: '20px', backgroundImage:`url(${props.resource.cover_image}`}}></div></header>
-    }
-    return (
-            <div class="container">
-              {coverImage}
-              <div class="title">
-                <h1>{props.resource.title}</h1>
-                <h3>
-                  <a href={'/'+props.resource.user.username} class="author">
-                    <img class="profile-pic" src={props.resource.user.profile_image_90} alt={props.resource.user.username}/>
-                    <span>{props.resource.user.name}</span>
-                  </a>
-                </h3>
-              </div>
-              <div class="body">
-              <div dangerouslySetInnerHTML={{__html: props.resource.body_html}} ></div>
-              </div>
-            </div>)
+    return <Article resource={props.resource}/>
   } else if (props.resource.type_of === "github") {
     return <GithubRepo
               activeChannelId={props.activeChannelId}
