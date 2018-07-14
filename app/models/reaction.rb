@@ -104,14 +104,13 @@ class Reaction < ApplicationRecord
     reactable.index! if reactable_type == "Article"
   end
 
+  BASE_POINTS = {
+    "vomit" => -50.0,
+    "thumbsdown" => -10.0
+  }.freeze
+
   def assign_points
-    base_points = if category == "vomit"
-                    -50.0
-                  elsif category == "thumbsdown"
-                    -10.0
-                  else
-                    1.0
-                  end
+    base_points = BASE_POINTS.fetch(category, 1.0)
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
