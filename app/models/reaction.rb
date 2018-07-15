@@ -115,9 +115,10 @@ class Reaction < ApplicationRecord
   end
 
   def permissions
-    if category == "vomit" || category == "thumbsdown"
-      errors.add(:category, "is not valid.") unless user.has_role?(:trusted)
+    if negative_reaction_from_untrusted_user?
+      errors.add(:category, "is not valid.")
     end
+
     if reactable_type == "Article" && !reactable.published
       errors.add(:reactable_id, "is not valid.")
     end
@@ -128,5 +129,13 @@ class Reaction < ApplicationRecord
     if rand(6) == 1 || reactable.positive_reactions_count.negative?
       reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
     end
+  end
+
+  def negative_reaction_from_untrusted_user?
+    negative? && !user.trusted
+  end
+
+  def negative?
+    category == "vomit" || category == "thumbsdown"
   end
 end
