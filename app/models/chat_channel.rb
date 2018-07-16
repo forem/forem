@@ -28,6 +28,10 @@ class ChatChannel < ApplicationRecord
     ranking ["desc(last_message_at)"]
   end
 
+  def open?
+    channel_type == "open"
+  end
+
   def clear_channel
     messages.each(&:destroy!)
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
