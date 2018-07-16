@@ -17,7 +17,7 @@
 #   after { StripeMock.stop }
 
 #   background do
-#     login_via_session_as user
+#     sign_in user
 #   end
 
 #   scenario "User navigates to settings page and adds a card" do

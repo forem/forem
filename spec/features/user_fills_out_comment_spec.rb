@@ -8,7 +8,7 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
   end
 
   before do
-    login_via_session_as user
+    sign_in user
   end
 
   it "User fills out comment box normally" do

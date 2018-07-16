@@ -5,7 +5,7 @@ feature "Admin creates new event" do
   let(:admin) { create(:user, :super_admin) }
 
   background do
-    login_via_session_as admin
+    sign_in admin
   end
 
   before do

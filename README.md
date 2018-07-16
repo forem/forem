@@ -159,15 +159,8 @@ The following technologies are used for testing:
 * **Rspec**
 * **Capybara** with **selenium-webdriver**
   * **chromedriver-helper** for standard JS testing.
-* **`rack_session_access`**
-* **Warden**
 * **guard-rspec** for automated testing
 * [Jest](https://facebook.github.io/jest) for testing in the front-end.
-
-#### When should I use `login_via_session_as(:user)` vs `login_as(:user)`?
-
-* `login_as(:user)` uses Warden's stubbing actions to make the application think that a user is signed in but without all of the overhead of actually signing them in. Recommended for view test.
-* `login_via_session_as(:user)` uses `rack_session_access` to modify application's session. It is integrated with Devise so current_user won't be nil. Recommended for feature test.
 
 ## Previewing emails in development
 
