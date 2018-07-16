@@ -10,7 +10,6 @@
 <% if user_signed_in? %>
   <%= javascript_pack_tag 'chat', defer: true %>
   <div class="chat-page-wrapper">
-    <div class="chat-page-header">DEV Connect is Beta (Work in Progress ❤️)</div>
     <div
       id="chat"
       class="live-chat"
@@ -23,7 +22,7 @@
       data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>"
     >
       <div class="chat" id="chat_placeholder">
-        <div class="chat__channels chat__channels--expanded">
+        <div class="chat__channels chat__channels--expanded chat__channels--placeholder">
             <button class="chat__channelstogglebutt" onClick={this.toggleExpand}><</button>
             <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
         </div>

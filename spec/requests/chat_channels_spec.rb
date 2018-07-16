@@ -19,7 +19,7 @@ RSpec.describe "ChatChannels", type: :request do
       end
 
       it "has proper content" do
-        expect(response.body).to include("DEV Connect is Beta ")
+        expect(response.body).to include("chat-page-wrapper")
       end
     end
 
@@ -31,7 +31,7 @@ RSpec.describe "ChatChannels", type: :request do
       end
 
       it "has proper content" do
-        expect(response.body).to include("DEV Connect is Beta ")
+        expect(response.body).to include("chat-page-wrapper")
       end
     end
   end

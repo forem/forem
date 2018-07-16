@@ -8,4 +8,5 @@ json.array! (@chat_channels_memberships.sort_by { |m| m.chat_channel.last_messag
   json.last_message_at membership.chat_channel.last_message_at
   json.adjusted_slug membership.chat_channel.adjusted_slug(current_user)
   json.membership_id membership.id
+  json.description membership.chat_channel.description
 end

@@ -22,7 +22,8 @@ class ChatChannel < ApplicationRecord
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
     attribute :id, :viewable_by, :slug, :channel_type,
       :channel_name, :channel_users, :last_message_at, :status,
-      :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields
+      :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
+      :description
     searchableAttributes [:channel_name, :channel_slug, :channel_human_names]
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
     ranking ["desc(last_message_at)"]

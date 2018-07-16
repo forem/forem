@@ -107,6 +107,9 @@ export default class ChannelDetails extends Component {
     return  <div>
               <h1>{channel.channel_name}</h1>
               {subHeader}
+              <div style={{marginBottom: '20px'}}>
+                <em>{channel.description || ''}</em>
+              </div>
               {users}
               {modSection}
             </div>

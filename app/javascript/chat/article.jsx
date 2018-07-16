@@ -4,6 +4,7 @@ import { h, Component } from 'preact';
 import heartImage from 'images/emoji/emoji-one-heart.png';
 import unicornImage from 'images/emoji/emoji-one-unicorn.png';
 import bookmarkImage from 'images/emoji/emoji-one-bookmark.png';
+import openLink from 'images/external-link-logo.svg';
 
 export default class Article extends Component {
   constructor(props) {
@@ -103,14 +104,21 @@ export default class Article extends Component {
     }
     return (
             <div className='activechatchannel__activeArticle'>
+              <div className="activechatchannel__activeArticleDetails">
+                <a href={article.path} target='_blank'>
+                  <span className="activechatchannel__activeArticleDetailsPath">{article.path}</span>
+                  <img src={openLink} />
+                </a>
+              </div>
               <div className="container">
                 {coverImage}
                 <div className="title">
                   <h1>{article.title}</h1>
                   <h3>
                     <a href={'/'+article.user.username} className="author" data-content={'/users/'+article.user.id}>
-                      <img className="profile-pic" src={article.user.profile_image_90} alt={article.user.username}/>
-                      <span>{article.user.name}</span>
+                      <img className="profile-pic" src={article.user.profile_image_90} alt={article.user.username}/> 
+                      <span>{article.user.name} </span> 
+                      <span class="published-at"> | {article.readable_publish_date}</span>
                     </a>
                   </h3>
                 </div>

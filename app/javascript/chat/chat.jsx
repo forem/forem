@@ -491,6 +491,11 @@ export default class Chat extends Component {
     this.setState({activeContent: newActiveContent});
     setTimeout(function() {
       document.getElementById("chat_activecontent").scrollTop = 0;
+      document.getElementById("chat").scrollLeft = 1000
+    }, 3);
+    setTimeout(function() {
+      document.getElementById("chat_activecontent").scrollTop = 0;
+      document.getElementById("chat").scrollLeft = 1000
     }, 10);
   }
 

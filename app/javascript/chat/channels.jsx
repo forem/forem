@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from 'images/three-dots.svg';
+import GroupImage from 'images/organization.svg';
 
 const Channels = ({ activeChannelId,
     chatChannels,
@@ -29,7 +30,7 @@ const Channels = ({ activeChannelId,
     const name = channel.channel_type === "direct" ? '@'+channel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '') : channel.channel_name
     const newMessagesIndicatorClass = isUnopened ? "new" : "old"
     const modififedSlug = channel.channel_type === "direct" ? name : channel.slug;
-    const indicatorPic = channel.channel_type === "direct" ? <img src = {channel.channel_users[name.replace('@','')].profile_image} /> : ''
+    const indicatorPic = channel.channel_type === "direct" ? <img src = {channel.channel_users[name.replace('@','')].profile_image} className='chatchanneltabindicatordirectimage' /> : <img src={GroupImage} />
     let channelColor = 'transparent'
     if (channel.channel_type === "direct" && isActive) {
       channelColor = channel.channel_users[name.replace('@','')].darker_color;
