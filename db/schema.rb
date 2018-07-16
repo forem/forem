@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180707162348) do
+ActiveRecord::Schema.define(version: 20180716182629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -180,6 +180,7 @@ ActiveRecord::Schema.define(version: 20180707162348) do
     t.string "channel_name"
     t.string "channel_type", null: false
     t.datetime "created_at", null: false
+    t.string "description"
     t.datetime "last_message_at", default: "2017-01-01 05:00:00"
     t.string "slug"
     t.string "status", default: "active"

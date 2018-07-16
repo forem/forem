@@ -35,7 +35,8 @@ class Message < ApplicationRecord
             subject: "https://dev.to",
             public_key: ENV["VAPID_PUBLIC_KEY"],
             private_key: ENV["VAPID_PRIVATE_KEY"],
-      })
+        },
+      )
     end
   end
 
@@ -70,7 +71,7 @@ class Message < ApplicationRecord
         html = html + "<a style='color: #0a0a0a' href='#{article.path}'
           target='_blank' data-content='articles/#{article.id}'>
           <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>
-          #{article.title} 👉</h1></a>".html_safe
+          #{article.title}</h1></a>".html_safe
       end
     end
     html

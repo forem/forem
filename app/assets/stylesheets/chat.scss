@@ -2,36 +2,25 @@
 
 // High level classes
 .chat-page-wrapper{
-  margin: 100px auto 0px;
+  margin: 85px auto 0px;
   width: 96%;
-  max-width: 1440px;
+  max-width: calc(1440px + 10vw);
 }
 .live-chat{
-  height: calc(100vh - 220px);
+  height: calc(100vh - 190px);
   overflow-y: hidden;
   @media screen and ( min-width: 400px ){
-    height: calc(100vh - 121px);
+    height: calc(100vh - 80px);
   }
 }
-.chat-page-header{
-  background: $green;
-  text-align: center;
-  padding: 5px;
-  margin-top: -25px;
-  border-radius: 3px;
-  margin-bottom: 5px;
-  font-size:0.8em;
-  font-weight: bold;
-}
-
 
 //chat
 .chat {
   display: flex;
-  height: calc(100vh - 227px);
+  height: calc(100vh - 201px);
   padding-right: 3px;
   @media screen and ( min-width: 400px ){
-    height: calc(100vh - 128px);
+    height: calc(100vh - 91px);
   }
 }
 
@@ -79,7 +68,18 @@
     }
   }
   @media screen and ( min-width: 1300px ){
-    width: 280px;
+    width: calc(280px + 3vw);
+  }
+  &.chat__channels--placeholder{
+    @media screen and ( max-width: 599px ){
+      width: 45px;
+      input{
+        display: none;
+      }
+      .chat__channelstogglebutt{
+        visibility: hidden;
+      }
+    }
   }
 }
 
@@ -108,14 +108,14 @@
 }
 
 .chat__channeltypefilter{
-  padding: 3px 0px 3px;
+  padding: 4px 0px 4px;
 }
 
 .chat__channeltypefilterbutton{
   background: transparent;
   border: 0px;
-  font-size: 14px;
-  padding: 4px 8px 2px;
+  font-size: 15px;
+  padding: 9px 15px 4px;
   font-family: $monospace;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -237,6 +237,26 @@
   font-size:25px;
   background: white;
   border:0px;
+  font-size:1.8em;
+}
+
+.chatNonChatView_contentblock{
+  border: 1px solid $medium-gray;
+  padding: 20px;
+  margin-bottom: 10px;
+  max-width: 900px;
+  box-shadow: $bold-shadow;
+  h2{
+    margin:5px auto 5px;
+  }
+  button{
+    font-size: 1.6em;
+    background: white;
+    border: 4px solid $black;
+    padding: 4px 12px;
+    border-radius: 3px;
+    margin: 20px 12px;
+  }
 }
 
 .chat__videocallexitbutton{
@@ -342,9 +362,10 @@
 }
 
 .activechatchannel__activecontent{
+  border: 1px solid $outline-color;
   border-left: 2px solid $outline-color;
   padding: 13px;
-  min-width: 290px;
+  min-width: 310px;
   margin-left: -180px;
   background: white;
   flex-basis: 80%;
@@ -352,6 +373,7 @@
   position: relative;
   box-sizing: border-box;
   overflow-y: scroll;
+  max-width:96%;
   @media screen and ( min-width: 1000px ){
     margin-left: initial;
     min-width: 0px;
@@ -374,13 +396,42 @@
   background: transparent;
   position: absolute;
   left: 6px;
-  top:-4px;
+  top:-5px;
 }
 
 .activechatchannel__activeArticle{
   position: absolute;
-  top: 38px; left: 0; right: 0; bottom: 0;
+  top: 36px; left: 0; right: 0; bottom: 0;
   border-top: 1px solid $light-medium-gray !important;
+}
+
+.activechatchannel__activeArticleDetails{
+  position: absolute;
+  top: -25px;
+  right: 2px;
+  left: 42px;
+  font-family: $monospace;
+  font-size:0.85em;
+  a{
+    color: $dark-gray;
+  }
+  .activechatchannel__activeArticleDetailsPath{
+    display: inline-block;
+    max-width: calc(100% - 20px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  img{
+    height: 1.1em;
+    width: 1.1em;
+    margin-left: 10px;
+    vertical-align:2px;
+    opacity:0.86;
+    &:hover{
+      opacity:1;
+    }
+  }
 }
 
 .chat .activechatchannel__activeArticle .container {
@@ -493,7 +544,7 @@
   text-align: start;
   font-size: 11px;
   font-weight: 500;
-  padding: 3px;
+  padding: 6px 4px;
   border: 1px solid transparent;
   border-radius: 3px;
   white-space: nowrap;
@@ -517,27 +568,31 @@
 
 .chatchanneltabindicator{
   display: inline-block;
-  background: $light-medium-gray;
-  border: 2px solid $light-medium-gray;
   min-height: 0.3em;
   min-width: 0.3em;
   border-radius: 100px;
   // vertical-align: -0.05em;
   margin-right: 3px;
   img {
-    height: 20px;
-    width: 20px;
-    border-radius: 100px;
-    vertical-align: -7px;
-    border: 3px solid $light-medium-gray;
+    height: calc(20px + 0.3vw);
+    width: calc(20px + 0.3vw);
+    vertical-align: calc(-7px - 0.14vw);
+    border: 2px solid transparent;
+    &.chatchanneltabindicatordirectimage{
+      border: 2px solid $light-medium-gray;
+      border-radius: 100px;
+    }
+  }
+  .chatchanneltabgroupicon{
+    display: inline-block;
+    margin-left: calc(20px + 0.3vw);
   }
 }
 
 .chatchanneltabindicator--new{
   background: $yellow;
-  border: 2px solid $black;
-  img {
-    border: 3px solid $yellow;
+  img.chatchanneltabindicatordirectimage {
+    border: 2px solid $black;
   }
 }
 
