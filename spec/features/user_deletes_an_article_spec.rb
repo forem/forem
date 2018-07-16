@@ -17,7 +17,7 @@ RSpec.feature "Deleting Article", js: true do
   end
 
   scenario "author of article deletes own article" do
-    login_via_session_as author
+    sign_in author
     delete_article_via_dashboard
     expect(page).to have_text("Write your first post now")
   end

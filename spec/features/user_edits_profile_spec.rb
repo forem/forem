@@ -4,7 +4,7 @@
 #   let(:user) { create(:user, saw_onboarding: true) }
 
 #   before do
-#     login_via_session_as user
+#     sign_in user
 #   end
 
 #   describe "via their profile page" do

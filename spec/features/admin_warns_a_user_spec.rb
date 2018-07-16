@@ -5,7 +5,7 @@ feature "Admin warns user" do
   let(:user)        { create(:user) }
 
   background do
-    login_via_session_as admin
+    sign_in admin
   end
 
   before do

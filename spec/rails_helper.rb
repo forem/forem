@@ -10,7 +10,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "spec_helper"
 require "webmock/rspec"
 require "capybara/rspec"
-require "rack_session_access/capybara"
 require "stream_rails"
 require "selenium/webdriver"
 require "rspec/retry"
@@ -61,7 +60,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   # Apply rack_session_access integrated with devise.
-  config.include FeatureHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :feature
 
   # show retry status in spec process
   config.verbose_retry = true
@@ -202,7 +201,7 @@ end
 
 Capybara.register_driver :headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w(headless disable-gpu window-size=1400,2000) },
+    chromeOptions: { args: %w(headless disable-gpu no-sandbox window-size=1400,2000) },
   )
 
   Capybara::Selenium::Driver.new app,
@@ -212,6 +211,6 @@ end
 
 # The current driveres implemented are
 # - chrome-helper (:chrome) => Use this for browser-based testing
-# - headless-chrome (:headless_chrome) => headless version of chrome-helper. Work but slow.
+# - headless-chrome (:headless_chrome) => headless version of chrome-helper
 
 Capybara.javascript_driver = :headless_chrome

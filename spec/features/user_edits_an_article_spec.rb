@@ -12,7 +12,7 @@ feature "Editing with an editor" do
   end
 
   background do
-    login_via_session_as user
+    sign_in user
   end
 
   scenario "user click the edit-post button", js: true, retry: 3 do

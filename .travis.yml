@@ -1,0 +1,58 @@
+sudo: required
+
+language: ruby
+
+cache:
+  directories:
+    - vendor/bundle
+    - node_modules
+
+rvm:
+  - 2.5.1
+
+addons:
+  postgresql: "9.6"
+  chrome: stable
+
+env:
+  global:
+    - RAILS_ENV=test
+
+branches:
+  only:
+    - master
+
+install:
+  - bundle install --path vendor/bundle
+  - bundle exec chromedriver-update
+  - yarn install
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+
+
+before_script:
+  - cp config/database.yml.travis config/database.yml
+  - psql -c 'create database travis_ci_test;' -U postgres
+
+script:
+  - bundle exec rails webpacker:compile
+  - bundle exec rake db:schema:load
+  - ./cc-test-reporter before-build
+  - bundle exec rspec spec
+  - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json
+  - yarn test
+  - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
+  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json
+  - ./cc-test-reporter upload-coverage
+
+deploy:
+  provider: heroku
+  api_key: $HEROKU_AUTH_TOKEN
+  app:
+    master: practicaldev
+  run:
+    - "rake db:migrate"
+    - restart
+
+after_deploy:
+  - ./after_deploy.sh

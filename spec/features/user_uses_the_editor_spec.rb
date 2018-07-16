@@ -10,7 +10,7 @@ feature "Using the editor" do
   let(:rich_template) { File.read(File.join(File.dirname(__FILE__), rich_dir)) }
 
   background do
-    login_via_session_as user
+    sign_in user
   end
 
   def read_from_file(dir)

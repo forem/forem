@@ -5,7 +5,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
   let(:organization) { create(:organization) }
 
   before do
-    login_via_session_as user
+    sign_in user
   end
 
   it "user creates an organization" do

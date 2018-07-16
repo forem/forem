@@ -8,7 +8,7 @@ RSpec.describe BlockPolicy do
   let(:valid_attributes) do
     %i[input_html input_css input_javascript featured index_position publish_now]
   end
-  
+
   context "when not signed in" do
     let(:user) { nil }
 
@@ -23,8 +23,6 @@ RSpec.describe BlockPolicy do
 
   context "when user is signed in as a super admin" do
     let(:user) { build(:user, :super_admin) }
-
-    before { login_as user }
 
     it { is_expected.to permit_actions(%i[index show new edit create update destroy]) }
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }
