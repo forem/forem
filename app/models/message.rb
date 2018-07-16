@@ -80,11 +80,11 @@ class Message < ApplicationRecord
     if chat_channel_id.blank?
       errors.add(:base, "Must be part of channel.")
     end
+
     channel = ChatChannel.find(chat_channel_id)
-    return if channel.channel_type == "open"
-    if channel.has_member?(user)
-      # this is fine
-    else
+    return if channel.open?
+
+    unless channel.has_member?(user)
       errors.add(:base, "You are not a participant of this chat channel.")
     end
   end
