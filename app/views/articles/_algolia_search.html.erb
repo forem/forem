@@ -19,11 +19,6 @@
   function algoliaMain() {
     var query = filterXSS(params.q);
     var filters = filterXSS(params.filters || "");
-    var div_for_decode = document.createElement('div');
-    div_for_decode.innerHTML = query;
-    var search_query = div_for_decode.firstChild.nodeValue;
-    document.activeElement.blur();
-    document.getElementById("nav-search").value = search_query
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
     var client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>');
     var index = client.initIndex('searchables_<%= Rails.env %>');

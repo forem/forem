@@ -30,5 +30,10 @@ module.exports = {
         devDependencies: ['**/*.test.js', '**/*.test.jsx', '**/*.stories.jsx'],
       },
     ],
+    'import/prefer-default-export': 'off',
+  },
+  globals: {
+    InstantClick: false,
+    filterXSS: false,
   },
 };

@@ -16,7 +16,7 @@
     <meta name="algolia-public-id" content="<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>">
     <meta name="algolia-public-key" content="<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>">
     <meta name="environment" content="<%= Rails.env %>">
-    
+
     <%= render "layouts/styles" %>
     <style>
       .home {
@@ -33,6 +33,7 @@
         }
       }
     </style>
+    <%= javascript_pack_tag 'Search', defer: true %>
     <% if core_pages? %>
       <%= javascript_include_tag 'base', defer: true %>
       <% if user_signed_in? %>
@@ -84,11 +85,6 @@
     <div id="page-content-inner">
       <%= yield %>
     </div>
-    <% unless @query.present? %>
-      <script async>
-        document.getElementById("nav-search").value = ""
-      </script>
-    <% end %>
   </div>
   <% unless is_internal_navigation? %>
     <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ENV["DEPLOYMENT_SIGNATURE"].to_s}", :expires_in => 200.hours) do %>
