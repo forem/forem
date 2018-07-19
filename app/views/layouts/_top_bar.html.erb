@@ -3,10 +3,12 @@
 <div class="top-bar" id="top-bar">
   <nav>
     <a href="/" class="logo-link" id="logo-link" aria-label="DEV Home"><%= inline_svg("devplain.svg", class: "logo", size: '20% * 20%') %></a>
-      <div class="nav-search-form" id="nav-search-form">
-        <%= form_tag( '/search', :method => :get, id: "site-search-form" ) do %>
-          <%= text_field_tag :q, nil, placeholder: "search", id: "nav-search", autocomplete: :off %>
-        <% end %>
+      <div id="nav-search-form-root">
+        <div class="nav-search-form">
+          <form acceptCharset="UTF-8" method="get">
+            <input class="nav-search-form__input" type="text" name="q" id="nav-search" placeholder="search" autoComplete="off" />
+          </form>
+        </div>
       </div>
       <a href="/new" id="write-link" class="cta nav-link write">WRITE A POST</a>
       <a href="/connect" id="connect-link" class="nav-link connect-icon" aria-label="Connect">
