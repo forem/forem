@@ -114,10 +114,7 @@ class StoriesController < ApplicationController
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     end
     @stories = @stories.decorate
-    @podcast_episodes = PodcastEpisode.
-      includes(:podcast).
-      order("published_at desc").
-      select(:slug, :title, :podcast_id).limit(5)
+    assign_podcasts
     @article_index = true
     @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar").first
     set_surrogate_key_header "articles", @stories.map(&:record_key)
@@ -265,6 +262,15 @@ class StoriesController < ApplicationController
     end
   end
 
+  def assign_podcasts
+    if user_signed_in?
+      @podcast_episodes = PodcastEpisode.
+        includes(:podcast).
+        order("published_at desc").
+        select(:slug, :title, :podcast_id).limit(5)
+    end
+  end
+
   def article_finder(num_articles)
     Article.where(published: true).
     includes(:user).
@@ -287,6 +293,7 @@ class StoriesController < ApplicationController
       where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
       where(published: true).
       where.not(id: @article.id, user_id: @article.user_id).
+      limited_column_select.
       where("featured_number > ?", 5.days.ago.to_i).
       order("RANDOM()").
       limit(8)
@@ -294,6 +301,7 @@ class StoriesController < ApplicationController
       more_articles = Article.tagged_with((["career","productivity","discuss","explainlikeimfive"]), any: true).
         includes(:user).
         where("comments_count > ?", comment_count_num).
+        limited_column_select.
         where(published: true).
         where.not(id: @article.id, user_id: @article.user_id).
         where("featured_number > ?", 5.days.ago.to_i).
@@ -303,6 +311,7 @@ class StoriesController < ApplicationController
 
     @user_stickies = (@organization || @user).articles.
         where(published: true).
+        limited_column_select.
         tagged_with(article_tags, any: true).
         where.not(id: @article.id).order("published_at DESC").
         limit(2)
