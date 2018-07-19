@@ -66,9 +66,10 @@ class Article < ApplicationRecord
   scope :limited_column_select, -> {
     select(:path, :title, :id,
     :comments_count, :positive_reactions_count, :cached_tag_list,
-    :main_image, :main_image_background_hex_color, :updated_at,
+    :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url, :published_at, :crossposted_at)
+    :video_thumbnail_url, :video_closed_caption_track_url,
+    :published_at, :crossposted_at, :boost_states, :description)
   }
 
   scope :limited_columns_internal_select, -> {

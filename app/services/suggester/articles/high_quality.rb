@@ -8,12 +8,13 @@ module Suggester
       end
 
       def suggest
-        Article.where(published: true, featured: true).
-          includes(:user).
-          where("positive_reactions_count > ?", MIN_HQ_REACTION_COUNT).
-          order("RANDOM()").
-          where.not(id: @not_ids).
-          first
+          Article.where(published: true, featured: true).
+            includes(:user).
+            where("positive_reactions_count > ?", MIN_HQ_REACTION_COUNT).
+            order("RANDOM()").
+            limited_column_select.
+            where.not(id: @not_ids).
+            first
       end
     end
   end
