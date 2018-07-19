@@ -21,6 +21,10 @@
       "eslint --fix",
       "git add"
     ],
+    "{app,spec}/**/*.rb": [
+      "bundle exec rubocop --auto-correct",
+      "git add"
+    ],
     "*.json": [
       "prettier --write",
       "git add"
