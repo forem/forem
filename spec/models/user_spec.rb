@@ -145,6 +145,13 @@ RSpec.describe User, type: :model do
       expect(user.old_old_username).to eq(old_username)
     end
 
+    it "does not allow too short or too long name" do
+      user.name = ""
+      expect(user).not_to be_valid
+      user.name = Faker::Lorem.paragraph_by_chars(200)
+      expect(user).not_to be_valid
+    end
+
     it "does not accept invalid employer url" do
       user.employer_url = "ben.com"
       expect(user).not_to be_valid
