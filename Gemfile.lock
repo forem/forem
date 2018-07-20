@@ -577,6 +577,7 @@ GEM
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     mustermann (1.0.2)
+    nakayoshi_fork (0.0.4)
     naught (1.1.0)
     nenv (0.3.0)
     netrc (0.11.0)
@@ -975,6 +976,7 @@ DEPENDENCIES
   launchy (~> 2.4)
   liquid (~> 4.0)
   memory_profiler (~> 0.9)
+  nakayoshi_fork
   nokogiri (~> 1.8)
   octokit (~> 4.8)
   omniauth (~> 1.8)
