@@ -22,8 +22,8 @@ class RssReader
 
   def valid_feed_url?(link)
     true if fetch_rss(link)
-  rescue
-    return false
+  rescue StandardError
+    false
   end
 
   private
@@ -31,17 +31,15 @@ class RssReader
   def create_articles_for_user(user)
     feed = fetch_rss(user.feed_url)
     feed.entries.reverse_each do |item|
-      begin
-        make_from_rss_item(item, user, feed)
-      rescue => e
-        log_error("RssReaderError: occurred while creating article for " \
-                               "USER: #{user.username} " \
-                               "FEED-URL: #{user.feed_url} " \
-                               "ITEM-TITLE: #{item.title ? item.title : 'no title'} " \
-                               "ERROR: #{e}")
-      end
+      make_from_rss_item(item, user, feed)
+    rescue StandardError => e
+      log_error("RssReaderError: occurred while creating article for " \
+                             "USER: #{user.username} " \
+                             "FEED-URL: #{user.feed_url} " \
+                             "ITEM-TITLE: #{item.title || 'no title'} " \
+                             "ERROR: #{e}")
     end
-  rescue => e
+  rescue StandardError => e
     log_error("RssReaderError: occurred while fetch feed for " \
               "USER: #{user.username} " \
               "FEED-URL: #{user.feed_url} " \
@@ -130,7 +128,7 @@ class RssReader
       a_tag = iframe.css("a")
       next if a_tag.empty?
       possible_link = a_tag[0].inner_html
-      if possible_link =~ /medium\.com\/media\/.+\/href/
+      if /medium\.com\/media\/.+\/href/.match?(possible_link)
         real_link = ""
         open(possible_link) do |h|
           real_link = h.base_uri.to_s
@@ -161,7 +159,7 @@ class RssReader
 
   def parse_and_translate_youtube_iframe!(html_doc)
     html_doc.css("iframe").each do |iframe|
-      if iframe.attributes["src"].value =~ /youtube\.com/
+      if /youtube\.com/.match?(iframe.attributes["src"].value)
         iframe.name = "p"
         youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,12})%3F/).flatten.first
         iframe.keys.each { |attr| iframe.remove_attribute(attr) }

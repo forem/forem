@@ -49,7 +49,7 @@ class Notification < ApplicationRecord
 
   def activity_actor
     if notifiable.class.name == "Broadcast" || action == "Moderation"
-      User.find(ENV["DEVTO_USER_ID"])
+      User.find(ApplicationConfig["DEVTO_USER_ID"])
     else
       notifiable.user
     end

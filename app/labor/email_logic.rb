@@ -55,8 +55,8 @@ class EmailLogic
 
   def get_days_until_next_email
     # Relies on hyperbolic tangent function to model the frequency of the digest email
-    max_day = ENV["PERIODIC_EMAIL_DIGEST_MAX"].to_i
-    min_day = ENV["PERIODIC_EMAIL_DIGEST_MIN"].to_i
+    max_day = ApplicationConfig["PERIODIC_EMAIL_DIGEST_MAX"].to_i
+    min_day = ApplicationConfig["PERIODIC_EMAIL_DIGEST_MIN"].to_i
     result = max_day * (1 - Math.tanh(2 * @open_percentage))
     result = result.round
     result < min_day ? min_day : result

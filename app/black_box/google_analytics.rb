@@ -32,7 +32,7 @@ class GoogleAnalytics
 
   def make_report_request(url)
     ReportRequest.new(
-      view_id: ENV["GA_VIEW_ID"],
+      view_id: ApplicationConfig["GA_VIEW_ID"],
       filters_expression: "ga:pagePath==#{url}",
       metrics: [Metric.new(expression: "ga:pageviews")],
       date_ranges: [
@@ -51,7 +51,7 @@ class GoogleAnalytics
 
   def create_service_account_credential
     ServiceAccountCredentials.make_creds(
-      json_key_io: OpenStruct.new(read: ENV["GA_SERVICE_ACCOUNT_JSON"]),
+      json_key_io: OpenStruct.new(read: ApplicationConfig["GA_SERVICE_ACCOUNT_JSON"]),
       scope: [AUTH_ANALYTICS_READONLY],
     )
   end

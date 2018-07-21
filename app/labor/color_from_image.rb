@@ -17,7 +17,7 @@ class ColorFromImage
     input = {
       url: @url
     }
-    client = Algorithmia.client(ENV["ALGORITHMIA_KEY"])
+    client = Algorithmia.client(ApplicationConfig["ALGORITHMIA_KEY"])
     algo = client.algo('vagrant/ColorSchemeExtraction/0.2.0')
     algo.pipe(input).result
   end

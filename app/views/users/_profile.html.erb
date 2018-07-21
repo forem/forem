@@ -12,7 +12,7 @@
 <% if @user.identities.where(provider:'twitter').empty? %>
   <div class="field">
     <label>Action</label>
-    <a href="/users/auth/twitter?callback_url=<%= ENV["APP_PROTOCOL"] %><%= ENV["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
+    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
       <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
     </a>
   </div>

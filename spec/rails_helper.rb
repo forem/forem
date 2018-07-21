@@ -102,8 +102,6 @@ RSpec.configure do |config|
     stub_request(:post, /api.bufferapp.com/).
       to_return(status: 200, body: {fake_text:"so fake"}.to_json, headers: {})
 
-    stub_request(:any, /api.twitter.com/).to_rack(FakeTwitter)
-
     # stub_request(:any, /api.getstream.io/).to_rack(FakeStream)
 
     # for twitter image cdn

@@ -2,7 +2,7 @@
 <script src="//d79i1fxsrar4t.cloudfront.net/jquery.liveaddress/3.4/jquery.liveaddress.min.js"></script>
 <script>
   var liveaddress = jQuery.LiveAddress({
-    key: "<%= ENV['SMARTY_STREETS_WEB_KEY'] %>",
+    key: "<%= ApplicationConfig['SMARTY_STREETS_WEB_KEY'] %>",
     target: "US|International",
     addresses: [{
       address1: '#user_shipping_address',

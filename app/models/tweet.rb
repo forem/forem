@@ -22,10 +22,10 @@ class Tweet < ApplicationRecord
   def self.fetch(twitter_id_code)
     tries = 0
     tweet = nil
-    until (tries > 4 || tweet) do
+    until tries > 4 || tweet
       begin
         return tweet = try_to_get_tweet(twitter_id_code)
-      rescue => e
+      rescue StandardError => e
         puts e
         tries += 1
       end
@@ -34,24 +34,24 @@ class Tweet < ApplicationRecord
 
   def processed_text
     urls_serialized.each do |url|
-      text.gsub!(url[:url],"<a href='#{url[:url]}'>#{url[:display_url]}</a>")
+      text.gsub!(url[:url], "<a href='#{url[:url]}'>#{url[:display_url]}</a>")
     end
     mentioned_usernames_serialized.each do |username|
       uname = username["screen_name"]
-      text.gsub!("@"+uname,"<a href='https://twitter.com/#{uname}'>#{"@"+uname}</a>")
+      text.gsub!("@" + uname, "<a href='https://twitter.com/#{uname}'>#{'@' + uname}</a>")
     end
     hashtags_serialized.each do |tag|
       tag_text = tag[:text]
-      text.gsub!("#"+tag_text,"<a href='https://twitter.com/hashtag/#{tag_text}'>#{"#"+tag_text}</a>")
+      text.gsub!("#" + tag_text, "<a href='https://twitter.com/hashtag/#{tag_text}'>#{'#' + tag_text}</a>")
     end
 
     if extended_entities_serialized && extended_entities_serialized[:media]
       extended_entities_serialized[:media].each do |media|
-        text.gsub!(media[:url],"")
+        text.gsub!(media[:url], "")
       end
     end
 
-    text.gsub!("\n","<br/>")
+    text.gsub!("\n", "<br/>")
     text
   end
 
@@ -98,10 +98,10 @@ class Tweet < ApplicationRecord
 
   def self.random_identity
     if Rails.env.production?
-      Identity.where(provider:"twitter").last(250).sample
+      Identity.where(provider: "twitter").last(250).sample
     else
-      Identity.where(provider:"twitter").last
+      Identity.where(provider: "twitter").last ||
+        { token: ApplicationConfig["TWITTER_KEY"], secret: ApplicationConfig["TWITTER_SECRET"] }
     end
   end
-
 end

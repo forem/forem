@@ -55,7 +55,7 @@ class PagesController < ApplicationController
   private # helpers
 
   def latest_published_welcome_thread
-    Article.where(user_id: ENV["DEVTO_USER_ID"], published: true).
+    Article.where(user_id: ApplicationConfig["DEVTO_USER_ID"], published: true).
       tagged_with("welcome").last
   end
 

@@ -1,12 +1,20 @@
-require 'rails_helper'
+require "rails_helper"
 
-RSpec.describe Tweet, type: :model do
+vcr_option = {
+  cassette_name: "twitter_gem",
+  allow_playback_repeats: "true",
+}
+
+RSpec.describe Tweet, type: :model, vcr: vcr_option do
+  let(:tweet_id) { "1018911886862057472" }
+
   it "fetches a tweet" do
-    tweet = Tweet.fetch("STUBBED_TWEET_ID")
-    expect(tweet.class.name).to eq("Tweet")
+    tweet = Tweet.fetch(tweet_id)
+    expect(tweet.class).to eq(described_class)
   end
+
   it "renders processed text" do
-    tweet = Tweet.fetch("STUBBED_TWEET_ID")
-    expect(tweet.processed_text).to include("<br/>") # because there is a \n in the tweet
+    tweet = Tweet.fetch(tweet_id)
+    expect(tweet.processed_text).not_to be_nil
   end
 end

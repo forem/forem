@@ -38,7 +38,7 @@
         Sign In/Up
       </div>
     </a>
-    <a href="/users/auth/twitter?callback_url=<%= ENV["APP_PROTOCOL"] %><%= ENV["APP_DOMAIN"] %>/users/auth/twitter/callback" data-no-instant>
+    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" data-no-instant>
       <div class="option">
         Via Twitter
       </div>

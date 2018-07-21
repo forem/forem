@@ -17,7 +17,7 @@
       <p>
         We’re a place where coders share, stay up-to-date and grow their careers.
       </p>
-      <a href="/users/auth/twitter?callback_url=<%= ENV["APP_PROTOCOL"] %><%= ENV["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
+      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
         <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter"/> Auth With Twitter
       </a>
       <a href="/users/auth/github?state=signup-modal" class="sign-up-link cta" data-no-instant>

@@ -1,7 +1,7 @@
 function initializeReadingListPage(){
   if ( getCurrentPage("reading_list_items-index") && checkUserLoggedIn() ) {
-    var publicSearchKey = '<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>'
-    client = algoliasearch('<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
+    var publicSearchKey = '<%= ApplicationConfig["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>'
+    client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
     readinglistIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
     commentsIndex = client.initIndex('ordered_comments_<%= Rails.env %>');
     var params = getQueryParams(document.location.search);

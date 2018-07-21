@@ -33,8 +33,8 @@ class Message < ApplicationRecord
         ttl: 24 * 60 * 60,
         vapid: {
             subject: "https://dev.to",
-            public_key: ENV["VAPID_PUBLIC_KEY"],
-            private_key: ENV["VAPID_PRIVATE_KEY"],
+            public_key: ApplicationConfig["VAPID_PUBLIC_KEY"],
+            private_key: ApplicationConfig["VAPID_PRIVATE_KEY"],
         },
       )
     end
@@ -67,7 +67,7 @@ class Message < ApplicationRecord
     doc = Nokogiri::HTML(html)
     rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
     doc.css("a").each do |a|
-      if a["href"].include?("//#{ENV["APP_DOMAIN"]}/") && article = Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
+      if a["href"].include?("//#{ApplicationConfig["APP_DOMAIN"]}/") && article = Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
         html = html + "<a style='color: #0a0a0a' href='#{article.path}'
           target='_blank' data-content='articles/#{article.id}'>
           <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>

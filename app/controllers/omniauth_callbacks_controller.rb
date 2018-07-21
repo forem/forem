@@ -2,8 +2,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # Don't need a policy for this since this is our sign up/in route
   include Devise::Controllers::Rememberable
   def self.provides_callback_for(provider)
-    # raise env["omniauth.auth"].to_yaml
-    class_eval %Q{
+    # raise ApplicationConfig["omniauth.auth"].to_yaml
+    class_eval %{
       def #{provider}
         cta_variant = request.env["omniauth.params"]['state'].to_s
         @user = AuthorizationService.new(request.env["omniauth.auth"], current_user, cta_variant).get_user
@@ -19,8 +19,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     }
   end
 
-  [:twitter, :github].each do |provider|
+  %i[twitter github].each do |provider|
     provides_callback_for provider
   end
-
 end

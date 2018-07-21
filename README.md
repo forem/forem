@@ -17,8 +17,8 @@
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
   </a>
-  <a href="https://app.codeship.com/projects/229274">
-    <img src="https://app.codeship.com/projects/6c96c1d0-3db5-0135-649e-1a9b211ca261/status?branch=master" alt="Codeship Status for thepracticaldev/dev.to_private"/>
+  <a href="https://travis-ci.com/thepracticaldev/dev.to_core">
+    <img src="https://travis-ci.com/thepracticaldev/dev.to_core.svg?token=gYyQp8xsU99uXSw75ah6&branch=master" alt="Travis Status for thepracticaldev/dev.to_core"/>
   </a>
   <a href="https://codeclimate.com/repos/5a9720ab6f8db3029200792a/maintainability">
     <img src="https://api.codeclimate.com/v1/badges/607170a91196c15668e5/maintainability" />
@@ -71,10 +71,15 @@ We are all humans trying to work together to improve things for the community. A
 2.  `bundle install`
 3.  `bin/yarn`
 4.  Set up your environment variables/secrets
-    * Create a `config/application.yml` file to store development secrets. This is a personal file that is ignored in git.
-    * Copy [`config/sample_application.yml`](config/sample_application.yml) in order to create a valid `application.yml`
-    * You'll need to get your own free API keys for a few services in order to get your development environment running. [**Follow this wiki to get them.**](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development)
-    * If you are missing `ENV` variables on bootup, `_env_checker.rb` will let you know. If you add or remove `ENV` vars to the project, you must also modify this file before they can be merged. The wiki above should handle all the necessary keys for basic development.
+    * Take a look at `Envfile`. This file list all the `ENV` variables we use and provides a fake default a particular key is missing. You'll need to get your own free API keys for a few services in order to get your development environment running. [**Follow this wiki to get them.**](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development)
+    * For any key that you wish to enter/replace:
+      1. Create a `config/application.yml` file. This is a personal file that is ignored in git.
+      2. Input the keys you want to replace. ie:
+      ```
+      THAT_THIRD_PARTY_SERVICE_OAUTH: A_SOME_SECURE_AND_LONG_KEY
+      TWITTER_ACCESS_TOKEN: A_SOME_SECURE_AND_LONG_KEY
+      ```
+    * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 5.  Run `bin/setup`
 
@@ -167,66 +172,35 @@ The following technologies are used for testing:
 You can modify the test in `/test/mailers/previews`
 You can view the previews at (for example) `http://localhost:3000/rails/mailers/notify_mailer/new_reply_email`
 
-## How to contribute (Internal)
-
-1.  Clone the project locally.
-2.  Create a branch for each separate piece of work.
-3.  Do the work and write [good commit messages](https://chris.beams.io/posts/git-commit/).
-
-* If your work includes adding a new environment variable, make sure you update `_env_checker.rb`.
-
-4.  Push your branch up to this repository.
-5.  Create a new pull-reqest.
-6.  After the pull-request is approved and merged, delete your branch on github.
-
-**Avoid pushing spike(test) branches up to the main repository**. If you must, push the spike branches up to a forked repository.
-
-<!-- This would be how we would contribute if we are doing a fork-and-branch workflow
+## How to contribute
 1. Fork the project & clone locally.
-2. Create an upstream remote and sync your local copy before you branch.
-3. Create a branch for each separate piece of work.
-4. Do the work and write good commit messages.
-5. Push to your origin repository.
-6. Create a new PR in GitHub.
--->
-
-### Branch Policies
-
-#### Branch naming convention
-
-Name the branch in the following manner.
-`<your-name>/<type>/<github issue# (if there's one)>-<name>`
-
-###### Examples
-
-```text
-ben/feature/renderer-cookies
-jess/hotfix/dockerfile-base-image
-andy-mac/issue/#132-broken-link
-```
+2. Create a feature branch: `git checkout -b my-name/feature/that-new-feature`
+3. Code and Commit your changes. Bonus point if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-name/feature/that-new-feature`
+5. Create a new pull request for your feature branch 🎉
 
 #### Pull request guideline
 
-* Keep the pull request small; a pull request should try it's very best to address only a single concern.
+* Try to keep the pull request small; a pull request should try it's very best to address only a single concern.
 * Make sure all the tests pass and add additional tests for the code you submit.
 * Document your reasoning behind the changes. Explain why you wrote the code in the way you did, not what it does.
 * If there's an existing issue related to the pull request, reference to it. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
 
-Please note that we squash all pull request. **After a pull request is approved, we will remove the branch the PR is on unless you state it otherwise**
+Please note that we squash all pull request.
 
 ## Continuous Integration & Continuous Deployment
 
-We are using Codeship for CI and CD. Codeship will run a build (in isolated environment for testing) for every push to this repository. Keep in mind that a passing-build does not necessarily mean the project won't run into any issues. Strive to write good tests for any chunk of code you wish to contribute. Only pushes to the `deployment` branch will evoke the CD portion of Codeship after CI passes. Our test suite is not perfect and sometimes a re-rerun is needed.
+We are using Travis for CI and CD. Travis will run a build (in isolated environment for testing) for every push to this repository. Keep in mind that a passing-build does not necessarily mean the project won't run into any issues. Strive to write good tests for any chunk of code you wish to contribute. Travis will deploy a pull request to production after CI passes. Our test suite is not perfect and sometimes a re-rerun is needed.
 
 #### Skipping CI build (Not recommended)
 
-If your changes are minor (i.e. updating README), you can skip CI by adding `--skip-ci` to your commit message. More info [here](https://documentation.codeship.com/general/projects/skipping-builds/).
+If your changes are minor (i.e. updating README), you can skip CI by adding `[skip ci]` to your commit message.
 
 ## CodeClimate and Simplecov
 
 We are using CodeClimate to track code quality and code coverage. Codeclimate will grade the quality of the code of every PR but not the entirety of the project. If you feel that the current linting rule is unreasonable, feel free to submit a _separate_ PR to change it. Fix any errors that Codeclimate provides and strive to leave code better than you found it.
 
-Simplecov is a gem that is tracking the coverage of our test suite. Codeship will upload Simplecov data to CodeClimate. We are still in the early stage of using it so it may not provide an accurate measurement our of codebase.
+Simplecov is a gem that is tracking the coverage of our test suite. Travis will upload Simplecov data to CodeClimate. We are still in the early stage of using it so it may not provide an accurate measurement our of codebase.
 
 #### Using simplecov locally
 
@@ -234,3 +208,7 @@ Simplecov is a gem that is tracking the coverage of our test suite. Codeship wil
 2.  After rspec is complete, open `index.html` within the coverage folder to view code coverages.
 
 Run `bin/rspecov` to do all of this in one step
+
+***
+
+## Happy Coding ❤️

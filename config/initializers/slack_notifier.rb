@@ -6,15 +6,15 @@ end
 
 def create_normal_notifier
   Slack::Notifier.new(
-    ENV["SLACK_WEBHOOK_URL"],
-    channel: ENV["SLACK_CHANNEL"],
+    ApplicationConfig["SLACK_WEBHOOK_URL"],
+    channel: ApplicationConfig["SLACK_CHANNEL"],
     username: "activity_bot",
   )
 end
 
 def create_test_channel_notifier
   Slack::Notifier.new(
-    ENV["SLACK_WEBHOOK_URL"],
+    ApplicationConfig["SLACK_WEBHOOK_URL"],
     channel: "#test",
     username: "development_test_bot",
   )

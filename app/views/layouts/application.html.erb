@@ -13,8 +13,8 @@
   <% else %>
     <meta name="last-updated" content="<%= Time.now %>">
     <meta name="user-signed-in" content="<%= user_signed_in? %>">
-    <meta name="algolia-public-id" content="<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>">
-    <meta name="algolia-public-key" content="<%= ENV["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>">
+    <meta name="algolia-public-id" content="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>">
+    <meta name="algolia-public-key" content="<%= ApplicationConfig["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>">
     <meta name="environment" content="<%= Rails.env %>">
 
     <%= render "layouts/styles" %>
@@ -71,7 +71,7 @@
     <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The DEV Community"/>
   <% end %>
 </head>
-<body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ENV["PUSHER_KEY"] %>">
+<body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
   <% unless is_internal_navigation? %>
     <div id="audiocontent">
       <%= yield(:audio) %>
@@ -87,7 +87,7 @@
     </div>
   </div>
   <% unless is_internal_navigation? %>
-    <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ENV["DEPLOYMENT_SIGNATURE"].to_s}", :expires_in => 200.hours) do %>
+    <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig["DEPLOYMENT_SIGNATURE"].to_s}", :expires_in => 200.hours) do %>
       <%= render "layouts/footer" %>
       <%= render "layouts/signup_modal" unless user_signed_in? %>
     <% end %>
