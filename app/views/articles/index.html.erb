@@ -160,7 +160,7 @@
               </a>
             <% end %>
             <% if @user.website_url.present? %>
-              <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
+              <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow">
                 <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
               </a>
             <% end %>
