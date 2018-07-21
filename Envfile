@@ -52,6 +52,12 @@ variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: "Optional"
 variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: "Optional"
 
 # AWS for images storages
+variable :AWS_ID, :String, default: "Optional"
+variable :AWS_SECRET, :String, default: "Optional"
+variable :AWS_BUCKET_NAME, :String, default: "Optional"
+
+
+# AWS SDK
 variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"
 variable :AWS_SDK_KEY, :String, default: "Optional"
 variable :AWS_SDK_SECRET, :String, default: "Optional"
