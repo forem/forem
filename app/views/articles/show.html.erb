@@ -59,6 +59,7 @@
   <% if !@article.published || (@article.positive_reactions_count < 8 && @article.user.comments_count < 1 && !@article.featured) ||
     @article.featured_number.to_i < 1500000000 %>
     <meta name="googlebot" content="noindex">
+    <meta name="googlebot" content="nofollow">
   <% end %>
 <% end %>
 
