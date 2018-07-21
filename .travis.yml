@@ -1,58 +1,54 @@
 sudo: required
-
 language: ruby
-
 cache:
   directories:
-    - vendor/bundle
-    - node_modules
-
+  - vendor/bundle
+  - node_modules
 rvm:
-  - 2.5.1
-
+- 2.5.1
 addons:
-  postgresql: "9.6"
+  postgresql: '9.6'
   chrome: stable
-
 env:
   global:
-    - RAILS_ENV=test
-
+  - RAILS_ENV=test
+  - CC_TEST_REPORTER_ID=4d20fbc40b511f2ecc8322241848be64ef7f951fe34c8be956fb8675f51ee46d
 branches:
   only:
-    - master
-
+  - master
 install:
-  - bundle install --path vendor/bundle
-  - bundle exec chromedriver-update
-  - yarn install
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-
-
+- bundle install --path vendor/bundle
+- bundle exec chromedriver-update
+- yarn install
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
 before_script:
-  - cp config/database.yml.travis config/database.yml
-  - psql -c 'create database travis_ci_test;' -U postgres
-
+- cp config/database.yml.travis config/database.yml
+- psql -c 'create database travis_ci_test;' -U postgres
 script:
-  - bundle exec rails webpacker:compile
-  - bundle exec rake db:schema:load
-  - ./cc-test-reporter before-build
-  - bundle exec rspec spec
-  - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json
-  - yarn test
-  - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json
-  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json
-  - ./cc-test-reporter upload-coverage
-
+- bundle exec rails webpacker:compile
+- bundle exec rake db:schema:load
+- "./cc-test-reporter before-build"
+- bundle exec rspec spec
+- "./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json"
+- yarn test
+- "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
+- "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
+- "./cc-test-reporter upload-coverage"
+before_deploy:
+- chmod -x ./after_deploy.sh
 deploy:
   provider: heroku
-  api_key: $HEROKU_AUTH_TOKEN
+  api_key: "$HEROKU_AUTH_TOKEN"
   app:
     master: practicaldev
   run:
-    - "rake db:migrate"
-    - restart
-
+  - rake db:migrate
 after_deploy:
-  - ./after_deploy.sh
+- "./after_deploy.sh"
+notifications:
+  slack:
+    on_success: always
+    on_failure: always
+    secure: fMRLZjxN+14dpkRygscyRujF/DjJKiIRqi1wn2oRxAn5uNgv/wvV2iVgIvHcK31wtGcyVTntvTiDi7E4a6ufO+dYN3VuDG5oppK9zbCQl1dpdlKxFajAgS6KMD65XfzL51KDoznJ/3CKx/Y5ZFHqM+XmbMdrZCTvXg4wu4HLFJmkc6T4j7UgMCLlGN+9zI23OCmg0Pc9bQa8t5hyuqQISAyCrcWYqLc6XnbI0S9avudoW+Wi1gYu2uGYNYMPxjKCulvCSxxQl3zWS49nicQpanDrJwFETRhuqWeZ2fVlhArbdUn8B6q0gaB552YUx1L0Uyc02UoxxYTTsrBfSvW2v1zRstGHOruVgB9Uywbm1ajDaB5jNTrBbxI9To3dNANSm4WiBWQQPCXXacSkbhFk+4q7+DH7MdjvHhD1cgoa14ZL+Qkmzycw0RYMlYVbzhutUS0b19isNj7jIgDgV4oCPH22qFyIXDtuLxg75Rkf7jvsX3VUFS5Lp1uokA1pkvb9rlf/0o3maWYpwX/qyUTwceZHYk0TbLxEeFkv0BrJd7asQ4PMhA95BF6BxsO8mXOlmr3gO+nUFp0DlFQ4qslX45WuWt+rZxY3uXsD2ZLs9XYmDBG5Gae994E50klvgKt0uJtkE78sXXKkKCdB9ohZZi9OPacP2yzLdxDd/654h34=

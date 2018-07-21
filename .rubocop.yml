@@ -10,6 +10,11 @@ RSpec/DescribeClass:
   Exclude:
     - spec/features/*
     - spec/requests/*
+
+Metrics/LineLength:
+  Description: 'Limit lines to 100 characters.'
+  Max: 100
+
 #############################
 
 AllCops:
@@ -218,11 +223,6 @@ Style/LineEndConcatenation:
                  Use \ instead of + or << to concatenate two string literals at
                  line end.
   Enabled: false
-
-Metrics/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#80-character-limits'
-  Max: 80
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'

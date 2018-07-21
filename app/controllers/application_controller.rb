@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
-      username == ENV["APP_NAME"] && password == ENV["APP_PASSWORD"]
+      username == ApplicationConfig["APP_NAME"] && password == ApplicationConfig["APP_PASSWORD"]
     end
   end
 
@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def raise_banned
-    raise "BANNED" if current_user && current_user.banned
+    raise "BANNED" if current_user&.banned
   end
 
   def is_internal_navigation?
@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
     # We are at least secure for now.
     return if Rails.env.test?
     if request.referer.present?
-      request.referer.start_with?(ENV["APP_PROTOCOL"].to_s + ENV["APP_DOMAIN"].to_s)
+      request.referer.start_with?(ApplicationConfig["APP_PROTOCOL"].to_s + ApplicationConfig["APP_DOMAIN"].to_s)
     else
       logger.info "**REQUEST ORIGIN CHECK** #{request.origin}"
       raise InvalidAuthenticityToken, NULL_ORIGIN_MESSAGE if request.origin == "null"

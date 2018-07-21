@@ -298,9 +298,11 @@ RSpec.describe Article, type: :model do
     article.remove_algolia_index
   end
 
-  it "detects liquid tags used" do
-    article = build_and_validate_article(with_tweet_tag: true)
-    expect(article.decorate.liquid_tags_used).to eq([TweetTag])
+  it "detects liquid tags used", :vcr do
+    VCR.use_cassette("twitter_gem") do
+      article = build_and_validate_article(with_tweet_tag: true)
+      expect(article.decorate.liquid_tags_used).to eq([TweetTag])
+    end
   end
 
   it "fixes the issue with --- hr tags" do
@@ -440,5 +442,5 @@ RSpec.describe Article, type: :model do
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
-  
+
 end

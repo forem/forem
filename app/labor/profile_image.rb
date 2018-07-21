@@ -25,6 +25,6 @@ class ProfileImage
   end
 
   def get_external_link
-    image_link ? "#{ENV['APP_PROTOCOL']}#{ENV['APP_DOMAIN']}#{image_link}" : backup_link
+    image_link ? "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{image_link}" : backup_link
   end
 end

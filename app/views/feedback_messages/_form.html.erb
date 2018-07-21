@@ -52,7 +52,7 @@
     <%= flash[:notice] %>
    </div>
    <% end %>
-     <%= recaptcha_tags site_key: ENV['RECAPTCHA_SITE'] %>
+     <%= recaptcha_tags site_key: ApplicationConfig['RECAPTCHA_SITE'] %>
     <input type="submit" name="commit" value="Send Feedback" style="margin-top: 40px;" />
   </div>
 <% end %>

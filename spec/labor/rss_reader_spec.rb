@@ -36,9 +36,7 @@ RSpec.describe RssReader, vcr: vcr_option do
 
     it "gets articles for user" do
       described_class.new.fetch_user(User.first)
-      # the 7 here depends on the fixture
-      # not fetching comments is baked into this
-      expect(Article.all.length).to be > 2
+      expect(Article.all.length).to be > 0
     end
 
     it "does not set featured_number" do

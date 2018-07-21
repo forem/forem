@@ -15,7 +15,7 @@ class LanguageDetector
 
   def get_language
     return { "result" => "en", "confidence" => 0.9 } unless Rails.env.production?
-    client = Algorithmia.client(ENV["ALGORITHMIA_KEY"])
+    client = Algorithmia.client(ApplicationConfig["ALGORITHMIA_KEY"])
     algo = client.algo('miguelher/LanguageDetector/0.1.0')
     algo.pipe(text).result
   end

@@ -11,9 +11,9 @@ function initializeBaseTracking() {
     addedGA = true;
     wait++;
     if (window.ga && ga.create) {
-      ga('create', '<%= ENV["GA_TRACKING_ID"] %>', 'auto');
+      ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
       if (!checkUserLoggedIn() && Math.random() < 0.35) {
-        ga('require', '<%= ENV["GA_OPTIMIZE_ID"] %>');
+        ga('require', '<%= ApplicationConfig["GA_OPTIMIZE_ID"] %>');
       }
       ga('send', 'pageview', location.pathname + location.search);
       if (document.location.search.indexOf('newly-registered-user=true') > -1) {
@@ -81,7 +81,7 @@ function facebookTrackingScript() {
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '<%= ENV["FACEBOOK_PIXEL_ID"] %>');
+    fbq('init', '<%= ApplicationConfig["FACEBOOK_PIXEL_ID"] %>');
     fbTrack();
   } else {
     fbTrack();

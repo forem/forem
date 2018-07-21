@@ -6,7 +6,7 @@ class FunctionCaller
   end
 
   def call
-    response = AwsLambda.invoke(function_name: function_name, payload: payload)
+    response = AWS_LAMBDA.invoke(function_name: function_name, payload: payload)
     JSON.parse(JSON.parse(response.payload.as_json[0])["body"])["message"]
   end
 end

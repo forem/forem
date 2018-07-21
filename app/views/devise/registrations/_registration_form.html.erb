@@ -1,7 +1,7 @@
 <div class="new-article-pitch">
   <h1>Sign In or Create Your Account</h1>
   <div class="links">
-    <a href="/users/auth/twitter?callback_url=<%= ENV["APP_PROTOCOL"] %><%= ENV["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link" data-no-instant>
+    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link" data-no-instant>
       <%= icon("twitter") %> Auth with Twitter
     </a>
     <a href="/users/auth/github?state=join-club-page_basic" class="sign-up-link" data-no-instant>

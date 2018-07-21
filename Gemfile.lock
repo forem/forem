@@ -257,6 +257,9 @@ GEM
       http_parser.rb (~> 0.6.0)
     email_validator (1.6.0)
       activemodel
+    envied (0.9.1)
+      coercible (~> 1.0)
+      thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
     errbase (0.0.3)
@@ -949,6 +952,7 @@ DEPENDENCIES
   devise (~> 4.4)
   draper (~> 3.0)
   email_validator (~> 1.6)
+  envied (~> 0.9)
   factory_bot_rails (~> 4.10)
   fake_stripe (~> 0.1)
   faker!

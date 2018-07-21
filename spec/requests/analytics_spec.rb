@@ -10,9 +10,14 @@ RSpec.describe "Analytics", type: :request, vcr: vcr_option do
       let(:user) { create(:user, :analytics) }
       let(:article1) { create(:article, user_id: user.id) }
       let(:article2) { create(:article, user_id: user.id) }
-      let(:article3) { create(:article, user_id: user.id) }
+      let(:ga_double) { instance_double(GoogleAnalytics) }
 
       before do
+        allow(GoogleAnalytics).to receive(:new).and_return(ga_double)
+        allow(ga_double).to receive(:create_service_account_credential).and_return({})
+        allow(ga_double).to receive(:get_pageviews) do
+          { article1.id.to_s => "0", article2.id.to_s => "0" }
+        end
         login_as user
       end
 

@@ -131,7 +131,7 @@ class ChatChannelsController < ApplicationController
     current_user_id = current_user.id
     params = {filters: "viewable_by:#{current_user_id} AND status: active"}
     @secured_algolia_key = Algolia.generate_secured_api_key(
-      ENV["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params,
+      ApplicationConfig["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params,
     )
   end
 

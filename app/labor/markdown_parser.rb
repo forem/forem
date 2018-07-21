@@ -143,7 +143,7 @@ class MarkdownParser
     username = mention.gsub("@", "").downcase
     if User.find_by_username(username)
       <<~HTML
-        <a class='comment-mentioned-user' href='#{ENV['APP_PROTOCOL']}#{ENV['APP_DOMAIN']}/#{username}'>@#{username}</a>
+        <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}'>@#{username}</a>
       HTML
     else
       mention

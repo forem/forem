@@ -1,3 +1,3 @@
 DelayedJobWeb.use Rack::Auth::Basic do |username, password|
-  username == ENV["APP_NAME"] && password == ENV["APP_PASSWORD"]
+  username == ApplicationConfig["APP_NAME"] && password == ApplicationConfig["APP_PASSWORD"]
 end

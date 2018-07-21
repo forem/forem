@@ -17,7 +17,7 @@ class MailchimpBot
     # attempt to update email if user changed email addresses
     success = false
     begin
-      gibbon.lists(ENV["MAILCHIMP_NEWSLETTER_ID"]).members(target_md5_email).upsert(
+      gibbon.lists(ApplicationConfig["MAILCHIMP_NEWSLETTER_ID"]).members(target_md5_email).upsert(
         body: {
           email_address: user.email,
           status: user.email_newsletter ? "subscribed" : "unsubscribed",
@@ -57,7 +57,7 @@ class MailchimpBot
     status = user.email_membership_newsletter ? "subscribed" : "unsubscribed"
 
     begin
-      gibbon.lists(ENV["MAILCHIMP_SUSTAINING_MEMBERS_ID"]).members(target_md5_email).upsert(
+      gibbon.lists(ApplicationConfig["MAILCHIMP_SUSTAINING_MEMBERS_ID"]).members(target_md5_email).upsert(
         body: {
           email_address: user.email,
           status: status,

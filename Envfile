@@ -1,0 +1,142 @@
+# Most of the things are optional. If you need to use a
+# custom key, please create an application.yml for it
+
+enable_defaults! { ENV['RACK_ENV'] != 'production' }
+
+################################################
+############## Basic configuration #############
+################################################
+
+# App damain + Protocol setting for development
+variable :APP_DOMAIN, :String, default: "localhost:3000"
+variable :APP_PROTOCOL, :String, default: "http://"
+
+# Default staff account's id
+variable :DEVTO_USER_ID, :Integer, default: 1
+
+# Service timeout length
+variable :SERVICE_TIMEOUT, :Integer, default: 100000
+
+# Production related config that can be ignored
+variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
+
+################################################
+############## 3rd Party Services ##############
+################################################
+
+# It's best if you have the following configured
+# for more development experience
+
+# Github for github related access
+variable :GITHUB_KEY, :String, default: "Optional"
+variable :GITHUB_SECRET, :String, default: "Optional"
+variable :GITHUB_TOKEN, :String, default: "Optional"
+
+# Twitter for normal twitter access
+variable :TWITTER_ACCESS_TOKEN, :String, default: "Optional"
+variable :TWITTER_ACCESS_TOKEN_SECRET, :String, default: "Optional"
+variable :TWITTER_KEY, :String, default: "Optional"
+variable :TWITTER_SECRET, :String, default: "Optional"
+
+################################################
+######### Optional 3rd Party Services ##########
+################################################
+
+# Airbrake for error tracking
+variable :AIRBRAKE_API_KEY, :String, default: "Optional"
+variable :AIRBRAKE_PROJECT_ID, :integer, default: 00000
+
+# Algolish for search
+variable :ALGOLIASEARCH_API_KEY, :String, default: "Optional"
+variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: "Optional"
+variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: "Optional"
+variable :ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY, :String, default: "Optional"
+
+# AWS for images storages
+variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"
+variable :AWS_SDK_KEY, :String, default: "Optional"
+variable :AWS_SDK_SECRET, :String, default: "Optional"
+
+# AWS for video storage
+variable :AWS_S3_INPUT_BUCKET, :String, default: "Optional"
+variable :AWS_S3_VIDEO_ID, :String, default: "Optional"
+variable :AWS_S3_VIDEO_KEY, :String, default: "Optional"
+
+# Buffer for sending to buffer
+variable :BUFFER_ACCESS_TOKEN, :String, default: "Optional"
+variable :BUFFER_FACEBOOK_ID, :String, default: "Optional"
+variable :BUFFER_LINKEDIN_ID, :String, default: "Optional"
+variable :BUFFER_PROFILE_ID, :Integer, default: 0
+variable :BUFFER_TWITTER_ID, :String, default: "Optional"
+
+# Cloudinary for image resizing and cache??
+variable :CLOUDINARY_API_KEY, :String, default: "Optional"
+variable :CLOUDINARY_API_SECRET, :String, default: "Optional"
+variable :CLOUDINARY_CLOUD_NAME, :String, default: "Optional"
+variable :CLOUDINARY_SECURE, :String, default: "Optional"
+
+# Dacast for streaming
+variable :DACAST_STREAM_CODE, :String, default: "Optional"
+
+# Fastly for edge caching
+variable :FASTLY_API_KEY, :String, default: "Optional"
+variable :FASTLY_SERVICE_ID, :String, default: "Optional"
+
+# Google analytic
+variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
+variable :GA_TRACKING_ID, :String, default: "Optional"
+variable :GA_OPTIMIZE_ID, :String, default: "Optional"
+variable :GA_VIEW_ID, :String, default: "Optional"
+
+# Mailchimp for mails
+variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
+variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
+variable :MAILCHIMP_SUSTAINING_MEMBERS_ID, :String, default: "Optional"
+
+# Email digest frequency
+variable :PERIODIC_EMAIL_DIGEST_MAX, :Integer, default: 0
+variable :PERIODIC_EMAIL_DIGEST_MIN, :Integer, default: 2
+
+# Pusher for DEV Connect/notfications
+variable :PUSHER_APP_ID, :String, default: "Optional"
+variable :PUSHER_CLUSTER, :String, default: "Optional"
+variable :PUSHER_KEY, :String, default: "Optional"
+variable :PUSHER_SECRET, :String, default: "Optional"
+
+# Google recaptcha
+variable :RECAPTCHA_SECRET, :String, default: "Optional"
+variable :RECAPTCHA_SITE, :String, default: "Optional"
+
+# Sharemeow is a text-shot service
+# more information here https://github.com/producthunt/ShareMeow
+variable :SHARE_MEOW_BASE_URL, :String, default: "Optional"
+variable :SHARE_MEOW_SECRET_KEY, :String, default: "Optional"
+
+# Slack for customer alerts
+variable :SLACK_CHANNEL, :String, default: "Optional"
+variable :SLACK_WEBHOOK_URL, :String, default: "Optional"
+
+# Stream for notifications
+variable :STREAM_RAILS_KEY, :String, default: "Optional"
+variable :STREAM_RAILS_SECRET, :String, default: "Optional"
+
+# Stripe for payment system
+variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
+variable :STRIPE_SECRET_KEY, :String, default: "Optional"
+
+# For browser webpush notifications (webpush gem) (totally random base64 nums)
+variable :VAPID_PUBLIC_KEY, :String, default: "dGhpcyBpcyBkZXYudG8gdGVzdCBkYXRh"
+variable :VAPID_PRIVATE_KEY, :String, default: "VGhpcyBpcyBtb3JlIHRlc3QgZGF0YQ=="
+
+#For video calling in DEV Connect
+variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
+variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
+variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
+
+##### Legacy test related env vars ######
+variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
+variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
+
+group :production do
+  variable :SECRET_KEY_BASE, :String
+end

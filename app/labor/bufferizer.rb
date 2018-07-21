@@ -5,13 +5,13 @@ class Bufferizer
   end
 
   def twitter_post!
-    client = Buffer::Client.new(ENV["BUFFER_ACCESS_TOKEN"])
+    client = Buffer::Client.new(ApplicationConfig["BUFFER_ACCESS_TOKEN"])
     client.create_update(
       body: {
         text:
           twitter_buffer_text,
         profile_ids: [
-          ENV["BUFFER_TWITTER_ID"],
+          ApplicationConfig["BUFFER_TWITTER_ID"],
         ],
       },
     )
@@ -19,14 +19,14 @@ class Bufferizer
   end
 
   def facebook_post!
-    client = Buffer::Client.new(ENV["BUFFER_ACCESS_TOKEN"])
+    client = Buffer::Client.new(ApplicationConfig["BUFFER_ACCESS_TOKEN"])
     client.create_update(
       body: {
         text:
           fb_buffer_text,
         profile_ids: [
-          ENV["BUFFER_FACEBOOK_ID"], # We're sending to LinkedIn and FB with this.
-          ENV["BUFFER_LINKEDIN_ID"], # That's why there are two profile IDs
+          ApplicationConfig["BUFFER_FACEBOOK_ID"], # We're sending to LinkedIn and FB with this.
+          ApplicationConfig["BUFFER_LINKEDIN_ID"], # That's why there are two profile IDs
         ],
       },
     )

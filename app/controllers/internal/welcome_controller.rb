@@ -8,7 +8,7 @@ class Internal::WelcomeController < Internal::ApplicationController
   def create
     welcome_thread = Article.create(
       body_markdown: welcome_thread_content,
-      user_id: ENV["DEVTO_USER_ID"],
+      user_id: ApplicationConfig["DEVTO_USER_ID"],
     )
     redirect_to welcome_thread.path + "/edit"
   end

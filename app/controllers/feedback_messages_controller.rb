@@ -27,7 +27,7 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
-    params["g-recaptcha-response"] && verify_recaptcha(secret_key: ENV["RECAPTCHA_SECRET"])
+    params["g-recaptcha-response"] && verify_recaptcha(secret_key: ApplicationConfig["RECAPTCHA_SECRET"])
   end
 
   def send_slack_message

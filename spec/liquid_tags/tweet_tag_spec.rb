@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe TweetTag, type: :liquid_template do
-  let(:twitter_id)  { "783472379167113216" }
+  let(:twitter_id)  { "1018911886862057472" }
 
   setup             { Liquid::Template.register_tag("tweet", TweetTag) }
 
@@ -9,11 +9,11 @@ RSpec.describe TweetTag, type: :liquid_template do
     Liquid::Template.parse("{% tweet #{id} %}")
   end
 
-  it "accepts valid tweet id" do
-    liquid = generate_tweet_liquid_tag(twitter_id)
-    dir = File.join(File.dirname(__FILE__), "../support/fixtures/tweet_1.json")
-    actual_response = JSON.parse(File.read(dir))
-    expect(liquid.root.nodelist[0].tweet.text).to eq(actual_response["text"])
+  it "accepts valid tweet id", :vcr do
+    VCR.use_cassette("twitter_gem") do
+      liquid = generate_tweet_liquid_tag(twitter_id)
+      expect(liquid.root.nodelist[0].tweet.text).not_to eq(nil)
+    end
   end
 
   context "when given invalid id" do

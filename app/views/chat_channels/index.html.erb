@@ -13,8 +13,8 @@
     <div
       id="chat"
       class="live-chat"
-      data-pusher-key="<%= ENV["PUSHER_KEY"] %>"
-      data-algolia-id="<%= ENV["ALGOLIASEARCH_APPLICATION_ID"] %>"
+      data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>"
+      data-algolia-id="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>"
       data-algolia-key="<%= @secured_algolia_key %>"
       data-algolia-index="<%= "SecuredChatChannel_#{Rails.env}" %>"
       data-github-token="<%= @github_token %>"
@@ -43,5 +43,5 @@
   #page-content {max-height:100vh}
 </style>
 <script>
-  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes %>);
+  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ApplicationConfig['VAPID_PUBLIC_KEY']).bytes %>);
 </script>

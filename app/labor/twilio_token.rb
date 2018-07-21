@@ -7,10 +7,9 @@ class TwilioToken
   end
 
   def get
-    # Replace with ENV vars
-    account_sid = ENV["TWILIO_ACCOUNT_SID"]
-    api_key = ENV["TWILIO_VIDEO_API_KEY"]
-    api_secret = ENV["TWILIO_VIDEO_API_SECRET"]
+    account_sid = ApplicationConfig["TWILIO_ACCOUNT_SID"]
+    api_key = ApplicationConfig["TWILIO_VIDEO_API_KEY"]
+    api_secret = ApplicationConfig["TWILIO_VIDEO_API_SECRET"]
 
     token = Twilio::JWT::AccessToken.new(
       account_sid,
