@@ -56,7 +56,8 @@
     <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
     <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
   <% end %>
-  <% if (@article.positive_reactions_count < 9 && @article.user.comments_count < 1) || @article.featured_number < 1500000000 %>
+  <% if (@article.positive_reactions_count < 8 && @article.user.comments_count < 1 && !@article.featured) ||
+    @article.featured_number < 1500000000 %>
     <meta name="googlebot" content="noindex">
   <% end %>
 <% end %>
