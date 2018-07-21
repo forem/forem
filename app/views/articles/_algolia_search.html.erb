@@ -20,7 +20,7 @@
     var query = filterXSS(params.q);
     var filters = filterXSS(params.filters || "");
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
-    var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ApplicationConfig["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>');
+    var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>');
     var index = client.initIndex('searchables_<%= Rails.env %>');
     if (document.getElementById("query-wrapper")) {
       search(query, index, filters);
