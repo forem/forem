@@ -6,7 +6,7 @@ function checkIfNearBottomOfPage() {
   var elCheck = document.getElementById("index-container");
   
   if (elCheck) {
-    var publicSearchKey = '<%= ApplicationConfig["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] %>'
+    var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
     client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
     
     initScrolling.called = true;

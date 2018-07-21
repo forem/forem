@@ -12,5 +12,7 @@ if !Rails.env.test?
     ApplicationConfig["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params,
   )
 
-  ApplicationConfig["ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY"] = secured_algolia_key
+  ::ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY = secured_algolia_key
+else
+  ::ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY = "test_test_test".freeze
 end

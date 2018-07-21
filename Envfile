@@ -50,7 +50,6 @@ variable :AIRBRAKE_PROJECT_ID, :integer, default: 00000
 variable :ALGOLIASEARCH_API_KEY, :String, default: "Optional"
 variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: "Optional"
 variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: "Optional"
-variable :ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY, :String, default: "Optional"
 
 # AWS for images storages
 variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"
