@@ -10,8 +10,9 @@ class GithubRepo < ApplicationRecord
   before_destroy :clear_caches
 
   def self.find_or_create(params)
-    repo = where(github_id_code: params[:github_id_code]).or(where(url: params[:url])).
-      first_or_initialize
+    repo = where(github_id_code: params[:github_id_code])
+      .or(where(url: params[:url]))
+      .first_or_initialize
     repo.update(params)
     repo
   end
@@ -34,9 +35,7 @@ class GithubRepo < ApplicationRecord
           info_hash: fetched_repo.to_hash,
         )
       rescue => e
-        if e.message.include?("404 - Not Found")
-          repo.destroy
-        end
+        repo.destroy if e.message.include?("404 - Not Found")
       end
     end
   end
@@ -44,11 +43,11 @@ class GithubRepo < ApplicationRecord
   private
 
   def clear_caches
-    if user.present?
-      user.touch
-      CacheBuster.new.bust user.path
-      CacheBuster.new.bust user.path + "?i=i"
-      CacheBuster.new.bust user.path + "/?i=i"
-    end
+    return if user.blank?
+    user.touch
+    cache_buster = CacheBuster.new
+    cache_buster.bust user.path
+    cache_buster.bust user.path + "?i=i"
+    cache_buster.bust user.path + "/?i=i"
   end
 end
