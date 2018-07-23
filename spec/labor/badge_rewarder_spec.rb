@@ -8,7 +8,7 @@ RSpec.describe BadgeRewarder do
     older_user = create(:user, created_at: 390.days.ago)
     create(:badge, title: "heyhey")
     create(:badge, title: "heysddssdhey")
-    BadgeRewarder.new.award_yearly_club_badges
+    BadgeRewarder.award_yearly_club_badges
     expect(user.badge_achievements.size).to eq(1)
     expect(newer_user.badge_achievements.size).to eq(0)
     expect(older_user.badge_achievements.size).to eq(0)
@@ -23,7 +23,7 @@ RSpec.describe BadgeRewarder do
     create(:badge, title: "heweewweyhey")
     create(:badge, title: "heweweewewewewyhey")
     create(:badge, title: "heewwewewwwwwyhey")
-    BadgeRewarder.new.award_beloved_comment_badges
+    BadgeRewarder.award_beloved_comment_badges
     expect(user.badge_achievements.size).to eq(1)
     expect(user_other.badge_achievements.size).to eq(0)
   end
@@ -33,7 +33,7 @@ RSpec.describe BadgeRewarder do
     user = create(:user)
     user_other = create(:user)
     third_other = create(:user)
-    BadgeRewarder.new.reward_top_seven_badges([user.username, user_other.username])
+    BadgeRewarder.reward_top_seven_badges([user.username, user_other.username])
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 

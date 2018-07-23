@@ -1,5 +1,5 @@
-class BadgeRewarder
-  def award_yearly_club_badges
+module BadgeRewarder
+  def self.award_yearly_club_badges
     message = "Happy DEV birthday!"
     User.where("created_at < ? AND created_at > ?", 1.year.ago, 367.days.ago).each do |user|
       achievement = BadgeAchievement.create(
@@ -11,7 +11,7 @@ class BadgeRewarder
     end
   end
 
-  def award_beloved_comment_badges
+  def self.award_beloved_comment_badges
     Comment.where("positive_reactions_count > ?", 24).each do |comment|
       message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
@@ -23,7 +23,7 @@ class BadgeRewarder
     end
   end
 
-  def reward_top_seven_badges(usernames)
+  def self.reward_top_seven_badges(usernames)
     User.where(username: usernames).each do |user|
       BadgeAchievement.create(
         user_id: user.id,
