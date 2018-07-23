@@ -28,20 +28,20 @@
       text-align:center;
       float:left;
       width: 100%;
-      .live-chat{
+      .chat{
         height: calc(100vh - 62.5vw - 42px);
       }
       @media screen and ( min-width: 760px ){
         width:300px;
-        .live-chat{
-          height: 910px;
+        .chat{
+          height: 770px;
           max-height:920px;
         }
       }
       @media screen and ( min-width: 1200px ){
         width:400px;
-        .live-chat{
-          height: calc(100vh - 112px);
+        .chat{
+          height: calc(100vh - 128px);
         }
       }
     }
