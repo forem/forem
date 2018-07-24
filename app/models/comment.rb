@@ -305,8 +305,9 @@ class Comment < ApplicationRecord
 
   def bust_cache
     expire_root_fragment
-    CacheBuster.new.bust("#{commentable.path}") if commentable
-    CacheBuster.new.bust("#{commentable.path}/comments") if commentable
+    cache_buster = CacheBuster.new
+    cache_buster.bust("#{commentable.path}") if commentable
+    cache_buster.bust("#{commentable.path}/comments") if commentable
     async_bust
   end
 

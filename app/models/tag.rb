@@ -41,11 +41,12 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    CacheBuster.new.bust("/t/#{name}")
-    CacheBuster.new.bust("/t/#{name}?i=i")
-    CacheBuster.new.bust("/t/#{name}/?i=i")
-    CacheBuster.new.bust("/t/#{name}/")
-    CacheBuster.new.bust("/tags")
+    cache_buster = CacheBuster.new
+    cache_buster.bust("/t/#{name}")
+    cache_buster.bust("/t/#{name}?i=i")
+    cache_buster.bust("/t/#{name}/?i=i")
+    cache_buster.bust("/t/#{name}/")
+    cache_buster.bust("/tags")
   end
 
   def validate_alias

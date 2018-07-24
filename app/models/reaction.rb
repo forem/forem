@@ -70,15 +70,16 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
+    cache_buster = CacheBuster.new
     if reactable_type == "Article"
       reactable.async_score_calc
       reactable.index!
-      CacheBuster.new.bust "/reactions/logged_out_reaction_counts?article_id=#{reactable_id}"
+      cache_buster.bust "/reactions/logged_out_reaction_counts?article_id=#{reactable_id}"
     elsif reactable_type == "Comment"
       reactable.save
-      CacheBuster.new.bust "/reactions/logged_out_reaction_counts?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+      cache_buster.bust "/reactions/logged_out_reaction_counts?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
     end
-    CacheBuster.new.bust user.path
+    cache_buster.bust user.path
     occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
@@ -92,10 +93,11 @@ class Reaction < ApplicationRecord
     featured_articles = Article.where(featured: true).order('hotness_score DESC').limit(3).pluck(:id)
     if featured_articles.include?(reactable.id)
       reactable.touch
-      CacheBuster.new.bust "/"
-      CacheBuster.new.bust "/"
-      CacheBuster.new.bust "/?i=i"
-      CacheBuster.new.bust "?i=i"
+      cache_buster = CacheBuster.new
+      cache_buster.bust "/"
+      cache_buster.bust "/"
+      cache_buster.bust "/?i=i"
+      cache_buster.bust "?i=i"
     end
   end
   handle_asynchronously :async_bust

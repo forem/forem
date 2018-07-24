@@ -127,10 +127,11 @@ class PodcastEpisode < ApplicationRecord
     purge
     purge_all
     begin
-      CacheBuster.new.bust(path)
-      CacheBuster.new.bust("/"+podcast_slug)
-      CacheBuster.new.bust("/pod")
-      CacheBuster.new.bust(path)
+      cache_buster = CacheBuster.new
+      cache_buster.bust(path)
+      cache_buster.bust("/"+podcast_slug)
+      cache_buster.bust("/pod")
+      cache_buster.bust(path)
     rescue
 
     end
