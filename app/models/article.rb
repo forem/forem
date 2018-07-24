@@ -477,9 +477,10 @@ class Article < ApplicationRecord
 
   def bust_cache
     if Rails.env.production?
-      CacheBuster.new.bust(path)
-      CacheBuster.new.bust(path + "?i=i")
-      CacheBuster.new.bust(path + "?preview=" + password)
+      cache_buster = CacheBuster.new
+      cache_buster.bust(path)
+      cache_buster.bust(path + "?i=i")
+      cache_buster.bust(path + "?preview=" + password)
       async_bust
     end
   end

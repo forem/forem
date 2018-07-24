@@ -47,7 +47,8 @@ class Event < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust("/events")
-    CacheBuster.new.bust("/events?i=i")
+    cache_buster = CacheBuster.new
+    cache_buster.bust("/events")
+    cache_buster.bust("/events?i=i")
   end
 end

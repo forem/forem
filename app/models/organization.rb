@@ -71,9 +71,10 @@ class Organization < ApplicationRecord
   end
 
   def resave_articles
+    cache_buster = CacheBuster.new
     articles.each do |article|
-      CacheBuster.new.bust(article.path)
-      CacheBuster.new.bust(article.path + "?i=i")
+      cache_buster.bust(article.path)
+      cache_buster.bust(article.path + "?i=i")
       article.save
     end
   end
@@ -98,10 +99,11 @@ class Organization < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust("/#{slug}")
+    cache_buster = CacheBuster.new
+    cache_buster.bust("/#{slug}")
     begin
       articles.each do |article|
-        CacheBuster.new.bust(article.path)
+        cache_buster.bust(article.path)
       end
     rescue
       puts "Tag issue"

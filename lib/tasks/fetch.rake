@@ -7,14 +7,15 @@ task :get_podcast_episodes => :environment do
 end
 
 task :periodic_cache_bust => :environment do
-  CacheBuster.new.bust("/enter")
-  CacheBuster.new.bust("/new")
-  CacheBuster.new.bust("/dashboard")
-  CacheBuster.new.bust("/users/auth/twitter")
-  CacheBuster.new.bust("/users/auth/github")
-  CacheBuster.new.bust("/feed")
-  CacheBuster.new.bust("/feed")
-  CacheBuster.new.bust("/feed.xml")
+  cache_buster = CacheBuster.new
+  cache_buster.bust("/enter")
+  cache_buster.bust("/new")
+  cache_buster.bust("/dashboard")
+  cache_buster.bust("/users/auth/twitter")
+  cache_buster.bust("/users/auth/github")
+  cache_buster.bust("/feed")
+  cache_buster.bust("/feed")
+  cache_buster.bust("/feed.xml")
 end
 
 task :hourly_bust => :environment do
