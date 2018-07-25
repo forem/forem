@@ -17,6 +17,15 @@ describe('Search utilities', () => {
       });
     });
 
+    describe(`When the querystring key 'q' has a + character representing a space`, () => {
+      test(`should return the querystring key q's decoded value with + characters replaced by a space`, () => {
+        const expected = `my visual studio setup`;
+        const querystring = `?q=my+visual+studio+setup`;
+        const actual = getInitialSearchTerm(querystring);
+        expect(actual).toEqual(expected);
+      });
+    });
+
     describe(`When the querystring key 'q' has an encoded value with markup`, () => {
       test(`should return the querystring key q's decoded value`, () => {
         const expected = `<script>alert('XSS!');</script>`;

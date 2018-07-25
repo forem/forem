@@ -54,7 +54,7 @@ export function getInitialSearchTerm(querystring) {
   const matches = /(?:&|\?)?q=([^&=]+)/.exec(querystring);
   const rawSearchTerm =
     matches !== null && matches.length === 2
-      ? decodeURIComponent(matches[1])
+      ? decodeURIComponent(matches[1].replace(/\+/g, '%20'))
       : '';
   const query = filterXSS(rawSearchTerm);
   const divForDecode = document.createElement('div');
