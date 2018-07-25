@@ -1,5 +1,7 @@
 # This is the (future) public repo for dev.to
 
+Update: We'll be open-sourcing on August 8, 2018!
+
 The purpose of this repo is for feedback and discussion about the platform. This repo will evolve to host our codebase once it is ready. We want [dev.to](https://dev.to) to eventually be 90%+ open source.
 
 The codebase is not ready yet, so for now, let's just use this to discuss features and provide feedback.
