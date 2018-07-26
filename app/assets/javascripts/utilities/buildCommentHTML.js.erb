@@ -13,10 +13,10 @@ function buildCommentHTML(comment) {
     depthClass="child flat-node"
   }
   if (comment.user.twitter_username && comment.user.twitter_username.length > 0) {
-    twitterIcon = '<a href="http://twitter.com/'+comment.user.twitter_username+'"><%= image_tag("twitter-logo.svg", class:"icon-img") %></a>'
+    twitterIcon = '<a href="http://twitter.com/'+comment.user.twitter_username+'" rel="noopener noreferrer" target="_blank"><%= image_tag("twitter-logo.svg", class:"icon-img") %></a>'
   }
   if (comment.user.github_username && comment.user.github_username.length > 0) {
-    githubIcon = '<a href="http://github.com/'+comment.user.github_username+'"><%= image_tag("github-logo.svg", class:"icon-img") %></a>'
+    githubIcon = '<a href="http://github.com/'+comment.user.github_username+'" rel="noopener noreferrer" target="_blank"><%= image_tag("github-logo.svg", class:"icon-img") %></a>'
   }
   if (comment.newly_created) {
     customClass = "comment-created-via-fetch"
