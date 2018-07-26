@@ -1,4 +1,4 @@
-# This is Airbrake deployment tracking
+#!/bin/bash
 
 REPOSITORY=https://github.com/thepracticaldev/dev.to_private/
 REVISION="$(git rev-parse HEAD)"

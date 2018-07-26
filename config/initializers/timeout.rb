@@ -1,5 +1,7 @@
-# Rails.application.config.middleware.insert_before Rack::Runtime, Rack::Timeout, wait_timeout: 5, service_timeout: ENV["SERVICE_TIMEOUT"].to_i # seconds
+if Rails.env.development? && ENV["RACK_TIMEOUT_WAIT_TIMEOUT"].nil?
+  ENV["RACK_TIMEOUT_WAIT_TIMEOUT"] = "100"
+  ENV["RACK_TIMEOUT_SERVICE_TIMEOUT"] = "100"
+end
 
 Rack::Timeout.unregister_state_change_observer(:logger) if Rails.env.development?
 Rack::Timeout::Logger.disable
-

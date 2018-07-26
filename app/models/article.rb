@@ -191,7 +191,7 @@ class Article < ApplicationRecord
         where("published_at > ?", time_ago)
     else
       stories = stories.order("last_comment_at DESC").
-        where("published_at > ?", (tag.present? ? 5 : 2).days.ago)
+        where("published_at > ?", (tags.present? ? 5 : 2).days.ago)
     end
 
     stories = stories.tagged_with(tags)

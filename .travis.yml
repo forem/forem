@@ -36,8 +36,6 @@ script:
 - "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
 - "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
 - "./cc-test-reporter upload-coverage"
-before_deploy:
-- chmod -x ./after_deploy.sh
 deploy:
   provider: heroku
   api_key: "$HEROKU_AUTH_TOKEN"
@@ -46,9 +44,8 @@ deploy:
   run:
   - rake db:migrate
 after_deploy:
-- "./after_deploy.sh"
+- chmod -x after_deploy.sh
+- bash after_deploy.sh
 notifications:
   slack:
-    on_success: always
-    on_failure: always
-    secure: fMRLZjxN+14dpkRygscyRujF/DjJKiIRqi1wn2oRxAn5uNgv/wvV2iVgIvHcK31wtGcyVTntvTiDi7E4a6ufO+dYN3VuDG5oppK9zbCQl1dpdlKxFajAgS6KMD65XfzL51KDoznJ/3CKx/Y5ZFHqM+XmbMdrZCTvXg4wu4HLFJmkc6T4j7UgMCLlGN+9zI23OCmg0Pc9bQa8t5hyuqQISAyCrcWYqLc6XnbI0S9avudoW+Wi1gYu2uGYNYMPxjKCulvCSxxQl3zWS49nicQpanDrJwFETRhuqWeZ2fVlhArbdUn8B6q0gaB552YUx1L0Uyc02UoxxYTTsrBfSvW2v1zRstGHOruVgB9Uywbm1ajDaB5jNTrBbxI9To3dNANSm4WiBWQQPCXXacSkbhFk+4q7+DH7MdjvHhD1cgoa14ZL+Qkmzycw0RYMlYVbzhutUS0b19isNj7jIgDgV4oCPH22qFyIXDtuLxg75Rkf7jvsX3VUFS5Lp1uokA1pkvb9rlf/0o3maWYpwX/qyUTwceZHYk0TbLxEeFkv0BrJd7asQ4PMhA95BF6BxsO8mXOlmr3gO+nUFp0DlFQ4qslX45WuWt+rZxY3uXsD2ZLs9XYmDBG5Gae994E50klvgKt0uJtkE78sXXKkKCdB9ohZZi9OPacP2yzLdxDd/654h34=
+    secure: R8v5+l8eblaTOB80ETP9YW+r10j+UoKVqqQubYwoA7GJSB3ElmQUjEggbL7w1a65F9hj7heJZLIlxejxV9i2mpuNsPO5DCSjxWoVTXQJuPhLKh5pAcM631rDewJzD/MdSkRKw7JcC5FMvHeRjeQ5DEElG2cZju17JEWahvUpxV9wGnUEADtH6o7X0xIb0fY0XGkg1SmnNGyPiZnWetrun9QGkQDNOTVCR9EUch+hAVAJfA8BhuvptwQxuhxPLJhJ8CkzRb4njXkuSWoczl9TPi0y1yv7E0Tg07f1GD/wJINOyFMSx5aw5j3zrJFtZQwg4dZDtOPwbdbxiqPkRtzEWbMjYBt2NnYkoq5Ke0h8A+m3jBm75fZZipN7qJlGfUdZgl8aGyAH10knfHu15Wob5DKrRXQYN46y0zKhFjKvDO83+Kth1LCMhOoEBvLjOZEdYgFo0nfQVi4Oy17OoSB2PbQCBs/tYi75Vv7GuFn+PZN0t0umMyQYWzjyDMbpQCxaJjnPxaUoVNKtXpnV2MgYKHl9Z3PLjnBJK8/D6nA76Sl9t1wDnj5zdStccGQraBlPOLyYpLuHeKCccRAGfemPEa1iHkbSXR9mEMSlmhZWmguE/R4APId1CcmIa470/C/tuL1jOz/w2G+IT9eLmjg967ftu3Vs5BEWbdYIWecGrcU=
