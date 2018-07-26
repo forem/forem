@@ -15,7 +15,8 @@ variable :APP_PROTOCOL, :String, default: "http://"
 variable :DEVTO_USER_ID, :Integer, default: 1
 
 # Service timeout length
-variable :SERVICE_TIMEOUT, :Integer, default: 100000
+variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100
+variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100
 
 # Production related config that can be ignored
 variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
@@ -46,7 +47,7 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 variable :AIRBRAKE_API_KEY, :String, default: "Optional"
 variable :AIRBRAKE_PROJECT_ID, :integer, default: 00000
 
-# Algolish for search
+# Algolia for search
 variable :ALGOLIASEARCH_API_KEY, :String, default: "Optional"
 variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: "Optional"
 variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: "Optional"

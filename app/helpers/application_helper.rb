@@ -84,6 +84,7 @@ module ApplicationHelper
   def cloud_cover_url(url)
     return nil unless url.present?
     return asset_path("triple-unicorn") if Rails.env.test?
+    return url if Rails.env.development?
     width = 1000
     height = 420
     quality = "auto"

@@ -6,14 +6,14 @@ class ChatChannel < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
-  has_many :active_memberships, -> { where status: "active" }, class_name: 'ChatChannelMembership'
-  has_many :pending_memberships, -> { where status: "pending" }, class_name: 'ChatChannelMembership'
-  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: 'ChatChannelMembership'
-  has_many :mod_memberships, -> { where role: "mod" }, class_name: 'ChatChannelMembership'
-  has_many :active_users, :through => :active_memberships, class_name: "User", :source => :user
-  has_many :pending_users, :through => :pending_memberships, class_name: "User", :source => :user
-  has_many :rejected_users, :through => :rejected_memberships, class_name: "User", :source => :user
-  has_many :mod_users, :through => :mod_memberships, class_name: "User", :source => :user
+  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership"
+  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership"
+  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership"
+  has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership"
+  has_many :active_users, through: :active_memberships, class_name: "User", source: :user
+  has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
+  has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
+  has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
   validates :channel_type, presence: true, inclusion: { in: %w(open invite_only direct) }
   validates :status, presence: true, inclusion: { in: %w(active inactive) }
@@ -24,7 +24,7 @@ class ChatChannel < ApplicationRecord
       :channel_name, :channel_users, :last_message_at, :status,
       :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
       :description
-    searchableAttributes [:channel_name, :channel_slug, :channel_human_names]
+    searchableAttributes %i[channel_name channel_slug channel_human_names]
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
     ranking ["desc(last_message_at)"]
   end
@@ -89,16 +89,16 @@ class ChatChannel < ApplicationRecord
     elsif channel_type == "open"
       "open-channel-#{id}"
     else
-      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}"}
+      chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
     end
   end
 
-  def adjusted_slug(user = nil, caller_type="reciever")
+  def adjusted_slug(user = nil, caller_type = "reciever")
     user ||= current_user
     if channel_type == "direct" && caller_type == "reciever"
-      "@"+slug.gsub("/#{user.username}","").gsub("#{user.username}/","")
+      "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
     elsif caller_type == "sender"
-      "@"+user.username
+      "@" + user.username
     else
       slug
     end

@@ -1,4 +1,6 @@
-p "1/7 Creating Organizations"
+StreamRails.enabled = false
+
+p "1/8 Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -17,7 +19,7 @@ end
 
 ##############################################################################
 
-p "2/7 Creating Users"
+p "2/8 Creating Users"
 
 roles = %i(level_1_member level_2_member level_3_member level_4_member
            workshop_pass)
@@ -49,7 +51,7 @@ end
 
 ##############################################################################
 
-p "3/7 Creating Tags"
+p "3/8 Creating Tags"
 
 tags = %w(beginners career computerscience git go
           java javascript linux productivity python security webdev)
@@ -65,7 +67,7 @@ end
 
 ##############################################################################
 
-p "4/7 Creating Articles"
+p "4/8 Creating Articles"
 
 80.times do |i|
   tags = []
@@ -95,7 +97,7 @@ end
 
 ##############################################################################
 
-p "5/7 Creating Comments"
+p "5/8 Creating Comments"
 120.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
@@ -108,7 +110,7 @@ end
 
 ##############################################################################
 
-p "6/7 Creating Podcasts"
+p "6/8 Creating Podcasts"
 
 podcast_objects = [
   { "title" => "CodingBlocks", "description" => nil, "feed_url" => "http://feeds.podtrac.com/c8yBGHRafqhz", "image" => Faker::Avatar.image, "slug" => "codingblocks", "twitter_username" => "CodingBlocks", "website_url" => "http://codingblocks.net", "main_color_hex" => "111111", "overcast_url" => "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", "android_url" => "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz", image: Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg") },
@@ -123,7 +125,7 @@ end
 
 ##############################################################################
 
-p "7/7 Creating Broadcasts"
+p "7/8 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
@@ -131,5 +133,19 @@ Broadcast.create!(
   type_of: "Onboarding",
   sent: true,
 )
+
+##############################################################################
+
+p "8/8 Creating chat_channel"
+
+ChatChannel.without_auto_index do
+  ["Workshop", "Meta", "General"].each do |chan|
+    ChatChannel.create!(
+      channel_name: chan,
+      channel_type: "open",
+      slug: chan,
+    )
+  end
+end
 
 ##############################################################################
