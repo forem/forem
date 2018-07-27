@@ -12,8 +12,8 @@ Airbrake.configure do |c|
   # project_key navigate to your project's General Settings and copy the values
   # from the right sidebar.
   # https://github.com/airbrake/airbrake-ruby#project_id--project_key
-  c.project_id = ApplicationConfig['AIRBRAKE_PROJECT_ID']
-  c.project_key = ApplicationConfig['AIRBRAKE_API_KEY']
+  c.project_id = ApplicationConfig["AIRBRAKE_PROJECT_ID"]
+  c.project_key = ApplicationConfig["AIRBRAKE_API_KEY"]
 
   # Configures the root directory of your project. Expects a String or a
   # Pathname, which represents the path to your project. Providing this option
@@ -54,3 +54,9 @@ end
 # line below. It might simplify debugging of background Airbrake workers, which
 # can silently die.
 # Thread.abort_on_exception = ['test', 'development'].include?(Rails.env)
+
+Airbrake.add_filter do |notice|
+  if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }
+    notice.ignore!
+  end
+end
