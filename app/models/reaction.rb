@@ -74,10 +74,10 @@ class Reaction < ApplicationRecord
     if reactable_type == "Article"
       reactable.async_score_calc
       reactable.index!
-      cache_buster.bust "/reactions/logged_out_reaction_counts?article_id=#{reactable_id}"
+      cache_buster.bust "/reactions?article_id=#{reactable_id}"
     elsif reactable_type == "Comment"
       reactable.save
-      cache_buster.bust "/reactions/logged_out_reaction_counts?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
     end
     cache_buster.bust user.path
     occasionally_sync_reaction_counts
