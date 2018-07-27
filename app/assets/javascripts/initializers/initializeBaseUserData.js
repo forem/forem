@@ -49,7 +49,7 @@ function addRelevantButtonsToArticle(user) {
     }
   }
   var commentsContainer = document.getElementById('comments-container');
-  if (commentsContainer) {
+  if (commentsContainer && user.trusted) {
     var modButts = document.getElementsByClassName('mod-actions');
     for (var i = 0; i < modButts.length; i++) {
       var butt = modButts[i];
