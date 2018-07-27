@@ -290,8 +290,6 @@ GEM
       faraday_middleware (>= 0.9)
       loofah (>= 2.0)
       sax-machine (>= 1.0)
-    fetch-rails (1.0.0)
-      rails (>= 4.1.0)
     ffi (1.9.25)
     figaro (1.1.1)
       thor (~> 0.14)
@@ -959,7 +957,6 @@ DEPENDENCIES
   fastly (~> 1.13)
   fastly-rails (~> 0.8)
   feedjira (~> 2.1)
-  fetch-rails (~> 1.0)
   figaro (~> 1.1)
   fix-db-schema-conflicts!
   flipflop (~> 2.3)

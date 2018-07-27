@@ -34,8 +34,8 @@
       }
     </style>
 
-    <%= javascript_pack_tag "manifest" %>
-    <%= javascript_pack_tag "vendor" %>
+    <%= javascript_pack_tag "manifest", defer: true %>
+    <%= javascript_pack_tag "vendor", defer: true %>
 
     <%= javascript_pack_tag 'Search', defer: true %>
     <% if core_pages? %>
