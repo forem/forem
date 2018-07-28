@@ -1,0 +1,286 @@
+@import 'variables';
+
+.articleformcontainer {
+  padding-top: calc(98px + 0.2vw);
+  padding-bottom: calc(94px + 2vw);
+  background: white;
+  background: $light-gray;
+}
+
+.articleform {
+  margin: 0 auto;
+  width: calc(95% - 40px);
+  max-width: 880px;
+  padding: 0px 20px;
+  box-shadow: $bold-shadow;
+  border: 1px solid $dark-gray;
+  border-radius: 3px;
+  background: white;
+  position:relative;
+  .container{
+    border: 1px solid $light-medium-gray;
+  }
+  .help-guide-title{
+    padding-top: 20px;
+    h1{
+      background: $yellow;
+    }
+  }
+}
+
+.articleform__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.articleform__errors{
+  background: $red;
+  color: white;
+  font-weight: bold;
+  margin-top: 12px;
+  border-radius: 3px;
+  padding: 15px;
+}
+
+.articleform__orgsettings{
+  background: $black;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  border-radius: 3px;
+  margin-top: 12px;
+  margin-bottom: 3px;
+  box-shadow: $bold-shadow;
+  font-size:24px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  button {
+    background: $purple;
+    border-radius: 3px;
+    border: 0px;
+    font-size: 1em;
+    font-family: $helvetica-condensed;
+    width: 80px;
+    margin-left: 10px;
+  }
+}
+
+.articleform__mainimage{
+  padding: 10px 0px;
+  text-align: center;
+  width: 100%;
+  img {
+    width:100%;
+    height: auto; 
+    display: block;
+    cursor: pointer;
+    &:hover{
+      opacity:0.8;
+    }
+  }
+}
+
+.articleform__title {
+  height: 50px;
+  font-size: 40px;
+  word-break: break-word;
+  border: 0;
+  padding: 20px 0px 15px;
+  font-weight: bold;
+}
+.articleform__detailfields{
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.articleform__tagswrapper{
+  display: inline-block;
+  flex-grow: 1;
+  float: left;
+}
+
+.articleform__tags {
+  height: 19px;
+  width: 96%;
+  resize: none;
+  border: 0;
+  font-size: 16px;
+  font-family: $monospace;
+  font-weight: bold;
+  border-radius: 3px;
+  padding: 8px 8px 7px;
+  border: 2px solid $black;
+}
+
+.articleform__tagsoptions{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30px;
+  background: white;
+  border: 1px solid $medium-gray;
+  box-shadow: $bold-shadow;
+  font-family: $monospace;
+  z-index:20;
+}
+.articleform__tagoptionrow{
+  padding: 10px;
+  cursor:pointer;
+  &:hover{
+    background: lighten($green, 20%);
+  }
+}
+.articleform__tagoptionrow--active{
+  background: $green;
+}
+
+.articleform__imageButton{
+  width: 96px;
+  color: $black;
+  background: white;
+  border-radius: 3px;
+  border: 2px solid $black;
+  padding: 3px;
+  font-family: $helvetica-condensed;
+  font-size: 16px;
+  height: 38px;
+  &:hover{
+    background: lighten($green, 24%);
+  }
+  img{
+    width: 21px;
+    height: 21px;
+    vertical-align: -4px;
+    display: inline;
+  }
+}
+
+.articleform__description {
+  height: 30px;
+}
+
+.articleform__body {
+  min-height: calc(90vh - 280px);
+  // height: calc(90vh - 240px);
+  border: 0;
+  font-size: 18px;
+  resize: none;
+  padding: 20px 8px;
+  font-family: $monospace;
+}
+
+.articleform__buttons{
+  padding: 20px 0px 20px;
+  text-align: center;
+  position:fixed;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  background: white;
+  z-index: 20;
+  border-top: 1px solid $dark-gray;
+  button, a{
+    cursor:pointer;
+    background: white;
+    border: 3px solid $black;
+    font-family: $helvetica-condensed;
+    font-size:16px;
+    border-radius: 3px;
+    padding: 6px 0px;
+    display: inline-block;
+    width: 40%;
+    text-align: center;
+    color: $black;
+    margin: 5px calc(6px + 1vw);
+    &:hover{
+      background: lighten($green, 24%);
+    }
+    &.active{ 
+      background: $green;
+    }
+    @media screen and ( min-width: 600px ){
+      width: 130px;
+    }
+  }
+}
+
+.articleform__imagemanagement{
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $dark-gray;
+  color: white;
+  padding: 5%;
+  box-shadow: $bold-shadow;
+  text-align: center;
+  border-radius: 3px;
+  h2{
+    color: $green;
+    font-size: 3em;
+    font-family: $helvetica-condensed;
+  }
+  input[type="file"]{
+    width: 90%;
+    background: $black;
+    padding: 20px;
+    border-radius: 3px;
+    margin: 20px auto;
+    display: block;
+    cursor:pointer;
+  }
+  input[type="text"]{
+    width: 90%;
+    padding: 10px 20px;
+    border-radius: 3px;
+    margin: 20px auto;
+    display: block;
+    border: 0px;
+    font-size: 20px;
+  }
+  .articleform__exitbutton{
+    position:absolute;
+    color: white;
+    font-size: 37px;
+    font-weight: bold;
+    left: 1%;
+    top: 0%;
+    background: transparent;
+    border: 0px;
+    cursor:pointer;
+  }
+  button{
+    background: $red;
+    color: white;
+    border: 0px;
+    padding: 4px 10px;
+    font-size: 14px;
+    border-radius: 3px;
+    font-weight: bold;
+  }
+  img{
+    display: block;
+    margin: 10px auto;
+    max-width: 80%;
+  }
+}
+
+.articleform__notice{
+  position: fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  padding: 25px 0px;
+  color: white;
+  background: $green;
+  text-align: center;
+  font-size:2em;
+  font-weight: bold;
+  z-index:50;
+  &.articleform__notice--draft{
+    background: $yellow;
+    color: $black;
+  }
+}

@@ -306,6 +306,12 @@ class Article < ApplicationRecord
     end
   end
 
+  def has_frontmatter?
+    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+    parsed.front_matter["title"]
+  end
+
   def class_name
     self.class.name
   end

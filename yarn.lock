@@ -5667,6 +5667,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+linkstate@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/linkstate/-/linkstate-1.1.1.tgz#cb9c29189baa7552295898f78f82b4055d6be108"
+
 lint-staged@^7.0.5:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-7.2.0.tgz#bdf4bb7f2f37fe689acfaec9999db288a5b26888"
@@ -7534,6 +7538,10 @@ preact-render-to-string@^3.6.0, preact-render-to-string@^3.6.3:
   resolved "https://registry.yarnpkg.com/preact-render-to-string/-/preact-render-to-string-3.7.0.tgz#7db4177454bc01395e0d01d6ac07bc5e838e31ee"
   dependencies:
     pretty-format "^3.5.1"
+
+preact-textarea-autosize@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/preact-textarea-autosize/-/preact-textarea-autosize-4.0.7.tgz#aa654ce1a0ed57027dca21e4710a78cb6f007457"
 
 preact-transition-group@^1.1.0:
   version "1.1.1"
