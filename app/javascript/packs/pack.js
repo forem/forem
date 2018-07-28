@@ -8,6 +8,7 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
     return resolve();
   }
   document.addEventListener('DOMContentLoaded', () => resolve());
+  return null;
 });
 
 function shouldShowOnboarding() {

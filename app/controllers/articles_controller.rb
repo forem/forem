@@ -47,10 +47,7 @@ class ArticlesController < ApplicationController
                              processed_html: "")
                else
                  skip_authorization
-                 Article.new(
-                   body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
-                   processed_html: "",
-                 )
+                 Article.new
                end
   end
 

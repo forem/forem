@@ -3,8 +3,8 @@ module Api
     class ArticlesController < ApiController
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
-        :cache_path => Proc.new { |c| c.params.permit! },
-        :expires_in => 5.minutes
+        cache_path: Proc.new { |c| c.params.permit! },
+        expires_in: 5.minutes
       respond_to :json
 
       before_action :cors_preflight_check
@@ -16,19 +16,19 @@ module Api
       end
 
       def show
-        if params[:id] == "by_path"
-          @article = Article.includes(:user).find_by_path(params[:url])&.decorate
-        else
-          @article = Article.includes(:user).find(params[:id])&.decorate
-        end
+        @article = if params[:id] == "by_path"
+                     Article.includes(:user).find_by_path(params[:url])&.decorate
+                   else
+                     Article.includes(:user).find(params[:id])&.decorate
+                   end
         not_found unless @article&.published
       end
 
       def onboarding
         tag_list = if params[:tag_list].present?
-          params[:tag_list].split(",")
-        else
-          ["career", "discuss", "productivity"]
+                     params[:tag_list].split(",")
+                   else
+                     ["career", "discuss", "productivity"]
         end
         @articles = []
         4.times do
@@ -41,6 +41,32 @@ module Api
             @articles << article
           end
         @articles = @articles.uniq.sample(6)
+      end
+
+      def create
+        @article = ArticleCreationService.new(current_user, article_params, {}).create!
+        render json:  if @article.persisted?
+                        @article.to_json(only: [:id], methods: [:current_state_path])
+                      else
+                        @article.errors.to_json
+                      end
+      end
+
+      def update
+        @article = Article.find(params[:id])
+        render json: if @article.update(article_params)
+                        @article.to_json(only: [:id], methods: [:current_state_path])
+                      else
+                        @article.errors.to_json
+                      end
+      end
+
+      def article_params
+        params["article"].transform_keys!(&:underscore)
+        params.require(:article).permit(
+          :title, :body_markdown, :user_id, :main_image, :published, :description,
+          :tag_list
+        )
       end
     end
   end

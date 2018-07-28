@@ -1,4 +1,5 @@
 class Tag < ActsAsTaggableOn::Tag
+  include AlgoliaSearch
   acts_as_followable
   resourcify
 
@@ -15,6 +16,12 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :pound_it
   before_save :calculate_hotness_score
   after_save :bust_cache
+
+  algoliasearch per_environment: true do
+    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported
+    attributesForFaceting [:supported]
+    customRanking ["desc(hotness_score)"]
+  end
 
   def submission_template_customized(param_0 = nil)
     submission_template.gsub("PARAM_0", param_0)

@@ -1,0 +1,34 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
+
+<div class="articleformcontainer">
+  <div class="articleform"
+    id="article-form"
+    data-article="<%= @article.
+    to_json(only: [:id, :title, :cached_tag_list, :published, :body_markdown, :main_image]) %>"
+    data-organization="<%= current_user.organization&.to_json(only: [:name, :bg_color_hex, :text_color_hex]) %>"
+    >
+    
+    <form class="articleform__form">
+    <input class="articleform__title" type="text" value="<%= @article.title %>" placeholder="title" />
+    <div class="articleform__detailfields">
+      <div class="articleform__tagswrapper">
+        <textarea type="text" class="articleform__tags" placeholder="tags"><%= @article.cached_tag_list %></textarea>
+      </div><button class="articleform__imageButton">
+      <img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button>
+    </div>
+    <textarea class="articleform__body" placeholder="Body" name="body_markdown"><%= @article.body_markdown %></textarea>
+    <% if @article.published %>
+      <div class="articleform__buttons"><button class="inactive">HELP</button><button class="inactive">PREVIEW</button><button>UNPUBLISH</button><button>SAVE CHANGES</button></div>    </form>
+    <% else %>
+      <div class="articleform__buttons"><button class="inactive">HELP</button><button class="inactive">PREVIEW</button><button>SAVE DRAFT</button><button>PUBLISH</button></div>    </form>
+    <% end %>
+    <div style="display:none">
+      <%= render "pages/editor_guide_text" %>
+    </div>
+  </div>
+</div>
+
+<style>
+  #footer-container{display: none}
+</style>

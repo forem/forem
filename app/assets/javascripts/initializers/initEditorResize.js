@@ -39,24 +39,13 @@ function initEditorResize() {
 
   function resize() {
     textarea.style.height = 'auto';
-    textarea.style.height = textarea.scrollHeight - 24 + 'px';
-    resizeHighlightArea(textarea.scrollHeight - 24);
-    window.scrollTo(scrollLeft, scrollTop);
-  }
-
-  function resizeHighlightArea(height) {
-    function getbyClass(name) {
-      return document.getElementsByClassName(name);
-    }
-    if (
-      getbyClass('highlightTextarea-container')[0] &&
-      getbyClass('highlightTextarea')[0]
-    ) {
-      getbyClass('highlightTextarea-container')[0].style.height =
-        height - 4 + 'px';
-      getbyClass('highlightTextarea-highlighter')[0].style.height =
-        height + 'px';
-      getbyClass('highlightTextarea')[0].style.height = height + 132 + 'px';
+    textarea.style.height = textarea.scrollHeight - 29 + 'px';
+    var len = textarea.value.length;
+    // If character entered is at the end of the textarea (therefore cursor)
+    if((textarea.selectionEnd > (len - 10)) && len > 50 && document.activeElement === textarea ) {
+      window.scrollTo(scrollLeft, 10000);
+    } else {
+      window.scrollTo(scrollLeft, scrollTop);
     }
   }
 
@@ -78,6 +67,6 @@ function initEditorResize() {
   observe(textarea, 'paste', delayedResize);
   observe(textarea, 'drop', delayedResize);
   observe(textarea, 'keydown', delayedResize);
-  textarea.focus();
+  // textarea.focus();
   resize();
 }

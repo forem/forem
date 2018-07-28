@@ -30,12 +30,9 @@
   </div>
 <% end %>
 
-<% if params[:beta_form] %>
-  <%= render 'react_form' %>
-<% else %>
-  <% if @article.body_html && @article.body_html.size > 10 %>
-    <%= render 'inline_form' %>
+  <% unless @article.has_frontmatter? %>
+    <%= javascript_pack_tag 'articleForm', defer: true %>
+    <%= render 'articles/v2_form' %>
   <% else %>
     <%= render 'articles/markdown_form' %>
   <% end %>
-<% end %>
