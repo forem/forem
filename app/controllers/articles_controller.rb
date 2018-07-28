@@ -47,8 +47,15 @@ class ArticlesController < ApplicationController
                              processed_html: "")
                else
                  skip_authorization
-                 Article.new
-               end
+                 if params[:state] == "v2" || Rails.env.development?
+                   Article.new
+                 else
+                    Article.new(
+                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
+                      processed_html: "",
+                    )
+                  end
+              end
   end
 
   def edit
