@@ -61,4 +61,18 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
+
+  describe "DELETE /chat_channel_memberships/:id" do
+    before do
+      user.add_role(:super_admin)
+      post "/chat_channel_memberships", params: {
+        chat_channel_membership: {user_id: second_user.id, chat_channel_id: chat_channel.id}}
+    end
+    it "leaves chat channel" do
+      membership = ChatChannelMembership.last
+      sign_in second_user
+      delete "/chat_channel_memberships/#{membership.chat_channel.id}", params: {}
+      expect(ChatChannelMembership.find(membership.id).status).to eq("left_channel")
+    end
+  end
 end
