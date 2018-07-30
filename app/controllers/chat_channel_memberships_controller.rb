@@ -28,6 +28,16 @@ class ChatChannelMembershipsController < ApplicationController
     render "chat_channels/index.json"
   end
 
+  def destroy
+    @chat_channel_membership = ChatChannel.find(params[:id]).
+      chat_channel_memberships.where(user_id: current_user.id).first
+    authorize @chat_channel_membership
+    @chat_channel_membership.update(status: "left_channel")
+    @chat_channel_membership.chat_channel.index!
+    @chat_channels_memberships = []
+    render json: { result: "left channel" }, status: 201
+  end
+
   def permitted_params
     params.require(:chat_channel_membership).permit(:user_id, :chat_channel_id, :user_action, :id)
   end

@@ -15,13 +15,13 @@ RSpec.describe ChatChannelMembershipPolicy do
     let(:user) { create(:user) }
     let(:chat_channel) { create(:chat_channel ) }
     let(:chat_channel_membership) { create(:chat_channel_membership, user_id: user.id, chat_channel_id: chat_channel.id ) }
-    it { is_expected.to permit_actions(%i[update]) }
+    it { is_expected.to permit_actions(%i[update destroy]) }
   end
   context "when user does not belong to membership" do
     let(:user) { create(:user) }
     let(:other_user) { create(:user) }
     let(:chat_channel) { create(:chat_channel ) }
     let(:chat_channel_membership) { create(:chat_channel_membership, user_id: other_user.id, chat_channel_id: chat_channel.id ) }
-    it { is_expected.to forbid_actions(%i[update]) }
+    it { is_expected.to forbid_actions(%i[update destroy]) }
   end
 end
