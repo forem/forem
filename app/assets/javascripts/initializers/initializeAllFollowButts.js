@@ -21,6 +21,9 @@ function initializeFollowButt(butt) {
     return;
   }
   else {
+    if(butt.dataset.fetched === 'fetched') {
+      return;
+    }
     fetchButt(butt, buttInfo);
   }
 }
@@ -35,6 +38,7 @@ function addModalEventListener(butt) {
 }
 
 function fetchButt(butt, buttInfo) {
+  butt.dataset.fetched = 'fetched';
   var dataRequester;
   if (window.XMLHttpRequest) {
       dataRequester = new XMLHttpRequest();

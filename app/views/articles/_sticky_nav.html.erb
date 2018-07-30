@@ -78,7 +78,7 @@
   <% end %>
   <% if sticky_articles %>
     <div class="primary-sticky-nav-title">
-      <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/129/fire_1f525.png"/> Trending on <a href="https://dev.to">dev.to</a>
+      <img src="<%= asset_path "emoji/apple-fire.png"%>"/> Trending on <a href="https://dev.to">dev.to</a>
     </div>
     <% sticky_articles.each do |article| %>
       <a class="primary-sticky-nav-element" href="<%= article.path %>">
@@ -93,7 +93,7 @@
     <% end %>
     <% if 1 == 2 %>
       <a class="primary-sticky-nav-element sticky-join-cta" href="/enter">
-        <img src="https://emojipedia-us.s3.amazonaws.com/thumbs/240/apple/129/waving-hand-sign_1f44b.png" /> Join the DEV Community
+        <img src="<%= asset_path "emoji/apple-fire.png"%>" /> Join the DEV Community
       </a>
     <% end %>
 
