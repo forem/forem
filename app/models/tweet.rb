@@ -97,11 +97,10 @@ class Tweet < ApplicationRecord
   end
 
   def self.random_identity
-    if Rails.env.production?
-      Identity.where(provider: "twitter").last(250).sample
-    else
-      Identity.where(provider: "twitter").last ||
-        { token: ApplicationConfig["TWITTER_KEY"], secret: ApplicationConfig["TWITTER_SECRET"] }
-    end
+    iden = Identity.where(provider: "twitter").last(250).sample
+    {
+      token: iden&.token || ApplicationConfig["TWITTER_KEY"],
+      secret: iden&.secret || ApplicationConfig["TWITTER_SECRET"],
+    }
   end
 end
