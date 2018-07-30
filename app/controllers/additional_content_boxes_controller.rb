@@ -1,5 +1,8 @@
 class AdditionalContentBoxesController < ApplicationController
   # No authorization required for entirely public controller
+
+  before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+
   def index
     article_ids = params[:article_id].split(",")
     @article = Article.find(article_ids[0])
@@ -17,6 +20,7 @@ class AdditionalContentBoxesController < ApplicationController
       @alt_classic = Suggester::Articles::Classic.
         new(@article, {not_ids: (article_ids + [@for_user_article&.id])}).get
     end
+    set_surrogate_key_header "additional_content_boxes_" + params.to_s unless current_user
     render "boxes", layout: false
   end
 
