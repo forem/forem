@@ -6,6 +6,7 @@
 function initEditorResize() {
   var observe, scrollLeft, scrollTop;
   var textarea = document.getElementById('article_body_markdown');
+  var oldEditor = document.getElementById('markdown-editor-main');
 
   if (!textarea) {
     return;
@@ -40,6 +41,9 @@ function initEditorResize() {
   function resize() {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight - 29 + 'px';
+    if (oldEditor) {
+      return;
+    }
     var len = textarea.value.length;
     // If character entered is at the end of the textarea (therefore cursor)
     if((textarea.selectionEnd > (len - 10)) && len > 50 && document.activeElement === textarea ) {
