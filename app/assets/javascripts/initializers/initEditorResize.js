@@ -41,6 +41,7 @@ function initEditorResize() {
   function resize() {
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight - 29 + 'px';
+    window.scrollTo(scrollLeft, scrollTop);
     if (oldEditor) {
       return;
     }
