@@ -47,10 +47,11 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 variable :AIRBRAKE_API_KEY, :String, default: "Optional"
 variable :AIRBRAKE_PROJECT_ID, :integer, default: 00000
 
-# Algolia for search
-variable :ALGOLIASEARCH_API_KEY, :String, default: "Optional"
-variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: "Optional"
-variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: "Optional"
+# Algolia for search (not optional)
+only_in_test = proc { ENV['RACK_ENV'] == "test" ? "test-test" : nil}
+variable :ALGOLIASEARCH_API_KEY, :String, default: only_in_test
+variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: only_in_test
+variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 
 # AWS for images storages
 variable :AWS_ID, :String, default: "Optional"

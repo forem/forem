@@ -71,7 +71,7 @@ We are all humans trying to work together to improve things for the community. A
 2.  `bundle install`
 3.  `bin/yarn`
 4.  Set up your environment variables/secrets
-    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free API keys for a few services in order to get your development environment running. [**Follow this wiki to get them.**](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development)
+    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free API keys for a few services in order to get your development environment running. Check this [wiki](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development) on how to get them. For minimum requirement, you should obtain valid [Algolia](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development#algolia-choose-oauth-or-email-sign-up) credentials.
     * For any key that you wish to enter/replace:
       1. Create `config/application.yml` by copying from the provided template (`cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
       2. Obtain the development variable and apply the key you wish to enter/replace. ie:

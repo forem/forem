@@ -23,7 +23,7 @@ p "2/8 Creating Users"
 
 roles = %i(level_1_member level_2_member level_3_member level_4_member
            workshop_pass)
-
+User.clear_index!
 40.times do |i|
   user = User.create!(
     name: name = Faker::Name.unique.name,
@@ -46,6 +46,7 @@ roles = %i(level_1_member level_2_member level_3_member level_4_member
     token: i.to_s,
     secret: i.to_s,
     user: user,
+    auth_data_dump: { "extra" => { "raw_info" => { "lang" => "en" } } },
   )
 end
 
@@ -69,6 +70,7 @@ end
 
 p "4/8 Creating Articles"
 
+Article.clear_index!
 80.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
@@ -98,6 +100,8 @@ end
 ##############################################################################
 
 p "5/8 Creating Comments"
+
+Comment.clear_index!
 120.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
@@ -138,6 +142,7 @@ Broadcast.create!(
 
 p "8/8 Creating chat_channel"
 
+ChatChannel.clear_index!
 ChatChannel.without_auto_index do
   ["Workshop", "Meta", "General"].each do |chan|
     ChatChannel.create!(
@@ -147,5 +152,6 @@ ChatChannel.without_auto_index do
     )
   end
 end
+ChatChannel.reindex!
 
 ##############################################################################
