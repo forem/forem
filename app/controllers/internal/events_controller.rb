@@ -7,12 +7,12 @@ module Internal
         location_url: "https://dev.to",
         description_markdown: "*Description* *Pre-requisites:* *Bio*",
       )
-      @events = Event.order("starts_at ASC")
+      @events = Event.order("starts_at DESC")
     end
 
     def create
       @event = Event.new(event_params)
-      @events = Event.order("starts_at ASC")
+      @events = Event.order("starts_at DESC")
       if @event.save
         flash[:success] = "Successfully created event: #{@event.title}"
         redirect_to(action: :index)
@@ -24,7 +24,7 @@ module Internal
 
     def update
       @event = Event.find(params[:id])
-      @events = Event.order("starts_at ASC")
+      @events = Event.order("starts_at DESC")
       if @event.update(event_params)
         CacheBuster.new.bust "/live_articles"
         flash[:success] = "#{@event.title} was successfully updated"
