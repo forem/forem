@@ -14,10 +14,10 @@ GIT
 
 GIT
   remote: https://github.com/stympy/faker.git
-  revision: 00be118fc07fe19309b87d1863c12941ad161651
+  revision: 9910aa58d92c018abab25d491191576fcc1a7707
   branch: master
   specs:
-    faker (1.8.7)
+    faker (1.9.1)
       i18n (>= 0.7)
 
 GIT
@@ -1048,4 +1048,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.2
+   1.16.3
