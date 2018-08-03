@@ -554,7 +554,7 @@ export default class Chat extends Component {
       const channelUsername = activeChannel.slug.replace(`${window.currentUser.username}/`, '').replace(`/${window.currentUser.username}`, '')
       return <div className="chatmessage" style={{color: "grey"}}>
         <div className="chatmessage__body">
-          You and <a href={"/"+channelUsername} style={{color:activeChannel.channel_users[channelUsername].darker_color}} >@{channelUsername}</a> are connected because follow each other. All interactions <em><b>must</b></em> abide by the <a href="/code-of-conduct">code of conduct</a>.
+          You and <a href={"/"+channelUsername} style={{color:activeChannel.channel_users[channelUsername].darker_color}} >@{channelUsername}</a> are connected because you both follow each other. All interactions <em><b>must</b></em> abide by the <a href="/code-of-conduct">code of conduct</a>.
         </div>
       </div>
     }
