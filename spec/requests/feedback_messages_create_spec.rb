@@ -28,7 +28,7 @@ RSpec.describe "feedback_messages", type: :request do
         )
       end
 
-      it "redirects to the ticket page" do
+      xit "redirects to the ticket page" do
         expect(response).to redirect_to(FeedbackMessage.last.path)
       end
     end
@@ -47,7 +47,7 @@ RSpec.describe "feedback_messages", type: :request do
         expect(FeedbackMessage.find_by(reporter_id: user.id)).not_to eq(nil)
       end
 
-      it "sends an email to the reporter" do
+      xit "sends an email to the reporter" do
         expect(NotifyMailer).to have_received(:new_report_email)
       end
     end
