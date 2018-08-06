@@ -22,6 +22,7 @@ export default class Chat extends Component {
           id="messageform"
           placeholder="Message goes here"
           onKeyDown={handleKeyDown}
+          maxLength="1000"
         />
         <button
           className="messagecomposer__submit"

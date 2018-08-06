@@ -92,6 +92,7 @@ class ChatChannelsController < ApplicationController
       @chat_channels_memberships = current_user.
       chat_channel_memberships.includes(:chat_channel).
       where("has_unopened_messages = ? OR status = ?", true, "pending").
+      where(show_global_badge_notification: true).
       order("chat_channel_memberships.updated_at DESC")
     else
       @chat_channels_memberships = []
