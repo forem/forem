@@ -103,6 +103,8 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
+  before_update :mentor_status_update
+  before_update :mentee_status_update
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -496,5 +498,17 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def mentor_status_update
+    if mentor_description_changed? || offering_mentorship_changed?
+      self.mentor_form_updated_at = Time.now
+    end
+  end
+
+  def mentee_status_update
+    if mentee_description_changed? || seeking_mentorship_changed?
+      self.mentee_form_updated_at = Time.now
+    end
   end
 end
