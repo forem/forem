@@ -5,11 +5,12 @@ class FeedbackMessagesController < ApplicationController
   def create
     flash.clear
     @feedback_message = FeedbackMessage.new(
-      feedback_message_params.merge(reporter_id: current_user&.id))
+      feedback_message_params.merge(reporter_id: current_user&.id),
+    )
     if recaptcha_verified? && @feedback_message.save
       send_slack_message
-      NotifyMailer.new_report_email(@feedback_message).deliver if @feedback_message.reporter_id?
-      redirect_to @feedback_message.path
+      # NotifyMailer.new_report_email(@feedback_message).deliver if @feedback_message.reporter_id?
+      redirect_to "/feedback_messages"
     elsif feedback_message_params[:feedback_type] == "bug-reports"
       flash[:notice] = "Make sure the forms are filled 🤖 "
       render file: "public/500.html", status: 500, layout: false
@@ -27,13 +28,14 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
-    params["g-recaptcha-response"] && verify_recaptcha(secret_key: ApplicationConfig["RECAPTCHA_SECRET"])
+    params["g-recaptcha-response"] &&
+      verify_recaptcha(secret_key: ApplicationConfig["RECAPTCHA_SECRET"])
   end
 
   def send_slack_message
     SlackBot.ping(
       generate_message,
-      channel: "#{feedback_message_params[:feedback_type]}",
+      channel: feedback_message_params[:feedback_type].to_s,
       username: "#{feedback_message_params[:feedback_type]}_bot",
       icon_emoji: ":#{emoji_for_feedback(feedback_message_params[:feedback_type])}:",
     )

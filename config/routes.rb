@@ -78,7 +78,7 @@ Rails.application.routes.draw do
   resources :comments, only: [:create,:update,:destroy]
   resources :users, only: [:update]
   resources :reactions, only: [:index, :create]
-  resources :feedback_messages, only: [:create]
+  resources :feedback_messages, only: [:create, :index]
   get "/reports/:slug", to: "feedback_messages#show"
   resources :organizations, only: [:update, :create]
   resources :followed_articles, only: [:index]
