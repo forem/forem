@@ -24,4 +24,13 @@ RSpec.describe Message, type: :model do
     message = build(:message, chat_channel_id: chat_channel.id, user_id: user_2.id)
     expect(message).to be_valid
   end
+
+  it "is invalid if over 1024 chars" do
+    long_text = Faker::Hipster.words(1500)
+    p long_text.size
+    message = build(:message, chat_channel_id: chat_channel.id, user_id: user.id, message_markdown: long_text)
+    expect(message).to_not be_valid
+    message.message_markdown = "hello"
+    expect(message).to be_valid
+  end
 end

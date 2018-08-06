@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180716182629) do
+ActiveRecord::Schema.define(version: 20180806142338) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -168,6 +168,7 @@ ActiveRecord::Schema.define(version: 20180716182629) do
     t.boolean "has_unopened_messages", default: false
     t.datetime "last_opened_at", default: "2017-01-01 05:00:00"
     t.string "role", default: "member"
+    t.boolean "show_global_badge_notification", default: true
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -377,6 +378,10 @@ ActiveRecord::Schema.define(version: 20180716182629) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
+    t.text "encrypted_message_html"
+    t.text "encrypted_message_html_iv"
+    t.text "encrypted_message_markdown"
+    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false

@@ -3,7 +3,7 @@ class Message < ApplicationRecord
   belongs_to :chat_channel
 
   validates :message_html, presence: true
-  validates :message_markdown, presence: true, length: { maximum: 600 }
+  validates :message_markdown, presence: true, length: { maximum: 1024 }
   validate :channel_permission
 
   before_save       :determine_user_validity
