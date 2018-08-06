@@ -643,13 +643,6 @@ var instantClick
 //FUNCTIONAL CODE FOR PAGE
 
   function initializeBaseApp() {
-    var pingLoops = 0;
-    setInterval(function() {
-      if (window.ga && ga.create && pingLoops > 0) {
-        ga('send', 'event', 'ping', '30 second ping', location.pathname, null);
-      }
-      pingLoops++;
-    }, 30000);
     InstantClick.on('change', function() {
       initializePage();
     });
