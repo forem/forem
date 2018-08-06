@@ -669,7 +669,9 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.boolean "looking_for_work_publicly", default: false
     t.datetime "membership_started_at"
     t.text "mentee_description"
+    t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
+    t.datetime "mentor_form_updated_at"
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"

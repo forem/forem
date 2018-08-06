@@ -145,6 +145,18 @@ RSpec.describe User, type: :model do
       expect(user.old_old_username).to eq(old_username)
     end
 
+    it "updates mentor_form_updated_at at appropriate time" do
+      user.mentor_description = "hello"
+      user.save
+      expect(user.mentor_form_updated_at).to_not eq(nil)
+    end
+
+    it "updates mentee_form_updated_at at appropriate time" do
+      user.mentee_description = "hello"
+      user.save
+      expect(user.mentee_form_updated_at).to_not eq(nil)
+    end
+
     it "does not allow too short or too long name" do
       user.name = ""
       expect(user).not_to be_valid
