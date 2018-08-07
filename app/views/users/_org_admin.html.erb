@@ -74,11 +74,11 @@
   </div>
   <div class="field">
     <%= f.label :text_color_hex, "Text color (hex)"%>
-    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true}" %>
+    <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
     <%= f.label :bg_color_hex, "Background color (hex)"%>
-    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true}" %>
+    <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
     <%= f.label :url, "Site url" %>
@@ -86,37 +86,37 @@
   </div>
   <div class="field">
     <%= f.label :tag_line %>
-    <%= f.text_field :tag_line, maxlegth: 60 %>
+    <%= f.text_field :tag_line, maxlength: 60, placeholder: "Limit of 60 characters" %>
   </div>
   <div class="field">
     <%= f.label :summary %>
-    <%= f.text_area :summary, maxlegth: 250 %>
+    <%= f.text_area :summary, maxlength: 250, placeholder: "Limit of 250 characters" %>
   </div>
   <div class="field">
     <%= f.label :location %>
-    <%= f.text_field :location, maxlength: 64 %>
+    <%= f.text_field :location, maxlength: 64, placeholder: "Limit of 64 characters" %>
   </div>  
   <div class="field">
     <%= f.label :email, "Support Email" %>
-    <%= f.text_field :email, maxlength: 64 %>
+    <%= f.text_field :email, maxlength: 64, placeholder: "Limit of 64 characters" %>
   </div> 
   <div class="field">
     <%= f.label :company_size, "Company Size" %>
-    <%= f.text_field :company_size, maxlength: 64 %>
+    <%= f.text_field :company_size, maxlength: 64, placeholder: "Limit of 64 characters" %>
   </div>   
   <div class="field">
     <%= f.label :story, "Our Story" %>
-    <%= f.text_area :story, maxlength: 200 %>
+    <%= f.text_area :story, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>
   <div class="field">
     <%= f.label :tech_stack, "Our Stack" %>
-    <%= f.text_area :tech_stack, maxlength: 200 %>
+    <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>      
   <% if @organization.approved %>
     <h2>Call-to-action box</h2>
     <div class="field">
       <%= f.label "Button Text" %>
-      <%= f.text_field :cta_button_text, maxlength: 12 %>
+      <%= f.text_field :cta_button_text, maxlength: 12, placeholder: "Limit of 12 characters" %>
     </div>
     <div class="field">
       <%= f.label "Button Link" %>
@@ -124,7 +124,7 @@
     </div>
     <div class="field">
       <%= f.label "Body text" %>
-      <%= f.text_area :cta_body_markdown, maxlength: 140 %>
+      <%= f.text_area :cta_body_markdown, maxlength: 140, placeholder: "Limit of 140 characters" %>
     </div>
     <% if @organization.approved_and_filled_out_cta? %>
       <div class="field">

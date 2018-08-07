@@ -1,6 +1,6 @@
-include CloudinaryHelper
-
 class Organization < ApplicationRecord
+  include CloudinaryHelper
+
   acts_as_followable
 
   has_many :job_listings
@@ -17,8 +17,8 @@ class Organization < ApplicationRecord
   validates :tag_line,
             length: { maximum: 60 }
   validates :jobs_email, email: true, allow_blank: true
-  validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
-  validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
+  validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :slug,
             presence: true,
             uniqueness: { case_sensitive: false },
