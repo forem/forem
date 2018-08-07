@@ -9,7 +9,7 @@ FactoryBot.define do
     watchers_count     { rand(100000) }
     github_id_code     { rand(100000) }
     stargazers_count   { rand(100000) }
-    featured           { true }
-    fork               { false }
+    featured true
+    fork false
   end
 end

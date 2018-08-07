@@ -7,6 +7,7 @@ RSpec.describe MembershipService do
   let(:stripe_source_token) { stripe_helper.generate_card_token }
 
   before { StripeMock.start }
+
   after { StripeMock.stop }
 
   def valid_instance(user = user_one, amount = 1200)
@@ -31,6 +32,7 @@ RSpec.describe MembershipService do
 
   describe "#initialize" do
     context "when evoked on a user that already has subscription" do
+      # rubocop:disable RSpec/ExampleLength
       it "returns an object with subscription" do
         customer = Stripe::Customer.create(
           email: "stripe_tester@dev.to",
@@ -46,9 +48,12 @@ RSpec.describe MembershipService do
           statement_descriptor: "DEV membership",
         )
         Stripe::Subscription.create(customer: customer.id, plan: plan.id)
-        test = described_class.new(Stripe::Customer.retrieve(user_one.stripe_id_code), user_one, 1200)
+        test = described_class.new(
+          Stripe::Customer.retrieve(user_one.stripe_id_code), user_one, 1200
+        )
         expect(test.subscription).not_to be(nil)
       end
+      # rubocop:enable RSpec/ExampleLength
     end
   end
 

@@ -90,8 +90,8 @@ class Organization < ApplicationRecord
   end
 
   def remove_at_from_usernames
-    self.twitter_username = twitter_username.gsub("@","") if twitter_username
-    self.github_username = github_username.gsub("@","") if github_username
+    self.twitter_username = twitter_username.gsub("@", "") if twitter_username
+    self.github_username = github_username.gsub("@", "") if github_username
   end
 
   def downcase_slug
@@ -105,7 +105,7 @@ class Organization < ApplicationRecord
       articles.each do |article|
         cache_buster.bust(article.path)
       end
-    rescue
+    rescue StandardError
       puts "Tag issue"
     end
   end

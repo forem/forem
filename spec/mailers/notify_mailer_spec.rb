@@ -50,20 +50,23 @@ RSpec.describe NotifyMailer, type: :mailer do
     describe "#new_badge_email" do
       let(:badge) { create(:badge) }
 
+      def create_badge_achievement(user, badge, rewarder)
+        BadgeAchievement.create(
+          user_id: user.id,
+          badge_id: badge.id,
+          rewarder_id: rewarder.id,
+          rewarding_context_message_markdown: "Hello [Yoho](/hey)",
+        )
+      end
+
       it "renders proper subject" do
-        badge_achievement = BadgeAchievement.create(user_id: user.id,
-        badge_id: badge.id,
-        rewarder_id: user2.id,
-        rewarding_context_message_markdown: "Hello [Yoho](/hey)")
+        badge_achievement = create_badge_achievement(user, badge, user2)
         new_badge_email = described_class.new_badge_email(badge_achievement)
         expect(new_badge_email.subject).to eq("You just got a badge")
       end
 
       it "renders proper receiver" do
-        badge_achievement = BadgeAchievement.create(user_id: user.id,
-        badge_id: badge.id,
-        rewarder_id: user2.id,
-        rewarding_context_message_markdown: "Hello [Yoho](/hey)")
+        badge_achievement = create_badge_achievement(user, badge, user2)
         new_badge_email = described_class.new_badge_email(badge_achievement)
         expect(new_badge_email.to).to eq([user.email])
       end

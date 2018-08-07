@@ -26,63 +26,63 @@ class PodcastDashboard < Administrate::BaseDashboard
     status_notice: Field::Text,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-  }
+  }.freeze
 
   # COLLECTION_ATTRIBUTES
   # an array of attributes that will be displayed on the model's index page.
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :podcast_episodes,
-    :id,
-    :title,
-    :description,
-  ]
+  COLLECTION_ATTRIBUTES = %i[
+    podcast_episodes
+    id
+    title
+    description
+  ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :podcast_episodes,
-    :id,
-    :title,
-    :description,
-    :feed_url,
-    :itunes_url,
-    :overcast_url,
-    :android_url,
-    :soundcloud_url,
-    :website_url,
-    :status_notice,
-    :twitter_username,
-    :main_color_hex,
-    :image,
-    :pattern_image,
-    :slug,
-    :created_at,
-    :updated_at,
-  ]
+  SHOW_PAGE_ATTRIBUTES = %i[
+    podcast_episodes
+    id
+    title
+    description
+    feed_url
+    itunes_url
+    overcast_url
+    android_url
+    soundcloud_url
+    website_url
+    status_notice
+    twitter_username
+    main_color_hex
+    image
+    pattern_image
+    slug
+    created_at
+    updated_at
+  ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :podcast_episodes,
-    :title,
-    :description,
-    :status_notice,
-    :feed_url,
-    :itunes_url,
-    :overcast_url,
-    :android_url,
-    :soundcloud_url,
-    :website_url,
-    :twitter_username,
-    :pattern_image,
-    :main_color_hex,
-    :image,
-    :slug,
-  ]
+  FORM_ATTRIBUTES = %i[
+    podcast_episodes
+    title
+    description
+    status_notice
+    feed_url
+    itunes_url
+    overcast_url
+    android_url
+    soundcloud_url
+    website_url
+    twitter_username
+    pattern_image
+    main_color_hex
+    image
+    slug
+  ].freeze
 
   # Overwrite this method to customize how podcasts are displayed
   # across all pages of the admin dashboard.

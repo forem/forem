@@ -16,7 +16,7 @@ class TwilioToken
       api_key,
       api_secret,
       [],
-      identity: user.id
+      identity: user.id,
     )
 
     grant = Twilio::JWT::AccessToken::VideoGrant.new
@@ -25,5 +25,4 @@ class TwilioToken
 
     token.to_jwt
   end
-
 end

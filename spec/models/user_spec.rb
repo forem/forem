@@ -1,10 +1,11 @@
-require 'rails_helper'
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+require "rails_helper"
 
 RSpec.describe User, type: :model do
   let(:user)            { create(:user) }
   let(:returning_user)  { create(:user, signup_cta_variant: nil) }
   let(:second_user)     { create(:user) }
-  let(:article)         { create(:article,user_id:user.id) }
+  let(:article)         { create(:article, user_id: user.id) }
   let(:tag)             { create(:tag) }
   let(:org)             { create(:organization) }
   let (:second_org)     { create(:organization) }
@@ -37,6 +38,12 @@ RSpec.describe User, type: :model do
   # it { is_expected.to have_many(:job_applications) }
   # it { is_expected.to have_many(:answers) }
   # it { is_expected.to validate_uniqueness_of(:email).case_insensitive.allow_blank }
+
+  def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
+    auth = OmniAuth.config.mock_auth[service_name]
+    service = AuthorizationService.new(auth, signed_in_resource, cta_variant)
+    service.get_user
+  end
 
   describe "validations" do
     it "gets a username after create" do
@@ -114,7 +121,7 @@ RSpec.describe User, type: :model do
     end
 
     it "does not accept invalid linkedin url" do
-      user.stackoverflow_url = "ben.com"
+      user.linkedin_url = "ben.com"
       expect(user).not_to be_valid
     end
 
@@ -180,14 +187,14 @@ RSpec.describe User, type: :model do
     end
 
     it "enforces summary length validation if old summary was valid" do
-      user.summary = str = "0" * 999
+      user.summary = "0" * 999
       user.save(validate: false)
-      user.summary = str = "0" * 999
+      user.summary = "0" * 999
       expect(user).to be_valid
     end
 
     it "does not inforce summary validation if old summary was invalid" do
-      user.summary = str = "0" * 999
+      user.summary = "0" * 999
       expect(user).not_to be_valid
     end
   end
@@ -196,68 +203,68 @@ RSpec.describe User, type: :model do
   describe "user registration" do
     it "finds user by email and assigns identity to that if exists" do
       OmniAuth.config.mock_auth[:twitter].info.email = user.email
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.id).to eq(user.id)
     end
 
     it "assigns random username if username is taken on registration" do
       OmniAuth.config.mock_auth[:twitter].info.nickname = user.username
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+
       expect(new_user.persisted?).to eq(true)
-      expect(new_user.username).to_not eq(user.username)
+      expect(new_user.username).not_to eq(user.username)
     end
 
     it "assigns random username if username is taken by organization on registration" do
       org = create(:organization)
       OmniAuth.config.mock_auth[:twitter].info.nickname = org.slug
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.persisted?).to eq(true)
-      expect(new_user.username).to_not eq(org.slug)
+      expect(new_user.username).not_to eq(org.slug)
     end
 
-
     it "assigns signup_cta_variant to state param with Twitter if new user" do
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "hey-hey-hey").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
     end
 
     it "sets saw_onboarding to false with proper signup variant" do
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "welcome-widget").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "welcome-widget")
       expect(new_user.saw_onboarding).to eq(false)
     end
 
     it "sets saw_onboarding to true with nil signup variant" do
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, nil).get_user
+      new_user = user_from_authorization_service(:twitter, nil, nil)
       expect(new_user.saw_onboarding).to eq(true)
     end
 
-
-
     it "does not assign signup_cta_variant to non-new users" do
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], returning_user, "hey-hey-hey").get_user
+      new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
     end
 
     it "assigns proper social_username based on auth" do
       OmniAuth.config.mock_auth[:twitter].info.nickname = "valid_username"
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.username).to eq("valid_username")
     end
 
     it "assigns modified username if invalid" do
       OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.username"
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.username).to eq("invalidusername")
     end
 
     it "assigns an identity to user" do
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.identities.size).to eq(1)
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:github], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
       expect(new_user.identities.size).to eq(2)
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       expect(new_user.identities.size).to eq(2)
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:github], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:github, nil, "navbar_basic")
       expect(new_user.identities.size).to eq(2)
     end
 
@@ -271,25 +278,26 @@ RSpec.describe User, type: :model do
       expect(user.estimated_default_language).to eq("ja")
     end
     it "estimates default language based on ID dump" do
-      new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       new_user.estimate_default_language_without_delay!
     end
   end
 
   it "follows users" do
-    user_2 = create(:user)
-    user_3 = create(:user)
-    user.follow(user_2)
-    user.follow(user_3)
+    user2 = create(:user)
+    user3 = create(:user)
+    user.follow(user2)
+    user.follow(user3)
     expect(user.all_follows.size).to eq(2)
   end
 
-  describe '#followed_articles' do
-    let(:user_2)  { create(:user) }
-    let(:user_3)  { create(:user) }
+  describe "#followed_articles" do
+    let(:user2)  { create(:user) }
+    let(:user3)  { create(:user) }
+
     before do
-      3.times { create(:article, user_id: user_2.id) }
-      user.follow(user_2)
+      create_list(:article, 3, user_id: user2.id)
+      user.follow(user2)
     end
 
     it "returns all articles following" do
@@ -310,7 +318,7 @@ RSpec.describe User, type: :model do
     expect(user).not_to be_valid
   end
 
-  it "does not allow to change to username that is taken" do
+  it "does not allow to change to username that is taken by an organization" do
     user.username = create(:organization).slug
     expect(user).not_to be_valid
   end
@@ -326,30 +334,32 @@ RSpec.describe User, type: :model do
     expect(user.score).to be > 0
   end
 
-  it 'persists JSON dump of identity data' do
-    new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+  it "persists JSON dump of identity data" do
+    new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
     identity = new_user.identities.first
     expect(identity.auth_data_dump.provider).to eq(identity.provider)
   end
 
-  it 'persists extracts relevant identity data from logged in user' do
-    new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:twitter], nil, "navbar_basic").get_user
+  it "persists extracts relevant identity data from logged in user" do
+    new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
     expect(new_user.twitter_following_count).to be_an(Integer)
     expect(new_user.twitter_followers_count).to eq(100)
     expect(new_user.twitter_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
-    new_user = AuthorizationService.new(OmniAuth.config.mock_auth[:github], nil, "navbar_basic").get_user
+    new_user = user_from_authorization_service(:github, nil, "navbar_basic")
     expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
   end
 
   describe "onboarding checklist" do
     it "returns onboarding checklist made first article if made first published article" do
       article.update(published: true)
-      expect(UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]).to eq(true)
+      checklist = UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]
+      expect(checklist).to eq(true)
     end
 
     it "returns onboarding checklist made first article false if hasn't written article" do
       article.update(published: false)
-      expect(UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]).to eq(true)
+      checklist = UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]
+      expect(checklist).to eq(true)
     end
 
     it "returns onboarding checklist follow_your_first_tag if has followed tag" do
@@ -373,20 +383,24 @@ RSpec.describe User, type: :model do
 
     it "returns onboarding checklist leave_your_first_reaction if has reacted to a post" do
       create(:reaction, user_id: user.id, reactable_id: article.id)
-      expect(UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]).to eq(true)
+      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]
+      expect(checklist).to eq(true)
     end
 
-    it "returns onboarding checklist leave_your_first_reaction false if has not reacted to a post" do
-      expect(UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]).to eq(false)
+    it "returns onboarding checklist leave_your_first_reaction false if hasn't reacted to a post" do
+      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]
+      expect(checklist).to eq(false)
     end
 
     it "returns onboarding checklist leave_your_first_comment if has left comment" do
       create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
-      expect(UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]).to eq(true)
+      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
+      expect(checklist).to eq(true)
     end
 
     it "returns onboarding checklist leave_your_first_comment false if has not left comment" do
-      expect(UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]).to eq(false)
+      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
+      expect(checklist).to eq(false)
     end
   end
 
@@ -444,3 +458,4 @@ RSpec.describe User, type: :model do
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

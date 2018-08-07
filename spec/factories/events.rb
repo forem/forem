@@ -4,6 +4,6 @@ FactoryBot.define do
     description_markdown { Faker::Hipster.paragraph(2) }
     starts_at { Time.now }
     ends_at { Time.now + 3660 }
-    category { "AMA" }
+    category "AMA"
   end
 end

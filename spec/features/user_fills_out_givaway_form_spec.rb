@@ -1,6 +1,6 @@
 require "rails_helper"
 
-feature "Freestickers giveaway (wind-down)" do
+describe "Freestickers giveaway (wind-down)" do
   let(:user) { create(:user, onboarding_package_requested: true) }
   let(:success_message) { "Your stickers should arrive soon" }
   let(:error_messages) do
@@ -28,14 +28,14 @@ feature "Freestickers giveaway (wind-down)" do
 
   before { login_as(user) }
 
-  scenario "user fills out giveaway form correctly" do
+  it "user fills out giveaway form correctly" do
     visit "freestickers/edit"
     fill_form
     click_button("Submit")
     expect(page).to have_text(success_message)
   end
 
-  scenario "user fills out giveaway form incorrectly" do
+  it "user fills out giveaway form incorrectly" do
     visit "freestickers/edit"
     # if we don't select '-----', the form will take 'US' because it is listed first
     select "-----", from: "Country"
@@ -44,7 +44,7 @@ feature "Freestickers giveaway (wind-down)" do
     error_messages.all? { |error| expect(page).to have_text(error) }
   end
 
-  scenario "user already filled out the re-request giveaway form" do
+  it "user already filled out the re-request giveaway form" do
     user.onboarding_package_requested_again = true
     visit "freestickers/edit"
     expect(page).to have_text(success_message)

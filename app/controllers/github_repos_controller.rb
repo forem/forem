@@ -29,7 +29,7 @@ class GithubReposController < ApplicationController
   def create_octokit_client
     current_user_token = current_user.identities.where(provider: "github").last.token
     client = Octokit::Client.new(access_token: current_user_token)
-    client.repositories.sort_by!(&:name) if client
+    client&.repositories&.sort_by!(&:name)
     client
   end
 

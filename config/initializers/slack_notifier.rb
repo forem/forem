@@ -26,7 +26,7 @@ def create_stubbed_notifier
   end
 end
 
-::SlackBot = case Rails.env
+::SlackBot = case Rails.env # rubocop:disable Naming/ConstantName
              when "production"
                create_normal_notifier
              when "development"

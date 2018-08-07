@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Tag, type: :model do
   let(:tag) { build(:tag) }

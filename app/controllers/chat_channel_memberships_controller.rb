@@ -7,7 +7,7 @@ class ChatChannelMembershipsController < ApplicationController
     ChatChannelMembership.create(
       user_id: permitted_params[:user_id],
       chat_channel_id: @chat_channel.id,
-      status: "pending"
+      status: "pending",
     )
     @chat_channel.index!
   end

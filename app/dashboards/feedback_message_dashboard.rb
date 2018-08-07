@@ -20,31 +20,31 @@ class FeedbackMessageDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :user,
-    :id,
-    :message,
-    :feedback_type,
+  COLLECTION_ATTRIBUTES = %i[
+    user
+    id
+    message
+    feedback_type
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :user,
-    :id,
-    :message,
-    :feedback_type,
-    :category,
+  SHOW_PAGE_ATTRIBUTES = %i[
+    user
+    id
+    message
+    feedback_type
+    category
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :user,
-    :message,
-    :feedback_type,
-    :category,
+  FORM_ATTRIBUTES = %i[
+    user
+    message
+    feedback_type
+    category
   ].freeze
 
   # Overwrite this method to customize how feedback messages are displayed

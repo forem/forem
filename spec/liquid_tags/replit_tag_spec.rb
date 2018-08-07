@@ -1,19 +1,20 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe ReplitTag, type: :liquid_template do
-  describe '#id' do
-    let(:replit_id) { 'dQw4w9WgXcQ' }
+  describe "#id" do
+    let(:replit_id) { "dQw4w9WgXcQ" }
+
     def generate_new_liquid(id)
-      Liquid::Template.register_tag('replit', ReplitTag)
+      Liquid::Template.register_tag("replit", ReplitTag)
       Liquid::Template.parse("{% replit #{id} %}")
     end
 
-    it 'accepts replit id' do
+    it "accepts replit id" do
       liquid = generate_new_liquid(replit_id)
       expect(liquid.render).to include('<div class="ltag__replit">')
     end
 
-    it 'renders iframe' do
+    it "renders iframe" do
       liquid = generate_new_liquid(replit_id)
       expect(liquid.render).to include("<iframe")
     end

@@ -1,11 +1,16 @@
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Reaction, type: :model do
   let(:user)        { create(:user) }
   let(:author)      { create(:user) }
   let(:article)     { create(:article, user_id: author.id, featured: true) }
-  let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article") }
-  let(:reaction)    { build(:reaction, user_id: user.id, reactable_id: comment.id, reactable_type: "Comment") }
+  let(:comment) do
+    create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
+  end
+  let(:reaction) do
+    build(:reaction, user_id: user.id, reactable_id: comment.id, reactable_type: "Comment")
+  end
 
   describe "validations" do
     it "allows like reaction for users without trusted role" do
@@ -29,14 +34,18 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "does not allow reaction on unpublished article" do
-      reaction = build(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
+      reaction = build(
+        :reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article"
+      )
       expect(reaction).to be_valid
       article.update_column(:published, false)
-      reaction = build(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
+      reaction = build(
+        :reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article"
+      )
       expect(reaction).not_to be_valid
     end
 
-    context "if user is trusted" do
+    context "when user is trusted" do
       before { user.add_role(:trusted) }
 
       it "allows vomit reactions for users with trusted role" do
@@ -77,13 +86,16 @@ RSpec.describe Reaction, type: :model do
 
   describe "stream" do
     after { StreamRails.enabled = false }
+
     before do
       StreamRails.enabled = true
       allow(StreamNotifier).to receive(:new).and_call_original
     end
+
     it "notifies the reactable author" do
-      reaction = create(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
+      create(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
       expect(StreamNotifier).to have_received(:new).with(author.id).at_least(:once)
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

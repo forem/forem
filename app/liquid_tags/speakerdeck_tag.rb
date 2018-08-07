@@ -4,7 +4,7 @@ class SpeakerdeckTag < LiquidTagBase
     @id = parse_id(id)
   end
 
-  def render(context)
+  def render(_context)
     html = <<-HTML
       <div class="ltag_speakerdeck"
         style="position: relative;

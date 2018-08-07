@@ -6,7 +6,7 @@ class YoutubeTag < LiquidTagBase
     @height = 399
   end
 
-  def render(context)
+  def render(_context)
     html = <<-HTML
     <iframe
       width="#{@width}"
@@ -22,11 +22,11 @@ class YoutubeTag < LiquidTagBase
 
   def parse_id(input)
     input = translate_url(input) if input.include?("watch?v=")
-    input_no_space = input.delete(' ')
+    input_no_space = input.delete(" ")
     if valid_id?(input_no_space)
       input_no_space
     else
-      raise StandardError, 'Invalid Youtube Id'
+      raise StandardError, "Invalid Youtube Id"
     end
   end
 
@@ -35,7 +35,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id.length == 11 && !(id !~ /[a-zA-Z0-9_-]{11}/)
+    id.length == 11 && id =~ /[a-zA-Z0-9_-]{11}/
   end
 end
 

@@ -9,23 +9,23 @@ class DashboardManifest
   # To show or hide dashboards, add or remove the model name from this list.
   # Dashboards returned from this method must be Rails models for Administrate
   # to work correctly.
-  DASHBOARDS = [
-    :articles,
-    :users,
-    :organizations,
-    :comments,
-    :follows,
-    :reactions,
-    :podcasts,
-    :podcast_episodes,
-    :collections,
-    :tags,
-    :email_messages,
-    :feedback_messages,
-    :display_ads,
-    :badges,
-    :badge_achievements,
-  ]
+  DASHBOARDS = %i[
+    articles
+    users
+    organizations
+    comments
+    follows
+    reactions
+    podcasts
+    podcast_episodes
+    collections
+    tags
+    email_messages
+    feedback_messages
+    display_ads
+    badges
+    badge_achievements
+  ].freeze
   # DASHBOARDS = [
   #   :users,
   #   :articles,

@@ -17,7 +17,6 @@ class PodcastEpisode < ApplicationRecord
   validates :media_url, presence: true, uniqueness: true
   validates :guid, presence: true, uniqueness: true
 
-
   after_update :purge
   after_create :purge_all
   after_destroy :purge, :purge_all
@@ -71,7 +70,7 @@ class PodcastEpisode < ApplicationRecord
   def path
     "/#{podcast.slug}/#{slug}"
   end
-  
+
   def podcast_slug
     podcast.slug
   end
@@ -109,7 +108,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def published_at_date_slashes
-    published_at.to_date.strftime("%m/%d/%Y") if published_at
+    published_at&.to_date&.strftime("%m/%d/%Y")
   end
 
   def user
@@ -118,7 +117,7 @@ class PodcastEpisode < ApplicationRecord
 
   def zero_method
     0
-  end  
+  end
   alias_method :hotness_score, :zero_method
   alias_method :search_score, :zero_method
   alias_method :positive_reactions_count, :zero_method
@@ -129,11 +128,10 @@ class PodcastEpisode < ApplicationRecord
     begin
       cache_buster = CacheBuster.new
       cache_buster.bust(path)
-      cache_buster.bust("/"+podcast_slug)
+      cache_buster.bust("/" + podcast_slug)
       cache_buster.bust("/pod")
       cache_buster.bust(path)
-    rescue
-
+    rescue StandardError
     end
     purge
     purge_all
@@ -163,28 +161,26 @@ class PodcastEpisode < ApplicationRecord
 
   def prefix_all_images
     return unless body.present?
-    self.processed_html = body.gsub("\r\n<p>&nbsp;</p>\r\n","").gsub("\r\n<p>&nbsp;</p>\r\n","").gsub("\r\n<h3>&nbsp;</h3>\r\n","").gsub("\r\n<h3>&nbsp;</h3>\r\n","")
-    self.processed_html = "<p>#{self.processed_html}</p>" unless processed_html.include?("<p>")
+    self.processed_html = body.gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
+    self.processed_html = "<p>#{processed_html}</p>" unless processed_html.include?("<p>")
     doc = Nokogiri::HTML(processed_html)
     doc.css("img").each do |img|
-      if img.attr('src') && (img.attr('src').include? ".gif")
-        quality = 66
-      else
-        quality = "auto"
-      end
-      if img.attr('src')
-        self.processed_html = processed_html.gsub(img.attr('src'),
-          cl_image_path(img.attr('src'),
-           :type=>"fetch",
-           :width => 725,
-           :crop => "limit",
-           :quality => quality,
-           :flags => "progressive",
-           :fetch_format => "auto",
-           :sign_url => true))
+      quality = if img.attr("src") && (img.attr("src").include? ".gif")
+                  66
+                else
+                  "auto"
+                end
+      if img.attr("src")
+        self.processed_html = processed_html.gsub(img.attr("src"),
+          cl_image_path(img.attr("src"),
+           type: "fetch",
+           width: 725,
+           crop: "limit",
+           quality: quality,
+           flags: "progressive",
+           fetch_format: "auto",
+           sign_url: true))
       end
     end
   end
-
-
 end

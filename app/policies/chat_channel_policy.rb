@@ -1,5 +1,4 @@
 class ChatChannelPolicy < ApplicationPolicy
-
   def index?
     user
   end
@@ -27,7 +26,6 @@ class ChatChannelPolicy < ApplicationPolicy
   def permitted_attributes
     %i[channel_name slug command]
   end
-
 
   private
 

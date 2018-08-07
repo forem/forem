@@ -5,7 +5,8 @@ module BadgeRewarder
       achievement = BadgeAchievement.create(
         user_id: user.id,
         badge_id: 2,
-        rewarding_context_message_markdown: message)
+        rewarding_context_message_markdown: message,
+      )
       user.save if achievement.valid?
       # ID 2 is the proper ID in prod. We should change in future to ENV var.
     end
@@ -17,7 +18,8 @@ module BadgeRewarder
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
         badge_id: 3,
-        rewarding_context_message_markdown: message)
+        rewarding_context_message_markdown: message,
+      )
       comment.user.save if achievement.valid?
       # ID 3 is the proper ID in prod. We should change in future to ENV var.
     end
@@ -28,7 +30,8 @@ module BadgeRewarder
       BadgeAchievement.create(
         user_id: user.id,
         badge_id: Badge.find_by_slug("top-7").id,
-        rewarding_context_message_markdown: "Congrats!!!")
+        rewarding_context_message_markdown: "Congrats!!!",
+      )
       user.save
     end
   end

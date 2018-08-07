@@ -46,7 +46,6 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when logged in" do
       it "renders user's organization articles" do
-        organization = create(:organization)
         user.update(organization_id: organization.id, org_admin: true)
         article.update(organization_id: organization.id)
         login_as user

@@ -1,4 +1,4 @@
-json.array! Comment.rooted_on(@commentable.id,@commentable_type).order("score DESC") do |comment|
+json.array! Comment.rooted_on(@commentable.id, @commentable_type).order("score DESC") do |comment|
   json.type_of            "comment"
   json.id_code            comment.id_code_generated
   json.body_html          comment.processed_html

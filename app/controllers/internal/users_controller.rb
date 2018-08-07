@@ -1,5 +1,5 @@
 class Internal::UsersController < Internal::ApplicationController
-  layout 'internal'
+  layout "internal"
 
   def index
     @users = User.where.not(feed_url: nil)
@@ -52,7 +52,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.remove_from_index!
     user.save!
     user.update!(old_username: nil)
-  rescue => e
+  rescue StandardError => e
     flash[:error] = e.message
   end
 end

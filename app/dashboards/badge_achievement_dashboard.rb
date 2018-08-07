@@ -26,34 +26,34 @@ class BadgeAchievementDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :user,
-    :badge,
-    :rewarder,
-    :id,
+  COLLECTION_ATTRIBUTES = %i[
+    user
+    badge
+    rewarder
+    id
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :id,
-    :user,
-    :name_of_user,
-    :badge,
-    :rewarding_context_message,
-    :rewarder,
-    :created_at,
-    :updated_at,
+  SHOW_PAGE_ATTRIBUTES = %i[
+    id
+    user
+    name_of_user
+    badge
+    rewarding_context_message
+    rewarder
+    created_at
+    updated_at
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :user_id,
-    :rewarding_context_message_markdown,
-    :badge,
-    :rewarder_id,
+  FORM_ATTRIBUTES = %i[
+    user_id
+    rewarding_context_message_markdown
+    badge
+    rewarder_id
   ].freeze
 
   # Overwrite this method to customize how badge achievements are displayed

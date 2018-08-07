@@ -6,16 +6,16 @@ class RateLimitChecker
 
   def limit_by_situation(situation)
     result = false
-    case situation
-    when "comment_creation"
-      result = user.comments.where("created_at > ?", 30.seconds.ago).size > 9
-    when "published_article_creation"
-      result = user.articles.
-        where(published: true).
-        where("created_at > ?", 30.seconds.ago).size > 9
-    else
-      result = false
-    end
+    result = case situation
+             when "comment_creation"
+               user.comments.where("created_at > ?", 30.seconds.ago).size > 9
+             when "published_article_creation"
+               user.articles.
+                 where(published: true).
+                 where("created_at > ?", 30.seconds.ago).size > 9
+             else
+               false
+             end
     ping_admins if result == true
     result
   end
@@ -29,7 +29,7 @@ class RateLimitChecker
   def ping_admins
     return unless user
     SlackBot.ping(
-        "Rate limit exceeded. https://dev.to#{user.path}",
+      "Rate limit exceeded. https://dev.to#{user.path}",
         channel: "abuse-reports",
         username: "rate_limit",
         icon_emoji: ":hand:",

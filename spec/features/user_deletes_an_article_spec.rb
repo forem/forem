@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.feature "Deleting Article", js: true do
+RSpec.describe "Deleting Article", js: true do
   let(:author) { create(:user) }
   let(:article) { create(:article, user_id: author.id) }
 
@@ -16,7 +16,7 @@ RSpec.feature "Deleting Article", js: true do
     article
   end
 
-  scenario "author of article deletes own article" do
+  it "author of article deletes own article" do
     sign_in author
     delete_article_via_dashboard
     expect(page).to have_text("Write your first post now")

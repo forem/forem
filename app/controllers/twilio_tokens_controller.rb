@@ -9,7 +9,7 @@ class TwilioTokensController < ApplicationController
       return
     end
     @chat_channel = ChatChannel.find(video_channel.to_i)
-    authorize @chat_channel #show pundit method for chat_channel_policy works here, should always check though
+    authorize @chat_channel # show pundit method for chat_channel_policy works here, should always check though
     @twilio_token = TwilioToken.new(current_user, params[:id]).get
     render json: { status: "success", token: @twilio_token }, status: 200
   end

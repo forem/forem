@@ -14,7 +14,7 @@ class Block < ApplicationRecord
     self.published_javascript = processed_javascript
     self.published_css = processed_css
     self.featured = true
-    self.save
+    save
   end
 
   private
@@ -29,7 +29,7 @@ class Block < ApplicationRecord
 
   def process_css
     scoped_scss = ".block-wrapper-#{id} { #{input_css}}"
-    se = Sass::Engine.new(scoped_scss, :syntax => :scss)
+    se = Sass::Engine.new(scoped_scss, syntax: :scss)
     self.processed_css = se.render
   end
 

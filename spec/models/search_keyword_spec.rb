@@ -1,14 +1,14 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe SearchKeyword, type: :model do
+  let(:search_keyword) { create(:search_keyword) }
+
   it { is_expected.to validate_presence_of(:keyword) }
   it { is_expected.to validate_presence_of(:google_result_path) }
   it { is_expected.to validate_presence_of(:google_position) }
   it { is_expected.to validate_presence_of(:google_volume) }
   it { is_expected.to validate_presence_of(:google_difficulty) }
   it { is_expected.to validate_presence_of(:google_checked_at) }
-
-  let(:search_keyword) { create(:search_keyword) }
 
   it "is valid with proper path" do
     search_keyword.google_result_path = "/hello/goodbye"

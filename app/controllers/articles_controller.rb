@@ -50,10 +50,10 @@ class ArticlesController < ApplicationController
                  if params[:state] == "v2" || Rails.env.development?
                    Article.new
                  else
-                    Article.new(
-                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
-                      processed_html: "",
-                    )
+                   Article.new(
+                     body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
+                     processed_html: "",
+                   )
                   end
               end
   end
@@ -163,11 +163,7 @@ class ArticlesController < ApplicationController
   end
 
   def set_article
-    owner = if User.find_by_username(params[:username])
-              User.find_by_username(params[:username])
-            else
-              Organization.find_by_slug(params[:username])
-            end
+    owner = User.find_by_username(params[:username]) || Organization.find_by_slug(params[:username])
     found_article = if params[:slug]
                       owner.articles.includes(:user).find_by_slug(params[:slug])
                     else

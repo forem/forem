@@ -24,7 +24,7 @@ class ChatChannelsController < ApplicationController
     authorize ChatChannel
     @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
     if @chat_channel.valid?
-      render json: { status: "success", chat_channel: @chat_channel.to_json(only: [:channel_name,:slug]) }, status: 200
+      render json: { status: "success", chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) }, status: 200
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
@@ -35,7 +35,7 @@ class ChatChannelsController < ApplicationController
     authorize @chat_channel
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
     if @chat_channel.valid?
-      render json: { status: "success", chat_channel: @chat_channel.to_json(only: [:channel_name,:slug]) }, status: 200
+      render json: { status: "success", chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) }, status: 200
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
@@ -101,25 +101,24 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_pending_json_response
-    if current_user
-      @chat_channels_memberships = current_user.
-      chat_channel_memberships.includes(:chat_channel).
-      where(status: "pending").
-      order("chat_channel_memberships.updated_at DESC")
-    else
-      @chat_channels_memberships = []
-    end
+    @chat_channels_memberships = if current_user
+                                   current_user.
+                                     chat_channel_memberships.includes(:chat_channel).
+                                     where(status: "pending").
+                                     order("chat_channel_memberships.updated_at DESC")
+                                 else
+                                   []
+                                 end
     render "index.json"
   end
-
 
   def render_channels_html
     return unless current_user
     if params[:slug]
-      slug =  if params[:slug] && params[:slug].start_with?("@")
-                        [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
-                      else
-                        params[:slug]
+      slug = if params[:slug]&.start_with?("@")
+               [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
+             else
+               params[:slug]
                       end
       @active_channel = ChatChannel.find_by_slug(slug)
       @active_channel.current_user = current_user if @active_channel
@@ -130,9 +129,9 @@ class ChatChannelsController < ApplicationController
 
   def generate_algolia_search_key
     current_user_id = current_user.id
-    params = {filters: "viewable_by:#{current_user_id} AND status: active"}
+    params = { filters: "viewable_by:#{current_user_id} AND status: active" }
     @secured_algolia_key = Algolia.generate_secured_api_key(
-      ApplicationConfig["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params,
+      ApplicationConfig["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params
     )
   end
 

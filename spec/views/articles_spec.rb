@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/MultipleExpectations
 require "rails_helper"
 
 describe "articles/show", type: :view do
@@ -15,10 +16,13 @@ describe "articles/show", type: :view do
   end
 
   def create_comment(parent_id = nil)
-    create(:comment, user_id: user1.id,
-           parent_id: parent_id ? parent_id : nil,
-           commentable_id: article1.id,
-           commentable_type: "Article")
+    create(
+      :comment,
+      user_id: user1.id,
+      parent_id: parent_id || nil,
+      commentable_id: article1.id,
+      commentable_type: "Article",
+    )
   end
 
   it "shows user title of the article" do
@@ -45,6 +49,7 @@ describe "articles/show", type: :view do
     expect(rendered).to have_css("input#submit-button")
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it "shows user comments of the article" do
     without_partial_double_verification do
       allow(view).to receive(:comment_class) { |a, b| helper.comment_class(a, b) }
@@ -56,6 +61,7 @@ describe "articles/show", type: :view do
     expect(rendered).to have_text(comment1.body_html)
     expect(rendered).to have_text(comment2.body_html)
   end
+  # rubocop:enable RSpec/ExampleLength
 end
 
 # note fully implemented yet
@@ -69,3 +75,4 @@ end
 #   end
 #
 # end
+# rubocop:enable RSpec/MultipleExpectations

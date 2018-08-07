@@ -4,7 +4,7 @@ class GlitchTag < LiquidTagBase
     @id = parse_id(id)
   end
 
-  def render(context)
+  def render(_context)
     html = <<-HTML
       <div class="glitch-embed-wrap" style="height: 450px; width: 100%;margin: 1em auto 1.3em">
         <iframe

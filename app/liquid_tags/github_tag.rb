@@ -8,7 +8,7 @@ class GithubTag < LiquidTagBase
   end
 
   def issue_or_readme
-    if @link.include?('issues')
+    if @link.include?("issues")
       "issue"
     else
       "readme"
@@ -16,16 +16,14 @@ class GithubTag < LiquidTagBase
   end
 
   def pre_render
-    begin
-      if issue_or_readme == "issue"
-        GithubTag::GithubIssueTag.new(@link).render
-      elsif issue_or_readme == "readme"
-        gt = GithubTag::GithubReadmeTag.new(@link)
-        gt.render
-      end
-    rescue StandardError => e
-      raise StandardError, e.message
+    if issue_or_readme == "issue"
+      GithubTag::GithubIssueTag.new(@link).render
+    elsif issue_or_readme == "readme"
+      gt = GithubTag::GithubReadmeTag.new(@link)
+      gt.render
     end
+  rescue StandardError => e
+    raise StandardError, e.message
   end
 
   def render(*)

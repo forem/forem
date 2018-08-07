@@ -25,7 +25,9 @@ RSpec.describe CommentPolicy do
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }
 
-    it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
+    it do
+      is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create)
+    end
 
     context "with banned status" do
       before { user.add_role :banned }
@@ -48,7 +50,9 @@ RSpec.describe CommentPolicy do
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create]) }
 
-      it { is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update) }
+      it do
+        is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
+      end
     end
   end
 end

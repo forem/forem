@@ -1,5 +1,4 @@
 class Follow < ApplicationRecord
-
   extend ActsAsFollower::FollowerLib
   extend ActsAsFollower::FollowScopes
 
@@ -7,8 +6,8 @@ class Follow < ApplicationRecord
   as_activity
 
   # NOTE: Follows belong to the "followable" interface, and also to followers
-  belongs_to :followable, :polymorphic => true
-  belongs_to :follower,   :polymorphic => true
+  belongs_to :followable, polymorphic: true
+  belongs_to :follower,   polymorphic: true
   counter_culture :follower, column_name: proc { |follow|
     case follow.followable_type
     when "User"
@@ -17,7 +16,7 @@ class Follow < ApplicationRecord
       "following_orgs_count"
     when "ActsAsTaggableOn::Tag"
       "following_tags_count"
-    # add more whens if we add more follow types
+      # add more whens if we add more follow types
     end
   }, column_names: {
     ["follows.followable_type = ?", "User"] => "following_users_count",
@@ -30,7 +29,7 @@ class Follow < ApplicationRecord
   after_create :create_chat_channel
   before_destroy :modify_chat_channel_status
 
-  validates :followable_id, uniqueness: { scope: [:followable_type, :follower_id] }
+  validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
 
   def activity_actor
     follower
@@ -74,8 +73,8 @@ class Follow < ApplicationRecord
   def send_email_notification
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications
       return if EmailMessage.where(user_id: followable.id).
-        where("sent_at > ?", rand(15..35).hours.ago).
-        where("subject LIKE ?", "%followed you on dev.to%").any?
+          where("sent_at > ?", rand(15..35).hours.ago).
+          where("subject LIKE ?", "%followed you on dev.to%").any?
       NotifyMailer.new_follower_email(self).deliver
     end
   end

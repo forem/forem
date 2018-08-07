@@ -1,12 +1,12 @@
 class CommentTag < LiquidTagBase
   attr_reader :id_code, :comment
 
-  def initialize(tag_name, id_code, tokens)
+  def initialize(_tag_name, id_code, _tokens)
     @id_code = parse_id(id_code)
     @comment = find_comment
   end
 
-  def render(context)
+  def render(_context)
     raise_error unless @comment
     commentable = if @comment.commentable_type == "Article"
                     Article.find_by_id(@comment.commentable_id)
@@ -14,7 +14,7 @@ class CommentTag < LiquidTagBase
                     PodcastEpisode.find_by_id(@comment.commentable_id)
                   end
 
-    html = '' \
+    html = "" \
     "<div class=\"liquid-comment\">" \
       "<div class=\"details\">" \
         "<a href=\"/#{@comment.user.username}\">" \
@@ -29,29 +29,29 @@ class CommentTag < LiquidTagBase
         "</div>" \
       "</div>" \
       "<div class=\"body\">" \
-        + @comment.processed_html.html_safe+ \
+        + @comment.processed_html.html_safe + \
       "</div>" \
     "</div>"
   end
 
   def render_twitter_and_github
-    result = ''
+    result = ""
     if @comment.user.twitter_username.present?
       result += "<a href=\"http://twitter.com/#{@comment.user.twitter_username}\">" \
-        +image_tag('/assets/twitter-logo.svg', class:'icon-img', alt: 'twitter')+ \
-      "</a>"
+        +image_tag("/assets/twitter-logo.svg", class: "icon-img", alt: "twitter") + \
+        "</a>"
     end
     if @comment.user.github_username.present?
       result += "<a href=\"http://github.com/#{@comment.user.github_username}\">" \
-        +image_tag('/assets/github-logo.svg', class:'icon-img', alt: 'github')+ \
-      "</a>"
+        +image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github") + \
+        "</a>"
     end
   end
 
   private
 
   def parse_id(id)
-    id_no_space = id.delete(' ')
+    id_no_space = id.delete(" ")
     raise_error unless valid_id?(id_no_space)
     id_no_space
   end
@@ -63,11 +63,11 @@ class CommentTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id.length < 10 && !(id !~ /^[a-zA-Z0-9]*$/)
+    id.length < 10 && id =~ /^[a-zA-Z0-9]*$/
   end
 
   def raise_error
-    raise StandardError, 'Invalid comment ID or comment does not exist'
+    raise StandardError, "Invalid comment ID or comment does not exist"
   end
 end
 

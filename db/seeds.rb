@@ -116,15 +116,69 @@ end
 
 p "6/8 Creating Podcasts"
 
+image_file = File.join(
+  Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"
+)
+
 podcast_objects = [
-  { "title" => "CodingBlocks", "description" => nil, "feed_url" => "http://feeds.podtrac.com/c8yBGHRafqhz", "image" => Faker::Avatar.image, "slug" => "codingblocks", "twitter_username" => "CodingBlocks", "website_url" => "http://codingblocks.net", "main_color_hex" => "111111", "overcast_url" => "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", "android_url" => "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz", image: Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg") },
-  { "title" => "Talk Python", "description" => nil, "feed_url" => "https://talkpython.fm/episodes/rss", "image" => Faker::Avatar.image, "slug" => "talkpython", "twitter_username" => "TalkPython", "website_url" => "https://talkpython.fm", "main_color_hex" => "181a1c", "overcast_url" => "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers", "android_url" => "https://subscribeonandroid.com/talkpython.fm/episodes/rss", image: Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg") },
-  { "title" => "Developer on Fire", "description" => "", "feed_url" => "http://developeronfire.com/rss.xml", "itunes_url" => "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326", "image" => Faker::Avatar.image, "slug" => "developeronfire", "twitter_username" => "raelyard", "website_url" => "http://developeronfire.com", "main_color_hex" => "", "overcast_url" => "https://overcast.fm/itunes1006105326/developer-on-fire", "android_url" => "http://subscribeonandroid.com/developeronfire.com/rss.xml", image: Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg") },
-  { "title" => "Building Programmers", "description" => "", "feed_url" => "https://building.fireside.fm/rss", "itunes_url" => "https://itunes.apple.com/us/podcast/building-programmers/id1149043456", "image" => Faker::Avatar.image, "slug" => "buildingprogrammers", "twitter_username" => "run_kmc", "website_url" => "https://building.fireside.fm", "main_color_hex" => "140837", "overcast_url" => "https://overcast.fm/itunes1149043456/building-programmers", "android_url" => "https://subscribeonandroid.com/building.fireside.fm/rss", image: Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg") },
+  {
+    title: "CodingBlocks",
+    description: "",
+    feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
+    image: Faker::Avatar.image,
+    slug: "codingblocks",
+    twitter_username: "CodingBlocks",
+    website_url: "http://codingblocks.net",
+    main_color_hex: "111111",
+    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", # rubocop:disable Metrics/LineLength
+    android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+  },
+  {
+    title: "Talk Python",
+    description: "",
+    feed_url: "https://talkpython.fm/episodes/rss",
+    image: Faker::Avatar.image,
+    slug: "talkpython",
+    twitter_username: "TalkPython",
+    website_url: "https://talkpython.fm",
+    main_color_hex: "181a1c",
+    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers", # rubocop:disable Metrics/LineLength
+    android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+  },
+  {
+    title: "Developer on Fire",
+    description: "",
+    feed_url: "http://developeronfire.com/rss.xml",
+    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326", # rubocop:disable Metrics/LineLength
+    image: Faker::Avatar.image,
+    slug: "developeronfire",
+    twitter_username: "raelyard",
+    website_url: "http://developeronfire.com",
+    main_color_hex: "",
+    overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
+    android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+  },
+  {
+    title: "Building Programmers",
+    description: "",
+    feed_url: "https://building.fireside.fm/rss",
+    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456", # rubocop:disable Metrics/LineLength
+    image: Faker::Avatar.image,
+    slug: "buildingprogrammers",
+    twitter_username: "run_kmc",
+    website_url: "https://building.fireside.fm",
+    main_color_hex: "140837",
+    overcast_url: "https://overcast.fm/itunes1149043456/building-programmers",
+    android_url: "https://subscribeonandroid.com/building.fireside.fm/rss",
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+  },
 ]
 
 podcast_objects.each do |attributes|
-  podcast = Podcast.create!(attributes)
+  Podcast.create!(attributes)
 end
 
 ##############################################################################
@@ -133,7 +187,7 @@ p "7/8 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
-  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
+  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.", # rubocop:disable Metrics/LineLength
   type_of: "Onboarding",
   sent: true,
 )

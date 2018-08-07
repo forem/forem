@@ -1,5 +1,5 @@
 class RegistrationsController < Devise::RegistrationsController
-  prepend_before_action :require_no_authentication, :only => []
+  prepend_before_action :require_no_authentication, only: []
   # No authorization required for public registration route
 
   def new

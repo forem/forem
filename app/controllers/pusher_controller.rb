@@ -1,13 +1,11 @@
 class PusherController < ApplicationController
-
   def auth
     if valid_channel
-      response = Pusher.authenticate(params[:channel_name], params[:socket_id], {
-        user_id: current_user.id, # => required
-      })
+      response = Pusher.authenticate(params[:channel_name], params[:socket_id],
+                                       user_id: current_user.id) # => required
       render json: response
     else
-      render json: { text: 'Forbidden', status: '403' }
+      render json: { text: "Forbidden", status: "403" }
     end
   end
 

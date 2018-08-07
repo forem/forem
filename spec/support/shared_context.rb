@@ -1,4 +1,4 @@
-RSpec.shared_context "proper status" do
+RSpec.shared_context "when proper status" do
   before do
     Rails.application.env_config["action_dispatch.show_detailed_exceptions"] = false
     Rails.application.env_config["action_dispatch.show_exceptions"] = true
@@ -11,5 +11,5 @@ RSpec.shared_context "proper status" do
 end
 
 RSpec.configure do |rspec|
-  rspec.include_context "proper status", proper_status: true
+  rspec.include_context "when proper status", proper_status: true
 end

@@ -7,14 +7,14 @@ Devise.setup do |config|
   # Devise will use the `secret_key_base` on Rails 4+ applications as its `secret_key`
   # by default. You can change it below and use your own secret key.
   if Rails.env.staging?
-    config.secret_key = 'b13fc11ef327908db65f8a2a90f40aa90678b4af5149f96c5219f226d36bc87a479affa70ea1c9c43a23e715bce84b4fb64f2510cc126fe9b9a041c2d863c50f'
+    config.secret_key = "b13fc11ef327908db65f8a2a90f40aa90678b4af5149f96c5219f226d36bc87a479affa70ea1c9c43a23e715bce84b4fb64f2510cc126fe9b9a041c2d863c50f" # rubocop:disable Metrics/LineLength
   end
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'dev.to <yo@dev.to>'
+  config.mailer_sender = "dev.to <yo@dev.to>"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
@@ -23,7 +23,7 @@ Devise.setup do |config|
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be
   # available as additional gems.
-  require 'devise/orm/active_record'
+  require "devise/orm/active_record"
 
   # ==> Configuration for any authentication mechanism
   # Configure which keys are used when authenticating a user. The default is
@@ -101,7 +101,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 10
 
   # Setup a pepper to generate the encrypted password.
-  # config.pepper = '091a2ebb7069a9b29893d315958bb0045dd58d8c46813a7fe2c12489a51e5e23b367a262e142472e83650ce953be4310e69b7c5b33d65d83532c5e269142691b'
+  # config.pepper = ''
 
   # ==> Configuration for :confirmable
   # A period that the user is allowed to access the website even without
@@ -264,7 +264,7 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 
-  config.omniauth :github, ApplicationConfig["GITHUB_KEY"], ApplicationConfig["GITHUB_SECRET"], scope: "user:email"
+  config.omniauth :github,
+  ApplicationConfig["GITHUB_KEY"], ApplicationConfig["GITHUB_SECRET"], scope: "user:email"
   config.omniauth :twitter, ApplicationConfig["TWITTER_KEY"], ApplicationConfig["TWITTER_SECRET"]
-
 end

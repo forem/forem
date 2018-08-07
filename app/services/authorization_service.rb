@@ -1,6 +1,6 @@
 class AuthorizationService
   attr_accessor :auth, :signed_in_resource, :cta_variant
-  def initialize(auth, signed_in_resource = nil, cta_variant=nil)
+  def initialize(auth, signed_in_resource = nil, cta_variant = nil)
     @auth = auth
     @signed_in_resource = signed_in_resource
     @cta_variant = cta_variant
@@ -22,7 +22,7 @@ class AuthorizationService
   end
 
   def add_social_identity_data(user)
-    return unless auth && auth.provider && auth.extra && auth.extra.raw_info
+    return unless auth&.provider && auth&.extra && auth.extra.raw_info
     if auth.provider == "twitter"
       user.twitter_created_at = auth.extra.raw_info.created_at
       user.twitter_followers_count = auth.extra.raw_info.followers_count.to_i

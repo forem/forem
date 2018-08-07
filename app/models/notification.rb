@@ -6,20 +6,20 @@ class Notification < ApplicationRecord
   as_activity
 
   validates :user_id, presence: true,
-            uniqueness: { scope: [:notifiable_id,
-                                  :notifiable_type,
-                                  :action] }
+                      uniqueness: { scope: %i[notifiable_id
+                                              notifiable_type
+                                              action] }
 
   class << self
     def send_all(notifiable, action)
       if notifiable.class.name == "Article"
-        return if notifiable.created_at < Time.new(2017,07,07,00,00,00,"+00:00")
+        return if notifiable.created_at < Time.new(2017, 0o7, 0o7, 0o0, 0o0, 0o0, "+00:00")
         notifiable.user.followers.each do |follower|
           Notification.create(
             user_id: follower.id,
             notifiable_id: notifiable.id,
             notifiable_type: "Article",
-            action: action
+            action: action,
           )
         end
       elsif notifiable.class.name == "Broadcast"
@@ -41,7 +41,7 @@ class Notification < ApplicationRecord
       Notification.where(
         notifiable_id: notifiable.id,
         notifiable_type: notifiable.class.name,
-        action: action
+        action: action,
       ).destroy_all
     end
     handle_asynchronously :remove_all

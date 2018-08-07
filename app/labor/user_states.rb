@@ -19,26 +19,26 @@ class UserStates
   end
 
   def made_first_article
-    user.articles.where(published:true).size > 0
+    !user.articles.where(published: true).empty?
   end
 
   def follows_a_tag
-    user.follows.where(followable_type:"ActsAsTaggableOn::Tag").size > 0
+    !user.follows.where(followable_type: "ActsAsTaggableOn::Tag").empty?
   end
 
   def fill_out_your_profile
-    user.summary.present? && user.summary.size > 0
+    user.summary.present? && !user.summary.empty?
   end
 
   def leave_reactions
-    user.reactions.size > 0
+    !user.reactions.empty?
   end
 
   def follow_people
-    user.follows.where(followable_type:"User").size > 0
+    !user.follows.where(followable_type: "User").empty?
   end
 
   def leave_comments
-    user.comments.size > 0
+    !user.comments.empty?
   end
 end

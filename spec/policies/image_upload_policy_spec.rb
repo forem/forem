@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ImageUploadPolicy do
   subject { described_class.new(user, image) }
-  
+
   let(:image) { "📸.jpg" }
 
   context "when user is not signed in" do

@@ -5,7 +5,7 @@ class CodepenTag < LiquidTagBase
     @height = 600
   end
 
-  def render(context)
+  def render(_context)
     html = <<-HTML
       <iframe height="#{@height}"
         src="#{@link}?height=500&default-tab=result&embed-version=2"

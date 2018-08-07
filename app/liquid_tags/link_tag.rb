@@ -2,11 +2,11 @@ class LinkTag < LiquidTagBase
   include ActionView::Helpers
   attr_reader :article
 
-  def initialize(tag_name, url, tokens)
+  def initialize(_tag_name, url, _tokens)
     @article = parse_url_for_article(url)
   end
 
-  def render(context)
+  def render(_context)
     tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join
     <<-HTML
       <div class='ltag__link'>
@@ -33,7 +33,7 @@ class LinkTag < LiquidTagBase
     article = find_article_by_user(hash) || find_article_by_org(hash)
     raise_error unless article
     article
-  rescue
+  rescue StandardError
     raise_error
   end
 

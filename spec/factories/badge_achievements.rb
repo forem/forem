@@ -3,6 +3,6 @@ FactoryBot.define do
     user
     badge
     rewarder { user }
-    rewarding_context_message_markdown { "Hello [Yoho](/hey)" }
+    rewarding_context_message_markdown "Hello [Yoho](/hey)"
   end
 end

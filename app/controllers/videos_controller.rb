@@ -7,7 +7,7 @@ class VideosController < ApplicationController
 
   def create
     authorize :video
-    @article = Article.new(body_markdown:"---\ntitle: Unpublished Video ~ #{rand(100000).to_s(26)}\npublished: false\ndescription: \ntags: \n---\n\n",processed_html:"")
+    @article = Article.new(body_markdown: "---\ntitle: Unpublished Video ~ #{rand(100000).to_s(26)}\npublished: false\ndescription: \ntags: \n---\n\n", processed_html: "")
     @article.user_id = current_user.id
     @article.show_comments = true
     assign_video_attributes

@@ -19,8 +19,8 @@ class PodcastFeed
         update_existing_episode(ep, item, podcast)
       end
     end
-    return feed.items.size
-  rescue => e
+    feed.items.size
+  rescue StandardError => e
     puts e.message
   end
 
@@ -36,19 +36,19 @@ class PodcastFeed
     get_media_url(ep, item, podcast)
     begin
       ep.published_at = item.pubDate.to_date
-    rescue
+    rescue StandardError
       puts "not valid date"
     end
     ep.body = item.content_encoded || item.itunes_summary || item.description
     ep.save!
   end
 
-  def update_existing_episode(ep, item, podcast)
+  def update_existing_episode(ep, item, _podcast)
     if ep.published_at == nil
       begin
         ep.published_at = item.pubDate.to_date
         ep.save
-      rescue
+      rescue StandardError
         puts "not valid date"
       end
     end
@@ -65,12 +65,12 @@ class PodcastFeed
 
   def get_media_url(ep, item, podcast)
     ep.media_url = if Rails.env.test? ||
-                      open(item.enclosure.url.gsub(/http:/, "https:")).status[0] == "200"
+        open(item.enclosure.url.gsub(/http:/, "https:")).status[0] == "200"
                      item.enclosure.url.gsub(/http:/, "https:")
                    else
                      item.enclosure.url
                    end
-  rescue
+  rescue StandardError
     # podcast episode must have a media_url
     ep.media_url = item.enclosure.url
     if podcast.status_notice.empty?
@@ -80,12 +80,12 @@ class PodcastFeed
 
   def update_media_url(ep, item)
     if ep.media_url.include?("https")
-      return
+      nil
     elsif !ep.media_url.include?("https") &&
         item.enclosure.url.include?("https")
       ep.update!(media_url: item.enclosure.url)
     end
-  rescue
+  rescue StandardError
     logger.info "something went wrong with #{podcast.title}, #{ep.title} -- #{ep.media_url}"
   end
 end

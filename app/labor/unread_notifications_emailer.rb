@@ -7,13 +7,11 @@ class UnreadNotificationsEmailer
     # We can change this up later.
     users = User.where("comments_count > ? OR reactions_count > ?", 0, 0).order("RANDOM()").limit(num)
     users.find_each do |user|
-      begin
-        UnreadNotificationsEmailer.new(user).send_email_if_appropriate
-      rescue => e
-        logger = Logger.new(STDOUT)
-        logger = Airbrake::AirbrakeLogger.new(logger)
-        logger.error(e)
-      end
+      UnreadNotificationsEmailer.new(user).send_email_if_appropriate
+    rescue StandardError => e
+      logger = Logger.new(STDOUT)
+      logger = Airbrake::AirbrakeLogger.new(logger)
+      logger.error(e)
     end
   end
 
@@ -56,7 +54,7 @@ class UnreadNotificationsEmailer
 
   def last_email_sent_after(time)
     last_email = user.email_messages.last
-    time_check = last_email && last_email.sent_at && (last_email.sent_at > time)
+    time_check = last_email&.sent_at && (last_email.sent_at > time)
     time_check.present?
   end
 end

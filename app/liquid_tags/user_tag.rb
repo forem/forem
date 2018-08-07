@@ -2,11 +2,11 @@ class UserTag < LiquidTagBase
   include ApplicationHelper
   attr_reader :user
 
-  def initialize(tag_name, user, tokens)
+  def initialize(_tag_name, user, _tokens)
     @user = parse_username_to_user(user)
   end
 
-  def render(context)
+  def render(_context)
     # looks like link liquid tag
     <<-HTML
     <div class="ltag__user ltag__user__id__#{@user.id}" style="border-color:#{@user.decorate.darker_color};box-shadow: 3px 3px 0px #{@user.decorate.darker_color}">
@@ -14,7 +14,7 @@ class UserTag < LiquidTagBase
         .ltag__user__id__#{@user.id} .follow-action-button{
           background-color: #{user_colors(@user)[:bg]} !important;
           color: #{user_colors(@user)[:text]} !important;
-          border-color: #{ user_colors(@user)[:bg].downcase == '#ffffff' ? user_colors(@user)[:text] : user_colors(@user)[:bg] } !important;
+          border-color: #{user_colors(@user)[:bg].casecmp('#ffffff').zero? ? user_colors(@user)[:text] : user_colors(@user)[:bg]} !important;
         }
       </style>
       <a href="/#{@user.username}" class="ltag__user__link profile-image-link">
@@ -54,7 +54,7 @@ class UserTag < LiquidTagBase
     if @user.twitter_username.present?
       <<-HTML
       <a href="http://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
-        #{image_tag('/assets/twitter-logo.svg', class:'icon-img', alt: 'twitter')} #{@user.twitter_username}
+        #{image_tag('/assets/twitter-logo.svg', class: 'icon-img', alt: 'twitter')} #{@user.twitter_username}
       </a>
       HTML
     end
@@ -64,7 +64,7 @@ class UserTag < LiquidTagBase
     if @user.github_username.present?
       <<-HTML
       <a href="http://github.com/#{@user.github_username}" target="_blank" rel="noopener">
-        #{image_tag('/assets/github-logo.svg', class:'icon-img', alt: 'github')} #{@user.github_username}
+        #{image_tag('/assets/github-logo.svg', class: 'icon-img', alt: 'github')} #{@user.github_username}
       </a>
       HTML
     end
@@ -74,7 +74,7 @@ class UserTag < LiquidTagBase
     if @user.website_url.present?
       <<-HTML
       <a href="#{@user.website_url}" target="_blank" rel="noopener">
-        #{image_tag('/assets/link.svg', class:'icon-img', alt: 'website link')} #{beautified_url(@user.website_url)}
+        #{image_tag('/assets/link.svg', class: 'icon-img', alt: 'website link')} #{beautified_url(@user.website_url)}
       </a>
       HTML
     end

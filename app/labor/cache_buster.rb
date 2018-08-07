@@ -1,12 +1,11 @@
 class CacheBuster
-
   def bust(path)
     return unless Rails.env.production?
     request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
-    :headers => { 'Fastly-Key' => 'f15066a3abedf47238b08e437684c84f' } )
+    headers: { "Fastly-Key" => "f15066a3abedf47238b08e437684c84f" })
     request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
-    :headers => { 'Fastly-Key' => 'f15066a3abedf47238b08e437684c84f' } )
-    return request
+    headers: { "Fastly-Key" => "f15066a3abedf47238b08e437684c84f" })
+    request
   end
 
   def bust_comment(comment)
@@ -22,10 +21,10 @@ class CacheBuster
       bust("?i=i")
     end
     bust("#{comment.commentable.path}/comments/")
-    bust("#{comment.commentable.path}")
+    bust(comment.commentable.path.to_s)
     comment.commentable.comments.each do |c|
       bust(c.path)
-      bust(c.path+"?i=i")
+      bust(c.path + "?i=i")
     end
     bust("#{comment.commentable.path}/comments/*")
     bust("/#{comment.user.username}")
@@ -50,10 +49,8 @@ class CacheBuster
     bust("/api/articles/#{article.id}")
     bust("/api/articles/by_path?url=#{article.path}")
 
-    if article.collection
-      article.collection.articles.each do |a|
-        bust(a.path)
-      end
+    article.collection&.articles&.each do |a|
+      bust(a.path)
     end
   end
 
@@ -62,7 +59,7 @@ class CacheBuster
       bust("/")
       bust("?i=i")
     end
-    [[1.week.ago, "week"],[1.month.ago, "month"],[1.year.ago, "year"],[5.years.ago, "infinity"]].each do |timeframe|
+    [[1.week.ago, "week"], [1.month.ago, "month"], [1.year.ago, "year"], [5.years.ago, "infinity"]].each do |timeframe|
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
           order("positive_reactions_count DESC").limit(4).pluck(:id).include?(article.id)
         bust("/top/#{timeframe[1]}")
@@ -88,7 +85,7 @@ class CacheBuster
         bust("/t/#{tag}/latest")
         bust("/t/#{tag}/latest?i=i")
       end
-      [[1.week.ago, "week"],[1.month.ago, "month"],[1.year.ago, "year"],[5.years.ago, "infinity"]].
+      [[1.week.ago, "week"], [1.month.ago, "month"], [1.year.ago, "year"], [5.years.ago, "infinity"]].
         each do |timeframe|
         if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
             order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)

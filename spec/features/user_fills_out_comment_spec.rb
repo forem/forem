@@ -19,12 +19,13 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
     expect(page).to have_text(raw_comment)
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it "User fill out commen box then click previews and submit" do
     visit article.path.to_s
     fill_in "text-area", with: raw_comment
     find(".checkbox").click
     click_button("PREVIEW")
-    
+
     expect(page).to have_text(raw_comment)
     expect(page).to have_text("MARKDOWN")
     click_button("MARKDOWN")
@@ -42,4 +43,5 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
     find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
     expect(page).to have_text(raw_comment)
   end
+  # rubocop:enable RSpec/ExampleLength
 end

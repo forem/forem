@@ -1,23 +1,32 @@
-require 'rails_helper'
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+require "rails_helper"
 
 RSpec.describe Mention, type: :model do
   let(:user)        { create(:user) }
   let(:article)     { create(:article, user_id: user.id) }
   let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment2)    do
+    create(
+      :comment,
+      body_markdown: "Hello @#{user.username}, you are cool.",
+      user_id: user.id,
+      commentable_id: article.id,
+    )
+  end
 
-  before(:each) do
-    #Run workers synchronously
+  before do
+    # Run workers synchronously
     # Delayed::Worker.delay_jobs = false
   end
 
-  it 'creates mention if there is a user mentioned' do
+  it "creates mention if there is a user mentioned" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save
     Mention.create_all_without_delay(comment)
     expect(Mention.all.size).to eq(1)
   end
 
-  it 'deletes mention if deleted from comment' do
+  it "deletes mention if deleted from comment" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save
     Mention.create_all_without_delay(comment)
@@ -28,44 +37,42 @@ RSpec.describe Mention, type: :model do
     expect(Mention.all.size).to eq(0)
   end
 
-  it 'creates one mention even if multiple mentions of same user' do
-    comment.body_markdown = "Hello @#{user.username} @#{user.username} @#{user.username}, you are cool."
+  it "creates one mention even if multiple mentions of same user" do
+    comment.body_markdown = "Hello @#{user.username} @#{user.username} @#{user.username}, you rock."
     comment.save
     Mention.create_all_without_delay(comment)
     expect(Mention.all.size).to eq(1)
   end
 
-  it 'creates multiple mentions for multiple users' do
-    user_2 = create(:user)
-    comment.body_markdown = "Hello @#{user.username} @#{user_2.username}, you are cool."
+  it "creates multiple mentions for multiple users" do
+    user2 = create(:user)
+    comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
     comment.save
     Mention.create_all_without_delay(comment)
     expect(Mention.all.size).to eq(2)
   end
 
-  it 'deletes one of multiple mentions if one of multiple is deleted' do
-    user_2 = create(:user)
-    comment.body_markdown = "Hello @#{user.username} @#{user_2.username}, you are cool."
+  it "deletes one of multiple mentions if one of multiple is deleted" do
+    user2 = create(:user)
+    comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
     comment.save
     Mention.create_all_without_delay(comment)
     expect(Mention.all.size).to eq(2)
-    comment.body_markdown = "Hello @#{user_2.username}, you are cool."
+    comment.body_markdown = "Hello @#{user2.username}, you are cool."
     comment.save
     Mention.create_all_without_delay(comment)
     expect(Mention.all.size).to eq(1)
   end
 
-  it 'creates mention on creation of comment (in addition to update)' do
-    comment_2 = create(:comment, body_markdown: "Hello @#{user.username}, you are cool.", commentable_id: article.id, user_id:user.id)
-    Mention.create_all_without_delay(comment_2)
+  it "creates mention on creation of comment (in addition to update)" do
+    Mention.create_all_without_delay(comment2)
     expect(Mention.all.size).to eq(1)
   end
 
-  it "can only be createdwith valid mentionable" do
-    comment_2 = create(:comment, body_markdown: "Hello @#{user.username}, you are cool.", commentable_id: article.id, user_id:user.id)
-    comment_2.update_column(:body_markdown, "")
-    Mention.create_all_without_delay(comment_2)
+  it "can only be created with valid mentionable" do
+    comment2.update_column(:body_markdown, "")
+    Mention.create_all_without_delay(comment2)
     expect(Mention.all.size).to eq(0)
   end
-
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

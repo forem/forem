@@ -17,10 +17,9 @@ RSpec.describe ReactionPolicy do
     it { is_expected.to permit_actions(%i[index create]) }
     context "when user is banned" do
       let(:user) { build(:user, :banned) }
-  
+
       it { is_expected.to permit_actions(%i[index]) }
       it { is_expected.to forbid_actions(%i[create]) }
     end
   end
-
 end

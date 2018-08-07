@@ -7,12 +7,12 @@ RSpec.describe "Videos", type: :request do
   describe "GET /videos/new" do
     context "when not authorized" do
       it "redirects non-logged in users" do
-        expect { get "/videos/new"}.to raise_error(Pundit::NotAuthorizedError)
+        expect { get "/videos/new" }.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "redirects logged in users" do
         login_as unauthorized_user
-        expect { get "/videos/new"}.to raise_error(Pundit::NotAuthorizedError)
+        expect { get "/videos/new" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
@@ -28,12 +28,12 @@ RSpec.describe "Videos", type: :request do
   describe "POST /videos" do
     context "when not authorized" do
       it "redirects non-logged in users" do
-        expect { post "/videos"}.to raise_error(Pundit::NotAuthorizedError)
+        expect { post "/videos" }.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "redirects logged in users" do
         login_as unauthorized_user
-        expect { post "/videos"}.to raise_error(Pundit::NotAuthorizedError)
+        expect { post "/videos" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
@@ -44,8 +44,8 @@ RSpec.describe "Videos", type: :request do
 
       valid_params = {
         article: {
-          video: "something.mp4"
-        }
+          video: "something.mp4",
+        },
       }
 
       xit "creates an article for the logged in user" do

@@ -6,8 +6,8 @@ class Mention < ApplicationRecord
   belongs_to :mentionable, polymorphic: true
 
   validates :user_id, presence: true,
-            uniqueness: { scope: [:mentionable_id,
-                                  :mentionable_type] }
+                      uniqueness: { scope: %i[mentionable_id
+                                              mentionable_type] }
   validates :mentionable_id, presence: true
   validates :mentionable_type, presence: true
   validate :permission
@@ -22,8 +22,8 @@ class Mention < ApplicationRecord
       usernames = []
       mentions = []
       doc.css(".comment-mentioned-user").each do |link|
-        username = link.text.gsub("@","").downcase
-        if user = User.find_by_username(link.text.gsub("@","").downcase)
+        username = link.text.gsub("@", "").downcase
+        if user = User.find_by_username(link.text.gsub("@", "").downcase)
           usernames << username
           mentions << create_mention(user)
         end
@@ -36,8 +36,8 @@ class Mention < ApplicationRecord
     private
 
     def delete_removed_mentions(usernames)
-      users = User.where(username:usernames)
-      @notifiable.mentions.where.not(user_id:users.pluck(:id)).destroy_all
+      users = User.where(username: usernames)
+      @notifiable.mentions.where.not(user_id: users.pluck(:id)).destroy_all
     end
 
     def create_mention(user)
@@ -59,7 +59,7 @@ class Mention < ApplicationRecord
   end
 
   def activity_target
-    return "mention_#{Time.now}"
+    "mention_#{Time.now}"
   end
 
   def remove_from_feed
@@ -68,7 +68,7 @@ class Mention < ApplicationRecord
   end
 
   def send_email_notification
-    if User.find(self.user_id).email.present? && User.find(self.user_id).email_mention_notifications
+    if User.find(user_id).email.present? && User.find(user_id).email_mention_notifications
       NotifyMailer.new_mention_email(self).deliver
     end
   end

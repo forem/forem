@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Suggester::Articles::Classic do
   let(:user) { create(:user) }
@@ -9,8 +9,8 @@ RSpec.describe Suggester::Articles::Classic do
   it "returns an article" do
     user.follow(tag)
     create(:reaction, user_id: user.id, reactable_id: article.id)
-    create(:reaction, user_id: user.id, reactable_id: article.id, category:"thinking")
-    create(:reaction, user_id: user.id, reactable_id: article.id, category:"unicorn")
+    create(:reaction, user_id: user.id, reactable_id: article.id, category: "thinking")
+    create(:reaction, user_id: user.id, reactable_id: article.id, category: "unicorn")
     expect(described_class.new(user).get.id).to eq article.id
   end
 
@@ -19,16 +19,18 @@ RSpec.describe Suggester::Articles::Classic do
     expect(described_class.new(user).get).to eq nil
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it "returns single article if multiple qualify" do
     user.follow(tag)
     create(:reaction, user_id: user.id, reactable_id: article.id)
-    create(:reaction, user_id: user.id, reactable_id: article.id, category:"thinking")
-    create(:reaction, user_id: user.id, reactable_id: article.id, category:"unicorn")
+    create(:reaction, user_id: user.id, reactable_id: article.id, category: "thinking")
+    create(:reaction, user_id: user.id, reactable_id: article.id, category: "unicorn")
     user2 = create(:user)
     article2 = create(:article, user_id: user2.id)
     create(:reaction, user_id: user2.id, reactable_id: article2.id)
-    create(:reaction, user_id: user2.id, reactable_id: article2.id, category:"thinking")
-    create(:reaction, user_id: user2.id, reactable_id: article2.id, category:"unicorn")
+    create(:reaction, user_id: user2.id, reactable_id: article2.id, category: "thinking")
+    create(:reaction, user_id: user2.id, reactable_id: article2.id, category: "unicorn")
     expect(described_class.new(user).get.id).to eq article.id
   end
+  # rubocop:enable RSpec/ExampleLength
 end

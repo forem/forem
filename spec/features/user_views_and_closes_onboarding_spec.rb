@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/LineLength
 # require "rails_helper"
 
 # describe "User views and closes onboarding", type: :feature, js: true do
@@ -39,7 +40,6 @@
 #         expect(find(".global-modal-inner")).to have_content("WELCOME!")
 #       end
 #     end
-
 
 #     describe "via notifications" do
 #       it "with Twitter" do
@@ -109,3 +109,4 @@
 #     end
 #   end
 # end
+# rubocop:enable Metrics/LineLength

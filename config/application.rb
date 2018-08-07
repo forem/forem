@@ -1,10 +1,10 @@
-require_relative 'boot'
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 require "action_view/railtie"
 require "sprockets/railtie"
-require 'sprockets/es6'
+require "sprockets/es6"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -42,7 +42,9 @@ module PracticalDeveloper
 
     # Replace with a lambda or method name defined in ApplicationController
     # to implement access control for the Flipflop dashboard.
-    config.flipflop.dashboard_access_filter = -> { head :forbidden unless current_user.has_any_role?(:super_admin) }
+    config.flipflop.dashboard_access_filter = -> {
+      head :forbidden unless current_user.has_any_role?(:super_admin)
+    }
 
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
@@ -53,9 +55,9 @@ module PracticalDeveloper
       top_routes = []
       Rails.application.routes.routes.each do |route|
         route = route.path.spec.to_s
-        unless route.starts_with?('/:')
-          route = route.split('/')[1]
-          route = route.split('(')[0] if route && route.include?('(')
+        unless route.starts_with?("/:")
+          route = route.split("/")[1]
+          route = route.split("(")[0] if route&.include?("(")
           top_routes << route
         end
       end

@@ -14,7 +14,11 @@ RSpec.describe UserPolicy do
   context "when user is signed-in" do
     let(:user) { other_user }
 
-    it { is_expected.to permit_actions(%i[edit update onboarding_update join_org leave_org dashboard_show]) }
+    it do
+      is_expected.to permit_actions(
+        %i[edit update onboarding_update join_org leave_org dashboard_show],
+      )
+    end
 
     context "with banned status" do
       before { user.add_role(:banned) }

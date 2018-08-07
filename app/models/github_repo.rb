@@ -10,9 +10,9 @@ class GithubRepo < ApplicationRecord
   before_destroy :clear_caches
 
   def self.find_or_create(params)
-    repo = where(github_id_code: params[:github_id_code])
-      .or(where(url: params[:url]))
-      .first_or_initialize
+    repo = where(github_id_code: params[:github_id_code]).
+      or(where(url: params[:url])).
+      first_or_initialize
     repo.update(params)
     repo
   end
@@ -34,7 +34,7 @@ class GithubRepo < ApplicationRecord
           stargazers_count: fetched_repo.stargazers_count,
           info_hash: fetched_repo.to_hash,
         )
-      rescue => e
+      rescue StandardError => e
         repo.destroy if e.message.include?("404 - Not Found")
       end
     end

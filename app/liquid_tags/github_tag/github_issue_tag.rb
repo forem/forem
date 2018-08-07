@@ -19,10 +19,10 @@ class GithubTag
       username = contentJSON[:user][:login]
       user_html_url = contentJSON[:user][:html_url]
       user_avatar_url = contentJSON[:user][:avatar_url]
-      date = Date.parse(contentJSON[:created_at].to_s).strftime('%b %d, %Y')
+      date = Date.parse(contentJSON[:created_at].to_s).strftime("%b %d, %Y")
       date_link = contentJSON[:html_url]
       title = generate_title
-      html = '' \
+      html = "" \
       "<div class=\"ltag_github-liquid-tag\"> "\
         "#{title}" \
         "<div class=\"github-thread\"> " \
@@ -52,7 +52,7 @@ class GithubTag
 
     def parse_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
-      link_no_space = link.delete(' ')
+      link_no_space = link.delete(" ")
       if valid_link?(link_no_space)
         generate_api_link(link_no_space)
       else
@@ -61,9 +61,9 @@ class GithubTag
     end
 
     def generate_api_link(input)
-      input = input.gsub(/\?.*/, '')
-      if input.include?('#issuecomment-')
-        input = input.gsub(/\d{1,}#issuecomment-/, 'comments/')
+      input = input.gsub(/\?.*/, "")
+      if input.include?("#issuecomment-")
+        input = input.gsub(/\d{1,}#issuecomment-/, "comments/")
       end
       "https://api.github.com/repos/#{input.gsub(/.*github\.com\//, '')}"
     end
@@ -76,7 +76,7 @@ class GithubTag
       return unless title
       "<h1> " \
         "<a href=\"#{link}\">" \
-          "<img class=\"github-logo\" src=\"#{ActionController::Base.helpers.asset_path("github-logo.svg")}\" /><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \
+          "<img class=\"github-logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\" /><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \
         "</a>" \
       "</h1> "
     end
@@ -88,17 +88,17 @@ class GithubTag
     end
 
     def valid_link?(link)
-      link_without_domain = link.gsub(/.*github\.com\//, '').split('/')
+      link_without_domain = link.gsub(/.*github\.com\//, "").split("/")
       raise_error unless [
-        !(link !~ /.*github\.com\//),
+        !!(link =~ /.*github\.com\//),
         link_without_domain.length == 4,
-        link_without_domain[3].to_i > 0
+        link_without_domain[3].to_i > 0,
       ].all? { |bool| bool == true }
       true
     end
 
     def raise_error
-      raise StandardError, 'Invalid Github issue link'
+      raise StandardError, "Invalid Github issue link"
     end
   end
 end

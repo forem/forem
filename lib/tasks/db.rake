@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/LineLength
 # namespace :db do
 #
 #   desc "Copy production database to local"
@@ -28,3 +29,4 @@
 # pg_restore --verbose --no-acl --no-owner -t articles -t users -t podcasts -t podcast_episodes -t sponsors -t identities -t organizations -h localhost -d PracticalDeveloper_development latest.dump
 # rake db:migrate
 # pg_restore --verbose --clean --no-acl --no-owner -t articles -t users -t podcasts -t podcast_episodes -t sponsors -t identities -t organizations -h localhost -d PracticalDeveloper_development latest.dump
+# rubocop:enable Metrics/LineLength
