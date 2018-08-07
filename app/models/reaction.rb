@@ -9,7 +9,7 @@ class Reaction < ApplicationRecord
 
   validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
-  validates :user_id, uniqueness: {:scope => [:reactable_id, :reactable_type, :category]}
+  validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
   before_save :assign_points
@@ -24,14 +24,14 @@ class Reaction < ApplicationRecord
 
   def self.count_for_reactable(reactable)
     Rails.cache.fetch("count_for_reactable-#{reactable.class.name}-#{reactable.id}", expires_in: 1.hour) do
-      [{category:"like",count:Reaction.where(reactable_id:reactable.id, reactable_type: reactable.class.name, category: "like").size},
-                                {category:"readinglist",count:Reaction.where(reactable_id:reactable.id, reactable_type: reactable.class.name, category: "readinglist").size},
-                                {category:"unicorn",count:Reaction.where(reactable_id:reactable.id, reactable_type: reactable.class.name, category: "unicorn").size}]
+      [{ category: "like", count: Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, category: "like").size },
+       { category: "readinglist", count: Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, category: "readinglist").size },
+       { category: "unicorn", count: Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, category: "unicorn").size }]
     end
   end
 
   def self.for_display(user)
-    self.includes(:reactable).
+    includes(:reactable).
       where(reactable_type: "Article", user_id: user.id).
       where("created_at > ?", 5.days.ago).
       select("distinct on (reactable_id) *").
@@ -90,7 +90,7 @@ class Reaction < ApplicationRecord
   handle_asynchronously :touch_user
 
   def async_bust
-    featured_articles = Article.where(featured: true).order('hotness_score DESC').limit(3).pluck(:id)
+    featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
     if featured_articles.include?(reactable.id)
       reactable.touch
       cache_buster = CacheBuster.new
@@ -108,7 +108,7 @@ class Reaction < ApplicationRecord
 
   BASE_POINTS = {
     "vomit" => -50.0,
-    "thumbsdown" => -10.0
+    "thumbsdown" => -10.0,
   }.freeze
 
   def assign_points

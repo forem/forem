@@ -45,20 +45,20 @@ class ArticleDashboard < Administrate::BaseDashboard
     video_thumbnail_url: Field::String,
     video_closed_caption_track_url: Field::String,
     main_tag_name_for_social: Field::String,
-  }
+  }.freeze
 
   # COLLECTION_ATTRIBUTES
   # an array of attributes that will be displayed on the model's index page.
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :user,
-    :title,
-    :published,
-    :featured,
-    :comments
-  ]
+  COLLECTION_ATTRIBUTES = %i[
+    user
+    title
+    published
+    featured
+    comments
+  ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
@@ -67,35 +67,34 @@ class ArticleDashboard < Administrate::BaseDashboard
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :user_id,
-    :second_user_id,
-    :third_user_id,
-    :organization,
-    :title,
-    :body_markdown,
-    :slug,
-    :social_image,
-    :featured,
-    :approved,
-    :featured_number,
-    :canonical_url,
-    :password,
-    :published_at,
-    :collection,
-    :collection_position,
-    :name_within_collection,
-    :show_comments,
-    :main_image_background_hex_color,
-    :ids_for_suggested_articles,
-    :video,
-    :video_code,
-    :video_source_url,
-    :video_thumbnail_url,
-    :video_closed_caption_track_url,
-    :main_tag_name_for_social
-
-  ]
+  FORM_ATTRIBUTES = %i[
+    user_id
+    second_user_id
+    third_user_id
+    organization
+    title
+    body_markdown
+    slug
+    social_image
+    featured
+    approved
+    featured_number
+    canonical_url
+    password
+    published_at
+    collection
+    collection_position
+    name_within_collection
+    show_comments
+    main_image_background_hex_color
+    ids_for_suggested_articles
+    video
+    video_code
+    video_source_url
+    video_thumbnail_url
+    video_closed_caption_track_url
+    main_tag_name_for_social
+  ].freeze
 
   # Overwrite this method to customize how articles are displayed
   # across all pages of the admin dashboard.

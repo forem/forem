@@ -8,6 +8,6 @@ class ChatChannelCreationService
 
   def create
     user.chat_channels.create(channel_type: "invite_only",
-      channel_name: params[:channel_name], slug: params[:slug])
+                              channel_name: params[:channel_name], slug: params[:slug])
   end
 end

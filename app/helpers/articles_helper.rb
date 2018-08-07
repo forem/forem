@@ -1,11 +1,10 @@
 module ArticlesHelper
-
   def hasVid(article)
     article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
   end
 
-  def collection_link_class(current_article,linked_article)
-    if (current_article.id == linked_article.id)
+  def collection_link_class(current_article, linked_article)
+    if current_article.id == linked_article.id
       "current-article"
     elsif !linked_article.published
       "coming-soon"
@@ -14,15 +13,15 @@ module ArticlesHelper
 
   def image_tag_or_inline_svg(service_name)
     if is_internal_navigation?
-      image_tag("#{service_name}-logo.svg", class:"icon-img")
+      image_tag("#{service_name}-logo.svg", class: "icon-img")
     else
-      inline_svg("#{service_name}-logo.svg", class:"icon-img")
+      inline_svg("#{service_name}-logo.svg", class: "icon-img")
     end
   end
 
   def should_show_updated_on?(article)
     article.edited_at &&
-    article.published &&
+      article.published &&
       !article.published_from_feed &&
       article.published_at.next_day < article.edited_at
   end
@@ -42,7 +41,7 @@ module ArticlesHelper
     host.start_with?("www.") ? host[4..-1] : host
   end
 
-  def is_hiring_form?(tag,article)
+  def is_hiring_form?(tag, article)
     tag.to_s == "hiring" || article.tag_list.include?("hiring")
   end
 end

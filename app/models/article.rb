@@ -58,10 +58,12 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
-  scope :active_help, -> { where(published: true).
-    tagged_with("help").
-    order("created_at DESC").
-    where("published_at > ? AND comments_count < ?", 12.hours.ago, 6) }
+  scope :active_help, -> {
+                        where(published: true).
+                          tagged_with("help").
+                          order("created_at DESC").
+                          where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
+                      }
 
   scope :limited_column_select, -> {
     select(:path, :title, :id,
@@ -80,8 +82,7 @@ class Article < ApplicationRecord
     :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
     :published_from_feed, :crossposted_at, :published_at, :featured_number,
     :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-    :email_digest_eligible
-    )
+    :email_digest_eligible)
   }
 
   scope :boosted_via_additional_articles, -> {
@@ -113,10 +114,10 @@ class Article < ApplicationRecord
       end
       tags do
         [tag_list,
-        "user_#{user_id}",
-        "username_#{user&.username}",
-        "lang_#{language || 'en'}",
-        ("organization_#{organization_id}" if organization)].flatten.compact
+         "user_#{user_id}",
+         "username_#{user&.username}",
+         "lang_#{language || 'en'}",
+         ("organization_#{organization_id}" if organization)].flatten.compact
       end
       searchableAttributes ["unordered(title)",
                             "body_text",
@@ -149,10 +150,10 @@ class Article < ApplicationRecord
       end
       tags do
         [tag_list,
-        "user_#{user_id}",
-        "username_#{user&.username}",
-        "lang_#{language || 'en'}",
-        ("organization_#{organization_id}" if organization)].flatten.compact
+         "user_#{user_id}",
+         "username_#{user&.username}",
+         "lang_#{language || 'en'}",
+         ("organization_#{organization_id}" if organization)].flatten.compact
       end
       ranking ["desc(hotness_score)"]
       add_replica "ordered_articles_by_positive_reactions_count", inherit: true, per_environment: true do
@@ -181,18 +182,18 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.active_threads(tags=["discuss"], time_ago=nil, number=10)
-    stories = where(published:true).
+  def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
+    stories = where(published: true).
       limit(number)
-    if time_ago == "latest"
-      stories = stories.order("published_at DESC")
-    elsif time_ago
-      stories = stories.order("comments_count DESC").
-        where("published_at > ?", time_ago)
-    else
-      stories = stories.order("last_comment_at DESC").
-        where("published_at > ?", (tags.present? ? 5 : 2).days.ago)
-    end
+    stories = if time_ago == "latest"
+                stories.order("published_at DESC")
+              elsif time_ago
+                stories.order("comments_count DESC").
+                  where("published_at > ?", time_ago)
+              else
+                stories.order("last_comment_at DESC").
+                  where("published_at > ?", (tags.present? ? 5 : 2).days.ago)
+              end
 
     stories = stories.tagged_with(tags)
 
@@ -202,17 +203,17 @@ class Article < ApplicationRecord
   def self.active_eli5(time_ago)
     stories = where(published: true).tagged_with("explainlikeimfive")
 
-    if time_ago == "latest"
-      stories = stories.order("published_at DESC").limit(3)
-    elsif time_ago
-      stories = stories.order("comments_count DESC").
-        where("published_at > ?", time_ago).
-        limit(6)
-    else
-      stories = stories.order("last_comment_at DESC").
-        where("published_at > ?", 5.days.ago).
-        limit(3)
-    end
+    stories = if time_ago == "latest"
+                stories.order("published_at DESC").limit(3)
+              elsif time_ago
+                stories.order("comments_count DESC").
+                  where("published_at > ?", time_ago).
+                  limit(6)
+              else
+                stories.order("last_comment_at DESC").
+                  where("published_at > ?", 5.days.ago).
+                  limit(3)
+              end
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
@@ -226,7 +227,7 @@ class Article < ApplicationRecord
 
   def self.trigger_delayed_index(record, remove)
     if remove
-      record.delay.remove_from_index! if (record && record.persisted?)
+      record.delay.remove_from_index! if record&.persisted?
     else
       record.index_or_remove_from_index_where_appropriate
     end
@@ -274,7 +275,7 @@ class Article < ApplicationRecord
   end
 
   def search_score
-    score = hotness_score.to_i + ((comments_count*3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier )
+    score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier)
     score.to_i
   end
 
@@ -302,7 +303,7 @@ class Article < ApplicationRecord
       self.processed_html = parsed_markdown.finalize
       evaluate_front_matter(parsed.front_matter)
     rescue StandardError => e
-      self.errors[:base] << ErrorMessageCleaner.new(e.message).clean
+      errors[:base] << ErrorMessageCleaner.new(e.message).clean
     end
   end
 
@@ -317,7 +318,7 @@ class Article < ApplicationRecord
   end
 
   def update_main_image_background_hex
-    return if (main_image.blank? || main_image_background_hex_color != "#dddddd")
+    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
     update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
   end
   handle_asynchronously :update_main_image_background_hex
@@ -347,10 +348,10 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.seo_boostable(tag=nil)
+  def self.seo_boostable(tag = nil)
     keyword_paths = SearchKeyword.
       where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",
-      3 , 20, 1000, 40).pluck(:google_result_path)
+      3, 20, 1000, 40).pluck(:google_result_path)
     if tag
       Article.where(path: keyword_paths, published: true, featured: true).
         tagged_with(tag).
@@ -369,7 +370,6 @@ class Article < ApplicationRecord
   end
   handle_asynchronously :async_score_calc
 
-
   private
 
   # def send_to_moderator
@@ -382,7 +382,7 @@ class Article < ApplicationRecord
     remove_algolia_index
     reactions.destroy_all
     user.delay.resave_articles
-    organization.delay.resave_articles if organization
+    organization&.delay&.resave_articles
   end
 
   def evaluate_front_matter(front_matter)
@@ -391,13 +391,13 @@ class Article < ApplicationRecord
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
       self.tag_list = []
-      self.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
+      tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
     end
-    self.published = front_matter["published"] if ["true","false"].include?(front_matter["published"].to_s)
-    self.published_at = parsed_date(front_matter["date"]) if self.published
+    self.published = front_matter["published"] if ["true", "false"].include?(front_matter["published"].to_s)
+    self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] ? front_matter["description"] : token_msg
+    self.description = front_matter["description"] || token_msg
     if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
       self.automatically_renew = front_matter["automatically_renew"]
     end
@@ -405,7 +405,7 @@ class Article < ApplicationRecord
 
   def parsed_date(date)
     today_date = Time.now.to_datetime
-    return self.published_at || today_date unless date
+    return published_at || today_date unless date
     given_date = date.to_datetime
     error_msg = "must be entered in DD/MM/YYYY format with current or past date"
     return errors.add(:date_time, error_msg) if given_date > today_date
@@ -458,8 +458,8 @@ class Article < ApplicationRecord
   def set_published_date
     if published && published_at.blank?
       self.published_at = Time.now
-      user.delay.resave_articles #tack-on functionality HACK
-      organization.delay.resave_articles if organization #tack-on functionality HACK
+      user.delay.resave_articles # tack-on functionality HACK
+      organization&.delay&.resave_articles # tack-on functionality HACK
     end
   end
 

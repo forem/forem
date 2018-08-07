@@ -1,5 +1,4 @@
 class Timeframer
-
   attr_accessor :timeframe
   def initialize(timeframe)
     @timeframe = timeframe
@@ -18,5 +17,4 @@ class Timeframer
       "latest"
     end
   end
-
 end

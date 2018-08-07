@@ -9,17 +9,16 @@ FactoryBot.define do
     end
   end
 
-
   trait :abuse_report do
-    feedback_type { "abuse-reports" }
-    message       { "this is spam" }
-    category      { "spam" }
-    reported_url  { "https://dev.to" }
+    feedback_type "abuse-reports"
+    message "this is spam"
+    category "spam"
+    reported_url "https://dev.to"
   end
 
   trait :bug_report do
-    feedback_type { "bug-reports" }
-    message       { "i clicked something and this happened" }
-    category      { "bugs" }
+    feedback_type "bug-reports"
+    message "i clicked something and this happened"
+    category "bugs"
   end
 end

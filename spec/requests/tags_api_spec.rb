@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe "ArticlesApi", type: :request do
@@ -21,3 +22,4 @@ RSpec.describe "ArticlesApi", type: :request do
     end
   end
 end
+# rubocop:enable RSpec/MultipleExpectations

@@ -1,5 +1,4 @@
 class ErrorMessageCleaner
-
   attr_accessor :error_message
 
   def initialize(error_message)
@@ -13,5 +12,4 @@ class ErrorMessageCleaner
       error_message
     end
   end
-
 end

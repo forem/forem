@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe JobOpportunity, type: :model do
   it "returns remoteness in words for remoteness" do

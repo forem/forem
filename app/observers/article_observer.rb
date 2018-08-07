@@ -8,7 +8,7 @@ class ArticleObserver < ActiveRecord::Observer
                     icon_emoji: ":writing_hand:"
 
     end
-  rescue
+  rescue StandardError
     puts "error"
   end
 end

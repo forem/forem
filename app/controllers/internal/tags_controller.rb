@@ -1,21 +1,21 @@
 class Internal::TagsController < Internal::ApplicationController
-  layout 'internal'
+  layout "internal"
 
   def index
-    if params[:state] == "supported"
-      @tags = Tag.where(supported: true).order("taggings_count DESC").limit(120)
-    elsif params[:state] == "unsupported"
-      @tags = Tag.where(supported: false).order("taggings_count DESC").limit(120)
-    else
-      @tags = Tag.order("taggings_count DESC").limit(120)
-    end
+    @tags = if params[:state] == "supported"
+              Tag.where(supported: true).order("taggings_count DESC").limit(120)
+            elsif params[:state] == "unsupported"
+              Tag.where(supported: false).order("taggings_count DESC").limit(120)
+            else
+              Tag.order("taggings_count DESC").limit(120)
+            end
   end
 
   def update
     @tag = Tag.find(params[:id])
     @tag.update!(tag_params)
     redirect_to(action: :index)
-  end  
+  end
 
   private
 
@@ -27,5 +27,4 @@ class Internal::TagsController < Internal::ApplicationController
                                 :bg_color_hex,
                                 :text_color_hex)
   end
-
 end

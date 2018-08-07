@@ -32,52 +32,52 @@ class PodcastEpisodeDashboard < Administrate::BaseDashboard
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     social_image: CarrierwaveField,
-  }
+  }.freeze
 
   # COLLECTION_ATTRIBUTES
   # an array of attributes that will be displayed on the model's index page.
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :id,
-    :title,
-  ]
+  COLLECTION_ATTRIBUTES = %i[
+    id
+    title
+  ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :id,
-    :podcast,
-    :title,
-    :image,
-    :social_image,
-    :body,
-    :featured,
-    :featured_number,
-    :media_url,
-    :website_url,
-    :itunes_url,
-    :duration_in_seconds,
-    :published_at,
-    :slug,
-    :created_at,
-    :updated_at,
-  ]
+  SHOW_PAGE_ATTRIBUTES = %i[
+    id
+    podcast
+    title
+    image
+    social_image
+    body
+    featured
+    featured_number
+    media_url
+    website_url
+    itunes_url
+    duration_in_seconds
+    published_at
+    slug
+    created_at
+    updated_at
+  ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :title,
-    :body,
-    :website_url,
-    :media_url,
-    :itunes_url,
-    :social_image,
-    :duration_in_seconds,
-    :published_at,
-  ]
+  FORM_ATTRIBUTES = %i[
+    title
+    body
+    website_url
+    media_url
+    itunes_url
+    social_image
+    duration_in_seconds
+    published_at
+  ].freeze
 
   # Overwrite this method to customize how podcast episodes are displayed
   # across all pages of the admin dashboard.

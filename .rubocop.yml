@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 require: rubocop-rspec
 
 # our custom config
@@ -19,7 +21,13 @@ Metrics/LineLength:
 
 AllCops:
   Exclude:
+    - bin/**/*
     - db/schema.rb
+    - db/migrate/*.rb
+    - node_modules/**/*
+  DisplayStyleGuide: true
+  ExtraDetails: true
+  TargetRubyVersion: 2.5
 
 Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
@@ -110,7 +118,7 @@ Metrics/AbcSize:
   Enabled: false
 
 Metrics/BlockLength:
-  CountComments: true  # count full line comments?
+  CountComments: false  # count full line comments?
   Max: 25
   ExcludedMethods: []
   Exclude:

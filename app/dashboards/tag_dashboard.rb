@@ -27,7 +27,7 @@ class TagDashboard < Administrate::BaseDashboard
     text_color_hex: Field::String,
     alias_for: Field::String,
     keywords_for_search: Field::String,
-    taggings_count: Field::Number
+    taggings_count: Field::Number,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -35,58 +35,58 @@ class TagDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to five items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :id,
-    :name,
-    :supported,
-    :alias_for,
-    :taggings_count
+  COLLECTION_ATTRIBUTES = %i[
+    id
+    name
+    supported
+    alias_for
+    taggings_count
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :id,
-    :name,
-    :supported,
-    :tag_moderator_ids,
-    :alias_for,
-    :wiki_body_markdown,
-    :wiki_body_html,
-    :rules_markdown,
-    :rules_html,
-    :short_summary,
-    :requires_approval,
-    :submission_template,
-    :submission_rules_headsup,
-    :pretty_name,
-    :profile_image,
-    :social_image,
-    :bg_color_hex,
-    :text_color_hex,
-    :keywords_for_search
+  SHOW_PAGE_ATTRIBUTES = %i[
+    id
+    name
+    supported
+    tag_moderator_ids
+    alias_for
+    wiki_body_markdown
+    wiki_body_html
+    rules_markdown
+    rules_html
+    short_summary
+    requires_approval
+    submission_template
+    submission_rules_headsup
+    pretty_name
+    profile_image
+    social_image
+    bg_color_hex
+    text_color_hex
+    keywords_for_search
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :name,
-    :supported,
-    :tag_moderator_ids,
-    :alias_for,
-    :wiki_body_markdown,
-    :rules_markdown,
-    :short_summary,
-    :requires_approval,
-    :submission_template,
-    :submission_rules_headsup,
-    :pretty_name,
-    :profile_image,
-    :social_image,
-    :bg_color_hex,
-    :text_color_hex,
-    :keywords_for_search
+  FORM_ATTRIBUTES = %i[
+    name
+    supported
+    tag_moderator_ids
+    alias_for
+    wiki_body_markdown
+    rules_markdown
+    short_summary
+    requires_approval
+    submission_template
+    submission_rules_headsup
+    pretty_name
+    profile_image
+    social_image
+    bg_color_hex
+    text_color_hex
+    keywords_for_search
   ].freeze
 
   # Overwrite this method to customize how tags are displayed

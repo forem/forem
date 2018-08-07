@@ -9,7 +9,7 @@ class ReactionObserver < ActiveRecord::Observer
         icon_emoji: emoji,
       )
     end
-  rescue
+  rescue StandardError
     puts "observer error"
   end
 end

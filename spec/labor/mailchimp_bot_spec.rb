@@ -19,24 +19,26 @@ RSpec.describe MailchimpBot do
   end
 
   def matcher
-    { body: {
-      email_address: user.email,
-      status: "subscribed",
-      merge_fields: {
-        NAME: user.name.to_s,
-        USERNAME: user.username.to_s,
-        TWITTER: user.twitter_username.to_s,
-        GITHUB: user.github_username.to_s,
-        IMAGE_URL: user.profile_image_url.to_s,
-        ARTICLES: user.articles.size,
-        COMMENTS: user.comments.size,
-        ONBOARD_PK: user.onboarding_package_requested.to_s,
-        EXPERIENCE: user.experience_level || 666,
-        COUNTRY: user.shipping_country.to_s,
-        STATE: user.shipping_state.to_s,
-        POSTAL_ZIP: user.shipping_postal_code.to_s,
+    {
+      body: {
+        email_address: user.email,
+        status: "subscribed",
+        merge_fields: {
+          NAME: user.name.to_s,
+          USERNAME: user.username.to_s,
+          TWITTER: user.twitter_username.to_s,
+          GITHUB: user.github_username.to_s,
+          IMAGE_URL: user.profile_image_url.to_s,
+          ARTICLES: user.articles.size,
+          COMMENTS: user.comments.size,
+          ONBOARD_PK: user.onboarding_package_requested.to_s,
+          EXPERIENCE: user.experience_level || 666,
+          COUNTRY: user.shipping_country.to_s,
+          STATE: user.shipping_state.to_s,
+          POSTAL_ZIP: user.shipping_postal_code.to_s,
+        },
       },
-    } }
+    }
   end
 
   describe "#upsert" do
@@ -81,6 +83,7 @@ RSpec.describe MailchimpBot do
       expect(described_class.new(user).upsert_to_membership_newsletter).to be(false)
     end
 
+    # rubocop:disable RSpec/ExampleLength
     context "when user is a sustaining member" do
       it "send proper information" do
         user.update(monthly_dues: 2500, email_membership_newsletter: true)
@@ -92,7 +95,7 @@ RSpec.describe MailchimpBot do
                    status: "subscribed",
                    merge_fields: hash_including(MEMBERSHIP: "level_2_member"),
                  ),
-          ))
+               ))
       end
 
       it "unsubscribes if monthly due become 0" do
@@ -103,5 +106,6 @@ RSpec.describe MailchimpBot do
           with(hash_including(body: hash_including(status: "unsubscribed")))
       end
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 end

@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
@@ -5,7 +6,9 @@ RSpec.describe Comment, type: :model do
   let(:article)     { create(:article, user_id: user.id, published: true) }
   let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
   let(:comment_2)   { create(:comment, user_id: user.id, commentable_id: article.id) }
-  let(:child_comment) { build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id) }
+  let(:child_comment) do
+    build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id)
+  end
 
   it "gets proper generated ID code" do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
@@ -114,7 +117,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "shortens long urls" do
-    comment.body_markdown = "Hello https://longurl.com/dsjkdsdsjdsdskhjdsjbhkdshjdshudsdsbhdsbiudsuidsuidsuidsuidsuidsuidsiudsiudsuidsuisduidsuidsiuiuweuiweuiewuiweuiweuiew?sdhiusduisduidsiudsuidsiusdiusdiuewiuewiuewiuweiuweiuweiuewiuweuiweuiewibsdiubdsiubdsisbdiudsbsdiusdbiu"
+    comment.body_markdown = "Hello https://longurl.com/dsjkdsdsjdsdskhjdsjbhkdshjdshudsdsbhdsbiudsuidsuidsuidsuidsuidsuidsiudsiudsuidsuisduidsuidsiuiuweuiweuiewuiweuiweuiew?sdhiusduisduidsiudsuidsiusdiusdiuewiuewiuewiuweiuweiuweiuewiuweuiweuiewibsdiubdsiubdsisbdiudsbsdiusdbiu" # rubocop:disable Metrics/LineLength
     comment.save
     expect(comment.processed_html.include?("...</a>")).to eq(true)
     expect(comment.processed_html.size).to be < 450
@@ -186,7 +189,7 @@ RSpec.describe Comment, type: :model do
       expect(ltag_comment.custom_css).not_to eq("")
     end
   end
-  
+
   describe "validity" do
     it "is invalid if commentable is unpublished article" do
       article.update_column(:published, false)
@@ -197,7 +200,7 @@ RSpec.describe Comment, type: :model do
 
   describe "#sharemeow_link" do
     it "uses ShareMeowClient" do
-    allow(ShareMeowClient).to receive(:image_url).and_return("www.test.com")
+      allow(ShareMeowClient).to receive(:image_url).and_return("www.test.com")
       comment.sharemeow_link
       expect(ShareMeowClient).to have_received(:image_url)
     end
@@ -232,7 +235,9 @@ RSpec.describe Comment, type: :model do
 
     context "when a comment with ancestor is created" do
       let(:nest_comment_1) { create(:comment, commentable_id: article.id) }
-      let(:nest_comment_2) { create(:comment, parent_id: nest_comment_1.id, commentable_id: article.id) }
+      let(:nest_comment_2) do
+        create(:comment, parent_id: nest_comment_1.id, commentable_id: article.id)
+      end
       let(:author_comment) do
         create(:comment, parent_id: nest_comment_2.id,
                          commentable_id: article.id, user_id: user.id)
@@ -273,3 +278,4 @@ RSpec.describe Comment, type: :model do
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

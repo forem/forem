@@ -8,14 +8,14 @@ class ArticleApiIndexService
   end
 
   def get
-    articles =  if tag.present?
-                  tag_articles
-                elsif username.present?
-                  username_articles
-                elsif state.present?
-                  state_articles(state)
-                else
-                  base_articles
+    articles = if tag.present?
+                 tag_articles
+               elsif username.present?
+                 username_articles
+               elsif state.present?
+                 state_articles(state)
+               else
+                 base_articles
                 end
     articles.
       decorate
@@ -82,11 +82,11 @@ class ArticleApiIndexService
 
   def base_articles
     Article.
-        where(published: true, featured: true).
-        order("hotness_score DESC").
-        includes(:user).
-        includes(:organization).
-        page(page).
-        per(30)
+      where(published: true, featured: true).
+      order("hotness_score DESC").
+      includes(:user).
+      includes(:organization).
+      page(page).
+      per(30)
   end
 end

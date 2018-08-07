@@ -42,7 +42,7 @@ class Tag < ActsAsTaggableOn::Tag
     self.hotness_score = Article.tagged_with(name).
       where("articles.featured_number > ?", 7.days.ago.to_i).
       map do |a|
-        (a.comments_count * 14) + (a.reactions_count * 4) + rand(6) + ((taggings_count + 1 ) / 2)
+        (a.comments_count * 14) + (a.reactions_count * 4) + rand(6) + ((taggings_count + 1) / 2)
       end.
       sum
   end

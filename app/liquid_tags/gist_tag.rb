@@ -4,7 +4,7 @@ class GistTag < LiquidTagBase
     @link = parse_link(link)
   end
 
-  def render(context)
+  def render(_context)
     html = <<~HTML
       <div class="ltag_gist-liquid-tag">
           <script id="gist-ltag" src="#{@link}.js"></script>

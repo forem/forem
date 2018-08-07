@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe "StripeSubscriptions", type: :request do
@@ -132,7 +133,6 @@ RSpec.describe "StripeSubscriptions", type: :request do
         expect(user.stripe_id_code).not_to eq(nil)
         expect(user.has_role?(:level_1_member)).to eq(false)
       end
-
     end
   end
 
@@ -170,3 +170,4 @@ RSpec.describe "StripeSubscriptions", type: :request do
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

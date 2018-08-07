@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe "ChatChannelMemberships", type: :request do
@@ -16,17 +17,20 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       mems_num = ChatChannelMembership.all.size
       post "/chat_channel_memberships", params: {
         chat_channel_membership: {
-          user_id: second_user.id, chat_channel_id: chat_channel.id}
-        }
+          user_id: second_user.id, chat_channel_id: chat_channel.id
+        },
+      }
       expect(ChatChannelMembership.all.size).to eq(mems_num + 1)
       expect(ChatChannelMembership.last.status).to eq("pending")
     end
+
     it "denies chat channel invitation to non-authorized user" do
       expect do
         post "/chat_channel_memberships", params: {
           chat_channel_membership: {
-            user_id: second_user.id, chat_channel_id: chat_channel.id}
-          }
+            user_id: second_user.id, chat_channel_id: chat_channel.id
+          },
+        }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -35,28 +39,36 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     before do
       user.add_role(:super_admin)
       post "/chat_channel_memberships", params: {
-        chat_channel_membership: {user_id: second_user.id, chat_channel_id: chat_channel.id}}
+        chat_channel_membership: { user_id: second_user.id, chat_channel_id: chat_channel.id },
+      }
     end
+
     it "accepts chat channel invitation" do
       membership = ChatChannelMembership.last
       sign_in second_user
       put "/chat_channel_memberships/#{membership.id}", params: {
         chat_channel_membership: {
-          user_action: "accept"}}
+          user_action: "accept",
+        },
+      }
       expect(ChatChannelMembership.find(membership.id).status).to eq("active")
     end
+
     it "rejects chat channel invitation" do
       membership = ChatChannelMembership.last
       sign_in second_user
       put "/chat_channel_memberships/#{membership.id}", params: {
-        chat_channel_membership: {user_action: "reject"}}
+        chat_channel_membership: { user_action: "reject" },
+      }
       expect(ChatChannelMembership.find(membership.id).status).to eq("rejected")
     end
+
     it "disallows non-logged-user" do
       membership = ChatChannelMembership.last
       expect do
         put "/chat_channel_memberships/#{membership.id}", params: {
-          chat_channel_membership: {user_action: "accept"}}
+          chat_channel_membership: { user_action: "accept" },
+        }
         expect(ChatChannelMembership.find(membership.id).status).to eq("active")
       end.to raise_error(Pundit::NotAuthorizedError)
     end
@@ -66,8 +78,10 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     before do
       user.add_role(:super_admin)
       post "/chat_channel_memberships", params: {
-        chat_channel_membership: {user_id: second_user.id, chat_channel_id: chat_channel.id}}
+        chat_channel_membership: { user_id: second_user.id, chat_channel_id: chat_channel.id },
+      }
     end
+
     it "leaves chat channel" do
       membership = ChatChannelMembership.last
       sign_in second_user
@@ -76,3 +90,4 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

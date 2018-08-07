@@ -14,11 +14,11 @@ class AdditionalContentBoxesController < ApplicationController
       @boosted_article = Suggester::Articles::Boosted.new(
         current_user,
         @article,
-        {not_ids: (article_ids + [@for_user_article&.id]), area: "additional_articles"},
+        not_ids: (article_ids + [@for_user_article&.id]), area: "additional_articles",
       ).suggest
     else
       @alt_classic = Suggester::Articles::Classic.
-        new(@article, {not_ids: (article_ids + [@for_user_article&.id])}).get
+        new(@article, not_ids: (article_ids + [@for_user_article&.id])).get
     end
     set_surrogate_key_header "additional_content_boxes_" + params.to_s unless current_user
     render "boxes", layout: false

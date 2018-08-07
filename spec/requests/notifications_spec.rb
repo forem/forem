@@ -12,6 +12,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     before do
       sign_in user
     end
+
     it "renders page with proper sidebar" do
       get "/notifications"
       expect(response.body).to include("Notifications")

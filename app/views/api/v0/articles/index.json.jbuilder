@@ -11,7 +11,7 @@ json.array! @articles do |article|
   json.url                article.url
   json.canonical_url      article.processed_canonical_url
   json.comments_count     article.comments_count
-  json.positive_reactions_count    article.positive_reactions_count
+  json.positive_reactions_count article.positive_reactions_count
 
   json.user do
     json.name             article.user.name
@@ -32,7 +32,6 @@ json.array! @articles do |article|
       json.profile_image_90 ProfileImage.new(article.organization).get(90)
     end
   end
-
 
   if FlareTag.new(article).tag
     json.flare_tag do

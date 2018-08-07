@@ -31,7 +31,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   def feedback_message_params
     params[:feedback_message].permit(
       :status, :reviewer_id,
-      note: [:content, :reason],
+      note: %i[content reason]
     )
   end
 end

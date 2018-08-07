@@ -5,7 +5,7 @@ module Api
       def create
         @user = valid_user
         unless @user
-          render json: { message: "invalid_user" }, :status => 422
+          render json: { message: "invalid_user" }, status: 422
           return
         end
         Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"

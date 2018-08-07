@@ -17,10 +17,11 @@ RSpec.describe "AdditionalContentBoxes", type: :request do
       get "/additional_content_boxes?article_id=#{regular_article.id}"
       expect(response.body).not_to include CGI.escapeHTML(suggestion.title)
     end
+
     it "returns boosted article if available" do
       organization = create(:organization)
-      suggestion = create(:article, published: true, featured: true)
-      boosted_sugg = create(:article, tags: [tag.name], featured: true, boosted_additional_articles: true, organization_id: organization.id)
+      create(:article, published: true, featured: true)
+      boosted_sugg = create(:article, tags: [tag.name], featured: true, boosted_additional_articles: true, organization_id: organization.id) # rubocop:disable Metrics/LineLength
       get "/additional_content_boxes?article_id=#{regular_article.id}"
       expect(response.body).to include CGI.escapeHTML(boosted_sugg.title)
     end

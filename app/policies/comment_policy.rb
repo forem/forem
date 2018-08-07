@@ -26,7 +26,7 @@ class CommentPolicy < ApplicationPolicy
   def permitted_attributes_for_update
     %i[body_markdown]
   end
-  
+
   def permitted_attributes_for_preview
     %i[body_markdown]
   end

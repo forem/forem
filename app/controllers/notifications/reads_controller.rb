@@ -1,5 +1,4 @@
 class Notifications::ReadsController < ApplicationController
-
   def create
     result = ""
     result = ReadNotificationsService.new(current_user).mark_as_read if current_user

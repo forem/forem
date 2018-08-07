@@ -49,7 +49,7 @@ class MessagesController < ApplicationController
       message: new_message.message_html,
       timestamp: Time.now,
       color: new_message.preferred_user_color,
-      reception_method: "pushed"
+      reception_method: "pushed",
     }.to_json
   end
 

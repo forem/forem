@@ -1,9 +1,9 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe PodcastEpisode, type: :model do
-  let(:podcast)        { create(:podcast) }
+  let(:podcast) { create(:podcast) }
 
-  it 'accept valid podcast' do
+  it "accept valid podcast" do
     expect(podcast).to be_valid
   end
 end

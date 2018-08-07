@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "TwilioTokens", type: :request do
   let(:user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
-  
+
   before do
     sign_in user
   end

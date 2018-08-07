@@ -1,5 +1,4 @@
 class Podcast < ApplicationRecord
-
   has_many :podcast_episodes
 
   mount_uploader :image, ProfileImageUploader

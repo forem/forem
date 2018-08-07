@@ -4,7 +4,8 @@
 #
 # https://github.com/rails/rails/issues/21948
 # The bug:
-# The rails session cookie is not persistent, therefore it expires when the page is loaded from cache
+# The rails session cookie is not persistent,
+# therefore it expires when the page is loaded from cache
 # (i.e. when browser restores tabs on restart https://www.youtube.com/watch?v=bKDu0qMT4HM)
 # which leads to an `InvalidAuthenticityToken` when the user submits a form from that page.
 #
@@ -20,7 +21,7 @@ module ActionController
       cookies.encrypted[COOKIE_NAME] ||= {
         value: csrf_token,
         expires: 1.year.from_now,
-        httponly: true
+        httponly: true,
       }
       session[:_csrf_token] = csrf_token
       Base64.strict_decode64(csrf_token)

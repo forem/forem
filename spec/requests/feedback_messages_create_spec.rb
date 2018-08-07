@@ -2,11 +2,13 @@ require "rails_helper"
 
 RSpec.describe "feedback_messages", type: :request do
   describe "POST /feedback_messages" do
+    # rubocop:disable RSpec/AnyInstance
     before do
       allow_any_instance_of(FeedbackMessagesController).
         to receive(:recaptcha_verified?).and_return(true)
       allow_any_instance_of(Slack::Notifier).to receive(:ping).and_return(true)
     end
+    # rubocop:enable RSpec/AnyInstance
 
     valid_abuse_report_params = {
       feedback_message: {

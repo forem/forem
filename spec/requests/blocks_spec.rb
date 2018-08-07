@@ -13,25 +13,32 @@ RSpec.describe "Blocks", type: :request do
     end
   end
 
+  # rubocop:disable RSpec/ExampleLength
   describe "POST blocks" do
     it "creates block from input data" do
       post "/blocks", params: {
-        block: { input_css: ".blue { color: blue;}", input_html: "yo", input_javascript: "alert('hey')" },
+        block: {
+          input_css: ".blue { color: blue;}",
+          input_html: "yo",
+          input_javascript: "alert('hey')",
+        },
       }
       expect(Block.all.size).to eq(1)
     end
   end
+
   describe "PUT blocks" do
     it "updates block from input data" do
       block = create(:block, user_id: user.id, input_css: ".blue { color: blue;}")
       put "/blocks/#{block.id}", params: {
         block: { input_css: ".blue { color: red;}",
-                  input_html: "yo",
-                  input_javascript: "alert('hey')" },
+                 input_html: "yo",
+                 input_javascript: "alert('hey')" },
       }
       expect(Block.last.processed_css).to include("color: red")
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 
   describe "DELETE blocks" do
     it "updates block from input data" do

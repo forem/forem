@@ -82,11 +82,5 @@ RSpec.describe MarkdownParser do
       inline_code = "![](https://image.com/image.jpg)"
       expect(generate_and_parse_markdown(inline_code)).to include("<a")
     end
-
-    it "replaces image with picture tag" do
-      inline_code = "![](https://image.com/image.jpg)"
-      expect(generate_and_parse_markdown(inline_code)).to include("<a")
-    end
-
   end
 end

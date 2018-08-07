@@ -1,5 +1,4 @@
 class GetUnseenNotificationsService
-
   def initialize(user)
     @user = user
   end

@@ -1,3 +1,4 @@
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Article, type: :model do
@@ -24,10 +25,13 @@ RSpec.describe Article, type: :model do
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
   it { is_expected.to validate_presence_of(:user_id) }
-  it { is_expected.to_not allow_value("foo").for(:main_image_background_hex_color)}
+  it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
-  context "if published" do
-    before { allow(subject).to receive(:published?).and_return(true) }
+  context "when published" do
+    before do
+      allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/NamedSubject
+    end
+
     it { is_expected.to validate_presence_of(:slug) }
   end
 
@@ -89,12 +93,13 @@ RSpec.describe Article, type: :model do
 
   describe "featured_number" do
     it "is updated if approved when already true" do
-      article.body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
+      body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
+      article.body_markdown = body
       article.save
       article.approved = true
       article.save
       sleep(1)
-      article.body_markdown = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHellos"
+      article.body_markdown = body + "s"
       article.approved = true
       article.save!
       expect(article.featured_number).not_to eq(article.updated_at.to_i)
@@ -211,51 +216,43 @@ RSpec.describe Article, type: :model do
   end
 
   describe "queries" do
-    it "returns article plucked objects that match keyword query" do
+    let(:search_keyword) do
       create(:search_keyword,
         google_result_path: article.path,
         google_position: 8,
         google_volume: 2000,
         google_difficulty: 10)
+    end
+
+    it "returns article plucked objects that match keyword query" do
+      search_keyword
       article.update(featured: true)
       articles = Article.seo_boostable
       expect(articles.flatten[0]).to eq(article.path)
     end
+
     it "returns keyword articles by tag" do
-      create(:search_keyword,
-        google_result_path: article.path,
-        google_position: 8,
-        google_volume: 2000,
-        google_difficulty: 10)
+      search_keyword
       article.update(featured: true)
       articles = Article.seo_boostable(article.tags.first)
       expect(articles.flatten[0]).to eq(article.path)
     end
+
     it "does not return articles when none match based on tag" do
-      create(:search_keyword,
-        google_result_path: article.path,
-        google_position: 8,
-        google_volume: 2000,
-        google_difficulty: 10)
+      search_keyword
       article.update(featured: true)
       articles = Article.seo_boostable("woozle-wozzle-20000")
       expect(articles.size).to eq(0)
     end
-    it "does not return keywords that don't match criteria plucked objects that match keyword query" do
-      create(:search_keyword,
-        google_result_path: article.path,
-        google_position: 33, #too high position
-        google_volume: 2000,
-        google_difficulty: 10)
+
+    it "doesn't return keywords that don't match criteria plucked objects matching keyword query" do
+      search_keyword.update_attributes(google_position: 33) # too high of a position
       articles = Article.seo_boostable
       expect(articles.size).to eq(0)
     end
+
     it "does not return unpublished articles" do
-      create(:search_keyword,
-        google_result_path: article.path,
-        google_position: 8,
-        google_volume: 2000,
-        google_difficulty: 10)
+      search_keyword
       articles = Article.seo_boostable
       article.update(published: false)
       expect(articles.size).to eq(0)
@@ -370,15 +367,15 @@ RSpec.describe Article, type: :model do
     end
 
     it "returns a hash with the flare tag's name" do
-      expect(FlareTag.new(valid_article).tag_hash.values.include?("ama")).to be true
+      expect(FlareTag.new(valid_article).tag_hash.value?("ama")).to be true
     end
 
     it "returns a hash with the flare tag's bg_color_hex" do
-      expect(FlareTag.new(valid_article).tag_hash.values.include?("#f3f3f3")).to be true
+      expect(FlareTag.new(valid_article).tag_hash.value?("#f3f3f3")).to be true
     end
 
     it "returns a hash with the flare tag's text_color_hex" do
-      expect(FlareTag.new(valid_article).tag_hash.values.include?("#cccccc")).to be true
+      expect(FlareTag.new(valid_article).tag_hash.value?("#cccccc")).to be true
     end
   end
 
@@ -442,5 +439,5 @@ RSpec.describe Article, type: :model do
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
-
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

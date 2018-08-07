@@ -20,51 +20,51 @@ class CollectionDashboard < Administrate::BaseDashboard
     published: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-  }
+  }.freeze
 
   # COLLECTION_ATTRIBUTES
   # an array of attributes that will be displayed on the model's index page.
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :articles,
-    :user,
-    :organization,
-    :id,
-  ]
+  COLLECTION_ATTRIBUTES = %i[
+    articles
+    user
+    organization
+    id
+  ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :articles,
-    :user,
-    :organization,
-    :id,
-    :title,
-    :slug,
-    :description,
-    :main_image,
-    :social_image,
-    :published,
-    :created_at,
-    :updated_at,
-  ]
+  SHOW_PAGE_ATTRIBUTES = %i[
+    articles
+    user
+    organization
+    id
+    title
+    slug
+    description
+    main_image
+    social_image
+    published
+    created_at
+    updated_at
+  ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :articles,
-    :user,
-    :organization,
-    :title,
-    :slug,
-    :description,
-    :main_image,
-    :social_image,
-    :published,
-  ]
+  FORM_ATTRIBUTES = %i[
+    articles
+    user
+    organization
+    title
+    slug
+    description
+    main_image
+    social_image
+    published
+  ].freeze
 
   # Overwrite this method to customize how collections are displayed
   # across all pages of the admin dashboard.

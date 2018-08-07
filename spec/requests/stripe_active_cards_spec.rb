@@ -21,7 +21,6 @@ RSpec.describe "StripeSubscriptions", type: :request do
     MembershipService.new(Stripe::Customer.retrieve(user.stripe_id_code), user, amount)
   end
 
-
   describe "POST StripeActiveCards#create" do
     it "successfully adds a card to the correct user" do
       post "/stripe_active_cards", params: { stripe_token: stripe_helper.generate_card_token }

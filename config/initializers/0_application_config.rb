@@ -1,4 +1,4 @@
-ENVied.require(*ENV['ENVIED_GROUPS'] || Rails.groups)
+ENVied.require(*ENV["ENVIED_GROUPS"] || Rails.groups)
 
 class ApplicationConfig
   def self.[](key)

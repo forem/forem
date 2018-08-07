@@ -65,7 +65,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-
   describe "GET /live" do
     let(:user) { create(:user) }
 
@@ -123,4 +122,4 @@ RSpec.describe "Pages", type: :request do
       end
     end
   end
-end 
+end

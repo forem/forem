@@ -10,7 +10,7 @@ git_source(:github) do |repo_name|
 end
 
 group :production do
-  gem 'nakayoshi_fork'
+  gem "nakayoshi_fork"
 end
 
 gem "actionpack-action_caching", "~> 1.2"

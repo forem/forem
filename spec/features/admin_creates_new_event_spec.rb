@@ -1,14 +1,11 @@
-require 'rails_helper'
-require 'date'
+require "rails_helper"
+require "date"
 
-feature "Admin creates new event" do
+describe "Admin creates new event" do
   let(:admin) { create(:user, :super_admin) }
 
-  background do
-    sign_in admin
-  end
-
   before do
+    sign_in admin
     visit "/internal/events"
   end
 

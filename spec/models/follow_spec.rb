@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Follow, type: :model do
   after { StreamRails.enabled = false }
@@ -7,9 +7,10 @@ RSpec.describe Follow, type: :model do
   let(:user_2) { create(:user) }
 
   before do
-    StreamRails.enabled = true #Test with StreamRails
+    StreamRails.enabled = true # Test with StreamRails
     allow(StreamNotifier).to receive(:new).and_call_original
   end
+
   it "follows user" do
     user.follow(user_2)
     expect(user.following?(user_2)).to eq(true)

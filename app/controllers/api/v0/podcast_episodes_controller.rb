@@ -1,16 +1,15 @@
 module Api
   module V0
     class PodcastEpisodesController < ApiController
-
       # before_action :set_cache_control_headers, only: [:index, :show]
       caches_action :index,
-        :cache_path => Proc.new { |c| c.params.permit! },
-        :expires_in => 10.minutes
+        cache_path: Proc.new { |c| c.params.permit! },
+        expires_in: 10.minutes
       respond_to :json
 
       caches_action :show,
-        :cache_path => Proc.new { |c| c.params.permit! },
-        :expires_in => 10.minutes
+        cache_path: Proc.new { |c| c.params.permit! },
+        expires_in: 10.minutes
       respond_to :json
 
       before_action :cors_preflight_check

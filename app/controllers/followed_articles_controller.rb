@@ -2,8 +2,8 @@ class FollowedArticlesController < ApplicationController
   # No authorization required for entirely public controller
 
   caches_action :index,
-    :cache_path => Proc.new { "followed_articles_#{current_user.id}__#{current_user.updated_at}__#{user_signed_in?.to_s}" },
-    :expires_in => 35.minutes
+    cache_path: Proc.new { "followed_articles_#{current_user.id}__#{current_user.updated_at}__#{user_signed_in?}" },
+    expires_in: 35.minutes
 
   def index
     if current_user
@@ -26,9 +26,9 @@ class FollowedArticlesController < ApplicationController
     classic_article = Suggester::Articles::Classic.new(current_user).get
     response.headers["Cache-Control"] = "public, max-age=150"
     render json: {
-                    articles: @articles,
-                    classic_article: (article_json(classic_article) if classic_article),
-                 }.to_json
+      articles: @articles,
+      classic_article: (article_json(classic_article) if classic_article),
+    }.to_json
   end
 
   def inappropriate_hiring_instance(article)

@@ -1,6 +1,5 @@
 require "rails_helper"
 require "rss"
-require "open-uri"
 
 vcr_option = {
   cassette_name: "rss_feeds",
@@ -11,7 +10,7 @@ RSpec.describe RssReader, vcr: vcr_option do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
-  let(:rss_data) { RSS::Parser.parse(open(link).read, false) }
+  let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
 
   describe "#get_all_articles" do
     before do

@@ -63,13 +63,15 @@ RSpec.describe UserRoleService do
 
     it "adds workshop_expiration date with valid params" do
       expiration_date = Time.now + 1.year
-      described_class.new(user).send(:new_roles?, scholar: "1", workshop_expiration: expiration_date)
+      described_class.new(user).
+        send(:new_roles?, scholar: "1", workshop_expiration: expiration_date)
       expect(user.workshop_expiration).to eq(expiration_date)
     end
 
     it "doesn't add a workshop_expiration date if scholar is not checked" do
       expiration_date = Time.now + 1.year
-      described_class.new(user).send(:new_roles?, scholar: "0", workshop_expiration: expiration_date)
+      described_class.new(user).
+        send(:new_roles?, scholar: "0", workshop_expiration: expiration_date)
       expect(user.workshop_expiration).to eq(nil)
     end
   end

@@ -1,6 +1,7 @@
+# rubocop:disable RSpec/InstanceVariable
 require "rails_helper"
 
-feature "Send a broadcast" do
+describe "Send a broadcast" do
   describe "Onboarding/welcome broadcast" do
     describe "sent broadcast" do
       before do
@@ -24,7 +25,7 @@ feature "Send a broadcast" do
 
     describe "unsent broadcast" do
       before do
-        broadcast = FactoryBot.create(:broadcast, :onboarding)
+        FactoryBot.create(:broadcast, :onboarding)
       end
 
       it "is an unsent broadcast that doesn't create a notification" do
@@ -33,3 +34,4 @@ feature "Send a broadcast" do
     end
   end
 end
+# rubocop:enable RSpec/InstanceVariable

@@ -9,10 +9,10 @@ class Comment < ApplicationRecord
   has_many   :mentions, as: :mentionable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25000 },
-                        uniqueness: { scope: [:user_id,
-                                              :ancestry,
-                                              :commentable_id,
-                                              :commentable_type] }
+                            uniqueness: { scope: %i[user_id
+                                                    ancestry
+                                                    commentable_id
+                                                    commentable_type] }
   validates :commentable_id, presence: true
   validates :commentable_type, inclusion: { in: %w(Article PodcastEpisode) }
   validates :user_id, presence: true
@@ -27,7 +27,7 @@ class Comment < ApplicationRecord
   before_save    :set_markdown_character_count
   before_create  :adjust_comment_parent_based_on_depth
   before_validation :evaluate_markdown
-  validate  :permissions
+  validate :permissions
 
   include StreamRails::Activity
   as_activity
@@ -42,7 +42,7 @@ class Comment < ApplicationRecord
         :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
       attribute :body_html do
         HTML_Truncator.truncate(processed_html,
-          500, :ellipsis => '<a class="comment-read-more" href="'+path+'">... Read Entire Comment</a>')
+          500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
       end
       attribute :url do
         path
@@ -60,29 +60,31 @@ class Comment < ApplicationRecord
         parent&.path
       end
       attribute :heart_ids do
-        reactions.where(category:"like").pluck(:user_id)
+        reactions.where(category: "like").pluck(:user_id)
       end
       attribute :user do
-        { username: user.username,
+        {
+          username: user.username,
           name: user.name,
           id: user.id,
           profile_pic: ProfileImage.new(user).get(90),
           profile_image_90: ProfileImage.new(user).get(90),
           github_username: user.github_username,
-          twitter_username: user.twitter_username
+          twitter_username: user.twitter_username,
         }
       end
       attribute :commentable do
-        { path: commentable&.path,
+        {
+          path: commentable&.path,
           title: commentable&.title,
           tag_list: commentable&.tag_list,
-          id: commentable&.id
+          id: commentable&.id,
         }
       end
       tags do
         [commentable.tag_list,
-          "user_#{user_id}",
-          "commentable_#{commentable_type}_#{commentable_id}"].flatten.compact
+         "user_#{user_id}",
+         "commentable_#{commentable_type}_#{commentable_id}"].flatten.compact
       end
       ranking ["desc(created_at)"]
     end
@@ -90,7 +92,7 @@ class Comment < ApplicationRecord
 
   def self.trigger_delayed_index(record, remove)
     if remove
-      record.delay.remove_from_index! if (record && record.persisted?)
+      record.delay.remove_from_index! if record&.persisted?
     else
       if record.deleted == false
         record.delay.index!
@@ -110,7 +112,6 @@ class Comment < ApplicationRecord
     "comments-#{id}"
   end
 
-
   def self.rooted_on(commentable_id, commentable_type)
     includes(:user, :commentable).
       select(:id, :user_id, :commentable_type, :commentable_id,
@@ -121,11 +122,9 @@ class Comment < ApplicationRecord
   end
 
   def path
-    begin
-      "/#{user.username}/comment/#{id_code_generated}"
-    rescue
-      "/404.html"
-    end
+    "/#{user.username}/comment/#{id_code_generated}"
+  rescue StandardError
+    "/404.html"
   end
 
   def parent_or_root_article
@@ -137,9 +136,9 @@ class Comment < ApplicationRecord
   end
 
   def parent_type
-    parent_or_root_article.class.name.downcase
-                          .gsub('article', 'post')
-                          .gsub('podcastepisode', 'episode')
+    parent_or_root_article.class.name.downcase.
+      gsub("article", "post").
+      gsub("podcastepisode", "episode")
   end
 
   def id_code_generated
@@ -171,7 +170,7 @@ class Comment < ApplicationRecord
   end
 
   def activity_target
-    return "comment_#{Time.now}"
+    "comment_#{Time.now}"
   end
 
   def remove_from_feed
@@ -181,7 +180,7 @@ class Comment < ApplicationRecord
     elsif ancestors
       user_ids = ancestors.map { |comment| comment.user.id }
       user_ids = user_ids.uniq.reject { |uid| uid == commentable.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == self.user_id }
+      user_ids = user_ids.uniq.reject { |uid| uid == user_id }
       # filters out article author and duplicate users
       user_ids.map do |id|
         User.find_by(id: id)&.touch(:last_notification_activity)
@@ -249,7 +248,7 @@ class Comment < ApplicationRecord
 
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
-    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) {|s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>"}
+    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>" }
   end
 
   def shorten_urls!
@@ -292,8 +291,8 @@ class Comment < ApplicationRecord
   def create_first_reaction
     Reaction.create(user_id: user_id,
                     reactable_id: id,
-                    reactable_type: 'Comment',
-                    category: 'like')
+                    reactable_type: "Comment",
+                    category: "like")
   end
   handle_asynchronously :create_first_reaction
 
@@ -306,7 +305,7 @@ class Comment < ApplicationRecord
   def bust_cache
     expire_root_fragment
     cache_buster = CacheBuster.new
-    cache_buster.bust("#{commentable.path}") if commentable
+    cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
     async_bust
   end
@@ -331,10 +330,10 @@ class Comment < ApplicationRecord
   end
 
   def strip_url(url)
-    url.sub!(%r{https://}, '') if url.include?('https://')
-    url.sub!(%r{http://}, '')  if url.include?('http://')
-    url.sub!(/www./, '')       if url.include?('www.')
-    url = url.truncate(37) unless url.include?(' ')
+    url.sub!(%r{https://}, "") if url.include?("https://")
+    url.sub!(%r{http://}, "")  if url.include?("http://")
+    url.sub!(/www./, "")       if url.include?("www.")
+    url = url.truncate(37) unless url.include?(" ")
     url
   end
 

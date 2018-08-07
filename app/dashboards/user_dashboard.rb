@@ -53,17 +53,17 @@ class UserDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :profile_image,
-    :id,
-    :created_at,
-    :username,
-    :name,
-    :twitter_username,
-    :github_username,
-    :following_tags_count,
-    :saw_onboarding,
-    :monthly_dues,
+  COLLECTION_ATTRIBUTES = %i[
+    profile_image
+    id
+    created_at
+    username
+    name
+    twitter_username
+    github_username
+    following_tags_count
+    saw_onboarding
+    monthly_dues
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -73,28 +73,28 @@ class UserDashboard < Administrate::BaseDashboard
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :organization,
-    :name,
-    :username,
-    :twitter_username,
-    :github_username,
-    :profile_image,
-    :org_admin,
-    :banned,
-    :reason_for_ban,
-    :warned,
-    :reason_for_warning,
-    :trusted,
-    :scholar,
-    :analytics,
-    :summary,
-    :website_url,
-    :bg_color_hex,
-    :text_color_hex,
-    :reputation_modifier,
-    :feed_url,
-    :saw_onboarding,
+  FORM_ATTRIBUTES = %i[
+    organization
+    name
+    username
+    twitter_username
+    github_username
+    profile_image
+    org_admin
+    banned
+    reason_for_ban
+    warned
+    reason_for_warning
+    trusted
+    scholar
+    analytics
+    summary
+    website_url
+    bg_color_hex
+    text_color_hex
+    reputation_modifier
+    feed_url
+    saw_onboarding
   ].freeze
 
   # Overwrite this method to customize how users are displayed

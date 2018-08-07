@@ -55,9 +55,9 @@ module Api
       def update
         @article = Article.find(params[:id])
         render json: if @article.update(article_params)
-                        @article.to_json(only: [:id], methods: [:current_state_path])
-                      else
-                        @article.errors.to_json
+                       @article.to_json(only: [:id], methods: [:current_state_path])
+                     else
+                       @article.errors.to_json
                       end
       end
 

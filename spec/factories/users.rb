@@ -4,19 +4,23 @@ FactoryBot.define do
   sequence(:twitter_username) { |n| "twitter#{n}" }
   sequence(:github_username) { |n| "github#{n}" }
 
+  image = Rack::Test::UploadedFile.new(
+    File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg"
+  )
+
   factory :user do
     name               { Faker::Name.name }
     email              { generate :email }
     username           { generate :username }
-    profile_image      { Rack::Test::UploadedFile.new(File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg") }
+    profile_image      { image }
     twitter_username   { generate :twitter_username }
     github_username    { generate :github_username }
     summary            { Faker::Lorem.paragraph[0..rand(190)] }
     website_url        { Faker::Internet.url }
     confirmed_at       { Time.now }
-    saw_onboarding     { true }
-    signup_cta_variant { "navbar_basic" }
-    email_digest_periodic { false }
+    saw_onboarding true
+    signup_cta_variant "navbar_basic"
+    email_digest_periodic false
 
     trait :super_admin do
       after(:build) { |user| user.add_role(:super_admin) }

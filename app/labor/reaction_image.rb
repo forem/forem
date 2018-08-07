@@ -7,11 +7,11 @@ class ReactionImage
 
   def path
     images = {
-      'like' => 'emoji/emoji-one-heart.png',
-      'unicorn' => 'emoji/emoji-one-unicorn.png',
-      'hands' => 'emoji/emoji-one-hands.png',
-      'thinking' => 'emoji/emoji-one-thinking.png',
-      'readinglist' => 'emoji/emoji-one-bookmark.png'
+      "like" => "emoji/emoji-one-heart.png",
+      "unicorn" => "emoji/emoji-one-unicorn.png",
+      "hands" => "emoji/emoji-one-hands.png",
+      "thinking" => "emoji/emoji-one-thinking.png",
+      "readinglist" => "emoji/emoji-one-bookmark.png",
     }.freeze
     images[category]
   end

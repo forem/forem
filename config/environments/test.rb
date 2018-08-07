@@ -20,7 +20,7 @@ Rails.application.configure do
   # Configure static file server for tests with Cache-Control for performance.
   config.public_file_server.enabled = true
   config.public_file_server.headers = {
-    'Cache-Control' => 'public, max-age=3600'
+    "Cache-Control" => "public, max-age=3600",
   }
 
   # Show full error reports and disable caching.
@@ -40,7 +40,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :test
 
   # Additional setting to make test work. This is possibly useless and can be deleted.
-  config.action_mailer.default_url_options = { :host => 'test.host' }
+  config.action_mailer.default_url_options = { host: "test.host" }
 
   # Randomize the order test cases are executed.
   config.active_support.test_order = :random
@@ -55,5 +55,4 @@ Rails.application.configure do
   logger = Timber::Logger.new(nil)
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
-
 end

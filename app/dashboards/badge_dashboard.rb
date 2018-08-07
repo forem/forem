@@ -23,35 +23,35 @@ class BadgeDashboard < Administrate::BaseDashboard
   #
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
-  COLLECTION_ATTRIBUTES = [
-    :badge_image,
-    :id,
-    :title,
-    :slug,
-    :description,
+  COLLECTION_ATTRIBUTES = %i[
+    badge_image
+    id
+    title
+    slug
+    description
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
-  SHOW_PAGE_ATTRIBUTES = [
-    :users,
-    :id,
-    :title,
-    :slug,
-    :description,
-    :badge_image,
-    :created_at,
-    :updated_at,
+  SHOW_PAGE_ATTRIBUTES = %i[
+    users
+    id
+    title
+    slug
+    description
+    badge_image
+    created_at
+    updated_at
   ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-    :title,
-    :slug,
-    :description,
-    :badge_image,
+  FORM_ATTRIBUTES = %i[
+    title
+    slug
+    description
+    badge_image
   ].freeze
 
   # Overwrite this method to customize how badges are displayed

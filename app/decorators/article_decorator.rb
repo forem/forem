@@ -43,7 +43,7 @@ class ArticleDecorator < ApplicationDecorator
     end
   end
 
-  def internal_utm_params(place="additional_box")
+  def internal_utm_params(place = "additional_box")
     campaign = if boosted_additional_articles
                  "#{organization&.slug}_boosted"
                else

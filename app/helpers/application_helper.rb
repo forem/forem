@@ -20,10 +20,10 @@ module ApplicationHelper
       controller_name == "users" ||
       controller_name == "pages" ||
       controller_name == "chat_channels" ||
-      controller_name == "dashboards"||
-      controller_name == "moderations"||
-      controller_name == "videos"||
-      controller_name == "badges"||
+      controller_name == "dashboards" ||
+      controller_name == "moderations" ||
+      controller_name == "videos" ||
+      controller_name == "badges" ||
       controller_name == "stories" ||
       controller_name == "comments" ||
       controller_name == "notifications" ||
@@ -36,16 +36,16 @@ module ApplicationHelper
 
   def title(page_title)
     derived_title = if page_title.include?("DEV")
-      page_title
-    else
-      page_title + " - DEV Community 👩‍💻👨‍💻"
+                      page_title
+                    else
+                      page_title + " - DEV Community 👩‍💻👨‍💻"
     end
-    content_for(:title){ derived_title }
+    content_for(:title) { derived_title }
     derived_title
   end
 
   def icon(name, pixels = "20")
-    image_tag icon_url(name), alt: name, class:"icon-img", height: pixels, width: pixels
+    image_tag icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels
   end
 
   def icon_url(name)
@@ -66,11 +66,11 @@ module ApplicationHelper
     end
   end
 
-  def cloudinary(url, width = nil, quality = 80, format = "jpg")
+  def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
     if Rails.env.development? && (url.blank? || !url.include?("http"))
       return url
     end
-    if url && url.size.positive?
+    if url&.size&.positive?
       if width
         "https://res.cloudinary.com/practicaldev/image/fetch/c_scale,fl_progressive,q_auto,w_#{width}/f_auto/#{url}"
       else
@@ -121,7 +121,7 @@ module ApplicationHelper
   def tag_colors(tag)
     Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
       if found_tag = Tag.find_by_name(tag)
-        { background: found_tag.bg_color_hex,color: found_tag.text_color_hex }
+        { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
       else
         { background: "#d6d9e0", color: "#606570" }
       end
@@ -130,7 +130,7 @@ module ApplicationHelper
 
   def beautified_url(url)
     url.sub(/^((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
-  rescue
+  rescue StandardError
     url
   end
 

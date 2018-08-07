@@ -1,6 +1,6 @@
 class StoriesController < ApplicationController
-  before_action :authenticate_user!, except: [:index,:search,:show, :feed, :new]
-  before_action :set_cache_control_headers, only: [:index, :search, :show]
+  before_action :authenticate_user!, except: %i[index search show feed new]
+  before_action :set_cache_control_headers, only: %i[index search show]
 
   def index
     return handle_user_or_organization_or_podcast_index if params[:username]
@@ -81,11 +81,11 @@ class StoriesController < ApplicationController
 
     @stories = article_finder(8)
 
-    if @tag_model && @tag_model.requires_approval
+    if @tag_model&.requires_approval
       @stories = @stories.where(approved: true)
     end
 
-    @stories = stories_by_timeframe 
+    @stories = stories_by_timeframe
     @stories = @stories.decorate
 
     @featured_story = Article.new
@@ -147,7 +147,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.find_by_username(params[:username].tr("@","").downcase)
+    @user = User.find_by_username(params[:username].tr("@", "").downcase)
     unless @user
       redirect_to_changed_username_profile
       return
@@ -173,7 +173,7 @@ class StoriesController < ApplicationController
     @comments_to_show_count = 25
     @comment = Comment.new
     render template: "podcast_episodes/show"
-    return
+    nil
   end
 
   def redirect_if_view_param
@@ -239,7 +239,7 @@ class StoriesController < ApplicationController
 
   def assign_organization_article
     @article = @organization.articles.find_by_slug(params[:slug])&.decorate
-    @user = @article&.user || not_found #The org may have changed back to user and this does not handle that properly
+    @user = @article&.user || not_found # The org may have changed back to user and this does not handle that properly
   end
 
   def assign_user_article
@@ -273,12 +273,12 @@ class StoriesController < ApplicationController
 
   def article_finder(num_articles)
     Article.where(published: true).
-    includes(:user).
-    limited_column_select.
-    page(@page).
-    per(num_articles). 
-    filter_excluded_tags(params[:tag]) 
-  end 
+      includes(:user).
+      limited_column_select.
+      page(@page).
+      per(num_articles).
+      filter_excluded_tags(params[:tag])
+  end
 
   def assign_sticky_nav
     return unless @article
@@ -298,7 +298,7 @@ class StoriesController < ApplicationController
       order("RANDOM()").
       limit(8)
     if tag_articles.size < 6
-      more_articles = Article.tagged_with((["career","productivity","discuss","explainlikeimfive"]), any: true).
+      more_articles = Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
         includes(:user).
         where("comments_count > ?", comment_count_num).
         limited_column_select.
@@ -310,12 +310,11 @@ class StoriesController < ApplicationController
     end
 
     @user_stickies = (@organization || @user).articles.
-        where(published: true).
-        limited_column_select.
-        tagged_with(article_tags, any: true).
-        where.not(id: @article.id).order("published_at DESC").
-        limit(2)
+      where(published: true).
+      limited_column_select.
+      tagged_with(article_tags, any: true).
+      where.not(id: @article.id).order("published_at DESC").
+      limit(2)
     @sticky_articles = (tag_articles + more_articles).sample(8)
   end
-
 end

@@ -1,5 +1,4 @@
 class FollowChecker
-
   attr_accessor :follower, :followable_type, :followable_id
 
   def initialize(follower, followable_type, followable_id)

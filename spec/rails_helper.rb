@@ -1,7 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] = "test"
 
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
@@ -46,8 +46,8 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  Approvals.configure do |config|
-    config.approvals_path = "#{::Rails.root}/spec/support/fixtures/approvals/"
+  Approvals.configure do |approvals_config|
+    approvals_config.approvals_path = "#{::Rails.root}/spec/support/fixtures/approvals/"
   end
 
   config.include Devise::Test::ControllerHelpers, type: :view
@@ -77,7 +77,7 @@ RSpec.configure do |config|
   end
 
   # Only turn on VCR if :vcr is included metadata keys
-  config.around(:each) do |ex|
+  config.around do |ex|
     if ex.metadata.key?(:vcr)
       ex.run
     else
@@ -92,27 +92,27 @@ RSpec.configure do |config|
     puts "Running **live** tests against Stripe..."
   end
 
-  config.before(:each) do
-    stub_request(:any, /res.cloudinary.com/).to_rack('dsdsdsds')
+  config.before do
+    stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
     stub_request(:post, /api.fastly.com/).
-      with(headers: { 'Fastly-Key' => 'f15066a3abedf47238b08e437684c84f' }).
-      to_return(status: 200, body: '', headers: {})
+      with(headers: { "Fastly-Key" => "f15066a3abedf47238b08e437684c84f" }).
+      to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /api.bufferapp.com/).
-      to_return(status: 200, body: {fake_text:"so fake"}.to_json, headers: {})
+      to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
 
     # stub_request(:any, /api.getstream.io/).to_rack(FakeStream)
 
     # for twitter image cdn
-    stub_request(:get, /twimg.com/)
-      .to_return(status: 200, body: '', headers: {})
+    stub_request(:get, /twimg.com/).
+      to_return(status: 200, body: "", headers: {})
 
-    stub_request(:any, /api.mailchimp.com/)
-      .to_return(status: 200, body: '', headers: {})
+    stub_request(:any, /api.mailchimp.com/).
+      to_return(status: 200, body: "", headers: {})
 
-    stub_request(:post, /us-east-api.stream-io-api.com\/api\/v1.0\/feed\/user/)
-      .to_return(status: 200, body: '{}', headers: {})
+    stub_request(:post, /us-east-api.stream-io-api.com\/api\/v1.0\/feed\/user/).
+      to_return(status: 200, body: "{}", headers: {})
 
     stub_request(:get, /us-east-api.stream-io-api.com\/api/).to_rack(FakeStream)
   end
@@ -129,7 +129,7 @@ RSpec.configure do |config|
   raw_info.first_name = "fname"
   raw_info.gender = "female"
   raw_info.id = "123456"
-  raw_info.last_name ="lname"
+  raw_info.last_name = "lname"
   raw_info.link = "http://www.facebook.com/url&#8221"
   raw_info.lang = "fr"
   raw_info.locale = "en_US"
