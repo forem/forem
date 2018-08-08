@@ -89,7 +89,7 @@ PS: a clear and detailed issue gets lots of love, all you have to do is follow t
 Some existing code may be poorly written or untested, so we must have more scrutiny going forward. We test with [rspec](http://rspec.info/), let us know if you have any questions about this!
 
 #### Create a pull request
-* Try to keep the pull requests small; a pull request should try it's very best to address only a single concern.
+* Try to keep the pull requests small; a pull request should try its very best to address only a single concern.
 * Make sure all tests pass and add additional tests for the code you submit.
 * Document your reasoning behind the changes. Explain why you wrote the code in the way you did; the code should explain what it does.
 * If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
