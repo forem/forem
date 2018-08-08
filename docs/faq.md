@@ -4,7 +4,7 @@ Get started with our [`README`](https://github.com/thepracticaldev/dev.to). You 
 
 ## Actually, I meant how to contribute to these cool docs!
 
-All documentation lives in the [docs folder](/docs). Any guides and clarifications are very much welcome.
+All documentation lives in the [docs folder](https://github.com/thepracticaldev/dev.to/tree/master/docs). Any guides and clarifications are very much welcome.
 
 ## I'm getting an error [SOME-ERROR]. Where do I report it?
 

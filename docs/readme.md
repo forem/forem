@@ -24,4 +24,4 @@ This is the home of the nitty-gritty technical details for contributing to dev.t
 
 If you're looking to get started, check out our [`README` in the main repo.](https://github.com/thepracticaldev/dev.to)
 
-Have any questions, comments, or concerns? Check out our [FAQ](faq), or ask for help in our [help thread on dev.to](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45)!
+Have any questions, comments, or concerns? Check out our [FAQ](https://docs.dev.to/faq/), or ask for help in our [help thread on dev.to](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45)!
