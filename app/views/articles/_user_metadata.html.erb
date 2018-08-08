@@ -60,19 +60,20 @@
           </div>
         </div>
       <% end %>
-      <% if @user.employer_name.present? %>
+      <% if @user.employment_title.present? %>
         <div class="row">
           <div class="key">
             work
           </div>
           <div class="value">
-            <% if @user.employment_title.present? %>
-              <span><%= @user.employment_title %> at </span>
-            <% end %>
-            <% if @user.employer_url.present? %>
-              <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
-            <% else %>
-              <%= @user.employer_name %>
+            <span><%= @user.employment_title %></span>
+            <% if @user.employer_name.present? %>
+              <span> at <span>
+              <% if @user.employer_url.present? %>
+                <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
+              <% else %>
+                <%= @user.employer_name %>
+              <% end %>
             <% end %>
           </div>
         </div>
