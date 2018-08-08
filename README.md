@@ -55,6 +55,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
 - [Additional docs](#additional-docs)
+- [Product Roadmap](#product-roadmap)
 - [Core Team Members](#core-team)
 - [License](#license)
 
@@ -74,10 +75,10 @@ TODO: update link ^
 
 ### How to contribute
 1. Fork the project & clone locally. Follow the initial setup [here](#getting-started).
-2. Create a feature branch: `git checkout -b feature/that-new-feature`
+2. Create a branch, naming it either a feature or bug: `git checkout -b feature/that-new-feature` or `bug/fixing-that-bug`
 3. Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
 4. Push to the branch: `git push origin feature/that-new-feature`
-5. [Create a pull request](#create-a-pull-request) for your feature branch 🎉
+5. [Create a pull request](#create-a-pull-request) for your branch 🎉
 
 ### Contribution guideline
 
@@ -178,6 +179,18 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 
 ## Additional docs
 [Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
+
+## Product Roadmap
+
+Our new product roadmap can be found [here](https://github.com/thepracticaldev/dev.to/projects/1). Many notes need to be converted to issues but this should provide an overview of features we plan to work on, as well as features we are considering.
+
+Core team members will move issues along the project board as they progress.
+
+- Ideas & Requests: features up for discussion.
+- Needs Owners: features in need of an owner.
+- Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
+- In Progress (early stage): work has begun on feature.
+- In Progress (late stage): feature is near completion.
 
 ## Core team
 

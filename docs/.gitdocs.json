@@ -1,7 +1,8 @@
 {
-  "name": "dev.to Docs",
+  "name": "DEV Docs",
   "root": "./",
   "logo": "devblacksquarelogo.svg",
+  "favicon": "favicon-32x32.png",
   "header_links": [
     {
       "title": "Repo",
