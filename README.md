@@ -63,9 +63,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harrassment-free.
 
 ### Where to contribute
-When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](ADD LINK). Any issue with `good first issue` tag is typically a good place to start.
-
-TODO: update link ^
+When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with `good first issue` tag is typically a good place to start.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
@@ -102,7 +100,7 @@ _Please note: all commits in a pull request will be squashed when merged, but wh
 ### How to get help
 Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
 
-TODO: needs an oss thread link
+# [OSS Help/Discussion Thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45)
 
 ### The bottom line
 We are all humans trying to work together to improve the community. Always be kind and appreciate the need for tradeoffs. ❤️
