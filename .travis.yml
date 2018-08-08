@@ -12,7 +12,7 @@ addons:
 env:
   global:
   - RAILS_ENV=test
-  - CC_TEST_REPORTER_ID=4d20fbc40b511f2ecc8322241848be64ef7f951fe34c8be956fb8675f51ee46d
+  - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
 branches:
   only:
   - master
