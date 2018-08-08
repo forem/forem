@@ -32,7 +32,7 @@
     </div>
       <% if story.comments_count > 0 %>
         <div class="article-engagement-count comments-count">
-          <a href="<%=story.path%>">
+          <a href="<%=story.path%>#comments-container">
             <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
           </a>
         </div>
