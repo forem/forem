@@ -20,6 +20,6 @@
 * We use [_Rolify_](https://github.com/RolifyCommunity/rolify) for role management.
 * We use [_Pundit_](https://github.com/varvet/pundit) for authorization.
 * We use Service Workers to proxy traffic
-* We use Preact for some of the front end. See [Frontend](/frontend) for more info
+* We use Preact for some of the front end. See [Frontend](https://docs.dev.to/frontend/) for more info
 
 _This list is non-exhaustive. If you see something that belongs here, feel free to add it._
