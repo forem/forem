@@ -100,7 +100,7 @@ _Please note: all commits in a pull request will be squashed when merged, but wh
 ### How to get help
 Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
 
-# [OSS Help/Discussion Thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45)
+### 👉 [OSS Help/Discussion Thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) 👈
 
 ### The bottom line
 We are all humans trying to work together to improve the community. Always be kind and appreciate the need for tradeoffs. ❤️
