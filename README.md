@@ -100,7 +100,7 @@ Some existing code may be poorly written or untested, so we must have more scrut
 _Please note: all commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!_
 
 ### How to get help
-Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](#)'s contributor's channel or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
+Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
 
 TODO: needs an oss thread link
 
