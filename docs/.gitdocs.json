@@ -1,0 +1,17 @@
+{
+  "name": "dev.to Docs",
+  "root": "./",
+  "logo": "devblacksquarelogo.svg",
+  "header_links": [
+    {
+      "title": "Repo",
+      "href": "https://github.com/thepracticaldev/dev.to",
+      "target": "_blank"
+    },
+    {
+      "title": "dev.to",
+      "href": "https://dev.to",
+      "target": "_blank"
+    }
+  ]
+}
