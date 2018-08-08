@@ -8,5 +8,26 @@
 [build]
   base = "docs/"
 [[redirects]]
-  from = "http://devto.netlify.com/*"
+  from = "http://docs.dev.to"
   to = "https://docs.dev.to"
+[[redirects]]
+  from = "http://docs.dev.to/*"
+  to = "https://docs.dev.to/:splat"
+[[redirects]]
+  from = "docs.dev.to"
+  to = "https://docs.dev.to"
+[[redirects]]
+  from = "docs.dev.to/*"
+  to = "https://docs.dev.to/:splat"
+[[redirects]]
+  from = "http://devto.netlify.com"
+  to = "https://docs.dev.to"
+[[redirects]]
+  from = "http://devto.netlify.com/:splat"
+  to = "https://docs.dev.to/:splat"
+[[redirects]]
+  from = "https://devto.netlify.com"
+  to = "https://docs.dev.to"
+[[redirects]]
+  from = "https://devto.netlify.com/*"
+  to = "https://docs.dev.to/:splat"

@@ -1,13 +1,12 @@
-# _TASK or Feature_
-### Request or User Story
+<!-- Fill out the appropriate template and delete nonappicable lines -->
 
+## Feature Request or Task
+### User Story / Description
 ### Definition of Done
 
-### Notes
-
-# _BUG_
-### Current/Expected Behavior
-
-### Additional Info (steps to replicate, device/browser, helpful links)
-
-### Screenshots
+-------
+## Bug Report
+### Current Behavior
+### Expected Behavior
+### Mobile & Desktop Screenshots/Recordings
+### Additional Info (device/browser, helpful links)
