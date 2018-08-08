@@ -110,7 +110,7 @@ We are all humans trying to work together to improve the community. Always be ki
 ### The stack
 We run on a Rails backend with mostly vanilla JavaScript on the front end, and some Preact sprinkled in. One of our goals is to move to mostly Preact for our front end.
 
-Additional technologies and services are listed on [our docs](add link).
+Additional technologies and services are listed on [our docs](https://docs.dev.to).
 
 ### Engineering standards
 #### Style Guide
