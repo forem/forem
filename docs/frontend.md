@@ -4,7 +4,7 @@ Before doing any development in the front-end, ensure that [Node.js](https://nod
 
 * [Download and install the LTS version](https://nodejs.org/en/download), or
 * [Download and install nvm](https://github.com/creationix/nvm) and follow their instructions to install the Node.js LTS version (recommended), or
-* [Download and install n](https://github.com/tj/n)and follow their instructions to install the Node.js LTS version, or
+* [Download and install n](https://github.com/tj/n) and follow their instructions to install the Node.js LTS version, or
 * Install Node.js via Homebrew (macOS only) `brew install node`
 
 For bundling, we use Webpack via the [webpacker](https://github.com/rails/webpacker) since the backend is Ruby on Rails.
