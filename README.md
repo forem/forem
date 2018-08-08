@@ -17,14 +17,14 @@
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
   </a>
-  <a href="https://travis-ci.com/thepracticaldev/dev.to_core">
-    <img src="https://travis-ci.com/thepracticaldev/dev.to_core.svg?token=gYyQp8xsU99uXSw75ah6&branch=master" alt="Travis Status for thepracticaldev/dev.to_core"/>
+  <a href="https://travis-ci.com/thepracticaldev/dev.to">
+    <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to"/>
   </a>
-  <a href="https://codeclimate.com/repos/5a9720ab6f8db3029200792a/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/607170a91196c15668e5/maintainability" />
+  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" />
   </a>
-  <a href="https://codeclimate.com/repos/5a9720ab6f8db3029200792a/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/607170a91196c15668e5/test_coverage" />
+  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
+    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" />
   </a>
   <a href="https://www.skylight.io/app/applications/K9H5IV3RqKGu">
     <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" />
