@@ -50,7 +50,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
     - [Style guide](#style-guide)
     - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
-  - [Prerequisite](#Pre-requisites)
+  - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
@@ -125,8 +125,8 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
-### Pre-requisites
-These pre-requisites assume you are running macOS. If you are running a different OS, you should install these pre-requisites specific to your OS.
+### prerequisites
+These prerequisites assume you are running macOS. If you are running a different OS, you should install these prerequisites specific to your OS.
 
 * Ruby: we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * Bundler: `gem install bundler`
