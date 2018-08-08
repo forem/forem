@@ -51,6 +51,10 @@
     text-align: center;
     padding-top: 15px !important;
     padding-bottom: 20px !important;
+    img{
+      width:100%;
+      border-radius: 3px;
+    }
     .primary-sticky-nav-countdown-timer-element{
       padding: 14px 2px;
       height: 30px;
@@ -59,7 +63,7 @@
       border-radius: 3px;
     }
     .primary-sticky-nav-countdown-headline{
-      font-size:1.4em;
+      font-size:1.33em;
       font-family: $helvetica-condensed;
       padding: 16px 2px 3px;
     }
