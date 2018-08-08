@@ -1,15 +1,15 @@
-<center><h1>The DEV Community 👩‍💻👨‍💻</h1></center>
-
-<p align="center">
+<div align="center">
+  <br>
   <img
     alt="DEV"
     src="https://thepracticaldev.s3.amazonaws.com/i/d3o5l9yiqfv1z24cn1yp.png"
-    height=200px
+    width=500px
   />
-</p>
-<p align="center">
- The Human Layer of the Stack
-</p>
+  <br/>
+  <h1>DEV Community 👩‍💻👨‍💻</h1>
+  <strong>The Human Layer of the Stack</strong>
+</div>
+<br/>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
     <img src="https://img.shields.io/badge/Ruby-v2.5.1-green.svg" alt="ruby version"/>
@@ -31,47 +31,117 @@
   </a>
 </p>
 
-## Introduction and Contribution Guideline
+Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
 
-Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. Most importantly, all contributors must abide by the [code of conduct](https://dev.to/code-of-conduct).
+## Table of Contents
 
-With your help, we can build out the DEV Community platform to be more stable and better serve the community. We are a [Ruby on Rails](http://rubyonrails.org/) app. When in doubt, try to do things "The Rails Way", but it is an evolving codebase and we will learn from all new contributions in order to evolve.
+- [Contributing](#contributing)
+  - [Where to contribute](#where-to-contribute)
+  - [How to contribute](#how-to-contribute)
+  - [Contribution guideline](#contribution-guideline)
+    - [Clean code with tests](#clean-code-with-tests)
+    - [Create a pull request](#create-a-pull-request)
+    - [Creating an issue](#creating-an-issue)
+  - [How to get help](#how-to-get-help)
+  - [The bottom line](#the-bottom-line)
+- [Codebase](#codebase)
+  - [The stack](#the-stack)
+  - [Engineering standards](#engineering-standards)
+    - [Style guide](#style-guide)
+    - [Husky hooks](#husky-hooks)
+- [Getting Started](#getting-started)
+  - [Prerequisite](#prerequisite)
+  - [Installation](#installation)
+  - [Starting the application](#starting-the-application)
+  - [Suggested Workflow](#suggested-workflow)
+- [Additional docs](#additional-docs)
+- [Core Team Members](#core-team)
+- [License](#license)
 
-### How to contribute
+## Contributing
+We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harrassment-free.
 
-When in doubt, ask! This is a new process and we need to learn from pain points.
+### Where to contribute
+When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](ADD LINK). Any issue with `good first issue` tag is typically a good place to start.
+
+TODO: update link ^
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
 **Fixing bugs** may also not require a lot of communication, but the more the better. Please surround bug fixes with ample tests. Bugs are magnets for other bugs. Write tests near bugs!
 
-**Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. Let's talk about the features!
+**Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. The [product roadmap](https://github.com/thepracticaldev/dev.to/projects) should be a good guide to follow. As always, when in doubt, ask!
 
-### Clean code with tests
+### How to contribute
+1. Fork the project & clone locally. Follow the initial setup [here](#getting-started).
+2. Create a feature branch: `git checkout -b feature/that-new-feature`
+3. Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature/that-new-feature`
+5. [Create a pull request](#create-a-pull-request) for your feature branch 🎉
 
-Even though some of the existing code is poorly written or untested, we must have more scrutiny for code going forward. We test with [rspec](http://rspec.info/), let us know if you have any questions about this!
+### Contribution guideline
+
+### Create an issue
+Nobody's perfect. Something doesn't work? or could be done better? Let us know by creating an issue.
+
+PS: a clear and detailed issue gets lots of love, all you have to do is follow the issue template!
+
+#### Clean code with tests
+Some existing code may be poorly written or untested, so we must have more scrutiny going forward. We test with [rspec](http://rspec.info/), let us know if you have any questions about this!
+
+#### Create a pull request
+* Try to keep the pull requests small; a pull request should try it's very best to address only a single concern.
+* Make sure all tests pass and add additional tests for the code you submit.
+* Document your reasoning behind the changes. Explain why you wrote the code in the way you did; the code should explain what it does.
+* If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
+* If you follow the pull request template, you can't go wrong.
+
+_Please note: all commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!_
+
+### How to get help
+Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](#)'s contributor's channel or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
+
+TODO: needs an oss thread link
 
 ### The bottom line
+We are all humans trying to work together to improve the community. Always be kind and appreciate the need for tradeoffs. ❤️
 
-We are all humans trying to work together to improve things for the community. Always be kind and appreciate the need for tradeoffs. ❤️
+## Codebase
 
-# Getting Started
+### The stack
+We run on a Rails backend with mostly vanilla JavaScript on the front end, and some Preact sprinkled in. One of our goals is to move to mostly Preact for our front end.
 
-#### Prerequisite
+Additional technologies and services are listed on [our docs](add link).
+
+### Engineering standards
+#### Style Guide
+This project follows [Thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
+
+For Javascript, we follow [Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using [ESLint](https://eslint.org) and [prettier](https://github.com/prettier/prettier). If you have ESLint installed with your text editor of choice, you should be up and running.
+
+#### Husky hooks
+When commits are made, a git precommit hook runs via [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged). ESLint, prettier, and Rubocop will run on your code before it's committed. If there are linting errors that can't be automatically fixed, the commit will not happen. You will need to fix the issue manually then attempt to commit again.
+
+Note: if you've already installed the [husky](https://github.com/typicode/husky) package at least once (used for precommit npm script), you will need to run `yarn --force` or `npm install --no-cache`. For some reason, the post-install script of husky does not run when the package is pulled from yarn or npm's cache. This is not husky specific, but rather a cached package issue.
+
+## Getting Started
+
+### Pre-requisites
+These pre-requisites assume you are running macOS. If you are running a different OS, you should install these pre-requisites specific to your OS.
 
 * Ruby: we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * Bundler: `gem install bundler`
 * Foreman: `gem install foreman`
 * Yarn: use `brew install yarn` to install yarn. It will also install node if you don't already have it.
-* PostgresSQL: the easiest way to get started with this is to use [Postgres.app](https://postgresapp.com/).
+* PostgreSQL: the easiest way to get started with this is to use [Postgres.app](https://postgresapp.com/).
 
-#### Installation steps
-
-1.  `git clone git@github.com:thepracticaldev/dev.to_core.git`
+### Installation
+1.  `git clone git@github.com:thepracticaldev/dev.to.git`
 2.  `bundle install`
 3.  `bin/yarn`
 4.  Set up your environment variables/secrets
-    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free API keys for a few services in order to get your development environment running. Check this [wiki](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development) on how to get them. For minimum requirement, you should obtain valid [Algolia](https://github.com/thepracticaldev/dev.to_core/wiki/Getting-API-Keys-for-Basic-Development#algolia-choose-oauth-or-email-sign-up) credentials.
+    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia-(choose-oauth-or-email-sign-up)) to get your development environment running.
+    * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
     * For any key that you wish to enter/replace:
       1. Create `config/application.yml` by copying from the provided template (`cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
       2. Obtain the development variable and apply the key you wish to enter/replace. ie:
@@ -84,7 +154,6 @@ We are all humans trying to work together to improve things for the community. A
 5.  Run `bin/setup`
 
 #### Starting the application
-
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
 
 * Run **`bin/startup`** to start the server, Webpack, and our job runner `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the hood.
@@ -93,122 +162,48 @@ We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, 
 
 Here are some singleton commands you may need, usually in a separate instance/tab of your shell.
 
-* Running the job server (if using `bin/rails server`) -- this is for mostly for notifications and emails: **`bin/rails jobs:work`**
+* Running the job server (if using `bin/rails server`) -- this is mostly for notifications and emails: **`bin/rails jobs:work`**
 * Clearing jobs (in case you don't want to wait for the backlog of jobs): **`bin/rails jobs:clear`**
 
 Current gotchas: potential environment issues with external services need to be worked out.
 
-## ⚛ Front-End Development
-
-There is some legacy code which is old school JS, but for all things new, [Preact](https://preactjs.com) is the where it's at. If you're new to Preact, check out their [documentation](https://preactjs.com/guide/getting-started). Also, consider following the [#preact](https://dev.to/t/preact) tag on [dev.to](https://dev.to).
-
-### 👷‍ Building components
-
-We use [Storybook](https://storybook.js.org) to develop components. It allows you to focus on building components without the burden of the whole application running. If you're new to Storybook, check out their [documentation](https://storybook.js.org/basics/guide-react). Also, consider following the [#storybook](https://dev.to/t/storybook) tag on [dev.to](https://dev.to).
-
-To get Storybook running on your local:
-
-* 📦 Run `npm install` or `yarn` to ensure all your dependencies are installed.
-* 🏁 Run `npm run storybook` or `yarn storybook` to start Storybook.
-* 🏗️ Start working on your component and see the changes in Storybook as you save.
-
-## 🔑 Key App tech/services
-
-* We use **Puma** for the server
-* We [rely heavily on edge caching](https://dev.to/ben/making-devto-insanely-fast) with **Fastly**
-* We use **Cloudinary** for image manipulation/serving
-* We use **Keen** for event storage
-* We use **Airbrake** for error monitoring
-* We use **Timber** for logging
-* We use **Delayed Job** for background workers
-* We use **Algolia** for search
-* We use **Redcarpet/Rouge** for Markdown
-* We use **Carrierwave/Fog/AWS S3** for image upload/storage
-* We use a modified version of **InstantClick** instead of **Turbolinks**
-* We are hosted on **Heroku**
-* We use **Heroku scheduler** for scheduled jobs (default)
-* We use **Sendgrid** for API-triggered mailing
-* We use **Mailchimp** for marketing/outreach emails
-* We use **Figaro** for app configuration.
-* We use **CounterCulture** to keep track of association counts (counter caches)
-* We use **Rolify** for role management.
-* We use **Pundit** for authorization.
-* We use Service Workers to proxy traffic
-
-There's more, but that's a decent overview of the key need-to-knows.
-
-## Workflow Suggestion
-
+#### Suggested Workflow
 We use [Spring](https://github.com/rails/spring) and it is already included in the project.
 
 1.  Use the provided bin stubs to automatically start Spring, i.e. `bin/rails server`, `bin/rspec spec/models/`, `bin/rake db:migrate`.
 2.  If Spring isn't picking up on new changes, use `spring stop`. For example, Spring should always be restarted if there's a change in environment key.
 3.  Check Spring's status whenever with `spring status`.
 
-Caveat: `bin/rspec` is not equipped with Spring because it affect Simplecov's result. Instead use `bin/spring rspec`.
+Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's result. Instead use `bin/spring rspec`.
 
-## Style Guide
+## Additional docs
+[Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
 
-This project follows [Bbatsov's Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running. Settings can be edited in `.rubocop.yml`.
+## Core team
 
-For Javascript, we follow [Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using [ESLint](https://eslint.org) and [prettier](https://github.com/prettier/prettier). If you have ESLint installed with your text editor of choice, you should be up and running.
+- [@benhalpern](https://dev.to/ben)
+- [@jessleenyc](https://dev.to/jess)
+- [@peterkimfrank](https://dev.to/peter)
+- [@maestromac](https://dev.to/maestromac)
+- [@zhao-andy](https://dev.to/andy)
 
-When commits are made, a git precommit hook runs via [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged) on front-end code that will run eslint and prettier on your code before committing it. If there are linting errors and eslint isn't able to automatically fix it, the commit will not happen. You will need to fix the issue manually then attempt to commit again.
+## License
+DEV is licensed under the GNU Affero General Public License 3 (AGPL-3).  Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
 
-Note: if you've already installed the [husky](https://github.com/typicode/husky) package at least once (used for precommit npm script), you will need to run `yarn --force` or `npm install --no-cache`. For some reason the post-install script of husky does not run, when the package is pulled from yarn's or npm's cache. This is not husky specific, but rather a cached package specific issue.
+Like many open source projects, we require that contributors provide us with a Contributor License Agreement (CLA).  By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
 
-## Testing
+Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which they generously made available to the public domain under Creative Commons CC0 1.0 Universal.
 
-The following technologies are used for testing:
+Any questions, please refer to our [license FAQ](http://docs.dev.to/license-faq/) doc or email yo@dev.to
 
-* **Rspec**
-* **Capybara** with **selenium-webdriver**
-  * **chromedriver-helper** for standard JS testing.
-* **guard-rspec** for automated testing
-* [Jest](https://facebook.github.io/jest) for testing in the front-end.
+<br/>
 
-## Previewing emails in development
-
-You can modify the test in `/test/mailers/previews`
-You can view the previews at (for example) `http://localhost:3000/rails/mailers/notify_mailer/new_reply_email`
-
-## How to contribute
-1. Fork the project & clone locally.
-2. Create a feature branch: `git checkout -b my-name/feature/that-new-feature`
-3. Code and Commit your changes. Bonus point if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-name/feature/that-new-feature`
-5. Create a new pull request for your feature branch 🎉
-
-#### Pull request guideline
-
-* Try to keep the pull request small; a pull request should try it's very best to address only a single concern.
-* Make sure all the tests pass and add additional tests for the code you submit.
-* Document your reasoning behind the changes. Explain why you wrote the code in the way you did, not what it does.
-* If there's an existing issue related to the pull request, reference to it. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
-
-Please note that we squash all pull request.
-
-## Continuous Integration & Continuous Deployment
-
-We are using Travis for CI and CD. Travis will run a build (in isolated environment for testing) for every push to this repository. Keep in mind that a passing-build does not necessarily mean the project won't run into any issues. Strive to write good tests for any chunk of code you wish to contribute. Travis will deploy a pull request to production after CI passes. Our test suite is not perfect and sometimes a re-rerun is needed.
-
-#### Skipping CI build (Not recommended)
-
-If your changes are minor (i.e. updating README), you can skip CI by adding `[skip ci]` to your commit message.
-
-## CodeClimate and Simplecov
-
-We are using CodeClimate to track code quality and code coverage. Codeclimate will grade the quality of the code of every PR but not the entirety of the project. If you feel that the current linting rule is unreasonable, feel free to submit a _separate_ PR to change it. Fix any errors that Codeclimate provides and strive to leave code better than you found it.
-
-Simplecov is a gem that is tracking the coverage of our test suite. Travis will upload Simplecov data to CodeClimate. We are still in the early stage of using it so it may not provide an accurate measurement our of codebase.
-
-#### Using simplecov locally
-
-1.  Run `bundle exec rspec spec` or `bin/rspec spec`. You can run rspec on the whole project or a single file.
-2.  After rspec is complete, open `index.html` within the coverage folder to view code coverages.
-
-Run `bin/rspecov` to do all of this in one step
-
-***
-
-## Happy Coding ❤️
+<p align="center">
+  <img
+    alt="sloan"
+    width=250px
+    src="https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
+  />
+  <br/>
+  <strong>Happy Coding</strong> ❤️
+</p>

@@ -32,6 +32,7 @@ node_modules/
 /app/assets/javascripts/generated/*
 latest.dump
 .byebug_history
+.gitdocs_build/
 
 # Ignore application configuration
 /config/application.yml
