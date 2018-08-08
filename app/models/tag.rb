@@ -28,7 +28,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def tag_moderator_ids
-    User.with_role(:tag_moderator, self).map(&:id).sort
+    User.with_role(:tag_moderator, self).order("id ASC").pluck(:id)
   end
 
   private
