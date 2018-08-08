@@ -27,8 +27,8 @@
 <div class="primary-sticky-nav">
   <div class="primary-sticky-nav-element primary-sticky-nav-countdown">
     <div id="countdown-timer" class="primary-sticky-nav-countdown-timer-element"></div>
-    <div class="primary-sticky-nav-countdown-headline">Countdown to Open Source!</div>
-    <a href="https://dev.to/ben/the-devto-codebase-will-go-open-source-on-august-8-2kia">Read Announcement Post</a>
+    <div class="primary-sticky-nav-countdown-headline" id="countdown-headline">Countdown to Open Source!</div>
+    <a href="https://dev.to/ben/the-devto-codebase-will-go-open-source-on-august-8-2kia" id="oss-announcement-post">Read Announcement Post</a>
     <a href="https://github.com/thepracticaldev/dev.to" target="_blank" rel="noopener">View GitHub Repo</a>
   </div>
   <div class="primary-sticky-nav-element primary-sticky-nav-author">
@@ -135,8 +135,22 @@
 
     // If the count down is finished, write some text 
     if (distance < 0) {
+      var gifUrls = [
+        "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+        "https://media.giphy.com/media/RDbZGZ3O0UmL6/giphy.gif",
+        "https://media.giphy.com/media/3o7abldj0b3rxrZUxW/giphy.gif",
+        "https://media.giphy.com/media/yCjr0U8WCOQM0/giphy.gif",
+        "https://media.giphy.com/media/msKNSs8rmJ5m/giphy.gif",
+        "https://media.giphy.com/media/lz24Z42jLcTa8/giphy.gif",
+        "https://media.giphy.com/media/l8XYZYdlOHSrS/giphy.gif",
+        "https://media.giphy.com/media/12q8x5BEsmQati/giphy.gif",
+        "https://media.giphy.com/media/xT1XGHkP7hqm0JvWrS/giphy.gif",
+      ]
+      var randomGifUrl = gifUrls[Math.floor(Math.random()*gifUrls.length)];
       clearInterval(x);
-      document.getElementById("countdown-timer").innerHTML = "It's Time!!!";
+      document.getElementById("countdown-timer").outerHTML = "<img src='"+randomGifUrl+"' />";
+      document.getElementById("countdown-headline").innerHTML = "DEV Just Went Open Source!";
+      document.getElementById("oss-announcement-post").outerHTML = "";
     }
   }, 1000);
 </script>
