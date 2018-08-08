@@ -50,7 +50,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
     - [Style guide](#style-guide)
     - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
-  - [Prerequisite](#prerequisite)
+  - [Prerequisite](#Pre-requisites)
   - [Installation](#installation)
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
