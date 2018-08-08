@@ -213,8 +213,6 @@ Rails.application.routes.draw do
     end
   end
 
-  match "/delayed_job_admin" => DelayedJobWeb, :anchor => false, via: %i[get post]
-
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
