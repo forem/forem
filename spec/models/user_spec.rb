@@ -424,18 +424,18 @@ RSpec.describe User, type: :model do
   describe "organization admin privileges" do
     it "recognizes an org admin" do
       user.update(organization: org, org_admin: true)
-      expect(user.is_org_admin?(org)).to be true
+      expect(user.org_admin?(org)).to be true
     end
 
     it "forbids an incorrect org admin" do
       user.update(organization: org, org_admin: true)
-      expect(user.is_org_admin?(second_org)).to be false
-      expect(second_user.is_org_admin?(org)).to be false
+      expect(user.org_admin?(second_org)).to be false
+      expect(second_user.org_admin?(org)).to be false
     end
 
     it "responds to nil" do
-      expect(user.is_org_admin?(nil)).to be false
-      expect(second_user.is_org_admin?(nil)).to be false
+      expect(user.org_admin?(nil)).to be false
+      expect(second_user.org_admin?(nil)).to be false
     end
   end
 
