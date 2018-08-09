@@ -11,17 +11,14 @@ class FollowedArticlesController < ApplicationController
                     "user-#{current_user.id}__#{current_user.updated_at}/followed_articles",
                     expires_in: 30.minutes,
                   ) do
-                    current_user.
-                      followed_articles.
-                      includes(:user).
-                      where("published_at > ?", 5.days.ago).
+                    current_user.followed_articles.
+                      includes(:user).where("published_at > ?", 5.days.ago).
                       order("hotness_score DESC").
-                      limit(25).
-                      map do |a|
-                      unless inappropriate_hiring_instance(a)
-                        article_json(a)
-                      end
-                    end.compact
+                      limit(25).map do |a|
+                        unless inappropriate_hiring_instance(a)
+                          article_json(a)
+                        end
+                      end.compact
                   end
                 else
                   @articles = []
