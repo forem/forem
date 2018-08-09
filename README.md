@@ -134,7 +134,7 @@ These pre-requisites assume you are running macOS. If you are running a differen
 * Yarn: use `brew install yarn` to install yarn. It will also install node if you don't already have it.
 * PostgreSQL: the easiest way to get started with this is to use [Postgres.app](https://postgresapp.com/).
 
-### Installation
+### Basic Installation
 1.  `git clone git@github.com:thepracticaldev/dev.to.git`
 2.  `bundle install`
 3.  `bin/yarn`
@@ -151,6 +151,12 @@ These pre-requisites assume you are running macOS. If you are running a differen
     * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 5.  Run `bin/setup`
+
+### Docker Installation
+1. Install `docker` and `docker-compose`
+2. `git clone git@github.com:thepracticaldev/dev.to.git`
+3. Set environment variables above as described in the "Basic Installation"
+3. `docker-compose up -d`
 
 #### Starting the application
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:

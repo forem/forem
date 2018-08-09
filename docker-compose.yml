@@ -1,0 +1,40 @@
+version: "3"
+services:
+  rails:
+    build:
+      dockerfile: infra/dev/rails/Dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      ALGOLIASEARCH_API_KEY: ${ALGOLIASEARCH_API_KEY}
+      ALGOLIASEARCH_APPLICATION_ID: ${ALGOLIASEARCH_APPLICATION_ID}
+      ALGOLIASEARCH_SEARCH_ONLY_KEY: ${ALGOLIASEARCH_SEARCH_ONLY_KEY}
+      GITHUB_KEY: ${GITHUB_KEY}
+      GITHUB_SECRET: ${GITHUB_SECRET}
+      RAILS_ENV: development
+    volumes:
+      - .:/usr/src/app
+    command: rails server -b 0.0.0.0 -p 8080
+  migrate:
+    build:
+      dockerfile: infra/dev/rails/Dockerfile
+      context: .
+    depends_on:
+      - db
+    environment:
+      ALGOLIASEARCH_API_KEY: ${ALGOLIASEARCH_API_KEY}
+      ALGOLIASEARCH_APPLICATION_ID: ${ALGOLIASEARCH_APPLICATION_ID}
+      ALGOLIASEARCH_SEARCH_ONLY_KEY: ${ALGOLIASEARCH_SEARCH_ONLY_KEY}
+      GITHUB_KEY: ${GITHUB_KEY}
+      GITHUB_SECRET: ${GITHUB_SECRET}
+      RAILS_ENV: development
+    volumes:
+    - .:/usr/src/app
+    command: rake db:migrate
+  db:
+    image: postgres:10
+    ports:
+      - "5432:5432"
