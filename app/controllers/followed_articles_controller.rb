@@ -6,23 +6,26 @@ class FollowedArticlesController < ApplicationController
     expires_in: 35.minutes
 
   def index
-    if current_user
-      @articles = Rails.cache.fetch("user-#{current_user.id}__#{current_user.updated_at}/followed_articles", expires_in: 30.minutes) do
-        current_user.
-          followed_articles.
-          includes(:user).
-          where("published_at > ?", 5.days.ago).
-          order("hotness_score DESC").
-          limit(25).
-          map do |a|
-            unless inappropriate_hiring_instance(a)
-              article_json(a)
-            end
-          end.compact
-      end
-    else
-      @articles = []
-    end
+    @articles = if current_user
+                  Rails.cache.fetch(
+                    "user-#{current_user.id}__#{current_user.updated_at}/followed_articles",
+                    expires_in: 30.minutes,
+                  ) do
+                    current_user.
+                      followed_articles.
+                      includes(:user).
+                      where("published_at > ?", 5.days.ago).
+                      order("hotness_score DESC").
+                      limit(25).
+                      map do |a|
+                      unless inappropriate_hiring_instance(a)
+                        article_json(a)
+                      end
+                    end.compact
+                  end
+                else
+                  @articles = []
+                end
     classic_article = Suggester::Articles::Classic.new(current_user).get
     response.headers["Cache-Control"] = "public, max-age=150"
     render json: {
