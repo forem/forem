@@ -155,13 +155,13 @@ RSpec.describe User, type: :model do
     it "updates mentor_form_updated_at at appropriate time" do
       user.mentor_description = "hello"
       user.save
-      expect(user.mentor_form_updated_at).to_not eq(nil)
+      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "updates mentee_form_updated_at at appropriate time" do
       user.mentee_description = "hello"
       user.save
-      expect(user.mentee_form_updated_at).to_not eq(nil)
+      expect(user.mentee_form_updated_at).not_to eq(nil)
     end
 
     it "does not allow too short or too long name" do
