@@ -60,7 +60,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [License](#license)
 
 ## Contributing
-We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harrassment-free.
+We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
 ### Where to contribute
 When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with `good first issue` tag is typically a good place to start.
