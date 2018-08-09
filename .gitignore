@@ -43,3 +43,6 @@ latest.dump
 # Ignore storybook static site generation
 storybook-static/
 yarn-error.log
+
+# Ignore configuration file
+Envfile
