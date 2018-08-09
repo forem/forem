@@ -26,10 +26,9 @@
 
 <div class="primary-sticky-nav">
   <div class="primary-sticky-nav-element primary-sticky-nav-countdown">
-    <div id="countdown-timer" class="primary-sticky-nav-countdown-timer-element"></div>
-    <div class="primary-sticky-nav-countdown-headline" id="countdown-headline">Countdown to Open Source!</div>
-    <a href="https://dev.to/ben/the-devto-codebase-will-go-open-source-on-august-8-2kia" id="oss-announcement-post">Read Announcement Post</a>
-    <a href="https://github.com/thepracticaldev/dev.to" target="_blank" rel="noopener">View GitHub Repo</a>
+    <div class="primary-sticky-nav-countdown-headline" id="countdown-headline">dev.to is now open source!</div>
+    <a href="https://dev.to/ben/devto-is-now-open-source-5n1">View Announcement Post</a>
+    <a href="https://github.com/thepracticaldev/dev.to" target="_blank" rel="noopener" style="margin-bottom: 11px">View GitHub Repo</a>
   </div>
   <div class="primary-sticky-nav-element primary-sticky-nav-author">
     <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-author-top-profile-image" /></a>
@@ -105,52 +104,3 @@
 
   <% end %>
 </div>
-
-<script defer>
-// Remove this when we get open.
-// Set the date we're counting down to
-  var countDownDate = new Date("Aug 8, 2018 17:00:00 UTC").getTime();
-
-  // Update the count down every 1 second
-  var x = setInterval(function() {
-    if (!document.getElementById("countdown-timer")){
-      clearInterval(x);
-      return;
-    }
-    // Get todays date and time
-    var now = new Date().getTime();
-
-    // Find the distance between now and the count down date
-    var distance = countDownDate - now;
-
-    // Time calculations for days, hours, minutes and seconds
-    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    // Display the result in the element with id="demo"
-    document.getElementById("countdown-timer").innerHTML = days + "d " + hours + "h "
-    + minutes + "m " + seconds + "s ";
-
-    // If the count down is finished, write some text 
-    if (distance < 0) {
-      var gifUrls = [
-        "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
-        "https://media.giphy.com/media/RDbZGZ3O0UmL6/giphy.gif",
-        "https://media.giphy.com/media/3o7abldj0b3rxrZUxW/giphy.gif",
-        "https://media.giphy.com/media/yCjr0U8WCOQM0/giphy.gif",
-        "https://media.giphy.com/media/msKNSs8rmJ5m/giphy.gif",
-        "https://media.giphy.com/media/lz24Z42jLcTa8/giphy.gif",
-        "https://media.giphy.com/media/l8XYZYdlOHSrS/giphy.gif",
-        "https://media.giphy.com/media/12q8x5BEsmQati/giphy.gif",
-        "https://media.giphy.com/media/xT1XGHkP7hqm0JvWrS/giphy.gif",
-      ]
-      var randomGifUrl = gifUrls[Math.floor(Math.random()*gifUrls.length)];
-      clearInterval(x);
-      document.getElementById("countdown-timer").outerHTML = "<img src='"+randomGifUrl+"' />";
-      document.getElementById("countdown-headline").innerHTML = "DEV Just Went Open Source!";
-      document.getElementById("oss-announcement-post").outerHTML = "";
-    }
-  }, 1000);
-</script>

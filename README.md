@@ -60,7 +60,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [License](#license)
 
 ## Contributing
-We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harrassment-free.
+We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
 ### Where to contribute
 When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with `good first issue` tag is typically a good place to start.
@@ -114,7 +114,7 @@ Additional technologies and services are listed on [our docs](https://docs.dev.t
 
 ### Engineering standards
 #### Style Guide
-This project follows [Thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
+This project follows [thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
 
 For Javascript, we follow [Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using [ESLint](https://eslint.org) and [prettier](https://github.com/prettier/prettier). If you have ESLint installed with your text editor of choice, you should be up and running.
 
@@ -125,7 +125,7 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
-### prerequisites
+### Prerequisites
 These prerequisites assume you are running macOS. If you are running a different OS, you should install these prerequisites specific to your OS.
 
 * Ruby: we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
