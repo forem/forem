@@ -61,7 +61,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [License](#license)
 
 ## What is dev.to?
-[dev.to](https://dev.to) (or just DEV) is a platform where software developers write articles, take part in discussions, and build their professional profiles. We value supportive and constructive dialogue in the pursuit of great code. Content spans from beginner to advance, and all are welcome to find their place within our community. ❤️ 
+[dev.to](https://dev.to) (or just DEV) is a platform where software developers write articles, take part in discussions, and build their professional profiles. We value supportive and constructive dialogue in the pursuit of great code. Content spans from beginner to advanced, and all are welcome to find their place within our community. ❤️ 
 
 ## Contributing
 We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
