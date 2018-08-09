@@ -139,6 +139,7 @@ These pre-requisites assume you are running macOS. If you are running a differen
 2.  `bundle install`
 3.  `bin/yarn`
 4.  Set up your environment variables/secrets
+    * Copy `Envfile.example` and name it `Envfile`: `cp Envfile.example Envfile`
     * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia-(choose-oauth-or-email-sign-up)) to get your development environment running.
     * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
     * For any key that you wish to enter/replace:
