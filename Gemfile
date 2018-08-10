@@ -60,7 +60,7 @@ gem "octokit", "~> 4.8"
 gem "omniauth", "~> 1.8"
 gem "omniauth-github", "~> 1.3"
 gem "omniauth-twitter", "~> 1.4"
-gem "pg", "~> 0.21"
+gem "pg", "~> 1.0"
 gem "pry", "~> 0.11"
 gem "pry-rails", "~> 0.3"
 gem "puma", "~> 3.11"
@@ -142,7 +142,7 @@ group :test do
   gem "shoulda-matchers", "~> 3.1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
-  gem "stackprof", "~> 0.2", require: false
+  gem "stackprof", "~> 0.2", require: false, platforms: :ruby
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock"
   gem "test-prof", "~> 0.5"
   gem "timecop", "~> 0.9"
