@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: bundle exec rails s -b "0.0.0.0"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+
+  jobs:
+    build: .
+    command: bundle exec rails jobs:work
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+
+  webpacker:
+    build: .
+    command: ./bin/webpack-dev-server
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    ports:
+      - '3035:3035'
+    volumes:
+      - .:/usr/src/app
+
+volumes:
+  postgres-data:
+    driver: local

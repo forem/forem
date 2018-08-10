@@ -99,6 +99,10 @@ Rails.application.configure do
     Bullet.enable = true
     Bullet.console = true
   end
+
+  # This configuration is for docker. The IP might vary depeneding on the machine
+  # or network config
+  config.web_console.whitelisted_ips = "172.18.0.1"
 end
 
 # rubocop:enable Metrics/BlockLength
