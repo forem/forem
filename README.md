@@ -33,6 +33,9 @@
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
 
+## What is dev.to?
+[dev.to](https://dev.to) (or just DEV) is a platform where software developers write articles, take part in discussions, and build their professional profiles. We value supportive and constructive dialogue in the pursuit of great code and career growth for all members. The ecosystem spans from beginner to advanced developers, and all are welcome to find their place within our community. ❤️ 
+
 ## Table of Contents
 
 - [Contributing](#contributing)
@@ -50,7 +53,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
     - [Style guide](#style-guide)
     - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
-  - [Prerequisite](#prerequisite)
+  - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
@@ -114,7 +117,7 @@ Additional technologies and services are listed on [our docs](https://docs.dev.t
 
 ### Engineering standards
 #### Style Guide
-This project follows [Thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
+This project follows [thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
 
 For Javascript, we follow [Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using [ESLint](https://eslint.org) and [prettier](https://github.com/prettier/prettier). If you have ESLint installed with your text editor of choice, you should be up and running.
 
@@ -125,8 +128,8 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
-### Pre-requisites
-These pre-requisites assume you are running macOS. If you are running a different OS, you should install these pre-requisites specific to your OS.
+### Prerequisites
+These prerequisites assume you are running macOS. If you are running a different OS, you should install these prerequisites specific to your OS.
 
 * Ruby: we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * Bundler: `gem install bundler`

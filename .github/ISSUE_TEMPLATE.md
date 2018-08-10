@@ -1,4 +1,4 @@
-<!-- Fill out the appropriate template and delete nonappicable lines -->
+<!-- Fill out the appropriate template and delete non-applicable lines -->
 
 ## Feature Request or Task
 ### User Story / Description
