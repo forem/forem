@@ -1,4 +1,4 @@
-DEV is licensed under the [GNU Affero General Public License 3 (AGPL-3)](https://gnu.org/licenses/agpl-3.0.html).  Please see the LICENSE file in our repository for the full text.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.  Please see the [LICENSE](https://github.com/thepracticaldev/dev.to/blob/master/LICENSE.md) file in our repository for the full text.
  
 Like many open source projects, we require that contributors provide us with a Contributor License Agreement (CLA).  By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
  
