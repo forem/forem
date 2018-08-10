@@ -12,26 +12,30 @@ module ApplicationHelper
   end
 
   def core_pages?
-    controller_name == "articles" ||
-      controller_name == "podcast_episodes" ||
-      controller_name == "events" ||
-      controller_name == "tags" ||
-      controller_name == "registrations" ||
-      controller_name == "users" ||
-      controller_name == "pages" ||
-      controller_name == "chat_channels" ||
-      controller_name == "dashboards" ||
-      controller_name == "moderations" ||
-      controller_name == "videos" ||
-      controller_name == "badges" ||
-      controller_name == "stories" ||
-      controller_name == "comments" ||
-      controller_name == "notifications" ||
-      controller_name == "reading_list_items"
+    %w(
+      articles
+      podcast_episodes
+      events
+      tags
+      registrations
+      users
+      pages
+      chat_channels
+      dashboards
+      moderations
+      videos
+      badges
+      stories
+      comments
+      notifications
+      reading_list_items
+    ).include?(controller_name)
   end
 
   def render_js?
-    !((controller_name == "articles" && (controller.action_name == "index" || controller.action_name == "show")) || controller_name == "pulses")
+    article_pages = controller_name == "articles" && %(index show).include?(controller.action_name)
+    pulses_pages = controller_name == "pulses"
+    !(article_pages || pulses_pages)
   end
 
   def title(page_title)
@@ -49,42 +53,38 @@ module ApplicationHelper
   end
 
   def icon_url(name)
-    prefix = "https://res.cloudinary.com/practicaldev/image/upload/"
-    case name
-    when "twitter"
-      prefix + "v1456342401/twitter-logo-silhouette_1_letrqc.png"
-    when "github"
-      prefix + "v1456342401/github-logo_m841aq.png"
-    when "link"
-      prefix + "v1456342401/link-symbol_apfbll.png"
-    when "volume"
-      prefix + "v1461589297/technology_1_aefet2.png"
-    when "volume-mute"
-      prefix + "v1461589297/technology_jiugwb.png"
-    else
-      prefix + "v1456342953/star-in-black-of-five-points-shape_sor40l.png"
-    end
+    postfix = {
+      "twitter"     => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
+      "github"      => "v1456342401/github-logo_m841aq.png",
+      "link"        => "v1456342401/link-symbol_apfbll.png",
+      "volume"      => "v1461589297/technology_1_aefet2.png",
+      "volume-mute" => "v1461589297/technology_jiugwb.png"
+    }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
+
+    "https://res.cloudinary.com/practicaldev/image/upload/#{postfix}"
   end
 
   def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
-    if Rails.env.development? && (url.blank? || !url.include?("http"))
-      return url
-    end
+    return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
+
+    service_path = "https://res.cloudinary.com/practicaldev/image/fetch"
+
     if url&.size&.positive?
       if width
-        "https://res.cloudinary.com/practicaldev/image/fetch/c_scale,fl_progressive,q_auto,w_#{width}/f_auto/#{url}"
+        "#{service_path}/c_scale,fl_progressive,q_auto,w_#{width}/f_auto/#{url}"
       else
-        "https://res.cloudinary.com/practicaldev/image/fetch/c_scale,fl_progressive,q_auto/f_auto/#{url}"
+        "#{service_path}/c_scale,fl_progressive,q_auto/f_auto/#{url}"
       end
     else
-      "https://res.cloudinary.com/practicaldev/image/fetch/c_scale,fl_progressive,q_1/f_auto/https://pbs.twimg.com/profile_images/481625927911092224/iAVNQXjn_normal.jpeg"
+      "#{service_path}/c_scale,fl_progressive,q_1/f_auto/https://pbs.twimg.com/profile_images/481625927911092224/iAVNQXjn_normal.jpeg"
     end
   end
 
   def cloud_cover_url(url)
-    return nil unless url.present?
+    return if url.blank?
     return asset_path("triple-unicorn") if Rails.env.test?
     return url if Rails.env.development?
+
     width = 1000
     height = 420
     quality = "auto"
@@ -101,20 +101,20 @@ module ApplicationHelper
   end
 
   def cloud_social_image(article)
-    Rails.cache.
-      fetch("article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}",
-      expires_in: 1.hour) do
+    cache_key = "article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}"
+
+    Rails.cache.fetch(cache_key, expires_in: 1.hour) do
       src = GeneratedImage.new(article).social_image
       return src if src.include? "res.cloudinary"
       cl_image_path(src,
-      type: "fetch",
-      width:  "1000",
-      height: "500",
-      crop: "imagga_scale",
-      quality: "auto",
-      flags: "progressive",
-      fetch_format: "auto",
-      sign_url: true)
+        type: "fetch",
+        width:  "1000",
+        height: "500",
+        crop: "imagga_scale",
+        quality: "auto",
+        flags: "progressive",
+        fetch_format: "auto",
+        sign_url: true)
     end
   end
 
@@ -153,11 +153,17 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full")
-    "<button class='cta follow-action-button' data-info='{\"id\":#{followable.id},\"className\":\"#{followable.class.name}\",\"style\":\"#{style}\"}' data-follow-action-button>&nbsp;</button>".html_safe
+    tag :button,
+      class: "cta follow-action-button",
+      data: {
+        info: { id: followable.id, className: followable.class.name, style: style }.to_json,
+        "follow-action-button" => true
+      }
   end
 
   def user_colors_style(user)
-    "border: 2px solid #{user.decorate.darker_color}; box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
+    "border: 2px solid #{user.decorate.darker_color}; \
+    box-shadow: 5px 6px 0px #{user.decorate.darker_color}"
   end
 
   def user_colors(user)
@@ -169,10 +175,8 @@ module ApplicationHelper
   end
 
   def list_path
-    if params[:tag].present?
-      "/t/#{params[:tag]}"
-    else
-      ""
-    end
+    return "" if params[:tag].blank?
+
+    "/t/#{params[:tag]}"
   end
 end
