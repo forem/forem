@@ -47,6 +47,9 @@
     </div>
   <% end %>
   <div class="actions" id="submit-wrapper">
+    <a href="<%=commentable.path%>">
+        <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
+    </a>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
     <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)", class:"comment-action-button" %>
   </div>
@@ -68,6 +71,16 @@
           form.submit();
         }
       },1);
+    }
+  }
+</script>
+
+<script async>
+  var formElement = document.getElementById("edit_comment_<%= @comment.id if @comment %>");
+  if (formElement){
+    formElement.getElementsByClassName("comment-action-cancel")[0].style.display = "inline-block";
+    formElement.onsubmit = function(e) {
+        e.preventDefault();
     }
   }
 </script>

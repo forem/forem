@@ -291,6 +291,11 @@ a.header-link{
         appearance: none;
       }
 
+      .comment-action-cancel {
+        background: $red;
+        display:none;
+      }
+
       .comment-action-preview {
         background: $dark-gray;
         z-index: 10;
