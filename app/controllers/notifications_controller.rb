@@ -18,6 +18,10 @@ class NotificationsController < ApplicationController
 
   private
 
+  def core_pages?
+    true
+  end
+
   def cached_activities
     return feed_activities unless Rails.env.production?
     Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",

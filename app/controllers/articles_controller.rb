@@ -54,7 +54,7 @@ class ArticlesController < ApplicationController
                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
                      processed_html: "",
                    )
-                  end
+                 end
               end
   end
 
@@ -133,6 +133,10 @@ class ArticlesController < ApplicationController
   end
 
   private
+
+  def core_pages?
+    true
+  end
 
   def handle_org_assignment
     if @user.organization_id.present? && article_params[:publish_under_org].to_i == 1

@@ -145,6 +145,10 @@ class CommentsController < ApplicationController
 
   private
 
+  def core_pages?
+    true
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])

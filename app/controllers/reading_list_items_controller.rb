@@ -5,4 +5,10 @@ class ReadingListItemsController < ApplicationController
     @reading_list_items_index = true
     set_surrogate_key_header "reading-list-index"
   end
+
+  private
+
+  def core_pages?
+    true
+  end
 end

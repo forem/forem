@@ -9,4 +9,10 @@ class RegistrationsController < Devise::RegistrationsController
     end
     super
   end
+
+  private
+
+  def core_pages?
+    true
+  end
 end

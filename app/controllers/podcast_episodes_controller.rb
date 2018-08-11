@@ -18,6 +18,10 @@ class PodcastEpisodesController < ApplicationController
 
   private
 
+  def core_pages?
+    true
+  end
+
   def podcast_episode_params
     params.require(:podcast_episode).permit(:title,
                                     :body,
