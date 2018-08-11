@@ -17,17 +17,16 @@ import ImageUploadIcon from 'images/image-upload.svg';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/markdown/markdown';
 
-const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-  .content;
-const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-  .content;
-const env = document.querySelector("meta[name='environment']").content;
-const client = algoliasearch(algoliaId, algoliaKey);
-const index = client.initIndex(`Tag_${  env}`);
-
 export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
+
+    const algoliaId = document.querySelector("meta[name='algolia-public-id']").content
+    const algoliaKey = document.querySelector("meta[name='algolia-public-key']").content
+    const env = document.querySelector("meta[name='environment']").content
+    const client = algoliasearch(algoliaId, algoliaKey);
+    this.index = client.initIndex('Tag_' + env);
+
     const article = JSON.parse(this.props.article);
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
@@ -88,11 +87,10 @@ export default class ArticleForm extends Component {
       });
       return;
     }
-    index
-      .search(query, {
-        hitsPerPage: 10,
-        filters: 'supported:true',
-      })
+    this.index.search(query, {
+      hitsPerPage: 10,
+      filters: 'supported:true',
+    })
       .then((content) => {
         component.setState({
           tagOptions: content.hits.filter(
@@ -131,7 +129,7 @@ export default class ArticleForm extends Component {
       e.preventDefault();
       const newInput =
         `${component.state.selectedTags +
-        component.state.tagOptions[component.state.tagInputListIndex].name 
+        component.state.tagOptions[component.state.tagInputListIndex].name
         },`;
       document.getElementById('tag-input').value = newInput;
       component.setState({
@@ -307,7 +305,7 @@ export default class ArticleForm extends Component {
       <div
         tabIndex="-1"
         className={
-            `articleform__tagoptionrow articleform__tagoptionrow--${ 
+            `articleform__tagoptionrow articleform__tagoptionrow--${
             tagInputListIndex === index ? 'active' : 'inactive'}`
           }
         onClick={component.handleTagClick}
