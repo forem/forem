@@ -87,7 +87,7 @@ export default class ArticleForm extends Component {
       });
       return;
     }
-    this.index.search(query, {
+    return this.index.search(query, {
       hitsPerPage: 10,
       filters: 'supported:true',
     })

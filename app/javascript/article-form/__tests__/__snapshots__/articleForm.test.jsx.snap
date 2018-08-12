@@ -84,3 +84,57 @@ exports[`<ArticleForm /> renders properly 1`] = `
   </div>
 </form>
 `;
+
+exports[`<ArticleForm /> shows tags as you search 1`] = `
+Object {
+  "bodyMarkdown": "",
+  "description": "",
+  "editing": false,
+  "errors": null,
+  "helpHTML": "",
+  "helpShowing": false,
+  "id": null,
+  "imageManagementShowing": false,
+  "mainImageUrl": null,
+  "organization": null,
+  "postUnderOrg": false,
+  "previewHTML": "",
+  "previewShowing": false,
+  "published": false,
+  "selectedTags": Array [],
+  "submitting": false,
+  "tagInputListIndex": -1,
+  "tagList": "git",
+  "tagOptions": Array [
+    Object {
+      "_highlightResult": Object {
+        "bg_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#888751",
+        },
+        "name": Object {
+          "fullyHighlighted": false,
+          "matchLevel": "full",
+          "matchedWords": Array [
+            "gi",
+          ],
+          "value": "<em>gi</em>t",
+        },
+        "text_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#56c938",
+        },
+      },
+      "bg_color_hex": "#888751",
+      "hotness_score": 0,
+      "name": "git",
+      "objectID": "4",
+      "supported": true,
+      "text_color_hex": "#56c938",
+    },
+  ],
+  "title": "",
+}
+`;
