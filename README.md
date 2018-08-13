@@ -202,7 +202,8 @@ Core team members will move issues along the project board as they progress.
 - [@zhao-andy](https://dev.to/andy)
 
 ## License
-DEV is licensed under the GNU Affero General Public License 3 (AGPL-3).  Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.  Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
 
 Like many open source projects, we require that contributors provide us with a Contributor License Agreement (CLA).  By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
 
