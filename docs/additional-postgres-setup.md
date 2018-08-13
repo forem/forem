@@ -1,6 +1,6 @@
 # Setup your application with PostgreSQL
 
-Follow these links for detailed the installation guide.
+Follow the instructions in the the installation guide below that corresponds to your operating system.
 
 1.  [Mac OS](https://postgresapp.com/)
 2.  Linux / Ubuntu
