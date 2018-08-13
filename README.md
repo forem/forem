@@ -169,6 +169,12 @@ Here are some singleton commands you may need, usually in a separate instance/ta
 
 Current gotchas: potential environment issues with external services need to be worked out.
 
+#### Starting application with docker
+1.  Install `docker` and `docker-compose`
+2. `git clone git@github.com:thepracticaldev/dev.to.git`
+3.  Set environment variables above as described 
+3. `docker-compose up -d`
+
 #### Suggested Workflow
 We use [Spring](https://github.com/rails/spring) and it is already included in the project.
 

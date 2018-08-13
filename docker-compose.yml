@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  devto:
+    build: .
+    depends_on:
+      - postgres
+    environment:
+        RAILS_ENV:   development
+        DB_HOST:     postgres
+        DB_USER:     postgres
+        DB_PASSWORD: mysecretpassword
+        DB_DATABASE: postgres
+        DB_ADAPTER:  postgresql
+        ALGOLIASEARCH_APPLICATION_ID:  ${ALGOLIASEARCH_APPLICATION_ID}
+        ALGOLIASEARCH_API_KEY:         ${ALGOLIASEARCH_API_KEY}
+        ALGOLIASEARCH_SEARCH_ONLY_KEY: ${ALGOLIASEARCH_SEARCH_ONLY_KEY}
+    ports:
+      - 3000:3000
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword 
+
