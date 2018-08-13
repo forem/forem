@@ -37,14 +37,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thepracticaldev/dev.to_private.git"
+    "url": "git+https://github.com/thepracticaldev/dev.to.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/thepracticaldev/dev.to_private/issues"
+    "url": "https://github.com/thepracticaldev/dev.to/issues"
   },
-  "homepage": "https://github.com/thepracticaldev/dev.to_private#readme",
+  "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
     "@storybook/addon-actions": "^3.4.6",
     "@storybook/addon-links": "^3.4.6",
