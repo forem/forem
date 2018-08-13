@@ -1,5 +1,3 @@
-require "nokogiri"
-
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
