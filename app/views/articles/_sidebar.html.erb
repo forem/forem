@@ -89,12 +89,6 @@
           <button class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</button>
         </div>
       </div>
-      <div class="search-partner-mention <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
-        DEV search is powered by
-        <a class="partner-link" href="http://goto.algolia.com/l/139121/2018-01-31/287fnc" target="_blank" data-details="algolia__image">
-          <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ocsnineha2511m04ceku.png", 300) %>" />
-        </a>
-      </div>
     <% elsif @tag %>
       <% if @tag_model && @tag_model.short_summary.present? %>
         <div class="widget">
