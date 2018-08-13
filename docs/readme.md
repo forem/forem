@@ -17,7 +17,9 @@ items:
   - path: license-faq.md
     title: License FAQ
 ---
+
 # Welcome to the dev.to documentation!
+
 _If you're viewing this on GitHub, we recommend viewing our docs on our static page: [docs.dev.to](https://docs.dev.to)_
 
 This is the home of the nitty-gritty technical details for contributing to dev.to.
