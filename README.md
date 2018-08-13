@@ -44,7 +44,7 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
   - [Contribution guideline](#contribution-guideline)
     - [Clean code with tests](#clean-code-with-tests)
     - [Create a pull request](#create-a-pull-request)
-    - [Creating an issue](#creating-an-issue)
+    - [Creating an issue](#create-an-issue)
   - [How to get help](#how-to-get-help)
   - [The bottom line](#the-bottom-line)
 - [Codebase](#codebase)
