@@ -40,7 +40,7 @@
     "url": "git+https://github.com/thepracticaldev/dev.to.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/thepracticaldev/dev.to/issues"
   },
