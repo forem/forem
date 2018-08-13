@@ -1,6 +1,6 @@
-import { h } from 'preact';
+import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { shallow, deep } from 'preact-render-spy';
 import ArticleForm from '../articleForm';
 import { JSDOM } from 'jsdom'
 
@@ -54,6 +54,38 @@ describe('<ArticleForm />', () => {
 
     return context.component().handleTagKeyUp({ target: { value: 'git' } }).then(() => {
       expect(context.state()).toMatchSnapshot();
+    })
+  })
+
+  it('selects tag when you click on it', () => {
+    const component = preactRender(
+      <ArticleForm
+        article={
+          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+        }
+      />,
+      document.body,
+      document.body.firstElementChild
+    )._component
+
+    component.handleTagClick({ target: { dataset: { content: 'git' } } })
+    expect(component.state).toMatchSnapshot();
+  })
+
+  it('selects tag when you type a comma', () => {
+    const component = preactRender(
+      <ArticleForm
+        article={
+          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+        }
+      />,
+      document.body,
+      document.body.firstElementChild
+    )._component
+
+    return component.handleTagKeyUp({ target: { value: 'git' } }).then(() => {
+      component.handleTagKeyDown({ keyCode: 188, preventDefault: jest.fn() })
+      expect(component.state).toMatchSnapshot();
     })
   })
 });
