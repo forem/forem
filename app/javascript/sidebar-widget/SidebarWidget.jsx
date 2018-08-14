@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import sendFollowUser from '../src/utils/sendFollowUser';
-import SidebarUser from './sidebarUser';
+import SidebarUser from './SidebarUser';
 
 class SidebarWidget extends Component {
   constructor(props) {
@@ -79,7 +79,7 @@ class SidebarWidget extends Component {
       return (
         <div className="widget" id="widget-00001">
           <div className="widget-suggested-follows-container">
-            <header>{'who to follow'}</header>
+            <header>who to follow</header>
             <div className="widget-body">{users}</div>
           </div>
         </div>
