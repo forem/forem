@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { getUserDataAndCsrfToken } from '../chat/util';
+import { getUserDataAndCsrfToken } from '../src/views/Chat/util';
 import ArticleForm from '../article-form/articleForm';
 
 HTMLDocument.prototype.ready = new Promise(resolve => {
@@ -20,10 +20,12 @@ document.ready.then(
     render(
       <ArticleForm
         article={document.getElementById('article-form').dataset.article}
-        organization={document.getElementById('article-form').dataset.organization}
-       />,
+        organization={
+          document.getElementById('article-form').dataset.organization
+        }
+      />,
       root,
-      root.firstElementChild
+      root.firstElementChild,
     );
   }),
 );

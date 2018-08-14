@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import Onboarding from '../src/Onboarding';
-import { getUserDataAndCsrfToken } from '../chat/util';
+import { getUserDataAndCsrfToken } from '../src/views/Chat/util';
 import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 
 HTMLDocument.prototype.ready = new Promise(resolve => {

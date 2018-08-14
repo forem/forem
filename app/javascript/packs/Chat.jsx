@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
-import { getUserDataAndCsrfToken } from '../chat/util';
-import Chat from '../chat/chat';
+import { getUserDataAndCsrfToken } from '../src/views/Chat/util';
+import Chat from '../src/views/Chat/chat';
 
 HTMLDocument.prototype.ready = new Promise(resolve => {
   if (document.readyState !== 'loading') {
