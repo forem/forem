@@ -1,6 +1,6 @@
 version: "3"
 services:
-  rails:
+  rails: &rails_base
     build:
       dockerfile: infra/dev/rails/Dockerfile
       context: .
@@ -15,26 +15,29 @@ services:
       GITHUB_KEY: ${GITHUB_KEY}
       GITHUB_SECRET: ${GITHUB_SECRET}
       RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
     volumes:
       - .:/usr/src/app
-    command: rails server -b 0.0.0.0 -p 8080
+    command: bin/rails server -b 0.0.0.0 -p 8080
+  redis:
+    image: redis:3.2.11
+    ports:
+      - "6379:6379"
   migrate:
-    build:
-      dockerfile: infra/dev/rails/Dockerfile
-      context: .
+    ports: []
+    <<: *rails_base
+    command: bin/rails db:migrate
+  queue:
+    ports: []
+    <<: *rails_base
+    command: bin/delayed_job run
+  cable:
+    ports: []
+    <<: *rails_base
     depends_on:
-      - db
-    environment:
-      ALGOLIASEARCH_API_KEY: ${ALGOLIASEARCH_API_KEY}
-      ALGOLIASEARCH_APPLICATION_ID: ${ALGOLIASEARCH_APPLICATION_ID}
-      ALGOLIASEARCH_SEARCH_ONLY_KEY: ${ALGOLIASEARCH_SEARCH_ONLY_KEY}
-      GITHUB_KEY: ${GITHUB_KEY}
-      GITHUB_SECRET: ${GITHUB_SECRET}
-      RAILS_ENV: development
-    volumes:
-    - .:/usr/src/app
-    command: rake db:migrate
+      - 'redis'
+    command: puma -p 28080 cable/config.ru
   db:
     image: postgres:10
     ports:
-      - "5432:5432"
+    - "5432:5432"

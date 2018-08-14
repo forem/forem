@@ -10,7 +10,6 @@ WORKDIR /usr/src/app
 
 RUN apt-get update -y && apt-get install apt-transport-https
 
-
 COPY Gemfile Gemfile.lock ./
 
 COPY --from=node_build /node_modules /usr/src/app
