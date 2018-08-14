@@ -106,13 +106,6 @@ Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: each, for
-Style/For:
-  Exclude:
-    - 'app/views/articles/feed.rss.builder'
-
 # Offense count: 3
 Style/MixinUsage:
   Exclude:
