@@ -284,7 +284,6 @@ class StoriesController < ApplicationController
     return unless @article
     reaction_count_num = Rails.env.production? ? 15 : -1
     comment_count_num = Rails.env.production? ? 7 : -2
-    tag_articles = []
     more_articles = []
     article_tags = @article.cached_tag_list_array
     article_tags.delete("discuss")
