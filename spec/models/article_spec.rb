@@ -429,7 +429,7 @@ RSpec.describe Article, type: :model do
   end
 
   it "does not show year in readable time if not current year" do
-    time_now = Time.now
+    time_now = Time.current
     article.published_at = time_now
     expect(article.readable_publish_date).to eq(time_now.strftime("%b %e"))
   end
