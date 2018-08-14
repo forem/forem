@@ -116,4 +116,10 @@ class UsersController < ApplicationController
       end
     end
   end
+
+  private
+
+  def core_pages?
+    true
+  end
 end

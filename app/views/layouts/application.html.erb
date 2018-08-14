@@ -44,7 +44,7 @@
         <%= javascript_pack_tag 'pack', defer: true %>
       <% end %>
     <% end %>
-    <% if !core_pages? %>
+    <% unless core_pages? %>
       <%= stylesheet_link_tag 'application', media: 'all' %>
       <% if render_js? %>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>

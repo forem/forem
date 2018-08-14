@@ -6,4 +6,10 @@ class BadgesController < ApplicationController
     @badge = Badge.find_by_slug(params[:slug])
     set_surrogate_key_header "badges-show-action"
   end
+
+  private
+
+  def core_pages?
+    true
+  end
 end

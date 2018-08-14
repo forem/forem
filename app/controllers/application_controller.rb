@@ -3,6 +3,8 @@ class ApplicationController < ActionController::Base
 
   include Pundit
 
+  helper_method :core_pages?
+
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
       username == ApplicationConfig["APP_NAME"] && password == ApplicationConfig["APP_PASSWORD"]
@@ -69,5 +71,11 @@ class ApplicationController < ActionController::Base
 
   def touch_current_user
     current_user.touch
+  end
+
+  private
+
+  def core_pages?
+    false
   end
 end

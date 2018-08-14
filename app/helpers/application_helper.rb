@@ -11,25 +11,6 @@ module ApplicationHelper
     "#{controller_name} #{controller_name}-#{controller.action_name}"
   end
 
-  def core_pages?
-    controller_name == "articles" ||
-      controller_name == "podcast_episodes" ||
-      controller_name == "events" ||
-      controller_name == "tags" ||
-      controller_name == "registrations" ||
-      controller_name == "users" ||
-      controller_name == "pages" ||
-      controller_name == "chat_channels" ||
-      controller_name == "dashboards" ||
-      controller_name == "moderations" ||
-      controller_name == "videos" ||
-      controller_name == "badges" ||
-      controller_name == "stories" ||
-      controller_name == "comments" ||
-      controller_name == "notifications" ||
-      controller_name == "reading_list_items"
-  end
-
   def render_js?
     !((controller_name == "articles" && (controller.action_name == "index" || controller.action_name == "show")) || controller_name == "pulses")
   end

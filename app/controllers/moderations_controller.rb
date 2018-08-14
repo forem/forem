@@ -12,4 +12,10 @@ class ModerationsController < ApplicationController
     @moderatable = Comment.find(params[:id_code].to_i(26))
     render template: "moderations/mod"
   end
+
+  private
+
+  def core_pages?
+    true
+  end
 end

@@ -22,4 +22,10 @@ class DashboardsController < ApplicationController
       @articles = @user.articles.order("created_at DESC").decorate
     end
   end
+
+  private
+
+  def core_pages?
+    true
+  end
 end

@@ -89,6 +89,10 @@ class ChatChannelsController < ApplicationController
 
   private
 
+  def core_pages?
+    true
+  end
+
   def chat_channel_params
     params.require(:chat_channel).permit(policy(ChatChannel).permitted_attributes)
   end

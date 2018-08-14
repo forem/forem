@@ -30,6 +30,10 @@ class StoriesController < ApplicationController
 
   private
 
+  def core_pages?
+    true
+  end
+
   def redirect_to_changed_username_profile
     if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
       redirect_to @user.path
