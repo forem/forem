@@ -12,14 +12,12 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def update
     @feedback_message = FeedbackMessage.find(params[:id])
-    @feedback_message.status = feedback_message_params[:status]
-    @feedback_message.reviewer_id = feedback_message_params[:reviewer_id]
-    note = @feedback_message.find_or_create_note(@feedback_message.feedback_type)
-    note.content = feedback_message_params[:note][:content]
+    note = @feedback_message.notes.new(feedback_message_params[:note])
+    update_feedback_message_and_note(note)
     if @feedback_message.save && note.save
       @feedback_message.touch(:last_reviewed_at)
-      flash[:success] = "Report ##{@feedback_message.id} saved. Remember to send emails!"
-      redirect_to "/internal/reports?state=#{@feedback_message.feedback_type}"
+      flash[:success] = "Report ##{@feedback_message.id} saved."
+      redirect_to "/internal/reports?state=#{@feedback_message.feedback_type}&status=#{@feedback_message.status}"
     else
       @feedback_type = @feedback_message.feedback_type
       @feedback_messages = FeedbackMessage.
@@ -31,16 +29,18 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     end
   end
 
+  def update_feedback_message_and_note(note)
+    @feedback_message.status = feedback_message_params[:status]
+    note.content = feedback_message_params[:note][:content]
+    note.author_id = current_user.id
+  end
+
   private
 
   def feedback_message_params
     params[:feedback_message].permit(
       :status, :reviewer_id,
-<<<<<<< HEAD
-      note: %i[content reason]
-=======
-      note: %i(content reason)
->>>>>>> Fix error handling when submitting blank note
+      note: %i[content reason noteable_id noteable_type author_id]
     )
   end
 end

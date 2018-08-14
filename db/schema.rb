@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -286,7 +288,6 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.string "reported_url"
     t.boolean "reporter_email_sent?", default: false
     t.integer "reporter_id"
-    t.integer "reviewer_id"
     t.string "slug"
     t.string "status", default: "Open"
     t.datetime "updated_at"
@@ -387,6 +388,7 @@ ActiveRecord::Schema.define(version: 20180806142338) do
   end
 
   create_table "notes", id: :serial, force: :cascade do |t|
+    t.integer "author_id"
     t.text "content"
     t.datetime "created_at", null: false
     t.integer "noteable_id"

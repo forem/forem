@@ -8,9 +8,9 @@ class FeedbackMessagesController < ApplicationController
       feedback_message_params.merge(reporter_id: current_user&.id),
     )
     if recaptcha_verified? && @feedback_message.save
-      send_slack_message
+      # send_slack_message
       # NotifyMailer.new_report_email(@feedback_message).deliver if @feedback_message.reporter_id?
-      redirect_to "/feedback_messages"
+      redirect_to @feedback_message.path
     elsif feedback_message_params[:feedback_type] == "bug-reports"
       flash[:notice] = "Make sure the forms are filled 🤖 "
       render file: "public/500.html", status: 500, layout: false

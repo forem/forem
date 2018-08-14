@@ -51,7 +51,7 @@ class Notification < ApplicationRecord
     if notifiable.class.name == "Broadcast" || action == "Moderation"
       User.find(ApplicationConfig["DEVTO_USER_ID"])
     else
-      notifiable.user
+      notifiable&.user
     end
   end
 

@@ -9,6 +9,21 @@
 .blankmessage{
   font-style: italic;
 }
+.note-content{
+  border: 1px dashed black;
+  border-radius: 5px;
+  width: 50%;
+  padding: 5px;
+  word-wrap: break-word;
+}
+.email__subject{
+  width: 100%;
+}
+.email__body{
+  width: 100%;
+  height: 300px;
+  font-size: 18px;
+}
 </style>
 
 <h2>
@@ -40,21 +55,39 @@
     <%= feedback_message.message %>
   <% end %>
 </p>
-<hr>
   <h3>
-    Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'] %>
+    Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, :onchange => "openEmailForm()" %>
   </h3>
-  <h3>Note:</h3>
+<hr>
+  <h3>Email Form:</h3>
+  <h3>ent
+    To: <%= select_tag :email_to, [feedback_message.reporter&.email, feedback_message.victim&.email, feedback_message.offender&.email] %>
+  </h3>
+  <h3>Subject:</h3>
+  <%= text_field_tag :email_subject, "Subject for each user", class: "email__subject" %>
+  <h3>Body:</h3>
+  <%= text_area_tag (:email_body), "placeholder text for each user", class: "email__body" %>
+  <h3>Notes:</h3>
+  <% if feedback_message.notes.count.positive? %>
+    <% feedback_message.notes.order("created_at").each do |note| %>
+      <p class="note-content">
+        <%= note.author.name %>: <%= note.content %>
+      </p>
+    <% end %>
+  <% else %>
+  <% end %>
   <%= f.fields_for :note do |note| %>
     <%= note.hidden_field :reason, value: feedback_message.feedback_type %>
-    <%= note.text_area :content, value: feedback_message.note&.content, placeholder: "Leave some notes about the status and context of this report.", class: "notefield", required: true %>
-  <% end %>
-  <%= f.hidden_field :reviewer_id, value: current_user.id %>
-  <% if feedback_message.reviewer_id %>
-    <h4>Last reviewed by: <%= feedback_message.reviewer.name %></h4>
-    <h4>Last reviewed on: <%= feedback_message.to_eastern_strftime(feedback_message.last_reviewed_at) %></h4>
-  <% else %>
-    <h4>Last reviewed by: No one yet</h4>
+    <%= note.hidden_field :noteable_id, value: feedback_message.id %>
+    <%= note.hidden_field :noteable_type, value: "FeedbackMessage" %>
+    <%= note.hidden_field :author_id, value: current_user.id %>
+    <%= note.text_area :content, placeholder: "Leave some notes about the status and context of this report.", class: "notefield", required: true %>
   <% end %>
   <br>
 <button class="btn btn-primary" type="submit">SUBMIT</button>
+
+<script>
+  function openEmailForm() {
+    var currentSelected = event.target.options[event.target.options.selectedIndex].text;
+  }
+</script>

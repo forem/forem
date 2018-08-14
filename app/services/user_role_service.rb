@@ -1,6 +1,7 @@
 class UserRoleService
-  def initialize(user)
+  def initialize(user, current_user_id)
     @user = user
+    @current_user_id = current_user_id
   end
 
   def check_for_roles(params)
@@ -67,7 +68,7 @@ class UserRoleService
   end
 
   def create_or_update_note(reason, content)
-    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
+    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason, author_id: current_user_id)
     if note.nil?
       Note.create(
         noteable_id: @user.id,

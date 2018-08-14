@@ -78,7 +78,7 @@ RSpec.describe UserRoleService do
 
   describe "#create_or_update_note" do
     it "updates a user's previous note" do
-      user.notes.create(reason: "banned", content: "some reason")
+      user.notes.create(reason: "banned", content: "some reason", noteable_id: user.id, noteable_type: "User", author_id: user.id)
       described_class.new(user).send(:create_or_update_note, "banned", "a more specific reason")
       expect(user.notes.count).to eq(1)
     end

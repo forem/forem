@@ -3,7 +3,7 @@ class FeedbackMessage < ApplicationRecord
   belongs_to :reviewer, foreign_key: "reviewer_id", class_name: "User", optional: true
   belongs_to :reporter, foreign_key: "reporter_id", class_name: "User", optional: true
   belongs_to :victim, foreign_key: "victim_id", class_name: "User", optional: true
-  has_one :note, as: :noteable, dependent: :destroy
+  has_many :notes, as: :noteable, dependent: :destroy
 
   validates_presence_of :feedback_type, :message
   validates_presence_of :reported_url, :category, if: :abuse_report?
@@ -33,9 +33,5 @@ class FeedbackMessage < ApplicationRecord
 
   def path
     "/reports/#{slug}"
-  end
-
-  def find_or_create_note(reason)
-    note || Note.new(reason: reason, noteable_id: id, noteable_type: "FeedbackMessage")
   end
 end

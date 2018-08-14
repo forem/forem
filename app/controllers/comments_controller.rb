@@ -102,7 +102,8 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
+      # redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
+      redirect_to @comment.path, notice: "Comment was successfully updated."
     else
       @commentable = @comment.commentable
       render :edit

@@ -23,6 +23,7 @@ class User < ApplicationRecord
   has_many    :mentions, dependent: :destroy
   has_many    :messages
   has_many    :notes, as: :noteable
+  has_many    :notes, as: :author
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
   has_many    :tweets, dependent: :destroy
