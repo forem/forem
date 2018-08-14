@@ -3,17 +3,17 @@
   <img src="https://thepracticaldev.s3.amazonaws.com/i/dqf9n77i1me0yz14x492.gif" alt="doggies" />
 
   <h2>Comments past 24 hours</h2>
-  <% @comment_totals_24_hours.each do |hash| %>
-    <div><%= hash[:username] %>: <%= hash[:number_of_comments] %></div>
+  <% @comment_totals_24_hours.each do |comment| %>
+    <div><%= comment[:username] %>: <%= comment[:number_of_comments] %></div>
   <% end %>
 
   <h2>Comments this week</h2>
-  <% @comment_totals_this_week.each do |hash| %>
-    <div><%= hash[:username] %>: <%= hash[:number_of_comments] %></div>
+  <% @comment_totals_this_week.each do |comment| %>
+    <div><%= comment[:username] %>: <%= comment[:number_of_comments] %></div>
   <% end %>
 
   <h2>Overall comments</h2>
-  <% @team_members.order("comments_count DESC").each do |member| %>
+  <% @team_members.each do |member| %>
     <div><%= member.username %>: <%= member.comments_count %></div>
   <% end %>
 </center>
