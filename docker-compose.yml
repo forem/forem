@@ -27,10 +27,10 @@ services:
     ports: []
     <<: *rails_base
     command: bin/rails db:migrate
-  queue:
+  jobs:
     ports: []
     <<: *rails_base
-    command: bin/delayed_job run
+    command: rails jobs:work
   cable:
     ports: []
     <<: *rails_base
