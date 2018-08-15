@@ -147,7 +147,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 
 * [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
-* A [PostgreSQL](https://www.postgresql.org/) client of your choice.
+* [PostgreSQL](https://www.postgresql.org/) 9.2 or higher.
 
 ### Installation
 
