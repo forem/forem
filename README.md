@@ -147,7 +147,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 
 * [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
-* [PostgreSQL](https://www.postgresql.org/) 9.2 or higher.
+* [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
 
 ### Installation
 
@@ -158,7 +158,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  `bundle install`
 1.  `bin/yarn`
 1.  Set up your environment variables/secrets
-    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](<http://docs.dev.to/get-api-keys-dev-env/#algolia-(choose-oauth-or-email-sign-up)>) to get your development environment running.
+    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
     * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
     * For any key that you wish to enter/replace:
       1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
