@@ -3,6 +3,13 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
+  NAMES = %w(
+    beginners career computerscience git go java javascript
+    linux productivity python security webdev css php opensource
+    ruby cpp dotnet swift testing devops vim kotlin rust elixir
+    scala
+  ).freeze
+
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
