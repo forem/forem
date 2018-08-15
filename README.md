@@ -143,13 +143,13 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ### Prerequisites
 
-These prerequisites assume you are running macOS. If you are running a different OS, you should install these prerequisites specific to your OS.
+These are high-level requirements. For detailed installation, please check out our [docs](http://docs.dev.to/) TODO: get proper link
 
-* Ruby: we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
-* Bundler: `gem install bundler`
-* Foreman: `gem install foreman`
-* Yarn: use `brew install yarn` to install yarn. It will also install node if you don't already have it.
-* PostgreSQL: the easiest way to get started with this is to use [Postgres.app](https://postgresapp.com/).
+* [Ruby]((https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
+* [Bundler](https://bundler.io/): `gem install bundler`
+* [Foreman](https://github.com/ddollar/foreman): `gem install foreman`
+* [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install)
+* A PostgreSQL client of your choice
 
 ### Installation
 
