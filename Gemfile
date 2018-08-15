@@ -109,6 +109,7 @@ group :development do
   gem "guard-rspec", "~> 4.7", require: false
   gem "rb-fsevent", "~> 0.10", require: false
   gem "web-console", "~> 3.5"
+  gem 'foreman', require: false
 end
 
 group :development, :test do
