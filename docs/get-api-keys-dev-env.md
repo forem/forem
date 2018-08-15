@@ -1,6 +1,8 @@
 There are a few services you'll need **_(all free)_** in order to run the development server and access the app locally. Here are the instructions for getting them:
 
-# Algolia (Choose OAuth or Email Sign Up)
+# Algolia
+
+Choose OAuth or Email Sign Up
 
 ## Algolia: OAuth Sign Up
 
