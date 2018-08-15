@@ -350,7 +350,7 @@ class User < ApplicationRecord
                       temp_username + "_" + rand(100).to_s
                     else
                       temp_username
-    end
+                    end
   end
 
   def temp_name_exists?

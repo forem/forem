@@ -16,7 +16,7 @@ class ArticleApiIndexService
                  state_articles(state)
                else
                  base_articles
-                end
+               end
     articles.
       decorate
   end
