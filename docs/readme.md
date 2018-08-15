@@ -16,6 +16,8 @@ items:
     title: FAQ
   - path: license-faq.md
     title: License FAQ
+  - path: installations
+    title:  Installations
 ---
 
 # Welcome to the dev.to documentation!

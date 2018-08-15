@@ -141,31 +141,20 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
-This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/) TODO: get proper link
+This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installations) TODO: get proper link
 
 ### Prerequisites
 
 * [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
-* [Bundler](https://bundler.io/): `gem install bundler`
-* [Foreman](https://github.com/ddollar/foreman): `gem install foreman`
 * [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 * A [PostgreSQL](https://www.postgresql.org/) client of your choice.
-
-### Linux pre-requisites (based on Ubuntu 18.04)
-These prerequisites assume you're working on a Linux-based operating system but have been written by an Ubuntu 18.04 user so they may not work on all distributions.
-
-* Ruby: As recommended, [rbenv](https://github.com/rbenv/rbenv) should be used to install the Ruby version listed on the badge. Very detailed directions for rbenv installation for several distros can be found [here](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
-* Bundler: `gem install bundler`
-* Foreman: `gem install foreman`
-* Yarn: There are two ways to install Yarn.
-  1. Found [here](https://yarnpkg.com/en/docs/install#debian-stable)
-  2. [This](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) post describes how to install [NVM](https://github.com/creationix/nvm) a Node version manager. By installing NVM you can select a Node version (I would suggest either LTS or current), the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
-* PostgreSQL: For Ubuntu run `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`. To test the installation you can run `sudo -u postgres psql` which should open a PostgreSQL prompt. Exit the prompt by running `\q` then run `sudo -u postgres createuser -s $YOUR_USERNAME` where $YOUR_USERNAME is the username you are currently logged in as. Lastly, at least on Debian based systems, in the codebase under /config/database.yml you'll want to comment out the `host: localhost` to configure the database to use Unix domain sockets as outlined [here](https://stackoverflow.com/questions/23375740/pgconnectionbad-fe-sendauth-no-password-supplied).
 
 ### Installation
 
 0.  Make sure all the prerequisites are installed.
 1.  `git clone git@github.com:thepracticaldev/dev.to.git`
+1.  `gem install bundler`
+1.  `gem install foreman`
 1.  `bundle install`
 1.  `bin/yarn`
 1.  Set up your environment variables/secrets
