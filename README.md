@@ -148,19 +148,20 @@ This section provides a high-level requirement & quick start guide. For detailed
 * [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * [Bundler](https://bundler.io/): `gem install bundler`
 * [Foreman](https://github.com/ddollar/foreman): `gem install foreman`
-* [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install)
+* [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 * A [PostgreSQL](https://www.postgresql.org/) client of your choice.
 
 ### Installation
 
+0.  Make sure all the prerequisites are installed.
 1.  `git clone git@github.com:thepracticaldev/dev.to.git`
-2.  `bundle install`
-3.  `bin/yarn`
-4.  Set up your environment variables/secrets
+1.  `bundle install`
+1.  `bin/yarn`
+1.  Set up your environment variables/secrets
     * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](<http://docs.dev.to/get-api-keys-dev-env/#algolia-(choose-oauth-or-email-sign-up)>) to get your development environment running.
     * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
     * For any key that you wish to enter/replace:
-      1.  Create `config/application.yml` by copying from the provided template (`cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+      1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
       2.  Obtain the development variable and apply the key you wish to enter/replace. ie:
       ```
       GITHUB_KEY: "afaslkjdflkj2398jflskdjfljk"
@@ -168,7 +169,7 @@ This section provides a high-level requirement & quick start guide. For detailed
       ```
     * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
-5.  Run `bin/setup`
+1.  Run `bin/setup`
 
 #### Starting the application
 
