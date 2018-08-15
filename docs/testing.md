@@ -30,7 +30,7 @@ Travis will upload Simplecov data to CodeClimate. We are still in the early stag
 
 #### Skipping CI build (Not recommended)
 
-If your changes are **minor** (i.e. updating README, fixing a typo), you can skip CI by adding `[skip ci]` to your commit message.
+If your changes are **minor** (i.e. updating README, fixing a typo), you can skip CI by adding `[ci skip]` to your commit message.
 
 ## Continuous Integration & Continuous Deployment
 

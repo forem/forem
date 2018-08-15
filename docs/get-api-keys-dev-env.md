@@ -76,7 +76,7 @@ That's it! You should try logging in with development, it should work. If it doe
 
 # Twitter App
 
-1.  [Click this link and sign in/sign up for a Twitter account.](<(https://apps.twitter.com)>) Note that your Twitter account will need a phone number linked to it in order to create an app.
+1.  [Click this link and sign in/sign up for a Twitter account.](https://apps.twitter.com) Note that your Twitter account will need a phone number linked to it in order to create an app.
 2.  Create a new app, and fill out the form, like the following example image: ![](https://user-images.githubusercontent.com/17884966/41612665-952d4cae-73c1-11e8-8047-cf0bd03bffb6.png)
 
 The only important field is the "Callback URL" `http://localhost:3000/users/auth/twitter/callback`, which redirects you properly to `localhost:3000` when signing in.

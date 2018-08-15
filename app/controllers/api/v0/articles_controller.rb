@@ -29,7 +29,7 @@ module Api
                      params[:tag_list].split(",")
                    else
                      ["career", "discuss", "productivity"]
-        end
+                   end
         @articles = []
         4.times do
           @articles << Suggester::Articles::Classic.new.get(tag_list)
@@ -58,7 +58,7 @@ module Api
                        @article.to_json(only: [:id], methods: [:current_state_path])
                      else
                        @article.errors.to_json
-                      end
+                     end
       end
 
       def article_params
