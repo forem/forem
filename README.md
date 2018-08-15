@@ -85,9 +85,9 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 4.  Push to the branch: `git push origin feature/that-new-feature`
 5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
 
-### Contribution guideline
+## Contribution guideline
 
-## Create an issue
+### Create an issue
 
 Nobody's perfect. Something doesn't work? or could be done better? Let us know by creating an issue.
 
@@ -141,15 +141,15 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
+This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/) TODO: get proper link
+
 ### Prerequisites
 
-These are high-level requirements. For detailed installation, please check out our [docs](http://docs.dev.to/) TODO: get proper link
-
-* [Ruby]((https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
+* [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
 * [Bundler](https://bundler.io/): `gem install bundler`
 * [Foreman](https://github.com/ddollar/foreman): `gem install foreman`
 * [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install)
-* A PostgreSQL client of your choice
+* A [PostgreSQL](https://www.postgresql.org/) client of your choice.
 
 ### Installation
 
