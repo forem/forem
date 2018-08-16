@@ -12,7 +12,7 @@
 <% else %>
   <div class="row">
     <% if @user.comments.where("created_at < ?", 7.days.ago).empty? %>
-      <%= form_for([:internal, @user],confirm: "Are you absolutely sure?") do %>
+      <%= form_for(@user, :url => banish_internal_user_path(@user), :html => {:method => :post}) do %>
         <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
       <% end %>
       <em>This is extremely destructive. Do not do it lightly</em>

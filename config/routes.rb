@@ -27,7 +27,12 @@ Rails.application.routes.draw do
     resources :tags
     resources :welcome, only: %i[index create]
     resources :broadcasts
-    resources :users
+    resources :users do
+      member do
+        post 'banish'
+      end
+    end
+    # post "banish", to: "users#banish"
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: [:create]

@@ -2,15 +2,38 @@ class Internal::UsersController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @users = User.where.not(feed_url: nil)
+    case params[:state]
+    when "mentors"
+      @users = User.where(offering_mentorship: true)
+    when "mentees"
+      @users = User.where(seeking_mentorship: true)
+    else
+      @users = User.
+        where(offering_mentorship: true).
+        or(User.where(seeking_mentorship: true))
+    end
   end
 
   def edit
     @user = User.find(params[:id])
   end
 
+  def show
+    @user = User.find(params[:id])
+  end
+
   def update
     # Only used for stripping user right now.
+    @user = User.find(params[:id])
+    if user_params[:add_mentor]
+      mentor = User.find(user_params[:add_mentor])
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save
+    end
+    @user.update!(user_params)
+    redirect_to "/internal/users/#{@user.id}"
+  end
+
+  def banish
     @user = User.find(params[:id])
     strip_user(@user)
     redirect_to "/internal/users/#{@user.id}/edit"
@@ -54,5 +77,13 @@ class Internal::UsersController < Internal::ApplicationController
     user.update!(old_username: nil)
   rescue StandardError => e
     flash[:error] = e.message
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:seeking_mentorship,
+                                 :offering_mentorship,
+                                 :add_mentor)
   end
 end

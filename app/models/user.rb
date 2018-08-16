@@ -11,6 +11,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  attr_accessor :add_mentor
+
   belongs_to  :organization, optional: true
   has_many    :articles
   has_many    :badge_achievements, dependent: :destroy
@@ -30,6 +32,10 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many :in_mentor_relationships, class_name: "MentorRelationship", foreign_key: "mentee_id"
+  has_many :out_mentor_relationships, class_name: "MentorRelationship", foreign_key: "mentor_id"
+  has_many :mentors, through: :in_mentor_relationships, source: :mentor
+  has_many :mentees, through: :out_mentor_relationships, source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -103,8 +109,7 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
-  before_update :mentor_status_update
-  before_update :mentee_status_update
+  before_update :mentorship_status_update
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -500,13 +505,11 @@ class User < ApplicationRecord
     follows.destroy_all
   end
 
-  def mentor_status_update
+  def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
       self.mentor_form_updated_at = Time.now
     end
-  end
 
-  def mentee_status_update
     if mentee_description_changed? || seeking_mentorship_changed?
       self.mentee_form_updated_at = Time.now
     end
