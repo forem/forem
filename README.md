@@ -152,7 +152,8 @@ This section provides a high-level requirement & quick start guide. For detailed
 ### Installation
 
 0.  Make sure all the prerequisites are installed.
-1.  `git clone git@github.com:thepracticaldev/dev.to.git`
+1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
+1.  Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
 1.  `gem install bundler`
 1.  `gem install foreman`
 1.  `bundle install`
@@ -164,8 +165,8 @@ This section provides a high-level requirement & quick start guide. For detailed
       1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
       2.  Obtain the development variable and apply the key you wish to enter/replace. ie:
       ```
-      GITHUB_KEY: "afaslkjdflkj2398jflskdjfljk"
-      GITHUB_SECRET: "23r8dcvlk23jekljfslkdfjlks"
+      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
+      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
       ```
     * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.

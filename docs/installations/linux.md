@@ -1,17 +1,27 @@
 ## Installing prerequisites
 
+These prerequisites assume you're working on a Linux-based operating system but have been tested on Ubuntu 18.04.
+
 ### Ruby
 
 1.  If you don't already a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
 2.  With the Ruby version manager, install Ruby verion listed on our badge. (ie with rbenv: `rbenv install 2.5.1`)
 
+For very detailed rbenv installation directions on several distros, please vist [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
+
 ### Yarn
 
-Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
+There are two ways to install Yarn.
+
+* Yarn's offical [installation guide](https://yarnpkg.com/en/docs/install#debian-stable).
+* [DigitalOcean's detailed tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) describes how to install [Node version Manager](https://github.com/creationix/nvm). By installing NVM you can select a Node version (we recommend either LTS or current), the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
 
 ### PostgreSQL
 
-Dev.to requires PostgreSQL version 9.4 or higher. The easiest way to get started is to use [Postgres.app](https://postgresapp.com/). Alternatively, check out the official [PostgreSQL](https://www.postgresql.org/) site for more granular version.
+1.  run `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
+2.  To test the installation you can run `sudo -u postgres psql` which should open a PostgreSQL prompt. Exit the prompt by running `\q` then run `sudo -u postgres createuser -s $YOUR_USERNAME` where $YOUR_USERNAME is the username you are currently logged in as. Lastly, at least on Debian based systems, in the codebase under /config/database.yml you'll want to comment out the `host: localhost` to configure the database to use Unix domain sockets as outlined [here](https://stackoverflow.com/questions/23375740/pgconnectionbad-fe-sendauth-no-password-supplied).
+
+Check out the official [PostgreSQL](https://www.postgresql.org/) site for more information.
 
 ## Installing Dev.to
 
