@@ -37,6 +37,10 @@ services:
     depends_on:
       - 'redis'
     command: puma -p 28080 cable/config.ru
+  webpacker:
+    ports: []
+    <<: *rails_base
+    command: bin/rails webpacker:install
   db:
     image: postgres:10
     ports:
