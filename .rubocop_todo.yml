@@ -160,15 +160,6 @@ Style/MixinUsage:
     - 'app/models/organization.rb'
     - 'app/models/podcast_episode.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAsExpressionSeparator.
