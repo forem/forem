@@ -6,7 +6,7 @@ items:
   - windows.md
 ---
 
-# Detailed Installations guide
+# Detailed Installation Guides
 
 These are the guides for installing the app on different operating systems.
 
