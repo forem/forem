@@ -126,7 +126,7 @@ class ChatChannelsController < ApplicationController
                [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
              else
                params[:slug]
-                      end
+             end
       @active_channel = ChatChannel.find_by_slug(slug)
       @active_channel.current_user = current_user if @active_channel
     end
