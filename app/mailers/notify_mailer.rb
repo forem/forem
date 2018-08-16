@@ -55,8 +55,10 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "Thank you for your report")
   end
 
-  def reporter_resolution_email(report)
-    @feedback_message = report
-    @user = report.reporter
+  def feedback_message_resolution_email(params)
+    mail(to: params[:email_to], subject: params[:email_subject]) do |format|
+      format.text { render plain: params[:email_body] }
+      format.html { render html: params[:email_body].html_safe }
+    end
   end
 end
