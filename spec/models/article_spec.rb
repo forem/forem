@@ -418,6 +418,40 @@ RSpec.describe Article, type: :model do
     expect(article.update_main_image_background_hex_without_delay).to eq(true)
   end
 
+  describe "#async_score_calc" do
+    before { Delayed::Worker.delay_jobs = false }
+
+    context "when published" do
+      let(:article) { create(:article) }
+
+      it "updates the hotness score" do
+        article.save
+        expect(article.hotness_score > 0).to eq(true)
+      end
+
+      it "updates the spaminess score" do
+        article.update_column(:spaminess_rating, -1)
+        article.save
+        expect(article.spaminess_rating).to eq(0)
+      end
+    end
+
+    context "when unpublished" do
+      let(:article) { create(:article, published: false) }
+
+      it "does not update the hotness score" do
+        article.save
+        expect(article.hotness_score).to eq(0)
+      end
+
+      it "does not update the spaminess score" do
+        article.update_column(:spaminess_rating, -1)
+        article.save
+        expect(article.spaminess_rating).to eq(-1)
+      end
+    end
+  end
+
   it "detects detect_human_language" do
     article.save
     article.detect_human_language
