@@ -17,7 +17,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     if @feedback_message.save && note.save
       @feedback_message.touch(:last_reviewed_at)
       flash[:success] = "Report ##{@feedback_message.id} saved."
-      redirect_to "/internal/reports?state=#{@feedback_message.feedback_type}&status=#{@feedback_message.status}"
+      redirect_to "/internal/feedback_messages/#{@feedback_message.id}"
     else
       @feedback_type = @feedback_message.feedback_type
       @feedback_messages = FeedbackMessage.
@@ -29,10 +29,18 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     end
   end
 
+  def show
+    @feedback_message = FeedbackMessage.find_by(id: params[:id])
+  end
+
   def update_feedback_message_and_note(note)
     @feedback_message.status = feedback_message_params[:status]
     note.content = feedback_message_params[:note][:content]
     note.author_id = current_user.id
+  end
+
+  def send_email
+    NotifyMailer.feedback_message_resolution_email(params).deliver
   end
 
   private
