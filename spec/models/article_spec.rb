@@ -421,6 +421,8 @@ RSpec.describe Article, type: :model do
   describe "#async_score_calc" do
     before { Delayed::Worker.delay_jobs = false }
 
+    after  { Delayed::Worker.delay_jobs = true }
+
     context "when published" do
       let(:article) { create(:article) }
 
