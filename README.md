@@ -34,38 +34,41 @@
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
 
 ## What is dev.to?
-[dev.to](https://dev.to) (or just DEV) is a platform where software developers write articles, take part in discussions, and build their professional profiles. We value supportive and constructive dialogue in the pursuit of great code and career growth for all members. The ecosystem spans from beginner to advanced developers, and all are welcome to find their place within our community. ❤️ 
+
+[dev.to](https://dev.to) (or just DEV) is a platform where software developers write articles, take part in discussions, and build their professional profiles. We value supportive and constructive dialogue in the pursuit of great code and career growth for all members. The ecosystem spans from beginner to advanced developers, and all are welcome to find their place within our community. ❤️
 
 ## Table of Contents
 
-- [Contributing](#contributing)
-  - [Where to contribute](#where-to-contribute)
-  - [How to contribute](#how-to-contribute)
-  - [Contribution guideline](#contribution-guideline)
-    - [Clean code with tests](#clean-code-with-tests)
-    - [Create a pull request](#create-a-pull-request)
-    - [Creating an issue](#create-an-issue)
-  - [How to get help](#how-to-get-help)
-  - [The bottom line](#the-bottom-line)
-- [Codebase](#codebase)
-  - [The stack](#the-stack)
-  - [Engineering standards](#engineering-standards)
-    - [Style guide](#style-guide)
-    - [Husky hooks](#husky-hooks)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Starting the application](#starting-the-application)
-  - [Suggested Workflow](#suggested-workflow)
-- [Additional docs](#additional-docs)
-- [Product Roadmap](#product-roadmap)
-- [Core Team Members](#core-team)
-- [License](#license)
+* [Contributing](#contributing)
+  * [Where to contribute](#where-to-contribute)
+  * [How to contribute](#how-to-contribute)
+  * [Contribution guideline](#contribution-guideline)
+    * [Clean code with tests](#clean-code-with-tests)
+    * [Create a pull request](#create-a-pull-request)
+    * [Create an issue](#create-an-issue)
+  * [How to get help](#how-to-get-help)
+  * [The bottom line](#the-bottom-line)
+* [Codebase](#codebase)
+  * [The stack](#the-stack)
+  * [Engineering standards](#engineering-standards)
+    * [Style guide](#style-guide)
+    * [Husky hooks](#husky-hooks)
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+  * [Starting the application](#starting-the-application)
+  * [Suggested Workflow](#suggested-workflow)
+* [Additional docs](#additional-docs)
+* [Product Roadmap](#product-roadmap)
+* [Core Team Members](#core-team)
+* [License](#license)
 
 ## Contributing
+
 We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
 ### Where to contribute
+
 When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with `good first issue` tag is typically a good place to start.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
@@ -75,23 +78,27 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 **Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. The [product roadmap](https://github.com/thepracticaldev/dev.to/projects) should be a good guide to follow. As always, when in doubt, ask!
 
 ### How to contribute
-1. Fork the project & clone locally. Follow the initial setup [here](#getting-started).
-2. Create a branch, naming it either a feature or bug: `git checkout -b feature/that-new-feature` or `bug/fixing-that-bug`
-3. Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/that-new-feature`
-5. [Create a pull request](#create-a-pull-request) for your branch 🎉
 
-### Contribution guideline
+1.  Fork the project & clone locally. Follow the initial setup [here](#getting-started).
+2.  Create a branch, naming it either a feature or bug: `git checkout -b feature/that-new-feature` or `bug/fixing-that-bug`
+3.  Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
+4.  Push to the branch: `git push origin feature/that-new-feature`
+5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
+
+## Contribution guideline
 
 ### Create an issue
+
 Nobody's perfect. Something doesn't work? or could be done better? Let us know by creating an issue.
 
 PS: a clear and detailed issue gets lots of love, all you have to do is follow the issue template!
 
 #### Clean code with tests
+
 Some existing code may be poorly written or untested, so we must have more scrutiny going forward. We test with [rspec](http://rspec.info/), let us know if you have any questions about this!
 
 #### Create a pull request
+
 * Try to keep the pull requests small; a pull request should try its very best to address only a single concern.
 * Make sure all tests pass and add additional tests for the code you submit.
 * Document your reasoning behind the changes. Explain why you wrote the code in the way you did; the code should explain what it does.
@@ -101,72 +108,72 @@ Some existing code may be poorly written or untested, so we must have more scrut
 _Please note: all commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!_
 
 ### How to get help
+
 Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
 
 ### 👉 [OSS Help/Discussion Thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) 👈
 
 ### The bottom line
+
 We are all humans trying to work together to improve the community. Always be kind and appreciate the need for tradeoffs. ❤️
 
 ## Codebase
 
 ### The stack
+
 We run on a Rails backend with mostly vanilla JavaScript on the front end, and some Preact sprinkled in. One of our goals is to move to mostly Preact for our front end.
 
 Additional technologies and services are listed on [our docs](https://docs.dev.to).
 
 ### Engineering standards
+
 #### Style Guide
+
 This project follows [thoughtbot's Ruby Style Guide](https://github.com/thoughtbot/guides/blob/master/style/ruby/.rubocop.yml), using [Rubocop](https://github.com/bbatsov/rubocop) along with [Rubocop-Rspec](https://github.com/backus/rubocop-rspec) as the code analyzer. If you have Rubocop installed with your text editor of choice, you should be up and running.
 
 For Javascript, we follow [Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using [ESLint](https://eslint.org) and [prettier](https://github.com/prettier/prettier). If you have ESLint installed with your text editor of choice, you should be up and running.
 
 #### Husky hooks
+
 When commits are made, a git precommit hook runs via [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged). ESLint, prettier, and Rubocop will run on your code before it's committed. If there are linting errors that can't be automatically fixed, the commit will not happen. You will need to fix the issue manually then attempt to commit again.
 
 Note: if you've already installed the [husky](https://github.com/typicode/husky) package at least once (used for precommit npm script), you will need to run `yarn --force` or `npm install --no-cache`. For some reason, the post-install script of husky does not run when the package is pulled from yarn or npm's cache. This is not husky specific, but rather a cached package issue.
 
 ## Getting Started
 
+This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installations).
+
 ### Prerequisites
-These prerequisites assume you are running macOS. If you are running a different OS, you should install these prerequisites specific to your OS.
 
-* Ruby: we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
-* Bundler: `gem install bundler`
-* Foreman: `gem install foreman`
-* Yarn: use `brew install yarn` to install yarn. It will also install node if you don't already have it.
-* PostgreSQL: the easiest way to get started with this is to use [Postgres.app](https://postgresapp.com/).
-
-### Linux pre-requisites (based on Ubuntu 18.04)
-These prerequisites assume you're working on a Linux-based operating system but have been written by an Ubuntu 18.04 user so they may not work on all distributions.
-
-* Ruby: As recommended, [rbenv](https://github.com/rbenv/rbenv) should be used to install the Ruby version listed on the badge. Very detailed directions for rbenv installation for several distros can be found [here](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
-* Bundler: `gem install bundler`
-* Foreman: `gem install foreman`
-* Yarn: There are two ways to install Yarn.
-  1. Found [here](https://yarnpkg.com/en/docs/install#debian-stable)
-  2. [This](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) post describes how to install [NVM](https://github.com/creationix/nvm) a Node version manager. By installing NVM you can select a Node version (I would suggest either LTS or current), the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
-* PostgreSQL: For Ubuntu run `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`. To test the installation you can run `sudo -u postgres psql` which should open a PostgreSQL prompt. Exit the prompt by running `\q` then run `sudo -u postgres createuser -s $YOUR_USERNAME` where $YOUR_USERNAME is the username you are currently logged in as. Lastly, at least on Debian based systems, in the codebase under /config/database.yml you'll want to comment out the `host: localhost` to configure the database to use Unix domain sockets as outlined [here](https://stackoverflow.com/questions/23375740/pgconnectionbad-fe-sendauth-no-password-supplied).
+* [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
+* [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
+* [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
 
 ### Installation
-1.  `git clone git@github.com:thepracticaldev/dev.to.git`
-2.  `bundle install`
-3.  `bin/yarn`
-4.  Set up your environment variables/secrets
-    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia-(choose-oauth-or-email-sign-up)) to get your development environment running.
+
+0.  Make sure all the prerequisites are installed.
+1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
+1.  Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
+1.  `gem install bundler`
+1.  `gem install foreman`
+1.  `bundle install`
+1.  `bin/yarn`
+1.  Set up your environment variables/secrets
+    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
     * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
     * For any key that you wish to enter/replace:
-      1. Create `config/application.yml` by copying from the provided template (`cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-      2. Obtain the development variable and apply the key you wish to enter/replace. ie:
+      1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+      2.  Obtain the development variable and apply the key you wish to enter/replace. ie:
       ```
-      GITHUB_KEY: "afaslkjdflkj2398jflskdjfljk"
-      GITHUB_SECRET: "23r8dcvlk23jekljfslkdfjlks"
+      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
+      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
       ```
     * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
-5.  Run `bin/setup`
+1.  Run `bin/setup`
 
 #### Starting the application
+
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
 
 * Run **`bin/startup`** to start the server, Webpack, and our job runner `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the hood.
@@ -181,6 +188,7 @@ Here are some singleton commands you may need, usually in a separate instance/ta
 Current gotchas: potential environment issues with external services need to be worked out.
 
 #### Suggested Workflow
+
 We use [Spring](https://github.com/rails/spring) and it is already included in the project.
 
 1.  Use the provided bin stubs to automatically start Spring, i.e. `bin/rails server`, `bin/rspec spec/models/`, `bin/rake db:migrate`.
@@ -190,6 +198,7 @@ We use [Spring](https://github.com/rails/spring) and it is already included in t
 Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's result. Instead use `bin/spring rspec`.
 
 ## Additional docs
+
 [Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
 
 ## Product Roadmap
@@ -198,25 +207,25 @@ Our new product roadmap can be found [here](https://github.com/thepracticaldev/d
 
 Core team members will move issues along the project board as they progress.
 
-- Ideas & Requests: features up for discussion.
-- Needs Owners: features in need of an owner.
-- Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
-- In Progress (early stage): work has begun on feature.
-- In Progress (late stage): feature is near completion.
+* Ideas & Requests: features up for discussion.
+* Needs Owners: features in need of an owner.
+* Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
+* In Progress (early stage): work has begun on feature.
+* In Progress (late stage): feature is near completion.
 
 ## Core team
 
-- [@benhalpern](https://dev.to/ben)
-- [@jessleenyc](https://dev.to/jess)
-- [@peterkimfrank](https://dev.to/peter)
-- [@maestromac](https://dev.to/maestromac)
-- [@zhao-andy](https://dev.to/andy)
+* [@benhalpern](https://dev.to/ben)
+* [@jessleenyc](https://dev.to/jess)
+* [@peterkimfrank](https://dev.to/peter)
+* [@maestromac](https://dev.to/maestromac)
+* [@zhao-andy](https://dev.to/andy)
 
 ## License
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.  Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
 
-Like many open source projects, we require that contributors provide us with a Contributor License Agreement (CLA).  By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
+Like many open source projects, we require that contributors provide us with a Contributor License Agreement (CLA). By submitting code to the DEV project, you are granting us a right to use that code under the terms of the CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License Agreement, which they generously made available to the public domain under Creative Commons CC0 1.0 Universal.
 
