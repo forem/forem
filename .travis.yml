@@ -36,6 +36,7 @@ script:
 - "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
 - "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
 - "./cc-test-reporter upload-coverage"
+- bundle exec bundle-audit update && bundle exec bundle-audit check
 deploy:
   provider: heroku
   api_key: "$HEROKU_AUTH_TOKEN"
@@ -50,4 +51,4 @@ notifications:
     on_pull_requests: false
     on_success: always
     rooms:
-      secure: CbEDtugX9cXV2j+ol9onsF9p//3Ym3fG299JHTb9sC2G2g3NgF3m9z6YZPjEVlqmTM/tG56H1K/m/zFHUkceezFUsz6iQSj7bqpNbvdJIhO5QRL3RnplNWiIdaa/t50meshTi3hx8JKo2R43YwsAY9T9jOQKTkpnOMYWq5UlleKlHeJi2HNmFNi9H1YJjByfF+RZIsaEft00ARqVwT1ebKY3g/AHoVgKuCAhKVYdAjx+5QZjwW9/cUfJG12i46RzGZ+D1Jt9mWOCTP/1TZcRRJyN0111Gh6OxADN3ZI0HFWmwPHWmEzyTShekHeM3T2aVfB+4Y0sY0MVy93MWEfWYSUzoKvjV5R50qWHTwMJuQ/NqnkO/IX1OtTgKNXrnbqcPtHZI20/oz+OBPnziRhnCletx+TRp241O5V3GpJW9koAXJL+TKzJXbKty91sHEDcykcKVE6G4b2zW13RArLIs4RZyrPimE6SXJF9tC9STLkFcvJ7z80mMUzp+trrHDKfT2MBTLdV3wHn0+rXW1rZHUPD3d0rHTWuzKbw+81MBxx0KL/O1Tv7pfbMZsa6jRae/04LRGEJB3iFuXfNET3gYdT3F6QkxgwmkdtyChdHQ9fEGl2LfsKKmkQGd+YSEJaUwfxAAkkJI/s0kGilTn3f1NiQl/fHSEpkW7cQsmMjEZc=
+      secure: dLMY/PKYoMCYrb2TL5mr9V4vMmnFFPSaKaUUl6G+7qrWpBLeB8FS+MNUB2XdvA5EGqS9vRdr72gUMdMnhoHtPMZgzHxxStjUB9oTBlg18WoLaIRpg0hjcgV4SfTsn7KisdSPgG3Wc0fnmIK9sf6j5oMLE6Lt6/6ANce7PurCPVm/UFo5djlyCaPDmgxhbXfzRJEbnJTiSiswwxzELsaJtZ3d+lu/OfZfo59pGk18C5AKX+sLN529q8MHaM0a66zGS06WwQC91pq9YsNNN7c2S7qOl/OJgaXFEa3+ZqiyEkE5T1GNrPTYyju798B6n8BkXTRkKrEAl8qMCsgkCwiyz204e7LwHACze3d4rGynxxA/0UqHEnWTGdWDuMmZ6Sxp1SfJVc6dZGR2bzYE8gqQGs0dpoUQjvDVwiELZWYNUCkJUQl/1ahEcXSuGfH8fMiqYXkNZKUc+8rMO+Q9EVRuf0xMb6QD6yLtgWzXx6tpotIP1KouwDVFHVcEkZScKj2jXaguCDeaCUiOwc7BsL1shoDRixytCbM6BLpZzKL82vyRAWoDwMF1V5JezLow/l6BF78xXqBkw0TfBzAO923xUKDFjRUZwaEeSYwUdLTOyDgRx290JWDCy3oLcwTtskWJzGVlnnlpId7XfUv1UiGW13W60OWu2PvUKkK5WRtnPbE=

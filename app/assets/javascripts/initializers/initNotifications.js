@@ -57,10 +57,6 @@ function fetchNotificationsCount() {
     xmlhttp.open('Get', '/notifications/counts', true);
     xmlhttp.send();
   }
-  else if (document.getElementById("notifications-container") == null) {
-    document.getElementById("notifications-number").innerHTML = "1";
-    document.getElementById("notifications-number").classList.add("showing");
-  }
 }
 
 function initReactions() {

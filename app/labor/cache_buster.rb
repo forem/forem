@@ -1,10 +1,14 @@
 class CacheBuster
+  TIMEFRAMES = [
+    [1.week.ago, "week"], [1.month.ago, "month"], [1.year.ago, "year"], [5.years.ago, "infinity"]
+  ].freeze
+
   def bust(path)
     return unless Rails.env.production?
     request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
-    headers: { "Fastly-Key" => "f15066a3abedf47238b08e437684c84f" })
+    headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
     request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
-    headers: { "Fastly-Key" => "f15066a3abedf47238b08e437684c84f" })
+    headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
     request
   end
 
@@ -59,7 +63,7 @@ class CacheBuster
       bust("/")
       bust("?i=i")
     end
-    [[1.week.ago, "week"], [1.month.ago, "month"], [1.year.ago, "year"], [5.years.ago, "infinity"]].each do |timeframe|
+    TIMEFRAMES.each do |timeframe|
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
           order("positive_reactions_count DESC").limit(4).pluck(:id).include?(article.id)
         bust("/top/#{timeframe[1]}")
@@ -85,8 +89,7 @@ class CacheBuster
         bust("/t/#{tag}/latest")
         bust("/t/#{tag}/latest?i=i")
       end
-      [[1.week.ago, "week"], [1.month.ago, "month"], [1.year.ago, "year"], [5.years.ago, "infinity"]].
-        each do |timeframe|
+      TIMEFRAMES.each do |timeframe|
         if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
             order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
           bust("/top/#{timeframe[1]}")

@@ -9,43 +9,11 @@ module Api
 
       def index
         @page = params[:page]
-        @tags = Tag.all.order("taggings_count DESC").page(@page).per(10)
+        @tags = Tag.order(taggings_count: :desc).page(@page).per(10)
       end
 
       def onboarding
-        tag_names = %w[
-          beginners
-          career
-          computerscience
-          git
-          go
-          java
-          javascript
-          linux
-          productivity
-          python
-          security
-          webdev
-          css
-          php
-          opensource
-          ruby
-          cpp
-          dotnet
-          swift
-          testing
-          devops
-          vim
-          kotlin
-          rust
-          elixir
-          scala
-        ]
-        @tags = []
-        tag_names.each do |tag_name|
-          @tags.push(Tag.find_by(name: tag_name))
-        end
-        @tags = @tags.reject(&:nil?)
+        @tags = Tag.where(name: Tag::NAMES)
       end
     end
   end

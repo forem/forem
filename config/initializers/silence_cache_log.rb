@@ -1,1 +1,1 @@
-Rails.cache.silence!
+# Rails.cache.silence!

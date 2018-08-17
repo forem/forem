@@ -247,7 +247,7 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
-  def is_admin?
+  def admin?
     has_role?(:super_admin)
   end
 
@@ -280,7 +280,7 @@ class User < ApplicationRecord
     has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
   end
 
-  def is_org_admin?(organization)
+  def org_admin?(organization)
     user.org_admin && user.organization_id == organization.id
   end
 
@@ -350,7 +350,7 @@ class User < ApplicationRecord
                       temp_username + "_" + rand(100).to_s
                     else
                       temp_username
-    end
+                    end
   end
 
   def temp_name_exists?

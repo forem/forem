@@ -8,7 +8,7 @@
 * We use _Timber_ for logging
 * We use [_Delayed Job_](https://github.com/collectiveidea/delayed_job) for background workers
 * We use _Algolia_ for search
-* We use [_Redcarpet](https://github.com/vmg/redcarpet) and [Rouge_](https://github.com/jneen/rouge) for Markdown
+* We use [\_Redcarpet](https://github.com/vmg/redcarpet) and [Rouge\_](https://github.com/jneen/rouge) for Markdown
 * We use _[Carrierwave](https://github.com/carrierwaveuploader/carrierwave)/Fog/AWS S3_ for image upload/storage
 * We use a modified version of [_InstantClick_](http://instantclick.io/) instead of _Turbolinks_
 * We are hosted on _Heroku_
@@ -20,6 +20,6 @@
 * We use [_Rolify_](https://github.com/RolifyCommunity/rolify) for role management.
 * We use [_Pundit_](https://github.com/varvet/pundit) for authorization.
 * We use Service Workers to proxy traffic
-* We use Preact for some of the front end. See [Frontend](/frontend) for more info
+* We use Preact for some of the front end. See [Frontend](https://docs.dev.to/frontend/) for more info
 
 _This list is non-exhaustive. If you see something that belongs here, feel free to add it._

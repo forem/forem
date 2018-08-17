@@ -40,10 +40,10 @@ class ApplicationController < ActionController::Base
     raise "BANNED" if current_user&.banned
   end
 
-  def is_internal_navigation?
+  def internal_navigation?
     params[:i] == "i"
   end
-  helper_method :is_internal_navigation?
+  helper_method :internal_navigation?
 
   def valid_request_origin?
     # This manually does what it was supposed to do on its own.

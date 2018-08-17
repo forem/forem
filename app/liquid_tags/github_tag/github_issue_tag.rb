@@ -92,7 +92,7 @@ class GithubTag
       raise_error unless [
         !!(link =~ /.*github\.com\//),
         link_without_domain.length == 4,
-        link_without_domain[3].to_i > 0,
+        link_without_domain[3].to_i.positive?,
       ].all? { |bool| bool == true }
       true
     end

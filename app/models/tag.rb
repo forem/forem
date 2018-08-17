@@ -3,6 +3,13 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
+  NAMES = %w(
+    beginners career computerscience git go java javascript
+    linux productivity python security webdev css php opensource
+    ruby cpp dotnet swift testing devops vim kotlin rust elixir
+    scala
+  ).freeze
+
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
@@ -28,7 +35,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def tag_moderator_ids
-    User.with_role(:tag_moderator, self).map(&:id).sort
+    User.with_role(:tag_moderator, self).order("id ASC").pluck(:id)
   end
 
   private
