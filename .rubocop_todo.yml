@@ -145,10 +145,3 @@ Style/IfInsideElse:
 Style/MixinUsage:
   Exclude:
     - 'app/models/podcast_episode.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'
