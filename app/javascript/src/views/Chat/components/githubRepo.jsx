@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { getJSONContents } from './actions';
+import { getJSONContents } from '../actions';
 import marked from 'marked';
 
 export default class GithubRepo extends Component {

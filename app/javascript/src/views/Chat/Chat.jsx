@@ -17,13 +17,13 @@ import {
   setupNotifications,
   getNotificationState,
 } from './util';
-import Alert from './alert';
-import Channels from './channels';
-import Compose from './compose';
-import Message from './message';
-import Content from './content';
-import Video from './video';
-import View from './view';
+import Alert from './components/Alert';
+import Channels from './components/Channels';
+import Compose from './components/Compose';
+import Message from './components/Message';
+import Content from './components/Content';
+import Video from './components/Video';
+import View from './components/View';
 
 import setupPusher from '../../utils/pusher';
 
@@ -87,7 +87,7 @@ export default class Chat extends Component {
       const filters =
         this.state.channelTypeFilter === 'all'
           ? {}
-          : { filters: 'channel_type:' + this.state.channelTypeFilter };
+          : { filters: `channel_type:${this.state.channelTypeFilter}` };
       getChannels(
         '',
         this.state.activeChannelId,
@@ -116,12 +116,12 @@ export default class Chat extends Component {
 
   liveCoding = e => {
     if (this.state.activeContent != { type_of: 'code_editor' }) {
-      let newActiveContent = this.state.activeContent;
+      const newActiveContent = this.state.activeContent;
       newActiveContent[this.state.activeChannelId] = { type_of: 'code_editor' };
       this.setState({ activeContent: newActiveContent });
     }
     if (document.querySelector('.CodeMirror')) {
-      let cm = document.querySelector('.CodeMirror').CodeMirror;
+      const cm = document.querySelector('.CodeMirror').CodeMirror;
       if (cm && e.context === 'initializing-live-code-channel') {
         window.pusher.channel(e.channel).trigger('client-livecode', {
           value: cm.getValue(),
@@ -139,28 +139,26 @@ export default class Chat extends Component {
     }
   };
 
-  filterForActiveChannel = (channels, id) => {
-    return channels.filter(channel => channel.id === parseInt(id))[0];
-  };
+  filterForActiveChannel = (channels, id) =>
+    channels.filter(channel => channel.id === parseInt(id))[0];
 
   subscribePusher = channelName => {
     if (this.state.subscribedPusherChannels.includes(channelName)) {
       return;
-    } else {
-      setupPusher(this.props.pusherKey, {
-        channelId: channelName,
-        messageCreated: this.receiveNewMessage,
-        channelCleared: this.clearChannel,
-        redactUserMessages: this.redactUserMessages,
-        channelError: this.channelError,
-        liveCoding: this.liveCoding,
-        videoCallInitiated: this.receiveVideoCall,
-        videoCallEnded: this.receiveVideoCallHangup,
-      });
-      let subscriptions = this.state.subscribedPusherChannels;
-      subscriptions.push(channelName);
-      this.setState({ subscribedPusherChannels: subscriptions });
     }
+    setupPusher(this.props.pusherKey, {
+      channelId: channelName,
+      messageCreated: this.receiveNewMessage,
+      channelCleared: this.clearChannel,
+      redactUserMessages: this.redactUserMessages,
+      channelError: this.channelError,
+      liveCoding: this.liveCoding,
+      videoCallInitiated: this.receiveVideoCall,
+      videoCallEnded: this.receiveVideoCallHangup,
+    });
+    const subscriptions = this.state.subscribedPusherChannels;
+    subscriptions.push(channelName);
+    this.setState({ subscribedPusherChannels: subscriptions });
   };
 
   loadChannels = (channels, query) => {
@@ -196,10 +194,9 @@ export default class Chat extends Component {
       const channel = channels[0];
       const channelSlug =
         channel.channel_type === 'direct'
-          ? '@' +
-            channel.slug
+          ? `@${channel.slug
               .replace(`${window.currentUser.username}/`, '')
-              .replace(`/${window.currentUser.username}`, '')
+              .replace(`/${window.currentUser.username}`, '')}`
           : channel.slug;
       this.triggerSwitchChannel(channel.id, channelSlug);
     } else {
@@ -218,10 +215,10 @@ export default class Chat extends Component {
 
   loadPaginatedChannels = channels => {
     const currentChannels = this.state.chatChannels;
-    const currentChannelIds = currentChannels.map((channel, index) => {
-      return channel.id;
-    });
-    let newChannels = currentChannels;
+    const currentChannelIds = currentChannels.map(
+      (channel, index) => channel.id,
+    );
+    const newChannels = currentChannels;
     channels.forEach((channel, index) => {
       if (!currentChannelIds.includes(channel.id)) {
         newChannels.push(channel);
@@ -289,9 +286,9 @@ export default class Chat extends Component {
         : {};
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
-    let newChannelsObj = this.state.chatChannels.map((channel, index) => {
-      if (receivedChatChannelId === channel['id']) {
-        channel['last_message_at'] = new Date();
+    const newChannelsObj = this.state.chatChannels.map((channel, index) => {
+      if (receivedChatChannelId === channel.id) {
+        channel.last_message_at = new Date();
         newMessageChannelIndex = index;
         newMessageChannel = channel;
       }
@@ -317,7 +314,7 @@ export default class Chat extends Component {
   };
 
   receiveVideoCall = callObj => {
-    let incomingCalls = this.state.incomingVideoCallChannelIds;
+    const incomingCalls = this.state.incomingVideoCallChannelIds;
     incomingCalls.push(callObj.channelId);
     this.setState({ incomingVideoCallChannelIds: incomingCalls });
   };
@@ -352,7 +349,7 @@ export default class Chat extends Component {
       const filters =
         this.state.channelTypeFilter === 'all'
           ? {}
-          : { filters: 'channel_type:' + this.state.channelTypeFilter };
+          : { filters: `channel_type:${this.state.channelTypeFilter}` };
       getChannels(
         this.state.filterQuery,
         this.state.activeChannelId,
@@ -388,7 +385,7 @@ export default class Chat extends Component {
   handleMessageSubmit = message => {
     // should check if user has the priviledge
     if (message.startsWith('/code')) {
-      let newActiveContent = this.state.activeContent;
+      const newActiveContent = this.state.activeContent;
       newActiveContent[this.state.activeChannelId] = { type_of: 'code_editor' };
       this.setState({ activeContent: newActiveContent });
     } else if (message.startsWith('/call')) {
@@ -400,10 +397,10 @@ export default class Chat extends Component {
         });
     } else if (message.startsWith('/github')) {
       const args = message.split('/github ')[1].trim();
-      let newActiveContent = this.state.activeContent;
+      const newActiveContent = this.state.activeContent;
       newActiveContent[this.state.activeChannelId] = {
         type_of: 'github',
-        args: args,
+        args,
       };
       this.setState({ activeContent: newActiveContent });
     } else if (message[0] === '/') {
@@ -459,7 +456,7 @@ export default class Chat extends Component {
       showAlert: false,
     });
     this.setupChannel(id);
-    window.history.replaceState(null, null, '/connect/' + slug);
+    window.history.replaceState(null, null, `/connect/${slug}`);
     if (!this.state.isMobileDevice) {
       document.getElementById('messageform').focus();
     }
@@ -486,7 +483,7 @@ export default class Chat extends Component {
 
   triggerNotificationRequest = e => {
     const context = this;
-    Notification.requestPermission(function(permission) {
+    Notification.requestPermission(permission => {
       if (permission === 'granted') {
         context.setState({ notificationsPermission: 'granted' });
         setupNotifications();
@@ -497,7 +494,7 @@ export default class Chat extends Component {
   triggerActiveContent = e => {
     const target = e.target;
     if (
-      //Trying to open in new tab
+      // Trying to open in new tab
       e.ctrlKey ||
       e.shiftKey ||
       e.metaKey || // apple
@@ -509,7 +506,7 @@ export default class Chat extends Component {
       e.preventDefault();
       e.stopPropagation();
     }
-    let newActiveContent = this.state.activeContent;
+    const newActiveContent = this.state.activeContent;
     if (target.dataset.content === 'channel-details') {
       newActiveContent[this.state.activeChannelId] = {
         type_of: 'channel-details',
@@ -522,7 +519,7 @@ export default class Chat extends Component {
       newActiveContent[this.state.activeChannelId] = {
         type_of: 'loading-user',
       };
-      getContent('/api/' + target.dataset.content, this.setActiveContent, null);
+      getContent(`/api/${target.dataset.content}`, this.setActiveContent, null);
     } else if (
       target.dataset.content &&
       target.dataset.content.startsWith('articles/')
@@ -530,7 +527,7 @@ export default class Chat extends Component {
       newActiveContent[this.state.activeChannelId] = {
         type_of: 'loading-post',
       };
-      getContent('/api/' + target.dataset.content, this.setActiveContent, null);
+      getContent(`/api/${target.dataset.content}`, this.setActiveContent, null);
     } else if (target.dataset.content === 'exit') {
       newActiveContent[this.state.activeChannelId] = null;
     }
@@ -539,14 +536,14 @@ export default class Chat extends Component {
   };
 
   setActiveContent = response => {
-    let newActiveContent = this.state.activeContent;
+    const newActiveContent = this.state.activeContent;
     newActiveContent[this.state.activeChannelId] = response;
     this.setState({ activeContent: newActiveContent });
-    setTimeout(function() {
+    setTimeout(() => {
       document.getElementById('chat_activecontent').scrollTop = 0;
       document.getElementById('chat').scrollLeft = 1000;
     }, 3);
-    setTimeout(function() {
+    setTimeout(() => {
       document.getElementById('chat_activecontent').scrollTop = 0;
       document.getElementById('chat').scrollLeft = 1000;
     }, 10);
@@ -554,8 +551,8 @@ export default class Chat extends Component {
 
   handleChannelOpenSuccess = response => {
     const newChannelsObj = this.state.chatChannels.map(channel => {
-      if (parseInt(response.channel) === channel['id']) {
-        channel['last_opened_at'] = new Date();
+      if (parseInt(response.channel) === channel.id) {
+        channel.last_opened_at = new Date();
       }
       return channel;
     });
@@ -587,7 +584,7 @@ export default class Chat extends Component {
       channelTypeFilter: type,
       fetchingPaginatedChannels: false,
     });
-    const filters = type === 'all' ? {} : { filters: 'channel_type:' + type };
+    const filters = type === 'all' ? {} : { filters: `channel_type:${type}` };
     getChannels(
       this.state.filterQuery,
       null,
@@ -629,7 +626,7 @@ export default class Chat extends Component {
           <div className="chatmessage__body">
             You and{' '}
             <a
-              href={'/' + channelUsername}
+              href={`/${channelUsername}`}
               style={{
                 color:
                   activeChannel.channel_users[channelUsername].darker_color,
@@ -665,7 +662,7 @@ export default class Chat extends Component {
     const filters =
       this.state.channelTypeFilter === 'all'
         ? {}
-        : { filters: 'channel_type:' + this.state.channelTypeFilter };
+        : { filters: `channel_type:${this.state.channelTypeFilter}` };
     getChannels(
       e.target.value,
       null,
@@ -712,7 +709,7 @@ export default class Chat extends Component {
       }
       if (this.state.inviteChannels.length > 0) {
         invitesButton = (
-          <div class="chat__channelinvitationsindicator">
+          <div className="chat__channelinvitationsindicator">
             <button
               onClick={this.triggerNonChatView}
               data-content="invitations"
@@ -781,30 +778,27 @@ export default class Chat extends Component {
             {notificationsState}
           </div>
         );
-      } else {
-        return (
-          <div className="chat__channels">
-            {notificationsButton}
-            <button
-              class="chat__channelstogglebutt"
-              onClick={this.toggleExpand}
-              style={{ width: '100%' }}
-            >
-              {'>'}
-            </button>
-            <Channels
-              incomingVideoCallChannelIds={
-                this.state.incomingVideoCallChannelIds
-              }
-              activeChannelId={this.state.activeChannelId}
-              chatChannels={this.state.chatChannels}
-              handleSwitchChannel={this.handleSwitchChannel}
-              expanded={this.state.expanded}
-            />
-            {notificationsState}
-          </div>
-        );
       }
+      return (
+        <div className="chat__channels">
+          {notificationsButton}
+          <button
+            className="chat__channelstogglebutt"
+            onClick={this.toggleExpand}
+            style={{ width: '100%' }}
+          >
+            {'>'}
+          </button>
+          <Channels
+            incomingVideoCallChannelIds={this.state.incomingVideoCallChannelIds}
+            activeChannelId={this.state.activeChannelId}
+            chatChannels={this.state.chatChannels}
+            handleSwitchChannel={this.handleSwitchChannel}
+            expanded={this.state.expanded}
+          />
+          {notificationsState}
+        </div>
+      );
     }
     return '';
   };
@@ -841,7 +835,7 @@ export default class Chat extends Component {
 
   render() {
     let channelHeader = <div className="activechatchannel__header">&nbsp;</div>;
-    let channelHeaderInner = '';
+    const channelHeaderInner = '';
     const currentChannel = this.state.activeChannel;
     if (currentChannel) {
       let channelHeaderInner = '';
@@ -851,7 +845,7 @@ export default class Chat extends Component {
           .replace(`/${window.currentUser.username}`, '');
         channelHeaderInner = (
           <a
-            href={'/' + username}
+            href={`/${username}`}
             onClick={this.triggerActiveContent}
             data-content={`users/by_username?url=${username}`}
           >
@@ -861,7 +855,7 @@ export default class Chat extends Component {
       } else {
         channelHeaderInner = (
           <a
-            href={'/' + currentChannel.adjusted_slug}
+            href={`/${currentChannel.adjusted_slug}`}
             onClick={this.triggerActiveContent}
             data-content="channel-details"
           >
@@ -909,9 +903,9 @@ export default class Chat extends Component {
     }
     return (
       <div
-        className={
-          'chat chat--' + (this.state.expanded ? 'expanded' : 'contracted')
-        }
+        className={`chat chat--${
+          this.state.expanded ? 'expanded' : 'contracted'
+        }`}
         data-no-instant
       >
         {this.renderChatChannels()}

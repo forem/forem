@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { getTwilioToken } from './actions';
+import { getTwilioToken } from '../actions';
 const {connect, createLocalVideoTrack} = require('twilio-video');
 
 export default class Video extends Component {

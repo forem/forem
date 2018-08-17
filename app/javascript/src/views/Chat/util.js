@@ -1,7 +1,6 @@
 import 'intersection-observer';
 import { sendKeys } from './actions';
 
-
 export function getUserDataAndCsrfToken() {
   const promise = new Promise((resolve, reject) => {
     let i = 0;
@@ -76,39 +75,40 @@ export function adjustTimestamp(timestamp) {
   return time;
 }
 
-
 export function setupNotifications() {
-  navigator.serviceWorker.ready.then((serviceWorkerRegistration) => {
-    serviceWorkerRegistration.pushManager.getSubscription()
-      .then(function(subscription) {
+  navigator.serviceWorker.ready.then(serviceWorkerRegistration => {
+    serviceWorkerRegistration.pushManager
+      .getSubscription()
+      .then((subscription) => {
         if (subscription) {
           return subscription;
         }
         return serviceWorkerRegistration.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: window.vapidPublicKey
+          applicationServerKey: window.vapidPublicKey,
         });
-      }).then(function(subscription) {
-        sendKeys(subscription.toJSON(), null, null)
+      })
+      .then((subscription) => {
+        sendKeys(subscription.toJSON(), null, null);
       });
   });
 }
 
 export function getNotificationState() {
   //Not yet ready
-  if (!window.location.href.includes('ask-for-notifications')){
-    return "dont-ask"
+  if (!window.location.href.includes('ask-for-notifications')) {
+    return 'dont-ask';
   }
 
   // Let's check if the browser supports notifications
-  if (!("Notification" in window)) {
-    return "not-supported"
-  }  else if (Notification.permission === "granted") {
+  if (!('Notification' in window)) {
+    return 'not-supported';
+  } else if (Notification.permission === 'granted') {
     setupNotifications();
-    return "granted"
-  }  else if (Notification.permission !== 'denied') {
-    return "waiting-permission"
-  } else {
-    return "denied"
-  }
+    return 'granted';
+  } else if (Notification.permission !== 'denied') {
+    return 'waiting-permission';
+  } 
+    return 'denied';
+  
 }
