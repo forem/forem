@@ -1,15 +1,8 @@
-<h1>RSS Users</h1>
+<h1>Mentors & Mentees</h1>
 
 <% @users.each do |user| %>
-    <div class="row">
-      <h2><%= user.name%></h2>
-      <h3><a href="/<%= user.username %>" target="_blank">@<%= user.username%></a></h3>
-      <h4><a href="/dashboard/<%= user.username %>" class="btn btn-primary" target="_blank">View dashboard</a></h4>
-      <hr/>
-      <h4><a href="<%= user.feed_url %>" target="_blank"><%= user.feed_url%></a></h4>
-      <% if user.feed_admin_publish_permission %>
-        <h4 style="color:green">Admin Publish Permission 👌</h4>
-      <% end%>
-      
-    </div>
-<% end%>
+  <div class="row">
+    <h2><%= user.name%></h2>
+    <h3><a href="/internal/users/<%= user.id %>" target="_blank">@<%= user.username%></a></h3>
+  </div>
+<% end %>

@@ -30,6 +30,20 @@ class UserRoleService
     true
   end
 
+  def create_or_update_note(reason, content)
+    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
+    if note.nil?
+      Note.create(
+        noteable_id: @user.id,
+        noteable_type: "User",
+        reason: reason,
+        content: content,
+      )
+    else
+      note.update(content: content)
+    end
+  end
+
   private
 
   def new_roles?(params)
@@ -63,20 +77,6 @@ class UserRoleService
       @user.errors[:reason_for_warning] << "can't be blank if warned is checked"
     elsif params[:warned] == "1"
       give_warning(params[:reason_for_warning])
-    end
-  end
-
-  def create_or_update_note(reason, content)
-    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
-    if note.nil?
-      Note.create(
-        noteable_id: @user.id,
-        noteable_type: "User",
-        reason: reason,
-        content: content,
-      )
-    else
-      note.update(content: content)
     end
   end
 

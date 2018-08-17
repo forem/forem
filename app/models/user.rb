@@ -2,6 +2,11 @@ class User < ApplicationRecord
   include CloudinaryHelper
 
   attr_accessor :scholar_email
+  attr_accessor :add_mentor
+  attr_accessor :add_mentee
+  attr_accessor :mentorship_note
+  attr_accessor :change_mentorship_status
+
   rolify
   include AlgoliaSearch
   include Storext.model
@@ -10,8 +15,6 @@ class User < ApplicationRecord
 
   acts_as_followable
   acts_as_follower
-
-  attr_accessor :add_mentor
 
   belongs_to  :organization, optional: true
   has_many    :articles

@@ -44,6 +44,7 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: [:update]
     resources :reports, only: %i[index update], controller: "feedback_messages"
     mount Flipflop::Engine => "/features"
+
   end
 
   namespace :api, defaults: { format: "json" } do

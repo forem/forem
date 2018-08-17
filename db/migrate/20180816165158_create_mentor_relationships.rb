@@ -3,6 +3,7 @@ class CreateMentorRelationships < ActiveRecord::Migration[5.1]
     create_table :mentor_relationships do |t|
       t.integer :mentor_id, null: false
       t.integer :mentee_id, null: false
+      t.boolean :active, default: true
       t.timestamps
     end
     add_index :mentor_relationships, :mentee_id

@@ -2,16 +2,16 @@ class Internal::UsersController < Internal::ApplicationController
   layout "internal"
 
   def index
-    case params[:state]
-    when "mentors"
-      @users = User.where(offering_mentorship: true)
-    when "mentees"
-      @users = User.where(seeking_mentorship: true)
-    else
-      @users = User.
-        where(offering_mentorship: true).
-        or(User.where(seeking_mentorship: true))
-    end
+    @users = case params[:state]
+             when "mentors"
+               User.where(offering_mentorship: true)
+             when "mentees"
+               User.where(seeking_mentorship: true)
+             else
+               User.
+                 where(offering_mentorship: true).
+                 or(User.where(seeking_mentorship: true))
+             end
   end
 
   def edit
@@ -20,17 +20,36 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: "mentorship")
+    @user_mentees = MentorRelationship.where(mentor_id: @user.id)
+    @user_mentors = MentorRelationship.where(mentee_id: @user.id)
   end
 
   def update
-    # Only used for stripping user right now.
     @user = User.find(params[:id])
-    if user_params[:add_mentor]
-      mentor = User.find(user_params[:add_mentor])
-      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save
-    end
+
+    mentorship_match
+    add_note
     @user.update!(user_params)
     redirect_to "/internal/users/#{@user.id}"
+  end
+
+  def mentorship_match
+    return if user_params[:add_mentee] == "" && user_params[:add_mentor] == ""
+    if user_params[:add_mentee] && user_params[:add_mentor]
+      MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save
+    elsif user_params[:add_mentor]
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save
+    elsif user_params[:add_mentee]
+      MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save
+    end
+  end
+
+  def add_note
+    if user_params[:mentorship_note]
+      UserRoleService.new(@user).create_or_update_note("mentorship", user_params[:mentorship_note])
+    end
   end
 
   def banish
@@ -84,6 +103,10 @@ class Internal::UsersController < Internal::ApplicationController
   def user_params
     params.require(:user).permit(:seeking_mentorship,
                                  :offering_mentorship,
-                                 :add_mentor)
+                                 :add_mentor,
+                                 :add_mentee,
+                                 :mentorship_note,
+                                 :change_mentorship_status,
+                                 :banned_from_mentorship)
   end
 end
