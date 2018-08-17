@@ -1,0 +1,40 @@
+<div class="row">
+  <h1>
+    <a href="/<%= @user.username %>" target="_blank"><%= @user.name%></a> (@<%= @user.username %>)
+  </h1>
+  <% if @user.banned %>
+    <p style="color:red">Banned User: <%= @user.reason_for_ban %></p>
+  <% elsif @user.warned %>
+    <p style="color:orange">Warned User: <%= @user.reason_for_warning %></p>
+  <% else %>
+    <p style="color:green">Member in good standing</p>
+  <% end %>
+
+  <%= form_for ([:internal, @user]) do |f| %>
+    <%= f.label :offering_mentorship %>
+    <%= f.check_box :offering_mentorship %>
+      <% if @user.mentees.count > 0 %>
+        <p style="color:green;">Mentee(s):
+          <% @user.mentees.each do |mentee| %>
+            <a href="https://dev.to/<%= mentee.username %>" target=">blank">@<%= mentee.username %> </a>
+          <% end %>
+        </p>
+      <% end %>
+    <p>"<%= @user.mentor_description %>"</p>
+    <%= f.label :seeking_mentorship %>
+    <%= f.check_box :seeking_mentorship %>
+      <% if @user.mentors.count > 0 %>
+        <h4 style="color:green">Mentor(s):
+          <% @user.mentors.each do |mentor| %>
+            <a href="https://dev.to/<%= mentor.username %>" target=">blank">@<%= mentor.username %> </a>
+          <% end %>
+        </h4>
+      <% end %>
+    <p>"<%= @user.mentee_description %>"</p>
+    <%= f.label :add_mentor %>
+    <%= f.text_field :add_mentor %>
+    <%= f.submit %>
+  <% end %>
+
+</div>
+
