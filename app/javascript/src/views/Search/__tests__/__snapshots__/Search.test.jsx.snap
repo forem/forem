@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Search /> renders properly 1`] = `
+<div
+  class="nav-search-form"
+>
+  <form
+    acceptCharset="UTF-8"
+    action="/search"
+    method="get"
+    onSubmit={[Function]}
+  >
+    <input
+      name="utf8"
+      type="hidden"
+      value="✓"
+    />
+    <input
+      autoComplete="off"
+      class="nav-search-form__input"
+      id="nav-search"
+      name="q"
+      onKeyDown={[Function]}
+      placeholder="search"
+      type="text"
+      value=""
+    />
+  </form>
+</div>
+`;

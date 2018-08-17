@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import faker from 'faker';
 import GlobalModalWrapper from './GlobalModalWrapper';
 import OnboardingArticle from '../OnboardingArticle';
-import { defaultChildrenPropTypes } from '../common-prop-types';
+import { defaultChildrenPropTypes } from '../../../../components/common-prop-types';
 
 const article = {
   user: {

@@ -40,12 +40,14 @@ describe('<OnboardingFollowUsers />', () => {
     ];
     const handleCheckUser = jest.fn();
     const handleCheckAllUsers = jest.fn();
-    const tree = render(<OnboardingFollowUsers
-      users={users}
-      checkedUsers={checkedUsers}
-      handleCheckUser={handleCheckUser}
-      handleCheckAllUsers={handleCheckAllUsers}
-    />);
+    const tree = render(
+      <OnboardingFollowUsers
+        users={users}
+        checkedUsers={checkedUsers}
+        handleCheckUser={handleCheckUser}
+        handleCheckAllUsers={handleCheckAllUsers}
+      />,
+    );
     expect(tree).toMatchSnapshot();
   });
 });

@@ -3,7 +3,7 @@ import OnboardingWelcome from './components/OnboardingWelcome';
 import OnboardingFollowTags from './components/OnboardingFollowTags';
 import OnboardingFollowUsers from './components/OnboardingFollowUsers';
 import OnboardingWelcomeThread from './components/OnboardingWelcomeThread';
-import cancelSvg from '../../assets/images/cancel.svg';
+import cancelSvg from '../../../../assets/images/cancel.svg';
 import OnboardingArticles from './components/OnboardingArticles';
 
 class Onboarding extends Component {

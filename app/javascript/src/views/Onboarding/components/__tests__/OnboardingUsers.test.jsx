@@ -43,23 +43,29 @@ describe('<OnboardingUsers />', () => {
 
   describe('when given users to follow', () => {
     it('renders correctly', () => {
-      const context = render(<OnboardingUsers
-        users={users}
-        checkedUsers={checkedUsers}
-        handleCheckUser={handleCheckUser}
-        handleCheckAllUsers={handleCheckAllUsers}
-      />);
+      const context = render(
+        <OnboardingUsers
+          users={users}
+          checkedUsers={checkedUsers}
+          handleCheckUser={handleCheckUser}
+          handleCheckAllUsers={handleCheckAllUsers}
+        />,
+      );
       expect(context).toMatchSnapshot();
     });
 
     it('responds to clicking Follow All', () => {
-      const context = shallow(<OnboardingUsers
-        users={users}
-        checkedUsers={checkedUsers}
-        handleCheckUser={handleCheckUser}
-        handleCheckAllUsers={handleCheckAllUsers}
-      />);
-      expect(context.find('#onboarding-user-follow-all-btn').text()).toEqual('✓');
+      const context = shallow(
+        <OnboardingUsers
+          users={users}
+          checkedUsers={checkedUsers}
+          handleCheckUser={handleCheckUser}
+          handleCheckAllUsers={handleCheckAllUsers}
+        />,
+      );
+      expect(context.find('#onboarding-user-follow-all-btn').text()).toEqual(
+        '✓',
+      );
       context.find('#onboarding-user-follow-all-btn').simulate('click');
       expect(handleCheckAllUsers).toHaveBeenCalledTimes(1);
     });

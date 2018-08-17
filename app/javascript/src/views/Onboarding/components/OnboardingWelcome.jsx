@@ -12,8 +12,10 @@ const OnboardingWelcome = () => {
 
   return (
     <div>
-      {messages.map(item => (<p>{item}</p>))}
-      <p><strong className="yellow">{specialMessage}.</strong></p>
+      {messages.map(item => <p>{item}</p>)}
+      <p>
+        <strong className="yellow">{specialMessage}.</strong>
+      </p>
     </div>
   );
 };

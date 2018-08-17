@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import Onboarding from '../src/Onboarding';
+import Onboarding from '../src/views/Onboarding/Onboarding';
 import { getUserDataAndCsrfToken } from '../src/views/Chat/util';
 import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 

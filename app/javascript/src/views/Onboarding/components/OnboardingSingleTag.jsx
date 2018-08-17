@@ -13,7 +13,13 @@ class OnboardingSingleTag extends Component {
 
   render() {
     return (
-      <div className={`onboarding-tag-container${this.props.tag.following ? ' followed-tag' : ''}`} id={`onboarding-tag-container-${this.props.tag.name}`} style={`background: ${this.props.tag.bg_color_hex}`}>
+      <div
+        className={`onboarding-tag-container${
+          this.props.tag.following ? ' followed-tag' : ''
+        }`}
+        id={`onboarding-tag-container-${this.props.tag.name}`}
+        style={`background: ${this.props.tag.bg_color_hex}`}
+      >
         <a
           className="onboarding-tag-link"
           href="#"

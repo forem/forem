@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { userPropTypes } from './common-prop-types';
+import { userPropTypes } from '../../../components/common-prop-types';
 
 const MAX_ARTICLE_DESCRIPTION_LENGTH = 75;
 
