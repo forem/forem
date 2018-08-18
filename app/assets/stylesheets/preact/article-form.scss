@@ -72,7 +72,7 @@
   width: 100%;
   img {
     width:100%;
-    height: auto; 
+    height: auto;
     display: block;
     cursor: pointer;
     &:hover{
@@ -143,7 +143,7 @@
   border: 2px solid $black;
   padding: 3px;
   font-family: $helvetica-condensed;
-  font-size: 16px;
+  font-size: 14.4px;
   height: 38px;
   &:hover{
     background: lighten($green, 24%);
@@ -196,7 +196,7 @@
     &:hover{
       background: lighten($green, 24%);
     }
-    &.active{ 
+    &.active{
       background: $green;
     }
     @media screen and ( min-width: 600px ){

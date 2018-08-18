@@ -45,12 +45,13 @@ class Internal::UsersController < Internal::ApplicationController
       user.notes.create!(reason: "banned", content: "spam account")
     end
     user.comments.each do |comment|
-      comment.reactions.each &:destroy!
-      comment.destroy!
+      comment.reactions.each { |rxn| rxn.delay.destroy! }
+      comment.delay.destroy!
     end
-    user.articles.each &:destroy!
+    user.articles.each { |article| article.delay.destroy! }
     user.remove_from_index!
     user.save!
+    CacheBuster.new.bust("/#{user.old_username}")
     user.update!(old_username: nil)
   rescue StandardError => e
     flash[:error] = e.message
