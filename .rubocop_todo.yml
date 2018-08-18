@@ -73,19 +73,6 @@ Naming/MethodName:
     - 'app/helpers/articles_helper.rb'
     - 'app/liquid_tags/podcast_tag.rb'
 
-# Offense count: 4
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist, MethodDefinitionMacros.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-# MethodDefinitionMacros: define_method, define_singleton_method
-Naming/PredicateName:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/controllers/application_controller.rb'
-    - 'app/helpers/articles_helper.rb'
-    - 'app/models/user.rb'
-
 # Offense count: 9
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id, to, by, on, in, at, ip
@@ -152,12 +139,4 @@ Style/For:
 # Offense count: 3
 Style/MixinUsage:
   Exclude:
-    - 'app/models/organization.rb'
     - 'app/models/podcast_episode.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'
