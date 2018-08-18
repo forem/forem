@@ -73,7 +73,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
-**Fixing bugs** may also not require a lot of communication, but the more the better. Please surround bug fixes with ample tests. Bugs are magnets for other bugs. Write tests near bugs!
+**Fixing bugs** may also not require a lot of communication, but the more the better. Please surround bug fixes with sample tests. Bugs are magnets for other bugs. Write tests near bugs!
 
 **Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. The [product roadmap](https://github.com/thepracticaldev/dev.to/projects) should be a good guide to follow. As always, when in doubt, ask!
 
