@@ -1,7 +1,6 @@
-include CloudinaryHelper
-include ActionView::Helpers::SanitizeHelper
-
 class PodcastEpisode < ApplicationRecord
+  include CloudinaryHelper
+  include ActionView::Helpers::SanitizeHelper
   include AlgoliaSearch
 
   acts_as_taggable
