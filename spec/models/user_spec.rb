@@ -184,23 +184,28 @@ RSpec.describe User, type: :model do
       expect(user.mentee_form_updated_at).not_to eq(nil)
     end
 
-    it "does not allow mentor/mentee description too be too long" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentor_form_updated_at).to eq(nil)
+    it "does not allow mentee description to be too long" do
       user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
       user.save
       expect(user.mentee_form_updated_at).to eq(nil)
     end
 
-    it "allow mentor/mentee description to be the max length" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
+    it "does not allow mentor description to be too long" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
       user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
+      expect(user.mentor_form_updated_at).to eq(nil)
+    end
 
+    it "allow mentee description to be the max length" do
       user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
       user.save
       expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "allow mentor description to be the max length" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "does not allow too short or too long name" do
