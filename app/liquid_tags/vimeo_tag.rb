@@ -1,5 +1,3 @@
-require "uri"
-
 class VimeoTag < LiquidTagBase
   def initialize(tag_name, token, tokens)
     super
@@ -25,7 +23,12 @@ class VimeoTag < LiquidTagBase
   private
 
   def id_for(input)
-    File.basename URI(input.to_s.strip).path
+    # This was the original plan:
+    #   require "uri"
+    #   File.basename URI(input).path
+    # But the markdown turns the link into html. This is simple enough,
+    # works for all the use cases and isn't exploitable.
+    input.to_s.scan(/\d+/).max_by(&:length)
   end
 end
 
