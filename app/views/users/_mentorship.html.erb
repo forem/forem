@@ -10,7 +10,7 @@
   </div>
   <div class="field">
     <p>Please share the top 3 technologies/concepts you'd be comfortable working on with your mentee, how much experience you currently have (0-10, 10 being super duper expert), and anything else you'd like us to know.</p>
-    <%= f.text_area :mentor_description, placeholder: "For example:\n\n1. Vim - 6, I love teaching people how to use vim because I really believe it increases productivity.\n\nI don't think I'd be comfortable teaching a total beginner. ", maxlength: 500 %>
+    <%= f.text_area :mentor_description, placeholder: "For example:\n\n1. Vim - 6, I love teaching people how to use vim because I really believe it increases productivity.\n\nI don't think I'd be comfortable teaching a total beginner. ", maxlength: 1000 %>
   </div>
   <h3>Seeking Help</h3>
   <p><em><% if @user.mentee_form_updated_at? %>Last Updated:
@@ -22,7 +22,7 @@
   <div class="field">
     <%= f.label :mentee_description, "How can we help?" %>
     <p>Please share the top 3 technologies/concepts you'd like to work on with your mentor, how much experience you currently have (0-10, 0 being no experience at all), and why you're interested in learning more. Please also share your general technical background and career goals.</p>
-    <%= f.text_area :mentee_description, placeholder: "For example:\n\n1. React - 1, I walked through the tutorial on the React website, but I'm feeling lost. I see React listed in lots of job descriptions so I'd like to learn how to utilize the framework.\n\nI graduated from a coding bootcamp 3 months ago and my goal is to land my first developer role. I learned jQuery in the program.", maxlength: 500 %>
+    <%= f.text_area :mentee_description, placeholder: "For example:\n\n1. React - 1, I walked through the tutorial on the React website, but I'm feeling lost. I see React listed in lots of job descriptions so I'd like to learn how to utilize the framework.\n\nI graduated from a coding bootcamp 3 months ago and my goal is to land my first developer role. I learned jQuery in the program.", maxlength: 1000 %>
   </div>
   <div class="field">
     <label></label>
