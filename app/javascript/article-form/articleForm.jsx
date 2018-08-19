@@ -21,11 +21,13 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
 
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']").content
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']").content
-    const env = document.querySelector("meta[name='environment']").content
+    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
+      .content;
+    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
+      .content;
+    const env = document.querySelector("meta[name='environment']").content;
     const client = algoliasearch(algoliaId, algoliaKey);
-    this.index = client.initIndex('Tag_' + env);
+    this.index = client.initIndex(`Tag_${  env}`);
 
     const article = JSON.parse(this.props.article);
     const organization = this.props.organization
@@ -103,12 +105,12 @@ export default class ArticleForm extends Component {
   handleTagKeyDown = e => {
     const component = this;
     const keyCode = e.keyCode;
-    if (component.state.selectedTags.length === 4 && e.keyCode === 188) {
+    if (component.state.selectedTags.length === 4 && e.keyCode === KEYS.COMMA) {
       e.preventDefault();
       return;
     }
     if (
-      (e.keyCode === 40 || e.keyCode === 9) &&
+      (e.keyCode === KEYS.DOWN || e.keyCode === KEYS.TAB) &&
       component.state.tagInputListIndex <
         component.state.tagOptions.length - 1 &&
       component.state.tagList != ''
@@ -118,13 +120,19 @@ export default class ArticleForm extends Component {
       this.setState({
         tagInputListIndex: component.state.tagInputListIndex + 1,
       });
-    } else if (e.keyCode === 38 && component.state.tagInputListIndex > -1) {
+    } else if (
+      e.keyCode === KEYS.UP &&
+      component.state.tagInputListIndex > -1
+    ) {
       // up key
       e.preventDefault();
       this.setState({
         tagInputListIndex: component.state.tagInputListIndex - 1,
       });
-    } else if (e.keyCode === 13 && component.state.tagInputListIndex > -1) {
+    } else if (
+      e.keyCode === KEYS.RETURN &&
+      component.state.tagInputListIndex > -1
+    ) {
       // return key
       e.preventDefault();
       const newInput =
@@ -141,7 +149,10 @@ export default class ArticleForm extends Component {
       setTimeout(() => {
         document.getElementById('tag-input').focus();
       }, 10);
-    } else if (e.keyCode === 188 && component.state.tagInputListIndex === -1) {
+    } else if (
+      e.keyCode === KEYS.COMMA &&
+      component.state.tagInputListIndex === -1
+    ) {
       // comma key
       e.preventDefault();
       const newInput = `${component.state.tagList  },`;
@@ -152,7 +163,7 @@ export default class ArticleForm extends Component {
         tagInputListIndex: -1,
         selectedTags: newInput.split(','),
       });
-    } else if (e.keyCode === 8) {
+    } else if (e.keyCode === KEYS.DELETE) {
       // Delete key
       if (component.state.tagList[component.state.tagList.length - 1] === ',') {
         const selectedTags = component.state.selectedTags;
@@ -163,11 +174,11 @@ export default class ArticleForm extends Component {
       }
     } else if (
       (e.keyCode < 65 || e.keyCode > 90) &&
-      e.keyCode != 188 &&
-      e.keyCode != 8 &&
-      e.keyCode != 37 &&
-      e.keyCode != 39 &&
-      e.keyCode != 9
+      e.keyCode != KEYS.COMMA &&
+      e.keyCode != KEYS.DELETE &&
+      e.keyCode != KEYS.LEFT &&
+      e.keyCode != KEYS.RIGHT &&
+      e.keyCode != KEYS.TAB
     ) {
       // not letter or comma or delete
       e.preventDefault();
@@ -397,3 +408,14 @@ export default class ArticleForm extends Component {
     );
   }
 }
+
+const KEYS = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39,
+  TAB: 9,
+  RETURN: 13,
+  COMMA: 188,
+  DELETE: 8,
+};
