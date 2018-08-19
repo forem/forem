@@ -1,5 +1,3 @@
-require "nokogiri"
-
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
@@ -48,7 +46,7 @@ class Article < ApplicationRecord
   before_save       :set_all_dates
   before_save       :calculate_base_scores
   before_save       :set_caches
-  after_save        :async_score_calc
+  after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
@@ -366,7 +364,7 @@ class Article < ApplicationRecord
   def async_score_calc
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if published && tag_list.exclude?("hiring")
+    index! if tag_list.exclude?("hiring")
   end
   handle_asynchronously :async_score_calc
 

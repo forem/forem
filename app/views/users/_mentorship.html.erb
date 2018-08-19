@@ -3,7 +3,8 @@
 
 <%= form_for(@user) do |f| %>
   <h3>Offering Help</h3>
-  <p><em><% if @user.mentor_form_updated_at? %>Last Updated: <%= @user.mentor_form_updated_at.strftime("%b %d, %Y") %><% end %></em></p>
+  <p><em><% if @user.mentor_form_updated_at? %>
+    Last Updated: <%= @user.mentor_form_updated_at.strftime("%b %d, %Y") %><% end %></em></p>
   <div class="field checkbox-label-first">
     <%= f.label :offering_mentorship, "I'd like to be a mentor!"%>
     <%= f.check_box :offering_mentorship %>
@@ -13,9 +14,10 @@
     <%= f.text_area :mentor_description, placeholder: "For example:\n\n1. Vim - 6, I love teaching people how to use vim because I really believe it increases productivity.\n\nI don't think I'd be comfortable teaching a total beginner. ", maxlength: 1000 %>
   </div>
   <h3>Seeking Help</h3>
-  <p><em><% if @user.mentee_form_updated_at? %>Last Updated:
-  <%= @user.mentor_form_updated_at.strftime("%b %d, %Y") %><% end %></em></p>
-  <div class="field checkbox-label-first">
+  <p><em><% if @user.mentee_form_updated_at? %>
+    Last Updated:
+    <%= @user.mentee_form_updated_at.strftime("%b %d, %Y") %><% end %></em></p>
+    <div class="field checkbox-label-first">
     <%= f.label :seeking_mentorship, "I'm looking for a mentor!"%>
     <%= f.check_box :seeking_mentorship %>
   </div>

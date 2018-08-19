@@ -6,29 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, AutoCorrect, Severity.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Layout/EndAlignment:
-  Exclude:
-    - 'app/controllers/api/v0/articles_controller.rb'
-    - 'app/controllers/articles_controller.rb'
-    - 'app/controllers/chat_channels_controller.rb'
-    - 'app/controllers/image_uploads_controller.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/models/user.rb'
-    - 'app/services/article_api_index_service.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBrackets.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBrackets: space, no_space
-Layout/SpaceInsideArrayLiteralBrackets:
-  Exclude:
-    - 'app/dashboards/email_message_dashboard.rb'
-
 # Offense count: 3
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -95,19 +72,6 @@ Naming/MethodName:
   Exclude:
     - 'app/helpers/articles_helper.rb'
     - 'app/liquid_tags/podcast_tag.rb'
-
-# Offense count: 4
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist, MethodDefinitionMacros.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-# MethodDefinitionMacros: define_method, define_singleton_method
-Naming/PredicateName:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/controllers/application_controller.rb'
-    - 'app/helpers/articles_helper.rb'
-    - 'app/models/user.rb'
 
 # Offense count: 9
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
@@ -180,21 +144,4 @@ Style/IfInsideElse:
 # Offense count: 3
 Style/MixinUsage:
   Exclude:
-    - 'app/models/organization.rb'
     - 'app/models/podcast_episode.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'

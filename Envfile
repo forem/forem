@@ -7,7 +7,7 @@ enable_defaults! { ENV['RACK_ENV'] != 'production' }
 ############## Basic configuration #############
 ################################################
 
-# App damain + Protocol setting for development
+# App domain + Protocol setting for development
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 
@@ -57,7 +57,6 @@ variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 variable :AWS_ID, :String, default: "Optional"
 variable :AWS_SECRET, :String, default: "Optional"
 variable :AWS_BUCKET_NAME, :String, default: "Optional"
-
 
 # AWS SDK
 variable :AWS_DEFAULT_REGION, :String, default: "us-east-1"

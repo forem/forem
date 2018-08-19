@@ -68,7 +68,8 @@ class User < ApplicationRecord
               format: /\A(http|https):\/\/(www.behance.net|behance.net).*\z/m
   validates :linkedin_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.linkedin.com|linkedin.com).*\z/m
+              format:
+                /\A(http|https):\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com).*\z/m
   validates :dribbble_url,
               allow_blank: true,
               format: /\A(http|https):\/\/(www.dribbble.com|dribbble.com).*\z/m
@@ -92,7 +93,8 @@ class User < ApplicationRecord
   validates :website_url, :employer_name, :employer_url,
             :employment_title, :education, :location,
             length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for,
+  validates :mostly_work_with, :currently_learning, :currently_hacking_on,
+            :available_for, :mentee_description, :mentor_description,
             length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
             length: { maximum: 1000 }
@@ -198,8 +200,11 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch("user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
-      expires_in: 120.hours) do
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
+      expires_in: 120.hours,
+    ) do
+      
       # More efficient query. May not cover future edge cases.
       # Should probably only return users who have published lately
       # But this should be okay for most for now.
@@ -353,7 +358,7 @@ class User < ApplicationRecord
                       temp_username + "_" + rand(100).to_s
                     else
                       temp_username
-    end
+                    end
   end
 
   def temp_name_exists?
@@ -462,8 +467,9 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.sanitize(comments.last(2).pluck(:body_markdown).
-    join(" "))[0..2500]
+    ActionView::Base.full_sanitizer.sanitize(
+      comments.last(2).pluck(:body_markdown).join(" "),
+    )[0..2500]
   end
 
   def body_text

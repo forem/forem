@@ -4,6 +4,7 @@
 - [ ] Refactor
 - [ ] Feature
 - [ ] Bug Fix
+- [ ] Documentation Update
 
 ## Description
 ## Related Tickets & Documents

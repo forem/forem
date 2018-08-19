@@ -3,6 +3,9 @@
     "waderyan.nodejs-extension-pack",
     "esbenp.prettier-vscode",
     "donjayamanne.git-extension-pack",
-    "msjsdiag.debugger-for-chrome"
+    "msjsdiag.debugger-for-chrome",
+    "rebornix.ruby",
+    "castwide.solargraph",
+    "MS-vsliveshare.vsliveshare-pack"
   ]
 }

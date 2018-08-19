@@ -115,9 +115,29 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
+    it "accepts valid country specific http linkedin url" do
+      user.linkedin_url = "http://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
     it "accepts valid https linkedin url" do
       user.linkedin_url = "https://linkedin.com/in/jessleenyc"
       expect(user).to be_valid
+    end
+
+    it "accepts valid country specific https linkedin url" do
+      user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
+    it "does not accept three letters country codes in http linkedin url" do
+      user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept three letters country codes in https linkedin url" do
+      user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
     end
 
     it "does not accept invalid linkedin url" do

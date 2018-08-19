@@ -4,6 +4,7 @@ RSpec.describe Message, type: :model do
   let(:user) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
   let(:user2) { create(:user) }
+  let(:long_text) { Faker::Hipster.words(1500) }
 
   describe "validations" do
     subject { build(:message, :ignore_after_callback) }
@@ -27,11 +28,14 @@ RSpec.describe Message, type: :model do
   end
 
   it "is invalid if over 1024 chars" do
-    long_text = Faker::Hipster.words(1500)
-    p long_text.size
-    message = build(:message, chat_channel_id: chat_channel.id, user_id: user.id, message_markdown: long_text)
-    expect(message).to_not be_valid
-    message.message_markdown = "hello"
+    message = build(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+                              message_markdown: long_text)
+    expect(message).not_to be_valid
+  end
+
+  it "is valid if under 1024 chars" do
+    message = build(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+                              message_markdown: "hello")
     expect(message).to be_valid
   end
 end

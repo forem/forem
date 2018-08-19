@@ -2,25 +2,25 @@
 
 We use the following testing tools:
 
-  * **RSpec** for testing the backend
-  * **Capybara** with **selenium-webdriver** for view testing
-  * **chromedriver-helper** for standard JS testing
-  * **guard-rspec** for automated testing
-  * [Jest](https://facebook.github.io/jest) for testing in the front-end
-  * [SimpleCov](link-to-simplecov-repo) for tracking overall test coverage
+* **RSpec** for testing the backend
+* **Capybara** with **selenium-webdriver** for view testing
+* **chromedriver-helper** for standard JS testing
+* **guard-rspec** for automated testing
+* [Jest](https://facebook.github.io/jest) for testing in the front-end
+* [SimpleCov](link-to-simplecov-repo) for tracking overall test coverage
 
-Each pull request should come  with tests related to the newly written feature or bug fix. Ideally, we should test both the front end and back end.
+Each pull request should come with tests related to the newly written feature or bug fix. Ideally, we should test both the front end and back end.
 
 If you'd like to help us improve our test coverage, we recommend checking out our total coverage and writing tests for selected files based on SimpleCov's (more below) test coverage results.
 
-If you're new to writing tests in general or with Rails, we recommend reading about testing with Rails, RSpec, and Capybara first. For Webpack and 
+If you're new to writing tests in general or with Rails, we recommend reading about testing with Rails, RSpec, and Capybara first. For Webpack and
 
 ## How to Use SimpleCov
 
 1.  Run `bundle exec rspec spec` or `bin/rspec spec`. You can run RSpec on the whole project or a single file.
 2.  After rspec is complete, open `index.html` within the coverage folder to view code coverages.
 
-You can also run `bin/rspecov` to  run `bin/rspec spec` 
+You can also run `bin/rspecov` to run `bin/rspec spec`
 
 ## CodeClimate
 
@@ -30,7 +30,7 @@ Travis will upload Simplecov data to CodeClimate. We are still in the early stag
 
 #### Skipping CI build (Not recommended)
 
-If your changes are **minor** (i.e. updating README, fixing a typo), you can skip CI by adding `[skip ci]` to your commit message.
+If your changes are **minor** (i.e. updating README, fixing a typo), you can skip CI by adding `[ci skip]` to your commit message.
 
 ## Continuous Integration & Continuous Deployment
 
