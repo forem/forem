@@ -2,34 +2,35 @@ import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
 import ArticleForm from '../articleForm';
-import { JSDOM } from 'jsdom'
+import { JSDOM } from 'jsdom';
 
-const doc = new JSDOM('<!doctype html><html><body></body></html>')
-global.document = doc
-global.window = doc.defaultView
+const doc = new JSDOM('<!doctype html><html><body></body></html>');
+global.document = doc;
+global.window = doc.defaultView;
 
-global.document.body.createTextRange = function () {
+global.document.body.createTextRange = function() {
   return {
-    setEnd: function () { },
-    setStart: function () { },
-    getBoundingClientRect: function () {
+    setEnd() {},
+    setStart() {},
+    getBoundingClientRect() {
       return { right: 0 };
     },
-    getClientRects: function () {
+    getClientRects() {
       return {
         length: 0,
         left: 0,
-        right: 0
-      }
-    }
-  }
-}
-global.window.initEditorResize = jest.fn()
+        right: 0,
+      };
+    },
+  };
+};
+global.window.initEditorResize = jest.fn();
 
 global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
-import algoliasearch from './__mocks__/algoliasearch'
-global.window.algoliasearch = algoliasearch
+import algoliasearch from './__mocks__/algoliasearch';
+
+global.window.algoliasearch = algoliasearch;
 
 describe('<ArticleForm />', () => {
   it('renders properly', () => {
@@ -52,10 +53,13 @@ describe('<ArticleForm />', () => {
       />,
     );
 
-    return context.component().handleTagKeyUp({ target: { value: 'git' } }).then(() => {
-      expect(context.state()).toMatchSnapshot();
-    })
-  })
+    return context
+      .component()
+      .handleTagInput({ target: { value: 'git' } })
+      .then(() => {
+        expect(context.state()).toMatchSnapshot();
+      });
+  });
 
   it('selects tag when you click on it', () => {
     const component = preactRender(
@@ -65,12 +69,12 @@ describe('<ArticleForm />', () => {
         }
       />,
       document.body,
-      document.body.firstElementChild
-    )._component
+      document.body.firstElementChild,
+    )._component;
 
-    component.handleTagClick({ target: { dataset: { content: 'git' } } })
+    component.handleTagClick({ target: { dataset: { content: 'git' } } });
     expect(component.state).toMatchSnapshot();
-  })
+  });
 
   it('selects tag when you type a comma', () => {
     const component = preactRender(
@@ -80,12 +84,12 @@ describe('<ArticleForm />', () => {
         }
       />,
       document.body,
-      document.body.firstElementChild
-    )._component
+      document.body.firstElementChild,
+    )._component;
 
-    return component.handleTagKeyUp({ target: { value: 'git' } }).then(() => {
-      component.handleTagKeyDown({ keyCode: 188, preventDefault: jest.fn() })
+    return component.handleTagInput({ target: { value: 'git' } }).then(() => {
+      component.handleTagKeyDown({ keyCode: 188, preventDefault: jest.fn() });
       expect(component.state).toMatchSnapshot();
-    })
-  })
+    });
+  });
 });

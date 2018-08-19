@@ -27,7 +27,7 @@ export default class ArticleForm extends Component {
       .content;
     const env = document.querySelector("meta[name='environment']").content;
     const client = algoliasearch(algoliaId, algoliaKey);
-    this.index = client.initIndex(`Tag_${  env}`);
+    this.index = client.initIndex(`Tag_${env}`);
 
     const article = JSON.parse(this.props.article);
     const organization = this.props.organization
@@ -69,7 +69,7 @@ export default class ArticleForm extends Component {
     myCodeMirror.setSize('100%', '100%');
   }
 
-  handleTagKeyUp = e => {
+  handleTagInput = e => {
     const component = this;
     const inputArray = e.target.value.split(',');
     component.setState({
@@ -135,10 +135,8 @@ export default class ArticleForm extends Component {
     ) {
       // return key
       e.preventDefault();
-      const newInput =
-        `${component.state.selectedTags +
-        component.state.tagOptions[component.state.tagInputListIndex].name
-        },`;
+      const newInput = `${component.state.selectedTags +
+        component.state.tagOptions[component.state.tagInputListIndex].name},`;
       document.getElementById('tag-input').value = newInput;
       component.setState({
         tagOptions: [],
@@ -155,7 +153,7 @@ export default class ArticleForm extends Component {
     ) {
       // comma key
       e.preventDefault();
-      const newInput = `${component.state.tagList  },`;
+      const newInput = `${component.state.tagList},`;
       document.getElementById('tag-input').value = newInput;
       component.setState({
         tagOptions: [],
@@ -187,7 +185,7 @@ export default class ArticleForm extends Component {
 
   handleTagClick = e => {
     document.getElementById('tag-input').focus();
-    const newInput = `${this.state.selectedTags + e.target.dataset.content  },`;
+    const newInput = `${this.state.selectedTags + e.target.dataset.content},`;
     document.getElementById('tag-input').value = newInput;
     console.log('CLICK');
     this.setState({
@@ -324,7 +322,7 @@ export default class ArticleForm extends Component {
       >
         {tag.name}
       </div>
-      ));
+    ));
     if (tagOptions.length > 0 && document.activeElement.id === 'tag-input') {
       tagOptionsHTML = (
         <div className="articleform__tagsoptions">{tagOptionRows}</div>
@@ -380,7 +378,7 @@ export default class ArticleForm extends Component {
           <Tags
             defaultValue={tagList}
             onKeyDown={this.handleTagKeyDown}
-            onKeyUp={this.handleTagKeyUp}
+            onInput={this.handleTagInput}
             options={tagOptionsHTML}
             onFocusChange={this.handleFocusChange}
           />

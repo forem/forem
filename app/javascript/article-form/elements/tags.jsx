@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const Tags = ({ onKeyUp, onKeyDown, defaultValue, options, onFocusChange }) => (
+const Tags = ({ onInput, onKeyDown, defaultValue, options, onFocusChange }) => (
   <div className="articleform__tagswrapper">
     <textarea
       id="tag-input"
@@ -9,7 +9,7 @@ const Tags = ({ onKeyUp, onKeyDown, defaultValue, options, onFocusChange }) => (
       className="articleform__tags"
       placeholder="tags"
       value={defaultValue}
-      onKeyUp={onKeyUp}
+      onInput={onInput}
       onKeyDown={onKeyDown}
       onBlur={onFocusChange}
       onFocus={onFocusChange}
