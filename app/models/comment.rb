@@ -93,12 +93,10 @@ class Comment < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     if remove
       record.delay.remove_from_index! if record&.persisted?
+    elsif record.deleted == false
+      record.delay.index!
     else
-      if record.deleted == false
-        record.delay.index!
-      else
-        record.remove_algolia_index
-      end
+      record.remove_algolia_index
     end
   end
 

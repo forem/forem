@@ -129,11 +129,6 @@ Style/For:
   Exclude:
     - 'app/views/articles/feed.rss.builder'
 
-# Offense count: 1
-Style/IfInsideElse:
-  Exclude:
-    - 'app/models/comment.rb'
-
 # Offense count: 3
 Style/MixinUsage:
   Exclude:
