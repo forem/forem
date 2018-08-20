@@ -1,7 +1,7 @@
 # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
-RSpec.describe Article, type: :model, focus: true do
+RSpec.describe Article, type: :model do
   def build_and_validate_article(*args)
     article = build(:article, *args)
     article.validate
