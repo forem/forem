@@ -16,6 +16,7 @@ services:
       GITHUB_SECRET: ${GITHUB_SECRET}
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
+      YARN_INTEGRITY_ENABLED: "false"
     volumes:
       - .:/usr/src/app
     command: bin/rails server -b 0.0.0.0 -p 8080
