@@ -26,7 +26,7 @@ default: &default
       statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 2500 %>
 development:
   <<: *default
-  url: <%= ENV.fetch('DATABASE_URL') %>
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://[user]:[password]@][host][:port]/[dbname]') %>
   database: PracticalDeveloper_development
 
   # The specified database role being used to connect to postgres.
