@@ -74,6 +74,9 @@ export default class ArticleForm extends Component {
     const inputArray = e.target.value.split(',');
     component.setState({
       tagList: e.target.value,
+      selectedTags: e.target.value
+        .split(',')
+        .filter(item => item != undefined && item.length > 0),
     });
     const query = inputArray[inputArray.length - 1].replace(/ /g, '');
     if (query === '' && e.target.value != '') {
@@ -135,15 +138,10 @@ export default class ArticleForm extends Component {
     ) {
       // return key
       e.preventDefault();
-      const newInput = `${component.state.selectedTags +
-        component.state.tagOptions[component.state.tagInputListIndex].name},`;
-      document.getElementById('tag-input').value = newInput;
-      component.setState({
-        tagOptions: [],
-        tagList: newInput,
-        tagInputListIndex: -1,
-        selectedTags: newInput.split(','),
-      });
+      this.insertTag(
+        component.state.tagOptions[component.state.tagInputListIndex].name,
+      );
+
       setTimeout(() => {
         document.getElementById('tag-input').focus();
       }, 10);
@@ -152,14 +150,9 @@ export default class ArticleForm extends Component {
       component.state.tagInputListIndex === -1
     ) {
       // comma key
-      e.preventDefault();
-      const newInput = `${component.state.tagList},`;
-      document.getElementById('tag-input').value = newInput;
       component.setState({
         tagOptions: [],
-        tagList: newInput,
         tagInputListIndex: -1,
-        selectedTags: newInput.split(','),
       });
     } else if (e.keyCode === KEYS.DELETE) {
       // Delete key
@@ -183,17 +176,32 @@ export default class ArticleForm extends Component {
     }
   };
 
-  handleTagClick = e => {
-    document.getElementById('tag-input').focus();
-    const newInput = `${this.state.selectedTags + e.target.dataset.content},`;
-    document.getElementById('tag-input').value = newInput;
-    console.log('CLICK');
+  insertTag(tag) {
+    const input = document.getElementById('tag-input');
+    const lastCommaIndex = input.value.lastIndexOf(',');
+
+    let newInput = '';
+    if (lastCommaIndex !== -1) {
+      newInput = `${input.value.slice(0, lastCommaIndex + 1) + tag  },`;
+    } else {
+      newInput = `${tag  },`;
+    }
+
+    input.value = newInput;
     this.setState({
       tagOptions: [],
       tagList: newInput,
       tagInputListIndex: -1,
       selectedTags: newInput.split(','),
     });
+  }
+
+  handleTagClick = e => {
+    const input = document.getElementById('tag-input');
+    input.focus();
+
+    console.log('CLICK');
+    this.insertTag(e.target.dataset.content);
   };
 
   handleFocusChange = e => {

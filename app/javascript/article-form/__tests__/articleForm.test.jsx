@@ -55,7 +55,7 @@ describe('<ArticleForm />', () => {
 
     return context
       .component()
-      .handleTagInput({ target: { value: 'git' } })
+      .handleTagInput({ target: { value: 'gi' } })
       .then(() => {
         expect(context.state()).toMatchSnapshot();
       });
@@ -74,22 +74,5 @@ describe('<ArticleForm />', () => {
 
     component.handleTagClick({ target: { dataset: { content: 'git' } } });
     expect(component.state).toMatchSnapshot();
-  });
-
-  it('selects tag when you type a comma', () => {
-    const component = preactRender(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
-      document.body,
-      document.body.firstElementChild,
-    )._component;
-
-    return component.handleTagInput({ target: { value: 'git' } }).then(() => {
-      component.handleTagKeyDown({ keyCode: 188, preventDefault: jest.fn() });
-      expect(component.state).toMatchSnapshot();
-    });
   });
 });

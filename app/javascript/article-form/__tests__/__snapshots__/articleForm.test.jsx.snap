@@ -113,34 +113,6 @@ Object {
 }
 `;
 
-exports[`<ArticleForm /> selects tag when you type a comma 1`] = `
-Object {
-  "bodyMarkdown": "",
-  "description": "",
-  "editing": false,
-  "errors": null,
-  "helpHTML": "",
-  "helpShowing": false,
-  "id": null,
-  "imageManagementShowing": false,
-  "mainImageUrl": null,
-  "organization": null,
-  "postUnderOrg": false,
-  "previewHTML": "",
-  "previewShowing": false,
-  "published": false,
-  "selectedTags": Array [
-    "git",
-    "",
-  ],
-  "submitting": false,
-  "tagInputListIndex": -1,
-  "tagList": "git,",
-  "tagOptions": Array [],
-  "title": "",
-}
-`;
-
 exports[`<ArticleForm /> shows tags as you search 1`] = `
 Object {
   "bodyMarkdown": "",
@@ -157,10 +129,12 @@ Object {
   "previewHTML": "",
   "previewShowing": false,
   "published": false,
-  "selectedTags": Array [],
+  "selectedTags": Array [
+    "gi",
+  ],
   "submitting": false,
   "tagInputListIndex": -1,
-  "tagList": "git",
+  "tagList": "gi",
   "tagOptions": Array [
     Object {
       "_highlightResult": Object {
