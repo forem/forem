@@ -28,7 +28,7 @@ global.window.initEditorResize = jest.fn();
 
 global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
-import algoliasearch from './__mocks__/algoliasearch';
+import algoliasearch from '../__mocks__/algoliasearch';
 
 global.window.algoliasearch = algoliasearch;
 
