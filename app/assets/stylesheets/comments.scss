@@ -544,15 +544,49 @@ a.header-link{
     color:$dark-gray;
     position:relative;
     // background:$light-gray;
-    .comment-date{
+
+    .comment-date {
       border: none;
       position: absolute;
       top: calc(16px - 0.25vw);
       right: calc(35px + 0.2vw);
       font-size:12px;
       text-align:right;
-      a{
+
+      a {
         color:$medium-gray;
+      }
+
+      &-tooltip {
+        visibility: hidden;
+        width: 10vw;
+        background-color: #333333;
+        color: $light-gray;
+        text-align: center;
+        border-radius: 6px;
+        position: absolute;
+        z-index: 100;
+        padding: 5px;
+        left: 50%;
+        margin-top: 10px;
+        margin-left: -5vw;
+
+
+        &::after {
+          content: " ";
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          margin-left: -5px;
+          border: 5px solid;
+          border-color: transparent transparent #333333 transparent;
+        }
+      }
+
+      &:hover {
+        .comment-date-tooltip {
+          visibility: visible;
+        }
       }
     }
     .dropbtn {

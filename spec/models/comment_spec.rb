@@ -133,6 +133,10 @@ RSpec.describe Comment, type: :model do
     expect(comment.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
 
+  it "shows the full time in hover date" do
+    expect(comment.hover_publish_date).to eq(comment.created_at.strftime("%B %e %Y %I:%M %P"))
+  end
+
   it "returns a path" do
     expect(comment.path).not_to be(nil)
   end

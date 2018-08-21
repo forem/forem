@@ -207,6 +207,10 @@ class Comment < ApplicationRecord
     end
   end
 
+  def hover_publish_date
+    created_at.strftime("%B %e %Y %I:%M %P")
+  end
+
   def sharemeow_link
     user_image = ProfileImage.new(user)
     user_image_link = Rails.env.production? ? user_image.get_link : user_image.get_external_link

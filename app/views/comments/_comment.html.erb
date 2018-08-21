@@ -32,6 +32,7 @@
           <% end %>
           <div class="comment-date">
             <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>
+            <span class="comment-date-tooltip"><%= comment.hover_publish_date %></span>
           </div>
           <button class="dropbtn">
             <%= image_tag("chevron-down.svg", class: "dropdown-icon") %>
