@@ -1,7 +1,7 @@
 class ReactionObserver < ActiveRecord::Observer
   def after_create(reaction)
-    if reaction.points.negative?
-      emoji = reaction.category == "thumbsdown" ? ":thumbsdown:" : ":cry:"
+    if reaction.category == "vomit"
+      emoji = ":cry:"
       SlackBot.delay.ping(
         "#{reaction.user.name} (https://dev.to#{reaction.user.path}) \nreacted with a #{reaction.category} on\nhttps://dev.to#{reaction.reactable.path}",
         channel: "abuse-reports",

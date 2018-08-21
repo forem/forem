@@ -113,11 +113,6 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/notifications/reads_controller.rb'
 
 # Offense count: 1
-Style/DateTime:
-  Exclude:
-    - 'app/controllers/comments_controller.rb'
-
-# Offense count: 1
 Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
