@@ -94,7 +94,32 @@ function handleOptimisticButtRender(butt) {
     showModal('follow-button');
   } else {
     // Handles actual following of tags/users
-    assignState(butt, butt.dataset.verb);
+    try {
+        //lets try grab the event buttons info data attribute user id
+        let ev_fab_user_id = JSON.parse(butt.dataset.info).id;
+        //now for all follow action buttons
+        document.querySelectorAll('.follow-action-button').forEach(function(fab){
+            try{
+                //lets check they have info data attributes
+                if( fab.dataset.info ){
+                    //and attempt to parse those, to grab that buttons info user id
+                    let fab_user_id = JSON.parse(fab.dataset.infos).id;
+                    //now does that user id match our event buttons user id?
+                    if ( fab_user_id && fab_user_id == ev_fab_user_id ) {
+                        //yes - time to assign the same state!
+                        assignState(fab, butt.dataset.verb);
+                    }
+                }
+            }catch (err) {
+                //bugger something went wrong, probably JSON object parsing
+                console.log( '[DEV.TO ERROR] ' + err.message );
+            }
+        });
+    }catch (err) {
+        //bugger something went wrong, probably JSON object parsing
+        console.log( '[DEV.TO ERROR] ' + err.message );
+    }
+    
     handleFollowButtPress(butt);
   }
 }
