@@ -115,9 +115,29 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
+    it "accepts valid country specific http linkedin url" do
+      user.linkedin_url = "http://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
     it "accepts valid https linkedin url" do
       user.linkedin_url = "https://linkedin.com/in/jessleenyc"
       expect(user).to be_valid
+    end
+
+    it "accepts valid country specific https linkedin url" do
+      user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
+    it "does not accept three letters country codes in http linkedin url" do
+      user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept three letters country codes in https linkedin url" do
+      user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
     end
 
     it "does not accept invalid linkedin url" do
@@ -162,6 +182,30 @@ RSpec.describe User, type: :model do
       user.mentee_description = "hello"
       user.save
       expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "does not allow mentee description to be too long" do
+      user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
+      user.save
+      expect(user.mentee_form_updated_at).to eq(nil)
+    end
+
+    it "does not allow mentor description to be too long" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
+      user.save
+      expect(user.mentor_form_updated_at).to eq(nil)
+    end
+
+    it "allow mentee description to be the max length" do
+      user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "allow mentor description to be the max length" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "does not allow too short or too long name" do

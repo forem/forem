@@ -100,7 +100,7 @@ Some existing code may be poorly written or untested, so we must have more scrut
 #### Create a pull request
 
 * Try to keep the pull requests small; a pull request should try its very best to address only a single concern.
-* Make sure all tests pass and add additional tests for the code you submit.
+* Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
 * Document your reasoning behind the changes. Explain why you wrote the code in the way you did; the code should explain what it does.
 * If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
 * If you follow the pull request template, you can't go wrong.
@@ -160,7 +160,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  `bin/yarn`
 1.  Set up your environment variables/secrets
     * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-    * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
+    * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
     * For any key that you wish to enter/replace:
       1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
       2.  Obtain the development variable and apply the key you wish to enter/replace. ie:

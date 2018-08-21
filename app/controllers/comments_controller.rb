@@ -100,7 +100,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     authorize @comment
-    if @comment.update(permitted_attributes(@comment).merge(edited_at: DateTime.now))
+    if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
       redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
     else
