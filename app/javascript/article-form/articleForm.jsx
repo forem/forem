@@ -71,20 +71,23 @@ export default class ArticleForm extends Component {
 
   handleTagInput = e => {
     const component = this;
-    const inputArray = e.target.value.split(',');
     component.setState({
       tagList: e.target.value,
       selectedTags: e.target.value
         .split(',')
         .filter(item => item != undefined && item.length > 0),
     });
-    const query = inputArray[inputArray.length - 1].replace(/ /g, '');
+
+    const query = this.getCurrentTagAtSelectionIndex(
+      e.target.value,
+      e.target.selectionStart - 1,
+    );
     if (query === '' && e.target.value != '') {
       component.setState({
         tagOptions: [],
       });
       return;
-    } else if (e.target.value === '') {
+    } else if (query === '' || e.target.value === '') {
       component.setState({
         tagOptions: [],
         tagList: '',
@@ -92,18 +95,40 @@ export default class ArticleForm extends Component {
       });
       return;
     }
-    return this.index.search(query, {
-      hitsPerPage: 10,
-      filters: 'supported:true',
-    })
-      .then((content) => {
-        component.setState({
+    return this.search(query);
+  };
+
+  getCurrentTagAtSelectionIndex(value, index) {
+    let tagIndex = 0;
+    const tagByCharacterIndex = {};
+
+    value.split('').map((letter, index) => {
+      if (letter === ',') {
+        tagIndex++;
+      } else {
+        tagByCharacterIndex[index] = tagIndex;
+      }
+    });
+
+    const tag = value.split(',')[tagByCharacterIndex[index]];
+
+    return tag || '';
+  }
+
+  search(query) {
+    return this.index
+      .search(query, {
+        hitsPerPage: 10,
+        filters: 'supported:true',
+      })
+      .then(content => {
+        this.setState({
           tagOptions: content.hits.filter(
-            hit => !component.state.selectedTags.includes(hit.name),
+            hit => !this.state.tagList.split(',').includes(hit.name),
           ),
         });
       });
-  };
+  }
 
   handleTagKeyDown = e => {
     const component = this;
@@ -178,22 +203,50 @@ export default class ArticleForm extends Component {
 
   insertTag(tag) {
     const input = document.getElementById('tag-input');
-    const lastCommaIndex = input.value.lastIndexOf(',');
 
-    let newInput = '';
-    if (lastCommaIndex !== -1) {
-      newInput = `${input.value.slice(0, lastCommaIndex + 1) + tag  },`;
-    } else {
-      newInput = `${tag  },`;
+    const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
+    const insertingAtEnd = range[1] === input.value.length;
+    if (insertingAtEnd) {
+      tag += ',';
     }
 
-    input.value = newInput;
+    // Insert new tag between commas if there are any.
+    const newInput =
+      input.value.slice(0, range[0]) +
+      tag +
+      input.value.slice(range[1], input.value.length);
+
     this.setState({
       tagOptions: [],
       tagList: newInput,
       tagInputListIndex: -1,
       selectedTags: newInput.split(','),
     });
+  }
+
+  // Given an index of the String value, finds the range between commas.
+  // This is useful when we want to insert a new tag anywhere in the
+  // comma separated list of tags.
+  getRangeBetweenCommas(value, index) {
+    let start = 0;
+    let end = value.length;
+
+    const toPreviousComma = value
+      .slice(0, index)
+      .split('')
+      .reverse()
+      .indexOf(',');
+    const toNextComma = value.slice(index).indexOf(',');
+
+    if (toPreviousComma !== -1) {
+      start = index - toPreviousComma;
+    }
+
+    if (toNextComma !== -1) {
+      end = index + toNextComma;
+    }
+
+    return [start, end];
   }
 
   handleTagClick = e => {

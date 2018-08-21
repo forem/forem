@@ -55,7 +55,7 @@ describe('<ArticleForm />', () => {
 
     return context
       .component()
-      .handleTagInput({ target: { value: 'gi' } })
+      .handleTagInput({ target: { value: 'gi', selectionStart: 2 } })
       .then(() => {
         expect(context.state()).toMatchSnapshot();
       });
