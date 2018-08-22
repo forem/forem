@@ -110,9 +110,9 @@ function handleOptimisticButtRender(butt) {
                         assignState(fab, butt.dataset.verb);
                     }
                 }
-            }catch (err) {}
+            }catch (err) {return}
         });
-    }catch (err) {}
+    }catch (err) {return}
     
     handleFollowButtPress(butt);
   }
