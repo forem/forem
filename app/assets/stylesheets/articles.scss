@@ -557,7 +557,7 @@
         }
         .bm-success{
           display:none;
-        }       
+        }
         &.selected{
           color: darken($purple, 33%);
           background: transparent;
@@ -991,7 +991,7 @@
         padding-bottom:5px;
         &.body-scrollable{
           height: calc(100vh - 300px);
-          max-height: 500px;
+          max-height: 390px;
           overflow-y: scroll;
         }
         &.signup-cta-widget-body{
