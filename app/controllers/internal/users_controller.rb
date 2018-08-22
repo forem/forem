@@ -20,14 +20,12 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: "mentorship")
     @user_mentees = MentorRelationship.where(mentor_id: @user.id)
     @user_mentors = MentorRelationship.where(mentee_id: @user.id)
   end
 
   def update
     @user = User.find(params[:id])
-
     mentorship_match
     add_note
     @user.update!(user_params)
@@ -35,7 +33,7 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def mentorship_match
-    return if user_params[:add_mentee] == "" && user_params[:add_mentor] == ""
+    return if user_params[:add_mentee].blank? && user_params[:add_mentor].blank?
     if user_params[:add_mentee] && user_params[:add_mentor]
       MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save
       MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save
@@ -48,7 +46,12 @@ class Internal::UsersController < Internal::ApplicationController
 
   def add_note
     if user_params[:mentorship_note]
-      UserRoleService.new(@user).create_or_update_note("mentorship", user_params[:mentorship_note])
+      Note.create(
+        noteable_id: @user.id,
+        noteable_type: "User",
+        reason: "mentorship",
+        content: user_params[:mentorship_note],
+      )
     end
   end
 
