@@ -414,7 +414,7 @@ class Article < ApplicationRecord
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
     tag_list.each do |tag|
       if tag.length > 20
-        errors.add(:tag, "\"#{tag}\" is too long (maximum is 16 characters)")
+        errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)")
       end
     end
   end
