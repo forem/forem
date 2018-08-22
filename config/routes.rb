@@ -39,6 +39,8 @@ Rails.application.routes.draw do
     resources :feedback_messages, only: [:update, :show]
     resources :reports, only: %i[index update show], controller: "feedback_messages" do
       post "send_email", to: :send_email, on: :collection
+      post "create_note", to: :create_note, on: :collection
+      post "save_status", to: :save_status, on: :collection
     end
     mount Flipflop::Engine => "/features"
   end

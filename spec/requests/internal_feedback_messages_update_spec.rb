@@ -5,6 +5,7 @@ RSpec.describe "/internal/feedback_messages", type: :request do
     context "with a valid request" do
       let(:feedback_message) { create(:feedback_message, :abuse_report) }
       let(:admin)            { create(:user, :super_admin) }
+      let(:admin2)           { create(:user, :super_admin) }
 
       valid_abuse_report_params = {
         feedback_message: {
@@ -25,9 +26,16 @@ RSpec.describe "/internal/feedback_messages", type: :request do
       end
 
       it "adds a note to a report" do
-        expect(FeedbackMessage.last.note.content).to eq(
+        expect(FeedbackMessage.last.notes.first.content).to eq(
           valid_abuse_report_params[:feedback_message][:note][:content],
         )
+      end
+
+      it "can have multiple notes" do
+        valid_abuse_report_params[:feedback_message][:note][:content] = "some other message"
+        patch "/internal/feedback_messages/#{feedback_message.id}", params:
+          valid_abuse_report_params
+        expect(FeedbackMessage.last.notes.count).to eq(2)
       end
 
       it "adds the current user as the reviewer" do

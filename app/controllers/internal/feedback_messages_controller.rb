@@ -29,8 +29,18 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     end
   end
 
+  def save_status
+    feedback_message = FeedbackMessage.find(params[:id])
+    if feedback_message.update(status: params[:status])
+      render json: { outcome: "Success" }
+    else
+      render json: { outcome: feedback_message.errors.full_messages }
+    end
+  end
+
   def show
     @feedback_message = FeedbackMessage.find_by(id: params[:id])
+    @emails = EmailMessage.where(feedback_message_id: params[:id])
   end
 
   def update_feedback_message_and_note(note)
@@ -40,14 +50,41 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   def send_email
-    NotifyMailer.feedback_message_resolution_email(params).deliver
+    if NotifyMailer.feedback_message_resolution_email(params).deliver
+      render json: { outcome: "Success" }
+    else
+      render json: { outcome: "Failure" }
+    end
+  end
+
+  def create_note
+    note = Note.new(
+      noteable_id: note_params["feedback_message_id"],
+      noteable_type: note_params["noteable_type"],
+      author_id: note_params["author_id"],
+      content: note_params["content"],
+      reason: note_params["reason"],
+    )
+    if note.save
+      render json: {
+        outcome: "Success",
+        author_name: note.author.name,
+        content: note_params["content"],
+      }
+    else
+      render json: { outcome: note.errors.full_messages }
+    end
   end
 
   private
 
+  def note_params
+    JSON.parse(params[:feedback_message])
+  end
+
   def feedback_message_params
     params[:feedback_message].permit(
-      :status, :reviewer_id,
+      :id, :status, :reviewer_id,
       note: %i[content reason noteable_id noteable_type author_id]
     )
   end

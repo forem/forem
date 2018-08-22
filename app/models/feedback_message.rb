@@ -11,6 +11,10 @@ class FeedbackMessage < ApplicationRecord
             inclusion: {
               in: ["spam", "other", "rude or vulgar", "harassment", "bug"],
             }
+  validates :status,
+            inclusion: {
+              in: ["Open", "Invalid", "Resolved"],
+            }
 
   before_validation :generate_slug
 

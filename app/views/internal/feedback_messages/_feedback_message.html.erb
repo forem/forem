@@ -3,8 +3,10 @@
   width: 100%;
   resize: none;
   font-size: 18px;
-  height: 100px;
+  height: 50px;
   border-radius: 3px;
+  padding: 5px;
+  margin: 10px 0px;
 }
 .blankmessage{
   font-style: italic;
@@ -16,16 +18,11 @@
   padding: 5px;
   word-wrap: break-word;
 }
-.email__subject{
-  width: 100%;
-}
-.email__body{
-  width: 100%;
-  height: 300px;
-  font-size: 18px;
+.email__alert{
+  display: none;
 }
 </style>
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
       <h2 class="panel-title">
@@ -63,71 +60,80 @@
         <% end %>
       </p>
       <h3>
-        Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, :onchange => "openEmailForm()" %>
+        Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, id: "status__#{feedback_message.id}" %>
+        <button class="btn btn-primary" role="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
       </h3>
     <hr>
       <h3>Email Form:</h3>
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#reporter" aria-controls="reporter" role="tab" data-toggle="tab">Reporter</a></li>
-        <li role="presentation"><a href="#offender" aria-controls="offender" role="tab" data-toggle="tab">Offender</a></li>
-        <li role="presentation"><a href="#victim" aria-controls="victim" role="tab" data-toggle="tab">Victim</a></li>
+        <li role="presentation" class="active"><a href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab" data-toggle="tab">Reporter</a></li>
+        <li role="presentation"><a href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a></li>
+        <li role="presentation"><a href="#victim-<%= feedback_message.id %>" aria-controls="victim-<%= feedback_message.id %>" role="tab" data-toggle="tab">Victim</a></li>
       </ul>
 
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane fade in active" id="reporter">
+        <div role="tabpanel" class="tab-pane fade in active" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
           <h3>
             Send to:
             <br>
-            <%= text_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "form-control" %>
+            <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "form-control", id: "reporter__emailto__#{feedback_message.id}", required: true %>
           </h3>
           <h3>Subject:</h3>
-            <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "form-control" %>
+            <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "form-control", id: "reporter__subject__#{feedback_message.id}" %>
           <h3>Body:</h3>
-          <%= text_area_tag (:reporter_email_body), reporter_email_details[:body], class: "form-control", style: "height: 300px;" %>
+          <%= text_area_tag (:reporter_email_body), reporter_email_details[:body], class: "form-control", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="offender">
+        <div role="tabpanel" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
           <h3>
             Send to:
             <br>
-            <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "form-control" %>
+            <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "form-control", id: "offender__emailto__#{feedback_message.id}", required: true %>
           </h3>
           <h3>Subject:</h3>
-            <%= text_field_tag :offender_email_subject, offender_email_details[:subject], class: "form-control" %>
+            <%= text_field_tag :offender_email_subject, offender_email_details[:subject], class: "form-control", id: "offender__subject__#{feedback_message.id}" %>
           <h3>Body:</h3>
-            <%= text_area_tag (:offender_email_body), offender_email_details[:body], class: "form-control", style: "height: 300px;" %>
+            <%= text_area_tag (:offender_email_body), offender_email_details[:body], class: "form-control", style: "height: 300px;", id: "offender__body__#{feedback_message.id}" %>
         </div>
-        <div role="tabpanel" class="tab-pane fade" id="victim">
+        <div role="tabpanel" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="victim" id="victim-<%= feedback_message.id %>">
           <h3>
             Send to:
             <br>
-            <%= text_field_tag :victim_email_to, feedback_message.victim&.email, class: "form-control" %>
+            <%= email_field_tag :victim_email_to, feedback_message.victim&.email, class: "form-control", id: "victim__emailto__#{feedback_message.id}", required: true %>
           </h3>
           <h3>Subject:</h3>
-            <%= text_field_tag :victim_email_subject, victim_email_details[:subject], class: "form-control" %>
+            <%= text_field_tag :victim_email_subject, victim_email_details[:subject], class: "form-control", id: "victim__subject__#{feedback_message.id}" %>
           <h3>Body:</h3>
-            <%= text_area_tag (:victim_email_body), victim_email_details[:body], class: "form-control", style: "height: 300px;" %>
+            <%= text_area_tag (:victim_email_body), victim_email_details[:body], class: "form-control", style: "height: 300px;", id: "victim__body__#{feedback_message.id}" %>
         </div>
       </div>
 
       <br>
-      <button class="btn btn-primary" type="button">SEND EMAIL ✉️ </button>
+      <button class="btn btn-primary" type="submit" id="send__email__btn__<%= feedback_message.id %>">SEND EMAIL ✉️ </button>
+      <div class="email__alert alert fade in" id="email__alert__<%= feedback_message.id %>">
+      </div>
 
       <h3>Notes:</h3>
+      <div class="notes__container" id="notes__<%= feedback_message.id %>">
         <% feedback_message.notes&.order("created_at").each do |note| %>
           <p class="note-content">
             <%= note.author.name %>: <%= note.content %>
           </p>
         <% end %>
-      <%= f.fields_for :note do |note| %>
-        <%= note.hidden_field :reason, value: feedback_message.feedback_type %>
-        <%= note.hidden_field :noteable_id, value: feedback_message.id %>
-        <%= note.hidden_field :noteable_type, value: "FeedbackMessage" %>
-        <%= note.hidden_field :author_id, value: current_user.id %>
-        <%= note.text_area :content, placeholder: "Leave some notes about the status and context of this report.", class: "notefield", required: true %>
-      <% end %>
-
+      </div>
+      <input type="hidden" name="reason" value="<%= feedback_message.feedback_type %>" id="note__reason__<%= feedback_message.id %>">
+      <input type="hidden" name="noteable_id" value="<%= feedback_message.id %>" id="note__noteable-id__<%= feedback_message.id %>">
+      <input type="hidden" name="noteable_type" value="FeedbackMessage" id="note__noteable-type__<%= feedback_message.id %>">
+      <input type="hidden" name="author_id" value="<%= current_user.id %>" id="note__author-id__<%= feedback_message.id %>">
+      <input
+        type="textarea"
+        name="content"
+        placeholder="Leave some notes about the status and context of this report."
+        class="notefield"
+        id="note__content__<%= feedback_message.id %>"
+        required
+      >
       <br>
-    <button class="btn btn-primary" type="submit">SUBMIT NOTE 📝 </button>
+    <button class="btn btn-primary" type="submit" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝 </button>
 
       </div>
     </div>
@@ -135,4 +141,165 @@
 </div>
 
 <script>
+  var csrfToken = document.querySelector("meta[name='csrf-token']").content;
+  var sendEmailBtn = document.getElementById('send__email__btn__<%= feedback_message.id %>');
+  var alert = document.getElementById('email__alert__<%= feedback_message.id %>');
+  var statusBtn = document.getElementById('save__status__<%= feedback_message.id %>');
+
+  function saveStatus() {
+    event.preventDefault();
+
+    var formData = new FormData();
+    var statusSelectTag = document.getElementById('status__<%= feedback_message.id %>');
+    formData.append('id', '<%= feedback_message.id %>');
+    formData.append('status', statusSelectTag.options[statusSelectTag.selectedIndex].value);
+
+    fetch('/internal/reports/save_status', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+      },
+      body: formData,
+      credentials: 'same-origin'
+    })
+    .then(response => response.json()
+      .then(json => {
+        if (json.outcome === 'Success') {
+          statusBtn.innerText = "Saved!";
+          setTimeout(function() {
+            statusBtn.innerText = "SAVE STATUS"
+          }, 250);
+        } else {
+        }
+      }))
+  }
+
+  statusBtn.addEventListener('click', saveStatus);
+
+  function successfulEmail() {
+    alert.style.display = 'inline-block';
+    alert.classList.add('alert-success');
+    alert.innerHTML = "Email sent successfully!";
+  }
+
+  function failedEmail() {
+    alert.style.display = 'inline-block';
+    alert.classList.add('alert-danger');
+    alert.innerHTML = "Email failed to send, see console for errors";
+  }
+
+  function sendEmail() {
+    var activeTab = document.querySelector(".tab-pane.fade.in.active[data-id='<%= feedback_message.id %>']");
+    var userType = activeTab.dataset.usertype;
+    var emailToAddress = activeTab.querySelector("#" + userType + "__emailto__<%= feedback_message.id %>").value;
+    var subjectLine = activeTab.querySelector("#" + userType + "__subject__<%= feedback_message.id %>").value;
+    var emailBody = activeTab.querySelector("#" + userType + "__body__<%= feedback_message.id %>").value;
+
+    alert.style.display = "none";
+    alert.classList.remove("alert-warning");
+    alert.classList.remove("alert-success");
+    alert.classList.remove("alert-danger");
+
+    if(emailToAddress === "") {
+      alert.style.display = 'inline-block';
+      alert.classList.add("alert-warning");
+      alert.innerHTML = "Email can't be blank!"
+      return
+    }
+
+    if(emailBody.includes("[*") || emailBody.includes("*]")) {
+      alert.style.display = 'inline-block';
+      alert.classList.add("alert-warning");
+      alert.innerHTML = "Username wasn't changed!"
+      return
+    }
+
+    var formData = new FormData();
+    formData.append('feedback_message_id', '<%= feedback_message.id %>');
+    formData.append('email_to', emailToAddress);
+    formData.append('email_body', emailBody);
+    formData.append('email_subject', subjectLine);
+
+    fetch('/internal/reports/send_email', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+      },
+      body: formData,
+      credentials: 'same-origin'
+    })
+    .then(response => response.json()
+      .then(json => {
+        if (json.outcome === "Success") {
+          successfulEmail();
+        } else {
+          console.log('note failed')
+          failedEmail();
+        }
+      }))
+    .catch(error => {
+      failedEmail();
+      console.log(error);
+    })
+  }
+
+  sendEmailBtn.addEventListener('click', function() {
+    event.preventDefault();
+    sendEmail();
+  });
+
+  function addNoteToPage(noteParams) {
+    var notesDiv = document.getElementById('notes__<%= feedback_message.id %>');
+    var newNote = document.createElement('p');
+    newNote.className = 'note-content';
+    var noteContent = document.createTextNode(noteParams.author_name + ': ' + noteParams.content);
+    newNote.appendChild(noteContent);
+    notesDiv.append(newNote);
+  }
+
+  function clearNote() {
+    document.getElementById('note__content__<%= feedback_message.id %>').value = '';
+  }
+
+  function submitNote() {
+    event.preventDefault();
+
+    var params = {
+      'feedback_message_id': '<%= feedback_message.id %>',
+      'content': document.getElementById('note__content__<%= feedback_message.id %>').value,
+      'reason': document.getElementById('note__reason__<%= feedback_message.id %>').value,
+      'noteable_id': document.getElementById('note__noteable-id__<%= feedback_message.id %>').value,
+      'noteable_type': document.getElementById('note__noteable-type__<%= feedback_message.id %>').value,
+      'author_id': document.getElementById('note__author-id__<%= feedback_message.id %>').value
+    }
+
+    var formData = new FormData();
+    formData.append('feedback_message', JSON.stringify(params))
+
+    fetch('/internal/reports/create_note', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+      },
+      body: formData,
+      credentials: 'same-origin'
+    })
+    .then(response => response.json()
+      .then(json => {
+        if (json.outcome === 'Success') {
+          addNoteToPage(json);
+          clearNote();
+        } else {
+          // failedNote();
+        }
+      })
+    .catch(error => {
+      // failedNote();
+      console.log(error);
+    }))
+  }
+
+  var noteSubmitBtn = document.getElementById('note__submit__<%= feedback_message.id %>');
+
+  noteSubmitBtn.addEventListener('click', submitNote);
 </script>

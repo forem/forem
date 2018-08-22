@@ -56,9 +56,9 @@ class NotifyMailer < ApplicationMailer
   end
 
   def feedback_message_resolution_email(params)
-    mail(to: params[:email_to], subject: params[:email_subject]) do |format|
-      format.text { render plain: params[:email_body] }
-      format.html { render html: params[:email_body].html_safe }
-    end
+    @user = User.find_by(email: params[:email_to])
+    @email_body = params[:email_body]
+    track extra: { feedback_message_id: params[:feedback_message_id] }
+    mail(to: params[:email_to], subject: params[:email_subject])
   end
 end
