@@ -31,7 +31,7 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
-  validates :cached_tag_list, length: { maximum: 64 }
+  validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :video, url: { allow_blank: true, schemes: ["https", "http"] }
