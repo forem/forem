@@ -45,11 +45,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    if id.length == 11
-      id =~ /[a-zA-Z0-9_-]{11}/
-    elsif id.split("?")[0].length == 11
-      id =~ /[a-zA-Z0-9_-]{11}\?start\=\d*/
-    end
+    id =~ /[a-zA-Z0-9_-]{11}(\?start\=\d*)?/
   end
 end
 
