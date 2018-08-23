@@ -31,17 +31,6 @@ Lint/UselessAccessModifier:
     - 'app/black_box/black_box.rb'
     - 'app/models/tweet.rb'
 
-# Offense count: 10
-Lint/UselessAssignment:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'
-    - 'app/labor/cache_buster.rb'
-    - 'app/labor/markdown_parser.rb'
-    - 'app/labor/rate_limit_checker.rb'
-    - 'app/liquid_tags/comment_tag.rb'
-    - 'app/liquid_tags/glitch_tag.rb'
-    - 'app/liquid_tags/tweet_tag.rb'
-
 # Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
 # ExcludedMethods: refine
