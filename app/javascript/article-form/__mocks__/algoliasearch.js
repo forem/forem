@@ -4,47 +4,54 @@ global.document.head.innerHTML =
   "<meta name='environment' content='test' />";
 
 const mockIndex = {
-  search: (query, options) => new Promise((resolve, reject) => {
+  search: (query, options) =>
+    new Promise((resolve, reject) => {
       process.nextTick(() => {
-        resolve({
-          hits: [
-            {
-              name: 'git',
-              bg_color_hex: '#888751',
-              text_color_hex: '#56c938',
-              hotness_score: 0,
-              supported: true,
-              objectID: '4',
-              _highlightResult: {
-                name: {
-                  value: '<em>gi</em>t',
-                  matchLevel: 'full',
-                  fullyHighlighted: false,
-                  matchedWords: ['gi'],
-                },
-                bg_color_hex: {
-                  value: '#888751',
-                  matchLevel: 'none',
-                  matchedWords: [],
-                },
-                text_color_hex: {
-                  value: '#56c938',
-                  matchLevel: 'none',
-                  matchedWords: [],
+        const searchResults = {
+          gi: {
+            hits: [
+              {
+                name: 'git',
+                bg_color_hex: '#888751',
+                text_color_hex: '#56c938',
+                hotness_score: 0,
+                supported: true,
+                objectID: '4',
+                _highlightResult: {
+                  name: {
+                    value: '<em>gi</em>t',
+                    matchLevel: 'full',
+                    fullyHighlighted: false,
+                    matchedWords: ['gi'],
+                  },
+                  bg_color_hex: {
+                    value: '#888751',
+                    matchLevel: 'none',
+                    matchedWords: [],
+                  },
+                  text_color_hex: {
+                    value: '#56c938',
+                    matchLevel: 'none',
+                    matchedWords: [],
+                  },
                 },
               },
-            },
-          ],
-          nbHits: 1,
-          page: 0,
-          nbPages: 1,
-          hitsPerPage: 10,
-          processingTimeMS: 1,
-          exhaustiveNbHits: true,
-          query: 'gi',
-          params:
-            'query=gi&hitsPerPage=10&filters=supported%3Atrue&restrictIndices=searchables_development%2CTag_development%2Cordered_articles_development%2Cordered_articles_by_published_at_development%2Cordered_articles_by_positive_reactions_count_development%2Cordered_comments_development',
-        });
+            ],
+            nbHits: 1,
+            page: 0,
+            nbPages: 1,
+            hitsPerPage: 10,
+            processingTimeMS: 1,
+            exhaustiveNbHits: true,
+            query: 'gi',
+            params:
+              'query=gi&hitsPerPage=10&filters=supported%3Atrue&restrictIndices=searchables_development%2CTag_development%2Cordered_articles_development%2Cordered_articles_by_published_at_development%2Cordered_articles_by_positive_reactions_count_development%2Cordered_comments_development',
+          },
+        };
+
+        const results = searchResults[query] || { hits: [] };
+
+        resolve(results);
       });
     }),
 };

@@ -75,4 +75,47 @@ describe('<ArticleForm />', () => {
     component.handleTagClick({ target: { dataset: { content: 'git' } } });
     expect(component.state).toMatchSnapshot();
   });
+
+  it('replaces tag when editing', () => {
+    const component = preactRender(
+      <ArticleForm
+        article={
+          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+        }
+      />,
+      document.body,
+      document.body.firstElementChild,
+    )._component;
+
+    const input = document.getElementById('tag-input');
+    input.value = 'java,javascript,linux';
+    input.selectionStart = 2;
+
+    component.handleTagClick({ target: { dataset: { content: 'git' } } });
+    expect(component.state).toMatchSnapshot();
+  });
+
+  it('shows tags when editing', () => {
+    const component = preactRender(
+      <ArticleForm
+        article={
+          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+        }
+      />,
+      document.body,
+      document.body.firstElementChild,
+    )._component;
+
+    const input = document.getElementById('tag-input');
+    input.value = 'java,javascript,linux';
+    input.selectionStart = 2;
+
+    return component
+      .handleTagInput({
+        target: { value: 'gi,javascript,linux', selectionStart: 2 },
+      })
+      .then(() => {
+        expect(component.state).toMatchSnapshot();
+      });
+  });
 });

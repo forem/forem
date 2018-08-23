@@ -85,6 +85,35 @@ exports[`<ArticleForm /> renders properly 1`] = `
 </form>
 `;
 
+exports[`<ArticleForm /> replaces tag when editing 1`] = `
+Object {
+  "bodyMarkdown": "",
+  "description": "",
+  "editing": false,
+  "errors": null,
+  "helpHTML": "",
+  "helpShowing": false,
+  "id": null,
+  "imageManagementShowing": false,
+  "mainImageUrl": null,
+  "organization": null,
+  "postUnderOrg": false,
+  "previewHTML": "",
+  "previewShowing": false,
+  "published": false,
+  "selectedTags": Array [
+    "git",
+    "javascript",
+    "linux",
+  ],
+  "submitting": false,
+  "tagInputListIndex": -1,
+  "tagList": "git,javascript,linux",
+  "tagOptions": Array [],
+  "title": "",
+}
+`;
+
 exports[`<ArticleForm /> selects tag when you click on it 1`] = `
 Object {
   "bodyMarkdown": "",
@@ -135,6 +164,64 @@ Object {
   "submitting": false,
   "tagInputListIndex": -1,
   "tagList": "gi",
+  "tagOptions": Array [
+    Object {
+      "_highlightResult": Object {
+        "bg_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#888751",
+        },
+        "name": Object {
+          "fullyHighlighted": false,
+          "matchLevel": "full",
+          "matchedWords": Array [
+            "gi",
+          ],
+          "value": "<em>gi</em>t",
+        },
+        "text_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#56c938",
+        },
+      },
+      "bg_color_hex": "#888751",
+      "hotness_score": 0,
+      "name": "git",
+      "objectID": "4",
+      "supported": true,
+      "text_color_hex": "#56c938",
+    },
+  ],
+  "title": "",
+}
+`;
+
+exports[`<ArticleForm /> shows tags when editing 1`] = `
+Object {
+  "bodyMarkdown": "",
+  "description": "",
+  "editing": false,
+  "errors": null,
+  "helpHTML": "",
+  "helpShowing": false,
+  "id": null,
+  "imageManagementShowing": false,
+  "mainImageUrl": null,
+  "organization": null,
+  "postUnderOrg": false,
+  "previewHTML": "",
+  "previewShowing": false,
+  "published": false,
+  "selectedTags": Array [
+    "gi",
+    "javascript",
+    "linux",
+  ],
+  "submitting": false,
+  "tagInputListIndex": -1,
+  "tagList": "gi,javascript,linux",
   "tagOptions": Array [
     Object {
       "_highlightResult": Object {
