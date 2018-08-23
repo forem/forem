@@ -141,7 +141,7 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
-This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installations).
+This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installation).
 
 ### Prerequisites
 
