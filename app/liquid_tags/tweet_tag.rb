@@ -9,8 +9,6 @@ class TweetTag < LiquidTagBase
 
   def render(_context)
     media_div = ""
-    video_div = ""
-    play_butt = ""
     quote_div = ""
     if @tweet.extended_entities_serialized.present? && @tweet.extended_entities_serialized[:media] && @tweet.extended_entities_serialized[:media].size == 1
       media_item = @tweet.extended_entities_serialized[:media].first
