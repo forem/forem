@@ -23,7 +23,7 @@
   <a href="/internal/reports?state=abuse-reports&status=Open" class="<%= "active-state" if @feedback_type == "abuse-reports" %>">Abuse Reports</a> |
   <a href="/internal/reports?state=bug-reports&status=Open" class="<%= "active-state" if @feedback_type == "bug-reports" %>">Bug Reports</a>
   <hr>
-  <a href="/internal/reports?state=<%= @feedback_type %>&status=Open" class="<%= "active-state" if @status == "Open" %>">Unresolved</a> |
+  <a href="/internal/reports?state=<%= @feedback_type %>&status=Open" class="<%= "active-state" if @status == "Open" %>">Open/Unresolved</a> |
   <a href="/internal/reports?state=<%= @feedback_type %>&status=Resolved" class="<%= "active-state" if @status == "Resolved" %>">Resolved</a> |
   <a href="/internal/reports?state=<%= @feedback_type %>&status=Invalid" class="<%= "active-state" if @status == "Invalid" %>">Invalid</a>
 </h3>

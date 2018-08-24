@@ -148,16 +148,12 @@
 
 <script>
   var csrfToken = document.querySelector("meta[name='csrf-token']").content;
-  var sendEmailBtn = document.getElementById('send__email__btn__<%= feedback_message.id %>');
-  var alert = document.getElementById('email__alert__<%= feedback_message.id %>');
-  var statusBtn = document.getElementById('save__status__<%= feedback_message.id %>');
 
-  function saveStatus() {
-    event.preventDefault();
-
+  function saveStatus(id) {
     var formData = new FormData();
-    var statusSelectTag = document.getElementById('status__<%= feedback_message.id %>');
-    formData.append('id', '<%= feedback_message.id %>');
+    var statusSelectTag = document.getElementById('status__' + id);
+    var statusBtn = document.getElementById('save__status__' + id);
+    formData.append('id', id);
     formData.append('status', statusSelectTag.options[statusSelectTag.selectedIndex].value);
 
     fetch('/internal/reports/save_status', {
@@ -171,16 +167,21 @@
     .then(response => response.json()
       .then(json => {
         if (json.outcome === 'Success') {
+        console.log(json.outcome)
           statusBtn.innerText = "Saved!";
           setTimeout(function() {
             statusBtn.innerText = "SAVE STATUS"
-          }, 250);
+          }, 1000);
         } else {
         }
       }))
   }
 
-  statusBtn.addEventListener('click', saveStatus);
+  document.getElementById('save__status__' + <%= feedback_message.id %>).addEventListener('click', function(event) {
+    event.preventDefault();
+    var reportId = <%= feedback_message.id %>
+    saveStatus(reportId);
+  });
 
   function successfulEmail() {
     alert.style.display = 'inline-block';
@@ -194,12 +195,14 @@
     alert.innerHTML = "Email failed to send, see console for errors";
   }
 
-  function sendEmail() {
-    var activeTab = document.querySelector(".tab-pane.fade.in.active[data-id='<%= feedback_message.id %>']");
+  function sendEmail(id) {
+    var activeTab = document.querySelector(".tab-pane.fade.in.active[data-id='" + id + "']");
+    var alert = document.getElementById('email__alert__' + id);
+    var sendEmailBtn = document.getElementById('send__email__btn__' + id);
     var userType = activeTab.dataset.usertype;
-    var emailToAddress = activeTab.querySelector("#" + userType + "__emailto__<%= feedback_message.id %>").value;
-    var subjectLine = activeTab.querySelector("#" + userType + "__subject__<%= feedback_message.id %>").value;
-    var emailBody = activeTab.querySelector("#" + userType + "__body__<%= feedback_message.id %>").value;
+    var emailToAddress = activeTab.querySelector("#" + userType + "__emailto__" + id).value;
+    var subjectLine = activeTab.querySelector("#" + userType + "__subject__" + id).value;
+    var emailBody = activeTab.querySelector("#" + userType + "__body__" + id).value;
 
     alert.style.display = "none";
     alert.classList.remove("alert-warning");
@@ -221,7 +224,7 @@
     }
 
     var formData = new FormData();
-    formData.append('feedback_message_id', '<%= feedback_message.id %>');
+    formData.append('feedback_message_id', id);
     formData.append('email_to', emailToAddress);
     formData.append('email_body', emailBody);
     formData.append('email_subject', subjectLine);
@@ -249,13 +252,14 @@
     })
   }
 
-  sendEmailBtn.addEventListener('click', function() {
+  document.getElementById('send__email__btn__' + <%= feedback_message.id %>).addEventListener('click', function(event) {
     event.preventDefault();
-    sendEmail();
+    var reportId = <%= feedback_message.id %>;
+    sendEmail(reportId);
   });
 
-  function addNoteToPage(noteParams) {
-    var notesDiv = document.getElementById('notes__<%= feedback_message.id %>');
+  function addNoteToPage(noteParams, id) {
+    var notesDiv = document.getElementById('notes__' + id);
     var newNote = document.createElement('p');
     newNote.className = 'note-content';
     var noteContent = document.createTextNode(noteParams.author_name + ': ' + noteParams.content);
@@ -263,20 +267,18 @@
     notesDiv.append(newNote);
   }
 
-  function clearNote() {
-    document.getElementById('note__content__<%= feedback_message.id %>').value = '';
+  function clearNote(id) {
+    document.getElementById('note__content__' + id).value = '';
   }
 
-  function submitNote() {
-    event.preventDefault();
-
+  function submitNote(id) {
     var params = {
-      'feedback_message_id': '<%= feedback_message.id %>',
-      'content': document.getElementById('note__content__<%= feedback_message.id %>').value,
-      'reason': document.getElementById('note__reason__<%= feedback_message.id %>').value,
-      'noteable_id': document.getElementById('note__noteable-id__<%= feedback_message.id %>').value,
-      'noteable_type': document.getElementById('note__noteable-type__<%= feedback_message.id %>').value,
-      'author_id': document.getElementById('note__author-id__<%= feedback_message.id %>').value
+      'feedback_message_id': id,
+      'content': document.getElementById('note__content__' + id).value,
+      'reason': document.getElementById('note__reason__' + id).value,
+      'noteable_id': document.getElementById('note__noteable-id__' + id).value,
+      'noteable_type': document.getElementById('note__noteable-type__' + id).value,
+      'author_id': document.getElementById('note__author-id__' + id).value
     }
 
     var formData = new FormData();
@@ -293,8 +295,8 @@
     .then(response => response.json()
       .then(json => {
         if (json.outcome === 'Success') {
-          addNoteToPage(json);
-          clearNote();
+          addNoteToPage(json, id);
+          clearNote(id);
         } else {
           // failedNote();
         }
@@ -305,7 +307,8 @@
     }))
   }
 
-  var noteSubmitBtn = document.getElementById('note__submit__<%= feedback_message.id %>');
-
-  noteSubmitBtn.addEventListener('click', submitNote);
+  document.getElementById('note__submit__<%= feedback_message.id %>').addEventListener('click', function() {
+    var reportId = <%= feedback_message.id %>;
+    submitNote(reportId);
+  });
 </script>
