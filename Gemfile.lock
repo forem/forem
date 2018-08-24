@@ -277,7 +277,7 @@ GEM
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
     fastimage (2.1.1)
-    fastly (1.13.2)
+    fastly (1.15.0)
     fastly-rails (0.8.0)
       fastly (~> 1.6)
       railties (> 2, < 6)
@@ -949,7 +949,7 @@ DEPENDENCIES
   factory_bot_rails (~> 4.11)
   fake_stripe (~> 0.1)
   faker!
-  fastly (~> 1.13)
+  fastly (~> 1.15)
   fastly-rails (~> 0.8)
   feedjira (~> 2.1)
   figaro (~> 1.1)
