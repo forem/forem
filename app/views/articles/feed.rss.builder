@@ -9,7 +9,7 @@ xml.rss version: "2.0" do
     xml.link @user ? "https://dev.to" + @user.path : "https://dev.to"
     xml.language "en"
 
-    for article in @articles
+    @articles.each do |article|
       xml.item do
         if article.title
           xml.title article.title
