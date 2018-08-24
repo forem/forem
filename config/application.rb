@@ -49,6 +49,10 @@ module PracticalDeveloper
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
 
+    # Allow cookies to be read by Rails 5.1, at least until 5.2 has been in
+    # production for a while and won't need rolling back
+    config.action_dispatch.use_authenticated_cookie_encryption = false
+
     # After-initialize checker to add routes to reserved words
     config.after_initialize do
       Rails.application.reload_routes!
