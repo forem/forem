@@ -62,7 +62,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-preact": "^1.1.0",
     "css-loader": "^0.28.11",
-    "eslint": "^4.9.0",
+    "eslint": "^5.4.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-airbnb-base": "^12.0.0",
     "eslint-config-prettier": "^2.9.0",
