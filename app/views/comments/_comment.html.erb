@@ -29,6 +29,10 @@
                                   commentable.third_user_id == comment.user_id) &&
                                   commentable.decorate.cached_tag_list_array.include?("ama") %>
             <span class="op-marker">ASK ME ANYTHING</span>
+          <% elsif commentable && (commentable.user_id == comment.user_id ||
+              commentable.second_user_id == comment.user_id ||
+              commentable.third_user_id == comment.user_id) %>
+            <span class="op-marker">OP</span>
           <% end %>
           <div class="comment-date">
             <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>
