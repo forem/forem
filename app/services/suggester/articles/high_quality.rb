@@ -11,7 +11,7 @@ module Suggester
         Article.where(published: true, featured: true).
           includes(:user).
           where("positive_reactions_count > ?", MIN_HQ_REACTION_COUNT).
-          order("RANDOM()").
+          order(Arel.sql("RANDOM()")).
           limited_column_select.
           where.not(id: @not_ids).
           first

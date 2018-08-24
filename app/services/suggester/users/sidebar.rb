@@ -20,7 +20,7 @@ module Suggester
           group_one = User.select(:id, :name, :username, :profile_image).where(id: user_ids).
             order("reputation_modifier DESC").limit(20).to_a
           group_two = User.select(:id, :name, :username, :profile_image).where(id: user_ids).
-            order("RANDOM()").limit(20).to_a
+            order(Arel.sql("RANDOM()")).limit(20).to_a
           (group_one + group_two).uniq
         end
       end

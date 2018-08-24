@@ -5,7 +5,8 @@ class UnreadNotificationsEmailer
     # This will run once a day (defined outside the app)
     # only to users who have made at least one comment or article.
     # We can change this up later.
-    users = User.where("comments_count > ? OR reactions_count > ?", 0, 0).order("RANDOM()").limit(num)
+    users = User.where("comments_count > ? OR reactions_count > ?", 0, 0).
+            order(Arel.sql("RANDOM()")).limit(num)
     users.find_each do |user|
       UnreadNotificationsEmailer.new(user).send_email_if_appropriate
     rescue StandardError => e

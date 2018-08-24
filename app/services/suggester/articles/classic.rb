@@ -28,7 +28,7 @@ module Suggester
             where(published: true, featured: true).
             where("positive_reactions_count > ?", MIN_REACTION_COUNT).
             where("published_at > ?", 10.months.ago).
-            order("RANDOM()")
+            order(Arel.sql("RANDOM()"))
         end
       end
 

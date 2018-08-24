@@ -297,7 +297,7 @@ class StoriesController < ApplicationController
       where.not(id: @article.id, user_id: @article.user_id).
       limited_column_select.
       where("featured_number > ?", 5.days.ago.to_i).
-      order("RANDOM()").
+      order(Arel.sql("RANDOM()")).
       limit(8)
     if tag_articles.size < 6
       more_articles = Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
@@ -307,7 +307,7 @@ class StoriesController < ApplicationController
         where(published: true).
         where.not(id: @article.id, user_id: @article.user_id).
         where("featured_number > ?", 5.days.ago.to_i).
-        order("RANDOM()").
+        order(Arel.sql("RANDOM()")).
         limit(10 - tag_articles.size)
     end
 
