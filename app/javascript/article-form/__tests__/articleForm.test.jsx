@@ -35,27 +35,15 @@ describe('<ArticleForm />', () => {
   });
 
   it('renders properly', () => {
-    const tree = render(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
-    );
+    const tree = render(getArticleForm());
     expect(tree).toMatchSnapshot();
   });
 
   it('shows tags as you search', () => {
-    const context = shallow(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
-    );
+    const context = shallow(getArticleForm());
+    const component = context.component();
 
-    return context
-      .component()
+    return component
       .handleTagInput({ target: { value: 'gi', selectionStart: 2 } })
       .then(() => {
         expect(context.state()).toMatchSnapshot();
@@ -64,11 +52,7 @@ describe('<ArticleForm />', () => {
 
   it('selects tag when you click on it', () => {
     const component = preactRender(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
+      getArticleForm(),
       document.body,
       document.body.firstElementChild,
     )._component;
@@ -79,11 +63,7 @@ describe('<ArticleForm />', () => {
 
   it('replaces tag when editing', () => {
     const component = preactRender(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
+      getArticleForm(),
       document.body,
       document.body.firstElementChild,
     )._component;
@@ -98,18 +78,10 @@ describe('<ArticleForm />', () => {
 
   it('shows tags when editing', () => {
     const component = preactRender(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
+      getArticleForm(),
       document.body,
       document.body.firstElementChild,
     )._component;
-
-    const input = document.getElementById('tag-input');
-    input.value = 'java,javascript,linux';
-    input.selectionStart = 2;
 
     return component
       .handleTagInput({
@@ -122,11 +94,7 @@ describe('<ArticleForm />', () => {
 
   it('only allows 4 tags', () => {
     const component = preactRender(
-      <ArticleForm
-        article={
-          '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-        }
-      />,
+      getArticleForm(),
       document.body,
       document.body.firstElementChild,
     )._component;
@@ -138,3 +106,11 @@ describe('<ArticleForm />', () => {
     expect(component.state).toMatchSnapshot();
   });
 });
+
+const getArticleForm = () => (
+  <ArticleForm
+    article={
+        '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+      }
+  />
+  );
