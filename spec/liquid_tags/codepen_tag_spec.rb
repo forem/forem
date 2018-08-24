@@ -20,5 +20,11 @@ RSpec.describe CodepenTag, type: :liquid_template do
         generate_new_liquid("invalid_codepen_link")
       end.to raise_error(StandardError)
     end
+
+    it "rejects XSS attempts" do
+      expect do
+        generate_new_liquid("//evil.com/?codepen.io")
+      end.to raise_error(StandardError)
+    end
   end
 end

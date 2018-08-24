@@ -28,5 +28,11 @@ RSpec.describe GistTag, type: :liquid_template do
         generate_new_liquid("really_long_invalid_id")
       end.to raise_error(StandardError)
     end
+
+    it "rejects XSS attempts" do
+      expect do
+        generate_new_liquid("//pastebin.com/raw/b77FrXUA#gist.github.com")
+      end.to raise_error(StandardError)
+    end
   end
 end

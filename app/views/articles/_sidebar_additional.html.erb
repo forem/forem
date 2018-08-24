@@ -204,6 +204,20 @@
             <a class="cta cta-button" href="/new/explainlikeimfive">ASK FOR AN EXPLANATION</a>
         </div>
       </div>
+      <div class="widget">
+        <header>
+          <a href="/t/healthydebate">#healthydebate</a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["healthydebate"], Timeframer.new(params[:timeframe]).datetime).
+              each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+            <a class="cta cta-button" href="/new/healthydebate">START A DEBATE</a>
+        </div>
+      </div>
       <% if user_signed_in? %>
         <div class="widget" id="podcast-widget">
           <header>

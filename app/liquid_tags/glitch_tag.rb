@@ -20,7 +20,7 @@ class GlitchTag < LiquidTagBase
   private
 
   def parse_id(input)
-    input_no_space = input.delete(" ")
+    input.delete(" ")
   end
 end
 
