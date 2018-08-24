@@ -133,7 +133,10 @@ export default class ArticleForm extends Component {
   handleTagKeyDown = e => {
     const component = this;
     const keyCode = e.keyCode;
-    if (component.state.selectedTags.length === 4 && e.keyCode === KEYS.COMMA) {
+    if (
+      component.state.selectedTags.length === MAX_TAGS &&
+      e.keyCode === KEYS.COMMA
+    ) {
       e.preventDefault();
       return;
     }
@@ -206,7 +209,8 @@ export default class ArticleForm extends Component {
 
     const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
     const insertingAtEnd = range[1] === input.value.length;
-    if (insertingAtEnd) {
+    const maxTagsWillBeReached = this.state.selectedTags.length === MAX_TAGS;
+    if (insertingAtEnd && !maxTagsWillBeReached) {
       tag += ',';
     }
 
@@ -220,7 +224,9 @@ export default class ArticleForm extends Component {
       tagOptions: [],
       tagList: newInput,
       tagInputListIndex: -1,
-      selectedTags: newInput.split(','),
+      selectedTags: newInput
+        .split(',')
+        .filter(item => item != undefined && item.length > 0),
     });
   }
 
@@ -478,3 +484,5 @@ const KEYS = {
   COMMA: 188,
   DELETE: 8,
 };
+
+const MAX_TAGS = 4;
