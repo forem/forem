@@ -263,10 +263,10 @@ GEM
     eventmachine (1.2.5)
     excon (0.60.0)
     execjs (2.7.0)
-    factory_bot (4.10.0)
+    factory_bot (4.11.0)
       activesupport (>= 3.0.0)
-    factory_bot_rails (4.10.0)
-      factory_bot (~> 4.10.0)
+    factory_bot_rails (4.11.0)
+      factory_bot (~> 4.11.0)
       railties (>= 3.0.0)
     fake_stripe (0.1.0)
       capybara
@@ -499,7 +499,7 @@ GEM
     httparty (0.16.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.0.1)
+    i18n (1.1.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     inflecto (0.0.2)
@@ -643,7 +643,7 @@ GEM
       rack
     rack-proxy (0.6.4)
       rack
-    rack-test (1.0.0)
+    rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.5.1)
     rails (5.1.6)
@@ -946,7 +946,7 @@ DEPENDENCIES
   draper (~> 3.0)
   email_validator (~> 1.6)
   envied (~> 0.9)
-  factory_bot_rails (~> 4.10)
+  factory_bot_rails (~> 4.11)
   fake_stripe (~> 0.1)
   faker!
   fastly (~> 1.13)
