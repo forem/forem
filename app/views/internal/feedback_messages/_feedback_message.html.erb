@@ -20,16 +20,22 @@
 }
 .email__alert{
   display: none;
+  margin: 0;
+}
+.panel-right-elements{
+  float: right;
 }
 </style>
 <div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
       <h2 class="panel-title">
-        <a href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
+        <a href="/internal/reports/<%= feedback_message.id %>">
           Report #<%= feedback_message.id %> - Submitted on: <%= feedback_message.to_eastern_strftime(feedback_message.created_at) %>
         </a>
-
+        <div class="panel-right-elements">
+          <a href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">Collapse</a>
+        </div>
       </h2>
     </div>
     <div class="panel-collapse collapse in" id="collapse<%= feedback_message.id %>" role="tabpanel" aria-labelledby="heading<%= %>">
