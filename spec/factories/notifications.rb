@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :notification do
-    sent false
+    sent { false }
   end
 end
