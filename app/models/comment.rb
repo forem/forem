@@ -208,7 +208,7 @@ class Comment < ApplicationRecord
   end
 
   def hover_publish_date
-    created_at.in_time_zone("Eastern Time (US & Canada)").strftime("%B %e %Y %I:%M %P %Z")
+    created_at.strftime("%B %e %Y %I:%M %P %Z")
   end
 
   def sharemeow_link
