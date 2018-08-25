@@ -14,7 +14,9 @@ _You can find all installation options for a variety of operating systems [on th
 
 ## Configuration
 
-By default the application is configured to connect to a local database named `PracticalDeveloper_development`. If you need to specify a username and a password you can go about it two ways: using the environment variable `DATABASE_URL` (preferred method) or modifying the file `database.yml`.
+By default the application is configured to connect to a local database named `PracticalDeveloper_development`. If you need to specify a username and a password you can go about it two ways: using the environment variable `DATABASE_URL` with a connection string (preferred method) or modifying the file `database.yml`.
+
+The [official Rails guides](https://guides.rubyonrails.org/configuring.html#connection-preference) go into depth on how Rails merges the existing `database.yml` with the connection string.
 
 ### Setup `DATABASE_URL` in application.yml
 
@@ -27,6 +29,8 @@ DATABASE_URL: postgresql://USERNAME:PASSWORD@localhost/PracticalDeveloper_develo
 ```
 
 3.  Replace `USERNAME` with your database username, `PASSWORD` with your database password.
+
+You can find more details on connection strings in [PostgreSQL's own documentation](https://www.postgresql.org/docs/10/static/libpq-connect.html#LIBPQ-CONNSTRING).
 
 ### Modify connection params in `database.yml`
 
