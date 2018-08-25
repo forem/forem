@@ -96,15 +96,15 @@ function handleOptimisticButtRender(butt) {
     // Handles actual following of tags/users
     try {
         //lets try grab the event buttons info data attribute user id
-        let evFabUserId = JSON.parse(butt.dataset.info).id;
-        let requestVerb = butt.dataset.verb;
+        var evFabUserId = JSON.parse(butt.dataset.info).id;
+        var requestVerb = butt.dataset.verb;
         //now for all follow action buttons
         document.querySelectorAll('.follow-action-button').forEach(function(fab){
             try{
                 //lets check they have info data attributes
                 if( fab.dataset.info ){
                     //and attempt to parse those, to grab that buttons info user id
-                    let fabUserId = JSON.parse(fab.dataset.info).id;
+                    var fabUserId = JSON.parse(fab.dataset.info).id;
                     //now does that user id match our event buttons user id?
                     if ( fabUserId && fabUserId === evFabUserId ) {
                         //yes - time to assign the same state!
