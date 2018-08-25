@@ -49,7 +49,7 @@ test:
     password: PASSWORD
 ```
 
-**Keep in mind not to commit `database.yml` under any circumstances to any repository.**
+**Keep in mind not to commit your modified `database.yml` containing your credentials under any circumstances to any repository.**
 
 ## Troubleshooting tests
 
