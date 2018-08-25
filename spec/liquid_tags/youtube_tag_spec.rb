@@ -28,10 +28,9 @@ RSpec.describe YoutubeTag, type: :liquid_template do
       expect(liquid.render).to eq(generate_iframe(youtube_id))
     end
 
-    it "rejects invalid youtube video id" do
-      expect do
-        generate_new_liquid("really_long_invalid_id")
-      end.to raise_error(StandardError)
+    it "accepts youtube video id with start time" do
+      liquid = generate_new_liquid(youtube_id + "?t=1m7s")
+      expect(liquid.render).to eq(generate_iframe(youtube_id + "?start=67"))
     end
   end
 end

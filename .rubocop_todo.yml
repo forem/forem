@@ -18,12 +18,6 @@ Lint/IneffectiveAccessModifier:
     - 'app/black_box/black_box.rb'
     - 'app/models/tweet.rb'
 
-# Offense count: 3
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'app/views/api/v0/comments/index.json.jbuilder'
-    - 'app/views/api/v0/comments/show.json.jbuilder'
-
 # Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
@@ -105,13 +99,6 @@ Style/ClassAndModuleChildren:
 Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: each, for
-Style/For:
-  Exclude:
-    - 'app/views/articles/feed.rss.builder'
 
 # Offense count: 3
 Style/MixinUsage:
