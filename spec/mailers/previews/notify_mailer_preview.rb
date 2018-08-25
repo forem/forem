@@ -31,5 +31,4 @@ class NotifyMailerPreview < ActionMailer::Preview
   def new_message_email
     NotifyMailer.new_message_email(Message.last)
   end
-
 end

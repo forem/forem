@@ -111,7 +111,7 @@ class Message < ApplicationRecord
     return if chat_channel.channel_type != "direct" ||
         direct_receiver.updated_at > 2.hours.ago ||
         direct_receiver.chat_channel_memberships.order("last_opened_at DESC").
-          first.last_opened_at > 18.hours.ago ||
+            first.last_opened_at > 18.hours.ago ||
         chat_channel.last_message_at > 45.minutes.ago
     NotifyMailer.new_message_email(self).deliver
   end
