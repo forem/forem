@@ -8,6 +8,7 @@ class Message < ApplicationRecord
 
   before_save       :determine_user_validity
   before_validation :evaluate_markdown
+  after_create      :send_email_if_appropriate
   after_create      :update_chat_channel_last_message_at
   after_create      :update_all_has_unopened_messages_statuses
 
@@ -40,6 +41,11 @@ class Message < ApplicationRecord
     end
   end
 
+  def direct_receiver
+    return if chat_channel.channel_type != "direct"
+    chat_channel.users.where.not(id: user.id).first
+  end
+
   private
 
   def update_chat_channel_last_message_at
@@ -67,7 +73,7 @@ class Message < ApplicationRecord
     doc = Nokogiri::HTML(html)
     rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
     doc.css("a").each do |a|
-      if a["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && article = Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
+      if article = rich_link_article(a)
         html = html + "<a style='color: #0a0a0a' href='#{article.path}'
           target='_blank' data-content='articles/#{article.id}'>
           <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>
@@ -93,5 +99,20 @@ class Message < ApplicationRecord
   def no_push_necessary?(sub)
     membership = sub.user.chat_channel_memberships.order("last_opened_at DESC").first
     membership.last_opened_at > 40.seconds.ago
+  end
+
+  def rich_link_article(a)
+    if a["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && a["href"].split("/")[4]
+      Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
+    end
+  end
+
+  def send_email_if_appropriate
+    return if chat_channel.channel_type != "direct" ||
+        direct_receiver.updated_at > 2.hours.ago ||
+        direct_receiver.chat_channel_memberships.order("last_opened_at DESC").
+          first.last_opened_at > 18.hours.ago ||
+        chat_channel.last_message_at > 45.minutes.ago
+    NotifyMailer.new_message_email(self).deliver
   end
 end

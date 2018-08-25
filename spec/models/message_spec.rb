@@ -38,4 +38,35 @@ RSpec.describe Message, type: :model do
                               message_markdown: "hello")
     expect(message).to be_valid
   end
+
+  it "creates rich link in connect with proper link" do
+    article = create(:article)
+    message = create(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+      message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}#{article.path}")
+    expect(message.message_html).to include(article.title)
+    expect(message.message_html).to include("data-content")
+  end
+
+  it "creates rich link in connect with non-rich link" do
+    message = create(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+      message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}/report-abuse")
+    expect(message.message_html).not_to include("data-content")
+  end
+
+  it "sends email if user not recently active on /connect" do
+    chat_channel.add_users([user, user2])
+    chat_channel.update_column(:channel_type, "direct")
+    user2.update_column(:updated_at, 1.day.ago)
+    user2.chat_channel_memberships.last.update_column(:last_opened_at, 2.days.ago)
+    create(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+      message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}/report-abuse")
+    expect(EmailMessage.last.subject).to start_with("#{user.name} just messaged you")
+  end
+
+  it "does not send email if user has been recently active" do
+    chat_channel.add_users([user, user2])
+    create(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+      message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}/report-abuse")
+    expect(EmailMessage.all.size).to eq(0)
+  end
 end
