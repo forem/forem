@@ -10,22 +10,23 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
   return null;
 });
 
-function shouldShowOnboarding() {
-  const { user } = document.body.dataset;
-
+function isUserSignedIn() {
   return (
-    document.head.getElementsByTagName('meta')[2].content === 'true' &&
-    user &&
-    JSON.parse(user).saw_onboarding === false
+    document.head.querySelector(
+      'meta[name="user-signed-in"][content="true"]',
+    ) !== null
   );
 }
 
 function renderPage() {
-  if (shouldShowOnboarding()) {
-    import('../src/Onboarding').then(({ default: Onboarding }) =>
+  import('../src/Onboarding')
+    .then(({ default: Onboarding }) =>
       render(<Onboarding />, document.getElementById('top-bar')),
-    );
-  }
+    )
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error('Unable to load onboarding', error);
+    });
 }
 
 document.ready.then(
@@ -33,7 +34,10 @@ document.ready.then(
     window.currentUser = currentUser;
     window.csrfToken = csrfToken;
 
-    renderPage();
     getUnopenedChannels();
+
+    if (isUserSignedIn() && !currentUser.saw_onboarding) {
+      renderPage();
+    }
   }),
 );
