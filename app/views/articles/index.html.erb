@@ -326,7 +326,7 @@
           <a href="<%= @featured_story.user.path %>" class="featured-profile-button">
             <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.user).get(90) %>" alt="<%= @featured_story.title %>" />
           </a>
-          <div class="featured-user-name"><a href="<%= @featured_story.user.path %>"><%= @featured_story.user.name %>・<%= @featured_story.readable_publish_date %></a></div>
+          <div class="featured-user-name"><a href="<%= @featured_story.user.path %>"><%= @featured_story.user.name %>・<%= @featured_story.readable_publish_date %><%= @featured_story.time_from_publish %></a></div>
           <div class="featured-tags tags">
             <% @featured_story.cached_tag_list_array.each do |tag| %>
               <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>

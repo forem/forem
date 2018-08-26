@@ -340,6 +340,20 @@ class Article < ApplicationRecord
     end
   end
 
+  def time_from_publish
+    relevant_date = crossposted_at.present? ? crossposted_at : published_at
+    seconds = (Time.now - relevant_date.to_time) / 1.second
+    if seconds < 60
+      "・" + (seconds <= 1 ? "a second" : seconds.floor.to_s + " seconds") + " ago"
+    elsif seconds >= 60 && seconds < 3600
+      minutes = (seconds / 60).floor
+      "・" + (minutes == 1 ? "a minute" : minutes.to_s + " minutes") + " ago"
+    elsif seconds >= 3600 && seconds < 86400
+      hours = (seconds / (60 * 60)).floor
+      "・" + (hours == 1 ? "an hour" : hours.to_s + " hours") + " ago"
+    end
+  end
+
   def self.cached_find(id)
     Rails.cache.fetch("find-article-by-id-#{id}", expires_in: 5.hours) do
       find(id)
