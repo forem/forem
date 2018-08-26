@@ -111,11 +111,13 @@ export function getNotificationState() {
   // Let's check if the browser supports notifications
   if (!('Notification' in window)) {
     return 'not-supported';
-  } else if (Notification.permission === 'granted') {
-    setupNotifications();
-    return 'granted';
-  } else if (Notification.permission !== 'denied') {
-    return 'waiting-permission';
   }
-  return 'denied';
+
+  const { permission } = Notification;
+
+  if (permission === 'granted') {
+    setupNotifications();
+  }
+
+  return permission === 'default' ? 'waiting-permission' : permission;
 }
