@@ -1,13 +1,13 @@
 import 'intersection-observer';
 import { sendKeys } from './actions';
 
-export function getCsrfToken(doc = document) {
-  const element = doc.querySelector(`meta[name='csrf-token']`);
+export function getCsrfToken() {
+  const element = document.querySelector(`meta[name='csrf-token']`);
 
   return element !== null ? element.content : undefined;
 }
 
-const getWaitOnUserDataHandler = ({ resolve, reject, doc, waitTime = 20 }) => {
+const getWaitOnUserDataHandler = ({ resolve, reject, waitTime = 20 }) => {
   let totalTimeWaiting = 0;
 
   return function waitingOnUserData() {
@@ -16,8 +16,8 @@ const getWaitOnUserDataHandler = ({ resolve, reject, doc, waitTime = 20 }) => {
       return;
     }
 
-    const csrfToken = getCsrfToken(doc);
-    const { user } = doc.body.dataset;
+    const csrfToken = getCsrfToken(document);
+    const { user } = document.body.dataset;
 
     if (user && csrfToken !== undefined) {
       const currentUser = JSON.parse(user);
@@ -31,9 +31,9 @@ const getWaitOnUserDataHandler = ({ resolve, reject, doc, waitTime = 20 }) => {
   };
 };
 
-export function getUserDataAndCsrfToken(doc = document) {
+export function getUserDataAndCsrfToken() {
   return new Promise((resolve, reject) => {
-    getWaitOnUserDataHandler({ resolve, reject, doc })();
+    getWaitOnUserDataHandler({ resolve, reject })();
   });
 }
 
