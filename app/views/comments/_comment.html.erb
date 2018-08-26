@@ -24,7 +24,7 @@
           <% if comment.user.github_username.present? %>
             <a href="http://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank"><%= image_tag("github-logo.svg", class:"icon-img") %></a>
           <% end %>
-          <% if user_id_present?(commentable, comment)%>
+          <% if commentable_author_is_op?(commentable, comment)%>
             <span class="op-marker"><%= get_ama_or_op_banner(commentable) %></span>
           <% end %>
           <div class="comment-date">

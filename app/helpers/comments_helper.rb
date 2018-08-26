@@ -11,12 +11,12 @@ module CommentsHelper
     comment.deleted ? 0 : comment.user_id
   end
 
-  def user_id_present?(commentable, comment)
+  def commentable_author_is_op?(commentable, comment)
     commentable &&
       [
         commentable.user_id,
         commentable.second_user_id,
-        commentable.third_user_id
+        commentable.third_user_id,
       ].any? { |id| id == comment.user_id }
   end
 
