@@ -2,6 +2,15 @@ import { h, render } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import Chat from '../chat/chat';
 
+function initializeChat(loadChat) {
+  getUserDataAndCsrfToken()
+    .then(loadChat)
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error('Unable to load chat', error);
+    });
+}
+
 function renderChat(root) {
   render(<Chat {...root.dataset} />, root, root.firstChild);
 }
@@ -33,9 +42,8 @@ const loadChat = ({ currentUser, csrfToken }) => {
   });
 };
 
-// TODO: Currently there is no handling of errors if the promise's reject.
-getUserDataAndCsrfToken().then(loadChat);
+initializeChat(loadChat);
 
 window.InstantClick.on('change', () => {
-  getUserDataAndCsrfToken().then(loadChat);
+  initializeChat(loadChat);
 });

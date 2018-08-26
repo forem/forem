@@ -30,14 +30,19 @@ function renderPage() {
 }
 
 document.ready.then(
-  getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
-    window.currentUser = currentUser;
-    window.csrfToken = csrfToken;
+  getUserDataAndCsrfToken()
+    .then(({ currentUser, csrfToken }) => {
+      window.currentUser = currentUser;
+      window.csrfToken = csrfToken;
 
-    getUnopenedChannels();
+      getUnopenedChannels();
 
-    if (isUserSignedIn() && !currentUser.saw_onboarding) {
-      renderPage();
-    }
-  }),
+      if (isUserSignedIn() && !currentUser.saw_onboarding) {
+        renderPage();
+      }
+    })
+    .catch(error => {
+      // eslint-disable-next-line no-console
+      console.error('Error getting user and CSRF Token', error);
+    }),
 );
