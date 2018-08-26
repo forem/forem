@@ -2,40 +2,38 @@ import 'intersection-observer';
 import { sendKeys } from './actions';
 
 export function getCsrfToken(doc = document) {
-  // TODO: It's not documented what the behaviour is supposed to be if there is no CSRF token.
   const element = doc.querySelector(`meta[name='csrf-token']`);
 
   return element !== null ? element.content : undefined;
 }
 
-const getWaitOnUserDataHandler = ({ resolve, reject, waitTime = 20 }) => {
-  let i = 0;
+const getWaitOnUserDataHandler = ({ resolve, reject, doc, waitTime = 20 }) => {
+  let totalTimeWaiting = 0;
 
   return function waitingOnUserData() {
-    // is not the right approach, but baby steps.
-    if (i === 3000) {
+    if (totalTimeWaiting === 3000) {
       reject(new Error("Couldn't find user data on page."));
       return;
     }
 
-    const userData = document.body.getAttribute('data-user');
-    const csrfToken = getCsrfToken();
+    const csrfToken = getCsrfToken(doc);
+    const { user } = doc.body.dataset;
 
-    if (userData && csrfToken !== undefined) {
-      const currentUser = JSON.parse(userData);
+    if (user && csrfToken !== undefined) {
+      const currentUser = JSON.parse(user);
 
       resolve({ currentUser, csrfToken });
       return;
     }
 
-    i += waitTime;
+    totalTimeWaiting += waitTime;
     setTimeout(waitingOnUserData, waitTime);
   };
 };
 
-export function getUserDataAndCsrfToken() {
+export function getUserDataAndCsrfToken(doc = document) {
   return new Promise((resolve, reject) => {
-    getWaitOnUserDataHandler({ resolve, reject })();
+    getWaitOnUserDataHandler({ resolve, reject, doc })();
   });
 }
 
