@@ -13,7 +13,11 @@ module CommentsHelper
 
   def user_id_present?(commentable, comment)
     commentable &&
-    [commentable.user_id, commentable.second_user_id, commentable.third_user_id].any? { |id| id == comment.user_id }
+      [
+        commentable.user_id,
+        commentable.second_user_id,
+        commentable.third_user_id,
+      ].any? { |id| id == comment.user_id }
   end
 
   def get_ama_or_op_banner(commentable)
