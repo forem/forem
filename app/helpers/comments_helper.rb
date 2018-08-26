@@ -16,7 +16,7 @@ module CommentsHelper
       [
         commentable.user_id,
         commentable.second_user_id,
-        commentable.third_user_id,
+        commentable.third_user_id
       ].any? { |id| id == comment.user_id }
   end
 
