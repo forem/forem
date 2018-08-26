@@ -10,4 +10,12 @@ module CommentsHelper
   def comment_user_id_unless_deleted(comment)
     comment.deleted ? 0 : comment.user_id
   end
+
+  def is_user_id_present(commentable, comment)
+    commentable && [commentable.user_id, commentable.second_user_id, commentable.third_user_id].any? { |id| id == comment.user_id }
+  end
+
+  def get_ama_or_op_banner(commentable)
+    commentable.decorate.cached_tag_list_array.include?("ama") ? "ASK ME ANYTHING" : "OP"
+  end
 end
