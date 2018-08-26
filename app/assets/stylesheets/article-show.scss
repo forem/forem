@@ -758,6 +758,31 @@ header{
             border-radius: 3px;
             margin: 10px auto 5px;
           }
+          #snackbar{
+            display: none;
+            min-width: 100px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 30px;
+            padding: 10px;
+            position: fixed;
+            z-index: 1;
+            left: 35%;
+            bottom: 30px;
+            &.showing {
+              display: block;
+              animation: fadein 0.5s, fadeout 0.5s 2.5s forwards;
+            }
+            @keyframes fadein {
+              from {bottom: 0; opacity: 0;}
+              to {bottom: 30px; opacity: 1;}
+            }
+            @keyframes fadeout {
+              from {bottom: 30px; opacity: 1;}
+              to {bottom: 0; opacity: 0;}
+            }
+          }
           a{
             font-weight: bold;
             color: $black;

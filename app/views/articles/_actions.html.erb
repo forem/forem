@@ -20,8 +20,19 @@
     </button>
     <div class="dropdown-content">
       <div>
+        <script async>
+          function copyLink() {
+            var copyButton = document.getElementById('copy-link')
+            copyButton.select()
+            document.execCommand('copy')
+            var snackbar = document.getElementById('snackbar')
+            snackbar.classList.add('showing')
+            setTimeout(() => { snackbar.classList.remove('showing') }, 3000 )
+          }
+        </script>
         <div class="dropdown-link-row">
-          <img src="<%= asset_path("link.svg") %>" /><input value="https://dev.to<%= @article.path %>" onClick="this.setSelectionRange(0, this.value.length)"/>
+          <img src="<%= asset_path("link.svg") %>" /><input id="copy-link" readonly value="https://dev.to<%= @article.path %>" onClick="copyLink()"/>
+          <div id='snackbar'>Copied!</div>
         </div>
         <div class="dropdown-link-row"><a href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> https://dev.to<%= @article.path %>'>Share to Twitter</a></div>
         <div class="dropdown-link-row"><a href="/report-abuse">Report Abuse</a></div>
