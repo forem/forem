@@ -340,7 +340,7 @@ class Article < ApplicationRecord
     end
   end
 
-  def time_from_publish
+  def time_since_publish
     relevant_date = crossposted_at.present? ? crossposted_at : published_at
     seconds = (Time.now - relevant_date.to_time) / 1.second
     if seconds < 60

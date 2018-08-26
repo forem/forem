@@ -478,37 +478,37 @@ RSpec.describe Article, type: :model do
 
   it "shows a second ago for 1 seconds from publish time" do
     article.published_at = Time.current
-    expect(article.time_from_publish).to eq("・a second ago")
+    expect(article.time_since_publish).to eq("・a second ago")
   end
 
   it "shows seconds ago for less than 60 seconds from publish time" do
     article.published_at = 5.second.ago
-    expect(article.time_from_publish).to eq("・5 seconds ago")
+    expect(article.time_since_publish).to eq("・5 seconds ago")
   end
 
   it "shows a minute ago for 1 minute from publish time" do
     article.published_at = 1.minute.ago
-    expect(article.time_from_publish).to eq("・a minute ago")
+    expect(article.time_since_publish).to eq("・a minute ago")
   end
 
   it "shows minutes ago for less than 60 minutes from publish time" do
     article.published_at = 50.minute.ago
-    expect(article.time_from_publish).to eq("・50 minutes ago")
+    expect(article.time_since_publish).to eq("・50 minutes ago")
   end
 
   it "shows an hour ago for 1 hour from publish time" do
     article.published_at = 1.hour.ago
-    expect(article.time_from_publish).to eq("・an hour ago")
+    expect(article.time_since_publish).to eq("・an hour ago")
   end
 
   it "shows hours ago for less than 24 hours from publish time" do
     article.published_at = 15.hour.ago
-    expect(article.time_from_publish).to eq("・15 hours ago")
+    expect(article.time_since_publish).to eq("・15 hours ago")
   end
 
   it "doesn't show ago time for more than 24 hours from publish time" do
     article.published_at = 24.hour.ago
-    expect(article.time_from_publish).to eq(nil)
+    expect(article.time_since_publish).to eq(nil)
   end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
