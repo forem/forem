@@ -1,5 +1,4 @@
 import { h, render } from 'preact';
-import Onboarding from '../src/Onboarding';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 
@@ -12,28 +11,28 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
 });
 
 function shouldShowOnboarding() {
+  const { user } = document.body.dataset;
+
   return (
     document.head.getElementsByTagName('meta')[2].content === 'true' &&
-    document.body.getAttribute('data-user') &&
-    document.body.getAttribute('data-user') !== 'undefined' &&
-    JSON.parse(document.body.getAttribute('data-user')).saw_onboarding === false
+    user &&
+    JSON.parse(user).saw_onboarding === false
   );
 }
 
 function renderPage() {
   if (shouldShowOnboarding()) {
-    setTimeout(() => {
-      render(<Onboarding />, document.getElementById('top-bar'));
-    }, 580);
+    import('../src/Onboarding').then(({ default: Onboarding }) =>
+      render(<Onboarding />, document.getElementById('top-bar')),
+    );
   }
 }
 
 document.ready.then(
-  getUserDataAndCsrfToken().then(currentUser => {
+  getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
     window.currentUser = currentUser;
-    window.csrfToken = document.querySelector(
-      "meta[name='csrf-token']",
-    ).content;
+    window.csrfToken = csrfToken;
+
     renderPage();
     getUnopenedChannels();
   }),
