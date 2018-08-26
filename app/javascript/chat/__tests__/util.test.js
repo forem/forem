@@ -30,7 +30,7 @@ describe('Chat utilities', () => {
       );
     });
 
-    test('should resolve if user csrf token found.', () => {
+    test('should resolve if user and csrf token found.', () => {
       const csrfToken = 'some-csrf-token';
       const currentUser = {
         id: 41,
