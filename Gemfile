@@ -82,7 +82,7 @@ gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4", group: :doc
 gem "serviceworker-rails", "~> 0.5"
 gem "share_meow_client", "~> 0.1"
-gem "skylight", "~> 1.5"
+gem "skylight", "~> 2.0"
 gem "slack-notifier", "~> 1.5"
 gem "sprockets", "~> 3.7"
 gem "sprockets-es6", "~> 0.9"
