@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180821204032) do
+ActiveRecord::Schema.define(version: 20180824191849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -289,7 +289,6 @@ ActiveRecord::Schema.define(version: 20180821204032) do
     t.string "reported_url"
     t.boolean "reporter_email_sent?", default: false
     t.integer "reporter_id"
-    t.string "slug"
     t.string "status", default: "Open"
     t.datetime "updated_at"
     t.boolean "victim_email_sent?", default: false

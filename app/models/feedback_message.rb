@@ -16,14 +16,8 @@ class FeedbackMessage < ApplicationRecord
               in: ["Open", "Invalid", "Resolved"],
             }
 
-  before_validation :generate_slug
-
   def abuse_report?
     feedback_type == "abuse-reports"
-  end
-
-  def generate_slug
-    self.slug = SecureRandom.hex(10) unless slug?
   end
 
   def capitalize_status
@@ -35,7 +29,7 @@ class FeedbackMessage < ApplicationRecord
     time.in_time_zone("America/New_York").strftime("%A, %b %d %Y - %I:%M %p %Z")
   end
 
-  def path
-    "/reports/#{slug}"
+  def email_messages
+    EmailMessage.where(feedback_message_id: id)
   end
 end
