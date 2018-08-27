@@ -38,10 +38,6 @@ RSpec.describe "/internal/feedback_messages", type: :request do
         expect(FeedbackMessage.last.notes.count).to eq(2)
       end
 
-      it "adds the current user as the reviewer" do
-        expect(FeedbackMessage.find_by(reviewer_id: admin.id)).not_to eq(nil)
-      end
-
       it "updates the last_reviewed_at timestamp" do
         expect(FeedbackMessage.last.last_reviewed_at).not_to eq(nil)
       end
