@@ -26,6 +26,7 @@
   float: right;
 }
 </style>
+<% @emails = feedback_message.email_messages unless @emails %>
 <div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">

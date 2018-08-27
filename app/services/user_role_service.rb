@@ -35,7 +35,11 @@ class UserRoleService
 
   def new_roles?(params)
     params[:trusted] == "1" ? @user.add_role(:trusted) : @user.remove_role(:trusted)
-    params[:analytics] == "1" ? @user.add_role(:analytics_beta_tester) : @user.remove_role(:analytics_beta_tester)
+    if params[:analytics] == "1"
+      @user.add_role(:analytics_beta_tester)
+    else
+      @user.remove_role(:analytics_beta_tester)
+    end
     if params[:scholar] == "1"
       @user.add_role(:workshop_pass)
       @user.update(workshop_expiration: params[:workshop_expiration])
@@ -68,9 +72,10 @@ class UserRoleService
   end
 
   def create_or_update_note(reason, content)
-    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason, author_id: current_user_id)
+    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
     if note.nil?
       Note.create(
+        author_id: @current_user_id,
         noteable_id: @user.id,
         noteable_type: "User",
         reason: reason,
