@@ -108,11 +108,14 @@ class Message < ApplicationRecord
   end
 
   def send_email_if_appropriate
-    return if chat_channel.channel_type != "direct" ||
-        direct_receiver.updated_at > 2.hours.ago ||
-        direct_receiver.chat_channel_memberships.order("last_opened_at DESC").
+    recipient = direct_receiver
+    return if !chat_channel.direct? ||
+        recipient.updated_at > 2.hours.ago ||
+        recipient.chat_channel_memberships.order("last_opened_at DESC").
             first.last_opened_at > 18.hours.ago ||
-        chat_channel.last_message_at > 45.minutes.ago
+        chat_channel.last_message_at > 45.minutes.ago ||
+        recipient.email_connect_messages == false
+
     NotifyMailer.new_message_email(self).deliver
   end
 end

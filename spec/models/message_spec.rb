@@ -69,4 +69,15 @@ RSpec.describe Message, type: :model do
       message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}/report-abuse")
     expect(EmailMessage.all.size).to eq(0)
   end
+
+  it "does not send email if user has email_messages turned off" do
+    chat_channel.add_users([user, user2])
+    chat_channel.update_column(:channel_type, "direct")
+    user2.update_column(:updated_at, 1.day.ago)
+    user2.update_column(:email_connect_messages, false)
+    user2.chat_channel_memberships.last.update_column(:last_opened_at, 2.days.ago)
+    create(:message, chat_channel_id: chat_channel.id, user_id: user.id,
+      message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}/report-abuse")
+      expect(EmailMessage.all.size).to eq(0)
+  end
 end
