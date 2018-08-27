@@ -11,7 +11,7 @@ class ChatChannelMembership < ApplicationRecord
   private
 
   def permission
-    if chat_channel.channel_type == "direct" && chat_channel.slug.split("/").exclude?(user.username)
+    if chat_channel.direct? && chat_channel.slug.split("/").exclude?(user.username)
       errors.add(:user_id, "is not allowed in chat")
     end
     # To be possibly implemented in future
