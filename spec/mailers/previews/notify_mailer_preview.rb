@@ -27,4 +27,8 @@ class NotifyMailerPreview < ActionMailer::Preview
   def new_report_email
     NotifyMailer.new_report_email(FeedbackMessage.first)
   end
+
+  def new_message_email
+    NotifyMailer.new_message_email(Message.last)
+  end
 end
