@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180824191849) do
+ActiveRecord::Schema.define(version: 20180826174411) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -634,6 +634,7 @@ ActiveRecord::Schema.define(version: 20180824191849) do
     t.string "email", default: "", null: false
     t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
+    t.boolean "email_connect_messages", default: true
     t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true
     t.boolean "email_membership_newsletter", default: false

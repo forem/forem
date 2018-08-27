@@ -52,6 +52,7 @@ class NotifyMailer < ApplicationMailer
   def feedback_message_resolution_email(params)
     @user = User.find_by(email: params[:email_to])
     @email_body = params[:email_body]
+    track utm_campaign: params[:email_type]
     track extra: { feedback_message_id: params[:feedback_message_id] }
     mail(to: params[:email_to], subject: params[:email_subject])
   end

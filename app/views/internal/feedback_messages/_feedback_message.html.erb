@@ -25,18 +25,29 @@
 .panel-right-elements{
   float: right;
 }
+.email__container{
+  border: 1px solid gray;
+  margin: 10px;
+  padding-left: 50px;
+  padding-top: 5px;
+}
+.to__subject{
+  margin: 5px;
+  font-size: 20px;
+  color: black;
+  text-align: center;
+}
 </style>
-<% @emails = feedback_message.email_messages unless @emails %>
 <div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
       <h2 class="panel-title">
-        <a href="/internal/reports/<%= feedback_message.id %>">
+        <a href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
           Report #<%= feedback_message.id %> - Submitted on: <%= feedback_message.to_eastern_strftime(feedback_message.created_at) %>
         </a>
         <div class="panel-right-elements">
-          ✉️ Emails Sent: <%= @emails.count %> |
-          <a href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">Collapse/Expand</a>
+          ✉️ Emails Sent: <%= feedback_message.email_messages.count %> |
+          <a href="/internal/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
         </div>
       </h2>
     </div>
@@ -75,7 +86,12 @@
       <h3>Previous Emails:</h3>
       <div class="previous__emails__container">
         <% EmailMessage.where(feedback_message_id: feedback_message.id).each do |email| %>
-        <%= email.body_html_content.html_safe %>
+        <div class="email__container">
+          <p class="to__subject">Type: <%= email.utm_campaign.capitalize %></p>
+          <p class="to__subject">To: <%= email.to %></p>
+          <p class="to__subject">Subject: <%= email.subject %></p>
+          <%= email.body_html_content.html_safe %>
+        </div>
         <% end %>
       </div>
       <h3>Email Form:</h3>
@@ -191,13 +207,13 @@
     saveStatus(reportId);
   });
 
-  function successfulEmail() {
+  function successfulEmail(alert) {
     alert.style.display = 'inline-block';
     alert.classList.add('alert-success');
-    alert.innerHTML = "Email sent successfully!";
+    alert.innerHTML = "Email sent successfully! Refresh to see";
   }
 
-  function failedEmail() {
+  function failedEmail(alert) {
     alert.style.display = 'inline-block';
     alert.classList.add('alert-danger');
     alert.innerHTML = "Email failed to send, see console for errors";
@@ -236,6 +252,7 @@
     formData.append('email_to', emailToAddress);
     formData.append('email_body', emailBody);
     formData.append('email_subject', subjectLine);
+    formData.append('email_type', userType);
 
     fetch('/internal/reports/send_email', {
       method: 'POST',
@@ -248,14 +265,14 @@
     .then(response => response.json()
       .then(json => {
         if (json.outcome === "Success") {
-          successfulEmail();
+          successfulEmail(alert);
         } else {
-          console.log('note failed')
-          failedEmail();
+          console.log('email failed')
+          failedEmail(alert);
         }
       }))
     .catch(error => {
-      failedEmail();
+      failedEmail(alert);
       console.log(error);
     })
   }

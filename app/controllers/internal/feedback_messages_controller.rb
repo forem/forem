@@ -40,7 +40,6 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def show
     @feedback_message = FeedbackMessage.find_by(id: params[:id])
-    @emails = EmailMessage.where(feedback_message_id: params[:id])
   end
 
   def update_feedback_message_and_note(note)
