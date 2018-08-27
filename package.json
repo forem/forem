@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "jest app/javascript/ --coverage",
-    "test:watch": "jest app/javascript/ --coverage --watch",
+    "test:watch": "jest app/javascript/ --watch",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "precommit": "lint-staged"
