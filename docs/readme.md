@@ -20,6 +20,10 @@ items:
     title:  Installation Guide
   - path: liquid-tags.md
     title:  Liquid Tags
+  - path: design-guidelines.md
+    title:  Design Guidelines
+  - path: vocabulary.md
+    title: Vocabulary
 ---
 
 # Welcome to the dev.to documentation!

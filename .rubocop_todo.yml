@@ -18,29 +18,12 @@ Lint/IneffectiveAccessModifier:
     - 'app/black_box/black_box.rb'
     - 'app/models/tweet.rb'
 
-# Offense count: 3
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'app/views/api/v0/comments/index.json.jbuilder'
-    - 'app/views/api/v0/comments/show.json.jbuilder'
-
 # Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
   Exclude:
     - 'app/black_box/black_box.rb'
     - 'app/models/tweet.rb'
-
-# Offense count: 10
-Lint/UselessAssignment:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'
-    - 'app/labor/cache_buster.rb'
-    - 'app/labor/markdown_parser.rb'
-    - 'app/labor/rate_limit_checker.rb'
-    - 'app/liquid_tags/comment_tag.rb'
-    - 'app/liquid_tags/glitch_tag.rb'
-    - 'app/liquid_tags/tweet_tag.rb'
 
 # Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -113,21 +96,9 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/notifications/reads_controller.rb'
 
 # Offense count: 1
-Style/DateTime:
-  Exclude:
-    - 'app/controllers/comments_controller.rb'
-
-# Offense count: 1
 Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: each, for
-Style/For:
-  Exclude:
-    - 'app/views/articles/feed.rss.builder'
 
 # Offense count: 3
 Style/MixinUsage:

@@ -29,7 +29,7 @@ class CodepenTag < LiquidTagBase
   def valid_link?(link)
     # TODO: the ideal link should look like below
     # https://codepen.io/{sjdklfjsdklf}/embed/{sjdklfjsldf}
-    link.include?("codepen.io")
+    (link =~ /^(http|https):\/\/(codepen\.io)\/[a-zA-Z0-9\-]{1,20}\/pen\/.*/)&.zero?
   end
 
   def raise_error

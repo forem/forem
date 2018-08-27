@@ -10,7 +10,7 @@ module Admin
     before_action :authorize_admin
 
     def order
-      @_order ||= Administrate::Order.new(params[:order] || "id", params[:direction] || "desc")
+      @order ||= Administrate::Order.new(params[:order] || "id", params[:direction] || "desc")
     end
 
     def valid_request_origin?

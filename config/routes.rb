@@ -174,7 +174,6 @@ Rails.application.routes.draw do
   get "/rlygenerator" => "pages#generator"
   get "/orlygenerator" => "pages#generator"
   get "/rlyslack" => "pages#generator"
-  get "/rlytest" => "pages#rlytest"
   get "/rlyweb" => "pages#rlyweb"
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
