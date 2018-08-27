@@ -56,6 +56,7 @@ class UserPolicy < ApplicationPolicy
        email_follower_notifications
        email_membership_newsletter
        email_mention_notifications
+       email_connect_messages
        email_newsletter
        email_public
        email_unread_notifications
