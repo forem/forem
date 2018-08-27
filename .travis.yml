@@ -36,6 +36,7 @@ script:
 - "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
 - "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
 - "./cc-test-reporter upload-coverage"
+- "bundle exec bundle-audit check --update --ignore CVE-2018-1000544"
 deploy:
   provider: heroku
   api_key: "$HEROKU_AUTH_TOKEN"
