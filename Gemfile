@@ -118,7 +118,7 @@ group :development, :test do
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
-  gem "parallel_tests", "~> 2.21"
+  gem "parallel_tests", "~> 2.22"
   gem "rspec-rails", "~> 3.7"
   gem "rspec-retry", "~> 0.6"
   gem "rubocop", "~> 0.57", require: false
