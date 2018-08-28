@@ -33,6 +33,14 @@ class ChatChannel < ApplicationRecord
     channel_type == "open"
   end
 
+  def direct?
+    channel_type == "direct"
+  end
+
+  def invite_only?
+    channel_type == "invite_only"
+  end
+
   def clear_channel
     messages.each(&:destroy!)
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
@@ -84,9 +92,9 @@ class ChatChannel < ApplicationRecord
   end
 
   def pusher_channels
-    if channel_type == "invite_only"
+    if invite_only?
       "presence-channel-#{id}"
-    elsif channel_type == "open"
+    elsif open?
       "open-channel-#{id}"
     else
       chat_channel_memberships.pluck(:user_id).map { |id| "private-message-notifications-#{id}" }
@@ -95,7 +103,7 @@ class ChatChannel < ApplicationRecord
 
   def adjusted_slug(user = nil, caller_type = "reciever")
     user ||= current_user
-    if channel_type == "direct" && caller_type == "reciever"
+    if direct? && caller_type == "reciever"
       "@" + slug.gsub("/#{user.username}", "").gsub("#{user.username}/", "")
     elsif caller_type == "sender"
       "@" + user.username
