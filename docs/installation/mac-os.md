@@ -13,6 +13,8 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 Dev.to requires PostgreSQL version 9.4 or higher. The easiest way to get started is to use [Postgres.app](https://postgresapp.com/). Alternatively, check out the official [PostgreSQL](https://www.postgresql.org/) site for more granular version.
 
+For additional configuration, [click here](/additional-postgres-setup)
+
 ## Installing Dev.to
 
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork

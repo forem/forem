@@ -21,7 +21,7 @@ There are two ways to install Yarn.
 1.  run `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
 2.  To test the installation you can run `sudo -u postgres psql` which should open a PostgreSQL prompt. Exit the prompt by running `\q` then run `sudo -u postgres createuser -s $YOUR_USERNAME` where $YOUR_USERNAME is the username you are currently logged in as. Lastly, at least on Debian based systems, in the codebase under /config/database.yml you'll want to comment out the `host: localhost` to configure the database to use Unix domain sockets as outlined [here](https://stackoverflow.com/questions/23375740/pgconnectionbad-fe-sendauth-no-password-supplied).
 
-Check out the official [PostgreSQL](https://www.postgresql.org/) site for more information.
+There are more than one way to setup Postgres. For additional configuration, check out our [postgres doc](/additional-postgres-setup) or the official [PostgreSQL](https://www.postgresql.org/) site for more information.
 
 ## Installing Dev.to
 
