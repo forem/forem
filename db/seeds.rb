@@ -125,7 +125,6 @@ podcast_objects = [
     title: "CodingBlocks",
     description: "",
     feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
-    image: Faker::Avatar.image,
     slug: "codingblocks",
     twitter_username: "CodingBlocks",
     website_url: "http://codingblocks.net",
@@ -138,7 +137,6 @@ podcast_objects = [
     title: "Talk Python",
     description: "",
     feed_url: "https://talkpython.fm/episodes/rss",
-    image: Faker::Avatar.image,
     slug: "talkpython",
     twitter_username: "TalkPython",
     website_url: "https://talkpython.fm",
@@ -152,7 +150,6 @@ podcast_objects = [
     description: "",
     feed_url: "http://developeronfire.com/rss.xml",
     itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326", # rubocop:disable Metrics/LineLength
-    image: Faker::Avatar.image,
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
@@ -166,7 +163,6 @@ podcast_objects = [
     description: "",
     feed_url: "https://building.fireside.fm/rss",
     itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456", # rubocop:disable Metrics/LineLength
-    image: Faker::Avatar.image,
     slug: "buildingprogrammers",
     twitter_username: "run_kmc",
     website_url: "https://building.fireside.fm",
