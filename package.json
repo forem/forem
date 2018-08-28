@@ -73,7 +73,7 @@
     "eslint-plugin-react": "^7.4.0",
     "faker": "^4.1.0",
     "husky": "^0.14.3",
-    "jest": "^22.1.2",
+    "jest": "^23.5.0",
     "jest-fetch-mock": "^1.4.0",
     "lint-staged": "^7.0.5",
     "node-sass": "^4.9.0",
