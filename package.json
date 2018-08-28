@@ -65,7 +65,7 @@
     "eslint": "^4.9.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-airbnb-base": "^12.0.0",
-    "eslint-config-prettier": "^2.9.0",
+    "eslint-config-prettier": "^3.0.1",
     "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.10.0",
