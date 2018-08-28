@@ -55,6 +55,13 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "Thank you for your report")
   end
 
+  def new_message_email(message)
+    @message = message
+    @user = message.direct_receiver
+    subject = "#{message.user.name} just messaged you"
+    mail(to: @user.email, subject: subject)
+  end
+
   def reporter_resolution_email(report)
     @feedback_message = report
     @user = report.reporter

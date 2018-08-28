@@ -18,7 +18,17 @@ export default class UserDetails extends Component {
     if (user.website_url) {
       socialIcons.push(<a href={user.website_url} target='_blank'><img src={websiteImage} style={{width: "30px", margin: "5px 15px 15px 0px"}} /></a>)
     }
-    console.log(socialIcons)
+    let userLocation = ''
+    if (user.location && user.location.length > 0) {
+      userLocation = <div>
+                        <div class="key">
+                          location
+                        </div>
+                        <div className="value">
+                          {user.location}
+                        </div>
+                      </div>
+}
     return <div><img
                     src={user.profile_image}
                     style={{height: "210px",
@@ -34,6 +44,15 @@ export default class UserDetails extends Component {
                 </div>
                 <div style={{fontStyle: "italic"}}>
                   {user.summary}
+                </div>
+                <div className='activechatchannel__activecontentuserdetails'>
+                  {userLocation}
+                  <div class="key">
+                    joined
+                  </div>
+                  <div className="value">
+                    {user.joined_at}
+                  </div>
                 </div>
              </div>
   }
