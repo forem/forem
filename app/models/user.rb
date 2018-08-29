@@ -6,6 +6,7 @@ class User < ApplicationRecord
   attr_accessor :add_mentee
   attr_accessor :mentorship_note
   attr_accessor :change_mentorship_status
+  attr_accessor :banned_from_mentorship
 
   rolify
   include AlgoliaSearch
@@ -35,10 +36,10 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
-  has_many :in_mentor_relationships, class_name: "MentorRelationship", foreign_key: "mentee_id"
-  has_many :out_mentor_relationships, class_name: "MentorRelationship", foreign_key: "mentor_id"
-  has_many :mentors, through: :in_mentor_relationships, source: :mentor
-  has_many :mentees, through: :out_mentor_relationships, source: :mentee
+  has_many :mentor_relationships_as_mentee, class_name: "MentorRelationship", foreign_key: "mentee_id"
+  has_many :mentor_relationships_as_mentor, class_name: "MentorRelationship", foreign_key: "mentor_id"
+  has_many :mentors, through: :mentor_relationships_as_mentee, source: :mentor
+  has_many :mentees, through: :mentor_relationships_as_mentor, source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -253,6 +254,10 @@ class User < ApplicationRecord
 
   def warned
     has_role? :warned
+  end
+
+  def banned_from_mentorship
+    has_role? :banned_from_mentorship
   end
 
   def admin?

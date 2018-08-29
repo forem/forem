@@ -1,2 +1,0 @@
-class MentorshipMatch < ApplicationRecord
-end

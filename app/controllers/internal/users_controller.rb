@@ -28,20 +28,33 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     mentorship_match
     add_note
+    ban_from_mentorship
     @user.update!(user_params)
     redirect_to "/internal/users/#{@user.id}"
   end
 
   def mentorship_match
+    binding.pry
     return if user_params[:add_mentee].blank? && user_params[:add_mentor].blank?
-    if user_params[:add_mentee] && user_params[:add_mentor]
-      MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save
-      MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save
-    elsif user_params[:add_mentor]
-      MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save
-    elsif user_params[:add_mentee]
-      MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save
+
+    if user_params[:add_mentor] && user_params[:add_mentee].blank?
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save!
+    elsif user_params[:add_mentee] && user_params[:add_mentor].blank?
+      MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save!
+    else
+      MentorRelationship.new(
+        mentee_id: User.find(user_params[:add_mentee]).id,
+        mentor_id: @user.id).save!
+      MentorRelationship.new(
+        mentee_id: @user.id,
+        mentor_id: User.find(user_params[:add_mentor]).id).save!
     end
+    rescue StandardError => e
+      flash[:error] = e.message
+  end
+
+  def validates_mentor_relationship
+    user_params[:add_mentee] != @user.id || user_params[:add_mentor] != @user.id && user_params[:add_mentee] != user_params[:add_mentor]
   end
 
   def add_note
@@ -52,6 +65,28 @@ class Internal::UsersController < Internal::ApplicationController
         reason: "mentorship",
         content: user_params[:mentorship_note],
       )
+    end
+  end
+
+  def inactive_mentorship(mentor, mentee)
+    relationship = MentorRelationship.where(mentor_id: mentor.id, mentee_id: mentee.id)
+    relationship.update(active: false)
+  end
+
+  def ban_from_mentorship
+    if user_params[:banned_from_mentorship]
+      @user.add_role :banned_from_mentorship
+      mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
+      mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+      deactivate_mentorship(mentee_relationships)
+      deactivate_mentorship(mentor_relationships)
+
+    end
+  end
+
+  def deactivate_mentorship(relationships)
+    relationships.each do |relationship|
+      relationship.update(active: false)
     end
   end
 
@@ -97,8 +132,8 @@ class Internal::UsersController < Internal::ApplicationController
     user.remove_from_index!
     user.save!
     user.update!(old_username: nil)
-  rescue StandardError => e
-    flash[:error] = e.message
+    rescue StandardError => e
+      flash[:error] = e.message
   end
 
   private

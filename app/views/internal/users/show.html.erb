@@ -52,11 +52,11 @@
       <% @user_mentors.each do |mentor| %>
         <% if mentor.active %>
           <li>
-            <a href="https://dev.to/<%= User.find(mentor.id).username %>" target=">blank">@<%= User.find(mentor.id).username %></a><span style="color:green"><em> (active)</em></span>
+            <a href="https://dev.to/<%= User.find(mentor.id).username %>" target=">blank">@<%= User.find(mentor.mentor_id).username %></a><span style="color:green"><em> (active)</em></span>
           </li>
         <% else %>
           <li>
-            <a href="https://dev.to/<%= User.find(mentor.id).username %>" target=">blank">@<%= User.find(mentor.id).username %></a><span style="color:red"><em> (inactive)</em></span>
+            <a href="https://dev.to/<%= User.find(mentor.id).username %>" target=">blank">@<%= User.find(mentor.mentor_id).username %></a><span style="color:red"><em> (inactive)</em></span>
           </li>
         <% end %>
       <% end %>
