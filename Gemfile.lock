@@ -155,7 +155,7 @@ GEM
     bindex (0.5.0)
     bourbon (1.4.0)
       sass (>= 3.1)
-    brakeman (3.7.2)
+    brakeman (4.3.1)
     buftok (0.2.0)
     builder (3.2.3)
     bullet (5.7.3)
@@ -927,7 +927,7 @@ DEPENDENCIES
   autoprefixer-rails (~> 6.7)
   aws-sdk-lambda (~> 1.5)
   bourbon (~> 1.4)
-  brakeman (~> 3.7)
+  brakeman (~> 4.3)
   buffer!
   bullet (~> 5.7)
   bundler-audit (~> 0.6)

@@ -100,7 +100,7 @@ gem "webpacker", "~> 3.5"
 gem "webpush", "~> 0.3"
 
 group :development do
-  gem "brakeman", "~> 3.7", require: false
+  gem "brakeman", "~> 4.3", require: false
   gem "bullet", "~> 5.7"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
