@@ -3,7 +3,7 @@ import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
 import ArticleForm from '../articleForm';
 import { JSDOM } from 'jsdom';
-import algoliasearch from '../__mocks__/algoliasearch';
+import algoliasearch from '../elements/__mocks__/algoliasearch';
 
 describe('<ArticleForm />', () => {
   beforeEach(() => {
@@ -38,79 +38,12 @@ describe('<ArticleForm />', () => {
     const tree = render(getArticleForm());
     expect(tree).toMatchSnapshot();
   });
-
-  it('shows tags as you search', () => {
-    const context = shallow(getArticleForm());
-    const component = context.component();
-
-    return component
-      .handleTagInput({ target: { value: 'gi', selectionStart: 2 } })
-      .then(() => {
-        expect(context.state()).toMatchSnapshot();
-      });
-  });
-
-  it('selects tag when you click on it', () => {
-    const component = preactRender(
-      getArticleForm(),
-      document.body,
-      document.body.firstElementChild,
-    )._component;
-
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
-    expect(component.state).toMatchSnapshot();
-  });
-
-  it('replaces tag when editing', () => {
-    const component = preactRender(
-      getArticleForm(),
-      document.body,
-      document.body.firstElementChild,
-    )._component;
-
-    const input = document.getElementById('tag-input');
-    input.value = 'java,javascript,linux';
-    input.selectionStart = 2;
-
-    component.handleTagClick({ target: { dataset: { content: 'git' } } });
-    expect(component.state).toMatchSnapshot();
-  });
-
-  it('shows tags when editing', () => {
-    const component = preactRender(
-      getArticleForm(),
-      document.body,
-      document.body.firstElementChild,
-    )._component;
-
-    return component
-      .handleTagInput({
-        target: { value: 'gi,javascript,linux', selectionStart: 2 },
-      })
-      .then(() => {
-        expect(component.state).toMatchSnapshot();
-      });
-  });
-
-  it('only allows 4 tags', () => {
-    const component = preactRender(
-      getArticleForm(),
-      document.body,
-      document.body.firstElementChild,
-    )._component;
-
-    component.handleTagInput({
-      target: { value: 'java,javascript,linux,productivity' },
-    });
-    component.handleTagKeyDown({ keyCode: 188, preventDefault: jest.fn() });
-    expect(component.state).toMatchSnapshot();
-  });
 });
 
 const getArticleForm = () => (
   <ArticleForm
     article={
-        '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-      }
+      '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
+    }
   />
-  );
+);

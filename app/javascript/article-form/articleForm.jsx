@@ -21,14 +21,6 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
 
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-      .content;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    this.index = client.initIndex(`Tag_${env}`);
-
     const article = JSON.parse(this.props.article);
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
@@ -40,9 +32,6 @@ export default class ArticleForm extends Component {
       description: '',
       bodyMarkdown: article.body_markdown || '',
       published: article.published || false,
-      tagOptions: [],
-      selectedTags: [],
-      tagInputListIndex: -1,
       previewShowing: false,
       helpShowing: false,
       previewHTML: '',
@@ -68,231 +57,6 @@ export default class ArticleForm extends Component {
     });
     myCodeMirror.setSize('100%', '100%');
   }
-
-  handleTagInput = e => {
-    const component = this;
-
-    let value = e.target.value;
-    if (e.inputType === 'insertText') {
-      if (e.target.value[e.target.selectionStart - 2] === ',') {
-        value = `${value.slice(0, e.target.selectionStart - 1)} ${value.slice(
-          e.target.selectionStart - 1,
-          value.length,
-        )}`;
-      }
-    }
-
-    if (e.data === ',') {
-      value += ' ';
-    }
-
-    component.setState({
-      tagList: value,
-      selectedTags: e.target.value
-        .split(',')
-        .map(item => item != undefined && item.trim())
-        .filter(item => item.length > 0),
-    });
-
-    const query = this.getCurrentTagAtSelectionIndex(
-      e.target.value,
-      e.target.selectionStart - 1,
-    );
-    if (query === '' && e.target.value != '') {
-      component.setState({
-        tagOptions: [],
-      });
-      return;
-    } else if (query === '' || e.target.value === '') {
-      component.setState({
-        tagOptions: [],
-        tagList: '',
-        selectedTags: [],
-      });
-      return;
-    }
-    return this.search(query);
-  };
-
-  getCurrentTagAtSelectionIndex(value, index) {
-    let tagIndex = 0;
-    const tagByCharacterIndex = {};
-
-    value.split('').map((letter, index) => {
-      if (letter === ',') {
-        tagIndex++;
-      } else {
-        tagByCharacterIndex[index] = tagIndex;
-      }
-    });
-
-    const tag = value.split(',')[tagByCharacterIndex[index]];
-
-    if (tag === undefined) {
-      return '';
-    } 
-      return tag.trim();
-    
-  }
-
-  search(query) {
-    return this.index
-      .search(query, {
-        hitsPerPage: 10,
-        filters: 'supported:true',
-      })
-      .then(content => {
-        this.setState({
-          tagOptions: content.hits.filter(
-            hit => !this.state.tagList.split(',').includes(hit.name),
-          ),
-        });
-      });
-  }
-
-  handleTagKeyDown = e => {
-    const component = this;
-    const keyCode = e.keyCode;
-    if (
-      component.state.selectedTags.length === MAX_TAGS &&
-      e.keyCode === KEYS.COMMA
-    ) {
-      e.preventDefault();
-      return;
-    }
-    if (
-      (e.keyCode === KEYS.DOWN || e.keyCode === KEYS.TAB) &&
-      component.state.tagInputListIndex <
-        component.state.tagOptions.length - 1 &&
-      component.state.tagList != ''
-    ) {
-      // down key or tab key
-      e.preventDefault();
-      this.setState({
-        tagInputListIndex: component.state.tagInputListIndex + 1,
-      });
-    } else if (
-      e.keyCode === KEYS.UP &&
-      component.state.tagInputListIndex > -1
-    ) {
-      // up key
-      e.preventDefault();
-      this.setState({
-        tagInputListIndex: component.state.tagInputListIndex - 1,
-      });
-    } else if (
-      e.keyCode === KEYS.RETURN &&
-      component.state.tagInputListIndex > -1
-    ) {
-      // return key
-      e.preventDefault();
-      this.insertTag(
-        component.state.tagOptions[component.state.tagInputListIndex].name,
-      );
-
-      setTimeout(() => {
-        document.getElementById('tag-input').focus();
-      }, 10);
-    } else if (
-      e.keyCode === KEYS.COMMA &&
-      component.state.tagInputListIndex === -1
-    ) {
-      // comma key
-      component.setState({
-        tagOptions: [],
-        tagInputListIndex: -1,
-      });
-    } else if (e.keyCode === KEYS.DELETE) {
-      // Delete key
-      if (component.state.tagList[component.state.tagList.length - 1] === ',') {
-        const selectedTags = component.state.selectedTags;
-        component.setState({
-          tagInputListIndex: -1,
-          selectedTags: selectedTags.slice(0, selectedTags.length - 2),
-        });
-      }
-    } else if (
-      (e.keyCode < 65 || e.keyCode > 90) &&
-      e.keyCode != KEYS.COMMA &&
-      e.keyCode != KEYS.DELETE &&
-      e.keyCode != KEYS.LEFT &&
-      e.keyCode != KEYS.RIGHT &&
-      e.keyCode != KEYS.TAB
-    ) {
-      // not letter or comma or delete
-      e.preventDefault();
-    }
-  };
-
-  insertTag(tag) {
-    const input = document.getElementById('tag-input');
-
-    const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
-    const insertingAtEnd = range[1] === input.value.length;
-    const maxTagsWillBeReached = this.state.selectedTags.length === MAX_TAGS;
-    if (insertingAtEnd && !maxTagsWillBeReached) {
-      tag += ', ';
-    }
-
-    // Insert new tag between commas if there are any.
-    const newInput =
-      input.value.slice(0, range[0]) +
-      tag +
-      input.value.slice(range[1], input.value.length);
-
-    this.setState({
-      tagOptions: [],
-      tagList: newInput,
-      tagInputListIndex: -1,
-      selectedTags: newInput
-        .split(',')
-        .map(item => item != undefined && item.trim())
-        .filter(item => item.length > 0),
-    });
-  }
-
-  // Given an index of the String value, finds the range between commas.
-  // This is useful when we want to insert a new tag anywhere in the
-  // comma separated list of tags.
-  getRangeBetweenCommas(value, index) {
-    let start = 0;
-    let end = value.length;
-
-    const toPreviousComma = value
-      .slice(0, index)
-      .split('')
-      .reverse()
-      .indexOf(',');
-    const toNextComma = value.slice(index).indexOf(',');
-
-    if (toPreviousComma !== -1) {
-      start = index - toPreviousComma + 1;
-    }
-
-    if (toNextComma !== -1) {
-      end = index + toNextComma;
-    }
-
-    return [start, end];
-  }
-
-  handleTagClick = e => {
-    const input = document.getElementById('tag-input');
-    input.focus();
-
-    console.log('CLICK');
-    this.insertTag(e.target.dataset.content);
-  };
-
-  handleFocusChange = e => {
-    const component = this;
-    setTimeout(() => {
-      if (document.activeElement.id === 'tag-input') {
-        return;
-      }
-      component.forceUpdate();
-    }, 100);
-  };
 
   toggleHelp = e => {
     e.preventDefault();
@@ -374,6 +138,10 @@ export default class ArticleForm extends Component {
     });
   };
 
+  updateTagList = tagList => {
+    this.setState({ tagList: tagList });
+  };
+
   render() {
     // cover image url should asking for url OR providing option to upload an image
     const {
@@ -382,8 +150,6 @@ export default class ArticleForm extends Component {
       description,
       bodyMarkdown,
       published,
-      tagOptions,
-      tagInputListIndex,
       previewShowing,
       helpShowing,
       previewHTML,
@@ -396,26 +162,6 @@ export default class ArticleForm extends Component {
       errors,
     } = this.state;
     // <input type="image" name="cover-image" />
-    let tagOptionsHTML = '';
-    const component = this;
-    const tagOptionRows = tagOptions.map((tag, index) => (
-      <div
-        tabIndex="-1"
-        className={
-            `articleform__tagoptionrow articleform__tagoptionrow--${
-            tagInputListIndex === index ? 'active' : 'inactive'}`
-          }
-        onClick={component.handleTagClick}
-        data-content={tag.name}
-      >
-        {tag.name}
-      </div>
-    ));
-    if (tagOptions.length > 0 && document.activeElement.id === 'tag-input') {
-      tagOptionsHTML = (
-        <div className="articleform__tagsoptions">{tagOptionRows}</div>
-      );
-    }
 
     let bodyArea = '';
     if (previewShowing) {
@@ -463,13 +209,7 @@ export default class ArticleForm extends Component {
         {imageArea}
         <Title defaultValue={title} onChange={linkState(this, 'title')} />
         <div className="articleform__detailfields">
-          <Tags
-            defaultValue={tagList}
-            onKeyDown={this.handleTagKeyDown}
-            onInput={this.handleTagInput}
-            options={tagOptionsHTML}
-            onFocusChange={this.handleFocusChange}
-          />
+          <Tags defaultValue={tagList} onInput={this.updateTagList} />
           <button
             className="articleform__imageButton"
             onClick={this.toggleImageManagement}
@@ -494,16 +234,3 @@ export default class ArticleForm extends Component {
     );
   }
 }
-
-const KEYS = {
-  UP: 38,
-  DOWN: 40,
-  LEFT: 37,
-  RIGHT: 39,
-  TAB: 9,
-  RETURN: 13,
-  COMMA: 188,
-  DELETE: 8,
-};
-
-const MAX_TAGS = 4;

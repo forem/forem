@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Tags /> only allows 4 tags 1`] = `
+Object {
+  "searchResults": Array [],
+  "selected": Array [
+    "java",
+    "javascript",
+    "linux",
+    "productivity",
+  ],
+  "selectedIndex": -1,
+}
+`;
+
+exports[`<Tags /> renders properly 1`] = `
+<div
+  class="articleform__tagswrapper"
+>
+  <textarea
+    class="articleform__tags"
+    id="tag-input"
+    onBlur={[Function]}
+    onFocus={[Function]}
+    onInput={[Function]}
+    onKeyDown={[Function]}
+    placeholder="tags"
+    type="text"
+    value=""
+  />
+</div>
+`;
+
+exports[`<Tags /> replaces tag when editing 1`] = `
+Object {
+  "searchResults": Array [],
+  "selected": Array [
+    "git",
+    "javascript",
+    "linux",
+  ],
+  "selectedIndex": -1,
+}
+`;
+
+exports[`<Tags /> selects tag when you click on it 1`] = `
+Object {
+  "searchResults": Array [],
+  "selected": Array [
+    "git",
+  ],
+  "selectedIndex": -1,
+}
+`;
+
+exports[`<Tags /> shows tags as you search 1`] = `
+Object {
+  "searchResults": Array [
+    Object {
+      "_highlightResult": Object {
+        "bg_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#888751",
+        },
+        "name": Object {
+          "fullyHighlighted": false,
+          "matchLevel": "full",
+          "matchedWords": Array [
+            "gi",
+          ],
+          "value": "<em>gi</em>t",
+        },
+        "text_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#56c938",
+        },
+      },
+      "bg_color_hex": "#888751",
+      "hotness_score": 0,
+      "name": "git",
+      "objectID": "4",
+      "supported": true,
+      "text_color_hex": "#56c938",
+    },
+  ],
+  "selected": Array [
+    "gi",
+  ],
+  "selectedIndex": -1,
+}
+`;
+
+exports[`<Tags /> shows tags when editing 1`] = `
+Object {
+  "searchResults": Array [
+    Object {
+      "_highlightResult": Object {
+        "bg_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#888751",
+        },
+        "name": Object {
+          "fullyHighlighted": false,
+          "matchLevel": "full",
+          "matchedWords": Array [
+            "gi",
+          ],
+          "value": "<em>gi</em>t",
+        },
+        "text_color_hex": Object {
+          "matchLevel": "none",
+          "matchedWords": Array [],
+          "value": "#56c938",
+        },
+      },
+      "bg_color_hex": "#888751",
+      "hotness_score": 0,
+      "name": "git",
+      "objectID": "4",
+      "supported": true,
+      "text_color_hex": "#56c938",
+    },
+  ],
+  "selected": Array [
+    "gi",
+    "javascript",
+    "linux",
+  ],
+  "selectedIndex": -1,
+}
+`;
