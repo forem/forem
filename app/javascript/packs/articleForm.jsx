@@ -11,19 +11,17 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
 });
 
 document.ready.then(
-  getUserDataAndCsrfToken().then(currentUser => {
+  getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
     window.currentUser = currentUser;
+    window.csrfToken = csrfToken;
+
     const root = document.getElementById('article-form');
-    window.csrfToken = document.querySelector(
-      "meta[name='csrf-token']",
-    ).content;
+    const { article, organization } = root.dataset;
+
     render(
-      <ArticleForm
-        article={document.getElementById('article-form').dataset.article}
-        organization={document.getElementById('article-form').dataset.organization}
-       />,
+      <ArticleForm article={article} organization={organization} />,
       root,
-      root.firstElementChild
+      root.firstElementChild,
     );
   }),
 );

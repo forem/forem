@@ -38,7 +38,7 @@ gem "devise", "~> 4.4"
 gem "draper", "~> 3.0"
 gem "email_validator", "~> 1.6"
 gem "envied", "~> 0.9"
-gem "fastly", "~> 1.13"
+gem "fastly", "~> 1.15"
 gem "fastly-rails", "~> 0.8"
 gem "feedjira", "~> 2.1"
 gem "figaro", "~> 1.1"
@@ -89,18 +89,18 @@ gem "sprockets-es6", "~> 0.9"
 gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stream_rails", "~> 2.5"
-gem "stripe", "~> 3.15"
+gem "stripe", "~> 3.25"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
 gem "twilio-ruby", "~> 5.10"
 gem "twitter", "~> 6.2"
-gem "uglifier", "~> 3.2"
+gem "uglifier", "~> 4.1"
 gem "validate_url", "~> 1.0"
 gem "webpacker", "~> 3.5"
 gem "webpush", "~> 0.3"
 
 group :development do
-  gem "brakeman", "~> 3.7", require: false
+  gem "brakeman", "~> 4.3", require: false
   gem "bullet", "~> 5.7"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
@@ -113,7 +113,7 @@ end
 
 group :development, :test do
   gem "byebug", "~> 8.2"
-  gem "capybara", "~> 2.18"
+  gem "capybara", "~> 3.6"
   gem "derailed", "~> 0.1"
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
