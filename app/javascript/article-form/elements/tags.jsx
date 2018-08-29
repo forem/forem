@@ -1,22 +1,30 @@
-import { h } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-const Tags = ({ onInput, onKeyDown, defaultValue, options, onFocusChange }) => (
-  <div className="articleform__tagswrapper">
-    <textarea
-      id="tag-input"
-      type="text"
-      className="articleform__tags"
-      placeholder="tags"
-      value={defaultValue}
-      onInput={onInput}
-      onKeyDown={onKeyDown}
-      onBlur={onFocusChange}
-      onFocus={onFocusChange}
-    />
-    {options}
-  </div>
-);
+class Tags extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="articleform__tagswrapper">
+        <textarea
+          id="tag-input"
+          type="text"
+          className="articleform__tags"
+          placeholder="tags"
+          value={this.props.defaultValue}
+          onInput={this.props.onInput}
+          onKeyDown={this.props.onKeyDown}
+          onBlur={this.props.onFocusChange}
+          onFocus={this.props.onFocusChange}
+        />
+        {this.props.options}
+      </div>
+    );
+  }
+}
 
 Tags.propTypes = {
   onChange: PropTypes.func.isRequired,
