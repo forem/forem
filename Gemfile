@@ -89,7 +89,7 @@ gem "sprockets-es6", "~> 0.9"
 gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stream_rails", "~> 2.5"
-gem "stripe", "~> 3.15"
+gem "stripe", "~> 3.25"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
 gem "twilio-ruby", "~> 5.10"
