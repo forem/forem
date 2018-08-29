@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 const Tags = ({ onKeyUp, onKeyDown, defaultValue, options, onFocusChange }) => (
-  <div className='articleform__tagswrapper'>
+  <div className="articleform__tagswrapper">
     <textarea
       id="tag-input"
       type="text"
@@ -14,14 +14,14 @@ const Tags = ({ onKeyUp, onKeyDown, defaultValue, options, onFocusChange }) => (
       onBlur={onFocusChange}
       onFocus={onFocusChange}
     />
-      {options}
+    {options}
   </div>
 );
 
 Tags.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
-  options: PropTypes.array.isRequired
+  options: PropTypes.array.isRequired,
 };
 
 export default Tags;
