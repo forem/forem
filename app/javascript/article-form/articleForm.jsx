@@ -71,11 +71,27 @@ export default class ArticleForm extends Component {
 
   handleTagInput = e => {
     const component = this;
+
+    let value = e.target.value;
+    if (e.inputType === 'insertText') {
+      if (e.target.value[e.target.selectionStart - 2] === ',') {
+        value = `${value.slice(0, e.target.selectionStart - 1)} ${value.slice(
+          e.target.selectionStart - 1,
+          value.length,
+        )}`;
+      }
+    }
+
+    if (e.data === ',') {
+      value += ' ';
+    }
+
     component.setState({
-      tagList: e.target.value,
+      tagList: value,
       selectedTags: e.target.value
         .split(',')
-        .filter(item => item != undefined && item.length > 0),
+        .map(item => item != undefined && item.trim())
+        .filter(item => item.length > 0),
     });
 
     const query = this.getCurrentTagAtSelectionIndex(
@@ -112,7 +128,11 @@ export default class ArticleForm extends Component {
 
     const tag = value.split(',')[tagByCharacterIndex[index]];
 
-    return tag || '';
+    if (tag === undefined) {
+      return '';
+    } 
+      return tag.trim();
+    
   }
 
   search(query) {
@@ -211,7 +231,7 @@ export default class ArticleForm extends Component {
     const insertingAtEnd = range[1] === input.value.length;
     const maxTagsWillBeReached = this.state.selectedTags.length === MAX_TAGS;
     if (insertingAtEnd && !maxTagsWillBeReached) {
-      tag += ',';
+      tag += ', ';
     }
 
     // Insert new tag between commas if there are any.
@@ -226,7 +246,8 @@ export default class ArticleForm extends Component {
       tagInputListIndex: -1,
       selectedTags: newInput
         .split(',')
-        .filter(item => item != undefined && item.length > 0),
+        .map(item => item != undefined && item.trim())
+        .filter(item => item.length > 0),
     });
   }
 
@@ -245,7 +266,7 @@ export default class ArticleForm extends Component {
     const toNextComma = value.slice(index).indexOf(',');
 
     if (toPreviousComma !== -1) {
-      start = index - toPreviousComma;
+      start = index - toPreviousComma + 1;
     }
 
     if (toNextComma !== -1) {

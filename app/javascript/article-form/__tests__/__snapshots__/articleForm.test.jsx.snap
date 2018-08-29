@@ -165,7 +165,7 @@ Object {
   ],
   "submitting": false,
   "tagInputListIndex": -1,
-  "tagList": "git,",
+  "tagList": "git, ",
   "tagOptions": Array [],
   "title": "",
 }
