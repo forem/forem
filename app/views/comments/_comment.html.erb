@@ -19,7 +19,7 @@
             </span>
           </a>
           <% if comment.user.twitter_username.present? %>
-            <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank"<%= image_tag("twitter-logo.svg", class:"icon-img") %></a>
+            <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank"><%= image_tag("twitter-logo.svg", class:"icon-img") %></a>
           <% end %>
           <% if comment.user.github_username.present? %>
             <a href="https://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank"><%= image_tag("github-logo.svg", class:"icon-img") %></a>
