@@ -867,7 +867,7 @@ GEM
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uber (0.1.0)
-    uglifier (3.2.0)
+    uglifier (4.1.18)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
@@ -1033,7 +1033,7 @@ DEPENDENCIES
   timecop (~> 0.9)
   twilio-ruby (~> 5.10)
   twitter (~> 6.2)
-  uglifier (~> 3.2)
+  uglifier (~> 4.1)
   validate_url (~> 1.0)
   vcr (~> 4.0)
   web-console (~> 3.5)
