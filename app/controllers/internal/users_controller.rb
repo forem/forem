@@ -44,13 +44,15 @@ class Internal::UsersController < Internal::ApplicationController
     else
       MentorRelationship.new(
         mentee_id: User.find(user_params[:add_mentee]).id,
-        mentor_id: @user.id).save!
+        mentor_id: @user.id,
+      ).save!
       MentorRelationship.new(
         mentee_id: @user.id,
-        mentor_id: User.find(user_params[:add_mentor]).id).save!
+        mentor_id: User.find(user_params[:add_mentor]).id,
+      ).save!
     end
-    rescue StandardError => e
-      flash[:error] = e.message
+  rescue StandardError => e
+    flash[:error] = e.message
   end
 
   def validates_mentor_relationship
@@ -132,8 +134,8 @@ class Internal::UsersController < Internal::ApplicationController
     user.remove_from_index!
     user.save!
     user.update!(old_username: nil)
-    rescue StandardError => e
-      flash[:error] = e.message
+  rescue StandardError => e
+    flash[:error] = e.message
   end
 
   private
