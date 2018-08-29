@@ -24,11 +24,6 @@ class FeedbackMessage < ApplicationRecord
     self.status = status.capitalize unless status.blank?
   end
 
-  def to_eastern_strftime(time)
-    return if time.nil?
-    time.in_time_zone("America/New_York").strftime("%A, %b %d %Y - %I:%M %p %Z")
-  end
-
   def email_messages
     EmailMessage.where(feedback_message_id: id)
   end

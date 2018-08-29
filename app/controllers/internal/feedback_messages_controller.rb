@@ -10,25 +10,6 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       page(params[:page] || 1).per(25)
   end
 
-  def update
-    @feedback_message = FeedbackMessage.find(params[:id])
-    note = @feedback_message.notes.new(feedback_message_params[:note])
-    update_feedback_message_and_note(note)
-    if @feedback_message.save && note.save
-      @feedback_message.touch(:last_reviewed_at)
-      flash[:success] = "Report ##{@feedback_message.id} saved."
-      redirect_to "/internal/feedback_messages/#{@feedback_message.id}"
-    else
-      @feedback_type = @feedback_message.feedback_type
-      @feedback_messages = FeedbackMessage.
-        where(feedback_type: @feedback_type).
-        order("created_at DESC").
-        page(params[:page] || 1).per(25)
-      flash[:danger] = "Something went wrong. Did you leave a blank note?"
-      render "index.html.erb", state: @feedback_type
-    end
-  end
-
   def save_status
     feedback_message = FeedbackMessage.find(params[:id])
     if feedback_message.update(status: params[:status])
@@ -42,12 +23,6 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     @feedback_message = FeedbackMessage.find_by(id: params[:id])
   end
 
-  def update_feedback_message_and_note(note)
-    @feedback_message.status = feedback_message_params[:status]
-    note.content = feedback_message_params[:note][:content]
-    note.author_id = current_user.id
-  end
-
   def send_email
     if NotifyMailer.feedback_message_resolution_email(params).deliver
       render json: { outcome: "Success" }
@@ -58,17 +33,17 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def create_note
     note = Note.new(
-      noteable_id: note_params["feedback_message_id"],
-      noteable_type: note_params["noteable_type"],
-      author_id: note_params["author_id"],
-      content: note_params["content"],
-      reason: note_params["reason"],
+      noteable_id: params["noteable_id"],
+      noteable_type: params["noteable_type"],
+      author_id: params["author_id"],
+      content: params["content"],
+      reason: params["reason"],
     )
     if note.save
       render json: {
         outcome: "Success",
+        content: params["content"],
         author_name: note.author.name,
-        content: note_params["content"],
       }
     else
       render json: { outcome: note.errors.full_messages }
@@ -76,10 +51,6 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   private
-
-  def note_params
-    JSON.parse(params[:feedback_message])
-  end
 
   def feedback_message_params
     params[:feedback_message].permit(
