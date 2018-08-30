@@ -32,12 +32,14 @@ class GistTag < LiquidTagBase
     if valid_link?(link)
       input_no_space
     else
-      raise StandardError, "Invalid Gist link"
+      raise StandardError,
+        "Invalid Gist link: #{link} Links must follow this format: https://gist.github.com/username/gist_id"
     end
   end
 
   def valid_link?(link)
-    (link =~ /^(http(s)?:)?\/\/(gist.github.com)\/.*/)&.zero?
+    (link =~ /^https\:\/\/gist\.github\.com\/([a-zA-Z0-9\-]){1,39}\/([a-zA-Z0-9]){32}\s/)&.
+      zero?
   end
 end
 
