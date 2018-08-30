@@ -31,12 +31,12 @@ class CommentTag < LiquidTagBase
   def render_twitter_and_github
     result = ""
     if @comment.user.twitter_username.present?
-      result += "<a href=\"http://twitter.com/#{@comment.user.twitter_username}\">" \
+      result += "<a href=\"https://twitter.com/#{@comment.user.twitter_username}\">" \
         +image_tag("/assets/twitter-logo.svg", class: "icon-img", alt: "twitter") + \
         "</a>"
     end
     if @comment.user.github_username.present?
-      result + "<a href=\"http://github.com/#{@comment.user.github_username}\">" \
+      result + "<a href=\"https://github.com/#{@comment.user.github_username}\">" \
         +image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github") + \
         "</a>"
     end
