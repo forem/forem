@@ -6,6 +6,8 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
     return resolve();
   }
   document.addEventListener('DOMContentLoaded', () => resolve());
+
+  return null;
 });
 
 if (document.getElementById('widget-00001') === null) {
