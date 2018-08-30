@@ -34,7 +34,15 @@ RSpec.describe BadgeRewarder do
     badge = create(:badge, title: "Top 7")
     user = create(:user)
     user_other = create(:user)
-    described_class.reward_top_seven_badges([user.username, user_other.username])
+    described_class.award_top_seven_badges([user.username, user_other.username])
+    expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
+  end
+
+  it "rewards contributor badges" do
+    badge = create(:badge, title: "Dev Contributor")
+    user = create(:user)
+    user_other = create(:user)
+    described_class.award_contributor_badges([user.username, user_other.username])
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 end
