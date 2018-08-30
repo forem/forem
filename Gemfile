@@ -112,7 +112,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "byebug", "~> 8.2"
+  gem "byebug", "~> 10.0"
   gem "capybara", "~> 3.6"
   gem "derailed", "~> 0.1"
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
