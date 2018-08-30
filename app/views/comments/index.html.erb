@@ -102,7 +102,7 @@
     <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
   </center>
 </div>
-<% if hasVid(@commentable) %>
+<% if has_vid?(@commentable) %>
   <%= render 'articles/fitvids' %>
 <% end %>
 

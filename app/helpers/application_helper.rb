@@ -43,7 +43,7 @@ module ApplicationHelper
                       page_title
                     else
                       page_title + " - DEV Community 👩‍💻👨‍💻"
-    end
+                    end
     content_for(:title) { derived_title }
     derived_title
   end

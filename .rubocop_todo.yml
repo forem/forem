@@ -6,29 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, AutoCorrect, Severity.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Layout/EndAlignment:
-  Exclude:
-    - 'app/controllers/api/v0/articles_controller.rb'
-    - 'app/controllers/articles_controller.rb'
-    - 'app/controllers/chat_channels_controller.rb'
-    - 'app/controllers/image_uploads_controller.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/models/user.rb'
-    - 'app/services/article_api_index_service.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBrackets.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBrackets: space, no_space
-Layout/SpaceInsideArrayLiteralBrackets:
-  Exclude:
-    - 'app/dashboards/email_message_dashboard.rb'
-
 # Offense count: 3
 Lint/AmbiguousBlockAssociation:
   Exclude:
@@ -41,29 +18,12 @@ Lint/IneffectiveAccessModifier:
     - 'app/black_box/black_box.rb'
     - 'app/models/tweet.rb'
 
-# Offense count: 3
-Lint/ShadowingOuterLocalVariable:
-  Exclude:
-    - 'app/views/api/v0/comments/index.json.jbuilder'
-    - 'app/views/api/v0/comments/show.json.jbuilder'
-
 # Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
   Exclude:
     - 'app/black_box/black_box.rb'
     - 'app/models/tweet.rb'
-
-# Offense count: 10
-Lint/UselessAssignment:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'
-    - 'app/labor/cache_buster.rb'
-    - 'app/labor/markdown_parser.rb'
-    - 'app/labor/rate_limit_checker.rb'
-    - 'app/liquid_tags/comment_tag.rb'
-    - 'app/liquid_tags/glitch_tag.rb'
-    - 'app/liquid_tags/tweet_tag.rb'
 
 # Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
@@ -96,19 +56,6 @@ Naming/MethodName:
     - 'app/helpers/articles_helper.rb'
     - 'app/liquid_tags/podcast_tag.rb'
 
-# Offense count: 4
-# Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist, MethodDefinitionMacros.
-# NamePrefix: is_, has_, have_
-# NamePrefixBlacklist: is_, has_, have_
-# NameWhitelist: is_a?
-# MethodDefinitionMacros: define_method, define_singleton_method
-Naming/PredicateName:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/controllers/application_controller.rb'
-    - 'app/helpers/articles_helper.rb'
-    - 'app/models/user.rb'
-
 # Offense count: 9
 # Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
 # AllowedNames: io, id, to, by, on, in, at, ip
@@ -120,13 +67,6 @@ Naming/UncommunicativeMethodParamName:
     - 'app/labor/podcast_feed.rb'
     - 'app/models/chat_channel.rb'
     - 'app/models/tweet.rb'
-
-# Offense count: 2
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: snake_case, camelCase
-Naming/VariableName:
-  Exclude:
-    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
 
 # Offense count: 3
 Security/Open:
@@ -156,45 +96,11 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/notifications/reads_controller.rb'
 
 # Offense count: 1
-Style/DateTime:
-  Exclude:
-    - 'app/controllers/comments_controller.rb'
-
-# Offense count: 1
 Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
 
-# Offense count: 1
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: each, for
-Style/For:
-  Exclude:
-    - 'app/views/articles/feed.rss.builder'
-
-# Offense count: 1
-Style/IfInsideElse:
-  Exclude:
-    - 'app/models/comment.rb'
-
 # Offense count: 3
 Style/MixinUsage:
   Exclude:
-    - 'app/models/organization.rb'
     - 'app/models/podcast_episode.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'app/controllers/stories_controller.rb'

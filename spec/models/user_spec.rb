@@ -115,9 +115,29 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
+    it "accepts valid country specific http linkedin url" do
+      user.linkedin_url = "http://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
     it "accepts valid https linkedin url" do
       user.linkedin_url = "https://linkedin.com/in/jessleenyc"
       expect(user).to be_valid
+    end
+
+    it "accepts valid country specific https linkedin url" do
+      user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
+    it "does not accept three letters country codes in http linkedin url" do
+      user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept three letters country codes in https linkedin url" do
+      user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
     end
 
     it "does not accept invalid linkedin url" do
@@ -155,13 +175,37 @@ RSpec.describe User, type: :model do
     it "updates mentor_form_updated_at at appropriate time" do
       user.mentor_description = "hello"
       user.save
-      expect(user.mentor_form_updated_at).to_not eq(nil)
+      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "updates mentee_form_updated_at at appropriate time" do
       user.mentee_description = "hello"
       user.save
-      expect(user.mentee_form_updated_at).to_not eq(nil)
+      expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "does not allow mentee description to be too long" do
+      user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
+      user.save
+      expect(user.mentee_form_updated_at).to eq(nil)
+    end
+
+    it "does not allow mentor description to be too long" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
+      user.save
+      expect(user.mentor_form_updated_at).to eq(nil)
+    end
+
+    it "allow mentee description to be the max length" do
+      user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "allow mentor description to be the max length" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "does not allow too short or too long name" do
@@ -424,18 +468,18 @@ RSpec.describe User, type: :model do
   describe "organization admin privileges" do
     it "recognizes an org admin" do
       user.update(organization: org, org_admin: true)
-      expect(user.is_org_admin?(org)).to be true
+      expect(user.org_admin?(org)).to be true
     end
 
     it "forbids an incorrect org admin" do
       user.update(organization: org, org_admin: true)
-      expect(user.is_org_admin?(second_org)).to be false
-      expect(second_user.is_org_admin?(org)).to be false
+      expect(user.org_admin?(second_org)).to be false
+      expect(second_user.org_admin?(org)).to be false
     end
 
     it "responds to nil" do
-      expect(user.is_org_admin?(nil)).to be false
-      expect(second_user.is_org_admin?(nil)).to be false
+      expect(user.org_admin?(nil)).to be false
+      expect(second_user.org_admin?(nil)).to be false
     end
   end
 

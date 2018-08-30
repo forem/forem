@@ -10,7 +10,7 @@ class ImageUploadsController < ApplicationController
              ApplicationController.helpers.cloud_cover_url(uploader.url)
            else
              uploader.url
-            end
+           end
     respond_to do |format|
       format.json { render json: { link: link }, status: 200 }
     end

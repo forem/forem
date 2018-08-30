@@ -54,8 +54,8 @@ class ArticlesController < ApplicationController
                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
                      processed_html: "",
                    )
-                  end
-              end
+                 end
+               end
   end
 
   def edit

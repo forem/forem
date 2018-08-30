@@ -1,5 +1,3 @@
-require "nokogiri"
-
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
@@ -33,7 +31,7 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
-  validates :cached_tag_list, length: { maximum: 64 }
+  validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :video, url: { allow_blank: true, schemes: ["https", "http"] }
@@ -48,7 +46,7 @@ class Article < ApplicationRecord
   before_save       :set_all_dates
   before_save       :calculate_base_scores
   before_save       :set_caches
-  after_save        :async_score_calc
+  after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
@@ -366,7 +364,7 @@ class Article < ApplicationRecord
   def async_score_calc
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if published && tag_list.exclude?("hiring")
+    index! if tag_list.exclude?("hiring")
   end
   handle_asynchronously :async_score_calc
 
@@ -416,7 +414,7 @@ class Article < ApplicationRecord
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
     tag_list.each do |tag|
       if tag.length > 20
-        errors.add(:tag, "\"#{tag}\" is too long (maximum is 16 characters)")
+        errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)")
       end
     end
   end

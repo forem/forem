@@ -68,7 +68,8 @@ class User < ApplicationRecord
               format: /\A(http|https):\/\/(www.behance.net|behance.net).*\z/m
   validates :linkedin_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.linkedin.com|linkedin.com).*\z/m
+              format:
+                /\A(http|https):\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com).*\z/m
   validates :dribbble_url,
               allow_blank: true,
               format: /\A(http|https):\/\/(www.dribbble.com|dribbble.com).*\z/m
@@ -92,8 +93,11 @@ class User < ApplicationRecord
   validates :website_url, :employer_name, :employer_url,
             :employment_title, :education, :location,
             length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, :mentee_description, :mentor_description,
+  validates :mostly_work_with, :currently_learning, :currently_hacking_on,
+            :available_for,
             length: { maximum: 500 }
+  validates :mentee_description, :mentor_description,
+            length: { maximum: 1000 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
   validate  :unique_including_orgs
@@ -196,7 +200,11 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch("user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids", expires_in: 120.hours) do
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
+      expires_in: 120.hours,
+    ) do
+
       # More efficient query. May not cover future edge cases.
       # Should probably only return users who have published lately
       # But this should be okay for most for now.
@@ -247,7 +255,7 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
-  def is_admin?
+  def admin?
     has_role?(:super_admin)
   end
 
@@ -280,7 +288,7 @@ class User < ApplicationRecord
     has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
   end
 
-  def is_org_admin?(organization)
+  def org_admin?(organization)
     user.org_admin && user.organization_id == organization.id
   end
 
@@ -350,7 +358,7 @@ class User < ApplicationRecord
                       temp_username + "_" + rand(100).to_s
                     else
                       temp_username
-    end
+                    end
   end
 
   def temp_name_exists?
@@ -459,7 +467,9 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.sanitize(comments.last(2).pluck(:body_markdown).join(" "))[0..2500]
+    ActionView::Base.full_sanitizer.sanitize(
+      comments.last(2).pluck(:body_markdown).join(" "),
+    )[0..2500]
   end
 
   def body_text
@@ -478,7 +488,8 @@ class User < ApplicationRecord
   end
 
   def search_score
-    score = (((articles_count + comments_count + reactions_count) * 10) + tag_keywords_for_search.size) * reputation_modifier * followers_count
+    article_score = (articles_count + comments_count + reactions_count) * 10
+    score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
   end
 

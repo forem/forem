@@ -53,7 +53,7 @@ class ApplicationPolicy
     end
   end
 
-  def user_is_admin?
+  def user_admin?
     user.has_role?(:super_admin)
   end
 

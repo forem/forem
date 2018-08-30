@@ -3,6 +3,13 @@ require "rails_helper"
 RSpec.describe GistTag, type: :liquid_template do
   describe "#link" do
     let(:gist_link) { "https://gist.github.com/vaidehijoshi/6536e03b81e93a78c56537117791c3f1" }
+    let(:bad_links) do
+      [
+        "//pastebin.com/raw/b77FrXUA#gist.github.com",
+        "https://gist.github.com@evil.com",
+        "https://gist.github.com.evil.com",
+      ]
+    end
 
     def generate_new_liquid(link)
       Liquid::Template.register_tag("gist", GistTag)
@@ -27,6 +34,12 @@ RSpec.describe GistTag, type: :liquid_template do
       expect do
         generate_new_liquid("really_long_invalid_id")
       end.to raise_error(StandardError)
+    end
+
+    it "rejects XSS attempts" do
+      bad_links.each do |link|
+        expect { generate_new_liquid(link) } .to raise_error(StandardError)
+      end
     end
   end
 end

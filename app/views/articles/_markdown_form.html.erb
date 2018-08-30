@@ -11,7 +11,7 @@
     </div>
   <% end %>
   <span id="error_explanation_anchor"></span>
-  <% if is_hiring_form?(@tag, @article) %>
+  <% if hiring_form?(@tag, @article) %>
     <div class="job-listing-header">
       <h5>< beta ❤️ ></h5>
       <h1>The #Hiring Tag</h1>
@@ -19,7 +19,7 @@
     </div>
   <% end %>
   <div class="container article markdown-editor" id="markdown-editor">
-    <% unless is_hiring_form?(@tag, @article) %>
+    <% unless hiring_form?(@tag, @article) %>
       <div class="top-buttons">
         <button id="help-butt" class="editor-button help-butt">HELP</button>
         <button id="markdownbutt" class="editor-button markdown-butt active">MARKDOWN</button>
@@ -28,7 +28,7 @@
       </div>
     <% end %>
     <div id="markdown-editor-main" class="editor-view">
-      <% if is_hiring_form?(@tag, @article) %>
+      <% if hiring_form?(@tag, @article) %>
         <%= render 'articles/hiring_form', f:f %>
       <% else %>
         <% if current_user.organization %>
@@ -56,7 +56,7 @@
           </div>
         </div>
         <%= f.text_area :body_markdown %>
-        <% if is_hiring_form?(@tag, @article) %>
+        <% if hiring_form?(@tag, @article) %>
           <% if current_user.organization %>
             <div class="hiring-form-toggle">
               <label class="switch">

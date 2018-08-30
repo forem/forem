@@ -8,13 +8,7 @@ class CommentTag < LiquidTagBase
 
   def render(_context)
     raise_error unless @comment
-    commentable = if @comment.commentable_type == "Article"
-                    Article.find_by_id(@comment.commentable_id)
-                  else
-                    PodcastEpisode.find_by_id(@comment.commentable_id)
-                  end
 
-    html = "" \
     "<div class=\"liquid-comment\">" \
       "<div class=\"details\">" \
         "<a href=\"/#{@comment.user.username}\">" \
@@ -42,7 +36,7 @@ class CommentTag < LiquidTagBase
         "</a>"
     end
     if @comment.user.github_username.present?
-      result += "<a href=\"http://github.com/#{@comment.user.github_username}\">" \
+      result + "<a href=\"http://github.com/#{@comment.user.github_username}\">" \
         +image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github") + \
         "</a>"
     end
