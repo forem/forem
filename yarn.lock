@@ -438,9 +438,9 @@
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.3.0.tgz#3a129cda7c4e5df2409702626892cb4b96546dd5"
 
-"@webscopeio/react-textarea-autocomplete@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.2.0.tgz#793c5ffd659369d887f143547845ce40eedb0bee"
+"@webscopeio/react-textarea-autocomplete@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.2.tgz#98246ab50c131fae560f4b8cbaad5d674b98835d"
   dependencies:
     textarea-caret "3.0.2"
 
