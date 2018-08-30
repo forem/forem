@@ -8,6 +8,7 @@ RSpec.describe GistTag, type: :liquid_template do
         "//pastebin.com/raw/b77FrXUA#gist.github.com",
         "https://gist.github.com@evil.com",
         "https://gist.github.com.evil.com",
+        "https://gist.github.com/string/string/raw/string/file",
       ]
     end
 
