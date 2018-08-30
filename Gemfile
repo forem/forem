@@ -76,7 +76,7 @@ gem "recaptcha", "~> 4.6", require: "recaptcha/rails"
 gem "redcarpet", "~> 3.4"
 gem "reverse_markdown", "~> 1.0"
 gem "rolify", "~> 5.2"
-gem "rouge", "~> 3.1"
+gem "rouge", "~> 3.2"
 gem "s3_direct_upload", "~> 0.1"
 gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4", group: :doc
