@@ -21,15 +21,15 @@ class CodepenTag < LiquidTagBase
   private
 
   def parse_link(link)
-    striped_link = ActionController::Base.helpers.strip_tags(link)
-    raise_error unless valid_link?(striped_link)
-    striped_link.gsub("/pen/", "/embed/")
+    stripped_link = ActionController::Base.helpers.strip_tags(link)
+    raise_error unless valid_link?(stripped_link)
+    stripped_link.gsub("/pen/", "/embed/")
   end
 
   def valid_link?(link)
-    # TODO: the ideal link should look like below
-    # https://codepen.io/{sjdklfjsdklf}/embed/{sjdklfjsldf}
-    (link =~ /^(http|https):\/\/(codepen\.io)\/[a-zA-Z0-9\-]{1,20}\/pen\/.*/)&.zero?
+    link_no_space = link.delete(" ")
+    (link_no_space =~
+      /^(http|https):\/\/(codepen\.io)\/[a-zA-Z0-9\-]{1,20}\/pen\/([a-zA-Z]{6})\z/)&.zero?
   end
 
   def raise_error
