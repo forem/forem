@@ -55,7 +55,7 @@
     "@storybook/addons": "^3.4.6",
     "@storybook/react": "^3.4.10",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^9.0.0",
     "babel-jest": "^23.4.2",
     "babel-loader": "^7.1.4",
     "babel-plugin-transform-react-jsx": "^6.24.1",
