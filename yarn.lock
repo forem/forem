@@ -216,20 +216,11 @@
     react-inspector "^2.2.2"
     uuid "^3.2.1"
 
-"@storybook/addon-links@3.4.10":
+"@storybook/addon-links@3.4.10", "@storybook/addon-links@^3.4.10":
   version "3.4.10"
   resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-3.4.10.tgz#db53d0a0b354e7f5e55195315f48f7045307a429"
   dependencies:
     "@storybook/components" "3.4.10"
-    babel-runtime "^6.26.0"
-    global "^4.3.2"
-    prop-types "^15.6.1"
-
-"@storybook/addon-links@^3.4.6":
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-3.4.6.tgz#0e167c03932ddfcbeba02215af1a420c0d3f0843"
-  dependencies:
-    "@storybook/components" "3.4.6"
     babel-runtime "^6.26.0"
     global "^4.3.2"
     prop-types "^15.6.1"
@@ -261,14 +252,6 @@
 "@storybook/components@3.4.10":
   version "3.4.10"
   resolved "https://registry.yarnpkg.com/@storybook/components/-/components-3.4.10.tgz#9af0bba14234d10f14a37656ac5982ec640cfcc8"
-  dependencies:
-    glamor "^2.20.40"
-    glamorous "^4.12.1"
-    prop-types "^15.6.1"
-
-"@storybook/components@3.4.6":
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-3.4.6.tgz#34bddcfa21bddc59ef57a052d157285fab7ba003"
   dependencies:
     glamor "^2.20.40"
     glamorous "^4.12.1"
