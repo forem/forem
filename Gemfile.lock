@@ -132,7 +132,7 @@ GEM
       io-like (~> 0.3.0)
     arel (8.0.0)
     ast (2.4.0)
-    autoprefixer-rails (6.7.7.2)
+    autoprefixer-rails (9.1.3)
       execjs
     aws-partitions (1.82.0)
     aws-sdk-core (3.20.2)
@@ -933,7 +933,7 @@ DEPENDENCIES
   algorithmia (~> 1.0)
   ancestry (~> 3.0)
   approvals (~> 0.0)
-  autoprefixer-rails (~> 6.7)
+  autoprefixer-rails (~> 9.1)
   aws-sdk-lambda (~> 1.5)
   better_errors (~> 2.5)
   binding_of_caller (~> 0.8)
