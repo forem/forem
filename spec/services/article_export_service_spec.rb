@@ -128,13 +128,13 @@ RSpec.describe ArticleExportService do
     context "with the user notification" do
       it "delivers one email" do
         service = valid_instance(article.user)
-        service.export(notify_user: true)
+        service.export(send_email: true)
         expect(ActionMailer::Base.deliveries.count).to eq(1)
       end
 
       it "delivers an email with the export" do
         service = valid_instance(article.user)
-        zipped_export = service.export(notify_user: true)
+        zipped_export = service.export(send_email: true)
         attachment = ActionMailer::Base.deliveries.last.attachments[0].decoded
 
         expected_articles = extract_zipped_articles(zipped_export)

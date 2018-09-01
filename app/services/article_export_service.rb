@@ -7,12 +7,12 @@ class ArticleExportService
     @user = user
   end
 
-  def export(slug: nil, notify_user: false)
+  def export(slug: nil, send_email: false)
     articles = user.articles
     articles = articles.where(slug: slug) if slug.present?
     zipped_export = zip_json_articles(jsonify_articles(articles))
 
-    send_articles_exported_email(zipped_export) if notify_user
+    send_articles_exported_email(zipped_export) if send_email
 
     user.update!(articles_export_requested: false, articles_exported_at: Time.current)
 
