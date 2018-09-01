@@ -78,7 +78,7 @@ RSpec.describe "UserSettings", type: :request do
       it "hides the checkbox" do
         send_request
         follow_redirect!
-        expect(response.body).not_to include("Request an export of your articles")
+        expect(response.body).not_to include("Request an export of your posts")
       end
 
       it "tells the user they recently requested an export" do

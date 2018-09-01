@@ -86,16 +86,16 @@
   </div>
 <% end %>
 
-<h2>Export articles</h2>
+<h2>Export posts</h2>
 
 <% if @user.articles_export_requested? %>
   <h4 style="font-weight:400">
-    You have recently requested an export of your articles.
+    You have recently requested an export of your posts.
     Please check your email.
   </h4>
 <% else %>
   <h4 style="font-weight:400">
-    You can request an export of all your articles.
+    You can request an export of all your posts.
     It will be emailed to your inbox.
   </h4>
 
@@ -103,7 +103,7 @@
     <div class="checkbox-field">
       <div class="sub-field">
         <%= f.check_box :articles_export_requested %>
-        <%= f.label :articles_export_requested, "Request an export of your articles" %>
+        <%= f.label :articles_export_requested, "Request an export of your posts" %>
       </div>
     </div>
     <div class="field">
