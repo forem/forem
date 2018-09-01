@@ -18,7 +18,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     if @feedback_message.save! && note.save!
       @feedback_message.touch(:last_reviewed_at)
       flash[:success] = "Report ##{@feedback_message.id} saved. Remember to send emails!"
-      redirect_to "/internal/reports?state=#{@feedback_message.feedback_type}"
+      redirect_to URI.parse("/internal/reports?state=#{@feedback_message.feedback_type}")
     else
       @feedback_messages = FeedbackMessage.where(feedback_type: @feedback_type)
       flash[:error] = @feedback_message.errors.full_messages

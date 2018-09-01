@@ -192,7 +192,7 @@ class ArticlesController < ApplicationController
     else
       if @article.errors.to_h[:body_markdown] == "has already been taken"
         @article = Article.find_by_body_markdown(@article.body_markdown)
-        redirect_to @article.current_state_path
+        redirect_to URI.parse(@article.current_state_path)
         return
       end
       render :new

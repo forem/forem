@@ -27,7 +27,7 @@
           <div class="single-comment <%= "strong-comment" if comment.ancestry == nil%>">
             <span class="comment-title">re: <%= comment.commentable.title %></span>
             <span class="comment-date"><%= comment.readable_publish_date %></span>
-            <div class="comment-preview"><%= truncate(strip_tags(comment.processed_html), length:64).html_safe %></div>
+            <div class="comment-preview"><%= sanitize truncate(strip_tags(comment.processed_html), length:64).html_safe %></div>
           </div>
         </a>
       <% end %>

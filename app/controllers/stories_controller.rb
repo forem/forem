@@ -32,11 +32,11 @@ class StoriesController < ApplicationController
 
   def redirect_to_changed_username_profile
     if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
-      redirect_to @user.path
+      redirect_to URI.parse(@user.path)
       return
     end
     if @user = User.find_by_old_old_username(params[:username].tr("@", "").downcase)
-      redirect_to @user.path
+      redirect_to URI.parse(@user.path)
       return
     end
     not_found
@@ -45,13 +45,13 @@ class StoriesController < ApplicationController
   def redirect_to_changed_username_article_page
     if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
       if @user.articles.find_by_slug(params[:slug])
-        redirect_to "/#{@user.username}/#{params[:slug]}"
+        redirect_to URI.parse("/#{@user.username}/#{params[:slug]}")
         return
       end
     end
     if @user = User.find_by_old_old_username(params[:username].tr("@", "").downcase)
       if @user.articles.find_by_slug(params[:slug])
-        redirect_to "/#{@user.username}/#{params[:slug]}"
+        redirect_to URI.parse("/#{@user.username}/#{params[:slug]}")
         return
       end
     end

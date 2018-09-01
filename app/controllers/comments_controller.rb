@@ -102,7 +102,7 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
+      redirect_to URI.parse("#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated.")
     else
       @commentable = @comment.commentable
       render :edit
@@ -120,7 +120,7 @@ class CommentsController < ApplicationController
       @comment.deleted = true
       @comment.save!
     end
-    redirect_to @commentable_path, notice: "Comment was successfully deleted."
+    redirect_to URI.parse(@commentable_path, notice: "Comment was successfully deleted.")
   end
 
   def delete_confirm

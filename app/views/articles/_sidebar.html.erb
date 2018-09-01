@@ -96,7 +96,7 @@
             #<%= @tag %> 👋
           </header>
           <div class="widget-body">
-            <%= @tag_model.short_summary.html_safe %>
+            <%= sanitize @tag_model.short_summary.html_safe %>
           </div>  
         </div>
       <% end %>
@@ -106,7 +106,7 @@
             submission guidelines
           </header>
           <div class="widget-body">
-            <%= @tag_model.rules_html.html_safe %>
+            <%= sanitize @tag_model.rules_html.html_safe %>
             <a class="cta cta-button" href="/new/<%= @tag %>" >
               WRITE A POST
             </a>
@@ -119,7 +119,7 @@
             about #<%= @tag %>
           </header>
           <div class="widget-body">
-            <%= @tag_model.wiki_body_html.html_safe %>
+            <%= sanitize @tag_model.wiki_body_html.html_safe %>
           </div>
         </div>
       <% end %>

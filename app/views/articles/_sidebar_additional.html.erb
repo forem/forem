@@ -88,7 +88,7 @@
       <% if @sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">
-            <%= @sidebar_ad.processed_html.html_safe %>
+            <%= sanitize @sidebar_ad.processed_html.html_safe %>
           </div>
         </div>
       <% end %>

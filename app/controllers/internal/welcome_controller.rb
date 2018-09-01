@@ -10,7 +10,7 @@ class Internal::WelcomeController < Internal::ApplicationController
       body_markdown: welcome_thread_content,
       user_id: ApplicationConfig["DEVTO_USER_ID"],
     )
-    redirect_to welcome_thread.path + "/edit"
+    redirect_to URI.parse(welcome_thread.path + "/edit")
   end
 
   private

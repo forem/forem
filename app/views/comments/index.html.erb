@@ -56,7 +56,7 @@
           </div>
         <% else %>
           <div class="body">
-            <%= truncate(strip_tags(@commentable.processed_html), length:150).html_safe %> <a href="<%=@commentable.path %>"><span class="read-more">[Read Full]</span></a>
+            <%= sanitize truncate(strip_tags(@commentable.processed_html), length:150).html_safe %> <a href="<%=@commentable.path %>"><span class="read-more">[Read Full]</span></a>
           </div>
         <% end %>
       <% end %>
