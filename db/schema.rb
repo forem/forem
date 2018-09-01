@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181020195954) do
+ActiveRecord::Schema.define(version: 20180901155115) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -667,6 +667,8 @@ ActiveRecord::Schema.define(version: 20181020195954) do
 
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
+    t.boolean "articles_export_requested", default: false
+    t.datetime "articles_exported_at"
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
     t.text "base_cover_letter"

@@ -57,6 +57,36 @@ RSpec.describe "UserSettings", type: :request do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")
     end
+
+    context "when requesting an export of the articles" do
+      def send_request
+        put "/users/#{user.id}", params: {
+          user: { tab: "misc", articles_export_requested: true },
+        }
+      end
+
+      it "updates articles_export_requested flag" do
+        send_request
+        expect(user.reload.articles_export_requested).to be(true)
+      end
+
+      it "displays a flash with a reminder for the user to expect an email" do
+        send_request
+        expect(flash[:notice]).to include("The export will be emailed to you shortly.")
+      end
+
+      it "hides the checkbox" do
+        send_request
+        follow_redirect!
+        expect(response.body).not_to include("Request an export of your articles")
+      end
+
+      it "tells the user they recently requested an export" do
+        send_request
+        follow_redirect!
+        expect(response.body).to include("You have recently requested an export")
+      end
+    end
   end
 
   describe "DELETE /users/remove_association" do

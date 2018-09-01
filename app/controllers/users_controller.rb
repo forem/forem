@@ -25,6 +25,9 @@ class UsersController < ApplicationController
     if @user.update(permitted_attributes(@user))
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
+      if @user.articles_export_requested?
+        notice = notice + " The export will be emailed to you shortly."
+      end
       follow_hiring_tag(@user)
       redirect_to "/settings/#{@tab}", notice: notice
     else

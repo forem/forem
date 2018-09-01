@@ -102,7 +102,8 @@ class UserPolicy < ApplicationPolicy
        summary
        text_color_hex
        username
-       website_url]
+       website_url
+       articles_export_requested]
   end
 
   private

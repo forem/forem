@@ -50,7 +50,7 @@
       <%= f.check_box :prefer_language_it %>
       <%= f.label :prefer_language_it, "Italian" %>
     </div>
-  </div>  
+  </div>
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
@@ -84,4 +84,32 @@
     <%= f.hidden_field :tab, value: @tab %>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
+<% end %>
+
+<h2>Export articles</h2>
+
+<% if @user.articles_export_requested? %>
+  <h4 style="font-weight:400">
+    You have recently requested an export of your articles.
+    Please check your email.
+  </h4>
+<% else %>
+  <h4 style="font-weight:400">
+    You can request an export of all your articles.
+    It will be emailed to your inbox.
+  </h4>
+
+  <%= form_for(@user) do |f| %>
+    <div class="checkbox-field">
+      <div class="sub-field">
+        <%= f.check_box :articles_export_requested %>
+        <%= f.label :articles_export_requested, "Request an export of your articles" %>
+      </div>
+    </div>
+    <div class="field">
+      <label></label>
+      <%= f.hidden_field :tab, value: @tab %>
+      <%= f.submit "SUBMIT", class: "cta" %>
+    </div>
+  <% end %>
 <% end %>
