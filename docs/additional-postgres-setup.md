@@ -25,12 +25,14 @@ The [official Rails guides](https://guides.rubyonrails.org/configuring.html#conn
 2.  Add the following:
 
 ```yml
-DATABASE_URL: postgresql://USERNAME:PASSWORD@localhost/PracticalDeveloper_development
+DATABASE_URL: postgresql://USERNAME:PASSWORD@localhost
 ```
 
 3.  Replace `USERNAME` with your database username, `PASSWORD` with your database password.
 
 You can find more details on connection strings in [PostgreSQL's own documentation](https://www.postgresql.org/docs/10/static/libpq-connect.html#LIBPQ-CONNSTRING).
+
+NOTE: due to how Rails merges `database.yml` and `DATABASE_URL` it's recommended not to add the database name in the connection string. This will default to your development database name also during tests, which will effectively empty the development DB each time tests are run.
 
 ### Modify connection params in `database.yml`
 
