@@ -80,15 +80,15 @@ RSpec.describe ArticleExportService do
     context "when slug is unknown" do
       it "returns stream with no articles if the slug is not found" do
         service = valid_instance(user)
-        zipped_buffer = service.export(slug: "not found")
-        articles = extract_zipped_articles(zipped_buffer)
+        zipped_export = service.export(slug: "not found")
+        articles = extract_zipped_articles(zipped_export)
         expect(articles).to be_empty
       end
 
       it "returns stream with no articles if slug belongs to another user" do
         service = valid_instance(user)
-        zipped_buffer = service.export(slug: other_user_article.slug)
-        articles = extract_zipped_articles(zipped_buffer)
+        zipped_export = service.export(slug: other_user_article.slug)
+        articles = extract_zipped_articles(zipped_export)
         expect(articles).to be_empty
       end
     end
@@ -96,15 +96,15 @@ RSpec.describe ArticleExportService do
     context "when slug is known" do
       it "returns a stream with the article" do
         service = valid_instance(user)
-        zipped_buffer = service.export(slug: article.slug)
-        articles = extract_zipped_articles(zipped_buffer)
+        zipped_export = service.export(slug: article.slug)
+        articles = extract_zipped_articles(zipped_export)
         expect(articles.length).to eq(1)
       end
 
       it "returns only expected fields for the article" do
         service = valid_instance(user)
-        zipped_buffer = service.export(slug: article.slug)
-        articles = extract_zipped_articles(zipped_buffer)
+        zipped_export = service.export(slug: article.slug)
+        articles = extract_zipped_articles(zipped_export)
         expect(articles.first.keys).to eq(expected_fields)
       end
     end
@@ -112,34 +112,48 @@ RSpec.describe ArticleExportService do
     context "when all articles are requested" do
       it "returns a stream with all the articles as json" do
         service = valid_instance(article.user)
-        zipped_buffer = service.export
-        articles = extract_zipped_articles(zipped_buffer)
+        zipped_export = service.export
+        articles = extract_zipped_articles(zipped_export)
         expect(articles.length).to eq(user.articles.size)
       end
 
       it "returns only expected fields for articles" do
         service = valid_instance(article.user)
-        zipped_buffer = service.export
-        articles = extract_zipped_articles(zipped_buffer)
+        zipped_export = service.export
+        articles = extract_zipped_articles(zipped_export)
         expect(articles.first.keys).to eq(expected_fields)
       end
     end
-  end
 
-  describe "#export_and_deliver_to_inbox" do
-    it "delivers one email" do
-      service = valid_instance(article.user)
-      service.export_and_deliver_to_inbox
-      expect(ActionMailer::Base.deliveries.count).to eq(1)
+    context "with the user notification" do
+      it "delivers one email" do
+        service = valid_instance(article.user)
+        service.export(notify_user: true)
+        expect(ActionMailer::Base.deliveries.count).to eq(1)
+      end
+
+      it "delivers an email with the export" do
+        service = valid_instance(article.user)
+        zipped_export = service.export(notify_user: true)
+        attachment = ActionMailer::Base.deliveries.last.attachments[0].decoded
+
+        expected_articles = extract_zipped_articles(zipped_export)
+        expect(expected_articles).to eq(extract_zipped_articles(StringIO.new(attachment)))
+      end
     end
 
-    it "delivers an email with the export" do
+    it "sets the requested flag as false" do
       service = valid_instance(article.user)
-      service.export_and_deliver_to_inbox
-      attachment = ActionMailer::Base.deliveries.last.attachments[0].decoded
+      service.export
+      expect(user.articles_export_requested).to be(false)
+    end
 
-      expected_articles = extract_zipped_articles(service.export)
-      expect(expected_articles).to eq(extract_zipped_articles(StringIO.new(attachment)))
+    it "sets the exported at datetime as the current one" do
+      Timecop.freeze(Time.current) do
+        service = valid_instance(article.user)
+        service.export
+        expect(user.articles_exported_at).to eq(Time.current)
+      end
     end
   end
 end

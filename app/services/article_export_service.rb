@@ -7,19 +7,25 @@ class ArticleExportService
     @user = user
   end
 
-  def export(slug: nil)
+  def export(slug: nil, notify_user: false)
     articles = user.articles
     articles = articles.where(slug: slug) if slug.present?
-    zip_json_articles(jsonify_articles(articles))
-  end
+    zipped_export = zip_json_articles(jsonify_articles(articles))
 
-  def export_and_deliver_to_inbox(slug: nil)
-    zipped_export = export(slug: slug)
+    send_articles_exported_email(zipped_export) if notify_user
+
+    user.update!(articles_export_requested: false, articles_exported_at: Time.current)
+
     zipped_export.rewind
-    NotifyMailer.articles_exported_email(user, zipped_export.read).deliver
+    zipped_export
   end
 
   private
+
+  def send_articles_exported_email(zipped_export)
+    zipped_export.rewind
+    NotifyMailer.articles_exported_email(user, zipped_export.read).deliver
+  end
 
   def blacklisted_attributes
     %i[
