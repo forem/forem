@@ -139,5 +139,28 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(mentor_email.from).to include "liana@dev.to"
       end
     end
+
+    describe "#articles_exported_email" do
+      it "renders proper subject" do
+        articles_exported_email = described_class.articles_exported_email(user, "attachment")
+        expect(articles_exported_email.subject).to include("export of your posts is ready")
+      end
+
+      it "renders proper receiver" do
+        articles_exported_email = described_class.articles_exported_email(user, "attachment")
+        expect(articles_exported_email.to).to eq([user.email])
+      end
+
+      it "attaches a zip file" do
+        articles_exported_email = described_class.articles_exported_email(user, "attachment")
+        expect(articles_exported_email.attachments[0].content_type).to include("application/zip")
+      end
+
+      it "adds the correct filename" do
+        articles_exported_email = described_class.articles_exported_email(user, "attachment")
+        expected_filename = "posts-#{Date.current.iso8601}.zip"
+        expect(articles_exported_email.attachments[0].filename).to eq(expected_filename)
+      end
+    end
   end
 end

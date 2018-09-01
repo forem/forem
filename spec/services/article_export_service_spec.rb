@@ -7,6 +7,10 @@ RSpec.describe ArticleExportService do
   let(:other_user) { create(:user) }
   let(:other_user_article) { create(:article, user: other_user) }
 
+  before do
+    ActionMailer::Base.deliveries.clear
+  end
+
   def valid_instance(user)
     described_class.new(user)
   end
@@ -119,6 +123,23 @@ RSpec.describe ArticleExportService do
         articles = extract_zipped_articles(zipped_buffer)
         expect(articles.first.keys).to eq(expected_fields)
       end
+    end
+  end
+
+  describe "#export_and_deliver_to_inbox" do
+    it "delivers one email" do
+      service = valid_instance(article.user)
+      service.export_and_deliver_to_inbox
+      expect(ActionMailer::Base.deliveries.count).to eq(1)
+    end
+
+    it "delivers an email with the export" do
+      service = valid_instance(article.user)
+      service.export_and_deliver_to_inbox
+      attachment = ActionMailer::Base.deliveries.last.attachments[0].decoded
+
+      expected_articles = extract_zipped_articles(service.export)
+      expect(expected_articles).to eq(extract_zipped_articles(StringIO.new(attachment)))
     end
   end
 end

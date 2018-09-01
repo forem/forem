@@ -13,6 +13,12 @@ class ArticleExportService
     zip_json_articles(jsonify_articles(articles))
   end
 
+  def export_and_deliver_to_inbox(slug: nil)
+    zipped_export = export(slug: slug)
+    zipped_export.rewind
+    NotifyMailer.articles_exported_email(user, zipped_export.read).deliver
+  end
+
   private
 
   def blacklisted_attributes
