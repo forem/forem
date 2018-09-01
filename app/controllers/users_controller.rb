@@ -64,7 +64,7 @@ class UsersController < ApplicationController
   end
 
   def add_org_admin
-    user = User.find(params[:user_id])
+    user = User.find(session[:user_id])
     authorize user
     user.update(org_admin: true)
     user.add_role :analytics_beta_tester if user.organization.approved
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
   end
 
   def remove_org_admin
-    user = User.find(params[:user_id])
+    user = User.find(session[:user_id])
     authorize user
     user.update(org_admin: false)
     redirect_to "/settings/organization",
@@ -81,7 +81,7 @@ class UsersController < ApplicationController
   end
 
   def remove_from_org
-    user = User.find(params[:user_id])
+    user = User.find(session[:user_id])
     authorize user
     user.update(organization_id: nil)
     redirect_to "/settings/organization",

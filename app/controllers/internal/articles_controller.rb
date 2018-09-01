@@ -107,11 +107,11 @@ class Internal::ArticlesController < Internal::ApplicationController
   end
 
   def show
-    @article = Article.find(params[:id])
+    @article = Article.find(session[:id])
   end
 
   def update
-    article = Article.find(params[:id])
+    article = Article.find(session[:id])
     article.featured = article_params[:featured].to_s == "true"
     article.approved = article_params[:approved].to_s == "true"
     article.live_now = article_params[:live_now].to_s == "true"

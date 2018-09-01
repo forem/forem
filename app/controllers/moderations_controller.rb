@@ -9,7 +9,7 @@ class ModerationsController < ApplicationController
 
   def comment
     authorize(User, :moderation_routes?)
-    @moderatable = Comment.find(params[:id_code].to_i(26))
+    @moderatable = Comment.find(session[:id_code].to_i(26))
     render template: "moderations/mod"
   end
 end

@@ -21,7 +21,7 @@ class FollowsController < ApplicationController
                  elsif params[:followable_type] == "Tag"
                    Tag.find(params[:followable_id])
                  else
-                   User.find(params[:followable_id])
+                   User.find(session[:followable_id])
                  end
     @result = if params[:verb] == "unfollow"
                 current_user.stop_following(followable)

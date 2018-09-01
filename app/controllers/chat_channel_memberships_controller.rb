@@ -13,7 +13,7 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def update
-    @chat_channel_membership = ChatChannelMembership.find(params[:id])
+    @chat_channel_membership = ChatChannelMembership.find(session[:id])
     authorize @chat_channel_membership
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")

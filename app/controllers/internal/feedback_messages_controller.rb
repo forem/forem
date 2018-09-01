@@ -10,7 +10,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   def update
-    @feedback_message = FeedbackMessage.find(params[:id])
+    @feedback_message = FeedbackMessage.find(session[:id])
     @feedback_message.status = feedback_message_params[:status]
     @feedback_message.reviewer_id = feedback_message_params[:reviewer_id]
     note = @feedback_message.find_or_create_note(@feedback_message.feedback_type)

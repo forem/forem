@@ -19,7 +19,7 @@ module Api
         @user = if params[:id] == "by_username"
                   User.find_by_username(params[:url])
                 else
-                  User.find(params[:id])
+                  User.find(session[:id])
                 end
       end
 

@@ -13,7 +13,7 @@ class CommentsController < ApplicationController
     @podcast = Podcast.find_by_slug(params[:username])
 
     if params[:id_code].present?
-      @root_comment = Comment.find(params[:id_code].to_i(26))
+      @root_comment = Comment.find(session[:id_code].to_i(26))
     end
 
     if @podcast
@@ -30,7 +30,7 @@ class CommentsController < ApplicationController
     end
     @commentable_type = @commentable.class.name
     if params[:id_code].present?
-      @root_comment = Comment.find(params[:id_code].to_i(26))
+      @root_comment = Comment.find(session[:id_code].to_i(26))
     end
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
@@ -44,7 +44,7 @@ class CommentsController < ApplicationController
 
   # GET /comments/1/edit
   def edit
-    @comment = Comment.find(params[:id_code].to_i(26))
+    @comment = Comment.find(session[:id_code].to_i(26))
     authorize @comment
     @parent_comment = @comment.parent
     @commentable = @comment.commentable
@@ -124,7 +124,7 @@ class CommentsController < ApplicationController
   end
 
   def delete_confirm
-    @comment = Comment.find(params[:id_code].to_i(26))
+    @comment = Comment.find(session[:id_code].to_i(26))
     authorize @comment
   end
 
@@ -147,6 +147,6 @@ class CommentsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
-    @comment = Comment.find(params[:id])
+    @comment = Comment.find(session[:id])
   end
 end

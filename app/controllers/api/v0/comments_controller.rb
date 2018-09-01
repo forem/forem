@@ -13,12 +13,12 @@ module Api
       respond_to :json
 
       def index
-        @commentable = Article.find(params[:a_id]) # or not_found
+        @commentable = Article.find(session[:a_id]) # or not_found
         @commentable_type = "Article"
       end
 
       def show
-        (@comment = Comment.find(params[:id].to_i(26))) || not_found
+        (@comment = Comment.find(session[:id].to_i(26))) || not_found
       end
     end
   end

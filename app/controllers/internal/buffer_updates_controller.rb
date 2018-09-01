@@ -1,6 +1,6 @@
 class Internal::BufferUpdatesController < Internal::ApplicationController
   def create
-    article = Article.find(params[:article_id])
+    article = Article.find(session[:article_id])
     fb_post = params[:fb_post]
     tweet = params[:tweet]
     if params[:social_channel] == "twitter"

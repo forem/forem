@@ -14,7 +14,7 @@ class GithubReposController < ApplicationController
   end
 
   def update
-    @repo = GithubRepo.find(params[:id])
+    @repo = GithubRepo.find(session[:id])
     authorize @repo
     if @repo.update(featured: false)
       redirect_to "/settings/integrations", notice: "GitHub repo added"

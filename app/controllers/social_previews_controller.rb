@@ -2,13 +2,13 @@ class SocialPreviewsController < ApplicationController
   # No authorization required for entirely public controller
 
   def article
-    @article = Article.find(params[:id])
+    @article = Article.find(session[:id])
     not_found unless @article.published
     render layout: false
   end
 
   def user
-    @user = User.find(params[:id]) || not_found
+    @user = User.find(session[:id]) || not_found
     render layout: false
   end
 

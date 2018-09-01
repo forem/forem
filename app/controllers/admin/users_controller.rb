@@ -1,7 +1,7 @@
 module Admin
   class UsersController < Admin::ApplicationController
     def update
-      user = User.find(params[:id])
+      user = User.find(session[:id])
       UserRoleService.new(user).check_for_roles(params[:user])
       if user.errors.messages.blank? && user.update(user_params)
         flash[:notice] = "User successfully updated"

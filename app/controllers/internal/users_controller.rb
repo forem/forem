@@ -6,12 +6,12 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
+    @user = User.find(session[:id])
   end
 
   def update
     # Only used for stripping user right now.
-    @user = User.find(params[:id])
+    @user = User.find(session[:id])
     strip_user(@user)
     redirect_to "/internal/users/#{@user.id}/edit"
   end

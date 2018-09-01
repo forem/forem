@@ -1,7 +1,7 @@
 module Admin
   class CommentsController < Admin::ApplicationController
     def update
-      comment = Comment.find(params[:id])
+      comment = Comment.find(session[:id])
       if comment.update(comment_params)
         flash[:notice] = "Comment successfully updated"
         redirect_to "/admin/comments/#{comment.id}"
