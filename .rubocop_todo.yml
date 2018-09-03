@@ -13,13 +13,6 @@ Lint/IneffectiveAccessModifier:
     - 'app/models/tweet.rb'
 
 # Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'lib/tasks/fetch.rake'
-
-# Offense count: 2
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
   Exclude:
