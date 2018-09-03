@@ -71,13 +71,10 @@ class Tags extends Component {
     const input = document.getElementById('tag-input');
     input.focus();
 
-    console.log('CLICK');
     this.insertTag(e.target.dataset.content);
   };
 
   handleInput = e => {
-    const component = this;
-
     let value = e.target.value;
     if (e.inputType === 'insertText') {
       if (e.target.value[e.target.selectionStart - 2] === ',') {
@@ -99,15 +96,10 @@ class Tags extends Component {
       e.target.selectionStart - 1,
     );
     if (query === '' && e.target.value != '') {
-      component.setState({
-        searchResults: [],
-      });
+      this.resetSearchResults();
       return;
     } else if (query === '' || e.target.value === '') {
-      component.setState({
-        searchResults: [],
-        selected: [],
-      });
+      this.resetSearchResults();
       return;
     }
     return this.search(query);
@@ -148,35 +140,31 @@ class Tags extends Component {
       });
   }
 
+  resetSearchResults() {
+    this.setState({
+      searchResults: [],
+    });
+  }
+
   handleKeyDown = e => {
     const component = this;
-    const keyCode = e.keyCode;
+
     if (component.selected.length === MAX_TAGS && e.keyCode === KEYS.COMMA) {
       e.preventDefault();
       return;
     }
+
     if (
       (e.keyCode === KEYS.DOWN || e.keyCode === KEYS.TAB) &&
-      component.state.selectedIndex <
-        component.state.searchResults.length - 1 &&
+      !this.isBottomOfSearchResults &&
       component.props.defaultValue != ''
     ) {
-      // down key or tab key
       e.preventDefault();
-      this.setState({
-        selectedIndex: component.state.selectedIndex + 1,
-      });
-    } else if (e.keyCode === KEYS.UP && component.state.selectedIndex > -1) {
-      // up key
+      this.moveDownInSearchResults();
+    } else if (e.keyCode === KEYS.UP && !this.isTopOfSearchResults) {
       e.preventDefault();
-      this.setState({
-        selectedIndex: component.state.selectedIndex - 1,
-      });
-    } else if (
-      e.keyCode === KEYS.RETURN &&
-      component.state.selectedIndex > -1
-    ) {
-      // return key
+      this.moveUpInSearchResults();
+    } else if (e.keyCode === KEYS.RETURN && this.isSearchResultSelected) {
       e.preventDefault();
       this.insertTag(
         component.state.searchResults[component.state.selectedIndex].name,
@@ -185,27 +173,16 @@ class Tags extends Component {
       setTimeout(() => {
         document.getElementById('tag-input').focus();
       }, 10);
-    } else if (
-      e.keyCode === KEYS.COMMA &&
-      component.state.selectedIndex === -1
-    ) {
-      // comma key
-      component.setState({
-        searchResults: [],
-        selectedIndex: -1,
-      });
+    } else if (e.keyCode === KEYS.COMMA && !this.isSearchResultSelected) {
+      this.resetSearchResults();
+      this.clearSelectedSearchResult();
     } else if (e.keyCode === KEYS.DELETE) {
-      // Delete key
       if (
         component.props.defaultValue[
           component.props.defaultValue.length - 1
         ] === ','
       ) {
-        const selectedTags = component.selected;
-        component.setState({
-          selectedIndex: -1,
-          selected: selectedTags.slice(0, selectedTags.length - 2),
-        });
+        this.clearSelectedSearchResult();
       }
     } else if (
       (e.keyCode < 65 || e.keyCode > 90) &&
@@ -215,10 +192,39 @@ class Tags extends Component {
       e.keyCode != KEYS.RIGHT &&
       e.keyCode != KEYS.TAB
     ) {
-      // not letter or comma or delete
       e.preventDefault();
     }
   };
+
+  moveUpInSearchResults() {
+    this.setState({
+      selectedIndex: this.state.selectedIndex - 1,
+    });
+  }
+
+  moveDownInSearchResults() {
+    this.setState({
+      selectedIndex: this.state.selectedIndex + 1,
+    });
+  }
+
+  get isTopOfSearchResults() {
+    return this.state.selectedIndex <= 0;
+  }
+
+  get isBottomOfSearchResults() {
+    return this.state.selectedIndex >= this.state.searchResults.length - 1;
+  }
+
+  get isSearchResultSelected() {
+    return this.state.selectedIndex > -1;
+  }
+
+  clearSelectedSearchResult() {
+    this.setState({
+      selectedIndex: -1,
+    });
+  }
 
   insertTag(tag) {
     const input = document.getElementById('tag-input');
@@ -237,11 +243,8 @@ class Tags extends Component {
       input.value.slice(range[1], input.value.length);
 
     this.props.onInput(newInput);
-
-    this.setState({
-      searchResults: [],
-      selectedIndex: -1,
-    });
+    this.resetSearchResults();
+    this.clearSelectedSearchResult();
   }
 
   // Given an index of the String value, finds the range between commas.
