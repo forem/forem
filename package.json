@@ -95,7 +95,7 @@
     "preact": "^8.2.5",
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.6.2",
-    "pusher-js": "^4.2.2",
+    "pusher-js": "^4.3.0",
     "twilio-video": "^1.10.0"
   }
 }
