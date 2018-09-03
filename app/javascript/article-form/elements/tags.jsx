@@ -76,12 +76,15 @@ class Tags extends Component {
 
   handleInput = e => {
     let value = e.target.value;
+    // If we start typing immediately after a comma, add a space
+    // before what we typed.
+    // e.g. If value = "javascript," and we type a "p",
+    // the result should be "javascript, p".
     if (e.inputType === 'insertText') {
-      if (e.target.value[e.target.selectionStart - 2] === ',') {
-        value = `${value.slice(0, e.target.selectionStart - 1)} ${value.slice(
-          e.target.selectionStart - 1,
-          value.length,
-        )}`;
+      const isTypingAfterComma =
+        e.target.value[e.target.selectionStart - 2] === ',';
+      if (isTypingAfterComma) {
+        value = this.insertSpace(value, e.target.selectionStart - 1);
       }
     }
 
@@ -98,6 +101,10 @@ class Tags extends Component {
 
     return this.search(query);
   };
+
+  insertSpace(value, position) {
+    return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
+  }
 
   getCurrentTagAtSelectionIndex(value, index) {
     let tagIndex = 0;
