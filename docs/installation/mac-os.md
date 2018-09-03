@@ -41,3 +41,10 @@ For additional configuration, [click here](/additional-postgres-setup)
 * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 
 10. Run `bin/setup`
+
+#### Possible Error Messages
+
+**Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
+**_Solution:_** Run the command `rbenv install <version number>`
+
+> If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.
