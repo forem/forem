@@ -173,6 +173,11 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  Run `bin/setup`
 1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
+#### Possible Error Messages
+
+**Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
+**_Solution:_** Run the command `rbenv install <version number>`
+
 #### Starting the application
 
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
