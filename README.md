@@ -173,10 +173,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  Run `bin/setup`
 1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
-#### Possible Error Messages
-
-**Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
-**_Solution:_** Run the command `rbenv install <version number>`
+[View Full Installation Documentation](https://docs.dev.to/installation/)
 
 #### Starting the application
 
