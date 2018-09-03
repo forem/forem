@@ -86,6 +86,7 @@ class PodcastFeed
       episode.update!(media_url: item.enclosure.url)
     end
   rescue StandardError
-    logger.info "something went wrong with #{podcast.title}, #{episode.title} -- #{episode.media_url}"
+    message = "something went wrong with #{podcast.title}, #{episode.title} -- #{episode.media_url}"
+    logger.info message
   end
 end

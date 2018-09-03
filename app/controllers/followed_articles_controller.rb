@@ -46,7 +46,8 @@ class FollowedArticlesController < ApplicationController
         tag_list: article.decorate.cached_tag_list_array,
         title: article.title,
         published_at_int: article.published_at.to_i,
-        published_at_month_day: article.published_at.strftime("%B #{article.published_at.day.ordinalize}"),
+        published_at_month_day: article.published_at.
+          strftime("%B #{article.published_at.day.ordinalize}"),
         is_classic: article.published_at < 7.days.ago,
         comments_count: article.comments_count,
         reactions_count: article.positive_reactions_count,
