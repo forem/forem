@@ -3,12 +3,6 @@
 exports[`<Tags /> only allows 4 tags 1`] = `
 Object {
   "searchResults": Array [],
-  "selected": Array [
-    "java",
-    "javascript",
-    "linux",
-    "productivity",
-  ],
   "selectedIndex": -1,
 }
 `;
@@ -34,11 +28,6 @@ exports[`<Tags /> renders properly 1`] = `
 exports[`<Tags /> replaces tag when editing 1`] = `
 Object {
   "searchResults": Array [],
-  "selected": Array [
-    "git",
-    "javascript",
-    "linux",
-  ],
   "selectedIndex": -1,
 }
 `;
@@ -46,9 +35,6 @@ Object {
 exports[`<Tags /> selects tag when you click on it 1`] = `
 Object {
   "searchResults": Array [],
-  "selected": Array [
-    "git",
-  ],
   "selectedIndex": -1,
 }
 `;
@@ -85,9 +71,6 @@ Object {
       "text_color_hex": "#56c938",
     },
   ],
-  "selected": Array [
-    "gi",
-  ],
   "selectedIndex": -1,
 }
 `;
@@ -123,11 +106,6 @@ Object {
       "supported": true,
       "text_color_hex": "#56c938",
     },
-  ],
-  "selected": Array [
-    "gi",
-    "javascript",
-    "linux",
   ],
   "selectedIndex": -1,
 }

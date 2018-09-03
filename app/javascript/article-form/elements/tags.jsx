@@ -6,7 +6,6 @@ class Tags extends Component {
     super(props);
 
     this.state = {
-      selected: [],
       selectedIndex: -1,
       searchResults: [],
     };
@@ -18,6 +17,13 @@ class Tags extends Component {
     const env = document.querySelector("meta[name='environment']").content;
     const client = algoliasearch(algoliaId, algoliaKey);
     this.index = client.initIndex(`Tag_${env}`);
+  }
+
+  get selected() {
+    return this.props.defaultValue
+      .split(',')
+      .map(item => item != undefined && item.trim())
+      .filter(item => item.length > 0);
   }
 
   render() {
@@ -88,13 +94,6 @@ class Tags extends Component {
 
     this.props.onInput(value);
 
-    component.setState({
-      selected: e.target.value
-        .split(',')
-        .map(item => item != undefined && item.trim())
-        .filter(item => item.length > 0),
-    });
-
     const query = this.getCurrentTagAtSelectionIndex(
       e.target.value,
       e.target.selectionStart - 1,
@@ -152,10 +151,7 @@ class Tags extends Component {
   handleKeyDown = e => {
     const component = this;
     const keyCode = e.keyCode;
-    if (
-      component.state.selected.length === MAX_TAGS &&
-      e.keyCode === KEYS.COMMA
-    ) {
+    if (component.selected.length === MAX_TAGS && e.keyCode === KEYS.COMMA) {
       e.preventDefault();
       return;
     }
@@ -205,7 +201,7 @@ class Tags extends Component {
           component.props.defaultValue.length - 1
         ] === ','
       ) {
-        const selectedTags = component.state.selected;
+        const selectedTags = component.selected;
         component.setState({
           selectedIndex: -1,
           selected: selectedTags.slice(0, selectedTags.length - 2),
@@ -229,7 +225,7 @@ class Tags extends Component {
 
     const range = this.getRangeBetweenCommas(input.value, input.selectionStart);
     const insertingAtEnd = range[1] === input.value.length;
-    const maxTagsWillBeReached = this.state.selected.length === MAX_TAGS;
+    const maxTagsWillBeReached = this.selected.length === MAX_TAGS;
     if (insertingAtEnd && !maxTagsWillBeReached) {
       tag += ', ';
     }
@@ -245,10 +241,6 @@ class Tags extends Component {
     this.setState({
       searchResults: [],
       selectedIndex: -1,
-      selected: newInput
-        .split(',')
-        .map(item => item != undefined && item.trim())
-        .filter(item => item.length > 0),
     });
   }
 
