@@ -95,13 +95,7 @@ class Tags extends Component {
       e.target.value,
       e.target.selectionStart - 1,
     );
-    if (query === '' && e.target.value != '') {
-      this.resetSearchResults();
-      return;
-    } else if (query === '' || e.target.value === '') {
-      this.resetSearchResults();
-      return;
-    }
+
     return this.search(query);
   };
 
@@ -126,6 +120,15 @@ class Tags extends Component {
   }
 
   search(query) {
+    if (query === '') {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          this.resetSearchResults();
+          resolve();
+        }, 5);
+      });
+    }
+
     return this.index
       .search(query, {
         hitsPerPage: 10,
