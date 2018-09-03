@@ -138,10 +138,6 @@ export default class ArticleForm extends Component {
     });
   };
 
-  updateTagList = tagList => {
-    this.setState({ tagList: tagList });
-  };
-
   render() {
     // cover image url should asking for url OR providing option to upload an image
     const {
@@ -209,7 +205,7 @@ export default class ArticleForm extends Component {
         {imageArea}
         <Title defaultValue={title} onChange={linkState(this, 'title')} />
         <div className="articleform__detailfields">
-          <Tags defaultValue={tagList} onInput={this.updateTagList} />
+          <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
           <button
             className="articleform__imageButton"
             onClick={this.toggleImageManagement}
