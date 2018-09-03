@@ -144,7 +144,7 @@ class Tags extends Component {
       .then(content => {
         this.setState({
           searchResults: content.hits.filter(
-            hit => !this.props.defaultValue.split(',').includes(hit.name),
+            hit => !this.selected.includes(hit.name),
           ),
         });
       });
