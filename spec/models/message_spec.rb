@@ -78,6 +78,6 @@ RSpec.describe Message, type: :model do
     user2.chat_channel_memberships.last.update_column(:last_opened_at, 2.days.ago)
     create(:message, chat_channel_id: chat_channel.id, user_id: user.id,
                      message_markdown: "hello http://#{ApplicationConfig['APP_DOMAIN']}/report-abuse")
-      expect(EmailMessage.all.size).to eq(0)
+    expect(EmailMessage.all.size).to eq(0)
   end
 end

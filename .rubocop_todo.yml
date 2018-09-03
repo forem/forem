@@ -9,14 +9,6 @@
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
-# SupportedStyles: normal, rails
-Layout/IndentationConsistency:
-  Exclude:
-    - 'spec/models/message_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
 # SupportedStyles: final_newline, final_blank_line
 Layout/TrailingBlankLines:
   Exclude:
