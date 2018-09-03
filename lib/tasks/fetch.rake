@@ -91,4 +91,3 @@ task :award_contributor_badges, [:arg1] => :environment do |t, args|
   BadgeRewarder.award_contributor_badges(usernames)
   puts "Done!"
 end
-
