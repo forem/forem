@@ -58,7 +58,7 @@ module ApplicationHelper
       "github"      => "v1456342401/github-logo_m841aq.png",
       "link"        => "v1456342401/link-symbol_apfbll.png",
       "volume"      => "v1461589297/technology_1_aefet2.png",
-      "volume-mute" => "v1461589297/technology_jiugwb.png"
+      "volume-mute" => "v1461589297/technology_jiugwb.png",
     }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
 
     "https://res.cloudinary.com/practicaldev/image/upload/#{postfix}"
@@ -157,7 +157,7 @@ module ApplicationHelper
       class: "cta follow-action-button",
       data: {
         info: { id: followable.id, className: followable.class.name, style: style }.to_json,
-        "follow-action-button" => true
+        "follow-action-button" => true,
       }
   end
 

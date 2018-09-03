@@ -94,11 +94,3 @@ Style/EvalWithLocation:
 Style/MixinUsage:
   Exclude:
     - 'app/models/podcast_episode.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInHashLiteral:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
