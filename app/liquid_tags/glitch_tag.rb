@@ -20,7 +20,12 @@ class GlitchTag < LiquidTagBase
   private
 
   def parse_id(input)
+    raise StandardError, "Invalid Glitch ID" unless valid_id?(input)
     input.delete(" ")
+  end
+
+  def valid_id?(input)
+    (input.delete(" ") =~ /^[a-zA-Z0-9\-]{1,110}$/)&.zero?
   end
 end
 
