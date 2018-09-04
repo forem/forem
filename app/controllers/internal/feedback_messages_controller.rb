@@ -6,8 +6,9 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     @status = params[:status] || "Open"
     @feedback_messages = FeedbackMessage.
       where(feedback_type: @feedback_type, status: @status).
+      includes(:reporter, :notes).
       order("created_at DESC").
-      page(params[:page] || 1).per(25)
+      page(params[:page] || 1).per(5)
   end
 
   def save_status
