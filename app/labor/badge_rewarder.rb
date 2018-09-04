@@ -25,12 +25,20 @@ module BadgeRewarder
     end
   end
 
-  def self.reward_top_seven_badges(usernames)
+  def self.award_top_seven_badges(usernames, message_markdown = "Congrats!!!")
+    award_badges(usernames, "top-7", message_markdown)
+  end
+
+  def self.award_contributor_badges(usernames, message_markdown = "Thank you so much for your contributions!")
+    award_badges(usernames, "dev-contributor", message_markdown)
+  end
+
+  def self.award_badges(usernames, slug, message_markdown)
     User.where(username: usernames).each do |user|
       BadgeAchievement.create(
         user_id: user.id,
-        badge_id: Badge.find_by_slug("top-7").id,
-        rewarding_context_message_markdown: "Congrats!!!",
+        badge_id: Badge.find_by_slug(slug).id,
+        rewarding_context_message_markdown: message_markdown,
       )
       user.save
     end

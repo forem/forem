@@ -228,12 +228,12 @@
       context.stroke()
     }
 
-    function startPaint(e) {
+    function startPaint(event) {
       addClick(event, this)
       paint = true
     }
 
-    function endPaint(e) {
+    function endPaint(event) {
       if (paint) {
         addClick(event, this)
         draw()

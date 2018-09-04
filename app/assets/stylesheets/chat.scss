@@ -388,6 +388,13 @@
   }
 }
 
+.live-chat-wrapper .activechatchannel__activecontent{
+  min-width: 310px;
+  margin-left: -180px;
+  max-width:96%;
+  padding: 13px;
+}
+
 .activechatchannel__activecontentexitbutton{
   border:  0px;
   font-size: 36px;
@@ -431,6 +438,17 @@
     &:hover{
       opacity:1;
     }
+  }
+}
+
+.activechatchannel__activecontentuserdetails{
+  margin-top:20px;
+  font-family: $monospace;
+  font-size:0.9em;
+  .key{
+    color: $medium-gray;
+    margin-bottom: 3px;
+    font-size:0.9em
   }
 }
 
@@ -605,7 +623,7 @@
   padding: 3px 0 10px;
   flex-grow: 1;
   overflow: scroll;
-  padding-bottom: 25px;
+  padding-bottom: 9vw;
   overflow-x: hidden;
 }
 

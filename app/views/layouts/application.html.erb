@@ -41,7 +41,7 @@
     <% if core_pages? %>
       <%= javascript_include_tag 'base', defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_pack_tag 'pack', defer: true %>
+        <%= javascript_pack_tag 'Onboarding', defer: true %>
       <% end %>
     <% end %>
     <% if !core_pages? %>

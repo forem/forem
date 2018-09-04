@@ -27,6 +27,7 @@ class Role < ApplicationRecord
                 workshop_pass
                 video_permission
                 chatroom_beta_tester
+                comment_banned
               ),
             }
   scopify
