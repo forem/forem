@@ -8002,11 +8002,13 @@ punycode@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.0.tgz#5f863edc89b96db09074bad7947bf09056ca4e7d"
 
-pusher-js@^4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-4.2.2.tgz#de391bfb14d221ef96f462304f8a73b95ce9acc5"
+pusher-js@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-4.3.0.tgz#b24319a5b0b784dc49498515274994488eff2f10"
   dependencies:
     faye-websocket "0.9.4"
+    tweetnacl "^1.0.0"
+    tweetnacl-util "^0.15.0"
     xmlhttprequest "^1.8.0"
 
 q@^1.1.2:
@@ -9663,9 +9665,17 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
+tweetnacl-util@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/tweetnacl-util/-/tweetnacl-util-0.15.0.tgz#4576c1cee5e2d63d207fee52f1ba02819480bc75"
+
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
+
+tweetnacl@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
 
 twilio-video@^1.10.0:
   version "1.10.0"
