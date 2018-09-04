@@ -47,7 +47,7 @@ class ArticlesController < ApplicationController
                              processed_html: "")
                else
                  skip_authorization
-                 if params[:state] == "v2" # || Rails.env.development?
+                 if params[:state] == "v2" || Rails.env.development?
                    Article.new
                  else
                    Article.new(
