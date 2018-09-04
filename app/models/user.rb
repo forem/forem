@@ -54,25 +54,26 @@ class User < ApplicationRecord
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :facebook_url,
-              format: /
-              \A(http|https):\/\/(www.facebook.com|facebook.com)
-              .*\z/x,
+              format: /\A(http|https):\/\/(www.facebook.com|facebook.com)\/([a-zA-Z0-9]{5,50})\z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
-              format: /
-              \A(http|https):\/\/(www.stackoverflow.com|stackoverflow.com)
-              .*\z/x
+              format:
+              /\A(http|https):\/\/(www.stackoverflow.com|stackoverflow.com)
+                \/users\/([0-9]{3,10})\/([a-zA-Z0-9\s\'\-]{3,30})\z/
   validates :behance_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.behance.net|behance.net).*\z/m
+              format: /\A(http|https):\/\/(www.behance.net|behance.net)
+                \/([a-zA-Z0-9\-\_]{3,20})\z/
   validates :linkedin_url,
               allow_blank: true,
               format:
-                /\A(http|https):\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com).*\z/m
+                /\A(https):\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)
+                  \/in\/([a-zA-Z0-9\-]{3,100})\z/
   validates :dribbble_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.dribbble.com|dribbble.com).*\z/m
+              format: /\A(http|https):\/\/(www.dribbble.com|dribbble.com)
+                \/([a-zA-Z0-9\-\_]{2,20})\z/
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
