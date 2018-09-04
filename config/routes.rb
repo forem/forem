@@ -189,7 +189,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
-  get "/survey", to: "pages#survey"
+  get "/survey", to: redirect("https://dev.to/devteam/state-of-the-web-data---call-for-analysis-2o75")
   get "/now" => "pages#now"
   get "/membership" => "pages#membership"
   get "/events" => "events#index"

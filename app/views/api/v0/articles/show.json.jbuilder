@@ -15,8 +15,10 @@ json.comments_count     @article.comments_count
 json.positive_reactions_count @article.positive_reactions_count
 
 json.body_html          @article.processed_html
-json.ltag_style         @article.liquid_tags_used.map { |ltag| Rails.application.assets["ltags/#{ltag}.css"].to_s.html_safe }
-json.ltag_script        @article.liquid_tags_used.map { |ltag| ltag.script.html_safe }
+json.ltag_style         (@article.liquid_tags_used.map do |ltag|
+                           Rails.application.assets["ltags/#{ltag}.css"].to_s.html_safe
+                         end)
+json.ltag_script        (@article.liquid_tags_used.map { |ltag| ltag.script.html_safe })
 
 json.user do
   json.name @article.user.name

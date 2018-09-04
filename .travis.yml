@@ -4,6 +4,7 @@ cache:
   directories:
   - vendor/bundle
   - node_modules
+  - $HOME/.nvm
 rvm:
 - 2.5.1
 addons:
@@ -16,6 +17,8 @@ env:
 branches:
   only:
     - master
+before_install:
+  - nvm install node v8.11.4
 install:
 - bundle install --path vendor/bundle
 - bundle exec chromedriver-update
@@ -36,7 +39,7 @@ script:
 - "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
 - "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
 - "./cc-test-reporter upload-coverage"
-- bundle exec bundle-audit update && bundle exec bundle-audit check
+- "bundle exec bundle-audit check --update"
 deploy:
   provider: heroku
   api_key: "$HEROKU_AUTH_TOKEN"

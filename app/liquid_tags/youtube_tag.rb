@@ -22,6 +22,7 @@ class YoutubeTag < LiquidTagBase
 
   def parse_id(input)
     input = translate_url(input) if input.include?("watch?v=")
+    input = translate_start_time(input) if input.include?("?t=")
     input_no_space = input.delete(" ")
     if valid_id?(input_no_space)
       input_no_space
@@ -34,8 +35,17 @@ class YoutubeTag < LiquidTagBase
     input.split("watch?v=")[1].split("\"")[0]
   end
 
+  def translate_start_time(id)
+    time = id.split("?t=")[-1]
+    if /(\d+)m(\d+)s/.match?(time)
+      time = time.scan(/(\d+)m(\d+)s/)[0].map(&:to_i)
+      seconds = time[1] + (time[0] * 60)
+      "#{id.split('?t=')[0]}?start=#{seconds}"
+    end
+  end
+
   def valid_id?(id)
-    id.length == 11 && id =~ /[a-zA-Z0-9_-]{11}/
+    id =~ /[a-zA-Z0-9_-]{11}(\?start\=\d*)?/
   end
 end
 

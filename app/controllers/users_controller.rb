@@ -21,6 +21,7 @@ class UsersController < ApplicationController
     @tab_list = @user.settings_tab_list
     @tab = params["user"]["tab"] || "profile"
     authorize @user
+    # raise permitted_attributes(@user).to_s
     if @user.update(permitted_attributes(@user))
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."

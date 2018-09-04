@@ -141,7 +141,7 @@ Note: if you've already installed the [husky](https://github.com/typicode/husky)
 
 ## Getting Started
 
-This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installations).
+This section provides a high-level requirement & quick start guide. For detailed installations, please check out our [docs](http://docs.dev.to/installation).
 
 ### Prerequisites
 
@@ -171,6 +171,9 @@ This section provides a high-level requirement & quick start guide. For detailed
     * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 1.  Run `bin/setup`
+1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
+
+[View Full Installation Documentation](https://docs.dev.to/installation/)
 
 #### Starting the application
 
