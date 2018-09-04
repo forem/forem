@@ -49,6 +49,14 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "You just got a badge")
   end
 
+  def feedback_message_resolution_email(params)
+    @user = User.find_by(email: params[:email_to])
+    @email_body = params[:email_body]
+    track utm_campaign: params[:email_type]
+    track extra: { feedback_message_id: params[:feedback_message_id] }
+    mail(to: params[:email_to], subject: params[:email_subject])
+  end
+  
   def new_report_email(report)
     @feedback_message = report
     @user = report.reporter
