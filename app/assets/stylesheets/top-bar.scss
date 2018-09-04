@@ -246,6 +246,7 @@
           margin-bottom: 5px;
           font-size: 1.22em;
           font-weight: 500;
+          overflow-wrap: break-word;
         }
         &:hover {
           background: darken($tan, 2%);
