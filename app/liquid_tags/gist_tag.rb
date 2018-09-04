@@ -38,7 +38,7 @@ class GistTag < LiquidTagBase
   end
 
   def valid_link?(link)
-    (link =~ /^https\:\/\/gist\.github\.com\/([a-zA-Z0-9\-]){1,39}\/([a-zA-Z0-9]){32}\s/)&.
+    (link =~ /^https\:\/\/gist\.github\.com\/([a-zA-Z0-9\-]){1,39}\/([a-zA-Z0-9]){32}\s$/)&.
       zero?
   end
 end
