@@ -292,7 +292,7 @@ var instantClick
 
     $timing.ready = +new Date - $timing.start
 
-    if (xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
+    if (xhr.status === 200 && xhr.getResponseHeader('Content-Type').match(/\/(x|ht|xht)ml/)) {
       var doc = document.implementation.createHTMLDocument('');
       doc.documentElement.innerHTML = removeNoscriptTags(xhr.responseText)
       var title = doc.title
@@ -306,7 +306,6 @@ var instantClick
           title = alteredOnReceive.title
         }
       }
-
       $fetchedBodies[url] = {body:body, title:title};
       var urlWithoutHash = removeHash(url)
 
