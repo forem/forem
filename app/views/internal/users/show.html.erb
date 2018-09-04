@@ -49,16 +49,15 @@
     <% if @user.mentors.count > 0 %>
       <h4> Mentor(s):</h4>
       <ul>
-      <% @user_mentors.each do |mentor| %>
-        <% if mentor.active %>
-          <li>
-            <a href="https://dev.to/<%= User.find(mentor.id).username %>" target=">blank">@<%= User.find(mentor.mentor_id).username %></a><span style="color:green"><em> (active)</em></span>
-          </li>
-        <% else %>
-          <li>
-            <a href="https://dev.to/<%= User.find(mentor.id).username %>" target=">blank">@<%= User.find(mentor.mentor_id).username %></a><span style="color:red"><em> (inactive)</em></span>
-          </li>
-        <% end %>
+      <% @user_mentor_relationships.each do |relationship| %>
+        <li>
+          <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
+          <% if relationship.active %>
+            <span style="color:green"><em> (active)</em></span>
+          <% else %>
+            <span style="color:red"><em> (inactive)</em></span>
+          <% end %>
+        </li>
       <% end %>
       </ul>
     <% end %>
@@ -68,12 +67,14 @@
     <% if @user.mentees.count > 0 %>
       <h4>Mentee(s):</h4>
       <ul>
-      <% @user_mentees.each do |mentee| %>
-        <% if mentee.active %>
-          <li><a href="https://dev.to/<%= User.find(mentee.id).username %>" target=">blank">@<%= User.find(mentee.id).username %></a><span style="color:green;"><em> (active)</em></span></li>
+      <% @user_mentee_relationships.each do |relationship| %>
+        <li><a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
+        <% if relationship.active %>
+          <span style="color:green"><em> (active)</em></span>
         <% else %>
-          <li><a href="https://dev.to/<%= User.find(mentee.id).username %>" target=">blank">@<%= User.find(mentee.id).username %></a><span style="color:red;"><em> (inactive)</em></span></li>
+          <span style="color:red"><em> (inactive)</em></span>
         <% end %>
+        </li>
       <% end %>
       </ul>
     <% end %>

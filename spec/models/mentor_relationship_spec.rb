@@ -1,5 +1,18 @@
 require "rails_helper"
 
 RSpec.describe MentorRelationship, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  let(:mentor) { create(:user) }
+  let(:mentee) { create(:user) }
+  let(:relationship) {  MentorRelationship.create(mentor_id: mentor.id, mentee_id: mentee.id) }
+
+  it "is active" do
+    expect(relationship.active).to eq(true)
+  end
+
+  it { is_expected.to belong_to(:mentor) }
+  it { is_expected.to belong_to(:mentee) }
+
+  it "is not the same user" do
+
+  end
 end

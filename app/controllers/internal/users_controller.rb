@@ -2,16 +2,14 @@ class Internal::UsersController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @users = case params[:state]
-             when "mentors"
-               User.where(offering_mentorship: true)
-             when "mentees"
-               User.where(seeking_mentorship: true)
-             else
-               User.
-                 where(offering_mentorship: true).
-                 or(User.where(seeking_mentorship: true))
-             end
+    case params[:state]
+      when "mentors"
+        @users = User.where(offering_mentorship: true).page(params[:page]).per(3)
+      when "mentees"
+        @users = User.where(seeking_mentorship: true).page(params[:page]).per(3)
+      else
+        @users = User.order("created_at DESC").page(params[:page]).per(3)
+      end
   end
 
   def edit
@@ -20,43 +18,38 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @user_mentees = MentorRelationship.where(mentor_id: @user.id)
-    @user_mentors = MentorRelationship.where(mentee_id: @user.id)
+    @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
+    @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
   end
 
   def update
     @user = User.find(params[:id])
-    mentorship_match
+    @new_mentee = user_params[:add_mentee]
+    @new_mentor = user_params[:add_mentor]
+    check_for_matches
     add_note
-    ban_from_mentorship
+    if user_params[:banned_from_mentorship] == true
+      ban_from_mentorship
+    end
     @user.update!(user_params)
     redirect_to "/internal/users/#{@user.id}"
   end
 
-  def mentorship_match
-    binding.pry
-    return if user_params[:add_mentee].blank? && user_params[:add_mentor].blank?
-
-    if user_params[:add_mentor] && user_params[:add_mentee].blank?
-      MentorRelationship.new(mentee_id: @user.id, mentor_id: User.find(user_params[:add_mentor]).id).save!
-    elsif user_params[:add_mentee] && user_params[:add_mentor].blank?
-      MentorRelationship.new(mentee_id: User.find(user_params[:add_mentee]).id, mentor_id: @user.id).save!
-    else
-      MentorRelationship.new(
-        mentee_id: User.find(user_params[:add_mentee]).id,
-        mentor_id: @user.id,
-      ).save!
-      MentorRelationship.new(
-        mentee_id: @user.id,
-        mentor_id: User.find(user_params[:add_mentor]).id,
-      ).save!
-    end
-  rescue StandardError => e
-    flash[:error] = e.message
+  def check_for_matches
+    return if @new_mentee.blank? && @new_mentor.blank?
+    make_matches
   end
 
-  def validates_mentor_relationship
-    user_params[:add_mentee] != @user.id || user_params[:add_mentor] != @user.id && user_params[:add_mentee] != user_params[:add_mentor]
+  def make_matches
+    if !@new_mentee.blank?
+      mentee = User.find(@new_mentee)
+      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
+    end
+
+    if !@new_mentor.blank?
+      mentor = User.find(@new_mentor)
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
+    end
   end
 
   def add_note
@@ -76,14 +69,11 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def ban_from_mentorship
-    if user_params[:banned_from_mentorship]
-      @user.add_role :banned_from_mentorship
-      mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-      mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
-      deactivate_mentorship(mentee_relationships)
-      deactivate_mentorship(mentor_relationships)
-
-    end
+    @user.add_role :banned_from_mentorship
+    mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
+    mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+    deactivate_mentorship(mentee_relationships)
+    deactivate_mentorship(mentor_relationships)
   end
 
   def deactivate_mentorship(relationships)

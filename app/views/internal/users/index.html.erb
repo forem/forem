@@ -1,8 +1,20 @@
-<h1>Mentors & Mentees</h1>
-
+<h3 class="top-nav">
+  <a href="/internal/users">All Users</a> ||
+  <a href="/internal/users?state=mentors">Mentors Only </a>||
+  <a href="/internal/users?state=mentees">Mentees Only</a>
+</h3>
+<% if params[:state] == "mentors" %>
+  <h1>Mentors</h1>
+<% elsif params[:state] == "mentees" %>
+  <h1>Mentees</h1>
+<% else %>
+  <h1>All Users</h1>
+<% end %>
+<%= paginate @users %>
 <% @users.each do |user| %>
   <div class="row">
     <h2><%= user.name%></h2>
     <h3><a href="/internal/users/<%= user.id %>" target="_blank">@<%= user.username%></a></h3>
   </div>
 <% end %>
+<%= paginate @users %>
