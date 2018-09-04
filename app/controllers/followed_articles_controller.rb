@@ -36,25 +36,28 @@ class FollowedArticlesController < ApplicationController
       (article.decorate.cached_tag_list_array.include?("hiring") && current_user.cached_followed_tag_names.exclude?("hiring"))
   end
 
-  def article_json(a)
-    Rails.cache.fetch("article_json-#{a.id}-#{a.updated_at}-#{a.comments_count}-#{a.reactions_count}", expires_in: 30.minutes) do
+  def article_json(article)
+    cache_key = "article_json-#{article.id}-#{article.updated_at}" \
+      "-#{article.comments_count}-#{article.reactions_count}"
+    Rails.cache.fetch(cache_key, expires_in: 30.minutes) do
       {
-        id: a.id,
-        path: a.path,
-        tag_list: a.decorate.cached_tag_list_array,
-        title: a.title,
-        published_at_int: a.published_at.to_i,
-        published_at_month_day: a.published_at.strftime("%B #{a.published_at.day.ordinalize}"),
-        is_classic: a.published_at < 7.days.ago,
-        comments_count: a.comments_count,
-        reactions_count: a.positive_reactions_count,
-        language: a.language,
+        id: article.id,
+        path: article.path,
+        tag_list: article.decorate.cached_tag_list_array,
+        title: article.title,
+        published_at_int: article.published_at.to_i,
+        published_at_month_day: article.published_at.
+          strftime("%B #{article.published_at.day.ordinalize}"),
+        is_classic: article.published_at < 7.days.ago,
+        comments_count: article.comments_count,
+        reactions_count: article.positive_reactions_count,
+        language: article.language,
         user: {
-          name: a.user.name,
-          username: a.user.username,
-          profile_image_90: ProfileImage.new(a.user).get(90),
+          name: article.user.name,
+          username: article.user.username,
+          profile_image_90: ProfileImage.new(article.user).get(90),
         },
-        flare_tag: FlareTag.new(a).tag_hash,
+        flare_tag: FlareTag.new(article).tag_hash,
       }
     end
   end
