@@ -5,7 +5,6 @@ class User < ApplicationRecord
   attr_accessor :add_mentor
   attr_accessor :add_mentee
   attr_accessor :mentorship_note
-  attr_accessor :change_mentorship_status
   attr_accessor :banned_from_mentorship
 
   rolify

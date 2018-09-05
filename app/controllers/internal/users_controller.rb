@@ -26,17 +26,20 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
-    check_for_matches
+    handle_mentorship
     add_note
-    if user_params[:banned_from_mentorship] == true
-      ban_from_mentorship
-    end
     @user.update!(user_params)
     redirect_to "/internal/users/#{@user.id}"
   end
 
-  def check_for_matches
-    return if @new_mentee.blank? && @new_mentor.blank?
+  def handle_mentorship
+    if user_params[:banned_from_mentorship] == "true"
+      ban_from_mentorship
+    end
+
+    if @new_mentee.blank? && @new_mentor.blank?
+      return
+    end
     make_matches
   end
 
@@ -136,7 +139,6 @@ class Internal::UsersController < Internal::ApplicationController
                                  :add_mentor,
                                  :add_mentee,
                                  :mentorship_note,
-                                 :change_mentorship_status,
                                  :banned_from_mentorship)
   end
 end
