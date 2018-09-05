@@ -8,7 +8,7 @@ class DevCommentTag < LiquidTagBase
 
   def render(_context)
     raise_error unless @comment
-    <<-HTML
+    html = <<-HTML
     <div class="liquid-comment">
       <div class="details">
         <a href="/#{@comment.user.username}">
@@ -18,7 +18,6 @@ class DevCommentTag < LiquidTagBase
         <a href="/#{@comment.user.username}">
           <span class="comment-username">#{@comment.user.name}</span>
         </a>
-        #{render_twitter_and_github}
         <div class="comment-date">
           <a href="#{@comment.path}">#{@comment.readable_publish_date}</a>
         </div>
