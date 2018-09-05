@@ -407,9 +407,9 @@
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/@twilio/sip.js/-/sip.js-0.7.7.tgz#cff50f66f9b295d46f219737b72780c7d0e6df52"
 
-"@twilio/webrtc@twilio/twilio-webrtc.js#2.0.1-rc1":
-  version "2.0.1-rc1"
-  resolved "https://codeload.github.com/twilio/twilio-webrtc.js/tar.gz/3532058a5083e69b6ce1ae2984dd59ad5c864f29"
+"@twilio/webrtc@^2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.1.3.tgz#3920a5aea6ebe1ac434b4dfe17430d3c1035dcc2"
 
 "@types/jest@^23.0.0":
   version "23.3.1"
@@ -9655,12 +9655,12 @@ tweetnacl@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
 
-twilio-video@^1.10.0:
-  version "1.10.0"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.10.0.tgz#5345f7b664a815a0fc35b99820cdfe19984ae56f"
+twilio-video@^1.14.0:
+  version "1.14.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.14.0.tgz#edd68f8ff3ea34e8a90f19f0bbd37c57d52ebfae"
   dependencies:
     "@twilio/sip.js" "^0.7.7"
-    "@twilio/webrtc" twilio/twilio-webrtc.js#2.0.1-rc1
+    "@twilio/webrtc" "^2.1.3"
     ws "^3.3.1"
     xmlhttprequest "^1.8.0"
 
