@@ -2,14 +2,14 @@ class Internal::UsersController < Internal::ApplicationController
   layout "internal"
 
   def index
-    case params[:state]
-      when "mentors"
-        @users = User.where(offering_mentorship: true).page(params[:page]).per(3)
-      when "mentees"
-        @users = User.where(seeking_mentorship: true).page(params[:page]).per(3)
-      else
-        @users = User.order("created_at DESC").page(params[:page]).per(3)
-      end
+    @users = case params[:state]
+             when "mentors"
+               User.where(offering_mentorship: true).page(params[:page]).per(3)
+             when "mentees"
+               User.where(seeking_mentorship: true).page(params[:page]).per(3)
+             else
+               User.order("created_at DESC").page(params[:page]).per(3)
+               end
   end
 
   def edit
