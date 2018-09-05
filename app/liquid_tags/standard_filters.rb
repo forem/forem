@@ -7,6 +7,10 @@ module StandardFilters
     raise StandardError, "Liquid#compact filter is disabled"
   end
 
+  def first(_input)
+    raise StandardError, "Liquid#first filter is disabled"
+  end
+
   def join(_input)
     raise StandardError, "Liquid#join filter is disabled"
   end
