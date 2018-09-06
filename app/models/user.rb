@@ -56,7 +56,7 @@ class User < ApplicationRecord
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   # rubocop:disable Metrics/LineLength
   validates :facebook_url,
-              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/([a-zA-Z0-9]{5,50})\/?\Z/,
+              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/(?=([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*)).{5,50}\/?\Z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
