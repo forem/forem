@@ -9,6 +9,11 @@ class MarkdownParser
     parse_it
   end
 
+  def calculate_reading_time
+    word_count = @content.split(/\W+/).count
+    (word_count / 275.0).ceil
+  end
+
   def evaluate_markdown
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)

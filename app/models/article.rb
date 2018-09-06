@@ -298,6 +298,7 @@ class Article < ApplicationRecord
       fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed_markdown = MarkdownParser.new(parsed.content)
+      self.reading_time = parsed_markdown.calculate_reading_time
       self.processed_html = parsed_markdown.finalize
       evaluate_front_matter(parsed.front_matter)
     rescue StandardError => e
