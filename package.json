@@ -61,7 +61,7 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-preact": "^1.1.0",
-    "css-loader": "^0.28.11",
+    "css-loader": "^1.0.0",
     "eslint": "^5.5.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
