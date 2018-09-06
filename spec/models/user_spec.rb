@@ -66,7 +66,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https facebook url" do
-      %w(thepracticaldev thepracticaldev/).each do |username|
+      %w(thepracticaldev thepracticaldev/ the.practical.dev).each do |username|
         user.facebook_url = "https://facebook.com/#{username}"
         expect(user).to be_valid
       end
