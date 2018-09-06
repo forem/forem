@@ -57,7 +57,7 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^9.0.0",
     "babel-jest": "^23.4.2",
-    "babel-loader": "^7.1.4",
+    "babel-loader": "^8.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-preact": "^1.1.0",
