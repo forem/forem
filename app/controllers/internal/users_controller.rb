@@ -40,9 +40,15 @@ class Internal::UsersController < Internal::ApplicationController
     user.currently_hacking_on = ""
     user.available_for = ""
     user.email_public = false
+    user.facebook_url = nil
+    user.dribbble_url = nil
+    user.stackoverflow_url = nil
+    user.behance_url = nil
+    user.linkedin_url = nil
     user.add_role :banned
     unless user.notes.where(reason: "banned").any?
-      user.notes.create!(reason: "banned", content: "spam account")
+      user.notes.
+        create!(reason: "banned", content: "spam account", author_id: current_user.id)
     end
     user.comments.each do |comment|
       comment.reactions.each { |rxn| rxn.delay.destroy! }
