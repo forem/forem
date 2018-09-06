@@ -1,5 +1,6 @@
 class MarkdownParser
   include ApplicationHelper
+  include CloudinaryHelper
 
   def initialize(content)
     @content = content
