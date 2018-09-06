@@ -86,7 +86,7 @@
     "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
-    "@rails/webpacker": "^3.5.3",
+    "@rails/webpacker": "^3.5.5",
     "@webscopeio/react-textarea-autocomplete": "^2.2.0",
     "codemirror": "^5.40.0",
     "intersection-observer": "^0.5.0",
