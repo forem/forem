@@ -6,7 +6,7 @@ RSpec.describe "internal/users", type: :request do
   let(:admin)  { create(:user, :super_admin) }
 
   before do
-    login_as(admin)
+    sign_in(admin)
     mentor
     mentee
   end
@@ -28,7 +28,7 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
-  describe "GETS /internal/users/:id" do
+  describe "GET /internal/users/:id" do
     it "renders to appropriate page" do
       get "/internal/users/#{mentor.id}"
       expect(response.body).to include(mentor.username)
@@ -48,9 +48,8 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "bans user from mentorship" do
-      put "/internal/users/#{mentor.id}", params: { user: { banned_from_mentorship: true } }
+      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: true } }
       expect(mentor.reload.banned_from_mentorship).to eq(true)
-
     end
 
     it "pairs mentor with a mentee" do
@@ -59,10 +58,43 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "pairs mentee with a mentor" do
-      put "/internal/users/#{mentee.id}", params: { user: {add_mentor: mentor.id} }
+      put "/internal/users/#{mentee.id}", params: { user: { add_mentor: mentor.id } }
       expect(mentor.mentees[0].id).to eq(mentee.id)
     end
 
+    it "deactivates existing mentorships when user is banned" do
+      put "/internal/users/#{mentor.id}", params: { user: { add_mentee: mentee.id } }
+      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: true } }
+      expect(MentorRelationship.where(mentor_id: mentor.id)[0].active).to eq(false)
+    end
+
+    it "creates mentorship note" do
+      put "/internal/users/#{mentor.id}", params: { user: { mentorship_note: "some note" } }
+      expect(mentor.notes[0].content).to eq("some note")
+    end
   end
 
+  describe "GET internal/users/:id/edit" do
+    it "redirects from /username/moderate" do
+      get "/#{mentor.username}/moderate"
+      expect(response).to redirect_to("/internal/users/#{mentor.id}/edit")
+    end
+
+    it "shows banish button for new users" do
+      get "/internal/users/#{mentor.id}/edit"
+      expect(response.body).to include("Banish User for Spam!")
+    end
+
+    it "does not show banish button for non-admins" do
+      sign_out(admin)
+      expect { get "/internal/users/#{mentor.id}/edit" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
+  describe "PUT internal/users/:id/edit" do
+    it "bans user for spam" do
+      post "/internal/users/#{mentor.id}/banish"
+      expect(mentor.reload.username).to include("spam")
+    end
+  end
 end

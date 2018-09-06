@@ -5,7 +5,7 @@ class User < ApplicationRecord
   attr_accessor :add_mentor
   attr_accessor :add_mentee
   attr_accessor :mentorship_note
-  attr_accessor :banned_from_mentorship
+  attr_accessor :ban_from_mentorship
 
   rolify
   include AlgoliaSearch
@@ -35,10 +35,16 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
-  has_many :mentor_relationships_as_mentee, class_name: "MentorRelationship", foreign_key: "mentee_id"
-  has_many :mentor_relationships_as_mentor, class_name: "MentorRelationship", foreign_key: "mentor_id"
-  has_many :mentors, through: :mentor_relationships_as_mentee, source: :mentor
-  has_many :mentees, through: :mentor_relationships_as_mentor, source: :mentee
+  has_many :mentor_relationships_as_mentee,
+  class_name: "MentorRelationship", foreign_key: "mentee_id"
+  has_many :mentor_relationships_as_mentor,
+  class_name: "MentorRelationship", foreign_key: "mentor_id"
+  has_many :mentors,
+  through: :mentor_relationships_as_mentee,
+  source: :mentor
+  has_many :mentees,
+  through: :mentor_relationships_as_mentor,
+  source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -99,10 +105,13 @@ class User < ApplicationRecord
               allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
-            :employment_title, :education, :location,
-            length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, :mentee_description, :mentor_description,
-            length: { maximum: 500 }
+              length: { maximum: 100 }
+  validates :employment_title, :education, :location,
+              length: { maximum: 100 }
+  validates :mostly_work_with, :currently_learning,
+            :currently_hacking_on, :available_for,
+            :mentee_description, :mentor_description,
+              length: { maximum: 500 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
   validate  :unique_including_orgs
@@ -204,7 +213,8 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch("user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids", expires_in: 120.hours) do
+    Rails.cache.fetch("user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
+      expires_in: 120.hours) do
       # More efficient query. May not cover future edge cases.
       # Should probably only return users who have published lately
       # But this should be okay for most for now.
@@ -471,7 +481,10 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.sanitize(comments.last(2).pluck(:body_markdown).join(" "))[0..2500]
+    ActionView::Base.full_sanitizer.
+      sanitize(comments.last(2).
+      pluck(:body_markdown).
+      join(" "))[0..2500]
   end
 
   def body_text
@@ -490,7 +503,10 @@ class User < ApplicationRecord
   end
 
   def search_score
-    score = (((articles_count + comments_count + reactions_count) * 10) + tag_keywords_for_search.size) * reputation_modifier * followers_count
+    score =
+      (((articles_count + comments_count + reactions_count) * 10) + tag_keywords_for_search.size) *
+      reputation_modifier *
+      followers_count
     score.to_i
   end
 

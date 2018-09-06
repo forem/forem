@@ -29,10 +29,9 @@ Rails.application.routes.draw do
     resources :broadcasts
     resources :users do
       member do
-        post 'banish'
+        post "banish"
       end
     end
-    # post "banish", to: "users#banish"
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: [:create]

@@ -31,7 +31,7 @@
     <% if @user.banned_from_mentorship %>
       <p style="background-color:red; color:white;"> USER IS BANNED FROM MENTORSHIP, SEE NOTES BELOW </p>
     <% else %>
-      <p>Ban user from participating in mentorship program <%= f.check_box :banned_from_mentorship %></p>
+      <p>Ban user from participating in mentorship program <%= f.check_box :ban_from_mentorship %></p>
     <% end %>
     <%= f.label :offering_mentorship %>
     <%= f.check_box :offering_mentorship %>

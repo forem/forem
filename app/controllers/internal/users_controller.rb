@@ -4,16 +4,16 @@ class Internal::UsersController < Internal::ApplicationController
   def index
     @users = case params[:state]
              when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(3)
+               User.where(offering_mentorship: true).page(params[:page]).per(20)
              when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(3)
+               User.where(seeking_mentorship: true).page(params[:page]).per(20)
              else
-               User.order("created_at DESC").page(params[:page]).per(3)
-               end
+               User.order("created_at DESC").page(params[:page]).per(20)
+             end
   end
 
   def edit
-    @user = User.find(params[:id])
+    @user = User.find(pa∏rams[:id])
   end
 
   def show
@@ -33,7 +33,7 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def handle_mentorship
-    if user_params[:banned_from_mentorship] == "true"
+    if user_params[:ban_from_mentorship] == "true"
       ban_from_mentorship
     end
 
@@ -139,6 +139,6 @@ class Internal::UsersController < Internal::ApplicationController
                                  :add_mentor,
                                  :add_mentee,
                                  :mentorship_note,
-                                 :banned_from_mentorship)
+                                 :ban_from_mentorship)
   end
 end
