@@ -48,7 +48,7 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "bans user from mentorship" do
-      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: true } }
+      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: "1" } }
       expect(mentor.reload.banned_from_mentorship).to eq(true)
     end
 
@@ -64,7 +64,7 @@ RSpec.describe "internal/users", type: :request do
 
     it "deactivates existing mentorships when user is banned" do
       put "/internal/users/#{mentor.id}", params: { user: { add_mentee: mentee.id } }
-      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: true } }
+      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: "1" } }
       expect(MentorRelationship.where(mentor_id: mentor.id)[0].active).to eq(false)
     end
 

@@ -106,13 +106,14 @@ class User < ApplicationRecord
               allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
-            :employment_title, :education, :location,
-            length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on,
-            :available_for,
-            length: { maximum: 500 }
+              length: { maximum: 100 }
+  validates :employment_title, :education, :location,
+              length: { maximum: 100 }
+  validates :mostly_work_with, :currently_learning,
+            :currently_hacking_on, :available_for,
+                length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
-            length: { maximum: 1000 }
+              length: { maximum: 1000 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
   validate  :unique_including_orgs

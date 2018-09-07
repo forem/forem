@@ -84,7 +84,7 @@
     <h3><u>Mentorship Notes</u></h3>
     <% if @user.notes.count > 0 %>
       <% @user.notes.each do |note| %>
-        <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %></em> - <%= note.content %></p>
+        <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
       <% end %>
       <br>
       <h4>Add new mentorship note</h4>

@@ -33,7 +33,7 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def handle_mentorship
-    if user_params[:ban_from_mentorship] == "true"
+    if user_params[:ban_from_mentorship] == "1"
       ban_from_mentorship
     end
 
@@ -58,6 +58,7 @@ class Internal::UsersController < Internal::ApplicationController
   def add_note
     if user_params[:mentorship_note]
       Note.create(
+        author_id: @current_user.id,
         noteable_id: @user.id,
         noteable_type: "User",
         reason: "mentorship",
