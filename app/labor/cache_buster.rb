@@ -5,11 +5,10 @@ class CacheBuster
 
   def bust(path)
     return unless Rails.env.production?
-    request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
+    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
     headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
+    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
     headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    request
   end
 
   def bust_comment(comment)
@@ -44,7 +43,7 @@ class CacheBuster
     bust(article.path + "/?i=i")
     bust(article.path + "/comments")
     bust(article.path + "?preview=" + article.password)
-    bust(article.path + "?preview=" + article.password + "?i=i")
+    bust(article.path + "?preview=" + article.password + "&i=i")
     if article.organization.present?
       bust("/#{article.organization.slug}")
     end

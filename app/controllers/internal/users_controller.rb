@@ -115,17 +115,24 @@ class Internal::UsersController < Internal::ApplicationController
     user.currently_hacking_on = ""
     user.available_for = ""
     user.email_public = false
+    user.facebook_url = nil
+    user.dribbble_url = nil
+    user.stackoverflow_url = nil
+    user.behance_url = nil
+    user.linkedin_url = nil
     user.add_role :banned
     unless user.notes.where(reason: "banned").any?
-      user.notes.create!(reason: "banned", content: "spam account")
+      user.notes.
+        create!(reason: "banned", content: "spam account", author_id: current_user.id)
     end
     user.comments.each do |comment|
-      comment.reactions.each &:destroy!
-      comment.destroy!
+      comment.reactions.each { |rxn| rxn.delay.destroy! }
+      comment.delay.destroy!
     end
-    user.articles.each &:destroy!
+    user.articles.each { |article| article.delay.destroy! }
     user.remove_from_index!
     user.save!
+    CacheBuster.new.bust("/#{user.old_username}")
     user.update!(old_username: nil)
   rescue StandardError => e
     flash[:error] = e.message

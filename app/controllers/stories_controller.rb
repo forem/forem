@@ -162,7 +162,8 @@ class StoriesController < ApplicationController
     @featured_story = Article.new
     @article_index = true
     @list_of = "articles"
-    redirect_if_view_param; return if performed?
+    redirect_if_view_param
+    return if performed?
     set_surrogate_key_header "articles-user-#{@user.id}", @stories.map(&:record_key)
     render template: "articles/index"
   end
@@ -196,7 +197,8 @@ class StoriesController < ApplicationController
     @comment = Comment.new
     assign_article_and_user_and_organization
     assign_sticky_nav
-    handle_possible_redirect; return if performed?
+    handle_possible_redirect
+    return if performed?
     not_found unless @article
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 75 : 25
     assign_second_and_third_user
@@ -206,7 +208,8 @@ class StoriesController < ApplicationController
     unless user_signed_in?
       response.headers["Surrogate-Control"] = "max-age=10000, stale-while-revalidate=30, stale-if-error=86400"
     end
-    redirect_if_show_view_param; return if performed?
+    redirect_if_show_view_param
+    return if performed?
     render template: "articles/show"
   end
 
@@ -284,7 +287,6 @@ class StoriesController < ApplicationController
     return unless @article
     reaction_count_num = Rails.env.production? ? 15 : -1
     comment_count_num = Rails.env.production? ? 7 : -2
-    tag_articles = []
     more_articles = []
     article_tags = @article.cached_tag_list_array
     article_tags.delete("discuss")

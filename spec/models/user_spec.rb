@@ -65,11 +65,6 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
-    it "accepts valid http facebook url" do
-      user.facebook_url = "http://facebook.com/thepracticaldev"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https facebook url" do
       user.facebook_url = "https://facebook.com/thepracticaldev"
       expect(user).to be_valid
@@ -78,11 +73,6 @@ RSpec.describe User, type: :model do
     it "does not accept invalid facebook url" do
       user.facebook_url = "ben.com"
       expect(user).not_to be_valid
-    end
-
-    it "accepts valid http behance url" do
-      user.behance_url = "http://behance.net/jess"
-      expect(user).to be_valid
     end
 
     it "accepts valid https behance url" do
@@ -95,13 +85,8 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http stackoverflow url" do
-      user.stackoverflow_url = "http://stackoverflow.com/jess"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https stackoverflow url" do
-      user.stackoverflow_url = "https://stackoverflow.com/jess"
+      user.stackoverflow_url = "https://stackoverflow.com/users/7381391/pandyzhao"
       expect(user).to be_valid
     end
 
@@ -110,24 +95,29 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http linkedin url" do
-      user.linkedin_url = "http://linkedin.com/in/jessleenyc"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https linkedin url" do
       user.linkedin_url = "https://linkedin.com/in/jessleenyc"
       expect(user).to be_valid
     end
 
-    it "does not accept invalid linkedin url" do
-      user.linkedin_url = "ben.com"
+    it "accepts valid country specific https linkedin url" do
+      user.linkedin_url = "https://mx.linkedin.com/in/jessleenyc"
+      expect(user).to be_valid
+    end
+
+    it "does not accept three letters country codes in http linkedin url" do
+      user.linkedin_url = "http://mex.linkedin.com/in/jessleenyc"
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http dribbble url" do
-      user.dribbble_url = "http://dribbble.com/jess"
-      expect(user).to be_valid
+    it "does not accept three letters country codes in https linkedin url" do
+      user.linkedin_url = "https://mex.linkedin.com/in/jessleenyc"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept invalid linkedin url" do
+      user.linkedin_url = "ben.com"
+      expect(user).not_to be_valid
     end
 
     it "accepts valid https dribbble url" do
@@ -162,6 +152,30 @@ RSpec.describe User, type: :model do
       user.mentee_description = "hello"
       user.save
       expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "does not allow mentee description to be too long" do
+      user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
+      user.save
+      expect(user.mentee_form_updated_at).to eq(nil)
+    end
+
+    it "does not allow mentor description to be too long" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
+      user.save
+      expect(user.mentor_form_updated_at).to eq(nil)
+    end
+
+    it "allow mentee description to be the max length" do
+      user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentee_form_updated_at).not_to eq(nil)
+    end
+
+    it "allow mentor description to be the max length" do
+      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
+      user.save
+      expect(user.mentor_form_updated_at).not_to eq(nil)
     end
 
     it "does not allow too short or too long name" do

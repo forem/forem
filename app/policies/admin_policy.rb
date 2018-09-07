@@ -1,5 +1,5 @@
 class AdminPolicy < ApplicationPolicy
   def show?
-    user_is_admin?
+    user_admin?
   end
 end

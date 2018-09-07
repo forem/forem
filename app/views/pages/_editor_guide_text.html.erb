@@ -35,13 +35,16 @@
     <h3><strong>Inline Images</strong></h3>
     <p>
       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan"></img>
-      <code>![Alt text of image](put-link-to-image-here)</code>
+      <pre>
+        ![Alt text of image](put-link-to-image-here)
+      </pre>
+        <figcaption> You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
     </p>
 
     <h3><strong>Headers</strong></h3>
     <p>Add a header to your post with this syntax:</p>
     <pre>
-      <code><br>#One '#' for a h1 header<br>##Two '#'s for a h2 header<br>...<br>######Six '#'s for a h6 header</code>
+      <br># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header
     </pre>
     <h1>One '#' for a h1 header</h1>
     <h2>Two '#'s for a h2 header</h2>
@@ -53,6 +56,10 @@
     <h3><strong>dev.to Article/Post Embed</strong></h3>
     <p>All you need is the full link of the article:</p>
     <code>{% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
+
+    <h3><strong>dev.to User Embed</strong></h3>
+    <p>All you need is the DEV username:</p>
+    <code>{% user jess %}</code>
 
     <h3><strong>dev.to Comment Embed</strong></h3>
     <p>All you need is the <code>ID</code> at the end of a comment URL. To get the comment link, click the top right arrow on a comment and then click "Permalink". Here's an example:</p>
@@ -67,12 +74,12 @@
     <code>{% twitter 834439977220112384 %}</code>
 
     <h3><strong>Glitch embed</strong></h3>
-    <p>Use the glitch project slug</p>
+    <p>All you need is the Glitch project slug</p>
     <code>{% glitch earthy-course %}</code>
 
     <h3><strong>GitHub Repo Embed</strong></h3>
-    <p>Use the GitHub username and repo name like this:</p>
-    <code>{% github thepracticaldev/dev.to_core %}</code>
+    <p>All you need is the GitHub username and repo:</p>
+    <code>{% github thepracticaldev/dev.to %}</code>
 
     <h3><strong>GitHub Issue or Comment Embed</strong></h3>
     <p>All you need is the GitHub issue or comment URL:</p>
@@ -82,9 +89,10 @@
     <p>All you need is the gist link:</p>
     <code>{% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}</code>
 
-    <h3><strong>YouTube Embed</strong></h3>
-    <p>All you need is the YouTube <code>id</code> from the URL:</p>
-    <code>{% youtube 9z-Pdfxxdyo %}</code>
+    <h3><strong>Video Embed</strong></h3>
+    <p>All you need is the <code>id</code> from the URL.
+    <code>{% youtube dQw4w9WgXcQ %}</code>
+    <code>{% vimeo 193110695 %}</code><br />
 
     <h3><strong>CodePen Embed</strong></h3>
     <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
@@ -92,7 +100,7 @@
 
     <h3><strong>RunKit Embed</strong></h3>
     <p>Put executable code within a runkit liquid block, as follows:</p>
-    <pre><code>{% runkit %}<br>console.log("Place javascript here!"); <br>{% endrunkit %} <br></code></pre>
+    <pre>{% runkit %}<br>console.log("Place javascript here!"); <br>{% endrunkit %} <br></pre>
 
     <h3><strong>repl.it Embed</strong></h3>
     <p>All you need is the URL after the domain name:</p>
@@ -101,6 +109,18 @@
     <h3><strong>Instagram Embed</strong></h3>
     <p>All you need is the Instagram post <code>id</code> from the URL.</p>
     <code>{% instagram BXgGcAUjM39 %}</code>
+
+    <h3><strong>Speakerdeck Tag</strong></h3>
+    <p>All you need is the data-id code from the embed link:</p>
+    <pre>
+      <span style="color: gray;"># Given this embed link:</span>
+      < script async class="speakerdeck-embed"
+      data-id="<span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span>"
+      data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js">< /script >
+    </pre>
+    <pre>
+      {% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}
+    </pre>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
     <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>

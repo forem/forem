@@ -1,5 +1,6 @@
 class MarkdownParser
   include ApplicationHelper
+  include CloudinaryHelper
 
   def initialize(content)
     @content = content
@@ -88,7 +89,7 @@ class MarkdownParser
     html = wrap_all_images_in_links(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
-    html = wrap_mentions_with_links!(html)
+    wrap_mentions_with_links!(html)
   end
 
   def catch_xss_attempts(markdown)

@@ -28,6 +28,7 @@ class User < ApplicationRecord
   has_many    :mentions, dependent: :destroy
   has_many    :messages
   has_many    :notes, as: :noteable
+  has_many    :authored_notes, as: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
   has_many    :tweets, dependent: :destroy
@@ -68,25 +69,25 @@ class User < ApplicationRecord
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  # rubocop:disable Metrics/LineLength
   validates :facebook_url,
-              format: /
-              \A(http|https):\/\/(www.facebook.com|facebook.com)
-              .*\z/x,
+              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/([a-zA-Z0-9]{5,50})\Z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
-              format: /
-              \A(http|https):\/\/(www.stackoverflow.com|stackoverflow.com)
-              .*\z/x
+              format:
+              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com)\/users\/([0-9]{3,10})\/([a-zA-Z0-9\s\'\-]{3,30})\Z/
   validates :behance_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.behance.net|behance.net).*\z/m
+              format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\Z/
   validates :linkedin_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.linkedin.com|linkedin.com).*\z/m
+              format:
+                /\Ahttps:\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/in\/([a-zA-Z0-9\-]{3,100})\Z/
   validates :dribbble_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.dribbble.com|dribbble.com).*\z/m
+              format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\Z/
+  # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
@@ -105,13 +106,13 @@ class User < ApplicationRecord
               allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
-              length: { maximum: 100 }
-  validates :employment_title, :education, :location,
-              length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning,
-            :currently_hacking_on, :available_for,
-            :mentee_description, :mentor_description,
-              length: { maximum: 500 }
+            :employment_title, :education, :location,
+            length: { maximum: 100 }
+  validates :mostly_work_with, :currently_learning, :currently_hacking_on,
+            :available_for,
+            length: { maximum: 500 }
+  validates :mentee_description, :mentor_description,
+            length: { maximum: 1000 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
   validate  :unique_including_orgs
@@ -213,8 +214,11 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch("user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
-      expires_in: 120.hours) do
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
+      expires_in: 120.hours,
+    ) do
+
       # More efficient query. May not cover future edge cases.
       # Should probably only return users who have published lately
       # But this should be okay for most for now.
@@ -481,10 +485,9 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.
-      sanitize(comments.last(2).
-      pluck(:body_markdown).
-      join(" "))[0..2500]
+    ActionView::Base.full_sanitizer.sanitize(
+      comments.last(2).pluck(:body_markdown).join(" "),
+    )[0..2500]
   end
 
   def body_text
@@ -503,10 +506,8 @@ class User < ApplicationRecord
   end
 
   def search_score
-    score =
-      (((articles_count + comments_count + reactions_count) * 10) + tag_keywords_for_search.size) *
-      reputation_modifier *
-      followers_count
+    article_score = (articles_count + comments_count + reactions_count) * 10
+    score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
   end
 

@@ -1,5 +1,5 @@
-# Global settings applied to the whole site.  
-# 
+# Global settings applied to the whole site.
+#
 # “publish” is the directory to publish (relative to root of your repo),
 # “command” is your build command,
 # “base” is directory to change to before starting build. if you set base:
@@ -13,21 +13,25 @@
 [[redirects]]
   from = "http://docs.dev.to/*"
   to = "https://docs.dev.to/:splat"
+  status = 301
 [[redirects]]
   from = "docs.dev.to"
   to = "https://docs.dev.to"
 [[redirects]]
   from = "docs.dev.to/*"
   to = "https://docs.dev.to/:splat"
+  status = 301
 [[redirects]]
   from = "http://devto.netlify.com"
   to = "https://docs.dev.to"
 [[redirects]]
-  from = "http://devto.netlify.com/:splat"
+  from = "http://devto.netlify.com/*"
   to = "https://docs.dev.to/:splat"
+  status = 301
 [[redirects]]
   from = "https://devto.netlify.com"
   to = "https://docs.dev.to"
 [[redirects]]
   from = "https://devto.netlify.com/*"
   to = "https://docs.dev.to/:splat"
+  status = 301

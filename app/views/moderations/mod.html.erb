@@ -23,7 +23,7 @@
 </style>
 
 <div class="container" style="text-align: center">
-  <h2>MODERATE: <a href="<%= @moderatable.path %>"><%= @moderatable.title %></a></h2>
+  <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %>></a></h2>
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
