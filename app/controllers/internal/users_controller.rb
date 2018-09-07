@@ -13,7 +13,7 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def edit
-    @user = User.find(pa∏rams[:id])
+    @user = User.find(params[:id])
   end
 
   def show
