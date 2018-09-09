@@ -6,7 +6,24 @@ class MarkdownParser
   end
 
   def finalize
-    parse_it
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    catch_xss_attempts(@content)
+    escaped_content = escape_liquid_tags_in_codeblock(@content)
+    html = markdown.render(escaped_content)
+    sanitized_content = sanitize_rendered_markdown(html)
+    begin
+      parsed_liquid = Liquid::Template.parse(sanitized_content)
+    rescue StandardError => e
+      raise StandardError, e.message
+    end
+    html = markdown.render(parsed_liquid.render)
+    html = remove_nested_linebreak_in_list(html)
+    html = prefix_all_images(html)
+    html = wrap_all_images_in_links(html)
+    html = wrap_all_tables(html)
+    html = remove_empty_paragraphs(html)
+    wrap_mentions_with_links!(html)
   end
 
   def calculate_reading_time
@@ -74,27 +91,6 @@ class MarkdownParser
   end
 
   private
-
-  def parse_it
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    catch_xss_attempts(@content)
-    escaped_content = escape_liquid_tags_in_codeblock(@content)
-    html = markdown.render(escaped_content)
-    sanitized_content = sanitize_rendered_markdown(html)
-    begin
-      parsed_liquid = Liquid::Template.parse(sanitized_content)
-    rescue StandardError => e
-      raise StandardError, e.message
-    end
-    html = markdown.render(parsed_liquid.render)
-    html = remove_nested_linebreak_in_list(html)
-    html = prefix_all_images(html)
-    html = wrap_all_images_in_links(html)
-    html = wrap_all_tables(html)
-    html = remove_empty_paragraphs(html)
-    wrap_mentions_with_links!(html)
-  end
 
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
