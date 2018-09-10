@@ -56,22 +56,22 @@ class User < ApplicationRecord
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   # rubocop:disable Metrics/LineLength
   validates :facebook_url,
-              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/([a-zA-Z0-9]{5,50})\Z/,
+              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/[a-zA-Z0-9.]{5,50}\/?\Z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
               format:
-              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com)\/users\/([0-9]{3,10})\/([a-zA-Z0-9\s\'\-]{3,30})\Z/
+              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com)\/users\/([0-9]{3,10})\/([a-zA-Z0-9\s\'\-]{3,30})\/?\Z/
   validates :behance_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\Z/
+              format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\/?\Z/
   validates :linkedin_url,
               allow_blank: true,
               format:
-                /\Ahttps:\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/in\/([a-zA-Z0-9\-]{3,100})\Z/
+                /\Ahttps:\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/in\/([a-zA-Z0-9\-]{3,100})\/?\Z/
   validates :dribbble_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\Z/
+              format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
   # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
