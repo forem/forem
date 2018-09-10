@@ -22,7 +22,7 @@ class ReplitTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id.length > 1 && id =~ /[a-zA-Z0-9\/]/
+    id =~ /\A\@[\w]{2,15}\/[a-zA-Z0-9\-]{0,60}\Z/
   end
 end
 

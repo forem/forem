@@ -167,8 +167,8 @@ class Comment < ApplicationRecord
   end
 
   def custom_css
-    MarkdownParser.new(body_markdown).tags_used.map do |t|
-      Rails.application.assets["ltags/#{t}.css"].to_s
+    MarkdownParser.new(body_markdown).tags_used.map do |tag|
+      Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
   end
 

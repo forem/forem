@@ -28,6 +28,27 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.new_report_email(FeedbackMessage.first)
   end
 
+  def feedback_message_resolution_email
+    # change email_body text when you need to see a different version
+    email_body = <<~HEREDOC
+      Hi [*USERNAME*],
+
+      We wanted to say thank you for flagging a [comment/post] that was in violation of the dev.to code of conduct and terms of service. Your action has helped us continue our work of fostering an open and welcoming community.
+
+      We've also removed the offending posts and reached out to the offender(s).
+
+      Thanks again for being a great part of the community.
+
+      PBJ
+    HEREDOC
+    params = {
+      email_to: "andy@dev.to",
+      email_subject: "Courtesy notice from dev.to",
+      email_body: email_body,
+    }
+    NotifyMailer.feedback_message_resolution_email(params)
+  end
+  
   def new_message_email
     NotifyMailer.new_message_email(Message.last)
   end

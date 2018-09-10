@@ -91,9 +91,9 @@ class MailchimpBot
     Digest::MD5.hexdigest(email.downcase)
   end
 
-  def report_error(e)
+  def report_error(exception)
     logger = Logger.new(STDOUT)
-    logger.error(e)
+    logger.error(exception)
   end
 
   def target_md5_email

@@ -41,7 +41,7 @@ class SpeakerdeckTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    !!(id =~ /\A[a-z\d]*\Z/i)
+    id =~ /\A[a-z\d]{32}\Z/i
   end
 end
 

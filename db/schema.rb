@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 20180826174411) do
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
     t.datetime "clicked_at"
     t.text "content"
+    t.integer "feedback_message_id"
     t.string "mailer"
     t.datetime "opened_at"
     t.datetime "sent_at"
@@ -286,8 +287,6 @@ ActiveRecord::Schema.define(version: 20180826174411) do
     t.string "reported_url"
     t.boolean "reporter_email_sent?", default: false
     t.integer "reporter_id"
-    t.integer "reviewer_id"
-    t.string "slug"
     t.string "status", default: "Open"
     t.datetime "updated_at"
     t.boolean "victim_email_sent?", default: false
@@ -387,6 +386,7 @@ ActiveRecord::Schema.define(version: 20180826174411) do
   end
 
   create_table "notes", id: :serial, force: :cascade do |t|
+    t.integer "author_id"
     t.text "content"
     t.datetime "created_at", null: false
     t.integer "noteable_id"
