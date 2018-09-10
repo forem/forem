@@ -77,7 +77,7 @@ task award_badges: :environment do
 end
 
 # rake award_top_seven_badges["ben jess peter mac liana andy"]
-task :award_top_seven_badges, [:arg1] => :environment do |t, args|
+task :award_top_seven_badges, [:arg1] => :environment do |_t, args|
   usernames = args[:arg1].split(" ")
   puts "Awarding top-7 badges to #{usernames}"
   BadgeRewarder.award_top_seven_badges(usernames)
@@ -85,10 +85,9 @@ task :award_top_seven_badges, [:arg1] => :environment do |t, args|
 end
 
 # rake award_contributor_badges["ben jess peter mac liana andy"]
-task :award_contributor_badges, [:arg1] => :environment do |t, args|
+task :award_contributor_badges, [:arg1] => :environment do |_t, args|
   usernames = args[:arg1].split(" ")
   puts "Awarding dev-contributor badges to #{usernames}"
   BadgeRewarder.award_contributor_badges(usernames)
   puts "Done!"
 end
-
