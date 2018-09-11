@@ -30,6 +30,7 @@ class NotifyMailerPreview < ActionMailer::Preview
 
   def feedback_message_resolution_email
     # change email_body text when you need to see a different version
+    @user = User.first
     email_body = <<~HEREDOC
       Hi [*USERNAME*],
 
@@ -42,13 +43,13 @@ class NotifyMailerPreview < ActionMailer::Preview
       PBJ
     HEREDOC
     params = {
-      email_to: "andy@dev.to",
+      email_to: @user.email,
       email_subject: "Courtesy notice from dev.to",
-      email_body: email_body,
+      email_body: email_body
     }
     NotifyMailer.feedback_message_resolution_email(params)
   end
-  
+
   def new_message_email
     NotifyMailer.new_message_email(Message.last)
   end
