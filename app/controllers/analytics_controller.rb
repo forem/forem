@@ -6,8 +6,8 @@ class AnalyticsController < ApplicationController
 
   def index
     article_ids = analytics_params.split(",")
-    article_to_check = Article.find_by(id: article_ids.first)
-    authorize article_to_check, :analytics_index?
+    articles_to_check = Article.where(id: article_ids)
+    authorize articles_to_check, :analytics_index?
     cache_name = "pageviews-#{article_ids}/dashboard-index"
     pageviews = Rails.cache.fetch(cache_name, expires_in: 15.minutes) do
       GoogleAnalytics.new(article_ids).get_pageviews

@@ -1,16 +1,16 @@
 require "rails_helper"
 
 vcr_option = {
-  cassette_name: "google_api_request_spec",
+  cassette_name: "google_api_request_spec"
 }
 
 RSpec.describe "Analytics", type: :request, vcr: vcr_option do
   describe "GET /analytics" do
     context "when signed in as an authorized user" do
-      let(:user) { create(:user, :analytics) }
-      let(:article1) { create(:article, user_id: user.id) }
-      let(:article2) { create(:article, user_id: user.id) }
-      let(:ga_double) { instance_double(GoogleAnalytics) }
+      let(:user)                { create(:user, :analytics) }
+      let(:article1)            { create(:article, user_id: user.id) }
+      let(:article2)            { create(:article, user_id: user.id) }
+      let(:ga_double)           { instance_double(GoogleAnalytics) }
 
       before do
         allow(GoogleAnalytics).to receive(:new).and_return(ga_double)
