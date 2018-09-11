@@ -1,0 +1,100 @@
+<div class="row">
+  <h1>
+    <%= @user.name%><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
+  </h1>
+  <p><em>Member since <%= @user.created_at.strftime("%d %B %Y %H:%M UTC") %></em></p>
+  <% if @user.banned %>
+    <p style="background-color:red;color:white">BANNED USER</p>
+    <p>Reason for banning: <%= @user.reason_for_ban %></p>
+  <% elsif @user.warned %>
+    <p style="background-color:orange;color:white">User Status: Warned</p>
+    <p>Reason for warning: <%= @user.reason_for_warning %></p>
+  <% else %>
+    <p style="color:green">Member in good standing</p>
+  <% end %>
+  <hr/>
+  <h3><u>Basic Info</u></h3>
+  <p><strong>Email:</strong> <%= @user.email %></p>
+  <% if @user.feed_admin_publish_permission %>
+    <p><strong>Admins can publish from RSS ✅</strong></p>
+  <% else %>
+    <p>Admins cannot publish from RSS ❌<p>
+  <% end %>
+  <h3>Badges</h3>
+  <% if @user.badges.count > 0 %>
+    <% @user.badges.each do |badge| %>
+      <img src="<%= badge.badge_image_url %>">
+    <% end %>
+  <% end %>
+  <h3><u>Mentorship Details</u></h3>
+  <%= form_for ([:internal, @user]) do |f| %>
+    <% if @user.banned_from_mentorship %>
+      <p style="background-color:red; color:white;"> USER IS BANNED FROM MENTORSHIP, SEE NOTES BELOW </p>
+    <% else %>
+      <p>Ban user from participating in mentorship program <%= f.check_box :ban_from_mentorship %></p>
+    <% end %>
+    <%= f.label :offering_mentorship %>
+    <%= f.check_box :offering_mentorship %>
+    <br>
+    <% if @user.mentor_description %>
+      <p>"<%= @user.mentor_description %>"</p>
+    <% end %>
+    <%= f.label :seeking_mentorship %>
+    <%= f.check_box :seeking_mentorship %>
+    <br>
+    <% if @user.mentee_description %>
+      <p>"<%= @user.mentee_description %>"</p>
+    <% end %>
+    <h3><u>Mentorship Matches</u> </h3>
+    <% if @user.mentors.count > 0 %>
+      <h4> Mentor(s):</h4>
+      <ul>
+      <% @user_mentor_relationships.each do |relationship| %>
+        <li>
+          <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
+          <% if relationship.active %>
+            <span style="color:green"><em> (active)</em></span>
+          <% else %>
+            <span style="color:red"><em> (inactive)</em></span>
+          <% end %>
+        </li>
+      <% end %>
+      </ul>
+    <% end %>
+    <br>
+    <%= f.label :add_mentor %>
+    <%= f.text_field :add_mentor, placeholder:"user id#" %>
+    <% if @user.mentees.count > 0 %>
+      <h4>Mentee(s):</h4>
+      <ul>
+      <% @user_mentee_relationships.each do |relationship| %>
+        <li><a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
+        <% if relationship.active %>
+          <span style="color:green"><em> (active)</em></span>
+        <% else %>
+          <span style="color:red"><em> (inactive)</em></span>
+        <% end %>
+        </li>
+      <% end %>
+      </ul>
+    <% end %>
+    <br>
+    <%= f.label :add_mentee %>
+    <%= f.text_field :add_mentee, placeholder:"user id#" %>
+    <h3><u>Mentorship Notes</u></h3>
+    <% if @user.notes.count > 0 %>
+      <% @user.notes.each do |note| %>
+        <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
+      <% end %>
+      <br>
+      <h4>Add new mentorship note</h4>
+      <%= f.text_area :mentorship_note %>
+    <% else %>
+      <%= f.text_area :mentorship_note %>
+    <% end %>
+    <br/>
+    <%= f.submit %>
+  <% end %>
+
+</div>
+

@@ -27,7 +27,11 @@ Rails.application.routes.draw do
     resources :tags
     resources :welcome, only: %i[index create]
     resources :broadcasts
-    resources :users
+    resources :users do
+      member do
+        post "banish"
+      end
+    end
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: [:create]
@@ -43,6 +47,7 @@ Rails.application.routes.draw do
       post "save_status", to: :save_status, on: :collection
     end
     mount Flipflop::Engine => "/features"
+
   end
 
   namespace :api, defaults: { format: "json" } do

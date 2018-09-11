@@ -1,7 +1,8 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email
+  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship
+
   rolify
   include AlgoliaSearch
   include Storext.model
@@ -31,6 +32,16 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many :mentor_relationships_as_mentee,
+  class_name: "MentorRelationship", foreign_key: "mentee_id"
+  has_many :mentor_relationships_as_mentor,
+  class_name: "MentorRelationship", foreign_key: "mentor_id"
+  has_many :mentors,
+  through: :mentor_relationships_as_mentee,
+  source: :mentor
+  has_many :mentees,
+  through: :mentor_relationships_as_mentor,
+  source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -91,13 +102,14 @@ class User < ApplicationRecord
               allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
-            :employment_title, :education, :location,
-            length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on,
-            :available_for,
-            length: { maximum: 500 }
+              length: { maximum: 100 }
+  validates :employment_title, :education, :location,
+              length: { maximum: 100 }
+  validates :mostly_work_with, :currently_learning,
+            :currently_hacking_on, :available_for,
+                length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
-            length: { maximum: 1000 }
+              length: { maximum: 1000 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
   validate  :unique_including_orgs
@@ -107,8 +119,7 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
-  before_update :mentor_status_update
-  before_update :mentee_status_update
+  before_update :mentorship_status_update
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -253,6 +264,10 @@ class User < ApplicationRecord
 
   def warned
     has_role? :warned
+  end
+
+  def banned_from_mentorship
+    has_role? :banned_from_mentorship
   end
 
   def admin?
@@ -515,13 +530,11 @@ class User < ApplicationRecord
     follows.destroy_all
   end
 
-  def mentor_status_update
+  def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
       self.mentor_form_updated_at = Time.now
     end
-  end
 
-  def mentee_status_update
     if mentee_description_changed? || seeking_mentorship_changed?
       self.mentee_form_updated_at = Time.now
     end
