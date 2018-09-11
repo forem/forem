@@ -88,7 +88,7 @@ gem "sprockets", "~> 3.7"
 gem "sprockets-es6", "~> 0.9"
 gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
-gem "stream_rails", "~> 2.5"
+gem "stream_rails", "~> 2.6"
 gem "stripe", "~> 3.25"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
