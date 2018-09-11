@@ -65,14 +65,11 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
-    it "accepts valid http facebook url" do
-      user.facebook_url = "http://facebook.com/thepracticaldev"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https facebook url" do
-      user.facebook_url = "https://facebook.com/thepracticaldev"
-      expect(user).to be_valid
+      %w(thepracticaldev thepracticaldev/ the.practical.dev).each do |username|
+        user.facebook_url = "https://facebook.com/#{username}"
+        expect(user).to be_valid
+      end
     end
 
     it "does not accept invalid facebook url" do
@@ -80,14 +77,11 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http behance url" do
-      user.behance_url = "http://behance.net/jess"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https behance url" do
-      user.behance_url = "https://behance.net/jess"
-      expect(user).to be_valid
+      %w(jess jess/ je-ss jes_ss).each do |username|
+        user.behance_url = "https://behance.net/#{username}"
+        expect(user).to be_valid
+      end
     end
 
     it "does not accept invalid behance url" do
@@ -95,14 +89,11 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http stackoverflow url" do
-      user.stackoverflow_url = "http://stackoverflow.com/jess"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https stackoverflow url" do
-      user.stackoverflow_url = "https://stackoverflow.com/jess"
-      expect(user).to be_valid
+      %w(pandyzhao pandyzhao/ pandy-zhao).each do |username|
+        user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
+        expect(user).to be_valid
+      end
     end
 
     it "does not accept invalid stackoverflow url" do
@@ -110,19 +101,11 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http linkedin url" do
-      user.linkedin_url = "http://linkedin.com/in/jessleenyc"
-      expect(user).to be_valid
-    end
-
-    it "accepts valid country specific http linkedin url" do
-      user.linkedin_url = "http://mx.linkedin.com/in/jessleenyc"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https linkedin url" do
-      user.linkedin_url = "https://linkedin.com/in/jessleenyc"
-      expect(user).to be_valid
+      %w(jessleenyc jessleenyc/ jess-lee-nyc).each do |username|
+        user.linkedin_url = "https://linkedin.com/in/#{username}"
+        expect(user).to be_valid
+      end
     end
 
     it "accepts valid country specific https linkedin url" do
@@ -145,14 +128,11 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "accepts valid http dribbble url" do
-      user.dribbble_url = "http://dribbble.com/jess"
-      expect(user).to be_valid
-    end
-
     it "accepts valid https dribbble url" do
-      user.dribbble_url = "https://dribbble.com/jess"
-      expect(user).to be_valid
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.dribbble_url = "https://dribbble.com/#{username}"
+        expect(user).to be_valid
+      end
     end
 
     it "does not accept invalid dribbble url" do

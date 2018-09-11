@@ -100,6 +100,15 @@ class Comment < ApplicationRecord
     end
   end
 
+  def self.users_with_number_of_comments(user_ids, before_date)
+    joins(:user).
+      select("users.username, COUNT(comments.user_id) AS number_of_comments").
+      where(user_id: user_ids).
+      where(arel_table[:created_at].gt(before_date)).
+      group(User.arel_table[:username]).
+      order("number_of_comments DESC")
+  end
+
   def remove_algolia_index
     remove_from_index!
     index = Algolia::Index.new("ordered_comments_#{Rails.env}")
@@ -158,8 +167,8 @@ class Comment < ApplicationRecord
   end
 
   def custom_css
-    MarkdownParser.new(body_markdown).tags_used.map do |t|
-      Rails.application.assets["ltags/#{t}.css"].to_s
+    MarkdownParser.new(body_markdown).tags_used.map do |tag|
+      Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
   end
 

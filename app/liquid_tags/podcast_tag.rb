@@ -17,7 +17,7 @@ class PodcastTag < LiquidTagBase
 
   def render(_context)
     html = <<-HTML
-      <div class="podcastliquidtag" style="#{renderStyle}">
+      <div class="podcastliquidtag" style="#{render_style}">
         <div class="podcastliquidtag__info">
           <a href="/#{@podcast.slug}/#{@episode.slug}">
             <h1 class="podcastliquidtag__info__episodetitle">#{@episode.title}</h1>
@@ -56,7 +56,7 @@ class PodcastTag < LiquidTagBase
     finalize_html(html)
   end
 
-  def renderStyle
+  def render_style
     "background:##{@podcast.main_color_hex} " \
     "url(#{cl_image_path(@podcast.pattern_image_url || 'https://i.imgur.com/fKYKgo4.png', type: 'fetch', quality: 'auto', sign_url: true, flags: 'progressive', fetch_format: 'jpg')})"
   end

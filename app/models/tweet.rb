@@ -42,7 +42,8 @@ class Tweet < ApplicationRecord
     end
     hashtags_serialized.each do |tag|
       tag_text = tag[:text]
-      text.gsub!("#" + tag_text, "<a href='https://twitter.com/hashtag/#{tag_text}'>#{'#' + tag_text}</a>")
+      text.gsub!("#" + tag_text,
+                 "<a href='https://twitter.com/hashtag/#{tag_text}'>#{'#' + tag_text}</a>")
     end
 
     if extended_entities_serialized && extended_entities_serialized[:media]
@@ -63,35 +64,40 @@ class Tweet < ApplicationRecord
     make_tweet_from_api_object(t)
   end
 
-  def self.make_tweet_from_api_object(t)
-    t = TwitterBot.new(random_identity).client.status(t.attrs[:retweeted_status][:id_str]) if t.attrs[:retweeted_status]
-    tweet = Tweet.where(twitter_id_code: t.attrs[:id_str]).first_or_initialize
-    tweet.twitter_uid = t.user.id.to_s
-    tweet.twitter_username = t.user.screen_name.downcase
-    tweet.user_id = User.find_by_twitter_username(t.user.screen_name).try(:id)
-    tweet.favorite_count = t.favorite_count
-    tweet.retweet_count = t.retweet_count
-    tweet.in_reply_to_user_id_code = t.attrs[:in_reply_to_user_id_str]
-    tweet.in_reply_to_user_id_code = t.attrs[:in_reply_to_status_id_str]
-    tweet.twitter_user_following_count = t.user.friends_count
-    tweet.twitter_user_followers_count = t.user.followers_count
-    tweet.twitter_id_code = t.attrs[:id_str]
-    tweet.quoted_tweet_id_code = t.attrs[:quoted_status_id_str]
-    tweet.in_reply_to_username = t.in_reply_to_screen_name
-    tweet.source = t.source
-    tweet.text = t.attrs[:full_text]
-    tweet.twitter_name = t.user.name
-    tweet.mentioned_usernames_serialized = t.user_mentions.as_json
-    tweet.hashtags_serialized = t.attrs[:entities][:hashtags]
-    tweet.remote_profile_image_url = t.user.profile_image_url
-    tweet.urls_serialized = t.attrs[:entities][:urls]
-    tweet.media_serialized = t.attrs[:media]
-    tweet.extended_entities_serialized = t.attrs[:extended_entities]
-    tweet.full_fetched_object_serialized = t.attrs
-    tweet.tweeted_at = t.attrs[:created_at]
+  def self.make_tweet_from_api_object(tweeted)
+    twitter_bot = TwitterBot.new(random_identity)
+    tweeted = if tweeted.attrs[:retweeted_status]
+                twitter_bot.client.status(tweeted.attrs[:retweeted_status][:id_str])
+              else
+                tweeted
+              end
+    tweet = Tweet.where(twitter_id_code: tweeted.attrs[:id_str]).first_or_initialize
+    tweet.twitter_uid = tweeted.user.id.to_s
+    tweet.twitter_username = tweeted.user.screen_name.downcase
+    tweet.user_id = User.find_by_twitter_username(tweeted.user.screen_name).try(:id)
+    tweet.favorite_count = tweeted.favorite_count
+    tweet.retweet_count = tweeted.retweet_count
+    tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_user_id_str]
+    tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_status_id_str]
+    tweet.twitter_user_following_count = tweeted.user.friends_count
+    tweet.twitter_user_followers_count = tweeted.user.followers_count
+    tweet.twitter_id_code = tweeted.attrs[:id_str]
+    tweet.quoted_tweet_id_code = tweeted.attrs[:quoted_status_id_str]
+    tweet.in_reply_to_username = tweeted.in_reply_to_screen_name
+    tweet.source = tweeted.source
+    tweet.text = tweeted.attrs[:full_text]
+    tweet.twitter_name = tweeted.user.name
+    tweet.mentioned_usernames_serialized = tweeted.user_mentions.as_json
+    tweet.hashtags_serialized = tweeted.attrs[:entities][:hashtags]
+    tweet.remote_profile_image_url = tweeted.user.profile_image_url
+    tweet.urls_serialized = tweeted.attrs[:entities][:urls]
+    tweet.media_serialized = tweeted.attrs[:media]
+    tweet.extended_entities_serialized = tweeted.attrs[:extended_entities]
+    tweet.full_fetched_object_serialized = tweeted.attrs
+    tweet.tweeted_at = tweeted.attrs[:created_at]
     tweet.last_fetched_at = Time.now
-    tweet.user_is_verified = t.user.verified?
-    tweet.is_quote_status = t.attrs[:is_quote_status]
+    tweet.user_is_verified = tweeted.user.verified?
+    tweet.is_quote_status = tweeted.attrs[:is_quote_status]
     tweet.save!
     tweet
   end

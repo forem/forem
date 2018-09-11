@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe CommentTag, type: :liquid_template do
+RSpec.describe DevCommentTag, type: :liquid_template do
   let(:user)        { create(:user) }
   let(:article)     { create(:article, user_id: user.id) }
   let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
 
-  setup             { Liquid::Template.register_tag("devcomment", CommentTag) }
+  setup             { Liquid::Template.register_tag("devcomment", DevCommentTag) }
 
   def generate_comment_tag(id_code)
     Liquid::Template.parse("{% devcomment #{id_code} %}")

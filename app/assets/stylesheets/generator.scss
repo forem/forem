@@ -98,6 +98,7 @@
         text-align:left;
         overflow-x:scroll;
         background:rgb(246, 246, 246);
+        color: $black;
         font-size:16px;
         @media screen and ( max-width: 600px ){
           font-size:14px;

@@ -1,6 +1,7 @@
 class UserRoleService
-  def initialize(user)
+  def initialize(user, current_user_id)
     @user = user
+    @current_user_id = current_user_id
   end
 
   def check_for_roles(params)
@@ -30,11 +31,30 @@ class UserRoleService
     true
   end
 
+  def create_or_update_note(reason, content)
+    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
+    if note.present?
+      note.update(content: content)
+    else
+      Note.create(
+        author_id: @current_user_id,
+        noteable_id: @user.id,
+        noteable_type: "User",
+        reason: reason,
+        content: content,
+      )
+    end
+  end
+
   private
 
   def new_roles?(params)
     params[:trusted] == "1" ? @user.add_role(:trusted) : @user.remove_role(:trusted)
-    params[:analytics] == "1" ? @user.add_role(:analytics_beta_tester) : @user.remove_role(:analytics_beta_tester)
+    if params[:analytics] == "1"
+      @user.add_role(:analytics_beta_tester)
+    else
+      @user.remove_role(:analytics_beta_tester)
+    end
     if params[:scholar] == "1"
       @user.add_role(:workshop_pass)
       @user.update(workshop_expiration: params[:workshop_expiration])
@@ -63,20 +83,6 @@ class UserRoleService
       @user.errors[:reason_for_warning] << "can't be blank if warned is checked"
     elsif params[:warned] == "1"
       give_warning(params[:reason_for_warning])
-    end
-  end
-
-  def create_or_update_note(reason, content)
-    note = Note.find_by(noteable_id: @user.id, noteable_type: "User", reason: reason)
-    if note.nil?
-      Note.create(
-        noteable_id: @user.id,
-        noteable_type: "User",
-        reason: reason,
-        content: content,
-      )
-    else
-      note.update(content: content)
     end
   end
 
