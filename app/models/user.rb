@@ -385,6 +385,10 @@ class User < ApplicationRecord
         c.slug = c.slug.gsub(username_was, username)
         c.save
       end
+      articles.find_each do |a|
+        a.path = a.path.gsub(username_was, username)
+        a.save
+      end
     end
   end
 
