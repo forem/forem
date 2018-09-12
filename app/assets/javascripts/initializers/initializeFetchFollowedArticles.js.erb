@@ -70,6 +70,8 @@ function algoliaFollowedArticles(){
             }
           });
         }
+        var el = document.getElementById("home-articles-object")
+        if (el){el.outerHTML = ''}
       });
     }
 }
