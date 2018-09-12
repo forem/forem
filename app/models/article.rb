@@ -101,14 +101,11 @@ class Article < ApplicationRecord
                 :featured, :published, :published_at, :featured_number,
                 :comments_count, :reactions_count, :positive_reactions_count,
                 :path, :class_name, :user_name, :user_username, :comments_blob,
-                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date
+                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
-      end
-      attribute :flare_tag do
-        FlareTag.new(self).tag_hash
       end
       tags do
         [tag_list,
@@ -134,7 +131,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date
+        :readable_publish_date, :flare_tag
       attribute :published_at_int do
         published_at.to_i
       end
@@ -142,9 +139,6 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
-      end
-      attribute :flare_tag do
-        FlareTag.new(self).tag_hash
       end
       tags do
         [tag_list,
@@ -313,6 +307,10 @@ class Article < ApplicationRecord
 
   def class_name
     self.class.name
+  end
+
+  def flare_tag
+    FlareTag.new(self).tag_hash
   end
 
   def update_main_image_background_hex

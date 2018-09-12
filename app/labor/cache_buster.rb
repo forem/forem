@@ -64,13 +64,13 @@ class CacheBuster
     end
     TIMEFRAMES.each do |timeframe|
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
-          order("positive_reactions_count DESC").limit(4).pluck(:id).include?(article.id)
+          order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
         bust("/top/#{timeframe[1]}")
         bust("/top/#{timeframe[1]}?i=i")
         bust("/top/#{timeframe[1]}/?i=i")
       end
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
-          order("hotness_score DESC").limit(3).pluck(:id).include?(article.id)
+          order("hotness_score DESC").limit(2).pluck(:id).include?(article.id)
         bust("/")
         bust("?i=i")
       end
