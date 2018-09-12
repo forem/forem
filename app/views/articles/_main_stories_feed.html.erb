@@ -52,6 +52,29 @@
       <% end %>
     </div>
   <% end %>
+<% else %>
+  <div id="home-articles-object" data-articles="
+    <%=@stories.to_json(only:
+                          [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count],
+                        methods:
+                          [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name],
+                        include: [user: {only: [:username, :name], methods: [:profile_image_90]}]) %>">
+    <% 3.times do %>
+    <div class="single-article single-article-small-pic">
+      <div class="small-pic" >
+        <div class="color single-article-loading"></div>
+      </div>
+      <div class="content">
+        <h3 class="single-article-loading">&nbsp;</h3>
+      </div>
+      <h4 class="single-article-loading" style="width:46%">
+        &nbsp;
+      </h4>
+      <div class="tags single-article-loading" style="width:56%">
+      </div>
+    </div>
+    <% end %>
+  </div>
 <% end %>
 
 
