@@ -24,7 +24,7 @@ p "2/8 Creating Users"
 roles = %i(level_1_member level_2_member level_3_member level_4_member
            workshop_pass)
 User.clear_index!
-40.times do |i|
+10.times do |i|
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
@@ -71,7 +71,7 @@ end
 p "4/8 Creating Articles"
 
 Article.clear_index!
-80.times do |i|
+25.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
   tags.concat Tag.order("RANDOM()").select("name").first(3).map(&:name)
@@ -102,11 +102,11 @@ end
 p "5/8 Creating Comments"
 
 Comment.clear_index!
-120.times do
+30.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
     user_id: User.order("RANDOM()").first.id,
-    commentable_id: Article.where("id > ?", 30).order("RANDOM()").first.id,
+    commentable_id: Article.order("RANDOM()").first.id,
     commentable_type: "Article",
   }
   Comment.create!(attributes)
