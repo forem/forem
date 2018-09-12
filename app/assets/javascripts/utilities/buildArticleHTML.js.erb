@@ -17,19 +17,21 @@ function buildArticleHTML(article) {
   else if (article) {
     var container = document.getElementById("index-container");
     var tagString = ""
-    if(article.tag_list) {
-      article.tag_list.forEach(function(t){
+    var tagList = article.tag_list || article.cached_tag_list_array
+    if(tagList) {
+      tagList.forEach(function(t){
       tagString = tagString + '<a href="/t/'+t+'"><span class="tag">#'+t+'</span></a>\n'
       });
     }
     var commentsCountHTML = ""
     if ((article.comments_count || '0') > 0 && article.class_name != "User") {
-      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
+      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
     }
     var flareTag = ""
     if (container){
       var currentTag = JSON.parse(container.dataset.params).tag
     }
+    console.log(article.flare_tag)
     if (article.flare_tag && currentTag != article.flare_tag.name) {
       flareTag = "<span class='tag-identifier' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
     }

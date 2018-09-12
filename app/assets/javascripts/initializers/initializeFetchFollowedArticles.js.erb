@@ -13,9 +13,28 @@ function insertArticle(article,parent,insertPlace) {
   }
 }
 
+function insertInitialArticles(user) {
+  var el = document.getElementById("home-articles-object")
+  if (!el) {return}
+  var articlesJSON = JSON.parse(el.dataset.articles)
+  el.outerHTML = "";
+  var insertPlace = document.getElementById("article-index-hidden-div");
+  if (insertPlace) {
+    var parent = insertPlace.parentNode;
+      articlesJSON.forEach(function(article){
+      var containsTag = findOne(user.followed_tag_names, article.cached_tag_list_array)
+      var containsUserID = findOne([article.user_id], user.followed_user_ids)
+      if ( (containsTag || containsUserID) && !document.getElementById("article-link-"+article.id) ) {
+        insertArticle(article,parent,insertPlace);
+      }
+    });
+  }
+}
+
 function algoliaFollowedArticles(){
     var user = userData();
     if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
+      insertInitialArticles(user)
       var followedUsersArray = [];
       if (user.followed_user_ids){
         followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});
@@ -54,3 +73,9 @@ function algoliaFollowedArticles(){
       });
     }
 }
+
+function findOne(haystack, arr) {
+    return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+    });
+};

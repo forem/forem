@@ -98,7 +98,7 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
-    num_articles = user_signed_in? ? 3 : 15
+    num_articles = user_signed_in? ? 9 : 15
     @stories = article_finder(num_articles)
 
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
@@ -110,7 +110,10 @@ class StoriesController < ApplicationController
         where("featured_number > ?", 1449999999)
       @featured_story = Article.new
     else
-      @stories = @stories.where(featured: true).order("hotness_score DESC")
+      @default_home_feed = true
+      @stories = @stories.
+        where("reactions_count > ? OR featured = ?", 10, true).
+        order("hotness_score DESC")
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     end
     @stories = @stories.decorate
