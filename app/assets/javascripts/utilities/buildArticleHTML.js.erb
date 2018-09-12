@@ -31,7 +31,6 @@ function buildArticleHTML(article) {
     if (container){
       var currentTag = JSON.parse(container.dataset.params).tag
     }
-    console.log(article.flare_tag)
     if (article.flare_tag && currentTag != article.flare_tag.name) {
       flareTag = "<span class='tag-identifier' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
     }
