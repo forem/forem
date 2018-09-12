@@ -57,7 +57,7 @@ module StreamRails
           includes(:user, :commentable)
       when "Reaction"
         model.classify.constantize.where(id: ids.keys).
-          includes(reactable: :user)
+          includes(:reactable, :user)
       when "Article"
         model.classify.constantize.where(id: ids.keys).
           select(:id, :title, :path, :user_id, :updated_at, :cached_tag_list)
