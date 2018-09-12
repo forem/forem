@@ -24,6 +24,8 @@ items:
     title:  Design Guidelines
   - path: vocabulary.md
     title: Vocabulary
+  - path: dev-instance.md
+    title: Hosting Your Own DEV Instance  
 ---
 
 # Welcome to the dev.to documentation!
