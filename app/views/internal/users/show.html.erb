@@ -20,10 +20,10 @@
   <% else %>
     <p>Admins cannot publish from RSS ❌<p>
   <% end %>
-  <h3>Badges</h3>
+  <h3><u>Badges</u></h3>
   <% if @user.badges.count > 0 %>
     <% @user.badges.each do |badge| %>
-      <img src="<%= badge.badge_image_url %>">
+      <img style="max-width: 230px;" src="<%= badge.badge_image_url %>">
     <% end %>
   <% end %>
   <h3><u>Mentorship Details</u></h3>
@@ -36,13 +36,13 @@
     <%= f.label :offering_mentorship %>
     <%= f.check_box :offering_mentorship %>
     <br>
-    <% if @user.mentor_description %>
+    <% if !@user.mentor_description.blank? %>
       <p>"<%= @user.mentor_description %>"</p>
     <% end %>
     <%= f.label :seeking_mentorship %>
     <%= f.check_box :seeking_mentorship %>
     <br>
-    <% if @user.mentee_description %>
+    <% if !@user.mentee_description.blank? %>
       <p>"<%= @user.mentee_description %>"</p>
     <% end %>
     <h3><u>Mentorship Matches</u> </h3>
@@ -60,6 +60,9 @@
         </li>
       <% end %>
       </ul>
+    <% else %>
+      <em>This member does not have any mentorship relationships right now.</em>
+      </br>
     <% end %>
     <br>
     <%= f.label :add_mentor %>
