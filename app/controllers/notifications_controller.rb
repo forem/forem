@@ -19,17 +19,17 @@ class NotificationsController < ApplicationController
   private
 
   def cached_activities
-    Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",
-                      expires_in: 5.hours) do
+    cache_name = "notifications-fetch-#{@user.id}-#{@user.last_notification_activity}"
+    results = Rails.cache.fetch(cache_name, expires_in: 5.hours) do
       feed_activities
     end
+    @enricher.enrich_aggregated_activities(results)
   end
 
   def feed_activities
     return [] if Rails.env.test?
     feed = StreamRails.feed_manager.get_notification_feed(@user.id)
-    results = feed.get(limit: 45)["results"]
-    @enricher.enrich_aggregated_activities(results)
+    feed.get(limit: 45)["results"]
   end
 
   def create_enricher
@@ -50,7 +50,6 @@ module StreamRails
     def construct_query(model, ids)
       send("get_#{model.downcase}", ids)
     rescue NoMethodError
-      logger.warn "There was attempt to query for #{model}"
       model.classify.constantize.where(id: ids.keys).to_a
     end
 
