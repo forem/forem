@@ -21,7 +21,7 @@ class NotificationsController < ApplicationController
   def cached_activities
     return feed_activities unless Rails.env.production?
     Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",
-                      expires_in: 10.seconds) do
+                      expires_in: 5.hours) do
       feed_activities
     end
   end
