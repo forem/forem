@@ -541,10 +541,8 @@ header{
     table{
       font-family: $helvetica;
       border-collapse: collapse;
-      width:100%;
       font-size:0.78em;
-      margin:0.8em 0 1.2em;
-      display:block;
+      margin:0.8em auto 1.2em;
       table-layout: fixed;
       @media screen and ( min-width: 500px ){
         font-size:0.9em;
@@ -558,7 +556,6 @@ header{
       td{
         border: 1px solid $light-medium-gray;
         padding:5px 1vw;
-        width:1000px;
         box-sizing: border-box;
       }
     }
