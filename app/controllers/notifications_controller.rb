@@ -19,7 +19,6 @@ class NotificationsController < ApplicationController
   private
 
   def cached_activities
-    return feed_activities unless Rails.env.production?
     Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",
                       expires_in: 5.hours) do
       feed_activities
@@ -51,6 +50,7 @@ module StreamRails
     def construct_query(model, ids)
       send("get_#{model.downcase}", ids)
     rescue NoMethodError
+      logger.warn "There was attempt to query for #{model}"
       model.classify.constantize.where(id: ids.keys).to_a
     end
 
@@ -75,6 +75,10 @@ module StreamRails
     def get_article(ids)
       Article.where(id: ids.keys).
         select(:id, :title, :path, :user_id, :updated_at, :cached_tag_list).to_a
+    end
+
+    def get_broadcast(ids)
+      Broadcast.where(id: ids.keys).to_a
     end
   end
 end
