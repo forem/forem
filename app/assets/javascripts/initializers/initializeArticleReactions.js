@@ -38,6 +38,13 @@ function initializeArticleReactions() {
         reactToArticle(articleId, this.dataset.category)
       };
     }
+    document.getElementById("jump-to-comments").onclick = function(e){
+      e.preventDefault();
+      document.getElementById('comments').scrollIntoView({
+        behavior: 'instant',
+        block: "start"
+      });
+    }
   }, 3)
 }
 
