@@ -19,12 +19,10 @@ class NotificationsController < ApplicationController
   private
 
   def cached_activities
-    # return feed_activities unless Rails.env.production?
+    return feed_activities unless Rails.env.production?
     Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",
                       expires_in: 10.seconds) do
-      puts "======================cacheing========================="
-      test = feed_activities
-      test
+      feed_activities
     end
   end
 
@@ -53,13 +51,13 @@ module StreamRails
     def construct_query(model, ids)
       send("get_#{model.downcase}", ids)
     rescue NoMethodError
-      model.classify.constantize.where(id: ids.keys).all
+      model.classify.constantize.where(id: ids.keys).to_a
     end
 
     private
 
     def get_user(ids)
-      User.where(id: ids.keys).select(:id, :name, :username, :profile_image).all
+      User.where(id: ids.keys).select(:id, :name, :username, :profile_image).to_a
     end
 
     def get_comment(ids)
@@ -67,16 +65,16 @@ module StreamRails
         select(:id, :id_code, :user_id, :processed_html,
                :commentable_id, :commentable_type,
                :updated_at, :ancestry).
-        includes(:user, :commentable).all
+        includes(:user, :commentable).to_a
     end
 
     def get_reaction(ids)
-      Reaction.where(id: ids.keys).includes(:reactable, :user).all
+      Reaction.where(id: ids.keys).includes(:reactable, :user).to_a
     end
 
     def get_article(ids)
       Article.where(id: ids.keys).
-        select(:id, :title, :path, :user_id, :updated_at, :cached_tag_list).all
+        select(:id, :title, :path, :user_id, :updated_at, :cached_tag_list).to_a
     end
   end
 end
