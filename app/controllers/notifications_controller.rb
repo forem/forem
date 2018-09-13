@@ -19,10 +19,12 @@ class NotificationsController < ApplicationController
   private
 
   def cached_activities
-    return feed_activities unless Rails.env.production?
+    # return feed_activities unless Rails.env.production?
     Rails.cache.fetch("notifications-fetch-#{@user.id}-#{@user.last_notification_activity}",
-      expires_in: 5.hours) do
-      feed_activities
+                      expires_in: 10.seconds) do
+      puts "======================cacheing========================="
+      test = feed_activities
+      test
     end
   end
 
@@ -41,29 +43,40 @@ end
 module StreamRails
   class Enrich
     def retrieve_objects(references)
-      Hash[references.
-        map { |model, ids| [model, Hash[construct_query(model, ids).map { |i| [i.id.to_s, i] }]] }]
+      Hash[
+        references.map do |model, ids|
+          [model, Hash[construct_query(model, ids).map { |i| [i.id.to_s, i] }]]
+        end
+      ]
     end
 
     def construct_query(model, ids)
-      case model
-      when "User"
-        model.classify.constantize.where(id: ids.keys).select(:id, :name, :username, :profile_image)
-      when "Comment"
-        model.classify.constantize.where(id: ids.keys).
-          select(:id, :id_code, :user_id, :processed_html,
-          :commentable_id, :commentable_type,
-          :updated_at, :ancestry).
-          includes(:user, :commentable)
-      when "Reaction"
-        model.classify.constantize.where(id: ids.keys).
-          includes(:reactable, :user)
-      when "Article"
-        model.classify.constantize.where(id: ids.keys).
-          select(:id, :title, :path, :user_id, :updated_at, :cached_tag_list)
-      else
-        model.classify.constantize.where(id: ids.keys)
-      end
+      send("get_#{model.downcase}", ids)
+    rescue NoMethodError
+      model.classify.constantize.where(id: ids.keys).all
+    end
+
+    private
+
+    def get_user(ids)
+      User.where(id: ids.keys).select(:id, :name, :username, :profile_image).all
+    end
+
+    def get_comment(ids)
+      Comment.where(id: ids.keys).
+        select(:id, :id_code, :user_id, :processed_html,
+               :commentable_id, :commentable_type,
+               :updated_at, :ancestry).
+        includes(:user, :commentable).all
+    end
+
+    def get_reaction(ids)
+      Reaction.where(id: ids.keys).includes(:reactable, :user).all
+    end
+
+    def get_article(ids)
+      Article.where(id: ids.keys).
+        select(:id, :title, :path, :user_id, :updated_at, :cached_tag_list).all
     end
   end
 end
