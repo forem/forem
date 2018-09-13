@@ -68,6 +68,8 @@ function fetchNextPodcastPage(el){
 function insertArticles(articles) {
   var list = document.getElementById("substories");
   var newArticlesHTML = "";
+  var el = document.getElementById("home-articles-object")
+  if (el) {el.outerHTML = "";}
   articles.forEach(function(article){
     var existingEl = document.getElementById("article-link-"+article.id);
     if ( existingEl &&
