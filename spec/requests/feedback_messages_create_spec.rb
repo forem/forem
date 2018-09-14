@@ -6,7 +6,7 @@ RSpec.describe "feedback_messages", type: :request do
     before do
       allow_any_instance_of(FeedbackMessagesController).
         to receive(:recaptcha_verified?).and_return(true)
-      allow_any_instance_of(Slack::Notifier).to receive(:ping).and_return(true)
+      allow(SlackBot).to receive(:ping).and_return(true)
     end
     # rubocop:enable RSpec/AnyInstance
 
@@ -15,8 +15,8 @@ RSpec.describe "feedback_messages", type: :request do
         feedback_type: "abuse-reports",
         category: "rude or vulgar",
         reported_url: "https://dev.to",
-        message: "this was vulgar",
-      },
+        message: "this was vulgar"
+      }
     }
 
     context "with valid params" do
@@ -30,27 +30,37 @@ RSpec.describe "feedback_messages", type: :request do
         )
       end
 
-      xit "redirects to the ticket page" do
-        expect(response).to redirect_to(FeedbackMessage.last.path)
+      it "send a Slack message when completed" do
+        expect(SlackBot).to have_received(:ping)
       end
     end
 
-    context "when a logged in user submits report" do
-      let(:user)         { create(:user) }
-      let(:mail_message) { instance_double(Mail::Message, deliver: true) }
+    context "when a logged in user submits a report" do
+      let(:user) { create(:user) }
 
       before do
-        allow(NotifyMailer).to receive(:new_report_email).and_return(mail_message)
         login_as(user)
         post "/feedback_messages", params: valid_abuse_report_params
       end
 
-      it "adds the logged in user as as the reporter" do
+      it "adds the logged in user as the reporter" do
         expect(FeedbackMessage.find_by(reporter_id: user.id)).not_to eq(nil)
       end
 
-      xit "sends an email to the reporter" do
-        expect(NotifyMailer).to have_received(:new_report_email)
+      it "send a Slack message when completed" do
+        expect(SlackBot).to have_received(:ping)
+      end
+    end
+
+    context "when a signed out users submits a report" do
+      before { post "/feedback_messages", params: valid_abuse_report_params }
+
+      it "does not add any user as the reporter" do
+        expect(FeedbackMessage.last.reporter_id).to eq(nil)
+      end
+
+      it "send a Slack message when completed" do
+        expect(SlackBot).to have_received(:ping)
       end
     end
   end
