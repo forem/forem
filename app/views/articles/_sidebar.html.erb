@@ -53,6 +53,12 @@
           <div>
             <%= pluralize @user.decorate.cached_followed_tags.size, "Tag" %> Followed
           </div>
+          <div>
+            <%= pluralize @user.following_users_count, "User" %> Followed
+          </div>
+          <div>
+            <%= pluralize @user.followers_count, "Follower" %>
+          </div>
         </div>
       </div>
     <% elsif @user && @user.class.name == "Organization" %>
