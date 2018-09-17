@@ -75,6 +75,13 @@ RSpec.describe GlitchTag, type: :liquid_template do
       expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?path=index.html")
       expect(actual).to eq(expected)
     end
+
+    it "generates a glitch URI" do
+      template = generate_tag(id_with_app_option)
+      string = template.root.nodelist.first.uri
+      expect(string).to start_with("https://glitch.com/embed/#!/embed/")
+    end
+
     # rubocop:enable LineLength
   end
 end
