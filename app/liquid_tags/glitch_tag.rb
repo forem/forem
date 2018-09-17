@@ -5,6 +5,7 @@ class GlitchTag < LiquidTagBase
   def initialize(tag_name, id, tokens)
     super
     @uri = build_uri(id)
+    @id = parse_id(id)
   end
 
   def render(_context)
