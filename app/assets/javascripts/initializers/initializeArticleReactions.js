@@ -1,4 +1,4 @@
-//Set reaction count to correct number
+// Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
   var reactionClassList = document.getElementById("reaction-butt-" + reactionName).classList;
   var reactionNumber = document.getElementById("reaction-number-" + reactionName);
@@ -85,7 +85,7 @@ function initializeArticleReactions() {
 }
 
 function reactToArticle(articleId, reaction) {
-  //Visually toggle the reaction
+  // Visually toggle the reaction
   function toggleReaction() {
     var currentNum = getNumReactions(reaction);
     if (hasUserReacted(reaction)) {
@@ -101,7 +101,7 @@ function reactToArticle(articleId, reaction) {
     showModal("react-to-article");
     return;
   } else {
-    //Optimistically toggle reaction
+     // Optimistically toggle reaction
     toggleReaction();
   }
 
@@ -117,17 +117,13 @@ function reactToArticle(articleId, reaction) {
     return formData;
   }
 
-  function successCb(response) {
-    //Optimistic rendering was successful. Therefore no need to act
-  }
 
   getCsrfToken()
     .then(sendFetch("reaction-creation", createFormdata()))
     .then(function (response) {
       if (response.status === 200) {
-        return response.json().then(successCb);
+        return response.json().then();
       } else {
-        //If failure then undo the optimistic rendering
         toggleReaction();
       }
     })
