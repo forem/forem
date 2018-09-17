@@ -85,12 +85,24 @@ function initializeArticleReactions() {
 }
 
 function reactToArticle(articleId, reaction) {
+  //Visually toggle the reaction
+  function toggleReaction() {
+    var currentNum = getNumReactions(reaction);
+    if (hasUserReacted(reaction)) {
+      hideUserReaction(reaction);
+      setReactionCount(reaction, currentNum - 1);
+    } else {
+      showUserReaction(reaction);
+      setReactionCount(reaction, currentNum + 1);
+    }
+  }
   var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
   if (userStatus == "logged-out") {
     showModal("react-to-article");
     return;
   } else {
-    document.getElementById("reaction-butt-" + reaction).classList.add("user-activated");
+    //Optimistically toggle reaction
+    toggleReaction();
   }
 
   function createFormdata() {
@@ -106,14 +118,7 @@ function reactToArticle(articleId, reaction) {
   }
 
   function successCb(response) {
-    var numReactions = getNumReactions(reaction);
-    if (response.result == "create") {
-      showUserReaction(reaction);
-      setReactionCount(reaction, numReactions + 1);
-    } else {
-      hideUserReaction(reaction);
-      setReactionCount(reaction, numReactions - 1);
-    }
+    //Optimistic rendering was successful. Therefore no need to act
   }
 
   getCsrfToken()
@@ -122,7 +127,8 @@ function reactToArticle(articleId, reaction) {
       if (response.status === 200) {
         return response.json().then(successCb);
       } else {
-        // there's currently no errorCb.
+        //If failure then undo the optimistic rendering
+        toggleReaction();
       }
     })
     .catch(function (error) {
