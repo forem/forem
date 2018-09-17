@@ -69,7 +69,6 @@ RSpec.describe GlitchTag, type: :liquid_template do
       template = generate_tag(id_with_many_options)
       expected = "src=\"" + base_uri +
         "some-id?previewSize=100&attributionHidden=true&sidebarCollapsed=true&path=script.js"
-      puts template.render(nil)
       expect(template.render(nil)).to include(expected)
     end
 
