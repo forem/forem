@@ -280,7 +280,9 @@ class Onboarding extends Component {
     const csrfToken = document.querySelector("meta[name='csrf-token']").content;
     const formData = new FormData();
     formData.append('saw_onboarding', true);
-
+    if (window.ga && ga.create) {
+      ga('send', 'event', 'click', 'close onboarding slide', this.state.pageNumber, null)
+    }
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
