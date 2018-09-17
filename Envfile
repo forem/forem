@@ -94,6 +94,9 @@ variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
 
+# Honeycomb
+variable :HONEYCOMB_API_KEY, :String, default: "Optional"
+
 # Mailchimp for mails
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
 variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
