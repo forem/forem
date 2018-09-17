@@ -56,6 +56,8 @@ class CommentsController < ApplicationController
     authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
     @comment = Comment.new(permitted_attributes(Comment))
+    honeycomb_metadata[:commentable_id] = @comment.commentable_id
+    honeycomb_metadata[:commentable_type] = @comment.commentable_type
     @comment.user_id = current_user.id
     if @comment.save
       if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct

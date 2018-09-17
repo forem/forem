@@ -70,4 +70,10 @@ class ApplicationController < ActionController::Base
   def touch_current_user
     current_user.touch
   end
+
+  def capture_param(*keys)
+    keys.each do |k|
+      honeycomb_metadata[k] = params[k]
+    end
+  end
 end

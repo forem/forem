@@ -23,6 +23,7 @@ class FollowsController < ApplicationController
                  else
                    User.find(params[:followable_id])
                  end
+    capture_param(:followable_type, :followable_id, :verb)
     @result = if params[:verb] == "unfollow"
                 current_user.stop_following(followable)
                 "unfollowed"
