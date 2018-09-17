@@ -190,7 +190,7 @@ GEM
       fastimage
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
-    chromedriver-helper (1.2.0)
+    chromedriver-helper (2.0.0)
       archive-zip (~> 0.10)
       nokogiri (~> 1.8)
     cloudinary (1.9.1)
@@ -946,7 +946,7 @@ DEPENDENCIES
   capybara (~> 3.6)
   carrierwave (~> 1.2)
   carrierwave-bombshelter (~> 0.2)
-  chromedriver-helper (~> 1.2)
+  chromedriver-helper (~> 2.0)
   cloudinary (~> 1.9)
   counter_culture (~> 1.9)
   csv_shaper (~> 1.3)

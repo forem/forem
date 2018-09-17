@@ -132,7 +132,7 @@ end
 
 group :test do
   gem "approvals", "~> 0.0"
-  gem "chromedriver-helper", "~> 1.2"
+  gem "chromedriver-helper", "~> 2.0"
   gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
   gem "fake_stripe", "~> 0.1"
