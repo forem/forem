@@ -13,7 +13,7 @@ class GlitchTag < LiquidTagBase
       <div class="glitch-embed-wrap" style="height: 450px; width: 100%;margin: 1em auto 1.3em">
         <iframe
           sandbox="allow-same-origin allow-scripts allow-forms"
-          src="{@uri}"
+          src="#{@uri}"
           alt="#{@id} on glitch"
           style="height: 100%; width: 100%; border: 0;margin:0;padding:0"></iframe>
       </div>
