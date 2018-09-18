@@ -18,17 +18,15 @@ class RunkitTag < Liquid::Block
   def self.special_script
     <<~JAVASCRIPT
       var targets = document.getElementsByClassName("runkit-element");
-      if (targets.length > 0) {
-        for (var i = 0; i < targets.length; i++) {
-          var content = targets[i].textContent;
-          var preamble = targets[i].dataset.preamble;
-          targets[i].innerHTML = "";
-          var notebook = RunKit.createNotebook({
-            element: targets[i],
-            source: content,
-            preamble: preamble
-          });
-        }
+      for (var i = 0; i < targets.length; i++) {
+        var content = targets[i].textContent;
+        var preamble = targets[i].dataset.preamble;
+        targets[i].innerHTML = "";
+        var notebook = RunKit.createNotebook({
+          element: targets[i],
+          source: content,
+          preamble: preamble
+        });
       }
     JAVASCRIPT
   end
@@ -38,18 +36,16 @@ class RunkitTag < Liquid::Block
       var checkRunkit = setInterval(function() {
         if(typeof(RunKit) !== 'undefined') {
           var targets = document.getElementsByClassName("runkit-element");
-          if (targets.length > 0) {
-            for (var i = 0; i < targets.length; i++) {
-              var content = targets[i].textContent;
-              var preamble = targets[i].dataset.preamble;
-              if(/^(\<iframe src)/.test(content) === false) {
-                targets[i].innerHTML = "";
-                var notebook = RunKit.createNotebook({
-                  element: targets[i],
-                  source: content,
-                  preamble: preamble
-                });
-              }
+          for (var i = 0; i < targets.length; i++) {
+            var content = targets[i].textContent;
+            var preamble = targets[i].dataset.preamble;
+            if(/^(\<iframe src)/.test(content) === false) {
+              targets[i].innerHTML = "";
+              var notebook = RunKit.createNotebook({
+                element: targets[i],
+                source: content,
+                preamble: preamble
+              });
             }
           }
           clearInterval(checkRunkit);
