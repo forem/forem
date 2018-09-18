@@ -1,7 +1,7 @@
 class RunkitTag < Liquid::Block
   def initialize(tag_name, markup, tokens)
     super
-    @preamble = sanitize(markup, tags: [])
+    @preamble = ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
   end
 
   def render(context)
