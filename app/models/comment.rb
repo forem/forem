@@ -155,8 +155,9 @@ class Comment < ApplicationRecord
   # notifications
 
   def activity_notify
-    user_ids = ancestors.map(&:user_id).to_set.add(commentable.user.id).delete(user_id)
-    user_ids.map { |id| StreamNotifier.new(id).notify }
+    user_ids = ancestors.map(&:user_id).to_set
+    user_ids.add(commentable.user.id) if user_ids.empty?
+    user_ids.delete(user_id).map { |id| StreamNotifier.new(id).notify }
   end
 
   def custom_css
