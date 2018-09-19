@@ -45,6 +45,8 @@ ActiveRecord::Migration.maintain_test_schema!
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  Capybara.server = :puma, { Silent: true }
+  Capybara.default_max_wait_time = 5
 
   Approvals.configure do |approvals_config|
     approvals_config.approvals_path = "#{::Rails.root}/spec/support/fixtures/approvals/"
@@ -56,7 +58,6 @@ RSpec.configure do |config|
   config.include ApplicationHelper
   # config.include CommentsHelper, type: :view
 
-  config.use_transactional_fixtures = false
   config.include FactoryBot::Syntax::Methods
 
   # Apply rack_session_access integrated with devise.
