@@ -326,7 +326,8 @@ class Comment < ApplicationRecord
   handle_asynchronously :send_email_notification
 
   def should_send_email_notification?
-    parent_user != user &&
+    parent_user.class.name != "Podcast" &&
+      parent_user != user &&
       parent_user.email_comment_notifications &&
       parent_user.email
   end
