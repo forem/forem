@@ -70,7 +70,7 @@ RSpec.configure do |config|
 
   # run retry only on features
   config.around :each, :js do |ex|
-    ex.run_with_retry retry: 3
+    ex.run_with_retry retry: ENV["CI"] ? 3 : 1
   end
 
   config.before do
