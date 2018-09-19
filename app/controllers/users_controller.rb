@@ -109,7 +109,9 @@ class UsersController < ApplicationController
           new(access_token: current_user.identities.where(provider: "github").last.token)
       end
     when "billing"
-      @customer = Stripe::Customer.retrieve(current_user.stripe_id_code) if current_user.stripe_id_code
+      stripe_code = current_user.stripe_id_code
+      return if stripe_code == "special"
+      @customer = Stripe::Customer.retrieve(stripe_code) if !stripe_code.blank?
     when "membership"
       if current_user.monthly_dues.zero?
         redirect_to "/membership"
