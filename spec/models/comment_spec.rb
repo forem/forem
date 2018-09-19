@@ -206,7 +206,7 @@ RSpec.describe Comment, type: :model do
     end
   end
 
-  describe "::StreamRails::Activity(notification callbacks)", focus: true do
+  describe "::StreamRails::Activity(notification callbacks)" do
     before do
       StreamRails.enabled = true
       allow(StreamNotifier).to receive(:new).and_call_original
