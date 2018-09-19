@@ -38,9 +38,10 @@ class RunkitTag < Liquid::Block
         if(typeof(RunKit) !== 'undefined') {
           var targets = document.getElementsByClassName("runkit-element");
           for (var i = 0; i < targets.length; i++) {
-            var preamble = targets[i].children[0].textContent;
-            var content = targets[i].children[1].textContent;
-            if(/^(\<iframe src)/.test(content) === false) {
+            var wrapperContent = targets[i].textContent;
+            if(/^(\<iframe src)/.test(wrapperContent) === false) {
+              var preamble = targets[i].children[0].textContent;
+              var content = targets[i].children[1].textContent;
               targets[i].innerHTML = "";
               var notebook = RunKit.createNotebook({
                 element: targets[i],
