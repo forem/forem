@@ -8,8 +8,9 @@ class RunkitTag < Liquid::Block
     content = Nokogiri::HTML.parse(super)
     parsed_content = content.xpath("//html/body").text
     html = <<~HTML
-      <div class="runkit-element" data-preamble="#{@preamble}">
-        #{parsed_content}
+      <div class="runkit-element">
+        <code style="display: none">#{@preamble}</code>
+        <code>#{parsed_content}</code>
       </div>
     HTML
     html
@@ -19,8 +20,8 @@ class RunkitTag < Liquid::Block
     <<~JAVASCRIPT
       var targets = document.getElementsByClassName("runkit-element");
       for (var i = 0; i < targets.length; i++) {
-        var content = targets[i].textContent;
-        var preamble = targets[i].dataset.preamble;
+        var preamble = targets[i].children[0].textContent;
+        var content = targets[i].children[1].textContent;
         targets[i].innerHTML = "";
         var notebook = RunKit.createNotebook({
           element: targets[i],
@@ -37,8 +38,8 @@ class RunkitTag < Liquid::Block
         if(typeof(RunKit) !== 'undefined') {
           var targets = document.getElementsByClassName("runkit-element");
           for (var i = 0; i < targets.length; i++) {
-            var content = targets[i].textContent;
-            var preamble = targets[i].dataset.preamble;
+            var preamble = targets[i].children[0].textContent;
+            var content = targets[i].children[1].textContent;
             if(/^(\<iframe src)/.test(content) === false) {
               targets[i].innerHTML = "";
               var notebook = RunKit.createNotebook({

@@ -24,8 +24,9 @@ RSpec.describe RunkitTag, type: :liquid_template do
 
     def generate_script(preamble_str, block)
       <<~HTML
-        <div class="runkit-element" data-preamble="#{preamble_str}">
-          #{block}
+        <div class="runkit-element">
+          <code style="display: none">#{preamble_str}</code>
+          <code>#{block}</code>
         </div>
       HTML
     end
