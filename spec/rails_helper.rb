@@ -1,18 +1,15 @@
-abort("The Rails environment is running in production mode!") if Rails.env.production?
 ENV["RAILS_ENV"] = "test"
 
 require "spec_helper"
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
+abort("The Rails environment is running in production mode!") if Rails.env.production?
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require "algolia/webmock"
-require "approvals/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
-require "rspec/retry"
-require "shoulda/matchers"
 require "stream_rails"
 require "webmock/rspec"
 
@@ -39,33 +36,14 @@ ActiveRecord::Migration.maintain_test_schema!
 WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-
-  Approvals.configure do |approvals_config|
-    approvals_config.approvals_path = "#{::Rails.root}/spec/support/fixtures/approvals/"
-  end
 
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include RequestSpecHelper, type: :request
   config.include ApplicationHelper
-  # config.include CommentsHelper, type: :view
-
   config.include FactoryBot::Syntax::Methods
-
-  # Apply rack_session_access integrated with devise.
-  config.include Devise::Test::IntegrationHelpers, type: :feature
-
-  # show retry status in spec process
-  config.verbose_retry = true
-  # show exception that triggers a retry if verbose_retry is set to true
-  config.display_try_failure_messages = true
-
-  # run retry only on features
-  config.around :each, :js do |ex|
-    ex.run_with_retry retry: ENV["CI"] ? 3 : 1
-  end
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
@@ -170,8 +148,6 @@ RSpec.configure do |config|
 
   OmniAuth.config.mock_auth[:github] = github_auth_hash
 
-  #########
-
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
@@ -179,11 +155,3 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
-
-Shoulda::Matchers.configure do |config|
-  config.integrate do |with|
-    with.test_framework :rspec
-    with.library :rails
-  end
-end
-
