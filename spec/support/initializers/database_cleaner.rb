@@ -1,3 +1,5 @@
+require "database_cleaner"
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
 
@@ -41,5 +43,4 @@ RSpec.configure do |config|
   config.append_after do
     DatabaseCleaner.clean
   end
-
 end

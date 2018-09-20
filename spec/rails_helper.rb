@@ -1,27 +1,20 @@
-# This file is copied to spec/ when you run 'rails generate rspec:install'
+abort("The Rails environment is running in production mode!") if Rails.env.production?
 ENV["RAILS_ENV"] = "test"
 
+require "spec_helper"
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-
-# Prevent database truncation if the environment is production
-abort("The Rails environment is running in production mode!") if Rails.env.production?
-require "spec_helper"
-require "webmock/rspec"
-require "capybara/rspec"
-require "stream_rails"
-require "selenium/webdriver"
-require "rspec/retry"
-require "algolia/webmock"
-require "approvals/rspec"
-require "shoulda/matchers"
-require "pundit/rspec"
-require "pundit/matchers"
-
-WebMock.disable_net_connect!(allow_localhost: true)
 
 # Add additional requires below this line. Rails is not loaded until this point!
+
+require "algolia/webmock"
+require "approvals/rspec"
+require "pundit/matchers"
+require "pundit/rspec"
+require "rspec/retry"
+require "shoulda/matchers"
+require "stream_rails"
+require "webmock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -35,18 +28,19 @@ WebMock.disable_net_connect!(allow_localhost: true)
 # of increasing the boot-up time by auto-requiring all files in the support
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
-#
-# Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+# Disable internet connection with Webmock
+WebMock.disable_net_connect!(allow_localhost: true)
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
-  Capybara.server = :puma, { Silent: true }
-  Capybara.default_max_wait_time = 5
 
   Approvals.configure do |approvals_config|
     approvals_config.approvals_path = "#{::Rails.root}/spec/support/fixtures/approvals/"
@@ -193,22 +187,3 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome)
-end
-
-Capybara.register_driver :headless_chrome do |app|
-  capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
-    chromeOptions: { args: %w(headless disable-gpu no-sandbox window-size=1400,2000) },
-  )
-
-  Capybara::Selenium::Driver.new app,
-    browser: :chrome,
-    desired_capabilities: capabilities
-end
-
-# The current driveres implemented are
-# - chrome-helper (:chrome) => Use this for browser-based testing
-# - headless-chrome (:headless_chrome) => headless version of chrome-helper
-
-Capybara.javascript_driver = :headless_chrome
