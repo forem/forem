@@ -22,7 +22,7 @@
       "git add"
     ],
     "{app,spec}/**/*.rb": [
-      "bundle exec rubocop --auto-correct",
+      "bundle exec rubocop --require rubocop-rspec --auto-correct",
       "git add"
     ],
     "*.json": [
