@@ -1,6 +1,8 @@
 require "rails_helper"
 require "uri"
 
+base_uri = "https://glitch.com/embed/#!/embed/"
+
 RSpec.describe GlitchTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id) { "BXgGcAUjM39" }
@@ -12,6 +14,7 @@ RSpec.describe GlitchTag, type: :liquid_template do
     let(:id_with_preview_first_option) { "some-id preview-first" }
     let(:id_with_file_option) { "some-id file=script.js" }
     let(:id_with_app_and_code_option) { "some-id app code" }
+    let(:id_with_many_options) { "some-id app no-attribution no-files file=script.js" }
 
     def generate_tag(id)
       Liquid::Template.register_tag("glitch", GlitchTag)
@@ -26,55 +29,53 @@ RSpec.describe GlitchTag, type: :liquid_template do
       expect { generate_tag(id_with_quotes) }.to raise_error(StandardError)
     end
 
-    # rubocop:disable LineLength
-    it "accepts 'app' option" do
+    it "handles 'app' option" do
       template = generate_tag(id_with_app_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?previewSize=100&path=index.html")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?previewSize=100&path=index.html"
+      expect(template.render(nil)).to include(expected)
     end
 
-    it "accepts 'code' option" do
+    it "handles 'code' option" do
       template = generate_tag(id_with_code_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?previewSize=0&path=index.html")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?previewSize=0&path=index.html"
+      expect(template.render(nil)).to include(expected)
     end
 
-    it "accepts 'no-files' option" do
+    it "handles 'no-files' option" do
       template = generate_tag(id_with_no_files_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?sidebarCollapsed=true&path=index.html")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?sidebarCollapsed=true&path=index.html"
+      expect(template.render(nil)).to include(expected)
     end
 
-    it "accepts 'preview-first' option" do
+    it "handles 'preview-first' option" do
       template = generate_tag(id_with_preview_first_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?previewFirst=true&path=index.html")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?previewFirst=true&path=index.html"
+      expect(template.render(nil)).to include(expected)
     end
 
-    it "accepts 'no-attribution' option" do
+    it "handles 'no-attribution' option" do
       template = generate_tag(id_with_no_attribution_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?attributionHidden=true&path=index.html")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?attributionHidden=true&path=index.html"
+      expect(template.render(nil)).to include(expected)
     end
 
-    it "accepts 'file' option" do
+    it "handles 'file' option" do
       template = generate_tag(id_with_file_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?path=script.js")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?path=script.js"
+      expect(template.render(nil)).to include(expected)
+    end
+
+    it "handles complex case" do
+      template = generate_tag(id_with_many_options)
+      expected = "src=\"" + base_uri +
+        "some-id?previewSize=100&attributionHidden=true&sidebarCollapsed=true&path=script.js"
+      expect(template.render(nil)).to include(expected)
     end
 
     it "'app' and 'code' cancel each other" do
       template = generate_tag(id_with_app_and_code_option)
-      actual = URI.parse(template.root.nodelist.first.uri)
-      expected = URI.parse("https://glitch.com/embed/#!/embed/some-id?path=index.html")
-      expect(actual).to eq(expected)
+      expected = "src=\"" + base_uri + "some-id?path=index.html"
+      expect(template.render(nil)).to include(expected)
     end
-    # rubocop:enable LineLength
   end
 end

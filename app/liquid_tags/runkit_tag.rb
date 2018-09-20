@@ -20,7 +20,7 @@ class RunkitTag < Liquid::Block
       var targets = document.getElementsByClassName("runkit-element");
       if (targets.length > 0) {
         for (var i = 0; i < targets.length; i++) {
-          var content = targets[i].innerHTML;
+          var content = targets[i].textContent;
           targets[i].innerHTML = "";
           var notebook = RunKit.createNotebook({
             element: targets[i],
@@ -38,7 +38,7 @@ class RunkitTag < Liquid::Block
           var targets = document.getElementsByClassName("runkit-element");
           if (targets.length > 0) {
             for (var i = 0; i < targets.length; i++) {
-              var content = targets[i].innerHTML;
+              var content = targets[i].textContent;
               if(/^(\<iframe src)/.test(content) === false) {
                 targets[i].innerHTML = "";
                 var notebook = RunKit.createNotebook({
