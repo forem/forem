@@ -93,7 +93,6 @@ RSpec.configure do |config|
   StreamRails.enabled = false
   OmniAuth.config.test_mode = true
 
-
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.

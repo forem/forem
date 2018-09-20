@@ -10,6 +10,8 @@ RSpec.describe User, type: :model do
   let(:org)             { create(:organization) }
   let (:second_org)     { create(:organization) }
 
+  before { mock_auth_hash }
+
   it { is_expected.to have_many(:articles) }
   it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
   it { is_expected.to have_many(:badges).through(:badge_achievements) }
