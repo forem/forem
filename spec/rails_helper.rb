@@ -38,12 +38,13 @@ WebMock.disable_net_connect!(allow_localhost: true)
 RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  config.include Devise::Test::ControllerHelpers, type: :view
-  config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Devise::Test::IntegrationHelpers, type: :feature
-  config.include RequestSpecHelper, type: :request
   config.include ApplicationHelper
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :view
+  config.include Devise::Test::IntegrationHelpers, type: :feature
   config.include FactoryBot::Syntax::Methods
+  config.include OmniauthMacros
+  config.include RequestSpecHelper, type: :request
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
@@ -89,64 +90,9 @@ RSpec.configure do |config|
     stub_request(:get, /us-east-api.stream-io-api.com\/api/).to_rack(FakeStream)
   end
 
-  # Stub Stream.io
   StreamRails.enabled = false
-
-  # Omniauth mock
-
   OmniAuth.config.test_mode = true
 
-  raw_info = Hashie::Mash.new
-  raw_info.email = "yourname@email.com"
-  raw_info.first_name = "fname"
-  raw_info.gender = "female"
-  raw_info.id = "123456"
-  raw_info.last_name = "lname"
-  raw_info.link = "http://www.facebook.com/url&#8221"
-  raw_info.lang = "fr"
-  raw_info.locale = "en_US"
-  raw_info.name = "fname lname"
-  raw_info.timezone = 5.5
-  raw_info.updated_time = "2012-06-08T13:09:47+0000"
-  raw_info.username = "fname.lname"
-  raw_info.verified = true
-  raw_info.followers_count = 100
-  raw_info.friends_count = 1000
-  raw_info.created_at = "2017-06-08T13:09:47+0000"
-
-  extra_info = Hashie::Mash.new
-  extra_info.raw_info = raw_info
-
-  info = OmniAuth::AuthHash::InfoHash.new
-  info.first_name = "fname"
-  # info.image = "http://graph.facebook.com/123456/picture?type=square&#8221"
-  info.last_name = "lname"
-  info.location = "location,state,country"
-  info.name = "fname lname"
-  info.nickname = "fname.lname"
-  info.verified = true
-
-  credentials = OmniAuth::AuthHash::InfoHash.new
-  credentials.token =  "2735246777-jlOnuFlGlvybuwDJfyrIyESLUEgoo6CffyJCQUO"
-  credentials.secret = "o0cu6ACtypMQfLyWhme3Vj99uSds7rjr4szuuTiykSYcN"
-
-  twitter_auth_hash = OmniAuth::AuthHash.new
-  twitter_auth_hash.provider = "twitter"
-  twitter_auth_hash.uid = "123456"
-  twitter_auth_hash.info = info
-  twitter_auth_hash.extra = extra_info
-  twitter_auth_hash.credentials = credentials
-
-  github_auth_hash = OmniAuth::AuthHash.new
-  github_auth_hash.provider = "github"
-  github_auth_hash.uid = "1234567"
-  github_auth_hash.info = info
-  github_auth_hash.extra = extra_info
-  github_auth_hash.credentials = credentials
-
-  OmniAuth.config.mock_auth[:twitter] = twitter_auth_hash
-
-  OmniAuth.config.mock_auth[:github] = github_auth_hash
 
   config.infer_spec_type_from_file_location!
 
