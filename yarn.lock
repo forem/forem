@@ -328,9 +328,9 @@
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.1.3.tgz#3920a5aea6ebe1ac434b4dfe17430d3c1035dcc2"
 
-"@webscopeio/react-textarea-autocomplete@^2.2.0":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.3.tgz#a691c0f26bff65fbf20cabddb7a23a770f5ca47b"
+"@webscopeio/react-textarea-autocomplete@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.4.tgz#f6eaadff8a4683ff9302c90637eb071df4bccbef"
   dependencies:
     custom-event "^1.0.1"
     textarea-caret "3.0.2"
