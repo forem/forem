@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20180905013458) do
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
     t.integer "reactions_count", default: 0, null: false
-    t.integer "reading_time"
+    t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
     t.integer "second_user_id"

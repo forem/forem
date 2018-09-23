@@ -196,6 +196,12 @@ RSpec.describe Article, type: :model do
         expect(article_with_canon_url.canonical_url).to eq(initial_link)
       end
     end
+
+    describe "#reading_time" do
+      it "produces a correct reading time" do
+        expect(test_article.reading_time).to eq(1)
+      end
+    end
   end
 
   describe "#video" do
