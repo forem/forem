@@ -1,5 +1,6 @@
 class AuthorizationService
   attr_accessor :auth, :signed_in_resource, :cta_variant
+
   def initialize(auth, signed_in_resource = nil, cta_variant = nil)
     @auth = auth
     @signed_in_resource = signed_in_resource
