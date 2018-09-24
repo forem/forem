@@ -31,7 +31,6 @@ class RunkitTag < Liquid::Block
           });
         }
       }
-      }
     JAVASCRIPT
   end
 
