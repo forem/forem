@@ -19,15 +19,19 @@ class RunkitTag < Liquid::Block
   def self.special_script
     <<~JAVASCRIPT
       var targets = document.getElementsByClassName("runkit-element");
-      for (var i = 0; i < targets.length; i++) {
-        var preamble = targets[i].children[0].textContent;
-        var content = targets[i].children[1].textContent;
-        targets[i].innerHTML = "";
-        var notebook = RunKit.createNotebook({
-          element: targets[i],
-          source: content,
-          preamble: preamble
-        });
+      if (targets.length > 0) {
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i].children) {
+            var preamble = targets[i].children[0].textContent;
+            var content = targets[i].children[1].textContent;
+            targets[i].innerHTML = "";
+            var notebook = RunKit.createNotebook({
+              element: targets[i],
+              source: content,
+              preamble: preamble
+            });
+          }
+        }
       }
     JAVASCRIPT
   end
@@ -41,14 +45,16 @@ class RunkitTag < Liquid::Block
             for (var i = 0; i < targets.length; i++) {
               var wrapperContent = targets[i].textContent;
               if(/^(\<iframe src)/.test(wrapperContent) === false) {
-                var preamble = targets[i].children[0].textContent;
-                var content = targets[i].children[1].textContent;
-                targets[i].innerHTML = "";
-                var notebook = RunKit.createNotebook({
-                  element: targets[i],
-                  source: content,
-                  preamble: preamble
-                });
+                if (targets[i].children) {
+                  var preamble = targets[i].children[0].textContent;
+                  var content = targets[i].children[1].textContent;
+                  targets[i].innerHTML = "";
+                  var notebook = RunKit.createNotebook({
+                    element: targets[i],
+                    source: content,
+                    preamble: preamble
+                  });
+                }
               }
             }
           }
