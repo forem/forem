@@ -15,7 +15,7 @@
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "precommit": "lint-staged",
     "upstream:sync": "git checkout master; git pull upstream master;",
-    "upstream:connect": "git remote add upstream https://github.com/thepracticaldev/dev.to.git"
+    "upstream:setup": "git remote add upstream https://github.com/thepracticaldev/dev.to.git"
   },
   "lint-staged": {
     "*.{js,jsx}": [
