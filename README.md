@@ -94,6 +94,10 @@ Inside your dev.to directory, add a remote to the official dev.to repo:
 $ git remote add upstream https://github.com/thepracticaldev/dev.to.git
 ```
 
+Optionally, you can run two commands to setup and sync your fork:
+  * `npm run upstream:setup` Will perform the above command
+  * `npm run upstream:sync` Will checkout the master branch and pull the master branch from Dev.to into your local master branch.
+
 #### Rebasing from Upstream
 Do this prior to every time you create a branch for a PR:
 
