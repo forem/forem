@@ -207,29 +207,33 @@ RSpec.describe Comment, type: :model do
   end
 
   describe "::StreamRails::Activity(notification callbacks)" do
+    before do
+      StreamRails.enabled = true
+      allow(StreamNotifier).to receive(:new).and_call_original
+    end
+
     after { StreamRails.enabled = false }
 
     context "when a comment without ancestor is created" do
-      before do
-        StreamRails.enabled = true
-        allow(StreamNotifier).to receive(:new).and_call_original
-      end
+      let(:test_comment) { build(:comment, commentable_id: article.id) }
+
+      before { allow(test_comment).to receive(:send_email_notification).and_call_original }
 
       it "notifies the author" do
-        create(:comment, commentable_id: article.id)
-        expect(StreamNotifier).to have_received(:new).with(user.id).at_least(:once)
+        test_comment.save!
+        expect(StreamNotifier).to have_received(:new).at_least(:once)
       end
 
-      it " does not notify author if self is author" do
-        create(:comment, commentable_id: article.id, user_id: user.id)
+      it "does not notify author if self is author" do
+        test_comment.user = user
+        test_comment.save
         expect(StreamNotifier).not_to have_received(:new).with(user.id)
+        expect(test_comment).not_to have_received :send_email_notification
       end
 
       it "does not notify anybody else" do
-        comment1 = create(:comment, commentable_id: article.id)
-        comment2 = create(:comment, commentable_id: article.id)
-        expect(StreamNotifier).not_to have_received(:new).with(comment1.user.id)
-        expect(StreamNotifier).not_to have_received(:new).with(comment2.user.id)
+        test_comment.save
+        expect(StreamNotifier).not_to have_received(:new).with(test_comment.user_id)
       end
     end
 
@@ -245,9 +249,9 @@ RSpec.describe Comment, type: :model do
       let(:nest_comments_authors) { [nest_comment_1.user_id, nest_comment_2.user_id] }
 
       before do
+        StreamRails.enabled = false
         nest_comments_authors # this needs to be evoked before StreamRails is enabled
         StreamRails.enabled = true
-        allow(StreamNotifier).to receive(:new).and_call_original
       end
 
       it "notifies all the ancestors" do
@@ -271,9 +275,11 @@ RSpec.describe Comment, type: :model do
 
       it "does not notify self if self is among the ancestors" do
         me = create(:user)
+        test_comment = create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
         create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
-        create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
+        allow(test_comment).to receive(:send_email_notification).and_call_original
         expect(StreamNotifier).not_to have_received(:new).with(me.id)
+        expect(test_comment).not_to have_received(:send_email_notification)
       end
     end
   end

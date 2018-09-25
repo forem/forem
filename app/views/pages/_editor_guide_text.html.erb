@@ -76,6 +76,38 @@
     <h3><strong>Glitch embed</strong></h3>
     <p>All you need is the Glitch project slug</p>
     <code>{% glitch earthy-course %}</code>
+    <p>There are several <a href="https://glitch.com/help/how-can-i-customize-a-glitch-app-embed/">optional attributes</a> you can use in your tag, just add them after the id, separated by spaces.</p>
+    <dl>
+      <dt><code>app</code></dt>
+      <dd>
+        Shows the app preview without the code.<br/>
+        <code>{% glitch earthy-course app %}</code>
+      </dd>
+      <dt><code>code</code></dt>
+      <dd>
+        Shows the code without the app preview.<br/>
+        <code>{% glitch earthy-course code %}</code>
+      </dd>
+      <dt><code>preview-first</code></dt>
+      <dd>
+        Hides the file browser.<br/>
+        <code>{% glitch earthy-course preview-first %}</code>
+      </dd>
+      <dt><code>no-attribution</code></dt>
+      <dd>
+        Hides the file browser.<br/>
+        <code>{% glitch earthy-course no-attribution %}</code>
+      </dd>
+      <dt><code>no-files</code></dt>
+      <dd>
+        Hides the file browser.<br/>
+        <code>{% glitch earthy-course no-files %}</code>
+      </dd>
+      <dt><code>file</code></dt>
+      <dd>
+        Lets you choose which file to display in the code panel. Defaults to index.html.<br/>
+        <code>{% glitch earthy-course file=script.js %}</code>
+      </dd>
 
     <h3><strong>GitHub Repo Embed</strong></h3>
     <p>All you need is the GitHub username and repo:</p>
@@ -104,7 +136,7 @@
 
     <h3><strong>RunKit Embed</strong></h3>
     <p>Put executable code within a runkit liquid block, as follows:</p>
-    <pre>{% runkit %}<br>console.log("Place javascript here!"); <br>{% endrunkit %} <br></pre>
+    <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %} <br></pre>
 
     <h3><strong>repl.it Embed</strong></h3>
     <p>All you need is the URL after the domain name:</p>

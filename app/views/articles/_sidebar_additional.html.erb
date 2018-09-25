@@ -25,6 +25,22 @@
         <%= render "articles/badges_area" %>
       <% end %>
     <% elsif @user && @user.class.name == "Organization" %>
+      <% if @user.users.size > 0 %>
+        <div class="widget">
+          <div class="widget-suggested-follows-container">
+            <header>meet the team</header>
+            <div class="widget-body">
+              <% @user.users.each do |user| %>
+                  <div class="widget-user-pic">
+                    <a href="/<%= user.username %>">
+                      <img src="<%= ProfileImage.new(user).get(90) %>" />
+                    </a>
+                  </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     <% elsif @tag  %>
       <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">

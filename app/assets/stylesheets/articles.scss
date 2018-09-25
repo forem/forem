@@ -1088,6 +1088,15 @@
           color: #000000;
           font-weight: 500;
         }
+        .widget-user-pic{
+          display: inline-block;
+          img{
+            height: 60px;
+            width: 60px;
+            margin: 9px;
+            border-radius: 100px;
+          }
+        }
         .utc-date{
           width: 46px;
           background: $dark-purple;
