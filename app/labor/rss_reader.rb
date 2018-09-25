@@ -24,9 +24,7 @@ class RssReader
   def fetch_user(user)
     Thread.current[:request_id] = @request_id
     Thread.current[:span_id] = @request_id
-    with_span("fetch_user", user_id: user.id, username: user.username) do
-      create_articles_for_user(user)
-    end
+    create_articles_for_user(user)
   end
 
   def valid_feed_url?(link)
@@ -38,22 +36,25 @@ class RssReader
   private
 
   def create_articles_for_user(user)
-    feed = fetch_rss(user.feed_url)
-    feed.entries.reverse_each do |item|
-      make_from_rss_item(item, user, feed)
+    with_span("create_articles_for_user", user_id: user.id, username: user.username) do |metadata|
+      feed = fetch_rss(user.feed_url)
+      metadata[:feed_length] = feed.entries.length if feed&.entries
+      feed.entries.reverse_each do |item|
+        make_from_rss_item(item, user, feed)
+      rescue StandardError => e
+        log_error("RssReaderError: occurred while creating article for",
+                    user: user.username,
+                    feed_url: user.feed_url,
+                    item_count: get_item_count_error(feed),
+                    error: e)
+      end
     rescue StandardError => e
-      log_error("RssReaderError: occurred while creating article for",
+      log_error("RssReaderError: occurred while fetch feed for",
                   user: user.username,
                   feed_url: user.feed_url,
                   item_count: get_item_count_error(feed),
                   error: e)
     end
-  rescue StandardError => e
-    log_error("RssReaderError: occurred while fetch feed for",
-                user: user.username,
-                feed_url: user.feed_url,
-                item_count: get_item_count_error(feed),
-                error: e)
   end
 
   def get_item_count_error(feed)
@@ -65,11 +66,11 @@ class RssReader
   end
 
   def fetch_rss(url)
-    with_span("fetch_rss", url: url) do
-      xml = with_span("http_get") do
+    with_span("fetch_rss", url: url) do |metadata|
+      xml = with_timer("http_get", metadata) do
         HTTParty.get(url).body
       end
-      with_span("parse_xml") do
+      with_timer("parse_xml", metadata) do
         Feedjira::Feed.parse xml
       end
     end
@@ -79,7 +80,7 @@ class RssReader
     with_span("make_from_rss_item",
                 item_id: item.entry_id,
                 item_title: item.title,
-                item_summary_size: item.summary.size) do
+                item_summary_size: item.summary&.size) do |metadata|
       return if medium_reply?(item) || article_exist?(user, item)
       article_params = {
         feed_source_url: feed_source_url = item.url.strip.split("?source=")[0],
@@ -90,7 +91,9 @@ class RssReader
         body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
         organization_id: user.organization_id.present? ? user.organization_id : nil
       }
-      article = Article.create!(article_params)
+      article = with_timer("save_article", metadata) do
+        Article.create!(article_params)
+      end
       SlackBot.delay.ping(
         "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
         channel: "activity",
@@ -133,10 +136,8 @@ class RssReader
   end
 
   def thorough_parsing(content, feed_url)
-    with_span("thorough_parsing") do
-      html_doc = with_span("nokogiri") do
-        Nokogiri::HTML(content)
-      end
+    with_span("thorough_parsing", content_length: content.length) do
+      html_doc = Nokogiri::HTML(content)
       find_and_replace_possible_links!(html_doc)
       if feed_url.include?("medium.com")
         parse_and_translate_gist_iframe!(html_doc)
@@ -256,7 +257,7 @@ class RssReader
   # into the block.
   def with_span(name, metadata = nil)
     trace_id = Thread.current[:request_id]
-    return yield unless trace_id
+    return yield({}) unless trace_id
 
     id = SecureRandom.uuid
     start = Time.new
@@ -276,7 +277,7 @@ class RssReader
     # Set the current span ID before invoking the provided block, then capture
     # the return value to return after emitting the Honeycomb event.
     Thread.current[:span_id] = id
-    ret = yield
+    ret = yield data
 
     data[:duration_ms] = (Time.new - start) * 1000
     if metadata
@@ -291,5 +292,13 @@ class RssReader
     ret
   ensure
     Thread.current[:span_id] = parent_id
+  end
+
+  def with_timer(name, data)
+    start = Time.new
+    ret = yield
+    data[name + "_dur_ms"] = (Time.new - start) * 1000 if data
+
+    ret
   end
 end
