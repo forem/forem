@@ -169,6 +169,7 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
+  delete "users/remove_association" => "users#remove_association"
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
 
   # The priority is based upon order of creation: first created -> highest priority.

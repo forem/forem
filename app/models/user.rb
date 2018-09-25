@@ -342,17 +342,18 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = ["Profile",
-                "Mentorship",
-                "Integrations",
-                "Notifications",
-                "Publishing from RSS",
-                "Organization",
-                "Billing"]
+    tab_list = %w(
+      Profile
+      Mentorship
+      Integrations
+      Notifications
+      Publishing from RSS
+      Organization
+      Billing
+    )
     tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list << "Misc"
-    tab_list
+    tab_list.push("Account", "Misc")
   end
 
   def profile_image_90

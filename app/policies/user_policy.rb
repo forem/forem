@@ -31,6 +31,10 @@ class UserPolicy < ApplicationPolicy
     user.org_admin && not_self? && within_the_same_org?
   end
 
+  def remove_association?
+    current_user?
+  end
+
   def dashboard_show?
     current_user? || user_admin?
   end

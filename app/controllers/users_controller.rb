@@ -32,6 +32,25 @@ class UsersController < ApplicationController
     end
   end
 
+  def remove_association
+    @user = current_user
+    authorize @user
+    provider = params[:provider]
+    identity = @user.identities.find_by(provider: provider)
+    @tab_list = @user.settings_tab_list
+    @tab = "account"
+    if @user.identities.count == 2 && identity
+      identity.destroy
+      identity_username = "#{provider}_username".to_sym
+      @user.update(identity_username => nil)
+      redirect_to "/settings/#{@tab}",
+        notice: "Your #{provider.capitalize} account was successfully removed."
+    else
+      flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
+      redirect_to "/settings/#{@tab}"
+    end
+  end
+
   def onboarding_update
     current_user.saw_onboarding = true
     authorize User
@@ -117,6 +136,24 @@ class UsersController < ApplicationController
         redirect_to "/membership"
         return
       end
+    when "account"
+      @email_body = <<~HEREDOC
+        Hello DEV Team,
+        %0A
+        %0A
+        I would like to delete my dev.to account.
+        %0A%0A
+        You can keep any comments and discussion posts under the Ghost account.
+        %0A
+        ---OR---
+        %0A
+        Please delete all my personal information, including comments and discussion posts.
+        %0A
+        %0A
+        Regards,
+        %0A
+        YOUR-DEV-USERNAME-HERE
+      HEREDOC
     end
   end
 end

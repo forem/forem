@@ -1,0 +1,46 @@
+<h2 style="color: #ff0000;">Danger Zone</h2>
+<% if @user.identities.count == 2 %>
+  <h3>Remove OAuth Associations</h3>
+  <h4 style="font-weight:400;">
+    You can remove one of your authentication methods. We'll still need one to authenticate you.
+    <br>
+    <br>
+    Removing an OAuth association will:
+    <ul>
+      <li>remove your ability to sign in with that account</li>
+      <li>remove the associated URL from your profile</li>
+    </ul>
+    <strong>
+      Note that this does not revoke our OAuth app access; you will have to do so in your
+      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your 
+      <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+    </strong>
+    <br>
+    <br>
+    <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your Twitter account?');" do %>
+      <%= hidden_field_tag :provider, "twitter" %>
+      <button class="danger-button small-button" type="submit">
+        <img src="<%= asset_path('twitter-logo.svg') %>" /> REMOVE TWITTER
+      </button>
+    <% end %>
+    <span style="margin-left: 124px;">OR</span>
+    <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your GitHub account?');" do %>
+      <%= hidden_field_tag :provider, "github" %>
+      <button class="danger-button small-button" type="submit">
+        <img src="<%= asset_path('github-logo.svg') %>" /> REMOVE GITHUB
+      </button>
+    <% end %>
+  </h4>
+<% end %>
+
+<h3>Request Account Deletion</h3>
+<h4 style="font-weight:400;">
+  <b>
+  <a href="mailto:yo@dev.to?subject=Request Account Deletion&body=<%= @email_body %>">
+    Click this link to request account deletion via email.
+  </a>
+  </b>
+  <br>
+  <br>
+  Be sure to change the email template to fit your needs.
+</h4>

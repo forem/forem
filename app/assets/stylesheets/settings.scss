@@ -208,6 +208,29 @@
           }
         }
       }
+      button {
+        width: 255px;
+        max-width: 100%;
+        padding: 10px 0px;
+        margin: 10px 0px;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-radius: 3px;
+        border: 0;
+        &:hover {
+          opacity: 0.88;
+        }
+        cursor: pointer;
+        &.danger-button {
+          background-color: $red;
+          color: $off-white;
+        }
+        img {
+          vertical-align:-3px;
+          height: 1.2em;
+          width: 1.2em;
+        }
+      }
       .image-present {
         @media screen and ( max-width: 700px ) {
           display:block;

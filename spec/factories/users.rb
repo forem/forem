@@ -64,5 +64,9 @@ FactoryBot.define do
     after(:create) do |user|
       create(:identity, user_id: user.id)
     end
+
+    trait :two_identities do
+      after(:create) { |user| create(:identity, user_id: user.id, provider: "twitter") }
+    end
   end
 end
