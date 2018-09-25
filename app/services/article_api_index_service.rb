@@ -1,10 +1,11 @@
 class ArticleApiIndexService
-  attr_accessor :tag, :username, :page, :state
+  attr_accessor :tag, :username, :page, :state, :top
   def initialize(params)
     @page =     params[:page]
     @tag =      params[:tag]
     @username = params[:username]
     @state = params[:state]
+    @top = params[:top]
   end
 
   def get
@@ -53,6 +54,16 @@ class ArticleApiIndexService
       Article.
         where(published: true, approved: true).
         order("featured_number DESC").
+        includes(:user).
+        includes(:organization).
+        page(page).
+        per(30).
+        filter_excluded_tags(tag)
+    elsif top.present?
+      Article.
+        where(published: true).
+        order("positive_reactions_count DESC").
+        where("published_at > ?", top.to_i.days.ago).
         includes(:user).
         includes(:organization).
         page(page).
