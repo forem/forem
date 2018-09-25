@@ -51,7 +51,7 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
       <h2 class="panel-title">
-        <a href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
+        <a id="collapse__header__link-<%= feedback_message.id %>" href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
           Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
         </a>
         <div class="panel-right-elements">
@@ -87,10 +87,6 @@
           <%= feedback_message.message %>
         <% end %>
       </p>
-      <h3>
-        Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, id: "status__#{feedback_message.id}" %>
-        <button class="btn btn-primary" role="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
-      </h3>
     <hr>
       <h3>Previous Emails:</h3>
       <div class="previous__emails__container">
@@ -150,7 +146,10 @@
       <button class="btn btn-primary" type="submit" id="send__email__btn__<%= feedback_message.id %>">SEND EMAIL ✉️ </button>
       <div class="email__alert alert fade in" id="email__alert__<%= feedback_message.id %>">
       </div>
-
+      <h3>
+        Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, id: "status__#{feedback_message.id}" %>
+        <button class="btn btn-primary" role="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
+      </h3>
       <h3>Notes:</h3>
       <div class="notes__container" id="notes__<%= feedback_message.id %>">
         <% feedback_message.notes&.order("created_at").each do |note| %>
@@ -177,8 +176,12 @@
         required
       >
       <br>
-    <button class="btn btn-primary" type="submit" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝 </button>
-
+      <button class="btn btn-primary" type="submit" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝 </button>
+      <br>
+      <br>
+      <button class="btn btn-primary" type="button" id="minimize__report__button__<%= feedback_message.id %>">
+        Minimize Report
+      </button>
       </div>
     </div>
   </div>
@@ -353,5 +356,9 @@
   document.getElementById('note__submit__<%= feedback_message.id %>').addEventListener('click', function() {
     var reportId = <%= feedback_message.id %>;
     submitNote(reportId);
+  });
+
+  document.getElementById('minimize__report__button__<%= feedback_message.id %>').addEventListener('click', function() {
+    document.getElementById('collapse__header__link-<%= feedback_message.id %>').click();
   });
 </script>

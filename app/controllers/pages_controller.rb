@@ -26,8 +26,9 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
+    reported_url = params[:reported_url] || params[:url] || request.referrer
     @feedback_message = FeedbackMessage.new(
-      reported_url: params[:reported_url] || params[:url] || request.referrer,
+      reported_url: reported_url&.chomp("?i=i"),
     )
     render "pages/report-abuse"
   end

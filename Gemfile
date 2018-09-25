@@ -56,7 +56,7 @@ gem "kaminari", "~> 1.1"
 gem "keen", "~> 0.7"
 gem "liquid", "~> 4.0"
 gem "nokogiri", "~> 1.8"
-gem "octokit", "~> 4.8"
+gem "octokit", "~> 4.12"
 gem "omniauth", "~> 1.8"
 gem "omniauth-github", "~> 1.3"
 gem "omniauth-twitter", "~> 1.4"
@@ -132,7 +132,7 @@ end
 
 group :test do
   gem "approvals", "~> 0.0"
-  gem "chromedriver-helper", "~> 1.2"
+  gem "chromedriver-helper", "~> 2.1"
   gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
   gem "fake_stripe", "~> 0.1"
