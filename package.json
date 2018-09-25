@@ -13,7 +13,9 @@
     "test:watch": "jest app/javascript/ --watch",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "upstream:sync": "git checkout master; git pull upstream master;",
+    "upstream:connect": "git remote add upstream https://github.com/thepracticaldev/dev.to.git"
   },
   "lint-staged": {
     "*.{js,jsx}": [
