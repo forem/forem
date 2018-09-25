@@ -32,7 +32,7 @@ class ReactionsController < ApplicationController
         {
           current_user: { id: current_user&.id },
           positive_reaction_counts: reaction_counts,
-          reactions: reactions,
+          reactions: reactions
         }.to_json
     end
     set_surrogate_key_header params.to_s unless current_user

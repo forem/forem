@@ -108,7 +108,7 @@ class Reaction < ApplicationRecord
 
   BASE_POINTS = {
     "vomit" => -50.0,
-    "thumbsdown" => -10.0,
+    "thumbsdown" => -10.0
   }.freeze
 
   def assign_points
