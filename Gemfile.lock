@@ -978,6 +978,7 @@ DEPENDENCIES
   jquery-rails (~> 4.3)
   kaminari (~> 1.1)
   launchy (~> 2.4)
+  libhoney (~> 1.10)
   liquid (~> 4.0)
   memory_profiler (~> 0.9)
   nakayoshi_fork

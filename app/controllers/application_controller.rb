@@ -76,4 +76,12 @@ class ApplicationController < ActionController::Base
       honeycomb_metadata[k] = params[k]
     end
   end
+
+  def append_info_to_payload(payload)
+    super(payload)
+    honeycomb_metadata["trace.trace_id"] = request.request_id
+    honeycomb_metadata["trace.span_id"] = request.request_id
+    honeycomb_metadata[:service_name] = "rails"
+    honeycomb_metadata[:name] = self.class.name
+  end
 end

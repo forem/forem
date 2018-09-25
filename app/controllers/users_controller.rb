@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     authorize @user
     # raise permitted_attributes(@user).to_s
     if @user.update(permitted_attributes(@user))
-      RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
+      RssReader.new(request.request_id).delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       follow_hiring_tag(@user)
       redirect_to "/settings/#{@tab}", notice: notice
