@@ -831,7 +831,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     staccato (0.5.1)
-    stackprof (0.2.11)
+    stackprof (0.2.12)
     storext (2.2.2)
       rails (>= 4.0, < 6.0)
       virtus
