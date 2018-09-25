@@ -4,32 +4,23 @@ class Bufferizer
     @text = text
   end
 
-  def twitter_post!
-    client = Buffer::Client.new(ApplicationConfig["BUFFER_ACCESS_TOKEN"])
-    client.create_update(
-      body: {
-        text:
-          twitter_buffer_text,
-        profile_ids: [
-          ApplicationConfig["BUFFER_TWITTER_ID"],
-        ],
-      },
-    )
+  def sattelite_tweet!
+    article.tags.each do |tag|
+      if tag.buffer_profile_id_code.present?
+        BufferUpdate.new(article.id, twitter_buffer_text, tag.buffer_profile_id_code, "twitter", tag.id).buff!
+      end
+    end
+    @article.update(last_buffered: Time.now)
+  end
+
+  def main_teet!
+    BufferUpdate.new(article.id, ApplicationConfig["BUFFER_TWITTER_ID"], tag.buffer_profile_id_code, "twitter", tag.id).buff!
     @article.update(last_buffered: Time.now)
   end
 
   def facebook_post!
-    client = Buffer::Client.new(ApplicationConfig["BUFFER_ACCESS_TOKEN"])
-    client.create_update(
-      body: {
-        text:
-          fb_buffer_text,
-        profile_ids: [
-          ApplicationConfig["BUFFER_FACEBOOK_ID"], # We're sending to LinkedIn and FB with this.
-          ApplicationConfig["BUFFER_LINKEDIN_ID"], # That's why there are two profile IDs
-        ],
-      },
-    )
+    BufferUpdate.new(article.id, fb_buffer_text, ApplicationConfig["BUFFER_FACEBOOK_ID"], "facebook").buff!
+    BufferUpdate.new(article.id, fb_buffer_text, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin").buff!
     @article.update(facebook_last_buffered: Time.now)
   end
 

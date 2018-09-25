@@ -51,6 +51,9 @@
 			
 			&nbsp &nbsp <button class="btn btn-primary">SUBMIT</button>
 		</form>
+		<div>
+			<h1><%= article.buffer_updates.size %></h1>
+		</div>
 
 		<% if article.boosted_dev_digest_email %>
 			<br/><br/>
@@ -68,7 +71,6 @@
 	<% unless params[:state]&.include?("classic") %>
 		<div class="inner-row" style="padding:10px;margin-top:20px;font-weight:800;">
 			<%= form_tag "/internal/buffer_updates" do %>
-				<input type="hidden" name="social_channel" value="twitter" />
 				<input type="hidden" name="article_id" value="<%= article.id %>" />
 				<p> Twitter </p>
 				<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>         
@@ -76,6 +78,9 @@
 						<button class="btn btn-danger" style="font-size:1em;">🙈 TWEETED <%= time_ago_in_words(article.last_buffered) %> ago</button>
 				<% else %>
 						<button class="btn btn-info" style="font-size:1em;">😎 TWEET 🚀🚀🚀🚀🚀🚀</button>
+						<input type="submit" name="social_channel" value="main_twitter" />
+						<input type="button" name="social_channel" value="sattelite_twitter" />
+
 				<% end %>
 			<% end %>
 			<%= form_tag "/internal/buffer_updates" do %>
