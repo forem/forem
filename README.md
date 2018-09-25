@@ -85,8 +85,14 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 4.  Push to the branch: `git push origin feature/that-new-feature`
 5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
 
-### Maintaining 
+### Maintaining Your Fork
 Now that you have a copy of your fork, there is work you will need to do to keep it current.
+
+#### Setup Your Upstream
+Inside your dev.to directory, add a remote to the official dev.to repo:
+```
+$ git remote add upstream https://github.com/thepracticaldev/dev.to.git
+```
 
 #### Rebasing from Upstream
 Do this prior to every time you create a branch for a PR:
