@@ -33,6 +33,11 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings/membership"
         expect(response.body).to include("Settings for")
       end
+
+      it "renders heads up dupe account message with proper param" do
+        get "/settings?state=previous-registration"
+        expect(response.body).to include("There is an existing account authorized with that social account")
+      end
     end
   end
 
