@@ -11,7 +11,7 @@
     <meta property="og:image" content="<%= GeneratedImage.new(@user).social_image %>" >
     <meta property="og:description" content="<%= @user.summary %>" />
     <meta property="og:site_name" content="The DEV Community" />
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@ThePracticalDev">
     <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
@@ -70,7 +70,7 @@
   <% if params[:timeframe].present? %>
     <% title "DEV Community  👩‍💻👨‍💻 - top posts this #{params[:timeframe]}" %>
   <% else %>
-    <% title "DEV Community  👩‍💻👨‍💻 - Where software engineers connect, build their resumes, and grow." %>
+    <% title "DEV Community" %>
   <% end %>
     <link rel="canonical" href="https://dev.to<%= request.path %>"/>
     <meta name="description" content="Where programmers share ideas and help each other grow.">
@@ -177,14 +177,14 @@
       border: 2px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
       box-shadow: 5px 6px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
     }
-  </style>  
+  </style>
   <div class="user-profile-header tag-header">
     <div class="tag-or-query-header-container">
       <h1>
         <% if @tag_model && @tag_model.pretty_name.present? %>
           <%= @tag_model.pretty_name %>
         <% else %>
-          <%= @tag %> 
+          <%= @tag %>
         <% end %>
         <% if @tag_model %>
             <span class="user-profile-follow-button-wrapper">
