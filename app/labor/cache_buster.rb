@@ -94,6 +94,9 @@ class CacheBuster
           bust("/top/#{timeframe[1]}")
           bust("/top/#{timeframe[1]}?i=i")
           bust("/top/#{timeframe[1]}/?i=i")
+          12.times do |i|
+            bust("/api/articles?tag=#{tag}&top=#{i}")
+          end
         end
         if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
             order("hotness_score DESC").limit(3).pluck(:id).include?(article.id)
