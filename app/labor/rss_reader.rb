@@ -245,6 +245,10 @@ class RssReader
     ev = $libhoney.event
     ev.add(metadata)
     ev.add_field("error_msg", error_msg)
+    ev.add_field("trace.trace_id", @request_id)
+    parent_id = Thread.current[:span_id] || @request_id
+    ev.add_field("trace.parent_id", parent_id)
+    ev.add_field("trace.span_id", SecureRandom.uuid)
     ev.send
   end
 
