@@ -25,7 +25,7 @@ class Reaction < ApplicationRecord
   as_activity
 
   def self.count_for_article(id)
-    Rails.cache.fetch("count_for_reactable-article-#{id}", expires_in: 1.hour) do
+    Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
       reactions = Reaction.for_article(id)
 
       ["like", "readinglist", "unicorn"].map do |type|
