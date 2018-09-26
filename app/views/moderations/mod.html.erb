@@ -23,7 +23,7 @@
 </style>
 
 <div class="container" style="text-align: center">
-  <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %>></a></h2>
+  <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
@@ -33,12 +33,23 @@
     <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
   </button>
-  <p style="width: 90%;margin:50px auto;text-align:left">
-    <b style="font-size:1.3em">All negative reactions are 100% private.</b>
-    <br><br>Use the <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
-    <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
-    <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
-  </p>
+
+  <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
+    <h1> Admin Functionality!</h1>
+    <script
+      src="https://code.jquery.com/jquery-2.2.4.min.js"
+      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+      crossorigin="anonymous"></script>
+    <%= render "internal/articles/individual_article", article: @moderatable %>
+    <%= render "internal/articles/article_script" %>
+  <% else %>
+    <p style="width: 90%;margin:50px auto;text-align:left">
+      <b style="font-size:1.3em">All negative reactions are 100% private.</b>
+      <br><br>Use the <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
+      <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
+      <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
+    </p>
+  <% end %>
 </div>
 
 <script defer>
