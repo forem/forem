@@ -101,6 +101,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         where(featured: true).
         where("featured_number > ?", Time.now.to_i).
         includes(:user).
+        includes(:buffer_updates).
         limited_columns_internal_select.
         order("featured_number DESC")
     end

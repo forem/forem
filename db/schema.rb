@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180826174411) do
+ActiveRecord::Schema.define(version: 20180924204406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -161,6 +161,18 @@ ActiveRecord::Schema.define(version: 20180826174411) do
     t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
+  end
+
+  create_table "buffer_updates", force: :cascade do |t|
+    t.integer "article_id", null: false
+    t.text "body_text"
+    t.string "buffer_id_code"
+    t.string "buffer_profile_id_code"
+    t.text "buffer_response", default: "--- {}\n"
+    t.datetime "created_at", null: false
+    t.string "social_service_name"
+    t.integer "tag_id"
+    t.datetime "updated_at", null: false
   end
 
   create_table "chat_channel_memberships", force: :cascade do |t|
@@ -388,6 +400,10 @@ ActiveRecord::Schema.define(version: 20180826174411) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
+    t.text "encrypted_message_html"
+    t.text "encrypted_message_html_iv"
+    t.text "encrypted_message_markdown"
+    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
@@ -567,6 +583,7 @@ ActiveRecord::Schema.define(version: 20180826174411) do
   create_table "tags", id: :serial, force: :cascade do |t|
     t.string "alias_for"
     t.string "bg_color_hex"
+    t.string "buffer_profile_id_code"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"

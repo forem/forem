@@ -14,6 +14,7 @@ class Article < ApplicationRecord
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
   has_many :comments,       as: :commentable
+  has_many :buffer_updates
   has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
