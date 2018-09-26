@@ -23,7 +23,7 @@
 			</div>
 	<% end %>
 	<b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b> <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a>
-	<% article.tag_list.each do |tag| %>
+	<% article.decorate.cached_tag_list_array.each do |tag| %>
 		<a href='/t/<%= tag %>'>#<%= tag %></a>
 	<% end %>
 	<a href="<%= article.user&.path %>">@<%= article.user&.username %></a> ❤️ <%= article.positive_reactions_count %> | 💬 <%= article.comments_count %> | ID: <a href="/internal/articles/<%= article.id %>"><%= article.id %></a>
@@ -52,7 +52,11 @@
 			&nbsp &nbsp <button class="btn btn-primary">SUBMIT</button>
 		</form>
 		<div>
-			<h1><%= article.buffer_updates.size %></h1>
+			<% article.buffer_updates.order("created_at ASC").each do |buffer_update| %>
+				<div class="row bg-warning">
+					<b><a href="https://buffer.com/app/profile/<%= buffer_update.buffer_profile_id_code %>/buffer/queue/list"><%= buffer_update.social_service_name %> <%= " MAIN" if buffer_update.buffer_profile_id_code == ApplicationConfig["BUFFER_TWITTER_ID"] %></a> </b> <%= buffer_update.body_text %> <br/><em style="font-size:0.8em"><%= time_ago_in_words(buffer_update.created_at) %> ago</em>
+				</div>
+			<% end %>
 		</div>
 
 		<% if article.boosted_dev_digest_email %>
@@ -70,29 +74,30 @@
 
 	<% unless params[:state]&.include?("classic") %>
 		<div class="inner-row" style="padding:10px;margin-top:20px;font-weight:800;">
+		<div>
 			<%= form_tag "/internal/buffer_updates" do %>
+				<input type="hidden" name="social_channel" value="main_twitter" />
 				<input type="hidden" name="article_id" value="<%= article.id %>" />
-				<p> Twitter </p>
+				<p> Twitter MAIN</p>
 				<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>         
-				<% if article.last_buffered %>
-						<button class="btn btn-danger" style="font-size:1em;">🙈 TWEETED <%= time_ago_in_words(article.last_buffered) %> ago</button>
-				<% else %>
-						<button class="btn btn-info" style="font-size:1em;">😎 TWEET 🚀🚀🚀🚀🚀🚀</button>
-						<input type="submit" name="social_channel" value="main_twitter" />
-						<input type="button" name="social_channel" value="sattelite_twitter" />
-
+				<button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @ThePracticalDev</button>
+			<% end %>
+			<% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
+				<%= form_tag "/internal/buffer_updates" do %>
+					<input type="hidden" name="social_channel" value="satellite_twitter" />
+					<input type="hidden" name="article_id" value="<%= article.id %>" />
+					<p> Twitter Satellite</p>
+					<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>         
+					<button class="btn btn-info" style="font-size:1em;">🐦 Tweet to satellites</button>
 				<% end %>
 			<% end %>
+		</div>
 			<%= form_tag "/internal/buffer_updates" do %>
 				<input type="hidden" name="social_channel" value="facebook" />
 				<input type="hidden" name="article_id" value="<%= article.id %>" />
 				<p> Facebook & LinkedIn </p>
 				<textarea cols="37" rows="6" wrap="hard" name="fb_post" required/></textarea>
-				<% if article.facebook_last_buffered %>
-						<button class="btn btn-danger" style="font-size:1em;">🙈 POSTED <%= time_ago_in_words(article.facebook_last_buffered) %> ago</button>
-				<% else %>
-						<button class="btn btn-info" style="font-size:1em;">😎 POST 🚀🚀🚀🚀🚀🚀</button>
-				<% end %>
+				<button class="btn btn-info" style="font-size:1em;">📘 Post to Facebook</button>
 			<% end %>
 		</div>
 	<% end %>
