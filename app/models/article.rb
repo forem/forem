@@ -338,12 +338,6 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch("find-article-by-id-#{id}", expires_in: 5.hours) do
-      find(id)
-    end
-  end
-
   def self.seo_boostable(tag = nil)
     keyword_paths = SearchKeyword.
       where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",

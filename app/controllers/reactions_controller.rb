@@ -5,9 +5,9 @@ class ReactionsController < ApplicationController
   def index
     skip_authorization
     if params[:article_id]
-      article = Article.cached_find(params[:article_id])
+      id = params[:article_id]
       reactions = if efficient_current_user_id.present?
-                    Reaction.where(reactable_id: article.id,
+                    Reaction.where(reactable_id: id,
                                    reactable_type: "Article",
                                    user_id: efficient_current_user_id).
                       where("points > ?", 0)
@@ -17,8 +17,8 @@ class ReactionsController < ApplicationController
       render json:
       {
         current_user: { id: efficient_current_user_id },
-        article_reaction_counts: Reaction.count_for_reactable(article),
-        reactions: reactions,
+        article_reaction_counts: Reaction.count_for_article(id),
+        reactions: reactions
       }.to_json
     else
       comments = Comment.where(
