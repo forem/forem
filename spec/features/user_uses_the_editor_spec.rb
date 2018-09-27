@@ -27,7 +27,7 @@ describe "Using the editor" do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    it "fill out form with ruch content and click preview" do
+    it "fill out form with rich content and click preview" do
       fill_markdown_with(read_from_file(raw_text))
       page.execute_script("window.scrollTo(0, -100000)")
       find("button#previewbutt").click

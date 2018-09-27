@@ -44,7 +44,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "converts body_markdown to proper processed_html" do
-      expect(comment.processed_html.include?("<h1>")).to eq(true)
+      expect(comment.processed_html.include?('<h1 id="hello-hy-hey-hey">')).to eq(true)
     end
   end
 
@@ -275,7 +275,12 @@ RSpec.describe Comment, type: :model do
 
       it "does not notify self if self is among the ancestors" do
         me = create(:user)
-        test_comment = create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
+        test_comment = create(
+          :comment,
+          parent_id: author_comment.id,
+          commentable_id: article.id,
+          user_id: me.id,
+        )
         create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
         allow(test_comment).to receive(:send_email_notification).and_call_original
         expect(StreamNotifier).not_to have_received(:new).with(me.id)
