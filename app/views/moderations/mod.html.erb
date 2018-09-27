@@ -35,13 +35,9 @@
   </button>
 
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
-    <h1> Admin Functionality!</h1>
-    <script
-      src="https://code.jquery.com/jquery-2.2.4.min.js"
-      integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-      crossorigin="anonymous"></script>
-    <%= render "internal/articles/individual_article", article: @moderatable %>
-    <%= render "internal/articles/article_script" %>
+    <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> | <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> | <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
+  <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
+    <h1> ADMIN: <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Comment Admin</a> | <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>User Admin</a></h1>
   <% else %>
     <p style="width: 90%;margin:50px auto;text-align:left">
       <b style="font-size:1.3em">All negative reactions are 100% private.</b>
