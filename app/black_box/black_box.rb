@@ -2,8 +2,8 @@ class BlackBox
   def self.article_hotness_score(article)
     return (article.featured_number || 10000) / 10000 unless Rails.env.production?
     reaction_points = article.reactions.sum(:points)
-    super_super_recent_bonus = article.published_at > 1.hours.ago ? 15 : 0
-    super_recent_bonus = article.published_at > 3.hours.ago ? 10 : 0
+    super_super_recent_bonus = article.published_at > 1.hours.ago ? 18 : 0
+    super_recent_bonus = article.published_at > 3.hours.ago ? 11 : 0
     recency_bonus = article.published_at > 12.hours.ago ? 70 : 0
     today_bonus = article.published_at > 32.hours.ago ? 280 : 0
     FunctionCaller.new("blackbox-production-articleHotness",
