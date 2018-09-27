@@ -3,7 +3,11 @@ require 'libhoney'
 key = ApplicationConfig["HONEYCOMB_API_KEY"]
 dataset = "dev.to-#{Rails.env}"
 
-$libhoney = Libhoney::Client.new(:writekey => key, :dataset => dataset)
+$libhoney = Libhoney::Client.new(
+  writekey: key,
+  dataset: dataset,
+  user_agent_addition: HoneycombRails::USER_AGENT_SUFFIX,
+)
 
 HoneycombRails.configure do |conf|
   conf.writekey = key
