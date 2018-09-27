@@ -4,14 +4,15 @@ class Internal::ArticlesController < Internal::ApplicationController
   def index
     case params[:state]
 
-    when "not-buffered"
+    when /not\-buffered/
+      days_ago = params[:state].split("-")[2].to_i
       @articles = Article.
         where(last_buffered: nil).
         includes(:user).
         includes(:buffer_updates).
         order("positive_reactions_count DESC").
         page(params[:page]).
-        where("published_at > ?", 1.week.ago).
+        where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
         limited_columns_internal_select.
         per(50)
     when /top\-/

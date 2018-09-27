@@ -18,12 +18,14 @@
 </div>
 <br/>
 <br/>
+<style>.top-nav a {border: 1px solid #d8d8d8;font-weight: bold;margin-right: 3px;font-size:0.9em}</style>
 <h3 class="top-nav">
-  <a href="/internal/articles" style="padding:10px;<%= "background:#89ffba" if params[:state].blank? %>">Hot Posts</a> | 
-  <a href="/internal/articles?state=not-buffered" style="padding:10px;<%= "background:#89ffba" if params[:state] == "not-buffered" %>">Not Buffered</a> | 
-  <a href="/internal/articles?state=top-3" style="padding:10px;<%= "background:#89ffba" if params[:state] == "top-3" %>">Top (3 mo)</a> | 
-  <a href="/internal/articles?state=top-6" style="padding:10px;<%= "background:#89ffba" if params[:state] == "top-6" %>">Top (6 mo)</a> |
-  <a href="/internal/articles?state=boosted-additional-articles" style="padding:10px;<%= "background:#89ffba" if params[:state] == "boosted-additional-articles" %>">Boosted</a>
+  <a href="/internal/articles" class="btn <%= "btn-success" if params[:state].blank? %>">Hot Posts</a>  
+  <a href="/internal/articles?state=not-buffered-1" class="btn <%= "btn-success" if params[:state] == "not-buffered-1" %>">Not Buffered (Today)</a> 
+  <a href="/internal/articles?state=not-buffered-7" class="btn <%= "btn-success" if params[:state] == "not-buffered-7" %>">Not Buffered (This Week)</a> 
+  <a href="/internal/articles?state=top-3" class="btn <%= "btn-success" if params[:state] == "top-3" %>">Top (3 mo)</a> 
+  <a href="/internal/articles?state=top-6" class="btn <%= "btn-success" if params[:state] == "top-6" %>">Top (6 mo)</a> 
+  <a href="/internal/articles?state=boosted-additional-articles" class="btn <%= "btn-success" if params[:state] == "boosted-additional-articles" %>">Boosted</a>
 </h3>
 <br/>
   <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
