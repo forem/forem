@@ -18,7 +18,7 @@ class AnalyticsController < ApplicationController
   def get_articles_that_qualify(articles_to_check)
     qualified_articles = []
     articles_to_check.each do |article|
-      if article.positive_reactions_count > article.previous_positive_reactions_count
+      if should_fetch(article)
         qualified_articles << article
       end
     end
@@ -27,11 +27,11 @@ class AnalyticsController < ApplicationController
 
   def fetch_and_update_page_views_and_reaction_counts(qualified_articles)
     qualified_articles.each_slice(25).to_a.each do |chunk|
-      pageviews = GoogleAnalytics.new(chunk.pluck(:id)).get_pageviews
+      pageviews = GoogleAnalytics.new(chunk.pluck(:id), current_user.id).get_pageviews
       page_views_obj = pageviews.to_h
       chunk.each do |article|
         article.update_columns(page_views_count: page_views_obj[article.id].to_i,
-                                previous_positive_reactions_count: article.positive_reactions_count)
+                               previous_positive_reactions_count: article.positive_reactions_count)
       end
     end
   end
@@ -41,6 +41,12 @@ class AnalyticsController < ApplicationController
     Article.where(id: @article_ids).
       pluck(:id, :page_views_count).map { |a| finalized_object[a[0]] = a[1].to_s }
     render json: finalized_object.to_json
+  end
+
+  def should_fetch(article)
+    new_reactions = (article.positive_reactions_count > article.previous_positive_reactions_count)
+    random = (rand(80) == 1)
+    new_reactions || random
   end
 
   private
