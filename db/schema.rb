@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180924204406) do
+ActiveRecord::Schema.define(version: 20180928161837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,10 +77,12 @@ ActiveRecord::Schema.define(version: 20180924204406) do
     t.string "main_tag_name_for_social"
     t.string "name_within_collection"
     t.integer "organization_id"
+    t.integer "page_views_count", default: 0
     t.boolean "paid", default: false
     t.string "password"
     t.string "path"
     t.integer "positive_reactions_count", default: 0, null: false
+    t.integer "previous_positive_reactions_count", default: 0
     t.text "processed_html"
     t.boolean "published", default: false
     t.datetime "published_at"
