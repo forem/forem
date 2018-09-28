@@ -29,8 +29,10 @@ class AnalyticsController < ApplicationController
     pageviews = GoogleAnalytics.new(qualified_articles.pluck(:id)).get_pageviews
     page_views_obj = pageviews.to_h
     qualified_articles.each do |article|
-      article.update_columns(page_views_count: page_views_obj[article.id],
-                             previous_positive_reactions_count: article.positive_reactions_count)
+      if page_views_obj[article.id].to_i > 0
+        article.update_columns(page_views_count: page_views_obj[article.id],
+                               previous_positive_reactions_count: article.positive_reactions_count)
+      end
     end
   end
 
