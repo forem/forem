@@ -36,6 +36,18 @@ RSpec.describe "Analytics", type: :request, vcr: vcr_option do
         get "/analytics?article_ids=#{article1.id},#{article2.id}"
         expect(JSON.parse(response.body)).to eq(article1.id.to_s => "0", article2.id.to_s => "0")
       end
+
+      it "updates article view counts" do
+        Reaction.create!(
+          user_id: user.id,
+          reactable_id: article1.id,
+          reactable_type: "Article",
+          category: "readinglist",
+        )
+        expect(article1.reload.previous_positive_reactions_count).not_to eq(article1.positive_reactions_count)
+        get "/analytics?article_ids=#{article1.id},#{article2.id}"
+        expect(article1.reload.previous_positive_reactions_count).to eq(article1.positive_reactions_count)
+      end
     end
   end
 end
