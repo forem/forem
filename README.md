@@ -39,29 +39,29 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 
 ## Table of Contents
 
-* [Contributing](#contributing)
-  * [Where to contribute](#where-to-contribute)
-  * [How to contribute](#how-to-contribute)
-  * [Contribution guideline](#contribution-guideline)
-    * [Clean code with tests](#clean-code-with-tests)
-    * [Create a pull request](#create-a-pull-request)
-    * [Create an issue](#create-an-issue)
-  * [How to get help](#how-to-get-help)
-  * [The bottom line](#the-bottom-line)
-* [Codebase](#codebase)
-  * [The stack](#the-stack)
-  * [Engineering standards](#engineering-standards)
-    * [Style guide](#style-guide)
-    * [Husky hooks](#husky-hooks)
-* [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-  * [Starting the application](#starting-the-application)
-  * [Suggested Workflow](#suggested-workflow)
-* [Additional docs](#additional-docs)
-* [Product Roadmap](#product-roadmap)
-* [Core Team Members](#core-team)
-* [License](#license)
+- [Contributing](#contributing)
+  - [Where to contribute](#where-to-contribute)
+  - [How to contribute](#how-to-contribute)
+  - [Contribution guideline](#contribution-guideline)
+    - [Clean code with tests](#clean-code-with-tests)
+    - [Create a pull request](#create-a-pull-request)
+    - [Create an issue](#create-an-issue)
+  - [How to get help](#how-to-get-help)
+  - [The bottom line](#the-bottom-line)
+- [Codebase](#codebase)
+  - [The stack](#the-stack)
+  - [Engineering standards](#engineering-standards)
+    - [Style guide](#style-guide)
+    - [Husky hooks](#husky-hooks)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Starting the application](#starting-the-application)
+  - [Suggested Workflow](#suggested-workflow)
+- [Additional docs](#additional-docs)
+- [Product Roadmap](#product-roadmap)
+- [Core Team Members](#core-team)
+- [License](#license)
 
 ## Contributing
 
@@ -99,11 +99,11 @@ Some existing code may be poorly written or untested, so we must have more scrut
 
 #### Create a pull request
 
-* Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
-* Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
-* Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
-* If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
-* If you follow the pull request template, you can't go wrong.
+- Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
+- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
+- Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
+- If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
+- If you follow the pull request template, you can't go wrong.
 
 _Please note: all commits in a pull request will be squashed when merged, but when your PR is approved and passes our CI, it will be live on production!_
 
@@ -145,9 +145,11 @@ This section provides a high-level requirement & quick start guide. For detailed
 
 ### Prerequisites
 
-* [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge.
-* [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
-* [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
+Following software are required to be installed before you proceed.
+
+- [Ruby](https://www.ruby-lang.org/en/): we recommend using [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on the badge. (Alternatively, you can use [`brew`](https://brew.sh/) via `brew install ruby && brew link --overwrite ruby`).
+- [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
+- [PostgreSQL](https://www.postgresql.org/) 9.4 or higher. [Installation guide](https://docs.dev.to/additional-postgres-setup/). (For Postgres.app — make sure the app is running, stop and start it if the setup fails).
 
 ### Installation
 
@@ -159,18 +161,18 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  `bundle install`
 1.  `bin/yarn`
 1.  Set up your environment variables/secrets
-    * Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-    * This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
-    * For any key that you wish to enter/replace:
+    - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
+    - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
+    - For any key that you wish to enter/replace:
       1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
       2.  Obtain the development variable and apply the key you wish to enter/replace. ie:
       ```
       GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
       GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
       ```
-    * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
-    * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
-1.  Run `bin/setup`
+    - If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
+    - You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
+1.  Run `bin/setup` (if it fails run it again)
 1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
@@ -179,14 +181,14 @@ This section provides a high-level requirement & quick start guide. For detailed
 
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:
 
-* Run **`bin/startup`** to start the server, Webpack, and our job runner `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the hood.
-* `alias start="bin/startup"` makes this even faster. 😊
-* If you're using **`pry`** for debugging in Rails, note that using `foreman` and `pry` together works, but it's not as clean as `bin/rails server`.
+- Run **`bin/startup`** to start the server, Webpack, and our job runner `delayed_job`. `bin/startup` runs `foreman start -f Procfile.dev` under the hood.
+- `alias start="bin/startup"` makes this even faster. 😊
+- If you're using **`pry`** for debugging in Rails, note that using `foreman` and `pry` together works, but it's not as clean as `bin/rails server`.
 
 Here are some singleton commands you may need, usually in a separate instance/tab of your shell.
 
-* Running the job server (if using `bin/rails server`) -- this is mostly for notifications and emails: **`bin/rails jobs:work`**
-* Clearing jobs (in case you don't want to wait for the backlog of jobs): **`bin/rails jobs:clear`**
+- Running the job server (if using `bin/rails server`) -- this is mostly for notifications and emails: **`bin/rails jobs:work`**
+- Clearing jobs (in case you don't want to wait for the backlog of jobs): **`bin/rails jobs:clear`**
 
 Current gotchas: potential environment issues with external services need to be worked out.
 
@@ -210,19 +212,19 @@ Our new product roadmap can be found [here](https://github.com/thepracticaldev/d
 
 Core team members will move issues along the project board as they progress.
 
-* Ideas & Requests: features up for discussion.
-* Needs Owners: features in need of an owner.
-* Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
-* In Progress (early stage): work has begun on feature.
-* In Progress (late stage): feature is near completion.
+- Ideas & Requests: features up for discussion.
+- Needs Owners: features in need of an owner.
+- Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
+- In Progress (early stage): work has begun on feature.
+- In Progress (late stage): feature is near completion.
 
 ## Core team
 
-* [@benhalpern](https://dev.to/ben)
-* [@jessleenyc](https://dev.to/jess)
-* [@peterkimfrank](https://dev.to/peter)
-* [@maestromac](https://dev.to/maestromac)
-* [@zhao-andy](https://dev.to/andy)
+- [@benhalpern](https://dev.to/ben)
+- [@jessleenyc](https://dev.to/jess)
+- [@peterkimfrank](https://dev.to/peter)
+- [@maestromac](https://dev.to/maestromac)
+- [@zhao-andy](https://dev.to/andy)
 
 ## License
 
