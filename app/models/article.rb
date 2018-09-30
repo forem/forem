@@ -355,6 +355,7 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
+    update_column(:score, reactions.sum(:points))
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
     index! if tag_list.exclude?("hiring")

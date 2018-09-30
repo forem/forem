@@ -14,10 +14,43 @@ function insertArticle(article,parent,insertPlace) {
 }
 
 function insertInitialArticles(user) {
-  var el = document.getElementById("home-articles-object")
+  var el = document.getElementById("home-articles-object");
   if (!el) {return}
-  var articlesJSON = JSON.parse(el.dataset.articles)
+  el.innerHTML = "";
+  insertNewArticles(user);
+  insertTopArticles(user);
   el.outerHTML = "";
+}
+
+function insertNewArticles(user){
+  var el = document.getElementById("new-articles-object");
+  var articlesJSON = JSON.parse(el.dataset.articles);
+  var insertPlace = document.getElementById("article-index-hidden-div");
+  if (insertPlace) {
+      articlesJSON.forEach(function(article){
+      var articlePoints = 0
+      var containsUserID = findOne([article.user_id], user.followed_user_ids)
+      articlePoints = articlePoints + (intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length*2) + article.positive_reactions_count
+      if (containsUserID || article.user_id === user.id) {
+        articlePoints = articlePoints + 16
+      }
+      article['points'] = articlePoints
+    });
+    var sortedArticles = articlesJSON.sort(function(a, b) {
+      return b.points - a.points;
+    });
+    sortedArticles.forEach(function(article){
+      var parent = insertPlace.parentNode;
+      if ( article.points > 15 && !document.getElementById("article-link-"+article.id) ) {
+        insertArticle(article,parent,insertPlace);
+      }
+    });
+  }
+}
+
+function insertTopArticles(user){
+  var el = document.getElementById("home-articles-object");
+  var articlesJSON = JSON.parse(el.dataset.articles)
   var insertPlace = document.getElementById("article-index-hidden-div");
   if (insertPlace) {
       articlesJSON.forEach(function(article){
