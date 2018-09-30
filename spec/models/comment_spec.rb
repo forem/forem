@@ -44,7 +44,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "converts body_markdown to proper processed_html" do
-      expect(comment.processed_html.include?('<h1 id="hello-hy-hey-hey">')).to eq(true)
+      expect(comment.processed_html.include?('<h1 id="hello">')).to eq(true)
     end
   end
 

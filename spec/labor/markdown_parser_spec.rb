@@ -54,7 +54,7 @@ RSpec.describe MarkdownParser do
     it "does not generated nested link tags" do
       nested_links = generate_and_parse_markdown("[[](http://b)](http://a)")
       nested_links = Nokogiri::HTML(nested_links).at("p").inner_html
-      expect(nested_links).to eq('[<a href="http://b" rel="noopener noreferrer"></a>](<a href="http://a" rel="noopener noreferrer">http://a</a>)') # rubocop:disable Metrics/LineLength
+      expect(nested_links).to eq('[<a href="http://b"></a>](<a href="http://a">http://a</a>)')
     end
   end
 
