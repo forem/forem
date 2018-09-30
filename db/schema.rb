@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180928161837) do
+ActiveRecord::Schema.define(version: 20180930015157) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20180928161837) do
     t.integer "reactions_count", default: 0, null: false
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
+    t.integer "score", default: 0
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
