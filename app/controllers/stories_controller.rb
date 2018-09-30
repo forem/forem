@@ -119,6 +119,14 @@ class StoriesController < ApplicationController
         @stories = @stories.offset(offset)
       end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
+      if user_signed_in?
+        @new_stories = Article.where("published_at > ? AND score > ?", 4.hours.ago, -30).
+          includes(:user).
+          limit(45).
+          order("published_at DESC").
+          limited_column_select.
+          decorate
+      end
     end
     @stories = @stories.decorate
     assign_podcasts
