@@ -58,7 +58,7 @@
     "babel-jest": "^23.4.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
-    "eslint": "^5.6.0",
+    "eslint": "^5.6.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^3.1.0",
