@@ -4,93 +4,39 @@ class Internal::ArticlesController < Internal::ApplicationController
   def index
     case params[:state]
 
-    when "by-featured-number"
+    when /not\-buffered/
+      days_ago = params[:state].split("-")[2].to_f
       @articles = Article.
-        where(published: true).
+        where(last_buffered: nil).
         includes(:user).
-        order("featured_number DESC").
+        includes(:buffer_updates).
+        order("positive_reactions_count DESC").
         page(params[:page]).
-        limited_columns_internal_select.
-        per(50)
-    when "unfeatured-by-published"
-      @articles = Article.
-        where(featured: false, published: true).
-        includes(:user).
-        order("published_at DESC").
-        page(params[:page]).
-        limited_columns_internal_select.
-        per(50)
-    when "rss"
-      @articles = Article.
-        where(published_from_feed: true).
-        includes(:user).
-        order("created_at DESC").
-        page(params[:page]).
-        limited_columns_internal_select.
-        per(50)
-    when "rss-recent"
-      @articles = Article.
-        where(published_from_feed: true).
-        includes(:user).
-        order("published_at DESC").
-        page(params[:page]).
-        limited_columns_internal_select.
-        per(50)
-    when "spam"
-      @articles = Article.
-        where(published: true).
-        where("spaminess_rating > ?", 10).
-        includes(:user).
-        order("published_at DESC").
-        page(params[:page]).
+        where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
         limited_columns_internal_select.
         per(50)
     when /top\-/
       @articles = Article.
-        where("published_at > ?", params[:state].split("-")[1].to_i.months.ago).
+        where("published_at > ?", params[:state].split("-")[1].to_f.months.ago).
         includes(:user).
+        includes(:buffer_updates).
         order("positive_reactions_count DESC").
         page(params[:page]).
         limited_columns_internal_select.
         per(50)
-    when "classic-candidate"
-      @articles = Article.where("positive_reactions_count > ?",
-                                Suggester::Articles::Classic::MIN_REACTION_COUNT).
-        includes(:user).
-        order("positive_reactions_count DESC").
-        where(featured: false).
-        page(params[:page]).
-        per(100).
-        limited_columns_internal_select
-    when "classic"
-      @articles = Article.where("positive_reactions_count > ?",
-                                Suggester::Articles::Classic::MIN_REACTION_COUNT).
-        includes(:user).
-        order("positive_reactions_count DESC").
-        where(featured: true).
-        page(params[:page]).
-        per(100).
-        limited_columns_internal_select
     when "boosted-additional-articles"
       @articles = Article.
         includes(:user).
         order("published_at DESC").
+        includes(:buffer_updates).
         boosted_via_additional_articles.
-        page(params[:page]).
-        per(100).
-        limited_columns_internal_select
-    when "boosted-dev-digest"
-      @articles = Article.
-        includes(:user).
-        order("published_at DESC").
-        boosted_via_dev_digest_email.
         page(params[:page]).
         per(100).
         limited_columns_internal_select
     else # MIX
       @articles = Article.
         where(published: true).
-        order("published_at DESC").
+        order("hotness_score DESC").
         page(params[:page]).
         limited_columns_internal_select.
         per(50)
@@ -101,6 +47,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         where(featured: true).
         where("featured_number > ?", Time.now.to_i).
         includes(:user).
+        includes(:buffer_updates).
         limited_columns_internal_select.
         order("featured_number DESC")
     end

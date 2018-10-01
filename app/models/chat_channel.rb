@@ -145,14 +145,14 @@ class ChatChannel < ApplicationRecord
     mod_users.pluck(:id)
   end
 
-  def user_obj(m, i)
+  def user_obj(membership, index)
     {
-      profile_image: i < 11 ? ProfileImage.new(m.user).get(90) : nil,
-      darker_color: m.user.decorate.darker_color,
-      name: m.user.name,
-      last_opened_at: m.last_opened_at,
-      username: m.user.username,
-      id: m.user_id,
+      profile_image: index < 11 ? ProfileImage.new(membership.user).get(90) : nil,
+      darker_color: membership.user.decorate.darker_color,
+      name: membership.user.name,
+      last_opened_at: membership.last_opened_at,
+      username: membership.user.username,
+      id: membership.user_id,
     }
   end
 end

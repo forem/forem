@@ -52,6 +52,7 @@
   <meta name="twitter:title" content="<%=@article.title %>">
   <meta name="twitter:description" content="<%=@article.description || "An article from the community" %>">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:widgets:new-embed-design" content="on">
   <% if @article.published %>
     <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
     <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
@@ -135,7 +136,7 @@
           <% if should_show_updated_on?(@article) %>
             <span class="published-at updated-at"><em>Updated on <span itemprop="dateModified"><%= @article.edited_at.strftime("%b %d, %Y") if @article.edited_at %></span> </em></span>
           <% elsif should_show_crossposted_on?(@article) %>
-            <span class="published-at updated-at"><em>Originally published at <a href="<%= @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.feed_source_url) %></a> on <span class="posted-date-inline"><%= @article.published_at.strftime("%b %d, %Y") if @article.crossposted_at %></span></em></span>
+            <span class="published-at updated-at"><em>Originally published at <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a> on <span class="posted-date-inline"><%= @article.published_at.strftime("%b %d, %Y") if @article.crossposted_at %></span></em></span>
           <% end %>
           <span class="action-space" id="action-space"></span>
         </h3>
@@ -172,6 +173,7 @@
       <% end %>
     <% end %>
     <%= render 'articles/org_branding', organization: @organization %>
+    <div id="comments" style="margin-top: -56px;padding-bottom:56px;position:relative;z-index:-100"></div>
     <% if @article.show_comments %>
       <div class="comments-container-container">
         <div

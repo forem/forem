@@ -18,19 +18,17 @@
 </div>
 <br/>
 <br/>
+<style>.top-nav a {border: 1px solid #d8d8d8;font-weight: bold;margin-right: 3px;font-size:0.8em}</style>
 <h3 class="top-nav">
-  <a href="/internal/articles" style="padding:10px;<%= "background:#89ffba" if params[:state].blank? %>">Mix</a> | 
-  <a href="/internal/articles?state=by-featured-number" style="padding:10px;<%= "background:#89ffba" if params[:state] == "by-featured-number" %>">By Featured Number</a> | 
-  <a href="/internal/articles?state=unfeatured-by-published" style="padding:10px;<%= "background:#89ffba" if params[:state] == "unfeatured-by-published" %>">Unfeatured</a> | 
-  <a href="/internal/articles?state=rss" style="padding:10px;<%= "background:#89ffba" if params[:state] == "rss" %>">RSS (new to dev.to)</a> | 
-  <a href="/internal/articles?state=rss-recent" style="padding:10px;<%= "background:#89ffba" if params[:state] == "rss-recent" %>">RSS (new to world)</a> | 
-  <a href="/internal/articles?state=top-3" style="padding:10px;<%= "background:#89ffba" if params[:state] == "top-3" %>">Top (3 mo)</a> | 
-  <a href="/internal/articles?state=top-6" style="padding:10px;<%= "background:#89ffba" if params[:state] == "top-6" %>">Top (6 mo)</a> |
-  <a href="/internal/articles?state=spam" style="padding:10px;<%= "background:#89ffba" if params[:state] == "spam" %>">Spam?</a>
-  <a href="/internal/articles?state=classic" style="padding:10px;<%= "background:#89ffba" if params[:state] == "classic" %>">Classic</a>
-  <a href="/internal/articles?state=classic-candidate" style="padding:10px;<%= "background:#89ffba" if params[:state] == "classic-candidate" %>">Classic Candidate</a>
-  <a href="/internal/articles?state=boosted-additional-articles" style="padding:10px;<%= "background:#89ffba" if params[:state] == "boosted-additional-articles" %>">Boosted (Additional articles)</a>
-  <a href="/internal/articles?state=boosted-dev-digest" style="padding:10px;<%= "background:#89ffba" if params[:state] == "boosted-dev-digest" %>">Boosted (DEV Digest)</a>
+  <a href="/internal/articles" class="btn <%= "btn-success" if params[:state].blank? %>">Hot Posts</a>
+  Not Buffered: 
+  <a href="/internal/articles?state=not-buffered-0.25" class="btn <%= "btn-success" if params[:state] == "not-buffered-0.25" %>">6hr</a> 
+  <a href="/internal/articles?state=not-buffered-1" class="btn <%= "btn-success" if params[:state] == "not-buffered-1" %>">1d</a> 
+  <a href="/internal/articles?state=not-buffered-7" class="btn <%= "btn-success" if params[:state] == "not-buffered-7" %>">7d</a>
+  Top: 
+  <a href="/internal/articles?state=top-3" class="btn <%= "btn-success" if params[:state] == "top-3" %>">3mo</a> 
+  <a href="/internal/articles?state=top-6" class="btn <%= "btn-success" if params[:state] == "top-6" %>">6mo</a> 
+  <a href="/internal/articles?state=boosted-additional-articles" class="btn <%= "btn-success" if params[:state] == "boosted-additional-articles" %>">Boosted</a>
 </h3>
 <br/>
   <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
@@ -60,92 +58,4 @@
   <%= paginate @articles %>
 </div>
 
-<script>
-  function timeNow(objectID){
-    var seconds = new Date().getTime() / 1000;
-    document.getElementById("featured_number_"+objectID).value = Math.round(seconds);
-  }
-  function sink(objectID){
-    var seconds = new Date().getTime() / 1080;
-    document.getElementById("featured_number_"+objectID).value = Math.round(seconds);
-  }
-
-  $('.row').on("submit", "form", function() {
-    var form = $(this);
-    var valuesToSubmit = $(this).serialize();
-    $.ajax({
-        type: "POST",
-        url: $(this).attr('action'), //sumbits it to the given url of the form
-        data: valuesToSubmit,
-        // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
-    }).success(function(json){
-      console.log("success")
-      form.parents(".row").addClass("highlighted-bg")
-      form.parents(".row").addClass("highlighted-border")
-      setTimeout(function(){
-        form.parents(".row").removeClass("highlighted-bg")
-      },350)
-    });
-    return false; // prevents normal behaviour
-  });
-
-  document.getElementById('image-upload-button').onclick = function (e) {
-    e.preventDefault();
-    document.getElementById('image-upload').click();
-  }
-
-  document.getElementById('image-upload').onchange = function (e) {
-    var image = document.getElementById('image-upload').files;
-    if (image.length > 0) {
-      document.getElementById('image-upload-file-label').style = 'color:#888888';
-      document.getElementById('image-upload-file-label').innerHTML = "Uploading...";
-      document.getElementById('uploaded-image').style = 'display:none';
-      document.getElementById('image-upload-submit').value = "uploading";
-      setTimeout(function(){
-        document.getElementById('image-upload-submit').click(function(){
-        });
-      },50)
-    }
-  }
-
-  document.getElementById('image-upload-submit').onclick = function (e) {
-    e.preventDefault();
-    var image = document.getElementById('image-upload').files;
-    if (image.length > 0) {
-      var ajaxReq = createAjaxReq();
-      ajaxReq.onreadystatechange = uploadImageCb.bind(this, ajaxReq);
-      ajaxReq.open('POST', '/image_uploads', true);
-      ajaxReq.send(generateUploadFormdata(image));
-    }
-  }
-
-  function generateUploadFormdata(image) {
-    var token = document.getElementsByName('authenticity_token')[0].value;
-    var formData = new FormData();
-    formData.append('authenticity_token', token);
-    formData.append('image', image[0]);
-    return formData;
-  }
-
-  function uploadImageCb(ajaxReq) {
-    if (ajaxReq.status === 200 && ajaxReq.readyState === XMLHttpRequest.DONE) {
-      var address = document.getElementById('uploaded-image');
-      address.value = JSON.parse(ajaxReq.response).link;
-      address.style.display = "inline-block";
-      address.style.width = "90%";
-      address.select();
-      var uploadedMessage = '';
-      document.getElementById('image-upload-file-label').innerHTML = uploadedMessage;
-      document.getElementById('image-upload-file-label').style.color = '#00c673';
-      document.getElementById('image-upload-submit').style.display = 'none';
-    }
-  }
-
-  function createAjaxReq() {
-    if (window.XMLHttpRequest) {
-       return new XMLHttpRequest();
-    } else {
-       return new ActiveXObject("Microsoft.XMLHTTP");
-    }
-   }
-</script>
+<%= render "article_script" %>

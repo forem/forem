@@ -539,6 +539,9 @@
       }
       &.comments-count {
         left:93px;
+        img{
+          width: 28px;
+        }
       }
       &.reactions-count {
         left:20px;
@@ -839,6 +842,7 @@
               font-family: $helvetica;
               padding-bottom: 10px;
               padding-left:8px;
+              
               a{
                 color: $medium-gray;
                 padding: 7px 12px;
@@ -1096,6 +1100,15 @@
         .widget-events-single-link{
           color: #000000;
           font-weight: 500;
+        }
+        .widget-user-pic{
+          display: inline-block;
+          img{
+            height: 60px;
+            width: 60px;
+            margin: 9px;
+            border-radius: 100px;
+          }
         }
         .utc-date{
           width: 46px;
@@ -1371,4 +1384,29 @@
   &.showing {
     display:block;
   }
+}
+
+.single-article-loading{
+  @extend .animated-background;
+}
+
+@keyframes placeHolderShimmer{
+  0%{
+      background-position: -468px 0
+  }
+  100%{
+      background-position: 468px 0
+  }
+}
+
+.animated-background {
+  animation-duration: 1.25s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #F6F6F6;
+  background: linear-gradient(to right, #F6F6F6 8%, #F0F0F0 18%, #F6F6F6 33%);
+  background-size: 800px 104px;
+  position: relative;
 }

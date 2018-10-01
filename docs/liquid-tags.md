@@ -2,7 +2,7 @@ Liquid tags are a special element of the [dev.to](/) markdown editor.
 
 They are custom embeds that are added via `{% %}` syntax. [Liquid](https://shopify.github.io/liquid/) is a templating language developed by Shopify.
 
-Liquid embeds are for tweets, like `{% tweet 765282762081329153 }` or a DEV user profile preview, like `{% user jess %}` etc.
+Liquid embeds are for tweets, like `{% tweet 765282762081329153 %}` or a DEV user profile preview, like `{% user jess %}` etc.
 
 They make for good community contributions because they can be extended and improved on consistently. It is truly how we extend the functionality of the editor. At the moment, there could be a lot of work refactoring and improving existing liquid tags, in addition to adding new ones.
 

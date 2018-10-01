@@ -334,7 +334,7 @@
           </div>
           <% if @featured_story.comments_count > 0 %>
             <div class="article-engagement-count comments-count featured-engagement-count">
-              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
+              <a href="<%=@featured_story.path%>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
                 <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
               </a>
             </div>
