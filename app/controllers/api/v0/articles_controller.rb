@@ -12,7 +12,15 @@ module Api
 
       def index
         @articles = ArticleApiIndexService.new(params).get
-        set_surrogate_key_header "articles_api_#{params[:tag]}_#{params[:page]}_#{params[:userame]}_#{params[:signature]}_#{params[:state]}"
+        key_headers = [
+          "articles_api",
+          params[:tag],
+          params[:page],
+          params[:userame],
+          params[:signature],
+          params[:state],
+        ]
+        set_surrogate_key_header key_headers.join('_')
       end
 
       def show
