@@ -29,6 +29,8 @@ class ChatChannel < ApplicationRecord
     ranking ["desc(last_message_at)"]
   end
 
+  before_destroy :remove_from_index!
+
   def open?
     channel_type == "open"
   end
@@ -152,7 +154,7 @@ class ChatChannel < ApplicationRecord
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,
       username: membership.user.username,
-      id: membership.user_id,
+      id: membership.user_id
     }
   end
 end

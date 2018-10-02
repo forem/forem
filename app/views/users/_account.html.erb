@@ -33,14 +33,70 @@
   </h4>
 <% end %>
 
-<h3>Request Account Deletion</h3>
-<h4 style="font-weight:400;">
-  <b>
-  <a href="mailto:yo@dev.to?subject=Request Account Deletion&body=<%= @email_body %>">
-    Click this link to request account deletion via email.
-  </a>
-  </b>
+
+<% if @user.articles_count.zero? && @user.comments_count.zero? %>
+  <h3>Delete Account</h3>
+  <h4 style="font-weight:400;">
+    <%= form_tag "/users/destroy", method: :delete, autocomplete: "off" do %>
+    Deleting your account will:
+      <ul class="delete__account">
+        <li>delete your profile, along with your Twitter and/or GitHub associations.
+        This does not include app permissions, which you will have to remove yourself on Twitter/GitHub.</li>
+        <%# TODO: expand the delete messaging later %>
+        <li>delete any and all content you have, such as your reading list or chat messages.</li>
+        <li>allow your username to become available to anyone.</li>
+      </ul>
+      <b>To delete your account, type in your username:</b>
+      <div class="field">
+        <input type="text" id="delete__account__username__field">
+      </div>
+      <b>For verification, type the words:</b> <i>delete my account</i>
+      <div class="field">
+        <input type="text" id="delete__account__verification__field">
+      </div>
+      <button class="danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
+        DELETE ACCOUNT
+      </button>
+    <% end %>
+  </h4>
   <br>
-  <br>
-  Be sure to change the email template to fit your needs.
-</h4>
+    <script>
+      var deleteAccountBtn = document.getElementById('delete__account__btn')
+      var deleteAccountUsernameInput = document.getElementById('delete__account__username__field')
+      var deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field')
+
+      function bothInputsVerified () {
+        return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account"
+      }
+
+      deleteAccountUsernameInput.addEventListener('input', function() {
+        if (bothInputsVerified()) {
+          deleteAccountBtn.disabled = false;
+          // enable the button via css or removing disabled class
+        } else {
+          deleteAccountBtn.disabled = true;
+        }
+      })
+
+      deleteAcccountVerificationInput.addEventListener('input', function() {
+        if (bothInputsVerified()) {
+          deleteAccountBtn.disabled = false;
+        } else {
+        deleteAccountBtn.disabled = true;
+        }
+      })
+    </script>
+  <% end %>
+  <h3>Request Full Account Deletion</h3>
+  <h4 style="font-weight: 400;">
+    Want to delete all your personal information?
+    <br>
+    <br>
+    <a href="mailto:yo@dev.to?subject=Request Account Deletion&body=<%= @email_body %>">
+      Click this link to request full account deletion via email.
+    </a> This includes all articles, comments, reactions, etc. as well as any personal information you have.
+    </b>
+    <br>
+    <br>
+    Be sure to change the email template to fit your needs.
+  </h4>

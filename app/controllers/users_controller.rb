@@ -32,6 +32,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+    @user = current_user
+    @tab_list = @user.settings_tab_list
+    @tab = "account"
+    authorize @user
+    if @user.articles_count.zero? && @user.comments_count.zero?
+      @user.destroy!
+      NotifyMailer.account_deleted_email(@user).deliver
+      sign_out @user
+      redirect_to root_path, notice: "Your account has been deleted."
+    else
+      flash[:error] = "An error occurred. Try requesting an account deletion below."
+      redirect_to "/settings/#{@tab}"
+    end
+  end
+
   def remove_association
     @user = current_user
     authorize @user

@@ -92,8 +92,6 @@ RSpec.describe "UserSettings", type: :request do
 
     # Users won't be able to do this via the view, but in case they hit the route somehow...
     context "when user has only one identity" do
-      let(:user) { create(:user) }
-
       before { login_as user }
 
       it "sets the proper error message" do
@@ -111,6 +109,62 @@ RSpec.describe "UserSettings", type: :request do
       it "redirects successfully to /settings/account" do
         delete "/users/remove_association", params: { provider: "github" }
         expect(response).to redirect_to "/settings/account"
+      end
+    end
+  end
+
+  describe "DELETE /users/destroy" do
+    context "when user has no articles or comments" do
+      before do
+        login_as user
+        delete "/users/destroy"
+      end
+
+      it "destroys the user" do
+        expect(user.persisted?).to eq false
+      end
+
+      it "sends an email to the user" do
+        expect(EmailMessage.last.to).to eq user.email
+      end
+
+      it "signs out the user" do
+        expect(controller.current_user).to eq nil
+      end
+
+      it "redirects successfully to the home page" do
+        expect(response).to redirect_to "/"
+      end
+    end
+
+    context "when users are not allowed to destroy" do
+      let(:user_with_article) { create(:user, :with_article) }
+      let(:user_with_comment) { create(:user, :with_only_comment) }
+      let(:user_with_article_and_comment) { create(:user, :with_article_and_comment) }
+      let(:users) { [user_with_article, user_with_comment, user_with_article_and_comment] }
+
+      it "does not allow invalid users to delete their account" do
+        users.each do |user|
+          login_as user
+          delete "/users/destroy"
+          expect(user.persisted?).to eq true
+        end
+      end
+
+      it "redirects successfully to /settings/account" do
+        users.each do |user|
+          login_as user
+          delete "/users/destroy"
+          expect(response).to redirect_to "/settings/account"
+        end
+      end
+
+      it "shows the proper error message after redirecting" do
+        users.each do |user|
+          login_as user
+          delete "/users/destroy"
+          expect(flash[:error]).to eq "An error occurred. Try requesting an account deletion below."
+        end
       end
     end
   end

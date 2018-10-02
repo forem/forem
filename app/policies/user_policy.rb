@@ -1,6 +1,6 @@
 class UserPolicy < ApplicationPolicy
   def edit?
-    user == record
+    current_user?
   end
 
   def onboarding_update?
@@ -8,7 +8,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    user == record
+    current_user?
+  end
+
+  def destroy?
+    current_user?
   end
 
   def join_org?

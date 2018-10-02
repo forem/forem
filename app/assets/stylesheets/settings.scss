@@ -199,7 +199,6 @@
           padding:14px 0px;
           margin-top:20px;
           font-size:1.8em;
-          cursor:pointer;
           &.danger-button {
             background:$red;
           }
@@ -224,6 +223,13 @@
         &.danger-button {
           background-color: $red;
           color: $off-white;
+        }
+        &:disabled {
+          background-color: $light-medium-gray;
+          &:hover {
+            opacity: 1.0;
+            cursor: not-allowed;
+          }
         }
         img {
           vertical-align:-3px;
@@ -490,4 +496,10 @@
   margin-top: 10px;
   position: initial;
   font-size: 1.2em;
+}
+
+ul.delete__account{
+  li{
+    padding-bottom: 5px;
+  }
 }

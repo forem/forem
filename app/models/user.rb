@@ -13,16 +13,16 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
-  has_many    :articles
+  has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
   has_many    :collections, dependent: :destroy
-  has_many    :comments
+  has_many    :comments, dependent: :destroy
   has_many    :email_messages, class_name: "Ahoy::Message"
   has_many    :github_repos, dependent: :destroy
   has_many    :identities, dependent: :destroy
   has_many    :mentions, dependent: :destroy
-  has_many    :messages
+  has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable
   has_many    :authored_notes, as: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
@@ -519,6 +519,8 @@ class User < ApplicationRecord
 
   def remove_from_algolia_index
     remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
   end
 
   def destroy_empty_dm_channels
