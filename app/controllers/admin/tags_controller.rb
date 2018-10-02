@@ -40,7 +40,7 @@ module Admin
 
     def handle_moderators
       user_ids = params[:tag][:tag_moderator_ids].split(",")
-      UserRoleService.new(nil).update_tag_moderators(user_ids.sort, @tag)
+      UserRoleService.new(nil, current_user.id).update_tag_moderators(user_ids.sort, @tag)
     end
   end
 end

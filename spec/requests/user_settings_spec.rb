@@ -36,6 +36,12 @@ RSpec.describe "UserSettings", type: :request do
         get "/settings/account"
         expect(response.body).to include("Danger Zone")
       end
+
+      it "renders heads up dupe account message with proper param" do
+        get "/settings?state=previous-registration"
+        error_message = "There is an existing account authorized with that social account"
+        expect(response.body).to include error_message
+      end
     end
   end
 

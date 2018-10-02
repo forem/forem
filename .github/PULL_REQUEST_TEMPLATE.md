@@ -15,4 +15,4 @@
   - [ ] no documentation needed
 
 ## [optional] What gif best describes this PR or how it makes you feel?
-![alt-text](gif-link)
+![alt_text](gif_link)

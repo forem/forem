@@ -56,7 +56,7 @@ gem "kaminari", "~> 1.1"
 gem "keen", "~> 0.7"
 gem "liquid", "~> 4.0"
 gem "nokogiri", "~> 1.8"
-gem "octokit", "~> 4.8"
+gem "octokit", "~> 4.12"
 gem "omniauth", "~> 1.8"
 gem "omniauth-github", "~> 1.3"
 gem "omniauth-twitter", "~> 1.4"
@@ -123,7 +123,7 @@ group :development, :test do
   gem "pry-byebug", "~> 3.6"
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
-  gem "rubocop", "~> 0.57", require: false
+  gem "rubocop", "~> 0.59", require: false
   gem "rubocop-rspec", "~> 1.29"
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
