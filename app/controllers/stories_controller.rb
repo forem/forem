@@ -167,9 +167,7 @@ class StoriesController < ApplicationController
       redirect_to_changed_username_profile
       return
     end
-    comment_count = params[:view] == "comments" ? 250 : 8
-    @comments = @user.comments.where(deleted: false).
-      order("created_at DESC").includes(:commentable).limit(comment_count)
+    assign_user_comments
     @stories = ArticleDecorator.decorate_collection(@user.
       articles.where(published: true).
       limited_column_select.
@@ -219,7 +217,6 @@ class StoriesController < ApplicationController
     assign_second_and_third_user
     not_found if permission_denied?
     set_surrogate_key_header @article.record_key
-    @classic_article = Suggester::Articles::Classic.new(@article).get
     unless user_signed_in?
       response.headers["Surrogate-Control"] = "max-age=10000, stale-while-revalidate=30, stale-if-error=86400"
     end
@@ -258,6 +255,16 @@ class StoriesController < ApplicationController
   def assign_organization_article
     @article = @organization.articles.find_by_slug(params[:slug])&.decorate
     @user = @article&.user || not_found # The org may have changed back to user and this does not handle that properly
+  end
+
+  def assign_user_comments
+    comment_count = params[:view] == "comments" ? 250 : 8
+    @comments = if @user.comments_count > 0
+                  @user.comments.where(deleted: false).
+                    order("created_at DESC").includes(:commentable).limit(comment_count)
+                else
+                  []
+                end
   end
 
   def assign_user_article
