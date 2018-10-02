@@ -12,7 +12,7 @@ module FeedbackMessagesHelper
     HEREDOC
     {
       subject: "dev.to Status Update",
-      body: body,
+      body: body
     }.freeze
   end
 
@@ -30,7 +30,7 @@ module FeedbackMessagesHelper
     HEREDOC
     {
       subject: "dev.to Status Update",
-      body: body,
+      body: body
     }.freeze
   end
 
@@ -46,7 +46,7 @@ module FeedbackMessagesHelper
     HEREDOC
     {
       subject: "Courtesy Notice from dev.to",
-      body: body,
+      body: body
     }.freeze
   end
 end

@@ -106,7 +106,7 @@ class Tweet < ApplicationRecord
     iden = Identity.where(provider: "twitter").last(250).sample
     {
       token: iden&.token || ApplicationConfig["TWITTER_KEY"],
-      secret: iden&.secret || ApplicationConfig["TWITTER_SECRET"],
+      secret: iden&.secret || ApplicationConfig["TWITTER_SECRET"]
     }
   end
 end

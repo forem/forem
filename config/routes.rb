@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
-    registrations: "registrations",
+    registrations: "registrations"
   }
 
   devise_scope :user do
@@ -226,7 +226,7 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|user_followers|following_users|reading/,
+        which: /organization|user_followers|following_users|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 

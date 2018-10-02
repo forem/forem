@@ -79,7 +79,7 @@ RSpec.describe NotifyMailer, type: :mailer do
           email_subject: "dev.to Status Update",
           email_body: "You've violated our code of conduct",
           email_type: "Reporter",
-          feedback_message_id: feedback_message_id,
+          feedback_message_id: feedback_message_id
         }
       end
 

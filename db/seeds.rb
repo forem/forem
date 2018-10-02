@@ -107,7 +107,7 @@ Comment.clear_index!
     body_markdown: Faker::Hipster.paragraph(1),
     user_id: User.order("RANDOM()").first.id,
     commentable_id: Article.order("RANDOM()").first.id,
-    commentable_type: "Article",
+    commentable_type: "Article"
   }
   Comment.create!(attributes)
 end
@@ -131,7 +131,7 @@ podcast_objects = [
     main_color_hex: "111111",
     overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", # rubocop:disable Metrics/LineLength
     android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
   {
     title: "Talk Python",
@@ -143,7 +143,7 @@ podcast_objects = [
     main_color_hex: "181a1c",
     overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers", # rubocop:disable Metrics/LineLength
     android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
   {
     title: "Developer on Fire",
@@ -156,7 +156,7 @@ podcast_objects = [
     main_color_hex: "",
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
   {
     title: "Building Programmers",
@@ -169,7 +169,7 @@ podcast_objects = [
     main_color_hex: "140837",
     overcast_url: "https://overcast.fm/itunes1149043456/building-programmers",
     android_url: "https://subscribeonandroid.com/building.fireside.fm/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
 ]
 

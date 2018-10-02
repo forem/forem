@@ -85,7 +85,7 @@ RSpec.describe UserRoleService do
     note_params = {
       reason: "banned",
       content: "some reason",
-      noteable_type: "User",
+      noteable_type: "User"
     }
 
     it "updates a user's previous note" do

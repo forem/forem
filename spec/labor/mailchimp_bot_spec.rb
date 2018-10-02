@@ -35,9 +35,9 @@ RSpec.describe MailchimpBot do
           EXPERIENCE: user.experience_level || 666,
           COUNTRY: user.shipping_country.to_s,
           STATE: user.shipping_state.to_s,
-          POSTAL_ZIP: user.shipping_postal_code.to_s,
-        },
-      },
+          POSTAL_ZIP: user.shipping_postal_code.to_s
+        }
+      }
     }
   end
 

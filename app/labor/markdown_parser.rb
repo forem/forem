@@ -38,7 +38,7 @@ class MarkdownParser
     renderer_options = {
       hard_wrap: true,
       filter_html: false,
-      link_attributes: { rel: "noopener noreferrer", target: "_blank" },
+      link_attributes: { rel: "noopener noreferrer", target: "_blank" }
     }
     renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
