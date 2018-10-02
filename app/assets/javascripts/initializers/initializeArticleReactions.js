@@ -128,6 +128,6 @@ function reactToArticle(articleId, reaction) {
       }
     })
     .catch(function (error) {
-      // there's currently no error handling.
+        toggleReaction();
     })
 }
