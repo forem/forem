@@ -53,19 +53,40 @@
       height: 100vh;
     }
 
-    path {
-      opacity: 50%;
+    .brushSizeViewer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      background-color: #444444;
+      border-radius: 50%;
+    }
+
+    .brushSizeViewer.hidden {
+      display: none;
     }
 
     .content {
       text-align: center;
       margin: 40px 20px;
+      z-index: -1;
+      transition: opacity linear .2s;
+    }
+
+    .content.hidden {
+      opacity: 0;
     }
 
     .colors {
       z-index: 2;
       margin: 0 40px;
       text-align: center;
+      transition: transform ease-out .2s;
+      transform-origin: center 100%;
+    }
+
+    .colors.hidden {
+      transform: rotate3d(1, 0, 0, -90deg);
     }
 
     .color {
@@ -73,7 +94,8 @@
       width: 50px;
       margin-right: 10px;
       border-radius: 50%;
-      border: none;
+      border: 2px solid #444444;
+      transition: transform ease-out .1s;
     }
 
     .color:hover {
@@ -84,9 +106,17 @@
       outline: 0;
     }
 
+    .color.selected {
+      transform: scale3d(1.2, 1.2, 1);
+    }
+
     .rainbow-logo {
       border-radius: 10%;
       max-width: 50%;
+    }
+
+    .rainbow-logo.hidden {
+      visibility: hidden;
     }
 
     .signature {
@@ -99,7 +129,7 @@
       }
 
       h3 {
-        font-size: 1.0em;
+        font-size: 1em;
       }
 
       .color {
@@ -121,6 +151,7 @@
 
 <body>
   <canvas></canvas>
+  <div class="brushSizeViewer hidden"></div>
   <div class="content">
     <svg viewBox="0 0 235 234" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="rainbow-logo"
       preserveAspectRatio="xMinYMin meet">
@@ -172,46 +203,51 @@
     </g>
   </svg>
   <script type="text/javascript">
-    const canvas = document.querySelector('canvas')
-    const context = canvas.getContext('2d')
-    const colors = ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C"]
+    const canvas = document.querySelector("canvas")
+    const context = canvas.getContext("2d")
+    const logo = document.querySelector(".rainbow-logo")
+    const text = document.querySelector(".content")
+    const colors = ["#F4908E", "#F2F097", "#88B0DC", "#F7B5D1", "#53C4AF", "#FDE38C", "#FFFFFF"]
     const colorDiv = document.querySelector(".colors")
+    const brushSizeViewer = document.querySelector(".brushSizeViewer")
+    const colorButtons = []
+    const TAU = Math.PI * 2
 
-    colors.forEach(color => {
+    let currentColor = 0
+
+    // Select a color
+    function selectColor(index) {
+      context.strokeStyle = colors[index]
+      context.fillStyle = colors[index]
+      colorButtons[currentColor].classList.remove("selected")
+      currentColor = index
+      colorButtons[index].classList.add("selected")
+    }
+
+    colors.forEach((color, index) => {
       const button = document.createElement("button")
       button.classList.add("color")
       button.style.backgroundColor = color
       colorDiv.appendChild(button)
-      button.addEventListener('click', () => context.strokeStyle = color)
+      button.addEventListener('click', () => selectColor(index))
+      colorButtons.push(button)
     })
-
-    const setSize = () => {
-      // set dimensions on the canvas
-      canvas.setAttribute('width', window.innerWidth)
-      canvas.setAttribute('height', window.innerHeight)
-      context.strokeStyle = colors[0]
-      context.lineJoin = "round"
-      context.lineWidth = 5
-    }
-
-    setSize()
-
-    window.addEventListener("resize", setSize)
-
-    let firstX, firstY, secondX, secondY, paint
 
     function getCoordinates(event) {
       // check to see if mobile or desktop
-      if (["mousedown", "mousemove"].includes(event.type)) {
-        // click events 
-        return [event.pageX - canvas.offsetLeft, event.pageY - canvas.offsetTop]
-      } else {
+      if (event.touches) {
         // touch coordinates
-        return [event.touches[0].pageX - canvas.offsetLeft, event.touches[0].pageY - canvas.offsetTop]
+        const lastTouch = event.touches[event.touches.length - 1]
+        return [lastTouch.pageX - canvas.offsetLeft, lastTouch.pageY - canvas.offsetTop]
+      } else {
+        // click events
+        return [event.pageX - canvas.offsetLeft, event.pageY - canvas.offsetTop]
       }
     }
 
-    function addClick(event, canvas) {
+    let firstX, firstY, secondX, secondY, paint
+
+    function addClick(event) {
       let [x, y] = getCoordinates(event)
 
       secondX = firstX
@@ -229,33 +265,109 @@
     }
 
     function startPaint(event) {
+      context.beginPath()
+      context.arc(...getCoordinates(event), brushSize / 2, 0, TAU)
+      context.fill()
+
+      text.classList.add("hidden")
+
       addClick(event, this)
       paint = true
     }
 
     function endPaint(event) {
+      brushSizeViewer.classList.add("hidden")
       if (paint) {
         addClick(event, this)
         draw()
       }
     }
 
-    canvas.addEventListener('mousedown', startPaint)
-    canvas.addEventListener('touchstart', startPaint)
-
-    const exit = _ => {
+    const exit = () => {
       paint = false
       firstX = null
       firstY = null
     }
 
-    canvas.addEventListener('mouseup', exit)
-    canvas.addEventListener('mouseleave', exit)
-    canvas.addEventListener('touchend', exit)
+    const logoImage = ((svg) => {
+      const data = (new XMLSerializer()).serializeToString(svg)
+      const svgBlob = new Blob([data], {type: "image/svg+xml;charset=utf-8"})
+      const img = new Image()
+      img.src = window.URL.createObjectURL(svgBlob)
+      img.onload = () => {
+        svg.classList.add("hidden")
+        drawSVG(svg, img)
+      }
+      return img
+    })(logo)
 
-    canvas.addEventListener('mousemove', endPaint)
-    canvas.addEventListener('touchmove', endPaint)
+    function drawSVG (svg, img) {
+      context.save()
 
+      // Compute border-radius cliping
+      const bounds = svg.getBoundingClientRect()
+      context.beginPath()
+      const margin = bounds.width * 0.1
+      context.moveTo(bounds.left + margin, bounds.top) // top-left
+      context.arcTo(bounds.right, bounds.top, bounds.right, bounds.top + margin, margin) // top-right
+      context.arcTo(bounds.right, bounds.bottom, bounds.right - margin, bounds.bottom, margin) // bottom-right
+      context.arcTo(bounds.left, bounds.bottom, bounds.left, bounds.bottom - margin, margin) // bottom-left
+      context.arcTo(bounds.left, bounds.top, bounds.left + margin, bounds.top, margin) // top-left
+      context.clip()
+
+      context.drawImage(img, bounds.x, bounds.y, bounds.width, bounds.height)
+
+      context.restore()
+    }
+
+    const minBrushSize = 2
+    const maxBrushSize = 50
+    let brushSize = 5
+    let brushHideTimeout = null
+    canvas.addEventListener("mousewheel", (event) => {
+      brushSize = Math.max(minBrushSize, Math.min(brushSize * (event.deltaY > 0 ? 1.2 : 1 / 1.2), maxBrushSize))
+      context.lineWidth = brushSize
+      const [x, y] = getCoordinates(event)
+      brushSizeViewer.classList.remove("hidden");
+      brushSizeViewer.style.transform = `translate3d(${x + 5}px, ${y - 5 - brushSize}px, 0)`
+      brushSizeViewer.style.width = `${brushSize}px`
+      brushSizeViewer.style.height = `${brushSize}px`
+      clearTimeout(brushHideTimeout)
+      brushHideTimeout = setTimeout(() => brushSizeViewer.classList.add("hidden"), 700)
+    })
+
+    // Set dimensions on the canvas
+    const setSize = () => {
+      canvas.setAttribute("width", window.innerWidth)
+      canvas.setAttribute("height", window.innerHeight)
+      selectColor(currentColor)
+      context.lineJoin = "round"
+      context.lineWidth = brushSize
+      if (logoImage.width) {
+        drawSVG(logo, logoImage)
+      }
+    }
+
+    setSize()
+
+    canvas.addEventListener("mousedown", startPaint)
+    canvas.addEventListener("touchstart", startPaint)
+
+    canvas.addEventListener("mouseup", exit)
+    canvas.addEventListener("mouseleave", exit)
+    canvas.addEventListener("touchend", exit)
+
+    canvas.addEventListener("mousemove", endPaint)
+    canvas.addEventListener("touchmove", endPaint)
+
+    window.addEventListener("resize", setSize)
+
+    window.addEventListener("keydown", (event) => {
+      switch (event.key) {
+        case "Tab" :
+          colorDiv.classList.toggle("hidden")
+      }
+    })
   </script>
 </body>
 </html>
