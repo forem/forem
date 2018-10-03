@@ -18,7 +18,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       post "/chat_channel_memberships", params: {
         chat_channel_membership: {
           user_id: second_user.id, chat_channel_id: chat_channel.id
-        },
+        }
       }
       expect(ChatChannelMembership.all.size).to eq(mems_num + 1)
       expect(ChatChannelMembership.last.status).to eq("pending")
@@ -29,7 +29,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         post "/chat_channel_memberships", params: {
           chat_channel_membership: {
             user_id: second_user.id, chat_channel_id: chat_channel.id
-          },
+          }
         }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
@@ -39,7 +39,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     before do
       user.add_role(:super_admin)
       post "/chat_channel_memberships", params: {
-        chat_channel_membership: { user_id: second_user.id, chat_channel_id: chat_channel.id },
+        chat_channel_membership: { user_id: second_user.id, chat_channel_id: chat_channel.id }
       }
     end
 
@@ -48,8 +48,8 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       sign_in second_user
       put "/chat_channel_memberships/#{membership.id}", params: {
         chat_channel_membership: {
-          user_action: "accept",
-        },
+          user_action: "accept"
+        }
       }
       expect(ChatChannelMembership.find(membership.id).status).to eq("active")
     end
@@ -58,7 +58,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       membership = ChatChannelMembership.last
       sign_in second_user
       put "/chat_channel_memberships/#{membership.id}", params: {
-        chat_channel_membership: { user_action: "reject" },
+        chat_channel_membership: { user_action: "reject" }
       }
       expect(ChatChannelMembership.find(membership.id).status).to eq("rejected")
     end
@@ -67,7 +67,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       membership = ChatChannelMembership.last
       expect do
         put "/chat_channel_memberships/#{membership.id}", params: {
-          chat_channel_membership: { user_action: "accept" },
+          chat_channel_membership: { user_action: "accept" }
         }
         expect(ChatChannelMembership.find(membership.id).status).to eq("active")
       end.to raise_error(Pundit::NotAuthorizedError)
@@ -78,7 +78,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     before do
       user.add_role(:super_admin)
       post "/chat_channel_memberships", params: {
-        chat_channel_membership: { user_id: second_user.id, chat_channel_id: chat_channel.id },
+        chat_channel_membership: { user_id: second_user.id, chat_channel_id: chat_channel.id }
       }
     end
 

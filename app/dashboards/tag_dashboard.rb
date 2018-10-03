@@ -28,7 +28,7 @@ class TagDashboard < Administrate::BaseDashboard
     alias_for: Field::String,
     keywords_for_search: Field::String,
     taggings_count: Field::Number,
-    buffer_profile_id_code: Field::String,
+    buffer_profile_id_code: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES

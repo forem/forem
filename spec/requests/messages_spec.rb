@@ -9,7 +9,7 @@ RSpec.describe "Messages", type: :request do
       {
         message_markdown: "hi",
         user_id: user.id,
-        chat_channel_id: chat_channel.id,
+        chat_channel_id: chat_channel.id
       }
     end
 
