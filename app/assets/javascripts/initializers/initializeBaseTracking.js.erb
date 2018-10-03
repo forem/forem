@@ -105,6 +105,6 @@ function logImpressions() {
   var el = document.getElementById("featured-story-marker")
   if (el){
     var data = el.dataset.featuredArticle;
-    ga('send', 'event', 'click', 'featured-feed-impression', data, null);
+    ga('send', 'event', 'view', 'featured-feed-impression', data, null);
   }
 }
