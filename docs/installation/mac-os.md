@@ -13,6 +13,8 @@ Please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 
 Dev.to requires PostgreSQL version 9.4 or higher. The easiest way to get started is to use [Postgres.app](https://postgresapp.com/). Alternatively, check out the official [PostgreSQL](https://www.postgresql.org/) site for more granular version.
 
+For additional configuration, [click here](/additional-postgres-setup)
+
 ## Installing Dev.to
 
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
@@ -39,3 +41,10 @@ Dev.to requires PostgreSQL version 9.4 or higher. The easiest way to get started
 * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 
 10. Run `bin/setup`
+
+#### Possible Error Messages
+
+**Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
+**_Solution:_** Run the command `rbenv install <version number>`
+
+> If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.

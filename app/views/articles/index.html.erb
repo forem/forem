@@ -124,12 +124,12 @@
         </style>
         <p class="social">
           <% if @user.twitter_username.present? %>
-            <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
+            <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
               <%= inline_svg("twitter-logo.svg", class:"icon-img") %>
             </a>
           <% end %>
           <% if @user.github_username.present? %>
-            <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
+            <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
               <%= inline_svg("github-logo.svg", class:"icon-img") %>
             </a>
           <% end %>
@@ -334,7 +334,7 @@
           </div>
           <% if @featured_story.comments_count > 0 %>
             <div class="article-engagement-count comments-count featured-engagement-count">
-              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
+              <a href="<%=@featured_story.path%>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
                 <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
               </a>
             </div>

@@ -24,7 +24,7 @@ p "2/8 Creating Users"
 roles = %i(level_1_member level_2_member level_3_member level_4_member
            workshop_pass)
 User.clear_index!
-40.times do |i|
+10.times do |i|
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
@@ -71,7 +71,7 @@ end
 p "4/8 Creating Articles"
 
 Article.clear_index!
-80.times do |i|
+25.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
   tags.concat Tag.order("RANDOM()").select("name").first(3).map(&:name)
@@ -102,11 +102,11 @@ end
 p "5/8 Creating Comments"
 
 Comment.clear_index!
-120.times do
+30.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
     user_id: User.order("RANDOM()").first.id,
-    commentable_id: Article.where("id > ?", 30).order("RANDOM()").first.id,
+    commentable_id: Article.order("RANDOM()").first.id,
     commentable_type: "Article",
   }
   Comment.create!(attributes)
@@ -125,7 +125,6 @@ podcast_objects = [
     title: "CodingBlocks",
     description: "",
     feed_url: "http://feeds.podtrac.com/c8yBGHRafqhz",
-    image: Faker::Avatar.image,
     slug: "codingblocks",
     twitter_username: "CodingBlocks",
     website_url: "http://codingblocks.net",
@@ -138,7 +137,6 @@ podcast_objects = [
     title: "Talk Python",
     description: "",
     feed_url: "https://talkpython.fm/episodes/rss",
-    image: Faker::Avatar.image,
     slug: "talkpython",
     twitter_username: "TalkPython",
     website_url: "https://talkpython.fm",
@@ -152,7 +150,6 @@ podcast_objects = [
     description: "",
     feed_url: "http://developeronfire.com/rss.xml",
     itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326", # rubocop:disable Metrics/LineLength
-    image: Faker::Avatar.image,
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
@@ -166,7 +163,6 @@ podcast_objects = [
     description: "",
     feed_url: "https://building.fireside.fm/rss",
     itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456", # rubocop:disable Metrics/LineLength
-    image: Faker::Avatar.image,
     slug: "buildingprogrammers",
     twitter_username: "run_kmc",
     website_url: "https://building.fireside.fm",
@@ -209,3 +205,33 @@ end
 ChatChannel.reindex!
 
 ##############################################################################
+
+puts <<-ASCII
+
+
+
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ``````````````-oooooooo/-``````.+ooooooooo:``+ooo+````````oooo/````````````
+  ``````````````+MMMMMMMMMMm+```-NMMMMMMMMMMs``+MMMM:``````/MMMM/````````````
+  ``````````````+MMMNyyydMMMMy``/MMMMyyyyyyy/```mMMMd``````mMMMd`````````````
+  ``````````````+MMMm````:MMMM.`/MMMN```````````/MMMM/````/MMMM:`````````````
+  ``````````````+MMMm````.MMMM-`/MMMN````````````dMMMm````mMMMh``````````````
+  ``````````````+MMMm````.MMMM-`/MMMMyyyy+```````:MMMM/``+MMMM-``````````````
+  ``````````````+MMMm````.MMMM-`/MMMMMMMMy````````hMMMm``NMMMy```````````````
+  ``````````````+MMMm````.MMMM-`/MMMMoooo:````````-MMMM+oMMMM-```````````````
+  ``````````````+MMMm````.MMMM-`/MMMN``````````````yMMMmNMMMy````````````````
+  ``````````````+MMMm````+MMMM.`/MMMN``````````````.MMMMMMMM.````````````````
+  ``````````````+MMMMdddNMMMMo``/MMMMddddddd+```````sMMMMMMs`````````````````
+  ``````````````+MMMMMMMMMNh:```.mMMMMMMMMMMs````````yMMMMs``````````````````
+  ``````````````.///////:-````````-/////////-`````````.::.```````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+
+  All done!
+ASCII

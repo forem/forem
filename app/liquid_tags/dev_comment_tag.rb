@@ -1,4 +1,4 @@
-class CommentTag < LiquidTagBase
+class DevCommentTag < LiquidTagBase
   attr_reader :id_code, :comment
 
   def initialize(_tag_name, id_code, _tokens)
@@ -8,35 +8,36 @@ class CommentTag < LiquidTagBase
 
   def render(_context)
     raise_error unless @comment
-
-    "<div class=\"liquid-comment\">" \
-      "<div class=\"details\">" \
-        "<a href=\"/#{@comment.user.username}\">" \
-          "<img class=\"profile-pic\" src=\"#{ProfileImage.new(@comment.user).get(50)}\" alt=\"#{@comment.user.username} profile image\"/>" \
-        "</a>" \
-        "<a href=\"/#{@comment.user.username}\">" \
-          "<span class=\"comment-username\">#{@comment.user.name}</span>" \
-        "</a>" \
-        "#{render_twitter_and_github}" \
-        "<div class=\"comment-date\">" \
-          "<a href=\"#{@comment.path}\">#{@comment.readable_publish_date}</a>" \
-        "</div>" \
-      "</div>" \
-      "<div class=\"body\">" \
-        + @comment.processed_html.html_safe + \
-      "</div>" \
-    "</div>"
+    <<-HTML
+    <div class="liquid-comment">
+      <div class="details">
+        <a href="/#{@comment.user.username}">
+          <img class="profile-pic" src="#{ProfileImage.new(@comment.user).get(50)}"
+            alt="#{@comment.user.username} profile image"/>
+        </a>
+        <a href="/#{@comment.user.username}">
+          <span class="comment-username">#{@comment.user.name}</span>
+        </a>
+        <div class="comment-date">
+          <a href="#{@comment.path}">#{@comment.readable_publish_date}</a>
+        </div>
+      </div>
+      <div class="body">
+        #{@comment.processed_html.html_safe}
+      </div>
+    </div>
+    HTML
   end
 
   def render_twitter_and_github
     result = ""
     if @comment.user.twitter_username.present?
-      result += "<a href=\"http://twitter.com/#{@comment.user.twitter_username}\">" \
+      result += "<a href=\"https://twitter.com/#{@comment.user.twitter_username}\">" \
         +image_tag("/assets/twitter-logo.svg", class: "icon-img", alt: "twitter") + \
         "</a>"
     end
     if @comment.user.github_username.present?
-      result + "<a href=\"http://github.com/#{@comment.user.github_username}\">" \
+      result + "<a href=\"https://github.com/#{@comment.user.github_username}\">" \
         +image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github") + \
         "</a>"
     end
@@ -65,4 +66,4 @@ class CommentTag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("devcomment", CommentTag)
+Liquid::Template.register_tag("devcomment", DevCommentTag)

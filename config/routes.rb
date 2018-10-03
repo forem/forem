@@ -27,7 +27,11 @@ Rails.application.routes.draw do
     resources :tags
     resources :welcome, only: %i[index create]
     resources :broadcasts
-    resources :users
+    resources :users do
+      member do
+        post "banish"
+      end
+    end
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: [:create]
@@ -36,9 +40,14 @@ Rails.application.routes.draw do
     end
     resources :members, only: [:index]
     resources :events
-    resources :feedback_messages, only: [:update]
-    resources :reports, only: %i[index update], controller: "feedback_messages"
+    resources :feedback_messages, only: [:update, :show]
+    resources :reports, only: %i[index update show], controller: "feedback_messages" do
+      post "send_email", to: :send_email, on: :collection
+      post "create_note", to: :create_note, on: :collection
+      post "save_status", to: :save_status, on: :collection
+    end
     mount Flipflop::Engine => "/features"
+
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -185,7 +194,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
-  get "/survey", to: "pages#survey"
+  get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/now" => "pages#now"
   get "/membership" => "pages#membership"
   get "/events" => "events#index"

@@ -14,6 +14,7 @@ class Article < ApplicationRecord
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
   has_many :comments,       as: :commentable
+  has_many :buffer_updates
   has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
@@ -101,14 +102,11 @@ class Article < ApplicationRecord
                 :featured, :published, :published_at, :featured_number,
                 :comments_count, :reactions_count, :positive_reactions_count,
                 :path, :class_name, :user_name, :user_username, :comments_blob,
-                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date
+                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
-      end
-      attribute :flare_tag do
-        FlareTag.new(self).tag_hash
       end
       tags do
         [tag_list,
@@ -134,7 +132,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date
+        :readable_publish_date, :flare_tag
       attribute :published_at_int do
         published_at.to_i
       end
@@ -142,9 +140,6 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
-      end
-      attribute :flare_tag do
-        FlareTag.new(self).tag_hash
       end
       tags do
         [tag_list,
@@ -315,6 +310,10 @@ class Article < ApplicationRecord
     self.class.name
   end
 
+  def flare_tag
+    FlareTag.new(self).tag_hash
+  end
+
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
     update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
@@ -340,12 +339,6 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch("find-article-by-id-#{id}", expires_in: 5.hours) do
-      find(id)
-    end
-  end
-
   def self.seo_boostable(tag = nil)
     keyword_paths = SearchKeyword.
       where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",
@@ -362,6 +355,7 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
+    update_column(:score, reactions.sum(:points))
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
     index! if tag_list.exclude?("hiring")

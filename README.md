@@ -89,7 +89,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 
 ### Create an issue
 
-Nobody's perfect. Something doesn't work? or could be done better? Let us know by creating an issue.
+Nobody's perfect. Something doesn't work? Or could be done better? Let us know by creating an issue.
 
 PS: a clear and detailed issue gets lots of love, all you have to do is follow the issue template!
 
@@ -99,9 +99,9 @@ Some existing code may be poorly written or untested, so we must have more scrut
 
 #### Create a pull request
 
-* Try to keep the pull requests small; a pull request should try its very best to address only a single concern.
+* Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
 * Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
-* Document your reasoning behind the changes. Explain why you wrote the code in the way you did; the code should explain what it does.
+* Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
 * If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
 * If you follow the pull request template, you can't go wrong.
 
@@ -171,6 +171,9 @@ This section provides a high-level requirement & quick start guide. For detailed
     * If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
     * You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
 1.  Run `bin/setup`
+1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
+
+[View Full Installation Documentation](https://docs.dev.to/installation/)
 
 #### Starting the application
 

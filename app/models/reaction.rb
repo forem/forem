@@ -19,14 +19,18 @@ class Reaction < ApplicationRecord
   after_save :async_bust
   before_destroy :clean_up_before_destroy
 
+  scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }
+
   include StreamRails::Activity
   as_activity
 
-  def self.count_for_reactable(reactable)
-    Rails.cache.fetch("count_for_reactable-#{reactable.class.name}-#{reactable.id}", expires_in: 1.hour) do
-      [{ category: "like", count: Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, category: "like").size },
-       { category: "readinglist", count: Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, category: "readinglist").size },
-       { category: "unicorn", count: Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, category: "unicorn").size }]
+  def self.count_for_article(id)
+    Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
+      reactions = Reaction.for_article(id)
+
+      ["like", "readinglist", "unicorn"].map do |type|
+        { category: type, count: reactions.where(category: type).size }
+      end
     end
   end
 
@@ -108,7 +112,7 @@ class Reaction < ApplicationRecord
 
   BASE_POINTS = {
     "vomit" => -50.0,
-    "thumbsdown" => -10.0,
+    "thumbsdown" => -10.0
   }.freeze
 
   def assign_points

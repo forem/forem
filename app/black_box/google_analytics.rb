@@ -6,8 +6,9 @@ class GoogleAnalytics
   include Google::Apis::AnalyticsreportingV4
   include Google::Auth
 
-  def initialize(article_ids = [])
+  def initialize(article_ids = [], user_id = "base")
     @article_ids = article_ids
+    @user_id = user_id.to_s
     @client = AnalyticsReportingService.new
     @client.authorization = create_service_account_credential
   end
@@ -42,7 +43,7 @@ class GoogleAnalytics
   end
 
   def fetch_analytics_for(*report_requests)
-    grr = GetReportsRequest.new(report_requests: report_requests)
+    grr = GetReportsRequest.new(report_requests: report_requests, quota_user: @user_id.to_s)
     response = @client.batch_get_reports(grr)
     response.reports.map do |report|
       report.data.totals[0].values[0]

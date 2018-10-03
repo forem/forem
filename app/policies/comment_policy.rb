@@ -4,7 +4,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_is_banned?
+    !user_is_banned? && !user_is_comment_banned?
   end
 
   def update?
@@ -36,6 +36,10 @@ class CommentPolicy < ApplicationPolicy
   end
 
   private
+
+  def user_is_comment_banned?
+    user.has_role? :comment_banned
+  end
 
   def user_is_author?
     record.user_id == user.id
