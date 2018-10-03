@@ -24,7 +24,7 @@ class GoogleAnalytics
 
   def get_feed_impression_info
     requests = @article_ids.map do |id|
-      make_report_request("ga:eventAction=~^featured-feed-impression,ga:eventLabel=~^article-#{id}",
+      make_report_request("ga:eventAction=~^featured-feed-impression,ga:eventLabel=~^articles-#{id}",
         "ga:totalEvents")
     end
     results = fetch_all_results(requests)
@@ -33,7 +33,7 @@ class GoogleAnalytics
 
   def get_feed_click_info
     requests = @article_ids.map do |id|
-      make_report_request("ga:eventAction=~^featured-feed-click,ga:eventLabel=~^article-#{id}",
+      make_report_request("ga:eventAction=~^featured-feed-click,ga:eventLabel=~^articles-#{id}",
         "ga:totalEvents")
     end
     results = fetch_all_results(requests)
@@ -59,7 +59,7 @@ class GoogleAnalytics
       filters_expression: filters_expression_string,
       metrics: [Metric.new(expression: metrics_string)],
       date_ranges: [
-        DateRange.new(start_date: "2012-01-01", end_date: "today"),
+        DateRange.new(start_date: "2015-01-01", end_date: "today"),
       ],
     )
   end
