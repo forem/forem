@@ -25,7 +25,7 @@ class BufferUpdate < ApplicationRecord
         text,
         profile_ids: [
           buffer_profile_id_code,
-        ],
+        ]
       },
     )
   end

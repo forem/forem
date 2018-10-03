@@ -22,7 +22,7 @@ class CommentDashboard < Administrate::BaseDashboard
     ancestry: Field::String,
     id_code: Field::String,
     score: Field::Number,
-    deleted: Field::Boolean,
+    deleted: Field::Boolean
   }.freeze
 
   # COLLECTION_ATTRIBUTES

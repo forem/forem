@@ -44,8 +44,8 @@ RSpec.describe "Videos", type: :request do
 
       valid_params = {
         article: {
-          video: "something.mp4",
-        },
+          video: "something.mp4"
+        }
       }
 
       xit "creates an article for the logged in user" do

@@ -72,7 +72,7 @@ class User < ApplicationRecord
   validates :stackoverflow_url,
               allow_blank: true,
               format:
-              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com)\/users\/([0-9]{3,10})\/([a-zA-Z0-9\s\'\-]{3,30})\/?\Z/
+              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/([\S]{3,100})\Z/
   validates :behance_url,
               allow_blank: true,
               format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\/?\Z/

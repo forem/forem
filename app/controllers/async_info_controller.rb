@@ -7,7 +7,7 @@ class AsyncInfoController < ApplicationController
     unless user_signed_in?
       render json: {
         param: request_forgery_protection_token,
-        token: form_authenticity_token,
+        token: form_authenticity_token
       }
       return
     end
@@ -22,7 +22,7 @@ class AsyncInfoController < ApplicationController
         render json: {
           param: request_forgery_protection_token,
           token: form_authenticity_token,
-          user: user_data.to_json,
+          user: user_data.to_json
         }
       end
     end
@@ -44,7 +44,7 @@ class AsyncInfoController < ApplicationController
         checked_code_of_conduct: @user.checked_code_of_conduct,
         number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,
-        trusted: @user.trusted,
+        trusted: @user.trusted
       }
     end
   end
