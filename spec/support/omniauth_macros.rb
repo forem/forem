@@ -38,7 +38,7 @@ module OmniauthMacros
     uid: "1234567",
     info: INFO,
     extra: EXTRA_INFO,
-    credentials:  CREDENTIAL,
+    credentials:  CREDENTIAL
   }
 
   def mock_auth_hash

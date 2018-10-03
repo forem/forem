@@ -9,11 +9,11 @@ class FeedbackMessage < ApplicationRecord
   validates_presence_of :reported_url, :category, if: :abuse_report?
   validates :category,
             inclusion: {
-              in: ["spam", "other", "rude or vulgar", "harassment", "bug"],
+              in: ["spam", "other", "rude or vulgar", "harassment", "bug"]
             }
   validates :status,
             inclusion: {
-              in: ["Open", "Invalid", "Resolved"],
+              in: ["Open", "Invalid", "Resolved"]
             }
 
   def abuse_report?
