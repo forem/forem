@@ -12,7 +12,7 @@ class FeedbackMessageDashboard < Administrate::BaseDashboard
     id: Field::Number,
     message: Field::Text,
     feedback_type: Field::String,
-    category: Field::String,
+    category: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES

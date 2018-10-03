@@ -49,7 +49,7 @@ class GithubReposController < ApplicationController
       watchers_count: fetched_repo.watchers,
       stargazers_count: fetched_repo.stargazers_count,
       featured: true,
-      info_hash: fetched_repo.to_hash,
+      info_hash: fetched_repo.to_hash
     }
   end
 end

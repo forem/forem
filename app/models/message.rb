@@ -35,7 +35,7 @@ class Message < ApplicationRecord
         vapid: {
           subject: "https://dev.to",
           public_key: ApplicationConfig["VAPID_PUBLIC_KEY"],
-          private_key: ApplicationConfig["VAPID_PRIVATE_KEY"],
+          private_key: ApplicationConfig["VAPID_PRIVATE_KEY"]
         },
       )
     end

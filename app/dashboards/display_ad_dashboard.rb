@@ -20,7 +20,7 @@ class DisplayAdDashboard < Administrate::BaseDashboard
     published: Field::Boolean,
     approved: Field::Boolean,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

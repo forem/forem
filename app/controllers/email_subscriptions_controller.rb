@@ -21,7 +21,7 @@ class EmailSubscriptionsController < ApplicationController
       email_follower_notifications: "follower notifications",
       email_mention_notifications: "mention notifications",
       email_connect_messages: "connect messages",
-      email_unread_notifications: "unread notifications",
+      email_unread_notifications: "unread notifications"
     }
     emails_type[given_email_type]
   end

@@ -89,7 +89,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       it "displays proper error messages" do
         invalid_text_color_hex = "udjsadasfkdjsa"
         patch "/tag/#{tag.id}", params: {
-          tag: { text_color_hex: invalid_text_color_hex, bg_color_hex: "" },
+          tag: { text_color_hex: invalid_text_color_hex, bg_color_hex: "" }
         }
         expect(response.body).to include("Text color hex is invalid")
       end
