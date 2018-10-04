@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180826174411) do
+ActiveRecord::Schema.define(version: 20181003173949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +60,8 @@ ActiveRecord::Schema.define(version: 20180826174411) do
     t.boolean "email_digest_eligible", default: true
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
+    t.float "featured_clickthrough_rate", default: 0.0
+    t.integer "featured_impressions", default: 0
     t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
@@ -77,10 +79,12 @@ ActiveRecord::Schema.define(version: 20180826174411) do
     t.string "main_tag_name_for_social"
     t.string "name_within_collection"
     t.integer "organization_id"
+    t.integer "page_views_count", default: 0
     t.boolean "paid", default: false
     t.string "password"
     t.string "path"
     t.integer "positive_reactions_count", default: 0, null: false
+    t.integer "previous_positive_reactions_count", default: 0
     t.text "processed_html"
     t.boolean "published", default: false
     t.datetime "published_at"
@@ -88,6 +92,7 @@ ActiveRecord::Schema.define(version: 20180826174411) do
     t.integer "reactions_count", default: 0, null: false
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
+    t.integer "score", default: 0
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
@@ -161,6 +166,18 @@ ActiveRecord::Schema.define(version: 20180826174411) do
     t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
+  end
+
+  create_table "buffer_updates", force: :cascade do |t|
+    t.integer "article_id", null: false
+    t.text "body_text"
+    t.string "buffer_id_code"
+    t.string "buffer_profile_id_code"
+    t.text "buffer_response", default: "--- {}\n"
+    t.datetime "created_at", null: false
+    t.string "social_service_name"
+    t.integer "tag_id"
+    t.datetime "updated_at", null: false
   end
 
   create_table "chat_channel_memberships", force: :cascade do |t|
@@ -571,6 +588,7 @@ ActiveRecord::Schema.define(version: 20180826174411) do
   create_table "tags", id: :serial, force: :cascade do |t|
     t.string "alias_for"
     t.string "bg_color_hex"
+    t.string "buffer_profile_id_code"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"

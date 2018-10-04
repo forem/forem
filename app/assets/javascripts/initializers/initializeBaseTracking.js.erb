@@ -20,6 +20,7 @@ function initializeBaseTracking() {
         ga('send', 'event', 'registration', 'New user registration', location.pathname, null);
       }
       clearInterval(waitingOnGA);
+      logImpressions();
     }
     if (wait > 85) {
       clearInterval(waitingOnGA);
@@ -98,5 +99,12 @@ function eventListening(){
       ga('send', 'event', 'click', 'register-now-click', null, null);
     }
   }
+}
 
+function logImpressions() {
+  var el = document.getElementById("featured-story-marker")
+  if (el){
+    var data = el.dataset.featuredArticle;
+    ga('send', 'event', 'view', 'featured-feed-impression', data, null);
+  }
 }

@@ -139,9 +139,13 @@ variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
 
+#Trending tags on home page
+variable :TRENDING_TAGS, :String, default: "git,beginners"
+
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
 variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
+
 
 group :production do
   variable :SECRET_KEY_BASE, :String

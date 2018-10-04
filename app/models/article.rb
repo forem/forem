@@ -14,6 +14,7 @@ class Article < ApplicationRecord
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
   has_many :comments,       as: :commentable
+  has_many :buffer_updates
   has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
@@ -338,12 +339,6 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch("find-article-by-id-#{id}", expires_in: 5.hours) do
-      find(id)
-    end
-  end
-
   def self.seo_boostable(tag = nil)
     keyword_paths = SearchKeyword.
       where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",
@@ -360,6 +355,7 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
+    update_column(:score, reactions.sum(:points))
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
     index! if tag_list.exclude?("hiring")

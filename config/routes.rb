@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
-    registrations: "registrations",
+    registrations: "registrations"
   }
 
   devise_scope :user do
@@ -169,6 +169,8 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
+  delete "users/remove_association", to: "users#remove_association"
+  delete "users/destroy", to: "users#destroy"
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -194,7 +196,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
-  get "/survey", to: redirect("https://dev.to/devteam/state-of-the-web-data---call-for-analysis-2o75")
+  get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/now" => "pages#now"
   get "/membership" => "pages#membership"
   get "/events" => "events#index"
@@ -226,7 +228,7 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|user_followers|following_users|reading/,
+        which: /organization|user_followers|following_users|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 

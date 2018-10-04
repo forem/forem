@@ -1,6 +1,6 @@
 AlgoliaSearch.configuration = {
   application_id: ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"],
-  api_key: ApplicationConfig["ALGOLIASEARCH_API_KEY"],
+  api_key: ApplicationConfig["ALGOLIASEARCH_API_KEY"]
 }
 
 if Rails.env.test?
@@ -15,7 +15,7 @@ else
       "ordered_articles_by_published_at_#{Rails.env}",
       "ordered_articles_by_positive_reactions_count_#{Rails.env}",
       "ordered_comments_#{Rails.env}",
-    ].join(","),
+    ].join(",")
   }
   secured_algolia_key = Algolia.generate_secured_api_key(
     ApplicationConfig["ALGOLIASEARCH_SEARCH_ONLY_KEY"], params

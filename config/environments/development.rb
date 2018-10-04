@@ -26,7 +26,7 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=172800",
+      "Cache-Control" => "public, max-age=172800"
     }
   else
     config.action_controller.perform_caching = false
@@ -75,7 +75,7 @@ Rails.application.configure do
     user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
     password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
     authentication: :plain,
-    domain: "localhost:3000",
+    domain: "localhost:3000"
   }
 
   config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"

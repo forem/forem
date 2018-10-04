@@ -1,5 +1,6 @@
 class AuthorizationService
   attr_accessor :auth, :signed_in_resource, :cta_variant
+
   def initialize(auth, signed_in_resource = nil, cta_variant = nil)
     @auth = auth
     @signed_in_resource = signed_in_resource
@@ -75,14 +76,14 @@ class AuthorizationService
   end
 
   def update_user(user)
+    user.remember_me!
+    user.remember_me = true
     if auth.provider == "github" && auth.info.nickname != user.github_username
       user.github_username = auth.info.nickname
     end
     if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
       user.twitter_username = auth.info.nickname
     end
-    user.remember_me!
-    user.remember_me = true
     add_social_identity_data(user)
     user.save
     user

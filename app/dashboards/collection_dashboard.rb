@@ -19,7 +19,7 @@ class CollectionDashboard < Administrate::BaseDashboard
     social_image: Field::String,
     published: Field::Boolean,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

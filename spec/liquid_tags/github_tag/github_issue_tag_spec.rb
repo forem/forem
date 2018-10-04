@@ -2,7 +2,7 @@ require "rails_helper"
 
 vcr_option = {
   cassette_name: "github_api",
-  allow_playback_repeats: "true",
+  allow_playback_repeats: "true"
 }
 
 RSpec.describe GithubTag::GithubIssueTag, vcr: vcr_option do

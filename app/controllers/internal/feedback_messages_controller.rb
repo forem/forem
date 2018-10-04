@@ -41,10 +41,14 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       reason: params["reason"],
     )
     if note.save
+      params["author_name"] = note.author.name
+      params["feedback_message_status"] = note.noteable.status
+      params["feedback_type"] = note.noteable.feedback_type
+      send_slack_message(params)
       render json: {
         outcome: "Success",
         content: params["content"],
-        author_name: note.author.name,
+        author_name: note.author.name
       }
     else
       render json: { outcome: note.errors.full_messages }
@@ -52,6 +56,25 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   private
+
+  def send_slack_message(params)
+    SlackBot.ping(
+      generate_message(params),
+      channel: params["feedback_type"],
+      username: "new_note_bot",
+      icon_emoji: ":memo:",
+    )
+  end
+
+  def generate_message(params)
+    <<~HEREDOC
+      *New note from #{params['author_name']}:*
+      *Report status: #{params['feedback_message_status']}*
+      Report page: https://dev.to/internal/reports/#{params['noteable_id']}
+      --------
+      Message: #{params['content']}
+    HEREDOC
+  end
 
   def feedback_message_params
     params[:feedback_message].permit(

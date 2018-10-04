@@ -45,7 +45,7 @@ class UserDashboard < Administrate::BaseDashboard
     saw_onboarding: Field::Boolean,
     following_tags_count: Field::Number,
     monthly_dues: Field::Number,
-    stripe_id_code: Field::String,
+    stripe_id_code: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
