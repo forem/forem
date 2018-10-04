@@ -106,5 +106,10 @@ RSpec.describe MarkdownParser do
       result = generate_and_parse_markdown("`{{ 'something' }}`")
       expect(result).to include("{{ 'something' }}")
     end
+
+    it "permits abbr and aside tags" do
+      result = generate_and_parse_markdown("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
+      expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
+    end
   end
 end
