@@ -1,14 +1,18 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-
 ---
+
+<!-- Before creating a bug report, try disabling browser extensions to see if the bug is still present. -->
+
+<!-- If you're having trouble updating your profile, it is likely because you logged in separately with GitHub & Twitter. Please check if this is the case before creating a bug report, and email yo@dev.to so we can merge your accounts. -->
 
 **Describe the bug**
 A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -21,15 +25,17 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+
+- OS: [e.g. iOS]
+- Browser [e.g. chrome, safari]
+- Version [e.g. 22]
 
 **Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+
+- Device: [e.g. iPhone6]
+- OS: [e.g. iOS8.1]
+- Browser [e.g. stock browser, safari]
+- Version [e.g. 22]
 
 **Additional context**
-Add any other context about the problem here.
+Add any other context about the problem or helpful links here.
