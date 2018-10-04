@@ -106,5 +106,10 @@ RSpec.describe MarkdownParser do
       result = generate_and_parse_markdown("`{{ 'something' }}`")
       expect(result).to include("{{ 'something' }}")
     end
+
+    it "renders nested lists without linebreaks" do
+      result = generate_and_parse_markdown("- [A](#a)\n  - [B](#b)\n- [C](#c)")
+      expect(result).not_to include("<br>")
+    end
   end
 end
