@@ -1,3 +1,19 @@
+<% if @user.identities.find_by(provider:'github').nil? %>
+  <div class="field">
+    <a href="/users/auth/github" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
+    </a>
+  </div>
+<% end %>
+
+<% if @user.identities.find_by(provider:'twitter').nil? %>
+  <div class="field">
+    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
+    </a>
+  </div>
+<% end %>
+
 <h2 style="color: #ff0000;">Danger Zone</h2>
 <% if @user.identities.count == 2 %>
   <h3>Remove OAuth Associations</h3>
@@ -87,13 +103,11 @@
       })
     </script>
   <% end %>
-  <h3>Request Full Account Deletion</h3>
+  <h3>Request Account Deletion</h3>
   <h4 style="font-weight: 400;">
-    Want to delete all your personal information?
-    <br>
     <br>
     <a href="mailto:yo@dev.to?subject=Request Account Deletion&body=<%= @email_body %>">
-      Click this link to request full account deletion via email.
+      Click this link to request account deletion via email.
     </a> This includes all articles, comments, reactions, etc. as well as any personal information you have.
     </b>
     <br>

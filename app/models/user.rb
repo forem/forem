@@ -347,7 +347,7 @@ class User < ApplicationRecord
       Mentorship
       Integrations
       Notifications
-      Publishing from RSS
+      Publishing\ from\ RSS
       Organization
       Billing
     )
