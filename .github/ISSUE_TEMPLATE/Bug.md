@@ -1,13 +1,3 @@
-<!-- Fill out the appropriate template and delete non-applicable lines -->
-
-## Feature Request or Task
-
-### User Story / Description
-
-### Definition of Done
-
----
-
 ## Bug Report
 
 <!-- Before creating a bug report, try disabling browser extensions to see if the bug is still present. -->
