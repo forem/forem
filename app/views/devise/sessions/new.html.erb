@@ -1,4 +1,21 @@
-<div class="devise-container">
-  <a href="/users/auth/twitter" class="sign-up-link" data-no-instant><%= icon("twitter") %> Twitter</a>
-  <a href="/users/auth/github" class="sign-up-link" data-no-instant><%= icon("github") %> Github</a>
-</div>
+<style>
+  .error-notice{
+    background: rgba(255, 80, 80, 0.7);
+    color: white;
+    padding: 40px 0px 40px;
+    text-align: center;
+    position: relative;
+    top: 60px;
+    left: 0px;
+    right: 0px;
+  }
+</style>
+<% if flash[:alert] %>
+  <div class="error-notice">
+    <%= flash[:alert] %>
+    <br>
+    Please try again below, or contact <a href="mailto:yo@dev.to">yo@dev.to</a> if this persists.
+  </div>
+<% end %>
+
+<%= render "devise/registrations/registration_form" %>
