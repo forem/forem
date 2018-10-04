@@ -1,17 +1,15 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
-<% if @user.identities.where(provider:'github').empty? %>
+<% if @user.identities.find_by(provider:'github').nil? %>
   <div class="field">
-    <label>Action</label>
     <a href="/users/auth/github" class="big-button cta" data-no-instant>
       <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
     </a>
   </div>
 <% end %>
 
-<% if @user.identities.where(provider:'twitter').empty? %>
+<% if @user.identities.find_by(provider:'twitter').nil? %>
   <div class="field">
-    <label>Action</label>
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
       <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
     </a>
