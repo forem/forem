@@ -33,14 +33,6 @@ class AuthorizationService
     end
   end
 
-  def see_onboarding?
-    !cta_variant.nil? &&
-      (cta_variant == "navbar_basic" ||
-        cta_variant&.include?("notifications") ||
-        cta_variant&.include?("welcome-widget") ||
-        cta_variant&.include?("in-feed-cta"))
-  end
-
   def build_identity
     identity = Identity.find_for_oauth(auth)
     identity.token = auth.credentials.token
@@ -69,7 +61,7 @@ class AuthorizationService
       user.remember_me!
       user.remember_me = true
       add_social_identity_data(user)
-      user.saw_onboarding = !see_onboarding?
+      user.saw_onboarding = false
       user.save!
     end
     user
