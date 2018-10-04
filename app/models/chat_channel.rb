@@ -29,6 +29,8 @@ class ChatChannel < ApplicationRecord
     ranking ["desc(last_message_at)"]
   end
 
+  before_destroy :remove_from_index!
+
   def open?
     channel_type == "open"
   end
