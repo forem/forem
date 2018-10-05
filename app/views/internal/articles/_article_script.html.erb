@@ -27,6 +27,11 @@
     return false; // prevents normal behaviour
   });
 
+  $(".toggle-buffering-butt").click(function (e) {
+    e.preventDefault()
+    console.log($(this).closest(".single-internal-article").find(".buffering-area-for-single-article").toggle());
+  })
+
   document.getElementById('image-upload-button').onclick = function (e) {
     e.preventDefault();
     document.getElementById('image-upload').click();
