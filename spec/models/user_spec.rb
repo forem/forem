@@ -256,16 +256,6 @@ RSpec.describe User, type: :model do
       expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
     end
 
-    it "sets saw_onboarding to false with proper signup variant" do
-      new_user = user_from_authorization_service(:twitter, nil, "welcome-widget")
-      expect(new_user.saw_onboarding).to eq(false)
-    end
-
-    it "sets saw_onboarding to true with nil signup variant" do
-      new_user = user_from_authorization_service(:twitter, nil, nil)
-      expect(new_user.saw_onboarding).to eq(true)
-    end
-
     it "does not assign signup_cta_variant to non-new users" do
       new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
