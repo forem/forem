@@ -25,7 +25,6 @@ export default class ArticleForm extends Component {
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
       : null;
-    console.log(article)
     this.state = {
       id: article.id || null,
       title: article.title || '',
@@ -49,7 +48,6 @@ export default class ArticleForm extends Component {
 
   componentDidMount() {
     initEditorResize();
-    console.log('codemirror-ify');
     // const editor = document.getElementById('article_body_markdown');
     // const myCodeMirror = CodeMirror(editor, {
     //   mode: 'markdown',
