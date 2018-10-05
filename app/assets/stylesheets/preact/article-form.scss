@@ -12,7 +12,7 @@
   width: calc(95% - 40px);
   max-width: 880px;
   padding: 0px 20px;
-  box-shadow: $bold-shadow;
+  box-shadow: 5px 5px 0px darken($light-medium-gray, 3%);
   border: 1px solid $dark-gray;
   border-radius: 3px;
   background: white;
@@ -46,23 +46,30 @@
   background: $black;
   color: white;
   text-align: center;
-  padding: 15px;
-  border-radius: 3px;
-  margin-top: 12px;
-  margin-bottom: 3px;
-  box-shadow: $bold-shadow;
+  padding: 20px;
+  margin: 0px -20px 3px;
   font-size:24px;
   font-weight: bold;
   cursor: pointer;
   user-select: none;
   button {
-    background: $purple;
+    background: transparent;
     border-radius: 3px;
     border: 0px;
     font-size: 1em;
     font-family: $helvetica-condensed;
-    width: 80px;
+    width: 110px;
+    border-radius: 100px;
+    padding: 5px 0px;
     margin-left: 10px;
+    border: 3px solid white;
+    &.no{
+      background: $red;
+    }
+    &.yes{
+      background: darken($green, 18%);
+      color: white;
+    }
   }
 }
 
@@ -83,11 +90,11 @@
 
 .articleform__title {
   height: 50px;
-  font-size: 40px;
+  font-size: 29px;
   word-break: break-word;
   border: 0;
   padding: 20px 0px 15px;
-  font-weight: bold;
+  font-weight: 600;
 }
 .articleform__detailfields{
   display: flex;
@@ -128,11 +135,14 @@
   padding: 10px;
   cursor:pointer;
   &:hover{
-    background: lighten($green, 20%);
+    background: lighten($green, 27%);
   }
 }
 .articleform__tagoptionrow--active{
   background: $green;
+  &:hover{
+    background: darken($green, 10%);
+  }
 }
 
 .articleform__imageButton{
@@ -183,21 +193,29 @@
   button, a{
     cursor:pointer;
     background: white;
-    border: 3px solid $black;
+    border: 2px solid $black;
     font-family: $helvetica-condensed;
     font-size:16px;
-    border-radius: 3px;
+    border-radius: 113px;
     padding: 6px 0px;
     display: inline-block;
     width: 40%;
     text-align: center;
     color: $black;
-    margin: 5px calc(6px + 1vw);
+    margin: 4px calc(6px + 0.5vw);
     &:hover{
       background: lighten($green, 24%);
     }
     &.active{
       background: $green;
+    }
+    &.articleform__buttons--publish{
+      background: $bold-blue;
+      border: 2px solid $bold-blue;
+      color: white;
+      &:hover{
+        opacity:0.9;
+      }
     }
     @media screen and ( min-width: 600px ){
       width: 130px;

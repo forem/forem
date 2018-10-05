@@ -12,7 +12,7 @@ RSpec.describe Article, type: :model do
   let(:article) { create(:article, user_id: user.id) }
 
   it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
-  it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id) }
+  it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id, :title) }
   it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
   it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
   it { is_expected.to validate_presence_of(:title) }
