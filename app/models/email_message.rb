@@ -7,4 +7,9 @@ class EmailMessage < Ahoy::Message
     closing_html_index = content.index("</html>") + 6
     content[doctype_index..closing_html_index]
   end
+
+  def self.find_for_reports(feedback_message_ids)
+    select(:to, :subject, :content, :feedback_message_id).
+      where(feedback_message_id: feedback_message_ids)
+  end
 end
