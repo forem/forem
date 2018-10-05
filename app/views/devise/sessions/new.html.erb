@@ -10,10 +10,16 @@
     right: 0px;
   }
 </style>
-<% if flash[:alert] %>
+<% unless flash[:alert].blank? %>
   <div class="error-notice">
-    <%= flash[:alert] %>
-    <br>
+  Something went wrong:
+    <ul>
+      <% flash[:alert].each do |error| %>
+        <li>
+          <%= error %>
+        </li>
+      <% end %>
+    </ul>
     Please try again below, or contact <a href="mailto:yo@dev.to">yo@dev.to</a> if this persists.
   </div>
 <% end %>
