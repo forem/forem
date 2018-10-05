@@ -63,9 +63,10 @@ module Api
 
       def article_params
         params["article"].transform_keys!(&:underscore)
+        params["article"]["organization_id"] = current_user.organization_id if params["article"]["post_under_org"]
         params.require(:article).permit(
           :title, :body_markdown, :user_id, :main_image, :published, :description,
-          :tag_list
+          :tag_list, :organization_id
         )
       end
     end

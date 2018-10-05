@@ -40,6 +40,7 @@ class ArticlesController < ApplicationController
 
   def new
     @user = current_user
+    @organization = @user&.organization
     @tag = Tag.find_by_name(params[:template])
     @article = if @tag&.submission_template.present? && @user
                  authorize Article
@@ -61,6 +62,7 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
+    @organization = @user&.organization
   end
 
   def preview

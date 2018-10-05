@@ -14,8 +14,8 @@ import ImageManagement from './elements/imageManagement';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import ImageUploadIcon from 'images/image-upload.svg';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/markdown/markdown';
+// import CodeMirror from 'codemirror';
+// import 'codemirror/mode/markdown/markdown';
 
 export default class ArticleForm extends Component {
   constructor(props) {
@@ -25,6 +25,7 @@ export default class ArticleForm extends Component {
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
       : null;
+    console.log(article)
     this.state = {
       id: article.id || null,
       title: article.title || '',
@@ -39,9 +40,9 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: article.id != null,
       imageManagementShowing: false,
-      mainImageUrl: article.main_image || null,
+      mainImage: article.main_image || null,
       organization,
-      postUnderOrg: false,
+      postUnderOrg: article.organization_id ? true : false,
       errors: null,
     };
   }
@@ -49,13 +50,13 @@ export default class ArticleForm extends Component {
   componentDidMount() {
     initEditorResize();
     console.log('codemirror-ify');
-    const editor = document.getElementById('article_body_markdown');
-    const myCodeMirror = CodeMirror(editor, {
-      mode: 'markdown',
-      theme: 'material',
-      highlightFormatting: true,
-    });
-    myCodeMirror.setSize('100%', '100%');
+    // const editor = document.getElementById('article_body_markdown');
+    // const myCodeMirror = CodeMirror(editor, {
+    //   mode: 'markdown',
+    //   theme: 'material',
+    //   highlightFormatting: true,
+    // });
+    // myCodeMirror.setSize('100%', '100%');
   }
 
   toggleHelp = e => {
@@ -109,7 +110,7 @@ export default class ArticleForm extends Component {
 
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImageUrl: payload.link,
+      mainImage: payload.link,
       imageManagementShowing: false,
     });
   };
@@ -154,7 +155,7 @@ export default class ArticleForm extends Component {
       imageManagementShowing,
       organization,
       postUnderOrg,
-      mainImageUrl,
+      mainImage,
       errors,
     } = this.state;
     // <input type="image" name="cover-image" />
@@ -174,15 +175,15 @@ export default class ArticleForm extends Component {
     }
 
     const notice = submitting ? <Notice published={published} /> : '';
-    const imageArea = mainImageUrl ? (
-      <MainImage mainImage={mainImageUrl} onEdit={this.toggleImageManagement} />
+    const imageArea = mainImage ? (
+      <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
       ''
     );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
-        mainImageUrl={mainImageUrl}
+        mainImage={mainImage}
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
     ) : (

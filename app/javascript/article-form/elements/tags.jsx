@@ -142,6 +142,7 @@ class Tags extends Component {
         filters: 'supported:true',
       })
       .then(content => {
+        console.log(content.hits)
         this.setState({
           searchResults: content.hits.filter(
             hit => !this.selected.includes(hit.name),

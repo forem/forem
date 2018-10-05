@@ -28,7 +28,7 @@ class Article < ApplicationRecord
             url: { allow_blank: true, no_local: true, schemes: ["https", "http"] },
             uniqueness: { allow_blank: true }
   # validates :description, length: { in: 10..170, if: :published? }
-  validates :body_markdown, uniqueness: { scope: :user_id }
+  validates :body_markdown, uniqueness: { scope: [:user_id, :title] }
   validate :validate_tag
   validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
@@ -288,9 +288,8 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    return if body_markdown.blank?
     begin
-      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed_markdown = MarkdownParser.new(parsed.content)
       self.processed_html = parsed_markdown.finalize
