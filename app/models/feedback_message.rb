@@ -23,9 +23,4 @@ class FeedbackMessage < ApplicationRecord
   def capitalize_status
     self.status = status.capitalize unless status.blank?
   end
-
-  def email_messages
-    EmailMessage.select(:to, :subject, :content, :feedback_message_id).
-      where(feedback_message_id: id)
-  end
 end
