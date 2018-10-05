@@ -9,10 +9,8 @@ const PublishToggle = ({ previewShowing, onPreview, onSaveDraft, onPublish, onHe
     <button onClick={onPreview} className={previewShowing ? "active" : "inactive" }>
       PREVIEW
     </button>
-    <button onClick={onSaveDraft}>
-      {published ? 'UNPUBLISH' : 'SAVE DRAFT' }
-    </button>
-    <button onClick={onPublish}>
+      {published ? '' : <button onClick={onSaveDraft}>SAVE DRAFT</button> }
+    <button onClick={onPublish} class="articleform__buttons--publish">
       {published ? 'SAVE CHANGES' : 'PUBLISH' }
     </button>
 

@@ -7,7 +7,7 @@ const OrgSettings = ({ organization, postUnderOrg, onToggle }) => (
     style={{backgroundColor: organization.bg_color_hex, color: organization.text_color_hex}}
     onClick={onToggle}
     >
-    Post From {organization.name} <button>{postUnderOrg ? 'YES' : 'NO'}</button>
+    Post From {organization.name} <button class={postUnderOrg ? 'yes' : 'no'}>{postUnderOrg ? 'YES' : 'NO'}</button>
   </div>
 );
 
