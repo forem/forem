@@ -107,6 +107,11 @@ RSpec.describe MarkdownParser do
       expect(result).to include("{{ 'something' }}")
     end
 
+    it "renders nested lists without linebreaks" do
+      result = generate_and_parse_markdown("- [A](#a)\n  - [B](#b)\n- [C](#c)")
+      expect(result).not_to include("<br>")
+    end
+
     it "permits abbr and aside tags" do
       result = generate_and_parse_markdown("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
       expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
