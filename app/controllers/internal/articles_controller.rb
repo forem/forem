@@ -33,7 +33,14 @@ class Internal::ArticlesController < Internal::ApplicationController
         page(params[:page]).
         per(100).
         limited_columns_internal_select
-    else # MIX
+      when "chronological"
+        @articles = Article.
+        where(published: true).
+        order("published_at DESC").
+        page(params[:page]).
+        limited_columns_internal_select.
+        per(50)
+      else # MIX
       @articles = Article.
         where(published: true).
         order("hotness_score DESC").
