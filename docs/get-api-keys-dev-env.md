@@ -152,12 +152,15 @@ Secret -> STREAM_RAILS_SECRET
 # Pusher
 
 1. [Sign up for a free account with this link](https://dashboard.pusher.com/accounts/sign_up).
+
    ![screen shot 2018-10-03 at 5 48 09 pm](https://user-images.githubusercontent.com/7942714/46447013-85187700-c734-11e8-92f7-89a17240ea0f.png)
 
 2. Once signed in, fill out the prompt to create a new Pusher Channels app. Only an app name is required.
+
    ![screen shot 2018-10-03 at 5 35 14 pm](https://user-images.githubusercontent.com/7942714/46446837-69f93780-c733-11e8-82d9-52ad97812d4b.png)
 
 3. In your new Pusher Channels app, click the "App Keys" tab.
+
    ![screen shot 2018-10-03 at 5 41 43 pm](https://user-images.githubusercontent.com/7942714/46446905-c0667600-c733-11e8-9c55-8fabf28a27fe.png)
 
 4. Change your keys accordingly (name of Pusher key -> name of our application key):

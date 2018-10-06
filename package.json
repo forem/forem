@@ -13,7 +13,8 @@
     "test:watch": "jest app/javascript/ --watch",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "serve-docs": "cd docs && gitdocs serve"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -68,6 +69,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.11.1",
     "faker": "^4.1.0",
+    "gitdocs": "^2.0.0",
     "husky": "^1.0.1",
     "jest": "^23.5.0",
     "jest-fetch-mock": "^1.6.6",
