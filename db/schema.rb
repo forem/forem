@@ -309,13 +309,6 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
-  create_table "flipflop_features", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.boolean "enabled", default: false, null: false
-    t.string "key", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
@@ -584,6 +577,16 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "updated_at"
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "sail_settings", force: :cascade do |t|
+    t.integer "cast_type", limit: 2, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.string "value", null: false
+    t.index ["name"], name: "index_settings_on_name", unique: true
   end
 
   create_table "search_keywords", force: :cascade do |t|

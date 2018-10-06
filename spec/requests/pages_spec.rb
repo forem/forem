@@ -77,14 +77,12 @@ RSpec.describe "Pages", type: :request do
 
     context "when live is starting soon" do
       before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_starting_soon, true)
+        Sail::Setting.create(name: :live_starting_soon, value: "true", cast_type: :boolean)
         get "/live"
       end
 
       after do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_starting_soon, false)
+        Sail::Setting.create(name: :live_starting_soon, value: "false", cast_type: :boolean)
       end
 
       it "shows the correct message" do
@@ -94,14 +92,12 @@ RSpec.describe "Pages", type: :request do
 
     context "when live is live" do
       before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_is_live, true)
+        Sail::Setting.create(name: :live_is_live, value: "true", cast_type: :boolean)
         create(:chat_channel, :workshop)
       end
 
       after do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_is_live, false)
+        Sail::Setting.create(name: :live_is_live, value: "false", cast_type: :boolean)
       end
 
       it "shows a sign in page for logged out users" do
