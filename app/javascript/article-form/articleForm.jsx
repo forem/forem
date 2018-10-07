@@ -184,7 +184,7 @@ export default class ArticleForm extends Component {
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
-      editorView = <BodyPreview previewHTML={previewHTML} articleState={this.state} version="article-preview" />;
+      editorView = <div>{errorsArea}{orgArea}{imageArea}<BodyPreview previewHTML={previewHTML} articleState={this.state} version="article-preview" /></div>;
     } else if (helpShowing) {
       editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
     } else {
