@@ -13,8 +13,11 @@
     <% if @organization %>
       <div class="articleform__orgsettings">
         <img src=<%= @organization.profile_image_90 %> />
-        Post From <%= @organization.name %> <button class="<%= @article.organization ? "yes" : "no" %>"><%= @article.organization ? "✅ YES" : "◻️ NO" %></button>
+        <%= @organization.name %> <button class="<%= @article.organization ? "yes" : "no" %>"><%= @article.organization ? "✅ YES" : "◻️ NO" %></button>
       </div>
+    <% end %>
+    <% if @article.main_image.present? %>
+      <div class="articleform__mainimage"><img src="<%= @article.main_image %>"></div>
     <% end %>
     <input class="articleform__title" type="text" value="<%= @article.title %>" placeholder="Title" />
     <div class="articleform__detailfields">

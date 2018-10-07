@@ -62,7 +62,7 @@
     border: 0px;
     font-size: 0.8em;
     font-family: $helvetica-condensed;
-    width: 100px;
+    width: 120px;
     border-radius: 100px;
     padding: 1px 0px;
     margin-left: 10px;
@@ -83,8 +83,12 @@
   text-align: center;
   width: 100%;
   img {
-    width:100%;
-    height: auto;
+    width: 100%;
+    height: calc(42vw - 44px);
+    background: #fcfcfc;
+    @media screen and ( min-width: 985px ){
+      height: 370px;
+    }
     display: block;
     cursor: pointer;
     &:hover{
