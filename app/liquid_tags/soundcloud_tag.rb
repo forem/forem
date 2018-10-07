@@ -23,9 +23,15 @@ class SoundcloudTag < LiquidTagBase
   private
 
   def parse_link(link)
-    stripped_link = ActionController::Base.helpers.strip_tags(link)
+    stripped_link = sanitize_link(link)
     raise_error unless valid_link?(stripped_link)
-    stripped_link.tr(" ", "")
+    stripped_link
+  end
+
+  def sanitize_link(link)
+    link = ActionController::Base.helpers.strip_tags(link)
+    link = ActionController::Base.helpers.sanitize(link)
+    link.tr(" ", "")
   end
 
   def valid_link?(link)
