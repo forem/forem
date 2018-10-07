@@ -83,6 +83,10 @@ class Organization < ApplicationRecord
     approved && cta_body_markdown? && cta_button_text? && cta_button_url?
   end
 
+  def profile_image_90
+    ProfileImage.new(self).get(90)
+  end
+
   private
 
   def evaluate_markdown
