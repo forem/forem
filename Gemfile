@@ -74,7 +74,7 @@ gem "rails-assets-airbrake-js-client", "~> 1.4", source: "https://rails-assets.o
 gem "rails-observers", "~> 0.1"
 gem "recaptcha", "~> 4.12", require: "recaptcha/rails"
 gem "redcarpet", "~> 3.4"
-gem "reverse_markdown", "~> 1.0"
+gem "reverse_markdown", "~> 1.1"
 gem "rolify", "~> 5.2"
 gem "rouge", "~> 3.2"
 gem "s3_direct_upload", "~> 0.1"
