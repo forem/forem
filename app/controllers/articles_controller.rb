@@ -42,7 +42,7 @@ class ArticlesController < ApplicationController
     @user = current_user
     @organization = @user&.organization
     @tag = Tag.find_by_name(params[:template])
-    @article = if @tag.present? && @user.editor_version == "v2"
+    @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  Article.new(body_markdown: "", cached_tag_list: @tag.name,
                    processed_html: "")
@@ -52,7 +52,7 @@ class ArticlesController < ApplicationController
                              processed_html: "")
                else
                  skip_authorization
-                 if @user.editor_version == "v2"
+                 if @user&.editor_version == "v2"
                    Article.new
                  else
                    Article.new(
