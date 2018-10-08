@@ -118,8 +118,13 @@
 }
 
 .articleform__tags {
-  height: 19px;
-  width: 94%;
+  height: 40px;
+  
+  @media screen and ( min-width: 800px ){
+    height: 19px;
+    width: 94%;
+  }
+  width: calc(100% - 80px);
   margin-left: -4px;
   resize: none;
   border: 0;
