@@ -156,7 +156,6 @@ export default class ArticleForm extends Component {
       mainImage,
       errors,
     } = this.state;
-    
     const notice = submitting ? <Notice published={published} /> : '';
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
