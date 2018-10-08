@@ -7,8 +7,6 @@ RSpec.describe "/internal/reports", type: :request do
   let(:user)              { create(:user) }
   let(:admin)             { create(:user, :super_admin) }
 
-  describe "GET "
-
   describe "POST /save_status" do
     context "when a valid request is made" do
       before do
@@ -35,13 +33,13 @@ RSpec.describe "/internal/reports", type: :request do
         "feedback_message_id" => 1,
         "email_subject" => "Thank you for your report",
         "email_body" => "Thanks for your report and being an awesome member!",
-        "email_type" => "reporter",
+        "email_type" => "reporter"
       }
 
       email_message_attributes = {
         "feedback_message_id" => 1,
         "subject" => "Thank you for your report",
-        "utm_campaign" => "reporter",
+        "utm_campaign" => "reporter"
       }
 
       before do
@@ -68,15 +66,16 @@ RSpec.describe "/internal/reports", type: :request do
       note_params = {
         "content" => "test note",
         "reason" => "abuse-reports",
-        "noteable_type" => "FeedbackMessage",
+        "noteable_type" => "FeedbackMessage"
       }
 
       json_response = {
         outcome: "Success",
-        content: "test note",
+        content: "test note"
       }
 
       before do
+        allow(SlackBot).to receive(:ping).and_return(true)
         feedback_message
         login_as admin
         note_params["noteable_id"] = feedback_message.id

@@ -14,6 +14,7 @@ class Article < ApplicationRecord
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
   has_many :comments,       as: :commentable
+  has_many :buffer_updates
   has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
@@ -27,7 +28,7 @@ class Article < ApplicationRecord
             url: { allow_blank: true, no_local: true, schemes: ["https", "http"] },
             uniqueness: { allow_blank: true }
   # validates :description, length: { in: 10..170, if: :published? }
-  validates :body_markdown, uniqueness: { scope: :user_id }
+  validates :body_markdown, uniqueness: { scope: [:user_id, :title] }
   validate :validate_tag
   validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
@@ -80,7 +81,7 @@ class Article < ApplicationRecord
     :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
     :published_from_feed, :crossposted_at, :published_at, :featured_number,
     :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-    :email_digest_eligible)
+    :email_digest_eligible, :processed_html)
   }
 
   scope :boosted_via_additional_articles, -> {
@@ -287,9 +288,8 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    return if body_markdown.blank?
     begin
-      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed_markdown = MarkdownParser.new(parsed.content)
       self.processed_html = parsed_markdown.finalize
@@ -338,12 +338,6 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch("find-article-by-id-#{id}", expires_in: 5.hours) do
-      find(id)
-    end
-  end
-
   def self.seo_boostable(tag = nil)
     keyword_paths = SearchKeyword.
       where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",
@@ -360,6 +354,7 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
+    update_column(:score, reactions.sum(:points))
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
     index! if tag_list.exclude?("hiring")

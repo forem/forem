@@ -82,7 +82,7 @@ class CommentsController < ApplicationController
                         name: current_user.name,
                         profile_pic: ProfileImage.new(current_user).get(50),
                         twitter_username: current_user.twitter_username,
-                        github_username: current_user.github_username,
+                        github_username: current_user.github_username
                       } }
     elsif @comment = Comment.where(body_markdown: @comment.body_markdown,
                                    commentable_id: @comment.commentable.id,

@@ -30,7 +30,7 @@ class FeedbackMessagesController < ApplicationController
   def send_slack_message
     SlackBot.ping(
       generate_message,
-      channel: feedback_message_params[:feedback_type].to_s,
+      channel: feedback_message_params[:feedback_type],
       username: "#{feedback_message_params[:feedback_type]}_bot",
       icon_emoji: ":#{emoji_for_feedback(feedback_message_params[:feedback_type])}:",
     )

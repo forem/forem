@@ -7,7 +7,7 @@ class JobOpportunity < ApplicationRecord
       "on_premise" => "In Office",
       "fully_remote" => "Fully Remote",
       "remote_optional" => "Remote Optional",
-      "on_premise_flexible" => "Mostly in Office but Flexible",
+      "on_premise_flexible" => "Mostly in Office but Flexible"
     }
     phrases[remoteness]
   end

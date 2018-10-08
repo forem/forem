@@ -24,7 +24,7 @@ p "2/8 Creating Users"
 roles = %i(level_1_member level_2_member level_3_member level_4_member
            workshop_pass)
 User.clear_index!
-40.times do |i|
+10.times do |i|
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
@@ -71,7 +71,7 @@ end
 p "4/8 Creating Articles"
 
 Article.clear_index!
-80.times do |i|
+25.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
   tags.concat Tag.order("RANDOM()").select("name").first(3).map(&:name)
@@ -102,12 +102,12 @@ end
 p "5/8 Creating Comments"
 
 Comment.clear_index!
-120.times do
+30.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
     user_id: User.order("RANDOM()").first.id,
-    commentable_id: Article.where("id > ?", 30).order("RANDOM()").first.id,
-    commentable_type: "Article",
+    commentable_id: Article.order("RANDOM()").first.id,
+    commentable_type: "Article"
   }
   Comment.create!(attributes)
 end
@@ -131,7 +131,7 @@ podcast_objects = [
     main_color_hex: "111111",
     overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", # rubocop:disable Metrics/LineLength
     android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
   {
     title: "Talk Python",
@@ -143,7 +143,7 @@ podcast_objects = [
     main_color_hex: "181a1c",
     overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers", # rubocop:disable Metrics/LineLength
     android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
   {
     title: "Developer on Fire",
@@ -156,7 +156,7 @@ podcast_objects = [
     main_color_hex: "",
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
   {
     title: "Building Programmers",
@@ -169,7 +169,7 @@ podcast_objects = [
     main_color_hex: "140837",
     overcast_url: "https://overcast.fm/itunes1149043456/building-programmers",
     android_url: "https://subscribeonandroid.com/building.fireside.fm/rss",
-    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg"),
+    image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
 ]
 
@@ -205,3 +205,33 @@ end
 ChatChannel.reindex!
 
 ##############################################################################
+
+puts <<-ASCII
+
+
+
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ``````````````-oooooooo/-``````.+ooooooooo:``+ooo+````````oooo/````````````
+  ``````````````+MMMMMMMMMMm+```-NMMMMMMMMMMs``+MMMM:``````/MMMM/````````````
+  ``````````````+MMMNyyydMMMMy``/MMMMyyyyyyy/```mMMMd``````mMMMd`````````````
+  ``````````````+MMMm````:MMMM.`/MMMN```````````/MMMM/````/MMMM:`````````````
+  ``````````````+MMMm````.MMMM-`/MMMN````````````dMMMm````mMMMh``````````````
+  ``````````````+MMMm````.MMMM-`/MMMMyyyy+```````:MMMM/``+MMMM-``````````````
+  ``````````````+MMMm````.MMMM-`/MMMMMMMMy````````hMMMm``NMMMy```````````````
+  ``````````````+MMMm````.MMMM-`/MMMMoooo:````````-MMMM+oMMMM-```````````````
+  ``````````````+MMMm````.MMMM-`/MMMN``````````````yMMMmNMMMy````````````````
+  ``````````````+MMMm````+MMMM.`/MMMN``````````````.MMMMMMMM.````````````````
+  ``````````````+MMMMdddNMMMMo``/MMMMddddddd+```````sMMMMMMs`````````````````
+  ``````````````+MMMMMMMMMNh:```.mMMMMMMMMMMs````````yMMMMs``````````````````
+  ``````````````.///////:-````````-/////////-`````````.::.```````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+  ```````````````````````````````````````````````````````````````````````````
+
+  All done!
+ASCII

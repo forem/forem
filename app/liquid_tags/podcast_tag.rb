@@ -7,7 +7,7 @@ class PodcastTag < LiquidTagBase
     itunes: "https://d.ibtimes.co.uk/en/full/1423047/itunes-12.png",
     overcast: "https://d2uzvmey2c90kn.cloudfront.net/img/logo.svg",
     android: "http://storage.googleapis.com/ix_choosemuse/uploads/2016/02/android-logo.png",
-    rss: "https://temenos.com/globalassets/img/marketplace/temenos/rss/rss.png",
+    rss: "https://temenos.com/globalassets/img/marketplace/temenos/rss/rss.png"
   }.freeze
 
   def initialize(_tag_name, link, _tokens)

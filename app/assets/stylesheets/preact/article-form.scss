@@ -12,8 +12,8 @@
   width: calc(95% - 40px);
   max-width: 880px;
   padding: 0px 20px;
-  box-shadow: $bold-shadow;
-  border: 1px solid $dark-gray;
+  box-shadow: 5px 5px 0px darken($light-medium-gray, 3%);
+  border: 1px solid darken($light-medium-gray, 5%);
   border-radius: 3px;
   background: white;
   position:relative;
@@ -43,26 +43,38 @@
 }
 
 .articleform__orgsettings{
-  background: $black;
-  color: white;
-  text-align: center;
-  padding: 15px;
-  border-radius: 3px;
-  margin-top: 12px;
-  margin-bottom: 3px;
-  box-shadow: $bold-shadow;
-  font-size:24px;
-  font-weight: bold;
+  padding: 0px;
+  padding-left: 10px;
+  margin: 20px 2px 0px;
+  font-size:23px;
   cursor: pointer;
   user-select: none;
+  img{
+    height: 33px;
+    width: 33px;
+    border-radius: 50px;
+    vertical-align: -8px;
+    margin-right: 8px;
+  }
   button {
-    background: $purple;
+    background: transparent;
     border-radius: 3px;
     border: 0px;
-    font-size: 1em;
+    font-size: 0.8em;
     font-family: $helvetica-condensed;
-    width: 80px;
+    width: 120px;
+    border-radius: 100px;
+    padding: 1px 0px;
     margin-left: 10px;
+    border: 3px solid white;
+    &.no{
+      background: $light-gray;
+      color: $medium-gray;
+    }
+    &.yes{
+      background: darken($green, 18%);
+      color: white;
+    }
   }
 }
 
@@ -71,8 +83,12 @@
   text-align: center;
   width: 100%;
   img {
-    width:100%;
-    height: auto;
+    width: 100%;
+    height: calc(42vw - 44px);
+    background: #fcfcfc;
+    @media screen and ( min-width: 985px ){
+      height: 370px;
+    }
     display: block;
     cursor: pointer;
     &:hover{
@@ -83,11 +99,12 @@
 
 .articleform__title {
   height: 50px;
-  font-size: 40px;
+  width: 94%;
+  font-size: 29px;
   word-break: break-word;
   border: 0;
   padding: 20px 0px 15px;
-  font-weight: bold;
+  font-weight: 600;
 }
 .articleform__detailfields{
   display: flex;
@@ -102,15 +119,17 @@
 
 .articleform__tags {
   height: 19px;
-  width: 96%;
+  width: 94%;
+  margin-left: -4px;
   resize: none;
   border: 0;
   font-size: 16px;
   font-family: $monospace;
   font-weight: bold;
-  border-radius: 3px;
+  border-radius: 100px;
   padding: 8px 8px 7px;
-  border: 2px solid $black;
+  background: $light-gray;
+  padding-left: 20px;
 }
 
 .articleform__tagsoptions{
@@ -128,23 +147,26 @@
   padding: 10px;
   cursor:pointer;
   &:hover{
-    background: lighten($green, 20%);
+    background: lighten($green, 27%);
   }
 }
 .articleform__tagoptionrow--active{
   background: $green;
+  &:hover{
+    background: darken($green, 10%);
+  }
 }
 
 .articleform__imageButton{
-  width: 96px;
+  width: 100px;
   color: $black;
-  background: white;
-  border-radius: 3px;
-  border: 2px solid $black;
+  background: $purple;
+  border: 0px;
+  border-radius: 300px;
   padding: 3px;
   font-family: $helvetica-condensed;
   font-size: 14.4px;
-  height: 38px;
+  height: 34px;
   &:hover{
     background: lighten($green, 24%);
   }
@@ -163,6 +185,7 @@
 .articleform__body {
   min-height: calc(90vh - 280px);
   // height: calc(90vh - 240px);
+  width: 94%;
   border: 0;
   font-size: 18px;
   resize: none;
@@ -179,25 +202,37 @@
   right: 0;
   background: white;
   z-index: 20;
-  border-top: 1px solid $dark-gray;
+  border-top: 1px solid $light-medium-gray;
   button, a{
     cursor:pointer;
-    background: white;
-    border: 3px solid $black;
+    background: $light-gray;
     font-family: $helvetica-condensed;
     font-size:16px;
-    border-radius: 3px;
+    border: 0px;
+    border-radius: 113px;
+    box-shadow:  2px 2px 8px darken($light-medium-gray, 13%);
     padding: 6px 0px;
     display: inline-block;
     width: 40%;
     text-align: center;
-    color: $black;
-    margin: 5px calc(6px + 1vw);
+    color: $medium-gray;
+    margin: 4px calc(6px + 0.5vw);
     &:hover{
       background: lighten($green, 24%);
     }
     &.active{
       background: $green;
+    }
+    &.articleform__buttons--small{
+      width: 45px;
+      border: white;
+    }
+    &.articleform__buttons--publish{
+      background: $bold-blue;
+      color: white;
+      &:hover{
+        opacity:0.9;
+      }
     }
     @media screen and ( min-width: 600px ){
       width: 130px;

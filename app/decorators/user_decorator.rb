@@ -15,12 +15,12 @@ class UserDecorator < ApplicationDecorator
     if bg_color_hex.blank?
       {
         bg: assigned_color[:bg],
-        text: assigned_color[:text],
+        text: assigned_color[:text]
       }
     else
       {
         bg: bg_color_hex || assigned_color[:bg],
-        text: text_color_hex || assigned_color[:text],
+        text: text_color_hex || assigned_color[:text]
       }
     end
   end
@@ -29,43 +29,43 @@ class UserDecorator < ApplicationDecorator
     colors = [
       {
         bg: "#093656",
-        text: "#ffffff",
+        text: "#ffffff"
       },
       {
         bg: "#19063A",
-        text: "#dce9f3",
+        text: "#dce9f3"
       },
       {
         bg: "#0D4D4B",
-        text: "#fdf9f3",
+        text: "#fdf9f3"
       },
       {
         bg: "#61122f",
-        text: "#ffffff",
+        text: "#ffffff"
       },
       {
         bg: "#edebf6",
-        text: " #070126",
+        text: " #070126"
       },
       {
         bg: "#080E3B",
-        text: "#ffffff",
+        text: "#ffffff"
       },
       {
         bg: "#010C1F",
-        text: "#aebcd5",
+        text: "#aebcd5"
       },
       {
         bg: "#d7dee2",
-        text: "#022235",
+        text: "#022235"
       },
       {
         bg: "#161616",
-        text: "#66e2d5",
+        text: "#66e2d5"
       },
       {
         bg: "#1c0bba",
-        text: "#c9d2dd",
+        text: "#c9d2dd"
       },
     ]
     colors[id % 10]

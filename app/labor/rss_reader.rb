@@ -69,7 +69,7 @@ class RssReader
       published_from_feed: true,
       show_comments: true,
       body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
-      organization_id: user.organization_id.present? ? user.organization_id : nil,
+      organization_id: user.organization_id.present? ? user.organization_id : nil
     }
     article = Article.create!(article_params)
     SlackBot.delay.ping(
