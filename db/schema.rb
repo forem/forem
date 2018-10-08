@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181005180705) do
+ActiveRecord::Schema.define(version: 20181005200827) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -306,6 +306,9 @@ ActiveRecord::Schema.define(version: 20181005180705) do
     t.integer "reporter_id"
     t.string "status", default: "Open"
     t.datetime "updated_at"
+    t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
+    t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
+    t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
