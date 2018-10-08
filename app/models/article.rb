@@ -14,6 +14,7 @@ class Article < ApplicationRecord
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
   has_many :comments,       as: :commentable
+  has_many :buffer_updates
   has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
@@ -27,11 +28,11 @@ class Article < ApplicationRecord
             url: { allow_blank: true, no_local: true, schemes: ["https", "http"] },
             uniqueness: { allow_blank: true }
   # validates :description, length: { in: 10..170, if: :published? }
-  validates :body_markdown, uniqueness: { scope: :user_id }
+  validates :body_markdown, uniqueness: { scope: [:user_id, :title] }
   validate :validate_tag
   validate :validate_video
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
-  validates :cached_tag_list, length: { maximum: 64 }
+  validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :video, url: { allow_blank: true, schemes: ["https", "http"] }
@@ -46,7 +47,7 @@ class Article < ApplicationRecord
   before_save       :set_all_dates
   before_save       :calculate_base_scores
   before_save       :set_caches
-  after_save        :async_score_calc
+  after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
@@ -80,7 +81,7 @@ class Article < ApplicationRecord
     :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
     :published_from_feed, :crossposted_at, :published_at, :featured_number,
     :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-    :email_digest_eligible)
+    :email_digest_eligible, :processed_html)
   }
 
   scope :boosted_via_additional_articles, -> {
@@ -101,14 +102,11 @@ class Article < ApplicationRecord
                 :featured, :published, :published_at, :featured_number,
                 :comments_count, :reactions_count, :positive_reactions_count,
                 :path, :class_name, :user_name, :user_username, :comments_blob,
-                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date
+                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
-      end
-      attribute :flare_tag do
-        FlareTag.new(self).tag_hash
       end
       tags do
         [tag_list,
@@ -134,7 +132,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date
+        :readable_publish_date, :flare_tag
       attribute :published_at_int do
         published_at.to_i
       end
@@ -142,9 +140,6 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
-      end
-      attribute :flare_tag do
-        FlareTag.new(self).tag_hash
       end
       tags do
         [tag_list,
@@ -293,9 +288,8 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    return if body_markdown.blank?
     begin
-      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
+      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed_markdown = MarkdownParser.new(parsed.content)
       self.processed_html = parsed_markdown.finalize
@@ -313,6 +307,10 @@ class Article < ApplicationRecord
 
   def class_name
     self.class.name
+  end
+
+  def flare_tag
+    FlareTag.new(self).tag_hash
   end
 
   def update_main_image_background_hex
@@ -340,12 +338,6 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch("find-article-by-id-#{id}", expires_in: 5.hours) do
-      find(id)
-    end
-  end
-
   def self.seo_boostable(tag = nil)
     keyword_paths = SearchKeyword.
       where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",
@@ -362,9 +354,10 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
+    update_column(:score, reactions.sum(:points))
     update_column(:hotness_score, BlackBox.article_hotness_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if published && tag_list.exclude?("hiring")
+    index! if tag_list.exclude?("hiring")
   end
   handle_asynchronously :async_score_calc
 
@@ -414,7 +407,7 @@ class Article < ApplicationRecord
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
     tag_list.each do |tag|
       if tag.length > 20
-        errors.add(:tag, "\"#{tag}\" is too long (maximum is 16 characters)")
+        errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)")
       end
     end
   end

@@ -1,6 +1,6 @@
 class UserPolicy < ApplicationPolicy
   def edit?
-    user == record
+    current_user?
   end
 
   def onboarding_update?
@@ -8,7 +8,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    user == record
+    current_user?
+  end
+
+  def destroy?
+    current_user?
   end
 
   def join_org?
@@ -31,8 +35,12 @@ class UserPolicy < ApplicationPolicy
     user.org_admin && not_self? && within_the_same_org?
   end
 
+  def remove_association?
+    current_user?
+  end
+
   def dashboard_show?
-    current_user? || user_is_admin?
+    current_user? || user_admin?
   end
 
   def moderation_routes?
@@ -56,6 +64,7 @@ class UserPolicy < ApplicationPolicy
        email_follower_notifications
        email_membership_newsletter
        email_mention_notifications
+       email_connect_messages
        email_newsletter
        email_public
        email_unread_notifications

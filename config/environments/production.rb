@@ -37,7 +37,7 @@ Rails.application.configure do
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
   config.public_file_server.headers = {
-    "Cache-Control" => "public, s-maxage=2592000, max-age=86400",
+    "Cache-Control" => "public, s-maxage=2592000, max-age=86400"
   }
 
   # Compress JavaScripts and CSS.
@@ -127,7 +127,7 @@ Rails.application.configure do
     user_name: ENV["SENDGRID_USERNAME_ACCEL"],
     password: ENV["SENDGRID_PASSWORD_ACCEL"],
     domain: "dev.to",
-    enable_starttls_auto: true,
+    enable_starttls_auto: true
   }
 
   config.middleware.use Rack::HostRedirect,

@@ -83,4 +83,38 @@ RSpec.describe MarkdownParser do
       expect(generate_and_parse_markdown(inline_code)).to include("<a")
     end
   end
+
+  context "when using Liquid variables" do
+    it "prevents Liquid variables" do
+      expect { generate_and_parse_markdown("{{ 'something' }}") }.to raise_error(StandardError)
+    end
+
+    it "allows Liquid variables in codeblocks" do
+      expect { generate_and_parse_markdown("```\n{{ 'something' }}\n```") }.not_to raise_error
+    end
+
+    it "renders the text in the codeblock properly" do
+      result = generate_and_parse_markdown("```\n{{ 'something' }}\n```")
+      expect(result).to include("{{ 'something' }}")
+    end
+
+    it "allows Liquid variables within inline code" do
+      expect { generate_and_parse_markdown("`{{ 'something' }}`") }.not_to raise_error
+    end
+
+    it "renders the inline code with the text properly" do
+      result = generate_and_parse_markdown("`{{ 'something' }}`")
+      expect(result).to include("{{ 'something' }}")
+    end
+
+    it "renders nested lists without linebreaks" do
+      result = generate_and_parse_markdown("- [A](#a)\n  - [B](#b)\n- [C](#c)")
+      expect(result).not_to include("<br>")
+    end
+
+    it "permits abbr and aside tags" do
+      result = generate_and_parse_markdown("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
+      expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
+    end
+  end
 end

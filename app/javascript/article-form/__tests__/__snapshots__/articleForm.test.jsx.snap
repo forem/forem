@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ArticleForm /> renders properly 1`] = `
+<form
+  class="articleform__form"
+>
+  <div>
+    <input
+      autocomplete="off"
+      class="articleform__title"
+      id="article-form-title"
+      onChange={[Function]}
+      placeholder="Title"
+      type="text"
+      value=""
+    />
+    <div
+      class="articleform__detailfields"
+    >
+      <div
+        class="articleform__tagswrapper"
+      >
+        <textarea
+          class="articleform__tags"
+          id="tag-input"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          onInput={[Function]}
+          onKeyDown={[Function]}
+          placeholder="tags"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="articleform__imageButton"
+        onClick={[Function]}
+      >
+        <img
+          src=""
+        />
+         IMAGES
+      </button>
+    </div>
+    <textarea
+      class="articleform__body"
+      id="article_body_markdown"
+      name="body_markdown"
+      onChange={[Function]}
+      placeholder="Body"
+      ref={[Function]}
+      style={
+        Object {
+          "height": 0,
+        }
+      }
+      value=""
+    />
+  </div>
+  <div
+    class="articleform__buttons"
+  >
+    <button
+      class="articleform__buttons--small inactive"
+      onClick={[Function]}
+    >
+      ?
+    </button>
+    <button
+      class="inactive"
+      onClick={[Function]}
+    >
+      PREVIEW
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      SAVE DRAFT
+    </button>
+    <button
+      class="articleform__buttons--publish"
+      onClick={[Function]}
+    >
+      PUBLISH
+    </button>
+  </div>
+</form>
+`;

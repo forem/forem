@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
 
 <% if user_signed_in? %>
-  <%= javascript_pack_tag 'chat', defer: true %>
+  <%= javascript_pack_tag 'Chat', defer: true %>
   <div class="chat-page-wrapper">
     <div
       id="chat"
@@ -43,5 +43,8 @@
   #page-content {max-height:100vh}
 </style>
 <script>
+  if (navigator.userAgent.match(/iPhone/i) && !navigator.userAgent.match('CriOS')) {
+    document.getElementById("chat").classList.add("live-chat--iossafari")
+  }
   window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ApplicationConfig['VAPID_PUBLIC_KEY']).bytes %>);
 </script>

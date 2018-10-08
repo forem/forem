@@ -72,17 +72,43 @@ RSpec.describe NotifyMailer, type: :mailer do
       end
     end
 
-    describe "#new_report_email" do
+    describe "#new_feedback_message_resolution_email" do
+      def params(user_email, feedback_message_id)
+        {
+          email_to: user_email,
+          email_subject: "dev.to Status Update",
+          email_body: "You've violated our code of conduct",
+          email_type: "Reporter",
+          feedback_message_id: feedback_message_id
+        }
+      end
+
       it "renders proper subject" do
         feedback_message = create(:feedback_message, :abuse_report, reporter_id: user.id)
-        new_report_email = described_class.new_report_email(feedback_message)
-        expect(new_report_email.subject).to eq("Thank you for your report")
+        feedback_message_resolution_email = described_class.
+          feedback_message_resolution_email(params(user.email, feedback_message.id))
+        expect(feedback_message_resolution_email.subject).to eq "dev.to Status Update"
       end
 
       it "renders proper receiver" do
         feedback_message = create(:feedback_message, :abuse_report, reporter_id: user.id)
-        new_report_email = described_class.new_report_email(feedback_message)
-        expect(new_report_email.to).to eq([user.email])
+        feedback_message_resolution_email = described_class.
+          feedback_message_resolution_email(params(user.email, feedback_message.id))
+        expect(feedback_message_resolution_email.to).to eq [user.email]
+      end
+    end
+
+    describe "#account_deleted_email" do
+      let(:user) { create(:user) }
+
+      it "renders proper subject" do
+        account_deleted_email = described_class.account_deleted_email(user)
+        expect(account_deleted_email.subject).to eq "dev.to - Account Deletion Confirmation"
+      end
+
+      it "renders proper receiver" do
+        account_deleted_email = described_class.account_deleted_email(user)
+        expect(account_deleted_email.to).to eq [user.email]
       end
     end
   end

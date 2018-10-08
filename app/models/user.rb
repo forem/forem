@@ -1,7 +1,8 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email
+  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship
+
   rolify
   include AlgoliaSearch
   include Storext.model
@@ -12,17 +13,18 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
-  has_many    :articles
+  has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
   has_many    :collections, dependent: :destroy
-  has_many    :comments
+  has_many    :comments, dependent: :destroy
   has_many    :email_messages, class_name: "Ahoy::Message"
   has_many    :github_repos, dependent: :destroy
   has_many    :identities, dependent: :destroy
   has_many    :mentions, dependent: :destroy
-  has_many    :messages
+  has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable
+  has_many    :authored_notes, as: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
   has_many    :tweets, dependent: :destroy
@@ -30,6 +32,16 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many :mentor_relationships_as_mentee,
+  class_name: "MentorRelationship", foreign_key: "mentee_id"
+  has_many :mentor_relationships_as_mentor,
+  class_name: "MentorRelationship", foreign_key: "mentor_id"
+  has_many :mentors,
+  through: :mentor_relationships_as_mentee,
+  source: :mentor
+  has_many :mentees,
+  through: :mentor_relationships_as_mentor,
+  source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -53,25 +65,25 @@ class User < ApplicationRecord
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  # rubocop:disable Metrics/LineLength
   validates :facebook_url,
-              format: /
-              \A(http|https):\/\/(www.facebook.com|facebook.com)
-              .*\z/x,
+              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/[a-zA-Z0-9.]{5,50}\/?\Z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
-              format: /
-              \A(http|https):\/\/(www.stackoverflow.com|stackoverflow.com)
-              .*\z/x
+              format:
+              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/([\S]{3,100})\Z/
   validates :behance_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.behance.net|behance.net).*\z/m
+              format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\/?\Z/
   validates :linkedin_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.linkedin.com|linkedin.com).*\z/m
+              format:
+                /\Ahttps:\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/in\/([a-zA-Z0-9\-]{3,100})\/?\Z/
   validates :dribbble_url,
               allow_blank: true,
-              format: /\A(http|https):\/\/(www.dribbble.com|dribbble.com).*\z/m
+              format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
+  # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
@@ -90,10 +102,14 @@ class User < ApplicationRecord
               allow_blank: true
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
-            :employment_title, :education, :location,
-            length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, :mentee_description, :mentor_description,
-            length: { maximum: 500 }
+              length: { maximum: 100 }
+  validates :employment_title, :education, :location,
+              length: { maximum: 100 }
+  validates :mostly_work_with, :currently_learning,
+            :currently_hacking_on, :available_for,
+                length: { maximum: 500 }
+  validates :mentee_description, :mentor_description,
+              length: { maximum: 1000 }
   validate  :conditionally_validate_summary
   validate  :validate_feed_url
   validate  :unique_including_orgs
@@ -103,8 +119,7 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
-  before_update :mentor_status_update
-  before_update :mentee_status_update
+  before_update :mentorship_status_update
   before_validation :set_username
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -121,7 +136,7 @@ class User < ApplicationRecord
       attribute :user do
         { username: user.username,
           name: user.username,
-          profile_image_90: ProfileImage.new(user).get(90) }
+          profile_image_90: profile_image_90 }
       end
       attribute :title, :path, :tag_list, :main_image, :id,
         :featured, :published, :published_at, :featured_number, :comments_count,
@@ -196,7 +211,11 @@ class User < ApplicationRecord
   end
 
   def cached_following_users_ids
-    Rails.cache.fetch("user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids", expires_in: 120.hours) do
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
+      expires_in: 120.hours,
+    ) do
+
       # More efficient query. May not cover future edge cases.
       # Should probably only return users who have published lately
       # But this should be okay for most for now.
@@ -245,6 +264,10 @@ class User < ApplicationRecord
 
   def warned
     has_role? :warned
+  end
+
+  def banned_from_mentorship
+    has_role? :banned_from_mentorship
   end
 
   def admin?
@@ -319,17 +342,22 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = ["Profile",
-                "Mentorship",
-                "Integrations",
-                "Notifications",
-                "Publishing from RSS",
-                "Organization",
-                "Billing"]
+    tab_list = %w(
+      Profile
+      Mentorship
+      Integrations
+      Notifications
+      Publishing\ from\ RSS
+      Organization
+      Billing
+    )
     tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list << "Misc"
-    tab_list
+    tab_list.push("Account", "Misc")
+  end
+
+  def profile_image_90
+    ProfileImage.new(self).get(90)
   end
 
   private
@@ -376,6 +404,10 @@ class User < ApplicationRecord
       chat_channels.find_each do |c|
         c.slug = c.slug.gsub(username_was, username)
         c.save
+      end
+      articles.find_each do |a|
+        a.path = a.path.gsub(username_was, username)
+        a.save
       end
     end
   end
@@ -459,7 +491,9 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.sanitize(comments.last(2).pluck(:body_markdown).join(" "))[0..2500]
+    ActionView::Base.full_sanitizer.sanitize(
+      comments.last(2).pluck(:body_markdown).join(" "),
+    )[0..2500]
   end
 
   def body_text
@@ -478,12 +512,15 @@ class User < ApplicationRecord
   end
 
   def search_score
-    score = (((articles_count + comments_count + reactions_count) * 10) + tag_keywords_for_search.size) * reputation_modifier * followers_count
+    article_score = (articles_count + comments_count + reactions_count) * 10
+    score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
   end
 
   def remove_from_algolia_index
     remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
   end
 
   def destroy_empty_dm_channels
@@ -500,13 +537,11 @@ class User < ApplicationRecord
     follows.destroy_all
   end
 
-  def mentor_status_update
+  def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
       self.mentor_form_updated_at = Time.now
     end
-  end
 
-  def mentee_status_update
     if mentee_description_changed? || seeking_mentorship_changed?
       self.mentee_form_updated_at = Time.now
     end

@@ -15,7 +15,7 @@ class BadgeDashboard < Administrate::BaseDashboard
     description: Field::String,
     badge_image: CarrierwaveField,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

@@ -4,12 +4,12 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
     session: "sessions",
-    registrations: "registrations",
+    registrations: "registrations"
   }
 
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", :as => :new_user_registration_path
+    get "/enter" => "registrations#new", as: :new_user_registration_path
   end
 
   namespace :admin do
@@ -27,17 +27,27 @@ Rails.application.routes.draw do
     resources :tags
     resources :welcome, only: %i[index create]
     resources :broadcasts
-    resources :users
+    resources :users do
+      member do
+        post "banish"
+      end
+    end
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: [:create]
     resources :articles, only: %i[index update] do
-      get "rss_articles", to: :rss_articles, on: :collection
+      get "rss_articles", on: :collection
     end
     resources :members, only: [:index]
     resources :events
-    resources :feedback_messages, only: [:update]
-    resources :reports, only: %i[index update], controller: "feedback_messages"
+    resources :feedback_messages, only: %i[update show]
+    resources :reports, only: %i[index update show], controller: "feedback_messages" do
+      collection do
+        post "send_email"
+        post "create_note"
+        post "save_status"
+      end
+    end
     mount Flipflop::Engine => "/features"
   end
 
@@ -128,31 +138,31 @@ Rails.application.routes.draw do
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
   get "/hello-goodbye-to-the-go-go-go",
-    to: redirect("ben/hello-goodbye-to-the-go-go-go")
+      to: redirect("ben/hello-goodbye-to-the-go-go-go")
   get "/dhh-on-the-future-of-rails",
-  to: redirect("ben/dhh-on-the-future-of-rails")
+      to: redirect("ben/dhh-on-the-future-of-rails")
   get "/christopher-chedeau-on-the-philosophies-of-react",
-  to: redirect("ben/christopher-chedeau-on-the-philosophies-of-react")
+      to: redirect("ben/christopher-chedeau-on-the-philosophies-of-react")
   get "/javascript-fatigue-buzzword",
-  to: redirect("ben/javascript-fatigue-buzzword")
+      to: redirect("ben/javascript-fatigue-buzzword")
   get "/chris-seaton-making-ruby-fast",
-  to: redirect("ben/chris-seaton-making-ruby-fast")
+      to: redirect("ben/chris-seaton-making-ruby-fast")
   get "/communicating-intent-the-perpetually-misunderstood-ruby-bang",
-  to: redirect("tom/communicating-intent-the-perpetually-misunderstood-ruby-bang")
+      to: redirect("tom/communicating-intent-the-perpetually-misunderstood-ruby-bang")
   get "/quick-tip-grepping-rails-routes",
-  to: redirect("tom/quick-tip-grepping-rails-routes")
+      to: redirect("tom/quick-tip-grepping-rails-routes")
   get "/use-cases-for-githubs-new-direct-upload-feature",
-  to: redirect("ben/use-cases-for-githubs-new-direct-upload-feature")
+      to: redirect("ben/use-cases-for-githubs-new-direct-upload-feature")
   get "/this-blog-post-was-written-using-draft-js",
-  to: redirect("ben/this-blog-post-was-written-using-draft-js")
+      to: redirect("ben/this-blog-post-was-written-using-draft-js")
   get "/the-future-of-software-development",
-  to: redirect("ben/the-future-of-software-development")
+      to: redirect("ben/the-future-of-software-development")
   get "/the-zen-of-missing-out-on-the-next-great-programming-tool",
-  to: redirect("ben/the-zen-of-missing-out-on-the-next-great-programming-tool")
+      to: redirect("ben/the-zen-of-missing-out-on-the-next-great-programming-tool")
   get "/the-joy-and-benefit-of-being-an-early-adopter-in-programming",
-  to: redirect("ben/the-joy-and-benefit-of-being-an-early-adopter-in-programming")
+      to: redirect("ben/the-joy-and-benefit-of-being-an-early-adopter-in-programming")
   get "/watkinsmatthewp/every-developer-should-write-a-personal-automation-api",
-  to: redirect("anotherdevblog/every-developer-should-write-a-personal-automation-api")
+      to: redirect("anotherdevblog/every-developer-should-write-a-personal-automation-api")
 
   # Settings
   post "users/join_org" => "users#join_org"
@@ -160,6 +170,8 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
+  delete "users/remove_association", to: "users#remove_association"
+  delete "users/destroy", to: "users#destroy"
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
 
   # The priority is based upon order of creation: first created -> highest priority.
@@ -174,7 +186,6 @@ Rails.application.routes.draw do
   get "/rlygenerator" => "pages#generator"
   get "/orlygenerator" => "pages#generator"
   get "/rlyslack" => "pages#generator"
-  get "/rlytest" => "pages#rlytest"
   get "/rlyweb" => "pages#rlyweb"
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
@@ -186,7 +197,7 @@ Rails.application.routes.draw do
   get "/welcome" => "pages#welcome"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
-  get "/survey", to: "pages#survey"
+  get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/now" => "pages#now"
   get "/membership" => "pages#membership"
   get "/events" => "events#index"
@@ -206,8 +217,8 @@ Rails.application.routes.draw do
   post "/fallback_activity_recorder" => "ga_events#create"
 
   scope "p" do
-    pages_actions = %w(rly rlyweb welcome twitter_moniter editor_guide information
-                       markdown_basics scholarships wall_of_patrons membership_form badges)
+    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide information
+                       markdown_basics scholarships wall_of_patrons membership_form badges]
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
     end
@@ -218,12 +229,12 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|user_followers|following_users|reading/,
+        which: /organization|user_followers|following_users|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 
   # for testing rails mailers
-  if !Rails.env.production?
+  unless Rails.env.production?
     get "/rails/mailers" => "rails/mailers#index"
     get "/rails/mailers/*path" => "rails/mailers#preview"
   end
@@ -234,10 +245,10 @@ Rails.application.routes.draw do
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
 
-  get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
+  get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/:username" => "articles#feed",
-      :as => "user_feed", :defaults => { format: "rss" }
-  get "/rss" => "articles#feed", :defaults => { format: "rss" }
+      as: "user_feed", defaults: { format: "rss" }
+  get "/rss" => "articles#feed", defaults: { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
   get "/t/:tag" => "stories#index"

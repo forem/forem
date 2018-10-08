@@ -22,7 +22,7 @@ class EmailMessageDashboard < Administrate::BaseDashboard
     utm_campaign: Field::String,
     sent_at: Field::DateTime,
     opened_at: Field::DateTime,
-    clicked_at: Field::DateTime,
+    clicked_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -61,8 +61,7 @@ class EmailMessageDashboard < Administrate::BaseDashboard
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
-  FORM_ATTRIBUTES = [
-  ].freeze
+  FORM_ATTRIBUTES = [].freeze
 
   # Overwrite this method to customize how messages are displayed
   # across all pages of the admin dashboard.

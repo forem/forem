@@ -1,4 +1,8 @@
 @import 'variables';
+html {
+  overflow-y:scroll;
+}
+
 body {
   background: $lightest-gray;
   color: $black;

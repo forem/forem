@@ -82,7 +82,7 @@ class CommentsController < ApplicationController
                         name: current_user.name,
                         profile_pic: ProfileImage.new(current_user).get(50),
                         twitter_username: current_user.twitter_username,
-                        github_username: current_user.github_username,
+                        github_username: current_user.github_username
                       } }
     elsif @comment = Comment.where(body_markdown: @comment.body_markdown,
                                    commentable_id: @comment.commentable.id,
@@ -100,9 +100,9 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     authorize @comment
-    if @comment.update(permitted_attributes(@comment).merge(edited_at: DateTime.now))
+    if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
+      redirect_to @comment.path, notice: "Comment was successfully updated."
     else
       @commentable = @comment.commentable
       render :edit

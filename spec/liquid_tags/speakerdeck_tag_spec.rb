@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe SpeakerdeckTag, type: :liquid_template do
   describe "#id" do
-    let(:valid_id)      { "BXgGcAUjM39" }
+    let(:valid_id)      { "7e9f8c0fa0c949bd8025457181913fd0" }
     let(:invalid_id)    { "blahblahblahbl sdsdssd // dsdssd" }
 
     def generate_tag(id)

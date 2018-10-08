@@ -21,7 +21,7 @@ class Comment < ApplicationRecord
   after_save     :calculate_score
   after_save     :bust_cache
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification
+  after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count
@@ -70,7 +70,7 @@ class Comment < ApplicationRecord
           profile_pic: ProfileImage.new(user).get(90),
           profile_image_90: ProfileImage.new(user).get(90),
           github_username: user.github_username,
-          twitter_username: user.twitter_username,
+          twitter_username: user.twitter_username
         }
       end
       attribute :commentable do
@@ -78,7 +78,7 @@ class Comment < ApplicationRecord
           path: commentable&.path,
           title: commentable&.title,
           tag_list: commentable&.tag_list,
-          id: commentable&.id,
+          id: commentable&.id
         }
       end
       tags do
@@ -93,13 +93,20 @@ class Comment < ApplicationRecord
   def self.trigger_delayed_index(record, remove)
     if remove
       record.delay.remove_from_index! if record&.persisted?
+    elsif record.deleted == false
+      record.delay.index!
     else
-      if record.deleted == false
-        record.delay.index!
-      else
-        record.remove_algolia_index
-      end
+      record.remove_algolia_index
     end
+  end
+
+  def self.users_with_number_of_comments(user_ids, before_date)
+    joins(:user).
+      select("users.username, COUNT(comments.user_id) AS number_of_comments").
+      where(user_id: user_ids).
+      where(arel_table[:created_at].gt(before_date)).
+      group(User.arel_table[:username]).
+      order("number_of_comments DESC")
   end
 
   def remove_algolia_index
@@ -148,20 +155,14 @@ class Comment < ApplicationRecord
   # notifications
 
   def activity_notify
-    if ancestors.empty? && user != commentable.user
-      [StreamNotifier.new(commentable.user.id).notify]
-    elsif ancestors
-      # notify all ancestors unless it's yourself
-      user_ids = ancestors.map(&:user_id).uniq - [user_id]
-      user_ids.map do |id|
-        StreamNotifier.new(id).notify
-      end
-    end
+    user_ids = ancestors.map(&:user_id).to_set
+    user_ids.add(commentable.user.id) if user_ids.empty?
+    user_ids.delete(user_id).map { |id| StreamNotifier.new(id).notify }
   end
 
   def custom_css
-    MarkdownParser.new(body_markdown).tags_used.map do |t|
-      Rails.application.assets["ltags/#{t}.css"].to_s
+    MarkdownParser.new(body_markdown).tags_used.map do |tag|
+      Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
   end
 
@@ -220,7 +221,7 @@ class Comment < ApplicationRecord
         subject_name: commentable.title,
         user_image_link: user_image_link,
         background_color: user.bg_color_hex,
-        text_color: user.text_color_hex,
+        text_color: user.text_color_hex
       },
     )
   end
@@ -320,13 +321,15 @@ class Comment < ApplicationRecord
   handle_asynchronously :async_bust
 
   def send_email_notification
-    NotifyMailer.new_reply_email(self).deliver if parent_email_exist?
+    NotifyMailer.new_reply_email(self).deliver
   end
   handle_asynchronously :send_email_notification
 
-  def parent_email_exist?
-    parent_user && parent_user.email.present? &&
-      parent_user.email_comment_notifications
+  def should_send_email_notification?
+    parent_user.class.name != "Podcast" &&
+      parent_user != user &&
+      parent_user.email_comment_notifications &&
+      parent_user.email
   end
 
   def strip_url(url)

@@ -5,11 +5,10 @@ class CacheBuster
 
   def bust(path)
     return unless Rails.env.production?
-    request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
+    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
     headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    request = HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
+    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
     headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    request
   end
 
   def bust_comment(comment)
@@ -44,7 +43,7 @@ class CacheBuster
     bust(article.path + "/?i=i")
     bust(article.path + "/comments")
     bust(article.path + "?preview=" + article.password)
-    bust(article.path + "?preview=" + article.password + "?i=i")
+    bust(article.path + "?preview=" + article.password + "&i=i")
     if article.organization.present?
       bust("/#{article.organization.slug}")
     end
@@ -65,13 +64,13 @@ class CacheBuster
     end
     TIMEFRAMES.each do |timeframe|
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
-          order("positive_reactions_count DESC").limit(4).pluck(:id).include?(article.id)
+          order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
         bust("/top/#{timeframe[1]}")
         bust("/top/#{timeframe[1]}?i=i")
         bust("/top/#{timeframe[1]}/?i=i")
       end
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
-          order("hotness_score DESC").limit(3).pluck(:id).include?(article.id)
+          order("hotness_score DESC").limit(2).pluck(:id).include?(article.id)
         bust("/")
         bust("?i=i")
       end
@@ -95,6 +94,9 @@ class CacheBuster
           bust("/top/#{timeframe[1]}")
           bust("/top/#{timeframe[1]}?i=i")
           bust("/top/#{timeframe[1]}/?i=i")
+          12.times do |i|
+            bust("/api/articles?tag=#{tag}&top=#{i}")
+          end
         end
         if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
             order("hotness_score DESC").limit(3).pluck(:id).include?(article.id)

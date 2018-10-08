@@ -27,7 +27,9 @@ class Role < ApplicationRecord
                 workshop_pass
                 video_permission
                 chatroom_beta_tester
-              ),
+                banned_from_mentorship
+                comment_banned
+              )
             }
   scopify
 end

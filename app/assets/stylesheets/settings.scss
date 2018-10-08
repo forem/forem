@@ -199,13 +199,41 @@
           padding:14px 0px;
           margin-top:20px;
           font-size:1.8em;
-          cursor:pointer;
+          cursor: pointer;
           &.danger-button {
             background:$red;
           }
           &:hover {
             opacity:0.88;
           }
+        }
+      }
+      button {
+        width: 100px;
+        padding: 3px 0px;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-radius: 3px;
+        border: 0;
+        &:hover {
+          opacity: 0.88;
+        }
+        cursor: pointer;
+        &.danger-button {
+          background-color: $red;
+          color: $off-white;
+        }
+        &:disabled {
+          background-color: $light-medium-gray;
+          &:hover {
+            opacity: 1.0;
+            cursor: not-allowed;
+          }
+        }
+        img {
+          vertical-align:-3px;
+          height: 1.2em;
+          width: 1.2em;
         }
       }
       .image-present {
@@ -467,4 +495,10 @@
   margin-top: 10px;
   position: initial;
   font-size: 1.2em;
+}
+
+ul.delete__account{
+  li{
+    padding-bottom: 5px;
+  }
 }

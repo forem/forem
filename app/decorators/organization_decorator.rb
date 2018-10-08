@@ -9,12 +9,12 @@ class OrganizationDecorator < ApplicationDecorator
     if bg_color_hex.blank?
       {
         bg: assigned_color[:bg],
-        text: assigned_color[:text],
+        text: assigned_color[:text]
       }
     else
       {
         bg: bg_color_hex || assigned_color[:bg],
-        text: text_color_hex || assigned_color[:text],
+        text: text_color_hex || assigned_color[:text]
       }
     end
   end
@@ -22,7 +22,7 @@ class OrganizationDecorator < ApplicationDecorator
   def assigned_color
     {
       bg: "#0a0a0a",
-      text: "#ffffff",
+      text: "#ffffff"
     }
   end
 end

@@ -42,8 +42,4 @@ RSpec.describe FeedbackMessage, type: :model do
         in_array(["spam", "other", "rude or vulgar", "harassment", "bug"])
     end
   end
-
-  it "always generates a slug" do
-    expect(abuse_report.slug).not_to be_nil
-  end
 end

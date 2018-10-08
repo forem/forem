@@ -96,7 +96,7 @@ RSpec.describe "Reactions", type: :request do
       {
         reactable_id: article.id,
         reactable_type: "Article",
-        category: "like",
+        category: "like"
       }
     end
 

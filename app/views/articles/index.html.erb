@@ -124,12 +124,12 @@
         </style>
         <p class="social">
           <% if @user.twitter_username.present? %>
-            <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
+            <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
               <%= inline_svg("twitter-logo.svg", class:"icon-img") %>
             </a>
           <% end %>
           <% if @user.github_username.present? %>
-            <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
+            <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
               <%= inline_svg("github-logo.svg", class:"icon-img") %>
             </a>
           <% end %>
@@ -313,9 +313,9 @@
       </div>
     <% end %>
     <% if @user.blank? && @tag.blank? && @featured_story.id %>
-      <div id="featured-story-marker"></div>
+      <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
       <img src="<%=cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>"/>
-      <a href="<%=@featured_story.path%>" id="article-link-<%=@featured_story.id%>" class="index-article-link" aria-label="Main Story">
+      <a href="<%=@featured_story.path%>" id="article-link-<%=@featured_story.id%>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
         <div class="single-article big-article">
           <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%=cloud_cover_url(@featured_story.main_image)%>)"></div>
           <div class="content-wrapper">
@@ -334,7 +334,7 @@
           </div>
           <% if @featured_story.comments_count > 0 %>
             <div class="article-engagement-count comments-count featured-engagement-count">
-              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
+              <a href="<%=@featured_story.path%>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
                 <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
               </a>
             </div>
