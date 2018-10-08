@@ -139,6 +139,7 @@ class Tags extends Component {
     return this.index
       .search(query, {
         hitsPerPage: 10,
+        attributesToHighlight: [],
         filters: 'supported:true',
       })
       .then(content => {
