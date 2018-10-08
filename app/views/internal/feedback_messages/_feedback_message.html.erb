@@ -1,3 +1,4 @@
+<% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
 <div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
@@ -6,7 +7,7 @@
           Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
         </a>
         <div class="panel-right-elements">
-          ✉️ Emails Sent: <%= feedback_message.email_messages.count %> |
+          ✉️ Emails Sent: <%= feedback_message_emails.count %> |
           <a href="/internal/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
         </div>
       </h2>
@@ -41,7 +42,7 @@
     <hr>
       <h3>Previous Emails:</h3>
       <div class="previous__emails__container">
-        <% @email_messages.select { |email| email.feedback_message_id == feedback_message.id }.each do |email| %>
+        <% feedback_message_emails.each do |email| %>
         <div class="email__container">
           <p class="to__subject">Type: <%= email.utm_campaign.capitalize %></p>
           <p class="to__subject">To: <%= email.to %></p>
