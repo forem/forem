@@ -450,6 +450,7 @@ GEM
     fugit (1.1.6)
       et-orbi (~> 1.1, >= 1.1.6)
       raabro (~> 1.1)
+    gemoji (3.0.0)
     get_process_mem (0.2.3)
     gibbon (2.2.5)
       faraday (>= 0.9.1)
@@ -963,6 +964,7 @@ DEPENDENCIES
   fix-db-schema-conflicts!
   fog (~> 1.41)
   front_matter_parser (~> 0.2)
+  gemoji (~> 3.0.0)
   gibbon (~> 2.2)
   google-api-client (~> 0.27)
   guard (~> 2.15)
