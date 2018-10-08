@@ -1,7 +1,7 @@
 <% title "New Post" %>
 
 <% if user_signed_in? %>
-  <% if params[:state] == "v2" || current_user.editor_version == "v2" || (Rails.env.development? && params[:state] != "v1") %>
+  <% if current_user.editor_version == "v2" %>
     <%= javascript_pack_tag 'articleForm', defer: true %>
     <%= render 'articles/v2_form' %>
   <% else %>
