@@ -216,7 +216,7 @@ GEM
     crass (1.0.4)
     csv_shaper (1.3.0)
       activesupport (>= 3.0.0)
-    dalli (2.7.6)
+    dalli (2.7.8)
     dante (0.2.0)
     database_cleaner (1.7.0)
     datetime_picker_rails (0.0.7)
