@@ -12,7 +12,7 @@
     <form class="articleform__form">
     <% if @organization %>
       <div class="articleform__orgsettings">
-        <img src=<%= @organization.profile_image_90 %> />
+        <img src=<%= @organization.profile_image_90 %> style="opacity: <%= @article.organization ? "1.0" : "0.7" %>" />
         <%= @organization.name %> <button class="<%= @article.organization ? "yes" : "no" %>"><%= @article.organization ? "✅ YES" : "◻️ NO" %></button>
       </div>
     <% end %>
