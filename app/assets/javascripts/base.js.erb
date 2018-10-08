@@ -622,10 +622,36 @@ var instantClick
     triggerPageEvent('change', true)
 
     addEventListener('popstate', popstateListener)
+    addRefreshBehavior();
   }
 
   function on(eventType, callback) {
     $eventsCallbacks[eventType].push(callback)
+  }
+
+  function addRefreshBehavior(){
+    if (!("ontouchstart" in document.documentElement)) {
+      return
+    }
+
+    var script = document.createElement('script');
+    script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
+    document.head.appendChild(script);
+    var waitingOnPTR = setInterval(function(){
+      if (typeof PullToRefresh !== 'undefined') {
+        var ptr = PullToRefresh.init({
+          mainElement: 'body',
+          passive: true,
+          onRefresh: function(){
+            $fetchedBodies = {}
+            var url = window.location.href
+            preload(url)
+            display(url)
+            }
+         });
+         clearInterval(waitingOnPTR)
+      }
+    }, 1)
   }
 
 

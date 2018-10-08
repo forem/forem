@@ -40,14 +40,19 @@ class ArticlesController < ApplicationController
 
   def new
     @user = current_user
+    @organization = @user&.organization
     @tag = Tag.find_by_name(params[:template])
-    @article = if @tag&.submission_template.present? && @user
+    @article = if @tag.present? && @user&.editor_version == "v2"
+                 authorize Article
+                 Article.new(body_markdown: "", cached_tag_list: @tag.name,
+                   processed_html: "")
+               elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
                              processed_html: "")
                else
                  skip_authorization
-                 if params[:state] == "v2" || Rails.env.development?
+                 if @user&.editor_version == "v2"
                    Article.new
                  else
                    Article.new(
@@ -61,6 +66,7 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
+    @organization = @user&.organization
   end
 
   def preview

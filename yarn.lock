@@ -328,9 +328,9 @@
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.1.3.tgz#3920a5aea6ebe1ac434b4dfe17430d3c1035dcc2"
 
-"@webscopeio/react-textarea-autocomplete@^2.2.0":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.3.tgz#a691c0f26bff65fbf20cabddb7a23a770f5ca47b"
+"@webscopeio/react-textarea-autocomplete@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.4.tgz#f6eaadff8a4683ff9302c90637eb071df4bccbef"
   dependencies:
     custom-event "^1.0.1"
     textarea-caret "3.0.2"
@@ -2185,7 +2185,7 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-codemirror@^5.40.2:
+codemirror@^5.40.0:
   version "5.40.2"
   resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.40.2.tgz#f4a41fee2d84e679543591b3680af259d903330b"
 
@@ -3199,9 +3199,9 @@ eslint-plugin-import@^2.14.0:
     read-pkg-up "^2.0.0"
     resolve "^1.6.0"
 
-eslint-plugin-jsx-a11y@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.1.1.tgz#7bf56dbe7d47d811d14dbb3ddff644aa656ce8e1"
+eslint-plugin-jsx-a11y@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.1.2.tgz#69bca4890b36dcf0fe16dd2129d2d88b98f33f88"
   dependencies:
     aria-query "^3.0.0"
     array-includes "^3.0.3"
@@ -4314,9 +4314,9 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
-husky@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-1.0.1.tgz#749bc6b3a14bdc9cab73d8cc827b92fcd691fac6"
+husky@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/husky/-/husky-1.1.1.tgz#7179043184f68a4d1ffc975cbd1c6132ef1fd7b3"
   dependencies:
     cosmiconfig "^5.0.6"
     execa "^0.9.0"
