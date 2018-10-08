@@ -97,6 +97,9 @@ class User < ApplicationRecord
               inclusion: { in: %w(tabs spaces),
                            message: "%{value} is not a valid answer" },
               allow_blank: true
+  validates :editor_version,
+              inclusion: { in: %w(v1 v2),
+                           message: "%{value} must be either v1 or v2" }
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true

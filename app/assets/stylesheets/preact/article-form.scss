@@ -1,7 +1,10 @@
 @import 'variables';
 
 .articleformcontainer {
-  padding-top: calc(98px + 0.2vw);
+  padding-top: calc(80px + 0.2vw);
+  @media screen and ( min-width: 500px ){
+    padding-top: calc(98px + 0.2vw);
+  }
   padding-bottom: calc(94px + 2vw);
   background: white;
   background: $light-gray;
@@ -115,28 +118,45 @@
   display: inline-block;
   flex-grow: 1;
   float: left;
+  padding-right: 15px;
+  @media screen and ( min-width: 500px ){
+    padding-right: 0px;
+  }
 }
 
 .articleform__tags {
-  height: 19px;
-  width: 94%;
+  height: 60px;
+  width: 96%;
+  border-radius: 3px;
+  padding: 8px 8px 7px;
+  @media screen and ( min-width: 500px ){
+    height: 40px;
+  }
+  @media screen and ( min-width: 600px ){
+    height: 19px;
+    border-radius: 100px;
+    padding-left: 17px;
+  }
   margin-left: -4px;
   resize: none;
   border: 0;
   font-size: 16px;
   font-family: $monospace;
   font-weight: bold;
-  border-radius: 100px;
-  padding: 8px 8px 7px;
   background: $light-gray;
-  padding-left: 20px;
 }
 
 .articleform__tagsoptions{
   position: absolute;
   left: 0;
   right: 0;
-  top: 30px;
+  top: 70px;
+  @media screen and ( min-width: 500px ){
+    top: 50px;
+  }
+  @media screen and ( min-width: 600px ){
+    top: 30px;
+  }
   background: white;
   border: 1px solid $medium-gray;
   box-shadow: $bold-shadow;
@@ -158,15 +178,16 @@
 }
 
 .articleform__imageButton{
-  width: 100px;
   color: $black;
   background: $purple;
   border: 0px;
   border-radius: 300px;
-  padding: 3px;
+  padding: 3px 18px;
   font-family: $helvetica-condensed;
   font-size: 14.4px;
   height: 34px;
+  display: inline-block;
+  margin-left:10px;
   &:hover{
     background: lighten($green, 24%);
   }
@@ -174,7 +195,10 @@
     width: 21px;
     height: 21px;
     vertical-align: -4px;
-    display: inline;
+    display: none;
+    @media screen and ( min-width: 500px ){
+      display: inline;
+    }
   }
 }
 
@@ -207,16 +231,15 @@
     cursor:pointer;
     background: $light-gray;
     font-family: $helvetica-condensed;
-    font-size:16px;
+    font-size:14.5px;
     border: 0px;
     border-radius: 113px;
     box-shadow:  2px 2px 8px darken($light-medium-gray, 13%);
-    padding: 6px 0px;
+    padding: 6px 13px;
     display: inline-block;
-    width: 40%;
     text-align: center;
     color: $medium-gray;
-    margin: 4px calc(6px + 0.5vw);
+    margin: 4px calc(3px + 0.7vw);
     &:hover{
       background: lighten($green, 24%);
     }
@@ -235,6 +258,7 @@
       }
     }
     @media screen and ( min-width: 600px ){
+      font-size:16px;
       width: 130px;
     }
   }
