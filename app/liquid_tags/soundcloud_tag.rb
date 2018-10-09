@@ -40,7 +40,7 @@ class SoundcloudTag < LiquidTagBase
   end
 
   def raise_error
-    raise StandardError, "Invalid Soundcloud URL; try taking off any URL params: '?something=value'"
+    raise StandardError, "Invalid Soundcloud URL - try taking off any URL params: '?something=value'"
   end
 end
 
