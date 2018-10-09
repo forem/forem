@@ -35,11 +35,12 @@ class SoundcloudTag < LiquidTagBase
   end
 
   def valid_link?(link)
-    link.include?("soundcloud.com")
+    (link =~ /\Ahttps:\/\/soundcloud\.com\/([a-zA-Z0-9\_\-]){3,25}\/(sets\/)?([a-zA-Z0-9\_\-]){3,255}\Z/)&.
+      zero?
   end
 
   def raise_error
-    raise StandardError, "Invalid Soundcloud URL"
+    raise StandardError, "Invalid Soundcloud URL - try taking off any URL params: '?something=value'"
   end
 end
 
