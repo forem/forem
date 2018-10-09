@@ -101,13 +101,17 @@
 }
 
 .articleform__title {
-  height: 50px;
-  width: 94%;
-  font-size: 29px;
+  height: 26px;
+  width: 99%;
+  font-size: 18px;
   word-break: break-word;
   border: 0;
   padding: 20px 0px 15px;
   font-weight: 600;
+  @media screen and ( min-width: 600px ){
+    font-size: 29px;
+    height: 50px;
+  }
 }
 .articleform__detailfields{
   display: flex;
@@ -125,12 +129,12 @@
 }
 
 .articleform__tags {
-  height: 60px;
-  width: 96%;
+  height: 40px;
+  width: 100%;
   border-radius: 3px;
   padding: 8px 8px 7px;
   @media screen and ( min-width: 500px ){
-    height: 40px;
+    width: 98%;
   }
   @media screen and ( min-width: 600px ){
     height: 19px;
@@ -150,10 +154,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 70px;
-  @media screen and ( min-width: 500px ){
-    top: 50px;
-  }
+  top: 50px;
   @media screen and ( min-width: 600px ){
     top: 30px;
   }
@@ -186,8 +187,11 @@
   font-family: $helvetica-condensed;
   font-size: 14.4px;
   height: 34px;
-  display: inline-block;
-  margin-left:10px;
+  display: none;
+  @media screen and ( min-width: 600px ){
+    display: inline-block;
+  }
+  margin-left:25px;
   &:hover{
     background: lighten($green, 24%);
   }
@@ -195,10 +199,19 @@
     width: 21px;
     height: 21px;
     vertical-align: -4px;
-    display: none;
-    @media screen and ( min-width: 500px ){
-      display: inline;
-    }
+    display: inline-block;
+  }
+  &.articleform__imageButton--bottombutton{
+    margin-left: -5px;
+    margin-top:10px;
+    margin-bottom: 8px;
+    display: inline-block;
+    padding: 2px 15px;
+    border-radius: 3px;
+    width:100px;
+    @media screen and ( min-width: 600px ){
+      display: none;
+    }  
   }
 }
 
@@ -207,14 +220,18 @@
 }
 
 .articleform__body {
-  min-height: calc(90vh - 280px);
+  min-height: calc(90vh - 340px);
   // height: calc(90vh - 240px);
-  width: 94%;
+  width: 98%;
   border: 0;
-  font-size: 18px;
+  font-size: 15px;
   resize: none;
-  padding: 20px 8px;
+  padding: 20px 6px;
   font-family: $monospace;
+  @media screen and ( min-width: 600px ){
+    font-size: 18px;
+    min-height: calc(90vh - 280px);
+  }
 }
 
 .articleform__buttons{
@@ -278,7 +295,7 @@
   border-radius: 3px;
   h2{
     color: $green;
-    font-size: 3em;
+    font-size: 2em;
     font-family: $helvetica-condensed;
   }
   input[type="file"]{
