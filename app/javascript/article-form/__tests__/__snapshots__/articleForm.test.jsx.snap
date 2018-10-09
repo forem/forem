@@ -56,6 +56,15 @@ exports[`<ArticleForm /> renders properly 1`] = `
       }
       value=""
     />
+    <button
+      class="articleform__imageButton articleform__imageButton--bottombutton"
+      onClick={[Function]}
+    >
+      <img
+        src=""
+      />
+       IMAGES
+    </button>
   </div>
   <div
     class="articleform__buttons"
