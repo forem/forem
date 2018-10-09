@@ -2,7 +2,7 @@ class FeedbackMessage < ApplicationRecord
   belongs_to :offender, foreign_key: "offender_id", class_name: "User", optional: true
   belongs_to :reviewer, foreign_key: "reviewer_id", class_name: "User", optional: true
   belongs_to :reporter, foreign_key: "reporter_id", class_name: "User", optional: true
-  belongs_to :victim, foreign_key: "victim_id", class_name: "User", optional: true
+  belongs_to :affected, foreign_key: "affected_id", class_name: "User", optional: true
   has_many :notes, as: :noteable, dependent: :destroy
 
   validates_presence_of :feedback_type, :message
@@ -22,9 +22,5 @@ class FeedbackMessage < ApplicationRecord
 
   def capitalize_status
     self.status = status.capitalize unless status.blank?
-  end
-
-  def email_messages
-    EmailMessage.where(feedback_message_id: id)
   end
 end
