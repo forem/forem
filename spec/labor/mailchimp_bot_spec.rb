@@ -108,4 +108,14 @@ RSpec.describe MailchimpBot do
     end
     # rubocop:enable RSpec/ExampleLength
   end
+
+  describe "#unsubscribe_all_newsletters" do
+    context "when called" do
+      it "unsubscribes the user from the weekly newsletter" do
+        described_class.new(user).unsubscribe_all_newsletters
+        expect(my_gibbon_client).to have_received(:upsert).
+          with(hash_including(body: hash_including(status: "unsubscribed")))
+      end
+    end
+  end
 end
