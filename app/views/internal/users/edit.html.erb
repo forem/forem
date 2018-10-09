@@ -11,13 +11,9 @@
   <% end %>
 <% else %>
   <div class="row">
-    <% if @user.comments.where("created_at < ?", 7.days.ago).empty? %>
-      <%= form_for(@user, :url => banish_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive and will change their username to @spam_###. Do not do it lightly.')"}) do %>
-        <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
-      <% end %>
-      <em>This is extremely destructive and will change their username to @spam_###. Do not do it lightly.</em>
-    <% else %>
-      <em>You cannot take admin action from this view because this is not a newish user. For safety.</em>
+    <%= form_for(@user, :url => banish_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive and will change their username to @spam_###. Do not do it lightly.')"}) do %>
+      <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
     <% end %>
+    <em>This is extremely destructive and will change their username to @spam_###. Do not do it lightly.</em>
   </div>
 <% end %>

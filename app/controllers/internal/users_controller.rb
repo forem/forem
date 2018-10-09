@@ -88,12 +88,11 @@ class Internal::UsersController < Internal::ApplicationController
 
   def banish
     @user = User.find(params[:id])
-    strip_user(@user)
+    banish_user(@user)
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
-  def strip_user(user)
-    return unless user.comments.where("created_at < ?", 7.days.ago).empty?
+  def banish_user(user)
     new_name = "spam_#{rand(10000)}"
     new_username = "spam_#{rand(10000)}"
     if User.find_by(name: new_name) || User.find_by(username: new_username)
