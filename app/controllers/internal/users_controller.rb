@@ -122,6 +122,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.behance_url = nil
     user.linkedin_url = nil
     user.add_role :banned
+    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"
     unless user.notes.where(reason: "banned").any?
       user.notes.
         create!(reason: "banned", content: "spam account", author_id: current_user.id)
@@ -133,6 +134,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.articles.each { |article| article.delay.destroy! }
     user.remove_from_index!
     user.save!
+    user.remove_from_algolia_index
     CacheBuster.new.bust("/#{user.old_username}")
     user.update!(old_username: nil)
   rescue StandardError => e
