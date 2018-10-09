@@ -9,6 +9,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       includes(:reporter, :notes).
       order("created_at DESC").
       page(params[:page] || 1).per(5)
+    @email_messages = EmailMessage.find_for_reports(@feedback_messages.pluck(:id))
   end
 
   def save_status

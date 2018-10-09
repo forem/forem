@@ -34,7 +34,7 @@ module FeedbackMessagesHelper
     }.freeze
   end
 
-  def victim_email_details
+  def affected_email_details
     body = <<~HEREDOC
       Hi [*USERNAME*],
 
