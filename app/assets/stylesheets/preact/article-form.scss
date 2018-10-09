@@ -47,17 +47,17 @@
 
 .articleform__orgsettings{
   padding: 0px;
-  padding-left: 10px;
+  padding-left: 0px;
   margin: 20px 2px 0px;
-  font-size:23px;
+  font-size:17px;
   cursor: pointer;
   user-select: none;
   img{
-    height: 33px;
-    width: 33px;
+    height: 28px;
+    width: 28px;
     border-radius: 50px;
-    vertical-align: -8px;
-    margin-right: 8px;
+    vertical-align: -7px;
+    margin-right: 4px;
   }
   button {
     background: transparent;
@@ -65,7 +65,7 @@
     border: 0px;
     font-size: 0.8em;
     font-family: $helvetica-condensed;
-    width: 120px;
+    width: 80px;
     border-radius: 100px;
     padding: 1px 0px;
     margin-left: 10px;
@@ -77,6 +77,19 @@
     &.yes{
       background: darken($green, 18%);
       color: white;
+    }
+  }
+  @media screen and ( min-width: 600px ){
+    font-size:23px;
+    padding-left: 10px;
+    img{
+      height: 33px;
+      width: 33px;
+      vertical-align: -8px;
+      margin-right: 8px;
+    }
+    button {
+      width: 120px;
     }
   }
 }
