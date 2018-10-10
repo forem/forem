@@ -4,35 +4,33 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
 <div
   class="tags-slide"
 >
-  <p>
-    <strong
-      class="yellow"
-    >
-      What topics are you interested in?
-    </strong>
-     Here are a few tags to follow (There are plenty more you can choose from at any time)
-  </p>
+  <div
+    class="onboarding-user-cta"
+  >
+    Personalize your home feed
+  </div>
   <div
     class="tags-col-container"
   >
     <div
       class="onboarding-tag-container"
       id="onboarding-tag-container-discuss"
-      style="background: #000000"
+      style="background: "
     >
       <a
         class="onboarding-tag-link"
         href="#"
         onClick={[Function]}
-        style="color:#ffffff"
+        style="color:"
       >
-        discuss
+        #discuss
       </a>
       <a
         class="onboarding-tag-link-follow"
         href="#"
         id="onboarding-tag-link-follow-discuss"
         onClick={[Function]}
+        style="color:"
       >
         +
       </a>
@@ -40,21 +38,22 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     <div
       class="onboarding-tag-container"
       id="onboarding-tag-container-javascript"
-      style="background: #f7df1e"
+      style="background: "
     >
       <a
         class="onboarding-tag-link"
         href="#"
         onClick={[Function]}
-        style="color:#000000"
+        style="color:"
       >
-        javascript
+        #javascript
       </a>
       <a
         class="onboarding-tag-link-follow"
         href="#"
         id="onboarding-tag-link-follow-javascript"
         onClick={[Function]}
+        style="color:"
       >
         +
       </a>
@@ -62,21 +61,22 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     <div
       class="onboarding-tag-container"
       id="onboarding-tag-container-javascript"
-      style="background: #f7df1e"
+      style="background: "
     >
       <a
         class="onboarding-tag-link"
         href="#"
         onClick={[Function]}
-        style="color:#000000"
+        style="color:"
       >
-        javascript
+        #javascript
       </a>
       <a
         class="onboarding-tag-link-follow"
         href="#"
         id="onboarding-tag-link-follow-javascript"
         onClick={[Function]}
+        style="color:"
       >
         +
       </a>
