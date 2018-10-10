@@ -15,8 +15,8 @@ variable :APP_PROTOCOL, :String, default: "http://"
 variable :DEVTO_USER_ID, :Integer, default: 1
 
 # Service timeout length
-variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100
-variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100
+variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100000
+variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100000
 
 # Production related config that can be ignored
 variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
