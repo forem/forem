@@ -15,6 +15,9 @@ class OnboardingTags extends Component {
 
     return (
       <div className="tags-slide">
+        <div className="onboarding-user-cta">
+          Personalize your home feed
+        </div>
         <div className="tags-col-container">
             {tags}
         </div>

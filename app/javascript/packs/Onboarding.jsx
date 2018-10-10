@@ -26,7 +26,7 @@ function renderPage() {
           render(<Onboarding />, document.getElementById('top-bar'))
           clearInterval(waitingForOnboarding);
         }
-      }, 1)
+      }, 3)
     })
     .catch(error => {
       // eslint-disable-next-line no-console

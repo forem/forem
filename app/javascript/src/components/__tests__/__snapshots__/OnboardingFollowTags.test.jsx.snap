@@ -5,6 +5,11 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
   class="tags-slide"
 >
   <div
+    class="onboarding-user-cta"
+  >
+    Personalize your home feed
+  </div>
+  <div
     class="tags-col-container"
   >
     <div

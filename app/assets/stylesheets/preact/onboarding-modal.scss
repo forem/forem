@@ -134,7 +134,7 @@
       overflow-y: auto;
       text-align:left;
       font-size: calc(0.77em + 6px);
-      height: calc(100vh - 250px);
+      height: calc(100vh - 280px);
       @media screen and (min-width: 900px) {
         font-size: 27px;
       }
@@ -210,6 +210,7 @@
     font-size: 1.1em;
     color: $black;
     margin: 20px auto 15px;
+    text-align: left;
   }
 
   .onboarding-user-container{

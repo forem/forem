@@ -18,7 +18,7 @@ const OnboardingProfile = ({onChange}) => {
       <div class="onboarding-profile-question">What are your core skills/languages?</div>
       <input name="mostly_work_with" placeholder="e.g. JavaScript and MongoDB" maxLength="200" onChange={onChange} />
       <div class="onboarding-profile-question">What are you currently learning/playing with?</div>
-      <input name="currently_hacking_on" placeholder="e.g. Rust and Docker" maxLength="200" onChange={onChange} />
+      <input name="currently_learning" placeholder="e.g. Rust and Docker" maxLength="200" onChange={onChange} />
     </div>
   );
 };
