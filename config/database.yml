@@ -26,7 +26,7 @@ default: &default
       statement_timeout: <%= ENV['STATEMENT_TIMEOUT'] || 2500 %>
 development:
   <<: *default
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://[user]:[password]@][host][:port]/[dbname]') %>
+  url: <%= ENV.fetch('DATABASE_URL', '') %>
   database: PracticalDeveloper_development
 
   # The specified database role being used to connect to postgres.
@@ -62,7 +62,7 @@ development:
 test:
   <<: *default
   host: localhost
-  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://[user]:[password]@][host][:port]/[dbname]') %>
+  url: <%= ENV.fetch('DATABASE_URL', '') %>
   database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
