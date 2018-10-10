@@ -8,7 +8,8 @@
   right:calc(15% - 33px);
   bottom:calc(15% - 33px);
   z-index:899900;
-  animation: fadein 0.15s ease ;
+  animation: fadein 0.20s ease ;
+  display: block !important;
   @keyframes fadein{
       0% { opacity:0;}
       100% { opacity:1;}

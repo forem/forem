@@ -417,7 +417,7 @@ class Onboarding extends Component {
   render() {
     if (this.state.showOnboarding) {
       return (
-        <div className="global-modal">
+        <div className="global-modal" style="display:none">
           <div className="global-modal-bg">
             <button className="close-button" onClick={this.closeOnboarding}>
               <img src={cancelSvg} alt="cancel button" />
