@@ -13,11 +13,6 @@ module Api
           given_tag = params[:tag]
           @users = Suggester::Users::Sidebar.new(current_user, given_tag).suggest.sample(3)
         end
-        @users = User.all
-      end
-
-      def update
-        current_user.update(params[:user])
       end
 
       def show
