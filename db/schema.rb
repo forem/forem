@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -294,20 +296,19 @@ ActiveRecord::Schema.define(version: 20181008174839) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
+    t.integer "affected_id"
     t.string "category"
     t.datetime "created_at"
     t.string "feedback_type"
-    t.datetime "last_reviewed_at"
     t.text "message"
-    t.boolean "offender_email_sent?", default: false
     t.integer "offender_id"
     t.string "reported_url"
-    t.boolean "reporter_email_sent?", default: false
     t.integer "reporter_id"
     t.string "status", default: "Open"
     t.datetime "updated_at"
-    t.boolean "victim_email_sent?", default: false
-    t.integer "victim_id"
+    t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
+    t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
+    t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
