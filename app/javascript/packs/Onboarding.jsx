@@ -20,9 +20,14 @@ function isUserSignedIn() {
 
 function renderPage() {
   import('../src/Onboarding')
-    .then(({ default: Onboarding }) =>
-      render(<Onboarding />, document.getElementById('top-bar')),
-    )
+    .then(({ default: Onboarding }) => {
+      let waitingForOnboarding = setInterval(function(){
+        if (document.getElementById("main-head-stylesheet")) {
+          render(<Onboarding />, document.getElementById('top-bar'))
+          clearInterval(waitingForOnboarding);
+        }
+      }, 1)
+    })
     .catch(error => {
       // eslint-disable-next-line no-console
       console.error('Unable to load onboarding', error);
