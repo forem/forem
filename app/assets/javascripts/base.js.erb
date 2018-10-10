@@ -643,10 +643,7 @@ var instantClick
           mainElement: 'body',
           passive: true,
           onRefresh: function(){
-            $fetchedBodies = {}
-            var url = window.location.href
-            preload(url)
-            display(url)
+            window.location.reload()
             }
          });
          clearInterval(waitingOnPTR)

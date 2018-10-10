@@ -156,7 +156,6 @@ export default class ArticleForm extends Component {
       mainImage,
       errors,
     } = this.state;
-    
     const notice = submitting ? <Notice published={published} /> : '';
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
@@ -206,6 +205,12 @@ export default class ArticleForm extends Component {
                         defaultValue={bodyMarkdown}
                         onChange={linkState(this, 'bodyMarkdown')}
                       />
+                                              <button
+                          className="articleform__imageButton articleform__imageButton--bottombutton"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
                       </div>
     }
     return (

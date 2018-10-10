@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
-
 <div class="articleformcontainer">
   <div class="articleform"
     id="article-form"
@@ -27,6 +24,8 @@
       <img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button>
     </div>
     <textarea class="articleform__body" placeholder="Body" name="body_markdown"><%= @article.body_markdown %></textarea>
+    <button class="articleform__imageButton articleform__imageButton--bottombutton">
+      <img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button>
     <% if @article.published %>
       <div class="articleform__buttons"><button class="articleform__buttons--small inactive">?</button><button class="inactive">PREVIEW</button><button class="articleform__buttons--publish">SAVE CHANGES</button></div>    </form>
     <% else %>
