@@ -21,7 +21,7 @@
     border:0;
     font-size: 1em;
     background:transparent;
-    top:1%;
+    top:2%;
     left:1%;
     cursor:pointer;
     img{
@@ -136,6 +136,7 @@
       text-align:left;
       font-size: calc(0.77em + 6px);
       height: calc(100vh - 280px);
+      -webkit-overflow-scrolling: touch;
       @media screen and (min-width: 900px) {
         font-size: 27px;
       }
@@ -153,6 +154,9 @@
       margin-top: calc(0.2vw + 3px);
       font-size: .75em;
       margin-bottom: 6px;
+      &:last-child{
+        margin-bottom: 150px;
+      }
       @media screen and (max-width: 900px) {
         width: 92%;
         margin-right: 0%;
@@ -262,6 +266,8 @@
       .onboarding-user-list-body{
         height: calc(65vh - 20px);
         overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
         .onboarding-user-loading {
           display: flex;
           align-items: center;
@@ -304,7 +310,7 @@
           width: 45%;
         }
         &:last-child{
-          margin-bottom: 80px;
+          margin-bottom: 110px;
         }
         img{
           height: 70px;
@@ -489,7 +495,7 @@
   .global-modal-inner {
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     position:fixed;
-    top:calc(9% - 36px);
+    top:calc(12% - 36px);
     left:calc(9% - 23px);
     right:calc(9% - 23px);
     bottom:calc(5% - 33px);
@@ -516,6 +522,7 @@
     height: 70vh;
     padding-bottom: 60px;
     overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
     .onboarding-profile-question{
       font-weight: bold;
       font-size: 18px;
@@ -527,6 +534,9 @@
       border-radius: 3px;
       font-size: 18px;
       border: 2px solid $light-medium-gray;
+      &:last-child{
+        margin-bottom: 110px;
+      }
     }  
   }
 
