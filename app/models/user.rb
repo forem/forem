@@ -129,6 +129,7 @@ class User < ApplicationRecord
   before_destroy :remove_from_algolia_index
   before_destroy :destroy_empty_dm_channels
   before_destroy :destroy_follows
+  before_destroy :unsubscribe_from_newsletters
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -538,6 +539,10 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   def mentorship_status_update
