@@ -54,7 +54,7 @@
     display:block;
     font-weight: 500;
     font-size: 1.1em;
-    max-width: 350px;
+    max-width: 450px;
     font-family: $helvetica-condensed;
     font-stretch:condensed;
     .triangle-isosceles {
@@ -117,7 +117,7 @@
       height:98%;
       width:95%;
       padding-left: calc(3% + 2px);
-      max-width: 850px;
+      max-width: 1000px;
       float:left;
       font-size: calc(0.8em + 6px);
       @media screen and (min-width: 700px) {
@@ -521,7 +521,7 @@
       padding: 12px 0px 8px;
     }
     input {
-      width: 80%;
+      width: 90%;
       padding: 7px;
       border-radius: 3px;
       font-size: 18px;
