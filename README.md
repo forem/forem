@@ -175,11 +175,15 @@ This section provides a high-level requirement & quick start guide. For detailed
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
 
-### Docker Installation
+### Docker Installation (BETA)
+Our docker implementation is incomplete and way not work smoothly with MacOS
+
 1. Install `docker` and `docker-compose`
 2. `git clone git@github.com:thepracticaldev/dev.to.git`
 3. Set environment variables above as described in the "Basic Installation"
-3. `docker-compose up -d`
+4. run `make`
+5. run `docker-compose up`
+6. That's it! Navigate to `localhost:8080`
 
 #### Starting the application
 
