@@ -1,48 +1,29 @@
 version: "3"
 services:
-  rails: &rails_base
+  web: &rails_base
     build:
-      dockerfile: infra/dev/rails/Dockerfile
+      dockerfile: Dockerfile
       context: .
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      ALGOLIASEARCH_API_KEY: ${ALGOLIASEARCH_API_KEY}
-      ALGOLIASEARCH_APPLICATION_ID: ${ALGOLIASEARCH_APPLICATION_ID}
-      ALGOLIASEARCH_SEARCH_ONLY_KEY: ${ALGOLIASEARCH_SEARCH_ONLY_KEY}
-      GITHUB_KEY: ${GITHUB_KEY}
-      GITHUB_SECRET: ${GITHUB_SECRET}
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
       YARN_INTEGRITY_ENABLED: "false"
     volumes:
       - .:/usr/src/app
-    command: bin/rails server -b 0.0.0.0 -p 8080
-  redis:
-    image: redis:3.2.11
-    ports:
-      - "6379:6379"
-  migrate:
-    ports: []
-    <<: *rails_base
-    command: bin/rails db:schema:load
+    command: bundle exec rails server -b 0.0.0.0 -p 8080
   jobs:
     ports: []
     <<: *rails_base
     command: rails jobs:work
-  cable:
-    ports: []
-    <<: *rails_base
-    depends_on:
-      - 'redis'
-    command: puma -p 28080 cable/config.ru
   webpacker:
     ports: []
     <<: *rails_base
-    command: bin/rails webpacker:install
+    command: ./bin/webpack-dev-server
   db:
-    image: postgres:10
+    image: postgres
     ports:
     - "5432:5432"

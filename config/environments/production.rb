@@ -1,15 +1,8 @@
 # rubocop:disable Metrics/BlockLength
-#
-def yarn_integrity_enabled?
-  ENV['YARN_INTEGRITY_ENABLED'] == 'true'
-end
 
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
-
-  # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
+  config.webpacker.check_yarn_integrity = false
 
   # Settings specified here will take precedence over those in config/application.rb.
 

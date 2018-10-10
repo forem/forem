@@ -62,6 +62,7 @@ development:
 test:
   <<: *default
   host: localhost
+  url: <%= ENV.fetch('DATABASE_URL', 'postgresql://[user]:[password]@][host][:port]/[dbname]') %>
   database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
