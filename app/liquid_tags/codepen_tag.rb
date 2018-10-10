@@ -9,7 +9,7 @@ class CodepenTag < LiquidTagBase
   def render(_context)
     html = <<-HTML
       <iframe height="#{@height}"
-        src="#{@link}?#{@build_options}&height=500&embed-version=2"
+        src="#{@link}?height=#{@height}&#{@build_options}&embed-version=2"
         scrolling="no"
         frameborder="no"
         allowtransparency="true"
@@ -33,7 +33,13 @@ class CodepenTag < LiquidTagBase
     validated_options = options.map { |o| valid_option(o) }.reject { |e| e == nil }
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
-    options.join("&")
+    option = options.join("&")
+
+    if option.blank?
+      "default-tab=result"
+    else
+      option
+    end
   end
 
   def parse_link(link)
