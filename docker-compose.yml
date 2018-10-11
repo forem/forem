@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       context: .
     ports:
-      - "8080:8080"
+      - "3000:3000"
     depends_on:
       - db
     environment:
@@ -14,7 +14,7 @@ services:
       YARN_INTEGRITY_ENABLED: "false"
     volumes:
       - .:/usr/src/app
-    command: bundle exec rails server -b 0.0.0.0 -p 8080
+    command: bundle exec rails server -b 0.0.0.0 -p 3000
   jobs:
     ports: []
     <<: *rails_base

@@ -14,4 +14,4 @@ RUN bundle install --jobs 20 --retry 5
 
 ENTRYPOINT ["bundle", "exec"]
 
-CMD ["rails", "server", "-b", "0.0.0.0", "-p", "8080"]
+CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]

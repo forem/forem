@@ -178,14 +178,16 @@ This section provides a high-level requirement & quick start guide. For detailed
 [View Full Installation Documentation](https://docs.dev.to/installation/)
 
 ### Docker Installation (BETA)
-Our docker implementation is incomplete and way not work smoothly with MacOS
+
+Our docker implementation is incomplete and may not work smoothly. Please kindly report any issues and any contribution is welcomed!
 
 1. Install `docker` and `docker-compose`
-2. `git clone git@github.com:thepracticaldev/dev.to.git`
-3. Set environment variables above as described in the "Basic Installation"
-4. run `make`
-5. run `docker-compose up`
-6. That's it! Navigate to `localhost:8080`
+1. `git clone git@github.com:thepracticaldev/dev.to.git`
+1. Set environment variables above as described in the "Basic Installation"
+1. run `docker-compose build`
+1. run `docker-compose run web rails db:setup`
+1. run `docker-compose up`
+1. That's it! Navigate to `localhost:3000`
 
 #### Starting the application
 
