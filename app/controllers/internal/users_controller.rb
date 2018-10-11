@@ -92,55 +92,71 @@ class Internal::UsersController < Internal::ApplicationController
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
+  def mark_articles_as_spam
+    @user = User.find(params[:id])
+    @user.articles.each do |article|
+      article.delay.update(featured_number: Time.now.to_i)
+    end
+    redirect_to "/internal/users/#{@user.id}/edit",
+      success: "Articles successfully marked as spam"
+  end
+
   def banish_user(user)
+    set_banned_attributes(user)
+    user.comments.each do |comment|
+      comment.reactions.each { |rxn| rxn.delay.destroy! }
+      comment.delay.destroy!
+    end
+    user.articles.each { |article| article.delay.destroy! }
+    ban_and_obscure(user)
+  rescue StandardError => e
+    flash[:error] = e.message
+  end
+
+  private
+
+  def set_banned_attributes(user)
     new_name = "spam_#{rand(10000)}"
     new_username = "spam_#{rand(10000)}"
     if User.find_by(name: new_name) || User.find_by(username: new_username)
       new_name = "spam_#{rand(10000)}"
       new_username = "spam_#{rand(10000)}"
     end
-    user.name = new_name
-    user.username = new_username
-    user.twitter_username = ""
-    user.github_username = ""
-    user.website_url = ""
-    user.summary = ""
-    user.location = ""
-    user.education = ""
-    user.employer_name = ""
-    user.employer_url = ""
-    user.employment_title = ""
-    user.mostly_work_with = ""
-    user.currently_learning = ""
-    user.currently_hacking_on = ""
-    user.available_for = ""
-    user.email_public = false
-    user.facebook_url = nil
-    user.dribbble_url = nil
-    user.stackoverflow_url = nil
-    user.behance_url = nil
-    user.linkedin_url = nil
-    user.add_role :banned
+    new_attributes = {
+      name: new_name,
+      username: new_username,
+      twitter_username: "",
+      github_username: "",
+      website_url: "",
+      summary: "",
+      location: "",
+      education: "",
+      employer_name: "",
+      employer_url: "",
+      employment_title: "",
+      mostly_work_with: "",
+      currently_learning: "",
+      currently_hacking_on: "",
+      available_for: "",
+      email_public: false,
+      facebook_url: nil,
+      dribbble_url: nil,
+      stackoverflow_url: nil,
+      behance_url: nil,
+      linkedin_url: nil
+    }
+    user.attributes = new_attributes
     user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"
-    unless user.notes.where(reason: "banned").any?
-      user.notes.
-        create!(reason: "banned", content: "spam account", author_id: current_user.id)
-    end
-    user.comments.each do |comment|
-      comment.reactions.each { |rxn| rxn.delay.destroy! }
-      comment.delay.destroy!
-    end
-    user.articles.each { |article| article.delay.destroy! }
-    user.remove_from_index!
+  end
+
+  def ban_and_obscure(user)
     user.save!
+    user.add_role :banned
+    user.notes.create(reason: "banned", content: "spam account", author_id: current_user.id)
     user.remove_from_algolia_index
     CacheBuster.new.bust("/#{user.old_username}")
     user.update!(old_username: nil)
-  rescue StandardError => e
-    flash[:error] = e.message
   end
-
-  private
 
   def user_params
     params.require(:user).permit(:seeking_mentorship,
