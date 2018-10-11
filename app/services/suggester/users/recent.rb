@@ -8,7 +8,7 @@ module Suggester
 
       def suggest
         users = if user.decorate.cached_followed_tag_names.any?
-                  ((recent_producers(1) + recent_producers(4) + recent_commenters - [user]).
+                  ((recent_producers(3) - [user]).
                            shuffle.first(55) + tagged_producers).uniq
                 else
                   (recent_commenters(4, 30) + recent_top_producers - [user]).
@@ -32,7 +32,7 @@ module Suggester
       end
 
       def recent_producers(num_weeks = 1)
-        User.where(id: tagged_article_user_ids(num_weeks)).order("updated_at DESC").limit(50).to_a
+        User.where(id: tagged_article_user_ids(num_weeks)).order("updated_at DESC").limit(80).to_a
       end
 
       def recent_top_producers
@@ -58,7 +58,7 @@ module Suggester
       end
 
       def article_reaction_count
-        Rails.env.production? ? 14 : -1
+        Rails.env.production? ? 13 : -1
       end
     end
   end

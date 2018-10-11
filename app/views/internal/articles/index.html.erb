@@ -18,9 +18,10 @@
 </div>
 <br/>
 <br/>
-<style>.top-nav a {border: 1px solid #d8d8d8;font-weight: bold;margin-right: 3px;font-size:0.8em}</style>
+<style>.top-nav a {border: 1px solid #d8d8d8;font-weight: bold;margin-right: 3px;font-size:0.66em}</style>
 <h3 class="top-nav">
-  <a href="/internal/articles" class="btn <%= "btn-success" if params[:state].blank? %>">Hot Posts</a>
+  <a href="/internal/articles" class="btn <%= "btn-success" if params[:state].blank? %>">Hot</a>
+  <a href="/internal/articles?state=chronological" class="btn <%= "btn-success" if params[:state] == "chronological" %>">Chronological</a>
   Not Buffered: 
   <a href="/internal/articles?state=not-buffered-0.25" class="btn <%= "btn-success" if params[:state] == "not-buffered-0.25" %>">6hr</a> 
   <a href="/internal/articles?state=not-buffered-1" class="btn <%= "btn-success" if params[:state] == "not-buffered-1" %>">1d</a> 

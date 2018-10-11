@@ -15,9 +15,9 @@ class OnboardingTags extends Component {
 
     return (
       <div className="tags-slide">
-        <p>
-          <strong class="yellow">What topics are you interested in?</strong> Here are a few tags to follow (There are plenty more you can choose from at any time)
-        </p>
+        <div className="onboarding-user-cta">
+          Personalize your home feed
+        </div>
         <div className="tags-col-container">
             {tags}
         </div>

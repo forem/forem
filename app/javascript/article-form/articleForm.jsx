@@ -14,8 +14,8 @@ import ImageManagement from './elements/imageManagement';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import ImageUploadIcon from 'images/image-upload.svg';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/markdown/markdown';
+// import CodeMirror from 'codemirror';
+// import 'codemirror/mode/markdown/markdown';
 
 export default class ArticleForm extends Component {
   constructor(props) {
@@ -39,23 +39,22 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: article.id != null,
       imageManagementShowing: false,
-      mainImageUrl: article.main_image || null,
+      mainImage: article.main_image || null,
       organization,
-      postUnderOrg: false,
+      postUnderOrg: article.organization_id ? true : false,
       errors: null,
     };
   }
 
   componentDidMount() {
     initEditorResize();
-    console.log('codemirror-ify');
-    const editor = document.getElementById('article_body_markdown');
-    const myCodeMirror = CodeMirror(editor, {
-      mode: 'markdown',
-      theme: 'material',
-      highlightFormatting: true,
-    });
-    myCodeMirror.setSize('100%', '100%');
+    // const editor = document.getElementById('article_body_markdown');
+    // const myCodeMirror = CodeMirror(editor, {
+    //   mode: 'markdown',
+    //   theme: 'material',
+    //   highlightFormatting: true,
+    // });
+    // myCodeMirror.setSize('100%', '100%');
   }
 
   toggleHelp = e => {
@@ -109,7 +108,7 @@ export default class ArticleForm extends Component {
 
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImageUrl: payload.link,
+      mainImage: payload.link,
       imageManagementShowing: false,
     });
   };
@@ -154,35 +153,19 @@ export default class ArticleForm extends Component {
       imageManagementShowing,
       organization,
       postUnderOrg,
-      mainImageUrl,
+      mainImage,
       errors,
     } = this.state;
-    // <input type="image" name="cover-image" />
-
-    let bodyArea = '';
-    if (previewShowing) {
-      bodyArea = <BodyPreview previewHTML={previewHTML} />;
-    } else if (helpShowing) {
-      bodyArea = <BodyPreview previewHTML={helpHTML} />;
-    } else {
-      bodyArea = (
-        <BodyMarkdown
-          defaultValue={bodyMarkdown}
-          onChange={linkState(this, 'bodyMarkdown')}
-        />
-      );
-    }
-
     const notice = submitting ? <Notice published={published} /> : '';
-    const imageArea = mainImageUrl ? (
-      <MainImage mainImage={mainImageUrl} onEdit={this.toggleImageManagement} />
+    const imageArea = mainImage ? (
+      <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
       ''
     );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
-        mainImageUrl={mainImageUrl}
+        mainImage={mainImage}
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
     ) : (
@@ -198,22 +181,41 @@ export default class ArticleForm extends Component {
       ''
     );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
+    let editorView = '';
+    if (previewShowing) {
+      editorView = <div>{errorsArea}{orgArea}{imageArea}<BodyPreview previewHTML={previewHTML} articleState={this.state} version="article-preview" /></div>;
+    } else if (helpShowing) {
+      editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
+    } else {
+        editorView = <div>
+                      {errorsArea}
+                      {orgArea}
+                      {imageArea}
+                      <Title defaultValue={title} onChange={linkState(this, 'title')} />
+                      <div className="articleform__detailfields">
+                        <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+                        <button
+                          className="articleform__imageButton"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                      </div>
+                      <BodyMarkdown
+                        defaultValue={bodyMarkdown}
+                        onChange={linkState(this, 'bodyMarkdown')}
+                      />
+                                              <button
+                          className="articleform__imageButton articleform__imageButton--bottombutton"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                      </div>
+    }
     return (
       <form className="articleform__form" onSubmit={this.onSubmit}>
-        {errorsArea}
-        {orgArea}
-        {imageArea}
-        <Title defaultValue={title} onChange={linkState(this, 'title')} />
-        <div className="articleform__detailfields">
-          <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-          <button
-            className="articleform__imageButton"
-            onClick={this.toggleImageManagement}
-          >
-            <img src={ImageUploadIcon} /> IMAGES
-          </button>
-        </div>
-        {bodyArea}
+        {editorView}
         <PublishToggle
           published={published}
           previewShowing={previewShowing}
