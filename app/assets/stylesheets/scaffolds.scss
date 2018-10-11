@@ -1,4 +1,5 @@
 @import 'variables';
+
 body {
   background: $lightest-gray;
   color: $black;
@@ -7,15 +8,22 @@ body {
   padding:0 !important;
   margin:0 !important;
   margin-top:-20px !important;
+  overflow-y:scroll;
   :focus {
   outline: 0;
   }
+}
+
+.ptr--ptr{
+  margin-top:70px;
+  margin-bottom: -70px;
 }
 
 .modal-open{
   margin: 0;
   overflow: hidden;
   overflow-y: hidden;
+  height: 90vh;
 }
 
 

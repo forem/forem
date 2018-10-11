@@ -156,22 +156,6 @@ export default class ArticleForm extends Component {
       mainImage,
       errors,
     } = this.state;
-    // <input type="image" name="cover-image" />
-
-    let bodyArea = '';
-    if (previewShowing) {
-      bodyArea = <BodyPreview previewHTML={previewHTML} />;
-    } else if (helpShowing) {
-      bodyArea = <BodyPreview previewHTML={helpHTML} />;
-    } else {
-      bodyArea = (
-        <BodyMarkdown
-          defaultValue={bodyMarkdown}
-          onChange={linkState(this, 'bodyMarkdown')}
-        />
-      );
-    }
-
     const notice = submitting ? <Notice published={published} /> : '';
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
@@ -197,22 +181,41 @@ export default class ArticleForm extends Component {
       ''
     );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
+    let editorView = '';
+    if (previewShowing) {
+      editorView = <div>{errorsArea}{orgArea}{imageArea}<BodyPreview previewHTML={previewHTML} articleState={this.state} version="article-preview" /></div>;
+    } else if (helpShowing) {
+      editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
+    } else {
+        editorView = <div>
+                      {errorsArea}
+                      {orgArea}
+                      {imageArea}
+                      <Title defaultValue={title} onChange={linkState(this, 'title')} />
+                      <div className="articleform__detailfields">
+                        <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+                        <button
+                          className="articleform__imageButton"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                      </div>
+                      <BodyMarkdown
+                        defaultValue={bodyMarkdown}
+                        onChange={linkState(this, 'bodyMarkdown')}
+                      />
+                                              <button
+                          className="articleform__imageButton articleform__imageButton--bottombutton"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                      </div>
+    }
     return (
       <form className="articleform__form" onSubmit={this.onSubmit}>
-        {errorsArea}
-        {orgArea}
-        {imageArea}
-        <Title defaultValue={title} onChange={linkState(this, 'title')} />
-        <div className="articleform__detailfields">
-          <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-          <button
-            className="articleform__imageButton"
-            onClick={this.toggleImageManagement}
-          >
-            <img src={ImageUploadIcon} /> IMAGES
-          </button>
-        </div>
-        {bodyArea}
+        {editorView}
         <PublishToggle
           published={published}
           previewShowing={previewShowing}

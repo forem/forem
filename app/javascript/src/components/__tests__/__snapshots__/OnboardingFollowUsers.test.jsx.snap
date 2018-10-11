@@ -7,18 +7,13 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
   <div
     class="onboarding-user-cta"
   >
-    Here are some folks from the community you might want to follow 
-    <strong
-      class="yellow"
-    >
-      based on your interests.
-    </strong>
+    Here are some suggestions based on your interests
   </div>
   <div
     class="onboarding-user-list"
   >
     <div
-      class="onboarding-user-list-header onboarding-user-list-row"
+      class="onboarding-user-list-header"
     >
       <div
         class="onboarding-user-list-key"
@@ -50,7 +45,14 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
             alt="Ben Halpern"
             src="ben.jpg"
           />
-          Ben Halpern
+          <div>
+            Ben Halpern
+          </div>
+          <div
+            class="onboarding-user-list-row__summary"
+          >
+            <em />
+          </div>
         </div>
         <div
           class="onboarding-user-list-checkbox"
@@ -72,7 +74,14 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
             alt="Krusty the Clown"
             src="clown.jpg"
           />
-          Krusty the Clown
+          <div>
+            Krusty the Clown
+          </div>
+          <div
+            class="onboarding-user-list-row__summary"
+          >
+            <em />
+          </div>
         </div>
         <div
           class="onboarding-user-list-checkbox"
@@ -94,7 +103,14 @@ exports[`<OnboardingFollowUsers /> renders properly when given users 1`] = `
             alt="dev.to staff"
             src="dev.jpg"
           />
-          dev.to staff
+          <div>
+            dev.to staff
+          </div>
+          <div
+            class="onboarding-user-list-row__summary"
+          >
+            <em />
+          </div>
         </div>
         <div
           class="onboarding-user-list-checkbox"

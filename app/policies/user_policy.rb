@@ -67,6 +67,7 @@ class UserPolicy < ApplicationPolicy
        email_connect_messages
        email_newsletter
        email_public
+       editor_version
        email_unread_notifications
        employer_name
        employer_url

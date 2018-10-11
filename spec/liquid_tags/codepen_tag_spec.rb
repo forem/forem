@@ -21,6 +21,13 @@ RSpec.describe CodepenTag, type: :liquid_template do
       Approvals.verify(rendered_codepen_iframe, name: "codepen_liquid_tag", format: :html)
     end
 
+    it "accepts codepen link with a / at the end" do
+      codepen_link = "https://codepen.io/twhite96/pen/XKqrJX/"
+      expect do
+        generate_new_liquid(codepen_link)
+      end.not_to raise_error
+    end
+
     it "rejects invalid codepen link" do
       expect do
         generate_new_liquid("invalid_codepen_link")

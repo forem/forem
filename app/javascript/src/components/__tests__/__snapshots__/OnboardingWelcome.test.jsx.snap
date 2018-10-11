@@ -1,22 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<OnboardingWelcome /> renders correctly 1`] = `
-<div>
+<div
+  class="onboarding-initial-welcome"
+>
   <p>
-    Hi there, I'm Sloan. It's nice to meet you!
+    Thank you for joining the DEV Community.
   </p>
   <p>
-    Welcome to the community. It's a place to talk shop and keep up with other devs.
+    Keep up with the people and software trends you care about. ❤️
   </p>
   <p>
-    Share more, learn more, write better code; I think you'll like it here. 🐨
-  </p>
-  <p>
-    <strong
-      class="yellow"
-    >
-      Let's get started.
-    </strong>
+    <em>
+      <strong
+        class="green"
+      >
+        Let's get started!
+      </strong>
+    </em>
   </p>
 </div>
 `;
