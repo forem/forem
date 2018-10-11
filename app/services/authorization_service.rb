@@ -58,7 +58,7 @@ class AuthorizationService
         remote_profile_image_url: (auth.info.image || "").gsub("_normal", ""),
         github_username: (auth.info.nickname if auth.provider == "github"),
         signup_cta_variant: cta_variant,
-        email: auth.info.email.downcase || "",
+        email: auth.info.email || "",
         twitter_username: (auth.info.nickname if auth.provider == "twitter"),
         password: Devise.friendly_token[0, 20],
       )
@@ -95,7 +95,7 @@ class AuthorizationService
     elsif identity.user
       identity.user
     elsif !auth.info.email.blank?
-      User.find_by_email(auth.info.email.downcase)
+      User.find_by_email(auth.info.email)
     end
   end
 
