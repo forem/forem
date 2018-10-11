@@ -7,7 +7,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     @feedback_messages = FeedbackMessage.
       where(feedback_type: @feedback_type, status: @status).
       includes(:reporter, :notes).
-      order("created_at DESC").
+      order("feedback_messages.created_at DESC").
       page(params[:page] || 1).per(5)
     @email_messages = EmailMessage.find_for_reports(@feedback_messages.pluck(:id))
   end
@@ -23,6 +23,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def show
     @feedback_message = FeedbackMessage.find_by(id: params[:id])
+    @email_messages = EmailMessage.find_for_reports(@feedback_message.id)
   end
 
   def send_email
