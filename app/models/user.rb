@@ -364,6 +364,12 @@ class User < ApplicationRecord
     ProfileImage.new(self).get(90)
   end
 
+  def remove_from_algolia_index
+    remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
+  end
+
   private
 
   def send_welcome_notification
@@ -519,12 +525,6 @@ class User < ApplicationRecord
     article_score = (articles_count + comments_count + reactions_count) * 10
     score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
-  end
-
-  def remove_from_algolia_index
-    remove_from_index!
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delay.delete_object("users-#{id}")
   end
 
   def destroy_empty_dm_channels
