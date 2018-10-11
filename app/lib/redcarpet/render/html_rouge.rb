@@ -15,6 +15,17 @@ module Redcarpet
         end
         %(<a href="#{link}"#{link_attributes}>#{content}</a>)
       end
+
+      def header(title, header_number)
+        anchor_link = title.downcase.gsub(/\W+/, "-")
+        <<~HEREDOC
+          <h#{header_number}>
+            <a name="#{anchor_link}" href="##{anchor_link}" class="anchor">
+            </a>
+            #{title}
+          </h#{header_number}>
+        HEREDOC
+      end
     end
   end
 end

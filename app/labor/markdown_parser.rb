@@ -12,11 +12,7 @@ class MarkdownParser
 
   def evaluate_markdown
     return if @content.blank?
-    renderer = Redcarpet::Render::HTMLRouge.new(
-      hard_wrap: true,
-      filter_html: false,
-      with_toc_data: true,
-    )
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     tag_whitelist = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
                        br ul ol li small sup sub img a span hr blockquote)
@@ -28,11 +24,7 @@ class MarkdownParser
 
   def evaluate_limited_markdown
     return if @content.blank?
-    renderer = Redcarpet::Render::HTMLRouge.new(
-      hard_wrap: true,
-      filter_html: false,
-      with_toc_data: true,
-    )
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     tag_whitelist = %w(strong i u b em p br)
     attribute_whitelist = %w(href strong em ref rel src title alt class)
@@ -46,11 +38,7 @@ class MarkdownParser
     renderer_options = {
       hard_wrap: true,
       filter_html: false,
-      with_toc_data: true,
-      link_attributes: {
-        rel: "noopener noreferrer",
-        target: "_blank"
-      }
+      link_attributes: { rel: "noopener noreferrer", target: "_blank" }
     }
     renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
@@ -84,11 +72,7 @@ class MarkdownParser
   private
 
   def parse_it
-    renderer = Redcarpet::Render::HTMLRouge.new(
-      hard_wrap: true,
-      filter_html: false,
-      with_toc_data: true,
-    )
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)

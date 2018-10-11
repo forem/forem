@@ -530,6 +530,14 @@ a.header-link{
       margin-left:0%;
       overflow-x:auto;
     }
+    a{
+      &.anchor{
+        padding-top: 50px;
+        margin-top: -50px;
+        -webkit-background-clip: content-box;
+        background-clip: content-box;
+      }
+    }
   }
   .icon-img{
     height:16px;
