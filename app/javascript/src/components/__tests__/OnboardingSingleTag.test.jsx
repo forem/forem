@@ -16,11 +16,11 @@ describe('<OnboardingSingleTag />', () => {
     it('responses to clicks', () => {
       const onClick = jest.fn();
       const context = shallow(<OnboardingSingleTag tag={followingTag} onTagClick={onClick} />);
-      expect(context.find('a').text()).toEqual('✓');
+      expect(context.find('a').text()).toEqual('#✓');
       context.find('.onboarding-tag-link-follow').simulate('click');
       expect(onClick).toHaveBeenCalledTimes(1);
       context.render(<OnboardingSingleTag tag={notFollowingTag} onTagClick={onClick} />);
-      expect(context.find('a').text()).toEqual('+');
+      expect(context.find('a').text()).toEqual('#+');
     });
   });
 
@@ -33,11 +33,11 @@ describe('<OnboardingSingleTag />', () => {
     it('responses to clicks', () => {
       const onClick = jest.fn();
       const context = shallow(<OnboardingSingleTag tag={notFollowingTag} onTagClick={onClick} />);
-      expect(context.find('a').text()).toEqual('+');
+      expect(context.find('a').text()).toEqual('#+');
       context.find('.onboarding-tag-link-follow').simulate('click');
       expect(onClick).toHaveBeenCalledTimes(1);
       context.render(<OnboardingSingleTag tag={followingTag} onTagClick={onClick} />);
-      expect(context.find('a').text()).toEqual('✓');
+      expect(context.find('a').text()).toEqual('#✓');
     });
   });
 });

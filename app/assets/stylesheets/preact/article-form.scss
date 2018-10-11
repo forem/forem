@@ -1,7 +1,10 @@
 @import 'variables';
 
 .articleformcontainer {
-  padding-top: calc(98px + 0.2vw);
+  padding-top: calc(80px + 0.2vw);
+  @media screen and ( min-width: 500px ){
+    padding-top: calc(98px + 0.2vw);
+  }
   padding-bottom: calc(94px + 2vw);
   background: white;
   background: $light-gray;
@@ -44,17 +47,17 @@
 
 .articleform__orgsettings{
   padding: 0px;
-  padding-left: 10px;
+  padding-left: 0px;
   margin: 20px 2px 0px;
-  font-size:23px;
+  font-size:17px;
   cursor: pointer;
   user-select: none;
   img{
-    height: 33px;
-    width: 33px;
+    height: 28px;
+    width: 28px;
     border-radius: 50px;
-    vertical-align: -8px;
-    margin-right: 8px;
+    vertical-align: -7px;
+    margin-right: 4px;
   }
   button {
     background: transparent;
@@ -62,7 +65,7 @@
     border: 0px;
     font-size: 0.8em;
     font-family: $helvetica-condensed;
-    width: 120px;
+    width: 80px;
     border-radius: 100px;
     padding: 1px 0px;
     margin-left: 10px;
@@ -74,6 +77,19 @@
     &.yes{
       background: darken($green, 18%);
       color: white;
+    }
+  }
+  @media screen and ( min-width: 600px ){
+    font-size:23px;
+    padding-left: 10px;
+    img{
+      height: 33px;
+      width: 33px;
+      vertical-align: -8px;
+      margin-right: 8px;
+    }
+    button {
+      width: 120px;
     }
   }
 }
@@ -98,13 +114,17 @@
 }
 
 .articleform__title {
-  height: 50px;
-  width: 94%;
-  font-size: 29px;
+  height: 26px;
+  width: 99%;
+  font-size: 18px;
   word-break: break-word;
   border: 0;
   padding: 20px 0px 15px;
   font-weight: 600;
+  @media screen and ( min-width: 600px ){
+    font-size: 29px;
+    height: 50px;
+  }
 }
 .articleform__detailfields{
   display: flex;
@@ -115,28 +135,42 @@
   display: inline-block;
   flex-grow: 1;
   float: left;
+  padding-right: 15px;
+  @media screen and ( min-width: 500px ){
+    padding-right: 0px;
+  }
 }
 
 .articleform__tags {
-  height: 19px;
-  width: 94%;
+  height: 40px;
+  width: 100%;
+  border-radius: 3px;
+  padding: 8px 8px 7px;
+  @media screen and ( min-width: 500px ){
+    width: 98%;
+  }
+  @media screen and ( min-width: 600px ){
+    height: 19px;
+    border-radius: 100px;
+    padding-left: 17px;
+  }
   margin-left: -4px;
   resize: none;
   border: 0;
   font-size: 16px;
   font-family: $monospace;
   font-weight: bold;
-  border-radius: 100px;
-  padding: 8px 8px 7px;
   background: $light-gray;
-  padding-left: 20px;
 }
 
 .articleform__tagsoptions{
   position: absolute;
   left: 0;
   right: 0;
-  top: 30px;
+  top: 50px;
+  @media screen and ( min-width: 600px ){
+    top: 30px;
+  }
   background: white;
   border: 1px solid $medium-gray;
   box-shadow: $bold-shadow;
@@ -158,15 +192,19 @@
 }
 
 .articleform__imageButton{
-  width: 100px;
   color: $black;
   background: $purple;
   border: 0px;
   border-radius: 300px;
-  padding: 3px;
+  padding: 3px 18px;
   font-family: $helvetica-condensed;
   font-size: 14.4px;
   height: 34px;
+  display: none;
+  @media screen and ( min-width: 600px ){
+    display: inline-block;
+  }
+  margin-left:25px;
   &:hover{
     background: lighten($green, 24%);
   }
@@ -174,7 +212,19 @@
     width: 21px;
     height: 21px;
     vertical-align: -4px;
-    display: inline;
+    display: inline-block;
+  }
+  &.articleform__imageButton--bottombutton{
+    margin-left: -5px;
+    margin-top:10px;
+    margin-bottom: 8px;
+    display: inline-block;
+    padding: 2px 15px;
+    border-radius: 3px;
+    width:100px;
+    @media screen and ( min-width: 600px ){
+      display: none;
+    }  
   }
 }
 
@@ -183,14 +233,18 @@
 }
 
 .articleform__body {
-  min-height: calc(90vh - 280px);
+  min-height: calc(90vh - 370px);
   // height: calc(90vh - 240px);
-  width: 94%;
+  width: 98%;
   border: 0;
-  font-size: 18px;
+  font-size: 15px;
   resize: none;
-  padding: 20px 8px;
+  padding: 20px 6px;
   font-family: $monospace;
+  @media screen and ( min-width: 600px ){
+    font-size: 18px;
+    min-height: calc(90vh - 280px);
+  }
 }
 
 .articleform__buttons{
@@ -207,16 +261,15 @@
     cursor:pointer;
     background: $light-gray;
     font-family: $helvetica-condensed;
-    font-size:16px;
+    font-size:14.5px;
     border: 0px;
     border-radius: 113px;
     box-shadow:  2px 2px 8px darken($light-medium-gray, 13%);
-    padding: 6px 0px;
+    padding: 6px 13px;
     display: inline-block;
-    width: 40%;
     text-align: center;
     color: $medium-gray;
-    margin: 4px calc(6px + 0.5vw);
+    margin: 4px calc(3px + 0.7vw);
     &:hover{
       background: lighten($green, 24%);
     }
@@ -235,6 +288,7 @@
       }
     }
     @media screen and ( min-width: 600px ){
+      font-size:16px;
       width: 130px;
     }
   }
@@ -254,7 +308,7 @@
   border-radius: 3px;
   h2{
     color: $green;
-    font-size: 3em;
+    font-size: 2em;
     font-family: $helvetica-condensed;
   }
   input[type="file"]{

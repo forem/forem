@@ -78,6 +78,28 @@ class MailchimpBot
     success
   end
 
+  def unsubscribe_all_newsletters
+    success = false
+    begin
+      gibbon.lists(ApplicationConfig["MAILCHIMP_NEWSLETTER_ID"]).members(target_md5_email).update(
+        body: {
+          status: "unsubscribed"
+        },
+      )
+      if a_sustaining_member?
+        gibbon.lists(ApplicationConfig["MAILCHIMP_SUSTAINING_MEMBERS_ID"]).members(target_md5_email).update(
+          body: {
+            status: "unsubscribed"
+          },
+        )
+      end
+      success = true
+    rescue Gibbon::MailChimpError => e
+      report_error(e)
+    end
+    success
+  end
+
   private
 
   def a_sustaining_member?
