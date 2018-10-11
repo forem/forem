@@ -448,7 +448,7 @@ GEM
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
-    front_matter_parser (0.1.1)
+    front_matter_parser (0.2.0)
     get_process_mem (0.2.2)
     gibbon (2.2.5)
       faraday (>= 0.9.1)
@@ -967,7 +967,7 @@ DEPENDENCIES
   fix-db-schema-conflicts!
   flipflop (~> 2.4)
   fog (~> 1.41)
-  front_matter_parser (~> 0.1)
+  front_matter_parser (~> 0.2)
   gibbon (~> 2.2)
   google-api-client (~> 0.24)
   guard (~> 2.14)
