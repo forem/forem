@@ -92,6 +92,8 @@ RSpec.describe "internal/users", type: :request do
   end
 
   describe "PUT internal/users/:id/edit" do
+    before { stub_request(:get, "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png") }
+
     it "bans user for spam" do
       post "/internal/users/#{mentor.id}/banish"
       expect(mentor.reload.username).to include("spam")
