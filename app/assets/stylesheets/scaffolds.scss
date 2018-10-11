@@ -1,7 +1,4 @@
 @import 'variables';
-html {
-  overflow-y:scroll;
-}
 
 body {
   background: $lightest-gray;
@@ -11,6 +8,7 @@ body {
   padding:0 !important;
   margin:0 !important;
   margin-top:-20px !important;
+  overflow-y:scroll;
   :focus {
   outline: 0;
   }
@@ -25,6 +23,7 @@ body {
   margin: 0;
   overflow: hidden;
   overflow-y: hidden;
+  height: 90vh;
 }
 
 
