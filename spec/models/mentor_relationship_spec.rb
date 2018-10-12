@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe MentorRelationship, type: :model do
   let(:mentor) { create(:user) }
   let(:mentee) { create(:user) }
-  let(:relationship) { MentorRelationship.new(mentor: mentor, mentee_id: mentee) }
+  let(:relationship) { MentorRelationship.new(mentor_id: mentor.id, mentee_id: mentee.id) }
 
   describe "validations" do
     subject { MentorRelationship.new(mentor: mentor, mentee: mentee) }
@@ -19,5 +19,16 @@ RSpec.describe MentorRelationship, type: :model do
 
   it "is not the same user" do
     expect(MentorRelationship.new(mentor_id: mentor.id, mentee_id: mentor.id)).to be_invalid
+  end
+
+  it "makes the users follow one another" do
+    relationship.save!
+    expect(mentor.reload.following?(mentee)).to eq(true)
+    expect(mentee.reload.following?(mentor)).to eq(true)
+  end
+
+  it "sends an email to both users" do
+    relationship.save!
+    expect(EmailMessage.all.size).to eq(2)
   end
 end
