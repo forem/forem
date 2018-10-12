@@ -56,6 +56,7 @@ Object {
   "checkedUsers": Array [],
   "followRequestSent": false,
   "pageNumber": 1,
+  "profileInfo": Object {},
   "saveRequestSent": false,
   "savedArticles": Array [],
   "showOnboarding": true,

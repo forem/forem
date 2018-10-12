@@ -4,10 +4,11 @@ class Tag < ActsAsTaggableOn::Tag
   resourcify
 
   NAMES = %w(
-    beginners career computerscience git go java javascript
+    beginners career computerscience git go java javascript react vue
     linux productivity python security webdev css php opensource
     ruby cpp dotnet swift testing devops vim kotlin rust elixir
-    scala
+    scala vscode docker aws android ios angular csharp typescript django rails
+    clojure ubuntu elm gamedev flutter bash
   ).freeze
 
   mount_uploader :profile_image, ProfileImageUploader
