@@ -47,7 +47,7 @@ class MessagesController < ApplicationController
       username: new_message.user.username,
       profile_image_url: ProfileImage.new(new_message.user).get(90),
       message: new_message.message_html,
-      timestamp: Time.now,
+      timestamp: Time.current,
       color: new_message.preferred_user_color,
       reception_method: "pushed"
     }.to_json

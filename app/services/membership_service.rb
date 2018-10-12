@@ -13,7 +13,7 @@ class MembershipService
     true if create_subscription &&
         assign_membership_role &&
         user.update(monthly_dues: monthly_dues,
-                    membership_started_at: Time.now,
+                    membership_started_at: Time.current,
                     email_membership_newsletter: true,
                     stripe_id_code: customer.id) &&
         send_welcome_email

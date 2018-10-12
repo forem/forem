@@ -624,7 +624,7 @@ Rails/Date:
   Description: >-
                   Checks the correct usage of date aware methods,
                   such as Date.today, Date.current etc.
-  Enabled: false
+  Enabled: true
 
 Rails/FindBy:
   Description: 'Prefer find_by over where.first.'

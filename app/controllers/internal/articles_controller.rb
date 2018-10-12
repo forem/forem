@@ -33,14 +33,14 @@ class Internal::ArticlesController < Internal::ApplicationController
         page(params[:page]).
         per(100).
         limited_columns_internal_select
-      when "chronological"
-        @articles = Article.
+    when "chronological"
+      @articles = Article.
         where(published: true).
         order("published_at DESC").
         page(params[:page]).
         limited_columns_internal_select.
         per(50)
-      else # MIX
+    else # MIX
       @articles = Article.
         where(published: true).
         order("hotness_score DESC").
@@ -52,7 +52,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         where(published: true).
         or(Article.where(published_from_feed: true)).
         where(featured: true).
-        where("featured_number > ?", Time.now.to_i).
+        where("featured_number > ?", Time.current.to_i).
         includes(:user).
         includes(:buffer_updates).
         limited_columns_internal_select.

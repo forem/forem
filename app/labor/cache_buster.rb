@@ -12,13 +12,13 @@ class CacheBuster
   end
 
   def bust_comment(comment)
-    if comment.commentable.featured_number.to_i > (Time.now.to_i - 5.hours.to_i)
+    if comment.commentable.featured_number.to_i > 5.hours.ago.to_i
       bust("/")
       bust("/?i=i")
       bust("?i=i")
     end
     if comment.commentable.decorate.cached_tag_list_array.include?("discuss") &&
-        comment.commentable.featured_number.to_i > (Time.now.to_i - 35.hours.to_i)
+        comment.commentable.featured_number.to_i > 35.hours.ago.to_i
       bust("/")
       bust("/?i=i")
       bust("?i=i")
@@ -58,7 +58,7 @@ class CacheBuster
   end
 
   def bust_home_pages(article)
-    if article.featured_number.to_i > Time.now.to_i
+    if article.featured_number.to_i > Time.current.to_i
       bust("/")
       bust("?i=i")
     end
