@@ -17,7 +17,7 @@ module Redcarpet
       end
 
       def header(title, header_number)
-        anchor_link = title.downcase.gsub(/\W+/, "-")
+        anchor_link = remove_emoji_and_hyphenate(title)
         <<~HEREDOC
           <h#{header_number}>
             <a name="#{anchor_link}" href="##{anchor_link}" class="anchor">
@@ -25,6 +25,12 @@ module Redcarpet
             #{title}
           </h#{header_number}>
         HEREDOC
+      end
+
+      private
+
+      def remove_emoji_and_hyphenate(string)
+        string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/\s/, "-")
       end
     end
   end
