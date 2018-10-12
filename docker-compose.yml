@@ -1,0 +1,29 @@
+version: "3"
+services:
+  web: &rails_base
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
+      YARN_INTEGRITY_ENABLED: "false"
+    volumes:
+      - .:/usr/src/app
+    command: bundle exec rails server -b 0.0.0.0 -p 3000
+  jobs:
+    ports: []
+    <<: *rails_base
+    command: rails jobs:work
+  webpacker:
+    ports: []
+    <<: *rails_base
+    command: ./bin/webpack-dev-server
+  db:
+    image: postgres
+    ports:
+    - "5432:5432"
