@@ -11,7 +11,7 @@ const OnboardingProfile = ({onChange}) => {
       <input name="summary" placeholder="e.g. I'm a passionate hacker wizard unicorn ninja" maxLength="120" onChange={onChange} />
       <div class="onboarding-profile-question">Where are you located?</div>
       <input name="location" placeholder="e.g. New York City" maxLength="60" onChange={onChange} />
-      <div class="onboarding-profile-question">Where is your title?</div>
+      <div class="onboarding-profile-question">What is your title?</div>
       <input name="employment_title" placeholder="e.g. Frontend developer" maxLength="60" onChange={onChange} />
       <div class="onboarding-profile-question">Where do you work?</div>
       <input name="employer_name" placeholder="e.g. Google" maxLength="60" onChange={onChange} />
