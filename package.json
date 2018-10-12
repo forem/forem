@@ -13,7 +13,8 @@
     "test:watch": "jest app/javascript/ --watch",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "serve-docs": "cd docs && gitdocs serve"
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -90,5 +91,10 @@
     "prop-types": "^15.6.2",
     "pusher-js": "^4.3.1",
     "twilio-video": "^1.14.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

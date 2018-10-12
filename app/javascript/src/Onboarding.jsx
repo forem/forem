@@ -40,7 +40,7 @@ class Onboarding extends Component {
   componentDidMount() {
     this.updateUserData();
     this.getUserTags();
-    document.getElementsByTagName('body')[0].classList.add('modal-open');
+    document.getElementsByTagName("body")[0].classList.add("modal-open");
   }
 
   getUserTags() {
@@ -89,27 +89,6 @@ class Onboarding extends Component {
       });
   }
 
-  getSuggestedArticles() {
-    const followedTags = [];
-    for (let i = 0; i < this.state.allTags.length; i += 1) {
-      if (this.state.allTags[i].following) {
-        followedTags.push(this.state.allTags[i].name);
-      }
-    }
-
-    fetch(`/api/articles/onboarding?tag_list=${followedTags.join(',')}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(json => {
-        this.setState({ articles: json, savedArticles: json });
-      });
-  }
-
   handleBulkFollowUsers(users) {
     if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
       const csrfToken = document.querySelector("meta[name='csrf-token']")
@@ -128,29 +107,6 @@ class Onboarding extends Component {
       }).then(response => {
         if (response.ok) {
           this.setState({ followRequestSent: true });
-        }
-      });
-    }
-  }
-
-  handleBulkSaveArticles(articles) {
-    if (this.state.savedArticles.length > 0 && !this.state.saveRequestSent) {
-      const csrfToken = document.querySelector("meta[name='csrf-token']")
-        .content;
-
-      const formData = new FormData();
-      formData.append('articles', JSON.stringify(articles));
-
-      fetch('/api/reactions/onboarding', {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-        },
-        body: formData,
-        credentials: 'same-origin',
-      }).then(response => {
-        if (response.ok) {
-          this.setState({ saveRequestSent: true });
         }
       });
     }
@@ -278,7 +234,6 @@ class Onboarding extends Component {
   handleNextHover() {
     if (this.state.pageNumber === 2 && this.state.users.length === 0) {
       this.getUsersToFollow();
-      this.getSuggestedArticles();
     }
   }
 
@@ -289,7 +244,6 @@ class Onboarding extends Component {
       this.state.articles.length === 0
     ) {
       this.getUsersToFollow();
-      this.getSuggestedArticles();
     }
     if (this.state.pageNumber < 5) {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
