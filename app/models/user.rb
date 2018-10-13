@@ -228,7 +228,7 @@ class User < ApplicationRecord
   end
 
   def cached_preferred_langs
-    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 80.hours) do
+    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
       langs = []
       langs << "en" if prefer_language_en
       langs << "ja" if prefer_language_ja
@@ -251,7 +251,7 @@ class User < ApplicationRecord
 
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{updated_at}/followed_tag_names"
-    Rails.cache.fetch(cache_name, expires_in: 100.hours) do
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
           follower_id: id,

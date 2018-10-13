@@ -20,8 +20,7 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     @podcast = Podcast.find_by_slug(params[:username])
-    @episode = PodcastEpisode.find_by_slug(params[:slug])
-    if @podcast && @episode
+    if @podcast && @episode = PodcastEpisode.find_by_slug(params[:slug])
       handle_podcast_show
     else
       handle_article_show
@@ -210,7 +209,6 @@ class StoriesController < ApplicationController
     @article_show = true
     @comment = Comment.new
     assign_article_and_user_and_organization
-    assign_sticky_nav
     handle_possible_redirect
     return if performed?
     not_found unless @article
@@ -304,42 +302,5 @@ class StoriesController < ApplicationController
       page(@page).
       per(num_articles).
       filter_excluded_tags(params[:tag])
-  end
-
-  def assign_sticky_nav
-    return unless @article
-    reaction_count_num = Rails.env.production? ? 15 : -1
-    comment_count_num = Rails.env.production? ? 7 : -2
-    more_articles = []
-    article_tags = @article.cached_tag_list_array
-    article_tags.delete("discuss")
-    tag_articles = Article.tagged_with(article_tags, any: true).
-      includes(:user).
-      where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
-      where(published: true).
-      where.not(id: @article.id, user_id: @article.user_id).
-      limited_column_select.
-      where("featured_number > ?", 5.days.ago.to_i).
-      order("RANDOM()").
-      limit(8)
-    if tag_articles.size < 6
-      more_articles = Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
-        includes(:user).
-        where("comments_count > ?", comment_count_num).
-        limited_column_select.
-        where(published: true).
-        where.not(id: @article.id, user_id: @article.user_id).
-        where("featured_number > ?", 5.days.ago.to_i).
-        order("RANDOM()").
-        limit(10 - tag_articles.size)
-    end
-
-    @user_stickies = (@organization || @user).articles.
-      where(published: true).
-      limited_column_select.
-      tagged_with(article_tags, any: true).
-      where.not(id: @article.id).order("published_at DESC").
-      limit(2)
-    @sticky_articles = (tag_articles + more_articles).sample(8)
   end
 end
