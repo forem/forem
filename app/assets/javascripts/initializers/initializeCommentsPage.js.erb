@@ -1,4 +1,4 @@
-const ENTER_KEY_CODE = 13;
+
 
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
@@ -274,6 +274,7 @@ function handleKeyUp(event) {
 
 function handleKeyDown(event) {
     // If Ctrl+Enter OR Command+Enter is pressed
+    var ENTER_KEY_CODE = 13;
     if((event.ctrlKey || event.metaKey) && event.keyCode === ENTER_KEY_CODE) {
         // Get user details and extract code of conduct & comment count
         var user = userData();
