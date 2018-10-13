@@ -359,17 +359,10 @@
   resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.1.3.tgz#3920a5aea6ebe1ac434b4dfe17430d3c1035dcc2"
   integrity sha512-K3/Ttlj2alDW8jw41Qpc0LPkK4w36DplXA2uTs+mjIyY9cFkn2OdavMo0mZ7iuzau0clmj28fc8l50nGSD0KCQ==
 
-<<<<<<< HEAD
-"@webscopeio/react-textarea-autocomplete@^2.2.0":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.3.tgz#a691c0f26bff65fbf20cabddb7a23a770f5ca47b"
-  integrity sha512-6RXRYwsZW2TxRKh/vObNSH/edxItG9bw56txVgogEzH7iEfkRsOrWSBhh8dvJYuBE4Ctql2Vo1+xwOWmbyQ3Rw==
-=======
 "@webscopeio/react-textarea-autocomplete@^2.3.4":
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.4.tgz#f6eaadff8a4683ff9302c90637eb071df4bccbef"
   integrity sha512-GofKzYbJ+Ad/x60xVgPw3Ah7mLUpEiyp+nunXKMOYDlh7BloPp49zW4q6KyIFfmRth9D68Cfh7QF0Oqs9X/uag==
->>>>>>> upstream/master
   dependencies:
     custom-event "^1.0.1"
     textarea-caret "3.0.2"
@@ -3680,17 +3673,10 @@ eslint-plugin-import@^2.14.0:
     read-pkg-up "^2.0.0"
     resolve "^1.6.0"
 
-<<<<<<< HEAD
-eslint-plugin-jsx-a11y@^6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.1.1.tgz#7bf56dbe7d47d811d14dbb3ddff644aa656ce8e1"
-  integrity sha512-JsxNKqa3TwmPypeXNnI75FntkUktGzI1wSa1LgNZdSOMI+B4sxnr1lSF8m8lPiz4mKiC+14ysZQM4scewUrP7A==
-=======
 eslint-plugin-jsx-a11y@^6.1.2:
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.1.2.tgz#69bca4890b36dcf0fe16dd2129d2d88b98f33f88"
   integrity sha512-7gSSmwb3A+fQwtw0arguwMdOdzmKUgnUcbSNlo+GjKLAQFuC2EZxWqG9XHRI8VscBJD5a8raz3RuxQNFW+XJbw==
->>>>>>> upstream/master
   dependencies:
     aria-query "^3.0.0"
     array-includes "^3.0.3"
@@ -4967,17 +4953,10 @@ https-browserify@^1.0.0:
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
   integrity sha1-7AbBDgo0wPL68Zn3/X/Hj//QPHM=
 
-<<<<<<< HEAD
-husky@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-1.0.1.tgz#749bc6b3a14bdc9cab73d8cc827b92fcd691fac6"
-  integrity sha512-MxwLwwwgY7mqV4auSpGWKPTCkZ9RmsdGojQQBvRtr6vxnjSOyI5l/M58QdUz0vRKb0igTpbzBeoUsScx4XJwQg==
-=======
 husky@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/husky/-/husky-1.1.1.tgz#7179043184f68a4d1ffc975cbd1c6132ef1fd7b3"
   integrity sha512-D8ly8eIZdWzWVG4mh4apaX1PP47uLSaN8CS0RyuuLtHJ20Gt6Ccky5pSecaPsqxNzQj0zon3x6QX/0kCc5/TOQ==
->>>>>>> upstream/master
   dependencies:
     cosmiconfig "^5.0.6"
     execa "^0.9.0"
