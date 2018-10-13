@@ -13,16 +13,16 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
-  has_many    :articles
+  has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
   has_many    :collections, dependent: :destroy
-  has_many    :comments
+  has_many    :comments, dependent: :destroy
   has_many    :email_messages, class_name: "Ahoy::Message"
   has_many    :github_repos, dependent: :destroy
   has_many    :identities, dependent: :destroy
   has_many    :mentions, dependent: :destroy
-  has_many    :messages
+  has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable
   has_many    :authored_notes, as: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
@@ -97,6 +97,9 @@ class User < ApplicationRecord
               inclusion: { in: %w(tabs spaces),
                            message: "%{value} is not a valid answer" },
               allow_blank: true
+  validates :editor_version,
+              inclusion: { in: %w(v1 v2),
+                           message: "%{value} must be either v1 or v2" }
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true
@@ -126,6 +129,7 @@ class User < ApplicationRecord
   before_destroy :remove_from_algolia_index
   before_destroy :destroy_empty_dm_channels
   before_destroy :destroy_follows
+  before_destroy :unsubscribe_from_newsletters
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -342,17 +346,18 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = ["Profile",
-                "Mentorship",
-                "Integrations",
-                "Notifications",
-                "Publishing from RSS",
-                "Organization",
-                "Billing"]
+    tab_list = %w(
+      Profile
+      Mentorship
+      Integrations
+      Notifications
+      Publishing\ from\ RSS
+      Organization
+      Billing
+    )
     tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list << "Misc"
-    tab_list
+    tab_list.push("Account", "Misc")
   end
 
   def profile_image_90
@@ -518,6 +523,8 @@ class User < ApplicationRecord
 
   def remove_from_algolia_index
     remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
   end
 
   def destroy_empty_dm_channels
@@ -532,6 +539,10 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   def mentorship_status_update

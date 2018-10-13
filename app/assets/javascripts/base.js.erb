@@ -257,6 +257,12 @@ var instantClick
       }
       display(a.href);
       e.preventDefault();
+      if (window.ga && ga.create) {
+        if (a.hasAttribute("data-featured-article")){
+          var data = a.dataset.featuredArticle;
+          ga('send', 'event', 'click', 'featured-feed-click', data, null);
+        }
+      }
     }
     catch(err){
       console.log(err);
@@ -616,10 +622,33 @@ var instantClick
     triggerPageEvent('change', true)
 
     addEventListener('popstate', popstateListener)
+    addRefreshBehavior();
   }
 
   function on(eventType, callback) {
     $eventsCallbacks[eventType].push(callback)
+  }
+
+  function addRefreshBehavior(){
+    if (!("ontouchstart" in document.documentElement)) {
+      return
+    }
+
+    var script = document.createElement('script');
+    script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
+    document.head.appendChild(script);
+    var waitingOnPTR = setInterval(function(){
+      if (typeof PullToRefresh !== 'undefined') {
+        var ptr = PullToRefresh.init({
+          mainElement: 'body',
+          passive: true,
+          onRefresh: function(){
+            window.location.reload()
+            }
+         });
+         clearInterval(waitingOnPTR)
+      }
+    }, 1)
   }
 
 

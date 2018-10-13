@@ -3,26 +3,12 @@
     <h1>Editor Guide 🤓</h1>
   </div>
   <div class="body">
-    <h1><strong>Things to Know</strong></h1>
-    <ul>
-      <li>We use a markdown editor that uses <a href="https://jekyllrb.com/docs/frontmatter/">Jekyll front matter</a>.</li>
-      <li>Most of the time, you can write inline HTML directly into your posts.</li>
-      <li>We support native Liquid tags and created some fun custom ones, too! Trying embedding a Tweet or GitHub issue in your post.</li>
-      <li>Links to unpublished posts are shareable for feedback/review.</li>
-      <li>When you're ready to publish, set the published variable to <strong>true.</strong></li>
-    </ul>
-
-    <h2><u><strong>Front Matter</strong></u></h2>
-    <p>Custom variables set for each post, located between the triple-dashed lines in your editor. Here are a list of possibilities:</p>
-    <ul>
-      <li><strong>title:</strong> title of your article</li>
-      <li><strong>published:</strong> boolean that determines whether or not your article is published</li>
-      <li><strong>description:</strong> description area in Twitter cards and open graph cards</li>
-      <li><strong>tags:</strong> max of four tags, needs to be comma-separated</li>
-      <li><strong>canonical_url:</strong> link for canonical version of content</li>
-      <li><strong>cover_image: </strong> cover image for post, accepts a URL. <br>The best size is 1000 x 420.</li>
-    </ul>
-    <h2><u><strong>Markdown Basics</strong></u></h2>
+    <% if version == "1" %>
+      <%= render "pages/v1_editor_guide_preamble" %>
+    <% else %>
+      <p><em>Use <strong>markdown</strong> to write and format <a href="/">dev.to</a> posts. Use <strong>liquid tags</strong> to make add rich content such as tweets and videos. More below.</em> ❤️</p>
+    <% end %>
+    <h2 style="font-size:2.8em"><strong>✍ Markdown Basics</strong></h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a></p>
 
     <h3><strong>Bold & Italic</strong></h3>
@@ -50,7 +36,7 @@
     <h2>Two '#'s for a h2 header</h2>
     <h6>Six '#'s for a h6 header</h6>
 
-    <h2><strong><u>Liquid Tags</u></strong></h2>
+    <h2 style="font-size:2.8em"><strong>🌊 Liquid Tags</strong></h2>
     <p>We support native <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:</p>
 
     <h3><strong>dev.to Article/Post Embed</strong></h3>
@@ -157,6 +143,10 @@
     <pre>
       {% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}
     </pre>
+
+    <h3><strong>Soundcloud Embed</strong></h3>
+    <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
+    <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
     <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>

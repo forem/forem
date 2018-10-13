@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180930015157) do
+ActiveRecord::Schema.define(version: 20181008174839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +62,8 @@ ActiveRecord::Schema.define(version: 20180930015157) do
     t.boolean "email_digest_eligible", default: true
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
+    t.float "featured_clickthrough_rate", default: 0.0
+    t.integer "featured_impressions", default: 0
     t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
@@ -292,20 +296,19 @@ ActiveRecord::Schema.define(version: 20180930015157) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
+    t.integer "affected_id"
     t.string "category"
     t.datetime "created_at"
     t.string "feedback_type"
-    t.datetime "last_reviewed_at"
     t.text "message"
-    t.boolean "offender_email_sent?", default: false
     t.integer "offender_id"
     t.string "reported_url"
-    t.boolean "reporter_email_sent?", default: false
     t.integer "reporter_id"
     t.string "status", default: "Open"
     t.datetime "updated_at"
-    t.boolean "victim_email_sent?", default: false
-    t.integer "victim_id"
+    t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
+    t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
+    t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
@@ -659,6 +662,7 @@ ActiveRecord::Schema.define(version: 20180930015157) do
     t.string "currently_learning"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
+    t.string "editor_version", default: "v1"
     t.string "education"
     t.string "email", default: "", null: false
     t.boolean "email_badge_notifications", default: true

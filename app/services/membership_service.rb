@@ -48,7 +48,7 @@ class MembershipService
   def update_stripe_plan_for_subscription
     subscription.items = [{
       id: subscription.items.data[0].id,
-      plan: plan.id,
+      plan: plan.id
     }]
     subscription.save
   end

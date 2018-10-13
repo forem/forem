@@ -1,8 +1,12 @@
 # rubocop:disable Metrics/BlockLength
+#
+def yarn_integrity_enabled?
+  ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
+end
 
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = true
+  config.webpacker.check_yarn_integrity = yarn_integrity_enabled?
 
   # Replace with a lambda or method name defined in ApplicationController
   # to implement access control for the Flipflop dashboard.
@@ -26,7 +30,7 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      "Cache-Control" => "public, max-age=172800",
+      "Cache-Control" => "public, max-age=172800"
     }
   else
     config.action_controller.perform_caching = false
@@ -75,7 +79,7 @@ Rails.application.configure do
     user_name: '<%= ENV["DEVELOPMENT_EMAIL_USERNAME"] %>',
     password: '<%= ENV["DEVELOPMENT_EMAIL_PASSWORD"] %>',
     authentication: :plain,
-    domain: "localhost:3000",
+    domain: "localhost:3000"
   }
 
   config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"

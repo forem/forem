@@ -37,7 +37,7 @@ rspec_options = {
   cmd: "bin/spring rspec -p",
   #############################
   failed_mode: :focus,
-  bundler_env: :clean_env,
+  bundler_env: :clean_env
 }
 
 guard :rspec, rspec_options do

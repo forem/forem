@@ -56,7 +56,7 @@ class NotifyMailer < ApplicationMailer
     track extra: { feedback_message_id: params[:feedback_message_id] }
     mail(to: params[:email_to], subject: params[:email_subject])
   end
-  
+
   def new_report_email(report)
     @feedback_message = report
     @user = report.reporter
@@ -73,5 +73,25 @@ class NotifyMailer < ApplicationMailer
   def reporter_resolution_email(report)
     @feedback_message = report
     @user = report.reporter
+  end
+
+  def account_deleted_email(user)
+    @name = user.name
+    subject = "dev.to - Account Deletion Confirmation"
+    mail(to: user.email, subject: subject)
+  end
+
+  def mentee_email(mentee, mentor)
+    @mentee = mentee
+    @mentor = mentor
+    subject = "You have been matched with a DEV mentor!"
+    mail(to: @mentee.email, subject: subject)
+  end
+
+  def mentor_email(mentor, mentee)
+    @mentor = mentor
+    @mentee = mentee
+    subject = "You have been matched with a new DEV mentee!"
+    mail(to: @mentor.email, subject: subject)
   end
 end

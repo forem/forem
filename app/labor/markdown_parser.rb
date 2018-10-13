@@ -14,7 +14,7 @@ class MarkdownParser
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong em p h1 h2 h3 h4 h5 h6 i u b code pre
+    tag_whitelist = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
                        br ul ol li small sup sub img a span hr blockquote)
     attribute_whitelist = %w(href strong em ref rel src title alt class)
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
@@ -38,7 +38,7 @@ class MarkdownParser
     renderer_options = {
       hard_wrap: true,
       filter_html: false,
-      link_attributes: { rel: "noopener noreferrer", target: "_blank" },
+      link_attributes: { rel: "noopener noreferrer", target: "_blank" }
     }
     renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
@@ -106,7 +106,7 @@ class MarkdownParser
 
   def remove_nested_linebreak_in_list(html)
     html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//*[self::ul or self::ol or self::li]/br[last()]").each(&:remove)
+    html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
     html_doc.to_html
   end
 

@@ -4,7 +4,9 @@
  * stackoverflow.com/questions/18262729/ how-to-stop-window-jumping-when-typing-in-autoresizing-textarea
  */
 function initEditorResize() {
-  var observe, scrollLeft, scrollTop;
+  var observe;
+  var scrollLeft;
+  var scrollTop;
   var textarea = document.getElementById('article_body_markdown');
   var oldEditor = document.getElementById('markdown-editor-main');
 
@@ -47,7 +49,11 @@ function initEditorResize() {
     }
     var len = textarea.value.length;
     // If character entered is at the end of the textarea (therefore cursor)
-    if((textarea.selectionEnd > (len - 10)) && len > 50 && document.activeElement === textarea ) {
+    if (
+      textarea.selectionEnd > len - 15 &&
+      len > 400 &&
+      document.activeElement === textarea
+    ) {
       window.scrollTo(scrollLeft, 10000);
     } else {
       window.scrollTo(scrollLeft, scrollTop);

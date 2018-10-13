@@ -25,9 +25,11 @@ Choose OAuth or Email Sign Up
 
 7.  Change your keys accordingly (name of Algolia key -> name of our application key):
 
-* `Application ID -> ALGOLIASEARCH_APPLICATION_ID`
-* `Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY`
-* `Admin API KEY -> ALGOLIASEARCH_API_KEY`
+```
+Application ID -> ALGOLIASEARCH_APPLICATION_ID
+Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY
+Admin API KEY -> ALGOLIASEARCH_API_KEY
+```
 
 ![screen shot 2018-05-02 at 4 26 27 pm](https://user-images.githubusercontent.com/17884966/39547471-b24f2e36-4e25-11e8-9a0e-b988d6a8253f.png)
 
@@ -62,9 +64,11 @@ Choose OAuth or Email Sign Up
 
 7.  Change your keys accordingly (name of Algolia key -> name of our application key):
 
-* `Application ID -> ALGOLIASEARCH_APPLICATION_ID`
-* `Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY`
-* `Admin API KEY -> ALGOLIASEARCH_API_KEY`
+```
+Application ID -> ALGOLIASEARCH_APPLICATION_ID
+Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY
+Admin API KEY -> ALGOLIASEARCH_API_KEY
+```
 
 ![screen shot 2018-05-02 at 4 26 27 pm](https://user-images.githubusercontent.com/17884966/39547471-b24f2e36-4e25-11e8-9a0e-b988d6a8253f.png)
 
@@ -92,8 +96,10 @@ The only important field is the "Callback URL" `http://localhost:3000/users/auth
 
 5.  Change your keys accordingly: (name of Twitter key -> name of our application key):
 
-* `Access Token -> TWITTER_KEY`
-* `Access Token Secret -> TWITTER_SECRET`
+```
+Access Token -> TWITTER_KEY
+Access Token Secret -> TWITTER_SECRET
+```
 
 6.  Done!
 
@@ -104,8 +110,10 @@ The only important field is the "Callback URL" `http://localhost:3000/users/auth
     ![screen shot 2018-04-26 at 4 08 01 pm](https://user-images.githubusercontent.com/17884966/39329488-77cbf554-496c-11e8-941e-dd257b5223ee.png)
 3.  Change your keys accordingly; (name of GitHub key -> name of our application key):
 
-* `Client ID -> GITHUB_KEY`
-* `Client Secret -> GITHUB_SECRET`
+```
+Client ID -> GITHUB_KEY
+Client Secret -> GITHUB_SECRET
+```
 
 4.  Done!
 
@@ -133,8 +141,35 @@ The only important field is the "Callback URL" `http://localhost:3000/users/auth
 
 6.  Change your keys accordingly: (name of Stream key -> name of our application key):
 
-* `Key -> STREAM_RAILS_KEY`
-* `Secret -> STREAM_RAILS_SECRET`
-* `"https://us-east-api.stream-io-api.com/api/v1.0/" -> STREAM_URL`
+```
+Key -> STREAM_RAILS_KEY
+Secret -> STREAM_RAILS_SECRET
+"https://us-east-api.stream-io-api.com/api/v1.0/" -> STREAM_URL
+```
 
 7.  Done!
+
+# Pusher
+
+1. [Sign up for a free account with this link](https://dashboard.pusher.com/accounts/sign_up).
+
+   ![screen shot 2018-10-03 at 5 48 09 pm](https://user-images.githubusercontent.com/7942714/46447013-85187700-c734-11e8-92f7-89a17240ea0f.png)
+
+2. Once signed in, fill out the prompt to create a new Pusher Channels app. Only an app name is required.
+
+   ![screen shot 2018-10-03 at 5 35 14 pm](https://user-images.githubusercontent.com/7942714/46446837-69f93780-c733-11e8-82d9-52ad97812d4b.png)
+
+3. In your new Pusher Channels app, click the "App Keys" tab.
+
+   ![screen shot 2018-10-03 at 5 41 43 pm](https://user-images.githubusercontent.com/7942714/46446905-c0667600-c733-11e8-9c55-8fabf28a27fe.png)
+
+4. Change your keys accordingly (name of Pusher key -> name of our application key):
+
+```
+app_id -> PUSHER_APP_ID
+key -> PUSHER_KEY
+secret -> PUSHER_SECRET
+cluster -> PUSHER_CLUSTER
+```
+
+5. Done!
