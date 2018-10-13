@@ -98,6 +98,49 @@
     <br/>
     <%= f.submit %>
   <% end %>
-
 </div>
 
+<% if @user.seeking_mentorship %>
+  <h2> Possible Mentors </h2>
+  <% count = 0 %>
+  <% User.where(offering_mentorship: true).order("mentor_form_updated_at DESC").each do |possible_mentor| %>
+    <% break if count > 18 %>
+    <% count = count + 1 %>
+    <% tag_intersection = ( @user.cached_followed_tag_names & possible_mentor.cached_followed_tag_names ) %>
+    <% mentor_relationships_count = MentorRelationship.where(mentor_id: possible_mentor.id).size %>
+    <% if tag_intersection.any? && mentor_relationships_count < 2 %>
+      <div class="row">
+        <div class="col-md-2">
+          <h4>User</h4>
+          <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
+        </div>
+        <div class="col-md-3">
+          <h4>Tag Intersection</h4>
+          <%= tag_intersection.join(", ") %>
+        </div>
+        <div class="col-md-3">
+          <h4>Mentor description</h4>
+          <%= possible_mentor.mentor_description %>
+        </div>
+        <div class="col-md-3">
+          <h4>Skills/Languages</h4>
+          <%= possible_mentor.mostly_work_with %>
+        </div>
+        <div class="col-md-1">
+          <h4>Action</h4>
+          <%= form_for ([:internal, @user]) do |f| %>
+            <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
+            <%= f.submit "Match!" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
+
+<h2> Recent Emails </h2>
+<% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+  <div class="row">
+    <a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <%= email.sent_at&.strftime("%b %e '%y") %>
+  </div>
+<% end %>

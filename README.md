@@ -151,7 +151,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 - [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 - [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
 
-### Installation
+### Standard Installation
 
 0.  Make sure all the prerequisites are installed.
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
@@ -176,6 +176,18 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
+
+### Docker Installation (BETA)
+
+Our docker implementation is incomplete and may not work smoothly. Please kindly report any issues and any contribution is welcomed!
+
+1. Install `docker` and `docker-compose`
+1. `git clone git@github.com:thepracticaldev/dev.to.git`
+1. Set environment variables above as described in the "Basic Installation"
+1. run `docker-compose build`
+1. run `docker-compose run web rails db:setup`
+1. run `docker-compose up`
+1. That's it! Navigate to `localhost:3000`
 
 #### Starting the application
 
