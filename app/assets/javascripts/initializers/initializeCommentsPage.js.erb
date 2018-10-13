@@ -1,3 +1,5 @@
+const ENTER_KEY_CODE = 13;
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
@@ -268,6 +270,35 @@ function handleBlur(event) {
 
 function handleKeyUp(event) {
   handleSizeChange(event);
+}
+
+function handleKeyDown(event) {
+    // If Ctrl+Enter OR Command+Enter is pressed
+    if((event.ctrlKey || event.metaKey) && event.keyCode === ENTER_KEY_CODE) {
+        // Get user details and extract code of conduct & comment count
+        var user = userData();
+        if (!user) {
+            return;
+        }
+
+        var commentCount = user.number_of_comments;
+
+        // var codeOfConduct = user.checked_code_of_conduct;
+        // Code of conduct is false the first time even if the user has accepted it
+        // so we are not using it in the check below
+        // It also seems unnecessary if comment count >= 1 indicates that
+        // it was previously accepted
+
+        // Ensure that user has commented at least once
+        // and we have a non-empty comment to post
+        if (commentCount >= 1 &&
+            event.target.value.trim() !== '') {
+            // get a reference to the submit button for the text area (first level comment vs. reply comment)
+            var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
+            var submitButton = document.querySelector(`#${parentFormId} input[type="submit"].comment-action-button`);
+            submitButton.click();
+        }
+    }
 }
 
 function handleSizeChange(event) {
