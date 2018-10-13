@@ -8,4 +8,15 @@
     width: 0 !important;
   }
 
+  .gist .markdown-body pre {
+    margin-left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    color: #29292e;
+  }
+
+  .gist .markdown-body pre code {
+    color: #29292e;
+  }
+
 }
