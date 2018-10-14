@@ -1,13 +1,11 @@
 class StickyArticleCollection
-  attr_accessor :article, :author, :tag_articles, :more_articles, :reaction_count_num, :comment_count_num
+  attr_accessor :article, :author, :reaction_count_num, :comment_count_num
   def initialize(article, author)
     @article = article
     @author = author
     @article_tags = article_tags
     @reaction_count_num = Rails.env.production? ? 15 : -1
     @comment_count_num = Rails.env.production? ? 7 : -2
-    @tag_articles = tag_articles
-    @more_articles = more_articles
   end
 
   def user_stickies
@@ -36,16 +34,16 @@ class StickyArticleCollection
   end
 
   def more_articles
-    return [] if tag_articles.size < 6
+    return [] if tag_articles.size > 6
     Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
-        includes(:user).
-        where("comments_count > ?", comment_count_num).
-        limited_column_select.
-        where(published: true).
-        where.not(id: article.id, user_id: article.user_id).
-        where("featured_number > ?", 5.days.ago.to_i).
-        order("RANDOM()").
-        limit(10 - tag_articles.size)
+      includes(:user).
+      where("comments_count > ?", comment_count_num).
+      limited_column_select.
+      where(published: true).
+      where.not(id: article.id, user_id: article.user_id).
+      where("featured_number > ?", 5.days.ago.to_i).
+      order("RANDOM()").
+      limit(10 - tag_articles.size)
   end
 
   def article_tags
