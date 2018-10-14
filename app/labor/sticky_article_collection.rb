@@ -38,14 +38,14 @@ class StickyArticleCollection
   def more_articles
     return [] if tag_articles.size < 6
     Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
-        includes(:user).
-        where("comments_count > ?", comment_count_num).
-        limited_column_select.
-        where(published: true).
-        where.not(id: article.id, user_id: article.user_id).
-        where("featured_number > ?", 5.days.ago.to_i).
-        order("RANDOM()").
-        limit(10 - tag_articles.size)
+      includes(:user).
+      where("comments_count > ?", comment_count_num).
+      limited_column_select.
+      where(published: true).
+      where.not(id: article.id, user_id: article.user_id).
+      where("featured_number > ?", 5.days.ago.to_i).
+      order("RANDOM()").
+      limit(10 - tag_articles.size)
   end
 
   def article_tags
