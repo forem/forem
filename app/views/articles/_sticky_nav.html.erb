@@ -1,3 +1,6 @@
+<% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
+<% @sticky_articles = @sticky_collection.suggested_stickies %>
+<% @user_stickies = @sticky_collection.user_stickies %>
 
 <% @actor = @article.organization || @article.user %>
 <style>
@@ -76,11 +79,11 @@
       </a>
     <% end %>
   <% end %>
-  <% if sticky_articles %>
+  <% if @sticky_articles %>
     <div class="primary-sticky-nav-title">
       <img src="<%= asset_path "emoji/apple-fire.png"%>"/> Trending on <a href="https://dev.to">dev.to</a>
     </div>
-    <% sticky_articles.each do |article| %>
+    <% @sticky_articles.each do |article| %>
       <a class="primary-sticky-nav-element" href="<%= article.path %>">
         <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
         <%= article.title %>
@@ -91,11 +94,5 @@
         </div>
       </a>
     <% end %>
-    <% if 1 == 2 %>
-      <a class="primary-sticky-nav-element sticky-join-cta" href="/enter">
-        <img src="<%= asset_path "emoji/apple-fire.png"%>" /> Join the DEV Community
-      </a>
-    <% end %>
-
   <% end %>
 </div>

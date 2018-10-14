@@ -19,7 +19,7 @@ RSpec.describe "StoriesShow", type: :request do
     it "redirects to appropriate if article belongs to org and user visits user version" do
       article.update(organization_id: create(:organization).id)
       get "/#{article.user.username}/#{article.slug}"
-      expect(response.body).to redirect_to article.path
+      expect(response.body).to redirect_to article.reload.path
     end
 
     it "renders to appropriate page if user changes username" do
