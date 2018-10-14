@@ -296,7 +296,7 @@ function handleKeyDown(event) {
             event.target.value.trim() !== '') {
             // get a reference to the submit button for the text area (first level comment vs. reply comment)
             var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
-            var submitButton = document.querySelector(`#${parentFormId} input[type="submit"].comment-action-button`);
+            var submitButton = document.querySelector('#' + parentFormId + ' input[type="submit"].comment-action-button');
             submitButton.click();
         }
     }
