@@ -846,7 +846,7 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
-    test-prof (0.5.0)
+    test-prof (0.7.2)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -1037,7 +1037,7 @@ DEPENDENCIES
   stream_rails (~> 2.6)
   stripe (~> 3.25)
   stripe-ruby-mock (~> 2.5)
-  test-prof (~> 0.5)
+  test-prof (~> 0.7)
   therubyracer (~> 0.12)
   timber (~> 2.6)
   timecop (~> 0.9)
