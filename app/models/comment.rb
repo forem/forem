@@ -226,6 +226,13 @@ class Comment < ApplicationRecord
     )
   end
 
+  def self.comment_async_bust(commentable, username)
+    commentable.touch
+    commentable.touch(:last_comment_at)
+    CacheBuster.new.bust_comment(commentable, username)
+    commentable.index!
+  end
+
   private
 
   def send_to_moderator
@@ -264,7 +271,6 @@ class Comment < ApplicationRecord
   end
 
   def calculate_score
-    ## NB: Not the culprit
     update_column(:score, BlackBox.comment_quality_score(self))
     update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
     root.save unless is_root?
@@ -299,21 +305,8 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
-    binding.pry
-    expire_root_fragment
-    cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
-    cache_buster.bust("#{commentable.path}/comments") if commentable
-    puts "==1==="
-    expire_root_fragment
-    puts "==2==="
-    commentable.touch
-    commentable.touch(:last_comment_at)
-    puts "==3==="
-    CacheBuster.new.bust_comment(self)
-    puts "==4==="
-    commentable.index!
-    puts "==5==="
+    bust_cache
+    Comment.delay.comment_async_bust(commentable, user.username)
     remove_algolia_index
     reactions.destroy_all
   end
@@ -323,22 +316,7 @@ class Comment < ApplicationRecord
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
-    comment_async_bust
   end
-
-  def comment_async_bust
-    puts "==1==="
-    expire_root_fragment
-    puts "==2==="
-    commentable.touch
-    commentable.touch(:last_comment_at)
-    puts "==3==="
-    CacheBuster.new.bust_comment(self)
-    puts "==4==="
-    commentable.index!
-    puts "==5==="
-  end
-  handle_asynchronously :comment_async_bust
 
   def send_email_notification
     NotifyMailer.new_reply_email(self).deliver
