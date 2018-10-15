@@ -77,10 +77,42 @@ RSpec.describe MarkdownParser do
     end
   end
 
+  context "when using gifs from Giphy as images" do
+    let(:giphy_markdown_texts) do
+      %w(
+        ![source](https://media.giphy.com/media/3ow0TN2M8TH2aAn67F/giphy.gif)
+        ![social](https://media.giphy.com/media/3ow0TN2M8TH2aAn67F/giphy.gif)
+        ![small](https://media.giphy.com/media/3ow0TN2M8TH2aAn67F/200w_d.gif)
+      )
+    end
+
+    it "does not wrap giphy images with Cloudinary" do
+      giphy_markdown_texts.each do |body_markdown|
+        html = Nokogiri::HTML(generate_and_parse_markdown(body_markdown))
+        img_src = html.search("img")[0]["src"]
+        expect(img_src).not_to include("https://res.cloudinary.com")
+      end
+    end
+
+    it "uses the raw gif from i.giphy.com" do
+      giphy_markdown_texts.each do |body_markdown|
+        html = Nokogiri::HTML(generate_and_parse_markdown(body_markdown))
+        img_src = html.search("img")[0]["src"]
+        expect(img_src).to start_with("https://i.giphy.com")
+      end
+    end
+  end
+
   context "when an image is used" do
+    let(:markdown_with_img) { "![](https://image.com/image.jpg)" }
+
     it "wraps image in link" do
-      inline_code = "![](https://image.com/image.jpg)"
-      expect(generate_and_parse_markdown(inline_code)).to include("<a")
+      expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
+    end
+
+    it "wraps the image with Cloudinary" do
+      expect(generate_and_parse_markdown(markdown_with_img)).
+        to include("https://res.cloudinary.com")
     end
   end
 
