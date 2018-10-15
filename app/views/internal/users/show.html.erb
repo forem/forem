@@ -106,7 +106,7 @@
 
   <h2> Possible Mentors </h2>
   <% count = 0 %>
-  <% User.where(offering_mentorship: true).where.not(mentee_form_updated_at: nil).order("mentor_form_updated_at DESC").each do |possible_mentor| %>
+  <% User.where(offering_mentorship: true).where.not(mentor_form_updated_at: nil).order("mentor_form_updated_at DESC").each do |possible_mentor| %>
     <% break if count > 20 %>
     <% count = count + 1 %>
     <% tag_intersection = ( @user.cached_followed_tag_names & possible_mentor.cached_followed_tag_names ) %>
