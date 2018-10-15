@@ -3,7 +3,6 @@
 - We use [_Puma_](https://github.com/puma/puma) for the server
 - We [rely heavily on edge caching](https://dev.to/ben/making-devto-insanely-fast) with _Fastly_
 - We use _Cloudinary_ for image manipulation/serving
-- We use _Keen_ for event storage
 - We use _Airbrake_ for error monitoring
 - We use _Timber_ for logging
 - We use [_Delayed Job_](https://github.com/collectiveidea/delayed_job) for background workers
