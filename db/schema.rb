@@ -693,6 +693,7 @@ ActiveRecord::Schema.define(version: 20181008174839) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
     t.datetime "mentee_form_updated_at"
