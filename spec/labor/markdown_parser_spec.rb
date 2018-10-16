@@ -149,16 +149,4 @@ RSpec.describe MarkdownParser do
       expect(result).to include("<aside><abbr title=\"ol korrect\">OK</abbr><aside>")
     end
   end
-
-  context "when using emojis" do
-    it "converts emoji names wrapped in colons into unicode" do
-      joy_emoji_unicode = Emoji.find_by_alias("joy").raw
-      expect(generate_and_parse_markdown(":joy:")).to include(joy_emoji_unicode)
-    end
-
-    it "leaves original text between colons when no emoji is found" do
-      emoji_text = ":no_one_will_ever_create_an_emoji_with_this_alias:"
-      expect(generate_and_parse_markdown(emoji_text)).to include(emoji_text)
-    end
-  end
 end
