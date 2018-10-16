@@ -15,6 +15,33 @@ class MentorRelationship < ApplicationRecord
     end
   end
 
+  def self.unmatched_mentees
+    sql = "SELECT mentee_form_updated_at,
+       users.id,
+       mentor_relationships.mentor_id
+    FROM users
+    LEFT JOIN notes ON users.id = notes.noteable_id
+    LEFT JOIN mentor_relationships ON users.id = mentor_relationships.mentee_id
+    WHERE seeking_mentorship IS TRUE
+    AND mentor_relationships.mentor_id IS null"
+    record_ids = ActiveRecord::Base.connection.execute(sql).pluck("id")
+    User.where(id: record_ids)
+  end
+
+  def self.unmatched_mentors
+    sql = "SELECT mentor_form_updated_at,
+       users.id,
+       mentor_relationships.mentor_id
+    FROM users
+    LEFT JOIN notes ON users.id = notes.noteable_id
+    LEFT JOIN mentor_relationships ON users.id = mentor_relationships.mentor_id
+    WHERE offering_mentorship IS TRUE
+    AND mentor_relationships.mentee_id IS null"
+    record_ids = ActiveRecord::Base.connection.execute(sql).pluck("id")
+    User.where(id: record_ids)
+  end
+
+
   private
 
   def mutual_follow
