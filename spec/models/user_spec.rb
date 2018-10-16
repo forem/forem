@@ -144,13 +144,13 @@ RSpec.describe User, type: :model do
 
     it "accepts valid https medium url" do
       %w(jess jess/ je-ss je_ss).each do |username|
-        user.dribbble_url = "https://medium.com/#{username}"
+        user.medium_url = "https://medium.com/#{username}"
         expect(user).to be_valid
       end
     end
 
     it "does not accept invalid medium url" do
-      user.dribbble_url = "ben.com"
+      user.medium_url = "ben.com"
       expect(user).not_to be_valid
     end
 
