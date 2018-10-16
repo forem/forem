@@ -85,13 +85,13 @@ class NotifyMailer < ApplicationMailer
     @mentee = mentee
     @mentor = mentor
     subject = "You have been matched with a DEV mentor!"
-    mail(to: @mentee.email, subject: subject)
+    mail(to: @mentee.email, subject: subject, from: "Liana (from DEV) <liana@dev.to>")
   end
 
   def mentor_email(mentor, mentee)
     @mentor = mentor
     @mentee = mentee
     subject = "You have been matched with a new DEV mentee!"
-    mail(to: @mentor.email, subject: subject)
+    mail(to: @mentor.email, subject: subject, from: "Liana (from DEV) <liana@dev.to>")
   end
 end
