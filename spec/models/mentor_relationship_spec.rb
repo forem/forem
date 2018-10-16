@@ -31,4 +31,20 @@ RSpec.describe MentorRelationship, type: :model do
     relationship.save!
     expect(EmailMessage.all.size).to eq(2)
   end
+
+  it "finds unmatched mentors" do
+    expect(MentorRelationship.unmatched_mentors.size).to eq(0)
+    new_mentor = create(:user, mentor_form_updated_at: Time.current, offering_mentorship: true)
+    expect(MentorRelationship.unmatched_mentors.size).to eq(1)
+    MentorRelationship.create(mentor_id: new_mentor.id, mentee_id: mentee.id)
+    expect(MentorRelationship.unmatched_mentors.size).to eq(0)
+  end
+
+  it "finds unmatched mentees" do
+    expect(MentorRelationship.unmatched_mentees.size).to eq(0)
+    new_mentee = create(:user, mentee_form_updated_at: Time.current, seeking_mentorship: true)
+    expect(MentorRelationship.unmatched_mentees.size).to eq(1)
+    MentorRelationship.create(mentor_id: mentor.id, mentee_id: new_mentee.id)
+    expect(MentorRelationship.unmatched_mentors.size).to eq(0)
+  end
 end

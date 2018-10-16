@@ -17,7 +17,11 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    if params[:id] == "unmatched_mentee"
+      @user = MentorRelationship.unmatched_mentees.order("RANDOM()").first
+    else
+      @user = User.find(params[:id])
+    end
     @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
     @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
   end
@@ -29,7 +33,11 @@ class Internal::UsersController < Internal::ApplicationController
     handle_mentorship
     add_note
     @user.update!(user_params)
-    redirect_to "/internal/users/#{@user.id}"
+    if params[:quick_match]
+      redirect_to "/internal/users/unmatched_mentee"
+    else
+      redirect_to "/internal/users/#{@user.id}"
+    end
   end
 
   def handle_mentorship
