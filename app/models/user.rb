@@ -85,7 +85,7 @@ class User < ApplicationRecord
               format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
   validates :medium_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
+              format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_\@]{2,20})\/?\Z/
   # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
