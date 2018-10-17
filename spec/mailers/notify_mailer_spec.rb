@@ -119,6 +119,10 @@ RSpec.describe NotifyMailer, type: :mailer do
         mentee_email = described_class.mentee_email(mentee, mentor)
         expect(mentee_email.subject).to eq "You have been matched with a DEV mentor!"
       end
+      it "renders proper from" do
+        mentee_email = described_class.mentee_email(mentee, mentor)
+        expect(mentee_email.from).to include "liana@dev.to"
+      end
     end
 
     describe "#mentor_email" do
@@ -127,6 +131,10 @@ RSpec.describe NotifyMailer, type: :mailer do
       it "renders proper subject" do
         mentor_email = described_class.mentor_email(mentor, mentee)
         expect(mentor_email.subject).to eq "You have been matched with a new DEV mentee!"
+      end
+      it "renders proper subject" do
+        mentor_email = described_class.mentor_email(mentor, mentee)
+        expect(mentor_email.from).to include "liana@dev.to"
       end
     end
   end
