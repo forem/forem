@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Comment", type: :feature, js: true, driver: :chrome do
+RSpec.describe "Deleting Comment", type: :feature, js: true do
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:article) do
@@ -13,9 +13,8 @@ RSpec.describe "Deleting Comment", type: :feature, js: true, driver: :chrome do
   end
 
   it "works" do
-    comment
     visit comment.path + "/delete_confirm"
     click_link("DELETE")
-    expect(page).to redirect_to(article.path)
+    expect(page).to have_current_path(article.path)
   end
 end
