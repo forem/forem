@@ -33,11 +33,7 @@ class Internal::UsersController < Internal::ApplicationController
     handle_mentorship
     add_note
     @user.update!(user_params)
-    if params[:quick_match]
-      redirect_to "/internal/users/unmatched_mentee"
-    else
-      redirect_to "/internal/users/#{@user.id}"
-    end
+    redirect_to "/internal/users/unmatched_mentee"
   end
 
   def handle_mentorship
