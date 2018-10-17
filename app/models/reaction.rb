@@ -80,7 +80,7 @@ class Reaction < ApplicationRecord
       reactable.index!
       cache_buster.bust "/reactions?article_id=#{reactable_id}"
     elsif reactable_type == "Comment" && reactable
-      reactable.save
+      reactable.save unless destroyed_by_association
       cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
     end
     cache_buster.bust user.path
