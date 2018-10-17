@@ -226,6 +226,13 @@ class Comment < ApplicationRecord
     )
   end
 
+  def self.comment_async_bust(commentable, username)
+    commentable.touch
+    commentable.touch(:last_comment_at)
+    CacheBuster.new.bust_comment(commentable, username)
+    commentable.index!
+  end
+
   private
 
   def send_to_moderator
@@ -299,6 +306,7 @@ class Comment < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
+    Comment.delay.comment_async_bust(commentable, user.username)
     remove_algolia_index
     reactions.destroy_all
   end
@@ -308,17 +316,7 @@ class Comment < ApplicationRecord
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
-    async_bust
   end
-
-  def async_bust
-    expire_root_fragment
-    commentable.touch
-    commentable.touch(:last_comment_at)
-    CacheBuster.new.bust_comment(self)
-    commentable.index!
-  end
-  handle_asynchronously :async_bust
 
   def send_email_notification
     NotifyMailer.new_reply_email(self).deliver
