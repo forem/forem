@@ -17,7 +17,11 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    if params[:id] == "unmatched_mentee"
+      @user = MentorRelationship.unmatched_mentees.order("RANDOM()").first
+    else
+      @user = User.find(params[:id])
+    end
     @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
     @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
   end
@@ -29,7 +33,7 @@ class Internal::UsersController < Internal::ApplicationController
     handle_mentorship
     add_note
     @user.update!(user_params)
-    redirect_to "/internal/users/#{@user.id}"
+    redirect_to "/internal/users/unmatched_mentee"
   end
 
   def handle_mentorship
@@ -90,15 +94,6 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     banish_user(@user)
     redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  def mark_articles_as_spam
-    @user = User.find(params[:id])
-    @user.articles.each do |article|
-      article.delay.update(featured_number: Time.now.to_i)
-    end
-    redirect_to "/internal/users/#{@user.id}/edit",
-      success: "Articles successfully marked as spam"
   end
 
   def banish_user(user)

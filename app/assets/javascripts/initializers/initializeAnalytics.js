@@ -13,9 +13,11 @@ function initializeAnalytics() {
         var total = 0;
         for (var k in json){
           total = total + Number(json[k]);
-          document.getElementById("pageviews-"+k).innerHTML = numberWithCommas(json[k]) + " VIEWS";
+          var numString = parseInt(json[k]) < 100 ? "< 100 " : numberWithCommas(json[k]) ;
+          var totalString = parseInt(total) < 100 ? "< 100 " : numberWithCommas(total) ;
+          document.getElementById("pageviews-"+k).innerHTML = numString + " Views";
           document.getElementById("pageviews-"+k).classList.add("loaded");
-          document.getElementById("dashboard-analytics").innerHTML = "Total Views: "+ numberWithCommas(total);
+          document.getElementById("dashboard-analytics").innerHTML = totalString+ " Total Views";
         }
         document.getElementById("dashboard-analytics-header").classList.add("loaded");
       });

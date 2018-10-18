@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008174839) do
+ActiveRecord::Schema.define(version: 20181016181008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -406,10 +406,6 @@ ActiveRecord::Schema.define(version: 20181008174839) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
-    t.text "encrypted_message_html"
-    t.text "encrypted_message_html_iv"
-    t.text "encrypted_message_markdown"
-    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
@@ -699,6 +695,7 @@ ActiveRecord::Schema.define(version: 20181008174839) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
     t.datetime "mentee_form_updated_at"

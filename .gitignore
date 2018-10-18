@@ -46,3 +46,6 @@ yarn-error.log
 
 # Ignore package-lock.json because we use yarn
 package-lock.json
+
+#Jetbrains Tools
+.idea/
