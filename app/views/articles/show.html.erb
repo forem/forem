@@ -165,6 +165,7 @@
         <%= @article.processed_html.html_safe %>
       </div>
       <%= render "articles/collection", position: "bottom" %>
+      <%= render 'articles/actions' %>
     </section>
     <% if @article.body_markdown && @article.body_markdown.size > 900 %>
       <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", :expires_in => 100.hours) do %>
@@ -199,7 +200,6 @@
         </div>
       </div>
     <% end %>
-    <%= render 'articles/actions' %>
   </div>
   <% cache("article-bottom-content-#{@article.cached_tag_list_array.sort}", :expires_in => 6.hours) do %>
     <% @classic_article = Suggester::Articles::Classic.new(@article).get %>
