@@ -122,6 +122,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.email_public = false
     user.facebook_url = nil
     user.dribbble_url = nil
+    user.medium_url = nil
     user.stackoverflow_url = nil
     user.behance_url = nil
     user.linkedin_url = nil
