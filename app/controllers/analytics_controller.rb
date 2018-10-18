@@ -30,6 +30,7 @@ class AnalyticsController < ApplicationController
       pageviews = GoogleAnalytics.new(chunk.pluck(:id), current_user.id).get_pageviews
       page_views_obj = pageviews.to_h
       chunk.each do |article|
+        next if article.page_views_count > page_views_obj[article.id].to_i
         article.update_columns(page_views_count: page_views_obj[article.id].to_i,
                                previous_positive_reactions_count: article.positive_reactions_count)
       end
