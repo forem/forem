@@ -74,20 +74,20 @@
   .dashboard-analytics-header{
     color:$black;
     margin:5px auto;
-    font-size:calc(0.8em + 0.25vw);
+    font-size:calc(0.77em + 0.22vw);
     padding: 20px 0px;
     padding-left: 10px;
     text-align: left;
     font-family: $monospace;
-    border-radius: 3px;
+    border-radius: 200px;
     border: 1px solid $light-medium-gray;
     box-shadow: $bold-shadow;
     display: inline-block;
     width: 90%;
     margin: 1.1%;
-    @media screen and ( min-width: 600px ) {
-      width: 45%;
-      margin: 1.1%;  
+    @media screen and ( min-width: 800px ) {
+      width: 43%;
+      margin: 1.2%;  
     }
     span{
       opacity:0.3;
@@ -96,7 +96,7 @@
       width: calc(0.9em + 1.2vw);
       height: calc(0.9em + 1.2vw);
       margin-right: 0.4em;
-      margin-left: 0.5em;
+      margin-left: 1.1em;
       vertical-align: calc(-0.6vw - 2px);
     }
     &.loaded{
