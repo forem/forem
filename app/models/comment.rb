@@ -171,7 +171,7 @@ class Comment < ApplicationRecord
   end
 
   def activity_target
-    "comment_#{Time.now}"
+    "comment_#{Time.current}"
   end
 
   def remove_from_feed
@@ -203,7 +203,7 @@ class Comment < ApplicationRecord
   end
 
   def readable_publish_date
-    if created_at.year == Time.now.year
+    if created_at.year == Time.current.year
       created_at.strftime("%b %e")
     else
       created_at.strftime("%b %e '%y")

@@ -148,5 +148,6 @@ group :test do
   gem "test-prof", "~> 0.7"
   gem "timecop", "~> 0.9"
   gem "webmock", "~> 3.4"
+  gem "zonebie", "~> 0.6.1"
 end
 # rubocop:enable LineLength

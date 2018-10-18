@@ -42,7 +42,7 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def activity_target
-    "badge_#{Time.now}"
+    "badge_#{Time.current}"
   end
 
   def remove_from_feed

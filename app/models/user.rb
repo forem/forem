@@ -298,7 +298,7 @@ class User < ApplicationRecord
   end
 
   def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.now
+    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
   end
 
@@ -550,11 +550,11 @@ class User < ApplicationRecord
 
   def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
-      self.mentor_form_updated_at = Time.now
+      self.mentor_form_updated_at = Time.current
     end
 
     if mentee_description_changed? || seeking_mentorship_changed?
-      self.mentee_form_updated_at = Time.now
+      self.mentee_form_updated_at = Time.current
     end
   end
 end

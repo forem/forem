@@ -15,7 +15,7 @@ RSpec.describe "Registrations", type: :request do
       it "redirects to /dashboard" do
         login_as user
         get "/enter"
-        is_expected.to redirect_to("/dashboard?signed-in-already&t=#{Time.now.to_i}")
+        is_expected.to redirect_to("/dashboard?signed-in-already&t=#{Time.current.to_i}")
       end
     end
   end
