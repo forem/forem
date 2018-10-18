@@ -40,14 +40,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 ## Table of Contents
 
 - [Contributing](#contributing)
-  - [Where to contribute](#where-to-contribute)
-  - [How to contribute](#how-to-contribute)
-  - [Contribution guideline](#contribution-guideline)
-    - [Clean code with tests](#clean-code-with-tests)
-    - [Create a pull request](#create-a-pull-request)
-    - [Create an issue](#create-an-issue)
-  - [How to get help](#how-to-get-help)
-  - [The bottom line](#the-bottom-line)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
   - [Engineering standards](#engineering-standards)
@@ -64,6 +56,8 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 - [License](#license)
 
 ## Contributing
+
+We encourage you to contribute to dev.to! Please check out the [Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to proceed.
 
 We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
