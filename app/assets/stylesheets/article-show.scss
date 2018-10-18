@@ -647,7 +647,7 @@ header{
   .article-actions{
     text-align:center;
     padding:9px 0px 16px;
-    position: fixed;
+    position: sticky;
     bottom:0;
     z-index:22;
     background: white;
