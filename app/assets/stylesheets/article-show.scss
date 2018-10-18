@@ -701,7 +701,7 @@ header{
         }
       }
       &.user-activated {
-        border:2px solid darken($bold-blue, 28%);
+        border:2px solid darken($bold-blue, 40%);
         padding:calc(0.05vw + 3px) calc(0.88vw + 3px);
         background: linear-gradient(60deg, #f4d2d2, #efb6b6);
         img{
@@ -715,7 +715,7 @@ header{
           background: linear-gradient(60deg, #d2cdf2, #beb8ef);
         }
         .reaction-number{
-          color: darken($bold-blue, 28%);
+          color: darken($bold-blue, 40%);
         }
         &.user-animated{
           animation: reaction 0.3s;
