@@ -28,7 +28,6 @@ body {
 
 
 .universal-page-content-wrapper{
-  overflow:hidden;
   min-height:88vh;
   visibility: visible;
   &.stories-index,&.notifications-index,&.stories-search,&.podcast_episodes-index,&.reading_list_items-index,.tags-index{
