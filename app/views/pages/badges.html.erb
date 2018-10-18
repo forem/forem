@@ -52,6 +52,16 @@
   &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name%>'s DEV Profile" height="30" width="30" /&gt;
 &lt;/a&gt;
         </pre>
+        <p>You can use <b><a href="https://fontawesome.com/icons/dev?style=brands" target="_blank" rel="noopoener">Font Awesome</a></b> with this :
+        </p>
+        <pre class="embed-code">
+&lt;a href="https://dev.to/<%= current_user.username %>"&gt;
+  &lt;img class="fa fa-dev-to" alt="<%= current_user.username %>'s DEV Profile" /&gt;
+&lt;/a&gt;
+        </pre>
+        <p>
+            <small><a href="https://fontawesome.com/how-to-use/on-the-web/setup/getting-started?using=web-fonts-with-css" target="_blank" rel="noopener">Getting Started with Font Awesome 👉</a></small>
+        </p>
       <% else %>
         <p>
           <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" />
@@ -61,5 +71,6 @@
         </h2>
         <br/><br/>
       <% end %>
+
   </div>
 </div>
