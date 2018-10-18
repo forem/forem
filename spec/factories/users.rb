@@ -17,7 +17,7 @@ FactoryBot.define do
     github_username    { generate :github_username }
     summary            { Faker::Lorem.paragraph[0..rand(190)] }
     website_url        { Faker::Internet.url }
-    confirmed_at       { Time.now }
+    confirmed_at       { Time.current }
     saw_onboarding { true }
     signup_cta_variant { "navbar_basic" }
     email_digest_periodic { false }

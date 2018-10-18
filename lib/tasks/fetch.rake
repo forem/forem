@@ -40,7 +40,7 @@ task renew_hired_articles: :environment do
     each do |article|
 
     if article.automatically_renew
-      article.featured_number = Time.now.to_i
+      article.featured_number = Time.current.to_i
     else
       article.approved = false
       article.body_markdown = article.body_markdown.gsub(
@@ -67,7 +67,7 @@ task github_repo_fetch_all: :environment do
 end
 
 task send_email_digest: :environment do
-  return if Time.now.wday < 3
+  return if Time.current.wday < 3
   EmailDigest.send_periodic_digest_email
 end
 

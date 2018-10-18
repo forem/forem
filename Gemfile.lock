@@ -914,6 +914,7 @@ GEM
     xpath (3.1.0)
       nokogiri (~> 1.8)
     yajl-ruby (1.4.0)
+    zonebie (0.6.1)
 
 PLATFORMS
   ruby
@@ -1047,6 +1048,7 @@ DEPENDENCIES
   webmock (~> 3.4)
   webpacker (~> 3.5)
   webpush (~> 0.3)
+  zonebie (~> 0.6.1)
 
 RUBY VERSION
    ruby 2.5.1p57

@@ -52,7 +52,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         where(published: true).
         or(Article.where(published_from_feed: true)).
         where(featured: true).
-        where("featured_number > ?", Time.now.to_i).
+        where("featured_number > ?", Time.current.to_i).
         includes(:user).
         includes(:buffer_updates).
         limited_columns_internal_select.

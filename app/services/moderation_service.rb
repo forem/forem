@@ -12,7 +12,7 @@ class ModerationService
         notifiable_type: object.class.name,
         action: "Moderation",
       )
-      moderator.update_column(:last_moderation_notification, Time.now)
+      moderator.update_column(:last_moderation_notification, Time.current)
     end
   end
   handle_asynchronously :send_moderation_notification
