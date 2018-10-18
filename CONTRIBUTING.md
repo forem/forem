@@ -18,7 +18,7 @@ We expect contributors to abide by our underlying [code of conduct](https://dev.
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `approved` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
 
-When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone knew to the project. For newer developers, try 'entry-level' issues.
+When in doubt, ask a [core team member](https://github.com/thepracticaldev/dev.to/#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone knew to the project. For newer developers, try 'entry-level' issues.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
@@ -28,11 +28,11 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 
 ### How to contribute
 
-1. Fork the project & clone locally. Follow the initial setup [here](#getting-started).
+1. Fork the project & clone locally. Follow the initial setup [here](https://github.com/thepracticaldev/dev.to/#getting-started).
 2. Create a branch, naming it either a feature or bug: `git checkout -b feature/that-new-feature` or `bug/fixing-that-bug`
 3. Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
 4. Push to the branch: `git push origin feature/that-new-feature`
-5. [Create a pull request](#create-a-pull-request) for your branch 🎉
+5. [Create a pull request](https://github.com/thepracticaldev/dev.to/#create-a-pull-request) for your branch 🎉
 
 ## Contribution guideline
 
@@ -58,7 +58,7 @@ _Please note: all commits in a pull request will be squashed when merged, but wh
 
 ### How to get help
 
-Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](#core-team) in an issue and we'll respond as soon as possible.
+Whether you are stuck with feature implementation, first-time setup, or you just want to tell us something could be done better, check out our [OSS thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) or create an issue. You can also mention any [core team member](https://github.com/thepracticaldev/dev.to/#core-team) in an issue and we'll respond as soon as possible.
 
 ### 👉 [OSS Help/Discussion Thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45) 👈
 
