@@ -761,9 +761,8 @@ GEM
     safe_yaml (1.0.4)
     safely_block (0.2.1)
       errbase
-    sail (1.2.2)
+    sail (1.3.0)
       fugit
-      jquery-rails
       rails
       sass-rails
     sass (3.6.0)
@@ -1007,7 +1006,7 @@ DEPENDENCIES
   ruby-prof (~> 0.17)
   rubyzip (~> 1.2, >= 1.2.2)
   s3_direct_upload (~> 0.1)
-  sail (~> 1.2.2)
+  sail (~> 1.3.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4)
   selenium-webdriver (~> 3.141)
