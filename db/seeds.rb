@@ -28,7 +28,7 @@ User.clear_index!
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
-    remote_profile_image_url: Faker::Avatar.image(nil, "300x300", "png", "set2", "bg2"),
+    profile_image: File.open("#{Rails.root}/app/assets/images/#{rand(1..40)}.png"),
     website_url: Faker::Internet.url,
     twitter_username: Faker::Internet.username(name),
     email_comment_notifications: false,

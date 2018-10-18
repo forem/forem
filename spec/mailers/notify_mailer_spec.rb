@@ -111,5 +111,31 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(account_deleted_email.to).to eq [user.email]
       end
     end
+
+    describe "#mentee_email" do
+      let(:mentee) { create(:user) }
+      let(:mentor) { create(:user) }
+      it "renders proper subject" do
+        mentee_email = described_class.mentee_email(mentee, mentor)
+        expect(mentee_email.subject).to eq "You have been matched with a DEV mentor!"
+      end
+      it "renders proper from" do
+        mentee_email = described_class.mentee_email(mentee, mentor)
+        expect(mentee_email.from).to include "liana@dev.to"
+      end
+    end
+
+    describe "#mentor_email" do
+      let(:mentee) { create(:user) }
+      let(:mentor) { create(:user) }
+      it "renders proper subject" do
+        mentor_email = described_class.mentor_email(mentor, mentee)
+        expect(mentor_email.subject).to eq "You have been matched with a new DEV mentee!"
+      end
+      it "renders proper subject" do
+        mentor_email = described_class.mentor_email(mentor, mentee)
+        expect(mentor_email.from).to include "liana@dev.to"
+      end
+    end
   end
 end

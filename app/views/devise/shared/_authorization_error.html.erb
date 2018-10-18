@@ -13,6 +13,7 @@
 <% unless flash[:alert].blank? %>
   <div class="error-notice">
   Something went wrong:
+    <% if flash[:alert].is_a?(Array) %>
     <ul>
       <% flash[:alert].each do |error| %>
         <li>
@@ -20,6 +21,10 @@
         </li>
       <% end %>
     </ul>
+    <% else %>
+      <%= flash[:alert] %>
+      <br>
+    <% end %>
     Please try again below, or contact <a href="mailto:yo@dev.to">yo@dev.to</a> if this persists.
   </div>
 <% end %>

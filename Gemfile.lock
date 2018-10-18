@@ -272,10 +272,10 @@ GEM
     eventmachine (1.2.5)
     excon (0.60.0)
     execjs (2.7.0)
-    factory_bot (4.11.0)
+    factory_bot (4.11.1)
       activesupport (>= 3.0.0)
-    factory_bot_rails (4.11.0)
-      factory_bot (~> 4.11.0)
+    factory_bot_rails (4.11.1)
+      factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
     fake_stripe (0.1.0)
       capybara
@@ -508,7 +508,7 @@ GEM
     httparty (0.16.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.1.0)
+    i18n (1.1.1)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     inflecto (0.0.2)
@@ -545,8 +545,6 @@ GEM
       activerecord
       kaminari-core (= 1.1.1)
     kaminari-core (1.1.1)
-    keen (0.7.8)
-      multi_json (~> 1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
     libv8 (3.16.14.19)
@@ -846,7 +844,7 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
-    test-prof (0.5.0)
+    test-prof (0.7.2)
     therubyracer (0.12.3)
       libv8 (~> 3.16.14.15)
       ref
@@ -980,7 +978,6 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   jquery-rails (~> 4.3)
   kaminari (~> 1.1)
-  keen (~> 0.7)
   launchy (~> 2.4)
   liquid (~> 4.0)
   memory_profiler (~> 0.9)
@@ -1038,7 +1035,7 @@ DEPENDENCIES
   stream_rails (~> 2.6)
   stripe (~> 3.25)
   stripe-ruby-mock (~> 2.5)
-  test-prof (~> 0.5)
+  test-prof (~> 0.7)
   therubyracer (~> 0.12)
   timber (~> 2.6)
   timecop (~> 0.9)
@@ -1057,4 +1054,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.4
+   1.16.6
