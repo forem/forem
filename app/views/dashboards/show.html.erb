@@ -76,7 +76,7 @@
         </div>
       </div>
     <% end %>
-    <% if 1==2 #current_user.has_role?(:video_permission) %>
+    <% if current_user.has_role?(:video_permission) %>
       <a class="video-upload-cta" href="/videos/new" data-no-instant>
         Upload a Video 🎥
       </a>
