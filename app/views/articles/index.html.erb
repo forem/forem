@@ -11,7 +11,7 @@
     <meta property="og:image" content="<%= GeneratedImage.new(@user).social_image %>" >
     <meta property="og:description" content="<%= @user.summary %>" />
     <meta property="og:site_name" content="The DEV Community" />
-    
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@ThePracticalDev">
     <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
@@ -159,6 +159,11 @@
                 <%= inline_svg("dribbble_icon.svg", class:"icon-img") %>
               </a>
             <% end %>
+            <% if @user.medium_url.present? %>
+              <a href="<%= @user.medium_url %>" target="_blank" rel="noopener nofollow">
+                <%= inline_svg("medium_icon.svg", class:"icon-img") %>
+              </a>
+            <% end %>
             <% if @user.website_url.present? %>
               <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow">
                 <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
@@ -177,14 +182,14 @@
       border: 2px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
       box-shadow: 5px 6px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
     }
-  </style>  
+  </style>
   <div class="user-profile-header tag-header">
     <div class="tag-or-query-header-container">
       <h1>
         <% if @tag_model && @tag_model.pretty_name.present? %>
           <%= @tag_model.pretty_name %>
         <% else %>
-          <%= @tag %> 
+          <%= @tag %>
         <% end %>
         <% if @tag_model %>
             <span class="user-profile-follow-button-wrapper">
