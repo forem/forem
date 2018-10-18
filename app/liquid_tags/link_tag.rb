@@ -2,8 +2,8 @@ class LinkTag < LiquidTagBase
   include ActionView::Helpers
   attr_reader :article
 
-  def initialize(_tag_name, url, _tokens)
-    @article = parse_url_for_article(url)
+  def initialize(_tag_name, slug_or_path_or_url, _tokens)
+    @article = parse_url_for_article(slug_or_path_or_url)
   end
 
   def render(_context)
@@ -27,14 +27,26 @@ class LinkTag < LiquidTagBase
 
   private
 
-  def parse_url_for_article(url)
-    url = ActionController::Base.helpers.strip_tags(url)
-    hash = Rails.application.routes.recognize_path(url)
+  def parse_url_for_article(slug_or_path_or_url)
+    slug_or_path_or_url = ActionController::Base.helpers.strip_tags(slug_or_path_or_url).strip
+
+    hash = article_hash(slug_or_path_or_url)
+
+    raise_error if hash.nil?
+
     article = find_article_by_user(hash) || find_article_by_org(hash)
     raise_error unless article
     article
   rescue StandardError
     raise_error
+  end
+
+  def article_hash(slug_or_path_or_url)
+    path = Addressable::URI.parse(slug_or_path_or_url).path
+    path.slice!(0) if path.starts_with?("/") # remove leading slash if present
+    path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
+    template = Addressable::Template.new("{username}/{slug}")
+    template.extract(path)&.symbolize_keys
   end
 
   def find_article_by_user(hash)

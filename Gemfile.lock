@@ -923,6 +923,7 @@ DEPENDENCIES
   active_record_union (~> 1.3)
   acts-as-taggable-on (~> 5.0)
   acts_as_follower!
+  addressable (~> 2.5, >= 2.5.2)
   administrate (~> 0.9)
   ahoy_email (~> 0.5)
   airbrake (~> 5.8)
