@@ -10,6 +10,8 @@ ENV RAILS_ENV development
 
 ENV YARN_INTEGRITY_ENABLED "false"
 
+RUN gem install bundler
+
 RUN bundle install --jobs 20 --retry 5
 
 ENTRYPOINT ["bundle", "exec"]
