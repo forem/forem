@@ -76,7 +76,7 @@ RSpec.describe NotifyMailer, type: :mailer do
       def params(user_email, feedback_message_id)
         {
           email_to: user_email,
-          email_subject: "dev.to Status Update",
+          email_subject: "DEV Report Status Update",
           email_body: "You've violated our code of conduct",
           email_type: "Reporter",
           feedback_message_id: feedback_message_id
