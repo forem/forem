@@ -29,6 +29,9 @@
   <a href="https://www.skylight.io/app/applications/K9H5IV3RqKGu">
     <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" />
   </a>
+  <a href="https://www.codetriage.com/thepracticaldev/dev.to">
+    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge" />
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
