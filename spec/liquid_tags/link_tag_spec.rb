@@ -36,12 +36,12 @@ RSpec.describe LinkTag, type: :liquid_template do
     HTML
   end
 
-  it "raise error when invalid" do
+  it "raises an error when invalid" do
     expect { generate_new_liquid("fake_username/fake_article_slug") }.
       to raise_error("Invalid link URL or link URL does not exist")
   end
 
-  it "render proper link tag" do
+  it "renders a proper link tag" do
     liquid = generate_new_liquid("#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
@@ -49,5 +49,30 @@ RSpec.describe LinkTag, type: :liquid_template do
   it "also tries to look for article by organization if failed to find by username" do
     liquid = generate_new_liquid("#{org_article.username}/#{org_article.slug}")
     expect(liquid.render).to eq(correct_link_html(org_article))
+  end
+
+  it "renders with a leading slash" do
+    liquid = generate_new_liquid("/#{user.username}/#{article.slug}")
+    expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "renders with a trailing slash" do
+    liquid = generate_new_liquid("#{user.username}/#{article.slug}/")
+    expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "renders with both leading and trailing slashes" do
+    liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
+    expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "renders with a full link" do
+    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}")
+    expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "renders with a full link with a trailing slash" do
+    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
+    expect(liquid.render).to eq(correct_link_html(article))
   end
 end
