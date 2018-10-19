@@ -87,7 +87,7 @@ RSpec.describe NotifyMailer, type: :mailer do
         feedback_message = create(:feedback_message, :abuse_report, reporter_id: user.id)
         feedback_message_resolution_email = described_class.
           feedback_message_resolution_email(params(user.email, feedback_message.id))
-        expect(feedback_message_resolution_email.subject).to eq "dev.to Status Update"
+        expect(feedback_message_resolution_email.subject).to eq "DEV Report Status Update"
       end
 
       it "renders proper receiver" do
