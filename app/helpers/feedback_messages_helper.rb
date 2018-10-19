@@ -11,7 +11,7 @@ module FeedbackMessagesHelper
       dev.to team
     HEREDOC
     {
-      subject: "dev.to Status Update",
+      subject: "DEV Report Status Update",
       body: body
     }.freeze
   end
