@@ -14,11 +14,13 @@
 <%= form_for(@html_variant) do |f| %>
   <% if @html_variant.new_record? %>
     <%= f.label :name %>
-    <%= f.text_field :name %>
+    <%= f.text_field :name, placeholder: 'Unique, descriptive name' %>
   <% end %>
   <%= f.label :html %>
-  <%= f.text_area :html %>
+  <%= f.text_area :html, placeholder: 'HTML to be shown. Make sure all CSS is properly scoped, and all HTML tags are closed, etc. Manditory field.' %>
   <%= f.label :published %>
   <%= f.check_box :published %>
+  <%= f.label :target_tag %>
+  <%= f.text_field :target_tag, placeholder: 'One tag, e.g. javascript. Optional targeting.' %>
   <%= f.submit %>
 <% end %>

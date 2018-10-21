@@ -12,9 +12,6 @@ function initializeBaseTracking() {
     wait++;
     if (window.ga && ga.create) {
       ga('create', '<%= ApplicationConfig["GA_TRACKING_ID"] %>', 'auto');
-      if (!checkUserLoggedIn() && Math.random() < 0.35) {
-        ga('require', '<%= ApplicationConfig["GA_OPTIMIZE_ID"] %>');
-      }
       ga('send', 'pageview', location.pathname + location.search);
       if (document.location.search.indexOf('newly-registered-user=true') > -1) {
         ga('send', 'event', 'registration', 'New user registration', location.pathname, null);
@@ -112,45 +109,46 @@ function logImpressions() {
 
 function trackCustomImpressions() {
   setTimeout(function(){
+    var stickyNav = document.getElementById('article-show-primary-sticky-nav');
     var sidebarHTMLVariant = document.getElementById('html-variant-article-show-sidebar');
     var ArticleElement = document.getElementById('article-body');
     var tokenMeta = document.querySelector("meta[name='csrf-token']")
     var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
     var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
-    if (sidebarHTMLVariant && ArticleElement && tokenMeta && !isBot && randomNumber === 1) {
+    if (sidebarHTMLVariant && ArticleElement && tokenMeta && !isBot) {
       var dataBody = {
         html_variant_id: sidebarHTMLVariant.dataset.variantId,
         article_id: ArticleElement.dataset.articleId,
       };
       var csrfToken = tokenMeta.getAttribute('content');
-      window.fetch('/html_variant_trials', {
-            method: 'POST',
-            headers: {
-              'X-CSRF-Token': csrfToken,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataBody),
-            credentials: 'same-origin',
-          });
-      var successLinks = sidebarHTMLVariant.getElementsByTagName("a");
+      if (randomNumber === 1) {
+        window.fetch('/html_variant_trials', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-Token': csrfToken,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataBody),
+          credentials: 'same-origin',
+        });
+      }
+      var successLinks = stickyNav.querySelectorAll('a,button'); //track all links and button clicks within nav
       for(var i = 0; i < successLinks.length; i++)
       {
-        const goTo = successLinks[i].getAttribute("href");
-        successLinks[i].onclick = function(e) {
-          e.preventDefault();
-          window.fetch('/html_variant_successes', {
-            method: 'POST',
-            headers: {
-              'X-CSRF-Token': csrfToken,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataBody),
-            credentials: 'same-origin',
-          }).then(function(){
-            window.location = goTo;
-          });
-        }
+        successLinks[i].addEventListener('click', function() { trackHtmlVariantSuccess(dataBody, csrfToken) });
       }
     }
   }, 1500)
+}
+
+function trackHtmlVariantSuccess(dataBody, csrfToken) {
+  window.fetch('/html_variant_successes', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(dataBody),
+    credentials: 'same-origin',
+  })
 }

@@ -154,7 +154,7 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full")
-    tag :button,
+    tag.button (user_signed_in? ? "" : "+ FOLLOW"),
       class: "cta follow-action-button",
       data: {
         info: { id: followable.id, className: followable.class.name, style: style }.to_json,

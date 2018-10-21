@@ -28,6 +28,6 @@ class HtmlVariantPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[html name published approved]
+    %i[html name published approved target_tag]
   end
 end
