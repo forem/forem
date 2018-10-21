@@ -29,6 +29,7 @@ function initializeBaseTracking() {
   }, 25);
   facebookTrackingScript();
   eventListening();
+  trackCustomImpressions();
 }
 
 function fallbackActivityRecording() {
@@ -107,4 +108,49 @@ function logImpressions() {
     var data = el.dataset.featuredArticle;
     ga('send', 'event', 'view', 'featured-feed-impression', data, null);
   }
+}
+
+function trackCustomImpressions() {
+  setTimeout(function(){
+    var sidebarHTMLVariant = document.getElementById('html-variant-article-show-sidebar');
+    var ArticleElement = document.getElementById('article-body');
+    var tokenMeta = document.querySelector("meta[name='csrf-token']")
+    var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
+    var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
+    if (sidebarHTMLVariant && ArticleElement && tokenMeta && !isBot && randomNumber === 1) {
+      var dataBody = {
+        html_variant_id: sidebarHTMLVariant.dataset.variantId,
+        article_id: ArticleElement.dataset.articleId,
+      };
+      var csrfToken = tokenMeta.getAttribute('content');
+      window.fetch('/html_variant_trials', {
+            method: 'POST',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataBody),
+            credentials: 'same-origin',
+          });
+      var successLinks = sidebarHTMLVariant.getElementsByTagName("a");
+      for(var i = 0; i < successLinks.length; i++)
+      {
+        const goTo = successLinks[i].getAttribute("href");
+        successLinks[i].onclick = function(e) {
+          e.preventDefault();
+          window.fetch('/html_variant_successes', {
+            method: 'POST',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataBody),
+            credentials: 'same-origin',
+          }).then(function(){
+            window.location = goTo;
+          });
+        }
+      }
+    }
+  }, 1500)
 }

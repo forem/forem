@@ -1,0 +1,24 @@
+<% if @html_variant.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@html_variant.errors.count, "error") %> prohibited this block from being saved:</h2>
+
+    <ul>
+    <% @html_variant.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
+
+<%= form_for(@html_variant) do |f| %>
+  <% if @html_variant.new_record? %>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  <% end %>
+  <%= f.label :html %>
+  <%= f.text_area :html %>
+  <%= f.label :published %>
+  <%= f.check_box :published %>
+  <%= f.submit %>
+<% end %>

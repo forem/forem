@@ -29,6 +29,7 @@ module ApplicationHelper
       comments
       notifications
       reading_list_items
+      html_variants
     ).include?(controller_name)
   end
 

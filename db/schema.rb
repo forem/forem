@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181016181008) do
+ActiveRecord::Schema.define(version: 20181020195954) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -358,6 +356,35 @@ ActiveRecord::Schema.define(version: 20181016181008) do
     t.integer "watchers_count"
   end
 
+  create_table "html_variant_successes", force: :cascade do |t|
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.integer "html_variant_id"
+    t.datetime "updated_at", null: false
+    t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
+  end
+
+  create_table "html_variant_trials", force: :cascade do |t|
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.integer "html_variant_id"
+    t.datetime "updated_at", null: false
+    t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
+  end
+
+  create_table "html_variants", force: :cascade do |t|
+    t.boolean "approved", default: false
+    t.datetime "created_at", null: false
+    t.string "group"
+    t.text "html"
+    t.string "name"
+    t.boolean "published", default: false
+    t.float "success_rate", default: 0.0
+    t.string "target_tag"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
+
   create_table "identities", id: :serial, force: :cascade do |t|
     t.text "auth_data_dump"
     t.datetime "created_at", null: false
@@ -406,6 +433,10 @@ ActiveRecord::Schema.define(version: 20181016181008) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
+    t.text "encrypted_message_html"
+    t.text "encrypted_message_html_iv"
+    t.text "encrypted_message_markdown"
+    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
