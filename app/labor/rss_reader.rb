@@ -74,7 +74,7 @@ class RssReader
     article = Article.create!(article_params)
     SlackBot.delay.ping(
       "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
-      channel: "activity",
+      channel: Rails.env.production? ? "activity" : "test",
       username: "article_bot",
       icon_emoji: ":robot_face:",
     )
