@@ -36,27 +36,6 @@ class CacheBuster
     bust("/#{username}/comments/?i=i")
   end
 
-  def bust_article(article)
-    bust("/" + article.user.username)
-    bust(article.path + "/")
-    bust(article.path + "?i=i")
-    bust(article.path + "/?i=i")
-    bust(article.path + "/comments")
-    bust(article.path + "?preview=" + article.password)
-    bust(article.path + "?preview=" + article.password + "&i=i")
-    if article.organization.present?
-      bust("/#{article.organization.slug}")
-    end
-    bust_home_pages(article)
-    bust_tag_pages(article)
-    bust("/api/articles/#{article.id}")
-    bust("/api/articles/by_path?url=#{article.path}")
-
-    article.collection&.articles&.each do |a|
-      bust(a.path)
-    end
-  end
-
   def bust_home_pages(article)
     if article.featured_number.to_i > Time.current.to_i
       bust("/")

@@ -470,23 +470,12 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    if Rails.env.production?
-      cache_buster = CacheBuster.new
-      cache_buster.bust(path)
-      cache_buster.bust(path + "?i=i")
-      cache_buster.bust(path + "?preview=" + password)
-      async_bust
-    end
+    purge
+    HTTParty.get GeneratedImage.new(self).social_image if published
   end
 
   def calculate_base_scores
     self.hotness_score = 1000 if hotness_score.blank?
     self.spaminess_rating = 0 if new_record?
   end
-
-  def async_bust
-    CacheBuster.new.bust_article(self)
-    HTTParty.get GeneratedImage.new(self).social_image if published
-  end
-  handle_asynchronously :async_bust
 end
