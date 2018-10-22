@@ -843,7 +843,7 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    timber (2.6.1)
+    timber (2.6.2)
       msgpack (~> 1.0)
     timecop (0.9.1)
     trollop (2.1.2)
