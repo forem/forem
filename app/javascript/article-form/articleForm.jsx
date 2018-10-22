@@ -11,9 +11,11 @@ import Tags from './elements/tags';
 import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
+import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import ImageUploadIcon from 'images/image-upload.svg';
+import ThreeDotsIcon from 'images/three-dots.svg';
 // import CodeMirror from 'codemirror';
 // import 'codemirror/mode/markdown/markdown';
 
@@ -30,6 +32,7 @@ export default class ArticleForm extends Component {
       title: article.title || '',
       tagList: article.cached_tag_list || '',
       description: '',
+      canonicalUrl: article.canonical_url || '',
       bodyMarkdown: article.body_markdown || '',
       published: article.published || false,
       previewShowing: false,
@@ -39,6 +42,7 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: article.id != null,
       imageManagementShowing: false,
+      moreConfigShowing: false,
       mainImage: article.main_image || null,
       organization,
       postUnderOrg: article.organization_id ? true : false,
@@ -89,6 +93,13 @@ export default class ArticleForm extends Component {
     });
   };
 
+  toggleMoreConfig = e => {
+    e.preventDefault();
+    this.setState({
+      moreConfigShowing: !this.state.moreConfigShowing,
+    });
+  };
+
   showPreview = response => {
     this.setState({
       previewShowing: true,
@@ -105,6 +116,12 @@ export default class ArticleForm extends Component {
   failedPreview = response => {
     console.log(response);
   };
+
+  handleConfigChange = e => {
+    let newState = {}
+    newState[e.target.name] = e.target.value;
+    this.setState(newState)
+  }
 
   handleMainImageUrlChange = payload => {
     this.setState({
@@ -151,6 +168,7 @@ export default class ArticleForm extends Component {
       helpHTML,
       submitting,
       imageManagementShowing,
+      moreConfigShowing,
       organization,
       postUnderOrg,
       mainImage,
@@ -167,6 +185,16 @@ export default class ArticleForm extends Component {
         onExit={this.toggleImageManagement}
         mainImage={mainImage}
         onMainImageUrlChange={this.handleMainImageUrlChange}
+      />
+    ) : (
+      ''
+    );
+    const moreConfig = moreConfigShowing ? (
+      <MoreConfig
+        onExit={this.toggleMoreConfig}
+        passedData={this.state}
+        onSaveDraft={this.onSaveDraft}
+        onConfigChange={this.handleConfigChange}
       />
     ) : (
       ''
@@ -195,21 +223,33 @@ export default class ArticleForm extends Component {
                       <div className="articleform__detailfields">
                         <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
                         <button
-                          className="articleform__imageButton"
+                          className="articleform__detailsButton articleform__detailsButton--image"
                           onClick={this.toggleImageManagement}
                         >
                           <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--moreconfig"
+                          onClick={this.toggleMoreConfig}
+                        >
+                          <img src={ThreeDotsIcon} />
                         </button>
                       </div>
                       <BodyMarkdown
                         defaultValue={bodyMarkdown}
                         onChange={linkState(this, 'bodyMarkdown')}
                       />
-                                              <button
-                          className="articleform__imageButton articleform__imageButton--bottombutton"
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
                           onClick={this.toggleImageManagement}
                         >
                           <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+                          onClick={this.toggleMoreConfig}
+                        >
+                          <img src={ThreeDotsIcon} />
                         </button>
                       </div>
     }
@@ -228,6 +268,7 @@ export default class ArticleForm extends Component {
         />
         {notice}
         {imageManagement}
+        {moreConfig}
       </form>
     );
   }
