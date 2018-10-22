@@ -13,8 +13,7 @@
     "test:watch": "jest app/javascript/ --watch",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
-    "precommit": "lint-staged",
-    "serve-docs": "cd docs && gitdocs serve"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx}": [
