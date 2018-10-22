@@ -34,7 +34,7 @@ export default class MoreConfig extends Component {
                 <label>Canonical URL</label>
                 <input type="text" value={passedData.canonicalUrl} name="canonicalUrl" onKeyUp={this.props.onConfigChange}/>
               </div>
-              <small>Change meta tag<code>canonical_url</code> if this post was first published elsewhere (like your own blog)</small>
+              <small>Change meta tag <code>canonical_url</code> if this post was first published elsewhere (like your own blog)</small>
               {publishedField}
              </div>
   }
