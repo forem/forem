@@ -7,7 +7,7 @@ You can view the previews at (for example) `http://localhost:3000/rails/mailers/
 
 ## Previewing these docs in development
 
-0. Make sure you are the base of the repository
+0. Make sure you are at the base of the repository
 1. Install gitdocs `npm install -g gitdocs@next`
 1. Serve it `gitdocs serve`
 1. Visit `http://localhost:8000`
