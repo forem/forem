@@ -61,12 +61,10 @@ class GoogleAnalytics
       metrics: [Metric.new(expression: metrics_string)],
       dimensions: [Dimension.new(name: "ga:segment")],
       segments: [Segment.new(segment_id: "gaid::-1"),
-                Segment.new(segment_id: "gaid::-2"),
-                Segment.new(segment_id: "gaid::-19"),
-                Segment.new(segment_id: "gaid::-7")],
-        date_ranges: [
-        DateRange.new(start_date: @start_date, end_date: "2020-01-01"),
-      ],
+                 Segment.new(segment_id: "gaid::-2"),
+                 Segment.new(segment_id: "gaid::-19"),
+                 Segment.new(segment_id: "gaid::-7")],
+      date_ranges: [DateRange.new(start_date: @start_date, end_date: "2020-01-01")],
     )
   end
 

@@ -91,3 +91,12 @@ task :award_contributor_badges, [:arg1] => :environment do |_t, args|
   BadgeRewarder.award_contributor_badges(usernames)
   puts "Done!"
 end
+
+task remove_old_html_variant_data: :environment do
+  HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
+  HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
+  HtmlVariant.find_each do |html_variant|
+    return if html_variant.html_variant_successes.size < 20
+    html_variant.calculate_success_rate!
+  end
+end
