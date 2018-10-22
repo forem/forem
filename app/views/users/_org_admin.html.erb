@@ -113,38 +113,19 @@
     <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>      
   <% if @organization.approved %>
-    <h2>Call-to-action box</h2>
+    <h2>Post Call-to-action box</h2>
     <div class="field">
-      <%= f.label "Button Text" %>
+      <%= f.label "CTA Link Text" %>
       <%= f.text_field :cta_button_text, maxlength: 12, placeholder: "Limit of 12 characters" %>
     </div>
     <div class="field">
-      <%= f.label "Button Link" %>
+      <%= f.label "CTA Link URL" %>
       <%= f.text_field :cta_button_url %>
     </div>
     <div class="field">
-      <%= f.label "Body text" %>
-      <%= f.text_area :cta_body_markdown, maxlength: 140, placeholder: "Limit of 140 characters" %>
+      <%= f.label "Body text (markdown inline only)" %>
+      <%= f.text_area :cta_body_markdown, maxlength: 256, placeholder: "Limit of 256 characters" %>
     </div>
-    <% if @organization.approved_and_filled_out_cta? %>
-      <div class="field">
-        Preview of Widget:
-        <div class="org-widget-preview">
-          <div class="primary-sticky-nav">
-            <div class="primary-sticky-nav-element primary-sticky-nav-author primary-sticky-nav-org">
-              <div class="primary-sticky-nav-org-summary">
-                <!-- Markdown -->
-                <%# @organization.cta_body_markdown %>
-                <%= @organization.cta_processed_html.html_safe %>
-                <button class="cta primary-sticky-nav-org-button">
-                  <%= @organization.cta_button_text.upcase || "LEARN MORE" %>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
   <% end %>
   <div class="field">
     <label></label>
