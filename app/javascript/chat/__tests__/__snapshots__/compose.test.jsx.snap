@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Compose /> should render Compose and have the proper attributes/initial content 1`] = `
+exports[`<Compose /> behavior with message should render and test snapshot 1`] = `
 <div
   class="messagecomposer"
 >

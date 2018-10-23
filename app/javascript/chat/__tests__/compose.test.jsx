@@ -57,75 +57,81 @@ describe('<Compose />', () => {
     textfieldIsEmpty = true;
   });
 
-  it('should render Compose and have the proper attributes/initial content', () => {
-    const tree = render(getCompose(true));
-    expect(tree).toMatchSnapshot();
+  describe('behavior with no message', () => {
+    it('should click submit', () => {
+      const context = deep(getCompose(false));
+      const btn = context.find('.messagecomposer__submit');
 
-    const context = deep(getCompose(true));
-    expect(context.find('.messagecomposer').exists()).toEqual(true);
+      expect(btn.simulate('click'));
 
-    const input = context.find('.messagecomposer__input');
-    expect(input.exists()).toEqual(true);
-    expect(input.text()).toEqual('');
-    expect(input.attr('maxLength')).toEqual('1000');
-    expect(input.attr('placeholder')).toEqual('Message goes here');
+      expect(submitNoMessage).toEqual(true);
+      expect(submitWithMessage).toEqual(false);
+      expect(textfieldIsEmpty).toEqual(true);
+    });
 
-    const btn = context.find('.messagecomposer__submit');
-    expect(btn.exists()).toEqual(true);
-    expect(btn.text()).toEqual('SEND');
+    it('should press enter', () => {
+      const context = deep(getCompose(false));
+      const input = context.find('.messagecomposer__input');
+
+      const enter = { keyCode: 13 };
+      expect(input.simulate('keyDown', enter));
+
+      expect(submitNoMessage).toEqual(true);
+      expect(submitWithMessage).toEqual(false);
+      expect(textfieldIsEmpty).toEqual(true);
+    });
   });
 
-  it('should click submit on empty message', () => {
-    const context = deep(getCompose(false));
-    const btn = context.find('.messagecomposer__submit');
+  describe('behavior with message', () => {
+    it('should render and test snapshot', () => {
+      const tree = render(getCompose(true));
+      expect(tree).toMatchSnapshot();
+    });
 
-    expect(btn.simulate('click'));
+    it('should have proper elements, attributes and values', () => {
+      const context = deep(getCompose(true));
+      expect(context.find('.messagecomposer').exists()).toEqual(true);
 
-    expect(submitNoMessage).toEqual(true);
-    expect(submitWithMessage).toEqual(false);
-    expect(textfieldIsEmpty).toEqual(true);
-  });
+      const input = context.find('.messagecomposer__input');
+      expect(input.exists()).toEqual(true);
+      expect(input.text()).toEqual('');
+      expect(input.attr('maxLength')).toEqual('1000');
+      expect(input.attr('placeholder')).toEqual('Message goes here');
 
-  it('should click submit on non-empty message and check for empty textarea', () => {
-    const context = deep(getCompose(true));
-    const input = context.find('.messagecomposer__input');
-    const btn = context.find('.messagecomposer__submit');
+      const btn = context.find('.messagecomposer__submit');
+      expect(btn.exists()).toEqual(true);
+      expect(btn.text()).toEqual('SEND');
+    });
 
-    const someletter = { keyCode: 69 };
+    it('should click submit and check for empty textarea', () => {
+      const context = deep(getCompose(true));
+      const input = context.find('.messagecomposer__input');
+      const btn = context.find('.messagecomposer__submit');
 
-    expect(input.simulate('keyDown', someletter));
-    expect(textfieldIsEmpty).toEqual(false);
+      const someletter = { keyCode: 69 };
 
-    expect(btn.simulate('click'));
+      expect(input.simulate('keyDown', someletter));
+      expect(textfieldIsEmpty).toEqual(false);
 
-    expect(submitNoMessage).toEqual(false);
-    expect(submitWithMessage).toEqual(true);
-    expect(textfieldIsEmpty).toEqual(true);
-  });
+      expect(btn.simulate('click'));
 
-  it('should press enter on empty message', () => {
-    const context = deep(getCompose(false));
-    const input = context.find('.messagecomposer__input');
+      expect(submitNoMessage).toEqual(false);
+      expect(submitWithMessage).toEqual(true);
+      expect(textfieldIsEmpty).toEqual(true);
+    });
 
-    const enter = { keyCode: 13 };
-    expect(input.simulate('keyDown', enter));
+    it('should press enter and check for empty textarea', () => {
+      const context = deep(getCompose(true));
+      const input = context.find('.messagecomposer__input');
 
-    expect(submitNoMessage).toEqual(true);
-    expect(submitWithMessage).toEqual(false);
-    expect(textfieldIsEmpty).toEqual(true);
-  });
+      const someletter = { keyCode: 69 };
+      expect(input.simulate('keyDown', someletter));
+      const enter = { keyCode: 13 };
+      expect(input.simulate('keyDown', enter));
 
-  it('should press enter on non-empty message and check for empty textarea', () => {
-    const context = deep(getCompose(true));
-    const input = context.find('.messagecomposer__input');
-
-    const someletter = { keyCode: 69 };
-    expect(input.simulate('keyDown', someletter));
-    const enter = { keyCode: 13 };
-    expect(input.simulate('keyDown', enter));
-
-    expect(submitNoMessage).toEqual(false);
-    expect(submitWithMessage).toEqual(true);
-    expect(textfieldIsEmpty).toEqual(true);
+      expect(submitNoMessage).toEqual(false);
+      expect(submitWithMessage).toEqual(true);
+      expect(textfieldIsEmpty).toEqual(true);
+    });
   });
 });

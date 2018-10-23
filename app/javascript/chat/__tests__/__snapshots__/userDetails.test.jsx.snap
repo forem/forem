@@ -1,0 +1,237 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<UserDetails /> for user bojack should render and test snapshot 1`] = `
+<div>
+  <img
+    src="https://media.giphy.com/media/3o7WTHb2WjEXbsmWDS/giphy.gif"
+    style={
+      Object {
+        "borderRadius": "500px",
+        "display": "block",
+        "height": "210px",
+        "margin": " 15px auto",
+        "width": "210px",
+      }
+    }
+  />
+  <h1
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    <a
+      href="/bojackhorseman"
+      target="_blank"
+    >
+      Bojack Horseman
+    </a>
+  </h1>
+  <div
+    style={
+      Object {
+        "height": "50px",
+        "margin": "auto",
+        "width": "96%",
+      }
+    }
+  >
+    <a
+      href="https://twitter.com/bojacktwitter"
+      target="_blank"
+    >
+      <img
+        src=""
+        style={
+          Object {
+            "margin": "5px 15px 15px 0px",
+            "width": "30px",
+          }
+        }
+      />
+    </a>
+    <a
+      href="https://github.com/bojackgithub"
+      target="_blank"
+    >
+      <img
+        src=""
+        style={
+          Object {
+            "margin": "5px 15px 15px 0px",
+            "width": "30px",
+          }
+        }
+      />
+    </a>
+    <a
+      href="http://bojackhorseman.com"
+      target="_blank"
+    >
+      <img
+        src=""
+        style={
+          Object {
+            "margin": "5px 15px 15px 0px",
+            "width": "30px",
+          }
+        }
+      />
+    </a>
+  </div>
+  <div
+    style={
+      Object {
+        "fontStyle": "italic",
+      }
+    }
+  >
+    I am the Bojack Horseman from Horsing Around and Secreteriat
+  </div>
+  <div
+    class="activechatchannel__activecontentuserdetails"
+  >
+    <div>
+      <div
+        class="key"
+      >
+        location
+      </div>
+      <div
+        class="value"
+      >
+        Los Angeles, CA
+      </div>
+    </div>
+    <div
+      class="key"
+    >
+      joined
+    </div>
+    <div
+      class="value"
+    >
+      January 2, 1964
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<UserDetails /> for user mrpeanutbutter should render and test snapshot with user mrpeanutbutter 1`] = `
+<div>
+  <img
+    src="https://media.giphy.com/media/xThuW6sWCGbpZMpX7a/giphy.gif"
+    style={
+      Object {
+        "borderRadius": "500px",
+        "display": "block",
+        "height": "210px",
+        "margin": " 15px auto",
+        "width": "210px",
+      }
+    }
+  />
+  <h1
+    style={
+      Object {
+        "textAlign": "center",
+      }
+    }
+  >
+    <a
+      href="/mrpeanutbutter"
+      target="_blank"
+    >
+      Mr. Peanutbutter
+    </a>
+  </h1>
+  <div
+    style={
+      Object {
+        "height": "50px",
+        "margin": "auto",
+        "width": "96%",
+      }
+    }
+  >
+    <a
+      href="https://twitter.com/mrpbtwitter"
+      target="_blank"
+    >
+      <img
+        src=""
+        style={
+          Object {
+            "margin": "5px 15px 15px 0px",
+            "width": "30px",
+          }
+        }
+      />
+    </a>
+    <a
+      href="https://github.com/mrpbgithub"
+      target="_blank"
+    >
+      <img
+        src=""
+        style={
+          Object {
+            "margin": "5px 15px 15px 0px",
+            "width": "30px",
+          }
+        }
+      />
+    </a>
+    <a
+      href="http://mrpeanutbutter.com"
+      target="_blank"
+    >
+      <img
+        src=""
+        style={
+          Object {
+            "margin": "5px 15px 15px 0px",
+            "width": "30px",
+          }
+        }
+      />
+    </a>
+  </div>
+  <div
+    style={
+      Object {
+        "fontStyle": "italic",
+      }
+    }
+  >
+    Woof Woof *smile*
+  </div>
+  <div
+    class="activechatchannel__activecontentuserdetails"
+  >
+    <div>
+      <div
+        class="key"
+      >
+        location
+      </div>
+      <div
+        class="value"
+      >
+        Los Angeles, DO(G)
+      </div>
+    </div>
+    <div
+      class="key"
+    >
+      joined
+    </div>
+    <div
+      class="value"
+    >
+      1960s
+    </div>
+  </div>
+</div>
+`;

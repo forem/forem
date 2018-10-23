@@ -1,6 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GithubRepo /> should render and test snapshot (no github token) 1`] = `
+exports[`<GithubRepo /> with fake token should have the proper elements, attributes and values with setstates 1`] = `
+RenderContext {
+  "0": VNode {
+    "attributes": Object {
+      "activeChannelId": 12345,
+      "githubToken": "some_token",
+      "pusherKey": "ASDFGHJKL",
+      "resource": Object {
+        "args": "someargs",
+      },
+    },
+    "children": Array [],
+    "key": undefined,
+    "nodeName": [Function],
+  },
+  "length": 1,
+}
+`;
+
+exports[`<GithubRepo /> with fake token should render and test snapshot 1`] = `
+<div
+  class="activecontent__githubrepo"
+>
+  <div
+    class="activecontent__githubrepoheader"
+  >
+    <a
+      href="/Users/benhalpern/dev/dev.to_core/app"
+    />
+  </div>
+  <div
+    class="activecontent__githubrepofiles"
+  />
+</div>
+`;
+
+exports[`<GithubRepo /> with no token should render and test snapshot 1`] = `
 <div
   class="activecontent__githubrepo"
 >
@@ -21,22 +57,5 @@ exports[`<GithubRepo /> should render and test snapshot (no github token) 1`] = 
     </a>
      to use this feature.
   </p>
-</div>
-`;
-
-exports[`<GithubRepo /> should render and test snapshot 1`] = `
-<div
-  class="activecontent__githubrepo"
->
-  <div
-    class="activecontent__githubrepoheader"
-  >
-    <a
-      href="/Users/benhalpern/dev/dev.to_core/app"
-    />
-  </div>
-  <div
-    class="activecontent__githubrepofiles"
-  />
 </div>
 `;

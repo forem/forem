@@ -19,24 +19,17 @@ const handleInvitationDeclineFake = () => {
   declined = true;
 };
 
-const getEmptyView = () => (
-  <View
-    channels={[]}
-    onViewExit={onViewExitFake}
-    onAcceptInvitation={handleInvitationAcceptFake}
-    onDeclineInvitation={handleInvitationDeclineFake}
-  />
-);
+const sampleChannel = [
+  {
+    channel_name: 'name',
+    description: 'some description',
+    membership_id: '12345',
+  },
+];
 
-const getViewWithChannel = () => (
+const getView = channel => (
   <View
-    channels={[
-      {
-        channel_name: 'name',
-        description: 'some description',
-        membership_id: '12345',
-      },
-    ]}
+    channels={channel}
     onViewExit={onViewExitFake}
     onAcceptInvitation={handleInvitationAcceptFake}
     onDeclineInvitation={handleInvitationDeclineFake}
@@ -45,17 +38,17 @@ const getViewWithChannel = () => (
 
 describe('<View />', () => {
   it('should render and test snapshot (no channel)', () => {
-    const tree = render(getEmptyView());
+    const tree = render(getView([]));
     expect(tree).toMatchSnapshot();
   });
 
   it('should render and test snapshot (with channel)', () => {
-    const tree = deep(getViewWithChannel());
+    const tree = deep(getView(sampleChannel));
     expect(tree).toMatchSnapshot();
   });
 
   it('should have the proper attributes and text values (no channel provided)', () => {
-    const context = deep(getEmptyView());
+    const context = deep(getView([]));
     expect(context.find('.chatNonChatView').exists()).toEqual(true);
     expect(context.find('.container').exists()).toEqual(true);
 
@@ -71,7 +64,7 @@ describe('<View />', () => {
   });
 
   it('should have the proper attributes and text values (with channel provided)', () => {
-    const context = deep(getViewWithChannel());
+    const context = deep(getView(sampleChannel));
     expect(context.find('.chatNonChatView_contentblock').exists()).toEqual(
       true,
     );
@@ -110,14 +103,14 @@ describe('<View />', () => {
   });
 
   it('should trigger exit', () => {
-    const context = deep(getEmptyView());
+    const context = deep(getView([]));
     context.find('.chatNonChatView_exitbutton').simulate('click');
     expect(exited).toEqual(true);
     exited = false;
   });
 
   it('should trigger accept', () => {
-    const context = deep(getViewWithChannel());
+    const context = deep(getView(sampleChannel));
     context
       .find('.cta')
       .at(0)
@@ -136,7 +129,7 @@ describe('<View />', () => {
   });
 
   it('should trigger decline', () => {
-    const context = deep(getViewWithChannel());
+    const context = deep(getView(sampleChannel));
     context
       .find('.cta')
       .at(1)
