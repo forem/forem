@@ -286,7 +286,7 @@ GEM
     fastly-rails (0.8.0)
       fastly (~> 1.6)
       railties (> 2, < 6)
-    feedjira (2.1.4)
+    feedjira (2.2.0)
       faraday (>= 0.9)
       faraday_middleware (>= 0.9)
       loofah (>= 2.0)
@@ -954,7 +954,7 @@ DEPENDENCIES
   faker!
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
-  feedjira (~> 2.1)
+  feedjira (~> 2.2)
   figaro (~> 1.1)
   fix-db-schema-conflicts!
   flipflop (~> 2.4)
