@@ -422,6 +422,7 @@ RSpec.describe User, type: :model do
 
     it "returns onboarding checklist leave_your_first_comment if has left comment" do
       create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
+      user.reload
       checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
       expect(checklist).to eq(true)
     end

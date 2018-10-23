@@ -414,8 +414,10 @@ RSpec.describe Article, type: :model do
   end
 
   it "updates main_image_background_hex_color" do
+    article = build(:article)
+    allow(article).to receive(:update_main_image_background_hex).and_call_original
     article.save
-    expect(article.update_main_image_background_hex_without_delay).to eq(true)
+    expect(article).to have_received(:update_main_image_background_hex)
   end
 
   describe "#async_score_calc" do

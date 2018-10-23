@@ -22,9 +22,9 @@ RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
 ############
 RSpec.configure do |config|
   # makes example fail if there's any output
-  config.around do |ex|
-    expect(&ex).to avoid_outputting.to_stdout.and avoid_outputting.to_stderr
-  end
+  # config.around do |ex|
+  #   expect(&ex).to avoid_outputting.to_stdout.and avoid_outputting.to_stderr
+  # end
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

@@ -9,7 +9,20 @@ RSpec.describe Reaction, type: :model do
     create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
   end
   let(:reaction) do
-    build(:reaction, user_id: user.id, reactable_id: comment.id, reactable_type: "Comment")
+    build(:reaction, reactable: comment, reactable_type: "Comment")
+  end
+
+  describe "actual validation" do
+    subject { Reaction.new(reactable: article, reactable_type: "Article", user: user) }
+
+    before { user.add_role(:trusted) }
+
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(%w(like thinking hands unicorn thumbsdown vomit readinglist)) }
+    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
+
+    # Thumbsdown and Vomits test needed
+    # it { is_expected.to validate_inclusion_of(:reactable_type).in_array(%w(Comment Article)) }
   end
 
   describe "validations" do
@@ -46,7 +59,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     context "when user is trusted" do
-      before { user.add_role(:trusted) }
+      before { reaction.user.add_role(:trusted) }
 
       it "allows vomit reactions for users with trusted role" do
         reaction.category = "vomit"
