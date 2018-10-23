@@ -56,6 +56,7 @@ function reactToArticle(articleId, reaction) {
     showModal("react-to-article");
     return;
   } else {
+    document.getElementById("reaction-butt-" + reaction).disabled = true;
     document.getElementById("reaction-butt-" + reaction).classList.add("user-activated")
     document.getElementById("reaction-butt-" + reaction).classList.add("user-animated")
   }
@@ -90,6 +91,7 @@ function reactToArticle(articleId, reaction) {
         document.getElementById("reaction-number-" + reaction).innerHTML = parseInt(num) - 1;
       }
     }
+    document.getElementById("reaction-butt-" + reaction).disabled = false;
   }
 
   getCsrfToken()
@@ -98,10 +100,12 @@ function reactToArticle(articleId, reaction) {
       if (response.status === 200) {
         return response.json().then(successCb);
       } else {
-        // there's currently no errorCb.
+        // re-enabling the button if status !== 200
+        document.getElementById("reaction-butt-" + reaction).disabled = false;
       }
     })
     .catch(function (error) {
-      // there's currently no error handling.
+        // re-enabling the button if there is an error occurred
+        document.getElementById("reaction-butt-" + reaction).disabled = false;
     })
 }
