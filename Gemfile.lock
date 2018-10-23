@@ -111,9 +111,9 @@ GEM
       nokogiri
       railties
       safely_block (>= 0.1.1)
-    airbrake (5.8.1)
-      airbrake-ruby (~> 1.8)
-    airbrake-ruby (1.8.0)
+    airbrake (7.4.0)
+      airbrake-ruby (~> 2.12)
+    airbrake-ruby (2.12.0)
     algoliasearch (1.19.1)
       httpclient (~> 2.8.3)
       json (>= 1.5.1)
@@ -919,7 +919,7 @@ DEPENDENCIES
   addressable (~> 2.5, >= 2.5.2)
   administrate (~> 0.9)
   ahoy_email (~> 0.5)
-  airbrake (~> 5.8)
+  airbrake (~> 7.4)
   algoliasearch-rails (~> 1.20)
   algorithmia (~> 1.0)
   ancestry (~> 3.0)
