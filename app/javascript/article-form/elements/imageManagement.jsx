@@ -61,7 +61,7 @@ export default class ImageManagement extends Component {
                           </div>
     }
     return   <div
-                className="articleform__imagemanagement"
+                className="articleform__overlay"
               >
               <button
                 class="articleform__exitbutton"
