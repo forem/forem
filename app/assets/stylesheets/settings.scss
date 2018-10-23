@@ -386,8 +386,8 @@
         padding: 3px 0px;
         margin-top:-5px;
         float: right;
-        &:hover {
-          opacity: 0.9;
+        &:hover, &:focus {
+          background: $green;
         }
       }
     }

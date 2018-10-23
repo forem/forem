@@ -67,68 +67,6 @@ export class SingleRepo extends Component {
   }
 }
 
-// export const SingleRepo = ({
-//   name,
-//   githubIdCode,
-//   fork,
-//   selected,
-// }) => {
-
-//   const forkLabel = () => {
-//     if(fork) {
-//       return(
-//         <span className="github-repo-fork">fork</span>
-//       )
-//     }
-//     return null;
-//   }
-
-//   const submitRepo = () => {
-//     const csrfToken = document.querySelector("meta[name='csrf-token']").content
-//     const formData = new FormData()
-//     const formAttributes = {
-//       'github_id_code': githubIdCode,
-//       'featured': !selected
-//     }
-//     formData.append('github_repo', JSON.stringify(formAttributes))
-
-//     fetch('/api/github_repos/update_or_create', {
-//         method: 'POST',
-//         headers: {
-//           'X-CSRF-TOKEN': csrfToken,
-//         },
-//         body: formData,
-//         credentials: 'same-origin',
-//       })
-//       .then(response => response.json())
-//       .then(json => {
-//         console.log(json)
-//         debugger
-//       })
-//   }
-
-//   const githubRepoClassName = () => {
-//     if(selected) {
-//       return 'github-repo-row github-repo-row-selected'
-//     }
-//     return 'github-repo-row'
-//   }
-
-//   // make form a conditional variable
-
-//   return(
-//     <div className={githubRepoClassName()}>
-//       <div className="github-repo-row-name">
-//         {name}
-//         {forkLabel()}
-//         <button className="cta" type="button" onClick={submitRepo}>
-//           {selected ? 'REMOVE' : 'SELECT'}
-//         </button>
-//       </div>
-//     </div>
-//   )
-// }
-
 SingleRepo.propTypes = {
   name: PropTypes.string.isRequired,
   githubIdCode: PropTypes.number.isRequired,
