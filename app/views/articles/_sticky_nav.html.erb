@@ -46,7 +46,7 @@
       <%= follow_button(@actor) %>
     </div>
     <% if @actor.class.name == "User" %>
-      <%= render "articles/user_metadata" %>
+      <%= render "articles/user_metadata", context: "sidebar" %>
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
       <div class="primary-sticky-nav-org-summary">
         <%= @actor.cta_processed_html.html_safe %>
