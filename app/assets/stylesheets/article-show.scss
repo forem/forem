@@ -663,7 +663,7 @@ header{
     button{
       background:transparent;
       margin: 0px 0.22vw;
-      padding:calc(0.05vw + 3px) calc(0.88vw + 3px);
+      padding: 3px calc(0.88vw + 3px);
       border-radius:100px;
       border:2px solid darken($light-gray, 7%);
       font-family: $helvetica-condensed;
@@ -702,7 +702,6 @@ header{
       }
       &.user-activated {
         border:2px solid darken($bold-blue, 40%);
-        padding:calc(0.05vw + 3px) calc(0.88vw + 3px);
         background: linear-gradient(60deg, #f4d2d2, #efb6b6);
         img{
           filter: none;
@@ -1004,13 +1003,15 @@ header{
 
 @keyframes reaction {
   0% {
-    padding:calc(0.05vw + 3px) calc(0.88vw + 3px);
+    padding-left: calc(0.88vw + 3px);
+    padding-right: calc(0.88vw + 3px);
   }
   50% {
-    padding:calc(0.05vw + 3px) calc(1.1vw + 3px);
-    margin: 0px 0.00vw;
+    padding-left: calc(1.1vw + 3px);
+    padding-left: calc(1.1vw + 3px);
   }
   100% {
-    padding:calc(0.05vw + 3px) calc(0.88vw + 3px);
+    padding-left: calc(0.88vw + 3px);
+    padding-right: calc(0.88vw + 3px);
   }
 }

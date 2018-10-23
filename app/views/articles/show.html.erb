@@ -216,7 +216,7 @@
   </div>
 </div>
 
-<% cache("sticky-sidebar-#{@article.id}-#{@article.edited_at}", :expires_in => 8.hours) do %>
+<% cache("sticky-sidebar-#{@article.id}-#{@article.updated_at}-#{(@organization || @user).updated_at}-#{user_signed_in?}", :expires_in => 8.hours) do %>
   <%= render "articles/sticky_nav" %>
 <% end %>
 

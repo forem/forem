@@ -81,7 +81,7 @@
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
     "codemirror": "^5.40.0",
-    "intersection-observer": "^0.5.0",
+    "intersection-observer": "^0.5.1",
     "linkstate": "^1.1.1",
     "marked": "^0.5.1",
     "preact": "^8.3.1",
