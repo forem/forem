@@ -7,6 +7,7 @@ class HtmlVariant < ApplicationRecord
   belongs_to :user, optional: true
   has_many :html_variant_trials
   has_many :html_variant_successes
+  before_save :prefix_all_images
 
   def calculate_success_rate!
     self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0) # x10 because we only capture every 10th
@@ -36,5 +37,47 @@ class HtmlVariant < ApplicationRecord
     if (approved && html_changed? || name_changed? || group_changed?) && persisted?
       errors.add(:base, "cannot change once published and approved")
     end
+  end
+
+  def prefix_all_images
+    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
+    doc = Nokogiri::HTML.fragment(html)
+    doc.css("img").each do |img|
+      src = img.attr("src")
+      next unless src
+      # allow image to render as-is
+      img["src"] = if giphy_img?(src)
+                     src.gsub("https://media.", "https://i.")
+                   else
+                     img_of_size(src, 420)
+                   end
+    end
+    self.html = doc.to_html
+  end
+
+  def giphy_img?(source)
+    uri = URI.parse(source)
+    return false if uri.scheme != "https"
+    return false if uri.userinfo || uri.fragment || uri.query
+    return false if uri.host != "media.giphy.com" && uri.host != "i.giphy.com"
+    return false if uri.port != 443 # I think it has to be this if its https?
+
+    uri.path.ends_with?(".gif")
+  end
+
+  def img_of_size(source, width = 420)
+    quality = if source && (source.include? ".gif")
+                66
+              else
+                "auto"
+              end
+    cl_image_path(source,
+      type: "fetch",
+      width: width,
+      crop: "limit",
+      quality: quality,
+      flags: "progressive",
+      fetch_format: "auto",
+      sign_url: true).gsub(",", "%2C")
   end
 end

@@ -1,3 +1,8 @@
+<% flash.each do |key, value| %>
+  <div class="flash flash-<%= key %>"><%= value %></div>
+<% end %>
+
+
 <% if @html_variant.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(@html_variant.errors.count, "error") %> prohibited this block from being saved:</h2>
@@ -18,9 +23,17 @@
   <% end %>
   <%= f.label :html %>
   <%= f.text_area :html, placeholder: 'HTML to be shown. Make sure all CSS is properly scoped, and all HTML tags are closed, etc. Manditory field.' %>
-  <%= f.label :published %>
-  <%= f.check_box :published %>
-  <%= f.label :target_tag %>
-  <%= f.text_field :target_tag, placeholder: 'One tag, e.g. javascript. Optional targeting.' %>
+  <div class="form-sub-details">
+    <%= f.label :published %>
+    <%= f.check_box :published %>
+    <%= f.label :target_tag %>
+    <%= f.text_field :target_tag, placeholder: 'One tag, e.g. javascript. Optional targeting.' %>
+  </div>
   <%= f.submit %>
+<% end %>
+<% if @html_variant.html.present? %>
+  <h1 style="text-align:center;">Preview:</h1>
+  <div class="html-variant-wrapper" style="width: 310px;margin:20px auto;">
+    <%= @html_variant.html.html_safe %>
+  </div>
 <% end %>
