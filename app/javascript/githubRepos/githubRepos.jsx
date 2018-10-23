@@ -55,3 +55,5 @@ export class GithubRepos extends Component {
     return <div className="github-repos loading-repos" />;
   }
 }
+
+GithubRepos.displayName = 'GitHub Repos Wrapper';
