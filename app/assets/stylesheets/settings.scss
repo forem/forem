@@ -389,6 +389,9 @@
         &:hover, &:focus {
           background: $green;
         }
+        &:disabled {
+          cursor: wait;
+        }
       }
     }
     .github-repo-fork {

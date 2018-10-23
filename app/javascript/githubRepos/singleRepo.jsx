@@ -19,7 +19,13 @@ export class SingleRepo extends Component {
   submitRepo = () => {
     const { selected } = this.state;
     const { githubIdCode } = this.props;
-    this.setState({ selected: !selected });
+
+    const submitButton = document.getElementById(
+      `github-repo-button-${githubIdCode}`,
+    );
+    submitButton.textContent = selected ? 'removing...' : 'pinning...';
+    submitButton.disabled = true;
+
     const csrfToken = document.querySelector("meta[name='csrf-token']").content;
     const formData = new FormData();
     const formAttributes = {
@@ -38,6 +44,7 @@ export class SingleRepo extends Component {
     })
       .then(response => response.json())
       .then(json => {
+        submitButton.disabled = false;
         this.setState({ selected: json.featured });
       });
   };
@@ -52,20 +59,27 @@ export class SingleRepo extends Component {
 
   render() {
     const { selected } = this.state;
-    const { name } = this.props;
+    const { name, githubIdCode } = this.props;
     return (
       <div className={this.githubRepoClassName()}>
         <div className="github-repo-row-name">
-          {name}
-          {this.forkLabel()}
-          <button className="cta" type="button" onClick={this.submitRepo}>
+          <button
+            className="cta"
+            type="button"
+            id={`github-repo-button-${githubIdCode}`}
+            onClick={this.submitRepo}
+          >
             {selected ? 'REMOVE' : 'SELECT'}
           </button>
+          {name}
+          {this.forkLabel()}
         </div>
       </div>
     );
   }
 }
+
+SingleRepo.displayName = 'Single GitHub Repo';
 
 SingleRepo.propTypes = {
   name: PropTypes.string.isRequired,
