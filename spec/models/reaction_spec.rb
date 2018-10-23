@@ -64,10 +64,8 @@ RSpec.describe Reaction, type: :model do
     it "runs async jobs effectively" do
       u2 = create(:user)
       c2 = create(:comment, commentable_id: article.id)
-      Delayed::Worker.delay_jobs = false
       create(:reaction, user_id: u2.id, reactable_id: c2.id, reactable_type: "Comment")
       create(:reaction, user_id: u2.id, reactable_id: article.id, reactable_type: "Article")
-      Delayed::Worker.delay_jobs = true
       expect(reaction).to be_valid
     end
   end
