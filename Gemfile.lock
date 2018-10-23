@@ -123,7 +123,7 @@ GEM
     algorithmia (1.0.1)
       httparty (~> 0.13)
       json (~> 1.8)
-    ancestry (3.0.2)
+    ancestry (3.0.3)
       activerecord (>= 3.2.0)
     approvals (0.0.24)
       nokogiri (~> 1.6)
