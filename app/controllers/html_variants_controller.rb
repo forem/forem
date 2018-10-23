@@ -3,9 +3,13 @@ class HtmlVariantsController < ApplicationController
 
   def index
     authorize HtmlVariant
-    @user_variants = current_user.html_variants.order("created_at DESC")
-    @all_published_variants = HtmlVariant.where(published: true).order("created_at DESC")
-    @preview_path = Article.where(featured: true, published: true).order("published_at DESC").first&.path.to_s
+    @html_variants = if params[:state] == "mine"
+                       current_user.html_variants.order("created_at DESC").includes(:user)
+                     elsif params[:state] == "admin"
+                       HtmlVariant.where(published: true).order("created_at DESC").includes(:user)
+                     else
+                       HtmlVariant.where(published: true, approved: true).order("success_rate DESC").includes(:user)
+                     end
   end
 
   def new
@@ -13,9 +17,17 @@ class HtmlVariantsController < ApplicationController
     @html_variant = HtmlVariant.new
     if params[:fork_id]
       @fork = HtmlVariant.find(params[:fork_id])
-      @html_variant.name = @fork.name + " FORK"
+      @html_variant.name = @fork.name + " FORK-#{rand(10000)}"
       @html_variant.html = @fork.html
     end
+  end
+
+  def show
+    @story_show = true
+    @@article_show = true
+    @html_variant = HtmlVariant.find(params[:id])
+    authorize @html_variant
+    render layout: false
   end
 
   def edit
@@ -29,7 +41,8 @@ class HtmlVariantsController < ApplicationController
     @html_variant.group = "article_show_sidebar_cta"
     @html_variant.user_id = current_user.id
     if @html_variant.save
-      redirect_to "/html_variants"
+      flash[:success] = "HTML Variant Created"
+      redirect_to "/html_variants/#{@html_variant.id}/edit"
     else
       render :new
     end
@@ -39,7 +52,8 @@ class HtmlVariantsController < ApplicationController
     @html_variant = HtmlVariant.find(params[:id])
     authorize @html_variant
     if @html_variant.update(html_variant_params)
-      redirect_to "/html_variants"
+      flash[:success] = "HTML Variant Updated"
+      redirect_to "/html_variants/#{@html_variant.id}/edit"
     else
       render :edit
     end
