@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GithubRepo /> should render and test snapshot (no github token) 1`] = `
+<div
+  class="activecontent__githubrepo"
+>
+  <div
+    class="activecontent__githubrepoheader"
+  >
+    <em>
+      Authentication required
+    </em>
+  </div>
+  <p>
+    You must 
+    <a
+      data-no-instant={true}
+      href="/users/auth/github"
+    >
+      authenticate with GitHub
+    </a>
+     to use this feature.
+  </p>
+</div>
+`;
+
+exports[`<GithubRepo /> should render and test snapshot 1`] = `
+<div
+  class="activecontent__githubrepo"
+>
+  <div
+    class="activecontent__githubrepoheader"
+  >
+    <a
+      href="/Users/benhalpern/dev/dev.to_core/app"
+    />
+  </div>
+  <div
+    class="activecontent__githubrepofiles"
+  />
+</div>
+`;

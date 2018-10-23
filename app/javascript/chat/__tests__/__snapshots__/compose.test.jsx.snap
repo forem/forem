@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Compose /> should render Compose and have the proper attributes/initial content 1`] = `
+<div
+  class="messagecomposer"
+>
+  <textarea
+    class="messagecomposer__input"
+    id="messageform"
+    maxLength="1000"
+    onKeyDown={[Function]}
+    placeholder="Message goes here"
+  />
+  <button
+    class="messagecomposer__submit"
+    onClick={[Function]}
+  >
+    SEND
+  </button>
+</div>
+`;
