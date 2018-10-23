@@ -35,14 +35,14 @@
     <br>
     <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your Twitter account?');" do %>
       <%= hidden_field_tag :provider, "twitter" %>
-      <button class="danger-button small-button" type="submit">
+      <button class="big-action danger-button small-button" type="submit">
         <img src="<%= asset_path('twitter-logo.svg') %>" /> REMOVE TWITTER
       </button>
     <% end %>
-    <span style="margin-left: 124px;">OR</span>
+    <br/>
     <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your GitHub account?');" do %>
       <%= hidden_field_tag :provider, "github" %>
-      <button class="danger-button small-button" type="submit">
+      <button class="big-action danger-button small-button" type="submit">
         <img src="<%= asset_path('github-logo.svg') %>" /> REMOVE GITHUB
       </button>
     <% end %>
@@ -70,7 +70,7 @@
       <div class="field">
         <input type="text" id="delete__account__verification__field">
       </div>
-      <button class="danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
+      <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
         DELETE ACCOUNT
       </button>
     <% end %>
