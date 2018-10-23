@@ -2,13 +2,10 @@ import { h, Component } from 'preact';
 import { SingleRepo } from './singleRepo';
 
 export class GithubRepos extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      repos: [],
-      erroredOut: false,
-    };
-  }
+  state = {
+    repos: [],
+    erroredOut: false,
+  };
 
   componentDidMount() {
     this.getGithubRepos();
