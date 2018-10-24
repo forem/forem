@@ -50,10 +50,14 @@
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
       <div class="primary-sticky-nav-org-summary">
         <%= @actor.cta_processed_html.html_safe %>
-        <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
-          <%= @actor.cta_button_text.upcase %>
-          <span class="primary-sticky-nav-org-cta-link-domain-small"><%= Addressable::URI.parse(@actor.cta_button_url).domain %></span>
-        </a>
+        <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
+          <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
+            <%= @actor.cta_button_text %>
+            <span class="primary-sticky-nav-org-cta-link-domain-small">
+              <%= Addressable::URI.parse(@actor.cta_button_url).domain %>
+            </span>
+          </a>
+        <% end %>
       </div>
     <% end %>
   </div>
