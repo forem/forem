@@ -24,7 +24,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def self.find_top_for_test(tags_array)
-    where(group: "article_show_sidebar_cta", approved: true, published: true, target_tag: tags_array).order("success_rate DESC").limit(rand(1..10)).sample
+    where(group: "article_show_sidebar_cta", approved: true, published: true, target_tag: tags_array).order("success_rate DESC").limit(rand(1..15)).sample
   end
 
   def self.find_random_for_test(tags_array)
@@ -45,7 +45,7 @@ class HtmlVariant < ApplicationRecord
     doc.css("img").each do |img|
       src = img.attr("src")
       next unless src
-      # allow image to render as-is
+      next if whitelisted_image_host?(src)
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else
@@ -63,6 +63,10 @@ class HtmlVariant < ApplicationRecord
     return false if uri.port != 443 # I think it has to be this if its https?
 
     uri.path.ends_with?(".gif")
+  end
+
+  def whitelisted_image_host?(src)
+    src.start_with?("https://res.cloudinary.com/")
   end
 
   def img_of_size(source, width = 420)
