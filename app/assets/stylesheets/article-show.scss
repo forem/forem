@@ -658,21 +658,19 @@ article{
       margin-left: -1px;
       margin-right: -1px;
       width: 880px;
-      padding:8px 0px;
+      padding:6px 0px;
     }
     button{
       background:transparent;
       margin: 0px 0.22vw;
-      border:1px solid white;
-      padding:calc(0.15vw + 4px) calc(0.88vw + 4px);
-      border-radius:3px;
-      border:1px solid darken($light-gray,7%);
+      padding: 3px calc(0.88vw + 3px);
+      border-radius:100px;
+      border:2px solid darken($light-gray, 7%);
       font-family: $helvetica-condensed;
       font-stretch:condensed;
       img{
         height:23px;
         width:23px;
-        filter: grayscale(100%);
         transition: -webkit-filter 0.2s, opacity 0.2s, background-color 0.2s;
         @media screen and ( min-width: 500px ){
           height:28px;
@@ -694,34 +692,32 @@ article{
         }
       }
       &:hover{
-        background-color:$light-gray;
-        img{
-          filter: grayscale(80%);
-        }
+        border:2px solid #88aacc;
       }
       &.activated{
-        border:1px solid darken($light-gray,7%);
         img{
           filter: none;
           opacity:1;
         }
       }
       &.user-activated {
-        border:2px solid $black;
-        background-color:$green;
-        padding:calc(0.15vw + 3px) calc(0.88vw + 3px);
-        &.unicorn-reaction-button{
-          background-color:$purple;;
-        }
-        &.readinglist-reaction-button{
-          background: lighten($bold-blue, 32%);
-        }
-        .reaction-number{
-          color: $black;
-        }
+        border:2px solid darken($bold-blue, 40%);
+        background: linear-gradient(60deg, #f4d2d2, #efb6b6);
         img{
           filter: none;
           opacity:1;
+        }
+        &.unicorn-reaction-button{
+          background: linear-gradient(60deg, #d6e5fc, #c9deff);
+        }
+        &.readinglist-reaction-button{
+          background: linear-gradient(60deg, #d2cdf2, #beb8ef);
+        }
+        .reaction-number{
+          color: darken($bold-blue, 40%);
+        }
+        &.user-animated{
+          animation: reaction 0.3s;
         }
       }
     }
@@ -730,11 +726,11 @@ article{
       position:relative;
       width: 40px;
       button{
-        border: 1px solid white;
+        border: 2px solid white;
         min-width: 38px;
         opacity:0.7;
         &:hover{
-          border: 1px solid $light-gray;
+          border: 2px solid $light-gray;
           opacity:1;
         }
         .dropdown-icon{
@@ -792,7 +788,7 @@ article{
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
-      border:1px solid darken($light-gray,7%);
+      border:2px solid darken($light-gray, 7%);
       font-family: $helvetica-condensed;
       font-stretch: condensed;
       padding: 4px 0.88vw;
@@ -812,7 +808,7 @@ article{
     .article-actions-tweet-button{
       padding: 7px 0 6px;
       border-radius:3px;
-      border:1px solid darken($light-gray,7%);
+      border:2px solid darken($light-gray, 7%);
       margin-right: 0.15vw;
       margin-left: calc(0.2vw + 11px);
       vertical-align: calc(3px - 0.07vw);
@@ -1003,4 +999,19 @@ article{
         bottom:-0px;
 
     }
+}
+
+@keyframes reaction {
+  0% {
+    padding-left: calc(0.88vw + 3px);
+    padding-right: calc(0.88vw + 3px);
+  }
+  50% {
+    padding-left: calc(1.1vw + 3px);
+    padding-left: calc(1.1vw + 3px);
+  }
+  100% {
+    padding-left: calc(0.88vw + 3px);
+    padding-right: calc(0.88vw + 3px);
+  }
 }

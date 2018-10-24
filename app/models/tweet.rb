@@ -95,7 +95,7 @@ class Tweet < ApplicationRecord
     tweet.extended_entities_serialized = tweeted.attrs[:extended_entities]
     tweet.full_fetched_object_serialized = tweeted.attrs
     tweet.tweeted_at = tweeted.attrs[:created_at]
-    tweet.last_fetched_at = Time.now
+    tweet.last_fetched_at = Time.current
     tweet.user_is_verified = tweeted.user.verified?
     tweet.is_quote_status = tweeted.attrs[:is_quote_status]
     tweet.save!

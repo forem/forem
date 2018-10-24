@@ -57,7 +57,7 @@ class GlitchTag < LiquidTagBase
     params = options.map { |x| option_to_query_pair(x) }.compact
 
     # Deal with the file option if present or use default
-    file_option = options.select { |x| x.start_with?("file=") }.first
+    file_option = options.detect { |x| x.start_with?("file=") }
     path = file_option ? (file_option.sub! "file=", "") : "index.html"
     params.push ["path", path]
 

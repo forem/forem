@@ -30,14 +30,14 @@ RSpec.describe RateLimitChecker do
 
   it ".limit_by_email_recipient_address returns true if too many published articles at once" do
     10.times do
-      EmailMessage.create(to: user.email, sent_at: Time.now)
+      EmailMessage.create(to: user.email, sent_at: Time.current)
     end
     expect(described_class.new.limit_by_email_recipient_address(user.email)).to eq(true)
   end
 
   it ".limit_by_email_recipient_address returns false if published articles comment" do
     2.times do
-      EmailMessage.create(to: user.email, sent_at: Time.now)
+      EmailMessage.create(to: user.email, sent_at: Time.current)
     end
     expect(described_class.new.limit_by_email_recipient_address(user.email)).to eq(false)
   end

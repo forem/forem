@@ -4,7 +4,7 @@ RSpec.describe "StoriesShow", type: :request do
   let(:user) { FactoryBot.create(:user) }
   let(:article) { FactoryBot.create(:article, user_id: user.id) }
 
-  describe "GET /user" do
+  describe "GET /:username/:slug" do
     it "renders to appropriate page" do
       get article.path
       expect(response.body).to include CGI.escapeHTML(article.title)
@@ -19,7 +19,7 @@ RSpec.describe "StoriesShow", type: :request do
     it "redirects to appropriate if article belongs to org and user visits user version" do
       article.update(organization_id: create(:organization).id)
       get "/#{article.user.username}/#{article.slug}"
-      expect(response.body).to redirect_to article.path
+      expect(response.body).to redirect_to article.reload.path
     end
 
     it "renders to appropriate page if user changes username" do
@@ -65,5 +65,24 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include "title"
     end
     # rubocop:enable RSpec/ExampleLength
+  end
+
+  it "renders html variant" do
+    html_variant = create(:html_variant, published: true, approved: true)
+    get article.path
+    expect(response.body).to include html_variant.html
+  end
+
+  it "Does not render variant when no variants published" do
+    html_variant = create(:html_variant, published: false, approved: true)
+    get article.path
+    expect(response.body).not_to include html_variant.html
+  end
+
+  it "does not render html variant when user logged in" do
+    html_variant = create(:html_variant, published: true, approved: true)
+    sign_in user
+    get article.path
+    expect(response.body).not_to include html_variant.html
   end
 end

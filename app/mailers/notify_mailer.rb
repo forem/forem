@@ -80,4 +80,18 @@ class NotifyMailer < ApplicationMailer
     subject = "dev.to - Account Deletion Confirmation"
     mail(to: user.email, subject: subject)
   end
+
+  def mentee_email(mentee, mentor)
+    @mentee = mentee
+    @mentor = mentor
+    subject = "You have been matched with a DEV mentor!"
+    mail(to: @mentee.email, subject: subject, from: "Liana (from dev.to) <liana@dev.to>")
+  end
+
+  def mentor_email(mentor, mentee)
+    @mentor = mentor
+    @mentee = mentee
+    subject = "You have been matched with a new DEV mentee!"
+    mail(to: @mentor.email, subject: subject, from: "Liana (from dev.to) <liana@dev.to>")
+  end
 end

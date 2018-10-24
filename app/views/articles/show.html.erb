@@ -216,7 +216,9 @@
   </div>
 </div>
 
-<%= render "articles/sticky_nav", sticky_articles: @sticky_articles %>
+<% cache("sticky-sidebar-#{@article.id}-#{@article.updated_at}-#{(@organization || @user).updated_at}-#{user_signed_in?}", :expires_in => 8.hours) do %>
+  <%= render "articles/sticky_nav" %>
+<% end %>
 
 <% if has_vid?(@article) %>
   <%= render 'articles/fitvids' %>
