@@ -26,7 +26,7 @@ class MarkdownParser
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong i u b em p br)
+    tag_whitelist = %w(strong i u b em p br code)
     attribute_whitelist = %w(href strong em ref rel src title alt class)
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
     tags: tag_whitelist,
