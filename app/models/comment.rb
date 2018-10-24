@@ -306,12 +306,12 @@ class Comment < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
-    Comment.delay.comment_async_bust(commentable, user.username)
     remove_algolia_index
     reactions.destroy_all
   end
 
   def bust_cache
+    Comment.delay.comment_async_bust(commentable, user.username)
     expire_root_fragment
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
