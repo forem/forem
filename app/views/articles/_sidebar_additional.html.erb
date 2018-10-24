@@ -5,7 +5,7 @@
       <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
         <a class="widget" href="<%= repo.url %>" target="_blank">
           <header>
-            <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %>
+            <h4><span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %></h4>
           </header>
           <div class="widget-body">
             <%= repo.description %>
@@ -28,7 +28,7 @@
       <% if @user.users.size > 0 %>
         <div class="widget">
           <div class="widget-suggested-follows-container">
-            <header>meet the team</header>
+            <header><h4>meet the team</h4></header>
             <div class="widget-body">
               <% @user.users.each do |user| %>
                   <div class="widget-user-pic">
@@ -45,7 +45,7 @@
       <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
-            #discuss
+            <h4>#discuss</h4>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -67,7 +67,7 @@
           <% if @boostable_posts.any? %>
             <div class="widget">
               <header>
-                trending guides/resources
+                <h4>trending guides/resources</h4>
               </header>
               <div class="widget-body">
                 <div class="widget-link-list">
@@ -87,7 +87,7 @@
       <% unless user_signed_in? %>
         <div class="widget signin-cta-widget">
           <header>
-            DEV.TO(GETHER)
+            <h4>DEV.TO(GETHER)</h4>
           </header>
           <div class="widget-body">
             <center style="margin-bottom: 2px;">
@@ -111,7 +111,7 @@
       <% if Flipflop.she_coded? %>
         <div class="widget">
           <header>
-            <#SHECODED>
+            <h4><#SHECODED></h4>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -133,7 +133,7 @@
       <% if Event.in_the_future_and_published.any? && Flipflop.upcoming_events? %>
         <div class="widget">
           <header>
-            <a href="/events">upcoming live events</a>
+            <a href="/events"><h4>upcoming live events</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -148,7 +148,7 @@
       <% ApplicationConfig["TRENDING_TAGS"].split(",").each do |tag| %>
         <div class="widget">
           <header>
-            <a href="/t/<%= tag %>">#<%= tag %></a>
+            <a href="/t/<%= tag %>"><h4>#<%= tag %></h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -164,7 +164,7 @@
       <% if Article.active_help.any? %>
         <div class="widget">
           <header>
-            <a href="/t/help">#help</a>
+            <a href="/t/help"><h4>#help</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -179,7 +179,7 @@
       <% if Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
-            <a href="/t/ama">#ama</a>
+            <a href="/t/ama"><h4>#ama</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -195,7 +195,7 @@
       <% if Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
-            <a href="/t/challenge">#challenge</a>
+            <a href="/t/challenge"><h4>#challenge</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -210,7 +210,7 @@
       <% end %>
       <div class="widget">
         <header>
-          <a href="/t/discuss">#discuss</a>
+          <a href="/t/discuss"><h4>#discuss</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -224,7 +224,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/explainlikeimfive">#explainlikeimfive</a>
+          <a href="/t/explainlikeimfive"><h4>#explainlikeimfive</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -238,7 +238,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/healthydebate">#healthydebate</a>
+          <a href="/t/healthydebate"><h4>#healthydebate</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -252,7 +252,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/meta">#meta</a>
+          <a href="/t/meta"><h4>#meta</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -267,7 +267,7 @@
       <% if user_signed_in? %>
         <div class="widget" id="podcast-widget">
           <header>
-            <a href="/pod">latest podcasts</a>
+            <a href="/pod"><h4>latest podcasts</h4></a>
           </header>
           <div class="widget-body">
               <% @podcast_episodes.each do |ep| %>
@@ -287,7 +287,7 @@
           <% if @boostable_posts.any? %>
             <div class="widget">
               <header>
-                trending guides/resources
+                <h4>trending guides/resources</h4>
               </header>
               <div class="widget-body">
                 <div class="widget-link-list">

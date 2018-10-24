@@ -6,7 +6,7 @@
         <% if @user.mostly_work_with.present? %>
           <div class="widget">
             <header>
-              skills/languages
+              <h4>skills/languages</h4>
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.mostly_work_with %>
@@ -16,7 +16,7 @@
         <% if @user.currently_learning.present? %>
           <div class="widget">
             <header>
-              learning/trying
+              <h4>learning/trying</h4>
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.currently_learning %>
@@ -26,7 +26,7 @@
         <% if @user.currently_hacking_on.present? %>
           <div class="widget">
             <header>
-              projects and hacks
+              <h4>projects and hacks</h4>
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.currently_hacking_on %>
@@ -36,7 +36,7 @@
         <% if @user.available_for.present? %>
           <div class="widget">
             <header>
-              available for
+              <h4>available for</h4>
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @user.available_for %>
@@ -59,7 +59,7 @@
         <% if @organization.story.present? %>
           <div class="widget">
             <header>
-              our story
+              <h4>our story</h4>
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @organization.story %>
@@ -69,17 +69,17 @@
         <% if @organization.tech_stack.present? %>
           <div class="widget">
             <header>
-              our stack
+              <h4>our stack</h4>
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @organization.tech_stack %>
             </div>
           </div>
-        <% end %>              
-    <% elsif @query %>    
+        <% end %>
+    <% elsif @query %>
       <div class="widget">
         <header>
-          &lt;FILTERS&gt;
+          <h4>&lt;FILTERS&gt;</h4>
         </header>
         <div class="widget-body" style="margin-bottom:16px;">
           <button class="query-filter-button" data-filter="class_name:Article">POSTS</button>
@@ -93,17 +93,17 @@
       <% if @tag_model && @tag_model.short_summary.present? %>
         <div class="widget">
           <header>
-            #<%= @tag %> 👋
+            <h4>#<%= @tag %> 👋</h4>
           </header>
           <div class="widget-body">
             <%= @tag_model.short_summary.html_safe %>
-          </div>  
+          </div>
         </div>
       <% end %>
       <% if @tag_model && @tag_model.rules_html.present? %>
         <div class="widget">
           <header>
-            submission guidelines
+            <h4>submission guidelines</h4>
           </header>
           <div class="widget-body">
             <%= @tag_model.rules_html.html_safe %>
@@ -116,7 +116,7 @@
       <% if @tag_model && @tag_model.wiki_body_html.present? %>
         <div class="widget">
           <header>
-            about #<%= @tag %>
+            <h4>about #<%= @tag %></h4>
           </header>
           <div class="widget-body">
             <%= @tag_model.wiki_body_html.html_safe %>
@@ -126,7 +126,7 @@
       <% if @tag == "javascript" %>
         <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
           <header>
-            <a href="/sponsors">community sponsors</a>
+            <a href="/sponsors"><h4>community sponsors</h4></a>
             <span class="emoji">
               <img alt="emoji heart" src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
             </span>
@@ -155,7 +155,7 @@
     <% elsif @podcast_index && @podcasts %>
       <div class="widget podcast-pic-widget">
         <header>
-          &lt;ALL SHOWS&gt;
+          <h4>&lt;ALL SHOWS&gt;</h4>
         </header>
         <div class="widget-body">
           <% @podcasts.each do |podcast| %>
@@ -187,7 +187,7 @@
         <%= render "articles/sidebar_nav" %>
         <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
           <header>
-            <a href="/sponsors">community sponsors</a>
+            <a href="/sponsors"><h4>community sponsors</h4></a>
             <span class="emoji">
               <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart"/>
             </span>
@@ -238,7 +238,7 @@
         </div>
         <div class="widget">
           <header>
-            key links
+            <h4>key links</h4>
           </header>
           <div class="widget-body">
             <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>

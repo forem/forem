@@ -560,7 +560,7 @@
         }
         .bm-success{
           display:none;
-        }       
+        }
         &.selected{
           color: darken($purple, 33%);
           background: transparent;
@@ -906,6 +906,9 @@
       &:hover{
         opacity:1;
       }
+      h4{
+        margin: 0;
+      }
       &.signin-cta-widget{
         background: lighten($purple, 3%);
         border: 1px solid  darken($bold-blue, 5%);
@@ -972,6 +975,10 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         a{
           color: $black;
+          h4{
+            display: inline-block;
+            margin: 0;
+          }
           &:hover{
             text-decoration: underline;
           }
