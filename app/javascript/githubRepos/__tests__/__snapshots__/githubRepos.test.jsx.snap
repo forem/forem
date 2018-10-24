@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GithubRepos /> when it successfully gets the repos renders properly 1`] = `
+Object {
+  "erroredOut": false,
+  "repos": Array [],
+}
+`;
