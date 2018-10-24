@@ -23,7 +23,7 @@ export class SingleRepo extends Component {
     const submitButton = document.getElementById(
       `github-repo-button-${githubIdCode}`,
     );
-    submitButton.textContent = selected ? 'removing...' : 'pinning...';
+    submitButton.textContent = '';
     submitButton.disabled = true;
 
     const csrfToken = document.querySelector("meta[name='csrf-token']").content;

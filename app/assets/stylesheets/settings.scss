@@ -386,11 +386,14 @@
         padding: 3px 0px;
         margin-top:-5px;
         float: right;
+        min-height: 28.5px;
         &:hover, &:focus {
           background: $green;
         }
         &:disabled {
           cursor: wait;
+          background: white url(image_path('loading-ellipsis.svg')) no-repeat center center;
+          background-size: 75px;
         }
       }
     }
