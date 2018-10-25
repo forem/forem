@@ -3,6 +3,7 @@ class StoriesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[index search show]
 
   def index
+    add_param_context(:username, :tag)
     return handle_user_or_organization_or_podcast_index if params[:username]
     return handle_tag_index if params[:tag]
     handle_base_index
@@ -19,7 +20,7 @@ class StoriesController < ApplicationController
 
   def show
     @story_show = true
-    capture_param(:username, :slug)
+    add_param_context(:username, :slug)
     if @article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate
       handle_article_show
     elsif @article = Article.find_by_slug(params[:slug])&.decorate
@@ -81,7 +82,7 @@ class StoriesController < ApplicationController
     @tag = params[:tag].downcase
     @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by_name(@tag) || not_found
-    capture_param(:tag, :page)
+    add_param_context(:tag, :page)
     if @tag_model.alias_for.present?
       redirect_to "/t/#{@tag_model.alias_for}"
       return
@@ -108,7 +109,7 @@ class StoriesController < ApplicationController
     @page = (params[:page] || 1).to_i
     num_articles = 15
     @stories = article_finder(num_articles)
-    capture_param(:page, :timeframe)
+    add_param_context(:page, :timeframe)
 
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
@@ -153,7 +154,6 @@ class StoriesController < ApplicationController
     @article_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes.order("published_at DESC").limit(30)
-    honeycomb_metadata[:is_podcast] = true
     set_surrogate_key_header "podcast_episodes", (@podcast_episodes.map { |e| e["record_key"] })
     render template: "articles/index"
   end

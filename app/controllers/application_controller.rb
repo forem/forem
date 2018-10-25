@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   include Pundit
+  include Instrumentation
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
@@ -71,17 +72,8 @@ class ApplicationController < ActionController::Base
     current_user.touch
   end
 
-  def capture_param(*keys)
-    keys.each do |k|
-      honeycomb_metadata[k] = params[k]
-    end
-  end
-
   def append_info_to_payload(payload)
     super(payload)
-    honeycomb_metadata["trace.trace_id"] = request.request_id
-    honeycomb_metadata["trace.span_id"] = request.request_id
-    honeycomb_metadata[:service_name] = "rails"
-    honeycomb_metadata[:name] = self.class.name
+    append_to_honeycomb(request, self.class.name)
   end
 end
