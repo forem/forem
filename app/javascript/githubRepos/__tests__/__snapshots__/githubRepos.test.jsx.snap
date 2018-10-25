@@ -1,8 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GithubRepos /> when it successfully gets the repos renders properly 1`] = `
-Object {
-  "erroredOut": false,
-  "repos": Array [],
+exports[`<GithubRepos /> when there are no repos loaded yet should render and match the snapshot 1`] = `
+<div
+  class="github-repos loading-repos"
+/>
+`;
+
+exports[`<GithubRepos /> when there was an error in the response renders and matches the snapshot 1`] = `
+RenderContext {
+  "0": VNode {
+    "attributes": undefined,
+    "children": Array [],
+    "key": undefined,
+    "nodeName": [Function],
+  },
+  "length": 1,
 }
 `;
