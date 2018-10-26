@@ -13,7 +13,6 @@ RSpec.describe "Looking For Work" do
     visit "/settings"
     page.check "Looking for work"
     click_button("submit")
-    Delayed::Worker.new.work_off
     expect(user.follows.count).to eq(1)
   end
 end
