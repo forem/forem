@@ -1,6 +1,6 @@
 # rubocop:disable LineLength
 source "https://rubygems.org"
-ruby "2.5.1"
+ruby "2.5.3"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
@@ -50,7 +50,7 @@ gem "gibbon", "~> 2.2"
 gem "google-api-client", "~> 0.24"
 gem "html_truncator", "~> 0.4"
 gem "httparty", "~> 0.16"
-gem "inline_svg", "~> 0.12"
+gem "inline_svg", "~> 1.3"
 gem "jbuilder", "~> 2.7"
 gem "jquery-rails", "~> 4.3"
 gem "kaminari", "~> 1.1"
