@@ -95,10 +95,10 @@ class NotifyMailer < ApplicationMailer
     mail(to: @mentor.email, subject: subject, from: "Liana (from dev.to) <liana@dev.to>")
   end
 
-  def articles_exported_email(user, attachment)
+  def export_email(user, attachment)
     @user = user
-    export_filename = "posts-#{Date.current.iso8601}.zip"
+    export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
-    mail(to: @user.email, subject: "The export of your posts is ready")
+    mail(to: @user.email, subject: "The export of your data is ready")
   end
 end

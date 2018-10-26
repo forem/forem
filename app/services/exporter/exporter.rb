@@ -1,3 +1,5 @@
+require "zip"
+
 module Exporter
   class Exporter
     attr_reader :user
@@ -52,7 +54,7 @@ module Exporter
 
     def send_exports_by_email(zipped_exports)
       zipped_exports.rewind
-      NotifyMailer.articles_exported_email(user, zipped_exports.read).deliver
+      NotifyMailer.export_email(user, zipped_exports.read).deliver
     end
 
     def update_user_export_fields
