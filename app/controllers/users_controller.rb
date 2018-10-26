@@ -26,7 +26,7 @@ class UsersController < ApplicationController
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
 
-      if @user.articles_export_requested?
+      if @user.export_requested?
         notice = notice + " The export will be emailed to you shortly."
         ArticleExportService.new(@user).delay.export(send_email: true)
       end

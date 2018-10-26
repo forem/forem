@@ -65,13 +65,13 @@ RSpec.describe "UserSettings", type: :request do
     context "when requesting an export of the articles" do
       def send_request(flag = true)
         put "/users/#{user.id}", params: {
-          user: { tab: "misc", articles_export_requested: flag },
+          user: { tab: "misc", export_requested: flag }
         }
       end
 
-      it "updates articles_export_requested flag" do
+      it "updates export_requested flag" do
         send_request
-        expect(user.reload.articles_export_requested).to be(true)
+        expect(user.reload.export_requested).to be(true)
       end
 
       it "displays a flash with a reminder for the user to expect an email" do

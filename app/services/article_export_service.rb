@@ -14,7 +14,7 @@ class ArticleExportService
 
     send_articles_exported_email(zipped_export) if send_email
 
-    user.update!(articles_export_requested: false, articles_exported_at: Time.current)
+    user.update!(export_requested: false, exported_at: Time.current)
 
     zipped_export.rewind
     zipped_export
@@ -27,17 +27,43 @@ class ArticleExportService
     NotifyMailer.articles_exported_email(user, zipped_export.read).deliver
   end
 
-  def blacklisted_attributes
+  def whitelisted_attributes
     %i[
-      id abuse_removal_reason allow_big_edits allow_small_edits
-      amount_due amount_paid approved automatically_renew boost_states
-      collection_id collection_position email_digest_eligible
-      facebook_last_buffered featured featured_number hotness_score
-      ids_for_suggested_articles job_opportunity_id last_buffered
-      last_invoiced_at live_now main_tag_name_for_social
-      name_within_collection organization_id paid password
-      receive_notifications removed_for_abuse second_user_id
-      spaminess_rating third_user_id user_id video_state
+      body_html
+      body_markdown
+      cached_tag_list
+      cached_user_name
+      cached_user_username
+      canonical_url
+      comments_count
+      created_at
+      crossposted_at
+      description
+      edited_at
+      feed_source_url
+      language
+      last_comment_at
+      lat
+      long
+      main_image
+      main_image_background_hex_color
+      path
+      positive_reactions_count
+      processed_html
+      published
+      published_at
+      published_from_feed
+      reactions_count
+      show_comments
+      slug
+      social_image
+      title
+      updated_at
+      video
+      video_closed_caption_track_url
+      video_code
+      video_source_url
+      video_thumbnail_url
     ]
   end
 
@@ -48,7 +74,7 @@ class ArticleExportService
     articles.find_each do |article|
       articles_to_jsonify << article
     end
-    articles_to_jsonify.to_json(except: blacklisted_attributes)
+    articles_to_jsonify.to_json(only: whitelisted_attributes)
   end
 
   def zip_json_articles(json_articles)

@@ -145,14 +145,14 @@ RSpec.describe ArticleExportService do
     it "sets the requested flag as false" do
       service = valid_instance(article.user)
       service.export
-      expect(user.articles_export_requested).to be(false)
+      expect(user.export_requested).to be(false)
     end
 
     it "sets the exported at datetime as the current one" do
       Timecop.freeze(Time.current) do
         service = valid_instance(article.user)
         service.export
-        expect(user.articles_exported_at).to eq(Time.current)
+        expect(user.exported_at).to eq(Time.current)
       end
     end
   end
