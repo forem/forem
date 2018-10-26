@@ -1,7 +1,7 @@
 require "rails_helper"
 require "zip"
 
-RSpec.describe ArticleExportService do
+RSpec.describe Exporter::Exporter do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:other_user) { create(:user) }
@@ -15,18 +15,20 @@ RSpec.describe ArticleExportService do
     described_class.new(user)
   end
 
-  def extract_zipped_articles(buffer)
-    output = ""
+  def extract_zipped_exports(buffer)
+    exports = {}
+
     buffer.rewind
     Zip::InputStream.open(buffer) do |stream|
       loop do
         entry = stream.get_next_entry
         break if entry.blank?
-        continue unless entry.name == "articles.json"
-        output = stream.read
+        # continue unless entry.name == "articles.json"
+        exports[entry.name] = stream.read
       end
     end
-    JSON.parse(output)
+
+    exports
   end
 
   def expected_fields
@@ -69,6 +71,12 @@ RSpec.describe ArticleExportService do
     ]
   end
 
+  describe "EXPORTERS" do
+    it "is a list of supported exporters" do
+      expect(Exporter::Exporter::EXPORTERS).to eq([Exporter::Articles])
+    end
+  end
+
   describe "#initialize" do
     it "accepts a user" do
       service = valid_instance(user)
@@ -77,55 +85,21 @@ RSpec.describe ArticleExportService do
   end
 
   describe "#export" do
-    context "when slug is unknown" do
-      it "returns stream with no articles if the slug is not found" do
-        service = valid_instance(user)
-        zipped_export = service.export(slug: "not found")
-        articles = extract_zipped_articles(zipped_export)
-        expect(articles).to be_empty
-      end
-
-      it "returns stream with no articles if slug belongs to another user" do
-        service = valid_instance(user)
-        zipped_export = service.export(slug: other_user_article.slug)
-        articles = extract_zipped_articles(zipped_export)
-        expect(articles).to be_empty
-      end
+    it "exports a zip file with files" do
+      service = valid_instance(article.user)
+      zipped_exports = service.export
+      exports = extract_zipped_exports(zipped_exports)
+      expect(exports.keys).to eq(["articles.json"])
     end
 
-    context "when slug is known" do
-      it "returns a stream with the article" do
-        service = valid_instance(user)
-        zipped_export = service.export(slug: article.slug)
-        articles = extract_zipped_articles(zipped_export)
-        expect(articles.length).to eq(1)
-      end
-
-      it "returns only expected fields for the article" do
-        service = valid_instance(user)
-        zipped_export = service.export(slug: article.slug)
-        articles = extract_zipped_articles(zipped_export)
-        expect(articles.first.keys).to eq(expected_fields)
-      end
+    it "passes configuration to an exporter" do
+      service = valid_instance(article.user)
+      zipped_exports = service.export(config: { articles: { slug: article.slug } })
+      exports = extract_zipped_exports(zipped_exports)
+      expect(exports.length).to eq(1)
     end
 
-    context "when all articles are requested" do
-      it "returns a stream with all the articles as json" do
-        service = valid_instance(article.user)
-        zipped_export = service.export
-        articles = extract_zipped_articles(zipped_export)
-        expect(articles.length).to eq(user.articles.size)
-      end
-
-      it "returns only expected fields for articles" do
-        service = valid_instance(article.user)
-        zipped_export = service.export
-        articles = extract_zipped_articles(zipped_export)
-        expect(articles.first.keys).to eq(expected_fields)
-      end
-    end
-
-    context "with the user notification" do
+    context "when emailing the user" do
       it "delivers one email" do
         service = valid_instance(article.user)
         service.export(send_email: true)
@@ -137,8 +111,8 @@ RSpec.describe ArticleExportService do
         zipped_export = service.export(send_email: true)
         attachment = ActionMailer::Base.deliveries.last.attachments[0].decoded
 
-        expected_articles = extract_zipped_articles(zipped_export)
-        expect(expected_articles).to eq(extract_zipped_articles(StringIO.new(attachment)))
+        exports = extract_zipped_exports(zipped_export)
+        expect(exports).to eq(extract_zipped_exports(StringIO.new(attachment)))
       end
     end
 
