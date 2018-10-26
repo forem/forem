@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180901155115) do
+ActiveRecord::Schema.define(version: 20181026112019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -667,8 +667,6 @@ ActiveRecord::Schema.define(version: 20180901155115) do
 
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
-    t.boolean "articles_export_requested", default: false
-    t.datetime "articles_exported_at"
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
     t.text "base_cover_letter"
@@ -705,6 +703,8 @@ ActiveRecord::Schema.define(version: 20180901155115) do
     t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.integer "experience_level"
+    t.boolean "export_requested", default: false
+    t.datetime "exported_at"
     t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
     t.boolean "feed_mark_canonical", default: false
