@@ -35,10 +35,10 @@ module BadgeRewarder
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
     client = Octokit::Client.new
+    badge = Badge.find_by_slug("dev-contributor")
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios"].each do |repo|
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |c| c.author.id }
-      badge = Badge.find_by_slug("dev-contributor")
       Identity.where(provider: "github").where(uid: authors_uids).each do |i|
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
           rewarding_context_message_markdown: message_markdown,
