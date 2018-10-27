@@ -62,7 +62,7 @@ RSpec.describe BadgeRewarder do
 
     it "award contributor badge" do
       described_class.award_contributor_badges_from_github
-      expect(user.badge_achievements.count).to eq(1)
+      expect(user.badge_achievements.size).to eq(1)
     end
   end
 end
