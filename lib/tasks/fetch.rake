@@ -92,6 +92,11 @@ task :award_contributor_badges, [:arg1] => :environment do |_t, args|
   puts "Done!"
 end
 
+# this task is meant to be scheduled daily
+task award_contributor_badges_from_github: :environment do
+  BadgeRewarder.award_contributor_badges_from_github
+end
+
 task remove_old_html_variant_data: :environment do
   HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
