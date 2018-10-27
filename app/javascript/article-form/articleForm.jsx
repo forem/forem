@@ -2,6 +2,8 @@ import 'preact/devtools';
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
 import ImageUploadIcon from 'images/image-upload.svg';
+import ImageUploadIcon from 'images/image-upload.svg';
+import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
@@ -12,6 +14,7 @@ import Tags from './elements/tags';
 import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
+import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 // import CodeMirror from 'codemirror';
@@ -30,6 +33,7 @@ export default class ArticleForm extends Component {
       title: article.title || '',
       tagList: article.cached_tag_list || '',
       description: '',
+      canonicalUrl: article.canonical_url || '',
       bodyMarkdown: article.body_markdown || '',
       published: article.published || false,
       previewShowing: false,
@@ -39,6 +43,7 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: article.id != null,
       imageManagementShowing: false,
+      moreConfigShowing: false,
       mainImage: article.main_image || null,
       organization,
       postUnderOrg: !!article.organization_id,
@@ -89,6 +94,13 @@ export default class ArticleForm extends Component {
     });
   };
 
+  toggleMoreConfig = e => {
+    e.preventDefault();
+    this.setState({
+      moreConfigShowing: !this.state.moreConfigShowing,
+    });
+  };
+
   showPreview = response => {
     this.setState({
       previewShowing: true,
@@ -104,6 +116,12 @@ export default class ArticleForm extends Component {
 
   failedPreview = response => {
     console.log(response);
+  };
+
+  handleConfigChange = e => {
+    const newState = {};
+    newState[e.target.name] = e.target.value;
+    this.setState(newState);
   };
 
   handleMainImageUrlChange = payload => {
@@ -151,6 +169,7 @@ export default class ArticleForm extends Component {
       helpHTML,
       submitting,
       imageManagementShowing,
+      moreConfigShowing,
       organization,
       postUnderOrg,
       mainImage,
@@ -167,6 +186,16 @@ export default class ArticleForm extends Component {
         onExit={this.toggleImageManagement}
         mainImage={mainImage}
         onMainImageUrlChange={this.handleMainImageUrlChange}
+      />
+    ) : (
+      ''
+    );
+    const moreConfig = moreConfigShowing ? (
+      <MoreConfig
+        onExit={this.toggleMoreConfig}
+        passedData={this.state}
+        onSaveDraft={this.onSaveDraft}
+        onConfigChange={this.handleConfigChange}
       />
     ) : (
       ''
@@ -229,6 +258,49 @@ IMAGES
           </button>
         </div>
       );
+      editorView = (
+        <div>
+          {errorsArea}
+          {orgArea}
+          {imageArea}
+          <Title defaultValue={title} onChange={linkState(this, 'title')} />
+          <div className="articleform__detailfields">
+            <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+            <button
+              className="articleform__detailsButton articleform__detailsButton--image"
+              onClick={this.toggleImageManagement}
+            >
+              <img src={ImageUploadIcon} />
+              {' '}
+IMAGES
+            </button>
+            <button
+              className="articleform__detailsButton articleform__detailsButton--moreconfig"
+              onClick={this.toggleMoreConfig}
+            >
+              <img src={ThreeDotsIcon} />
+            </button>
+          </div>
+          <BodyMarkdown
+            defaultValue={bodyMarkdown}
+            onChange={linkState(this, 'bodyMarkdown')}
+          />
+          <button
+            className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
+            onClick={this.toggleImageManagement}
+          >
+            <img src={ImageUploadIcon} />
+            {' '}
+IMAGES
+          </button>
+          <button
+            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+            onClick={this.toggleMoreConfig}
+          >
+            <img src={ThreeDotsIcon} />
+          </button>
+        </div>
+      );
     }
     return (
       <form className="articleform__form" onSubmit={this.onSubmit}>
@@ -245,6 +317,7 @@ IMAGES
         />
         {notice}
         {imageManagement}
+        {moreConfig}
       </form>
     );
   }

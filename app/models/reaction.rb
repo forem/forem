@@ -74,19 +74,29 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
-    cache_buster = CacheBuster.new
     if reactable_type == "Article"
-      reactable.async_score_calc
-      reactable.index!
-      cache_buster.bust "/reactions?article_id=#{reactable_id}"
-    elsif reactable_type == "Comment"
-      reactable.save
-      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+      update_article
+    elsif reactable_type == "Comment" && reactable
+      update_comment
     end
-    cache_buster.bust user.path
     occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
+
+  def update_article
+    cache_buster = CacheBuster.new
+    reactable.async_score_calc
+    reactable.index!
+    cache_buster.bust "/reactions?article_id=#{reactable_id}"
+    cache_buster.bust user.path
+  end
+
+  def update_comment
+    cache_buster = CacheBuster.new
+    reactable.save unless destroyed_by_association
+    cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+    cache_buster.bust user.path
+  end
 
   def touch_user
     user.touch
@@ -125,7 +135,7 @@ class Reaction < ApplicationRecord
       errors.add(:category, "is not valid.")
     end
 
-    if reactable_type == "Article" && !reactable.published
+    if reactable_type == "Article" && !reactable&.published
       errors.add(:reactable_id, "is not valid.")
     end
   end

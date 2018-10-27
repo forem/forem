@@ -21,6 +21,11 @@ RSpec.describe "UserSettings", type: :request do
         end
       end
 
+      it "handles unknown settings tab properly" do
+        expect { get "/settings/does-not-exist" }.
+          to raise_error(ActionController::RoutingError)
+      end
+
       it "doesn't let user access membership if user has no monthly_dues" do
         get "/settings/membership"
         expect(response.body).not_to include("Settings for")

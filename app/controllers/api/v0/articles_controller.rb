@@ -68,7 +68,7 @@ module Api
                                                end
         params.require(:article).permit(
           :title, :body_markdown, :user_id, :main_image, :published, :description,
-          :tag_list, :organization_id
+          :tag_list, :organization_id, :canonical_url
         )
       end
     end

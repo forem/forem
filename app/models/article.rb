@@ -329,7 +329,7 @@ class Article < ApplicationRecord
 
   def readable_publish_date
     relevant_date = crossposted_at.present? ? crossposted_at : published_at
-    if relevant_date && relevant_date.year == Time.now.year
+    if relevant_date && relevant_date.year == Time.current.year
       relevant_date&.strftime("%b %e")
     else
       relevant_date&.strftime("%b %e '%y")
@@ -393,12 +393,11 @@ class Article < ApplicationRecord
   end
 
   def parsed_date(date)
-    today_date = Time.now.to_datetime
-    return published_at || today_date unless date
-    given_date = date.to_datetime
+    now = Time.current
+    return published_at || now unless date
     error_msg = "must be entered in DD/MM/YYYY format with current or past date"
-    return errors.add(:date_time, error_msg) if given_date > today_date
-    given_date
+    return errors.add(:date_time, error_msg) if date > now
+    date
   end
 
   def validate_tag
@@ -446,18 +445,18 @@ class Article < ApplicationRecord
 
   def set_published_date
     if published && published_at.blank?
-      self.published_at = Time.now
+      self.published_at = Time.current
       user.delay.resave_articles # tack-on functionality HACK
       organization&.delay&.resave_articles # tack-on functionality HACK
     end
   end
 
   def set_featured_number
-    self.featured_number = Time.now.to_i if featured_number.blank? && published
+    self.featured_number = Time.current.to_i if featured_number.blank? && published
   end
 
   def set_crossposted_at
-    self.crossposted_at = Time.now if published && crossposted_at.blank? && published_from_feed
+    self.crossposted_at = Time.current if published && crossposted_at.blank? && published_from_feed
   end
 
   def set_last_comment_at

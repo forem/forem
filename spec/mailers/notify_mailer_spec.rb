@@ -76,7 +76,7 @@ RSpec.describe NotifyMailer, type: :mailer do
       def params(user_email, feedback_message_id)
         {
           email_to: user_email,
-          email_subject: "dev.to Status Update",
+          email_subject: "DEV Report Status Update",
           email_body: "You've violated our code of conduct",
           email_type: "Reporter",
           feedback_message_id: feedback_message_id
@@ -87,7 +87,7 @@ RSpec.describe NotifyMailer, type: :mailer do
         feedback_message = create(:feedback_message, :abuse_report, reporter_id: user.id)
         feedback_message_resolution_email = described_class.
           feedback_message_resolution_email(params(user.email, feedback_message.id))
-        expect(feedback_message_resolution_email.subject).to eq "dev.to Status Update"
+        expect(feedback_message_resolution_email.subject).to eq "DEV Report Status Update"
       end
 
       it "renders proper receiver" do
@@ -120,6 +120,10 @@ RSpec.describe NotifyMailer, type: :mailer do
         mentee_email = described_class.mentee_email(mentee, mentor)
         expect(mentee_email.subject).to eq "You have been matched with a DEV mentor!"
       end
+      it "renders proper from" do
+        mentee_email = described_class.mentee_email(mentee, mentor)
+        expect(mentee_email.from).to include "liana@dev.to"
+      end
     end
 
     describe "#mentor_email" do
@@ -129,6 +133,10 @@ RSpec.describe NotifyMailer, type: :mailer do
       it "renders proper subject" do
         mentor_email = described_class.mentor_email(mentor, mentee)
         expect(mentor_email.subject).to eq "You have been matched with a new DEV mentee!"
+      end
+      it "renders proper subject" do
+        mentor_email = described_class.mentor_email(mentor, mentee)
+        expect(mentor_email.from).to include "liana@dev.to"
       end
     end
   end

@@ -142,6 +142,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "accepts valid https medium url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.medium_url = "https://medium.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid medium url" do
+      user.medium_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
     it "changes old_username if old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"
@@ -410,6 +422,7 @@ RSpec.describe User, type: :model do
 
     it "returns onboarding checklist leave_your_first_comment if has left comment" do
       create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
+      user.reload
       checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
       expect(checklist).to eq(true)
     end

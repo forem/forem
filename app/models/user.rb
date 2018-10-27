@@ -32,6 +32,7 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many    :html_variants, dependent: :destroy
   has_many :mentor_relationships_as_mentee,
   class_name: "MentorRelationship", foreign_key: "mentee_id"
   has_many :mentor_relationships_as_mentor,
@@ -83,6 +84,9 @@ class User < ApplicationRecord
   validates :dribbble_url,
               allow_blank: true,
               format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
+  validates :medium_url,
+              allow_blank: true,
+              format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_\@\.]{2,32})\/?\Z/
   # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
@@ -295,7 +299,7 @@ class User < ApplicationRecord
   end
 
   def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.now
+    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
   end
 
@@ -547,11 +551,11 @@ class User < ApplicationRecord
 
   def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
-      self.mentor_form_updated_at = Time.now
+      self.mentor_form_updated_at = Time.current
     end
 
     if mentee_description_changed? || seeking_mentorship_changed?
-      self.mentee_form_updated_at = Time.now
+      self.mentee_form_updated_at = Time.current
     end
   end
 end

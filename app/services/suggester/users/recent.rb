@@ -9,10 +9,10 @@ module Suggester
       def suggest
         users = if user.decorate.cached_followed_tag_names.any?
                   ((recent_producers(3) - [user]).
-                           shuffle.first(55) + tagged_producers).uniq
+                           sample(55) + tagged_producers).uniq
                 else
                   (recent_commenters(4, 30) + recent_top_producers - [user]).
-                    uniq.shuffle.first(50)
+                    uniq.sample(50)
                 end
         users
       end

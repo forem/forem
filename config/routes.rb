@@ -113,6 +113,9 @@ Rails.application.routes.draw do
   resources :videos, only: %i[create new]
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]
+  resources :html_variants
+  resources :html_variant_trials, only: [:create]
+  resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
 
   get "/notifications/:username" => "notifications#index"

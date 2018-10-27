@@ -108,7 +108,6 @@
       }
     }
     label {
-      width: 160px;
       display:inline-block;
       vertical-align:top;
       padding:14px 0px 8px;
@@ -208,8 +207,8 @@
           }
         }
       }
-      button {
-        width: 100px;
+      button.big-action {
+        width: 130px;
         padding: 3px 0px;
         font-size: 1.2em;
         font-weight: bold;

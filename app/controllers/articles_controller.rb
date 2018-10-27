@@ -104,7 +104,7 @@ class ArticlesController < ApplicationController
     @article.tag_list = []
     @article.main_image = nil
     edited_at_date = if @article.user == current_user && @article.published
-                       Time.now
+                       Time.current
                      else
                        @article.edited_at
                      end
