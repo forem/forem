@@ -1,10 +1,13 @@
-
-
-<% if @article.collection.present? && @article.collection.articles.size > 1 %>
+<% @collection = @article.collection %>
+<% if @collection.present? && @collection.articles.where(published: true).size > 1 %>
   <div class="article-collection-wrapper article-collection-wrapper-<%= position %>">
-    <p>Part of a series</p>
+    <% if @collection.slug.present? %>
+      <p>Part of "<%= @collection.slug %>" series</p>
+    <% else %>
+      <p>Part of a series</p>
+    <% end %>
     <div class="article-collection">
-      <% @article.collection.articles.order("collection_position ASC").each_with_index do |article,i| %>
+      <% @collection.articles.where(published: true).order("published_at ASC").each_with_index do |article,i| %>
           <a
             href="<%= article.path if article.published %>"
             class="<%= collection_link_class(@article,article) %>"

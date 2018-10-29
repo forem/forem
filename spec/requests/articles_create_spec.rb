@@ -50,5 +50,16 @@ RSpec.describe "ArticlesCreate", type: :request do
     }
     expect(Article.last.job_opportunity.remoteness).to eq("on_premise")
   end
+
+  it "creates series when series is created with frontmatter" do
+    new_title = "NEW TITLE #{rand(100)}"
+    post "/articles", params: {
+      article: {
+        title: new_title,
+        body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
+      }
+    }
+    expect(Collection.last.slug).to eq("helloyo")
+  end
   # rubocop:enable RSpec/ExampleLength
 end

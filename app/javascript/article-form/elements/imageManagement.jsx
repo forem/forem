@@ -72,6 +72,7 @@ export default class ImageManagement extends Component {
                 {mainImageArea}
                 <h2>Body Images</h2>
                 {inertionImageArea}
+                <div><button class="articleform__donebutton" onClick={onExit}>Done</button></div>
               </div>
 
               }

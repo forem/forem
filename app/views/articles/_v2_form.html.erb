@@ -2,7 +2,7 @@
   <div class="articleform"
     id="article-form"
     data-article="<%= @article.
-    to_json(only: [:id, :title, :cached_tag_list, :published, :body_markdown, :main_image, :organization_id, :canonical_url]) %>"
+    to_json(only: [:id, :title, :cached_tag_list, :published, :body_markdown, :main_image, :organization_id, :canonical_url], methods: [:series, :all_series]) %>"
     data-organization="<%= @organization&.to_json(only: [:name, :bg_color_hex, :text_color_hex], methods: [:profile_image_90]) %>"
     >
     

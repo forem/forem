@@ -67,4 +67,70 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(JSON.parse(response.body)["title"]).to eq(article.title)
     end
   end
+
+  describe "POST /api/articles w/ current_user" do
+    before do
+      sign_in user1
+    end
+    it "creates ordinary article with proper params" do
+      new_title = "NEW TITLE #{rand(100)}"
+      post "/api/articles", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+      }
+      expect(Article.last.user_id).to eq(user1.id)
+    end
+    # rubocop:disable RSpec/ExampleLength
+    it "creates article with front matter params" do
+      post "/api/articles", params: {
+        article: {
+          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
+          tag_list: "yo"
+        }
+      }
+      expect(Article.last.title).to eq("hey hey hahuu")
+    end
+    it "creates article w/ series param" do
+      new_title = "NEW TITLE #{rand(100)}"
+      post "/api/articles", params: {
+        article: { title: new_title,
+                   body_markdown: "Yo ho ho#{rand(100)}",
+                   tag_list: "yo",
+                   series: "helloyo",
+                  }
+      }
+      expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
+      expect(Article.last.collection.user_id).to eq(Article.last.user_id)
+    end
+    it "creates article with front matter params" do
+      post "/api/articles", params: {
+        article: {
+          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
+          tag_list: "yo"
+        }
+      }
+      expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
+      expect(Article.last.collection.user_id).to eq(Article.last.user_id)
+    end
+  end
+
+  describe "PUT /api/articles/:id w/ current_user" do
+    before do
+      sign_in user1
+      @article = create(:article, user: user1)
+    end
+    it "updates ordinary article with proper params" do
+      new_title = "NEW TITLE #{rand(100)}"
+      put "/api/articles/#{@article.id}", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+      }
+      expect(Article.last.title).to eq(new_title)
+    end
+    it "updates ordinary article with proper params" do
+      new_title = "NEW TITLE #{rand(100)}"
+      put "/api/articles/#{@article.id}", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+      }
+      expect(Article.last.title).to eq(new_title)
+    end
+  end
 end
