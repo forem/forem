@@ -40,10 +40,12 @@ module ApplicationHelper
   end
 
   def title(page_title)
+    women = ["👩‍💻", "👩🏻‍💻", "👩🏼‍💻", "👩🏽‍💻", "👩🏾‍💻", "👩🏿‍💻"]
+    men = ["👨‍💻", "👨🏻‍💻", "👨🏼‍💻", "👨🏽‍💻", "👨🏾‍💻", "👨🏿‍💻"]
     derived_title = if page_title.include?("DEV")
                       page_title
                     else
-                      page_title + " - DEV Community 👩‍💻👨‍💻"
+                      page_title + " - DEV Community " + women.sample + men.sample
                     end
     content_for(:title) { derived_title }
     derived_title
@@ -154,7 +156,7 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full")
-    tag :button, #Yikes
+    tag :button, # Yikes
       class: "cta follow-action-button",
       data: {
         info: { id: followable.id, className: followable.class.name, style: style }.to_json,
