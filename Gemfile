@@ -91,7 +91,7 @@ gem "stream_rails", "~> 2.6"
 gem "stripe", "~> 3.25"
 gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
-gem "twilio-ruby", "~> 5.10"
+gem "twilio-ruby", "~> 5.15"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 4.1"
 gem "validate_url", "~> 1.0"
