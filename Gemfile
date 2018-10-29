@@ -113,7 +113,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.6"
+  gem "capybara", "~> 3.10"
   gem "derailed", "~> 0.1"
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
