@@ -132,5 +132,21 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.title).to eq(new_title)
     end
+    it "allows collection to be assigned via api" do
+      new_title = "NEW TITLE #{rand(100)}"
+      collection = Collection.create(user_id: @article.user_id, slug: "yoyoyo")
+      put "/api/articles/#{@article.id}", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id }
+      }
+      expect(Article.last.collection_id).to eq(collection.id)
+    end
+    it "does not allow collection which is not of user" do
+      new_title = "NEW TITLE #{rand(100)}"
+      collection = Collection.create(user_id: 3333, slug: "yoyoyo")
+      put "/api/articles/#{@article.id}", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id }
+      }
+      expect(Article.last.collection_id).not_to eq(collection.id)
+    end
   end
 end
