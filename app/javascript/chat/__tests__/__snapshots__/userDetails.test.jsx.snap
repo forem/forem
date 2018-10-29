@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<UserDetails /> for user bojack should render and test snapshot 1`] = `
+exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
 <div>
   <img
     src="https://media.giphy.com/media/3o7WTHb2WjEXbsmWDS/giphy.gif"
@@ -118,7 +118,7 @@ exports[`<UserDetails /> for user bojack should render and test snapshot 1`] = `
 </div>
 `;
 
-exports[`<UserDetails /> for user mrpeanutbutter should render and test snapshot with user mrpeanutbutter 1`] = `
+exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
 <div>
   <img
     src="https://media.giphy.com/media/xThuW6sWCGbpZMpX7a/giphy.gif"
