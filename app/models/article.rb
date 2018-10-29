@@ -398,6 +398,7 @@ class Article < ApplicationRecord
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || token_msg
+    self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
       self.automatically_renew = front_matter["automatically_renew"]
