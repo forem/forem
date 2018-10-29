@@ -235,6 +235,13 @@ RSpec.describe User, type: :model do
       user.summary = "0" * 999
       expect(user).not_to be_valid
     end
+
+    it "does not allow usernames to be a reserved word" do
+      ReservedWords.all.each do |word|
+        user.username = word
+        expect(user).not_to be_valid
+      end
+    end
   end
 
   ## Registration
