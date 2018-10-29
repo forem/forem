@@ -1,13 +1,11 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow, deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
 import marked from 'marked';
 import GithubRepo from '../githubRepo';
 
 global.fetch = fetch;
-
-// const notfoundResponse = JSON.stringify([{ message: 'Not Found' }]);
 
 const githubSampleReponse = JSON.stringify([
   {
@@ -158,6 +156,7 @@ describe('<GithubRepo />', () => {
       const tree = render(getGithubRepo());
       expect(tree).toMatchSnapshot();
     });
+
     it('should have the proper elements, attributes and values', () => {
       fetch.mockResponse(githubSampleReponse);
       const context = shallow(getGithubRepo());
@@ -173,9 +172,9 @@ describe('<GithubRepo />', () => {
       expect(tree).toMatchSnapshot();
     });
 
-    it('should have the proper elements, attributes and values with setstates', async () => {
+    it('should have the proper elements, attributes and values with states set', async () => {
       fetch.mockResponse(githubSampleReponse);
-      const context = await deep(getGithubRepo('some_token'));
+      const context = await shallow(getGithubRepo('some_token'));
       const dirs = [
         {
           name: 'Camera',
@@ -326,12 +325,4 @@ describe('<GithubRepo />', () => {
       ).toEqual({ __html: `${marked(context.state('readme'))}` });
     });
   });
-
-  // describe('github API reponse stubbed and set state', () => {
-  //   it('thingo ', () => {
-  //     fetch.mockResponse(githubSampleReponse);
-  //     const context = deep(getGithubRepo('some_token'));
-  //
-  //   });
-  // });
 });

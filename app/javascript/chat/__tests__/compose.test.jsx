@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import Compose from '../compose';
 
 let submitNoMessage = false;
@@ -31,7 +31,7 @@ const handleKeyDownFake = e => {
 };
 
 const getCompose = tf => {
-  // true not empty, false empty
+  // true -> not empty, false -> empty
   if (tf) {
     return (
       <Compose
@@ -59,7 +59,7 @@ describe('<Compose />', () => {
 
   describe('behavior with no message', () => {
     it('should click submit', () => {
-      const context = deep(getCompose(false));
+      const context = shallow(getCompose(false));
       const btn = context.find('.messagecomposer__submit');
 
       expect(btn.simulate('click'));
@@ -70,7 +70,7 @@ describe('<Compose />', () => {
     });
 
     it('should press enter', () => {
-      const context = deep(getCompose(false));
+      const context = shallow(getCompose(false));
       const input = context.find('.messagecomposer__input');
 
       const enter = { keyCode: 13 };
@@ -89,7 +89,7 @@ describe('<Compose />', () => {
     });
 
     it('should have proper elements, attributes and values', () => {
-      const context = deep(getCompose(true));
+      const context = shallow(getCompose(true));
       expect(context.find('.messagecomposer').exists()).toEqual(true);
 
       const input = context.find('.messagecomposer__input');
@@ -104,7 +104,7 @@ describe('<Compose />', () => {
     });
 
     it('should click submit and check for empty textarea', () => {
-      const context = deep(getCompose(true));
+      const context = shallow(getCompose(true));
       const input = context.find('.messagecomposer__input');
       const btn = context.find('.messagecomposer__submit');
 
@@ -121,7 +121,7 @@ describe('<Compose />', () => {
     });
 
     it('should press enter and check for empty textarea', () => {
-      const context = deep(getCompose(true));
+      const context = shallow(getCompose(true));
       const input = context.find('.messagecomposer__input');
 
       const someletter = { keyCode: 69 };

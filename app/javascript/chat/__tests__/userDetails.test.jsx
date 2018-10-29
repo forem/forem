@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import UserDetails from '../userDetails';
 
 const bojack = {
@@ -37,7 +37,7 @@ describe('<UserDetails />', () => {
     });
 
     it('should have the appropriate elements, attributes and values', () => {
-      const context = deep(getUserDetails(bojack));
+      const context = shallow(getUserDetails(bojack));
       expect(
         context.find('.activechatchannel__activecontentuserdetails').exists(),
       ).toEqual(true); // only class to check for
@@ -109,7 +109,7 @@ describe('<UserDetails />', () => {
     });
 
     it('should have the appropriate elements, attributes and values for user mr peanutbutter', () => {
-      const context = deep(getUserDetails(mrpeanutbutter));
+      const context = shallow(getUserDetails(mrpeanutbutter));
       expect(
         context.find('.activechatchannel__activecontentuserdetails').exists(),
       ).toEqual(true); // only class to check for

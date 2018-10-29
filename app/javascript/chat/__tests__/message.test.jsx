@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import Message from '../message';
 
 const msg = {
@@ -26,7 +26,7 @@ describe('<Message />', () => {
   });
 
   it('should have the proper elements, attributes and values', () => {
-    const context = deep(getMessage(msg));
+    const context = shallow(getMessage(msg));
     expect(context.find('.chatmessage').exists()).toEqual(true);
     expect(
       context.find('.chatmessagebody__message').attr('dangerouslySetInnerHTML'),

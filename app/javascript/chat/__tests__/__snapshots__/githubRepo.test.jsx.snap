@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GithubRepo /> with fake token should have the proper elements, attributes and values with setstates 1`] = `
+exports[`<GithubRepo /> with fake token should have the proper elements, attributes and values with states set 1`] = `
 RenderContext {
   "0": VNode {
     "attributes": Object {

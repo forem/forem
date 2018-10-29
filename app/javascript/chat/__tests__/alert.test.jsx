@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow, deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import Alert from '../alert';
 
 describe('<Alert />', () => {
@@ -24,7 +24,7 @@ describe('<Alert />', () => {
   });
 
   it('should have div with hidden class', () => {
-    const context = deep(<Alert showAlert={false} />);
+    const context = shallow(<Alert showAlert={false} />);
     expect(context.find('.chatalert__default').exists()).toEqual(true);
     expect(context.find('.chatalert__default').text()).toEqual(
       'More new messages below',

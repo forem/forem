@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { deep } from 'preact-render-spy';
+import { shallow } from 'preact-render-spy';
 import View from '../view';
 
 let exited = false;
@@ -43,12 +43,12 @@ describe('<View />', () => {
   });
 
   it('should render and test snapshot (with channel)', () => {
-    const tree = deep(getView(sampleChannel));
+    const tree = shallow(getView(sampleChannel));
     expect(tree).toMatchSnapshot();
   });
 
   it('should have the proper attributes and text values (no channel provided)', () => {
-    const context = deep(getView([]));
+    const context = shallow(getView([]));
     expect(context.find('.chatNonChatView').exists()).toEqual(true);
     expect(context.find('.container').exists()).toEqual(true);
 
@@ -64,7 +64,7 @@ describe('<View />', () => {
   });
 
   it('should have the proper attributes and text values (with channel provided)', () => {
-    const context = deep(getView(sampleChannel));
+    const context = shallow(getView(sampleChannel));
     expect(context.find('.chatNonChatView_contentblock').exists()).toEqual(
       true,
     );
@@ -103,23 +103,18 @@ describe('<View />', () => {
   });
 
   it('should trigger exit', () => {
-    const context = deep(getView([]));
+    const context = shallow(getView([]));
     context.find('.chatNonChatView_exitbutton').simulate('click');
     expect(exited).toEqual(true);
     exited = false;
   });
 
   it('should trigger accept', () => {
-    const context = deep(getView(sampleChannel));
+    const context = shallow(getView(sampleChannel));
     context
       .find('.cta')
       .at(0)
       .simulate('click'); // click accept button
-
-    // expect(context.find('.chatNonChatView_contentblock').exists()).toEqual(false);
-    // expect(context.find('h2').exists()).toEqual(false);
-    // expect(context.find('em').exists()).toEqual(false);
-    // expect(context.find('.cta').exists()).toEqual(false);
 
     expect(exited).toEqual(false);
     expect(accepted).toEqual(true);
@@ -129,16 +124,11 @@ describe('<View />', () => {
   });
 
   it('should trigger decline', () => {
-    const context = deep(getView(sampleChannel));
+    const context = shallow(getView(sampleChannel));
     context
       .find('.cta')
       .at(1)
       .simulate('click'); // click decline button
-
-    // expect(context.find('.chatNonChatView_contentblock').exists()).toEqual(false);
-    // expect(context.find('h2').exists()).toEqual(false);
-    // expect(context.find('em').exists()).toEqual(false);
-    // expect(context.find('.cta').exists()).toEqual(false);
 
     expect(exited).toEqual(false);
     expect(accepted).toEqual(false);
