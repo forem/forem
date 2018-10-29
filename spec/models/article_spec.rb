@@ -479,11 +479,5 @@ RSpec.describe Article, type: :model do
     article.collection_id = collection.id
     expect(article).to be_valid
   end
-
-  it "is not valid as part of a collection that does not belong to user" do
-    collection = Collection.create(user_id: 32443, slug: "yoyoyo")
-    article.collection_id = collection.id
-    expect(article).not_to be_valid
-  end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
