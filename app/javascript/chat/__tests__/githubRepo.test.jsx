@@ -7,139 +7,6 @@ import GithubRepo from '../githubRepo';
 
 global.fetch = fetch;
 
-const githubSampleReponse = JSON.stringify([
-  {
-    name: 'Camera',
-    path: 'Camera',
-    sha: 'hysst5jI2idHutihWo3JxYlTByoj0lkdXmkmuBEp',
-    size: 0,
-    url:
-      'https://api.github.com/repos/username/repositoryname/contents/Camera?ref=master',
-    html_url: 'https://github.com/username/repositoryname/tree/master/Camera',
-    git_url:
-      'https://api.github.com/repos/username/repositoryname/git/trees/hysst5jI2idHutihWo3JxYlTByoj0lkdXmkmuBEp',
-    download_url: null,
-    type: 'dir',
-    _links: {
-      self:
-        'https://api.github.com/repos/username/repositoryname/contents/Camera?ref=master',
-      git:
-        'https://api.github.com/repos/username/repositoryname/git/trees/hysst5jI2idHutihWo3JxYlTByoj0lkdXmkmuBEp',
-      html: 'https://github.com/username/repositoryname/tree/master/Camera',
-    },
-  },
-  {
-    name: 'Environment',
-    path: 'Environment',
-    sha: 'dwogYlYGQOXj1ru3L9HYfX7HdX3WNQPJgJVeStRs',
-    size: 0,
-    url:
-      'https://api.github.com/repos/username/repositoryname/contents/Environment?ref=master',
-    html_url:
-      'https://github.com/username/repositoryname/tree/master/Environment',
-    git_url:
-      'https://api.github.com/repos/username/repositoryname/git/trees/dwogYlYGQOXj1ru3L9HYfX7HdX3WNQPJgJVeStRs',
-    download_url: null,
-    type: 'dir',
-    _links: {
-      self:
-        'https://api.github.com/repos/username/repositoryname/contents/Environment?ref=master',
-      git:
-        'https://api.github.com/repos/username/repositoryname/git/trees/dwogYlYGQOXj1ru3L9HYfX7HdX3WNQPJgJVeStRs',
-      html:
-        'https://github.com/username/repositoryname/tree/master/Environment',
-    },
-  },
-  {
-    name: 'Interactables',
-    path: 'Interactables',
-    sha: '44OLxtYSQjr2DLVKPnwGTj6JuQpo7Te7pEIDULat',
-    size: 0,
-    url:
-      'https://api.github.com/repos/username/repositoryname/contents/Interactables?ref=master',
-    html_url:
-      'https://github.com/username/repositoryname/tree/master/Interactables',
-    git_url:
-      'https://api.github.com/repos/username/repositoryname/git/trees/44OLxtYSQjr2DLVKPnwGTj6JuQpo7Te7pEIDULat',
-    download_url: null,
-    type: 'dir',
-    _links: {
-      self:
-        'https://api.github.com/repos/username/repositoryname/contents/Interactables?ref=master',
-      git:
-        'https://api.github.com/repos/username/repositoryname/git/trees/44OLxtYSQjr2DLVKPnwGTj6JuQpo7Te7pEIDULat',
-      html:
-        'https://github.com/username/repositoryname/tree/master/Interactables',
-    },
-  },
-  {
-    name: 'Level Design',
-    path: 'Level Design',
-    sha: 'g178Oy2xV8gqFBhoaflJkSbHN01dxWEqjJTxw6Ax',
-    size: 583,
-    url:
-      'https://api.github.com/repos/username/repositoryname/contents/Level%20Design?ref=master',
-    html_url:
-      'https://github.com/username/repositoryname/tree/master/Level%20Design',
-    git_url:
-      'https://api.github.com/repos/username/repositoryname/git/trees/g178Oy2xV8gqFBhoaflJkSbHN01dxWEqjJTxw6Ax',
-    download_url:
-      'https://raw.githubusercontent.com/username/repositoryname/master/Level%20Design',
-    type: 'file',
-    _links: {
-      self:
-        'https://api.github.com/repos/username/repositoryname/contents/Level%20Design?ref=master',
-      git:
-        'https://api.github.com/repos/username/repositoryname/git/trees/g178Oy2xV8gqFBhoaflJkSbHN01dxWEqjJTxw6Ax',
-      html:
-        'https://github.com/username/repositoryname/tree/master/Level%20Design',
-    },
-  },
-  {
-    name: 'Player',
-    path: 'Player',
-    sha: 'tia6ISq19krmOJzbtwpCTIuwRnvpSxZY2g1FMgOp',
-    size: 1000,
-    url:
-      'https://api.github.com/repos/username/repositoryname/contents/Player?ref=master',
-    html_url: 'https://github.com/username/repositoryname/tree/master/Player',
-    git_url:
-      'https://api.github.com/repos/username/repositoryname/git/trees/tia6ISq19krmOJzbtwpCTIuwRnvpSxZY2g1FMgOp',
-    download_url:
-      'https://raw.githubusercontent.com/username/repositoryname/master/Player',
-    type: 'file',
-    _links: {
-      self:
-        'https://api.github.com/repos/username/repositoryname/contents/Player?ref=master',
-      git:
-        'https://api.github.com/repos/username/repositoryname/git/trees/tia6ISq19krmOJzbtwpCTIuwRnvpSxZY2g1FMgOp',
-      html: 'https://github.com/username/repositoryname/tree/master/Player',
-    },
-  },
-  {
-    name: 'README.md',
-    path: 'README.md',
-    sha: 'JOkJF69EVq1Xfv32rBmU0nQF5poBNzqM8SGvV0BX',
-    size: 970,
-    url:
-      'https://api.github.com/repos/username/repositoryname/contents/README.md?ref=master',
-    html_url:
-      'https://github.com/username/repositoryname/blob/master/README.md',
-    git_url:
-      'https://api.github.com/repos/username/repositoryname/git/blobs/JOkJF69EVq1Xfv32rBmU0nQF5poBNzqM8SGvV0BX',
-    download_url:
-      'https://raw.githubusercontent.com/username/repositoryname/master/README.md',
-    type: 'file',
-    _links: {
-      self:
-        'https://api.github.com/repos/username/repositoryname/contents/README.md?ref=master',
-      git:
-        'https://api.github.com/repos/username/repositoryname/git/blobs/JOkJF69EVq1Xfv32rBmU0nQF5poBNzqM8SGvV0BX',
-      html: 'https://github.com/username/repositoryname/blob/master/README.md',
-    },
-  },
-]);
-
 const getGithubRepo = token => (
   <GithubRepo
     activeChannelId={12345}
@@ -152,13 +19,11 @@ const getGithubRepo = token => (
 describe('<GithubRepo />', () => {
   describe('with no token', () => {
     it('should render and test snapshot', () => {
-      fetch.mockResponse(githubSampleReponse);
       const tree = render(getGithubRepo());
       expect(tree).toMatchSnapshot();
     });
 
     it('should have the proper elements, attributes and values', () => {
-      fetch.mockResponse(githubSampleReponse);
       const context = shallow(getGithubRepo());
       expect(context.find('.activecontent__githubrepo').exists()).toEqual(true);
       expect(context.find('em').text()).toEqual('Authentication required');
@@ -167,13 +32,11 @@ describe('<GithubRepo />', () => {
 
   describe('with fake token', () => {
     it('should render and test snapshot', () => {
-      fetch.mockResponse(githubSampleReponse);
       const tree = render(getGithubRepo('some_token'));
       expect(tree).toMatchSnapshot();
     });
 
     it('should have the proper elements, attributes and values with states set', async () => {
-      fetch.mockResponse(githubSampleReponse);
       const context = await shallow(getGithubRepo('some_token'));
       const dirs = [
         {
