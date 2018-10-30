@@ -34,9 +34,6 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-    it { is_expected.to validate_exclusion_of(:username).
-         in_array(ReservedWords.all.reject { |a| a == "%F0%9F%92%B8" }).
-         with_message("username is reserved") }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
   end
 
