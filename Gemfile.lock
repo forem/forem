@@ -543,7 +543,6 @@ GEM
     kaminari-core (1.1.1)
     launchy (2.4.3)
       addressable (~> 2.3)
-    libv8 (3.16.14.19)
     liquid (4.0.0)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -692,7 +691,6 @@ GEM
     recaptcha (4.12.0)
       json
     redcarpet (3.4.0)
-    ref (2.0.0)
     regexp_parser (1.2.0)
     representable (3.0.4)
       declarative (< 0.1.0)
@@ -838,9 +836,6 @@ GEM
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
     test-prof (0.7.2)
-    therubyracer (0.12.3)
-      libv8 (~> 3.16.14.15)
-      ref
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
@@ -1029,7 +1024,6 @@ DEPENDENCIES
   stripe (~> 3.25)
   stripe-ruby-mock (~> 2.5)
   test-prof (~> 0.7)
-  therubyracer (~> 0.12)
   timber (~> 2.6)
   timecop (~> 0.9)
   twilio-ruby (~> 5.15)
@@ -1047,4 +1041,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-   1.16.6
+   1.17.1

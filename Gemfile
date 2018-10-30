@@ -89,7 +89,6 @@ gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stream_rails", "~> 2.6"
 gem "stripe", "~> 3.25"
-gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
 gem "twilio-ruby", "~> 5.15"
 gem "twitter", "~> 6.2"
