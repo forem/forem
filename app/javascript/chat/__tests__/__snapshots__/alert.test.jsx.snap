@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Alert /> should render and test snapshot 1`] = `
+<div
+  class="chatalert__default "
+>
+  More new messages below
+</div>
+`;
+
+exports[`<Alert /> should render and test snapshot with hidden class 1`] = `
+<div
+  class="chatalert__default chatalert__default--hidden"
+>
+  More new messages below
+</div>
+`;
