@@ -6,7 +6,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
 >
   <div>
     <input
-      autocomplete="off"
+      autoComplete="off"
       class="articleform__title"
       id="article-form-title"
       onChange={[Function]}
