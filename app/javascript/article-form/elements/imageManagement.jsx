@@ -70,23 +70,28 @@ export default class ImageManagement extends Component {
         </div>
       );
     }
-    return   <div
-                className="articleform__overlay"
-              >
-              <button
-                class="articleform__exitbutton"
-                data-content="exit"
-                onClick={onExit}
-                >×</button>
-                <h2>Cover Image</h2>
-                {mainImageArea}
-                <h2>Body Images</h2>
-                {inertionImageArea}
-                <div><button class="articleform__donebutton" onClick={onExit}>Done</button></div>
-              </div>
-
-              }
-};
+    return (
+      <div className="articleform__overlay">
+        <button
+          className="articleform__exitbutton"
+          data-content="exit"
+          onClick={onExit}
+        >
+          ×
+        </button>
+        <h2>Cover Image</h2>
+        {mainImageArea}
+        <h2>Body Images</h2>
+        {inertionImageArea}
+        <div>
+          <button className="articleform__donebutton" onClick={onExit}>
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+}
 
 ImageManagement.propTypes = {
   onExit: PropTypes.func.isRequired,
