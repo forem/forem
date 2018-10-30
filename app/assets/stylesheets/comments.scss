@@ -544,7 +544,7 @@ a.header-link{
     color:$dark-gray;
     position:relative;
     // background:$light-gray;
-    .comment-date{
+    > .comment-date{
       border: none;
       position: absolute;
       top: calc(16px - 0.25vw);
