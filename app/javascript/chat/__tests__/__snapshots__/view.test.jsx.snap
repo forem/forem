@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<View /> should render and test snapshot (no channel) 1`] = `
+<div
+  class="chatNonChatView"
+>
+  <div
+    class="container"
+  >
+    <button
+      class="chatNonChatView_exitbutton"
+      data-content="exit"
+      onClick={[Function]}
+    >
+      ×
+    </button>
+    <h1>
+      Channel Invitations 🤗
+    </h1>
+  </div>
+</div>
+`;
+
+exports[`<View /> should render and test snapshot (with channel) 1`] = `
+RenderContext {
+  "0": VNode {
+    "attributes": Object {
+      "channels": Array [
+        Object {
+          "channel_name": "name",
+          "description": "some description",
+          "membership_id": "12345",
+        },
+      ],
+      "onAcceptInvitation": [Function],
+      "onDeclineInvitation": [Function],
+      "onViewExit": [Function],
+    },
+    "children": Array [],
+    "key": undefined,
+    "nodeName": [Function],
+  },
+  "length": 1,
+}
+`;
