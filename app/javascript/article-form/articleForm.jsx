@@ -34,6 +34,8 @@ export default class ArticleForm extends Component {
       tagList: article.cached_tag_list || '',
       description: '',
       canonicalUrl: article.canonical_url || '',
+      series: article.series || '',
+      allSeries: article.all_series || [],
       bodyMarkdown: article.body_markdown || '',
       published: article.published || false,
       previewShowing: false,
@@ -119,7 +121,8 @@ export default class ArticleForm extends Component {
   };
 
   handleConfigChange = e => {
-    const newState = {};
+    e.preventDefault();
+    let newState = {}
     newState[e.target.name] = e.target.value;
     this.setState(newState);
   };

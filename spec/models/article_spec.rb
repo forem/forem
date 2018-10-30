@@ -473,5 +473,11 @@ RSpec.describe Article, type: :model do
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
+
+  it "is valid as part of a collection" do
+    collection = Collection.create(user_id: article.user.id, slug: "yoyoyo")
+    article.collection_id = collection.id
+    expect(article).to be_valid
+  end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
