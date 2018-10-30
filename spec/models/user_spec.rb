@@ -12,28 +12,30 @@ RSpec.describe User, type: :model do
 
   before { mock_auth_hash }
 
-  it { is_expected.to have_many(:articles) }
-  it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
-  it { is_expected.to have_many(:badges).through(:badge_achievements) }
-  it { is_expected.to have_many(:collections).dependent(:destroy) }
-  it { is_expected.to have_many(:comments) }
-  it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
-  it { is_expected.to have_many(:identities).dependent(:destroy) }
-  it { is_expected.to have_many(:mentions).dependent(:destroy) }
-  it { is_expected.to have_many(:notes) }
-  it { is_expected.to have_many(:notifications).dependent(:destroy) }
-  it { is_expected.to have_many(:reactions).dependent(:destroy) }
-  it { is_expected.to have_many(:tweets).dependent(:destroy) }
-  it { is_expected.to have_many(:github_repos).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-  it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
-  it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-  it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
-  it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
-  it { is_expected.to validate_presence_of(:username) }
-  it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-  it { is_expected.to validate_length_of(:name).is_at_most(100) }
+  describe "validations" do
+    it { is_expected.to have_many(:articles) }
+    it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
+    it { is_expected.to have_many(:badges).through(:badge_achievements) }
+    it { is_expected.to have_many(:collections).dependent(:destroy) }
+    it { is_expected.to have_many(:comments) }
+    it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
+    it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tweets).dependent(:destroy) }
+    it { is_expected.to have_many(:github_repos).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
+    it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+    it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
+    it { is_expected.to validate_presence_of(:username) }
+    it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+    it { is_expected.to validate_length_of(:name).is_at_most(100) }
+  end
 
   # the followings are failing
   # it { is_expected.to have_many(:keys) }
