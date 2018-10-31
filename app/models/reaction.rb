@@ -135,7 +135,7 @@ class Reaction < ApplicationRecord
       errors.add(:category, "is not valid.")
     end
 
-    if reactable_type == "Article" && !reactable.published
+    if reactable_type == "Article" && !reactable&.published
       errors.add(:reactable_id, "is not valid.")
     end
   end

@@ -1,4 +1,3 @@
-# Configuration for weekly-digest - https://github.com/apps/weekly-digest
 publishDay: mon
 canPublishIssues: true
 canPublishPullRequests: true

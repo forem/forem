@@ -94,6 +94,7 @@ class RssReader
       article = with_timer("save_article", metadata) do
         Article.create!(article_params)
       end
+      return unless Rails.env.production?
       SlackBot.delay.ping(
         "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
         channel: "activity",

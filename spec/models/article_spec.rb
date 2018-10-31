@@ -414,15 +414,13 @@ RSpec.describe Article, type: :model do
   end
 
   it "updates main_image_background_hex_color" do
+    article = build(:article)
+    allow(article).to receive(:update_main_image_background_hex).and_call_original
     article.save
-    expect(article.update_main_image_background_hex_without_delay).to eq(true)
+    expect(article).to have_received(:update_main_image_background_hex)
   end
 
   describe "#async_score_calc" do
-    before { Delayed::Worker.delay_jobs = false }
-
-    after  { Delayed::Worker.delay_jobs = true }
-
     context "when published" do
       let(:article) { create(:article) }
 
@@ -474,6 +472,12 @@ RSpec.describe Article, type: :model do
     article.published_at = 1.years.ago
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+  end
+
+  it "is valid as part of a collection" do
+    collection = Collection.create(user_id: article.user.id, slug: "yoyoyo")
+    article.collection_id = collection.id
+    expect(article).to be_valid
   end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

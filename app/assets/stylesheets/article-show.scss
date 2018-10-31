@@ -247,13 +247,13 @@ header{
   .article-collection-wrapper{
     text-align:center;
     font-family: $helvetica;
-    font-size:15px;
+    font-size:16px;
     p{
-      border-bottom:2px solid $black;
-      width:120px;
+      max-width:90%;
       margin:35px auto 15px;
       padding:2px 0px;
       font-weight:bold;
+      font-style: oblique;
     }
     .article-collection{
       display:inline-block;
@@ -265,19 +265,19 @@ header{
       margin-bottom: 1.1vw;
       a{
         color:$black;
-        padding:calc(0.8vw + 10px);
-        background:$lightest-gray;
+        padding:calc(0.3vw + 14px);
+        background:darken($lightest-gray, 12%);
         display:inline-block;
         position:relative;
         z-index:4;
         max-width:260px;
         margin:0.2vw;
-        border-radius:5px;
+        border-radius:100px;
         &:first-child{
           // margin-left:-5px;
         }
         &:hover{
-          background:darken($lightest-gray,3%);
+          background:darken($lightest-gray,18%);
         }
         &.current-article{
           background: $black;
