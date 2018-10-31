@@ -38,6 +38,14 @@ RSpec.describe BadgeRewarder do
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 
+  it "rewards fab five badge to users" do
+    badge = create(:badge, title: "Fab 5")
+    user = create(:user)
+    user_other = create(:user)
+    described_class.award_fab_five_badges([user.username, user_other.username])
+    expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
+  end
+
   it "rewards contributor badges" do
     badge = create(:badge, title: "Dev Contributor")
     user = create(:user)

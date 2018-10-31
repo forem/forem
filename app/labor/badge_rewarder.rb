@@ -29,6 +29,10 @@ module BadgeRewarder
     award_badges(usernames, "top-7", message_markdown)
   end
 
+  def self.award_fab_five_badges(usernames, message_markdown = "Congrats!!!")
+    award_badges(usernames, "fab-5", message_markdown)
+  end
+
   def self.award_contributor_badges(usernames, message_markdown = "Thank you so much for your contributions!")
     award_badges(usernames, "dev-contributor", message_markdown)
   end
