@@ -169,6 +169,7 @@
           height: 22px;
           width: 22px;
           transition: all 0.3s ease 0s;
+          white-space: nowrap;
           &:hover {
             color: #ff4343;
           }
@@ -190,7 +191,7 @@
     display:block;
     width:140%;
     animation: grow-width 3200ms ease-out, pulsate 1.4s infinite ease-in-out;
-    
+
   }
 }
 
@@ -290,7 +291,7 @@
   transform: translateX(-50%) translateY(-50%);
   width: 22px;
   height: 22px;
-  
+
   &:before {
     content: '';
     position: relative;
@@ -304,11 +305,11 @@
     background-color: $dark-purple;
     animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
   }
-  
+
   &:after {
     content: '';
     position: absolute;
-    left: 0; 
+    left: 0;
     top: 0;
     display: block;
     width: 100%;
