@@ -1,7 +1,7 @@
 require "zip"
 
 module Exporter
-  class Exporter
+  class Service
     attr_reader :user
 
     EXPORTERS = [

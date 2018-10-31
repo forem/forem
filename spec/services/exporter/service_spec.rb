@@ -1,7 +1,7 @@
 require "rails_helper"
 require "zip"
 
-RSpec.describe Exporter::Exporter do
+RSpec.describe Exporter::Service do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:other_user) { create(:user) }
@@ -73,7 +73,7 @@ RSpec.describe Exporter::Exporter do
 
   describe "EXPORTERS" do
     it "is a list of supported exporters" do
-      expect(Exporter::Exporter::EXPORTERS).to eq([Exporter::Articles])
+      expect(described_class::EXPORTERS).to eq([Exporter::Articles])
     end
   end
 

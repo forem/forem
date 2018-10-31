@@ -28,7 +28,7 @@ class UsersController < ApplicationController
 
       if @user.export_requested?
         notice = notice + " The export will be emailed to you shortly."
-        Exporter::Exporter.new(@user).delay.export(send_email: true)
+        Exporter::Service.new(@user).delay.export(send_email: true)
       end
 
       follow_hiring_tag(@user)
