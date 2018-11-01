@@ -17,7 +17,7 @@ module BadgeRewarder
       message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
-        badge_id: 3,
+        badge_id: Badge.find_by_slug("beloved-comment")&.id || 3,
         rewarding_context_message_markdown: message,
       )
       comment.user.save if achievement.valid?
