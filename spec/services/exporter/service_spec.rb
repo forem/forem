@@ -23,7 +23,6 @@ RSpec.describe Exporter::Service do
       loop do
         entry = stream.get_next_entry
         break if entry.blank?
-        # continue unless entry.name == "articles.json"
         exports[entry.name] = stream.read
       end
     end
