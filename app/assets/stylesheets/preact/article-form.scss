@@ -191,7 +191,7 @@
   }
 }
 
-.articleform__imageButton{
+.articleform__detailsButton{
   color: $black;
   background: $purple;
   border: 0px;
@@ -214,7 +214,15 @@
     vertical-align: -4px;
     display: inline-block;
   }
-  &.articleform__imageButton--bottombutton{
+  &.articleform__detailsButton--moreconfig {
+    margin-left: 5px;
+    background: $light-medium-gray;
+    &.articleform__detailsButton--bottom{
+      margin-left: 5px;
+      width:50px;
+    }
+  }
+  &.articleform__detailsButton--bottom{
     margin-left: -5px;
     margin-top:10px;
     margin-bottom: 8px;
@@ -294,7 +302,7 @@
   }
 }
 
-.articleform__imagemanagement{
+.articleform__overlay{
   position: absolute;
   top: 0px;
   left: 0;
@@ -321,13 +329,52 @@
     cursor:pointer;
   }
   input[type="text"]{
-    width: 90%;
+    width: calc(80% - 20px);
     padding: 10px 20px;
     border-radius: 3px;
-    margin: 20px auto;
-    display: block;
+    margin: 5px auto 0px;
+    display: inline-block;
     border: 0px;
-    font-size: 20px;
+    font-size: 1em;
+    @media screen and ( min-width: 600px ){
+      width: calc(100% - 270px);
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      margin: 20px auto 0px;
+    }
+  }
+  label {
+    margin-top:20px;
+    display: inline-block;
+    width: 80%;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+    background: $medium-gray;
+    padding: 10px;
+    border-radius: 3px;
+    @media screen and ( min-width: 600px ){
+      width: 180px;
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;  
+    }
+
+  }
+  small {
+    display: block;
+    font-size:0.8em;
+    color: $light-medium-gray;
+    text-align: left;
+    width: 80%;
+    margin: 7px auto;
+    font-style:oblique;
+    @media screen and ( min-width: 600px ){
+      width: calc(100% - 40px);
+    }
+    button {
+      margin-left: 5px;
+      background: $bold-blue;
+    }
   }
   .articleform__exitbutton{
     position:absolute;
@@ -348,6 +395,15 @@
     font-size: 14px;
     border-radius: 3px;
     font-weight: bold;
+  }
+  .articleform__donebutton{
+    display: block;
+    font-size: 22px;
+    background: $green;
+    color: $black;
+    padding: 10px 40px;
+    margin: 20px auto;
+
   }
   img{
     display: block;

@@ -2,7 +2,7 @@
   <div class="articleform"
     id="article-form"
     data-article="<%= @article.
-    to_json(only: [:id, :title, :cached_tag_list, :published, :body_markdown, :main_image, :organization_id]) %>"
+    to_json(only: [:id, :title, :cached_tag_list, :published, :body_markdown, :main_image, :organization_id, :canonical_url], methods: [:series, :all_series]) %>"
     data-organization="<%= @organization&.to_json(only: [:name, :bg_color_hex, :text_color_hex], methods: [:profile_image_90]) %>"
     >
     
@@ -20,12 +20,10 @@
     <div class="articleform__detailfields">
       <div class="articleform__tagswrapper">
         <textarea type="text" class="articleform__tags" placeholder="tags"><%= @article.cached_tag_list %></textarea>
-      </div><button class="articleform__imageButton">
-      <img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button>
+      </div><button class="articleform__detailsButton articleform__detailsButton--image"><img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button><button class="articleform__detailsButton articleform__detailsButton--moreconfig"><img src="<%= asset_path 'three-dots.svg' %>"></button>
     </div>
     <textarea class="articleform__body" placeholder="Body" name="body_markdown"><%= @article.body_markdown %></textarea>
-    <button class="articleform__imageButton articleform__imageButton--bottombutton">
-      <img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button>
+    <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"><img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button><button class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"><img src="<%= asset_path 'three-dots.svg' %>"></button>
     <% if @article.published %>
       <div class="articleform__buttons"><button class="articleform__buttons--small inactive">?</button><button class="inactive">PREVIEW</button><button class="articleform__buttons--publish">SAVE CHANGES</button></div>    </form>
     <% else %>

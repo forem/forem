@@ -6,7 +6,7 @@ class Article < ApplicationRecord
 
   acts_as_taggable_on :tags
 
-  attr_accessor :publish_under_org
+  attr_accessor :publish_under_org, :series
 
   belongs_to :user
   belongs_to :job_opportunity, optional: true
@@ -28,9 +28,10 @@ class Article < ApplicationRecord
             url: { allow_blank: true, no_local: true, schemes: ["https", "http"] },
             uniqueness: { allow_blank: true }
   # validates :description, length: { in: 10..170, if: :published? }
-  validates :body_markdown, uniqueness: { scope: [:user_id, :title] }
+  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
+  validate :validate_collection_permission
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
@@ -288,15 +289,13 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    begin
-      fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
-      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed_markdown = MarkdownParser.new(parsed.content)
-      self.processed_html = parsed_markdown.finalize
-      evaluate_front_matter(parsed.front_matter)
-    rescue StandardError => e
-      errors[:base] << ErrorMessageCleaner.new(e.message).clean
-    end
+    fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
+    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+    parsed_markdown = MarkdownParser.new(parsed.content)
+    self.processed_html = parsed_markdown.finalize
+    evaluate_front_matter(parsed.front_matter)
+  rescue StandardError => e
+    errors[:base] << ErrorMessageCleaner.new(e.message).clean
   end
 
   def has_frontmatter?
@@ -331,7 +330,7 @@ class Article < ApplicationRecord
 
   def readable_publish_date
     relevant_date = crossposted_at.present? ? crossposted_at : published_at
-    if relevant_date && relevant_date.year == Time.now.year
+    if relevant_date && relevant_date.year == Time.current.year
       relevant_date&.strftime("%b %e")
     else
       relevant_date&.strftime("%b %e '%y")
@@ -361,6 +360,16 @@ class Article < ApplicationRecord
   end
   handle_asynchronously :async_score_calc
 
+  def series
+    # name of series article is part of
+    collection&.slug
+  end
+
+  def all_series
+    # all series names
+    user&.collections&.pluck(:slug)
+  end
+
   private
 
   # def send_to_moderator
@@ -389,18 +398,19 @@ class Article < ApplicationRecord
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || token_msg
+    self.collection_id = nil if front_matter["title"].present?
+    self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
       self.automatically_renew = front_matter["automatically_renew"]
     end
   end
 
   def parsed_date(date)
-    today_date = Time.now.to_datetime
-    return published_at || today_date unless date
-    given_date = date.to_datetime
+    now = Time.current
+    return published_at || now unless date
     error_msg = "must be entered in DD/MM/YYYY format with current or past date"
-    return errors.add(:date_time, error_msg) if given_date > today_date
-    given_date
+    return errors.add(:date_time, error_msg) if date > now
+    date
   end
 
   def validate_tag
@@ -418,6 +428,12 @@ class Article < ApplicationRecord
     end
     if video.present? && !user.has_role?(:video_permission)
       return errors.add(:video, "cannot be added member without permission")
+    end
+  end
+
+  def validate_collection_permission
+    if collection && collection.user_id != user_id
+      errors.add(:collection_id, "must be one you have permission to post to")
     end
   end
 
@@ -448,18 +464,18 @@ class Article < ApplicationRecord
 
   def set_published_date
     if published && published_at.blank?
-      self.published_at = Time.now
+      self.published_at = Time.current
       user.delay.resave_articles # tack-on functionality HACK
       organization&.delay&.resave_articles # tack-on functionality HACK
     end
   end
 
   def set_featured_number
-    self.featured_number = Time.now.to_i if featured_number.blank? && published
+    self.featured_number = Time.current.to_i if featured_number.blank? && published
   end
 
   def set_crossposted_at
-    self.crossposted_at = Time.now if published && crossposted_at.blank? && published_from_feed
+    self.crossposted_at = Time.current if published && crossposted_at.blank? && published_from_feed
   end
 
   def set_last_comment_at

@@ -11,29 +11,29 @@ class CacheBuster
     headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   end
 
-  def bust_comment(comment)
-    if comment.commentable.featured_number.to_i > (Time.now.to_i - 5.hours.to_i)
+  def bust_comment(commentable, username)
+    if commentable.featured_number.to_i > 5.hours.ago.to_i
       bust("/")
       bust("/?i=i")
       bust("?i=i")
     end
-    if comment.commentable.decorate.cached_tag_list_array.include?("discuss") &&
-        comment.commentable.featured_number.to_i > (Time.now.to_i - 35.hours.to_i)
+    if commentable.decorate.cached_tag_list_array.include?("discuss") &&
+        commentable.featured_number.to_i > 35.hours.ago.to_i
       bust("/")
       bust("/?i=i")
       bust("?i=i")
     end
-    bust("#{comment.commentable.path}/comments/")
-    bust(comment.commentable.path.to_s)
-    comment.commentable.comments.each do |c|
+    bust("#{commentable.path}/comments/")
+    bust(commentable.path.to_s)
+    commentable.comments.each do |c|
       bust(c.path)
       bust(c.path + "?i=i")
     end
-    bust("#{comment.commentable.path}/comments/*")
-    bust("/#{comment.user.username}")
-    bust("/#{comment.user.username}/comments")
-    bust("/#{comment.user.username}/comments?i=i")
-    bust("/#{comment.user.username}/comments/?i=i")
+    bust("#{commentable.path}/comments/*")
+    bust("/#{username}")
+    bust("/#{username}/comments")
+    bust("/#{username}/comments?i=i")
+    bust("/#{username}/comments/?i=i")
   end
 
   def bust_article(article)
@@ -58,7 +58,7 @@ class CacheBuster
   end
 
   def bust_home_pages(article)
-    if article.featured_number.to_i > Time.now.to_i
+    if article.featured_number.to_i > Time.current.to_i
       bust("/")
       bust("?i=i")
     end

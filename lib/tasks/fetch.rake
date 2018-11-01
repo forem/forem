@@ -40,7 +40,7 @@ task renew_hired_articles: :environment do
     each do |article|
 
     if article.automatically_renew
-      article.featured_number = Time.now.to_i
+      article.featured_number = Time.current.to_i
     else
       article.approved = false
       article.body_markdown = article.body_markdown.gsub(
@@ -67,7 +67,7 @@ task github_repo_fetch_all: :environment do
 end
 
 task send_email_digest: :environment do
-  return if Time.now.wday < 3
+  return if Time.current.wday < 3
   EmailDigest.send_periodic_digest_email
 end
 
@@ -90,4 +90,19 @@ task :award_contributor_badges, [:arg1] => :environment do |_t, args|
   puts "Awarding dev-contributor badges to #{usernames}"
   BadgeRewarder.award_contributor_badges(usernames)
   puts "Done!"
+end
+
+# this task is meant to be scheduled daily
+task award_contributor_badges_from_github: :environment do
+  BadgeRewarder.award_contributor_badges_from_github
+end
+
+task remove_old_html_variant_data: :environment do
+  HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
+  HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
+  HtmlVariant.find_each do |html_variant|
+    if html_variant.html_variant_successes.size > 3
+    html_variant.calculate_success_rate!
+    end
+  end
 end

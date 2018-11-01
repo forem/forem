@@ -64,7 +64,7 @@ class Notification < ApplicationRecord
   end
 
   def activity_target
-    "#{notifiable_type.downcase}_#{Time.now}"
+    "#{notifiable_type.downcase}_#{Time.current.utc}"
   end
 
   def activity_notify

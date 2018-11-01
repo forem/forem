@@ -34,9 +34,9 @@ class GithubReposController < ApplicationController
   end
 
   def fetched_repo_params
-    fetched_repo = @client.repositories.select do |repo|
+    fetched_repo = @client.repositories.detect do |repo|
       repo.id == permitted_attributes(GithubRepo)[:github_id_code].to_i
-    end.first
+    end
     {
       github_id_code: fetched_repo.id,
       user_id: current_user.id,

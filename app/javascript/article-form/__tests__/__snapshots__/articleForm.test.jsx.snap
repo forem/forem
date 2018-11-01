@@ -33,13 +33,21 @@ exports[`<ArticleForm /> renders properly 1`] = `
         />
       </div>
       <button
-        class="articleform__imageButton"
+        class="articleform__detailsButton articleform__detailsButton--image"
         onClick={[Function]}
       >
         <img
           src=""
         />
          IMAGES
+      </button>
+      <button
+        class="articleform__detailsButton articleform__detailsButton--moreconfig"
+        onClick={[Function]}
+      >
+        <img
+          src=""
+        />
       </button>
     </div>
     <textarea
@@ -57,13 +65,21 @@ exports[`<ArticleForm /> renders properly 1`] = `
       value=""
     />
     <button
-      class="articleform__imageButton articleform__imageButton--bottombutton"
+      class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
       onClick={[Function]}
     >
       <img
         src=""
       />
        IMAGES
+    </button>
+    <button
+      class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+      onClick={[Function]}
+    >
+      <img
+        src=""
+      />
     </button>
   </div>
   <div

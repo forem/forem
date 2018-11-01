@@ -4,7 +4,7 @@ import OnboardingFollowTags from './components/OnboardingFollowTags';
 import OnboardingFollowUsers from './components/OnboardingFollowUsers';
 import OnboardingWelcomeThread from './components/OnboardingWelcomeThread';
 import cancelSvg from '../../assets/images/cancel.svg';
-import OnboardingArticles from './components/OnboardingArticles';
+import OnboardingProfile from './components/OnboardingProfile';
 
 const getContentOfToken = token => document.querySelector(`meta[name='${token}']`).content;
 const getFormDataAndAppend = array => {
@@ -27,6 +27,7 @@ class Onboarding extends Component {
     this.handleCheckUser = this.handleCheckUser.bind(this);
     this.handleSaveAllArticles = this.handleSaveAllArticles.bind(this);
     this.handleSaveArticle = this.handleSaveArticle.bind(this);
+    this.handleProfileChange = this.handleProfileChange.bind(this);
     this.getUsersToFollow = this.getUsersToFollow.bind(this);
     this.state = {
       pageNumber: 1,
@@ -39,13 +40,14 @@ class Onboarding extends Component {
       articles: [],
       savedArticles: [],
       saveRequestSent: false,
+      profileInfo: {}
     };
   }
 
   componentDidMount() {
     this.updateUserData();
     this.getUserTags();
-    document.getElementsByTagName('body')[0].classList.add('modal-open');
+    document.getElementsByTagName("body")[0].classList.add("modal-open");
   }
 
   getUserTags() {
@@ -94,32 +96,11 @@ class Onboarding extends Component {
       });
   }
 
-  getSuggestedArticles() {
-    const followedTags = [];
-    for (let i = 0; i < this.state.allTags.length; i += 1) {
-      if (this.state.allTags[i].following) {
-        followedTags.push(this.state.allTags[i].name);
-      }
-    }
-
-    fetch(`/api/articles/onboarding?tag_list=${followedTags.join(',')}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(json => {
-        this.setState({ articles: json, savedArticles: json });
-      });
-  }
-  
   handleBulkFollowUsers(users) {
     if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
       const csrfToken = getContentOfToken('csrf-token');
       const formData = getFormDataAndAppend([{ key: 'users', value: JSON.stringify(users) }]);
-      
+
       fetch('/api/follows', {
         method: 'POST',
         headers: {
@@ -135,13 +116,12 @@ class Onboarding extends Component {
     }
   }
 
-  handleBulkSaveArticles(articles) {
-    if (this.state.savedArticles.length > 0 && !this.state.saveRequestSent) {
+  handleUserProfileSave() {
       const csrfToken = getContentOfToken('csrf-token');
-      const formData = getFormDataAndAppend([{ key: 'articles', value: JSON.stringify(articles) }]);
+      const formData = getFormDataAndAppend([{ key: 'user', value: JSON.stringify(this.state.profileInfo) }]);
 
-      fetch('/api/reactions/onboarding', {
-        method: 'POST',
+      fetch('/onboarding_update', {
+        method: 'PATCH',
         headers: {
           'X-CSRF-Token': csrfToken,
         },
@@ -152,7 +132,6 @@ class Onboarding extends Component {
           this.setState({ saveRequestSent: true });
         }
       });
-    }
   }
 
   updateUserData() {
@@ -174,6 +153,16 @@ class Onboarding extends Component {
       { key: 'verb', value: tag.following ? 'unfollow' : 'follow' }
     ]);
 
+    this.setState({
+      allTags: this.state.allTags.map(currentTag => {
+        const newTag = currentTag;
+        if (currentTag.name === tag.name) {
+          newTag.following = true;
+        }
+        return newTag;
+        // add in optimistic rendering
+      }),
+    });
     fetch('/follows', {
       method: 'POST',
       headers: {
@@ -209,6 +198,12 @@ class Onboarding extends Component {
     }
   }
 
+  handleProfileChange(event) {
+    let newProfileInfo = this.state.profileInfo;
+    newProfileInfo[event.target.name] = event.target.value;
+    this.setState({profileInfo: newProfileInfo})
+  }
+
   handleCheckUser(user) {
     const newCheckedUsers = this.state.checkedUsers.slice();
     if (this.state.checkedUsers.indexOf(user) > -1) {
@@ -242,7 +237,6 @@ class Onboarding extends Component {
   handleNextHover() {
     if (this.state.pageNumber === 2 && this.state.users.length === 0) {
       this.getUsersToFollow();
-      this.getSuggestedArticles();
     }
   }
 
@@ -253,21 +247,20 @@ class Onboarding extends Component {
       this.state.articles.length === 0
     ) {
       this.getUsersToFollow();
-      this.getSuggestedArticles();
     }
     if (this.state.pageNumber < 5) {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
       if (this.state.pageNumber === 4 && this.state.checkedUsers.length > 0) {
         this.handleBulkFollowUsers(this.state.checkedUsers);
       } else if (
-        this.state.pageNumber === 5 &&
-        this.state.savedArticles.length > 0
+        this.state.pageNumber === 5
       ) {
-        this.handleBulkSaveArticles(this.state.savedArticles);
+        this.handleUserProfileSave(this.state.profileInfo);
       }
     } else if (this.state.pageNumber === 5) {
       this.closeOnboarding();
     }
+    const sloan = document.getElementById("sloan-mascot-onboarding-area");
   }
 
   handleBackButton() {
@@ -282,7 +275,7 @@ class Onboarding extends Component {
     const formData = getFormDataAndAppend([
       { key: 'saw_onboarding', value: true }
     ]);
-    
+
     if (window.ga && ga.create) {
       ga('send', 'event', 'click', 'close onboarding slide', this.state.pageNumber, null)
     }
@@ -328,11 +321,8 @@ class Onboarding extends Component {
       );
     } else if (this.state.pageNumber === 4) {
       return (
-        <OnboardingArticles
-          articles={this.state.articles}
-          savedArticles={this.state.savedArticles}
-          handleSaveAllArticles={this.handleSaveAllArticles}
-          handleSaveArticle={this.handleSaveArticle}
+        <OnboardingProfile
+        onChange={this.handleProfileChange}
         />
       );
     } else if (this.state.pageNumber === 5) {
@@ -364,13 +354,21 @@ class Onboarding extends Component {
     );
   }
 
+  renderPageIndicators() {
+      return <div class='pageindicators'>
+                <div class={this.state.pageNumber === 2 ? 'pageindicator pageindicator--active': 'pageindicator'}></div>
+                <div class={this.state.pageNumber === 3 ? 'pageindicator pageindicator--active' : 'pageindicator'}></div>
+                <div class={this.state.pageNumber === 4 ? 'pageindicator pageindicator--active' : 'pageindicator'}></div>
+              </div>
+  }
+
   renderSloanMessage() {
     const messages = {
       1: 'WELCOME!',
-      2: 'FOLLOW TAGS!',
-      3: 'FOLLOW SOME DEVS!',
-      4: 'SAVE SOME POSTS!',
-      5: 'GET INVOLVED!',
+      2: 'FOLLOW TAGS',
+      3: 'FOLLOW DEVS',
+      4: 'CREATE YOUR PROFILE',
+      5: 'GET INVOLVED',
     };
     return messages[this.state.pageNumber];
   }
@@ -378,7 +376,7 @@ class Onboarding extends Component {
   render() {
     if (this.state.showOnboarding) {
       return (
-        <div className="global-modal">
+        <div className="global-modal" style="display:none">
           <div className="global-modal-bg">
             <button className="close-button" onClick={this.closeOnboarding}>
               <img src={cancelSvg} alt="cancel button" />
@@ -391,7 +389,7 @@ class Onboarding extends Component {
               </div>
             </div>
             <div className="modal-body">
-              <div className="sloan-bar">
+              <div id="sloan-mascot-onboarding-area" className="sloan-bar wiggle">
                 <img
                   src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
                   className="sloan-img"
@@ -401,7 +399,9 @@ class Onboarding extends Component {
             </div>
             <div className="modal-footer">
               <div className="modal-footer-left">{this.renderBackButton()}</div>
-              <div className="modal-footer-center" />
+              <div className="modal-footer-center">
+                {this.renderPageIndicators()}
+              </div>
               <div className="modal-footer-right">
                 {this.renderNextButton()}
               </div>

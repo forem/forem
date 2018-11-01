@@ -2,7 +2,7 @@ class UserDecorator < ApplicationDecorator
   delegate_all
 
   def cached_followed_tags
-    Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags", expires_in: 100.hours) do
+    Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags", expires_in: 20.hours) do
       Tag.where(id: Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id)).order("hotness_score DESC")
     end
   end
@@ -44,8 +44,8 @@ class UserDecorator < ApplicationDecorator
         text: "#ffffff"
       },
       {
-        bg: "#edebf6",
-        text: " #070126"
+        bg: "#2e0338",
+        text: " #ffffff"
       },
       {
         bg: "#080E3B",

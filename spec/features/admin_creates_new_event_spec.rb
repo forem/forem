@@ -19,8 +19,8 @@ describe "Admin creates new event" do
 
   def create_and_publish_event
     fill_in("Title", with: "Workshop Title")
-    select_date_and_time(Date.today.year.to_s, "December", "30", "15", "30", "starts_at")
-    select_date_and_time(Date.today.year.to_s, "December", "30", "16", "30", "ends_at")
+    select_date_and_time(Time.current.year.to_s, "December", "30", "15", "30", "starts_at")
+    select_date_and_time(Time.current.year.to_s, "December", "30", "16", "30", "ends_at")
     check("event[published]")
     click_button("Create Event")
   end

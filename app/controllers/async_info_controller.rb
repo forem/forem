@@ -40,7 +40,6 @@ class AsyncInfoController < ApplicationController
         followed_user_ids: @user.cached_following_users_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         saw_onboarding: @user.saw_onboarding,
-        onboarding_checklist: UserStates.new(@user).cached_onboarding_checklist,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,

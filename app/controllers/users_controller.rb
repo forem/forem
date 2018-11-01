@@ -68,6 +68,9 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
+    if params[:user]
+      current_user.update(JSON.parse(params[:user]).to_h)
+    end
     current_user.saw_onboarding = true
     authorize User
     if current_user.save!
@@ -170,6 +173,8 @@ class UsersController < ApplicationController
         %0A
         YOUR-DEV-USERNAME-HERE
       HEREDOC
+    else
+      not_found unless @tab_list.map { |t| t.downcase.gsub(" ", "-") }.include? @tab
     end
   end
 end

@@ -1,4 +1,8 @@
-<% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
+<% if action_name == "show" %>
+  <% feedback_message_emails = @email_messages %>
+<% else %>
+  <% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
+<% end %>
 <div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
@@ -7,7 +11,7 @@
           Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
         </a>
         <div class="panel-right-elements">
-          ✉️ Emails Sent: <%= feedback_message_emails.count %> |
+          ✉️ Emails Sent: <%= feedback_message_emails.size %> |
           <a href="/internal/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
         </div>
       </h2>

@@ -29,6 +29,9 @@
   <a href="https://www.skylight.io/app/applications/K9H5IV3RqKGu">
     <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" />
   </a>
+  <a href="https://www.codetriage.com/thepracticaldev/dev.to">
+    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge" />
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
@@ -40,14 +43,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 ## Table of Contents
 
 - [Contributing](#contributing)
-  - [Where to contribute](#where-to-contribute)
-  - [How to contribute](#how-to-contribute)
-  - [Contribution guideline](#contribution-guideline)
-    - [Clean code with tests](#clean-code-with-tests)
-    - [Create a pull request](#create-a-pull-request)
-    - [Create an issue](#create-an-issue)
-  - [How to get help](#how-to-get-help)
-  - [The bottom line](#the-bottom-line)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
   - [Engineering standards](#engineering-standards)
@@ -65,13 +60,15 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 
 ## Contributing
 
-We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
+We encourage you to contribute to dev.to! Please check out the [Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to proceed.
+
+We expect contributors to abide by our underlying [code of conduct](CODE_OF_CONDUCT.md). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
 ### Where to contribute
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `approved` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
 
-When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone knew to the project. For newer developers, try 'entry-level' issues.
+When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone new to the project. For newer developers, try 'entry-level' issues.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
@@ -151,7 +148,7 @@ This section provides a high-level requirement & quick start guide. For detailed
 - [Yarn](https://yarnpkg.com/): please refer to their [installation guide](https://yarnpkg.com/en/docs/install).
 - [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
 
-### Installation
+### Standard Installation
 
 0.  Make sure all the prerequisites are installed.
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
@@ -176,6 +173,18 @@ This section provides a high-level requirement & quick start guide. For detailed
 1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
+
+### Docker Installation (BETA)
+
+Our docker implementation is incomplete and may not work smoothly. Please kindly report any issues and any contribution is welcomed!
+
+1. Install `docker` and `docker-compose`
+1. `git clone git@github.com:thepracticaldev/dev.to.git`
+1. Set environment variables above as described in the "Basic Installation"
+1. run `docker-compose build`
+1. run `docker-compose run web rails db:setup`
+1. run `docker-compose up`
+1. That's it! Navigate to `localhost:3000`
 
 #### Starting the application
 
