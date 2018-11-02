@@ -8,14 +8,14 @@ cache:
 rvm:
 - 2.5.3
 go:
-- master
+- 1.10.3
 addons:
   postgresql: '9.6'
   chrome: stable
 env:
   global:
   - RAILS_ENV=test
-  - TRAVIS_ENDPOINT=https://api.travis-ci.com
+  - TRAVIS_ENDPOINT="https://api.travis-ci.com"
   - TRAVIS_QUEUE_BRANCHES=master
   - secure: YEmKIlewbbGDW7QB6fgaVd5oTWwH9dY+GeOUvz8Ca2TLyP6Ebp9zIibuCEivG6AATpTJIVK/+8J2D4xxBOoT3l5B/jhB7tQUbQH0oqp96zgc/ymLE3/WvU7PECbEmSbPu/hn6TrCXX8Q5yxrHfQnjpX5yticSnm2ruMtc1i73K+uXTmZaJtY61TfxVwyp/PWTR0zOj7RcEomzuHzHew+WraOB92GmPG7hEGdEJqYrgcZQ1AzWZ4+jwQFHQrBScmAQ9GfkExIGJ26m/ypsaP2pJP4Ri2C8j6EvhFI5tIxixHQz5XaNcZoaYciBz3umZAQ026MoeMqH6Sjns0pdFSzvQt9GKi66EdJz4zC0D1IwvQBJ75JLPS9BzZS7oSb9R0XXLfOC++bAE/2Am8elonMgqfxiXTQUKn9ceQaZEtzzjHJmD3SrmISKW3Haifk1kIncvrudcWbRt/+/YhOVRjggaGUARYtP6PybeYpSH8RQxcESwHxFxvpFt1Y4XBnDSAdzNpamrVAsS4EBNMNilG61s3ssKvByIAcNDXCg4DVGTanATLOrrZ8tWnUPl7/Jvvt1V49AlnjA5yrqF9sca+7DbQf7vuQoNp6hHnV7+qsJ7Peiso2/B5rB0bh8lXrV+EOqynq0/1v+p9wSLvYVDThMXEvkt+BWte+np+leyUQlWY=
   - secure: q3VA/x4qd1Ltw0mAnwuiPggVwjdZX58JjQYluwS0gUA0OB2pQqMeYjsy6/bXM1IHGzzrffete+rR3wNNQ5ys3XBC7D/2Rj46gCLl2yvQEEYqsLD/K3rJxAV7yYU1puOiVLEzDvyC3BM5CsEb48mgqP8nAC/q2N63kLkFJbhMFUkOtQHcNS8UUe4y8vq4NGGojzEt/1R90Acaj68FHnKJDIMMRxctuqOecTQAFi72y8h/TX5nqo5PjqeEgJ35/8VSciFLzEWmc7IGlmob+bjRXaHUqgRk067dC9TX7J+FN7E/uZEmi+A8V16MUSZe/YKIIjFIEfb5l42/BuJw+nOen7sR7iwEXUbmQdwhrgIgAyZgwgtMxTY8kznJKh3xUItOZ3UbjyZp1MP+dietsaARHbLY0H++YLbovdO+U7cAqy25r6lbgmopu6aPEUn8u4+IhX/nbOGC0Y188e68baLlHsr2jNoIGyL3Nnk8iIH71Y7hHpiDvc9RnHdBwNXTv3BhIrFpg92NKfRe/I9stwzO9EtKUidn0Ehpq4fmn7L5evZB6w68Qe8/K01xPU/YWWohfzXsn9ZEM5/0VrpA3IsdQK0FUm3kcBQnsZDpkjZsvVgAl2+HUqtfhGIDTKEAAsvdnPi8boEWZ9dbVBn2EzWcfE1IXn0pd5kZbG/nKxup6Uw=
