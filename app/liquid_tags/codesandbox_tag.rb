@@ -19,6 +19,7 @@ class CodesandboxTag < LiquidTagBase
       input_no_space
     else
       raise StandardError, "Invalid codesandbox Id"
+
     end
   end
 
