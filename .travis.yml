@@ -7,7 +7,6 @@ cache:
   - "$HOME/.nvm"
 rvm:
 - 2.5.3
-go: "1.10"
 addons:
   postgresql: '9.6'
   chrome: stable
@@ -22,6 +21,7 @@ branches:
   only:
   - master
 before_install:
+- gimme stable
 - go version
 - go get github.com/pulumi/travisqueue
 - travisqueue start
