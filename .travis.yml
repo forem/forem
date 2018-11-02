@@ -21,7 +21,7 @@ branches:
   only:
   - master
 before_install:
-- gimme 1.8.3
+- eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
 - go version
 - go get github.com/pulumi/travisqueue
 - travisqueue start
