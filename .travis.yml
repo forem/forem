@@ -2,53 +2,62 @@ sudo: required
 language: ruby
 cache:
   directories:
-    - vendor/bundle
-    - node_modules
-    - $HOME/.nvm
+  - vendor/bundle
+  - node_modules
+  - "$HOME/.nvm"
 rvm:
-  - 2.5.3
+- 2.5.3
+go:
+- master
 addons:
   postgresql: '9.6'
   chrome: stable
 env:
   global:
-    - RAILS_ENV=test
-    - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+  - RAILS_ENV=test
+  - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+  - secure: 2gkpj8KkTcQUiI0AwW8Z9SgaTRBe05U4JkejqmAJAbjuGnJmhho0qIsKIuqK0hcVZCT6Y83tdrqrjFA52zT1SVQXJ0bGVwDjRTz7nuVN3SPDxQpeOBDAEV58iSOFVCYPzNK5zp9UiuREDxoytx1/WFQbIOkVRJBcnpb1XvuQYiG++2Sg+RhNgjHr9QJ6dH+U59woYsAFnIM5lVgjD/2tRuVHY+Pvcu0td/V0Kcn0DbeQXEYywMjVpMr+g2arCTVd3Is2mu0qXUe0GcjViK32p3oaOFP/iehbXUauTFqYRobbSPJqI5bDDEgnQUM8rmcVgeutafpAVzNhQr5et20cUzd85mlA84rs2p9LHMU+/XqN6h5cWZONhS9Rb+HElByDJAH9zVCXdsvdx1L+DXvux2XVen2s9gF7sR6KRuAzppjaJ9ruRiyNCSTfPil5JJZhdav2a3x8f/IXOTYTSYN27L1MWCZ3wVHoARtkLq6lZ/g8w7CmNptVFtQ9V+QnVg+ruLdCVVe4cbQ6xlJLGW9CtlROUQ/8AQ+iO4ZbHykfTsPMjEjakKg7CXHR9F2/AOjzzNj68yOEZFgBCiheNwpofFgQkiSuatob1MuD3hJBV6C1w24+g9kC38BCk6qWuf4czSWwlxUuPGzFxhRBZVsDasJY1NWQIeZQvGj4pWuh9nw=
+  - secure: lTrt+6jnSGz06L+ryb3caUhO0BOXeivjsuZxSMaFyp7HMhEohHEfayiSwIy8nJpZNVl8Wf1RKijd79FaZa32J+unRbxhhnWxddzSuI80e+VKZTMby3UQj/Fms8RFeMXxgobn8HvzQ42hlnb9ba88wXzHGIiUixkYyq4Bd6nBdFLE3CbyAcWrAYJSRUTCKJJ+tVpVEffNtdZp4kDlB4+YiXDcc9jLfX6LxmM+GKpq0ypsHvfaB9nEL1WHLqz1hty6BMpjQJKvwXLplDZ+w+MrdbX3TbY3yWzElmW3tca5pzDNJNaWCmgGBdKyqLPqztslP4aMJUpX6oiiogJ9kWUcslrWCRjgrR0i1X2sacKup1gmyImNS+5hqiNdFoG009X6HdxUOJUWhZJx06lXZmEzCjSsoeyduWoTnsMs/mZuLPJUUrah7CWmRO4DnZI/3dqxjB7+LQ6CSbJQ+MpafxXfV29+toB9N89RV2zOc3wyPN/4RbuPHcqiNWFzTk0KWMn3dXv2Xt4EnJ0xyFZo9B2oya9gynHT9G7Z7C/w9EIYKMLPAp+pHv5i3HZmyjCK/EbX5VSlYGRZVWMUi3AdcO8ETz7vGzGvnLRbQL3V7umVtKnnFzF5fCkz5osyf18ux7BHdVEmaA8F6cxbxkKNX8Ay6JWd4wulJF0GtAFI5UBlP2w=
+  - secure: 5rBkmogZR3QFUbOsEKm3MFNGm6fd2R/m/8vn856dt82PSawaRAlx0ipIJ4imQ7qHx3ejIVVoA4oklCWHS14++U03ZEx7EDl9tvS2/2NXar8wv5Og/BcjOkRKhADCG5Lcx6We9IsDBoiuD9C96fcNh1ouVv+0G3mXE+ofxNzyGx+ShM6V+n5ggjk0gSirL7kW/PfOKRzSFnK0tHyWqV7gZBE/MuN5yHkGztp2Ne2mtYl933cO04TLFYPEt60BdefIihgZlt8CZI5V4YXVdQsZ9P7RAC59HDttNVgECVwYT7LE6RAyIGttYAFV8pIy2lom3zV7p9KoNkJfOMR5eh+D0etU8lMTwY891QUm5Zoc9mFzQcATPsyOCt+4eBENyi2tzV4+5XA5vaKxEvfkK/SwLlSMneWi96T/zcFlmK6B5czl0vhSDF+JgAL0KipPlJeYuHHulTNlDuZ6pVDZxGW5ChSJx/U9Uaies2hl4gBoTVwglfsPuXsNviAa+i6vQQA0dxJRM0wWdKsgB+XxZ1yaDoTe65ePGLmT/pyp/JbRd2awmODhc3D12dJwEdbgTMeKXdqzWAi3HDGylqcjy+/p316mq5Vr4Ltiunx3U0oILuZo7+SiBnAhF2YTJeWy0TO0o17JurAkSNyLR+pck+b3qngyuM/TWpA5CthubtrrwQo=
 branches:
   only:
-    - master
+  - master
 before_install:
-  - nvm install node v8.11.4
+- go get github.com/pulumi/travisqueue
+- travisqueue start
+- nvm install node v8.11.4
 install:
-  - bundle install --path vendor/bundle
-  - bundle exec chromedriver-update
-  - yarn install
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-    > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
+- bundle install --path vendor/bundle
+- bundle exec chromedriver-update
+- yarn install
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
 before_script:
-  - cp config/database.yml.travis config/database.yml
-  - psql -c 'create database travis_ci_test;' -U postgres
+- cp config/database.yml.travis config/database.yml
+- psql -c 'create database travis_ci_test;' -U postgres
 script:
-  - bundle exec rails webpacker:compile
-  - bundle exec rake db:schema:load
-  - './cc-test-reporter before-build'
-  - bundle exec rspec spec
-  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
-  - yarn test
-  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
-  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
-  - './cc-test-reporter upload-coverage'
-  - 'bundle exec bundle-audit check --update'
+- bundle exec rails webpacker:compile
+- bundle exec rake db:schema:load
+- "./cc-test-reporter before-build"
+- bundle exec rspec spec
+- "./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json"
+- yarn test
+- "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
+- "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
+- "./cc-test-reporter upload-coverage"
+- bundle exec bundle-audit check --update
 deploy:
   provider: heroku
-  api_key: '$HEROKU_AUTH_TOKEN'
+  api_key: "$HEROKU_AUTH_TOKEN"
   app:
     master: practicaldev
   run:
-    - rake db:migrate
+  - rake db:migrate
 after_deploy:
-  - bash after_deploy.sh
+- bash after_deploy.sh
+after_script:
+- travisqueue finish
 notifications:
   slack:
     on_pull_requests: false
