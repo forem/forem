@@ -22,6 +22,7 @@ branches:
   only:
   - master
 before_install:
+- go version
 - go get github.com/pulumi/travisqueue
 - travisqueue start
 - nvm install node v8.11.4
