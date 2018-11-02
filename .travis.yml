@@ -18,7 +18,7 @@ branches:
   only:
   - master
 before_install:
-- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./scripts/setup-travisqueue; fi'
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./scripts/setup-travisqueue.sh; fi'
 - nvm install node v8.11.4
 install:
 - bundle install --path vendor/bundle
