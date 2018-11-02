@@ -18,7 +18,7 @@ class CodesandboxTag < LiquidTagBase
     if valid_id?(input_no_space)
       input_no_space
     else
-      raise StandardError, "Invalid repl.it Id"
+      raise StandardError, "Invalid codesandbox Id"
     end
   end
 
