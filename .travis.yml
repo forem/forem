@@ -1,5 +1,5 @@
 sudo: required
-language: generic
+language: ruby
 cache:
   directories:
   - vendor/bundle
@@ -13,18 +13,12 @@ addons:
 env:
   global:
   - RAILS_ENV=test
-  - TRAVIS_ENDPOINT="https://api.travis-ci.com"
-  - TRAVIS_QUEUE_BRANCHES=master
-  - secure: hkXAVh2OMrFY4uVP9JQwBgyiFdUacu9BASMIel8k29bMMNXohwNQvqnGbAiMpVD/CPpmzm+pxwhrRXOu27uS24SJTKjJZpLcVH5uu+WQRqIzXdMM4v1d30sFgil4H34HVt4tGXsNct5rVl2R9v2xxgYW9C3Lq8NMRDgmN5G3ghgrf1ENEyfhDtGM9b0Rz2uTmxGNWT3I+EVydUMV5M4gG5yDXFmEhDeW+kx6c/HS3psoZ8bpMWlbV+rkUuMd2bsDAKPgH28QHl3Fec6asYVkksvV/+H0m3AnMFbR4jO/hGS0oW+6PGyBvHQ2B/KRCQkjDJ4+kgsGg0kFUqkNiKUKDmieRUIDerHX57aSfN25jsmZm2eyY+pSc6KgCzoLLiRaHN8j3Om6lT5tbSEzgfXjTJzMDWH4bxJ1fvOz3Lcl3OAdx7OiuGnlfobojrQ6P49Pm6qTJkICDVAU1x28t7S1tX4w/jA4be5V5mWS5XYJkiJnOorgGgyn1/INgjLuJwOQrqlfT4OYGVY7z8061anEUDaV/UWVr1Vfc7/tVnKzXo39RnkQY9B8ANWuElxMBRE8LJrJNtKzFeQGH3SBsGCxYFmAY0x/Iw7Gy9mSzE1WvMSw5J697waB7e7N1CoN7RQo3MP1P+2hGPBqvNRSMRPlyDhNBSHGtk+uqBSH6vQweYk=
-  - secure: TE5XePiG76/C9JzFl03Nf+G3x9alVVH8UueymlsF3X4MmVpapb1TK2cNm+1ifM/vbiBpoy4KHc6d5vabAgaafzlWXdE58YeH/4wFebc1By3hiERaorQnqhMjsCO5efnmWUjd00PGQWFow/kJm8MwRE7WiX4AtUOlgIZbDF4OJBuwHplhuUPKzevCFT/it6b4XSUZcI/RWQz0GQ1Dp8JW76fvIx9+qbT8nTJyJyP7C85n5bIukxIcLnJI6WoA36lVhaXM+c25DWLYthizWr2LPHFyMliBdEI8qwyq8Q8eAIXe+xs7J7bibxex8d1RPwAhW/1blL3ihayKbLi+rahzUpavxShgbyMko7gyvbVgJYwZwtpIOJliBSxplj1QtmQjWLafVJ10JCzl2z71dwyEwq0Ynwvnt8EUqZdSyny6owvUOO+pyjwC8Skb4xCuoWmHJDtDlvxtuMj1Rnkw9SqvBV+Lu5u6JSrPqLTPd8H8//M0NIvHShHN7U31Rl9jsODSGVzIyO6zp+bi+TfWFGfcu6ixYE03v/UFBjFoYtEsAOfVLmosqTnhn7aJoQ9e8Zccquzbv6L5XETxK9JEx08WFSCacBQtYIHXWYTGNuEC7pqqdcuIfg/JCj2CzBGVs0KoBluiZYxUT11EaJaPJQ5jKn+JVZip8LelQGP+FZyIMBs=
-  - secure: HXnxlp+F94dENv3FCAVNzZ1iCn2xQymv1oLoOYChY7sIntMY/8JhIeR8EuOuGR2br6Mz522q8VocrK98eT23eeF36qDFqXT048aYf5SnK1J59L27V+DKtEFbDNy6No2lY5VCUuXEQAtFGU77+sPjwqrUkOeksc87BbCf+xkfdo8d36oRMhHd5Vh3MkZbQlgQmHuRe8NsamD4heO2cg9jlon6Uxcq1RAWh7OSUMlS+rtZNJGDUcNv+ZU66JQH0Na8hoWVf5kvmdbLXLfBoRz3TmHSVjfdo1Nk1zBB9HtilsWsa3AJx5Ys+CO2VoXZj3H2tBxYjkF77OhmuzgCnYtcdhPqbyK0AEzOVL37QtKmBfRRGjCnTlwVgfvcyP/cq6TmdoZimXFh/Q60gd6RnPq/T60G8cytD3d/bN7fPJr7buYydVOx/rHMuvEyiGeT3WastfShpcNSoYkqK2z6HzSOkJKw0gqv20WwsElA5uy2uMrMC5oevIpCWj04NmCxWCyKUPatZ+zfRVJ0+lRSScQAwsWZJSy5St/0y1JBb8dTGoUm+xADdfkR5O9GwK/OLSF9JRPmFoTpHVA3BEOvDnrkVbo2rOfburPQWPdTX1BNM9qfgMK+qICWr+FOHB2wg7sxzRBr+TQZtNvGxWbSRJmHmHtUL+Xk1iImfDAISslvGRo=
+  - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
 branches:
   only:
   - master
 before_install:
-- eval "$(GIMME_GO_VERSION=1.8.3 gimme)"
-- go get github.com/pulumi/travisqueue
-- travisqueue start
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash ./scripts/setup-travisqueue; fi'
 - nvm install node v8.11.4
 install:
 - bundle install --path vendor/bundle
@@ -55,9 +49,9 @@ deploy:
   run:
   - rake db:migrate
 after_deploy:
-- bash after_deploy.sh
+- bash ./scripts/after_deploy.sh
 after_script:
-- travisqueue finish
+- 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then travisqueue finish; fi'
 notifications:
   slack:
     on_pull_requests: false
