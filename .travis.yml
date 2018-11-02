@@ -1,5 +1,5 @@
 sudo: required
-language: ruby
+language: generic
 cache:
   directories:
   - vendor/bundle
