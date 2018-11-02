@@ -8,7 +8,7 @@ cache:
 rvm:
 - 2.5.3
 go:
-- master
+- 1.8
 addons:
   postgresql: '9.6'
   chrome: stable
