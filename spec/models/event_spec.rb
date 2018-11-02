@@ -14,7 +14,7 @@ RSpec.describe Event, type: :model do
   end
 
   it "rejects ends times that are earlier than start times" do
-    event.ends_at = Time.now - 50000
+    event.ends_at = 14.hours.ago
     expect(event).not_to be_valid
   end
 

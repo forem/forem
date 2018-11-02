@@ -14,7 +14,7 @@ class ColorFromImage
 
   def get_palette
     input = {
-      url: @url,
+      url: @url
     }
     client = Algorithmia.client(ApplicationConfig["ALGORITHMIA_KEY"])
     algo = client.algo("vagrant/ColorSchemeExtraction/0.2.0")

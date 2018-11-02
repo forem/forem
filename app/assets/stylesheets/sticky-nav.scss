@@ -39,13 +39,12 @@
     .primary-sticky-nav-author-follow{
       padding-top:8px;
       button{
-        width:135px;
-        font-size:1.1em;
+        width:100%;
+        font-size:1.25em;
         border:0px;
         border-radius:3px;
         padding: 3px;
-        height: 29px;
-
+        height: 44px;
       }
     }
   }
@@ -112,38 +111,77 @@
       box-shadow: 3px 4px 0px darken($light-medium-gray, 17%);
     }
   }
+  .user-metadata-details {
+    margin-top: 10px;
+    margin-left: 2px;
+    font-family: $monospace;
+    .row{
+      padding: calc(3px + 0.1vw) 0px;
+      display: inline-block;
+      width: 96%;
+    }
+    .key{
+      font-size: 0.8em;
+      font-weight: 800;
+      margin-bottom: 2px;
+      color: $medium-gray;
+    }
+    .value{
+      display: inline-block;
+      font-size: 0.92em;
+      margin-bottom: 4px;
+    }
+  }
+  .html-variant-wrapper{
+    margin: 10px;
+  }
 }
 
-.primary-sticky-nav-org{
-  position:relative;
-  .sticky-box-connector{
-    position:absolute;
-    top: - 10px;
-    height: 10px;
-    width: 5px;
-    background: $outline-color;
-    left: 15px;
-    &.sticky-box-right-connector{
-      left: auto;
-      right: 15px;
-    }
-  }
+
   .primary-sticky-nav-org-summary{
     font-weight: 400;
-    color: $medium-gray;
-    padding: 0px 0px 5px;
-    font-size:0.88em;
+    color: $black;
+    padding: 4px 0px;
+    font-size:0.95em;
+    margin-top: 20px;
+    border-top: 1px solid $light-medium-gray;
     p{
-      margin:5px 0px;
+      margin:12px 0px;
+    }
+    code {
+      background: $light-gray;
+      border-radius: 3px;
+      padding: 3px 4px;
+      color:#333842;
+      font-family: $monospace;
+    }
+    a.primary-sticky-nav-org-cta-link{
+      width:100%;
+      display: block;
+      font-size:1.25em;
+      border:0px;
+      border-radius:3px;
+      padding: 11px 0px 5px;
+      margin-top: 20px;
+      background: white;
+      color: $black;
+      font-family: $helvetica-condensed;
+      font-weight: bold;
+      border: 1px solid darken($light-medium-gray, 10%);
+      text-align: center;
+      font-stretch: condensed;
+      .primary-sticky-nav-org-cta-link-domain-small{
+        display: block;
+        font-weight: 400;
+        padding-top: 2px;
+        font-size:0.75em;
+        color: darken($light-medium-gray, 9%);
+        font-family: $monospace;
+      }
+      &:hover {
+        border: 1px solid darken($light-medium-gray, 14%);
+        box-shadow: $shadow;
+        transition: all 0.1s;
+      }
     }
   }
-  button{
-    min-width:135px;
-    font-size:1.1em;
-    border:0px;
-    border-radius:3px;
-    padding: 3px;
-    display: block;
-    margin-top:18px;
-  }
-}

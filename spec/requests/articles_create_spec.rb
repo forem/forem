@@ -10,7 +10,7 @@ RSpec.describe "ArticlesCreate", type: :request do
   it "creates ordinary article with proper params" do
     new_title = "NEW TITLE #{rand(100)}"
     post "/articles", params: {
-      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" },
+      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
     }
     expect(Article.last.user_id).to eq(user.id)
   end
@@ -20,8 +20,8 @@ RSpec.describe "ArticlesCreate", type: :request do
     post "/articles", params: {
       article: {
         body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
-        tag_list: "yo",
-      },
+        tag_list: "yo"
+      }
     }
     expect(Article.last.title).to eq("hey hey hahuu")
   end
@@ -34,7 +34,7 @@ RSpec.describe "ArticlesCreate", type: :request do
           title: new_title,
           body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yoyo",
           job_opportunity: { remoteness: "on_premise" }
-        },
+        }
       }
     end .to raise_error(RuntimeError)
   end
@@ -46,9 +46,20 @@ RSpec.describe "ArticlesCreate", type: :request do
         title: new_title,
         body_markdown: "Yo ho ho#{rand(100)}", tag_list: "hiring",
         job_opportunity: { remoteness: "on_premise" }
-      },
+      }
     }
     expect(Article.last.job_opportunity.remoteness).to eq("on_premise")
+  end
+
+  it "creates series when series is created with frontmatter" do
+    new_title = "NEW TITLE #{rand(100)}"
+    post "/articles", params: {
+      article: {
+        title: new_title,
+        body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
+      }
+    }
+    expect(Collection.last.slug).to eq("helloyo")
   end
   # rubocop:enable RSpec/ExampleLength
 end

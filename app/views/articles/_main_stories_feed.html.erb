@@ -12,10 +12,10 @@
               <% end %>
             </h2>
             <div class="button-container">
-              <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" data-no-instant>
+              <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" aria-label="Sign in with Twitter." data-no-instant>
                 TWITTER
               </a>
-              <a href="/users/auth/github?state=in-feed-cta" class="cta cta-button" data-no-instant>
+              <a href="/users/auth/github?state=in-feed-cta" class="cta cta-button" aria-label="Sign in with GitHub." data-no-instant>
                 GITHUB
               </a>
             </div>
@@ -28,7 +28,14 @@
     <% end %>
   <% end %>
 <% else %>
-  <% cache("fetched-home-articles-object", :expires_in => 5.minutes) do %>
+  <% cache("fetched-home-articles-object", :expires_in => 3.minutes) do %>
+      <div id="new-articles-object" data-articles="
+      <%=@new_stories.to_json(only:
+                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count],
+                          methods:
+                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name],
+                          include: [user: {only: [:username, :name], methods: [:profile_image_90]}]) %>">
+    </div>
     <div id="home-articles-object" data-articles="
       <%=@stories.to_json(only:
                             [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count],

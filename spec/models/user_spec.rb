@@ -10,28 +10,32 @@ RSpec.describe User, type: :model do
   let(:org)             { create(:organization) }
   let (:second_org)     { create(:organization) }
 
-  it { is_expected.to have_many(:articles) }
-  it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
-  it { is_expected.to have_many(:badges).through(:badge_achievements) }
-  it { is_expected.to have_many(:collections).dependent(:destroy) }
-  it { is_expected.to have_many(:comments) }
-  it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
-  it { is_expected.to have_many(:identities).dependent(:destroy) }
-  it { is_expected.to have_many(:mentions).dependent(:destroy) }
-  it { is_expected.to have_many(:notes) }
-  it { is_expected.to have_many(:notifications).dependent(:destroy) }
-  it { is_expected.to have_many(:reactions).dependent(:destroy) }
-  it { is_expected.to have_many(:tweets).dependent(:destroy) }
-  it { is_expected.to have_many(:github_repos).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-  it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
-  it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-  it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
-  it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
-  it { is_expected.to validate_presence_of(:username) }
-  it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-  it { is_expected.to validate_length_of(:name).is_at_most(100) }
+  before { mock_auth_hash }
+
+  describe "validations" do
+    it { is_expected.to have_many(:articles) }
+    it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
+    it { is_expected.to have_many(:badges).through(:badge_achievements) }
+    it { is_expected.to have_many(:collections).dependent(:destroy) }
+    it { is_expected.to have_many(:comments) }
+    it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
+    it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tweets).dependent(:destroy) }
+    it { is_expected.to have_many(:github_repos).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
+    it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+    it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
+    it { is_expected.to validate_presence_of(:username) }
+    it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+    it { is_expected.to validate_length_of(:name).is_at_most(100) }
+  end
 
   # the followings are failing
   # it { is_expected.to have_many(:keys) }
@@ -137,6 +141,18 @@ RSpec.describe User, type: :model do
 
     it "does not accept invalid dribbble url" do
       user.dribbble_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https medium url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.medium_url = "https://medium.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid medium url" do
+      user.medium_url = "ben.com"
       expect(user).not_to be_valid
     end
 
@@ -252,16 +268,6 @@ RSpec.describe User, type: :model do
     it "assigns signup_cta_variant to state param with Twitter if new user" do
       new_user = user_from_authorization_service(:twitter, nil, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
-    end
-
-    it "sets saw_onboarding to false with proper signup variant" do
-      new_user = user_from_authorization_service(:twitter, nil, "welcome-widget")
-      expect(new_user.saw_onboarding).to eq(false)
-    end
-
-    it "sets saw_onboarding to true with nil signup variant" do
-      new_user = user_from_authorization_service(:twitter, nil, nil)
-      expect(new_user.saw_onboarding).to eq(true)
     end
 
     it "does not assign signup_cta_variant to non-new users" do
@@ -418,6 +424,7 @@ RSpec.describe User, type: :model do
 
     it "returns onboarding checklist leave_your_first_comment if has left comment" do
       create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
+      user.reload
       checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
       expect(checklist).to eq(true)
     end

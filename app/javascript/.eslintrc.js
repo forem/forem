@@ -13,15 +13,6 @@ module.exports = {
     jest: true,
     browser: true,
   },
-  plugins: ['import', 'babel'],
-  rules: {
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: ['**/*.test.js', '**/*.test.jsx', '**/*.stories.jsx'],
-      },
-    ],
-  },
   plugins: ['import'],
   rules: {
     'import/no-extraneous-dependencies': [

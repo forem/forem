@@ -27,6 +27,7 @@ class CommentsController < ApplicationController
         @user.articles.find_by_slug(params[:slug]) ||
         not_found
       @article = @commentable
+      not_found unless @commentable.published
     end
     @commentable_type = @commentable.class.name
     if params[:id_code].present?
@@ -82,7 +83,7 @@ class CommentsController < ApplicationController
                         name: current_user.name,
                         profile_pic: ProfileImage.new(current_user).get(50),
                         twitter_username: current_user.twitter_username,
-                        github_username: current_user.github_username,
+                        github_username: current_user.github_username
                       } }
     elsif @comment = Comment.where(body_markdown: @comment.body_markdown,
                                    commentable_id: @comment.commentable.id,

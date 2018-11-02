@@ -4,7 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def new
     if user_signed_in?
-      redirect_to "/dashboard?signed-in-already&t=#{Time.now.to_i}"
+      redirect_to "/dashboard?signed-in-already&t=#{Time.current.to_i}"
       return
     end
     super

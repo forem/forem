@@ -67,14 +67,14 @@ RSpec.describe UserRoleService do
     end
 
     it "adds workshop_expiration date with valid params" do
-      expiration_date = Time.now + 1.year
+      expiration_date = 1.year.from_now
       described_class.new(user, admin.id).
         send(:new_roles?, scholar: "1", workshop_expiration: expiration_date)
       expect(user.workshop_expiration).to eq(expiration_date)
     end
 
     it "doesn't add a workshop_expiration date if scholar is not checked" do
-      expiration_date = Time.now + 1.year
+      expiration_date = 1.year.from_now
       described_class.new(user, admin.id).
         send(:new_roles?, scholar: "0", workshop_expiration: expiration_date)
       expect(user.workshop_expiration).to eq(nil)
@@ -85,7 +85,7 @@ RSpec.describe UserRoleService do
     note_params = {
       reason: "banned",
       content: "some reason",
-      noteable_type: "User",
+      noteable_type: "User"
     }
 
     it "updates a user's previous note" do

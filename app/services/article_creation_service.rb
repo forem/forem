@@ -15,6 +15,7 @@ class ArticleCreationService
     if user.organization_id.present? && article_params[:publish_under_org].to_i == 1
       article.organization_id = user.organization_id
     end
+    article.collection_id = Collection.find_series(article_params[:series], user).id if article_params[:series].present?
     create_job_opportunity(article)
     if article.save
       if article.published

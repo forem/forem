@@ -28,6 +28,14 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.new_report_email(FeedbackMessage.first)
   end
 
+  def mentee_email
+    NotifyMailer.mentee_email(User.first, User.second)
+  end
+
+  def mentor_email
+    NotifyMailer.mentor_email(User.first, User.second)
+  end
+
   def feedback_message_resolution_email
     # change email_body text when you need to see a different version
     @user = User.first
@@ -52,5 +60,9 @@ class NotifyMailerPreview < ActionMailer::Preview
 
   def new_message_email
     NotifyMailer.new_message_email(Message.last)
+  end
+
+  def account_deleted_email
+    NotifyMailer.account_deleted_email(User.last)
   end
 end

@@ -44,7 +44,7 @@ class ArticleDashboard < Administrate::BaseDashboard
     video_source_url: Field::String,
     video_thumbnail_url: Field::String,
     video_closed_caption_track_url: Field::String,
-    main_tag_name_for_social: Field::String,
+    main_tag_name_for_social: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES

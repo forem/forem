@@ -7,5 +7,5 @@
   strikethrough: true,
   superscript: true,
   tables: true,
-  footnotes: true,
+  footnotes: true
 }.freeze

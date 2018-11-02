@@ -98,7 +98,7 @@ class Tags extends Component {
       e.target.value,
       e.target.selectionStart - 1,
     );
-
+    this.setState({selectedIndex: 0})
     return this.search(query);
   };
 
@@ -139,6 +139,7 @@ class Tags extends Component {
     return this.index
       .search(query, {
         hitsPerPage: 10,
+        attributesToHighlight: [],
         filters: 'supported:true',
       })
       .then(content => {

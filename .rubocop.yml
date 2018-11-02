@@ -3,8 +3,9 @@ inherit_from: .rubocop_todo.yml
 require: rubocop-rspec
 
 # our custom config
+# TODO: Uncomment it after fix rubocop-todo RSpec/MultipleExpectations
 RSpec/MultipleExpectations:
-  Max: 1
+  # Max: 1
   Exclude:
     - "spec/features/*"
 
@@ -13,9 +14,10 @@ RSpec/DescribeClass:
     - spec/features/*
     - spec/requests/*
 
-Metrics/LineLength:
-  Description: 'Limit lines to 100 characters.'
-  Max: 100
+# TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
+# Metrics/LineLength:
+#   Description: 'Limit lines to 100 characters.'
+#   Max: 100
 
 #############################
 
@@ -117,9 +119,10 @@ Metrics/AbcSize:
                  branches, and conditions.
   Enabled: false
 
+# TODO: Uncomment it after fix rubocop-todo Metrics/BlockLength
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
-  Max: 25
+#   Max: 25
   ExcludedMethods: []
   Exclude:
     - "spec/**/*"
@@ -621,7 +624,7 @@ Rails/Date:
   Description: >-
                   Checks the correct usage of date aware methods,
                   such as Date.today, Date.current etc.
-  Enabled: false
+  Enabled: true
 
 Rails/FindBy:
   Description: 'Prefer find_by over where.first.'

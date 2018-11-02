@@ -1,61 +1,17 @@
-<style>
-.notefield{
-  width: 100%;
-  resize: none;
-  font-size: 18px;
-  height: 50px;
-  border-radius: 3px;
-  padding: 5px;
-  margin: 10px 0px;
-}
-.blankmessage{
-  font-style: italic;
-}
-.note-content{
-  border: 1px dashed black;
-  border-radius: 5px;
-  width: 100%;
-  padding: 5px;
-  padding-top: 25px;
-  word-wrap: break-word;
-}
-.email__alert{
-  display: none;
-  margin: 0;
-}
-.panel-right-elements{
-  float: right;
-}
-.email__container{
-  border: 1px solid gray;
-  margin: 10px;
-  padding-left: 50px;
-  padding-top: 5px;
-}
-.to__subject{
-  margin: 5px;
-  font-size: 20px;
-  color: black;
-  text-align: center;
-}
-.time__badge{
-  float: right;
-  margin-top: 7px;
-  margin-right: 7px;
-}
-.single__note{
-  width: 60%;
-}
-</style>
+<% if action_name == "show" %>
+  <% feedback_message_emails = @email_messages %>
+<% else %>
+  <% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
+<% end %>
 <div class="panel-group" id="accordion-<%= feedback_message.id %>" role="tablist" aria-multiselectable="true">
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="heading<%= feedback_message.id %>">
       <h2 class="panel-title">
-        <a href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
+        <a id="collapse__header__link-<%= feedback_message.id %>" href="#collapse<%= feedback_message.id %>" role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
           Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
         </a>
         <div class="panel-right-elements">
-          ✉️ Emails Sent: <%= feedback_message.email_messages.count %> |
+          ✉️ Emails Sent: <%= feedback_message_emails.size %> |
           <a href="/internal/reports/<%= feedback_message.id %>">Link to Report #<%= feedback_message.id %></a>
         </div>
       </h2>
@@ -87,14 +43,10 @@
           <%= feedback_message.message %>
         <% end %>
       </p>
-      <h3>
-        Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, id: "status__#{feedback_message.id}" %>
-        <button class="btn btn-primary" role="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
-      </h3>
     <hr>
       <h3>Previous Emails:</h3>
       <div class="previous__emails__container">
-        <% EmailMessage.where(feedback_message_id: feedback_message.id).each do |email| %>
+        <% feedback_message_emails.each do |email| %>
         <div class="email__container">
           <p class="to__subject">Type: <%= email.utm_campaign.capitalize %></p>
           <p class="to__subject">To: <%= email.to %></p>
@@ -107,7 +59,7 @@
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab" data-toggle="tab">Reporter</a></li>
         <li role="presentation"><a href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a></li>
-        <li role="presentation"><a href="#victim-<%= feedback_message.id %>" aria-controls="victim-<%= feedback_message.id %>" role="tab" data-toggle="tab">Victim</a></li>
+        <li role="presentation"><a href="#affected-<%= feedback_message.id %>" aria-controls="affected-<%= feedback_message.id %>" role="tab" data-toggle="tab">Affected</a></li>
       </ul>
 
       <div class="tab-content">
@@ -133,16 +85,16 @@
           <h3>Body:</h3>
             <%= text_area_tag (:offender_email_body), offender_email_details[:body], class: "form-control", style: "height: 300px;", id: "offender__body__#{feedback_message.id}" %>
         </div>
-        <div role="tabpanel" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="victim" id="victim-<%= feedback_message.id %>">
+        <div role="tabpanel" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="affected" id="affected-<%= feedback_message.id %>">
           <h3>
             Send to:
             <br>
-            <%= email_field_tag :victim_email_to, feedback_message.victim&.email, class: "form-control", id: "victim__emailto__#{feedback_message.id}", required: true %>
+            <%= email_field_tag :affected_email_to, feedback_message.affected&.email, class: "form-control", id: "affected__emailto__#{feedback_message.id}", required: true %>
           </h3>
           <h3>Subject:</h3>
-            <%= text_field_tag :victim_email_subject, victim_email_details[:subject], class: "form-control", id: "victim__subject__#{feedback_message.id}" %>
+            <%= text_field_tag :affected_email_subject, affected_email_details[:subject], class: "form-control", id: "affected__subject__#{feedback_message.id}" %>
           <h3>Body:</h3>
-            <%= text_area_tag (:victim_email_body), victim_email_details[:body], class: "form-control", style: "height: 300px;", id: "victim__body__#{feedback_message.id}" %>
+            <%= text_area_tag (:affected_email_body), affected_email_details[:body], class: "form-control", style: "height: 300px;", id: "affected__body__#{feedback_message.id}" %>
         </div>
       </div>
 
@@ -150,7 +102,10 @@
       <button class="btn btn-primary" type="submit" id="send__email__btn__<%= feedback_message.id %>">SEND EMAIL ✉️ </button>
       <div class="email__alert alert fade in" id="email__alert__<%= feedback_message.id %>">
       </div>
-
+      <h3>
+        Status:  <%= f.select :status, ['Open', 'Invalid', 'Resolved'], {}, id: "status__#{feedback_message.id}" %>
+        <button class="btn btn-primary" role="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
+      </h3>
       <h3>Notes:</h3>
       <div class="notes__container" id="notes__<%= feedback_message.id %>">
         <% feedback_message.notes&.order("created_at").each do |note| %>
@@ -177,8 +132,12 @@
         required
       >
       <br>
-    <button class="btn btn-primary" type="submit" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝 </button>
-
+      <button class="btn btn-primary" type="submit" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝 </button>
+      <br>
+      <br>
+      <button class="btn btn-primary" type="button" id="minimize__report__button__<%= feedback_message.id %>">
+        Minimize Report
+      </button>
       </div>
     </div>
   </div>
@@ -353,5 +312,9 @@
   document.getElementById('note__submit__<%= feedback_message.id %>').addEventListener('click', function() {
     var reportId = <%= feedback_message.id %>;
     submitNote(reportId);
+  });
+
+  document.getElementById('minimize__report__button__<%= feedback_message.id %>').addEventListener('click', function() {
+    document.getElementById('collapse__header__link-<%= feedback_message.id %>').click();
   });
 </script>

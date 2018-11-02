@@ -59,7 +59,7 @@ class Mention < ApplicationRecord
   end
 
   def activity_target
-    "mention_#{Time.now}"
+    "mention_#{Time.current}"
   end
 
   def remove_from_feed

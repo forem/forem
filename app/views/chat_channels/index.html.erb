@@ -43,5 +43,8 @@
   #page-content {max-height:100vh}
 </style>
 <script>
+  if (navigator.userAgent.match(/iPhone/i) && !navigator.userAgent.match('CriOS')) {
+    document.getElementById("chat").classList.add("live-chat--iossafari")
+  }
   window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ApplicationConfig['VAPID_PUBLIC_KEY']).bytes %>);
 </script>

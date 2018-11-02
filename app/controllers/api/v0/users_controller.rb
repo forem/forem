@@ -24,7 +24,7 @@ module Api
       end
 
       def less_than_one_day_old?(user)
-        range = (Time.now.beginning_of_day - 1.day)..(Time.now)
+        range = 1.day.ago.beginning_of_day..Time.current
         user_identity_age = user.github_created_at ||
           user.twitter_created_at || 8.days.ago
         # last one is a fallback in case both are nil

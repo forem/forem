@@ -11,7 +11,7 @@
       }
     </style>
   <% else %>
-    <meta name="last-updated" content="<%= Time.now %>">
+    <meta name="last-updated" content="<%= Time.current %>">
     <meta name="user-signed-in" content="<%= user_signed_in? %>">
     <meta name="algolia-public-id" content="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>">
     <meta name="algolia-public-key" content="<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>">
@@ -20,8 +20,8 @@
     <%= render "layouts/styles" %>
     <style>
       .home {
-          position: relative;
           overflow: hidden;
+          position: relative;
           text-align: center;
           min-height: 440px;
           margin: auto;

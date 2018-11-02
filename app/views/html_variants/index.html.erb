@@ -1,0 +1,22 @@
+<%= render "page_styles" %>
+
+<div class="html-variants-page" >
+  <h1>
+    HTML Variants <a href="/html_variants/new">New</a>
+  </h1>
+  <nav>
+    <a href="/html_variants" class="<%= "selected" if params[:state].blank? %>">Leaderboard</a>
+    <a href="/html_variants?state=mine" class="<%= "selected" if params[:state] == "mine" %>">Mine</a>
+  </nav>
+  <% if params[:state] == "mine" %>
+    <h2>My Entries</h2>
+  <% elsif  params[:state] == "admin" %>
+    <h2>All Published Entries</h2>
+  <% else %>
+    <h2>Leaderboard</h2>
+  <% end %>
+  <% @html_variants.each do |html_variant| %>
+    <%= render "single_html_variant", html_variant: html_variant, admin: params[:state] == "admin" %>
+  <% end %>
+</div>
+

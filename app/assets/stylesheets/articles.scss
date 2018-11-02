@@ -5,7 +5,6 @@
 
 .home{
   position:relative;
-  overflow:hidden;
   min-height:440px;
   margin:auto;
   max-width:1250px;
@@ -560,7 +559,7 @@
         }
         .bm-success{
           display:none;
-        }       
+        }
         &.selected{
           color: darken($purple, 33%);
           background: transparent;
@@ -1087,6 +1086,15 @@
         .widget-events-single-link{
           color: #000000;
           font-weight: 500;
+        }
+        .widget-user-pic{
+          display: inline-block;
+          img{
+            height: 60px;
+            width: 60px;
+            margin: 9px;
+            border-radius: 100px;
+          }
         }
         .utc-date{
           width: 46px;

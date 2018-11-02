@@ -14,11 +14,11 @@ function setReactionCount(reactionName, newCount) {
 }
 
 function showUserReaction(reactionName) {
-  document.getElementById("reaction-butt-" + reactionName).classList.add("user-activated");
+  document.getElementById("reaction-butt-" + reactionName).classList.add("user-activated", "user-animated");
 }
 
 function hideUserReaction(reactionName) {
-  document.getElementById("reaction-butt-" + reactionName).classList.remove("user-activated");
+  document.getElementById("reaction-butt-" + reactionName).classList.remove("user-activated", "user-animated");
 }
 
 function hasUserReacted(reactionName) {

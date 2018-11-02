@@ -1,4 +1,4 @@
-<% title "Settings - DEV" %>
+<% title "Settings" %>
 
 <% if flash[:notice] && flash[:notice].include?("Your ") %>
   <div class="notice" id="notice">
@@ -12,6 +12,11 @@
   </div>
 <% end %>
 
+<% if params[:state] == "previous-registration" %>
+  <div class="notice error-notice" id="notice">
+    There is an existing account authorized with that social account. Contact <a href="mailto:yo@dev.to">yo@dev.to</a> if this is a mistake.
+  </div>
+<% end %>
 
 <div class="user-settings-page">
   <% if @tab == "organization" && @user.organization.present? %>
