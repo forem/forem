@@ -78,10 +78,7 @@
 
 <script async>
   var formElement = document.getElementById("edit_comment_<%= @comment.id if @comment %>");
-  if (formElement){
+  if (formElement) {
     formElement.getElementsByClassName("comment-action-cancel")[0].style.display = "inline-block";
-    formElement.onsubmit = function(e) {
-        e.preventDefault();
-    }
   }
 </script>
