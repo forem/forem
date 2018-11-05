@@ -52,7 +52,7 @@
   "devDependencies": {
     "@storybook/addon-actions": "^4.0.0",
     "@storybook/addon-links": "^4.0.0",
-    "@storybook/addons": "^4.0.0",
+    "@storybook/addons": "^4.0.2",
     "@storybook/react": "^3.4.11",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
