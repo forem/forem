@@ -138,7 +138,7 @@ group :test do
   gem "pundit-matchers", "~> 1.6"
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
-  gem "selenium-webdriver", "~> 3.12"
+  gem "selenium-webdriver", "~> 3.141"
   gem "shoulda-matchers", "~> 3.1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
