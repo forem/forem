@@ -40,27 +40,33 @@ class ArticlesController < ApplicationController
 
   def new
     @user = current_user
+    @organization = @user&.organization
     @tag = Tag.find_by_name(params[:template])
-    @article = if @tag&.submission_template.present? && @user
+    @article = if @tag.present? && @user&.editor_version == "v2"
+                 authorize Article
+                 Article.new(body_markdown: "", cached_tag_list: @tag.name,
+                             processed_html: "", user_id: current_user&.id)
+               elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
-                             processed_html: "")
+                             processed_html: "", user_id: current_user&.id)
                else
                  skip_authorization
-                 if params[:state] == "v2" || Rails.env.development?
-                   Article.new
+                 if @user&.editor_version == "v2"
+                   Article.new(user_id: current_user&.id)
                  else
                    Article.new(
                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
-                     processed_html: "",
+                     processed_html: "", user_id: current_user&.id
                    )
-                  end
-              end
+                 end
+               end
   end
 
   def edit
     authorize @article
     @user = @article.user
+    @organization = @user&.organization
   end
 
   def preview
@@ -98,7 +104,7 @@ class ArticlesController < ApplicationController
     @article.tag_list = []
     @article.main_image = nil
     edited_at_date = if @article.user == current_user && @article.published
-                       Time.now
+                       Time.current
                      else
                        @article.edited_at
                      end

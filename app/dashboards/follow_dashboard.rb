@@ -15,7 +15,7 @@ class FollowDashboard < Administrate::BaseDashboard
     id: Field::Number,
     blocked: Field::Boolean,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

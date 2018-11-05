@@ -1,5 +1,6 @@
 class UserTag < LiquidTagBase
   include ApplicationHelper
+  include ActionView::Helpers::TagHelper
   attr_reader :user
 
   def initialize(_tag_name, user, _tokens)
@@ -53,7 +54,7 @@ class UserTag < LiquidTagBase
   def twitter_link
     if @user.twitter_username.present?
       <<-HTML
-      <a href="http://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
+      <a href="https://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
         #{image_tag('/assets/twitter-logo.svg', class: 'icon-img', alt: 'twitter')} #{@user.twitter_username}
       </a>
       HTML
@@ -63,7 +64,7 @@ class UserTag < LiquidTagBase
   def github_link
     if @user.github_username.present?
       <<-HTML
-      <a href="http://github.com/#{@user.github_username}" target="_blank" rel="noopener">
+      <a href="https://github.com/#{@user.github_username}" target="_blank" rel="noopener">
         #{image_tag('/assets/github-logo.svg', class: 'icon-img', alt: 'github')} #{@user.github_username}
       </a>
       HTML

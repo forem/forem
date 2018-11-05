@@ -21,7 +21,7 @@ class Follow < ApplicationRecord
   }, column_names: {
     ["follows.followable_type = ?", "User"] => "following_users_count",
     ["follows.followable_type = ?", "Organization"] => "following_orgs_count",
-    ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count",
+    ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
   after_save :touch_user
   after_save :touch_user_followed_at

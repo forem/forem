@@ -24,7 +24,9 @@ class ChatChannelsController < ApplicationController
     authorize ChatChannel
     @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
     if @chat_channel.valid?
-      render json: { status: "success", chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) }, status: 200
+      render json: { status: "success",
+                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
+             status: 200
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
@@ -35,7 +37,9 @@ class ChatChannelsController < ApplicationController
     authorize @chat_channel
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
     if @chat_channel.valid?
-      render json: { status: "success", chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) }, status: 200
+      render json: { status: "success",
+                     chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
+             status: 200
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
@@ -60,7 +64,9 @@ class ChatChannelsController < ApplicationController
       if banned_user
         banned_user.add_role :banned
         banned_user.messages.each(&:destroy!)
-        Pusher.trigger(@chat_channel.pusher_channels, "user-banned", { userId: banned_user.id }.to_json)
+        Pusher.trigger(@chat_channel.pusher_channels,
+                       "user-banned",
+                       { userId: banned_user.id }.to_json)
         render json: { status: "success", message: "banned!" }, status: 200
       else
         render json: { status: "error", message: "username not found" }, status: 400
@@ -88,15 +94,16 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_unopened_json_response
-    if current_user
-      @chat_channels_memberships = current_user.
-      chat_channel_memberships.includes(:chat_channel).
-      where("has_unopened_messages = ? OR status = ?", true, "pending").
-      where(show_global_badge_notification: true).
-      order("chat_channel_memberships.updated_at DESC")
-    else
-      @chat_channels_memberships = []
-    end
+    @chat_channels_memberships = if current_user
+                                   current_user.
+                                     chat_channel_memberships.includes(:chat_channel).
+                                     where("has_unopened_messages = ? OR status = ?",
+                                            true, "pending").
+                                     where(show_global_badge_notification: true).
+                                     order("chat_channel_memberships.updated_at DESC")
+                                 else
+                                   []
+                                 end
     render "index.json"
   end
 
@@ -119,7 +126,7 @@ class ChatChannelsController < ApplicationController
                [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
              else
                params[:slug]
-                      end
+             end
       @active_channel = ChatChannel.find_by_slug(slug)
       @active_channel.current_user = current_user if @active_channel
     end

@@ -3,6 +3,14 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
+  NAMES = %w(
+    beginners career computerscience git go java javascript react vue
+    linux productivity python security webdev css php opensource
+    ruby cpp dotnet swift testing devops vim kotlin rust elixir
+    scala vscode docker aws android ios angular csharp typescript django rails
+    clojure ubuntu elm gamedev flutter bash
+  ).freeze
+
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
@@ -18,9 +26,10 @@ class Tag < ActsAsTaggableOn::Tag
   after_save :bust_cache
 
   algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported
+    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
+    searchableAttributes ["name", "short_summary"]
   end
 
   def submission_template_customized(param_0 = nil)
@@ -29,6 +38,12 @@ class Tag < ActsAsTaggableOn::Tag
 
   def tag_moderator_ids
     User.with_role(:tag_moderator, self).order("id ASC").pluck(:id)
+  end
+
+  def self.bufferized_tags
+    Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
+      where.not(buffer_profile_id_code: nil).pluck(:name)
+    end
   end
 
   private

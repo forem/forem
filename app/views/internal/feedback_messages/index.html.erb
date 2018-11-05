@@ -1,19 +1,12 @@
-<style>
-  .top-nav{
-    line-height: 1.4em;
-  }
-  .top-nav a {
-    display: inline-block;
-    padding: 10px;
-  }
-  .active-state {
-    background-color:#89ffba;
-  }
-</style>
+<%= render "style" %>
 
 <h3 class="top-nav">
-  <a href="/internal/reports?state=abuse-reports" class="<%= "active-state" if @feedback_type == "abuse-reports" %>">Abuse Reports</a> |
-  <a href="/internal/reports?state=bug-reports" class="<%= "active-state" if @feedback_type == "bug-reports" %>">Bug Reports</a>
+  <a href="/internal/reports?state=abuse-reports&status=Open" class="<%= "active-state" if @feedback_type == "abuse-reports" %>">Abuse Reports</a> |
+  <a href="/internal/reports?state=bug-reports&status=Open" class="<%= "active-state" if @feedback_type == "bug-reports" %>">Bug Reports</a>
+  <hr>
+  <a href="/internal/reports?state=<%= @feedback_type %>&status=Open" class="<%= "active-state" if @status == "Open" %>">Open/Unresolved</a> |
+  <a href="/internal/reports?state=<%= @feedback_type %>&status=Resolved" class="<%= "active-state" if @status == "Resolved" %>">Resolved</a> |
+  <a href="/internal/reports?state=<%= @feedback_type %>&status=Invalid" class="<%= "active-state" if @status == "Invalid" %>">Invalid</a>
 </h3>
 
 <h1><%= @feedback_type.titleize %></h1>
@@ -21,11 +14,9 @@
 <%= paginate @feedback_messages %>
 
   <% @feedback_messages.each do |feedback_message| %>
-    <div class="row main-group">
-      <%= form_for [:internal, feedback_message] do |f| %>
-        <%= render "feedback_message", f: f, feedback_message: feedback_message %>
-      <% end %>
-    </div>
+    <%= form_for [:internal, feedback_message] do |f| %>
+      <%= render "feedback_message", f: f, feedback_message: feedback_message %>
+    <% end %>
   <% end %>
   <br>
   <br>

@@ -1,7 +1,10 @@
 @import 'variables';
 
 .articleformcontainer {
-  padding-top: calc(98px + 0.2vw);
+  padding-top: calc(80px + 0.2vw);
+  @media screen and ( min-width: 500px ){
+    padding-top: calc(98px + 0.2vw);
+  }
   padding-bottom: calc(94px + 2vw);
   background: white;
   background: $light-gray;
@@ -12,8 +15,8 @@
   width: calc(95% - 40px);
   max-width: 880px;
   padding: 0px 20px;
-  box-shadow: $bold-shadow;
-  border: 1px solid $dark-gray;
+  box-shadow: 5px 5px 0px darken($light-medium-gray, 3%);
+  border: 1px solid darken($light-medium-gray, 5%);
   border-radius: 3px;
   background: white;
   position:relative;
@@ -43,26 +46,51 @@
 }
 
 .articleform__orgsettings{
-  background: $black;
-  color: white;
-  text-align: center;
-  padding: 15px;
-  border-radius: 3px;
-  margin-top: 12px;
-  margin-bottom: 3px;
-  box-shadow: $bold-shadow;
-  font-size:24px;
-  font-weight: bold;
+  padding: 0px;
+  padding-left: 0px;
+  margin: 20px 2px 0px;
+  font-size:17px;
   cursor: pointer;
   user-select: none;
+  img{
+    height: 28px;
+    width: 28px;
+    border-radius: 50px;
+    vertical-align: -7px;
+    margin-right: 4px;
+  }
   button {
-    background: $purple;
+    background: transparent;
     border-radius: 3px;
     border: 0px;
-    font-size: 1em;
+    font-size: 0.8em;
     font-family: $helvetica-condensed;
     width: 80px;
+    border-radius: 100px;
+    padding: 1px 0px;
     margin-left: 10px;
+    border: 3px solid white;
+    &.no{
+      background: $light-gray;
+      color: $medium-gray;
+    }
+    &.yes{
+      background: darken($green, 18%);
+      color: white;
+    }
+  }
+  @media screen and ( min-width: 600px ){
+    font-size:23px;
+    padding-left: 10px;
+    img{
+      height: 33px;
+      width: 33px;
+      vertical-align: -8px;
+      margin-right: 8px;
+    }
+    button {
+      width: 120px;
+    }
   }
 }
 
@@ -71,8 +99,12 @@
   text-align: center;
   width: 100%;
   img {
-    width:100%;
-    height: auto; 
+    width: 100%;
+    height: calc(42vw - 44px);
+    background: #fcfcfc;
+    @media screen and ( min-width: 985px ){
+      height: 370px;
+    }
     display: block;
     cursor: pointer;
     &:hover{
@@ -82,12 +114,17 @@
 }
 
 .articleform__title {
-  height: 50px;
-  font-size: 40px;
+  height: 26px;
+  width: 99%;
+  font-size: 18px;
   word-break: break-word;
   border: 0;
   padding: 20px 0px 15px;
-  font-weight: bold;
+  font-weight: 600;
+  @media screen and ( min-width: 600px ){
+    font-size: 29px;
+    height: 50px;
+  }
 }
 .articleform__detailfields{
   display: flex;
@@ -98,26 +135,42 @@
   display: inline-block;
   flex-grow: 1;
   float: left;
+  padding-right: 15px;
+  @media screen and ( min-width: 500px ){
+    padding-right: 0px;
+  }
 }
 
 .articleform__tags {
-  height: 19px;
-  width: 96%;
+  height: 40px;
+  width: 100%;
+  border-radius: 3px;
+  padding: 8px 8px 7px;
+  @media screen and ( min-width: 500px ){
+    width: 98%;
+  }
+  @media screen and ( min-width: 600px ){
+    height: 19px;
+    border-radius: 100px;
+    padding-left: 17px;
+  }
+  margin-left: -4px;
   resize: none;
   border: 0;
   font-size: 16px;
   font-family: $monospace;
   font-weight: bold;
-  border-radius: 3px;
-  padding: 8px 8px 7px;
-  border: 2px solid $black;
+  background: $light-gray;
 }
 
 .articleform__tagsoptions{
   position: absolute;
   left: 0;
   right: 0;
-  top: 30px;
+  top: 50px;
+  @media screen and ( min-width: 600px ){
+    top: 30px;
+  }
   background: white;
   border: 1px solid $medium-gray;
   box-shadow: $bold-shadow;
@@ -128,23 +181,30 @@
   padding: 10px;
   cursor:pointer;
   &:hover{
-    background: lighten($green, 20%);
+    background: lighten($green, 27%);
   }
 }
 .articleform__tagoptionrow--active{
   background: $green;
+  &:hover{
+    background: darken($green, 10%);
+  }
 }
 
-.articleform__imageButton{
-  width: 96px;
+.articleform__detailsButton{
   color: $black;
-  background: white;
-  border-radius: 3px;
-  border: 2px solid $black;
-  padding: 3px;
+  background: $purple;
+  border: 0px;
+  border-radius: 300px;
+  padding: 3px 18px;
   font-family: $helvetica-condensed;
-  font-size: 16px;
-  height: 38px;
+  font-size: 14.4px;
+  height: 34px;
+  display: none;
+  @media screen and ( min-width: 600px ){
+    display: inline-block;
+  }
+  margin-left:25px;
   &:hover{
     background: lighten($green, 24%);
   }
@@ -152,7 +212,27 @@
     width: 21px;
     height: 21px;
     vertical-align: -4px;
-    display: inline;
+    display: inline-block;
+  }
+  &.articleform__detailsButton--moreconfig {
+    margin-left: 5px;
+    background: $light-medium-gray;
+    &.articleform__detailsButton--bottom{
+      margin-left: 5px;
+      width:50px;
+    }
+  }
+  &.articleform__detailsButton--bottom{
+    margin-left: -5px;
+    margin-top:10px;
+    margin-bottom: 8px;
+    display: inline-block;
+    padding: 2px 15px;
+    border-radius: 3px;
+    width:100px;
+    @media screen and ( min-width: 600px ){
+      display: none;
+    }  
   }
 }
 
@@ -161,13 +241,18 @@
 }
 
 .articleform__body {
-  min-height: calc(90vh - 280px);
+  min-height: calc(90vh - 370px);
   // height: calc(90vh - 240px);
+  width: 98%;
   border: 0;
-  font-size: 18px;
+  font-size: 15px;
   resize: none;
-  padding: 20px 8px;
+  padding: 20px 6px;
   font-family: $monospace;
+  @media screen and ( min-width: 600px ){
+    font-size: 18px;
+    min-height: calc(90vh - 280px);
+  }
 }
 
 .articleform__buttons{
@@ -179,33 +264,45 @@
   right: 0;
   background: white;
   z-index: 20;
-  border-top: 1px solid $dark-gray;
+  border-top: 1px solid $light-medium-gray;
   button, a{
     cursor:pointer;
-    background: white;
-    border: 3px solid $black;
+    background: $light-gray;
     font-family: $helvetica-condensed;
-    font-size:16px;
-    border-radius: 3px;
-    padding: 6px 0px;
+    font-size:14.5px;
+    border: 0px;
+    border-radius: 113px;
+    box-shadow:  2px 2px 8px darken($light-medium-gray, 13%);
+    padding: 6px 13px;
     display: inline-block;
-    width: 40%;
     text-align: center;
-    color: $black;
-    margin: 5px calc(6px + 1vw);
+    color: $medium-gray;
+    margin: 4px calc(3px + 0.7vw);
     &:hover{
       background: lighten($green, 24%);
     }
-    &.active{ 
+    &.active{
       background: $green;
     }
+    &.articleform__buttons--small{
+      width: 45px;
+      border: white;
+    }
+    &.articleform__buttons--publish{
+      background: $bold-blue;
+      color: white;
+      &:hover{
+        opacity:0.9;
+      }
+    }
     @media screen and ( min-width: 600px ){
+      font-size:16px;
       width: 130px;
     }
   }
 }
 
-.articleform__imagemanagement{
+.articleform__overlay{
   position: absolute;
   top: 0px;
   left: 0;
@@ -219,7 +316,7 @@
   border-radius: 3px;
   h2{
     color: $green;
-    font-size: 3em;
+    font-size: 2em;
     font-family: $helvetica-condensed;
   }
   input[type="file"]{
@@ -232,13 +329,52 @@
     cursor:pointer;
   }
   input[type="text"]{
-    width: 90%;
+    width: calc(80% - 20px);
     padding: 10px 20px;
     border-radius: 3px;
-    margin: 20px auto;
-    display: block;
+    margin: 5px auto 0px;
+    display: inline-block;
     border: 0px;
-    font-size: 20px;
+    font-size: 1em;
+    @media screen and ( min-width: 600px ){
+      width: calc(100% - 270px);
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      margin: 20px auto 0px;
+    }
+  }
+  label {
+    margin-top:20px;
+    display: inline-block;
+    width: 80%;
+    font-weight: bold;
+    color: white;
+    font-size: 1em;
+    background: $medium-gray;
+    padding: 10px;
+    border-radius: 3px;
+    @media screen and ( min-width: 600px ){
+      width: 180px;
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;  
+    }
+
+  }
+  small {
+    display: block;
+    font-size:0.8em;
+    color: $light-medium-gray;
+    text-align: left;
+    width: 80%;
+    margin: 7px auto;
+    font-style:oblique;
+    @media screen and ( min-width: 600px ){
+      width: calc(100% - 40px);
+    }
+    button {
+      margin-left: 5px;
+      background: $bold-blue;
+    }
   }
   .articleform__exitbutton{
     position:absolute;
@@ -259,6 +395,15 @@
     font-size: 14px;
     border-radius: 3px;
     font-weight: bold;
+  }
+  .articleform__donebutton{
+    display: block;
+    font-size: 22px;
+    background: $green;
+    color: $black;
+    padding: 10px 40px;
+    margin: 20px auto;
+
   }
   img{
     display: block;

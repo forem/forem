@@ -2,9 +2,18 @@
 
 <div class="dashboard-container">
   <div class="actions">
-    <a class="action <%= 'active' if params[:which] == "organization" || params[:which].blank? %>" href="/dashboard">POSTS (<%= @user.articles_count %>)</a>
-    <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">FOLLOWERS (<%= @user.followers_count %>)</a>
-    <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">FOLLOWING (<%= @user.following_users_count %>)</a>
+    <a class="action <%= 'active' if params[:which] == "organization" || params[:which].blank? %>" href="/dashboard">
+      <span>POSTS</span>
+      <span>(<%= @user.articles_count %>)</span>
+    </a>
+    <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">
+      <span>FOLLOWERS</span>
+      <span>(<%= @user.followers_count %>)</span>
+    </a>
+    <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">
+      <span>FOLLOWING</span>
+      <span>(<%= @user.following_users_count %>)</span>
+    </a>
   </div>
 <% if @user.org_admin && @user.organization %>
   <h1>
@@ -14,9 +23,14 @@
 <% end %>
   <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
       <% if current_user.can_view_analytics? %>
-        <div class="dashboard-analytics-header" id="dashboard-analytics-header">
-          <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
+      <div class="dashboard-analytics-header-wrapper">
+        <div class="dashboard-analytics-header loaded">
+          <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" /><span><%= number_with_delimiter(@articles.sum(&:positive_reactions_count), delimeter: ",") %> Total Post Reactions</span>
         </div>
+        <div class="dashboard-analytics-header" id="dashboard-analytics-header">
+          <img id="dashboard-analytics-image" src="<%= asset_path "emoji/apple-eyes.png" %>" /><span id="dashboard-analytics">Loading Views Data...</span>
+        </div>
+      </div>
       <% end %>
       <% @articles.each do |article| %>
         <div class="single-article">
@@ -27,7 +41,7 @@
             <% end %>
             <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
             <% if article.published && current_user.can_view_analytics? %>
-              <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
+              <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">Loading View Data...</span>
             <% end %>
           </div>
           <%= form_for(article) do |f| %>
@@ -53,13 +67,18 @@
     <% end %>
   <% elsif @articles.any? %>
     <% if current_user.can_view_analytics? %>
-      <div class="dashboard-analytics-header" id="dashboard-analytics-header">
-        <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
+      <div class="dashboard-analytics-header-wrapper">
+        <div class="dashboard-analytics-header loaded">
+          <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" /><span><%= number_with_delimiter(@articles.sum(&:positive_reactions_count), delimeter: ",") %> Total Post Reactions</span>
+        </div>
+        <div class="dashboard-analytics-header" id="dashboard-analytics-header">
+          <img id="dashboard-analytics-image" src="<%= asset_path "emoji/apple-eyes.png" %>" /><span id="dashboard-analytics">Loading Views Data...</span>
+        </div>
       </div>
     <% end %>
     <% if current_user.has_role?(:video_permission) %>
-      <a class="cta" style="display:block;text-align:center;font-size:1.8em;border-radius:3px;margin:20px auto;padding: 10px 20px; max-width: 400px;background:#4e57ef;color:white" href="/videos/new" data-no-instant>
-        Upload a Video (beta ❤️)
+      <a class="video-upload-cta" href="/videos/new" data-no-instant>
+        Upload a Video 🎥
       </a>
     <% end %>
     <% @articles.each do |article| %>
@@ -78,7 +97,7 @@
           <a href="<%= article.path %>/edit" class="cta pill green">EDIT</a>
           <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
           <% if article.published && current_user.can_view_analytics? %>
-            <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
+            <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">Loading View Data...</span>
           <% end %>
         </div>  
       </div>

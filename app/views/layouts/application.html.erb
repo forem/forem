@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <% title = yield(:title) %>
   <title><%= title || 'DEV Community' %></title>
-  <% if is_internal_navigation? %>
+  <% if internal_navigation? %>
     <style>
       .universal-page-content-wrapper{
         visibility: hidden;
       }
     </style>
   <% else %>
-    <meta name="last-updated" content="<%= Time.now %>">
+    <meta name="last-updated" content="<%= Time.current %>">
     <meta name="user-signed-in" content="<%= user_signed_in? %>">
     <meta name="algolia-public-id" content="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>">
     <meta name="algolia-public-key" content="<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>">
@@ -20,8 +20,8 @@
     <%= render "layouts/styles" %>
     <style>
       .home {
-          position: relative;
           overflow: hidden;
+          position: relative;
           text-align: center;
           min-height: 440px;
           margin: auto;
@@ -41,7 +41,7 @@
     <% if core_pages? %>
       <%= javascript_include_tag 'base', defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_pack_tag 'pack', defer: true %>
+        <%= javascript_pack_tag 'Onboarding', defer: true %>
       <% end %>
     <% end %>
     <% if !core_pages? %>
@@ -76,13 +76,13 @@
   <% end %>
 </head>
 <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
-  <% unless is_internal_navigation? %>
+  <% unless internal_navigation? %>
     <div id="audiocontent">
       <%= yield(:audio) %>
     </div>
   <% end %>
-  <% cache("application-top-bar--#{user_signed_in?}--#{is_internal_navigation?}", :expires_in => 100.hours) do %>
-    <%= render "layouts/top_bar" unless is_internal_navigation? %>
+  <% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", :expires_in => 100.hours) do %>
+    <%= render "layouts/top_bar" unless internal_navigation? %>
   <% end %>
   <div id="message-notice"></div>
   <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
@@ -90,7 +90,7 @@
       <%= yield %>
     </div>
   </div>
-  <% unless is_internal_navigation? %>
+  <% unless internal_navigation? %>
     <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig["DEPLOYMENT_SIGNATURE"].to_s}", :expires_in => 200.hours) do %>
       <%= render "layouts/footer" %>
       <%= render "layouts/signup_modal" unless user_signed_in? %>

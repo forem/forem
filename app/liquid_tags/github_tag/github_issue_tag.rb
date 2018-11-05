@@ -14,13 +14,13 @@ class GithubTag
     end
 
     def render
-      contentJSON = @content.issue_serialized
+      content_json = @content.issue_serialized
       body = @content.processed_html
-      username = contentJSON[:user][:login]
-      user_html_url = contentJSON[:user][:html_url]
-      user_avatar_url = contentJSON[:user][:avatar_url]
-      date = Date.parse(contentJSON[:created_at].to_s).strftime("%b %d, %Y")
-      date_link = contentJSON[:html_url]
+      username = content_json[:user][:login]
+      user_html_url = content_json[:user][:html_url]
+      user_avatar_url = content_json[:user][:avatar_url]
+      date = Time.zone.parse(content_json[:created_at].to_s).utc.strftime("%b %d, %Y")
+      date_link = content_json[:html_url]
       title = generate_title
       html = "" \
       "<div class=\"ltag_github-liquid-tag\"> "\
@@ -69,10 +69,10 @@ class GithubTag
     end
 
     def generate_title
-      contentJSON = @content.issue_serialized
-      title = contentJSON[:title]
-      number = contentJSON[:number]
-      link = contentJSON[:html_url]
+      content_json = @content.issue_serialized
+      title = content_json[:title]
+      number = content_json[:number]
+      link = content_json[:html_url]
       return unless title
       "<h1> " \
         "<a href=\"#{link}\">" \
@@ -92,7 +92,7 @@ class GithubTag
       raise_error unless [
         !!(link =~ /.*github\.com\//),
         link_without_domain.length == 4,
-        link_without_domain[3].to_i > 0,
+        link_without_domain[3].to_i.positive?,
       ].all? { |bool| bool == true }
       true
     end

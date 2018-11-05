@@ -72,17 +72,71 @@ RSpec.describe NotifyMailer, type: :mailer do
       end
     end
 
-    describe "#new_report_email" do
+    describe "#new_feedback_message_resolution_email" do
+      def params(user_email, feedback_message_id)
+        {
+          email_to: user_email,
+          email_subject: "DEV Report Status Update",
+          email_body: "You've violated our code of conduct",
+          email_type: "Reporter",
+          feedback_message_id: feedback_message_id
+        }
+      end
+
       it "renders proper subject" do
         feedback_message = create(:feedback_message, :abuse_report, reporter_id: user.id)
-        new_report_email = described_class.new_report_email(feedback_message)
-        expect(new_report_email.subject).to eq("Thank you for your report")
+        feedback_message_resolution_email = described_class.
+          feedback_message_resolution_email(params(user.email, feedback_message.id))
+        expect(feedback_message_resolution_email.subject).to eq "DEV Report Status Update"
       end
 
       it "renders proper receiver" do
         feedback_message = create(:feedback_message, :abuse_report, reporter_id: user.id)
-        new_report_email = described_class.new_report_email(feedback_message)
-        expect(new_report_email.to).to eq([user.email])
+        feedback_message_resolution_email = described_class.
+          feedback_message_resolution_email(params(user.email, feedback_message.id))
+        expect(feedback_message_resolution_email.to).to eq [user.email]
+      end
+    end
+
+    describe "#account_deleted_email" do
+      let(:user) { create(:user) }
+
+      it "renders proper subject" do
+        account_deleted_email = described_class.account_deleted_email(user)
+        expect(account_deleted_email.subject).to eq "dev.to - Account Deletion Confirmation"
+      end
+
+      it "renders proper receiver" do
+        account_deleted_email = described_class.account_deleted_email(user)
+        expect(account_deleted_email.to).to eq [user.email]
+      end
+    end
+
+    describe "#mentee_email" do
+      let(:mentee) { create(:user) }
+      let(:mentor) { create(:user) }
+
+      it "renders proper subject" do
+        mentee_email = described_class.mentee_email(mentee, mentor)
+        expect(mentee_email.subject).to eq "You have been matched with a DEV mentor!"
+      end
+      it "renders proper from" do
+        mentee_email = described_class.mentee_email(mentee, mentor)
+        expect(mentee_email.from).to include "liana@dev.to"
+      end
+    end
+
+    describe "#mentor_email" do
+      let(:mentee) { create(:user) }
+      let(:mentor) { create(:user) }
+
+      it "renders proper subject" do
+        mentor_email = described_class.mentor_email(mentor, mentee)
+        expect(mentor_email.subject).to eq "You have been matched with a new DEV mentee!"
+      end
+      it "renders proper subject" do
+        mentor_email = described_class.mentor_email(mentor, mentee)
+        expect(mentor_email.from).to include "liana@dev.to"
       end
     end
   end

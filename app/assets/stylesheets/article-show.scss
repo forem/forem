@@ -52,7 +52,7 @@ header{
     width:100%;
     margin:auto;
     max-width:1024px;
-    background: transparent no-repeat top center;
+    background: transparent no-repeat center center;
     background-size: cover;
     z-index:2;
     padding-top: 42%;
@@ -247,13 +247,13 @@ header{
   .article-collection-wrapper{
     text-align:center;
     font-family: $helvetica;
-    font-size:15px;
+    font-size:16px;
     p{
-      border-bottom:2px solid $black;
-      width:120px;
+      max-width:90%;
       margin:35px auto 15px;
       padding:2px 0px;
       font-weight:bold;
+      font-style: oblique;
     }
     .article-collection{
       display:inline-block;
@@ -265,19 +265,19 @@ header{
       margin-bottom: 1.1vw;
       a{
         color:$black;
-        padding:calc(0.8vw + 10px);
-        background:$lightest-gray;
+        padding:calc(0.3vw + 14px);
+        background:darken($lightest-gray, 12%);
         display:inline-block;
         position:relative;
         z-index:4;
         max-width:260px;
         margin:0.2vw;
-        border-radius:5px;
+        border-radius:100px;
         &:first-child{
           // margin-left:-5px;
         }
         &:hover{
-          background:darken($lightest-gray,3%);
+          background:darken($lightest-gray,18%);
         }
         &.current-article{
           background: $black;
@@ -541,10 +541,8 @@ header{
     table{
       font-family: $helvetica;
       border-collapse: collapse;
-      width:100%;
       font-size:0.78em;
-      margin:0.8em 0 1.2em;
-      display:block;
+      margin:0.8em auto 1.2em;
       table-layout: fixed;
       @media screen and ( min-width: 500px ){
         font-size:0.9em;
@@ -558,7 +556,6 @@ header{
       td{
         border: 1px solid $light-medium-gray;
         padding:5px 1vw;
-        width:1000px;
         box-sizing: border-box;
       }
     }
@@ -649,20 +646,31 @@ header{
   }
   .article-actions{
     text-align:center;
-    padding:10px 0px 28px;
+    padding:9px 0px 16px;
+    position: fixed;
+    bottom:0;
+    z-index:22;
+    background: white;
+    border: 1px solid darken($light-medium-gray, 2%);
+    box-shadow: $bold-shadow;
+    width: 100%;
+    @media screen and ( min-width: 880px ){
+      margin-left: -1px;
+      margin-right: -1px;
+      width: 880px;
+      padding:6px 0px;
+    }
     button{
       background:transparent;
-      margin: 0px 0.3vw;
-      border:1px solid white;
-      padding:calc(0.3vw + 1px) calc(1vw + 1px);
-      border-radius:5px;
-      border:1px solid darken($light-gray,7%);
+      margin: 0px 0.22vw;
+      padding: 3px calc(0.88vw + 3px);
+      border-radius:100px;
+      border:2px solid darken($light-gray, 7%);
       font-family: $helvetica-condensed;
       font-stretch:condensed;
       img{
         height:23px;
         width:23px;
-        filter: grayscale(100%);
         transition: -webkit-filter 0.2s, opacity 0.2s, background-color 0.2s;
         @media screen and ( min-width: 500px ){
           height:28px;
@@ -684,54 +692,56 @@ header{
         }
       }
       &:hover{
-        background-color:$light-gray;
-        img{
-          filter: grayscale(80%);
-        }
+        border:2px solid #88aacc;
       }
       &.activated{
-        border:1px solid darken($light-gray,7%);
         img{
           filter: none;
           opacity:1;
         }
       }
       &.user-activated {
-        border:2px solid $black;
-        background-color:$green;
-        padding:0.3vw 1vw;
-        &.unicorn-reaction-button{
-          background-color:$purple;;
-        }
-        &.readinglist-reaction-button{
-          background: lighten($bold-blue, 32%);
-        }
-        .reaction-number{
-          color: $black;
-        }
+        border:2px solid darken($bold-blue, 40%);
+        background: linear-gradient(60deg, #f4d2d2, #efb6b6);
         img{
           filter: none;
           opacity:1;
+        }
+        &.unicorn-reaction-button{
+          background: linear-gradient(60deg, #d6e5fc, #c9deff);
+        }
+        &.readinglist-reaction-button{
+          background: linear-gradient(60deg, #d2cdf2, #beb8ef);
+        }
+        .reaction-number{
+          color: darken($bold-blue, 40%);
+        }
+        &.user-animated{
+          animation: reaction 0.3s;
         }
       }
     }
     .article-share-action-block{
       display: inline-block;
       position:relative;
+      width: 40px;
       button{
-        border: 1px solid white;
-        min-width: 70px;
+        border: 2px solid white;
+        min-width: 38px;
         opacity:0.7;
         &:hover{
-          border: 1px solid $light-gray;
+          border: 2px solid $light-gray;
           opacity:1;
+        }
+        .dropdown-icon{
+          vertical-align: -2px;
         }
       }
       .dropdown-content{
         display:none;
         position:absolute;
-        bottom: 50px;
-        right: 3px;
+        bottom: 45px;
+        right: 2px;
         z-index: 100;
         background: white;
         font-size: 0.85em;
@@ -770,6 +780,58 @@ header{
           }
         }
       }
+    }
+    .article-actions-comments-count{
+      display: none;
+      position:relative;
+      color: $medium-gray;
+      font-weight: bold;
+      font-size: calc(0.8em + 0.1vw);
+      vertical-align: calc(7px - 0.07vw);
+      border:2px solid darken($light-gray, 7%);
+      font-family: $helvetica-condensed;
+      font-stretch: condensed;
+      padding: 4px 0.88vw;
+      border-radius: 3px;
+      @media screen and ( min-width: 620px ){
+        display: inline-block;
+      }
+      @media screen and ( min-width: 1250px ){
+        font-size: 0.92em;
+        vertical-align: 6px;
+        }
+      img{
+        height: 18px;
+        width: 18px;
+      }
+    }
+    .article-actions-tweet-button{
+      padding: 7px 0 6px;
+      border-radius:3px;
+      border:2px solid darken($light-gray, 7%);
+      margin-right: 0.15vw;
+      margin-left: calc(0.2vw + 11px);
+      vertical-align: calc(3px - 0.07vw);
+      text-align:center;
+      width: 50px;
+      display: none;
+      img{
+        height:23px;
+        width:23px;
+        vertical-align:-4px;
+      }
+      @media screen and ( min-width: 370px ){
+        display: inline-block;
+      }
+      @media screen and ( min-width: 500px ){
+        padding: 2px 0 2px;
+        vertical-align: calc(6px - 0.07vw);
+      }
+      @media screen and ( min-width: 1250px ){
+        padding: 3px 0 3px;
+        vertical-align: 5px;
+      }
+
     }
   }
 }
@@ -937,4 +999,19 @@ header{
         bottom:-0px;
 
     }
+}
+
+@keyframes reaction {
+  0% {
+    padding-left: calc(0.88vw + 3px);
+    padding-right: calc(0.88vw + 3px);
+  }
+  50% {
+    padding-left: calc(1.1vw + 3px);
+    padding-left: calc(1.1vw + 3px);
+  }
+  100% {
+    padding-left: calc(0.88vw + 3px);
+    padding-right: calc(0.88vw + 3px);
+  }
 }

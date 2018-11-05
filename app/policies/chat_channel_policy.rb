@@ -12,7 +12,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def moderate?
-    !user_is_banned? && user_is_admin?
+    !user_is_banned? && user_admin?
   end
 
   def show?

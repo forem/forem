@@ -1,7 +1,7 @@
 class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   def initialize
     super
-    self.tags = %w(a add b blockquote br button center cite code col colgroup dd del dl dt em em figcaption h1 h2 h3 h4 h5 h6 hr i img li ol p pre q rp rt ruby small source span strong sub sup table tbody td tfoot th thead time tr u ul video)
+    self.tags = %w(a abbr add aside b blockquote br button center cite code col colgroup dd del dl dt em em figcaption h1 h2 h3 h4 h5 h6 hr i img li ol p pre q rp rt ruby small source span strong sub sup table tbody td tfoot th thead time tr u ul video)
     self.attributes = %w(alt class colspan data-conversation data-lang data-no-instant data-url em height href id loop name ref rel rowspan size span src start strong title type value width)
   end
 

@@ -3,26 +3,12 @@
     <h1>Editor Guide 🤓</h1>
   </div>
   <div class="body">
-    <h1><strong>Things to Know</strong></h1>
-    <ul>
-      <li>We use a markdown editor that uses <a href="https://jekyllrb.com/docs/frontmatter/">Jekyll front matter</a>.</li>
-      <li>Most of the time, you can write inline HTML directly into your posts.</li>
-      <li>We support native Liquid tags and created some fun custom ones, too! Trying embedding a Tweet or GitHub issue in your post.</li>
-      <li>Links to unpublished posts are shareable for feedback/review.</li>
-      <li>When you're ready to publish, set the published variable to <strong>true.</strong></li>
-    </ul>
-
-    <h2><u><strong>Front Matter</strong></u></h2>
-    <p>Custom variables set for each post, located between the triple-dashed lines in your editor. Here are a list of possibilities:</p>
-    <ul>
-      <li><strong>title:</strong> title of your article</li>
-      <li><strong>published:</strong> boolean that determines whether or not your article is published</li>
-      <li><strong>description:</strong> description area in Twitter cards and open graph cards</li>
-      <li><strong>tags:</strong> max of four tags, needs to be comma-separated</li>
-      <li><strong>canonical_url:</strong> link for canonical version of content</li>
-      <li><strong>cover_image: </strong> cover image for post, accepts a URL. <br>The best size is 1000 x 420.</li>
-    </ul>
-    <h2><u><strong>Markdown Basics</strong></u></h2>
+    <% if version == "1" %>
+      <%= render "pages/v1_editor_guide_preamble" %>
+    <% else %>
+      <p><em>Use <strong>markdown</strong> to write and format <a href="/">dev.to</a> posts. Use <strong>liquid tags</strong> to make add rich content such as tweets and videos. More below.</em> ❤️</p>
+    <% end %>
+    <h2 style="font-size:2.8em"><strong>✍ Markdown Basics</strong></h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a></p>
 
     <h3><strong>Bold & Italic</strong></h3>
@@ -35,24 +21,33 @@
     <h3><strong>Inline Images</strong></h3>
     <p>
       <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan"></img>
-      <code>![Alt text of image](put-link-to-image-here)</code>
+      <pre>
+        ![Alt text of image](put-link-to-image-here)
+      </pre>
+        <figcaption> You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
     </p>
 
     <h3><strong>Headers</strong></h3>
     <p>Add a header to your post with this syntax:</p>
     <pre>
-      <code><br>#One '#' for a h1 header<br>##Two '#'s for a h2 header<br>...<br>######Six '#'s for a h6 header</code>
+      <br># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header
     </pre>
     <h1>One '#' for a h1 header</h1>
     <h2>Two '#'s for a h2 header</h2>
     <h6>Six '#'s for a h6 header</h6>
 
-    <h2><strong><u>Liquid Tags</u></strong></h2>
+    <h2 style="font-size:2.8em"><strong>🌊 Liquid Tags</strong></h2>
     <p>We support native <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:</p>
 
     <h3><strong>dev.to Article/Post Embed</strong></h3>
     <p>All you need is the full link of the article:</p>
     <code>{% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
+    <p>You can also use the slug like this:</p>
+    <code>{% link kazz/boost-your-productivity-using-markdown-1be %}</code>
+
+    <h3><strong>dev.to User Embed</strong></h3>
+    <p>All you need is the DEV username:</p>
+    <code>{% user jess %}</code>
 
     <h3><strong>dev.to Comment Embed</strong></h3>
     <p>All you need is the <code>ID</code> at the end of a comment URL. To get the comment link, click the top right arrow on a comment and then click "Permalink". Here's an example:</p>
@@ -67,12 +62,44 @@
     <code>{% twitter 834439977220112384 %}</code>
 
     <h3><strong>Glitch embed</strong></h3>
-    <p>Use the glitch project slug</p>
+    <p>All you need is the Glitch project slug</p>
     <code>{% glitch earthy-course %}</code>
+    <p>There are several <a href="https://glitch.com/help/how-can-i-customize-a-glitch-app-embed/">optional attributes</a> you can use in your tag, just add them after the id, separated by spaces.</p>
+    <dl>
+      <dt><code>app</code></dt>
+      <dd>
+        Shows the app preview without the code.<br/>
+        <code>{% glitch earthy-course app %}</code>
+      </dd>
+      <dt><code>code</code></dt>
+      <dd>
+        Shows the code without the app preview.<br/>
+        <code>{% glitch earthy-course code %}</code>
+      </dd>
+      <dt><code>preview-first</code></dt>
+      <dd>
+        Hides the file browser.<br/>
+        <code>{% glitch earthy-course preview-first %}</code>
+      </dd>
+      <dt><code>no-attribution</code></dt>
+      <dd>
+        Hides the file browser.<br/>
+        <code>{% glitch earthy-course no-attribution %}</code>
+      </dd>
+      <dt><code>no-files</code></dt>
+      <dd>
+        Hides the file browser.<br/>
+        <code>{% glitch earthy-course no-files %}</code>
+      </dd>
+      <dt><code>file</code></dt>
+      <dd>
+        Lets you choose which file to display in the code panel. Defaults to index.html.<br/>
+        <code>{% glitch earthy-course file=script.js %}</code>
+      </dd>
 
     <h3><strong>GitHub Repo Embed</strong></h3>
-    <p>Use the GitHub username and repo name like this:</p>
-    <code>{% github thepracticaldev/dev.to_core %}</code>
+    <p>All you need is the GitHub username and repo:</p>
+    <code>{% github thepracticaldev/dev.to %}</code>
 
     <h3><strong>GitHub Issue or Comment Embed</strong></h3>
     <p>All you need is the GitHub issue or comment URL:</p>
@@ -80,11 +107,16 @@
 
     <h3><strong>GitHub Gist Embed</strong></h3>
     <p>All you need is the gist link:</p>
-    <code>{% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}</code>
+    <pre>
+    {% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}
+    </pre>
 
-    <h3><strong>YouTube Embed</strong></h3>
-    <p>All you need is the YouTube <code>id</code> from the URL:</p>
-    <code>{% youtube 9z-Pdfxxdyo %}</code>
+    <h3><strong>Video Embed</strong></h3>
+    <p>All you need is the <code>id</code> from the URL.
+    <ul>
+      <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
+      <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
+    </ul>
 
     <h3><strong>CodePen Embed</strong></h3>
     <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
@@ -92,7 +124,11 @@
 
     <h3><strong>RunKit Embed</strong></h3>
     <p>Put executable code within a runkit liquid block, as follows:</p>
-    <pre><code>{% runkit %}<br>console.log("Place javascript here!"); <br>{% endrunkit %} <br></code></pre>
+    <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %} <br></pre>
+
+    <h3><strong>CodeSandbox Embed</strong></h3>
+    <p>All you need is the ID of the Sandbox:</p>
+    <code>{% codesandbox ppxnl191zx %}</code>
 
     <h3><strong>repl.it Embed</strong></h3>
     <p>All you need is the URL after the domain name:</p>
@@ -101,6 +137,22 @@
     <h3><strong>Instagram Embed</strong></h3>
     <p>All you need is the Instagram post <code>id</code> from the URL.</p>
     <code>{% instagram BXgGcAUjM39 %}</code>
+
+    <h3><strong>Speakerdeck Tag</strong></h3>
+    <p>All you need is the data-id code from the embed link:</p>
+    <pre>
+      <span style="color: gray;"># Given this embed link:</span>
+      < script async class="speakerdeck-embed"
+      data-id="<span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span>"
+      data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js">< /script >
+    </pre>
+    <pre>
+      {% speakerdeck <span style="color: orange;">7e9f8c0fa0c949bd8025457181913fd0</span> %}
+    </pre>
+
+    <h3><strong>Soundcloud Embed</strong></h3>
+    <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
+    <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
     <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>

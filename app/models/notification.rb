@@ -51,7 +51,7 @@ class Notification < ApplicationRecord
     if notifiable.class.name == "Broadcast" || action == "Moderation"
       User.find(ApplicationConfig["DEVTO_USER_ID"])
     else
-      notifiable.user
+      notifiable&.user
     end
   end
 
@@ -64,7 +64,7 @@ class Notification < ApplicationRecord
   end
 
   def activity_target
-    "#{notifiable_type.downcase}_#{Time.now}"
+    "#{notifiable_type.downcase}_#{Time.current.utc}"
   end
 
   def activity_notify

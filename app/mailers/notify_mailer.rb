@@ -49,14 +49,49 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "You just got a badge")
   end
 
+  def feedback_message_resolution_email(params)
+    @user = User.find_by(email: params[:email_to])
+    @email_body = params[:email_body]
+    track utm_campaign: params[:email_type]
+    track extra: { feedback_message_id: params[:feedback_message_id] }
+    mail(to: params[:email_to], subject: params[:email_subject])
+  end
+
   def new_report_email(report)
     @feedback_message = report
     @user = report.reporter
     mail(to: @user.email, subject: "Thank you for your report")
   end
 
+  def new_message_email(message)
+    @message = message
+    @user = message.direct_receiver
+    subject = "#{message.user.name} just messaged you"
+    mail(to: @user.email, subject: subject)
+  end
+
   def reporter_resolution_email(report)
     @feedback_message = report
     @user = report.reporter
+  end
+
+  def account_deleted_email(user)
+    @name = user.name
+    subject = "dev.to - Account Deletion Confirmation"
+    mail(to: user.email, subject: subject)
+  end
+
+  def mentee_email(mentee, mentor)
+    @mentee = mentee
+    @mentor = mentor
+    subject = "You have been matched with a DEV mentor!"
+    mail(to: @mentee.email, subject: subject, from: "Liana (from dev.to) <liana@dev.to>")
+  end
+
+  def mentor_email(mentor, mentee)
+    @mentor = mentor
+    @mentee = mentee
+    subject = "You have been matched with a new DEV mentee!"
+    mail(to: @mentor.email, subject: subject, from: "Liana (from dev.to) <liana@dev.to>")
   end
 end

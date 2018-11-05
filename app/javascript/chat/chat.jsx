@@ -687,6 +687,7 @@ export default class Chat extends Component {
   
 
   render() {
+    const detectIOSSafariClass = (navigator.userAgent.match(/iPhone/i) && !navigator.userAgent.match('CriOS')) ? " chat--iossafari" : "";
     let channelHeader = <div className="activechatchannel__header">&nbsp;</div>
     let channelHeaderInner = ''
     const currentChannel = this.state.activeChannel
@@ -720,7 +721,7 @@ export default class Chat extends Component {
                       />
     }
     return (
-      <div className={"chat chat--" + (this.state.expanded ? "expanded" : "contracted")} data-no-instant>
+      <div className={"chat chat--" + (this.state.expanded ? "expanded" : "contracted") + detectIOSSafariClass} data-no-instant>
         {this.renderChatChannels()}
         <div className="chat__activechat">
           {vid}

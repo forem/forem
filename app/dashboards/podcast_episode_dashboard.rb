@@ -31,7 +31,7 @@ class PodcastEpisodeDashboard < Administrate::BaseDashboard
     guid: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-    social_image: CarrierwaveField,
+    social_image: CarrierwaveField
   }.freeze
 
   # COLLECTION_ATTRIBUTES

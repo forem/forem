@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180806142338) do
+ActiveRecord::Schema.define(version: 20181020195954) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
     t.datetime "clicked_at"
     t.text "content"
+    t.integer "feedback_message_id"
     t.string "mailer"
     t.datetime "opened_at"
     t.datetime "sent_at"
@@ -59,6 +60,8 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.boolean "email_digest_eligible", default: true
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
+    t.float "featured_clickthrough_rate", default: 0.0
+    t.integer "featured_impressions", default: 0
     t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
@@ -76,10 +79,12 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.string "main_tag_name_for_social"
     t.string "name_within_collection"
     t.integer "organization_id"
+    t.integer "page_views_count", default: 0
     t.boolean "paid", default: false
     t.string "password"
     t.string "path"
     t.integer "positive_reactions_count", default: 0, null: false
+    t.integer "previous_positive_reactions_count", default: 0
     t.text "processed_html"
     t.boolean "published", default: false
     t.datetime "published_at"
@@ -87,6 +92,7 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.integer "reactions_count", default: 0, null: false
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
+    t.integer "score", default: 0
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
@@ -160,6 +166,18 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.boolean "sent", default: false
     t.string "title"
     t.string "type_of"
+  end
+
+  create_table "buffer_updates", force: :cascade do |t|
+    t.integer "article_id", null: false
+    t.text "body_text"
+    t.string "buffer_id_code"
+    t.string "buffer_profile_id_code"
+    t.text "buffer_response", default: "--- {}\n"
+    t.datetime "created_at", null: false
+    t.string "social_service_name"
+    t.integer "tag_id"
+    t.datetime "updated_at", null: false
   end
 
   create_table "chat_channel_memberships", force: :cascade do |t|
@@ -276,22 +294,19 @@ ActiveRecord::Schema.define(version: 20180806142338) do
   end
 
   create_table "feedback_messages", force: :cascade do |t|
+    t.integer "affected_id"
     t.string "category"
     t.datetime "created_at"
     t.string "feedback_type"
-    t.datetime "last_reviewed_at"
     t.text "message"
-    t.boolean "offender_email_sent?", default: false
     t.integer "offender_id"
     t.string "reported_url"
-    t.boolean "reporter_email_sent?", default: false
     t.integer "reporter_id"
-    t.integer "reviewer_id"
-    t.string "slug"
     t.string "status", default: "Open"
     t.datetime "updated_at"
-    t.boolean "victim_email_sent?", default: false
-    t.integer "victim_id"
+    t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
+    t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
+    t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
   create_table "flipflop_features", force: :cascade do |t|
@@ -341,6 +356,35 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.integer "watchers_count"
   end
 
+  create_table "html_variant_successes", force: :cascade do |t|
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.integer "html_variant_id"
+    t.datetime "updated_at", null: false
+    t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
+  end
+
+  create_table "html_variant_trials", force: :cascade do |t|
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.integer "html_variant_id"
+    t.datetime "updated_at", null: false
+    t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
+  end
+
+  create_table "html_variants", force: :cascade do |t|
+    t.boolean "approved", default: false
+    t.datetime "created_at", null: false
+    t.string "group"
+    t.text "html"
+    t.string "name"
+    t.boolean "published", default: false
+    t.float "success_rate", default: 0.0
+    t.string "target_tag"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
+
   create_table "identities", id: :serial, force: :cascade do |t|
     t.text "auth_data_dump"
     t.datetime "created_at", null: false
@@ -375,13 +419,20 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.integer "user_id"
   end
 
+  create_table "mentor_relationships", force: :cascade do |t|
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.integer "mentee_id", null: false
+    t.integer "mentor_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mentee_id", "mentor_id"], name: "index_mentor_relationships_on_mentee_id_and_mentor_id", unique: true
+    t.index ["mentee_id"], name: "index_mentor_relationships_on_mentee_id"
+    t.index ["mentor_id"], name: "index_mentor_relationships_on_mentor_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
-    t.text "encrypted_message_html"
-    t.text "encrypted_message_html_iv"
-    t.text "encrypted_message_markdown"
-    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
@@ -391,6 +442,7 @@ ActiveRecord::Schema.define(version: 20180806142338) do
   end
 
   create_table "notes", id: :serial, force: :cascade do |t|
+    t.integer "author_id"
     t.text "content"
     t.datetime "created_at", null: false
     t.integer "noteable_id"
@@ -560,6 +612,7 @@ ActiveRecord::Schema.define(version: 20180806142338) do
   create_table "tags", id: :serial, force: :cascade do |t|
     t.string "alias_for"
     t.string "bg_color_hex"
+    t.string "buffer_profile_id_code"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"
@@ -632,10 +685,12 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.string "currently_learning"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
+    t.string "editor_version", default: "v1"
     t.string "education"
     t.string "email", default: "", null: false
     t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
+    t.boolean "email_connect_messages", default: true
     t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true
     t.boolean "email_membership_newsletter", default: false
@@ -667,6 +722,7 @@ ActiveRecord::Schema.define(version: 20180806142338) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
     t.datetime "mentee_form_updated_at"

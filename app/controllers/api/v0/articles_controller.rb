@@ -29,7 +29,7 @@ module Api
                      params[:tag_list].split(",")
                    else
                      ["career", "discuss", "productivity"]
-        end
+                   end
         @articles = []
         4.times do
           @articles << Suggester::Articles::Classic.new.get(tag_list)
@@ -58,14 +58,24 @@ module Api
                        @article.to_json(only: [:id], methods: [:current_state_path])
                      else
                        @article.errors.to_json
-                      end
+                     end
       end
 
       def article_params
         params["article"].transform_keys!(&:underscore)
+        if params["article"]["post_under_org"]
+          params["article"]["organization_id"] = current_user.organization_id
+        else
+          params["article"]["organization_id"] = nil
+        end
+        if params["article"]["series"].present?
+          params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], current_user)&.id
+        elsif params["article"]["series"] == ""
+          params["article"]["collection_id"] = nil
+        end
         params.require(:article).permit(
           :title, :body_markdown, :user_id, :main_image, :published, :description,
-          :tag_list
+          :tag_list, :organization_id, :canonical_url, :series, :collection_id
         )
       end
     end

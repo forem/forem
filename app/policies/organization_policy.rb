@@ -4,7 +4,7 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def update?
-    user.is_org_admin?(record)
+    user.org_admin?(record)
   end
 
   def generate_new_secret?

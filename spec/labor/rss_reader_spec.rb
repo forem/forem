@@ -3,7 +3,7 @@ require "rss"
 
 vcr_option = {
   cassette_name: "rss_feeds",
-  allow_playback_repeats: "true",
+  allow_playback_repeats: "true"
 }
 
 RSpec.describe RssReader, vcr: vcr_option do

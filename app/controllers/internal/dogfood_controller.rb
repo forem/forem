@@ -8,18 +8,13 @@ class Internal::DogfoodController < Internal::ApplicationController
                   ["thepracticaldev", "bendhalpern"]
                 end
 
-    @team_members = User.where(username: usernames)
-    @comments_this_week = Comment.where(user_id: @team_members.pluck(:id)).where("created_at > ?", Date.today.beginning_of_week).pluck(:user_id)
-    @comment_totals_this_week = frequency(@comments_this_week)
-    @comments_24_hours = Comment.where(user_id: @team_members.pluck(:id)).where("created_at > ?", 24.hours.ago).pluck(:user_id)
-    @comment_totals_24_hours = frequency(@comments_24_hours)
-  end
+    @team_members = User.where(username: usernames).order(comments_count: :desc)
+    user_ids = @team_members.map(&:id)
 
-  def frequency(a)
-    a.group_by do |e|
-      e
-    end.map do |key, values|
-      { number_of_comments: values.size, username: User.find(key).username }
-    end.sort_by { |hsh| hsh[:number_of_comments] }.reverse!
+    @comment_totals_this_week = Comment.
+      users_with_number_of_comments(user_ids, Time.zone.today.beginning_of_week)
+
+    @comment_totals_24_hours = Comment.
+      users_with_number_of_comments(user_ids, 24.hours.ago)
   end
 end

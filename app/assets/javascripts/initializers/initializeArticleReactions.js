@@ -38,6 +38,15 @@ function initializeArticleReactions() {
         reactToArticle(articleId, this.dataset.category)
       };
     }
+    if (document.getElementById('jump-to-comments')) {
+      document.getElementById('jump-to-comments').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('comments').scrollIntoView({
+          behavior: 'instant',
+          block: 'start',
+        });
+      };
+    }
   }, 3)
 }
 
@@ -48,6 +57,7 @@ function reactToArticle(articleId, reaction) {
     return;
   } else {
     document.getElementById("reaction-butt-" + reaction).classList.add("user-activated")
+    document.getElementById("reaction-butt-" + reaction).classList.add("user-animated")
   }
 
   function createFormdata() {

@@ -6,7 +6,7 @@ const Title = ({ onChange, defaultValue }) => (
     className="articleform__title"
     type="text"
     id="article-form-title"
-    placeholder="title"
+    placeholder="Title"
     autocomplete="off"
     value={defaultValue}
     onChange={onChange}

@@ -1,5 +1,5 @@
 module ArticlesHelper
-  def hasVid(article)
+  def has_vid?(article)
     article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
   end
 
@@ -12,7 +12,7 @@ module ArticlesHelper
   end
 
   def image_tag_or_inline_svg(service_name)
-    if is_internal_navigation?
+    if internal_navigation?
       image_tag("#{service_name}-logo.svg", class: "icon-img")
     else
       inline_svg("#{service_name}-logo.svg", class: "icon-img")
@@ -41,7 +41,7 @@ module ArticlesHelper
     host.start_with?("www.") ? host[4..-1] : host
   end
 
-  def is_hiring_form?(tag, article)
+  def hiring_form?(tag, article)
     tag.to_s == "hiring" || article.tag_list.include?("hiring")
   end
 end
