@@ -8,6 +8,12 @@ class ArticleObserver < ActiveRecord::Observer
                     icon_emoji: ":writing_hand:"
 
     end
+    if article.user.warned == true
+      SlackBot.ping "@#{article.user.username} just posted an article.\nThey've been warned since #{article.user.roles.where(name: 'warned')[0].updated_at.strftime('%d %B %Y')}\nhttps://dev.to#{article.path}",
+              channel: "warned-user-activity",
+              username: "sloan_watch_bot",
+              icon_emoji: ":sloan:"
+    end
   rescue StandardError
     puts "error"
   end
