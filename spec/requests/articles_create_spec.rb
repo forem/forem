@@ -7,30 +7,12 @@ RSpec.describe "ArticlesCreate", type: :request do
     sign_in user
   end
 
-  context "when an ordinary article is created with proper params" do
-    before do
-      allow(SlackBot).to receive(:ping).and_return(true)
-    end
-
-    def create_article
-      new_title = "NEW TITLE #{rand(100)}"
-      post "/articles", params: {
-        article: { title: new_title,
-                   body_markdown: "Yo ho ho#{rand(100)}",
-                   tag_list: "yo" }
-      }
-    end
-
-    it "creates article" do
-      create_article
-      expect(Article.last.user_id).to eq(user.id)
-    end
-
-    it "pings slack if user has warned role" do
-      user.add_role :warned
-      create_article
-      expect(SlackBot).to have_received(:ping)
-    end
+  it "creates ordinary article with proper params" do
+    new_title = "NEW TITLE #{rand(100)}"
+    post "/articles", params: {
+      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+    }
+    expect(Article.last.user_id).to eq(user.id)
   end
 
   # rubocop:disable RSpec/ExampleLength
