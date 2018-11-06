@@ -22,7 +22,7 @@ RSpec.describe "ArticlesCreate", type: :request do
       expect(Article.last.user_id).to eq(user.id)
     end
 
-    it "pings slack if user is has warned role" do
+    it "pings slack if user has warned role" do
       user.add_role :warned
       expect(SlackBot).to have_received(:ping)
     end
