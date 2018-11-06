@@ -5,11 +5,14 @@ RSpec.describe "ArticlesCreate", type: :request do
 
   before do
     sign_in user
-    allow(SlackBot).to receive(:ping).and_return(true)
   end
 
   context "when an ordinary article is created with proper params" do
     before do
+      allow(SlackBot).to receive(:ping).and_return(true)
+    end
+
+    def create_article
       new_title = "NEW TITLE #{rand(100)}"
       post "/articles", params: {
         article: { title: new_title,
@@ -18,12 +21,14 @@ RSpec.describe "ArticlesCreate", type: :request do
       }
     end
 
-    it "creates ordinary article with proper params" do
+    it "creates article" do
+      create_article
       expect(Article.last.user_id).to eq(user.id)
     end
 
     it "pings slack if user has warned role" do
       user.add_role :warned
+      create_article
       expect(SlackBot).to have_received(:ping)
     end
   end
