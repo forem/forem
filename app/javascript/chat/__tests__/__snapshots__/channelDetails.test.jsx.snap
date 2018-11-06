@@ -1,0 +1,260 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] = `
+<div
+  class="channeldetails"
+>
+  <h1
+    class="channeldetails__name"
+  >
+    channel name
+  </h1>
+  <div
+    class="channeldetails__description"
+    style={
+      Object {
+        "marginBottom": "20px",
+      }
+    }
+  >
+    <em>
+      something about this channel
+    </em>
+  </div>
+  <div
+    class="channeldetails__user"
+  >
+    <a
+      data-content="users/by_username?url=channeluser1"
+      href="/channeluser1"
+      style={
+        Object {
+          "color": undefined,
+          "padding": "3px 0px",
+        }
+      }
+    >
+      channel user 1
+    </a>
+  </div>
+  <div
+    class="channeldetails__user"
+  >
+    <a
+      data-content="users/by_username?url=channeluser2"
+      href="/channeluser2"
+      style={
+        Object {
+          "color": undefined,
+          "padding": "3px 0px",
+        }
+      }
+    >
+      channel user 2
+    </a>
+  </div>
+  <div
+    class="channeldetails__inviteusers"
+  >
+    <h2>
+      Invite Members
+    </h2>
+    <input
+      onKeyUp={[Function]}
+      placeholder="Find users"
+    />
+    <h2>
+      Pending Invites:
+    </h2>
+    <div
+      class="channeldetails__pendingusers"
+    >
+      <a
+        data-content="users/pendingid1"
+        href="/pendinguser1"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        @pendinguser1 - pending user 1
+      </a>
+    </div>
+    <div
+      class="channeldetails__pendingusers"
+    >
+      <a
+        data-content="users/pendingid2"
+        href="/pendinguser2"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        @pendinguser2 - pending user 2
+      </a>
+    </div>
+    <div
+      style={
+        Object {
+          "marginTop": "10px",
+        }
+      }
+    >
+      All functionality is early beta. Contact us if you need help with anything.
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<ChannelDetails /> as a moderator should search users and populate searched users div 1`] = `
+RenderContext {
+  "0": VNode {
+    "attributes": Object {
+      "activeChannelId": 12345,
+      "channel": Object {
+        "channel_mod_ids": "modID",
+        "channel_name": "channel name",
+        "channel_users": Array [
+          Object {
+            "name": "channel user 1",
+            "username": "channeluser1",
+          },
+          Object {
+            "name": "channel user 2",
+            "username": "channeluser2",
+          },
+        ],
+        "description": "something about this channel",
+        "id": "12345",
+        "pending_users_select_fields": Array [
+          Object {
+            "id": "pendingid1",
+            "name": "pending user 1",
+            "username": "pendinguser1",
+          },
+          Object {
+            "id": "pendingid2",
+            "name": "pending user 2",
+            "username": "pendinguser2",
+          },
+        ],
+        "type_of": "channel-details",
+      },
+    },
+    "children": Array [],
+    "key": undefined,
+    "nodeName": [Function],
+  },
+  "length": 1,
+}
+`;
+
+exports[`<ChannelDetails /> as a user should leave channel and show appropriate message 1`] = `
+RenderContext {
+  "0": VNode {
+    "attributes": Object {
+      "activeChannelId": 12345,
+      "channel": Object {
+        "channel_mod_ids": "userID",
+        "channel_name": "channel name",
+        "channel_users": Array [
+          Object {
+            "name": "channel user 1",
+            "username": "channeluser1",
+          },
+          Object {
+            "name": "channel user 2",
+            "username": "channeluser2",
+          },
+        ],
+        "description": "something about this channel",
+        "id": "12345",
+        "pending_users_select_fields": Array [
+          Object {
+            "id": "pendingid1",
+            "name": "pending user 1",
+            "username": "pendinguser1",
+          },
+          Object {
+            "id": "pendingid2",
+            "name": "pending user 2",
+            "username": "pendinguser2",
+          },
+        ],
+        "type_of": "channel-details",
+      },
+    },
+    "children": Array [],
+    "key": undefined,
+    "nodeName": [Function],
+  },
+  "length": 1,
+}
+`;
+
+exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
+<div
+  class="channeldetails"
+>
+  <h1
+    class="channeldetails__name"
+  >
+    channel name
+  </h1>
+  <div
+    class="channeldetails__description"
+    style={
+      Object {
+        "marginBottom": "20px",
+      }
+    }
+  >
+    <em>
+      something about this channel
+    </em>
+  </div>
+  <div
+    class="channeldetails__user"
+  >
+    <a
+      data-content="users/by_username?url=channeluser1"
+      href="/channeluser1"
+      style={
+        Object {
+          "color": undefined,
+          "padding": "3px 0px",
+        }
+      }
+    >
+      channel user 1
+    </a>
+  </div>
+  <div
+    class="channeldetails__user"
+  >
+    <a
+      data-content="users/by_username?url=channeluser2"
+      href="/channeluser2"
+      style={
+        Object {
+          "color": undefined,
+          "padding": "3px 0px",
+        }
+      }
+    >
+      channel user 2
+    </a>
+  </div>
+  <div
+    class="channeldetails__leavechannel"
+  >
+    <h2>
+      Danger Zone
+    </h2>
+    <button
+      Click={[Function]}
+      data-content="12345"
+      type="button"
+    >
+      Leave Channel.
+    </button>
+  </div>
+</div>
+`;
