@@ -8,7 +8,7 @@ class GithubRepoPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[github_id_code]
+    %i[github_id_code featured]
   end
 
   private

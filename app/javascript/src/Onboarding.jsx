@@ -6,6 +6,13 @@ import OnboardingWelcomeThread from './components/OnboardingWelcomeThread';
 import cancelSvg from '../../assets/images/cancel.svg';
 import OnboardingProfile from './components/OnboardingProfile';
 
+const getContentOfToken = token => document.querySelector(`meta[name='${token}']`).content;
+const getFormDataAndAppend = array => {
+  const form = new FormData();
+  array.forEach(item => form.append(item.key, item.value));
+  return form;
+}
+
 class Onboarding extends Component {
   constructor() {
     super();
@@ -91,11 +98,8 @@ class Onboarding extends Component {
 
   handleBulkFollowUsers(users) {
     if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
-      const csrfToken = document.querySelector("meta[name='csrf-token']")
-        .content;
-
-      const formData = new FormData();
-      formData.append('users', JSON.stringify(users));
+      const csrfToken = getContentOfToken('csrf-token');
+      const formData = getFormDataAndAppend([{ key: 'users', value: JSON.stringify(users) }]);
 
       fetch('/api/follows', {
         method: 'POST',
@@ -113,10 +117,8 @@ class Onboarding extends Component {
   }
 
   handleUserProfileSave() {
-      const csrfToken = document.querySelector("meta[name='csrf-token']")
-        .content;
-      const formData = new FormData();
-      formData.append('user', JSON.stringify(this.state.profileInfo));
+      const csrfToken = getContentOfToken('csrf-token');
+      const formData = getFormDataAndAppend([{ key: 'user', value: JSON.stringify(this.state.profileInfo) }]);
 
       fetch('/onboarding_update', {
         method: 'PATCH',
@@ -144,12 +146,13 @@ class Onboarding extends Component {
   }
 
   handleFollowTag(tag) {
-    const csrfToken = document.querySelector("meta[name='csrf-token']").content;
+    const csrfToken = getContentOfToken('csrf-token');
+    const formData = getFormDataAndAppend([
+      { key: 'followable_type', value: 'Tag' },
+      { key: 'followable_id', value: tag.id },
+      { key: 'verb', value: tag.following ? 'unfollow' : 'follow' }
+    ]);
 
-    const formData = new FormData();
-    formData.append('followable_type', 'Tag');
-    formData.append('followable_id', tag.id);
-    formData.append('verb', tag.following ? 'unfollow' : 'follow');
     this.setState({
       allTags: this.state.allTags.map(currentTag => {
         const newTag = currentTag;
@@ -268,9 +271,11 @@ class Onboarding extends Component {
 
   closeOnboarding() {
     document.getElementsByTagName('body')[0].classList.remove('modal-open');
-    const csrfToken = document.querySelector("meta[name='csrf-token']").content;
-    const formData = new FormData();
-    formData.append('saw_onboarding', true);
+    const csrfToken = getContentOfToken('csrf-token');
+    const formData = getFormDataAndAppend([
+      { key: 'saw_onboarding', value: true }
+    ]);
+
     if (window.ga && ga.create) {
       ga('send', 'event', 'click', 'close onboarding slide', this.state.pageNumber, null)
     }

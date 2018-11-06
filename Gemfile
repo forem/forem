@@ -35,7 +35,7 @@ gem "counter_culture", "~> 1.9"
 gem "csv_shaper", "~> 1.3"
 gem "dalli", "~> 2.7"
 gem "delayed_job_active_record", "~> 4.1"
-gem "devise", "~> 4.4"
+gem "devise", "~> 4.5"
 gem "draper", "~> 3.0"
 gem "email_validator", "~> 1.6"
 gem "envied", "~> 0.9"
@@ -101,7 +101,7 @@ group :development do
   gem "better_errors", "~> 2.5"
   gem "binding_of_caller", "~> 0.8"
   gem "brakeman", "~> 4.3", require: false
-  gem "bullet", "~> 5.7"
+  gem "bullet", "~> 5.8"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
   gem "guard", "~> 2.14", require: false
@@ -138,7 +138,7 @@ group :test do
   gem "pundit-matchers", "~> 1.6"
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
-  gem "selenium-webdriver", "~> 3.12"
+  gem "selenium-webdriver", "~> 3.141"
   gem "shoulda-matchers", "~> 3.1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"

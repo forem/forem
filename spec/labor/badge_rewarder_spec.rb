@@ -15,19 +15,18 @@ RSpec.describe BadgeRewarder do
   end
 
   it "rewards beloved comment to folks who have a qualifying comment" do
-    user = create(:user)
-    user_other = create(:user)
-    article = create(:article)
-    create(:comment, user_id: user.id, positive_reactions_count: 30, commentable_id: article.id)
-    create(
-      :comment, user_id: user_other.id, positive_reactions_count: 3, commentable_id: article.id
-    )
-    create(:badge, title: "heweewweyhey")
-    create(:badge, title: "heweweewewewewyhey")
-    create(:badge, title: "heewwewewwwwwyhey")
+    create(:badge, title: "Beloved comment", slug: "beloved-comment")
+    comment = create(:comment, commentable: create(:article))
+    comment.update(positive_reactions_count: 30)
     described_class.award_beloved_comment_badges
-    expect(user.badge_achievements.size).to eq(1)
-    expect(user_other.badge_achievements.size).to eq(0)
+    expect(BadgeAchievement.count).to eq(1)
+  end
+
+  it "does not reward beloved comment to non-qualifying comment" do
+    create(:badge, title: "Beloved comment", slug: "beloved-comment")
+    create(:comment, commentable: create(:article))
+    described_class.award_beloved_comment_badges
+    expect(BadgeAchievement.count).to eq(0)
   end
 
   it "rewards top seven badge to users" do
@@ -35,6 +34,14 @@ RSpec.describe BadgeRewarder do
     user = create(:user)
     user_other = create(:user)
     described_class.award_top_seven_badges([user.username, user_other.username])
+    expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
+  end
+
+  it "rewards fab five badge to users" do
+    badge = create(:badge, title: "Fab 5")
+    user = create(:user)
+    user_other = create(:user)
+    described_class.award_fab_five_badges([user.username, user_other.username])
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 
