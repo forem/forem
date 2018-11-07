@@ -717,7 +717,7 @@ header{
           color: darken($bold-blue, 40%);
         }
         &.user-animated{
-          animation: reaction 0.3s;
+          animation: reaction 0.25s;
         }
       }
     }
@@ -832,6 +832,15 @@ header{
         vertical-align: 5px;
       }
 
+    }
+  }
+}
+
+.dev-ios-native-body {
+  .container{
+    .article-actions{
+      padding:6px 0px;
+      transition: padding 0.33s;
     }
   }
 }
@@ -1007,8 +1016,13 @@ header{
     padding-right: calc(0.88vw + 3px);
   }
   50% {
+    padding-top: 6px;
+    padding-bottom: 4px;
     padding-left: calc(1.1vw + 3px);
-    padding-left: calc(1.1vw + 3px);
+    padding-right: calc(1.1vw + 3px);
+    margin: 0px 0vw;
+    margin-top: -4px;
+    margin-bottom: -1px;
   }
   100% {
     padding-left: calc(0.88vw + 3px);
