@@ -13,8 +13,8 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
-function showUserReaction(reactionName) {
-  document.getElementById("reaction-butt-" + reactionName).classList.add("user-activated", "user-animated");
+function showUserReaction(reactionName, animatedClass) {
+  document.getElementById("reaction-butt-" + reactionName).classList.add("user-activated", animatedClass);
 }
 
 function hideUserReaction(reactionName) {
@@ -56,7 +56,7 @@ function initializeArticleReactions() {
             })
             json.reactions.forEach(function (reaction) {
               if (document.getElementById("reaction-butt-" + reaction.category)) {
-                showUserReaction(reaction.category);
+                showUserReaction(reaction.category, "not-user-animated");
               }
             })
 
@@ -92,7 +92,7 @@ function reactToArticle(articleId, reaction) {
       hideUserReaction(reaction);
       setReactionCount(reaction, currentNum - 1);
     } else {
-      showUserReaction(reaction);
+      showUserReaction(reaction, "user-animated");
       setReactionCount(reaction, currentNum + 1);
     }
   }

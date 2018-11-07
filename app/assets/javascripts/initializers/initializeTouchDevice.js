@@ -1,6 +1,9 @@
 
 function initializeTouchDevice() {
-  var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  var isTouchDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(navigator.userAgent);
+  if (navigator.userAgent === 'DEV-Native-ios') {
+    document.getElementsByTagName("body")[0].classList.add("dev-ios-native-body");
+  }
   setTimeout(function(){
     removeShowingMenu();
     if (isTouchDevice) {
