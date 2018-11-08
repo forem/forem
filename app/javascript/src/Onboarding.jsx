@@ -78,6 +78,7 @@ class Onboarding extends Component {
   }
 
   getUsersToFollow() {
+    const { users } = this.state;
     fetch('/api/users?state=follow_suggestions', {
       headers: {
         Accept: 'application/json',
@@ -87,7 +88,7 @@ class Onboarding extends Component {
     })
       .then(response => response.json())
       .then(json => {
-        if (this.state.users.length === 0) {
+        if (users.length === 0) {
           this.setState({ users: json, checkedUsers: json });
         }
       })
@@ -97,7 +98,8 @@ class Onboarding extends Component {
   }
 
   handleBulkFollowUsers(users) {
-    if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
+    const { checkedUsers, followRequestSent } = this.state;
+    if (checkedUsers.length > 0 && !followRequestSent) {
       const csrfToken = getContentOfToken('csrf-token');
       const formData = getFormDataAndAppend([{ key: 'users', value: JSON.stringify(users) }]);
 
@@ -118,7 +120,8 @@ class Onboarding extends Component {
 
   handleUserProfileSave() {
       const csrfToken = getContentOfToken('csrf-token');
-      const formData = getFormDataAndAppend([{ key: 'user', value: JSON.stringify(this.state.profileInfo) }]);
+      const { profileInfo } = this.state;
+      const formData = getFormDataAndAppend([{ key: 'user', value: JSON.stringify(profileInfo) }]);
 
       fetch('/onboarding_update', {
         method: 'PATCH',
@@ -135,14 +138,12 @@ class Onboarding extends Component {
   }
 
   updateUserData() {
+    const userData = JSON.parse(document.body.getAttribute('data-user'));
+    const { saw_onboarding: sawOnboarding } = userData;
     this.setState({
-      userData: JSON.parse(document.body.getAttribute('data-user')),
-    });
-    if (this.state.userData.saw_onboarding === true) {
-      this.setState({ showOnboarding: false });
-    } else {
-      this.setState({ showOnboarding: true });
-    }
+      userData,
+      showOnboarding: !sawOnboarding,
+     });
   }
 
   handleFollowTag(tag) {
@@ -153,16 +154,16 @@ class Onboarding extends Component {
       { key: 'verb', value: tag.following ? 'unfollow' : 'follow' }
     ]);
 
-    this.setState({
-      allTags: this.state.allTags.map(currentTag => {
+    this.setState(prevState => ({
+      allTags: prevState.allTags.map(currentTag => {
         const newTag = currentTag;
-        if (currentTag.name === tag.name) {
+        if(currentTag.name === tag.name) {
           newTag.following = true;
         }
         return newTag;
-        // add in optimistic rendering
       }),
-    });
+    }));
+
     fetch('/follows', {
       method: 'POST',
       headers: {
@@ -173,16 +174,14 @@ class Onboarding extends Component {
     })
       .then(response =>
         response.json().then(json => {
-          this.setState({
-            allTags: this.state.allTags.map(currentTag => {
+          this.setState(prevState => ({
+            allTags: prevState.allTags.map(currentTag => {
               const newTag = currentTag;
-              if (currentTag.name === tag.name) {
-                newTag.following = json.outcome === 'followed';
-              }
+              newTag.following = (currentTag.name === tag.name) ? json.outcome : 'followed';
               return newTag;
               // add in optimistic rendering
             }),
-          });
+          }))
         }),
       )
       .catch(error => {
@@ -191,22 +190,30 @@ class Onboarding extends Component {
   }
 
   handleCheckAllUsers() {
-    if (this.state.checkedUsers.length < this.state.users.length) {
-      this.setState({ checkedUsers: this.state.users.slice() });
-    } else {
-      this.setState({ checkedUsers: [] });
+    const { users, checkedUsers: prevCheckedUsers  } = this.state;
+    let checkedUsers = [];
+
+    if (prevCheckedUsers.length < users.length) {
+      checkedUsers = users.slice();
     }
+    this.setState({ checkedUsers});
   }
 
   handleProfileChange(event) {
-    let newProfileInfo = this.state.profileInfo;
-    newProfileInfo[event.target.name] = event.target.value;
-    this.setState({profileInfo: newProfileInfo})
+    const { name, value } = event.target;
+
+    this.setState(prevState => ({
+      profileInfo: {
+        ...prevState.profileInfo,
+        [name]: value,
+      }
+    }));
   }
 
   handleCheckUser(user) {
-    const newCheckedUsers = this.state.checkedUsers.slice();
-    if (this.state.checkedUsers.indexOf(user) > -1) {
+    const { checkedUsers } = this.state;
+    const newCheckedUsers = checkedUsers.slice();
+    if (checkedUsers.indexOf(user) > -1) {
       const index = newCheckedUsers.indexOf(user);
       newCheckedUsers.splice(index, 1);
     } else {
@@ -216,16 +223,18 @@ class Onboarding extends Component {
   }
 
   handleSaveAllArticles() {
-    if (this.state.savedArticles.length < this.state.articles.length) {
-      this.setState({ savedArticles: this.state.articles.slice() });
-    } else {
-      this.setState({ savedArticles: [] });
+    const { savedArticles:prevSavedArticles, articles } = this.state;
+    let savedArticles = [];
+    if (prevSavedArticles.length < articles.length) {
+      savedArticles = articles.slice();
     }
+    this.setState({ savedArticles });
   }
 
   handleSaveArticle(article) {
-    const newSavedArticles = this.state.savedArticles.slice();
-    if (this.state.savedArticles.indexOf(article) > -1) {
+    const { savedArticles } = this.state;
+    const newSavedArticles = savedArticles.slice();
+    if (savedArticles.indexOf(article) > -1) {
       const index = newSavedArticles.indexOf(article);
       newSavedArticles.splice(index, 1);
     } else {
@@ -235,41 +244,44 @@ class Onboarding extends Component {
   }
 
   handleNextHover() {
-    if (this.state.pageNumber === 2 && this.state.users.length === 0) {
+    const { pageNumber, users } = this.statel
+    if (pageNumber === 2 && users.length === 0) {
       this.getUsersToFollow();
     }
   }
 
   handleNextButton() {
+    const { pageNumber, users, articles, checkedUsers, profileInfo } = this.state;
     if (
-      this.state.pageNumber === 2 &&
-      this.state.users.length === 0 &&
-      this.state.articles.length === 0
+      pageNumber === 2 &&
+      users.length === 0 &&
+      articles.length === 0
     ) {
       this.getUsersToFollow();
     }
-    if (this.state.pageNumber < 5) {
-      this.setState({ pageNumber: this.state.pageNumber + 1 });
-      if (this.state.pageNumber === 4 && this.state.checkedUsers.length > 0) {
-        this.handleBulkFollowUsers(this.state.checkedUsers);
+    if (pageNumber < 5) {
+      this.setState({ pageNumber: pageNumber + 1 });
+      if (pageNumber === 4 && checkedUsers.length > 0) {
+        this.handleBulkFollowUsers(checkedUsers);
       } else if (
-        this.state.pageNumber === 5
+        pageNumber === 5
       ) {
-        this.handleUserProfileSave(this.state.profileInfo);
+        this.handleUserProfileSave(profileInfo);
       }
-    } else if (this.state.pageNumber === 5) {
+    } else if (pageNumber === 5) {
       this.closeOnboarding();
     }
-    const sloan = document.getElementById("sloan-mascot-onboarding-area");
   }
 
   handleBackButton() {
-    if (this.state.pageNumber > 1) {
-      this.setState({ pageNumber: this.state.pageNumber - 1 });
+    const { pageNumber } = this.state;
+    if (pageNumber > 1) {
+      this.setState({ pageNumber: pageNumber - 1 });
     }
   }
 
   closeOnboarding() {
+    const { pageNumber } = this.state;
     document.getElementsByTagName('body')[0].classList.remove('modal-open');
     const csrfToken = getContentOfToken('csrf-token');
     const formData = getFormDataAndAppend([
@@ -277,7 +289,7 @@ class Onboarding extends Component {
     ]);
 
     if (window.ga && ga.create) {
-      ga('send', 'event', 'click', 'close onboarding slide', this.state.pageNumber, null)
+      ga('send', 'event', 'click', 'close onboarding slide', pageNumber, null)
     }
     fetch('/onboarding_update', {
       method: 'PATCH',
@@ -299,67 +311,87 @@ class Onboarding extends Component {
   }
 
   toggleOnboardingSlide() {
-    if (this.state.pageNumber === 1) {
-      return <OnboardingWelcome />;
-    } else if (this.state.pageNumber === 2) {
-      return (
-        <OnboardingFollowTags
-          userData={this.state.userData}
-          allTags={this.state.allTags}
-          followedTags={this.state.followedTags}
-          handleFollowTag={this.handleFollowTag}
-        />
-      );
-    } else if (this.state.pageNumber === 3) {
-      return (
-        <OnboardingFollowUsers
-          users={this.state.users}
-          checkedUsers={this.state.checkedUsers}
-          handleCheckUser={this.handleCheckUser}
-          handleCheckAllUsers={this.handleCheckAllUsers}
-        />
-      );
-    } else if (this.state.pageNumber === 4) {
-      return (
-        <OnboardingProfile
-        onChange={this.handleProfileChange}
-        />
-      );
-    } else if (this.state.pageNumber === 5) {
-      return <OnboardingWelcomeThread />;
+    const ONBOARDING = {
+      WELCOME_SCREEN: 1,
+      FOLLOW_TAG_SCREEN: 2,
+      FOLLOW_USERS_SCREEN: 3,
+      PROFILE_SCREEN: 4,
+      WELCOME_THREAD: 5,
+    }
+
+    const { pageNumber, userData, allTags, followedTags, users, checkedUsers } = this.state;
+    switch (pageNumber) {
+      case ONBOARDING.WELCOME_SCREEN:
+        return <OnboardingWelcome />;
+      case ONBOARDING.FOLLOW_TAG_SCREEN:
+        return (
+          <OnboardingFollowTags
+            userData={userData}
+            allTags={allTags}
+            followedTags={followedTags}
+            handleFollowTag={this.handleFollowTag}
+          />
+        );
+      case ONBOARDING.FOLLOW_USERS_SCREEN:
+        return (
+          <OnboardingFollowUsers
+            users={users}
+            checkedUsers={checkedUsers}
+            handleCheckUser={this.handleCheckUser}
+            handleCheckAllUsers={this.handleCheckAllUsers}
+          />
+        );
+      case ONBOARDING.PROFILE_SCREEN:
+        return (
+          <OnboardingProfile
+            onChange={this.handleProfileChange}
+          />
+        );
+      case ONBOARDING.WELCOME_THREAD:
+        return <OnboardingWelcomeThread />;
+      default:
+        return null;
     }
   }
 
   renderBackButton() {
-    if (this.state.pageNumber > 1) {
+    const { pageNumber } = this.state;
+    if (pageNumber > 1) {
       return (
-        <button className="button cta" onClick={this.handleBackButton}>
+        <button className="button cta" type="button" onClick={this.handleBackButton}>
           {' '}
-          BACK{' '}
+          BACK
+          {' '}
         </button>
       );
     }
+    return null;
   }
 
   renderNextButton() {
+    const { pageNumber } = this.state;
     return (
       <button
         className="button cta"
         onClick={this.handleNextButton}
         onMouseOver={this.handleNextHover}
         onFocus={this.handleNextHover}
+        type='button'
       >
-        {this.state.pageNumber < 5 ? 'NEXT' : "LET'S GO"}
+        {pageNumber < 5 ? 'NEXT' : "LET'S GO"}
       </button>
     );
   }
 
   renderPageIndicators() {
-      return <div class='pageindicators'>
-                <div class={this.state.pageNumber === 2 ? 'pageindicator pageindicator--active': 'pageindicator'}></div>
-                <div class={this.state.pageNumber === 3 ? 'pageindicator pageindicator--active' : 'pageindicator'}></div>
-                <div class={this.state.pageNumber === 4 ? 'pageindicator pageindicator--active' : 'pageindicator'}></div>
-              </div>
+    const { pageNumber } = this.state;
+      return (
+        <div className='pageindicators'>
+          <div className={pageNumber === 2 ? 'pageindicator pageindicator--active': 'pageindicator'} />
+          <div className={pageNumber === 3 ? 'pageindicator pageindicator--active' : 'pageindicator'} />
+          <div className={pageNumber === 4 ? 'pageindicator pageindicator--active' : 'pageindicator'} />
+        </div>
+      );
   }
 
   renderSloanMessage() {
@@ -370,11 +402,14 @@ class Onboarding extends Component {
       4: 'CREATE YOUR PROFILE',
       5: 'GET INVOLVED',
     };
-    return messages[this.state.pageNumber];
+    const { pageNumber } = this.state;
+
+    return messages[pageNumber];
   }
 
   render() {
-    if (this.state.showOnboarding) {
+    const { showOnboarding } = this.state;
+    if (showOnboarding) {
       return (
         <div className="global-modal" style="display:none">
           <div className="global-modal-bg">
