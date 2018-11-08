@@ -240,8 +240,8 @@ class Onboarding extends Component {
   handleSaveArticle(article) {
     const { savedArticles } = this.state;
     const newSavedArticles = savedArticles.slice();
-    if (savedArticles.indexOf(article) > -1) {
-      const index = newSavedArticles.indexOf(article);
+    const index = newSavedArticles.indexOf(article);
+    if (index > -1) {
       newSavedArticles.splice(index, 1);
     } else {
       newSavedArticles.push(article);
