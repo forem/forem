@@ -397,26 +397,25 @@ class Onboarding extends Component {
   }
 
   renderPageIndicators() {
-    const { pageNumber } = this.state;
     return (
       <div className="pageindicators">
         <div
           className={
-            pageNumber === 2
+            this.state.pageNumber === 2
               ? 'pageindicator pageindicator--active'
               : 'pageindicator'
           }
         />
         <div
           className={
-            pageNumber === 3
+            this.state.pageNumber === 3
               ? 'pageindicator pageindicator--active'
               : 'pageindicator'
           }
         />
         <div
           className={
-            pageNumber === 4
+            this.state.pageNumber === 4
               ? 'pageindicator pageindicator--active'
               : 'pageindicator'
           }
