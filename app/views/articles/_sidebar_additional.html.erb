@@ -115,7 +115,7 @@
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
-              <% Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime, 5).
+              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).
                 each do |plucked_article| %>
                   <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
