@@ -654,18 +654,20 @@ header{
     border: 1px solid darken($light-medium-gray, 2%);
     box-shadow: $bold-shadow;
     width: 100%;
+    background: $tan;
     @media screen and ( min-width: 880px ){
       margin-left: -1px;
       margin-right: -1px;
       width: 880px;
-      padding:6px 0px;
+      padding: calc(0px + 0.92vh) 0px;
     }
     button{
       background:transparent;
-      margin: 0px 0.22vw;
-      padding: 3px calc(0.88vw + 3px);
+      margin: 0px calc(0.22vw + 2px);
+      padding: 3px calc(0.88vw + 8px);
       border-radius:100px;
-      border:2px solid darken($light-gray, 7%);
+      border:2px solid darken($light-gray, 20%);
+      // background: linear-gradient(60deg, #f4d2d2, #ffffff);
       font-family: $helvetica-condensed;
       font-stretch:condensed;
       img{
@@ -701,7 +703,7 @@ header{
         }
       }
       &.user-activated {
-        border:2px solid darken($bold-blue, 40%);
+        border:2px solid darken($bold-blue, 35%);
         background: linear-gradient(60deg, #f4d2d2, #efb6b6);
         img{
           filter: none;
@@ -726,11 +728,10 @@ header{
       position:relative;
       width: 40px;
       button{
-        border: 2px solid white;
+        border: 2px solid transparent;
         min-width: 38px;
         opacity:0.7;
         &:hover{
-          border: 2px solid $light-gray;
           opacity:1;
         }
         .dropdown-icon{
@@ -739,40 +740,48 @@ header{
       }
       .dropdown-content{
         display:none;
-        position:absolute;
-        bottom: 45px;
-        right: 2px;
+        position:fixed;
+        bottom: 60px;
+        right: 0px;
+        left: 0px;
         z-index: 100;
-        background: white;
-        font-size: 0.85em;
-        border: 1px solid $light-medium-gray;
-        border-radius: 3px;
+        background: $tan;
+        font-size: 1em;
         text-align:left;
-        min-width: 270px;
-        box-shadow: $shadow;
+        min-width: 300px;
+        border-top: 2px solid $light-medium-gray;
+        padding-bottom: 15px;
+        padding-top: 15px;
+        @media screen and ( min-width: 500px ){
+          position: absolute;
+          right: -20px;
+          border-radius: 3px;
+          font-size: 0.92em;
+          border: 1px solid $light-medium-gray;
+          box-shadow: $shadow;
+          left: auto;
+          bottom: 48px;
+          padding-bottom: 6px;
+          padding-top: 6px;
+        }
         &.showing{
           display: block;
         }
         .dropdown-link-row{
-          img{
-            width: 15px;
-            margin-right: 10px;
-            margin-left: 10px;
-            vertical-align: -2px;
-          }
           input{
             border: 1px dashed black;
             padding: 4px 6px;
-            font-size: 14px;
-            width: calc(100% - 58px);
+            font-size: 1em;
+            width: calc(100% - 50px);
             border-radius: 3px;
             margin: 10px auto 5px;
+            margin-left: 15px;
           }
           a{
             font-weight: bold;
             color: $black;
-            padding: 10px;
-            width: calc(100% - 20px);
+            padding: 12px 18px;
+            width: calc(100% - 36px);
             display:block;
             &:hover{
               background: $light-gray;
@@ -788,7 +797,7 @@ header{
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
-      border:2px solid darken($light-gray, 7%);
+      border:2px solid darken($light-gray, 20%);
       font-family: $helvetica-condensed;
       font-stretch: condensed;
       padding: 4px 0.88vw;
@@ -808,7 +817,7 @@ header{
     .article-actions-tweet-button{
       padding: 7px 0 6px;
       border-radius:3px;
-      border:2px solid darken($light-gray, 7%);
+      border:2px solid darken($light-gray, 20%);
       margin-right: 0.15vw;
       margin-left: calc(0.2vw + 11px);
       vertical-align: calc(3px - 0.07vw);
@@ -820,10 +829,8 @@ header{
         width:23px;
         vertical-align:-4px;
       }
-      @media screen and ( min-width: 370px ){
-        display: inline-block;
-      }
       @media screen and ( min-width: 500px ){
+        display: inline-block;
         padding: 2px 0 2px;
         vertical-align: calc(6px - 0.07vw);
       }
@@ -839,8 +846,15 @@ header{
 .dev-ios-native-body {
   .container{
     .article-actions{
-      padding:6px 0px;
+      padding:8px 0px 0px;
+      border-bottom: 1px solid $tan;
+      border-top: 1px solid rgba(0, 0, 0, 0.33);
       transition: padding 0.33s;
+      .article-share-action-block{
+        .dropdown-content{
+          bottom: 43px;
+        }
+      }
     }
   }
 }
@@ -1012,20 +1026,16 @@ header{
 
 @keyframes reaction {
   0% {
-    padding-left: calc(0.88vw + 3px);
-    padding-right: calc(0.88vw + 3px);
   }
   50% {
     padding-top: 6px;
     padding-bottom: 4px;
-    padding-left: calc(1.1vw + 3px);
-    padding-right: calc(1.1vw + 3px);
+    padding-left: calc(1.1vw + 10px);
+    padding-right: calc(1.1vw + 10px);
     margin: 0px 0vw;
     margin-top: -4px;
     margin-bottom: -1px;
   }
   100% {
-    padding-left: calc(0.88vw + 3px);
-    padding-right: calc(0.88vw + 3px);
   }
 }
