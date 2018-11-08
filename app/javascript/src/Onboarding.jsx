@@ -218,13 +218,9 @@ class Onboarding extends Component {
 
   handleCheckUser(user) {
     const { checkedUsers } = this.state;
-    const newCheckedUsers = checkedUsers.slice();
-    const index = newCheckedUsers.indexOf(user);
-    if (index > -1) {
-      newCheckedUsers.splice(index, 1);
-    } else {
-      newCheckedUsers.push(user);
-    }
+    const index = checkedUsers.indexOf(user);
+    const newCheckedUsers = (index > -1) ? [...checkedUsers].splice(index, 1) : checkedUsers.concat(user);
+
     this.setState({ checkedUsers: newCheckedUsers });
   }
 
