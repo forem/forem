@@ -5,11 +5,6 @@ import Onboarding from '../Onboarding';
 
 global.fetch = fetch;
 
-// process.on('unhandledRejection', (reason, p) => {
-//   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-//   // application specific logging, throwing an error, or other logic here
-// });
-
 describe('<Onboarding />', () => {
   afterEach(() => {
     document.body.setAttribute('data-user', null);
@@ -32,14 +27,16 @@ describe('<Onboarding />', () => {
     text_color_hex: '#ffffff',
   }]);
 
-  it('shows nothing if there is no current user', () => {
+  it.only('shows nothing if there is no current user', () => {
     const dataUser = JSON.stringify({
       saw_onboarding: true,
       followed_tag_names: [],
     });
     document.body.setAttribute('data-user', dataUser);
-    fetch.mockResponse(fakeResponse);
+    // fetch.mockResponse(fakeResponse);
     const context = shallow(<Onboarding />);
+    // const component = context.component();
+    // console.log(component.state);
     expect(context.state('showOnboarding')).toEqual(false);
   });
 
