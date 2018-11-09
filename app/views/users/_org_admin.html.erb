@@ -41,7 +41,13 @@
     </div>
   <% end %>
   <h3>Grow the team</h3>
-  <h5>Invite teammates by sending them this secret. Keep the code secret and generate a new one regularly.</h5>
+  <h5>Invite teammates by sending them the secret and the following instructions:</h5>
+  <ol style="margin-bottom: 30px">
+    <li>Sign up at <a href="https://dev.to">https://dev.to</a>
+    <li>Navigate to <a href="https://dev.to/settings/organization">https://dev.to/settings/organization</a>
+    <li>Paste the secret code below and click <b>Join Organization</b></li>
+  </ol>
+  <h5>Your secret: (You should rotate this regularly)</h5>
   <input type="text" class="settings-org-secret" id="settings-org-secret" value="<%= @organization.secret %>" readonly>
   <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
     <button class="settings-generate-new-secret">Generate New Secret</button>
@@ -112,21 +118,25 @@
     <%= f.label :tech_stack, "Our Stack" %>
     <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>      
-  <% if @organization.approved %>
-    <h2>Post Call-to-action box</h2>
-    <div class="field">
-      <%= f.label "CTA Link Text" %>
-      <%= f.text_field :cta_button_text, maxlength: 12, placeholder: "Limit of 12 characters" %>
-    </div>
-    <div class="field">
-      <%= f.label "CTA Link URL" %>
-      <%= f.text_field :cta_button_url %>
-    </div>
-    <div class="field">
-      <%= f.label "Body text (markdown inline only)" %>
-      <%= f.text_area :cta_body_markdown, maxlength: 256, placeholder: "Limit of 256 characters" %>
-    </div>
-  <% end %>
+  <h2>Call-to-action box</h2>
+  <h4 style="margin-top:-25px">Customizable text that appears to the right of every post for your organization</h4>
+  <h4 style="margin-top:-15px">See an example from the <a href="https://dev.to/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank">DEV Team</a>.</h4>
+  <div class="field">
+    <%= f.label "Body text (Limited markdown — bold/italic/etc)" %>
+    <%= f.text_area :cta_body_markdown, maxlength: 256, placeholder: "**This is an example**
+
+_italic_ and **bold** is okay. Links, and headers etc. will not show up.
+
+256 character limit." %>
+  </div>
+  <div class="field">
+    <%= f.label "Link Text" %>
+    <%= f.text_field :cta_button_text, maxlength: 20, placeholder: "Limit of 20 characters" %>
+  </div>
+  <div class="field">
+    <%= f.label "Link Text" %>
+    <%= f.text_field :cta_button_url, placeholder: "https://example.com" %>
+  </div>
   <div class="field">
     <label></label>
     <%= f.submit "SUBMIT", class: "cta" %>

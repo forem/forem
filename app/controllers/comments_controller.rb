@@ -27,6 +27,7 @@ class CommentsController < ApplicationController
         @user.articles.find_by_slug(params[:slug]) ||
         not_found
       @article = @commentable
+      not_found unless @commentable.published
     end
     @commentable_type = @commentable.class.name
     if params[:id_code].present?

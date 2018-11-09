@@ -14,11 +14,6 @@ RSpec.describe Mention, type: :model do
     )
   end
 
-  before do
-    # Run workers synchronously
-    # Delayed::Worker.delay_jobs = false
-  end
-
   it "creates mention if there is a user mentioned" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save

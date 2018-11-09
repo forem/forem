@@ -7,4 +7,7 @@ You can view the previews at (for example) `http://localhost:3000/rails/mailers/
 
 ## Previewing these docs in development
 
-Run `yarn run serve-docs` and visit `http://localhost:8000` in your browser.
+0. Make sure you are at the base of the repository
+1. Install gitdocs `npm install -g gitdocs@next`
+1. Serve it `gitdocs serve`
+1. Visit `http://localhost:8000`

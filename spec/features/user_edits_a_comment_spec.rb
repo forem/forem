@@ -27,6 +27,7 @@ RSpec.describe "Editing A Comment", type: :feature, js: true do
 
   context "when user edits via permalinks" do
     it "updates" do
+      user.reload
       visit user.comments.last.path.to_s
       click_link("EDIT")
       assert_updated

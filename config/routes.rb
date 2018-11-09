@@ -77,6 +77,11 @@ Rails.application.routes.draw do
         end
       end
       resources :follows, only: [:create]
+      resources :github_repos, only: [:index] do
+        collection do
+          post "/update_or_create", to: "github_repos#update_or_create"
+        end
+      end
     end
   end
 

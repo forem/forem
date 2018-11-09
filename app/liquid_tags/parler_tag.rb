@@ -27,7 +27,6 @@ class ParlerTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    puts id
     id =~ /\A(https:\/\/www.parler.io\/audio\/\d{1,11}\/[a-zA-Z0-9]{11,40}.[0-9a-zA-Z-]{11,36}.mp3)\Z/
   end
 end

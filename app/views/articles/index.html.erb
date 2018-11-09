@@ -174,7 +174,7 @@
         </p>
       </div>
     </div>
-    <%= render "articles/user_metadata" %>
+    <%= render "articles/user_metadata", context: "profile" %>
   </div>
 <% elsif @tag %>
   <style>
@@ -398,7 +398,7 @@
 </div>
 
 
-<script async>
+<script defer>
   var isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
   if (isTouchDevice) {
     function hasClass(el, cls) {

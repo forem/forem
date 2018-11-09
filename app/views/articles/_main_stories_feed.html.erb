@@ -12,10 +12,10 @@
               <% end %>
             </h2>
             <div class="button-container">
-              <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" data-no-instant>
+              <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" aria-label="Sign in with Twitter." data-no-instant>
                 TWITTER
               </a>
-              <a href="/users/auth/github?state=in-feed-cta" class="cta cta-button" data-no-instant>
+              <a href="/users/auth/github?state=in-feed-cta" class="cta cta-button" aria-label="Sign in with GitHub." data-no-instant>
                 GITHUB
               </a>
             </div>
