@@ -143,10 +143,11 @@ class Article < ApplicationRecord
           profile_image_90: ProfileImage.new(user).get(90) }
       end
       attribute :organization do
-        return nil unless organization.present?
-        { slug: organization.slug,
-          name: organization.name,
-          profile_image_90: ProfileImage.new(organization).get(90) }
+        if organization
+          { slug: organization.slug,
+            name: organization.name,
+            profile_image_90: ProfileImage.new(organization).get(90) }
+        end
       end
       tags do
         [tag_list,
