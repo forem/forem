@@ -142,10 +142,12 @@ class Article < ApplicationRecord
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
       end
-      attribute :organization do
-        { slug: organization.slug,
-          name: organization.name,
-          profile_image_90: ProfileImage.new(organization).get(90) }
+      if organization
+        attribute :organization do
+          { slug: organization.slug,
+            name: organization.name,
+            profile_image_90: ProfileImage.new(organization).get(90) }
+        end
       end
       tags do
         [tag_list,
