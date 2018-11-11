@@ -182,8 +182,7 @@ class Onboarding extends Component {
           this.setState(prevState => ({
             allTags: prevState.allTags.map(currentTag => {
               const newTag = currentTag;
-              newTag.following =
-                currentTag.name === tag.name ? json.outcome : 'followed';
+              newTag.following = json.outcome === 'followed';
               return newTag;
               // add in optimistic rendering
             }),
@@ -218,9 +217,14 @@ class Onboarding extends Component {
 
   handleCheckUser(user) {
     const { checkedUsers } = this.state;
+    const newCheckedUsers = checkedUsers.slice();
     const index = checkedUsers.indexOf(user);
-    const newCheckedUsers = (index > -1) ? [...checkedUsers].splice(index, 1) : checkedUsers.concat(user);
 
+    if(index > -1){
+      checkedUsers.splice(index,1);
+    } else {
+      newCheckedUsers.push(user);
+    }
     this.setState({ checkedUsers: newCheckedUsers });
   }
 
@@ -246,7 +250,7 @@ class Onboarding extends Component {
   }
 
   handleNextHover() {
-    const { pageNumber, users } = this.statel;
+    const { pageNumber, users } = this.state;
     if (pageNumber === 2 && users.length === 0) {
       this.getUsersToFollow();
     }
