@@ -60,30 +60,24 @@ const Channels = ({
     }
 
     let content = '';
-
+    const contentInner = (
+      <span
+        data-channel-slug={modififedSlug}
+        className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicatorClass}`}
+        data-channel-id={channel.id}
+      >
+        {indicatorPic}
+      </span>
+    );
     if (expanded) {
       content = (
         <span>
-          <span
-            data-channel-slug={modififedSlug}
-            className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicatorClass}`}
-            data-channel-id={channel.id}
-          >
-            {indicatorPic}
-          </span>
+          {contentInner}
           {name}
         </span>
       );
     } else if (channel.channel_type === 'direct') {
-      content = (
-        <span
-          data-channel-slug={modififedSlug}
-          className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicatorClass}`}
-          data-channel-id={channel.id}
-        >
-          {indicatorPic}
-        </span>
-      );
+      content = contentInner;
     } else {
       content = name;
     }
@@ -143,9 +137,11 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>{' '}
+        </span>
+        {' '}
         Welcome to
-        <b>DEV Connect</b>! You may message anyone you mutually follow.
+        <b>DEV Connect</b>
+! You may message anyone you mutually follow.
       </div>
     );
   }
