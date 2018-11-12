@@ -133,7 +133,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date, :flare_tag
+        :readable_publish_date, :flare_tag, :user_id, :organization_id
       attribute :published_at_int do
         published_at.to_i
       end
@@ -141,6 +141,13 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
+      end
+      attribute :organization do
+        if organization
+          { slug: organization.slug,
+            name: organization.name,
+            profile_image_90: ProfileImage.new(organization).get(90) }
+        end
       end
       tags do
         [tag_list,
