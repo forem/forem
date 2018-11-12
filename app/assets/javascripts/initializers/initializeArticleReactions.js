@@ -101,8 +101,8 @@ function reactToArticle(articleId, reaction) {
     showModal("react-to-article");
     return;
   } else {
-     // Optimistically toggle reaction
     toggleReaction();
+    document.getElementById("reaction-butt-" + reaction).disabled = true;
   }
 
   function createFormdata() {
@@ -117,17 +117,20 @@ function reactToArticle(articleId, reaction) {
     return formData;
   }
 
-
   getCsrfToken()
     .then(sendFetch("reaction-creation", createFormdata()))
     .then(function (response) {
       if (response.status === 200) {
-        return response.json().then();
+        return response.json().then(() => {
+          document.getElementById("reaction-butt-" + reaction).disabled = false;
+        });
       } else {
         toggleReaction();
+        document.getElementById("reaction-butt-" + reaction).disabled = false;
       }
     })
     .catch(function (error) {
-        toggleReaction();
+      toggleReaction();
+      document.getElementById("reaction-butt-" + reaction).disabled = false;
     })
 }
