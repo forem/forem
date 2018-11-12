@@ -122,6 +122,13 @@
     <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
     <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX %}</code>
 
+    <dl>
+    <dt><code>default-tab</code></dt>
+    <dd>
+      Add default-tab parameter to your CodePen embed tag. Default to <i>result</i><br/>
+      <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</code>
+    </dd>
+
     <h3><strong>RunKit Embed</strong></h3>
     <p>Put executable code within a runkit liquid block, as follows:</p>
     <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %} <br></pre>
