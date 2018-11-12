@@ -1,0 +1,272 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Channels /> expanded with chat channels should render and test snapshot 1`] = `
+<div
+  class="chatchannels"
+>
+  <div
+    class="chatchannels__channelslist"
+    id="chatchannels__channelslist"
+  >
+    <button
+      class="chatchanneltabbutton"
+      data-channel-id={12345}
+      data-channel-slug="0"
+      onClick={[Function]}
+    >
+      <span
+        class="chatchanneltab chatchanneltab--active chatchanneltab--new"
+        data-channel-id={12345}
+        data-channel-slug="0"
+        style={
+          Object {
+            "border": "1px solid #4e57ef",
+            "boxShadow": "3px 3px 0px #4e57ef",
+          }
+        }
+      >
+        <span>
+          <span
+            class="chatchanneltabindicator chatchanneltabindicator--new"
+            data-channel-id={12345}
+            data-channel-slug="0"
+          >
+            <img
+              src=""
+            />
+          </span>
+          channel name 1
+        </span>
+      </span>
+    </button>
+    <button
+      class="chatchanneltabbutton"
+      data-channel-id={12345}
+      data-channel-slug="@1"
+      onClick={[Function]}
+    >
+      <span
+        class="chatchanneltab chatchanneltab--active chatchanneltab--new"
+        data-channel-id={12345}
+        data-channel-slug="@1"
+        style={
+          Object {
+            "border": "1px solid #222222",
+            "boxShadow": "3px 3px 0px #222222",
+          }
+        }
+      >
+        <span>
+          <span
+            class="chatchanneltabindicator chatchanneltabindicator--new"
+            data-channel-id={12345}
+            data-channel-slug="@1"
+          >
+            <img
+              class="chatchanneltabindicatordirectimage"
+              src="fake_profile_pic"
+            />
+          </span>
+          @1
+        </span>
+      </span>
+    </button>
+    <button
+      class="chatchanneltabbutton"
+      data-channel-id={67890}
+      data-channel-slug="2"
+      onClick={[Function]}
+    >
+      <span
+        class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-id={67890}
+        data-channel-slug="2"
+        style={
+          Object {
+            "border": "1px solid transparent",
+            "boxShadow": "3px 3px 0px transparent",
+          }
+        }
+      >
+        <span>
+          <span
+            class="chatchanneltabindicator chatchanneltabindicator--old"
+            data-channel-id={67890}
+            data-channel-slug="2"
+          >
+            <img
+              src=""
+            />
+          </span>
+          group channel 3
+        </span>
+      </span>
+    </button>
+  </div>
+  <div
+    class="chatchannels__config"
+  >
+    <img
+      src=""
+      style={
+        Object {
+          "height": "18px",
+        }
+      }
+    />
+    <div
+      class="chatchannels__configmenu"
+    >
+      <a
+        href="/settings"
+      >
+        DEV Settings
+      </a>
+      <a
+        href="/report-abuse"
+      >
+        Report Abuse
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Channels /> expanded without chat channels should render and test snapshot 1`] = `
+<div
+  class="chatchannels"
+>
+  <div
+    class="chatchannels__channelslist"
+    id="chatchannels__channelslist"
+  >
+    <div
+      class="chatchannels__channelslistheader"
+    >
+      👋 Welcome to 
+      <b>
+        DEV Connect
+      </b>
+      ! You may message anyone you mutually follow.
+    </div>
+  </div>
+  <div
+    class="chatchannels__config"
+  >
+    <img
+      src=""
+      style={
+        Object {
+          "height": "18px",
+        }
+      }
+    />
+    <div
+      class="chatchannels__configmenu"
+    >
+      <a
+        href="/settings"
+      >
+        DEV Settings
+      </a>
+      <a
+        href="/report-abuse"
+      >
+        Report Abuse
+      </a>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<Channels /> not expanded with chat channels should render and test snapshot 1`] = `
+<div
+  class="chatchannels"
+>
+  <div
+    class="chatchannels__channelslist"
+    id="chatchannels__channelslist"
+  >
+    <button
+      class="chatchanneltabbutton"
+      data-channel-id={12345}
+      data-channel-slug="0"
+      onClick={[Function]}
+    >
+      <span
+        class="chatchanneltab chatchanneltab--active chatchanneltab--new"
+        data-channel-id={12345}
+        data-channel-slug="0"
+        style={
+          Object {
+            "border": "1px solid #4e57ef",
+            "boxShadow": "3px 3px 0px #4e57ef",
+          }
+        }
+      >
+        channel name 1
+      </span>
+    </button>
+    <button
+      class="chatchanneltabbutton"
+      data-channel-id={12345}
+      data-channel-slug="@1"
+      onClick={[Function]}
+    >
+      <span
+        class="chatchanneltab chatchanneltab--active chatchanneltab--new"
+        data-channel-id={12345}
+        data-channel-slug="@1"
+        style={
+          Object {
+            "border": "1px solid #222222",
+            "boxShadow": "3px 3px 0px #222222",
+          }
+        }
+      >
+        <span
+          class="chatchanneltabindicator chatchanneltabindicator--new"
+          data-channel-id={12345}
+          data-channel-slug="@1"
+        >
+          <img
+            class="chatchanneltabindicatordirectimage"
+            src="fake_profile_pic"
+          />
+        </span>
+      </span>
+    </button>
+    <button
+      class="chatchanneltabbutton"
+      data-channel-id={67890}
+      data-channel-slug="2"
+      onClick={[Function]}
+    >
+      <span
+        class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-id={67890}
+        data-channel-slug="2"
+        style={
+          Object {
+            "border": "1px solid transparent",
+            "boxShadow": "3px 3px 0px transparent",
+          }
+        }
+      >
+        group channel 3
+      </span>
+    </button>
+  </div>
+</div>
+`;
+
+exports[`<Channels /> not expanded without chat channels should render and test snapshot 1`] = `
+<div
+  class="chatchannels"
+>
+  <div
+    class="chatchannels__channelslist"
+    id="chatchannels__channelslist"
+  />
+</div>
+`;
