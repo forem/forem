@@ -163,20 +163,22 @@
       font-size:1.25em;
       border:0px;
       border-radius:100px;
-      padding: 11px 38px;
+      padding: 6px 38px;
       margin-top: 20px;
       background: white;
       color: $black;
       font-family: $helvetica-condensed;
       font-weight: bold;
-      border: 2px solid darken($light-medium-gray, 20%);
       text-align: center;
       font-stretch: condensed;
       box-shadow: $light-shadow;
       margin-bottom: 5px;
       &:hover {
         box-shadow: $dark-shadow;
-        transition: all 0.1s;
+        padding: 7px 39px;
+        margin-bottom: 4px;
+        margin-top: 19px;
+        transition: all 0.3s;
       }
     }
   }
