@@ -22,24 +22,39 @@ exports[`<View /> should render and test snapshot (no channel) 1`] = `
 `;
 
 exports[`<View /> should render and test snapshot (with channel) 1`] = `
-RenderContext {
-  "0": VNode {
-    "attributes": Object {
-      "channels": Array [
-        Object {
-          "channel_name": "name",
-          "description": "some description",
-          "membership_id": "12345",
-        },
-      ],
-      "onAcceptInvitation": [Function],
-      "onDeclineInvitation": [Function],
-      "onViewExit": [Function],
-    },
-    "children": Array [],
-    "key": undefined,
-    "nodeName": [Function],
-  },
-  "length": 1,
-}
+preact-render-spy (1 nodes)
+-------
+<div class="chatNonChatView">
+  <div class="container">
+    <button
+      class="chatNonChatView_exitbutton"
+      data-content="exit"
+      onClick={[Function onViewExitFake]}
+    >
+      ×
+    </button>
+    <h1>Channel Invitations 🤗</h1>
+    <div class="chatNonChatView_contentblock">
+      <h2>name</h2>
+      <div>
+        <em>some description</em>
+      </div>
+      <button
+        class="cta"
+        onClick={[Function handleInvitationAcceptFake]}
+        data-content="12345"
+      >
+        Accept
+      </button>
+      <button
+        class="cta"
+        onClick={[Function handleInvitationDeclineFake]}
+        data-content="12345"
+      >
+        Decline
+      </button>
+    </div>
+  </div>
+</div>
+
 `;
