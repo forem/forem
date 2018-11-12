@@ -140,7 +140,7 @@ const Channels = ({
         </span>
         {' '}
         Welcome to
-        <b>DEV Connect</b>
+        <b> DEV Connect</b>
 ! You may message anyone you mutually follow.
       </div>
     );

@@ -13,6 +13,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
       data-channel-id={12345}
       data-channel-slug="0"
       onClick={[Function]}
+      type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--active chatchanneltab--new"
@@ -32,6 +33,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
             data-channel-slug="0"
           >
             <img
+              alt="channel name 1"
               src=""
             />
           </span>
@@ -44,6 +46,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
       data-channel-id={12345}
       data-channel-slug="@1"
       onClick={[Function]}
+      type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--active chatchanneltab--new"
@@ -63,6 +66,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
             data-channel-slug="@1"
           >
             <img
+              alt="group channel 2"
               class="chatchanneltabindicatordirectimage"
               src="fake_profile_pic"
             />
@@ -76,6 +80,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
       data-channel-id={67890}
       data-channel-slug="2"
       onClick={[Function]}
+      type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
@@ -95,6 +100,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
             data-channel-slug="2"
           >
             <img
+              alt="group channel 3"
               src=""
             />
           </span>
@@ -107,6 +113,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
     class="chatchannels__config"
   >
     <img
+      alt=""
       src=""
       style={
         Object {
@@ -143,9 +150,15 @@ exports[`<Channels /> expanded without chat channels should render and test snap
     <div
       class="chatchannels__channelslistheader"
     >
-      👋 Welcome to 
+      <span
+        aria-label="emoji"
+        role="img"
+      >
+        👋
+      </span>
+       Welcome to
       <b>
-        DEV Connect
+         DEV Connect
       </b>
       ! You may message anyone you mutually follow.
     </div>
@@ -154,6 +167,7 @@ exports[`<Channels /> expanded without chat channels should render and test snap
     class="chatchannels__config"
   >
     <img
+      alt=""
       src=""
       style={
         Object {
@@ -192,6 +206,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
       data-channel-id={12345}
       data-channel-slug="0"
       onClick={[Function]}
+      type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--active chatchanneltab--new"
@@ -212,6 +227,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
       data-channel-id={12345}
       data-channel-slug="@1"
       onClick={[Function]}
+      type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--active chatchanneltab--new"
@@ -230,6 +246,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
           data-channel-slug="@1"
         >
           <img
+            alt="group channel 2"
             class="chatchanneltabindicatordirectimage"
             src="fake_profile_pic"
           />
@@ -241,6 +258,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
       data-channel-id={67890}
       data-channel-slug="2"
       onClick={[Function]}
+      type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
