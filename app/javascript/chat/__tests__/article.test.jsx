@@ -52,7 +52,7 @@ describe('<Article />', () => {
   });
 
   it('should have the proper elements, attributes and values', async () => {
-    await fetch.mockResponse(sampleResponse);
+    await fetch.mockResponseOnce(sampleResponse);
     const context = shallow(getArticle());
 
     // checks that article details are placed at their appropriate elements
