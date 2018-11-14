@@ -132,6 +132,25 @@
     border-radius:3px;
     position:relative;
     background: white;
+    &.single-article-unpublished {
+      background: lighten($yellow, 20%);
+    }
+    .dashboard-collection-org-details {
+      .dashboard-top-pill {
+        background: darken($light-gray, 6%);
+        margin-right: 5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 0.9em;
+      }
+    }
+    .dashboard-meta-details{
+      font-size: 0.85em;
+      padding: 3px 0px 6px;
+      color: $medium-gray;
+    }
     a{
       color: $black;
       &.block-link{
@@ -165,18 +184,20 @@
       color:rgb(67, 78, 87);
     }
     .dashboard-actions{
-      padding: 5px 0px;
+      padding: 7px 0px 10px;
     }
     .pill{
       background:$bold-blue;
-      padding:2px 14px;
-      border-radius:3px;
+      padding:4px 20px;
+      border-radius:100px;
       color:white;
       margin-right:5px;
-      font-size:13px;
+      font-size:14px;
+      border: 2px solid transparent;
       &.yellow{
         background:$yellow;
         color:$black;
+        border: 2px solid $black;
       }
       &.green{
         background: $green;
