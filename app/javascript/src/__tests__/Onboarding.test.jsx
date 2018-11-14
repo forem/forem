@@ -140,7 +140,7 @@ describe('<Onboarding />', () => {
       expect(context).toMatchSnapshot();
     });
 
-    test.only('each tag can be clicked', async () => {
+    test('each tag can be clicked', async () => {
       fetch.mockResponse(JSON.stringify({ outcome: 'followed' }));
       context.find('.onboarding-tag-link').map(tag => {
         tag.simulate('click');
