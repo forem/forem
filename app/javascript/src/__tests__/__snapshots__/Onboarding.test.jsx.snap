@@ -25,7 +25,6 @@ FindWrapper {
     "attributes": Object {
       "className": "button cta",
       "onClick": [Function],
-      "type": "button",
     },
     "children": Array [
       " BACK ",
@@ -39,7 +38,6 @@ FindWrapper {
       "onClick": [Function],
       "onFocus": [Function],
       "onMouseOver": [Function],
-      "type": "button",
     },
     "children": Array [
       "NEXT",
