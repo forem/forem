@@ -1,0 +1,22 @@
+<div class="single-article">
+  <a href="<%= article.current_state_path %>"><h2><%= article.title %></h2></a>
+  <div class="dashboard-actions">
+    <% if !article.published %>
+      <span class="pill cta yellow">DRAFT</span>
+    <% end %>
+    <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
+    <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+    <% if article.published && current_user.can_view_analytics? %>
+      <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
+        <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> reactions
+      </span>
+    <% end %>
+  </div>
+  <% if org_admin %>
+    <%= form_for(article) do |f| %>
+      <input type="hidden" name="destination" value="/dashboard" />
+      AUTHOR: <%= f.select(:user_id, options_for_select(@user.organization.users.map {|x| [x.name, x.id] }, article.user_id )) %>
+      <%= f.submit "SUBMIT AUTHOR CHANGE", class:"cta pill black" %>
+    <% end %>
+  <% end %>
+</div>
