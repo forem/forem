@@ -20,7 +20,6 @@ module Exporter
 
     def whitelisted_attributes
       %i[
-        body_html
         body_markdown
         cached_tag_list
         cached_user_name
@@ -34,8 +33,6 @@ module Exporter
         feed_source_url
         language
         last_comment_at
-        lat
-        long
         main_image
         main_image_background_hex_color
         path
@@ -49,7 +46,6 @@ module Exporter
         slug
         social_image
         title
-        updated_at
         video
         video_closed_caption_track_url
         video_code
