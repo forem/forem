@@ -223,7 +223,7 @@ class Onboarding extends Component {
     const index = checkedUsers.indexOf(user);
 
     if(index > -1){
-      checkedUsers.splice(index,1);
+      newCheckedUsers.splice(index,1);
     } else {
       newCheckedUsers.push(user);
     }
@@ -260,17 +260,18 @@ class Onboarding extends Component {
 
   handleNextButton() {
     const {
-      pageNumber,
       users,
       articles,
       checkedUsers,
       profileInfo,
     } = this.state;
+    let { pageNumber } = this.state;
     if (pageNumber === 2 && users.length === 0 && articles.length === 0) {
       this.getUsersToFollow();
     }
     if (pageNumber < 5) {
-      this.setState({ pageNumber: pageNumber + 1 });
+      pageNumber += 1;
+      this.setState({ pageNumber });
       if (pageNumber === 4 && checkedUsers.length > 0) {
         this.handleBulkFollowUsers(checkedUsers);
       } else if (pageNumber === 5) {
