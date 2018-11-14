@@ -10,9 +10,10 @@ function flushPromises() {
 }
 
 describe('<Onboarding />', () => {
-  afterEach(() => {
+  beforeEach(() => {
     document.body.setAttribute('data-user', null);
-  });
+    fetch.resetMocks();
+  })
 
   const fakeTagResponse = JSON.stringify([
     {
@@ -59,7 +60,7 @@ describe('<Onboarding />', () => {
 
   describe('when user is not logged in', () => {
     beforeEach(() => {
-      fetch.mockResponseOnce(fakeTagResponse);
+      fetch.once(fakeTagResponse);
       document.body.setAttribute(
         'data-user',
         JSON.stringify({ saw_onboarding: true }),
@@ -82,7 +83,7 @@ describe('<Onboarding />', () => {
   describe('Welcome page', () => {
     let context;
     beforeEach(async () => {
-      fetch.mockResponseOnce(fakeTagResponse);
+      fetch.once(fakeTagResponse);
       document.body.setAttribute('data-user', dataUser);
       context = deep(<Onboarding />);
       await flushPromises();
@@ -108,7 +109,7 @@ describe('<Onboarding />', () => {
     document.body.appendChild(meta);
 
     beforeEach(async () => {
-      fetch.mockResponseOnce(fakeTagResponse);
+      fetch.once(fakeTagResponse);
       document.body.setAttribute('data-user', dataUser);
       context = deep(<Onboarding />);
       context.setState({ pageNumber: 2 });
@@ -129,7 +130,7 @@ describe('<Onboarding />', () => {
     });
 
     test('NEXT button works', async () => {
-      fetch.mockResponseOnce(fakeUsersToFollowResponse);
+      fetch.once(fakeUsersToFollowResponse);
       context
         .find('.button')
         .at(1)
@@ -139,10 +140,12 @@ describe('<Onboarding />', () => {
       expect(context).toMatchSnapshot();
     });
 
-    test('each tag can be clicked', () => {
+    test.only('each tag can be clicked', async () => {
+      fetch.mockResponse(JSON.stringify({ outcome: 'followed' }));
       context.find('.onboarding-tag-link').map(tag => {
         tag.simulate('click');
       });
+      await flushPromises();
       expect(context.state('allTags').map(tag => tag.following)).toEqual([
         true,
         true,
@@ -150,11 +153,13 @@ describe('<Onboarding />', () => {
       ]);
     });
 
-    test('each tag can be clicked (in weird combinations)', () => {
+    test('each tag can be clicked (in weird combinations)', async () => {
+      fetch.mockResponse(JSON.stringify({ outcome: 'followed' }));
       context
         .find('.onboarding-tag-link')
         .at(1)
         .simulate('click');
+      await flushPromises();
       expect(context.state('allTags').map(tag => tag.following)).toEqual([
         false,
         true,
@@ -166,10 +171,10 @@ describe('<Onboarding />', () => {
   describe('Follow dev members page', () => {
     let context;
     beforeEach(async () => {
-      fetch.mockResponseOnce(fakeTagResponse);
+      fetch.once(fakeTagResponse);
       document.body.setAttribute('data-user', dataUser);
       context = deep(<Onboarding />);
-      fetch.mockResponseOnce(fakeUsersToFollowResponse);
+      fetch.once(fakeUsersToFollowResponse);
       context.setState({ pageNumber: 2 });
       context
         .find('.button')
@@ -191,11 +196,13 @@ describe('<Onboarding />', () => {
       expect(context).toMatchSnapshot();
     });
 
-    test('NEXT button works', () => {
+    test('NEXT button works', async () => {
+      fetch.once(JSON.stringify({}));
       context
         .find('.button')
         .at(1)
         .simulate('click');
+      await flushPromises();
       expect(context.state('pageNumber')).toEqual(4);
       expect(context).toMatchSnapshot();
     });
@@ -204,7 +211,7 @@ describe('<Onboarding />', () => {
   describe('User info page', () => {
     let context;
     beforeEach(async () => {
-      fetch.mockResponseOnce(fakeTagResponse);
+      fetch.once(fakeTagResponse);
       document.body.setAttribute('data-user', dataUser);
       context = deep(<Onboarding />);
       context.setState({ pageNumber: 4 });
@@ -215,11 +222,13 @@ describe('<Onboarding />', () => {
       expect(context).toMatchSnapshot();
     });
 
-    test('NEXT button works', () => {
+    test('NEXT button works', async () => {
+      fetch.once({})
       context
         .find('.button')
         .at(1)
         .simulate('click');
+      await flushPromises()
       expect(context.state('pageNumber')).toEqual(5);
     });
 
@@ -231,7 +240,8 @@ describe('<Onboarding />', () => {
       expect(context.state('pageNumber')).toEqual(3);
     });
 
-    test('forms can be filled and submitted', () => {
+    test('forms can be filled and submitted', async () => {
+      fetch.once({});
       const targets = [
         'summary',
         'location',
@@ -251,6 +261,7 @@ describe('<Onboarding />', () => {
         .find('.button')
         .at(1)
         .simulate('click');
+      await flushPromises();
       expect(context.state('pageNumber')).toEqual(5);
       const idealResult = targets.reduce((accu, item) => {
         accu[item] = 'TEST';
@@ -263,7 +274,7 @@ describe('<Onboarding />', () => {
   describe('Final page', () => {
     let context;
     beforeEach(async () => {
-      fetch.mockResponseOnce(fakeTagResponse);
+      fetch.once(fakeTagResponse);
       document.body.setAttribute('data-user', dataUser);
       const meta = document.createElement('meta');
       meta.setAttribute('name', 'csrf-token');
@@ -277,16 +288,18 @@ describe('<Onboarding />', () => {
       expect(context).toMatchSnapshot();
     });
 
-    it('special next button exists and should reroute user', () => {
+    it('special next button exists and should reroute user', async () => {
+      fetch.once({})
       const next = context.find('.button').at(1);
       expect(next.text()).toEqual("LET'S GO");
       next.simulate('click');
+      await flushPromises();
       expect(context.state('pageNumber')).toEqual(5);
       expect(context).toMatchSnapshot();
     });
 
     it('sends proper update on close', async () => {
-      fetch.mockResponseOnce(JSON.stringify({ outcome: 'onboarding closed' }));
+      fetch.once(JSON.stringify({ outcome: 'onboarding closed' }));
       context
         .find('.button')
         .at(1)

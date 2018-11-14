@@ -113,6 +113,8 @@ class Onboarding extends Component {
         if (response.ok) {
           this.setState({ followRequestSent: true });
         }
+      }).catch(err => {
+        console.log(err);
       });
     }
   }
