@@ -1,12 +1,28 @@
-<div class="single-article">
+<div class="single-article <%= "single-article-unpublished" unless article.published %>">
+  <div class="dashboard-collection-org-details">
+    <% if article.organization_id %>
+      <span class="dashboard-top-pill"><%= article.organization&.name %></span>
+    <% end %>
+    <% if article.collection_id %>
+      <span class="dashboard-top-pill"><strong>Series:</strong> <%= article.series %></span>
+    <% end %>
+  </div>
   <a href="<%= article.current_state_path %>"><h2><%= article.title %></h2></a>
+  <div class="dashboard-meta-details">
+    <% if article.published %>
+      <%= article.readable_publish_date %>
+      <% article.cached_tag_list_array.each do |tag| %>
+        #<%= tag %>
+      <% end %>
+    <% end %>
+  </div>
   <div class="dashboard-actions">
     <% if !article.published %>
-      <span class="pill cta yellow">DRAFT</span>
+      <a href="<%= article.current_state_path %>" class="pill cta yellow">DRAFT</a>
     <% end %>
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
-    <% if article.published && current_user.can_view_analytics? %>
+    <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> reactions // <%= article.comments_count %> comments
       </span>
