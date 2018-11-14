@@ -182,7 +182,9 @@ class Onboarding extends Component {
           this.setState(prevState => ({
             allTags: prevState.allTags.map(currentTag => {
               const newTag = currentTag;
-              newTag.following = json.outcome === 'followed';
+              if (currentTag.name === tag.name) {
+                newTag.following = json.outcome === 'followed';
+              }
               return newTag;
               // add in optimistic rendering
             }),
