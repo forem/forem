@@ -6,13 +6,12 @@ import OnboardingWelcomeThread from './components/OnboardingWelcomeThread';
 import cancelSvg from '../../assets/images/cancel.svg';
 import OnboardingProfile from './components/OnboardingProfile';
 
-const getContentOfToken = token =>
-  document.querySelector(`meta[name='${token}']`).content;
+const getContentOfToken = token => document.querySelector(`meta[name='${token}']`).content;
 const getFormDataAndAppend = array => {
   const form = new FormData();
   array.forEach(item => form.append(item.key, item.value));
   return form;
-};
+}
 
 class Onboarding extends Component {
   constructor() {
@@ -26,6 +25,8 @@ class Onboarding extends Component {
     this.getUserTags = this.getUserTags.bind(this);
     this.handleCheckAllUsers = this.handleCheckAllUsers.bind(this);
     this.handleCheckUser = this.handleCheckUser.bind(this);
+    this.handleSaveAllArticles = this.handleSaveAllArticles.bind(this);
+    this.handleSaveArticle = this.handleSaveArticle.bind(this);
     this.handleProfileChange = this.handleProfileChange.bind(this);
     this.getUsersToFollow = this.getUsersToFollow.bind(this);
     this.state = {
@@ -39,14 +40,14 @@ class Onboarding extends Component {
       articles: [],
       savedArticles: [],
       saveRequestSent: false,
-      profileInfo: {},
+      profileInfo: {}
     };
   }
 
   componentDidMount() {
     this.updateUserData();
     this.getUserTags();
-    document.getElementsByTagName('body')[0].classList.add('modal-open');
+    document.getElementsByTagName("body")[0].classList.add("modal-open");
   }
 
   getUserTags() {
@@ -98,9 +99,7 @@ class Onboarding extends Component {
   handleBulkFollowUsers(users) {
     if (this.state.checkedUsers.length > 0 && !this.state.followRequestSent) {
       const csrfToken = getContentOfToken('csrf-token');
-      const formData = getFormDataAndAppend([
-        { key: 'users', value: JSON.stringify(users) },
-      ]);
+      const formData = getFormDataAndAppend([{ key: 'users', value: JSON.stringify(users) }]);
 
       fetch('/api/follows', {
         method: 'POST',
@@ -113,33 +112,25 @@ class Onboarding extends Component {
         if (response.ok) {
           this.setState({ followRequestSent: true });
         }
-      }).catch(err => {
-        console.log(err);
       });
     }
   }
 
   handleUserProfileSave() {
-    const csrfToken = getContentOfToken('csrf-token');
-    const formData = getFormDataAndAppend([
-      { key: 'user', value: JSON.stringify(this.state.profileInfo) },
-    ]);
+      const csrfToken = getContentOfToken('csrf-token');
+      const formData = getFormDataAndAppend([{ key: 'user', value: JSON.stringify(this.state.profileInfo) }]);
 
-    fetch('/onboarding_update', {
-      method: 'PATCH',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-      },
-      body: formData,
-      credentials: 'same-origin',
-    })
-      .then(response => {
+      fetch('/onboarding_update', {
+        method: 'PATCH',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+        },
+        body: formData,
+        credentials: 'same-origin',
+      }).then(response => {
         if (response.ok) {
           this.setState({ saveRequestSent: true });
         }
-      })
-      .catch(err => {
-        console.log(err);
       });
   }
 
@@ -159,7 +150,7 @@ class Onboarding extends Component {
     const formData = getFormDataAndAppend([
       { key: 'followable_type', value: 'Tag' },
       { key: 'followable_id', value: tag.id },
-      { key: 'verb', value: tag.following ? 'unfollow' : 'follow' },
+      { key: 'verb', value: tag.following ? 'unfollow' : 'follow' }
     ]);
 
     this.setState({
@@ -208,9 +199,9 @@ class Onboarding extends Component {
   }
 
   handleProfileChange(event) {
-    const newProfileInfo = this.state.profileInfo;
+    let newProfileInfo = this.state.profileInfo;
     newProfileInfo[event.target.name] = event.target.value;
-    this.setState({ profileInfo: newProfileInfo });
+    this.setState({profileInfo: newProfileInfo})
   }
 
   handleCheckUser(user) {
@@ -222,6 +213,25 @@ class Onboarding extends Component {
       newCheckedUsers.push(user);
     }
     this.setState({ checkedUsers: newCheckedUsers });
+  }
+
+  handleSaveAllArticles() {
+    if (this.state.savedArticles.length < this.state.articles.length) {
+      this.setState({ savedArticles: this.state.articles.slice() });
+    } else {
+      this.setState({ savedArticles: [] });
+    }
+  }
+
+  handleSaveArticle(article) {
+    const newSavedArticles = this.state.savedArticles.slice();
+    if (this.state.savedArticles.indexOf(article) > -1) {
+      const index = newSavedArticles.indexOf(article);
+      newSavedArticles.splice(index, 1);
+    } else {
+      newSavedArticles.push(article);
+    }
+    this.setState({ savedArticles: newSavedArticles });
   }
 
   handleNextHover() {
@@ -242,13 +252,15 @@ class Onboarding extends Component {
       this.setState({ pageNumber: this.state.pageNumber + 1 });
       if (this.state.pageNumber === 4 && this.state.checkedUsers.length > 0) {
         this.handleBulkFollowUsers(this.state.checkedUsers);
-      } else if (this.state.pageNumber === 5) {
+      } else if (
+        this.state.pageNumber === 5
+      ) {
         this.handleUserProfileSave(this.state.profileInfo);
       }
     } else if (this.state.pageNumber === 5) {
       this.closeOnboarding();
     }
-    const sloan = document.getElementById('sloan-mascot-onboarding-area');
+    const sloan = document.getElementById("sloan-mascot-onboarding-area");
   }
 
   handleBackButton() {
