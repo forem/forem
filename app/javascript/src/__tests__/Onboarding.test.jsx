@@ -13,7 +13,7 @@ describe('<Onboarding />', () => {
   beforeEach(() => {
     document.body.setAttribute('data-user', null);
     fetch.resetMocks();
-  })
+  });
 
   const fakeTagResponse = JSON.stringify([
     {
@@ -142,9 +142,7 @@ describe('<Onboarding />', () => {
 
     test('each tag can be clicked', async () => {
       fetch.mockResponse(JSON.stringify({ outcome: 'followed' }));
-      context.find('.onboarding-tag-link').map(tag => {
-        tag.simulate('click');
-      });
+      context.find('.onboarding-tag-link').map(tag => tag.simulate('click'));
       await flushPromises();
       expect(context.state('allTags').map(tag => tag.following)).toEqual([
         true,
@@ -223,12 +221,12 @@ describe('<Onboarding />', () => {
     });
 
     test('NEXT button works', async () => {
-      fetch.once({})
+      fetch.once({});
       context
         .find('.button')
         .at(1)
         .simulate('click');
-      await flushPromises()
+      await flushPromises();
       expect(context.state('pageNumber')).toEqual(5);
     });
 
@@ -263,10 +261,10 @@ describe('<Onboarding />', () => {
         .simulate('click');
       await flushPromises();
       expect(context.state('pageNumber')).toEqual(5);
-      const idealResult = targets.reduce((accu, item) => {
-        accu[item] = 'TEST';
-        return accu;
-      }, {});
+      const idealResult = {};
+      targets.forEach(attr => {
+        idealResult[attr] = 'TEST';
+      });
       expect(context.state('profileInfo')).toEqual(idealResult);
     });
   });
@@ -289,7 +287,7 @@ describe('<Onboarding />', () => {
     });
 
     it('special next button exists and should reroute user', async () => {
-      fetch.once({})
+      fetch.once({});
       const next = context.find('.button').at(1);
       expect(next.text()).toEqual("LET'S GO");
       next.simulate('click');
