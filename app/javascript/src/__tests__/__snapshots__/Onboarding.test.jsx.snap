@@ -86,6 +86,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -104,6 +105,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -162,6 +164,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -180,6 +183,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           LET'S GO
         </button>
@@ -238,6 +242,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -256,6 +261,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           LET'S GO
         </button>
@@ -379,6 +385,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -397,6 +404,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -493,6 +501,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -511,6 +520,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -641,6 +651,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -659,6 +670,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -730,6 +742,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -860,6 +873,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -878,6 +892,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -1001,6 +1016,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -1019,6 +1035,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -1115,6 +1132,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -1133,6 +1151,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -1256,6 +1275,7 @@ preact-render-spy (1 nodes)
       <div class="modal-footer-left">
         <button
           class="button cta"
+          type="button"
           onClick={[Function bound handleBackButton]}
         >
            BACK 
@@ -1274,6 +1294,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
@@ -1345,6 +1366,7 @@ preact-render-spy (1 nodes)
           onClick={[Function bound handleNextButton]}
           onMouseOver={[Function bound handleNextHover]}
           onFocus={[Function bound handleNextHover]}
+          type="button"
         >
           NEXT
         </button>
