@@ -16,7 +16,7 @@
   </button>
   <a class="article-actions-tweet-button"
       target='_blank'
-      href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+      href='https://twitter.com/intent/tweet?text="<%=u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
     <img src="<%= asset_path("twitter.svg") %>" />
   </a>
   <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
