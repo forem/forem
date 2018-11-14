@@ -228,7 +228,7 @@ class Comment < ApplicationRecord
 
   def self.comment_async_bust(commentable, username)
     commentable.touch
-    commentable.touch(:last_comment_at)
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end
@@ -306,12 +306,12 @@ class Comment < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
-    Comment.delay.comment_async_bust(commentable, user.username)
     remove_algolia_index
     reactions.destroy_all
   end
 
   def bust_cache
+    Comment.delay.comment_async_bust(commentable, user.username)
     expire_root_fragment
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable

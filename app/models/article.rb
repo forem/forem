@@ -6,7 +6,7 @@ class Article < ApplicationRecord
 
   acts_as_taggable_on :tags
 
-  attr_accessor :publish_under_org
+  attr_accessor :publish_under_org, :series
 
   belongs_to :user
   belongs_to :job_opportunity, optional: true
@@ -31,6 +31,7 @@ class Article < ApplicationRecord
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
+  validate :validate_collection_permission
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
@@ -132,7 +133,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date, :flare_tag
+        :readable_publish_date, :flare_tag, :user_id, :organization_id
       attribute :published_at_int do
         published_at.to_i
       end
@@ -140,6 +141,13 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
+      end
+      attribute :organization do
+        if organization
+          { slug: organization.slug,
+            name: organization.name,
+            profile_image_90: ProfileImage.new(organization).get(90) }
+        end
       end
       tags do
         [tag_list,
@@ -359,6 +367,16 @@ class Article < ApplicationRecord
   end
   handle_asynchronously :async_score_calc
 
+  def series
+    # name of series article is part of
+    collection&.slug
+  end
+
+  def all_series
+    # all series names
+    user&.collections&.pluck(:slug)
+  end
+
   private
 
   # def send_to_moderator
@@ -387,6 +405,8 @@ class Article < ApplicationRecord
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || token_msg
+    self.collection_id = nil if front_matter["title"].present?
+    self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
       self.automatically_renew = front_matter["automatically_renew"]
     end
@@ -415,6 +435,12 @@ class Article < ApplicationRecord
     end
     if video.present? && !user.has_role?(:video_permission)
       return errors.add(:video, "cannot be added member without permission")
+    end
+  end
+
+  def validate_collection_permission
+    if collection && collection.user_id != user_id
+      errors.add(:collection_id, "must be one you have permission to post to")
     end
   end
 

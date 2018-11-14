@@ -27,6 +27,13 @@
   .sticky-box-connector{
     background: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
   }
+  .primary-sticky-nav-org-cta-link {
+    background-color: <%= user_colors(@actor)[:text] %> !important;
+    color: <%= user_colors(@actor)[:bg] %> !important;
+    <% if user_colors(@actor)[:text].downcase == "#ffffff" %>
+      border: 2px solid <%= user_colors(@actor)[:bg] %> !important;
+    <% end %>
+  }
 </style>
 
 <div class="primary-sticky-nav" id="article-show-primary-sticky-nav">
@@ -50,10 +57,13 @@
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
       <div class="primary-sticky-nav-org-summary">
         <%= @actor.cta_processed_html.html_safe %>
-        <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
-          <%= @actor.cta_button_text.upcase %>
-          <span class="primary-sticky-nav-org-cta-link-domain-small"><%= Addressable::URI.parse(@actor.cta_button_url).domain %></span>
-        </a>
+        <div class="primary-sticky-nav-org-cta-link-wrapper">
+          <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
+            <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
+              <%= @actor.cta_button_text %>
+            </a>
+          <% end %>
+        </div>
       </div>
     <% end %>
   </div>

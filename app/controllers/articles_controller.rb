@@ -45,19 +45,19 @@ class ArticlesController < ApplicationController
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  Article.new(body_markdown: "", cached_tag_list: @tag.name,
-                             processed_html: "")
+                             processed_html: "", user_id: current_user&.id)
                elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
-                             processed_html: "")
+                             processed_html: "", user_id: current_user&.id)
                else
                  skip_authorization
                  if @user&.editor_version == "v2"
-                   Article.new
+                   Article.new(user_id: current_user&.id)
                  else
                    Article.new(
                      body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
-                     processed_html: "",
+                     processed_html: "", user_id: current_user&.id
                    )
                  end
                end

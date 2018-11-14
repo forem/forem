@@ -21,7 +21,6 @@ RSpec.describe ParlerTag, type: :liquid_template do
 
     it "accepts a valid Parler URL" do
       liquid = generate_new_liquid(valid_id)
-      puts liquid
       expect(liquid.render).to eq(generate_iframe(valid_id))
     end
 

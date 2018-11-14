@@ -371,6 +371,10 @@
     @media screen and ( min-width: 600px ){
       width: calc(100% - 40px);
     }
+    button {
+      margin-left: 5px;
+      background: $bold-blue;
+    }
   }
   .articleform__exitbutton{
     position:absolute;
@@ -391,6 +395,15 @@
     font-size: 14px;
     border-radius: 3px;
     font-weight: bold;
+  }
+  .articleform__donebutton{
+    display: block;
+    font-size: 22px;
+    background: $green;
+    color: $black;
+    padding: 10px 40px;
+    margin: 20px auto;
+
   }
   img{
     display: block;

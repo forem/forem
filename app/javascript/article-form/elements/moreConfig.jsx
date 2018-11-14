@@ -11,9 +11,21 @@ export default class MoreConfig extends Component {
     // this.state = {insertionImageUrl: null}
   }
 
+  handleSeriesButtonClick = e => {
+    e.preventDefault();
+    this.props.onConfigChange(e);
+  }
+
   render() {
     const { onExit, passedData, onSaveDraft } = this.props;
     let publishedField = '';
+    let seriesTip = <small>Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)</small>
+    if (passedData.allSeries.length > 0) {
+      const seriesNames = passedData.allSeries.map( name => {
+        return <button name='series' onClick={this.props.onConfigChange} value={name}>{name}</button>
+      })
+      seriesTip = <small>Existing series: {seriesNames}</small>
+    }
     if (passedData.published) {
       publishedField =  <div>
                           <h4>Danger Zone</h4>
@@ -35,6 +47,12 @@ export default class MoreConfig extends Component {
                 <input type="text" value={passedData.canonicalUrl} name="canonicalUrl" onKeyUp={this.props.onConfigChange}/>
               </div>
               <small>Change meta tag <code>canonical_url</code> if this post was first published elsewhere (like your own blog)</small>
+              <div>
+                <label>Series Name</label>
+                <input type="text" value={passedData.series} name="series" onKeyUp={this.props.onConfigChange}/>
+              </div>
+              {seriesTip}
+              <div><button class="articleform__donebutton" onClick={onExit}>Done</button></div>
               {publishedField}
              </div>
   }

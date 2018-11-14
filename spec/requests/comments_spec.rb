@@ -35,6 +35,18 @@ RSpec.describe "Comments", type: :request do
         expect(response).to have_http_status(200)
       end
     end
+
+    context "when the article is unpublished" do
+      before do
+        new_markdown = article.body_markdown.gsub("published: true", "published: false")
+        comment
+        article.update(body_markdown: new_markdown)
+      end
+
+      it "raises a Not Found error" do
+        expect { get comment.path }.to raise_error("Not Found")
+      end
+    end
   end
 
   describe "GET /:username/:slug/comments/:id_code/edit" do

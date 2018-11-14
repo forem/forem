@@ -34,14 +34,14 @@ class Organization < ApplicationRecord
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :cta_button_url,
-    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }, if: :approved
-  validates :cta_button_text, length: { maximum: 12 }
+    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  validates :cta_button_text, length: { maximum: 20 }
   validates :cta_body_markdown, length: { maximum: 256 }
   before_save :remove_at_from_usernames
   after_save  :bust_cache
   before_save :generate_secret
   before_validation :downcase_slug
-  before_validation :evaluate_markdown, if: :approved
+  before_validation :evaluate_markdown
 
   validate :unique_slug_including_users
 
@@ -80,7 +80,7 @@ class Organization < ApplicationRecord
   end
 
   def approved_and_filled_out_cta?
-    approved && cta_body_markdown? && cta_button_text? && cta_button_url?
+    cta_processed_html?
   end
 
   def profile_image_90
