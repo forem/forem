@@ -4,16 +4,16 @@ These prerequisites assume you're working on a Linux-based operating system but 
 
 ### Ruby
 
-1. If you don't already a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
-2. With the Ruby version manager, install Ruby verion listed on our badge. (ie with rbenv: `rbenv install 2.5.3`)
+1. If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
+2. With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.5.3`)
 
-For very detailed rbenv installation directions on several distros, please vist [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
+For very detailed rbenv installation directions on several distros, please visit [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
 
 ### Yarn
 
 There are two ways to install Yarn.
 
-- Yarn's offical [installation guide](https://yarnpkg.com/en/docs/install#debian-stable).
+- Yarn's official [installation guide](https://yarnpkg.com/en/docs/install#debian-stable).
 - [DigitalOcean's detailed tutorial](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-18-04) describes how to install [Node version Manager](https://github.com/creationix/nvm). By installing NVM you can select a Node version (we recommend either LTS or current), the guide will also explain how to install NPM. This way you'll have Node, NPM, and then you can run `npm install -g yarn` to install Yarn.
 
 ### PostgreSQL
@@ -34,7 +34,7 @@ There are more than one way to setup Postgres. For additional configuration, che
 7.  Set up your environment variables/secrets
 
 - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-- This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
+- This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
 - For any key that you wish to enter/replace:
 
 8.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.

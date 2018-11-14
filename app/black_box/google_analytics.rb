@@ -17,7 +17,7 @@ class GoogleAnalytics
   def get_pageviews
     requests = @article_ids.map do |id|
       article = Article.find_by_id(id)
-      make_report_request("ga:pagePath==#{article.path}", "ga:pageviews")
+      make_report_request("ga:pagePath=@#{article.slug}", "ga:pageviews")
     end
     pageviews = fetch_all_results(requests)
     @article_ids.zip(pageviews).to_h
@@ -72,8 +72,6 @@ class GoogleAnalytics
     grr = GetReportsRequest.new(report_requests: report_requests, quota_user: @user_id.to_s)
     response = @client.batch_get_reports(grr)
     response.reports.map do |report|
-      p report.data
-      p report.data
       (report.data.maximums || report.data.totals)[0].values[0]
     end
   end

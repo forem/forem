@@ -222,11 +222,16 @@ class User < ApplicationRecord
       "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
       expires_in: 120.hours,
     ) do
-
-      # More efficient query. May not cover future edge cases.
-      # Should probably only return users who have published lately
-      # But this should be okay for most for now.
       Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
+    end
+  end
+
+  def cached_following_organizations_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
     end
   end
 
