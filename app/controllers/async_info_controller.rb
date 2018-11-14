@@ -17,6 +17,8 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
+    # Updates article analytics periodically:
+    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if rand(20) == 1
     respond_to do |format|
       format.json do
         render json: {
