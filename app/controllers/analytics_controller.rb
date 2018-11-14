@@ -26,7 +26,7 @@ class AnalyticsController < ApplicationController
   end
 
   def fetch_and_update_page_views_and_reaction_counts(qualified_articles)
-    qualified_articles.each_slice(25).to_a.each do |chunk|
+    qualified_articles.each_slice(15).to_a.each do |chunk|
       pageviews = GoogleAnalytics.new(chunk.pluck(:id), current_user.id).get_pageviews
       page_views_obj = pageviews.to_h
       chunk.each do |article|
@@ -45,9 +45,7 @@ class AnalyticsController < ApplicationController
   end
 
   def should_fetch(article)
-    new_reactions = (article.positive_reactions_count > article.previous_positive_reactions_count)
-    random = (rand(80) == 1)
-    new_reactions || random
+    article.positive_reactions_count > article.previous_positive_reactions_count
   end
 
   private

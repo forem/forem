@@ -72,8 +72,6 @@ class GoogleAnalytics
     grr = GetReportsRequest.new(report_requests: report_requests, quota_user: @user_id.to_s)
     response = @client.batch_get_reports(grr)
     response.reports.map do |report|
-      p report.data
-      p report.data
       (report.data.maximums || report.data.totals)[0].values[0]
     end
   end
