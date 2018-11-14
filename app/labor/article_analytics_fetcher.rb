@@ -1,4 +1,8 @@
 class ArticleAnalyticsFetcher
+  def initialize(context = "default")
+    @context = context
+  end
+
   def update_analytics(user_id)
     articles_to_check = Article.where(user_id: user_id, published: true)
     qualified_articles = get_articles_that_qualify(articles_to_check)
@@ -29,6 +33,7 @@ class ArticleAnalyticsFetcher
   end
 
   def should_fetch(article)
+    return true if @context == "force"
     article.positive_reactions_count > article.previous_positive_reactions_count
   end
 end

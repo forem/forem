@@ -8,7 +8,7 @@
     <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% if article.published && current_user.can_view_analytics? %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
-        <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> reactions
+        <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> reactions // <%= article.comments_count %> comments
       </span>
     <% end %>
   </div>

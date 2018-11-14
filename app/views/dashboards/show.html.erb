@@ -27,9 +27,7 @@
   </h1>
 <% end %>
   <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
-      <% if current_user.can_view_analytics? %>
-        <%= render "analytics" %>
-      <% end %>
+      <%= render "analytics" %>
       <% @articles.each do |article| %>
         <%= render "dashboard_article", article: article, org_admin: true %>
       <% end %>
@@ -50,9 +48,7 @@
         <% end %>
     <% end %>
   <% elsif @articles.any? %>
-    <% if current_user.can_view_analytics? %>
-      <%= render "analytics" %>
-    <% end %>
+    <%= render "analytics" %>
     <% if current_user.has_role?(:video_permission) %>
       <a class="video-upload-cta" href="/videos/new" data-no-instant>
         Upload a Video 🎥

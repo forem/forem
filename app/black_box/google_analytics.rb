@@ -17,7 +17,7 @@ class GoogleAnalytics
   def get_pageviews
     requests = @article_ids.map do |id|
       article = Article.find_by_id(id)
-      make_report_request("ga:pagePath==#{article.path}", "ga:pageviews")
+      make_report_request("ga:pagePath=@#{article.slug}", "ga:pageviews")
     end
     pageviews = fetch_all_results(requests)
     @article_ids.zip(pageviews).to_h
