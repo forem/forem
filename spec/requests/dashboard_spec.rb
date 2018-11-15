@@ -50,7 +50,7 @@ RSpec.describe "Dashboards", type: :request do
         article.update(organization_id: organization.id)
         login_as user
         get "/dashboard/organization"
-        expect(response.body).to include CGI.escapeHTML(organization.name.upcase)
+        expect(response.body).to include "#{CGI.escapeHTML(organization.name)} ("
       end
     end
   end
