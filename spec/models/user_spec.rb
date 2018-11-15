@@ -156,6 +156,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "accepts valid https gitlab url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.gitlab_url = "https://gitlab.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid gitlab url" do
+      user.gitlab_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
     it "changes old_username if old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"

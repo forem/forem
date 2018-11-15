@@ -164,6 +164,11 @@
                 <%= inline_svg("medium_icon.svg", class:"icon-img") %>
               </a>
             <% end %>
+            <% if @user.gitlab_url.present? %>
+              <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow">
+                <%= inline_svg("gitlab.svg", class:"icon-img") %>
+              </a>
+            <% end %>
             <% if @user.website_url.present? %>
               <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow">
                 <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
