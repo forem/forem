@@ -181,9 +181,17 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 1. `git clone git@github.com:thepracticaldev/dev.to.git`
 1. Set environment variables above as described in the "Basic Installation"
 1. run `docker-compose build`
-1. run `docker-compose run web rails db:setup`
-1. run `docker-compose up`
+1. run `docker-compose run app ./bin/setup`
+1. run `docker-compose up` to run all services (including jobs) or `docker-compose up web webpacker` for run only web.
 1. That's it! Navigate to `localhost:3000`
+   run `docker-compose run app something` to run rake tasks, rubocop etc, g.e.: `docker-compose run app bundle exec rubocop` or `docker-compose run app bundle exec rails db`
+
+Run tests with docker:
+
+```
+  RAILS_ENV=test docker-compose run app bundle exec rake db:test:prepare
+  RAILS_ENV=test docker-compose run app bundle exec rspec
+```
 
 #### Starting the application
 

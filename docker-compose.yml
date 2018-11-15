@@ -1,29 +1,57 @@
 version: "3"
 services:
-  web: &rails_base
+  app: &app
     build:
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
       context: .
-    ports:
-      - "3000:3000"
     depends_on:
       - db
     environment:
-      RAILS_ENV: development
-      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/postgres
       YARN_INTEGRITY_ENABLED: "false"
+      RAILS_ENV: ${RAILS_ENV:-development}
+      DATABASE_URL: postgres://postgres:mysecretpassword@db:5432/devto_${RAILS_ENV:-development}
+      DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: "true"
+      WEBPACKER_DEV_SERVER_HOST: webpacker
+
     volumes:
-      - .:/usr/src/app
+      - .:/app
+      - bundle:/bundle
+      - node_modules:/app/node_modules
+      - assets:/app/public/assets
+      - packs:/app/public/packs
+      - packs_test:/app/public/packs-test
+
+  web:
+    <<: *app
+    ports:
+      - "3000:3000"
     command: bundle exec rails server -b 0.0.0.0 -p 3000
+
   jobs:
-    ports: []
-    <<: *rails_base
+    <<: *app
     command: rails jobs:work
+
   webpacker:
-    ports: []
-    <<: *rails_base
+    ports:
+      - '3035:3035'
+    <<: *app
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=${RAILS_ENV:-development}
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
     command: ./bin/webpack-dev-server
+
   db:
     image: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
     ports:
     - "5432:5432"
+
+volumes:
+  bundle:
+  postgres:
+  node_modules:
+  assets:
+  packs:
+  packs_test:
