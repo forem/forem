@@ -210,6 +210,7 @@ Rails.application.routes.draw do
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
+  get "/organization-info" => "pages#org_info"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
