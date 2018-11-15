@@ -6,18 +6,23 @@
   max-width:96%;
   margin:auto;
   h1{
-    font-size:22px;
+    font-size: calc(16px + 0.3vw);
     font-family: $helvetica-condensed;
     font-stretch:condensed;
     padding-bottom: 20px;
+    text-align: center;
+    @media screen and ( min-width: 600px ){
+      text-align: left;
+    }
     a{
-      padding: 6px 25px;
+      padding: 4px 20px;
       border-radius: 100px;
-      margin-right: 18px;
+      margin-right: 5px;
       display: inline-block;
       color: $black;
+      background: lighten($light-medium-gray, 5%);
       &:hover{
-        background: lighten($light-medium-gray, 3%);
+        background: $light-medium-gray;
       }
       &.active{
         background: $dark-gray;
@@ -158,10 +163,13 @@
       }
     }
     h2{
-      font-weight:400;
+      font-weight:500;
       margin-bottom:5px;
       margin-top:8px;
-      font-size:36px;
+      font-size:22px;
+      @media screen and ( min-width: 800px ) {
+        font-size:34px;
+      }
       width: 100%;
       img{
         height: 40px;
@@ -194,6 +202,8 @@
       margin-right:5px;
       font-size:14px;
       border: 2px solid transparent;
+      margin-top: 6px;
+      display: inline-block;
       &.yellow{
         background:$yellow;
         color:$black;
