@@ -139,6 +139,10 @@
     <%= f.url_field :medium_url %>
   </div>
   <div class="field">
+    <%= f.label :gitlab_url %>
+    <%= f.url_field :gitlab_url %>
+  </div>
+  <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
     <%= f.submit "SUBMIT", class: "cta" %>

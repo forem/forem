@@ -86,6 +86,9 @@ class User < ApplicationRecord
   validates :medium_url,
               allow_blank: true,
               format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_\@\.]{2,32})\/?\Z/
+  validates :gitlab_url,
+              allow_blank: true,
+              format: /\Ahttps:\/\/(www.gitlab.com|gitlab.com)\/([a-zA-Z0-9_\-\.]{1,100})\/?\Z/
   # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
