@@ -17,11 +17,11 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    if params[:id] == "unmatched_mentee"
-      @user = MentorRelationship.unmatched_mentees.order("RANDOM()").first
-    else
-      @user = User.find(params[:id])
-    end
+    @user = if params[:id] == "unmatched_mentee"
+              MentorRelationship.unmatched_mentees.order("RANDOM()").first
+            else
+              User.find(params[:id])
+            end
     @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
     @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
   end
@@ -126,6 +126,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.stackoverflow_url = nil
     user.behance_url = nil
     user.linkedin_url = nil
+    user.gitlab_url = nil
     user.add_role :banned
     unless user.notes.where(reason: "banned").any?
       user.notes.
