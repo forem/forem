@@ -111,6 +111,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.website_url = ""
     user.summary = ""
     user.location = ""
+    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"
     user.education = ""
     user.employer_name = ""
     user.employer_url = ""
@@ -136,6 +137,7 @@ class Internal::UsersController < Internal::ApplicationController
       comment.reactions.each { |rxn| rxn.delay.destroy! }
       comment.delay.destroy!
     end
+    user.follows.each { |follow| follow.delay.destroy! }
     user.articles.each { |article| article.delay.destroy! }
     user.remove_from_index!
     user.save!
