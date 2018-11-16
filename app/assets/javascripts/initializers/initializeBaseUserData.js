@@ -1,6 +1,6 @@
 function initializeBaseUserData(){
   var user = userData()
-  var userProfileLinkHTML = '<a href="/'+user.username+'"><div class="option prime-option">@'+user.username+'</div></a>'
+  var userProfileLinkHTML = '<a href="/'+user.username+'" id="first-nav-link"><div class="option prime-option">@'+user.username+'</div></a>'
   document.getElementById("user-profile-link-placeholder").innerHTML = userProfileLinkHTML;
   document.getElementById("nav-profile-image").src = user.profile_image_90;
   initializeUserSidebar(user);
