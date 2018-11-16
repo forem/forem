@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181111040732) do
+ActiveRecord::Schema.define(version: 20181116223239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -560,6 +560,7 @@ ActiveRecord::Schema.define(version: 20181111040732) do
     t.float "points", default: 1.0
     t.integer "reactable_id"
     t.string "reactable_type"
+    t.string "status", default: "valid"
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["category"], name: "index_reactions_on_category"

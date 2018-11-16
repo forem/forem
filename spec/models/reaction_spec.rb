@@ -58,6 +58,17 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).not_to be_valid
     end
 
+    it "assigns 0 points if reaction is invalid" do
+      reaction.update(status: "invalid")
+      expect(reaction.points).to eq(0)
+    end
+
+    it "assigns 0 points if reaction is invalid" do
+      reaction_points = reaction.points
+      reaction.update(status: "confirmed")
+      expect(reaction.points).to eq(reaction_points*2)
+    end
+
     context "when user is trusted" do
       before { reaction.user.add_role(:trusted) }
 
