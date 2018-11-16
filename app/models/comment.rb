@@ -122,7 +122,7 @@ class Comment < ApplicationRecord
   def self.rooted_on(commentable_id, commentable_type)
     includes(:user, :commentable).
       select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at).
+             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
       where(commentable_id: commentable_id,
             ancestry: nil,
             commentable_type: commentable_type)
