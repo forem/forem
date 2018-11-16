@@ -5,20 +5,6 @@ class Notification < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[notifiable_id notifiable_type action] }
 
   class << self
-    def send_all(notifiable, action)
-      if notifiable.class.name == "Article"
-        return if notifiable.created_at < Time.new(2017, 0o7, 0o7, 0o0, 0o0, 0o0, "+00:00")
-        notifiable.user.followers.each do |follower|
-          Notification.create(
-            user_id: follower.id,
-            notifiable_id: notifiable.id,
-            notifiable_type: "Article",
-            action: action,
-          )
-        end
-      end
-    end
-
     def send_new_follower_notification(follow)
       json_data = { user: user_data(follow.follower) }
       Notification.create(
@@ -234,6 +220,8 @@ class Notification < ApplicationRecord
       }
     end
   end
+
+  # instance methods
 
   def aggregation_format
     if notifiable_type == "Reaction"

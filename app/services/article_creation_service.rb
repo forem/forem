@@ -19,7 +19,7 @@ class ArticleCreationService
     create_job_opportunity(article)
     if article.save
       if article.published
-        Notification.send_all(article, "Published")
+        Notification.send_to_followers(article, user.followers, "Published")
       end
     end
     article.decorate
