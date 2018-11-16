@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     resources :articles
     resources :tags
     resources :welcome, only: %i[index create]
+    resources :reactions, only: [:update]
     resources :broadcasts
     resources :users do
       member do
