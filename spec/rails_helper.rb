@@ -68,7 +68,7 @@ RSpec.configure do |config|
 
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
-
+    stub_request(:any, /s3.amazonaws.com/).to_rack("dsdsdsds")
     stub_request(:post, /api.fastly.com/).
       to_return(status: 200, body: "", headers: {})
 
