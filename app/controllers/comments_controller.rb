@@ -63,6 +63,7 @@ class CommentsController < ApplicationController
         current_user.update(checked_code_of_conduct: true)
       end
       Mention.create_all(@comment)
+      Notification.send_for_comments(@comment)
       if @comment.invalid?
         @comment.destroy
         render json: { status: "comment already exists" }
@@ -115,6 +116,7 @@ class CommentsController < ApplicationController
   def destroy
     authorize @comment
     @commentable_path = @comment.commentable.path
+    Notification.remove_all(id: @comment.id, class_name: "Comment")
     if @comment.is_childless?
       @comment.destroy
     else

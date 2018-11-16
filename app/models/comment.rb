@@ -28,6 +28,8 @@ class Comment < ApplicationRecord
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
+  after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
+  after_update   :remove_notifications, if: :deleted
   before_validation :evaluate_markdown
   validate :permissions
 
