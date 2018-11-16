@@ -97,7 +97,7 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def strip_user(user)
-    return unless user.comments.where("created_at < ?", 7.days.ago).empty?
+    return unless user.comments.where("created_at < ?", 150.days.ago).empty?
     new_name = "spam_#{rand(10000)}"
     new_username = "spam_#{rand(10000)}"
     if User.find_by(name: new_name) || User.find_by(username: new_username)
@@ -111,6 +111,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.website_url = ""
     user.summary = ""
     user.location = ""
+    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png" if Rails.env.production?
     user.education = ""
     user.employer_name = ""
     user.employer_url = ""
@@ -136,6 +137,7 @@ class Internal::UsersController < Internal::ApplicationController
       comment.reactions.each { |rxn| rxn.delay.destroy! }
       comment.delay.destroy!
     end
+    user.follows.each { |follow| follow.delay.destroy! }
     user.articles.each { |article| article.delay.destroy! }
     user.remove_from_index!
     user.save!
