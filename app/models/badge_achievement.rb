@@ -10,6 +10,7 @@ class BadgeAchievement < ApplicationRecord
   include StreamRails::Activity
   as_activity
 
+  after_create :notify_recipient
   after_create :send_email_notification
   before_validation :render_rewarding_context_message_html
 
@@ -53,6 +54,10 @@ class BadgeAchievement < ApplicationRecord
   end
 
   private
+
+  def notify_recipient
+    Notification.send_new_badge_notification(self)
+  end
 
   def send_email_notification
     if user.class.name == "User" && user.email.present? && user.email_badge_notifications
