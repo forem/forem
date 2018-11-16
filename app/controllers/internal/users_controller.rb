@@ -111,7 +111,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.website_url = ""
     user.summary = ""
     user.location = ""
-    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png"
+    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png" if Rails.env.production?
     user.education = ""
     user.employer_name = ""
     user.employer_url = ""
