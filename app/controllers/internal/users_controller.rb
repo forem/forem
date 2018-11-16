@@ -92,66 +92,18 @@ class Internal::UsersController < Internal::ApplicationController
 
   def banish
     @user = User.find(params[:id])
-    strip_user(@user)
+    Moderator::Banisher.call(admin: current_user, offender: @user)
     redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  def strip_user(user)
-    return unless user.comments.where("created_at < ?", 7.days.ago).empty?
-    new_name = "spam_#{rand(10000)}"
-    new_username = "spam_#{rand(10000)}"
-    if User.find_by(name: new_name) || User.find_by(username: new_username)
-      new_name = "spam_#{rand(10000)}"
-      new_username = "spam_#{rand(10000)}"
-    end
-    user.name = new_name
-    user.username = new_username
-    user.twitter_username = ""
-    user.github_username = ""
-    user.website_url = ""
-    user.summary = ""
-    user.location = ""
-    user.education = ""
-    user.employer_name = ""
-    user.employer_url = ""
-    user.employment_title = ""
-    user.mostly_work_with = ""
-    user.currently_learning = ""
-    user.currently_hacking_on = ""
-    user.available_for = ""
-    user.email_public = false
-    user.facebook_url = nil
-    user.dribbble_url = nil
-    user.medium_url = nil
-    user.stackoverflow_url = nil
-    user.behance_url = nil
-    user.linkedin_url = nil
-    user.add_role :banned
-    unless user.notes.where(reason: "banned").any?
-      user.notes.
-        create!(reason: "banned", content: "spam account", author_id: current_user.id)
-    end
-    user.comments.each do |comment|
-      comment.reactions.each { |rxn| rxn.delay.destroy! }
-      comment.delay.destroy!
-    end
-    user.articles.each { |article| article.delay.destroy! }
-    user.remove_from_index!
-    user.save!
-    CacheBuster.new.bust("/#{user.old_username}")
-    user.update!(old_username: nil)
-  rescue StandardError => e
-    flash[:error] = e.message
   end
 
   private
 
   def user_params
     params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :mentorship_note,
-                                 :ban_from_mentorship)
+                                :offering_mentorship,
+                                :add_mentor,
+                                :add_mentee,
+                                :mentorship_note,
+                                :ban_from_mentorship)
   end
 end

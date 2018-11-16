@@ -13,9 +13,10 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
+  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many :comments,       as: :commentable
   has_many :buffer_updates
-  has_many :reactions,      as: :reactable, dependent: :destroy
+
   has_many  :notifications, as: :notifiable
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
@@ -380,8 +381,7 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    reactions.destroy_all
-    user.delay.resave_articles
+    user.delay.cache_bust_all_articles
     organization&.delay&.resave_articles
   end
 
