@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<GithubRepo /> with fake token should have the proper elements, attributes and values with states set 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div class="activecontent__githubrepo">
+  <div class="activecontent__githubrepoheader">
+    <a href="/Users/benhalpern/dev/dev.to_core/app"></a>
+    someargs
+  </div>
+  <div class="activecontent__githubrepofiles">
+    <div class="activecontent__githubrepofilerow">
+      <a
+        href="https://github.com/username/repositoryname/tree/master/Camera"
+        data-api-url="https://api.github.com/repos/username/repositoryname/contents/Camera?ref=master"
+        data-path="Camera"
+        onClick={[Function value]}
+      >
+        📁 Camera
+      </a>
+    </div>
+    <div class="activecontent__githubrepofilerow">
+      <a
+        href="https://github.com/username/repositoryname/tree/master/Environment"
+        data-api-url="https://api.github.com/repos/username/repositoryname/contents/Environment?ref=master"
+        data-path="Environment"
+        onClick={[Function value]}
+      >
+        📁 Environment
+      </a>
+    </div>
+    <div class="activecontent__githubrepofilerow">
+      <a
+        href="https://github.com/username/repositoryname/tree/master/Interactables"
+        data-api-url="https://api.github.com/repos/username/repositoryname/contents/Interactables?ref=master"
+        data-path="Interactables"
+        onClick={[Function value]}
+      >
+        📁 Interactables
+      </a>
+    </div>
+    <div class="activecontent__githubrepofilerow">
+      <a
+        href="https://github.com/username/repositoryname/tree/master/Level%20Design"
+        data-api-url="https://api.github.com/repos/username/repositoryname/contents/Level%20Design?ref=master"
+        data-path="Level Design"
+        onClick={[Function value]}
+      >
+        Level Design
+      </a>
+    </div>
+    <div class="activecontent__githubrepofilerow">
+      <a
+        href="https://github.com/username/repositoryname/tree/master/Player"
+        data-api-url="https://api.github.com/repos/username/repositoryname/contents/Player?ref=master"
+        data-path="Player"
+        onClick={[Function value]}
+      >
+        Player
+      </a>
+    </div>
+  </div>
+  <div>
+    <p>SOMETHING READ ME BLAHHHH</p>
+    
+  </div>
+</div>
+
+`;
+
+exports[`<GithubRepo /> with fake token should render and test snapshot 1`] = `
+<div
+  class="activecontent__githubrepo"
+>
+  <div
+    class="activecontent__githubrepoheader"
+  >
+    <a
+      href="/Users/benhalpern/dev/dev.to_core/app"
+    />
+  </div>
+  <div
+    class="activecontent__githubrepofiles"
+  />
+</div>
+`;
+
+exports[`<GithubRepo /> with no token should render and test snapshot 1`] = `
+<div
+  class="activecontent__githubrepo"
+>
+  <div
+    class="activecontent__githubrepoheader"
+  >
+    <em>
+      Authentication required
+    </em>
+  </div>
+  <p>
+    You must 
+    <a
+      data-no-instant={true}
+      href="/users/auth/github"
+    >
+      authenticate with GitHub
+    </a>
+     to use this feature.
+  </p>
+</div>
+`;

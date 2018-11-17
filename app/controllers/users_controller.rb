@@ -179,6 +179,8 @@ class UsersController < ApplicationController
         %0A
         YOUR-DEV-USERNAME-HERE
       HEREDOC
+    else
+      not_found unless @tab_list.map { |t| t.downcase.gsub(" ", "-") }.include? @tab
     end
   end
 end

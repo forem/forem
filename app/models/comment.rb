@@ -122,7 +122,7 @@ class Comment < ApplicationRecord
   def self.rooted_on(commentable_id, commentable_type)
     includes(:user, :commentable).
       select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at).
+             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
       where(commentable_id: commentable_id,
             ancestry: nil,
             commentable_type: commentable_type)
@@ -228,7 +228,7 @@ class Comment < ApplicationRecord
 
   def self.comment_async_bust(commentable, username)
     commentable.touch
-    commentable.touch(:last_comment_at)
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end

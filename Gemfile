@@ -24,8 +24,8 @@ gem "airbrake", "~> 7.4"
 gem "algoliasearch-rails", "~> 1.20"
 gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
-gem "autoprefixer-rails", "~> 6.7"
-gem "aws-sdk-lambda", "~> 1.5" # Just Lambda. For more, install aws-sdk gem
+gem "autoprefixer-rails", "~> 9.3"
+gem "aws-sdk-lambda", "~> 1.13" # Just Lambda. For more, install aws-sdk gem
 gem "bourbon", "~> 1.4"
 gem "buffer", github: "bufferapp/buffer-ruby"
 gem "carrierwave", "~> 1.2"
@@ -35,7 +35,7 @@ gem "counter_culture", "~> 1.9"
 gem "csv_shaper", "~> 1.3"
 gem "dalli", "~> 2.7"
 gem "delayed_job_active_record", "~> 4.1"
-gem "devise", "~> 4.4"
+gem "devise", "~> 4.5"
 gem "draper", "~> 3.0"
 gem "email_validator", "~> 1.6"
 gem "envied", "~> 0.9"
@@ -90,9 +90,8 @@ gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stream_rails", "~> 2.6"
 gem "stripe", "~> 3.25"
-gem "therubyracer", "~> 0.12", platforms: :ruby
 gem "timber", "~> 2.6"
-gem "twilio-ruby", "~> 5.10"
+gem "twilio-ruby", "~> 5.15"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 4.1"
 gem "validate_url", "~> 1.0"
@@ -103,7 +102,7 @@ group :development do
   gem "better_errors", "~> 2.5"
   gem "binding_of_caller", "~> 0.8"
   gem "brakeman", "~> 4.3", require: false
-  gem "bullet", "~> 5.7"
+  gem "bullet", "~> 5.8"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
   gem "guard", "~> 2.14", require: false
@@ -114,12 +113,12 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.6"
+  gem "capybara", "~> 3.10"
   gem "derailed", "~> 0.1"
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
-  gem "parallel_tests", "~> 2.22"
+  gem "parallel_tests", "~> 2.26"
   gem "pry-byebug", "~> 3.6"
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
@@ -140,7 +139,7 @@ group :test do
   gem "pundit-matchers", "~> 1.6"
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
-  gem "selenium-webdriver", "~> 3.12"
+  gem "selenium-webdriver", "~> 3.141"
   gem "shoulda-matchers", "~> 3.1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"

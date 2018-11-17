@@ -9,6 +9,7 @@ class Reaction < ApplicationRecord
 
   validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
+  validates :status, inclusion: { in: %w(valid invalid confirmed) }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
@@ -127,6 +128,8 @@ class Reaction < ApplicationRecord
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
+    base_points = 0 if status == "invalid"
+    base_points = base_points * 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
@@ -135,7 +138,7 @@ class Reaction < ApplicationRecord
       errors.add(:category, "is not valid.")
     end
 
-    if reactable_type == "Article" && !reactable.published
+    if reactable_type == "Article" && !reactable&.published
       errors.add(:reactable_id, "is not valid.")
     end
   end

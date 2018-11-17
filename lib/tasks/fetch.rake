@@ -92,11 +92,25 @@ task :award_contributor_badges, [:arg1] => :environment do |_t, args|
   puts "Done!"
 end
 
+# rake award_fab_five_badges["ben jess peter mac liana andy"]
+task :award_fab_five_badges, [:arg1] => :environment do |_t, args|
+  usernames = args[:arg1].split(" ")
+  puts "Awarding fab 5 badges to #{usernames}"
+  BadgeRewarder.award_fab_five_badges(usernames)
+  puts "Done!"
+end
+
+# this task is meant to be scheduled daily
+task award_contributor_badges_from_github: :environment do
+  BadgeRewarder.award_contributor_badges_from_github
+end
+
 task remove_old_html_variant_data: :environment do
   HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariant.find_each do |html_variant|
-    return if html_variant.html_variant_successes.size < 12
+    if html_variant.html_variant_successes.size > 3
     html_variant.calculate_success_rate!
+    end
   end
 end

@@ -31,4 +31,3 @@
   style="color:<%= user_colors(followable)[:text] %>;background-color:<%=user_colors(followable)[:bg] %>"
   data-info='{"id":<%= followable.id %>,"className":"<%= followable.class.name %>"}'
   >&nbsp;</button>
-<div class="org-summary"><%= follow_cue&.html_safe || followable.summary %></div>

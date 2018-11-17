@@ -29,7 +29,9 @@ RSpec.describe MentorRelationship, type: :model do
 
   it "sends an email to both users" do
     relationship.save!
-    expect(EmailMessage.all.size).to eq(2)
+    ["mentor_email", "mentee_email"].each do |campaign|
+      expect(EmailMessage.where(utm_campaign: campaign).count).to eq(1)
+    end
   end
 
   it "finds unmatched mentors" do
