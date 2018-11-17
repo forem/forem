@@ -1,3 +1,5 @@
+const PER_PAGE = 45;
+
 function initializeReadingListPage(){
   if ( getCurrentPage("reading_list_items-index") && checkUserLoggedIn() ) {
     var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
@@ -7,51 +9,86 @@ function initializeReadingListPage(){
     var params = getQueryParams(document.location.search);
     document.getElementById('substories').dataset.tabs = '{"v": "'+(params.v || '')+'", "t": "'+(params.t || '')+'" }'
     postCommentFilter();
-    getArticles("***onlytags***");
+    getArticlesTags();
     document.getElementById("load-more-cta").onclick = function(event) {
       event.target.classList.remove("showing");
-      getArticles("");
+      var nextNumber = document.getElementsByClassName('single-article').length + PER_PAGE;
+      getArticles(currentTag(), nextNumber);
     }
   }
 }
 
+function currentTag() {
+  var tabsObj = JSON.parse(substories.dataset.tabs);
+  return (tabsObj["t"] || "");
+}
 
+function getArticlesTags(){
+  var user = userData();
+  var algoliaIds = user.reading_list_ids.map(function(id){return "articles-"+id});
+  var tags = {}
 
-function getArticles(tag, num){
+  readinglistIndex.getObjects(algoliaIds, function(err, content) {
+    content.results.forEach(function(story, i){
+      if (story) {
+        story.tag_list.forEach(function(tag){
+          if (tags[tag]){
+            tags[tag] = tags[tag]+1;
+          } else {
+            tags[tag] = 1;
+          }
+        })
+      }
+    })
+    renderTags(tags);
+    document.getElementById('tag-filter-widget').setAttribute('data-tags', JSON.stringify(tags));
+    initializeReadingListIcons();
+  });
+}
+
+function tagsCounts() {
+  var dataTags = document.getElementById('tag-filter-widget').getAttribute('data-tags');
+  return dataTags ? JSON.parse(dataTags) : {};
+}
+
+function getArticles(tag, num = PER_PAGE){
     var user = userData();
     var substoriesDiv = document.getElementById("substories");
     var algoliaIds = user.reading_list_ids.map(function(id){return "articles-"+id});
     var resultDivs = []
-    var tags = {}
+    var showMore = false;
+    var tagSpecified = (tag != "");
+
     readinglistIndex.getObjects(algoliaIds, function(err, content) {
-      var results = num ? content.results.slice(0, num) : content.results ;
-      results.forEach(function(story, i){
-        if (story) {
-          if (tag == "" || story.tag_list.indexOf(tag) > -1){
+      if (tagSpecified){
+        var results = content.results;
+        for (var i in results) {
+          if (resultDivs.length >= num) {
+            break;
+          }
+          if (results[i] && results[i].tag_list.indexOf(tag) > -1) {
+            resultDivs.push(buildArticleHTML(results[i]));
+          }
+        }
+        showMore = tagsCounts()[tag] > num;
+      }
+      else {
+        content.results.slice(0, num).forEach(function(story, i){
+          if (story) {
             resultDivs.push(buildArticleHTML(story));
           }
-          story.tag_list.forEach(function(tag){
-            if (tags[tag]){
-              tags[tag] = tags[tag]+1;
-            } else {
-              tags[tag] = 1;
-            }
-          })
-        }
-      })
-      if (tag != "***onlytags***") {
-        substoriesDiv.innerHTML = resultDivs.join("");
-        if ( resultDivs.length == 0) {
-          var message = "<div style='text-align:left;margin-top:20px;'>This is where to find your bookmarked posts, but it looks like you have not bookmarked anything.</div>"
-          substoriesDiv.innerHTML = message;
-        }
-      } else {
-        if (results.lenth > 43) {
-          document.getElementById("load-more-cta").classList.add("showing");
-        }
-        renderTags(tags);
+        })
+        showMore = num < content.results.length;
       }
-      initializeReadingListIcons();
+
+      substoriesDiv.innerHTML = resultDivs.join("");
+      if ( resultDivs.length == 0) {
+        var message = "<div style='text-align:left;margin-top:20px;'>This is where to find your bookmarked posts, but it looks like you have not bookmarked anything.</div>"
+        substoriesDiv.innerHTML = message;
+      }
+
+      var showMoreButton = document.getElementById("load-more-cta");
+      showMore ? showMoreButton.classList.add("showing") : showMoreButton.classList.remove("showing")
     });
 }
 
@@ -61,7 +98,7 @@ function getComments(){
   var substories = document.getElementById("substories");
   var tabsObj = JSON.parse(substories.dataset.tabs);
   commentsIndex.search("*", {
-      hitsPerPage: 45,
+      hitsPerPage: PER_PAGE,
       attributesToHighlight: [],
       tagFilters: [algoliaIds,tabsObj["t"]],
   })
@@ -171,7 +208,7 @@ function getStories(){
   if (tabsObj["v"] == "comments") {
     getComments(tabsObj["t"] || "");
   } else {
-    getArticles(tabsObj["t"] || "", 45);
+    getArticles(tabsObj["t"] || "", PER_PAGE);
   }
 }
 
