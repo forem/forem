@@ -15,6 +15,7 @@
 
   <% if @feedback_type == "abuse-reports" %>
     <% @vomits.each do |reaction| %>
+        <% next unless reaction.user && reaction.reactable %>
         <div class="row">
           <div class="inner-row col-md-3">
             <strong>🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a></strong>
