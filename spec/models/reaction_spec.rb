@@ -93,17 +93,5 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).to be_valid
     end
   end
-
-  describe "#activity_object" do
-    it "returns self" do
-      expect(reaction.activity_object.instance_of?(described_class)).to be true
-    end
-  end
-
-  describe "#activity_target" do
-    it "returns the porper string" do
-      expect(reaction.activity_target).to eq("#{reaction.reactable_type}_#{reaction.reactable_id}")
-    end
-  end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
