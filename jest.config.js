@@ -9,4 +9,5 @@ module.exports = {
   moduleNameMapper: {
     '\\.(svg|png)$': '<rootDir>/empty-module.js',
   },
+  snapshotSerializers: ['preact-render-spy/snapshot'],
 };

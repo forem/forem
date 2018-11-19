@@ -29,9 +29,13 @@ function insertNewArticles(user){
   if (insertPlace) {
       articlesJSON.forEach(function(article){
       var articlePoints = 0
-      var containsUserID = findOne([article.user_id], user.followed_user_ids)
+      var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
+      var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       articlePoints = articlePoints + (intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length*2) + article.positive_reactions_count
       if (containsUserID || article.user_id === user.id) {
+        articlePoints = articlePoints + 16
+      }
+      if (containsOrganizationID) {
         articlePoints = articlePoints + 16
       }
       article['points'] = articlePoints
@@ -55,9 +59,13 @@ function insertTopArticles(user){
   if (insertPlace) {
       articlesJSON.forEach(function(article){
       var articlePoints = 0
-      var containsUserID = findOne([article.user_id], user.followed_user_ids)
+      var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
+      var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       articlePoints = articlePoints + intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length
       if (containsUserID) {
+        articlePoints = articlePoints + 1
+      }
+      if (containsOrganizationID) {
         articlePoints = articlePoints + 1
       }
       article['points'] = articlePoints

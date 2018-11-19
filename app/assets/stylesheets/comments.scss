@@ -431,6 +431,32 @@ a.header-link{
       opacity:1;
     }
   }
+  .low-quality-comment-marker {
+    font-size:0.66em;
+    padding: 6px 13px;
+    background: $light-gray;
+    font-weight: bold;
+    border-bottom: 1px solid $light-medium-gray;
+    a {
+      background: lighten($green, 14%);
+      color: $black;
+      padding: 1px 5px 3px;
+      border-radius: 3px;
+      vertical-align: -1px;
+      margin-left: 3px;
+    }
+    img {
+      height: 22px;
+      width: 22px;
+      border-radius: 100px;
+      border: 2px solid $medium-gray;
+      vertical-align: -0.6em;
+      margin-right: 2px;
+    }
+  }
+  .low-quality-comment {
+    opacity: 0.5;
+  }
   .body{
     padding:1px;
     padding-left:1.5%;

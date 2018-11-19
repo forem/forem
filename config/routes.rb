@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     resources :articles
     resources :tags
     resources :welcome, only: %i[index create]
+    resources :reactions, only: [:update]
     resources :broadcasts
     resources :users do
       member do
@@ -107,7 +108,6 @@ Rails.application.routes.draw do
   resources :blocks
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
-  resources :analytics, only: [:index]
   resources :stripe_subscriptions, only: %i[create update destroy]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
@@ -211,6 +211,7 @@ Rails.application.routes.draw do
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
+  get "/organization-info" => "pages#org_info"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
@@ -237,7 +238,7 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|user_followers|following_users|reading/
+        which: /organization|organization_user_followers|user_followers|following_users|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 

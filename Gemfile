@@ -25,7 +25,7 @@ gem "algoliasearch-rails", "~> 1.20"
 gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
 gem "autoprefixer-rails", "~> 9.3"
-gem "aws-sdk-lambda", "~> 1.5" # Just Lambda. For more, install aws-sdk gem
+gem "aws-sdk-lambda", "~> 1.13" # Just Lambda. For more, install aws-sdk gem
 gem "bourbon", "~> 1.4"
 gem "buffer", github: "bufferapp/buffer-ruby"
 gem "carrierwave", "~> 1.2"
@@ -104,7 +104,7 @@ group :development do
   gem "bullet", "~> 5.8"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
-  gem "guard", "~> 2.14", require: false
+  gem "guard", "~> 2.15", require: false
   gem "guard-livereload", "~> 2.5", require: false
   gem "guard-rspec", "~> 4.7", require: false
   gem "rb-fsevent", "~> 0.10", require: false
@@ -133,7 +133,7 @@ group :test do
   gem "chromedriver-helper", "~> 2.1"
   gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
-  gem "fake_stripe", "~> 0.1"
+  gem "fake_stripe", "~> 0.2"
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
   gem "rails-controller-testing", "~> 1.0"
