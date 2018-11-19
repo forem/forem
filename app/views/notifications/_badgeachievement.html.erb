@@ -1,0 +1,22 @@
+<% json_data = notification.json_data %>
+<div class="content notification-content badge-content">
+  <% cache "activity-badge-reward-#{json_data["badge_achievement"]["badge_id"]}" do %>
+    <div class="badge-title">
+      You received the <strong><%= json_data["badge_achievement"]["badge"]["title"] %></strong> badge
+    </div>
+    <p class="badge-description">
+      <%= json_data["badge_achievement"]["badge"]["description"] %>
+    </p>
+    <img class="badge-image" src="<%= cloudinary json_data["badge_achievement"]["badge"]["badge_image_url"], 250 %>" alt="<%= json_data["badge_achievement"]["badge"]["title"] %>">
+  <% end %>
+  <p class="badge-reward-message">
+    <em>
+      <%= json_data["badge_achievement"]["rewarding_context_message"].html_safe %>
+    </em>
+  </p>
+  <a href="<%= json_data["user"]["path"] %>">
+    <button class="cta follow-action-button badge-button">
+      CHECK YOUR PROFILE
+    </button>
+  </a>
+</div>

@@ -122,10 +122,6 @@ variable :SHARE_MEOW_SECRET_KEY, :String, default: "Optional"
 variable :SLACK_CHANNEL, :String, default: "Optional"
 variable :SLACK_WEBHOOK_URL, :String, default: "Optional"
 
-# Stream for notifications
-variable :STREAM_RAILS_KEY, :String, default: "Optional"
-variable :STREAM_RAILS_SECRET, :String, default: "Optional"
-
 # Stripe for payment system
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"

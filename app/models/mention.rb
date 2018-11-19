@@ -1,7 +1,4 @@
 class Mention < ApplicationRecord
-  include StreamRails::Activity
-  as_activity
-
   belongs_to :user
   belongs_to :mentionable, polymorphic: true
 
@@ -47,28 +44,6 @@ class Mention < ApplicationRecord
       Notification.send_mention_notification(mention)
       mention
     end
-  end
-
-  def activity_actor
-    mentionable.user
-  end
-
-  def activity_notify
-    return if mentionable.parent_user && mentionable.parent_user.id == user.id
-    [StreamNotifier.new(user.id).notify]
-  end
-
-  def activity_object
-    mentionable
-  end
-
-  def activity_target
-    "mention_#{Time.current}"
-  end
-
-  def remove_from_feed
-    super
-    User.find_by(id: user.id)&.touch(:last_notification_activity)
   end
 
   def send_email_notification

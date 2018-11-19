@@ -13,7 +13,7 @@ RSpec.describe "Deleting Article", js: true do
   end
 
   before do
-    Notification.send_to_followers(article, [author], "Published")
+    Notification.send_to_followers(article, "Published")
   end
 
   it "author of article deletes own article" do

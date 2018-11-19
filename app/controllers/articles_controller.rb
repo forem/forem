@@ -112,7 +112,7 @@ class ArticlesController < ApplicationController
       handle_org_assignment
       handle_hiring_tag
       if @article.published
-        Notification.send_to_followers(@article, @user.followers, "Published") if @article.saved_changes["published_at"]&.include?(nil)
+        Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
         path = @article.path
       else
         Notification.remove_all(id: @article.id, class_name: "Article", action: "Published")
