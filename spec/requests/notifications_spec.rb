@@ -304,7 +304,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user2.follow(user)
-        Notification.send_to_followers(article, article.user.followers, "Published")
+        Notification.send_to_followers(article, "Published")
         sign_in user2
         get "/notifications"
       end
