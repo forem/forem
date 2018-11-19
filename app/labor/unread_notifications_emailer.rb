@@ -28,18 +28,8 @@ class UnreadNotificationsEmailer
   def should_send_email?
     return false if !user.email_unread_notifications
     return false if last_email_sent_after(24.hours.ago)
-    emailable_notifications_count = 0
-    user_activities.each do |activity|
-      emailable_notifications_count += 1 if proper_activity(activity)
-    end
+    emailable_notifications_count = user.notifications.where("read? = ? AND notifiable_type != ?", false, "Reaction").count
     emailable_notifications_count > rand(1..6)
-  end
-
-  def user_activities
-    return [] if Rails.env.test?
-    feed = StreamRails.feed_manager.get_notification_feed(user.id)
-    results = feed.get["results"]
-    StreamRails::Enrich.new.enrich_aggregated_activities(results)
   end
 
   def send_email
@@ -47,10 +37,6 @@ class UnreadNotificationsEmailer
   end
 
   private
-
-  def proper_activity(activity)
-    activity["verb"] != "Reaction" && activity["is_seen"] == false
-  end
 
   def last_email_sent_after(time)
     last_email = user.email_messages.last

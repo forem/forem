@@ -7,9 +7,6 @@ class BadgeAchievement < ApplicationRecord
 
   validates :badge_id, uniqueness: { scope: :user_id }
 
-  include StreamRails::Activity
-  as_activity
-
   after_create :notify_recipient
   after_create :send_email_notification
   before_validation :render_rewarding_context_message_html
@@ -27,30 +24,6 @@ class BadgeAchievement < ApplicationRecord
 
   def name_of_user
     user.name
-  end
-
-  # Stream/notification methods
-  def activity_actor
-    self
-  end
-
-  def activity_notify
-    [StreamNotifier.new(user.id).notify]
-  end
-
-  def activity_object
-    user
-  end
-
-  def activity_target
-    "badge_#{Time.current}"
-  end
-
-  def remove_from_feed
-    super
-    if user.class.name == "User"
-      User.find_by(id: user.id)&.touch(:last_notification_activity)
-    end
   end
 
   private

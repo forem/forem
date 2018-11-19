@@ -63,10 +63,10 @@ RSpec.describe Reaction, type: :model do
       expect(reaction.points).to eq(0)
     end
 
-    it "assigns 0 points if reaction is invalid" do
+    it "assigns the correct points if reaction is confirmed" do
       reaction_points = reaction.points
       reaction.update(status: "confirmed")
-      expect(reaction.points).to eq(reaction_points*2)
+      expect(reaction.points).to eq(reaction_points * 2)
     end
 
     context "when user is trusted" do
@@ -103,20 +103,6 @@ RSpec.describe Reaction, type: :model do
   describe "#activity_target" do
     it "returns the porper string" do
       expect(reaction.activity_target).to eq("#{reaction.reactable_type}_#{reaction.reactable_id}")
-    end
-  end
-
-  describe "stream" do
-    after { StreamRails.enabled = false }
-
-    before do
-      StreamRails.enabled = true
-      allow(StreamNotifier).to receive(:new).and_call_original
-    end
-
-    it "notifies the reactable author" do
-      create(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
-      expect(StreamNotifier).to have_received(:new).with(author.id).at_least(:once)
     end
   end
 end

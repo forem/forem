@@ -10,7 +10,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "algolia/webmock"
 require "pundit/matchers"
 require "pundit/rspec"
-require "stream_rails"
 require "webmock/rspec"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -75,19 +74,12 @@ RSpec.configure do |config|
     stub_request(:post, /api.bufferapp.com/).
       to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
 
-    # stub_request(:any, /api.getstream.io/).to_rack(FakeStream)
-
     # for twitter image cdn
     stub_request(:get, /twimg.com/).
       to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /api.mailchimp.com/).
       to_return(status: 200, body: "", headers: {})
-
-    stub_request(:post, /us-east-api.stream-io-api.com\/api\/v1.0\/feed\/user/).
-      to_return(status: 200, body: "{}", headers: {})
-
-    stub_request(:get, /us-east-api.stream-io-api.com\/api/).to_rack(FakeStream)
   end
 
   StreamRails.enabled = false
