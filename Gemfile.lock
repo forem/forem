@@ -276,7 +276,7 @@ GEM
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
-    fake_stripe (0.1.0)
+    fake_stripe (0.2.0)
       capybara
       sinatra
       webmock
@@ -693,7 +693,7 @@ GEM
     recaptcha (4.12.0)
       json
     redcarpet (3.4.0)
-    regexp_parser (1.2.0)
+    regexp_parser (1.3.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -948,7 +948,7 @@ DEPENDENCIES
   email_validator (~> 1.6)
   envied (~> 0.9)
   factory_bot_rails (~> 4.11)
-  fake_stripe (~> 0.1)
+  fake_stripe (~> 0.2)
   faker!
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
