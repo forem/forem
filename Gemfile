@@ -104,7 +104,7 @@ group :development do
   gem "bullet", "~> 5.8"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
-  gem "guard", "~> 2.14", require: false
+  gem "guard", "~> 2.15", require: false
   gem "guard-livereload", "~> 2.5", require: false
   gem "guard-rspec", "~> 4.7", require: false
   gem "rb-fsevent", "~> 0.10", require: false
