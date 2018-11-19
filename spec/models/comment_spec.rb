@@ -3,12 +3,15 @@ require "rails_helper"
 
 RSpec.describe Comment, type: :model do
   let(:user)        { create(:user) }
+  let(:user2)       { create(:user) }
   let(:article)     { create(:article, user_id: user.id, published: true) }
-  let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
-  let(:comment_2)   { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:comment)     { create(:comment, user_id: user2.id, commentable_id: article.id) }
+  let(:comment_2)   { create(:comment, user_id: user2.id, commentable_id: article.id) }
   let(:child_comment) do
     build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id)
   end
+
+  before { Notification.send_for_comments(comment) }
 
   it "gets proper generated ID code" do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
