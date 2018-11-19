@@ -33,7 +33,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       def mock_follow_notifications(amount)
         create_list :user, amount
         follow_instances = User.last(amount).map { |follower| follower.follow(user) }
-        follow_instances.each { |follow| Notification.send_new_follower_notification(follow) }
+        follow_instances.each { |follow| Notification.send_new_follower_notification_without_delay(follow) }
       end
 
       it "renders the proper message for a single notification" do
