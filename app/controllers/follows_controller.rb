@@ -24,10 +24,12 @@ class FollowsController < ApplicationController
                    User.find(params[:followable_id])
                  end
     @result = if params[:verb] == "unfollow"
-                current_user.stop_following(followable)
+                follow = current_user.stop_following(followable)
+                Notification.remove_all(id: follow.id, class_name: "Follow")
                 "unfollowed"
               else
-                current_user.follow(followable)
+                follow = current_user.follow(followable)
+                Notification.send_new_follower_notification(follow)
                 "followed"
               end
     current_user.save

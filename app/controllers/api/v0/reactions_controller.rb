@@ -15,6 +15,7 @@ module Api
           reactable_type: params[:reactable_type],
           category: params[:category] || "like",
         )
+        Notification.send_reaction_notification(@reaction) if @reaction.reactable.user_id != current_user.id
         render json: { reaction: @reaction.to_json }
       end
 
