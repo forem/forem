@@ -378,7 +378,7 @@ class User < ApplicationRecord
   private
 
   def send_welcome_notification
-    Broadcast.send_welcome_notification(id)
+    Notification.send_welcome_notification(id)
   end
 
   def set_username
