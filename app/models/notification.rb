@@ -35,7 +35,7 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_to_followers
 
-    def send_for_comments(notifiable)
+    def send_new_comment_notifications(notifiable)
       user_ids = notifiable.ancestors.map(&:user_id).to_set
       user_ids.add(notifiable.commentable.user.id) if user_ids.empty?
       user_ids.delete(notifiable.user_id).each do |user_id|
@@ -52,7 +52,7 @@ class Notification < ApplicationRecord
         )
       end
     end
-    handle_asynchronously :send_for_comments
+    handle_asynchronously :send_new_comment_notifications
 
     def send_new_badge_notification(notifiable)
       json_data = {
@@ -157,14 +157,26 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_moderation_notification
 
-    def remove_all(notifiable)
+    def remove_all(notifiable_hash)
       Notification.where(
-        notifiable_id: notifiable[:id],
-        notifiable_type: notifiable[:class_name],
-        action: notifiable[:action],
+        notifiable_id: notifiable_hash[:id],
+        notifiable_type: notifiable_hash[:class_name],
+        action: notifiable_hash[:action],
       ).destroy_all
     end
     handle_asynchronously :remove_all
+
+    def remove_each(notifiable_collection, action = nil)
+      # only used for mentions since it's an array
+      notifiable_collection.each do |notifiable|
+        Notification.where(
+          notifiable_id: notifiable.id,
+          notifiable_type: notifiable.class.name,
+          action: action,
+        ).destroy_all
+      end
+    end
+    handle_asynchronously :remove_each
 
     def update_notifications(notifiable, action = nil)
       notifications = Notification.where(
@@ -172,7 +184,8 @@ class Notification < ApplicationRecord
         notifiable_type: notifiable.class.name,
         action: action,
       )
-      new_json_data = notifications[0].json_data
+      return if notifications.blank?
+      new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
       notifications.update_all(json_data: new_json_data)
     end

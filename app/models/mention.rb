@@ -38,7 +38,7 @@ class Mention < ApplicationRecord
     def delete_removed_mentions(usernames)
       user_ids = User.where(username: usernames).pluck(:id)
       mentions = @notifiable.mentions.where.not(user_id: user_ids).destroy_all
-      Notification.remove_all(mentions) unless mentions.blank?
+      Notification.remove_each(mentions) unless mentions.blank?
     end
 
     def create_mention(user)

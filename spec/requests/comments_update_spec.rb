@@ -7,6 +7,7 @@ RSpec.describe "CommentsUpdate", type: :request do
 
   before do
     sign_in user
+    Notification.send_new_comment_notifications(comment)
   end
 
   it "updates ordinary article with proper params" do

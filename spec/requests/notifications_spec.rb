@@ -179,7 +179,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         sign_in user
-        Notification.send_for_comments(comment)
+        Notification.send_new_comment_notifications(comment)
         get "/notifications"
       end
 

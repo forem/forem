@@ -6,8 +6,8 @@ RSpec.describe "Editing A Comment", type: :feature, js: true do
   let(:new_comment_text) { Faker::Lorem.paragraph }
 
   before do
-    create(:comment, commentable: article, user: user, body_markdown: Faker::Lorem.paragraph)
-    Notification.send_for_comments(comment)
+    comment = create(:comment, commentable: article, user: user, body_markdown: Faker::Lorem.paragraph)
+    Notification.send_new_comment_notifications(comment)
     sign_in user
   end
 

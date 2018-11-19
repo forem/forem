@@ -2,16 +2,18 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  let(:user)        { create(:user) }
-  let(:user2)       { create(:user) }
-  let(:article)     { create(:article, user_id: user.id, published: true) }
-  let(:comment)     { create(:comment, user_id: user2.id, commentable_id: article.id) }
-  let(:comment_2)   { create(:comment, user_id: user2.id, commentable_id: article.id) }
+  let(:user)                  { create(:user) }
+  let(:user2)                 { create(:user) }
+  let(:article)               { create(:article, user_id: user.id, published: true) }
+  let(:article_with_video)    { create(:article, :video, user_id: user.id, published: true) } # :video is a trait, see articles.rb
+  let(:comment)               { create(:comment, user_id: user2.id, commentable_id: article.id) }
+  let(:video_comment)         { create(:comment, user_id: user2.id, commentable_id: article_with_video.id) }
+  let(:comment_2)             { create(:comment, user_id: user2.id, commentable_id: article.id) }
   let(:child_comment) do
     build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id)
   end
 
-  before { Notification.send_for_comments(comment) }
+  before { Notification.send_new_comment_notifications(comment) }
 
   it "gets proper generated ID code" do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
@@ -21,8 +23,9 @@ RSpec.describe Comment, type: :model do
     expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
   end
 
-  context "when comment is already posted " do
+  context "when comment is already posted" do
     before do
+      Notification.send_new_comment_notifications(comment_2)
       comment_2.update(ancestry: comment.ancestry,
                        body_markdown: comment.body_markdown,
                        commentable_type: comment.commentable_type,
@@ -52,25 +55,23 @@ RSpec.describe Comment, type: :model do
   end
 
   it "adds timestamp url if commentable has video and timestamp" do
-    article.video = "https://video.com"
-    article.user.add_role(:video_permission)
-    article.save!
-    comment.body_markdown = "I like the part at 4:30"
-    comment.save
-    expect(comment.processed_html.include?(">4:30</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 4:30 and 5:50"
-    comment.save
-    expect(comment.processed_html.include?(">5:50</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 5:30 and :55"
-    comment.save
-    expect(comment.processed_html.include?(">:55</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 52:30"
-    comment.save
-    expect(comment.processed_html.include?(">52:30</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 1:52:30 and 1:20"
-    comment.save
-    expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
-    expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
+    Notification.send_new_comment_notifications(video_comment)
+    video_comment.body_markdown = "I like the part at 4:30"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">4:30</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 4:30 and 5:50"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">5:50</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 5:30 and :55"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">:55</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 52:30"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">52:30</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 1:52:30 and 1:20"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">1:52:30</a>")).to eq(true)
+    expect(video_comment.processed_html.include?(">1:20</a>")).to eq(true)
   end
 
   it "does not add timestamp if commentable does not have video" do
@@ -166,7 +167,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "returns the root parent comment's user if root parent comment exists" do
-      expect(child_comment.parent_user).to eq(user)
+      expect(child_comment.parent_user).to eq(user2)
     end
   end
 
