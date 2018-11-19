@@ -7,7 +7,7 @@ module.exports = {
     '!**/__stories__/**',
   ],
   moduleNameMapper: {
-    '\\.(svg)$': '<rootDir>/empty-module.js',
+    '\\.(svg|png)$': '<rootDir>/empty-module.js',
   },
   snapshotSerializers: ['preact-render-spy/snapshot'],
 };
