@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GithubRepo /> with fake token should have the proper elements, attributes and values with states set 1`] = `
+exports[`<GithubRepo /> with fake token should render and test snapshot 1`] = `
 RenderContext {
   "0": VNode {
     "attributes": Object {
@@ -17,23 +17,6 @@ RenderContext {
   },
   "length": 1,
 }
-`;
-
-exports[`<GithubRepo /> with fake token should render and test snapshot 1`] = `
-<div
-  class="activecontent__githubrepo"
->
-  <div
-    class="activecontent__githubrepoheader"
-  >
-    <a
-      href="/Users/benhalpern/dev/dev.to_core/app"
-    />
-  </div>
-  <div
-    class="activecontent__githubrepofiles"
-  />
-</div>
 `;
 
 exports[`<GithubRepo /> with no token should render and test snapshot 1`] = `
