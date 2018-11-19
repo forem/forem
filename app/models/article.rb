@@ -381,7 +381,7 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    user.delay.cache_bust_all_articles
+    user.cache_bust_all_articles
     organization&.delay&.resave_articles
   end
 

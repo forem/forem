@@ -29,13 +29,15 @@ RSpec.describe "internal/users", type: :request do
 
     it "all delayed jobs pass", focus: true do
       reaction
+      comment
       Delayed::Worker.new(quiet: false).work_off
       banish_user
       if Delayed::Job.where("failed_at IS NOT NULL").count > 0
         class_name = YAML.load(Delayed::Job.last.handler).object.class.name
         method = YAML.load(Delayed::Job.last.handler).method_name
-        puts class_name + " " +  method.to_s
+        puts class_name + " " + method.to_s
       end
+
       expect(Delayed::Job.where("failed_at IS NOT NULL").count).to eq(0)
       expect(true).to eq(false)
     end
