@@ -133,7 +133,7 @@ group :test do
   gem "chromedriver-helper", "~> 2.1"
   gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
-  gem "fake_stripe", "~> 0.1"
+  gem "fake_stripe", "~> 0.2"
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
   gem "rails-controller-testing", "~> 1.0"
