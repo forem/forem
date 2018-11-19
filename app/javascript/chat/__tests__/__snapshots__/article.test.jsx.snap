@@ -1,0 +1,111 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Article /> should load article 1`] = `
+<div
+  class="activechatchannel__activeArticle"
+>
+  <div
+    class="activechatchannel__activeArticleDetails"
+  >
+    <a
+      href="/princesscarolyn/your-approval-means-nothing-to-me-42640"
+      target="_blank"
+    >
+      <span
+        class="activechatchannel__activeArticleDetailsPath"
+      >
+        /princesscarolyn/your-approval-means-nothing-to-me-42640
+      </span>
+      <img
+        src=""
+      />
+    </a>
+  </div>
+  <div
+    class="container"
+  >
+    <header>
+      <div
+        class="image image-final"
+        style={
+          Object {
+            "backgroundImage": "url(princess_carolyn_is_perfect.png",
+          }
+        }
+      />
+    </header>
+    <div
+      class="title"
+    >
+      <h1>
+        Your Approval Means Nothing to Me
+      </h1>
+      <h3>
+        <a
+          class="author"
+          data-content="/users/00001"
+          href="/princesscarolyn"
+        >
+          <img
+            alt="princesscarolyn"
+            class="profile-pic"
+            src="/princesscarolyn.png"
+          />
+          <span>
+            Princess Carolyn 
+          </span>
+          <span
+            class="published-at"
+          >
+             | July 30, 2014
+          </span>
+        </a>
+      </h3>
+    </div>
+    <div
+      class="body"
+    >
+      <div
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "That woman can knock a drink back like a Kennedy at a wake for another Kennedy, but I'll be damned if she doesn't get s*** done!",
+          }
+        }
+      />
+    </div>
+  </div>
+  <div
+    class="activechatchannel__activeArticleActions"
+  >
+    <button
+      class="heart-reaction-button "
+      data-category="like"
+      onClick={[Function]}
+    >
+      <img
+        src=""
+      />
+    </button>
+    <button
+      class="unicorn-reaction-button "
+      data-category="unicorn"
+      onClick={[Function]}
+    >
+      <img
+        data-category="unicorn"
+        src=""
+      />
+    </button>
+    <button
+      class="readinglist-reaction-button "
+      data-category="readinglist"
+      onClick={[Function]}
+    >
+      <img
+        data-category="readinglist"
+        src=""
+      />
+    </button>
+  </div>
+</div>
+`;

@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<GithubRepo /> with fake token should have the proper elements, attributes and values with states set 1`] = `
+exports[`<GithubRepo /> with fake token should render and test snapshot 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="activecontent__githubrepo">
   <div class="activecontent__githubrepoheader">
     <a href="/Users/benhalpern/dev/dev.to_core/app"></a>
-    someargs
+    invalid json response body at undefined reason: Unexpected end of JSON input
   </div>
   <div class="activecontent__githubrepofiles">
     <div class="activecontent__githubrepofilerow">
@@ -60,29 +60,8 @@ preact-render-spy (1 nodes)
       </a>
     </div>
   </div>
-  <div>
-    <p>SOMETHING READ ME BLAHHHH</p>
-    
-  </div>
 </div>
 
-`;
-
-exports[`<GithubRepo /> with fake token should render and test snapshot 1`] = `
-<div
-  class="activecontent__githubrepo"
->
-  <div
-    class="activecontent__githubrepoheader"
-  >
-    <a
-      href="/Users/benhalpern/dev/dev.to_core/app"
-    />
-  </div>
-  <div
-    class="activecontent__githubrepofiles"
-  />
-</div>
 `;
 
 exports[`<GithubRepo /> with no token should render and test snapshot 1`] = `
