@@ -1,0 +1,14 @@
+<% json_data = notification.json_data %>
+<% if notification.action == "Onboarding" %>
+  <% user = User.find_by_id(json_data["user"]["id"]) %>
+  <% cache "broadcast-onboarding-notification" do %>
+    <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
+        <div class="small-pic">
+          <img src="<%= ProfileImage.new(user).get %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+        </div>
+    </a>
+    <div class="content notification-content broadcast-content">
+      <%= json_data["broadcast"]["processed_html"].html_safe %>
+    </div>
+  <% end %>
+<% end %>

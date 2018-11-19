@@ -1,5 +1,3 @@
-StreamRails.enabled = false
-
 p "1/8 Creating Organizations"
 
 3.times do

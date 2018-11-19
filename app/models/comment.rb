@@ -31,9 +31,6 @@ class Comment < ApplicationRecord
   before_validation :evaluate_markdown
   validate :permissions
 
-  include StreamRails::Activity
-  as_activity
-
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
     add_index "ordered_comments",
@@ -162,35 +159,6 @@ class Comment < ApplicationRecord
 
   def title
     ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 60)
-  end
-
-  def activity_notify
-    user_ids = ancestors.map(&:user_id).to_set
-    user_ids.add(commentable.user.id) if user_ids.empty?
-    user_ids.delete(user_id).map { |id| StreamNotifier.new(id).notify }
-  end
-
-  def activity_object
-    self
-  end
-
-  def activity_target
-    "comment_#{Time.current}"
-  end
-
-  def remove_from_feed
-    super
-    if ancestors.empty? && user != commentable.user
-      [User.find_by(id: commentable.user.id)&.touch(:last_notification_activity)]
-    elsif ancestors
-      user_ids = ancestors.map { |comment| comment.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == commentable.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == user_id }
-      # filters out article author and duplicate users
-      user_ids.map do |id|
-        User.find_by(id: id)&.touch(:last_notification_activity)
-      end
-    end
   end
 
   def video
