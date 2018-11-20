@@ -15,9 +15,15 @@ module Moderator
       # return unless user.comments.where("created_at < ?", 7.days.ago).empty?
       ban_offender
       strip_user_profile
+      destroy_dependents
+      user.remove_from_index!
+    end
+
+    def destroy_dependents
       destroy_reactions
       destroy_comments
       destroy_articles
+      destroy_follows
     end
 
     def ban_offender
@@ -27,6 +33,11 @@ module Moderator
           create!(reason: "banned", content: "spam account", author_id: admin.id)
       end
     end
+
+    def destroy_follows
+      user.follows.destroy_all
+    end
+    handle_asynchronously :destroy_follows
 
     def destroy_reactions
       user.reactions.destroy_all
@@ -42,7 +53,12 @@ module Moderator
     end
     handle_asynchronously :destroy_articles
 
+    def bust_user_cache(old_username)
+      CacheBuster.new.bust("/#{old_username}")
+    end
+
     def strip_user_profile
+      bust_user_cache(user.username)
       new_name = "spam_#{rand(10000)}"
       new_username = "spam_#{rand(10000)}"
       if User.find_by(name: new_name) || User.find_by(username: new_username)
@@ -51,6 +67,7 @@ module Moderator
       end
       user.name = new_name
       user.username = new_username
+      user.old_username = nil
       user.twitter_username = ""
       user.github_username = ""
       user.website_url = ""
