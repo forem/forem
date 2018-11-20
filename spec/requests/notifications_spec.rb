@@ -57,22 +57,6 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include follow_message
       end
 
-      it "groups two notifications on the same day" do
-        mock_follow_notifications(2)
-        get "/notifications"
-        grouped_notifications = controller.instance_variable_get(:@notifications)[0].grouped_notifications
-        # only one notification object containing a group of notifications
-        expect(grouped_notifications.count).to eq 2
-      end
-
-      it "groups three or more notifications on the same day" do
-        amount = rand(3..10)
-        mock_follow_notifications(amount)
-        get "/notifications"
-        grouped_notifications = controller.instance_variable_get(:@notifications)[0].grouped_notifications
-        expect(grouped_notifications.count).to eq amount
-      end
-
       it "does not group notifications that occur on different days" do
         mock_follow_notifications(2)
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
@@ -126,34 +110,11 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include CGI.escapeHTML(message)
       end
 
-      it "renders the proper message for two or more reactions where at least one is private" do
-        mock_heart_reaction_notifications(1, %w(readinglist))
-        mock_heart_reaction_notifications(1, %w(unicorn like))
-        get "/notifications"
-        message = "Devs\n    reacted to"
-        expect(response.body).to include CGI.escapeHTML(message)
-      end
-
       it "renders the proper message for multiple public reactions" do
         mock_heart_reaction_notifications(3, %w(unicorn like))
         get "/notifications"
         message = "#{User.last.name}</a> and 2 others\n    reacted to"
         expect(response.body).to include CGI.escapeHTML(message)
-      end
-
-      it "properly groups two notifications that have the same day and reactable" do
-        mock_heart_reaction_notifications(2, %w(unicorn like readinglist))
-        get "/notifications"
-        grouped_notifications = controller.instance_variable_get(:@notifications)[0].grouped_notifications
-        expect(grouped_notifications.count).to eq 2
-      end
-
-      it "properly groups three or more notifications that have the same day and reactable" do
-        amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w(unicorn like readinglist))
-        get "/notifications"
-        grouped_notifications = controller.instance_variable_get(:@notifications)[0].grouped_notifications
-        expect(grouped_notifications.count).to eq amount
       end
 
       it "does not group notifications that are on different days but have the same reactable" do
