@@ -67,7 +67,6 @@ module Moderator
       end
       user.name = new_name
       user.username = new_username
-      user.old_username = nil
       user.twitter_username = ""
       user.github_username = ""
       user.website_url = ""
@@ -89,6 +88,7 @@ module Moderator
       user.behance_url = nil
       user.linkedin_url = nil
       user.save
+      user.update_columns(old_username: nil)
     end
   end
 end
