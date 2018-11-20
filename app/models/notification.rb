@@ -106,7 +106,7 @@ class Notification < ApplicationRecord
         }
       }
       if aggregated_reaction_siblings.size.zero?
-        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "reaction").destroy_all
+        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
       else
         previous_siblings_size = 0
         notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
