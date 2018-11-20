@@ -11,7 +11,7 @@
         <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
         commented on
         <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-          <%= json_data["comment"]["commentable"]["title"] %>
+          <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
         </a>
         <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
   <% elsif notification.action == "Moderation" %>
@@ -20,7 +20,7 @@
         <br/><br>
         <b>Here's the article for context:
         <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-          <%= json_data["comment"]["commentable"]["title"] %>
+          <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
         </a></b>
         <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
         <br>
@@ -29,7 +29,7 @@
     <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
     wrote their first comment on:
     <a href="<%= json_data["comment"]["commentable"]["path"] %>">
-      <%= json_data["comment"]["commentable"]["title"] %>
+      <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
     </a>
     <%= render "notifications/activity/activities/shared/comment_box", activity: activity, context: "moderation" %>
     Give them their first reply! 🎉

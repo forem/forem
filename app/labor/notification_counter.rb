@@ -11,5 +11,4 @@ class NotificationCounter
   def set_to_zero
     @user.notifications.where(read?: false).update_all(read?: true)
   end
-  handle_asynchronously :set_to_zero
 end

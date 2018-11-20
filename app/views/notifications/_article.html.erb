@@ -15,7 +15,7 @@
     <a href="<%= json_data["article"]["path"] %>">
       <div class="notification-new-post">
         <div class="notification-new-post-title">
-          <%= json_data["article"]["title"] %>
+          <%= sanitize(json_data["article"]["title"]) %>
         </div>
         <div class="notification-new-post-tags">
           <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
