@@ -177,7 +177,7 @@
         }
       }
       &.desktop {
-        &:hover {
+        &:hover,&:active,&:focus {
           .menu {
             display: block;
           }

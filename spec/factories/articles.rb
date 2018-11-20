@@ -34,4 +34,12 @@ FactoryBot.define do
       HEREDOC
     end
   end
+
+  trait :video do
+    after(:build) do |article|
+      article.video = "https://video.com"
+      article.user.add_role :video_permission
+      article.save
+    end
+  end
 end

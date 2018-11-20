@@ -41,26 +41,29 @@ class ReactionsController < ApplicationController
   def create
     authorize Reaction
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    category = params[:category] || "like"
     reaction = Reaction.where(
       user_id: current_user.id,
       reactable_id: params[:reactable_id],
       reactable_type: params[:reactable_type],
-      category: params[:category] || "like",
+      category: category,
     ).first
     if reaction
       reaction.user.touch
       reaction.destroy
+      Notification.remove_all(id: reaction.id, class_name: "Reaction", action: category) unless reaction.reactable.user_id == current_user.id
       @result = "destroy"
     else
-      Reaction.create!(
+      reaction = Reaction.create!(
         user_id: current_user.id,
         reactable_id: params[:reactable_id],
         reactable_type: params[:reactable_type],
-        category: params[:category] || "like",
+        category: category,
       )
+      Notification.send_reaction_notification(reaction) unless reaction.reactable.user_id == current_user.id
       @result = "create"
     end
-    render json: { result: @result, category: params[:category] || "like" }
+    render json: { result: @result, category: category }
   end
 
   def cached_user_positive_reactions(user)
