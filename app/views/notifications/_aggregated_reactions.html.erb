@@ -1,5 +1,5 @@
 <%# TODO: change to map of IDs %>
-<% siblings = notification.json_data["reaction"]["aggregated_siblings"] %>
+<% siblings = notification.json_data["reaction"]["aggregated_siblings"].select{|n| n["created_at"] > 24.hours.ago } %>
 <% cache "activity-aggregated-reactions-#{siblings}_#{siblings}" do %>
   <% actors = siblings.map { |n| n["user"] }.uniq %>
   <% reactable_data = notification.json_data["reaction"]["reactable"] %>
@@ -27,7 +27,7 @@
       </a>
       <span class="reaction-images">
           with
-        <% reaction_categories = siblings.select{|n| n["created_at"] > 24.hours.ago }.map { |n| n["category"] } %>
+        <% reaction_categories = siblings.map { |n| n["category"] } %>
         <% reaction_categories.each do |cat| %>
           <% if ReactionImage.new(cat).path.present? %>
             <%= image_tag ReactionImage.new(cat).path, class: "reaction-image", alt: "#{cat}" %>
