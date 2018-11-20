@@ -12,8 +12,8 @@ class NotificationsController < ApplicationController
       aggregate_notifications("Follow")
       aggregate_notifications("Reaction")
       @notifications = NotificationDecorator.decorate_collection(@notifications)[0..40]
-      @last_user_reaction = @user.reactions.last.id
-      @last_user_comment = @user.comments.last.id
+      @last_user_reaction = @user.reactions.last&.id
+      @last_user_comment = @user.comments.last&.id
     end
   end
 
