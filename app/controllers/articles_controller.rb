@@ -112,10 +112,10 @@ class ArticlesController < ApplicationController
       handle_org_assignment
       handle_hiring_tag
       if @article.published
-        Notification.send_all(@article, "Published") if @article.previous_changes.include?("published")
+        Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
         path = @article.path
       else
-        Notification.remove_all(@article, "Published")
+        Notification.remove_all(id: @article.id, class_name: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
       redirect_to (params[:destination] || path)
@@ -132,6 +132,7 @@ class ArticlesController < ApplicationController
   def destroy
     authorize @article
     @article.destroy!
+    Notification.remove_all(id: @article.id, class_name: "Article", action: "Published")
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }

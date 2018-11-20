@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181020195954) do
+ActiveRecord::Schema.define(version: 20181116223239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -454,10 +456,16 @@ ActiveRecord::Schema.define(version: 20181020195954) do
   create_table "notifications", id: :serial, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
+    t.jsonb "json_data"
     t.integer "notifiable_id"
     t.string "notifiable_type"
+    t.boolean "read?", default: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
+    t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
+    t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|
@@ -560,6 +568,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.float "points", default: 1.0
     t.integer "reactable_id"
     t.string "reactable_type"
+    t.string "status", default: "valid"
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["category"], name: "index_reactions_on_category"
@@ -712,6 +721,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
     t.string "github_username"
+    t.string "gitlab_url"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"

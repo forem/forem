@@ -2,10 +2,9 @@
   <br>
   <img
     alt="DEV"
-    src="https://thepracticaldev.s3.amazonaws.com/i/d3o5l9yiqfv1z24cn1yp.png"
+    src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png"
     width=500px
   />
-  <br/>
   <h1>DEV Community 👩‍💻👨‍💻</h1>
   <strong>The Human Layer of the Stack</strong>
 </div>

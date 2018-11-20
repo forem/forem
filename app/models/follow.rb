@@ -2,9 +2,6 @@ class Follow < ApplicationRecord
   extend ActsAsFollower::FollowerLib
   extend ActsAsFollower::FollowScopes
 
-  include StreamRails::Activity
-  as_activity
-
   # NOTE: Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
   belongs_to :follower,   polymorphic: true
@@ -30,26 +27,6 @@ class Follow < ApplicationRecord
   before_destroy :modify_chat_channel_status
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
-
-  def activity_actor
-    follower
-  end
-
-  def activity_notify
-    return if followable.class.name != "User"
-    [StreamNotifier.new(followable.id).notify]
-  end
-
-  def activity_object
-    followable
-  end
-
-  def remove_from_feed
-    super
-    if followable_type == "User"
-      User.find_by(id: followable.id)&.touch(:last_notification_activity)
-    end
-  end
 
   private
 
