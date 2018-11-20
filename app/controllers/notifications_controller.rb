@@ -8,12 +8,12 @@ class NotificationsController < ApplicationController
               else
                 current_user
               end
-      @notifications = Notification.where(user_id: current_user.id).order("created_at DESC").limit(500).to_a
+      @notifications = Notification.where(user_id: current_user.id).order("created_at DESC").limit(400).to_a
       aggregate_notifications("Follow")
       aggregate_notifications("Reaction")
-      @notifications = NotificationDecorator.decorate_collection(@notifications)[0..50]
-      @last_user_reaction = @user.reactions.pluck(:id).last
-      @last_user_comment = @user.comments.pluck(:id).last
+      @notifications = NotificationDecorator.decorate_collection(@notifications)[0..40]
+      @last_user_reaction = @user.reactions.last.id
+      @last_user_comment = @user.comments.last.id
     end
   end
 

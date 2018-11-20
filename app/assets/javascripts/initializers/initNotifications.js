@@ -23,7 +23,7 @@ function markNotificationsAsRead() {
       xmlhttp.setRequestHeader('X-CSRF-Token', csrfToken);
       xmlhttp.send();
     }
-  }, 250);
+  }, 380);
 }
 
 function fetchNotificationsCount() {
