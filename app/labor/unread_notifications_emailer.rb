@@ -28,7 +28,7 @@ class UnreadNotificationsEmailer
   def should_send_email?
     return false if !user.email_unread_notifications
     return false if last_email_sent_after(24.hours.ago)
-    emailable_notifications_count = user.notifications.where(read?: false).where.not(notifiable_type: "Reaction").count
+    emailable_notifications_count = user.notifications.where(read: false).where.not(notifiable_type: "Reaction").count
     emailable_notifications_count > rand(1..6)
   end
 

@@ -19,6 +19,10 @@ RSpec.describe Notification, type: :model do
       follow_data = { notifiable_id: follow_instance.id, notifiable_type: follow_instance.class.name }
       expect(notifiable_data).to eq follow_data
     end
+
+    it "is given notifiable_at upon creation" do
+      expect(Notification.last.notified_at).not_to eq nil
+    end
   end
 
   # describe "#send_to_followers" do
