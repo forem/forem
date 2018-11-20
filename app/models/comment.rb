@@ -283,7 +283,6 @@ class Comment < ApplicationRecord
   def before_destroy_actions
     bust_cache_without_delay
     remove_algolia_index
-    reactions.destroy_all
   end
 
   def bust_cache
