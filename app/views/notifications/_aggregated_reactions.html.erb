@@ -35,7 +35,7 @@
     reacted to
       <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
         <%# your article/comment or the actual title of the article/comment %>
-        <%= reactable_data["title"].blank? ? "your #{reactable_data["class"]["name"].downcase}" : reactable_data["title"] %>
+        <%= reactable_data["title"].blank? ? "your #{reactable_data["class"]["name"].downcase}" : sanitize(reactable_data["title"]) %>
       </a>
       <span class="reaction-images">
           with

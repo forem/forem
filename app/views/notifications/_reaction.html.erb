@@ -27,7 +27,7 @@
       <strong>
         <a href="<%= first_notification.json_data["reaction"]["reactable"]["path"] %>" class="notification-comment-reacted-link">
           <%# title is blank when it's a comment with only an image, for example %>
-          <%= first_notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{first_notification.json_data["reaction"]["reactable_type"].downcase}" : first_notification.json_data["reaction"]["reactable"]["title"] %>
+          <%= first_notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{first_notification.json_data["reaction"]["reactable_type"].downcase}" : sanitize(first_notification.json_data["reaction"]["reactable"]["title"]) %>
         </a>
       </strong>
       <span class="reaction-images">
