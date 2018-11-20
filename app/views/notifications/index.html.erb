@@ -33,7 +33,7 @@
         <% if user_signed_in? %>
           <% notification_count = 0 %>
           <% @notifications.each do |notification| %>
-            <% next if (notification.notified_at < 24.hours.ago && notificatin.aggregated?) %>
+            <% next if (notification.notified_at < 24.hours.ago && notification.aggregated?) %>
             <% notification_count = notification_count + 1 %>
             <% break if notification_count > 45 %>
             <div class="single-article single-article-small-pic <%= "unseen" unless notification.read? %>">
