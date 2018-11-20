@@ -51,7 +51,7 @@ class ReactionsController < ApplicationController
     if reaction
       reaction.user.touch
       reaction.destroy
-      Notification.remove_all(id: reaction.id, class_name: "Reaction", action: category) unless reaction.reactable.user_id == current_user.id
+      Notification.send_reaction_notification_without_delay(reaction)
       @result = "destroy"
     else
       reaction = Reaction.create!(
@@ -60,8 +60,8 @@ class ReactionsController < ApplicationController
         reactable_type: params[:reactable_type],
         category: category,
       )
-      Notification.send_reaction_notification(reaction) unless reaction.reactable.user_id == current_user.id
       @result = "create"
+      Notification.send_reaction_notification(reaction)
     end
     render json: { result: @result, category: category }
   end

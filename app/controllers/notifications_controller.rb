@@ -8,28 +8,13 @@ class NotificationsController < ApplicationController
               else
                 current_user
               end
-      @notifications = Notification.where(user_id: current_user.id).order("created_at DESC").limit(400).to_a
-      aggregate_notifications("Follow")
-      aggregate_notifications("Reaction")
-      @notifications = NotificationDecorator.decorate_collection(@notifications)[0..40]
+      @notifications = NotificationDecorator.
+        decorate_collection(Notification.where(user_id: current_user.id).
+        order("notified_at DESC").limit(60).to_a)
       @last_user_reaction = @user.reactions.last&.id
       @last_user_comment = @user.comments.last&.id
     end
   end
 
   private
-
-  def aggregate_notifications(notifiable_type)
-    notification_struct = Struct.new(:grouped_notifications, :notifiable_type, :read?)
-    notifications_to_aggregate = @notifications.select { |notification| notification.notifiable_type == notifiable_type }
-    aggregation_types = notifications_to_aggregate.map(&:aggregation_format).uniq
-    aggregation_types.each do |type|
-      matched_notifications = notifications_to_aggregate.select { |notification| type == notification.aggregation_format }
-      any_read = matched_notifications.count(&:read?).positive?
-      notification_group = notification_struct.new(matched_notifications, notifiable_type, any_read)
-      @notifications[@notifications.index(matched_notifications[0])] = notification_group unless @notifications.index(matched_notifications[0]).nil?
-      matched_notifications[1..-1].each { |notification| @notifications[@notifications.index(notification)] = nil }
-    end
-    @notifications.compact!
-  end
 end
