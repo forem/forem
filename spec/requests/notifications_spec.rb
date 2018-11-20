@@ -133,13 +133,13 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(notifications.count).to eq 2
       end
 
-      xit "properly renders reactable titles", focus: true do
+      it "properly renders reactable titles" do
         mock_heart_reaction_notifications(1, %w(unicorn like readinglist), special_characters_article)
         get "/notifications"
         expect(response.body).to include special_characters_article.title
       end
 
-      xit "properly renders reactable titles for multiple reactions", focus: true do
+      it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
         mock_heart_reaction_notifications(amount, %w(unicorn like readinglist), special_characters_article)
         get "/notifications"
