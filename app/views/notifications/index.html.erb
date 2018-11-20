@@ -30,8 +30,8 @@
         </header>
         <div class="widget-body">
           <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
-          <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
           <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "comments" %>" href="/notifications/comments">COMMENTS</a>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
         </div>
       </div>
     </div>
@@ -39,8 +39,8 @@
         <% if user_signed_in? %>
           <div class="notifications-mobile-filters">
             <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
-            <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
             <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "comments" %>" href="/notifications/comments">COMMENTS</a>
+            <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
           </div>
           <% notification_count = 0 %>
           <% @notifications.each do |notification| %>
