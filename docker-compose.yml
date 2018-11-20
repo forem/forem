@@ -14,7 +14,7 @@ services:
       WEBPACKER_DEV_SERVER_HOST: webpacker
 
     volumes:
-      - .:/app
+      - .:/app:cached
       - bundle:/bundle
       - node_modules:/app/node_modules
       - assets:/app/public/assets
