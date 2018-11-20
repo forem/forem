@@ -1,0 +1,39 @@
+<%# missing cache key %>
+<% if notification.grouped_notifications.length == 1 %>
+    <% first_notification = notification.grouped_notifications.last %>
+    <% if first_notification.json_data["reaction"]["category"] != "readinglist" %>
+      <% cache "activity-profile-pic-#{first_notification.json_data["user"]["id"]}-#{first_notification.json_data["user"]["profile_image_90"]}" do %>
+        <a href="<%= first_notification.json_data["user"]["path"] %>" class="small-pic-link-wrapper">
+          <div class="small-pic">
+            <img src="<%= first_notification.json_data["user"]["profile_image_90"] %>" alt="link to <%= first_notification.json_data["user"]["username"] %> profile">
+          </div>
+        </a>
+      <% end %>
+    <% else %>
+      <% cache "activity-profile-pic-readinglist-icon" do %>
+        <a href="#" class="small-pic-link-wrapper">
+          <div class="small-pic">
+            <img src="<%= asset_path ReactionImage.new("readinglist").path %>" alt="">
+          </div>
+        </a>
+      <% end %>
+    <% end %>
+    <div class="content notification-content reaction-content">
+      <% if first_notification.json_data["reaction"]["category"] == "readinglist" %>
+      Someone reacted to
+      <% else %>
+      <a href="<%= first_notification.json_data["user"]["path"] %>"><strong><%= first_notification.json_data["user"]["name"] %></strong></a> reacted to
+      <% end %>
+      <strong>
+        <a href="<%= first_notification.json_data["reaction"]["reactable"]["path"] %>" class="notification-comment-reacted-link">
+          <%# title is blank when it's a comment with only an image, for example %>
+          <%= first_notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{first_notification.json_data["reaction"]["reactable_type"].downcase}" : sanitize(first_notification.json_data["reaction"]["reactable"]["title"]) %>
+        </a>
+      </strong>
+      <span class="reaction-images">
+        with <%= image_tag ReactionImage.new(first_notification.json_data["reaction"]["category"]).path, class: "reaction-image", alt: "a #{first_notification.json_data["reaction"]["category"]}" %>
+      </span>
+    </div>
+<% else %>
+  <%= render "aggregated_reactions", notification: notification, notifications: notification.grouped_notifications %>
+<% end %>

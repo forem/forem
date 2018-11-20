@@ -76,6 +76,7 @@ class UserPolicy < ApplicationPolicy
        feed_admin_publish_permission
        feed_mark_canonical
        feed_url
+       gitlab_url
        linkedin_url
        location
        looking_for_work

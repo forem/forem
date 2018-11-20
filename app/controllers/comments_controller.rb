@@ -27,6 +27,7 @@ class CommentsController < ApplicationController
         @user.articles.find_by_slug(params[:slug]) ||
         not_found
       @article = @commentable
+      not_found unless @commentable.published
     end
     @commentable_type = @commentable.class.name
     if params[:id_code].present?
@@ -62,6 +63,7 @@ class CommentsController < ApplicationController
         current_user.update(checked_code_of_conduct: true)
       end
       Mention.create_all(@comment)
+      Notification.send_new_comment_notifications(@comment)
       if @comment.invalid?
         @comment.destroy
         render json: { status: "comment already exists" }
@@ -114,6 +116,7 @@ class CommentsController < ApplicationController
   def destroy
     authorize @comment
     @commentable_path = @comment.commentable.path
+    Notification.remove_all(id: @comment.id, class_name: "Comment")
     if @comment.is_childless?
       @comment.destroy
     else

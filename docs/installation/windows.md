@@ -36,8 +36,8 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
 
-rbenv install 2.5.1
-rbenv global 2.5.1
+rbenv install 2.5.3
+rbenv global 2.5.3
 ruby -v
 ```
 
@@ -54,7 +54,7 @@ node -v
 npm -v
 ```
 
-If `npm -v` give Syntax error: word unexpected (expecting "in"), restart the terminal and try again.
+If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the terminal and try again.
 
 And now, for rails itself:
 
@@ -103,12 +103,12 @@ Pay attention to the username and password you setup during installation of Post
 4.  Install foreman gem with `gem install foreman`
 5.  Run `rbenv rehash` when foreman installation is done.
 6.  Install our ruby dependencies with `bundle install`
-    While installing, you might ran into an error due to pg gem require PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
+    While installing, you might run into an error due to the pg gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
 7.  Install our frontend dependencies with `bin/yarn`
 8.  Set up your environment variables/secrets
 
 - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-- This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
+- This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
 - For any key that you wish to enter/replace:
 
 10. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.

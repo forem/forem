@@ -11,12 +11,13 @@ class GoogleAnalytics
     @user_id = user_id.to_s
     @client = AnalyticsReportingService.new
     @client.authorization = create_service_account_credential
+    @start_date = "201#{rand(5..8)}-0#{rand(1..8)}-0#{rand(1..9)}"
   end
 
   def get_pageviews
     requests = @article_ids.map do |id|
       article = Article.find_by_id(id)
-      make_report_request("ga:pagePath==#{article.path}", "ga:pageviews")
+      make_report_request("ga:pagePath=@#{article.slug}", "ga:pageviews")
     end
     pageviews = fetch_all_results(requests)
     @article_ids.zip(pageviews).to_h
@@ -58,9 +59,12 @@ class GoogleAnalytics
       view_id: ApplicationConfig["GA_VIEW_ID"],
       filters_expression: filters_expression_string,
       metrics: [Metric.new(expression: metrics_string)],
-      date_ranges: [
-        DateRange.new(start_date: "2015-01-01", end_date: "today"),
-      ],
+      dimensions: [Dimension.new(name: "ga:segment")],
+      segments: [Segment.new(segment_id: "gaid::-1"),
+                 Segment.new(segment_id: "gaid::-2"),
+                 Segment.new(segment_id: "gaid::-19"),
+                 Segment.new(segment_id: "gaid::-7")],
+      date_ranges: [DateRange.new(start_date: @start_date, end_date: "2020-01-01")],
     )
   end
 
@@ -68,7 +72,7 @@ class GoogleAnalytics
     grr = GetReportsRequest.new(report_requests: report_requests, quota_user: @user_id.to_s)
     response = @client.batch_get_reports(grr)
     response.reports.map do |report|
-      report.data.totals[0].values[0]
+      (report.data.maximums || report.data.totals)[0].values[0]
     end
   end
 
@@ -77,12 +81,5 @@ class GoogleAnalytics
       json_key_io: OpenStruct.new(read: ApplicationConfig["GA_SERVICE_ACCOUNT_JSON"]),
       scope: [AUTH_ANALYTICS_READONLY],
     )
-  end
-
-  def adjust(pageviews)
-    # This is naiively adjusting for "lost views" from adblockers,
-    # and ghostery, non-js loaded, etc.
-    # We can loosen this in the near future.
-    pageviews.map { |n| (n.to_i * 1.1).to_i.to_s }
   end
 end

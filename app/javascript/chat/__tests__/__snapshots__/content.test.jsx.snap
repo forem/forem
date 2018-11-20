@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Content /> as loading-user should render and test snapshot 1`] = `
+<div
+  class="activechatchannel__activecontent"
+  id="chat_activecontent"
+  onClick={false}
+>
+  <button
+    class="activechatchannel__activecontentexitbutton"
+    data-content="exit"
+  >
+    ×
+  </button>
+  <div
+    style={
+      Object {
+        "backgroundColor": "#f5f6f7",
+        "borderRadius": "500px",
+        "display": "block",
+        "height": "210px",
+        "margin": " 15px auto",
+        "width": "210px",
+      }
+    }
+  />
+</div>
+`;

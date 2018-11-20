@@ -1,5 +1,3 @@
-StreamRails.enabled = false
-
 p "1/8 Creating Organizations"
 
 3.times do
@@ -34,7 +32,7 @@ User.clear_index!
     email_comment_notifications: false,
     email_follower_notifications: false,
     email: Faker::Internet.email(name, "+"),
-    confirmed_at: Time.now,
+    confirmed_at: Time.current,
     password: "password",
   )
 

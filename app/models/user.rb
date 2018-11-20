@@ -32,6 +32,7 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many    :html_variants, dependent: :destroy
   has_many :mentor_relationships_as_mentee,
   class_name: "MentorRelationship", foreign_key: "mentee_id"
   has_many :mentor_relationships_as_mentor,
@@ -58,8 +59,7 @@ class User < ApplicationRecord
             uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
-            exclusion: { in: ReservedWords.all,
-                         message: "%{value} is reserved." }
+            exclusion: { in: ReservedWords.all, message: "username is reserved" }
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
@@ -83,6 +83,12 @@ class User < ApplicationRecord
   validates :dribbble_url,
               allow_blank: true,
               format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
+  validates :medium_url,
+              allow_blank: true,
+              format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_\@\.]{2,32})\/?\Z/
+  validates :gitlab_url,
+              allow_blank: true,
+              format: /\Ahttps:\/\/(www.gitlab.com|gitlab.com)\/([a-zA-Z0-9_\-\.]{1,100})\/?\Z/
   # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
@@ -219,16 +225,21 @@ class User < ApplicationRecord
       "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
       expires_in: 120.hours,
     ) do
-
-      # More efficient query. May not cover future edge cases.
-      # Should probably only return users who have published lately
-      # But this should be okay for most for now.
       Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
     end
   end
 
+  def cached_following_organizations_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
-    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 80.hours) do
+    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
       langs = []
       langs << "en" if prefer_language_en
       langs << "ja" if prefer_language_ja
@@ -251,7 +262,7 @@ class User < ApplicationRecord
 
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{updated_at}/followed_tag_names"
-    Rails.cache.fetch(cache_name, expires_in: 100.hours) do
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
           follower_id: id,
@@ -295,7 +306,7 @@ class User < ApplicationRecord
   end
 
   def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.now
+    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
   end
 
@@ -367,7 +378,7 @@ class User < ApplicationRecord
   private
 
   def send_welcome_notification
-    Broadcast.send_welcome_notification(id)
+    Notification.send_welcome_notification(id)
   end
 
   def set_username
@@ -547,11 +558,11 @@ class User < ApplicationRecord
 
   def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
-      self.mentor_form_updated_at = Time.now
+      self.mentor_form_updated_at = Time.current
     end
 
     if mentee_description_changed? || seeking_mentorship_changed?
-      self.mentee_form_updated_at = Time.now
+      self.mentee_form_updated_at = Time.current
     end
   end
 end

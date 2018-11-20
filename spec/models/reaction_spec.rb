@@ -9,7 +9,20 @@ RSpec.describe Reaction, type: :model do
     create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
   end
   let(:reaction) do
-    build(:reaction, user_id: user.id, reactable_id: comment.id, reactable_type: "Comment")
+    build(:reaction, reactable: comment, reactable_type: "Comment")
+  end
+
+  describe "actual validation" do
+    subject { Reaction.new(reactable: article, reactable_type: "Article", user: user) }
+
+    before { user.add_role(:trusted) }
+
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(%w(like thinking hands unicorn thumbsdown vomit readinglist)) }
+    it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
+
+    # Thumbsdown and Vomits test needed
+    # it { is_expected.to validate_inclusion_of(:reactable_type).in_array(%w(Comment Article)) }
   end
 
   describe "validations" do
@@ -45,8 +58,19 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).not_to be_valid
     end
 
+    it "assigns 0 points if reaction is invalid" do
+      reaction.update(status: "invalid")
+      expect(reaction.points).to eq(0)
+    end
+
+    it "assigns the correct points if reaction is confirmed" do
+      reaction_points = reaction.points
+      reaction.update(status: "confirmed")
+      expect(reaction.points).to eq(reaction_points * 2)
+    end
+
     context "when user is trusted" do
-      before { user.add_role(:trusted) }
+      before { reaction.user.add_role(:trusted) }
 
       it "allows vomit reactions for users with trusted role" do
         reaction.category = "vomit"
@@ -64,37 +88,9 @@ RSpec.describe Reaction, type: :model do
     it "runs async jobs effectively" do
       u2 = create(:user)
       c2 = create(:comment, commentable_id: article.id)
-      Delayed::Worker.delay_jobs = false
       create(:reaction, user_id: u2.id, reactable_id: c2.id, reactable_type: "Comment")
       create(:reaction, user_id: u2.id, reactable_id: article.id, reactable_type: "Article")
-      Delayed::Worker.delay_jobs = true
       expect(reaction).to be_valid
-    end
-  end
-
-  describe "#activity_object" do
-    it "returns self" do
-      expect(reaction.activity_object.instance_of?(described_class)).to be true
-    end
-  end
-
-  describe "#activity_target" do
-    it "returns the porper string" do
-      expect(reaction.activity_target).to eq("#{reaction.reactable_type}_#{reaction.reactable_id}")
-    end
-  end
-
-  describe "stream" do
-    after { StreamRails.enabled = false }
-
-    before do
-      StreamRails.enabled = true
-      allow(StreamNotifier).to receive(:new).and_call_original
-    end
-
-    it "notifies the reactable author" do
-      create(:reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article")
-      expect(StreamNotifier).to have_received(:new).with(author.id).at_least(:once)
     end
   end
 end

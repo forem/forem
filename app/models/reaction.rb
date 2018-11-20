@@ -9,6 +9,7 @@ class Reaction < ApplicationRecord
 
   validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
+  validates :status, inclusion: { in: %w(valid invalid confirmed) }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
@@ -20,9 +21,6 @@ class Reaction < ApplicationRecord
   before_destroy :clean_up_before_destroy
 
   scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }
-
-  include StreamRails::Activity
-  as_activity
 
   def self.count_for_article(id)
     Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
@@ -42,27 +40,6 @@ class Reaction < ApplicationRecord
       take(15)
   end
 
-  # notifications
-
-  def activity_object
-    self
-  end
-
-  def activity_target
-    "#{reactable_type}_#{reactable_id}"
-  end
-
-  def activity_notify
-    return if user_id == reactable.user_id
-    return if points.negative?
-    [StreamNotifier.new(reactable.user.id).notify]
-  end
-
-  def remove_from_feed
-    super
-    User.find_by(id: reactable.user.id)&.touch(:last_notification_activity)
-  end
-
   def self.cached_any_reactions_for?(reactable, user, category)
     Rails.cache.fetch("any_reactions_for-#{reactable.class.name}-#{reactable.id}-#{user.updated_at}-#{category}", expires_in: 24.hours) do
       Reaction.
@@ -74,19 +51,29 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
-    cache_buster = CacheBuster.new
     if reactable_type == "Article"
-      reactable.async_score_calc
-      reactable.index!
-      cache_buster.bust "/reactions?article_id=#{reactable_id}"
-    elsif reactable_type == "Comment"
-      reactable.save
-      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+      update_article
+    elsif reactable_type == "Comment" && reactable
+      update_comment
     end
-    cache_buster.bust user.path
     occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
+
+  def update_article
+    cache_buster = CacheBuster.new
+    reactable.async_score_calc
+    reactable.index!
+    cache_buster.bust "/reactions?article_id=#{reactable_id}"
+    cache_buster.bust user.path
+  end
+
+  def update_comment
+    cache_buster = CacheBuster.new
+    reactable.save unless destroyed_by_association
+    cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+    cache_buster.bust user.path
+  end
 
   def touch_user
     user.touch
@@ -117,6 +104,8 @@ class Reaction < ApplicationRecord
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
+    base_points = 0 if status == "invalid"
+    base_points = base_points * 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
@@ -125,7 +114,7 @@ class Reaction < ApplicationRecord
       errors.add(:category, "is not valid.")
     end
 
-    if reactable_type == "Article" && !reactable.published
+    if reactable_type == "Article" && !reactable&.published
       errors.add(:reactable_id, "is not valid.")
     end
   end

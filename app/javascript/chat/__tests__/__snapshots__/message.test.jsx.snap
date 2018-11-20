@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Message /> should render and test snapshot 1`] = `
+<div
+  class="chatmessage"
+>
+  <div
+    class="chatmessage__profilepic"
+  >
+    <a
+      data-content="users/undefined"
+      href="/asdf"
+      target="_blank"
+    >
+      <img
+        alt="asdf profile"
+        class="chatmessagebody__profileimage"
+        data-content="users/undefined"
+        src=""
+      />
+    </a>
+  </div>
+  <div
+    class="chatmessage__body"
+  >
+    <span
+      class="chatmessagebody__username"
+      style={
+        Object {
+          "color": "#00FFFF",
+        }
+      }
+    >
+      <a
+        class="chatmessagebody__username--link"
+        data-content="users/undefined"
+        href="/asdf"
+        target="_blank"
+      >
+        asdf
+      </a>
+    </span>
+    <span />
+    <div
+      class="chatmessage__bodytext"
+    >
+      <span
+        class="chatmessagebody__message"
+        dangerouslySetInnerHTML={
+          Object {
+            "__html": "WE BUILT THIS CITY",
+          }
+        }
+        style={
+          Object {
+            "color": "black",
+          }
+        }
+      />
+    </div>
+  </div>
+</div>
+`;

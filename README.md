@@ -2,17 +2,16 @@
   <br>
   <img
     alt="DEV"
-    src="https://thepracticaldev.s3.amazonaws.com/i/d3o5l9yiqfv1z24cn1yp.png"
+    src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png"
     width=500px
   />
-  <br/>
   <h1>DEV Community 👩‍💻👨‍💻</h1>
   <strong>The Human Layer of the Stack</strong>
 </div>
 <br/>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.5.1-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.5.3-green.svg" alt="ruby version"/>
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
@@ -29,6 +28,9 @@
   <a href="https://www.skylight.io/app/applications/K9H5IV3RqKGu">
     <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" />
   </a>
+  <a href="https://www.codetriage.com/thepracticaldev/dev.to">
+    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge" />
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
@@ -40,14 +42,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 ## Table of Contents
 
 - [Contributing](#contributing)
-  - [Where to contribute](#where-to-contribute)
-  - [How to contribute](#how-to-contribute)
-  - [Contribution guideline](#contribution-guideline)
-    - [Clean code with tests](#clean-code-with-tests)
-    - [Create a pull request](#create-a-pull-request)
-    - [Create an issue](#create-an-issue)
-  - [How to get help](#how-to-get-help)
-  - [The bottom line](#the-bottom-line)
 - [Codebase](#codebase)
   - [The stack](#the-stack)
   - [Engineering standards](#engineering-standards)
@@ -65,13 +59,15 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 
 ## Contributing
 
-We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
+We encourage you to contribute to dev.to! Please check out the [Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to proceed.
+
+We expect contributors to abide by our underlying [code of conduct](CODE_OF_CONDUCT.md). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
 ### Where to contribute
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `approved` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
 
-When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone knew to the project. For newer developers, try 'entry-level' issues.
+When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone new to the project. For newer developers, try 'entry-level' issues.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 

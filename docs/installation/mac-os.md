@@ -2,8 +2,8 @@
 
 ### Ruby
 
-1.  If you don't already a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
-2.  With the Ruby version manager, install Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.5.1`)
+1.  If you don't already have a Ruby version manager, we highly recommend [rbenv](https://github.com/rbenv/rbenv). Please follow their [installation guide](https://github.com/rbenv/rbenv#installation).
+2.  With the Ruby version manager, install the Ruby version listed on our badge. (ie with rbenv: `rbenv install 2.5.3`)
 
 ### Yarn
 
@@ -26,7 +26,7 @@ For additional configuration, [click here](/additional-postgres-setup)
 7.  Set up your environment variables/secrets
 
 - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-- This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional servies that may be required to run certain parts of the app.
+- This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
 - For any key that you wish to enter/replace:
 
 8.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.

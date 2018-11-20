@@ -50,7 +50,7 @@
           .user-profile-header {min-height: 398px;}
         </style>
       <% end %>
-      <% if @user.email_public %>
+      <% if @user.email_public && context != "sidebar" %>
         <div class="row">
           <div class="key">
             email

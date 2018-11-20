@@ -62,9 +62,11 @@ class OrganizationsController < ApplicationController
       text_color_hex
       twitter_username
       github_username
+      cta_button_text
+      cta_button_url
+      cta_body_markdown
     ]
-    approved_params = %i(cta_button_text cta_button_url cta_body_markdown)
-    @organization&.approved ? accessible + approved_params : accessible
+    accessible
   end
 
   def organization_params

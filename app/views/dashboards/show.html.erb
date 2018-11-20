@@ -1,12 +1,12 @@
 <% title "Dashboard - DEV" %>
 
-<div class="dashboard-container">
+<div class="dashboard-container" id="user-dashboard">
   <div class="actions">
     <a class="action <%= 'active' if params[:which] == "organization" || params[:which].blank? %>" href="/dashboard">
       <span>POSTS</span>
       <span>(<%= @user.articles_count %>)</span>
     </a>
-    <a class="action <%= 'active' if params[:which] == "user_followers" %>" href="/dashboard/user_followers">
+    <a class="action <%= 'active' if params[:which] == "user_followers" || params[:which] == "organization_user_followers" %>" href="/dashboard/user_followers">
       <span>FOLLOWERS</span>
       <span>(<%= @user.followers_count %>)</span>
     </a>
@@ -15,82 +15,47 @@
       <span>(<%= @user.following_users_count %>)</span>
     </a>
   </div>
-<% if @user.org_admin && @user.organization %>
+<% if @user.org_admin && @user.organization &&  (params[:which].blank? || params[:which] == "organization") %>
   <h1>
-    <a href="/dashboard" class=<%= "active" if params[:which].blank? %>>MY POSTS</a>
-    <a href="/dashboard/organization" class=<%= "active" if params[:which] == "organization" %>><%= @user.organization.name.upcase %> POSTS</a>
+    <a href="/dashboard" class=<%= "active" if params[:which].blank? %>>Personal</a>
+    <a href="/dashboard/organization" class=<%= "active" if params[:which] == "organization" %>><%= @user.organization.name %> (<%= @user.organization.articles.size %>)</a>
+  </h1>
+<% elsif @user.org_admin && @user.organization &&  (params[:which] == "organization_user_followers" || params[:which] == "user_followers")%>
+  <h1>
+    <a href="/dashboard/user_followers" class=<%= "active" if params[:which] == "user_followers" %>>Personal</a>
+    <a href="/dashboard/organization_user_followers" class=<%= "active" if params[:which] == "organization_user_followers" %>><%= @user.organization.name %> (<%= @user.organization.followers_count %>)</a>
   </h1>
 <% end %>
   <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
-      <% if current_user.can_view_analytics? %>
-        <div class="dashboard-analytics-header" id="dashboard-analytics-header">
-          <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
-        </div>
-      <% end %>
+      <%= render "analytics" %>
       <% @articles.each do |article| %>
-        <div class="single-article">
-          <a href="<%= article.current_state_path %>"><h2><%= article.title %></h2></a>
-          <div>
-            <% if !article.published %>
-              <span class="pill cta yellow">DRAFT</span>
-            <% end %>
-            <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
-            <% if article.published && current_user.can_view_analytics? %>
-              <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
-            <% end %>
-          </div>
-          <%= form_for(article) do |f| %>
-            <input type="hidden" name="destination" value="/dashboard" />
-            AUTHOR: <%= f.select(:user_id, options_for_select(@user.organization.users.map {|x| [x.name, x.id] }, article.user_id )) %>
-            <%= f.submit "SUBMIT AUTHOR CHANGE", class:"cta pill black" %>
-          <% end %>
-        </div>
+        <%= render "dashboard_article", article: article, org_admin: true %>
       <% end %>
     </div>
-  <% elsif params[:which] == "user_followers" || params[:which] == "following_users" %>
+  <% elsif params[:which] == "user_followers" || params[:which] == "following_users" || params[:which] == "organization_user_followers" %>
       <% @follows.each do |follow| %>
-      <% user = params[:which] == "user_followers" ? follow.follower : follow.followable %>
-      <div class="single-article">
-        <a href="<%= user.path %>" class="block-link">
-          <h2>
-            <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60)%>" />
-            <%= user.name %>
-            <span class="dashboard-username">@<%= user.username %></a>
-          </h2>
-        </a>
-      </div>
+        <% user = params[:which].include?("followers") ? follow.follower : follow.followable %>
+        <% if user %>
+          <div class="single-article">
+            <a href="<%= user.path %>" class="block-link">
+              <h2>
+                <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60)%>" />
+                <%= user.name %>
+                <span class="dashboard-username">@<%= user.username %></a>
+              </h2>
+            </a>
+          </div>
+        <% end %>
     <% end %>
   <% elsif @articles.any? %>
-    <% if current_user.can_view_analytics? %>
-      <div class="dashboard-analytics-header" id="dashboard-analytics-header">
-        <img src="<%= asset_path('bar-chart-white.svg') %>" /><span id="dashboard-analytics">...</span>
-      </div>
-    <% end %>
+    <%= render "analytics" %>
     <% if current_user.has_role?(:video_permission) %>
-      <a class="cta" style="display:block;text-align:center;font-size:1.5em;border-radius:3px;margin:20px 0px;padding: 6px 20px; max-width: 200px;background:#4e57ef;color:white" href="/videos/new" data-no-instant>
-        Upload a Video
+      <a class="video-upload-cta" href="/videos/new" data-no-instant>
+        Upload a Video 🎥
       </a>
     <% end %>
     <% @articles.each do |article| %>
-      <div class="single-article">
-        <a href="<%= article.current_state_path %>">
-          <h2>
-            <%= article.title %>
-          </h2>
-        </a>
-        <div class="dashboard-actions">
-          <% if article.published %>
-            <a href="<%= article.path %>" class="cta pill">PUBLISHED</a>
-          <% else %>
-            <a href="<%= article.path %>?preview=<%= article.password %>" class="cta pill yellow">DRAFT</a>
-          <% end %>
-          <a href="<%= article.path %>/edit" class="cta pill green">EDIT</a>
-          <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
-          <% if article.published && current_user.can_view_analytics? %>
-            <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">fetching stats...</span>
-          <% end %>
-        </div>  
-      </div>
+        <%= render "dashboard_article", article: article, org_admin: false %>
     <% end %>
   <% else %>
     <div class="no-articles">
