@@ -123,7 +123,7 @@ Rails.application.routes.draw do
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
 
-  get "/notifications/:username" => "notifications#index"
+  get "/notifications/:filter" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"

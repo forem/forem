@@ -106,7 +106,7 @@ class Notification < ApplicationRecord
         }
       }
       if aggregated_reaction_siblings.size.zero?
-        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "reaction").destroy_all
+        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
       else
         previous_siblings_size = 0
         notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
@@ -221,7 +221,9 @@ class Notification < ApplicationRecord
         name: user.name,
         username: user.username,
         path: user.path,
-        profile_image_90: user.profile_image_90
+        profile_image_90: user.profile_image_90,
+        comments_count: user.comments_count,
+        created_at: user.created_at
       }
     end
 
