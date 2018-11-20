@@ -63,7 +63,7 @@ class CommentsController < ApplicationController
         current_user.update(checked_code_of_conduct: true)
       end
       Mention.create_all(@comment)
-      Notification.send_new_comment_notifications(@comment)
+      Notification.send_new_comment_notifications_without_delay(@comment)
       if @comment.invalid?
         @comment.destroy
         render json: { status: "comment already exists" }
