@@ -2,7 +2,7 @@
 <div class="content notification-content badge-content">
   <% cache "activity-badge-reward-#{json_data["badge_achievement"]["badge_id"]}" do %>
     <div class="badge-title">
-      You received the <strong><%= json_data["badge_achievement"]["badge"]["title"] %></strong> badge
+      You received the <strong><%= sanitize(json_data["badge_achievement"]["badge"]["title"]) %></strong> badge
     </div>
     <p class="badge-description">
       <%= json_data["badge_achievement"]["badge"]["description"] %>
