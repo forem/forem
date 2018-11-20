@@ -433,25 +433,12 @@ ActiveRecord::Schema.define(version: 20181120170350) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
-    t.text "encrypted_message_html"
-    t.text "encrypted_message_html_iv"
-    t.text "encrypted_message_markdown"
-    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
-  end
-
-  create_table "mutes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "mutable_id"
-    t.integer "mutable_type"
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.index ["user_id", "mutable_id", "mutable_type"], name: "index_mutes_on_user_id_and_mutable_id_and_mutable_type"
   end
 
   create_table "notes", id: :serial, force: :cascade do |t|
@@ -724,8 +711,6 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.integer "experience_level"
-    t.boolean "export_requested", default: false
-    t.datetime "exported_at"
     t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
     t.boolean "feed_mark_canonical", default: false
