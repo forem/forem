@@ -14,7 +14,7 @@ class NotificationsController < ApplicationController
         order("notified_at DESC").limit(55).to_a)
       elsif params[:filter].to_s.downcase == "comments"
         @notifications = NotificationDecorator.
-        decorate_collection(Notification.where(user_id: current_user.id, notifiable_type: "Comment").
+        decorate_collection(Notification.where(user_id: current_user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
         order("notified_at DESC").limit(55).to_a)
       else
         @notifications = NotificationDecorator.

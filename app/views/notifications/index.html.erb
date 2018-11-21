@@ -50,6 +50,8 @@
             <div class="single-article single-article-small-pic <%= "unseen" unless notification.read? %>">
               <%= render "#{notification.notifiable_type.downcase}", notification: notification %>
             </div>
+          <% rescue => e %>
+            <% logger.error("Notifification error - #{e.message} - #{notification.id}") %>
           <% end %>
         <% else %>
           <div class="content notification-content comment-content">
