@@ -100,6 +100,7 @@ RSpec.describe Exporter::Articles do
         exporter = valid_instance(article.user)
         result = exporter.export
         articles = load_articles(result)
+        user.reload
         expect(articles.length).to eq(user.articles.size)
       end
 
