@@ -312,6 +312,12 @@ header{
       code{
         color:$sky-blue;
       }
+      &.anchor{
+        padding-top: 50px;
+        margin-top: -50px;
+        -webkit-background-clip: content-box;
+        background-clip: content-box;
+      }
     }
     h1,h2,h3,h4,h5,h6{
       font-family: $helvetica;

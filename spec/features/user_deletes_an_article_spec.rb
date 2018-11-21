@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Deleting Article", js: true do
-  let(:author) { create(:user) }
-  let(:article) { create(:article, user_id: author.id) }
+  let(:author)                    { create(:user) }
+  let(:article)                   { create(:article, user_id: author.id) }
 
   def delete_article_via_dashboard
     visit "/dashboard"
@@ -13,7 +13,7 @@ RSpec.describe "Deleting Article", js: true do
   end
 
   before do
-    article
+    Notification.send_to_followers(article, "Published")
   end
 
   it "author of article deletes own article" do

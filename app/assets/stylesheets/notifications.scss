@@ -52,6 +52,30 @@
           &.reaction-content{
             width:calc(100% - 145px);
           }
+          &.badge-content{
+            margin: auto;
+            width: 98%;
+            display: block;
+            text-align: center;
+            .badge-title{
+              margin: 6px auto;
+              width: 90%;
+              font-size: 1.3em;
+            }
+            p.badge-description{
+              margin: 10px auto;
+              width: 90%;
+              color:#666666;
+            }
+            img.badge-image{
+              margin:10px 0px 20px;
+              height: 150px;
+            }
+            p.badge-reward-message{
+              margin: 8px auto;
+              width: 90%;
+            }
+          }
           .follow-action-button{
             display:block;
             color:white;
@@ -61,6 +85,7 @@
             font-size:1.1em;
             margin-top:0.3em;
             padding:2px 10px;
+            min-height:33px;
             min-width:150px;
             &.following-butt{
               background:$sky-blue;
@@ -68,6 +93,10 @@
             }
             &:hover{
               border:2px solid darken($sky-blue,5%);
+            }
+            &.badge-button{
+              margin-bottom: 12px;
+              display: inline-block;
             }
           }
           .mod-instructions{

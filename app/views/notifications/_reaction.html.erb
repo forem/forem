@@ -1,0 +1,34 @@
+<%# missing cache key %>
+<% if notification.json_data["reaction"]["aggregated_siblings"].length == 1 %>
+    <% if notification.json_data["reaction"]["category"] != "readinglist" %>
+      <% cache "activity-profile-pic-#{notification.json_data["user"]["id"]}-#{notification.json_data["user"]["profile_image_90"]}" do %>
+        <a href="<%= notification.json_data["user"]["path"] %>" class="small-pic-link-wrapper">
+          <div class="small-pic">
+            <img src="<%= notification.json_data["user"]["profile_image_90"] %>" alt="link to <%= notification.json_data["user"]["username"] %> profile">
+          </div>
+        </a>
+      <% end %>
+    <% else %>
+      <% cache "activity-profile-pic-readinglist-icon" do %>
+        <a href="#" class="small-pic-link-wrapper">
+          <div class="small-pic">
+            <img src="<%= asset_path ReactionImage.new("readinglist").path %>" alt="">
+          </div>
+        </a>
+      <% end %>
+    <% end %>
+    <div class="content notification-content reaction-content">
+      <a href="<%= notification.json_data["user"]["path"] %>"><strong><%= notification.json_data["user"]["name"] %></strong></a> reacted to
+      <strong>
+        <a href="<%= notification.json_data["reaction"]["reactable"]["path"] %>" class="notification-comment-reacted-link">
+          <%# title is blank when it's a comment with only an image, for example %>
+          <%= notification.json_data["reaction"]["reactable"]["title"].blank? ? "your #{notification.json_data["reaction"]["reactable_type"].downcase}" : sanitize(notification.json_data["reaction"]["reactable"]["title"]) %>
+        </a>
+      </strong>
+      <span class="reaction-images">
+        with <%= image_tag ReactionImage.new(notification.json_data["reaction"]["category"]).path, class: "reaction-image", alt: "a #{notification.json_data["reaction"]["category"]}" %>
+      </span>
+    </div>
+<% else %>
+  <%= render "aggregated_reactions", notification: notification %>
+<% end %>

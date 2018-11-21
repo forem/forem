@@ -1,4 +1,4 @@
-<% title "Notifications - dev.to" %>
+<% title "Notifications" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="https://dev.to/notifications"/>
@@ -20,44 +20,38 @@
 
 
 <div class="user-profile-header tag-header" style="background: transparent;padding:0px;margin:22px auto 0px">
-  <div class="tag-or-query-header-container">
-    <% if user_signed_in? %>
-      <h1 class="notifications-header"><img src="<%=asset_path("bell.svg")%>" />Notifications</h1>
-    <% end %>  
-  </div>
 </div>
 
   <div class="home" id="notifications-container" style="margin-top:0px;">
-    <div class="side-bar"></div>
+    <div class="side-bar">
+      <div class="widget fixed-widget">
+        <header>
+          notifications
+        </header>
+        <div class="widget-body">
+          <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "comments" %>" href="/notifications/comments">COMMENTS</a>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
+        </div>
+      </div>
+    </div>
       <div class="articles-list" id="articles-list">
         <% if user_signed_in? %>
-          <% if @activities.size > 0 %>
-            <% cache "notifications-fragment-#{current_user.last_notification_activity}-#{current_user.updated_at.to_s}-#{current_user.id}", expires_in: 15.minutes  do %>
-              <% @activities.each do |group| %>
-                <% cache "notifications-fragment-#{group["is_seen"].to_s}-#{group["id"].to_s}-#{group.to_s.size}-#{@last_user_reaction}-#{@last_user_comment}" do %>
-                  <% if current_user.id == 1 || Rails.env.development? %>
-                      <% if group['verb'] == "Reaction" && group['activity_count'] > 1 %>
-                        <%= render "notifications/aggregated_reactions", group: group %>
-                      <% elsif group['verb'] == "Follow" && group['activity_count'] > 1 %>
-                        <%= render "notifications/aggregated_follows", group: group %>
-                      <% else %>
-                        <%= render_activity(group, partial_root: '/notifications/activity') %>
-                      <% end %>
-                  <% else %>
-                    <% begin %>
-                      <% if group['verb'] == "Reaction" && group['activity_count'] > 1 %>
-                        <%= render "notifications/aggregated_reactions", group: group %>
-                      <% elsif group['verb'] == "Follow" && group['activity_count'] > 1 %>
-                        <%= render "notifications/aggregated_follows", group: group %>
-                      <% else %>
-                        <%= render_activity(group, partial_root: '/notifications/activity') %>
-                      <% end %>
-                    <% rescue %>
-                    <% end %>
-                  <% end %>
-                <% end %>
-              <% end %>
-            <% end %>
+          <div class="notifications-mobile-filters">
+            <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
+            <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "comments" %>" href="/notifications/comments">COMMENTS</a>
+            <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
+          </div>
+          <% notification_count = 0 %>
+          <% @notifications.each do |notification| %>
+            <% next if (notification.notified_at < 24.hours.ago && notification.aggregated?) %>
+            <% notification_count = notification_count + 1 %>
+            <% break if notification_count > 45 %>
+            <div class="single-article single-article-small-pic <%= "unseen" unless notification.read? %>">
+              <%= render "#{notification.notifiable_type.downcase}", notification: notification %>
+            </div>
+          <% rescue => e %>
+            <% logger.error("Notifification error - #{e.message} - #{notification.id}") %>
           <% end %>
         <% else %>
           <div class="content notification-content comment-content">
@@ -68,4 +62,4 @@
     <div class="side-bar sidebar-additional"></div>
   </div>
 
-  <%= render 'articles/fitvids' %>
+  <%= render "articles/fitvids" %>
