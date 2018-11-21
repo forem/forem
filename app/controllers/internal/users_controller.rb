@@ -92,7 +92,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def banish
     @user = User.find(params[:id])
-    strip_user(@user)
+    Moderator::Banisher.call(admin: current_user, offender: @user)
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
@@ -151,10 +151,10 @@ class Internal::UsersController < Internal::ApplicationController
 
   def user_params
     params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :mentorship_note,
-                                 :ban_from_mentorship)
+                                :offering_mentorship,
+                                :add_mentor,
+                                :add_mentee,
+                                :mentorship_note,
+                                :ban_from_mentorship)
   end
 end

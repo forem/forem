@@ -281,18 +281,18 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
-    bust_cache
+    bust_cache_without_delay
     remove_algolia_index
-    reactions.destroy_all
   end
 
   def bust_cache
-    Comment.delay.comment_async_bust(commentable, user.username)
+    Comment.comment_async_bust(commentable, user.username)
     expire_root_fragment
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
   end
+  handle_asynchronously :bust_cache
 
   def send_email_notification
     NotifyMailer.new_reply_email(self).deliver
