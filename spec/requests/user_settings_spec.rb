@@ -54,7 +54,7 @@ RSpec.describe "UserSettings", type: :request do
     before { login_as user }
 
     after do
-      Delayed::Worker.delay_jobs = true
+      Delayed::Worker.delay_jobs = false
     end
 
     it "updates summary" do
@@ -69,6 +69,7 @@ RSpec.describe "UserSettings", type: :request do
 
     context "when requesting an export of the articles" do
       def send_request(flag = true)
+        Delayed::Worker.delay_jobs = true
         put "/users/#{user.id}", params: {
           user: { tab: "misc", export_requested: flag }
         }
@@ -97,8 +98,11 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        Delayed::Worker.delay_jobs = false
-        expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect do
+          send_request
+          Delayed::Worker.new.work_off
+          # Delayed::Worker.delay_jobs = false
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
       it "does not send an email if there was no request" do
