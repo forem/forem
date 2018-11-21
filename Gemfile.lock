@@ -997,6 +997,7 @@ DEPENDENCIES
   rubocop (~> 0.59)
   rubocop-rspec (~> 1.29)
   ruby-prof (~> 0.17)
+  rubyzip (~> 1.2, >= 1.2.2)
   s3_direct_upload (~> 0.1)
   sass-rails (~> 5.0)
   sdoc (~> 0.4)
