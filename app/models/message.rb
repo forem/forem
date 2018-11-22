@@ -57,7 +57,7 @@ class Message < ApplicationRecord
   def update_all_has_unopened_messages_statuses
     chat_channel.
       chat_channel_memberships.
-      where("last_opened_at < ?", 4.seconds.ago).
+      where("last_opened_at < ?", 10.seconds.ago).
       where.
       not(user_id: user_id).
       update_all(has_unopened_messages: true)

@@ -15,9 +15,9 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_save :update_reactable
-  before_destroy :update_reactable_without_delay
   after_save :touch_user
   after_save :async_bust
+  before_destroy :update_reactable_without_delay
   before_destroy :clean_up_before_destroy
 
   scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }

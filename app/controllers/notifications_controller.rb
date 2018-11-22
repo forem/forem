@@ -8,28 +8,30 @@ class NotificationsController < ApplicationController
               else
                 current_user
               end
-      @notifications = Notification.where(user_id: current_user.id).order("created_at DESC").limit(400).to_a
-      aggregate_notifications("Follow")
-      aggregate_notifications("Reaction")
-      @notifications = NotificationDecorator.decorate_collection(@notifications)[0..40]
+      if params[:page]
+        num = 48
+        notified_at_offset = Notification.find(params[:page])&.notified_at
+      else
+        num = 12
+      end
+      if params[:filter].to_s.downcase == "posts"
+        @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Article", action: "Published").
+        order("notified_at DESC")
+      elsif params[:filter].to_s.downcase == "comments"
+        @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
+        or(Notification.where(user_id: current_user.id, notifiable_type: "Mention")).
+        order("notified_at DESC")
+      else
+        @notifications = Notification.where(user_id: current_user.id).
+        order("notified_at DESC")
+      end
       @last_user_reaction = @user.reactions.last&.id
       @last_user_comment = @user.comments.last&.id
+      @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
+      @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+      render partial: "notifications_list" if notified_at_offset
     end
   end
 
   private
-
-  def aggregate_notifications(notifiable_type)
-    notification_struct = Struct.new(:grouped_notifications, :notifiable_type, :read?)
-    notifications_to_aggregate = @notifications.select { |notification| notification.notifiable_type == notifiable_type }
-    aggregation_types = notifications_to_aggregate.map(&:aggregation_format).uniq
-    aggregation_types.each do |type|
-      matched_notifications = notifications_to_aggregate.select { |notification| type == notification.aggregation_format }
-      any_read = matched_notifications.count(&:read?).positive?
-      notification_group = notification_struct.new(matched_notifications, notifiable_type, any_read)
-      @notifications[@notifications.index(matched_notifications[0])] = notification_group unless @notifications.index(matched_notifications[0]).nil?
-      matched_notifications[1..-1].each { |notification| @notifications[@notifications.index(notification)] = nil }
-    end
-    @notifications.compact!
-  end
 end

@@ -2,18 +2,27 @@ class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
   belongs_to :user
 
+  before_create :mark_notified_at_time
+
   validates :user_id, uniqueness: { scope: %i[notifiable_id notifiable_type action] }
 
   class << self
-    def send_new_follower_notification(follow)
-      json_data = { user: user_data(follow.follower) }
-      Notification.create(
-        user_id: follow.followable.id,
-        notifiable_id: follow.id,
-        notifiable_type: follow.class.name,
-        action: nil,
-        json_data: json_data,
-      )
+    def send_new_follower_notification(follow, is_read = false)
+      user = follow.followable
+      recent_follows = Follow.where(followable_type: "User", followable_id: user.id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
+      aggregated_siblings = recent_follows.map { |f| user_data(f.follower) }
+      if aggregated_siblings.size.zero?
+        Notification.find_or_create_by(user_id: user.id, action: "Follow").destroy
+      else
+        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings}
+        notification = Notification.find_or_create_by(user_id: user.id, action: "Follow")
+        notification.notifiable_id = recent_follows.first.id
+        notification.notifiable_type = "Follow"
+        notification.json_data = json_data
+        notification.notified_at = Time.current
+        notification.read = is_read
+        notification.save!
+        end
     end
     handle_asynchronously :send_new_follower_notification
 
@@ -78,6 +87,10 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_new_badge_notification
 
     def send_reaction_notification(notifiable)
+      return if notifiable.user_id == notifiable.reactable.user_id
+      aggregated_reaction_siblings = notifiable.reactable.reactions.
+        select{|r| r.user_id != notifiable.reactable.user_id}.
+        map { |r| {category: r.category, created_at: r.created_at, user: user_data(r.user)} }
       json_data = {
         user: user_data(notifiable.user),
         reaction: {
@@ -88,16 +101,24 @@ class Notification < ApplicationRecord
             path: notifiable.reactable.path,
             title: notifiable.reactable.title
           },
+          aggregated_siblings: aggregated_reaction_siblings,
           updated_at: notifiable.updated_at
         }
       }
-      Notification.create(
-        user_id: notifiable.reactable.user.id,
-        notifiable_id: notifiable.id,
-        notifiable_type: "Reaction",
-        action: notifiable.category,
-        json_data: json_data,
-      )
+      if aggregated_reaction_siblings.size.zero?
+        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
+      else
+        previous_siblings_size = 0
+        notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
+        previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
+        notification.user_id = notifiable.reactable.user.id
+        notification.json_data = json_data
+        notification.notified_at = Time.current
+        if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
+          notification.read = false
+        end
+        notification.save!
+      end
     end
     handle_asynchronously :send_reaction_notification
 
@@ -200,7 +221,9 @@ class Notification < ApplicationRecord
         name: user.name,
         username: user.username,
         path: user.path,
-        profile_image_90: user.profile_image_90
+        profile_image_90: user.profile_image_90,
+        comments_count: user.comments_count,
+        created_at: user.created_at
       }
     end
 
@@ -236,11 +259,11 @@ class Notification < ApplicationRecord
 
   # instance methods
 
-  def aggregation_format
-    if notifiable_type == "Reaction"
-      "#{created_at.beginning_of_day}-#{created_at.end_of_day}_#{json_data['reaction']['reactable_id']}_#{json_data['reaction']['reactable_type']}"
-    elsif notifiable_type == "Follow"
-      "#{created_at.beginning_of_day}-#{created_at.end_of_day}"
-    end
+  def aggregated?
+    action == "Reaction" || action == "Follow"
+  end
+
+  def mark_notified_at_time
+    self.notified_at = Time.current
   end
 end
