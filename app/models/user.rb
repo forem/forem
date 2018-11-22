@@ -356,6 +356,14 @@ class User < ApplicationRecord
     end
   end
 
+  def cache_bust_all_articles
+    cache_buster = CacheBuster.new
+    articles.each do |article|
+      cache_buster.bust(article.path)
+      cache_buster.bust(article.path + "?i=i")
+    end
+  end
+
   def settings_tab_list
     tab_list = %w(
       Profile
@@ -428,7 +436,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    if core_profile_details_changed?
+    if core_profile_details_changed? && !user.banned
       delay.resave_articles
     end
   end

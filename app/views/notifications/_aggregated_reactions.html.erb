@@ -1,9 +1,8 @@
 <%# TODO: change to map of IDs %>
 <% siblings = notification.json_data["reaction"]["aggregated_siblings"].select{|n| n["created_at"] > 24.hours.ago } %>
-<% cache "activity-aggregated-reactions-#{siblings}_#{siblings}" do %>
+<% cache "activity-aggregated-reactions-#{siblings}" do %>
   <% actors = siblings.map { |n| n["user"] }.uniq %>
   <% reactable_data = notification.json_data["reaction"]["reactable"] %>
-
   <% cache "activity-profile-pic-#{actors.first["id"]}-#{actors.first["profile_image_90"]}" do %>
     <a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
       <div class="small-pic">
