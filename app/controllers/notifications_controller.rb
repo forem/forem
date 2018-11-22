@@ -9,10 +9,10 @@ class NotificationsController < ApplicationController
                 current_user
               end
       if params[:page]
-        num = 48
+        num = 45
         notified_at_offset = Notification.find(params[:page])&.notified_at
       else
-        num = 12
+        num = 10
       end
       if params[:filter].to_s.downcase == "posts"
         @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Article", action: "Published").
