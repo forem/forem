@@ -128,6 +128,7 @@ function initPagination() {
       if (response.status === 200) {
         response.text().then(function(html){
           el.innerHTML = html
+          initReactions();
         });
       }
     });
