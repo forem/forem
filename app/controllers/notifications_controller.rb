@@ -8,21 +8,28 @@ class NotificationsController < ApplicationController
               else
                 current_user
               end
-      if params[:filter].to_s.downcase == "posts"
-        @notifications = NotificationDecorator.
-        decorate_collection(Notification.where(user_id: current_user.id, notifiable_type: "Article", action: "Published").
-        order("notified_at DESC").limit(55).to_a)
-      elsif params[:filter].to_s.downcase == "comments"
-        @notifications = NotificationDecorator.
-        decorate_collection(Notification.where(user_id: current_user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
-        order("notified_at DESC").limit(55).to_a)
+      if params[:page]
+        num = 48
+        notified_at_offset = Notification.find(params[:page])&.notified_at
       else
-        @notifications = NotificationDecorator.
-        decorate_collection(Notification.where(user_id: current_user.id).
-        order("notified_at DESC").limit(55).to_a)
+        num = 12
+      end
+      if params[:filter].to_s.downcase == "posts"
+        @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Article", action: "Published").
+        order("notified_at DESC")
+      elsif params[:filter].to_s.downcase == "comments"
+        @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
+        or(Notification.where(user_id: current_user.id, notifiable_type: "Mention")).
+        order("notified_at DESC")
+      else
+        @notifications = Notification.where(user_id: current_user.id).
+        order("notified_at DESC")
       end
       @last_user_reaction = @user.reactions.last&.id
       @last_user_comment = @user.comments.last&.id
+      @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
+      @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+      render partial: "notifications_list" if notified_at_offset
     end
   end
 

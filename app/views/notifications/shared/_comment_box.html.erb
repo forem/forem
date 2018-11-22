@@ -19,30 +19,31 @@
         <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
       </button>
     <% end %>
-    <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"]).children.find_by(user_id: current_user.id) %>
-    <% if reply %>
-      <a class="toggle-reply-form already-replied-link" href="<%= reply.path %>">
-        Replied
-      </a>
-    <% else %>
-      <a class="toggle-reply-form" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>">
-        Reply
-      </a>
-    <% end %>
-    </div>
-    <% @comment = Comment.new %>
-    <%= form_for(@comment, authenticity_token: false, html: {id: "comment-form-for-#{json_data["comment"]["id"]}", onsubmit: "handleCommentSubmit.bind(this)(event)"}) do |f| %>
-      <input type="hidden" name="authenticity_token" value="NOTHING" id="new_comment_authenticity_token">
-      <%= f.hidden_field :commentable_id, value: json_data["comment"]["commentable"]["id"] %>
-      <%= f.hidden_field :commentable_type, value: json_data["comment"]["commentable"]["class"]["name"] %>
+    <% cache "comment-box-comment-reply-#{@last_user_comment}-#{json_data["comment"]["updated_at"]}-#{json_data["comment"]["id"]}" do %>
+      <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"]).children.find_by(user_id: current_user.id) %>
+      <% if reply %>
+        <a class="toggle-reply-form already-replied-link" href="<%= reply.path %>">
+          Replied
+        </a>
+      <% else %>
+        <a class="toggle-reply-form" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>">
+          Reply
+        </a>
+      <% end %>
+      </div>
+      <% @comment = Comment.new %>
+      <%= form_for(@comment, authenticity_token: false, html: {id: "comment-form-for-#{json_data["comment"]["id"]}", onsubmit: "handleCommentSubmit.bind(this)(event)"}) do |f| %>
+        <%= f.hidden_field :commentable_id, value: json_data["comment"]["commentable"]["id"] %>
+        <%= f.hidden_field :commentable_type, value: json_data["comment"]["commentable"]["class"]["name"] %>
 
-      <%= f.hidden_field :parent_id, value: json_data["comment"]["id"] %>
-      <div class="field" id="textarea-wrapper">
-        <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data["comment"]["id"]}" %>
-      </div>
-      <div class="actions" id="submit-wrapper">
-        <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)" %>
-      </div>
+        <%= f.hidden_field :parent_id, value: json_data["comment"]["id"] %>
+        <div class="field" id="textarea-wrapper">
+          <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data["comment"]["id"]}" %>
+        </div>
+        <div class="actions" id="submit-wrapper">
+          <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)" %>
+        </div>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
