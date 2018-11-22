@@ -30,7 +30,8 @@ module Redcarpet
       private
 
       def remove_emoji_and_hyphenate(string)
-        string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/\s/, "-")
+        stripped_string = ActionView::Base.full_sanitizer.sanitize string
+        stripped_string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/\s/, "-")
       end
     end
   end
