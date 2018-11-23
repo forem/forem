@@ -21,16 +21,15 @@ class Comment < ApplicationRecord
   after_save     :calculate_score
   after_save     :bust_cache
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification
+  after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count
   before_create  :adjust_comment_parent_based_on_depth
+  after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
+  after_update   :remove_notifications, if: :deleted
   before_validation :evaluate_markdown
   validate :permissions
-
-  include StreamRails::Activity
-  as_activity
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
@@ -70,7 +69,7 @@ class Comment < ApplicationRecord
           profile_pic: ProfileImage.new(user).get(90),
           profile_image_90: ProfileImage.new(user).get(90),
           github_username: user.github_username,
-          twitter_username: user.twitter_username,
+          twitter_username: user.twitter_username
         }
       end
       attribute :commentable do
@@ -78,7 +77,7 @@ class Comment < ApplicationRecord
           path: commentable&.path,
           title: commentable&.title,
           tag_list: commentable&.tag_list,
-          id: commentable&.id,
+          id: commentable&.id
         }
       end
       tags do
@@ -100,6 +99,15 @@ class Comment < ApplicationRecord
     end
   end
 
+  def self.users_with_number_of_comments(user_ids, before_date)
+    joins(:user).
+      select("users.username, COUNT(comments.user_id) AS number_of_comments").
+      where(user_id: user_ids).
+      where(arel_table[:created_at].gt(before_date)).
+      group(User.arel_table[:username]).
+      order("number_of_comments DESC")
+  end
+
   def remove_algolia_index
     remove_from_index!
     index = Algolia::Index.new("ordered_comments_#{Rails.env}")
@@ -113,7 +121,7 @@ class Comment < ApplicationRecord
   def self.rooted_on(commentable_id, commentable_type)
     includes(:user, :commentable).
       select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at).
+             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
       where(commentable_id: commentable_id,
             ancestry: nil,
             commentable_type: commentable_type)
@@ -143,47 +151,10 @@ class Comment < ApplicationRecord
     id.to_s(26)
   end
 
-  # notifications
-
-  def activity_notify
-    if ancestors.empty? && user != commentable.user
-      [StreamNotifier.new(commentable.user.id).notify]
-    elsif ancestors
-      # notify all ancestors unless it's yourself
-      user_ids = ancestors.map(&:user_id).uniq - [user_id]
-      user_ids.map do |id|
-        StreamNotifier.new(id).notify
-      end
-    end
-  end
-
   def custom_css
-    MarkdownParser.new(body_markdown).tags_used.map do |t|
-      Rails.application.assets["ltags/#{t}.css"].to_s
+    MarkdownParser.new(body_markdown).tags_used.map do |tag|
+      Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
-  end
-
-  def activity_object
-    self
-  end
-
-  def activity_target
-    "comment_#{Time.now}"
-  end
-
-  def remove_from_feed
-    super
-    if ancestors.empty? && user != commentable.user
-      [User.find_by(id: commentable.user.id)&.touch(:last_notification_activity)]
-    elsif ancestors
-      user_ids = ancestors.map { |comment| comment.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == commentable.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == user_id }
-      # filters out article author and duplicate users
-      user_ids.map do |id|
-        User.find_by(id: id)&.touch(:last_notification_activity)
-      end
-    end
   end
 
   def title
@@ -200,7 +171,7 @@ class Comment < ApplicationRecord
   end
 
   def readable_publish_date
-    if created_at.year == Time.now.year
+    if created_at.year == Time.current.year
       created_at.strftime("%b %e")
     else
       created_at.strftime("%b %e '%y")
@@ -218,16 +189,31 @@ class Comment < ApplicationRecord
         subject_name: commentable.title,
         user_image_link: user_image_link,
         background_color: user.bg_color_hex,
-        text_color: user.text_color_hex,
+        text_color: user.text_color_hex
       },
     )
   end
 
+  def self.comment_async_bust(commentable, username)
+    commentable.touch
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    CacheBuster.new.bust_comment(commentable, username)
+    commentable.index!
+  end
+
   private
+
+  def update_notifications
+    Notification.update_notifications(self)
+  end
+
+  def remove_notifications
+    Notification.remove_all(id: id, class_name: "Comment")
+  end
 
   def send_to_moderator
     return if user && user.comments_count > 10
-    ModerationService.new.send_moderation_notification(self)
+    Notification.send_moderation_notification(self)
   end
 
   def evaluate_markdown
@@ -295,36 +281,29 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
-    bust_cache
+    bust_cache_without_delay
     remove_algolia_index
-    reactions.destroy_all
   end
 
   def bust_cache
+    Comment.comment_async_bust(commentable, user.username)
     expire_root_fragment
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
-    async_bust
   end
-
-  def async_bust
-    expire_root_fragment
-    commentable.touch
-    commentable.touch(:last_comment_at)
-    CacheBuster.new.bust_comment(self)
-    commentable.index!
-  end
-  handle_asynchronously :async_bust
+  handle_asynchronously :bust_cache
 
   def send_email_notification
-    NotifyMailer.new_reply_email(self).deliver if parent_email_exist?
+    NotifyMailer.new_reply_email(self).deliver
   end
   handle_asynchronously :send_email_notification
 
-  def parent_email_exist?
-    parent_user && parent_user.email.present? &&
-      parent_user.email_comment_notifications
+  def should_send_email_notification?
+    parent_user.class.name != "Podcast" &&
+      parent_user != user &&
+      parent_user.email_comment_notifications &&
+      parent_user.email
   end
 
   def strip_url(url)

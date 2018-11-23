@@ -1,24 +1,22 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
-<% if @user.identities.where(provider:'github').empty? %>
+<% if @user.identities.find_by(provider:'github').nil? %>
   <div class="field">
-    <label>Action</label>
     <a href="/users/auth/github" class="big-button cta" data-no-instant>
       <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
     </a>
   </div>
 <% end %>
 
-<% if @user.identities.where(provider:'twitter').empty? %>
+<% if @user.identities.find_by(provider:'twitter').nil? %>
   <div class="field">
-    <label>Action</label>
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
       <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
     </a>
   </div>
 <% end %>
 <h4>
-  <a href="https://dev.to/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28"style="vertical-align:-7px;margin-right:4px;"/></a> 
+  <a href="https://dev.to/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28"style="vertical-align:-7px;margin-right:4px;"/></a>
   Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
@@ -127,7 +125,7 @@
   <div class="field">
     <%= f.label :linkedin_url %>
     <%= f.url_field :linkedin_url %>
-  </div>      
+  </div>
   <div class="field">
     <%= f.label :behance_url %>
     <%= f.url_field :behance_url %>
@@ -135,7 +133,15 @@
   <div class="field">
     <%= f.label :dribbble_url %>
     <%= f.url_field :dribbble_url %>
-  </div>               
+  </div>
+  <div class="field">
+    <%= f.label :medium_url %>
+    <%= f.url_field :medium_url %>
+  </div>
+  <div class="field">
+    <%= f.label :gitlab_url %>
+    <%= f.url_field :gitlab_url %>
+  </div>
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>

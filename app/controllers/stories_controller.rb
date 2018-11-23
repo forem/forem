@@ -19,12 +19,14 @@ class StoriesController < ApplicationController
 
   def show
     @story_show = true
-    @podcast = Podcast.find_by_slug(params[:username])
-    @episode = PodcastEpisode.find_by_slug(params[:slug])
-    if @podcast && @episode
-      handle_podcast_show
-    else
+    if @article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate
       handle_article_show
+    elsif @article = Article.find_by_slug(params[:slug])&.decorate
+      handle_possible_redirect
+    else
+      @podcast = Podcast.find_by_slug(params[:username]) || not_found
+      @episode = PodcastEpisode.find_by_slug(params[:slug]) || not_found
+      handle_podcast_show
     end
   end
 
@@ -42,7 +44,7 @@ class StoriesController < ApplicationController
     not_found
   end
 
-  def redirect_to_changed_username_article_page
+  def handle_possible_redirect
     if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
       if @user.articles.find_by_slug(params[:slug])
         redirect_to "/#{@user.username}/#{params[:slug]}"
@@ -54,6 +56,10 @@ class StoriesController < ApplicationController
         redirect_to "/#{@user.username}/#{params[:slug]}"
         return
       end
+    end
+    if @organization = @article.organization
+      redirect_to "/#{@organization.slug}/#{params[:slug]}"
+      return
     end
     not_found
   end
@@ -98,7 +104,7 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
-    num_articles = user_signed_in? ? 3 : 15
+    num_articles = 15
     @stories = article_finder(num_articles)
 
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
@@ -107,11 +113,27 @@ class StoriesController < ApplicationController
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
-        where("featured_number > ?", 1449999999)
+        where("featured_number > ? AND score > ?", 1449999999, -40)
       @featured_story = Article.new
     else
-      @stories = @stories.where(featured: true).order("hotness_score DESC")
+      @default_home_feed = true
+      @stories = @stories.
+        where("reactions_count > ? OR featured = ?", 10, true).
+        order("hotness_score DESC")
+      if user_signed_in?
+        offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7].sample #random offset, weighted more towards zero
+        @stories = @stories.offset(offset)
+      end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
+      if user_signed_in?
+        @new_stories = Article.where("published_at > ? AND score > ?", 4.hours.ago, -30).
+          where(published: true).
+          includes(:user).
+          limit(45).
+          order("published_at DESC").
+          limited_column_select.
+          decorate
+      end
     end
     @stories = @stories.decorate
     assign_podcasts
@@ -152,9 +174,7 @@ class StoriesController < ApplicationController
       redirect_to_changed_username_profile
       return
     end
-    comment_count = params[:view] == "comments" ? 250 : 8
-    @comments = @user.comments.where(deleted: false).
-      order("created_at DESC").includes(:commentable).limit(comment_count)
+    assign_user_comments
     @stories = ArticleDecorator.decorate_collection(@user.
       articles.where(published: true).
       limited_column_select.
@@ -195,19 +215,11 @@ class StoriesController < ApplicationController
   def handle_article_show
     @article_show = true
     @comment = Comment.new
-    assign_article_and_user_and_organization
-    assign_sticky_nav
-    handle_possible_redirect
-    return if performed?
-    not_found unless @article
-    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 75 : 25
+    assign_user_and_org
+    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 65 : 35
     assign_second_and_third_user
     not_found if permission_denied?
     set_surrogate_key_header @article.record_key
-    @classic_article = Suggester::Articles::Classic.new(@article).get
-    unless user_signed_in?
-      response.headers["Surrogate-Control"] = "max-age=10000, stale-while-revalidate=30, stale-if-error=86400"
-    end
     redirect_if_show_view_param
     return if performed?
     render template: "articles/show"
@@ -217,9 +229,9 @@ class StoriesController < ApplicationController
     !@article.published && params[:preview] != @article.password
   end
 
-  def assign_article_and_user_and_organization
-    @organization = Organization.find_by_slug(params[:username].downcase)
-    @organization ? assign_organization_article : assign_user_article
+  def assign_user_and_org
+    @user = @article.user || not_found
+    @organization = @article.organization if @article.organization_id.present?
   end
 
   def assign_second_and_third_user
@@ -231,27 +243,14 @@ class StoriesController < ApplicationController
     end
   end
 
-  def handle_possible_redirect
-    if !@user && !@organization
-      redirect_to_changed_username_article_page
-    end
-    if @article&.organization.present? && @organization.blank?
-      redirect_to @article.path
-    end
-  end
-
-  def assign_organization_article
-    @article = @organization.articles.find_by_slug(params[:slug])&.decorate
-    @user = @article&.user || not_found # The org may have changed back to user and this does not handle that properly
-  end
-
-  def assign_user_article
-    @user = User.find_by_username(params[:username].downcase)
-    return unless @user
-    @article = @user.
-      articles.
-      find_by_slug(params[:slug])&.
-      decorate
+  def assign_user_comments
+    comment_count = params[:view] == "comments" ? 250 : 8
+    @comments = if @user.comments_count > 0
+                  @user.comments.where(deleted: false).
+                    order("created_at DESC").includes(:commentable).limit(comment_count)
+                else
+                  []
+                end
   end
 
   def stories_by_timeframe
@@ -259,7 +258,7 @@ class StoriesController < ApplicationController
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"
-      @stories.order("published_at DESC")
+      @stories.where("score > ?", -40).order("published_at DESC")
     else
       @stories.order("hotness_score DESC")
     end
@@ -281,42 +280,5 @@ class StoriesController < ApplicationController
       page(@page).
       per(num_articles).
       filter_excluded_tags(params[:tag])
-  end
-
-  def assign_sticky_nav
-    return unless @article
-    reaction_count_num = Rails.env.production? ? 15 : -1
-    comment_count_num = Rails.env.production? ? 7 : -2
-    more_articles = []
-    article_tags = @article.cached_tag_list_array
-    article_tags.delete("discuss")
-    tag_articles = Article.tagged_with(article_tags, any: true).
-      includes(:user).
-      where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
-      where(published: true).
-      where.not(id: @article.id, user_id: @article.user_id).
-      limited_column_select.
-      where("featured_number > ?", 5.days.ago.to_i).
-      order("RANDOM()").
-      limit(8)
-    if tag_articles.size < 6
-      more_articles = Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
-        includes(:user).
-        where("comments_count > ?", comment_count_num).
-        limited_column_select.
-        where(published: true).
-        where.not(id: @article.id, user_id: @article.user_id).
-        where("featured_number > ?", 5.days.ago.to_i).
-        order("RANDOM()").
-        limit(10 - tag_articles.size)
-    end
-
-    @user_stickies = (@organization || @user).articles.
-      where(published: true).
-      limited_column_select.
-      tagged_with(article_tags, any: true).
-      where.not(id: @article.id).order("published_at DESC").
-      limit(2)
-    @sticky_articles = (tag_articles + more_articles).sample(8)
   end
 end

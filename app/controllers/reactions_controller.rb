@@ -5,9 +5,9 @@ class ReactionsController < ApplicationController
   def index
     skip_authorization
     if params[:article_id]
-      article = Article.cached_find(params[:article_id])
+      id = params[:article_id]
       reactions = if efficient_current_user_id.present?
-                    Reaction.where(reactable_id: article.id,
+                    Reaction.where(reactable_id: id,
                                    reactable_type: "Article",
                                    user_id: efficient_current_user_id).
                       where("points > ?", 0)
@@ -17,8 +17,8 @@ class ReactionsController < ApplicationController
       render json:
       {
         current_user: { id: efficient_current_user_id },
-        article_reaction_counts: Reaction.count_for_reactable(article),
-        reactions: reactions,
+        article_reaction_counts: Reaction.count_for_article(id),
+        reactions: reactions
       }.to_json
     else
       comments = Comment.where(
@@ -32,7 +32,7 @@ class ReactionsController < ApplicationController
         {
           current_user: { id: current_user&.id },
           positive_reaction_counts: reaction_counts,
-          reactions: reactions,
+          reactions: reactions
         }.to_json
     end
     set_surrogate_key_header params.to_s unless current_user
@@ -41,26 +41,29 @@ class ReactionsController < ApplicationController
   def create
     authorize Reaction
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    category = params[:category] || "like"
     reaction = Reaction.where(
       user_id: current_user.id,
       reactable_id: params[:reactable_id],
       reactable_type: params[:reactable_type],
-      category: params[:category] || "like",
+      category: category,
     ).first
     if reaction
       reaction.user.touch
       reaction.destroy
+      Notification.send_reaction_notification_without_delay(reaction)
       @result = "destroy"
     else
-      Reaction.create!(
+      reaction = Reaction.create!(
         user_id: current_user.id,
         reactable_id: params[:reactable_id],
         reactable_type: params[:reactable_type],
-        category: params[:category] || "like",
+        category: category,
       )
       @result = "create"
+      Notification.send_reaction_notification(reaction)
     end
-    render json: { result: @result, category: params[:category] || "like" }
+    render json: { result: @result, category: category }
   end
 
   def cached_user_positive_reactions(user)

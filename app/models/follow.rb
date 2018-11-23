@@ -2,9 +2,6 @@ class Follow < ApplicationRecord
   extend ActsAsFollower::FollowerLib
   extend ActsAsFollower::FollowScopes
 
-  include StreamRails::Activity
-  as_activity
-
   # NOTE: Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
   belongs_to :follower,   polymorphic: true
@@ -21,7 +18,7 @@ class Follow < ApplicationRecord
   }, column_names: {
     ["follows.followable_type = ?", "User"] => "following_users_count",
     ["follows.followable_type = ?", "Organization"] => "following_orgs_count",
-    ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count",
+    ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
   after_save :touch_user
   after_save :touch_user_followed_at
@@ -30,26 +27,6 @@ class Follow < ApplicationRecord
   before_destroy :modify_chat_channel_status
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
-
-  def activity_actor
-    follower
-  end
-
-  def activity_notify
-    return if followable.class.name != "User"
-    [StreamNotifier.new(followable.id).notify]
-  end
-
-  def activity_object
-    followable
-  end
-
-  def remove_from_feed
-    super
-    if followable_type == "User"
-      User.find_by(id: followable.id)&.touch(:last_notification_activity)
-    end
-  end
 
   private
 
@@ -82,9 +59,10 @@ class Follow < ApplicationRecord
 
   def modify_chat_channel_status
     if followable_type == "User" && followable.following?(follower)
-      follower.chat_channels.
+      channel = follower.chat_channels.
         where("slug LIKE ? OR slug like ?", "%/#{followable.username}%", "%#{followable.username}/%").
-        first.update(status: "inactive")
+        first
+      channel.update(status: "inactive") if channel
     end
   end
 end

@@ -2,50 +2,53 @@ sudo: required
 language: ruby
 cache:
   directories:
-  - vendor/bundle
-  - node_modules
+    - vendor/bundle
+    - node_modules
+    - $HOME/.nvm
 rvm:
-- 2.5.1
+  - 2.5.3
 addons:
   postgresql: '9.6'
   chrome: stable
 env:
   global:
-  - RAILS_ENV=test
-  - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+    - RAILS_ENV=test
+    - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
 branches:
   only:
     - master
+before_install:
+  - nvm install node v8.11.4
 install:
-- bundle install --path vendor/bundle
-- bundle exec chromedriver-update
-- yarn install
-- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-  > ./cc-test-reporter
-- chmod +x ./cc-test-reporter
+  - bundle install --path vendor/bundle
+  - bundle exec chromedriver-update
+  - yarn install
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+    > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
 before_script:
-- cp config/database.yml.travis config/database.yml
-- psql -c 'create database travis_ci_test;' -U postgres
+  - cp config/database.yml.travis config/database.yml
+  - psql -c 'create database travis_ci_test;' -U postgres
 script:
-- bundle exec rails webpacker:compile
-- bundle exec rake db:schema:load
-- "./cc-test-reporter before-build"
-- bundle exec rspec spec
-- "./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json"
-- yarn test
-- "./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json"
-- "./cc-test-reporter sum-coverage coverage/codeclimate.*.json"
-- "./cc-test-reporter upload-coverage"
-- "bundle exec bundle-audit check --update --ignore CVE-2018-1000544"
+  - bundle exec rails webpacker:compile
+  - bundle exec rake db:schema:load
+  - './cc-test-reporter before-build'
+  - bundle exec rspec spec
+  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
+  - yarn test
+  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
+  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
+  - './cc-test-reporter upload-coverage'
+  - 'bundle exec bundle-audit check --update'
 deploy:
   provider: heroku
-  api_key: "$HEROKU_AUTH_TOKEN"
+  api_key: '$HEROKU_AUTH_TOKEN'
   app:
     master: practicaldev
   run:
-  - rake db:migrate
+    - rake db:migrate
 after_deploy:
-- bash after_deploy.sh
+  - bash after_deploy.sh
 notifications:
   slack:
     on_pull_requests: false

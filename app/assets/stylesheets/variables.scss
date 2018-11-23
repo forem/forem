@@ -5,6 +5,7 @@ $green: #66e2d5;
 $light-green: lighten($green,30%);
 $dark-purple: #4e57ef;
 $purple: #cfd7ff;
+$light-medium-purple: lighten($purple, 4%);
 $light-purple: lighten($purple, 7%);
 $blue: #1395b8;
 $sky-blue: #557de8;
@@ -21,10 +22,12 @@ $tan: #fdf9f3;
 $off-white: #fffffe;
 $bold-blue: #0045ff;
 
-$helvetica: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+$helvetica: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 $monospace: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 $helvetica-condensed: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
 
 $outline-color: darken($light-medium-gray, 2%);
 $shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.18);
+$light-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.1);
+$dark-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.25);
 $bold-shadow: 3px 3px 0px darken($light-medium-gray, 13%);

@@ -1,6 +1,6 @@
 class UserPolicy < ApplicationPolicy
   def edit?
-    user == record
+    current_user?
   end
 
   def onboarding_update?
@@ -8,7 +8,11 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    user == record
+    current_user?
+  end
+
+  def destroy?
+    current_user?
   end
 
   def join_org?
@@ -29,6 +33,10 @@ class UserPolicy < ApplicationPolicy
 
   def remove_from_org?
     user.org_admin && not_self? && within_the_same_org?
+  end
+
+  def remove_association?
+    current_user?
   end
 
   def dashboard_show?
@@ -59,6 +67,7 @@ class UserPolicy < ApplicationPolicy
        email_connect_messages
        email_newsletter
        email_public
+       editor_version
        email_unread_notifications
        employer_name
        employer_url
@@ -67,6 +76,7 @@ class UserPolicy < ApplicationPolicy
        feed_admin_publish_permission
        feed_mark_canonical
        feed_url
+       gitlab_url
        linkedin_url
        location
        looking_for_work
@@ -93,7 +103,8 @@ class UserPolicy < ApplicationPolicy
        summary
        text_color_hex
        username
-       website_url]
+       website_url
+       export_requested]
   end
 
   private

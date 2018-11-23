@@ -19,13 +19,13 @@ vendor/bundle
 coverage
 /tags
 
-#Ignore public uploads
+# Ignore public uploads
 /public/uploads/*
 /public/c/*
 /public/i/*
 /public/assets/*
 
-#Ignore node_modules
+# Ignore node_modules
 node_modules/
 
 # Generated js bundles
@@ -43,3 +43,9 @@ latest.dump
 # Ignore storybook static site generation
 storybook-static/
 yarn-error.log
+
+# Ignore package-lock.json because we use yarn
+package-lock.json
+
+#Jetbrains Tools
+.idea/

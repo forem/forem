@@ -20,7 +20,8 @@ class OnboardingUsers extends Component {
               src={user.profile_image_url}
               alt={user.name}
             />
-            {user.name}
+            <div>{user.name}</div>
+            <div className="onboarding-user-list-row__summary"><em>{user.summary}</em></div>
           </div>
           <div className="onboarding-user-list-checkbox">
             <button onClick={this.props.handleCheckUser.bind(this, user)} className={this.props.checkedUsers.indexOf(user) > -1 ? 'checked' : ''}>
@@ -44,10 +45,10 @@ class OnboardingUsers extends Component {
     return (
       <div className="onboarding-user-container">
         <div className="onboarding-user-cta">
-          Here are some folks from the community you might want to follow <strong className="yellow">based on your interests.</strong>
+          Here are some suggestions based on your interests
         </div>
         <div className="onboarding-user-list">
-          <div className="onboarding-user-list-header onboarding-user-list-row">
+          <div className="onboarding-user-list-header">
             <div className="onboarding-user-list-key">
               Follow All
             </div>

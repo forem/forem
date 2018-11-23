@@ -1,0 +1,240 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Chat /> should load chat 1`] = `
+<div
+  class="chat chat--expanded"
+  data-no-instant={true}
+>
+  <div
+    class="chat__channels chat__channels--expanded"
+  >
+    <button
+      class="chat__channelstogglebutt"
+      onClick={[Function]}
+    >
+      &lt;
+    </button>
+    <input
+      onKeyUp={[Function]}
+      placeholder="Filter"
+    />
+    <div
+      class="chat__channeltypefilter"
+    >
+      <button
+        class="chat__channeltypefilterbutton chat__channeltypefilterbutton--active"
+        data-channel-type="all"
+        onClick={[Function]}
+      >
+        all
+      </button>
+      <button
+        class="chat__channeltypefilterbutton chat__channeltypefilterbutton--inactive"
+        data-channel-type="direct"
+        onClick={[Function]}
+      >
+        direct
+      </button>
+      <button
+        class="chat__channeltypefilterbutton chat__channeltypefilterbutton--inactive"
+        data-channel-type="invite_only"
+        onClick={[Function]}
+      >
+        group
+      </button>
+    </div>
+    <div
+      class="chatchannels"
+    >
+      <div
+        class="chatchannels__channelslist"
+        id="chatchannels__channelslist"
+      >
+        <button
+          class="chatchanneltabbutton"
+          data-channel-id={12345}
+          data-channel-slug="0"
+          onClick={[Function]}
+          type="button"
+        >
+          <span
+            class="chatchanneltab chatchanneltab--inactive chatchanneltab--new"
+            data-channel-id={12345}
+            data-channel-slug="0"
+            style={
+              Object {
+                "border": "1px solid transparent",
+                "boxShadow": "3px 3px 0px transparent",
+              }
+            }
+          >
+            <span>
+              <span
+                class="chatchanneltabindicator chatchanneltabindicator--new"
+                data-channel-id={12345}
+                data-channel-slug="0"
+              >
+                <img
+                  alt="channel name 1"
+                  src=""
+                />
+              </span>
+              channel name 1
+            </span>
+          </span>
+        </button>
+        <button
+          class="chatchanneltabbutton"
+          data-channel-id={34561}
+          data-channel-slug="@1"
+          onClick={[Function]}
+          type="button"
+        >
+          <span
+            class="chatchanneltab chatchanneltab--active chatchanneltab--new"
+            data-channel-id={34561}
+            data-channel-slug="@1"
+            style={
+              Object {
+                "border": "1px solid #222222",
+                "boxShadow": "3px 3px 0px #222222",
+              }
+            }
+          >
+            <span>
+              <span
+                class="chatchanneltabindicator chatchanneltabindicator--new"
+                data-channel-id={34561}
+                data-channel-slug="@1"
+              >
+                <img
+                  alt="group channel 2"
+                  class="chatchanneltabindicatordirectimage"
+                  src="fake_profile_pic"
+                />
+              </span>
+              @1
+            </span>
+          </span>
+        </button>
+        <button
+          class="chatchanneltabbutton"
+          data-channel-id={67890}
+          data-channel-slug="2"
+          onClick={[Function]}
+          type="button"
+        >
+          <span
+            class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+            data-channel-id={67890}
+            data-channel-slug="2"
+            style={
+              Object {
+                "border": "1px solid transparent",
+                "boxShadow": "3px 3px 0px transparent",
+              }
+            }
+          >
+            <span>
+              <span
+                class="chatchanneltabindicator chatchanneltabindicator--old"
+                data-channel-id={67890}
+                data-channel-slug="2"
+              >
+                <img
+                  alt="group channel 3"
+                  src=""
+                />
+              </span>
+              group channel 3
+            </span>
+          </span>
+        </button>
+      </div>
+      <div
+        class="chatchannels__config"
+      >
+        <img
+          alt=""
+          src=""
+          style={
+            Object {
+              "height": "18px",
+            }
+          }
+        />
+        <div
+          class="chatchannels__configmenu"
+        >
+          <a
+            href="/settings"
+          >
+            DEV Settings
+          </a>
+          <a
+            href="/report-abuse"
+          >
+            Report Abuse
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="chat__activechat"
+  >
+    <div
+      class="activechatchannel"
+    >
+      <div
+        class="activechatchannel__conversation"
+      >
+        <div
+          class="activechatchannel__header"
+        >
+           
+        </div>
+        <div
+          class="activechatchannel__messages"
+          id="messagelist"
+        >
+          <div
+            class="messagelist__sentinel"
+            id="messagelist__sentinel"
+          />
+        </div>
+        <div
+          class="activechatchannel__alerts"
+        >
+          <div
+            class="chatalert__default chatalert__default--hidden"
+          >
+            More new messages below
+          </div>
+        </div>
+        <div
+          class="activechatchannel__form"
+        >
+          <div
+            class="messagecomposer"
+          >
+            <textarea
+              class="messagecomposer__input"
+              id="messageform"
+              maxLength="1000"
+              onKeyDown={[Function]}
+              placeholder="Message goes here"
+            />
+            <button
+              class="messagecomposer__submit"
+              onClick={[Function]}
+            >
+              SEND
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

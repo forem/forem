@@ -1,6 +1,6 @@
 function initializeBaseUserData(){
   var user = userData()
-  var userProfileLinkHTML = '<a href="/'+user.username+'"><div class="option prime-option">@'+user.username+'</div></a>'
+  var userProfileLinkHTML = '<a href="/'+user.username+'" id="first-nav-link"><div class="option prime-option">@'+user.username+'</div></a>'
   document.getElementById("user-profile-link-placeholder").innerHTML = userProfileLinkHTML;
   document.getElementById("nav-profile-image").src = user.profile_image_90;
   initializeUserSidebar(user);
@@ -43,9 +43,9 @@ function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId) == user.id) {
-      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/edit">EDIT <span class="post-word">POST</span></a>';
+      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/edit" rel="nofollow">EDIT <span class="post-word">POST</span></a>';
     } else if (user.trusted) {
-      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/mod">MODERATE <span class="post-word">POST</span></a>';
+      document.getElementById('action-space').innerHTML = '<a href="' + articleContainer.dataset.path + '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
     }
   }
   var commentsContainer = document.getElementById('comments-container');

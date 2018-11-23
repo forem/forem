@@ -59,7 +59,7 @@
         <% if @organization.story.present? %>
           <div class="widget">
             <header>
-              &lt;OUR STORY&gt;
+              our story
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @organization.story %>
@@ -69,7 +69,7 @@
         <% if @organization.tech_stack.present? %>
           <div class="widget">
             <header>
-              &lt;OUR STACK&gt;
+              our stack
             </header>
             <div class="widget-body">
               <%= sanitized_sidebar @organization.tech_stack %>
@@ -77,16 +77,16 @@
           </div>
         <% end %>              
     <% elsif @query %>    
-      <div class="widget">
+      <div class="widget fixed-widget">
         <header>
-          &lt;FILTERS&gt;
+          search results
         </header>
         <div class="widget-body" style="margin-bottom:16px;">
-          <button class="query-filter-button" data-filter="class_name:Article">POSTS</button>
-          <button class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</button>
-          <button class="query-filter-button" data-filter="class_name:User">PEOPLE</button>
-          <hr/ style="opacity:0.2">
-          <button class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</button>
+          <a class="query-filter-button" data-filter="class_name:Article">POSTS</a>
+          <a class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</a>
+          <a class="query-filter-button" data-filter="class_name:User">PEOPLE</a>
+          <hr style="opacity:0.2" />
+          <a class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</a>
         </div>
       </div>
     <% elsif @tag %>
@@ -128,13 +128,13 @@
           <header>
             <a href="/sponsors">community sponsors</a>
             <span class="emoji">
-              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
+              <img alt="emoji heart" src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
             </span>
           </header>
           <div class="widget-body">
             <div class="sidebar-sponsor">
               <a class="partner-link" href="https://developer.jwplayer.com/jw-player/demos/?utm_source=dev.to" target="_blank" data-details="jwplayer__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lc2gkdj9dbmkul4z26g0.png") %>" style="margin-bottom:8px;" />
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lc2gkdj9dbmkul4z26g0.png") %>" style="margin-bottom:8px;" alt="Cloudinary K" />
 
               </a>
               <div class="sponsor-tagline" style="display:inline;">
@@ -189,13 +189,13 @@
           <header>
             <a href="/sponsors">community sponsors</a>
             <span class="emoji">
-              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
+              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart"/>
             </span>
           </header>
           <div class="widget-body">
             <div class="sidebar-sponsor">
               <a class="partner-link" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/85318v8gv77kzr8r2e58.png") %>" style="margin-bottom:8px;" />
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/85318v8gv77kzr8r2e58.png") %>" style="margin-bottom:8px;" alt="Digital Ocean logo" />
               </a>
               <div class="sponsor-tagline" style="display:inline;">
                 The all-in-one cloud platform developers & their teams love.
@@ -205,23 +205,23 @@
               </div>
             </div>
             <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://timber.io/?utm_source=devto&utm_medium=homepage&utm_campaign=devto_aug" target="_blank" data-details="timber__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/wxyawe0x0ve0n7kmbzk5.png") %>" />
+              <a class="partner-link" href="https://www.twilio.com/?utm_source=devto&utm_medium=banner&utm_campaign=summer_awareness_campaign" target="_blank" data-details="twilio__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lgumfafaywo0zz90ciig.png") %>" alt="Twilio logo" />
               </a>
               <div class="sponsor-tagline">
-                Best in class logging for Node, Ruby and Elixir apps.
-                <a class="partner-link sponsor-learn-more" href="https://timber.io/?utm_source=devto&utm_medium=homepage&utm_campaign=devto_aug" target="_blank" data-details="timber__learn-more">
+                APIs for communicating with anyone on planet Earth.
+                <a class="partner-link sponsor-learn-more" href="https://www.twilio.com/?utm_source=devto&utm_medium=banner&utm_campaign=summer_awareness_campaign" target="_blank" data-details="twilio__learn-more">
                   Learn More 
                 </a>
               </div>
             </div>
             <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://underdog.io?utm_medium=homepage&utm_source=devto&utm_campaign=homepage2018-jun-30&utm_content=engineers-tech-companies" target="_blank" data-details="underdog__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/o4ajb22iefk88k0607vk.png") %>" />
+              <a class="partner-link" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/6a7bsz3y872g66upddt3.png") %>" alt="Raygun logo"/>
               </a>
               <div class="sponsor-tagline">
-                Connecting engineers to jobs at growing NY & SF tech companies.
-                <a class="partner-link sponsor-learn-more" href="https://underdog.io?utm_medium=homepage&utm_source=devto&utm_campaign=homepage2018-jun-30&utm_content=engineers-tech-companies" target="_blank" data-details="underdog__learn-more">
+                Error, crash, and performance monitoring software for devs.
+                <a class="partner-link sponsor-learn-more" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__learn-more">
                   Learn More 
                 </a>
               </div>
@@ -241,15 +241,14 @@
             key links
           </header>
           <div class="widget-body">
-            <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" class="social-icon" /></a>
-            <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" class="social-icon" /></a>
-            <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" class="social-icon" /></a>
-            <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" class="social-icon" /></a>
-            <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" class="social-icon" /></a>
+            <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
+            <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
+            <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
+            <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
+            <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
           </div>
           <div class="side-footer">
             <a href="/about">About</a>
-            <a href="/membership">Sustaining Membership</a>
             <a href="/events">Events</a>
             <a href="/sponsors">Sponsors</a>
             <a href="https://shop.dev.to/">DEV Shop</a>

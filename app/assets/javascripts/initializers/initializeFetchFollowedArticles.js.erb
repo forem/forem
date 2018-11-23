@@ -13,9 +13,79 @@ function insertArticle(article,parent,insertPlace) {
   }
 }
 
+function insertInitialArticles(user) {
+  var el = document.getElementById("home-articles-object");
+  if (!el) {return}
+  el.innerHTML = "";
+  insertNewArticles(user);
+  insertTopArticles(user);
+  el.outerHTML = "";
+}
+
+function insertNewArticles(user){
+  var el = document.getElementById("new-articles-object");
+  var articlesJSON = JSON.parse(el.dataset.articles);
+  var insertPlace = document.getElementById("article-index-hidden-div");
+  if (insertPlace) {
+      articlesJSON.forEach(function(article){
+      var articlePoints = 0
+      var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
+      var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
+      articlePoints = articlePoints + (intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length*2) + article.positive_reactions_count
+      if (containsUserID || article.user_id === user.id) {
+        articlePoints = articlePoints + 16
+      }
+      if (containsOrganizationID) {
+        articlePoints = articlePoints + 16
+      }
+      article['points'] = articlePoints
+    });
+    var sortedArticles = articlesJSON.sort(function(a, b) {
+      return b.points - a.points;
+    });
+    sortedArticles.forEach(function(article){
+      var parent = insertPlace.parentNode;
+      if ( article.points > 15 && !document.getElementById("article-link-"+article.id) ) {
+        insertArticle(article,parent,insertPlace);
+      }
+    });
+  }
+}
+
+function insertTopArticles(user){
+  var el = document.getElementById("home-articles-object");
+  var articlesJSON = JSON.parse(el.dataset.articles)
+  var insertPlace = document.getElementById("article-index-hidden-div");
+  if (insertPlace) {
+      articlesJSON.forEach(function(article){
+      var articlePoints = 0
+      var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
+      var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
+      articlePoints = articlePoints + intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length
+      if (containsUserID) {
+        articlePoints = articlePoints + 1
+      }
+      if (containsOrganizationID) {
+        articlePoints = articlePoints + 1
+      }
+      article['points'] = articlePoints
+    });
+    var sortedArticles = articlesJSON.sort(function(a, b) {
+      return b.points - a.points;
+    });
+    sortedArticles.forEach(function(article){
+      var parent = insertPlace.parentNode;
+      if ( article.points > 0 && !document.getElementById("article-link-"+article.id) ) {
+        insertArticle(article,parent,insertPlace);
+      }
+    });
+  }
+}
+
 function algoliaFollowedArticles(){
     var user = userData();
     if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
+      insertInitialArticles(user)
       var followedUsersArray = [];
       if (user.followed_user_ids){
         followedUsersArray = user.followed_user_ids.map(function(id){return 'user_'+id});
@@ -51,6 +121,40 @@ function algoliaFollowedArticles(){
             }
           });
         }
+        var el = document.getElementById("home-articles-object")
+        if (el){el.outerHTML = ''}
       });
     }
+}
+
+function findOne(haystack, arr) {
+    return arr.some(function (v) {
+        return haystack.indexOf(v) >= 0;
+    });
+};
+
+
+function intersect_arrays(a, b) {
+    var sorted_a = a.concat().sort();
+    var sorted_b = b.concat().sort();
+    var common = [];
+    var a_i = 0;
+    var b_i = 0;
+
+    while (a_i < a.length
+           && b_i < b.length)
+    {
+        if (sorted_a[a_i] === sorted_b[b_i]) {
+            common.push(sorted_a[a_i]);
+            a_i++;
+            b_i++;
+        }
+        else if(sorted_a[a_i] < sorted_b[b_i]) {
+            a_i++;
+        }
+        else {
+            b_i++;
+        }
+    }
+    return common;
 }

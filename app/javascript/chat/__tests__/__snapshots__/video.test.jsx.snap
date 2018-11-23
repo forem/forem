@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Video /> should render properly and test snapshot 1`] = `
+<div
+  class="chat__videocall"
+  draggable="true"
+  id="chat__videocall"
+  onDrag={[Function]}
+  style={
+    Object {
+      "left": "200px",
+      "top": "200px",
+    }
+  }
+>
+  <div
+    class="chat__remotevideoscreen-0"
+    id="videoremotescreen"
+  />
+  <div
+    class="chat__localvideoscren"
+    id="videolocalscreen"
+  />
+  <button
+    class="chat__videocallexitbutton"
+    onClick={[Function]}
+  >
+    ×
+  </button>
+</div>
+`;

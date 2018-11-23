@@ -15,6 +15,24 @@ module Redcarpet
         end
         %(<a href="#{link}"#{link_attributes}>#{content}</a>)
       end
+
+      def header(title, header_number)
+        anchor_link = remove_emoji_and_hyphenate(title)
+        <<~HEREDOC
+          <h#{header_number}>
+            <a name="#{anchor_link}" href="##{anchor_link}" class="anchor">
+            </a>
+            #{title}
+          </h#{header_number}>
+        HEREDOC
+      end
+
+      private
+
+      def remove_emoji_and_hyphenate(string)
+        stripped_string = ActionView::Base.full_sanitizer.sanitize string
+        stripped_string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/\s/, "-")
+      end
     end
   end
 end

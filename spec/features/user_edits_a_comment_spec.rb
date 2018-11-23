@@ -1,40 +1,37 @@
 require "rails_helper"
 
-RSpec.describe "Editing Comment", type: :feature, js: true do
+RSpec.describe "Editing A Comment", type: :feature, js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, show_comments: true) }
-  let(:raw_comment) { Faker::Lorem.paragraph }
   let(:new_comment_text) { Faker::Lorem.paragraph }
-  let(:comment) do
-    create(:comment, commentable_id: article.id, user_id: user.id, body_markdown: raw_comment)
-  end
 
   before do
+    comment = create(:comment, commentable: article, user: user, body_markdown: Faker::Lorem.paragraph)
+    Notification.send_new_comment_notifications(comment)
     sign_in user
-    comment
   end
 
-  describe "User edits their own comment on the bottom of the article" do
-    it "User clicks the edit button and autofocuses to the text field" do
-      visit article.path.to_s
-      find(:xpath, "//a[@class='edit-butt' and text()='EDIT']").click
-      expect(page).to have_css("textarea[autofocus='autofocus']")
-    end
+  def assert_updated
+    expect(page).to have_css("textarea[autofocus='autofocus']")
+    fill_in "text-area", with: new_comment_text
+    click_button("SUBMIT")
+    expect(page).to have_text(new_comment_text)
+  end
 
-    it "User submits a new edit on their comment" do
+  context "when user edits comment on the bottom of the article" do
+    it "updates" do
       visit article.path.to_s
-      find(:xpath, "//a[@class='edit-butt' and text()='EDIT']").click
-      fill_in "text-area", with: new_comment_text
-      click_button("SUBMIT")
-      expect(page).to have_text(new_comment_text)
+      click_link("EDIT")
+      assert_updated
     end
   end
 
-  describe "User edits comment their own comment on their permalink page" do
-    it "User clicks the edit button and autofocuses to the text field" do
-      visit comment.path.to_s
-      find(:xpath, "//a[@class='edit-butt' and text()='EDIT']").click
-      expect(page).to have_css("textarea[autofocus='autofocus']")
+  context "when user edits via permalinks" do
+    it "updates" do
+      user.reload
+      visit user.comments.last.path.to_s
+      click_link("EDIT")
+      assert_updated
     end
   end
 end

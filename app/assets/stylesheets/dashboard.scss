@@ -6,75 +6,156 @@
   max-width:96%;
   margin:auto;
   h1{
-    font-size:30px;
+    font-size: calc(16px + 0.3vw);
     font-family: $helvetica-condensed;
     font-stretch:condensed;
     padding-bottom: 20px;
+    text-align: center;
+    @media screen and ( min-width: 600px ){
+      text-align: left;
+    }
     a{
-      padding: 0px 20px;
-      border-radius: 3px;
-      margin-right: 18px;
+      padding: 4px 20px;
+      border-radius: 100px;
+      margin-right: 5px;
       display: inline-block;
       color: $black;
+      background: lighten($light-medium-gray, 5%);
+      &:hover{
+        background: $light-medium-gray;
+      }
       &.active{
-        background: $black;
+        background: $dark-gray;
         color:white;
       }
     }
   }
   .actions{
-    text-align:center;
-    padding:10px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2% 0; /* about .dashboard-container's left / right margin */
+    @media screen and ( min-width: 600px ){
+      flex-direction: row;
+    }
     .action{
-      width:calc(90% - 26px);
-      margin:7px 3px;
+      flex-basis: 0;
+      flex-grow: 1;
+      flex-shrink: 0;
+      width: 100%;
       color:$black;
       padding:10px 0px;
       border-radius:3px;
       min-width:115px;
-      display:inline-block;
-      transition: background-color 250ms ease;
+      transition: background-color 250ms ease, opacity 250ms ease;
       font-family: $helvetica-condensed;
       font-stretch:condensed;
-      font-size: 1.2em;
+      font-size: 1.1em;
+      text-align: center;
       &.active{
         background: $purple;
       }
-      @media screen and ( min-width: 600px ){
-        width:calc(25% - 16px);
+      &:not(.active):hover{
+        background: $light-medium-purple;
+      }
+      &:not(:last-child) {
+        /* gap between actions */
+        margin-bottom: 8px;
+        @media screen and ( min-width: 600px ){
+          margin-bottom: 0;
+          margin-right: 8px;
+        }
+      }
+      span {
+        display: inline-block;
+        @media screen and ( min-width: 600px ) and  ( max-width: 800px ){
+          display: block;
+        }
       }
     }
   }
+  .dashboard-analytics-header-wrapper{
+    text-align: center;
+    margin-bottom: 28px;
+    background: $dark-gray;
+    box-shadow: $bold-shadow;
+    padding: 15px 0px;
+  }
   .dashboard-analytics-header{
-    background: $green;
-    color:white;
-    margin:10px auto;
-    font-size:calc(1.2em + 1.5vw);
-    padding: 30px 5px;
-    padding-left: calc(1em + 1vw);
-    opacity:0.3;
-    font-family: $helvetica-condensed;
-    font-stretch:condensed;
-    border-radius: 3px;
+    color: white;
+    margin:5px auto;
+    font-size:calc(1.1em + 0.1vw);
+    padding: 18px 0px 7px;
+    padding-left: 10px;
+    text-align: left;
+    font-family: $monospace;
+    // border-radius: 200px;
+    border: 1px solid $light-gray;
+    // box-shadow: $bold-shadow;
+    display: inline-block;
+    width: 90%;
+    text-align: center;
+    margin: 1.1%;
+    @media screen and ( min-width: 800px ) {
+      width: 43%;
+      margin: 1.2%;  
+    }
+    span{
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-left: 8px;
+      display: inline-block;
+    }
     img{
-      width: calc(0.9em + 1.3vw);
-      height: calc(0.9em + 1.3vw);
-      margin-right: 0.5em;
-      vertical-align: calc(-0.25vw - 2px);
+      width: calc(1.2em + 0.2vw);
+      height: calc(1.2em + 0.2vw);
+      margin-left: 0.4em;
+      vertical-align: calc(-0.2vw - 0.3em);
+      background: $sky-blue;
+      border-radius: 100px;
+      border: 2px solid darken($light-gray, 7%);
     }
-    &.loaded{
-      opacity:1;
+    .dashboard-analytics-sub-indicator{
+      color: darken($light-gray, 7%);
+      padding: 10px 0px;
+      font-weight: bold;
+      font-size:0.66em;
     }
+  }
+
+  .video-upload-cta{
+    display: inline-block;
+    margin: 10px 0px 20px;
   }
 
   .single-article{
     border: 1px solid $light-medium-gray;
-    box-shadow: $shadow;
+    box-shadow: $bold-shadow;
     padding:5px 15px;
     margin-bottom:13px;
     border-radius:3px;
     position:relative;
     background: white;
+    &.single-article-unpublished {
+      background: lighten($yellow, 20%);
+    }
+    .dashboard-collection-org-details {
+      .dashboard-top-pill {
+        background: darken($light-gray, 6%);
+        margin-right: 5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 0.9em;
+      }
+    }
+    .dashboard-meta-details{
+      font-size: 0.85em;
+      padding: 3px 0px 6px;
+      color: $medium-gray;
+    }
     a{
       color: $black;
       &.block-link{
@@ -82,10 +163,13 @@
       }
     }
     h2{
-      font-weight:400;
+      font-weight:500;
       margin-bottom:5px;
       margin-top:8px;
-      font-size:36px;
+      font-size:22px;
+      @media screen and ( min-width: 800px ) {
+        font-size:34px;
+      }
       width: 100%;
       img{
         height: 40px;
@@ -108,18 +192,22 @@
       color:rgb(67, 78, 87);
     }
     .dashboard-actions{
-      padding: 8px 0px;
+      padding: 7px 0px 10px;
     }
     .pill{
       background:$bold-blue;
-      padding:2px 14px;
-      border-radius:3px;
+      padding:4px 20px;
+      border-radius:100px;
       color:white;
       margin-right:5px;
-      font-size:13px;
+      font-size:14px;
+      border: 2px solid transparent;
+      margin-top: 6px;
+      display: inline-block;
       &.yellow{
         background:$yellow;
         color:$black;
+        border: 2px solid $black;
       }
       &.green{
         background: $green;
@@ -129,19 +217,16 @@
         background:$red;
       }
       &.black{
-        background: $black;
+        background: $dark-gray;
       }
     }
     .dashboard-pageviews-indicator{
-      background:$green;
       display:inline-block;
-      border:1px solid darken($green,5%);
-      min-width:90px;
+      font-family: $monospace;
+      color: $dark-gray;
+      background: white;
       text-align:center;
-      opacity:0.4;
-      &.loaded{
-      opacity:1;
-      }
+      padding: 2px 8px;
     }
     form{
       padding: 10px 0px;

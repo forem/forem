@@ -1,10 +1,11 @@
 class ArticleApiIndexService
-  attr_accessor :tag, :username, :page, :state
+  attr_accessor :tag, :username, :page, :state, :top
   def initialize(params)
     @page =     params[:page]
     @tag =      params[:tag]
     @username = params[:username]
     @state = params[:state]
+    @top = params[:top]
   end
 
   def get
@@ -58,6 +59,16 @@ class ArticleApiIndexService
         page(page).
         per(30).
         filter_excluded_tags(tag)
+    elsif top.present?
+      Article.
+        where(published: true).
+        order("positive_reactions_count DESC").
+        where("published_at > ?", top.to_i.days.ago).
+        includes(:user).
+        includes(:organization).
+        page(page).
+        per(30).
+        filter_excluded_tags(tag)
     else
       Article.
         where(published: true).
@@ -73,10 +84,10 @@ class ArticleApiIndexService
   def state_articles(state)
     if state == "fresh"
       Article.where(published: true).
-        where("positive_reactions_count < ? AND featured_number > ?", 5, 7.hours.ago.to_i)
+        where("positive_reactions_count < ? AND featured_number > ? AND score > ?", 3, 7.hours.ago.to_i, -2)
     elsif state == "rising"
       Article.where(published: true).
-        where("positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?", 19, 27, 3.days.ago.to_i)
+        where("positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?", 19, 33, 3.days.ago.to_i)
     end
   end
 
