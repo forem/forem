@@ -187,12 +187,9 @@
               commentable: @article,
               commentable_type: "Article" %>
           <div class="comment-trees" id="comment-trees-container">
-            <% Comment.rooted_on(@article.id,"Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
+            <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
               <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-                <%= render("/comments/comment",
-                      comment:comment,
-                      commentable: @article,
-                      is_view_root: true) %>
+                <%= tree_for(comment, @article) %>
               <% end %>
             <% end %>
           </div>
