@@ -84,7 +84,7 @@
     "codemirror": "^5.41.0",
     "intersection-observer": "^0.5.1",
     "linkstate": "^1.1.1",
-    "marked": "^0.5.1",
+    "marked": "^0.5.2",
     "preact": "^8.3.1",
     "preact-compat": "^3.18.4",
     "preact-textarea-autosize": "^4.0.7",
