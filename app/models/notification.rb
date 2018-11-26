@@ -88,6 +88,7 @@ class Notification < ApplicationRecord
 
     def send_reaction_notification(notifiable)
       return if notifiable.user_id == notifiable.reactable.user_id
+      return if notifiable.points.negative?
       aggregated_reaction_siblings = notifiable.reactable.reactions.
         select{|r| r.user_id != notifiable.reactable.user_id}.
         map { |r| {category: r.category, created_at: r.created_at, user: user_data(r.user)} }
@@ -106,7 +107,7 @@ class Notification < ApplicationRecord
         }
       }
       if aggregated_reaction_siblings.size.zero?
-        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
+        notification = Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
       else
         previous_siblings_size = 0
         notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
@@ -119,6 +120,7 @@ class Notification < ApplicationRecord
         end
         notification.save!
       end
+      notification
     end
     handle_asynchronously :send_reaction_notification
 
