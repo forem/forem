@@ -36,7 +36,10 @@ body {
   &.night-theme {
     background-color: black !important;
 
-    &, & [class="highlight"], & iframe {
+    &,
+    & [class="highlight"],
+    & iframe,
+    & video {
       -webkit-filter: invert(100%);
       filter: invert(100%);
     }
