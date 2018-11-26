@@ -127,7 +127,6 @@ class ChannelDetails extends Component {
         if (channel.channel_users.includes(user)) {
           invite = (
             <span>
-              {' '}
               is already in
               {channel.name}
             </span>
@@ -135,7 +134,6 @@ class ChannelDetails extends Component {
         } else if (channel.pending_users_select_fields.includes(user)) {
           invite = (
             <span>
-              {' '}
               has already been invited to
               {channel.name}
             </span>
