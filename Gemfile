@@ -102,7 +102,7 @@ group :development do
   gem "better_errors", "~> 2.5"
   gem "binding_of_caller", "~> 0.8"
   gem "brakeman", "~> 4.3", require: false
-  gem "bullet", "~> 5.8"
+  gem "bullet", "~> 5.9"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
   gem "guard", "~> 2.15", require: false
