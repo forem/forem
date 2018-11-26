@@ -23,6 +23,29 @@ RSpec.describe Notification, type: :model do
     it "is given notifiable_at upon creation" do
       expect(Notification.last.notified_at).not_to eq nil
     end
+
+    it "creates positive reaction notification" do
+      reaction = Reaction.create!(
+        user_id: user2.id,
+        reactable_id: article.id,
+        reactable_type: "Article",
+        category: "like",
+      )
+      notification = Notification.send_reaction_notification_without_delay(reaction)
+      expect(notification).to be_valid
+    end
+
+    it "does not create negative notification" do
+      user2.add_role(:trusted)
+      reaction = Reaction.create!(
+        user_id: user2.id,
+        reactable_id: article.id,
+        reactable_type: "Article",
+        category: "vomit",
+      )
+      notification = Notification.send_reaction_notification_without_delay(reaction)
+      expect(notification).to eq nil
+    end
   end
 
   # describe "#send_to_followers" do
