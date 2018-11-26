@@ -144,7 +144,7 @@ preact-render-spy (1 nodes)
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img />
+        <img alt="profile_image" />
         @channeluser1 - channel user 1
       </a>
        
@@ -162,7 +162,7 @@ preact-render-spy (1 nodes)
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img />
+        <img alt="profile_image" />
         @pendinguser1 - pending user 1
       </a>
        
@@ -180,7 +180,7 @@ preact-render-spy (1 nodes)
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img />
+        <img alt="profile_image" />
         @searcheduser3 - searched user 3
       </a>
        
