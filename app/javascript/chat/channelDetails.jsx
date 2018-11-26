@@ -147,6 +147,7 @@ class ChannelDetails extends Component {
               {user.username}
               {' '}
 -
+              {' '}
               {user.name}
             </a>
             {' '}
@@ -165,7 +166,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
-- 
+-
             {' '}
             {user.name}
           </a>
@@ -197,7 +198,7 @@ class ChannelDetails extends Component {
           </h3>
           <h4>It may not be immediately in the sidebar</h4>
           <p>
-            Contact the admins at 
+            Contact the admins at
             {' '}
             <a href="mailto:yo@dev.to">yo@dev.to</a>
             {' '}
