@@ -164,7 +164,7 @@ GEM
     brakeman (4.3.1)
     buftok (0.2.0)
     builder (3.2.3)
-    bullet (5.8.1)
+    bullet (5.9.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.6.0)
@@ -920,7 +920,7 @@ DEPENDENCIES
   bourbon (~> 1.4)
   brakeman (~> 4.3)
   buffer!
-  bullet (~> 5.8)
+  bullet (~> 5.9)
   bundler-audit (~> 0.6)
   capybara (~> 3.10)
   carrierwave (~> 1.2)
