@@ -117,38 +117,6 @@ Client Secret -> GITHUB_SECRET
 
 4.  Done!
 
-# Stream
-
-1.  [Sign up for an account with this link](https://getstream.io/accounts/signup/), using either your email or GitHub.
-
-![stream step 1](https://user-images.githubusercontent.com/17884966/39548654-47db0f08-4e29-11e8-9cc3-c17d1b7228eb.png)
-
-2.  Click "View Dashboard" at the top right corner.
-
-![stream step 2](https://user-images.githubusercontent.com/17884966/39548718-6f1928ca-4e29-11e8-9034-52ef1c1cc9d6.png)
-
-3.  **In the next page, click "Add New Feed Group".**
-
-![stream step 3](https://user-images.githubusercontent.com/17884966/39548743-85bd4e44-4e29-11e8-9b6e-43567c4f7c22.png)
-
-<hr>
-
-4.  Add a new feed group with the type "Notification" and name it `notifications` (case sensitive).
-
-![stream step 4](https://user-images.githubusercontent.com/17884966/39548890-f0ad7742-4e29-11e8-84a3-ed823e720052.png)
-
-5.  Make sure you have a feed group with the type "Flat" and named `user` (case sensitive). You probably do, but if you don't, create one like you did with the notifications feed group.
-
-6.  Change your keys accordingly: (name of Stream key -> name of our application key):
-
-```
-Key -> STREAM_RAILS_KEY
-Secret -> STREAM_RAILS_SECRET
-"https://us-east-api.stream-io-api.com/api/v1.0/" -> STREAM_URL
-```
-
-7.  Done!
-
 # Pusher
 
 1. [Sign up for a free account with this link](https://dashboard.pusher.com/accounts/sign_up).
