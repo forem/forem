@@ -114,12 +114,8 @@ class ChannelDetails extends Component {
     let pendingInvites = [];
     if (channel.channel_mod_ids.includes(window.currentUser.id)) {
       // eslint-disable-next-line
-      searchedUsers = this.state.searchedUsers.map(user => (
-        <div className="channeldetails__searchedusers">
-          <a href={user.path} target="_blank" rel="noopener noreferrer">
-            {user.title}
-          </a>
-          {' '}
+      searchedUsers = this.state.searchedUsers.map(user => {
+        let invite = (
           <button
             type="button"
             onClick={this.triggerInvite}
@@ -127,8 +123,39 @@ class ChannelDetails extends Component {
           >
             Invite
           </button>
-        </div>
-      ));
+        );
+        if (channel.channel_users.includes(user)) {
+          invite = (
+            <span>
+              {' '}
+              is already in
+              {channel.name}
+            </span>
+          );
+        } else if (channel.pending_users_select_fields.includes(user)) {
+          invite = (
+            <span>
+              {' '}
+              has already been invited to
+              {channel.name}
+            </span>
+          );
+        }
+        return (
+          <div className="channeldetails__searchedusers">
+            <a href={user.path} target="_blank" rel="noopener noreferrer">
+              <img alt="profile_image" src={user.profile_image} />
+@
+              {user.username}
+              {' '}
+-
+              {user.name}
+            </a>
+            {' '}
+            {invite}
+          </div>
+        );
+      });
       pendingInvites = channel.pending_users_select_fields.map(user => (
         <div className="channeldetails__pendingusers">
           <a

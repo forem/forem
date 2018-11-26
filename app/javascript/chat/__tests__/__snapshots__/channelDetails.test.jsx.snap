@@ -70,7 +70,7 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
       class="channeldetails__pendingusers"
     >
       <a
-        data-content="users/pendingid1"
+        data-content="users/pendinguserid1"
         href="/pendinguser1"
         rel="noopener noreferrer"
         target="_blank"
@@ -82,7 +82,7 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
       class="channeldetails__pendingusers"
     >
       <a
-        data-content="users/pendingid2"
+        data-content="users/pendinguserid2"
         href="/pendinguser2"
         rel="noopener noreferrer"
         target="_blank"
@@ -140,51 +140,54 @@ preact-render-spy (1 nodes)
      />
     <div class="channeldetails__searchedusers">
       <a
-        href="/some_path1"
+        href="/user_path1"
         target="_blank"
         rel="noopener noreferrer"
       >
-        i am user1
+        <img />
+        @channeluser1 - channel user 1
       </a>
        
       <button
         type="button"
         onClick={[Function value]}
-        data-content="user_id1"
+        data-content="userid1"
       >
         Invite
       </button>
     </div>
     <div class="channeldetails__searchedusers">
       <a
-        href="/some_path2"
+        href="/pending_path1"
         target="_blank"
         rel="noopener noreferrer"
       >
-        i am user2
+        <img />
+        @pendinguser1 - pending user 1
       </a>
        
       <button
         type="button"
         onClick={[Function value]}
-        data-content="user_id2"
+        data-content="pendinguserid1"
       >
         Invite
       </button>
     </div>
     <div class="channeldetails__searchedusers">
       <a
-        href="/some_path3"
+        href="/search_path3"
         target="_blank"
         rel="noopener noreferrer"
       >
-        i am user3
+        <img />
+        @searcheduser3 - searched user 3
       </a>
        
       <button
         type="button"
         onClick={[Function value]}
-        data-content="user_id3"
+        data-content="searched_userid3"
       >
         Invite
       </button>
@@ -195,7 +198,7 @@ preact-render-spy (1 nodes)
         href="/pendinguser1"
         target="_blank"
         rel="noopener noreferrer"
-        data-content="users/pendingid1"
+        data-content="users/pendinguserid1"
       >
         @pendinguser1 - pending user 1
       </a>
@@ -205,7 +208,7 @@ preact-render-spy (1 nodes)
         href="/pendinguser2"
         target="_blank"
         rel="noopener noreferrer"
-        data-content="users/pendingid2"
+        data-content="users/pendinguserid2"
       >
         @pendinguser2 - pending user 2
       </a>

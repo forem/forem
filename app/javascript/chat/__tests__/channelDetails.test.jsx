@@ -26,25 +26,35 @@ const channelDetails = mod => {
     id: '12345',
     channel_users: [
       {
+        path: '/user_path1',
+        title: 'i am channel user 1',
         name: 'channel user 1',
         username: 'channeluser1',
+        id: 'userid1',
       },
       {
+        path: '/user_path2',
+        title: 'i am channel user 2',
         name: 'channel user 2',
         username: 'channeluser2',
+        id: 'userid2',
       },
     ],
     type_of: 'channel-details',
     pending_users_select_fields: [
       {
-        username: 'pendinguser1',
-        id: 'pendingid1',
+        path: '/pending_path1',
+        title: 'i am pending user 1',
         name: 'pending user 1',
+        username: 'pendinguser1',
+        id: 'pendinguserid1',
       },
       {
-        username: 'pendinguser2',
-        id: 'pendingid2',
+        path: '/pending_path2',
+        title: 'i am pending user 2',
         name: 'pending user 2',
+        username: 'pendinguser2',
+        id: 'pendinguserid2',
       },
     ],
     channel_mod_ids: id,
@@ -142,19 +152,25 @@ describe('<ChannelDetails />', () => {
       const searchedusers = {
         searchedUsers: [
           {
-            path: '/some_path1',
-            title: 'i am user1',
-            id: 'user_id1',
+            path: '/user_path1',
+            title: 'i am channel user 1',
+            name: 'channel user 1',
+            username: 'channeluser1',
+            id: 'userid1',
           },
           {
-            path: '/some_path2',
-            title: 'i am user2',
-            id: 'user_id2',
+            path: '/pending_path1',
+            title: 'i am pending user 1',
+            name: 'pending user 1',
+            username: 'pendinguser1',
+            id: 'pendinguserid1',
           },
           {
-            path: '/some_path3',
-            title: 'i am user3',
-            id: 'user_id3',
+            path: '/search_path3',
+            title: 'i am searched user 3',
+            name: 'searched user 3',
+            username: 'searcheduser3',
+            id: 'searched_userid3',
           },
         ],
       };
@@ -165,6 +181,7 @@ describe('<ChannelDetails />', () => {
       expect(searchedusersdivs.exists()).toEqual(true);
       expect(searchedusersdivs.length).toEqual(3);
 
+      let invitemessage;
       for (let i = 0; i < searchedusersdivs.length; i += 1) {
         expect(
           searchedusersdivs
@@ -177,19 +194,37 @@ describe('<ChannelDetails />', () => {
             .at(i)
             .childAt(0)
             .text(),
-        ).toEqual(searchedusers.searchedUsers[i].title);
+        ).toEqual(
+          `@${searchedusers.searchedUsers[i].username} - ${
+            searchedusers.searchedUsers[i].name
+          }`,
+        );
         expect(
           searchedusersdivs
             .at(i)
             .childAt(2)
             .attr('data-content'),
         ).toEqual(searchedusers.searchedUsers[i].id);
+
+        if (moddetails.channel_users.includes(searchedusers.searchedUsers[i])) {
+          invitemessage = `is already in ${channelDetails.channel_name}`;
+        } else if (
+          moddetails.pending_users_select_fields.includes(
+            searchedusers.searchedUsers[i],
+          )
+        ) {
+          invitemessage = `has already been invited to ${
+            channelDetails.channel_name
+          }`;
+        } else {
+          invitemessage = 'Invite';
+        }
         expect(
           searchedusersdivs
             .at(i)
             .childAt(2)
             .text(),
-        ).toEqual('Invite');
+        ).toEqual(invitemessage);
       }
 
       const tree = render(context);
