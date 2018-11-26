@@ -179,10 +179,27 @@ describe('<ChannelDetails />', () => {
       context.rerender();
       const searchedusersdivs = context.find('.channeldetails__searchedusers');
       expect(searchedusersdivs.exists()).toEqual(true);
-      expect(searchedusersdivs.length).toEqual(3);
+      expect(searchedusersdivs.length).toEqual(2);
 
-      let invitemessage;
+      let inviteMessage;
+      let inviteAttr;
+      let inviteAttrAns;
+      const included = (list, el) => {
+        for (let i = 0; i < list.length; i += 1) {
+          if (list[i].id === el.id) {
+            return true;
+          }
+        }
+      };
       for (let i = 0; i < searchedusersdivs.length; i += 1) {
+        if (
+          included(
+            moddetails.pending_users_select_fields,
+            searchedusers.searchedUsers[i],
+          )
+        ) {
+          continue;
+        }
         expect(
           searchedusersdivs
             .at(i)
@@ -199,32 +216,30 @@ describe('<ChannelDetails />', () => {
             searchedusers.searchedUsers[i].name
           }`,
         );
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(2)
-            .attr('data-content'),
-        ).toEqual(searchedusers.searchedUsers[i].id);
 
-        if (moddetails.channel_users.includes(searchedusers.searchedUsers[i])) {
-          invitemessage = `is already in ${channelDetails.channel_name}`;
-        } else if (
-          moddetails.pending_users_select_fields.includes(
-            searchedusers.searchedUsers[i],
-          )
+        if (
+          included(moddetails.channel_users, searchedusers.searchedUsers[i])
         ) {
-          invitemessage = `has already been invited to ${
-            channelDetails.channel_name
-          }`;
+          inviteMessage = `is already in ${moddetails.channel_name}`;
+          inviteAttr = 'className';
+          inviteAttrAns = 'channel__member';
         } else {
-          invitemessage = 'Invite';
+          inviteMessage = 'Invite';
+          inviteAttr = 'data-content';
+          inviteAttrAns = searchedusers.searchedUsers[i].id;
         }
         expect(
           searchedusersdivs
             .at(i)
             .childAt(2)
             .text(),
-        ).toEqual(invitemessage);
+        ).toEqual(inviteMessage);
+        expect(
+          searchedusersdivs
+            .at(i)
+            .childAt(2)
+            .attr(inviteAttr),
+        ).toEqual(inviteAttrAns);
       }
 
       const tree = render(context);

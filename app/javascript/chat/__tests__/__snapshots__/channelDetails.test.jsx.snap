@@ -148,31 +148,7 @@ preact-render-spy (1 nodes)
         @channeluser1 - channel user 1
       </a>
        
-      <button
-        type="button"
-        onClick={[Function value]}
-        data-content="userid1"
-      >
-        Invite
-      </button>
-    </div>
-    <div class="channeldetails__searchedusers">
-      <a
-        href="/pending_path1"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img alt="profile_image" />
-        @pendinguser1 - pending user 1
-      </a>
-       
-      <button
-        type="button"
-        onClick={[Function value]}
-        data-content="pendinguserid1"
-      >
-        Invite
-      </button>
+      <span class="channel__member">is already in channel name</span>
     </div>
     <div class="channeldetails__searchedusers">
       <a

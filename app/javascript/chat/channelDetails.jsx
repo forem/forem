@@ -92,6 +92,15 @@ class ChannelDetails extends Component {
     console.log(response); // eslint-disable-line no-console
   };
 
+  userInList = (list, user) => {
+    for (let i = 0; i < list.length; i += 1) {
+      if (user.id === list[i].id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   render() {
     const channel = this.props.channel; // eslint-disable-line
     const users = Object.values(channel.channel_users).map(user => (
@@ -115,45 +124,40 @@ class ChannelDetails extends Component {
     if (channel.channel_mod_ids.includes(window.currentUser.id)) {
       // eslint-disable-next-line
       searchedUsers = this.state.searchedUsers.map(user => {
-        let invite = (
-          <button
-            type="button"
-            onClick={this.triggerInvite}
-            data-content={user.id}
-          >
-            Invite
-          </button>
-        );
-        if (channel.channel_users.includes(user)) {
-          invite = (
-            <span>
-              is already in
-              {channel.name}
-            </span>
+        if (!this.userInList(channel.pending_users_select_fields, user)) {
+          let invite = (
+            <button
+              type="button"
+              onClick={this.triggerInvite}
+              data-content={user.id}
+            >
+              Invite
+            </button>
           );
-        } else if (channel.pending_users_select_fields.includes(user)) {
-          invite = (
-            <span>
-              has already been invited to
-              {channel.name}
-            </span>
+          if (this.userInList(channel.channel_users, user)) {
+            invite = (
+              <span className="channel__member">
+                is already in 
+                {' '}
+                {channel.channel_name}
+              </span>
+            );
+          }
+          return (
+            <div className="channeldetails__searchedusers">
+              <a href={user.path} target="_blank" rel="noopener noreferrer">
+                <img alt="profile_image" src={user.profile_image} />
+@
+                {user.username}
+                {' '}
+-
+                {user.name}
+              </a>
+              {' '}
+              {invite}
+            </div>
           );
         }
-        return (
-          <div className="channeldetails__searchedusers">
-            <a href={user.path} target="_blank" rel="noopener noreferrer">
-              <img alt="profile_image" src={user.profile_image} />
-@
-              {user.username}
-              {' '}
--
-              {' '}
-              {user.name}
-            </a>
-            {' '}
-            {invite}
-          </div>
-        );
       });
       pendingInvites = channel.pending_users_select_fields.map(user => (
         <div className="channeldetails__pendingusers">
@@ -166,7 +170,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
--
+- 
             {' '}
             {user.name}
           </a>
@@ -198,7 +202,7 @@ class ChannelDetails extends Component {
           </h3>
           <h4>It may not be immediately in the sidebar</h4>
           <p>
-            Contact the admins at
+            Contact the admins at 
             {' '}
             <a href="mailto:yo@dev.to">yo@dev.to</a>
             {' '}
