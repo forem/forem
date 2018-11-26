@@ -37,7 +37,7 @@ body {
     background-color: black !important;
 
     &,
-    & [class="highlight"],
+    & .highlight,
     & iframe,
     & video {
       -webkit-filter: invert(100%);
