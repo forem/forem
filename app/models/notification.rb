@@ -269,7 +269,7 @@ class Notification < ApplicationRecord
           aps: {
             alert: {
               title: title,
-              body: body.strip!
+              body: CGI.unescapeHTML(body.strip!)
             }
           },
           data: {
