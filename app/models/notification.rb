@@ -269,7 +269,7 @@ class Notification < ApplicationRecord
           aps: {
             alert: {
               title: title,
-              body: body.strip!
+              body: CGI.unescapeHTML(body.strip!)
             }
           },
           data: {
@@ -277,7 +277,7 @@ class Notification < ApplicationRecord
           }
         }
       }
-      Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
+      Pusher::PushNotifications.publish(interests: ["user-notifications-#{1}"], payload: payload)
     end
   end
 
