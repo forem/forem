@@ -105,6 +105,12 @@ class ChannelDetails extends Component {
     const channel = this.props.channel; // eslint-disable-line
     const users = Object.values(channel.channel_users).map(user => (
       <div className="channeldetails__user">
+        <img
+          className="channeldetails__userprofileimage"
+          src={user.profile_image_url}
+          alt={`${user} profile`}
+          data-content={`users/${user.id}`}
+        />
         <a
           href={`/${user.username}`}
           style={{ color: user.darker_color, padding: '3px 0px' }}
@@ -137,7 +143,7 @@ class ChannelDetails extends Component {
           if (this.userInList(channel.channel_users, user)) {
             invite = (
               <span className="channel__member">
-                is already in
+                is already in 
                 {' '}
                 {channel.channel_name}
               </span>
@@ -151,7 +157,6 @@ class ChannelDetails extends Component {
                 {user.username}
                 {' '}
 -
-                {' '}
                 {user.name}
               </a>
               {' '}
@@ -171,7 +176,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
--
+- 
             {' '}
             {user.name}
           </a>
@@ -203,7 +208,7 @@ class ChannelDetails extends Component {
           </h3>
           <h4>It may not be immediately in the sidebar</h4>
           <p>
-            Contact the admins at
+            Contact the admins at 
             {' '}
             <a href="mailto:yo@dev.to">yo@dev.to</a>
             {' '}
@@ -221,7 +226,7 @@ if
             Click={this.triggerLeaveChannel}
             data-content={channel.id}
           >
-            Leave Channel.
+            Leave Channel
           </button>
         </div>
       );
@@ -229,13 +234,13 @@ if
     return (
       <div className="channeldetails">
         <h1 className="channeldetails__name">{channel.channel_name}</h1>
-        {subHeader}
         <div
           className="channeldetails__description"
           style={{ marginBottom: '20px' }}
         >
           <em>{channel.description || ''}</em>
         </div>
+        {subHeader}
         {users}
         {modSection}
       </div>
