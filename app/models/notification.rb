@@ -277,7 +277,7 @@ class Notification < ApplicationRecord
           }
         }
       }
-      Pusher::PushNotifications.publish(interests: ["user-notifications-#{1}"], payload: payload)
+      Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
     end
   end
 
