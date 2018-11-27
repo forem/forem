@@ -152,7 +152,7 @@ class ChannelDetails extends Component {
           return (
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
-                <img alt="profile_image" src={user.profile_image} />
+                <img alt="profile_image" src={user.profile_image_url} />
                 @
                 {user.username}
                 {' '}

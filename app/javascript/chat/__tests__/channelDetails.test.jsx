@@ -31,6 +31,7 @@ const channelDetails = mod => {
         name: 'channel user 1',
         username: 'channeluser1',
         id: 'userid1',
+        profile_image_url: 'channeluser1pic.png',
       },
       {
         path: '/user_path2',
@@ -38,6 +39,7 @@ const channelDetails = mod => {
         name: 'channel user 2',
         username: 'channeluser2',
         id: 'userid2',
+        profile_image_url: 'channeluser2pic.png',
       },
     ],
     type_of: 'channel-details',
@@ -48,6 +50,7 @@ const channelDetails = mod => {
         name: 'pending user 1',
         username: 'pendinguser1',
         id: 'pendinguserid1',
+        profile_image_url: 'pendinguser1pic.png',
       },
       {
         path: '/pending_path2',
@@ -55,6 +58,7 @@ const channelDetails = mod => {
         name: 'pending user 2',
         username: 'pendinguser2',
         id: 'pendinguserid2',
+        profile_image_url: 'pendinguser2pic.png',
       },
     ],
     channel_mod_ids: id,
@@ -94,13 +98,13 @@ describe('<ChannelDetails />', () => {
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('href'),
         ).toEqual(`/${moddetails.channel_users[i].username}`);
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('data-content'),
         ).toEqual(
           `users/by_username?url=${moddetails.channel_users[i].username}`,
@@ -157,6 +161,7 @@ describe('<ChannelDetails />', () => {
             name: 'channel user 1',
             username: 'channeluser1',
             id: 'userid1',
+            profile_image_url: 'channeluser1pic.png',
           },
           {
             path: '/pending_path1',
@@ -164,6 +169,7 @@ describe('<ChannelDetails />', () => {
             name: 'pending user 1',
             username: 'pendinguser1',
             id: 'pendinguserid1',
+            profile_image_url: 'pendinguser1pic.png',
           },
           {
             path: '/search_path3',
@@ -171,6 +177,7 @@ describe('<ChannelDetails />', () => {
             name: 'searched user 3',
             username: 'searcheduser3',
             id: 'searched_userid3',
+            profile_image_url: 'searcheduser3pic.png',
           },
         ],
       };
@@ -274,13 +281,13 @@ describe('<ChannelDetails />', () => {
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('href'),
         ).toEqual(`/${userdetails.channel_users[i].username}`);
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('data-content'),
         ).toEqual(
           `users/by_username?url=${userdetails.channel_users[i].username}`,

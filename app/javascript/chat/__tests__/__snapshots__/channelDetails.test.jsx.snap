@@ -24,6 +24,12 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="[object Object] profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid1"
+      src="channeluser1pic.png"
+    />
     <a
       data-content="users/by_username?url=channeluser1"
       href="/channeluser1"
@@ -40,6 +46,12 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="[object Object] profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid2"
+      src="channeluser2pic.png"
+    />
     <a
       data-content="users/by_username?url=channeluser2"
       href="/channeluser2"
@@ -115,6 +127,12 @@ preact-render-spy (1 nodes)
     <em>something about this channel</em>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      src="channeluser1pic.png"
+      alt="[object Object] profile"
+      data-content="users/userid1"
+     />
     <a
       href="/channeluser1"
       style="padding: 3px 0px;"
@@ -124,6 +142,12 @@ preact-render-spy (1 nodes)
     </a>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      src="channeluser2pic.png"
+      alt="[object Object] profile"
+      data-content="users/userid2"
+     />
     <a
       href="/channeluser2"
       style="padding: 3px 0px;"
@@ -144,7 +168,10 @@ preact-render-spy (1 nodes)
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img alt="profile_image" />
+        <img
+          alt="profile_image"
+          src="channeluser1pic.png"
+         />
         @channeluser1 - channel user 1
       </a>
        
@@ -156,7 +183,10 @@ preact-render-spy (1 nodes)
         target="_blank"
         rel="noopener noreferrer"
       >
-        <img alt="profile_image" />
+        <img
+          alt="profile_image"
+          src="searcheduser3pic.png"
+         />
         @searcheduser3 - searched user 3
       </a>
        
@@ -209,6 +239,12 @@ preact-render-spy (1 nodes)
     <em>something about this channel</em>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      src="channeluser1pic.png"
+      alt="[object Object] profile"
+      data-content="users/userid1"
+     />
     <a
       href="/channeluser1"
       style="padding: 3px 0px;"
@@ -218,6 +254,12 @@ preact-render-spy (1 nodes)
     </a>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      src="channeluser2pic.png"
+      alt="[object Object] profile"
+      data-content="users/userid2"
+     />
     <a
       href="/channeluser2"
       style="padding: 3px 0px;"
@@ -272,6 +314,12 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="[object Object] profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid1"
+      src="channeluser1pic.png"
+    />
     <a
       data-content="users/by_username?url=channeluser1"
       href="/channeluser1"
@@ -288,6 +336,12 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="[object Object] profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid2"
+      src="channeluser2pic.png"
+    />
     <a
       data-content="users/by_username?url=channeluser2"
       href="/channeluser2"
@@ -312,7 +366,7 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
       data-content="12345"
       type="button"
     >
-      Leave Channel.
+      Leave Channel
     </button>
   </div>
 </div>
