@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120170350) do
+ActiveRecord::Schema.define(version: 20181127173004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -739,6 +739,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
