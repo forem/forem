@@ -108,6 +108,8 @@ variable :PUSHER_APP_ID, :String, default: "Optional"
 variable :PUSHER_CLUSTER, :String, default: "Optional"
 variable :PUSHER_KEY, :String, default: "Optional"
 variable :PUSHER_SECRET, :String, default: "Optional"
+variable :PUSHER_BEAMS_ID, :String, default: "Optional"
+variable :PUSHER_BEAMS_KEY, :String, default: "Optional"
 
 # Google recaptcha
 variable :RECAPTCHA_SECRET, :String, default: "Optional"
