@@ -60,7 +60,7 @@ class Notification < ApplicationRecord
           json_data: json_data,
         )
         # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-        if User.find(user_id)&.mobile_comment_notifications
+        if User.find_by(id: user_id)&.mobile_comment_notifications
           send_push_notifications(user_id, "@#{notifiable.user.username} replied to you:", notifiable.title, "/notifications/comments")
         end
       end
