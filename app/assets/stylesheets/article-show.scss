@@ -315,6 +315,8 @@ header{
       &.anchor{
         padding-top: 50px;
         margin-top: -50px;
+        display: block;
+        visibility: hidden;
         -webkit-background-clip: content-box;
         background-clip: content-box;
       }
