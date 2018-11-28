@@ -13,9 +13,9 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
+  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many :comments,       as: :commentable
   has_many :buffer_updates
-  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
@@ -52,6 +52,7 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
+  after_update      :update_notifications, if: Proc.new { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
@@ -133,7 +134,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date, :flare_tag
+        :readable_publish_date, :flare_tag, :user_id, :organization_id
       attribute :published_at_int do
         published_at.to_i
       end
@@ -141,6 +142,13 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
+      end
+      attribute :organization do
+        if organization
+          { slug: organization.slug,
+            name: organization.name,
+            profile_image_90: ProfileImage.new(organization).get(90) }
+        end
       end
       tags do
         [tag_list,
@@ -372,6 +380,10 @@ class Article < ApplicationRecord
 
   private
 
+  def update_notifications
+    Notification.update_notifications(self, "Published")
+  end
+
   # def send_to_moderator
   #   ModerationService.new.send_moderation_notification(self) if published
   #   turned off for now
@@ -380,8 +392,7 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    reactions.destroy_all
-    user.delay.resave_articles
+    user.cache_bust_all_articles
     organization&.delay&.resave_articles
   end
 

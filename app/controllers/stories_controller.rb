@@ -117,7 +117,7 @@ class StoriesController < ApplicationController
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
-        where("featured_number > ?", 1449999999)
+        where("featured_number > ? AND score > ?", 1449999999, -40)
       @featured_story = Article.new
     else
       @default_home_feed = true
@@ -262,7 +262,7 @@ class StoriesController < ApplicationController
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"
-      @stories.order("published_at DESC")
+      @stories.where("score > ?", -40).order("published_at DESC")
     else
       @stories.order("hotness_score DESC")
     end

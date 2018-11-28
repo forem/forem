@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181020195954) do
+ActiveRecord::Schema.define(version: 20181127173004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -454,10 +454,17 @@ ActiveRecord::Schema.define(version: 20181020195954) do
   create_table "notifications", id: :serial, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
+    t.jsonb "json_data"
     t.integer "notifiable_id"
     t.string "notifiable_type"
+    t.datetime "notified_at"
+    t.boolean "read", default: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
+    t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
+    t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|
@@ -560,6 +567,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.float "points", default: 1.0
     t.integer "reactable_id"
     t.string "reactable_type"
+    t.string "status", default: "valid"
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["category"], name: "index_reactions_on_category"
@@ -703,6 +711,8 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.integer "experience_level"
+    t.boolean "export_requested", default: false
+    t.datetime "exported_at"
     t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
     t.boolean "feed_mark_canonical", default: false
@@ -712,6 +722,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
     t.string "github_username"
+    t.string "gitlab_url"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
@@ -728,6 +739,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"

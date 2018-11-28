@@ -15,6 +15,7 @@ module Api
           reactable_type: params[:reactable_type],
           category: params[:category] || "like",
         )
+        Notification.send_reaction_notification(@reaction)
         render json: { reaction: @reaction.to_json }
       end
 

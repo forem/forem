@@ -56,7 +56,7 @@ RSpec.describe "ArticlesCreate", type: :request do
     post "/articles", params: {
       article: {
         title: new_title,
-        body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
+        body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
       }
     }
     expect(Collection.last.slug).to eq("helloyo")

@@ -9,20 +9,18 @@ class Reaction < ApplicationRecord
 
   validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
+  validates :status, inclusion: { in: %w(valid invalid confirmed) }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
   before_save :assign_points
   after_save :update_reactable
-  before_destroy :update_reactable_without_delay
   after_save :touch_user
   after_save :async_bust
+  before_destroy :update_reactable_without_delay
   before_destroy :clean_up_before_destroy
 
   scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }
-
-  include StreamRails::Activity
-  as_activity
 
   def self.count_for_article(id)
     Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
@@ -40,27 +38,6 @@ class Reaction < ApplicationRecord
       where("created_at > ?", 5.days.ago).
       select("distinct on (reactable_id) *").
       take(15)
-  end
-
-  # notifications
-
-  def activity_object
-    self
-  end
-
-  def activity_target
-    "#{reactable_type}_#{reactable_id}"
-  end
-
-  def activity_notify
-    return if user_id == reactable.user_id
-    return if points.negative?
-    [StreamNotifier.new(reactable.user.id).notify]
-  end
-
-  def remove_from_feed
-    super
-    User.find_by(id: reactable.user.id)&.touch(:last_notification_activity)
   end
 
   def self.cached_any_reactions_for?(reactable, user, category)
@@ -127,6 +104,8 @@ class Reaction < ApplicationRecord
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
+    base_points = 0 if status == "invalid"
+    base_points = base_points * 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 

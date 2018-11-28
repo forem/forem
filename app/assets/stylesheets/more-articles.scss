@@ -104,12 +104,9 @@
       margin: 15px 20px 0px;
     }
     .content-classification-text{
-      background: lighten($yellow, 16%);
-      border: 1px solid darken($yellow, 15%);
-      box-shadow: 3px 4px 0px darken($yellow, 15%);
+      background: $light-gray;
       display: inline-block;
       padding: 3px 25px;
-      font-family: $helvetica-condensed;
       color: $dark-gray;
     }
   }
@@ -216,7 +213,7 @@
     float: left;
     width: 280px;
     text-align:center;
-    padding:20px 0px;
+    padding:10px 0px 30px;
     .profile-pic-wrapper{
       width: 110px;
       height: 110px;
@@ -249,20 +246,11 @@
       background: $green;
       color: $black;
       border: 0;
-      font-size: 1em;
+      font-size: 1.05em;
       border: 0;
-      padding: 3px 6px;
+      padding: 8px 6px;
       border-radius: 3px;
       width:170px;
-    }
-    .org-summary{
-      font-size:0.88em;
-      width: 200px;
-      margin: 20px auto;
-      text-align:left;
-      a{
-        color: $bold-blue;
-      }
     }
   }
 }
