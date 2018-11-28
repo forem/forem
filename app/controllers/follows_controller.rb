@@ -23,6 +23,7 @@ class FollowsController < ApplicationController
                  else
                    User.find(params[:followable_id])
                  end
+    add_param_context(:followable_type, :followable_id, :verb)
     @result = if params[:verb] == "unfollow"
                 follow = current_user.stop_following(followable)
                 Notification.send_new_follower_notification_without_delay(follow, true)
