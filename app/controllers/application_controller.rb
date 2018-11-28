@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   include Pundit
+  include Instrumentation
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
@@ -69,5 +70,10 @@ class ApplicationController < ActionController::Base
 
   def touch_current_user
     current_user.touch
+  end
+
+  def append_info_to_payload(payload)
+    super(payload)
+    append_to_honeycomb(request, self.class.name)
   end
 end
