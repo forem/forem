@@ -407,7 +407,9 @@ header{
       line-height:1.4em;
       color:darken($medium-gray,8%);
       display:block;
-      margin-top:-0.8em;
+    }
+    p~figcaption{
+      margin-top: -0.8em;
     }
     @media screen and ( max-width:550px) {
       width:90%;
