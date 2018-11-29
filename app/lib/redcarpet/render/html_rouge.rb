@@ -31,7 +31,7 @@ module Redcarpet
 
       def slugify(string)
         stripped_string = ActionView::Base.full_sanitizer.sanitize string
-        stripped_string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/\s/, "-").gsub(/[[:punct:]]/u, "")
+        stripped_string.downcase.gsub(EmojiRegex::Regex, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
       end
     end
   end
