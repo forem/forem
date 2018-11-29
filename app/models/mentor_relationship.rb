@@ -25,7 +25,7 @@ class MentorRelationship < ApplicationRecord
     WHERE seeking_mentorship IS TRUE
     AND mentor_relationships.mentor_id IS null"
     record_ids = ActiveRecord::Base.connection.execute(sql).pluck("id")
-    User.where(id: record_ids)
+    User.where(id: record_ids).where.not(mentee_description: nil)
   end
 
   def self.unmatched_mentors
