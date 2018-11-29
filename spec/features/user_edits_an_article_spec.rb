@@ -28,7 +28,7 @@ describe "Editing with an editor" do
     expect(page).to have_text(template[-200..-1])
   end
 
-  it "user update their post" do
+  it "user update their post", retry: 3 do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("article-submit")
