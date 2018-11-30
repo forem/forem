@@ -164,7 +164,7 @@
     }
     h2{
       font-weight:500;
-      margin-bottom:5px;
+      margin-bottom:10px;
       margin-top:8px;
       font-size:22px;
       @media screen and ( min-width: 800px ) {
@@ -186,6 +186,9 @@
         display: inline-block;
         background: $light-gray;
         padding: 8px 15px;
+        float: right;
+        margin-bottom: 10px;
+        border-radius: 3px;
         input {
           font-size: 20px;
           border-radius: 3px;
