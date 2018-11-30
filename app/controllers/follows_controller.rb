@@ -37,4 +37,17 @@ class FollowsController < ApplicationController
     current_user.touch
     render json: { outcome: @result }
   end
+
+  def update
+    @follow = Follow.find(params[:id])
+    authorize @follow
+    if @follow.update(follow_params)
+      redirect_to "/dashboard/following"
+    end
+  end
+  private
+
+  def follow_params
+    params.require(:follow).permit(policy(Follow).permitted_attributes)
+  end
 end

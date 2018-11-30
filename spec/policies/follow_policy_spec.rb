@@ -12,7 +12,7 @@ RSpec.describe FollowPolicy do
   context "when user is signed in" do
     let(:user) { build(:user) }
 
-    it { is_expected.to permit_actions(%i[create]) }
+    it { is_expected.to permit_actions(%i[create update]) }
 
     context "when user is banned" do
       let(:user) { build(:user, :banned) }

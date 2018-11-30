@@ -182,6 +182,24 @@
         font-size: 0.6em;
         vertical-align:0.16em;
       }
+      form {
+        display: inline-block;
+        background: $light-gray;
+        padding: 8px 15px;
+        input {
+          font-size: 20px;
+          border-radius: 3px;
+          padding: 3px 8px;
+          width: 50px;
+          border: 1px solid $black;
+          &[type="submit"] {
+            width: auto;
+            background: $green;
+            font-family: $helvetica-condensed;
+            margin-left: 5px;
+          }
+        }
+      }
     }
     h4{
       margin-top:0px;
