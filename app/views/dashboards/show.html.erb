@@ -10,9 +10,9 @@
       <span>FOLLOWERS</span>
       <span>(<%= @user.followers_count %>)</span>
     </a>
-    <a class="action <%= 'active' if params[:which] == "following_users" %>" href="/dashboard/following_users">
+    <a class="action <%= 'active' if params[:which].to_s.include?("following") %>" href="/dashboard/following">
       <span>FOLLOWING</span>
-      <span>(<%= @user.following_users_count %>)</span>
+      <span>(<%= @user.following_users_count + @user.following_tags_count %>)</span>
     </a>
   </div>
 <% if @user.org_admin && @user.organization &&  (params[:which].blank? || params[:which] == "organization") %>
@@ -32,7 +32,31 @@
         <%= render "dashboard_article", article: article, org_admin: true %>
       <% end %>
     </div>
-  <% elsif params[:which] == "user_followers" || params[:which] == "following_users" || params[:which] == "organization_user_followers" %>
+  <% elsif params[:which] == "user_followers" || params[:which] == "following_users" || params[:which] == "following"  || params[:which] == "organization_user_followers" %>
+      <% if @followed_tags %>
+        <h2>Followed tags (<%= @user.following_tags_count %>)</h2>
+        <p><em>Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0)</em></p>
+        <% @followed_tags.each do |follow| %>
+          <% tag = follow.followable %>
+          <% if tag %>
+            <% color = HexComparer.new([tag.bg_color_hex || "#0000000",tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+            <div class="single-article" style="border-color:<%= color %>;box-shadow: 3px 3px 0px <%= color %>">
+                <h2>
+                  <a href="/t/<%= tag.name %>">
+                    <%= tag.name %>
+                  </a>
+                  <%= form_for(follow) do |f| %>
+                    <%= f.label(:points, "Follow Weight:") %>
+                    <%= f.text_field(:points) %>
+                    <%= f.submit "Submit" %>
+                  <% end %>
+                </h2>
+              </a>
+            </div>
+          <% end %>
+        <% end %>
+        <h2>Followed users (<%= @user.following_users_count %>)</h2>
+      <% end %>
       <% @follows.each do |follow| %>
         <% user = params[:which].include?("followers") ? follow.follower : follow.followable %>
         <% if user %>

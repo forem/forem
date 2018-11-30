@@ -351,6 +351,39 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#cached_followed_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+    let(:tag4)  { create(:tag) }
+    it "returns empty if no tags followed" do
+      expect(user.decorate.cached_followed_tags.size).to eq(0)
+    end
+
+    it "returns array of tags if user follows them" do
+      user.follow(tag1)
+      user.follow(tag2)
+      user.follow(tag3)
+      expect(user.decorate.cached_followed_tags.size).to eq(3)
+    end
+
+    it "returns tag object with name" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
+    end
+
+    it "returns follow points for tag" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(1.0)
+    end
+
+    it "returns adjusted points for tag" do
+      user.follow(tag1)
+      Follow.last.update(points: 0.1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
+    end
+  end
+
   it "inserts into mailchimp" do
     expect(user.subscribe_to_mailchimp_newsletter_without_delay).to eq true
   end

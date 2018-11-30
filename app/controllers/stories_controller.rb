@@ -107,7 +107,7 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
-    num_articles = 15
+    num_articles = 25
     @stories = article_finder(num_articles)
     add_param_context(:page, :timeframe)
 

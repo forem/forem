@@ -102,7 +102,7 @@ Rails.application.routes.draw do
   get "/reports/:slug", to: "feedback_messages#show"
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
-  resources :follows, only: %i[show create]
+  resources :follows, only: %i[show create update]
   resources :giveaways, only: %i[create update]
   resources :image_uploads, only: [:create]
   resources :blocks
@@ -238,7 +238,7 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|organization_user_followers|user_followers|following_users|reading/
+        which: /organization|organization_user_followers|user_followers|following_users|following|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 
