@@ -14,7 +14,7 @@ class Notification < ApplicationRecord
       if aggregated_siblings.size.zero?
         Notification.find_or_create_by(user_id: user.id, action: "Follow").destroy
       else
-        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings}
+        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings }
         notification = Notification.find_or_create_by(user_id: user.id, action: "Follow")
         notification.notifiable_id = recent_follows.first.id
         notification.notifiable_type = "Follow"
@@ -94,8 +94,8 @@ class Notification < ApplicationRecord
       return if notifiable.user_id == notifiable.reactable.user_id
       return if notifiable.points.negative?
       aggregated_reaction_siblings = notifiable.reactable.reactions.
-        select{|r| r.user_id != notifiable.reactable.user_id}.
-        map { |r| {category: r.category, created_at: r.created_at, user: user_data(r.user)} }
+        reject { |r| r.user_id == notifiable.reactable.user_id }.
+        map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
       json_data = {
         user: user_data(notifiable.user),
         reaction: {
@@ -104,7 +104,10 @@ class Notification < ApplicationRecord
           reactable_id: notifiable.reactable_id,
           reactable: {
             path: notifiable.reactable.path,
-            title: notifiable.reactable.title
+            title: notifiable.reactable.title,
+            class: {
+              name: notifiable.reactable.class.name
+            }
           },
           aggregated_siblings: aggregated_reaction_siblings,
           updated_at: notifiable.updated_at
