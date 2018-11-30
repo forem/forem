@@ -15,14 +15,14 @@ class NotificationsController < ApplicationController
         num = 10
       end
       @notifications = if params[:filter].to_s.casecmp("posts").zero?
-                         Notification.where(user_id: current_user.id, notifiable_type: "Article", action: "Published").
+                         Notification.where(user_id: @user.id, notifiable_type: "Article", action: "Published").
                            order("notified_at DESC")
                        elsif params[:filter].to_s.casecmp("comments").zero?
-                         Notification.where(user_id: current_user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
-                           or(Notification.where(user_id: current_user.id, notifiable_type: "Mention")).
+                         Notification.where(user_id: @user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
+                           or(Notification.where(user_id: @user.id, notifiable_type: "Mention")).
                            order("notified_at DESC")
                        else
-                         Notification.where(user_id: current_user.id).
+                         Notification.where(user_id: @user.id).
                            order("notified_at DESC")
                        end
       @last_user_reaction = @user.reactions.last&.id
