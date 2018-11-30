@@ -164,7 +164,7 @@
     }
     h2{
       font-weight:500;
-      margin-bottom:5px;
+      margin-bottom:10px;
       margin-top:8px;
       font-size:22px;
       @media screen and ( min-width: 800px ) {
@@ -181,6 +181,30 @@
         color: $medium-gray;
         font-size: 0.6em;
         vertical-align:0.16em;
+      }
+      form {
+        background: $light-gray;
+        padding: 8px 15px;
+        margin-bottom: 10px;
+        border-radius: 3px;
+        @media screen and ( min-width: 750px ) {
+          display: inline-block;
+          float: right;
+        }
+        input {
+          font-size: 16px;
+          border-radius: 3px;
+          padding: 3px 8px;
+          width: 50px;
+          border: 1px solid $black;
+          font-weight: bold;
+          &[type="submit"] {
+            width: auto;
+            background: $green;
+            font-family: $helvetica-condensed;
+            margin-left: 5px;
+          }
+        }
       }
     }
     h4{
