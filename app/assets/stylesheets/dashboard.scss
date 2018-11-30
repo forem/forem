@@ -183,18 +183,21 @@
         vertical-align:0.16em;
       }
       form {
-        display: inline-block;
         background: $light-gray;
         padding: 8px 15px;
-        float: right;
         margin-bottom: 10px;
         border-radius: 3px;
+        @media screen and ( min-width: 750px ) {
+          display: inline-block;
+          float: right;
+        }
         input {
-          font-size: 20px;
+          font-size: 16px;
           border-radius: 3px;
           padding: 3px 8px;
           width: 50px;
           border: 1px solid $black;
+          font-weight: bold;
           &[type="submit"] {
             width: auto;
             background: $green;
