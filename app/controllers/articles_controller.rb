@@ -133,6 +133,7 @@ class ArticlesController < ApplicationController
     authorize @article
     @article.destroy!
     Notification.remove_all_without_delay(id: @article.id, class_name: "Article", action: "Published")
+    Notification.remove_all(id: @article.id, class_name: "Article", action: "Reaction")
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }
