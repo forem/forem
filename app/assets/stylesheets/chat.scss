@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'connect/_channel-details';
 
 // High level classes
 .chat-page-wrapper{
@@ -447,6 +448,7 @@
     }
   }
 }
+
 
 .activechatchannel__activecontentuserdetails{
   margin-top:20px;
