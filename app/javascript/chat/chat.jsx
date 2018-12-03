@@ -561,7 +561,7 @@ export default class Chat extends Component {
       } else if (activeChannel.channel_type === "open") {
         return <div className="chatmessage" style={{color: "grey"}}>
           <div className="chatmessage__body">
-            You have joined {activeChannel.channel_name}!. All interactions <em><b>must</b></em> abide by the <a href="/code-of-conduct">code of conduct</a>.
+            You have joined {activeChannel.channel_name}! All interactions <em><b>must</b></em> abide by the <a href="/code-of-conduct">code of conduct</a>.
           </div>
         </div>
       }
