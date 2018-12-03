@@ -192,7 +192,7 @@ class Notification < ApplicationRecord
         notifiable_id: notifiable_hash[:id],
         notifiable_type: notifiable_hash[:class_name],
         action: notifiable_hash[:action],
-      ).destroy_all
+      ).delete_all
     end
     handle_asynchronously :remove_all
 
