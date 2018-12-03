@@ -208,7 +208,9 @@ class Comment < ApplicationRecord
   end
 
   def remove_notifications
-    Notification.remove_all(id: id, class_name: "Comment")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Moderation")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Reaction")
   end
 
   def send_to_moderator
@@ -281,6 +283,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
+    remove_notifications
     bust_cache_without_delay
     remove_algolia_index
   end

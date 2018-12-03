@@ -14,17 +14,17 @@ class NotificationsController < ApplicationController
       else
         num = 10
       end
-      if params[:filter].to_s.downcase == "posts"
-        @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Article", action: "Published").
-        order("notified_at DESC")
-      elsif params[:filter].to_s.downcase == "comments"
-        @notifications = Notification.where(user_id: current_user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
-        or(Notification.where(user_id: current_user.id, notifiable_type: "Mention")).
-        order("notified_at DESC")
-      else
-        @notifications = Notification.where(user_id: current_user.id).
-        order("notified_at DESC")
-      end
+      @notifications = if params[:filter].to_s.casecmp("posts").zero?
+                         Notification.where(user_id: @user.id, notifiable_type: "Article", action: "Published").
+                           order("notified_at DESC")
+                       elsif params[:filter].to_s.casecmp("comments").zero?
+                         Notification.where(user_id: @user.id, notifiable_type: "Comment", action: nil). # Nil action means not reaction in this context
+                           or(Notification.where(user_id: @user.id, notifiable_type: "Mention")).
+                           order("notified_at DESC")
+                       else
+                         Notification.where(user_id: @user.id).
+                           order("notified_at DESC")
+                       end
       @last_user_reaction = @user.reactions.last&.id
       @last_user_comment = @user.comments.last&.id
       @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
@@ -32,6 +32,4 @@ class NotificationsController < ApplicationController
       render partial: "notifications_list" if notified_at_offset
     end
   end
-
-  private
 end
