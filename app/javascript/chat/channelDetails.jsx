@@ -1,21 +1,27 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 
-const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-  .content;
-const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-  .content;
-const env = document.querySelector("meta[name='environment']").content;
-const client = algoliasearch(algoliaId, algoliaKey);
-const index = client.initIndex(`searchables_${  env}`);
+class ChannelDetails extends Component {
+  static propTypes = {
+    channel: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  };
 
-export default class ChannelDetails extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       searchedUsers: [],
-      invitations: [],
+      // invitations: [],
       hasLeftChannel: false,
     };
+
+    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
+      .content;
+    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
+      .content;
+    const env = document.querySelector("meta[name='environment']").content;
+    const client = algoliasearch(algoliaId, algoliaKey); // eslint-disable-line no-undef
+    this.index = client.initIndex(`searchables_${env}`);
   }
 
   triggerUserSearch = e => {
@@ -23,12 +29,12 @@ export default class ChannelDetails extends Component {
     const query = e.target.value;
     const filters = {
       hitsPerPage: 20,
-      attributesToRetrieve: ['id', 'title', 'path'],
+      attributesToRetrieve: ['id', 'title', 'path', 'user'],
       attributesToHighlight: [],
       filters: 'class_name:User',
     };
     if (query.length > 0) {
-      index.search(query, filters).then((content) => {
+      this.index.search(query, filters).then(content => {
         component.setState({ searchedUsers: content.hits });
       });
     } else {
@@ -78,27 +84,43 @@ export default class ChannelDetails extends Component {
       .catch(null);
   };
 
-  handleLeaveChannelSuccess = response => {
+  handleLeaveChannelSuccess = () => {
     this.setState({ hasLeftChannel: true });
   };
 
   handleInvitationSuccess = response => {
-    console.log(response);
+    console.log(response); // eslint-disable-line no-console
+  };
+
+  userInList = (list, user) => {
+    const keys = Object.keys(list)
+    for (const key of keys) {
+      if (user.id === list[key].id) {
+        return true;
+      }
+    }
+    return false;
   };
 
   render() {
-    const channel = this.props.channel;
+    const channel = this.props.channel; // eslint-disable-line
     const users = Object.values(channel.channel_users).map(user => (
-      <div>
+      <div className="channeldetails__user">
+        <img
+          className="channeldetails__userprofileimage"
+          src={user.profile_image}
+          alt={`${user.username} profile`}
+          data-content={`users/${user.id}`}
+        />
         <a
-          href={`/${  user.username}`}
+          href={`/${user.username}`}
           style={{ color: user.darker_color, padding: '3px 0px' }}
           data-content={`users/by_username?url=${user.username}`}
         >
           {user.name}
         </a>
       </div>
-      ));
+    ));
     let subHeader = '';
     if (users.length === 80) {
       subHeader = <h3>Recently Active Members</h3>;
@@ -107,32 +129,68 @@ export default class ChannelDetails extends Component {
     let searchedUsers = [];
     let pendingInvites = [];
     if (channel.channel_mod_ids.includes(window.currentUser.id)) {
-      searchedUsers = this.state.searchedUsers.map(user => (
-        <div>
-          <a href={user.path} target="_blank">
-            {user.title}
-          </a>{' '}
-          <button onClick={this.triggerInvite} data-content={user.id}>
+      // eslint-disable-next-line
+      searchedUsers = this.state.searchedUsers.map(user => {
+        if (!this.userInList(channel.pending_users_select_fields, user)) {
+          let invite = (
+            <button
+              type="button"
+              onClick={this.triggerInvite}
+              data-content={user.id}
+            >
               Invite
-          </button>
-        </div>
-        ));
+            </button>
+          );
+          if (this.userInList(channel.channel_users, user)) {
+            invite = (
+              <span className="channel__member">
+                is already in
+                {' '}
+                <em>{channel.channel_name}</em>
+              </span>
+            );
+          }
+          return (
+            <div className="channeldetails__searchedusers">
+              <a href={user.path} target="_blank" rel="noopener noreferrer">
+                <img src={user.user.profile_image_90} alt="profile_image"/>
+                @
+                {user.user.username}
+                {' '}
+-
+                {' '}
+                {user.title}
+              </a>
+              {' '}
+              {invite}
+            </div>
+          );
+        }
+      });
       pendingInvites = channel.pending_users_select_fields.map(user => (
-        <div>
+        <div className="channeldetails__pendingusers">
           <a
-            href={`/${  user.username}`}
+            href={`/${user.username}`}
             target="_blank"
-            data-content={`users/${  user.id}`}
+            rel="noopener noreferrer"
+            data-content={`users/${user.id}`}
           >
-              @{user.username} - {user.name}
+            @
+            {user.username}
+            {' '}
+-
+            {' '}
+            {user.name}
           </a>
         </div>
-        ));
+      ));
       modSection = (
-        <div>
+        <div className="channeldetails__inviteusers">
           <h2>Invite Members</h2>
           <input onKeyUp={this.triggerUserSearch} placeholder="Find users" />
-          {searchedUsers}
+          <div className="channeldetails__searchresults">
+            {searchedUsers}
+          </div>
           <h2>Pending Invites:</h2>
           {pendingInvites}
           <div style={{ marginTop: '10px' }}>
@@ -140,42 +198,58 @@ export default class ChannelDetails extends Component {
             anything.
           </div>
         </div>
-      );
+      ); // eslint-disable-next-line
     } else if (this.state.hasLeftChannel) {
-        modSection = (
-          <div>
-            <h2>Danger Zone</h2>
-            <h3>You have left this channel 😢😢😢</h3>
-            <h4>It may not be immediately in the sidebar</h4>
-            <p>
-              Contact the admins at <a href="mailto:yo@dev.to">yo@dev.to</a> if
-              this was a mistake
-            </p>
-          </div>
-        );
-      } else {
-        modSection = (
-          <div>
-            <h2>Danger Zone</h2>
-            <button
-              onClick={this.triggerLeaveChannel}
-              data-content={channel.id}
-            >
-              Leave Channel.
-            </button>
-          </div>
-        );
-      }
+      modSection = (
+        <div className="channeldetails__leftchannel">
+          <h2>Danger Zone</h2>
+          <h3>
+            You have left this channel
+            {' '}
+            <span role="img" aria-label="emoji">
+              😢😢😢
+            </span>
+          </h3>
+          <h4>It may not be immediately in the sidebar</h4>
+          <p>
+            Contact the admins at
+            {' '}
+            <a href="mailto:yo@dev.to">yo@dev.to</a>
+            {' '}
+if
+            this was a mistake
+          </p>
+        </div>
+      );
+    } else {
+      modSection = (
+        <div className="channeldetails__leavechannel">
+          <h2>Danger Zone</h2>
+          <button
+            type="button"
+            Click={this.triggerLeaveChannel}
+            data-content={channel.id}
+          >
+            Leave Channel
+          </button>
+        </div>
+      );
+    }
     return (
-      <div>
-        <h1>{channel.channel_name}</h1>
-        {subHeader}
-        <div style={{ marginBottom: '20px' }}>
+      <div className="channeldetails">
+        <h1 className="channeldetails__name">{channel.channel_name}</h1>
+        <div
+          className="channeldetails__description"
+          style={{ marginBottom: '20px' }}
+        >
           <em>{channel.description || ''}</em>
         </div>
+        {subHeader}
         {users}
         {modSection}
       </div>
     );
   }
 }
+
+export default ChannelDetails;

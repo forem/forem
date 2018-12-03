@@ -350,9 +350,17 @@ class User < ApplicationRecord
   def resave_articles
     cache_buster = CacheBuster.new
     articles.each do |article|
+      cache_buster.bust(article.path) if article.path
+      cache_buster.bust(article.path + "?i=i") if article.path
+      article.save
+    end
+  end
+
+  def cache_bust_all_articles
+    cache_buster = CacheBuster.new
+    articles.each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
-      article.save
     end
   end
 
@@ -378,7 +386,7 @@ class User < ApplicationRecord
   private
 
   def send_welcome_notification
-    Broadcast.send_welcome_notification(id)
+    Notification.send_welcome_notification(id)
   end
 
   def set_username
@@ -428,7 +436,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    if core_profile_details_changed?
+    if core_profile_details_changed? && !user.banned
       delay.resave_articles
     end
   end

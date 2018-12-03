@@ -240,13 +240,13 @@ a.header-link{
       transition: height 0.3s ease;
       cursor:text;
       &.embiggened{
-        height:calc(13vw + 15px);
+        height:calc(2vw + 115px);
       }
       &.embiggened-more{
-        height:calc(20vw + 18px);
+        height:calc(5vw + 118px);
       }
       &.embiggened-max{
-        height:calc(30vw + 18px);
+        height:calc(10vw + 118px);
       }
       &.preview-loading{
         background: white url(image_path('loading-ellipsis.svg')) no-repeat center center;
@@ -560,6 +560,14 @@ a.header-link{
       width:100%;
       margin-left:0%;
       overflow-x:auto;
+    }
+    a{
+      &.anchor{
+        padding-top: 50px;
+        margin-top: -50px;
+        -webkit-background-clip: content-box;
+        background-clip: content-box;
+      }
     }
   }
   .icon-img{

@@ -287,7 +287,7 @@ describe('<Onboarding />', () => {
     });
 
     it('special next button exists and should reroute user', async () => {
-      fetch.once({});
+      fetch.once(JSON.stringify({ outcome: 'onboarding closed' }));
       const next = context.find('.button').at(1);
       expect(next.text()).toEqual("LET'S GO");
       next.simulate('click');

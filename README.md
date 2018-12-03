@@ -152,9 +152,10 @@ This section provides a high-level requirement & quick start guide. For detailed
 0.  Make sure all the prerequisites are installed.
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
 1.  Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
-1.  `gem install bundler`
 1.  `gem install foreman`
-1.  `bundle install`
+1.  Setup your database
+    - Create `config/database.yml` by copying from the provided template (i.e. `cp config/database.yml.sample config/database.yml`)
+    - Update the `config/database.yml` file if needed.
 1.  Set up your environment variables/secrets
     - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
     - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.

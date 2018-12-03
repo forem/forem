@@ -13,9 +13,9 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
+  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many :comments,       as: :commentable
   has_many :buffer_updates
-  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
@@ -52,6 +52,7 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
+  after_update      :update_notifications, if: Proc.new { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
@@ -379,6 +380,10 @@ class Article < ApplicationRecord
 
   private
 
+  def update_notifications
+    Notification.update_notifications(self, "Published")
+  end
+
   # def send_to_moderator
   #   ModerationService.new.send_moderation_notification(self) if published
   #   turned off for now
@@ -387,8 +392,7 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    reactions.destroy_all
-    user.delay.resave_articles
+    user.cache_bust_all_articles
     organization&.delay&.resave_articles
   end
 

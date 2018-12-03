@@ -1,0 +1,49 @@
+<% cache "comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{json_data["comment"]["updated_at"]}-#{json_data["comment"]["id"]}" do %>
+  <% if json_data["comment"]["commentable"] %>
+    <div class="comment-text">
+      <a href="<%= json_data["comment"]["path"] %>" class="comment-link-wrapper"></a>
+      <%= json_data["comment"]["processed_html"].html_safe %>
+    </div>
+    <div class="comment-actions">
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "like") ? "reacted" : "" %>" data-reactable-id="<%= json_data["comment"]["id"] %>" data-category="like" data-reactable-type="Comment" title="heart">
+        <%= image_tag "favorite-heart-outline-button.svg" %>
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>"/>
+      </button>
+    <% if context == "moderation" && current_user.has_role?(:trusted) %>
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= json_data["comment"]["id"] %>" data-category="thumbsdown" data-reactable-type="Comment">
+        <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>"/>
+      </button>
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= json_data["comment"]["id"] %>" data-category="vomit" data-reactable-type="Comment">
+        <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
+      </button>
+    <% end %>
+    <% cache "comment-box-comment-reply-#{@last_user_comment}-#{json_data["comment"]["updated_at"]}-#{json_data["comment"]["id"]}" do %>
+      <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: json_data["comment"]["id"]).children.find_by(user_id: current_user.id) %>
+      <% if reply %>
+        <a class="toggle-reply-form already-replied-link" href="<%= reply.path %>">
+          Replied
+        </a>
+      <% else %>
+        <a class="toggle-reply-form" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>">
+          Reply
+        </a>
+      <% end %>
+      </div>
+      <% @comment = Comment.new %>
+      <%= form_for(@comment, authenticity_token: false, html: {id: "comment-form-for-#{json_data["comment"]["id"]}", onsubmit: "handleCommentSubmit.bind(this)(event)"}) do |f| %>
+        <%= f.hidden_field :commentable_id, value: json_data["comment"]["commentable"]["id"] %>
+        <%= f.hidden_field :commentable_type, value: json_data["comment"]["commentable"]["class"]["name"] %>
+
+        <%= f.hidden_field :parent_id, value: json_data["comment"]["id"] %>
+        <div class="field" id="textarea-wrapper">
+          <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data["comment"]["id"]}" %>
+        </div>
+        <div class="actions" id="submit-wrapper">
+          <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

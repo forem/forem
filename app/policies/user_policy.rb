@@ -69,6 +69,7 @@ class UserPolicy < ApplicationPolicy
        email_public
        editor_version
        email_unread_notifications
+       mobile_comment_notifications
        employer_name
        employer_url
        employment_title
@@ -103,7 +104,8 @@ class UserPolicy < ApplicationPolicy
        summary
        text_color_hex
        username
-       website_url]
+       website_url
+       export_requested]
   end
 
   private

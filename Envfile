@@ -94,6 +94,9 @@ variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
 
+# Honeycomb
+variable :HONEYCOMB_API_KEY, :String, default: "Optional"
+
 # Mailchimp for mails
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
 variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
@@ -108,6 +111,8 @@ variable :PUSHER_APP_ID, :String, default: "Optional"
 variable :PUSHER_CLUSTER, :String, default: "Optional"
 variable :PUSHER_KEY, :String, default: "Optional"
 variable :PUSHER_SECRET, :String, default: "Optional"
+variable :PUSHER_BEAMS_ID, :String, default: "Optional"
+variable :PUSHER_BEAMS_KEY, :String, default: "Optional"
 
 # Google recaptcha
 variable :RECAPTCHA_SECRET, :String, default: "Optional"
@@ -121,10 +126,6 @@ variable :SHARE_MEOW_SECRET_KEY, :String, default: "Optional"
 # Slack for customer alerts
 variable :SLACK_CHANNEL, :String, default: "Optional"
 variable :SLACK_WEBHOOK_URL, :String, default: "Optional"
-
-# Stream for notifications
-variable :STREAM_RAILS_KEY, :String, default: "Optional"
-variable :STREAM_RAILS_SECRET, :String, default: "Optional"
 
 # Stripe for payment system
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"

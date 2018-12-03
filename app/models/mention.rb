@@ -1,7 +1,4 @@
 class Mention < ApplicationRecord
-  include StreamRails::Activity
-  as_activity
-
   belongs_to :user
   belongs_to :mentionable, polymorphic: true
 
@@ -23,7 +20,7 @@ class Mention < ApplicationRecord
       mentions = []
       doc.css(".comment-mentioned-user").each do |link|
         username = link.text.gsub("@", "").downcase
-        if user = User.find_by_username(link.text.gsub("@", "").downcase)
+        if user = User.find_by_username(username)
           usernames << username
           mentions << create_mention(user)
         end
@@ -36,35 +33,17 @@ class Mention < ApplicationRecord
     private
 
     def delete_removed_mentions(usernames)
-      users = User.where(username: usernames)
-      @notifiable.mentions.where.not(user_id: users.pluck(:id)).destroy_all
+      user_ids = User.where(username: usernames).pluck(:id)
+      mentions = @notifiable.mentions.where.not(user_id: user_ids).destroy_all
+      Notification.remove_each(mentions) unless mentions.blank?
     end
 
     def create_mention(user)
-      Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
+      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
+      # mentionable_type = model that created the mention, user = user to be mentioned
+      Notification.send_mention_notification(mention)
+      mention
     end
-  end
-
-  def activity_actor
-    mentionable.user
-  end
-
-  def activity_notify
-    return if mentionable.parent_user && mentionable.parent_user.id == user.id
-    [StreamNotifier.new(user.id).notify]
-  end
-
-  def activity_object
-    mentionable
-  end
-
-  def activity_target
-    "mention_#{Time.current}"
-  end
-
-  def remove_from_feed
-    super
-    User.find_by(id: user.id)&.touch(:last_notification_activity)
   end
 
   def send_email_notification
