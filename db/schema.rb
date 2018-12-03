@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181129222416) do
+ActiveRecord::Schema.define(version: 20181130224531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -434,6 +434,10 @@ ActiveRecord::Schema.define(version: 20181129222416) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
+    t.text "encrypted_message_html"
+    t.text "encrypted_message_html_iv"
+    t.text "encrypted_message_markdown"
+    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
@@ -441,7 +445,16 @@ ActiveRecord::Schema.define(version: 20181129222416) do
     t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
-  
+
+  create_table "mutes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "mutable_id"
+    t.integer "mutable_type"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["user_id", "mutable_id", "mutable_type"], name: "index_mutes_on_user_id_and_mutable_id_and_mutable_type"
+  end
+
   create_table "notes", id: :serial, force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
@@ -597,6 +610,18 @@ ActiveRecord::Schema.define(version: 20181129222416) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "tag_adjustments", force: :cascade do |t|
+    t.string "adjustment_type"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.string "reason_for_adjustment"
+    t.string "status"
+    t.integer "tag_id"
+    t.string "tag_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
