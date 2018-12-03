@@ -118,7 +118,6 @@ class CommentsController < ApplicationController
   def destroy
     authorize @comment
     @commentable_path = @comment.commentable.path
-    Notification.remove_all(id: @comment.id, class_name: "Comment")
     if @comment.is_childless?
       @comment.destroy
     else

@@ -34,7 +34,7 @@
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
         <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
       </a>
-      <%= render "notifications/activity/activities/shared/comment_box", activity: activity, context: "moderation" %>
+      <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
       Give them their first reply! 🎉
       <br>
     <% end %>

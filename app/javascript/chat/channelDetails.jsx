@@ -29,7 +29,7 @@ class ChannelDetails extends Component {
     const query = e.target.value;
     const filters = {
       hitsPerPage: 20,
-      attributesToRetrieve: ['id', 'title', 'path'],
+      attributesToRetrieve: ['id', 'title', 'path', 'user'],
       attributesToHighlight: [],
       filters: 'class_name:User',
     };
@@ -92,10 +92,26 @@ class ChannelDetails extends Component {
     console.log(response); // eslint-disable-line no-console
   };
 
+  userInList = (list, user) => {
+    const keys = Object.keys(list)
+    for (const key of keys) {
+      if (user.id === list[key].id) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   render() {
     const channel = this.props.channel; // eslint-disable-line
     const users = Object.values(channel.channel_users).map(user => (
       <div className="channeldetails__user">
+        <img
+          className="channeldetails__userprofileimage"
+          src={user.profile_image}
+          alt={`${user.username} profile`}
+          data-content={`users/${user.id}`}
+        />
         <a
           href={`/${user.username}`}
           style={{ color: user.darker_color, padding: '3px 0px' }}
@@ -114,21 +130,43 @@ class ChannelDetails extends Component {
     let pendingInvites = [];
     if (channel.channel_mod_ids.includes(window.currentUser.id)) {
       // eslint-disable-next-line
-      searchedUsers = this.state.searchedUsers.map(user => (
-        <div className="channeldetails__searchedusers">
-          <a href={user.path} target="_blank" rel="noopener noreferrer">
-            {user.title}
-          </a>
-          {' '}
-          <button
-            type="button"
-            onClick={this.triggerInvite}
-            data-content={user.id}
-          >
-            Invite
-          </button>
-        </div>
-      ));
+      searchedUsers = this.state.searchedUsers.map(user => {
+        if (!this.userInList(channel.pending_users_select_fields, user)) {
+          let invite = (
+            <button
+              type="button"
+              onClick={this.triggerInvite}
+              data-content={user.id}
+            >
+              Invite
+            </button>
+          );
+          if (this.userInList(channel.channel_users, user)) {
+            invite = (
+              <span className="channel__member">
+                is already in
+                {' '}
+                <em>{channel.channel_name}</em>
+              </span>
+            );
+          }
+          return (
+            <div className="channeldetails__searchedusers">
+              <a href={user.path} target="_blank" rel="noopener noreferrer">
+                <img src={user.user.profile_image_90} alt="profile_image"/>
+                @
+                {user.user.username}
+                {' '}
+-
+                {' '}
+                {user.title}
+              </a>
+              {' '}
+              {invite}
+            </div>
+          );
+        }
+      });
       pendingInvites = channel.pending_users_select_fields.map(user => (
         <div className="channeldetails__pendingusers">
           <a
@@ -140,7 +178,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
-- 
+-
             {' '}
             {user.name}
           </a>
@@ -150,7 +188,9 @@ class ChannelDetails extends Component {
         <div className="channeldetails__inviteusers">
           <h2>Invite Members</h2>
           <input onKeyUp={this.triggerUserSearch} placeholder="Find users" />
-          {searchedUsers}
+          <div className="channeldetails__searchresults">
+            {searchedUsers}
+          </div>
           <h2>Pending Invites:</h2>
           {pendingInvites}
           <div style={{ marginTop: '10px' }}>
@@ -172,7 +212,7 @@ class ChannelDetails extends Component {
           </h3>
           <h4>It may not be immediately in the sidebar</h4>
           <p>
-            Contact the admins at 
+            Contact the admins at
             {' '}
             <a href="mailto:yo@dev.to">yo@dev.to</a>
             {' '}
@@ -190,7 +230,7 @@ if
             Click={this.triggerLeaveChannel}
             data-content={channel.id}
           >
-            Leave Channel.
+            Leave Channel
           </button>
         </div>
       );
@@ -198,13 +238,13 @@ if
     return (
       <div className="channeldetails">
         <h1 className="channeldetails__name">{channel.channel_name}</h1>
-        {subHeader}
         <div
           className="channeldetails__description"
           style={{ marginBottom: '20px' }}
         >
           <em>{channel.description || ''}</em>
         </div>
+        {subHeader}
         {users}
         {modSection}
       </div>

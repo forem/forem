@@ -24,6 +24,11 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="channeluser1 profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid1"
+    />
     <a
       data-content="users/by_username?url=channeluser1"
       href="/channeluser1"
@@ -40,6 +45,11 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="channeluser2 profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid2"
+    />
     <a
       data-content="users/by_username?url=channeluser2"
       href="/channeluser2"
@@ -63,6 +73,9 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
       onKeyUp={[Function]}
       placeholder="Find users"
     />
+    <div
+      class="channeldetails__searchresults"
+    />
     <h2>
       Pending Invites:
     </h2>
@@ -70,7 +83,7 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
       class="channeldetails__pendingusers"
     >
       <a
-        data-content="users/pendingid1"
+        data-content="users/pendinguserid1"
         href="/pendinguser1"
         rel="noopener noreferrer"
         target="_blank"
@@ -82,7 +95,7 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
       class="channeldetails__pendingusers"
     >
       <a
-        data-content="users/pendingid2"
+        data-content="users/pendinguserid2"
         href="/pendinguser2"
         rel="noopener noreferrer"
         target="_blank"
@@ -115,6 +128,11 @@ preact-render-spy (1 nodes)
     <em>something about this channel</em>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      alt="channeluser1 profile"
+      data-content="users/userid1"
+     />
     <a
       href="/channeluser1"
       style="padding: 3px 0px;"
@@ -124,6 +142,11 @@ preact-render-spy (1 nodes)
     </a>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      alt="channeluser2 profile"
+      data-content="users/userid2"
+     />
     <a
       href="/channeluser2"
       style="padding: 3px 0px;"
@@ -138,56 +161,46 @@ preact-render-spy (1 nodes)
       onKeyUp={[Function value]}
       placeholder="Find users"
      />
-    <div class="channeldetails__searchedusers">
-      <a
-        href="/some_path1"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        i am user1
-      </a>
-       
-      <button
-        type="button"
-        onClick={[Function value]}
-        data-content="user_id1"
-      >
-        Invite
-      </button>
-    </div>
-    <div class="channeldetails__searchedusers">
-      <a
-        href="/some_path2"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        i am user2
-      </a>
-       
-      <button
-        type="button"
-        onClick={[Function value]}
-        data-content="user_id2"
-      >
-        Invite
-      </button>
-    </div>
-    <div class="channeldetails__searchedusers">
-      <a
-        href="/some_path3"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        i am user3
-      </a>
-       
-      <button
-        type="button"
-        onClick={[Function value]}
-        data-content="user_id3"
-      >
-        Invite
-      </button>
+    <div class="channeldetails__searchresults">
+      <div class="channeldetails__searchedusers">
+        <a
+          href="/user_path1"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="channeluser1pic.png"
+            alt="profile_image"
+           />
+          @channeluser1 - i am channel user 1
+        </a>
+         
+        <span class="channel__member">
+          is already in 
+          <em>channel name</em>
+        </span>
+      </div>
+      <div class="channeldetails__searchedusers">
+        <a
+          href="/search_path3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="searcheduser3pic.png"
+            alt="profile_image"
+           />
+          @searcheduser3 - i am searched user 3
+        </a>
+         
+        <button
+          type="button"
+          onClick={[Function value]}
+          data-content="searched_userid3"
+        >
+          Invite
+        </button>
+      </div>
     </div>
     <h2>Pending Invites:</h2>
     <div class="channeldetails__pendingusers">
@@ -195,7 +208,7 @@ preact-render-spy (1 nodes)
         href="/pendinguser1"
         target="_blank"
         rel="noopener noreferrer"
-        data-content="users/pendingid1"
+        data-content="users/pendinguserid1"
       >
         @pendinguser1 - pending user 1
       </a>
@@ -205,7 +218,7 @@ preact-render-spy (1 nodes)
         href="/pendinguser2"
         target="_blank"
         rel="noopener noreferrer"
-        data-content="users/pendingid2"
+        data-content="users/pendinguserid2"
       >
         @pendinguser2 - pending user 2
       </a>
@@ -230,6 +243,11 @@ preact-render-spy (1 nodes)
     <em>something about this channel</em>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      alt="channeluser1 profile"
+      data-content="users/userid1"
+     />
     <a
       href="/channeluser1"
       style="padding: 3px 0px;"
@@ -239,6 +257,11 @@ preact-render-spy (1 nodes)
     </a>
   </div>
   <div class="channeldetails__user">
+    <img
+      class="channeldetails__userprofileimage"
+      alt="channeluser2 profile"
+      data-content="users/userid2"
+     />
     <a
       href="/channeluser2"
       style="padding: 3px 0px;"
@@ -293,6 +316,11 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="channeluser1 profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid1"
+    />
     <a
       data-content="users/by_username?url=channeluser1"
       href="/channeluser1"
@@ -309,6 +337,11 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
   <div
     class="channeldetails__user"
   >
+    <img
+      alt="channeluser2 profile"
+      class="channeldetails__userprofileimage"
+      data-content="users/userid2"
+    />
     <a
       data-content="users/by_username?url=channeluser2"
       href="/channeluser2"
@@ -333,7 +366,7 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
       data-content="12345"
       type="button"
     >
-      Leave Channel.
+      Leave Channel
     </button>
   </div>
 </div>
