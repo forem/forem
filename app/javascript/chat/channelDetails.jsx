@@ -29,7 +29,7 @@ class ChannelDetails extends Component {
     const query = e.target.value;
     const filters = {
       hitsPerPage: 20,
-      attributesToRetrieve: ['id', 'title', 'path'],
+      attributesToRetrieve: ['id', 'title', 'path', 'user'],
       attributesToHighlight: [],
       filters: 'class_name:User',
     };
@@ -93,8 +93,9 @@ class ChannelDetails extends Component {
   };
 
   userInList = (list, user) => {
-    for (let i = 0; i < list.length; i += 1) {
-      if (user.id === list[i].id) {
+    const keys = Object.keys(list)
+    for (const key of keys) {
+      if (user.id === list[key].id) {
         return true;
       }
     }
@@ -107,8 +108,8 @@ class ChannelDetails extends Component {
       <div className="channeldetails__user">
         <img
           className="channeldetails__userprofileimage"
-          src={user.profile_image_url}
-          alt={`${user} profile`}
+          src={user.profile_image}
+          alt={`${user.username} profile`}
           data-content={`users/${user.id}`}
         />
         <a
@@ -145,20 +146,20 @@ class ChannelDetails extends Component {
               <span className="channel__member">
                 is already in
                 {' '}
-                {channel.channel_name}
+                <em>{channel.channel_name}</em>
               </span>
             );
           }
           return (
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
-                <img alt="profile_image" src={user.profile_image_url} />
+                <img src={user.user.profile_image_90} alt="profile_image"/>
                 @
-                {user.username}
+                {user.user.username}
                 {' '}
 -
                 {' '}
-                {user.name}
+                {user.title}
               </a>
               {' '}
               {invite}
@@ -187,7 +188,9 @@ class ChannelDetails extends Component {
         <div className="channeldetails__inviteusers">
           <h2>Invite Members</h2>
           <input onKeyUp={this.triggerUserSearch} placeholder="Find users" />
-          {searchedUsers}
+          <div className="channeldetails__searchresults">
+            {searchedUsers}
+          </div>
           <h2>Pending Invites:</h2>
           {pendingInvites}
           <div style={{ marginTop: '10px' }}>

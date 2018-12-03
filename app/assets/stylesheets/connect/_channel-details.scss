@@ -13,12 +13,13 @@
 
   // channel users
   .channeldetails__user {
-    .channeldetails__userprofileimage img {
+    padding: 2px 0;
+    .channeldetails__userprofileimage {
       height: 25px;
       width: 25px;
       margin-right: 6px;
       border-radius: 20px;
-      vertical-align: -3px;
+      vertical-align: -6px;
     }
     a {
       font-family: $helvetica;
@@ -41,35 +42,41 @@
       -webkit-appearance: none;
     }
 
-    .channeldetails__searchedusers {
-      // profile pic
-      img {
-        height: 25px;
-        width: 25px;
-        margin-right: 6px;
-        border-radius: 20px;
-        vertical-align: -3px;
-      }
+    .channeldetails__searchresults {
+      padding: 5px 0;
 
-      a {
-        font-size: 18px;
-        font-family: $helvetica;
-      }
+      .channeldetails__searchedusers {
+        padding: 1px 0;
 
-      // invite button
-      button {
-        width: 85px;
-        height: 24px;
-        background-color: $purple;
-        border-radius: 3px;
-        color: $white;
-      }
+        // profile pic
+        img {
+          height: 22px;
+          width: 22px;
+          margin-right: 6px;
+          border-radius: 20px;
+          vertical-align: -6px;
+        }
 
-      // in channel message
-      span {
-        color: $dark-gray;
-        font-size: 18px;
-        font-family: $helvetica;
+        a {
+          font-size: 14px;
+          font-family: $helvetica;
+        }
+
+        // invite button
+        button {
+          width: 45px;
+          height: 24px;
+          background-color: $purple;
+          border-radius: 3px;
+          color: $white;
+        }
+
+        // in channel message
+        span {
+          color: $dark-gray;
+          font-size: 14px;
+          font-family: $helvetica;
+        }
       }
     }
 

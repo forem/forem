@@ -25,10 +25,9 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
     class="channeldetails__user"
   >
     <img
-      alt="[object Object] profile"
+      alt="channeluser1 profile"
       class="channeldetails__userprofileimage"
       data-content="users/userid1"
-      src="channeluser1pic.png"
     />
     <a
       data-content="users/by_username?url=channeluser1"
@@ -47,10 +46,9 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
     class="channeldetails__user"
   >
     <img
-      alt="[object Object] profile"
+      alt="channeluser2 profile"
       class="channeldetails__userprofileimage"
       data-content="users/userid2"
-      src="channeluser2pic.png"
     />
     <a
       data-content="users/by_username?url=channeluser2"
@@ -74,6 +72,9 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
     <input
       onKeyUp={[Function]}
       placeholder="Find users"
+    />
+    <div
+      class="channeldetails__searchresults"
     />
     <h2>
       Pending Invites:
@@ -129,8 +130,7 @@ preact-render-spy (1 nodes)
   <div class="channeldetails__user">
     <img
       class="channeldetails__userprofileimage"
-      src="channeluser1pic.png"
-      alt="[object Object] profile"
+      alt="channeluser1 profile"
       data-content="users/userid1"
      />
     <a
@@ -144,8 +144,7 @@ preact-render-spy (1 nodes)
   <div class="channeldetails__user">
     <img
       class="channeldetails__userprofileimage"
-      src="channeluser2pic.png"
-      alt="[object Object] profile"
+      alt="channeluser2 profile"
       data-content="users/userid2"
      />
     <a
@@ -162,41 +161,46 @@ preact-render-spy (1 nodes)
       onKeyUp={[Function value]}
       placeholder="Find users"
      />
-    <div class="channeldetails__searchedusers">
-      <a
-        href="/user_path1"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img
-          alt="profile_image"
-          src="channeluser1pic.png"
-         />
-        @channeluser1 - channel user 1
-      </a>
-       
-      <span class="channel__member">is already in channel name</span>
-    </div>
-    <div class="channeldetails__searchedusers">
-      <a
-        href="/search_path3"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <img
-          alt="profile_image"
-          src="searcheduser3pic.png"
-         />
-        @searcheduser3 - searched user 3
-      </a>
-       
-      <button
-        type="button"
-        onClick={[Function value]}
-        data-content="searched_userid3"
-      >
-        Invite
-      </button>
+    <div class="channeldetails__searchresults">
+      <div class="channeldetails__searchedusers">
+        <a
+          href="/user_path1"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="channeluser1pic.png"
+            alt="profile_image"
+           />
+          @channeluser1 - i am channel user 1
+        </a>
+         
+        <span class="channel__member">
+          is already in 
+          <em>channel name</em>
+        </span>
+      </div>
+      <div class="channeldetails__searchedusers">
+        <a
+          href="/search_path3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="searcheduser3pic.png"
+            alt="profile_image"
+           />
+          @searcheduser3 - i am searched user 3
+        </a>
+         
+        <button
+          type="button"
+          onClick={[Function value]}
+          data-content="searched_userid3"
+        >
+          Invite
+        </button>
+      </div>
     </div>
     <h2>Pending Invites:</h2>
     <div class="channeldetails__pendingusers">
@@ -241,8 +245,7 @@ preact-render-spy (1 nodes)
   <div class="channeldetails__user">
     <img
       class="channeldetails__userprofileimage"
-      src="channeluser1pic.png"
-      alt="[object Object] profile"
+      alt="channeluser1 profile"
       data-content="users/userid1"
      />
     <a
@@ -256,8 +259,7 @@ preact-render-spy (1 nodes)
   <div class="channeldetails__user">
     <img
       class="channeldetails__userprofileimage"
-      src="channeluser2pic.png"
-      alt="[object Object] profile"
+      alt="channeluser2 profile"
       data-content="users/userid2"
      />
     <a
@@ -315,10 +317,9 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
     class="channeldetails__user"
   >
     <img
-      alt="[object Object] profile"
+      alt="channeluser1 profile"
       class="channeldetails__userprofileimage"
       data-content="users/userid1"
-      src="channeluser1pic.png"
     />
     <a
       data-content="users/by_username?url=channeluser1"
@@ -337,10 +338,9 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
     class="channeldetails__user"
   >
     <img
-      alt="[object Object] profile"
+      alt="channeluser2 profile"
       class="channeldetails__userprofileimage"
       data-content="users/userid2"
-      src="channeluser2pic.png"
     />
     <a
       data-content="users/by_username?url=channeluser2"

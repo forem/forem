@@ -158,26 +158,32 @@ describe('<ChannelDetails />', () => {
           {
             path: '/user_path1',
             title: 'i am channel user 1',
-            name: 'channel user 1',
-            username: 'channeluser1',
+            user: {
+              name: 'channel user 1',
+              username: 'channeluser1',
+              profile_image_90: 'channeluser1pic.png',
+            },
             id: 'userid1',
-            profile_image_url: 'channeluser1pic.png',
           },
           {
             path: '/pending_path1',
             title: 'i am pending user 1',
-            name: 'pending user 1',
-            username: 'pendinguser1',
+            user: {
+              name: 'pending user 1',
+              username: 'pendinguser1',
+              profile_image_90: 'pendinguser1pic.png',
+            },
             id: 'pendinguserid1',
-            profile_image_url: 'pendinguser1pic.png',
           },
           {
             path: '/search_path3',
             title: 'i am searched user 3',
-            name: 'searched user 3',
-            username: 'searcheduser3',
+            user: {
+              name: 'searched user 3',
+              username: 'searcheduser3',
+              profile_image_90: 'searcheduser3pic.png',
+            },
             id: 'searched_userid3',
-            profile_image_url: 'searcheduser3pic.png',
           },
         ],
       };
@@ -192,63 +198,57 @@ describe('<ChannelDetails />', () => {
       let inviteAttr;
       let inviteAttrAns;
       const included = (list, el) => {
-        for (let i = 0; i < list.length; i += 1) {
-          if (list[i].id === el.id) {
+        const keys = Object.keys(list);
+        for (var key of keys) {
+          if (list[key].id === el.id) {
             return true;
           }
         }
       };
       for (let i = 0; i < searchedusersdivs.length; i += 1) {
-        if (
-          included(
+        if (!included(
             moddetails.pending_users_select_fields,
-            searchedusers.searchedUsers[i],
-          )
-        ) {
-          continue;
-        }
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(0)
-            .attr('href'),
-        ).toEqual(searchedusers.searchedUsers[i].path);
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(0)
-            .text(),
-        ).toEqual(
-          `@${searchedusers.searchedUsers[i].username} - ${
-            searchedusers.searchedUsers[i].name
-          }`,
-        );
+            searchedusers.searchedUsers[i])) {
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(0)
+              .attr('href'),
+          ).toEqual(searchedusers.searchedUsers[i].path);
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(0)
+              .text(),
+          ).toEqual(
+            `@${searchedusers.searchedUsers[i].user.username} - ${
+              searchedusers.searchedUsers[i].title
+            }`,
+          );
 
-        if (
-          included(moddetails.channel_users, searchedusers.searchedUsers[i])
-        ) {
-          inviteMessage = `is already in ${moddetails.channel_name}`;
-          inviteAttr = 'className';
-          inviteAttrAns = 'channel__member';
-        } else {
-          inviteMessage = 'Invite';
-          inviteAttr = 'data-content';
-          inviteAttrAns = searchedusers.searchedUsers[i].id;
+          if (included(moddetails.channel_users, searchedusers.searchedUsers[i])) {
+            inviteMessage = `is already in ${moddetails.channel_name}`;
+            inviteAttr = 'className';
+            inviteAttrAns = 'channel__member';
+          } else {
+            inviteMessage = 'Invite';
+            inviteAttr = 'data-content';
+            inviteAttrAns = searchedusers.searchedUsers[i].id;
+          }
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(2)
+              .text(),
+          ).toEqual(inviteMessage);
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(2)
+              .attr(inviteAttr),
+          ).toEqual(inviteAttrAns);
+          }
         }
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(2)
-            .text(),
-        ).toEqual(inviteMessage);
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(2)
-            .attr(inviteAttr),
-        ).toEqual(inviteAttrAns);
-      }
-
       const tree = render(context);
       expect(tree).toMatchSnapshot();
     });
