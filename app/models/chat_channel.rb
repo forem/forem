@@ -133,7 +133,7 @@ class ChatChannel < ApplicationRecord
     # Purely for algolia indexing
     obj = {}
     active_memberships.
-      order("last_opened_at DESC").limit(80).includes(:user).each_with_index do |m, i|
+      order("last_opened_at DESC").limit(25).includes(:user).each_with_index do |m, i|
       obj[m.user.username] = user_obj(m, i)
     end
     obj
@@ -149,7 +149,7 @@ class ChatChannel < ApplicationRecord
 
   def user_obj(membership, index)
     {
-      profile_image: index < 11 ? ProfileImage.new(membership.user).get(90) : nil,
+      profile_image: index < 25 ? ProfileImage.new(membership.user).get(90) : nil,
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,
