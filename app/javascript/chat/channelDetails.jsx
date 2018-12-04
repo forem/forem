@@ -122,7 +122,7 @@ class ChannelDetails extends Component {
       </div>
     ));
     let subHeader = '';
-    if (users.length === 80) {
+    if (users.length === 25) {
       subHeader = <h3>Recently Active Members</h3>;
     }
     let modSection = '';
