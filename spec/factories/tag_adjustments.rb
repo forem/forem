@@ -5,6 +5,7 @@ FactoryBot.define do
     tag_id                { 1 }
     tag_name              { "NOTHING" }
     adjustment_type       { "removal" }
+    reason_for_adjustment { "reason #{rand(10000)}" }
     status                { "committed" }
   end
 end

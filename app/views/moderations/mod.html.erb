@@ -80,7 +80,7 @@
       <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
     </p>
   <% end %>
-  <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by_name(t)) }).any? %>
+  <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by_name(t)) }).any? if @moderatable.class.name == "Article" %>
   <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
     <div class="tag-mod-form" >
       <%= form_for(TagAdjustment.new) do |f| %>
