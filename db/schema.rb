@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120170350) do
+ActiveRecord::Schema.define(version: 20181129222416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -323,6 +323,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "followable_type", null: false
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "points", default: 1.0
     t.datetime "updated_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
@@ -440,7 +441,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
-
+  
   create_table "notes", id: :serial, force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
@@ -739,6 +740,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -798,6 +800,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
+    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

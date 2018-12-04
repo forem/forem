@@ -54,7 +54,7 @@ function tagsCounts() {
 function getArticles(tag, num = PER_PAGE){
     var user = userData();
     var substoriesDiv = document.getElementById("substories");
-    var algoliaIds = user.reading_list_ids.map(function(id){return "articles-"+id});
+    var algoliaIds = user.reading_list_ids.slice(0, 999).map(function(id){return "articles-"+id});
     var resultDivs = []
     var showMore = false;
     var tagSpecified = (tag != "");

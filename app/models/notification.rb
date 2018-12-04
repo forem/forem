@@ -14,7 +14,7 @@ class Notification < ApplicationRecord
       if aggregated_siblings.size.zero?
         Notification.find_or_create_by(user_id: user.id, action: "Follow").destroy
       else
-        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings}
+        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings }
         notification = Notification.find_or_create_by(user_id: user.id, action: "Follow")
         notification.notifiable_id = recent_follows.first.id
         notification.notifiable_type = "Follow"
@@ -22,13 +22,13 @@ class Notification < ApplicationRecord
         notification.notified_at = Time.current
         notification.read = is_read
         notification.save!
-        end
+      end
     end
     handle_asynchronously :send_new_follower_notification
 
     def send_to_followers(notifiable, action = nil)
       # followers is an array and not an activerecord object
-      notifiable.user.followers.sort_by(&:updated_at).reverse[0..2500].each do |follower|
+      notifiable.user.followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
         json_data = {
           user: user_data(notifiable.user),
           article: article_data(notifiable)
@@ -59,6 +59,10 @@ class Notification < ApplicationRecord
           action: nil,
           json_data: json_data,
         )
+        # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
+        if User.find_by(id: user_id)&.mobile_comment_notifications
+          send_push_notifications(user_id, "@#{notifiable.user.username} replied to you:", notifiable.title, "/notifications/comments")
+        end
       end
     end
     handle_asynchronously :send_new_comment_notifications
@@ -88,9 +92,10 @@ class Notification < ApplicationRecord
 
     def send_reaction_notification(notifiable)
       return if notifiable.user_id == notifiable.reactable.user_id
+      return if notifiable.points.negative?
       aggregated_reaction_siblings = notifiable.reactable.reactions.
-        select{|r| r.user_id != notifiable.reactable.user_id}.
-        map { |r| {category: r.category, created_at: r.created_at, user: user_data(r.user)} }
+        reject { |r| r.user_id == notifiable.reactable.user_id }.
+        map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
       json_data = {
         user: user_data(notifiable.user),
         reaction: {
@@ -99,14 +104,17 @@ class Notification < ApplicationRecord
           reactable_id: notifiable.reactable_id,
           reactable: {
             path: notifiable.reactable.path,
-            title: notifiable.reactable.title
+            title: notifiable.reactable.title,
+            class: {
+              name: notifiable.reactable.class.name
+            }
           },
           aggregated_siblings: aggregated_reaction_siblings,
           updated_at: notifiable.updated_at
         }
       }
       if aggregated_reaction_siblings.size.zero?
-        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
+        notification = Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
       else
         previous_siblings_size = 0
         notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
@@ -119,6 +127,7 @@ class Notification < ApplicationRecord
         end
         notification.save!
       end
+      notification
     end
     handle_asynchronously :send_reaction_notification
 
@@ -183,7 +192,7 @@ class Notification < ApplicationRecord
         notifiable_id: notifiable_hash[:id],
         notifiable_type: notifiable_hash[:class_name],
         action: notifiable_hash[:action],
-      ).destroy_all
+      ).delete_all
     end
     handle_asynchronously :remove_all
 
@@ -254,6 +263,24 @@ class Notification < ApplicationRecord
         path: article.path,
         updated_at: article.updated_at
       }
+    end
+
+    def send_push_notifications(user_id, title, body, path)
+      return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
+      payload = {
+        apns: {
+          aps: {
+            alert: {
+              title: title,
+              body: CGI.unescapeHTML(body.strip!)
+            }
+          },
+          data: {
+            url: "https://dev.to" + path
+          }
+        }
+      }
+      Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
     end
   end
 

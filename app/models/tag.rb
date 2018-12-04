@@ -1,4 +1,7 @@
 class Tag < ActsAsTaggableOn::Tag
+
+  attr_accessor :points
+
   include AlgoliaSearch
   acts_as_followable
   resourcify
