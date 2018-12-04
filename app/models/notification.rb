@@ -187,6 +187,26 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_moderation_notification
 
+    def send_tag_adjustment_notification(notifiable)
+      article = notifiable.article
+      json_data = {
+        article: {title: article.title, path: article.path},
+        adjustment_type: notifiable.adjustment_type,
+        status: notifiable.status,
+        reason_for_adjustment: notifiable.reason_for_adjustment,
+        tag_name: notifiable.tag_name
+      }
+      Notification.create(
+        user_id: article.user_id,
+        notifiable_id: notifiable.id,
+        notifiable_type: notifiable.class.name,
+        json_data: json_data,
+      )
+      article.user.update_column(:last_moderation_notification, Time.current)
+    end
+    handle_asynchronously :send_tag_adjustment_notification
+
+
     def remove_all(notifiable_hash)
       Notification.where(
         notifiable_id: notifiable_hash[:id],

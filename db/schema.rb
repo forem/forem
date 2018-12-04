@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181129222416) do
+ActiveRecord::Schema.define(version: 20181130224531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -441,7 +441,7 @@ ActiveRecord::Schema.define(version: 20181129222416) do
     t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
-  
+
   create_table "notes", id: :serial, force: :cascade do |t|
     t.integer "author_id"
     t.text "content"
@@ -597,6 +597,18 @@ ActiveRecord::Schema.define(version: 20181129222416) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "tag_adjustments", force: :cascade do |t|
+    t.string "adjustment_type"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.string "reason_for_adjustment"
+    t.string "status"
+    t.integer "tag_id"
+    t.string "tag_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
