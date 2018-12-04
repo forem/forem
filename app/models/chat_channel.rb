@@ -149,7 +149,7 @@ class ChatChannel < ApplicationRecord
 
   def user_obj(membership, index)
     {
-      profile_image: index < 11 ? ProfileImage.new(membership.user).get(90) : nil,
+      profile_image: index < 80 ? ProfileImage.new(membership.user).get(90) : nil,
       darker_color: membership.user.decorate.darker_color,
       name: membership.user.name,
       last_opened_at: membership.last_opened_at,
