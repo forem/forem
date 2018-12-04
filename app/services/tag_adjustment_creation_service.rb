@@ -5,7 +5,7 @@ class TagAdjustmentCreationService
   end
 
   def create
-    @tag_adjustment = TagAdjustment.create(creation_args)
+    @tag_adjustment = TagAdjustment.create!(creation_args)
     update_article
     Notification.send_tag_adjustment_notification(@tag_adjustment)
     @tag_adjustment

@@ -6,12 +6,17 @@
   <% data = notification.json_data %>
   Hey there 👋
   <br/><br/>
-  Moderators removed the <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> from your post <a href="<%= data["article"]["path"] %>"><%= data["article"]["title"] %></a>.
+  Moderators removed the <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> tag from your post <a href="<%= data["article"]["path"] %>"><%= data["article"]["title"] %></a>.
   <br/><br/>
   Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
   <br/><br/>
-  Feel free to add <a href="/tags">other tags</a> which may be more appropriate.
+  <div class="comment-text">
+    <div style="font-size:0.8em;margin-top: -3px;font-weight: 900;margin-bottom: 5px;">Reason for action</div>
+    <%= data["reason_for_adjustment"] %>
+  </div>
+  <br/>
+  Check out <a href="/tags">other popular tags</a> which may be more appropriate.
   <br><br/>
-  Thanks for being part of DEV! If you feel like this mod action was a mistake, feel free to contact <a href="mailto:yo@dev.to">yo@dev.to</a>.
+  Thanks for being part of DEV! If you feel like this mod action was a mistake, feel free to contact <a href="mailto:yo@dev.to">yo@dev.to</a>. 🤗
   <br/><br/>
 </div>
