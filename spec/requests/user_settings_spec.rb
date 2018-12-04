@@ -21,6 +21,11 @@ RSpec.describe "UserSettings", type: :request do
         end
       end
 
+      it "handles unknown settings tab properly" do
+        expect { get "/settings/does-not-exist" }.
+          to raise_error(ActionController::RoutingError)
+      end
+
       it "doesn't let user access membership if user has no monthly_dues" do
         get "/settings/membership"
         expect(response.body).not_to include("Settings for")
@@ -48,6 +53,10 @@ RSpec.describe "UserSettings", type: :request do
   describe "PUT /update/:id" do
     before { login_as user }
 
+    after do
+      Delayed::Worker.delay_jobs = false
+    end
+
     it "updates summary" do
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
       expect(user.summary).to eq("Hello new summary")
@@ -56,6 +65,50 @@ RSpec.describe "UserSettings", type: :request do
     it "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")
+    end
+
+    context "when requesting an export of the articles" do
+      def send_request(flag = true)
+        Delayed::Worker.delay_jobs = true
+        put "/users/#{user.id}", params: {
+          user: { tab: "misc", export_requested: flag }
+        }
+      end
+
+      it "updates export_requested flag" do
+        send_request
+        expect(user.reload.export_requested).to be(true)
+      end
+
+      it "displays a flash with a reminder for the user to expect an email" do
+        send_request
+        expect(flash[:notice]).to include("The export will be emailed to you shortly.")
+      end
+
+      it "hides the checkbox" do
+        send_request
+        follow_redirect!
+        expect(response.body).not_to include("Request an export of your posts")
+      end
+
+      it "tells the user they recently requested an export" do
+        send_request
+        follow_redirect!
+        expect(response.body).to include("You have recently requested an export")
+      end
+
+      it "sends an email" do
+        expect do
+          send_request
+          Delayed::Worker.new.work_off
+          # Delayed::Worker.delay_jobs = false
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it "does not send an email if there was no request" do
+        Delayed::Worker.delay_jobs = false
+        expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
+      end
     end
   end
 

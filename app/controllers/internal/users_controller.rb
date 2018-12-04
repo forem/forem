@@ -17,11 +17,11 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    if params[:id] == "unmatched_mentee"
-      @user = MentorRelationship.unmatched_mentees.order("RANDOM()").first
-    else
-      @user = User.find(params[:id])
-    end
+    @user = if params[:id] == "unmatched_mentee"
+              MentorRelationship.unmatched_mentees.order("RANDOM()").first
+            else
+              User.find(params[:id])
+            end
     @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
     @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
   end
@@ -92,12 +92,12 @@ class Internal::UsersController < Internal::ApplicationController
 
   def banish
     @user = User.find(params[:id])
-    strip_user(@user)
+    Moderator::Banisher.call(admin: current_user, offender: @user)
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
   def strip_user(user)
-    return unless user.comments.where("created_at < ?", 7.days.ago).empty?
+    return unless user.comments.where("created_at < ?", 150.days.ago).empty?
     new_name = "spam_#{rand(10000)}"
     new_username = "spam_#{rand(10000)}"
     if User.find_by(name: new_name) || User.find_by(username: new_username)
@@ -111,6 +111,7 @@ class Internal::UsersController < Internal::ApplicationController
     user.website_url = ""
     user.summary = ""
     user.location = ""
+    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png" if Rails.env.production?
     user.education = ""
     user.employer_name = ""
     user.employer_url = ""
@@ -126,6 +127,8 @@ class Internal::UsersController < Internal::ApplicationController
     user.stackoverflow_url = nil
     user.behance_url = nil
     user.linkedin_url = nil
+    user.gitlab_url = nil
+    user.mastodon_url = nil
     user.add_role :banned
     unless user.notes.where(reason: "banned").any?
       user.notes.
@@ -135,6 +138,7 @@ class Internal::UsersController < Internal::ApplicationController
       comment.reactions.each { |rxn| rxn.delay.destroy! }
       comment.delay.destroy!
     end
+    user.follows.each { |follow| follow.delay.destroy! }
     user.articles.each { |article| article.delay.destroy! }
     user.remove_from_index!
     user.save!
@@ -148,10 +152,10 @@ class Internal::UsersController < Internal::ApplicationController
 
   def user_params
     params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :mentorship_note,
-                                 :ban_from_mentorship)
+                                :offering_mentorship,
+                                :add_mentor,
+                                :add_mentee,
+                                :mentorship_note,
+                                :ban_from_mentorship)
   end
 end

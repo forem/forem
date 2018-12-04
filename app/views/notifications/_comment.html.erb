@@ -1,0 +1,42 @@
+<% if notification.action == "Reaction" %>
+  <%= render "reaction", notification: notification %>
+<% else %>
+  <% json_data = notification.json_data %>
+  <% cache "activity-profile-pic-#{json_data["user"]["id"]}-#{json_data["user"]["profile_image_90"]}" do %>
+    <a href="<%= json_data["comment"]["path"] %>" class="small-pic-link-wrapper">
+      <div class="small-pic">
+        <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+      </div>
+    </a>
+  <% end %>
+  <div class="content notification-content comment-content">
+    <% if notification.action.blank? %>
+          <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
+          commented on
+          <a href="<%= json_data["comment"]["commentable"]["path"] %>">
+            <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
+          </a>
+          <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+    <% elsif notification.action == "Moderation" %>
+          Hey there! <%= image_tag "emoji/apple-hugging-face.png", class: "reaction-image" %> As a trusted member, could you react to this comment
+          so we know it fits our community code of conduct?
+          <br/><br>
+          <b>Here's the article for context:
+          <a href="<%= json_data["comment"]["commentable"]["path"] %>">
+            <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
+          </a></b>
+          <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
+          <br>
+          <div class="footnote">All negative reactions are 100% private. If it is a good comment, consider also replying with some positive reinforcement or adding to the conversation.</div>
+    <% elsif notification.action == "First" %>
+      <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
+      wrote their first comment on:
+      <a href="<%= json_data["comment"]["commentable"]["path"] %>">
+        <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
+      </a>
+      <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
+      Give them their first reply! 🎉
+      <br>
+    <% end %>
+  </div>
+<% end %>

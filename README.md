@@ -2,17 +2,16 @@
   <br>
   <img
     alt="DEV"
-    src="https://thepracticaldev.s3.amazonaws.com/i/d3o5l9yiqfv1z24cn1yp.png"
+    src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png"
     width=500px
   />
-  <br/>
   <h1>DEV Community 👩‍💻👨‍💻</h1>
   <strong>The Human Layer of the Stack</strong>
 </div>
 <br/>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.5.1-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.5.3-green.svg" alt="ruby version"/>
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
@@ -62,13 +61,13 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
 
 We encourage you to contribute to dev.to! Please check out the [Contributing to dev.to guide](CONTRIBUTING.md) for guidelines about how to proceed.
 
-We expect contributors to abide by our underlying [code of conduct](https://dev.to/code-of-conduct). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
+We expect contributors to abide by our underlying [code of conduct](CODE_OF_CONDUCT.md). All conversations and discussions on GitHub (issues, pull requests) and across dev.to must be respectful and harassment-free.
 
 ### Where to contribute
 
 All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled with `approved` are up for grabs. For clarification on how we label issues, check out their definitions [here](https://github.com/thepracticaldev/dev.to/labels).
 
-When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone knew to the project. For newer developers, try 'entry-level' issues.
+When in doubt, ask a [core team member](#core-team)! You can mention us in any issues or ask on the [DEV Contributor thread](https://dev.to/devteam/devto-open-source-helpdiscussion-thread-v0-1l45). Any issue with the `good first issue` tag is typically a good place to start for anyone new to the project. For newer developers, try 'entry-level' issues.
 
 **Refactoring** code, e.g. improving the code without modifying the behavior is an area that can probably be done based on intuition and may not require much communication to be merged.
 
@@ -153,10 +152,10 @@ This section provides a high-level requirement & quick start guide. For detailed
 0.  Make sure all the prerequisites are installed.
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
 1.  Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
-1.  `gem install bundler`
 1.  `gem install foreman`
-1.  `bundle install`
-1.  `bin/yarn`
+1.  Setup your database
+    - Create `config/database.yml` by copying from the provided template (i.e. `cp config/database.yml.sample config/database.yml`)
+    - Update the `config/database.yml` file if needed.
 1.  Set up your environment variables/secrets
     - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
     - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.

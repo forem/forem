@@ -108,43 +108,6 @@
           </div>
         </div>
       <% end %>
-      <% if Flipflop.she_coded? %>
-        <div class="widget">
-          <header>
-            <h4><#SHECODED></h4>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.
-                where(published: true, approved: true).
-                tagged_with(["shecoded", "theycoded"], any: true).
-                order("published_at DESC").
-                limit(100).
-                pluck(:path, :title, :comments_count, :created_at).
-                each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-              <% end %>
-            </div>
-            <p><center><a class="cta cta-button" href="/t/shecoded" style="color: white; background: #8a62b4;">VIEW ALL #SHECODED</a></center></p>
-            <p><center><a class="cta cta-button" href="/new/shecoded" style="color: white; background: #8a62b4;">SUBMIT YOUR STORY</a></center></p>
-          </div>
-        </div>
-      <% end %>
-      <% if Event.in_the_future_and_published.any? && Flipflop.upcoming_events? %>
-        <div class="widget">
-          <header>
-            <a href="/events"><h4>upcoming live events</h4></a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Event.in_the_future_and_published.limit(3).sort_by(&:starts_at).each do |event| %>
-                <%= render "events/widget_events_item", event: event %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/events">VIEW ALL EVENTS</a>
-          </div>
-        </div>
-      <% end %>
       <% ApplicationConfig["TRENDING_TAGS"].split(",").each do |tag| %>
         <div class="widget">
           <header>
@@ -152,7 +115,7 @@
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
-              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime).
+              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).
                 each do |plucked_article| %>
                   <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>

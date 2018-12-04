@@ -177,7 +177,7 @@
         }
       }
       &.desktop {
-        &:hover {
+        &:hover,&:active,&:focus {
           .menu {
             display: block;
           }
@@ -208,7 +208,7 @@
       bottom: 0;
       background: rgba(17, 17, 17, 0.88);
       z-index: -5;
-      top: 40px;
+      top: 48px;
       display: none;
     }
     .menu {

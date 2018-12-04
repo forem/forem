@@ -59,8 +59,7 @@ class User < ApplicationRecord
             uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
-            exclusion: { in: ReservedWords.all,
-                         message: "%{value} is reserved." }
+            exclusion: { in: ReservedWords.all, message: "username is reserved" }
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
@@ -87,6 +86,9 @@ class User < ApplicationRecord
   validates :medium_url,
               allow_blank: true,
               format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_\@\.]{2,32})\/?\Z/
+  validates :gitlab_url,
+              allow_blank: true,
+              format: /\Ahttps:\/\/(www.gitlab.com|gitlab.com)\/([a-zA-Z0-9_\-\.]{1,100})\/?\Z/
   # rubocop:enable Metrics/LineLength
   validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
@@ -110,6 +112,7 @@ class User < ApplicationRecord
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
               length: { maximum: 100 }
+  validates :mastodon_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :employment_title, :education, :location,
               length: { maximum: 100 }
   validates :mostly_work_with, :currently_learning,
@@ -118,6 +121,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
   validate  :conditionally_validate_summary
+  validate  :mastodon_url_whitelist
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
@@ -223,11 +227,16 @@ class User < ApplicationRecord
       "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
       expires_in: 120.hours,
     ) do
-
-      # More efficient query. May not cover future edge cases.
-      # Should probably only return users who have published lately
-      # But this should be okay for most for now.
       Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
+    end
+  end
+
+  def cached_following_organizations_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
     end
   end
 
@@ -343,9 +352,17 @@ class User < ApplicationRecord
   def resave_articles
     cache_buster = CacheBuster.new
     articles.each do |article|
+      cache_buster.bust(article.path) if article.path
+      cache_buster.bust(article.path + "?i=i") if article.path
+      article.save
+    end
+  end
+
+  def cache_bust_all_articles
+    cache_buster = CacheBuster.new
+    articles.each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
-      article.save
     end
   end
 
@@ -371,7 +388,7 @@ class User < ApplicationRecord
   private
 
   def send_welcome_notification
-    Broadcast.send_welcome_notification(id)
+    Notification.send_welcome_notification(id)
   end
 
   def set_username
@@ -421,7 +438,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    if core_profile_details_changed?
+    if core_profile_details_changed? && !user.banned
       delay.resave_articles
     end
   end
@@ -454,6 +471,13 @@ class User < ApplicationRecord
   def validate_feed_url
     return unless feed_url.present?
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
+  end
+
+  def mastodon_url_whitelist
+    return unless mastodon_url.present?
+    uri = URI.parse(mastodon_url)
+    return if uri.host&.in?(Constants::MASTODON_INSTANCE_WHITELIST)
+    errors.add(:mastodon_url, "is not a whitelisted Mastodon instance")
   end
 
   def title

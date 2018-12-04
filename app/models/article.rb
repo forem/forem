@@ -6,16 +6,16 @@ class Article < ApplicationRecord
 
   acts_as_taggable_on :tags
 
-  attr_accessor :publish_under_org
+  attr_accessor :publish_under_org, :series
 
   belongs_to :user
   belongs_to :job_opportunity, optional: true
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
+  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many :comments,       as: :commentable
   has_many :buffer_updates
-  has_many :reactions,      as: :reactable, dependent: :destroy
   has_many  :notifications, as: :notifiable
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
@@ -31,6 +31,7 @@ class Article < ApplicationRecord
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
+  validate :validate_collection_permission
   validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
@@ -51,6 +52,7 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
+  after_update      :update_notifications, if: Proc.new { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
@@ -132,7 +134,7 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count,
         :tag_list, :positive_reactions_count, :id, :hotness_score,
-        :readable_publish_date, :flare_tag
+        :readable_publish_date, :flare_tag, :user_id, :organization_id
       attribute :published_at_int do
         published_at.to_i
       end
@@ -140,6 +142,13 @@ class Article < ApplicationRecord
         { username: user.username,
           name: user.name,
           profile_image_90: ProfileImage.new(user).get(90) }
+      end
+      attribute :organization do
+        if organization
+          { slug: organization.slug,
+            name: organization.name,
+            profile_image_90: ProfileImage.new(organization).get(90) }
+        end
       end
       tags do
         [tag_list,
@@ -359,7 +368,21 @@ class Article < ApplicationRecord
   end
   handle_asynchronously :async_score_calc
 
+  def series
+    # name of series article is part of
+    collection&.slug
+  end
+
+  def all_series
+    # all series names
+    user&.collections&.pluck(:slug)
+  end
+
   private
+
+  def update_notifications
+    Notification.update_notifications(self, "Published")
+  end
 
   # def send_to_moderator
   #   ModerationService.new.send_moderation_notification(self) if published
@@ -369,8 +392,7 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    reactions.destroy_all
-    user.delay.resave_articles
+    user.cache_bust_all_articles
     organization&.delay&.resave_articles
   end
 
@@ -381,12 +403,17 @@ class Article < ApplicationRecord
       ActsAsTaggableOn::Taggable::Cache.included(Article)
       self.tag_list = []
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
+      TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
+        tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
+      end
     end
     self.published = front_matter["published"] if ["true", "false"].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || token_msg
+    self.collection_id = nil if front_matter["title"].present?
+    self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
       self.automatically_renew = front_matter["automatically_renew"]
     end
@@ -401,6 +428,11 @@ class Article < ApplicationRecord
   end
 
   def validate_tag
+    # remove adjusted tags
+    TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
+      tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
+      self.tag_list = tag_list
+    end
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
     tag_list.each do |tag|
       if tag.length > 20
@@ -415,6 +447,12 @@ class Article < ApplicationRecord
     end
     if video.present? && !user.has_role?(:video_permission)
       return errors.add(:video, "cannot be added member without permission")
+    end
+  end
+
+  def validate_collection_permission
+    if collection && collection.user_id != user_id
+      errors.add(:collection_id, "must be one you have permission to post to")
     end
   end
 

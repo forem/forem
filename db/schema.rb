@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181020195954) do
+ActiveRecord::Schema.define(version: 20181130224531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -323,6 +323,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.string "followable_type", null: false
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "points", default: 1.0
     t.datetime "updated_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
@@ -454,10 +455,17 @@ ActiveRecord::Schema.define(version: 20181020195954) do
   create_table "notifications", id: :serial, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
+    t.jsonb "json_data"
     t.integer "notifiable_id"
     t.string "notifiable_type"
+    t.datetime "notified_at"
+    t.boolean "read", default: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
+    t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
+    t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|
@@ -560,6 +568,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.float "points", default: 1.0
     t.integer "reactable_id"
     t.string "reactable_type"
+    t.string "status", default: "valid"
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["category"], name: "index_reactions_on_category"
@@ -588,6 +597,18 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "tag_adjustments", force: :cascade do |t|
+    t.string "adjustment_type"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.string "reason_for_adjustment"
+    t.string "status"
+    t.integer "tag_id"
+    t.string "tag_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
@@ -703,6 +724,8 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.string "employment_title"
     t.string "encrypted_password", default: "", null: false
     t.integer "experience_level"
+    t.boolean "export_requested", default: false
+    t.datetime "exported_at"
     t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
     t.boolean "feed_mark_canonical", default: false
@@ -712,6 +735,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
     t.string "github_username"
+    t.string "gitlab_url"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
@@ -728,6 +752,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -787,6 +812,7 @@ ActiveRecord::Schema.define(version: 20181020195954) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
+    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

@@ -75,18 +75,18 @@
               <%= sanitized_sidebar @organization.tech_stack %>
             </div>
           </div>
-        <% end %>
-    <% elsif @query %>
-      <div class="widget">
+        <% end %>              
+    <% elsif @query %>    
+      <div class="widget fixed-widget">
         <header>
-          <h4>&lt;FILTERS&gt;</h4>
+          <h4>search results</h4>
         </header>
         <div class="widget-body" style="margin-bottom:16px;">
-          <button class="query-filter-button" data-filter="class_name:Article">POSTS</button>
-          <button class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</button>
-          <button class="query-filter-button" data-filter="class_name:User">PEOPLE</button>
-          <hr/ style="opacity:0.2">
-          <button class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</button>
+          <a class="query-filter-button" data-filter="class_name:Article">POSTS</a>
+          <a class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</a>
+          <a class="query-filter-button" data-filter="class_name:User">PEOPLE</a>
+          <hr style="opacity:0.2" />
+          <a class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</a>
         </div>
       </div>
     <% elsif @tag %>
@@ -216,12 +216,12 @@
               </div>
             </div>
             <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://developer.qlik.com?utm_medium=direct_buy&utm_source=devto&utm_campaign=allylogo" target="_blank" data-details="qlik__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/eyinucxpl8a4ag51punb.png") %>" alt="Qlik Branch logo"/>
+              <a class="partner-link" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__image">
+                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/6a7bsz3y872g66upddt3.png") %>" alt="Raygun logo"/>
               </a>
               <div class="sponsor-tagline">
-                Helping developers turn data into their ally with Qlik APIs.
-                <a class="partner-link sponsor-learn-more" href="https://developer.qlik.com?utm_medium=direct_buy&utm_source=devto&utm_campaign=allylogo" target="_blank" data-details="qlik__learn-more">
+                Error, crash, and performance monitoring software for devs.
+                <a class="partner-link sponsor-learn-more" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__learn-more">
                   Learn More 
                 </a>
               </div>
@@ -249,7 +249,6 @@
           </div>
           <div class="side-footer">
             <a href="/about">About</a>
-            <a href="/membership">Sustaining Membership</a>
             <a href="/events">Events</a>
             <a href="/sponsors">Sponsors</a>
             <a href="https://shop.dev.to/">DEV Shop</a>
