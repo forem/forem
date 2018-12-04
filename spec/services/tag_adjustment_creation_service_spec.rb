@@ -11,7 +11,8 @@ RSpec.describe TagAdjustmentCreationService do
       adjustment_type: "removal",
       status: "committed",
       tag_name: tag.name,
-      article_id: article.id
+      article_id: article.id,
+      reason_for_adjustment: "Test"
     }).create
   end
 
