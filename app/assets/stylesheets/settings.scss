@@ -37,14 +37,16 @@
       }
     }
     .field-notice {
-      background:$red;
+      background: white;
       max-width:95%;
       padding:25px 0px;
       text-align:center;
       margin:0px 0px 25px;
-      color:white;
+      color:$black;
       font-weight:bold;
       border-radius:2px;
+      border: 1px solid $light-medium-gray;
+      box-shadow: $shadow;
       .small {
         font-size:13px;
         font-weight:300;
