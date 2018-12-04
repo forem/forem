@@ -702,11 +702,16 @@
   flex-grow: 1;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  word-break: break-word;
-  pre{
+  word-break: break-all;
+  pre {
     background:$lightest-gray;
   }
   code {
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
     background:$lightest-gray;
     padding:0.1em 0.3em 0px;
     border-radius:2px;
@@ -718,6 +723,7 @@
     font-family: $monospace;
   }
 }
+
 .chatmessage__bodytext{
   margin: 3px 1px 4px;
 }
