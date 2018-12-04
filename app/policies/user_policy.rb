@@ -82,6 +82,7 @@ class UserPolicy < ApplicationPolicy
        location
        looking_for_work
        looking_for_work_publicly
+       mastodon_url
        medium_url
        mentee_description
        mentee_form_updated_at

@@ -59,6 +59,21 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "accepts valid https mastodon url" do
+      user.mastodon_url = "https://mastodon.social/@test"
+      expect(user).to be_valid
+    end
+
+    it "does not accept a non whitelisted mastodon instance" do
+      user.mastodon_url = "https://SpammyMcSpamface.com/"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept invalid mastodon url" do
+      user.mastodon_url = "mastodon.social/@test"
+      expect(user).not_to be_valid
+    end
+
     it "accepts valid http website url" do
       user.website_url = "http://ben.com"
       expect(user).to be_valid

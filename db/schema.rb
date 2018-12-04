@@ -800,6 +800,7 @@ ActiveRecord::Schema.define(version: 20181129222416) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
+    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"
