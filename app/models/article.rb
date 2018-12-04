@@ -403,6 +403,9 @@ class Article < ApplicationRecord
       ActsAsTaggableOn::Taggable::Cache.included(Article)
       self.tag_list = []
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
+      TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
+        tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
+      end
     end
     self.published = front_matter["published"] if ["true", "false"].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if published
@@ -425,6 +428,11 @@ class Article < ApplicationRecord
   end
 
   def validate_tag
+    # remove adjusted tags
+    TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
+      tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
+      self.tag_list = tag_list
+    end
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
     tag_list.each do |tag|
       if tag.length > 20
