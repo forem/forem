@@ -104,8 +104,7 @@ class ChannelDetails extends Component {
 
   render() {
     const channel = this.props.channel; // eslint-disable-line
-    const users = Object.values(channel.channel_users).map(user => {
-      return (
+    const users = Object.values(channel.channel_users).map(user => (
       <div className="channeldetails__user">
         <img
           className="channeldetails__userprofileimage"
@@ -121,7 +120,7 @@ class ChannelDetails extends Component {
           {user.name}
         </a>
       </div>
-    )});
+    ));
     let subHeader = '';
     if (users.length === 80) {
       subHeader = <h3>Recently Active Members</h3>;
