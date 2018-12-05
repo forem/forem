@@ -84,7 +84,7 @@
     <br>
     <%= f.label :add_mentee %>
     <%= f.text_field :add_mentee, placeholder:"user id#" %>
-    <h3><u>Mentorship Notes</u></h3>
+    <h3><u>Notes</u></h3>
     <% if @user.notes.count > 0 %>
       <% @user.notes.each do |note| %>
         <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
@@ -102,7 +102,7 @@
 
 <% if @user.seeking_mentorship && @user.mentee_description.present? %>
   <h2> Mentee Description </h2>
-    <div class="row" style="font-size:0.9em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
+    <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
       <div class="col-md-2">
         <img src="<%= @user.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
         <br/>
@@ -113,8 +113,12 @@
         <h4>Tags</h4>
         <%= @user.cached_followed_tag_names.join(", ") %>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3" style="max-height: 22vh;overflow:auto">
         <h4>Mentee description</h4>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
         <%= @user.mentee_description %>
       </div>
       <div class="col-md-3">
