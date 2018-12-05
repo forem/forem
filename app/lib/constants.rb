@@ -10,6 +10,7 @@ module Constants
     "horiedon.com",
     "hostux.social",
     "imastodon.net",
+	"infosec.exchange",
     "kirakiratter.com",
     "knzk.me",
     "lou.lt",
