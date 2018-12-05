@@ -102,7 +102,7 @@ Rails.application.routes.draw do
   get "/reports/:slug", to: "feedback_messages#show"
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
-  resources :follows, only: %i[show create]
+  resources :follows, only: %i[show create update]
   resources :giveaways, only: %i[create update]
   resources :image_uploads, only: [:create]
   resources :blocks
@@ -122,6 +122,7 @@ Rails.application.routes.draw do
   resources :html_variant_trials, only: [:create]
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
+  resources :tag_adjustments, only: [:create]
 
   get "/notifications/:filter" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
@@ -238,7 +239,7 @@ Rails.application.routes.draw do
   get "/dashboard" => "dashboards#show"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|organization_user_followers|user_followers|following_users|reading/
+        which: /organization|organization_user_followers|user_followers|following_users|following|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 

@@ -143,6 +143,10 @@
     <%= f.url_field :gitlab_url %>
   </div>
   <div class="field">
+    <%= f.label :mastodon_url %>
+    <%= f.url_field :mastodon_url %>
+  </div>
+  <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
     <%= f.submit "SUBMIT", class: "cta" %>

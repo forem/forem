@@ -134,6 +134,11 @@
             </a>
           <% end %>
           <% if @user.class.name == "User" %>
+            <% if @user.mastodon_url.present? %>
+              <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener">
+                <%= inline_svg("mastodon-logo.svg", class:"icon-img") %>
+              </a>
+            <% end %>
             <% if @user.facebook_url.present? %>
               <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me">
                 <%= inline_svg("facebook-logo.svg", class:"icon-img") %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120170350) do
+ActiveRecord::Schema.define(version: 20181130224531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -316,6 +316,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "followable_type", null: false
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "points", default: 1.0
     t.datetime "updated_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
@@ -601,6 +602,18 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
   end
 
+  create_table "tag_adjustments", force: :cascade do |t|
+    t.string "adjustment_type"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.string "reason_for_adjustment"
+    t.string "status"
+    t.integer "tag_id"
+    t.string "tag_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
+
   create_table "taggings", id: :serial, force: :cascade do |t|
     t.string "context", limit: 128
     t.datetime "created_at"
@@ -742,6 +755,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -801,6 +815,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
+    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

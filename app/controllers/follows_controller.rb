@@ -23,6 +23,7 @@ class FollowsController < ApplicationController
                  else
                    User.find(params[:followable_id])
                  end
+    add_param_context(:followable_type, :followable_id, :verb)
     @result = if params[:verb] == "unfollow"
                 follow = current_user.stop_following(followable)
                 Notification.send_new_follower_notification_without_delay(follow, true)
@@ -35,5 +36,19 @@ class FollowsController < ApplicationController
     current_user.save
     current_user.touch
     render json: { outcome: @result }
+  end
+
+  def update
+    @follow = Follow.find(params[:id])
+    authorize @follow
+    if @follow.update(follow_params)
+      redirect_to "/dashboard/following"
+    end
+  end
+  
+  private
+
+  def follow_params
+    params.require(:follow).permit(policy(Follow).permitted_attributes)
   end
 end

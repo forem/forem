@@ -59,6 +59,21 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "accepts valid https mastodon url" do
+      user.mastodon_url = "https://mastodon.social/@test"
+      expect(user).to be_valid
+    end
+
+    it "does not accept a non whitelisted mastodon instance" do
+      user.mastodon_url = "https://SpammyMcSpamface.com/"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept invalid mastodon url" do
+      user.mastodon_url = "mastodon.social/@test"
+      expect(user).not_to be_valid
+    end
+
     it "accepts valid http website url" do
       user.website_url = "http://ben.com"
       expect(user).to be_valid
@@ -348,6 +363,39 @@ RSpec.describe User, type: :model do
 
     it "returns segment of articles if limit is passed" do
       expect(user.followed_articles.limit(2).size).to eq(2)
+    end
+  end
+
+  describe "#cached_followed_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+    let(:tag4)  { create(:tag) }
+    it "returns empty if no tags followed" do
+      expect(user.decorate.cached_followed_tags.size).to eq(0)
+    end
+
+    it "returns array of tags if user follows them" do
+      user.follow(tag1)
+      user.follow(tag2)
+      user.follow(tag3)
+      expect(user.decorate.cached_followed_tags.size).to eq(3)
+    end
+
+    it "returns tag object with name" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
+    end
+
+    it "returns follow points for tag" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(1.0)
+    end
+
+    it "returns adjusted points for tag" do
+      user.follow(tag1)
+      Follow.last.update(points: 0.1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
   end
 
