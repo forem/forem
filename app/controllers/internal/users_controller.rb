@@ -33,7 +33,11 @@ class Internal::UsersController < Internal::ApplicationController
     handle_mentorship
     add_note
     @user.update!(user_params)
-    redirect_to "/internal/users/unmatched_mentee"
+    if user_params[:quick_match]
+      redirect_to "/internal/users/unmatched_mentee"
+    else
+      redirect_to "/internal/users/#{params[:id]}"
+    end
   end
 
   def handle_mentorship
@@ -154,6 +158,7 @@ class Internal::UsersController < Internal::ApplicationController
     params.require(:user).permit(:seeking_mentorship,
                                 :offering_mentorship,
                                 :add_mentor,
+                                :quick_match,
                                 :add_mentee,
                                 :mentorship_note,
                                 :ban_from_mentorship)
