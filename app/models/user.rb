@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship
+  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship, :quick_match
 
   rolify
   include AlgoliaSearch
