@@ -264,6 +264,8 @@ header{
       width:92%;
       max-width:718px;
       margin-bottom: 1.1vw;
+      position: relative;
+      z-index: 8;
       a{
         color:$black;
         padding:calc(0.3vw + 14px);
