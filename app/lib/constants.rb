@@ -2,6 +2,7 @@ module Constants
   MASTODON_INSTANCE_WHITELIST = [
     "acg.mn",
     "bitcoinhackers.org",
+    "chaos.social",
     "cmx.im",
     "framapiaf.org",
     "friends.nico",
@@ -42,6 +43,7 @@ module Constants
     "pawoo.net",
     "qiitadon.com",
     "ro-mastodon.puyo.jp",
+    "ruhr.social",
     "social.targaryen.house",
     "social.tchncs.de",
     "switter.at",
