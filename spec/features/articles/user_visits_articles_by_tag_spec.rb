@@ -6,9 +6,9 @@ describe "User visits articles by tag", type: :feature do
   let!(:func_tag) { create(:tag, name: "functional") }
 
   let(:author) { create(:user) }
-  let!(:article) { create(:article, tags: "javascript, IoT", user: author) }
-  let!(:article2) { create(:article, tags: "functional", user: author) }
-  let!(:article3) { create(:article, tags: "functional, javascript", user: author) }
+  let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: Time.now - 2.days) }
+  let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.now) }
+  let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: Time.now - 2.weeks) }
 
   context "when user hasn't logged in" do
     before { visit "/t/javascript" }
@@ -37,6 +37,15 @@ describe "User visits articles by tag", type: :feature do
       within("#articles-list") do
         expect(page).to have_text(article.title)
         expect(page).to have_text(article3.title)
+        expect(page).not_to have_text(article2.title)
+      end
+    end
+
+    it "when user clicks 'week'" do
+      click_on "WEEK"
+      within("#articles-list") do
+        expect(page).to have_text(article.title)
+        expect(page).not_to have_text(article3.title)
         expect(page).not_to have_text(article2.title)
       end
     end
