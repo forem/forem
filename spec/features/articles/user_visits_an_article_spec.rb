@@ -1,10 +1,10 @@
 require "rails_helper"
 
-describe "Views an article" do
+describe "Views an article", type: :feature do
   let(:user) { create(:user) }
-  let(:dir) { "../support/fixtures/sample_article.txt" }
+  let(:dir) { "../../support/fixtures/sample_article.txt" }
   let(:template) { File.read(File.join(File.dirname(__FILE__), dir)) }
-  let(:article) do
+  let!(:article) do
     create(:article,
            user_id: user.id,
            body_markdown: template.gsub("false", "true"),

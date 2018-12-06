@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Article", js: true do
+RSpec.describe "Deleting Article", js: true, type: :feature do
   let(:author)                    { create(:user) }
   let(:article)                   { create(:article, user_id: author.id) }
 
