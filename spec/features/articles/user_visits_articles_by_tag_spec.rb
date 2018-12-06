@@ -41,7 +41,7 @@ describe "User visits articles by tag", type: :feature do
       end
     end
 
-    it "when user clicks 'WEEK'" do
+    it "when user clicks 'week'" do
       click_on "WEEK"
       within("#articles-list") do
         expect(page).to have_text(article.title)
