@@ -49,6 +49,7 @@ module Constants
     "social.tchncs.de",
     "switter.at",
     "todon.nl",
+    "toot.cafe",
     "wikitetas.club"
   ].freeze
 end
