@@ -19,7 +19,7 @@ RSpec.describe "internal/users", type: :request do
 
     def banish_user
       post "/internal/users/#{user.id}/banish"
-      Delayed::Worker.new(quiet: false).work_off
+      Delayed::Worker.new(quiet: true).work_off
       user.reload
     end
 
@@ -39,7 +39,18 @@ RSpec.describe "internal/users", type: :request do
       Delayed::Worker.new(quiet: true).work_off
     end
 
-    context "when offender is a spam user" do
+    it "works" do
+      create(:reaction, reactable: article, reactable_type: "Article", user: user)
+      create(:comment, commentable_type: "Article", commentable: article, user: user)
+      Delayed::Worker.new(quiet: true).work_off
+      banish_user
+      expect(user.username).to include("spam_")
+      expect(Article.count).to eq(0)
+      expect(Comment.count).to eq(0)
+      expect(Reaction.count).to eq(0)
+    end
+
+    xcontext "when offender is a spam user" do
       before do
         create(:reaction, reactable: article, reactable_type: "Article", user: user)
         create(:comment, commentable_type: "Article", commentable: article, user: user)
