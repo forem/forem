@@ -84,7 +84,7 @@
   <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
     <div class="tag-mod-form" >
       <%= form_for(TagAdjustment.new) do |f| %>
-        <h2> Remove Innapropriate Tags</h2>
+        <h2> Remove Inappropriate Tags</h2>
         <% unless current_user.has_role?(:super_admin) %>
           <ul>
             <li>You can only remove tags that you moderate.</li>
