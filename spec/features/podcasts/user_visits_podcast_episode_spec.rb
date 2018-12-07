@@ -1,9 +1,8 @@
 require "rails_helper"
 
-describe "User visits podcast show page" do
+describe "User visits podcast show page", type: :feature do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-  let(:user) { create(:user) }
 
   it "they see the content of the hero" do
     visit podcast_episode.path.to_s
@@ -19,6 +18,7 @@ describe "User visits podcast show page" do
   end
 
   context "when there're existing comments" do
+    let(:user) { create(:user) }
     let(:comment) { create(:comment, user_id: user.id, commentable: podcast_episode) }
     let!(:comment2) { create(:comment, user_id: user.id, commentable: podcast_episode, parent: comment) }
 
