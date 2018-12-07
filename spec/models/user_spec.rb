@@ -182,6 +182,18 @@ RSpec.describe User, type: :model do
       user.gitlab_url = "ben.com"
       expect(user).not_to be_valid
     end
+    
+    it "accepts valid https gitote url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.gitote_url = "https://gitote.in/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid gitote url" do
+      user.gitote_url = "ben.com"
+      expect(user).not_to be_valid
+    end
 
     it "changes old_username if old_old_username properly if username changes" do
       old_username = user.username

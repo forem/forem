@@ -736,6 +736,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.datetime "github_created_at"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "gitote_url"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"

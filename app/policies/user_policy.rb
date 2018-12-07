@@ -78,6 +78,7 @@ class UserPolicy < ApplicationPolicy
        feed_mark_canonical
        feed_url
        gitlab_url
+       gitote_url
        linkedin_url
        location
        looking_for_work

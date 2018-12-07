@@ -44,6 +44,7 @@ module Moderator
       user.linkedin_url = nil
       user.gitlab_url = nil
       user.mastodon_url = nil
+      user.gitote_url = nil
       user.add_role :banned
       unless user.notes.where(reason: "banned").any?
         user.notes.

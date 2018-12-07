@@ -147,6 +147,10 @@
     <%= f.url_field :mastodon_url %>
   </div>
   <div class="field">
+    <%= f.label :gitote_url %>
+    <%= f.url_field :gitote_url %>
+  </div>
+  <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
     <%= f.submit "SUBMIT", class: "cta" %>
