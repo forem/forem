@@ -43,6 +43,7 @@ module Constants
     "otajodon.com",
     "pawoo.net",
     "qiitadon.com",
+    "radical.town",
     "ro-mastodon.puyo.jp",
     "ruhr.social",
     "social.targaryen.house",
