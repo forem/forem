@@ -17,14 +17,15 @@ function buildArticleHTML(article) {
   else if (article) {
     var container = document.getElementById("index-container");
     var tagString = ""
-    if(article.tag_list) {
-      article.tag_list.forEach(function(t){
+    var tagList = article.tag_list || article.cached_tag_list_array
+    if(tagList) {
+      tagList.forEach(function(t){
       tagString = tagString + '<a href="/t/'+t+'"><span class="tag">#'+t+'</span></a>\n'
       });
     }
     var commentsCountHTML = ""
     if ((article.comments_count || '0') > 0 && article.class_name != "User") {
-      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
+      commentsCountHTML = '<div class="article-engagement-count comments-count"><a href="'+article.path+'#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number">'+(article.comments_count || '0')+'</span></a></div>'
     }
     var flareTag = ""
     if (container){
@@ -44,16 +45,11 @@ function buildArticleHTML(article) {
     if ((rc || '0') > 0 && article.class_name != "User") {
       var reactionsCountHTML = '<div class="article-engagement-count reactions-count"><a href="'+article.path+'"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-'+article.id+'" class="engagement-count-number">'+(rc || '0')+'</span></a></div>'
     }
-    if ( article.organization && article.tag_list.indexOf("hiring") > -1 && !document.getElementById("organization-index-page") ){
-      var picUrl = article.organization.profile_image_90
-      var profileUsername = article.organization.slug
-    } else {
-      var picUrl = article.user.profile_image_90
-      var profileUsername = article.user.username
-    }
-    var classicHeadline = "";
-    if (article.is_classic) {
-      classicHeadline = '<a href="'+article.path+'" class="article-classic-headline" id="article-classic-headline"><div class="article-classic-headline-inner">Classic from '+article.published_at_month_day+'</div></a>'
+    var picUrl = article.user.profile_image_90
+    var profileUsername = article.user.username
+    var orgHeadline = "";
+    if (article.organization && !document.getElementById("organization-article-index")) {
+      orgHeadline = '<div class="article-organization-headline"><a href="/'+article.organization.slug+'" class="article-organization-headline-inner"><img src="'+article.organization.profile_image_90+'" />'+article.organization.name+'</a><a class="org-headline-filler" href="'+article.path+'">&nbsp;</a></div>'
     }
     var bodyTextSnippet = "";
     var commentsBlobSnippet = "";
@@ -97,7 +93,7 @@ function buildArticleHTML(article) {
       publishDate = '・'+article.readable_publish_date
     }
     return '<div class="single-article single-article-small-pic">\
-      '+classicHeadline+'\
+      '+orgHeadline+'\
       <div class="small-pic">\
        <a href="/'+profileUsername+'" class="small-pic-link-wrapper">\
          <img src="'+picUrl+'" alt="'+profileUsername+' profile">\

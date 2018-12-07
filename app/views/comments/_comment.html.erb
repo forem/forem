@@ -1,6 +1,6 @@
 <% if comment && comment.user %>
   <div class="comment-hash-marker" id="<%= comment.id_code_generated %>"></div>
-  <div id="comment-node-<%= comment.id %>" class="single-comment-node <%= comment_class(comment,is_view_root) %> <%= "flat-node" if comment.depth > 3 %> comment-deep-<%=comment.depth%>"" data-comment-id="<%= comment.id %>" data-comment-author-id="<%= comment_user_id_unless_deleted comment %>">
+  <div id="comment-node-<%= comment.id %>" class="single-comment-node <%= comment_class(comment,is_view_root) %> <%= "flat-node" if comment.depth > 3 %> comment-deep-<%=comment.depth%>" data-comment-id="<%= comment.id %>" data-comment-author-id="<%= comment_user_id_unless_deleted comment %>">
     <% if comment.deleted %>
       <div class="inner-comment">
         <div class="body" style="padding-bottom:32px;opacity:0.3;user-select:none;cursor:default">
@@ -9,7 +9,21 @@
       </div>
     <% else %>
       <div class="inner-comment">
-        <div class="details">
+        <% if comment.decorate.low_quality %>
+          <div class="low-quality-comment-marker">
+          <%=image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+            :type=>"fetch",
+            :width => 50,
+            :height => 50,
+            :crop => "imagga_scale",
+            :quality => "auto",
+            :flags => "progressive",
+            :fetch_format => "auto",
+            :sign_url => true), class:"sloan", alt:"sloth-mascot") %>
+            Comment marked as low quality/non-constructive by the community <a href="/code-of-conduct">View code of conduct</a>
+          </div>
+        <% end %>
+        <div class="details <%= "low-quality-comment" if comment.decorate.low_quality %>">
           <a href="/<%= comment.user.username %>">
             <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50)%>" />
             <span class="comment-username">
@@ -19,10 +33,10 @@
             </span>
           </a>
           <% if comment.user.twitter_username.present? %>
-            <a href="http://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank"<%= image_tag("twitter-logo.svg", class:"icon-img") %></a>
+            <a href="https://twitter.com/<%= comment.user.twitter_username %>" rel="noopener noreferrer" target="_blank"><%= image_tag("twitter-logo.svg", class:"icon-img") %></a>
           <% end %>
           <% if comment.user.github_username.present? %>
-            <a href="http://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank"><%= image_tag("github-logo.svg", class:"icon-img") %></a>
+            <a href="https://github.com/<%= comment.user.github_username %>" rel="noopener noreferrer" target="_blank"><%= image_tag("github-logo.svg", class:"icon-img") %></a>
           <% end %>
           <% if commentable && (commentable.user_id == comment.user_id ||
                                   commentable.second_user_id == comment.user_id ||
@@ -48,7 +62,7 @@
             </div>
           </div>
         </div>
-        <div class="body">
+        <div class="body <%= "low-quality-comment" if comment.decorate.low_quality %>">
           <%= comment.processed_html.html_safe %>
           <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
             <%= image_tag "favorite-heart-outline-button.svg" %>
@@ -62,7 +76,7 @@
               <a href="<%=commentable.path%>/comments/<%= comment.id_code_generated %>/edit" class="edit-butt" rel="nofollow">EDIT</a>
             </span>
           <% end %>
-          <% if comment.depth < 2 || comment.is_childless? %>
+          <% if comment.depth < 2 || is_childless %>
             <a href="#<%=commentable.path%>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">REPLY</a>
           <% else %>
             <a href="#<%=commentable.path%>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form thread-indication" rel="nofollow">THREAD</a>
@@ -70,8 +84,6 @@
         </div>
       </div>
     <% end %>
-    <% comment.children.includes(:user, :commentable).order("score DESC").each do |child| %>
-      <%= render("comments/comment", comment:child, commentable:comment.commentable, is_view_root:false) %>
-    <% end %>
+    <%= subtree_html %>
   </div>
 <% end %>

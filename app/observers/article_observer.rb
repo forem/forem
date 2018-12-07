@@ -1,4 +1,4 @@
-class ArticleObserver < ActiveRecord::Observer
+class ArticleObserver < ApplicationObserver
   def after_save(article)
     return if Rails.env.development?
     if article.published && article.published_at > 30.seconds.ago
@@ -8,6 +8,7 @@ class ArticleObserver < ActiveRecord::Observer
                     icon_emoji: ":writing_hand:"
 
     end
+    warned_user_ping(article)
   rescue StandardError
     puts "error"
   end

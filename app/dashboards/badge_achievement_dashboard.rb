@@ -18,7 +18,7 @@ class BadgeAchievementDashboard < Administrate::BaseDashboard
     id: Field::Number,
     rewarder_id: UserIdField,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

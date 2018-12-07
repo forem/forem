@@ -5,7 +5,6 @@
 
 .home{
   position:relative;
-  overflow:hidden;
   min-height:440px;
   margin:auto;
   max-width:1250px;
@@ -68,6 +67,33 @@
       margin-right:15px;
       max-width:604px;
       float:left;
+    }
+    .notifications-mobile-filters {
+      padding-bottom: 8px;
+      @media screen and ( min-width: 950px ){
+        display: none;
+      }
+      .query-filter-button{
+        font-size: 12px;
+        font-weight: bold;
+        background: transparent;
+        border: 0px;
+        display:inline-block;
+        width: 27%;
+        padding: 9px 0px;
+        text-align:left;
+        border-radius: 100px;
+        color: $black;
+        text-align: center;
+        margin: 1%;
+        &:hover{
+          background: lighten($bold-blue, 38%);
+        }
+        &.selected{
+          background: lighten($bold-blue, 8%);
+          color: white;
+        }
+      }
     }
     .on-page-nav-controls{
       height:45px;
@@ -195,19 +221,30 @@
           margin-top:12px;
         }
       }
-      .article-classic-headline{
+      .article-organization-headline {
         display:block;
         margin-bottom:calc(-1px - 0.6vw);
-        .article-classic-headline-inner{
-          background: lighten($yellow,8%);
+        display: flex;
+        .article-organization-headline-inner {
+          background: darken($light-gray, 6%);
           color: $black;
-          padding: 4px 8px;
-          border-radius: 3px;
-          font-weight:500;
+          padding: 6px 12px;
+          border-radius: 100px;
+          font-weight:600;
           display:inline-block;
           margin-top:10px;
           margin-left: 10px;
-          font-size:calc(0.8em + 0.1vw);
+          font-size:calc(0.9em);
+          img {
+            height: calc(1.3em);
+            width: calc(1.3em);
+            vertical-align: - 0.27em;
+            margin-right: 6px;
+            border-radius: 100px;
+          }
+        }
+        a.org-headline-filler {
+          flex: 1;
         }
       }
       .small-pic{
@@ -527,6 +564,9 @@
       }
       &.comments-count {
         left:93px;
+        img{
+          width: 28px;
+        }
       }
       &.reactions-count {
         left:20px;
@@ -538,11 +578,11 @@
         text-align:center;
         bottom:12px;
         // border: 2px solid darken($purple, 30%);
-        background: darken($purple, 26%);
+        background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
         &:hover{
-          background: darken($purple, 30%);
+          background: darken($purple, 50%);
         }
         img{
           height:17px;
@@ -900,6 +940,14 @@
       border-radius:3px;
       border: 1px solid $outline-color;
       box-shadow: $bold-shadow;
+      &.fixed-widget {
+        position: fixed;
+        width: 254px;
+        top: 80px;
+        header {
+          padding-left: 6px;
+        }
+      }
       &:hover{
         opacity:1;
       }
@@ -1085,6 +1133,15 @@
           color: #000000;
           font-weight: 500;
         }
+        .widget-user-pic{
+          display: inline-block;
+          img{
+            height: 60px;
+            width: 60px;
+            margin: 9px;
+            border-radius: 100px;
+          }
+        }
         .utc-date{
           width: 46px;
           background: $dark-purple;
@@ -1104,14 +1161,16 @@
         border: 0px;
         display:block;
         padding: 6px 8px;
-        width: 100%;
+        width: calc(100% - 16px);
         text-align:left;
         border-radius: 0px;
+        color: $black;
         &:hover{
-          background: lighten($yellow, 15%);
+          background: lighten($bold-blue, 38%);
         }
         &.selected{
-          background: lighten($yellow, 2%);
+          background: lighten($bold-blue, 10%);
+          color: white;
         }
         &.query-type-filter-button{
           &:hover{
@@ -1359,4 +1418,29 @@
   &.showing {
     display:block;
   }
+}
+
+.single-article-loading{
+  @extend .animated-background;
+}
+
+@keyframes placeHolderShimmer{
+  0%{
+      background-position: -468px 0
+  }
+  100%{
+      background-position: 468px 0
+  }
+}
+
+.animated-background {
+  animation-duration: 1.25s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #F6F6F6;
+  background: linear-gradient(to right, #F6F6F6 8%, #F0F0F0 18%, #F6F6F6 33%);
+  background-size: 800px 104px;
+  position: relative;
 }

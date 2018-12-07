@@ -5,7 +5,6 @@ class RateLimitChecker
   end
 
   def limit_by_situation(situation)
-    result = false
     result = case situation
              when "comment_creation"
                user.comments.where("created_at > ?", 30.seconds.ago).size > 9
@@ -27,7 +26,7 @@ class RateLimitChecker
   end
 
   def ping_admins
-    return unless user
+    return unless user && Rails.env.production?
     SlackBot.ping(
       "Rate limit exceeded. https://dev.to#{user.path}",
         channel: "abuse-reports",

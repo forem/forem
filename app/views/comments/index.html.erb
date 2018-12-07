@@ -75,7 +75,6 @@
         <% end %>
         <a href="<%=@commentable.path%>/comments">VIEW FULL DISCUSSION</a>
       </span>
-
     </div>
   <% else %>
     <%= render "form",
@@ -87,13 +86,13 @@
     <% if @root_comment.present? %>
       <div class="root-comment">
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= render("comment", comment:@root_comment, commentable:@commentable, is_view_root: true) %>
+          <%= tree_for(@root_comment, @commentable) %>
         <% end %>
       </div>
     <% else %>
-      <% Comment.rooted_on(@commentable.id,@commentable_type).order("score DESC").each do |comment| %>
+      <% Comment.rooted_on(@commentable.id, @commentable_type).order("score DESC").each do |comment| %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-          <%= render("comment", comment:comment, commentable:@commentable, is_view_root: false) %>
+          <%= tree_for(comment, @commentable) %>
         <% end %>
       <% end %>
     <% end %>
@@ -102,7 +101,7 @@
     <%= render "articles/conduct_and_abuse_actions", page: "comments_index" %>
   </center>
 </div>
-<% if hasVid(@commentable) %>
+<% if has_vid?(@commentable) %>
   <%= render 'articles/fitvids' %>
 <% end %>
 

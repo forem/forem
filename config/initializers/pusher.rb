@@ -6,3 +6,8 @@ Pusher.secret = ApplicationConfig["PUSHER_SECRET"]
 Pusher.cluster = ApplicationConfig["PUSHER_CLUSTER"]
 Pusher.logger = Rails.logger
 Pusher.encrypted = true
+
+Pusher::PushNotifications.configure do |config|
+  config.instance_id = ApplicationConfig["PUSHER_BEAMS_ID"]
+  config.secret_key = ApplicationConfig["PUSHER_BEAMS_KEY"]
+end

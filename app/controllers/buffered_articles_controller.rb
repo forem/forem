@@ -3,7 +3,7 @@ class BufferedArticlesController < ApplicationController
   def index
     @article_urls = buffered_article_urls
     render json: {
-      urls: @article_urls,
+      urls: @article_urls
     }.to_json
   end
 

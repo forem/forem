@@ -18,13 +18,3 @@
           <% end %>
         </div>
       </p>
-      <a href="<%= article.path + article.decorate.internal_utm_params%>" class="cta<%= ' partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">READ POST</a>
-      <button
-        class="article-engagement-count bookmark-engage<%= ' partner-link' if classification == "boosted" %>"
-        data-reactable-id="<%= article.id %>"
-        aria-label="Save to reading list"
-        data-details="<%= organization&.slug %>__<%= article.slug %>__SAVE"
-        title="Save to reading list">
-        <span class="bm-success" data-details="<%= organization&.slug %>__<%= article.slug %>__SAVE"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
-        <span class="bm-initial" data-details="<%= organization&.slug %>__<%= article.slug %>__SAVE">SAVE FOR LATER</span>
-      </button>

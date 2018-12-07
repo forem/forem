@@ -1,4 +1,5 @@
 @import 'variables';
+
 body {
   background: $lightest-gray;
   color: $black;
@@ -7,15 +8,20 @@ body {
   padding:0 !important;
   margin:0 !important;
   margin-top:-20px !important;
-  :focus {
-  outline: 0;
-  }
+  overflow-y:scroll;
+
+}
+
+.ptr--ptr{
+  margin-top:70px;
+  margin-bottom: -70px;
 }
 
 .modal-open{
   margin: 0;
   overflow: hidden;
   overflow-y: hidden;
+  height: 90vh;
 }
 
 
@@ -87,3 +93,7 @@ button{
 input[type="submit"]{
   cursor:pointer;
 };
+
+input[type="text"],textarea, input[type="url"], input[type="email"]{
+  outline: 0;
+}

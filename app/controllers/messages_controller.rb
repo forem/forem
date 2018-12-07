@@ -31,8 +31,8 @@ class MessagesController < ApplicationController
         message: {
           chat_channel_id: @message.chat_channel_id,
           message: @message.errors.full_messages,
-          type: "error",
-        },
+          type: "error"
+        }
       }, status: 401
     end
   end
@@ -47,9 +47,9 @@ class MessagesController < ApplicationController
       username: new_message.user.username,
       profile_image_url: ProfileImage.new(new_message.user).get(90),
       message: new_message.message_html,
-      timestamp: Time.now,
+      timestamp: Time.current,
       color: new_message.preferred_user_color,
-      reception_method: "pushed",
+      reception_method: "pushed"
     }.to_json
   end
 
@@ -65,8 +65,8 @@ class MessagesController < ApplicationController
           message: {
             chat_channel_id: message_params[:chat_channel_id],
             message: "You can not do that because you are banned",
-            type: "error",
-          },
+            type: "error"
+          }
         }, status: 401
       end
     end

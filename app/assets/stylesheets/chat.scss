@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'connect/_channel-details';
 
 // High level classes
 .chat-page-wrapper{
@@ -7,7 +8,10 @@
   max-width: calc(1440px + 10vw);
 }
 .live-chat{
-  height: calc(100vh - 190px);
+  height: calc(100vh - 80px);
+  &.live-chat--iossafari{
+    height: calc(100vh - 190px);
+  }
   overflow-y: hidden;
   @media screen and ( min-width: 400px ){
     height: calc(100vh - 80px);
@@ -17,7 +21,10 @@
 //chat
 .chat {
   display: flex;
-  height: calc(100vh - 201px);
+  height: calc(100vh - 91px);
+  &.chat--iossafari{
+    height: calc(100vh - 201px);
+  }
   padding-right: 3px;
   @media screen and ( min-width: 400px ){
     height: calc(100vh - 91px);
@@ -307,6 +314,7 @@
   overflow-x: hidden;
   text-align: left;
   overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .activechatchannel__alerts {
@@ -388,6 +396,13 @@
   }
 }
 
+.live-chat-wrapper .activechatchannel__activecontent{
+  min-width: 310px;
+  margin-left: -180px;
+  max-width:96%;
+  padding: 13px;
+}
+
 .activechatchannel__activecontentexitbutton{
   border:  0px;
   font-size: 36px;
@@ -431,6 +446,18 @@
     &:hover{
       opacity:1;
     }
+  }
+}
+
+
+.activechatchannel__activecontentuserdetails{
+  margin-top:20px;
+  font-family: $monospace;
+  font-size:0.9em;
+  .key{
+    color: $medium-gray;
+    margin-bottom: 3px;
+    font-size:0.9em
   }
 }
 
@@ -605,7 +632,7 @@
   padding: 3px 0 10px;
   flex-grow: 1;
   overflow: scroll;
-  padding-bottom: 25px;
+  padding-bottom: 9vw;
   overflow-x: hidden;
 }
 

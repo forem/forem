@@ -25,6 +25,22 @@
         <%= render "articles/badges_area" %>
       <% end %>
     <% elsif @user && @user.class.name == "Organization" %>
+      <% if @user.users.size > 0 %>
+        <div class="widget">
+          <div class="widget-suggested-follows-container">
+            <header>meet the team</header>
+            <div class="widget-body">
+              <% @user.users.each do |user| %>
+                  <div class="widget-user-pic">
+                    <a href="/<%= user.username %>">
+                      <img src="<%= ProfileImage.new(user).get(90) %>" />
+                    </a>
+                  </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     <% elsif @tag  %>
       <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
@@ -92,40 +108,19 @@
           </div>
         </div>
       <% end %>
-      <% if Flipflop.she_coded? %>
+      <% ApplicationConfig["TRENDING_TAGS"].split(",").each do |tag| %>
         <div class="widget">
           <header>
-            <#SHECODED>
+            <a href="/t/<%= tag %>">#<%= tag %></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
-              <% Article.
-                where(published: true, approved: true).
-                tagged_with(["shecoded", "theycoded"], any: true).
-                order("published_at DESC").
-                limit(100).
-                pluck(:path, :title, :comments_count, :created_at).
+              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).
                 each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
             </div>
-            <p><center><a class="cta cta-button" href="/t/shecoded" style="color: white; background: #8a62b4;">VIEW ALL #SHECODED</a></center></p>
-            <p><center><a class="cta cta-button" href="/new/shecoded" style="color: white; background: #8a62b4;">SUBMIT YOUR STORY</a></center></p>
-          </div>
-        </div>
-      <% end %>
-      <% if Event.in_the_future_and_published.any? && Flipflop.upcoming_events? %>
-        <div class="widget">
-          <header>
-            <a href="/events">upcoming live events</a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Event.in_the_future_and_published.limit(3).sort_by(&:starts_at).each do |event| %>
-                <%= render "events/widget_events_item", event: event %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/events">VIEW ALL EVENTS</a>
+              <a class="cta cta-button" href="/new/<%= tag %>">MAKE A #<%= tag.upcase %> POST</a>
           </div>
         </div>
       <% end %>
@@ -202,6 +197,34 @@
             <% end %>
           </div>
             <a class="cta cta-button" href="/new/explainlikeimfive">ASK FOR AN EXPLANATION</a>
+        </div>
+      </div>
+      <div class="widget">
+        <header>
+          <a href="/t/healthydebate">#healthydebate</a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["healthydebate"], Timeframer.new(params[:timeframe]).datetime).
+              each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+            <a class="cta cta-button" href="/new/healthydebate">START A DEBATE</a>
+        </div>
+      </div>
+      <div class="widget">
+        <header>
+          <a href="/t/meta">#meta</a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["meta"], Timeframer.new(params[:timeframe]).datetime).
+              each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+            <a class="cta cta-button" href="/new/meta">START A META DISCUSSION</a>
         </div>
       </div>
       <% if user_signed_in? %>

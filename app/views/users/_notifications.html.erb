@@ -32,8 +32,20 @@
       <%= f.label :email_badge_notifications, "Send me an email when I receive a badge" %>
     </div>
     <div class="sub-field">
+      <%= f.check_box :email_connect_messages %>
+      <%= f.label :email_connect_messages, "Send me an email when I receive a direct message (while inactive)" %>
+    </div>
+    <div class="sub-field">
       <%= f.check_box :email_unread_notifications %>
       <%= f.label :email_unread_notifications, "Send me occasional reminders that I have unread notifications on dev.to" %>
+    </div>
+  </div>
+  <h3>Mobile Notification Settings (Beta)</h3>
+  <p><em>iOS only for now. Additional settings and platforms will be rolled out as new notification features are made available.</em></p>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :mobile_comment_notifications %>
+      <%= f.label :mobile_comment_notifications, "Notify me when someone replies to me in a comment thread" %>
     </div>
   </div>
   <div class="field">

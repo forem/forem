@@ -20,10 +20,45 @@
   .reaction-button.reacted .reacted-emoji {
     display: block;
   }
+  .tag-mod-form {
+    border-top: 2px solid #dddddd;
+    margin: 40px auto;
+  }
+  .tag-mod-form ul {
+    text-align: left;
+    font-size: 15px;
+  }
+  .tag-mod-form form{
+    width: 500px;
+    margin: auto;
+    max-width: 90%;
+  }
+  .tag-mod-form form input{
+    width: 100%;
+    padding: 5px;
+    font-size: 20px;
+    margin-bottom: 5px;
+    border: 1px solid #888;
+  }
+  .tag-mod-form form input[type="submit"]{
+    background: #0045ff;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    margin: auto;
+    display: block;
+  }
+  .tag-mod-form form textarea{
+    width: 100%;
+    padding: 5px;
+    font-size: 17px;
+    height: 50px;
+    border: 1px solid #888;
+  }
 </style>
 
 <div class="container" style="text-align: center">
-  <h2>MODERATE: <a href="<%= @moderatable.path %>"><%= @moderatable.title %></a></h2>
+  <h2>MODERATE: <a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
@@ -33,12 +68,48 @@
     <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
     <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
   </button>
-  <p style="width: 90%;margin:50px auto;text-align:left">
-    <b style="font-size:1.3em">All negative reactions are 100% private.</b>
-    <br><br>Use the <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
-    <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
-    <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
-  </p>
+  <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
+    <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> | <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> | <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
+  <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
+    <h1> ADMIN: <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Comment Admin</a> | <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>User Admin</a></h1>
+  <% else %>
+    <p style="width: 90%;margin:50px auto;text-align:left">
+      <b style="font-size:1.3em">All negative reactions are 100% private.</b>
+      <br><br>Use the <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
+      <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
+      <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
+    </p>
+  <% end %>
+  <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by_name(t)) }).any? if @moderatable.class.name == "Article" %>
+  <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
+    <div class="tag-mod-form" >
+      <%= form_for(TagAdjustment.new) do |f| %>
+        <h2> Remove Innapropriate Tags</h2>
+        <% unless current_user.has_role?(:super_admin) %>
+          <ul>
+            <li>You can only remove tags that you moderate.</li>
+            <li>Only remove tags which are tagged innapropriately.</li>
+            <li>Use negative reactions if tag is appropriate but quality is low.</li>
+            <li>Always be friendly in your tag removal reason.</li>
+          </ul>
+        <% end %>
+        <b>Current live tags:</b> <%= @moderatable.tag_list %>
+        <br/><br/>
+        <%= f.hidden_field :article_id, value: @moderatable.id %>
+        <%= f.text_field :tag_name, placeholder: "Tag Name" %>
+        <%= f.text_area  :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind)"  %>
+        <%= f.submit "Remove Tag" %>
+        <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
+        <% if adjustments.any? %>
+          <br/><br/>
+          <b>Removed tags: </b> 
+          <% adjustments.each do |adjustment| %>
+            <%= adjustment.tag_name %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 
 <script defer>

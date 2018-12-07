@@ -12,7 +12,7 @@ class EmailLogic
   end
 
   def analyze
-    @last_email_sent_at = get_last_digest_email_user_recieved
+    @last_email_sent_at = get_last_digest_email_user_received
     @open_percentage = get_open_rate
     @days_until_next_email = get_days_until_next_email
     @ready_to_receive_email = get_user_readiness
@@ -75,11 +75,11 @@ class EmailLogic
 
   def get_user_readiness
     return true unless @last_email_sent_at
-    # Has it been atleast x days since @user receive an email?
-    (Time.now.utc - @last_email_sent_at) >= @days_until_next_email.days.to_i
+    # Has it been at least x days since @user received an email?
+    Time.current - @last_email_sent_at >= @days_until_next_email.days.to_i
   end
 
-  def get_last_digest_email_user_recieved
+  def get_last_digest_email_user_received
     @user.email_messages.where(mailer: "DigestMailer#digest_email").last&.sent_at
   end
 

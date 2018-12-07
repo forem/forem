@@ -113,6 +113,7 @@ export default function getUnopenedChannels(user, successCb) {
       if (json.length > 0) {
         number.classList.add("showing")
         number.innerHTML = json.length
+        document.getElementById("connect-link").href = `/connect/${json[0].adjusted_slug}`  // Jump the user directly to the channel where appropriate
       } else {
         number.classList.remove("showing")
       }

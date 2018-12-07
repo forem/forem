@@ -43,16 +43,16 @@ class PodcastFeed
     ep.save!
   end
 
-  def update_existing_episode(ep, item, _podcast)
-    if ep.published_at == nil
+  def update_existing_episode(episode, item, _podcast)
+    if episode.published_at == nil
       begin
-        ep.published_at = item.pubDate.to_date
-        ep.save
+        episode.published_at = item.pubDate.to_date
+        episode.save
       rescue StandardError
         puts "not valid date"
       end
     end
-    update_media_url(ep, item)
+    update_media_url(episode, item)
   end
 
   def existing_episode(item, podcast)
@@ -63,29 +63,30 @@ class PodcastFeed
       (podcast.unique_website_url? && PodcastEpisode.where(website_url: item.link).presence)
   end
 
-  def get_media_url(ep, item, podcast)
-    ep.media_url = if Rails.env.test? ||
+  def get_media_url(episode, item, podcast)
+    episode.media_url = if Rails.env.test? ||
         open(item.enclosure.url.gsub(/http:/, "https:")).status[0] == "200"
-                     item.enclosure.url.gsub(/http:/, "https:")
-                   else
-                     item.enclosure.url
-                   end
+                          item.enclosure.url.gsub(/http:/, "https:")
+                        else
+                          item.enclosure.url
+                        end
   rescue StandardError
     # podcast episode must have a media_url
-    ep.media_url = item.enclosure.url
+    episode.media_url = item.enclosure.url
     if podcast.status_notice.empty?
       podcast.update(status_notice: "This podcast may not be playable in the browser")
     end
   end
 
-  def update_media_url(ep, item)
-    if ep.media_url.include?("https")
+  def update_media_url(episode, item)
+    if episode.media_url.include?("https")
       nil
-    elsif !ep.media_url.include?("https") &&
+    elsif !episode.media_url.include?("https") &&
         item.enclosure.url.include?("https")
-      ep.update!(media_url: item.enclosure.url)
+      episode.update!(media_url: item.enclosure.url)
     end
   rescue StandardError
-    logger.info "something went wrong with #{podcast.title}, #{ep.title} -- #{ep.media_url}"
+    message = "something went wrong with #{podcast.title}, #{episode.title} -- #{episode.media_url}"
+    logger.info message
   end
 end
