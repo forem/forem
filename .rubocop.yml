@@ -7,12 +7,16 @@ require: rubocop-rspec
 RSpec/MultipleExpectations:
   # Max: 1
   Exclude:
-    - "spec/features/*"
+    - "spec/features/**/*"
 
 RSpec/DescribeClass:
   Exclude:
-    - spec/features/*
+    - spec/features/**/*
     - spec/requests/*
+
+RSpec/ExampleLength:
+  Exclude:
+    - spec/features/**/*
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
 # Metrics/LineLength:
