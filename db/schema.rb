@@ -581,7 +581,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
   end
 
   create_table "sail_settings", force: :cascade do |t|
-    t.integer "cast_type", limit: 2, null: false
+    t.integer "cast_type", limit: 1, null: false
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
