@@ -677,21 +677,28 @@ header{
     @media screen and ( min-width: 1530px ){
       margin-left: -1px;
       margin-right: -1px;
-      width: 140px;
-      top: 30%;
-      bottom: 20%;
-      left: calc(50% - 755px);
+      width: 156px;
+      top: 0%;
+      padding: 10% 0px;
+      bottom: 10%;
+      left: calc(50% - 756px);
       border-radius: 20px;
       background: transparent;
       border: 0px;
       box-shadow: none;
+      opacity: 0.4;
+      transition: opacity 0.33s;
+      padding-right: 2px;
+      &:hover,&:focus-within {
+        opacity: 1;
+      }
       .article-share-action-block {
         width: 100% !important;
       }
       button, a {
         margin-bottom: 10px !important;
         display: block !important;
-        width: 100% !important;
+        width: 140px !important;
         padding: 6px 0px !important;
         margin-left: 0px !important;
         margin-right: 0px !important;
@@ -1123,9 +1130,9 @@ header{
   0% {
   }
   50% {
-    margin-left: -5px;
+    margin-left: -8px;
     margin-right: -5px;
-    width: calc(100% + 10px);
+    width: calc(100% + 5px);
   }
   100% {
   }
