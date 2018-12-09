@@ -155,6 +155,10 @@
         border-radius: 100%;
         margin-top: -1px;
         margin-left: -1px;
+        -ms-user-select:none;
+        -moz-user-select:none;
+        -webkit-user-select:none;
+        user-select:none;
       }
     }
     .bars {
@@ -173,7 +177,7 @@
         }
       }
       &.desktop {
-        &:hover {
+        &:hover,&:active,&:focus {
           .menu {
             display: block;
           }
@@ -204,7 +208,7 @@
       bottom: 0;
       background: rgba(17, 17, 17, 0.88);
       z-index: -5;
-      top: 40px;
+      top: 48px;
       display: none;
     }
     .menu {
@@ -246,6 +250,8 @@
           margin-bottom: 5px;
           font-size: 1.22em;
           font-weight: 500;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         &:hover {
           background: darken($tan, 2%);

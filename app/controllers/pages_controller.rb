@@ -26,8 +26,9 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
+    reported_url = params[:reported_url] || params[:url] || request.referrer
     @feedback_message = FeedbackMessage.new(
-      reported_url: params[:reported_url] || params[:url] || request.referrer,
+      reported_url: reported_url&.chomp("?i=i"),
     )
     render "pages/report-abuse"
   end
@@ -62,12 +63,9 @@ class PagesController < ApplicationController
 
   def members_for_display
     Rails.cache.fetch("members-for-display-on-membership-page", expires_in: 6.hours) do
-      members = User.with_any_role(:level_1_member,
-                                  :level_2_member,
-                                  :level_3_member,
-                                  :level_4_member,
-                                  :triple_unicorn_member,
-                                  :workshop_pass)
+      roles = %i[level_1_member level_2_member level_3_member level_4_member triple_unicorn_member
+                 workshop_pass]
+      members = User.select(:id, :username, :profile_image).with_any_role(*roles)
       team_ids = [1, 264, 6, 3, 31047, 510, 560, 1075, 48943, 13962]
       members.reject { |user| team_ids.include?(user.id) }.shuffle
     end

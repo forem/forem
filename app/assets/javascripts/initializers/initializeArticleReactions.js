@@ -1,3 +1,40 @@
+// Set reaction count to correct number
+function setReactionCount(reactionName, newCount) {
+  var reactionClassList = document.getElementById("reaction-butt-" + reactionName).classList;
+  var reactionNumber = document.getElementById("reaction-number-" + reactionName);
+  if (newCount > 0) {
+    reactionClassList.add("activated");
+    reactionNumber.innerHTML = newCount;
+
+  }
+  else {
+    reactionClassList.remove("activated");
+    reactionNumber.innerHTML = "";
+  }
+}
+
+function showUserReaction(reactionName, animatedClass) {
+  document.getElementById("reaction-butt-" + reactionName).classList.add("user-activated", animatedClass);
+}
+
+function hideUserReaction(reactionName) {
+  document.getElementById("reaction-butt-" + reactionName).classList.remove("user-activated", "user-animated");
+}
+
+function hasUserReacted(reactionName) {
+  return document.getElementById("reaction-butt-" + reactionName)
+  .classList.contains("user-activated");
+
+}
+
+function getNumReactions(reactionName) {
+  var num = document.getElementById("reaction-number-" + reactionName).innerHTML;
+  if (num == "") {
+    return 0;
+  }
+  return parseInt(num);
+}
+
 function initializeArticleReactions() {
   setTimeout(function () {
     if (document.getElementById("article-body")) {
@@ -15,14 +52,11 @@ function initializeArticleReactions() {
           if (ajaxReq.readyState == XMLHttpRequest.DONE) {
             var json = JSON.parse(ajaxReq.response);
             json.article_reaction_counts.forEach(function (reaction) {
-              if (reaction.count > 0) {
-                document.getElementById("reaction-butt-" + reaction.category).classList.add("activated")
-                document.getElementById("reaction-number-" + reaction.category).innerHTML = reaction.count;
-              }
+              setReactionCount(reaction.category, reaction.count)
             })
             json.reactions.forEach(function (reaction) {
               if (document.getElementById("reaction-butt-" + reaction.category)) {
-                document.getElementById("reaction-butt-" + reaction.category).classList.add("user-activated")
+                showUserReaction(reaction.category, "not-user-animated");
               }
             })
 
@@ -38,16 +72,38 @@ function initializeArticleReactions() {
         reactToArticle(articleId, this.dataset.category)
       };
     }
+    if (document.getElementById('jump-to-comments')) {
+      document.getElementById('jump-to-comments').onclick = function(e) {
+        e.preventDefault();
+        document.getElementById('comments').scrollIntoView({
+          behavior: 'instant',
+          block: 'start',
+        });
+      };
+    }
   }, 3)
 }
 
 function reactToArticle(articleId, reaction) {
+  // Visually toggle the reaction
+  function toggleReaction() {
+    var currentNum = getNumReactions(reaction);
+    if (hasUserReacted(reaction)) {
+      hideUserReaction(reaction);
+      setReactionCount(reaction, currentNum - 1);
+    } else {
+      showUserReaction(reaction, "user-animated");
+      setReactionCount(reaction, currentNum + 1);
+    }
+  }
   var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+  sendHapticMessage('medium');
   if (userStatus == "logged-out") {
     showModal("react-to-article");
     return;
   } else {
-    document.getElementById("reaction-butt-" + reaction).classList.add("user-activated")
+    toggleReaction();
+    document.getElementById("reaction-butt-" + reaction).disabled = true;
   }
 
   function createFormdata() {
@@ -62,36 +118,20 @@ function reactToArticle(articleId, reaction) {
     return formData;
   }
 
-  function successCb(response) {
-    var num = document.getElementById("reaction-number-" + reaction).innerHTML;
-    if (response.result == "create") {
-      document.getElementById("reaction-butt-" + reaction).classList.add("user-activated")
-      if (num == "") {
-        document.getElementById("reaction-number-" + reaction).innerHTML = "1";
-      } else {
-        document.getElementById("reaction-number-" + reaction).innerHTML = parseInt(num) + 1;
-      }
-    } else {
-      document.getElementById("reaction-butt-" + reaction).classList.remove("user-activated")
-      if (num == 1) {
-        document.getElementById("reaction-butt-" + reaction).classList.remove("activated")
-        document.getElementById("reaction-number-" + reaction).innerHTML = "";
-      } else {
-        document.getElementById("reaction-number-" + reaction).innerHTML = parseInt(num) - 1;
-      }
-    }
-  }
-
   getCsrfToken()
     .then(sendFetch("reaction-creation", createFormdata()))
     .then(function (response) {
       if (response.status === 200) {
-        return response.json().then(successCb);
+        return response.json().then(() => {
+          document.getElementById("reaction-butt-" + reaction).disabled = false;
+        });
       } else {
-        // there's currently no errorCb.
+        toggleReaction();
+        document.getElementById("reaction-butt-" + reaction).disabled = false;
       }
     })
     .catch(function (error) {
-      // there's currently no error handling.
+      toggleReaction();
+      document.getElementById("reaction-butt-" + reaction).disabled = false;
     })
 }

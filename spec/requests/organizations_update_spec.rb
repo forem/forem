@@ -13,7 +13,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
 
   it "updates ordinary article with proper params" do
     put "/organizations/#{organization.id}", params: {
-      organization: { text_color_hex: "#111111" },
+      organization: { text_color_hex: "#111111" }
     }
     expect(Organization.last.text_color_hex).to eq("#111111")
   end

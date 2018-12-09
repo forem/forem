@@ -1,5 +1,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
 <h3>Join An Organization</h3>
+<h5>Do you have the secret code?</h5>
+
 <%= form_tag "/users/join_org" do %>
   <div class="field">
     <%= label_tag :org_secret, "Secret" %>
@@ -22,6 +24,7 @@
   <div class="field">
     <%= f.label :slug, "Username *" %>
     <%= f.text_field :slug %>
+    <sub><em>Your organization URL will be dev.to/{username}</em></sub>
   </div>
   <div class="field">
     <%= f.label "Profile Image *" %>

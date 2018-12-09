@@ -2,10 +2,6 @@ require_relative "boot"
 
 require "rails/all"
 
-require "action_view/railtie"
-require "sprockets/railtie"
-require "sprockets/es6"
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -35,7 +31,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
     config.autoload_paths += Dir["#{config.root}/lib/"]
 
-    config.active_record.observers = :article_observer, :reaction_observer
+    config.active_record.observers = :article_observer, :reaction_observer, :comment_observer
     config.active_job.queue_adapter = :delayed_job
 
     config.middleware.use Rack::Deflater

@@ -12,7 +12,15 @@ module Api
 
       def index
         @articles = ArticleApiIndexService.new(params).get
-        set_surrogate_key_header "articles_api_#{params[:tag]}_#{params[:page]}_#{params[:userame]}_#{params[:signature]}_#{params[:state]}"
+        key_headers = [
+          "articles_api",
+          params[:tag],
+          params[:page],
+          params[:userame],
+          params[:signature],
+          params[:state],
+        ]
+        set_surrogate_key_header key_headers.join('_')
       end
 
       def show
@@ -63,9 +71,19 @@ module Api
 
       def article_params
         params["article"].transform_keys!(&:underscore)
+        if params["article"]["post_under_org"]
+          params["article"]["organization_id"] = current_user.organization_id
+        else
+          params["article"]["organization_id"] = nil
+        end
+        if params["article"]["series"].present?
+          params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], current_user)&.id
+        elsif params["article"]["series"] == ""
+          params["article"]["collection_id"] = nil
+        end
         params.require(:article).permit(
           :title, :body_markdown, :user_id, :main_image, :published, :description,
-          :tag_list
+          :tag_list, :organization_id, :canonical_url, :series, :collection_id
         )
       end
     end

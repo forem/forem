@@ -14,7 +14,6 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
   it "User fills out comment box normally" do
     visit article.path.to_s
     fill_in "text-area", with: raw_comment
-    find(".checkbox").click
     click_button("SUBMIT")
     expect(page).to have_text(raw_comment)
   end

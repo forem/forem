@@ -27,6 +27,7 @@ class CommentsController < ApplicationController
         @user.articles.find_by_slug(params[:slug]) ||
         not_found
       @article = @commentable
+      not_found unless @commentable.published
     end
     @commentable_type = @commentable.class.name
     if params[:id_code].present?
@@ -56,12 +57,15 @@ class CommentsController < ApplicationController
     authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
     @comment = Comment.new(permitted_attributes(Comment))
+    add_context(commentable_id: @comment.commentable_id,
+                commentable_type: @comment.commentable_type)
     @comment.user_id = current_user.id
     if @comment.save
       if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
         current_user.update(checked_code_of_conduct: true)
       end
       Mention.create_all(@comment)
+      Notification.send_new_comment_notifications_without_delay(@comment)
       if @comment.invalid?
         @comment.destroy
         render json: { status: "comment already exists" }
@@ -82,7 +86,7 @@ class CommentsController < ApplicationController
                         name: current_user.name,
                         profile_pic: ProfileImage.new(current_user).get(50),
                         twitter_username: current_user.twitter_username,
-                        github_username: current_user.github_username,
+                        github_username: current_user.github_username
                       } }
     elsif @comment = Comment.where(body_markdown: @comment.body_markdown,
                                    commentable_id: @comment.commentable.id,
@@ -102,7 +106,7 @@ class CommentsController < ApplicationController
     authorize @comment
     if @comment.update(permitted_attributes(@comment).merge(edited_at: Time.zone.now))
       Mention.create_all(@comment)
-      redirect_to "#{@comment.commentable.path}/comments/#{@comment.id_code_generated}", notice: "Comment was successfully updated."
+      redirect_to @comment.path, notice: "Comment was successfully updated."
     else
       @commentable = @comment.commentable
       render :edit

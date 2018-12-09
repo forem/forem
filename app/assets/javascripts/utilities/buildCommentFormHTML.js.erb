@@ -19,7 +19,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <input value="' + commentableId + '" type="hidden" name="comment[commentable_id]" id="comment_commentable_id" />\
             <input value="' + commentableType + '" type="hidden" name="comment[commentable_type]" id="comment_commentable_type" />\
             <input value="' + parentId + '" type="hidden" name="comment[parent_id]" id="comment_parent_id" />\
-            <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required></textarea>\
+            <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required onkeydown="handleKeyDown.bind(this)(event)"></textarea>\
             '+previewDiv+'\
                 '+codeOfConductHTML+'\
             <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\

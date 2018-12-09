@@ -3,35 +3,96 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
 
   def index
     @feedback_type = params[:state] || "abuse-reports"
+    @status = params[:status] || "Open"
     @feedback_messages = FeedbackMessage.
-      where(feedback_type: @feedback_type).
-      order("created_at DESC").
-      page(params[:page] || 1).per(25)
+      where(feedback_type: @feedback_type, status: @status).
+      includes(:reporter, :notes).
+      order("feedback_messages.created_at DESC").
+      page(params[:page] || 1).per(5)
+    @email_messages = EmailMessage.find_for_reports(@feedback_messages.pluck(:id))
+    @vomits = get_vomits
   end
 
-  def update
-    @feedback_message = FeedbackMessage.find(params[:id])
-    @feedback_message.status = feedback_message_params[:status]
-    @feedback_message.reviewer_id = feedback_message_params[:reviewer_id]
-    note = @feedback_message.find_or_create_note(@feedback_message.feedback_type)
-    note.content = feedback_message_params[:note][:content]
-    if @feedback_message.save! && note.save!
-      @feedback_message.touch(:last_reviewed_at)
-      flash[:success] = "Report ##{@feedback_message.id} saved. Remember to send emails!"
-      redirect_to "/internal/reports?state=#{@feedback_message.feedback_type}"
+  def get_vomits
+    if params[:status] == "Open" || params[:status].blank?
+      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
+    elsif params[:status] == "Resolved"
+      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
     else
-      @feedback_messages = FeedbackMessage.where(feedback_type: @feedback_type)
-      flash[:error] = @feedback_message.errors.full_messages
-      render "index.html.erb", state: @feedback_message.feedback_type
+      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    end
+  end
+
+  def save_status
+    feedback_message = FeedbackMessage.find(params[:id])
+    if feedback_message.update(status: params[:status])
+      render json: { outcome: "Success" }
+    else
+      render json: { outcome: feedback_message.errors.full_messages }
+    end
+  end
+
+  def show
+    @feedback_message = FeedbackMessage.find_by(id: params[:id])
+    @email_messages = EmailMessage.find_for_reports(@feedback_message.id)
+  end
+
+  def send_email
+    if NotifyMailer.feedback_message_resolution_email(params).deliver
+      render json: { outcome: "Success" }
+    else
+      render json: { outcome: "Failure" }
+    end
+  end
+
+  def create_note
+    note = Note.new(
+      noteable_id: params["noteable_id"],
+      noteable_type: params["noteable_type"],
+      author_id: params["author_id"],
+      content: params["content"],
+      reason: params["reason"],
+    )
+    if note.save
+      params["author_name"] = note.author.name
+      params["feedback_message_status"] = note.noteable.status
+      params["feedback_type"] = note.noteable.feedback_type
+      send_slack_message(params)
+      render json: {
+        outcome: "Success",
+        content: params["content"],
+        author_name: note.author.name
+      }
+    else
+      render json: { outcome: note.errors.full_messages }
     end
   end
 
   private
 
+  def send_slack_message(params)
+    SlackBot.ping(
+      generate_message(params),
+      channel: params["feedback_type"],
+      username: "new_note_bot",
+      icon_emoji: ":memo:",
+    )
+  end
+
+  def generate_message(params)
+    <<~HEREDOC
+      *New note from #{params['author_name']}:*
+      *Report status: #{params['feedback_message_status']}*
+      Report page: https://dev.to/internal/reports/#{params['noteable_id']}
+      --------
+      Message: #{params['content']}
+    HEREDOC
+  end
+
   def feedback_message_params
     params[:feedback_message].permit(
-      :status, :reviewer_id,
-      note: %i[content reason]
+      :id, :status, :reviewer_id,
+      note: %i[content reason noteable_id noteable_type author_id]
     )
   end
 end

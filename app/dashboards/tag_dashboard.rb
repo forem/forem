@@ -28,6 +28,7 @@ class TagDashboard < Administrate::BaseDashboard
     alias_for: Field::String,
     keywords_for_search: Field::String,
     taggings_count: Field::Number,
+    buffer_profile_id_code: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -87,6 +88,7 @@ class TagDashboard < Administrate::BaseDashboard
     bg_color_hex
     text_color_hex
     keywords_for_search
+    buffer_profile_id_code
   ].freeze
 
   # Overwrite this method to customize how tags are displayed

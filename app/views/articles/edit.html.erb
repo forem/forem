@@ -1,17 +1,17 @@
-<% title "Edit Article - DEV" %>
+<% title "Edit Post" %>
 
 <% if @article.video.present? %>
   <div style="text-align:center;padding-top:60px;margin:auto;max-width:880px;margin-bottom:-50px;">
 
     <% if @article.video_state == "PROGRESSING" %>
-        <h1 style="color:#062144">⏳ Video Transcoding In Progress ⏳</h1>
-        <img src="https://media.giphy.com/media/xf20D8HzvTQzu/giphy.gif" style="border-radius:12px" />
-        <div style="max-width:376px;margin:18px auto 0px;font-size:0.8em;">
+        <h1 style="color:#062144;margin-top:1.1em">⏳ Video Transcoding In Progress ⏳</h1>
+        <img src="https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif" style="border-radius:12px;height:317px" />
+        <div style="max-width:500px;margin:18px auto 0px;font-size:0.8em;">
           <p>
-            You'll get an email when it's finished. Contact <a href="mailto:ben@dev.to">ben@dev.to</a> if the email never comes, or if anything else is broken. 😱
-          </p>
+            <strong>You'll get an email when this process finishes.</strong>
+          </p> 
           <p>
-            This is an unpublished article with a video. Publish it as usual when the video is done processing.
+            <em>This is an ordinary unpublished post. Add title/tags/body/etc, and then mark as published after the video is done processing.</em>
           </p>
         </div>
     <% elsif @article.video_state == "COMPLETED" %>

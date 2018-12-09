@@ -1,80 +1,1314 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Onboarding /> allows user to interact properly 1`] = `
-FindWrapper {
-  "0": VNode {
-    "attributes": Object {
-      "className": "close-button",
-      "onClick": [Function],
-    },
-    "children": Array [
-      VNode {
-        "attributes": Object {
-          "alt": "cancel button",
-          "src": "",
-        },
-        "children": Array [],
-        "key": undefined,
-        "nodeName": "img",
-      },
-    ],
-    "key": undefined,
-    "nodeName": "button",
-  },
-  "1": VNode {
-    "attributes": Object {
-      "className": "button cta",
-      "onClick": [Function],
-    },
-    "children": Array [
-      " BACK ",
-    ],
-    "key": undefined,
-    "nodeName": "button",
-  },
-  "2": VNode {
-    "attributes": Object {
-      "className": "button cta",
-      "onClick": [Function],
-      "onFocus": [Function],
-      "onMouseOver": [Function],
-    },
-    "children": Array [
-      "NEXT",
-    ],
-    "key": undefined,
-    "nodeName": "button",
-  },
-  "length": 3,
-}
+exports[`<Onboarding /> Final page BACK button works 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">CREATE YOUR PROFILE</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-profile-page">
+          <div class="onboarding-user-cta">Tell the us a bit about yourself ❤️</div>
+          <div class="onboarding-profile-question">What's your quick bio?</div>
+          <input
+            name="summary"
+            placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
+            maxLength="120"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">Where are you located?</div>
+          <input
+            name="location"
+            placeholder="e.g. New York City"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">What is your title?</div>
+          <input
+            name="employment_title"
+            placeholder="e.g. Frontend developer"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">Where do you work?</div>
+          <input
+            name="employer_name"
+            placeholder="e.g. Google"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">What are your core skills/languages?</div>
+          <input
+            name="mostly_work_with"
+            placeholder="e.g. JavaScript and MongoDB"
+            maxLength="200"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">
+            What are you currently learning/playing with?
+          </div>
+          <input
+            name="currently_learning"
+            placeholder="e.g. Rust and Docker"
+            maxLength="200"
+            onChange={[Function bound handleProfileChange]}
+           />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator pageindicator--active"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 `;
 
-exports[`<Onboarding /> display if  there is current user 1`] = `
-Object {
-  "allTags": Array [],
-  "articles": Array [],
-  "checkedUsers": Array [],
-  "followRequestSent": false,
-  "pageNumber": 1,
-  "saveRequestSent": false,
-  "savedArticles": Array [],
-  "showOnboarding": true,
-  "userData": Object {
-    "followed_tag_names": Array [
-      Object {
-        "bg_color_hex": "#000000",
-        "id": 715,
-        "name": "discuss",
-        "text_color_hex": "#ffffff",
-      },
-      Object {
-        "bg_color_hex": "#f7df1e",
-        "id": 6,
-        "name": "javascript",
-        "text_color_hex": "#000000",
-      },
-    ],
-  },
-  "users": Array [],
-}
+exports[`<Onboarding /> Final page renders properly 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">GET INVOLVED</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-final-message">
+          <p>Software is driven by community.</p>
+          <p>
+            Don't hesitate to find a discussion and jump right in.
+          </p>
+          <p>
+            <em class="green">Everyone is welcome!</em>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          LET'S GO
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Final page special next button exists and should reroute user 1`] = `
+preact-render-spy (1 nodes)
+-------
+{undefined}
+
+`;
+
+exports[`<Onboarding /> Follow dev members page BACK button works 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">FOLLOW TAGS</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="tags-slide">
+          <div class="onboarding-user-cta">Personalize your home feed</div>
+          <div class="tags-col-container">
+            <div
+              class="onboarding-tag-container"
+              id="onboarding-tag-container-discuss"
+              style="background: "
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                #discuss
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-discuss"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                +
+              </a>
+            </div>
+            <div
+              class="onboarding-tag-container followed-tag"
+              id="onboarding-tag-container-javascript"
+              style="background: #f7df1e"
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:#000000"
+                onClick={[Function bound onClick]}
+              >
+                #javascript
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-javascript"
+                style="color:#000000"
+                onClick={[Function bound onClick]}
+              >
+                ✓
+              </a>
+            </div>
+            <div
+              class="onboarding-tag-container"
+              id="onboarding-tag-container-career"
+              style="background: "
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                #career
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-career"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                +
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator pageindicator--active"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Follow dev members page NEXT button works 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">CREATE YOUR PROFILE</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-profile-page">
+          <div class="onboarding-user-cta">Tell the us a bit about yourself ❤️</div>
+          <div class="onboarding-profile-question">What's your quick bio?</div>
+          <input
+            name="summary"
+            placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
+            maxLength="120"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">Where are you located?</div>
+          <input
+            name="location"
+            placeholder="e.g. New York City"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">What is your title?</div>
+          <input
+            name="employment_title"
+            placeholder="e.g. Frontend developer"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">Where do you work?</div>
+          <input
+            name="employer_name"
+            placeholder="e.g. Google"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">What are your core skills/languages?</div>
+          <input
+            name="mostly_work_with"
+            placeholder="e.g. JavaScript and MongoDB"
+            maxLength="200"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">
+            What are you currently learning/playing with?
+          </div>
+          <input
+            name="currently_learning"
+            placeholder="e.g. Rust and Docker"
+            maxLength="200"
+            onChange={[Function bound handleProfileChange]}
+           />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator pageindicator--active"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Follow dev members page renders properly 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">FOLLOW DEVS</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-user-container">
+          <div class="onboarding-user-cta">
+            Here are some suggestions based on your interests
+          </div>
+          <div class="onboarding-user-list">
+            <div class="onboarding-user-list-header">
+              <div class="onboarding-user-list-key">Follow All</div>
+              <div class="onboarding-user-list-checkbox">
+                <button
+                  id="onboarding-user-follow-all-btn"
+                  onClick={[Function bound handleAllClick]}
+                  class="checked"
+                >
+                  ✓
+                </button>
+              </div>
+            </div>
+            <div class="onboarding-user-list-body">
+              <div class="onboarding-user-list-row">
+                <div class="onboarding-user-list-key">
+                  <img
+                    src="ben.jpg"
+                    alt="Ben Halpern"
+                   />
+                  <div>Ben Halpern</div>
+                  <div class="onboarding-user-list-row__summary">
+                    <em></em>
+                  </div>
+                </div>
+                <div class="onboarding-user-list-checkbox">
+                  <button
+                    onClick={[Function bound bound handleCheckUser]}
+                    class="checked"
+                  >
+                    ✓
+                  </button>
+                </div>
+              </div>
+              <div class="onboarding-user-list-row">
+                <div class="onboarding-user-list-key">
+                  <img
+                    src="clown.jpg"
+                    alt="Krusty the Clown"
+                   />
+                  <div>Krusty the Clown</div>
+                  <div class="onboarding-user-list-row__summary">
+                    <em></em>
+                  </div>
+                </div>
+                <div class="onboarding-user-list-checkbox">
+                  <button
+                    onClick={[Function bound bound handleCheckUser]}
+                    class="checked"
+                  >
+                    ✓
+                  </button>
+                </div>
+              </div>
+              <div class="onboarding-user-list-row">
+                <div class="onboarding-user-list-key">
+                  <img
+                    src="dev.jpg"
+                    alt="dev.to staff"
+                   />
+                  <div>dev.to staff</div>
+                  <div class="onboarding-user-list-row__summary">
+                    <em></em>
+                  </div>
+                </div>
+                <div class="onboarding-user-list-checkbox">
+                  <button
+                    onClick={[Function bound bound handleCheckUser]}
+                    class="checked"
+                  >
+                    ✓
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator pageindicator--active"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Follow tag page BACK button works 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">WELCOME!</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-initial-welcome">
+          <p>Thank you for joining the DEV Community.</p>
+          <p>
+            Keep up with the people and software trends you care about. ❤️
+          </p>
+          <p>
+            <em>
+              <strong class="green">Let's get started!</strong>
+            </em>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left"></div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Follow tag page NEXT button works 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">FOLLOW DEVS</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-user-container">
+          <div class="onboarding-user-cta">
+            Here are some suggestions based on your interests
+          </div>
+          <div class="onboarding-user-list">
+            <div class="onboarding-user-list-header">
+              <div class="onboarding-user-list-key">Follow All</div>
+              <div class="onboarding-user-list-checkbox">
+                <button
+                  id="onboarding-user-follow-all-btn"
+                  onClick={[Function bound handleAllClick]}
+                  class="checked"
+                >
+                  ✓
+                </button>
+              </div>
+            </div>
+            <div class="onboarding-user-list-body">
+              <div class="onboarding-user-list-row">
+                <div class="onboarding-user-list-key">
+                  <img
+                    src="ben.jpg"
+                    alt="Ben Halpern"
+                   />
+                  <div>Ben Halpern</div>
+                  <div class="onboarding-user-list-row__summary">
+                    <em></em>
+                  </div>
+                </div>
+                <div class="onboarding-user-list-checkbox">
+                  <button
+                    onClick={[Function bound bound handleCheckUser]}
+                    class="checked"
+                  >
+                    ✓
+                  </button>
+                </div>
+              </div>
+              <div class="onboarding-user-list-row">
+                <div class="onboarding-user-list-key">
+                  <img
+                    src="clown.jpg"
+                    alt="Krusty the Clown"
+                   />
+                  <div>Krusty the Clown</div>
+                  <div class="onboarding-user-list-row__summary">
+                    <em></em>
+                  </div>
+                </div>
+                <div class="onboarding-user-list-checkbox">
+                  <button
+                    onClick={[Function bound bound handleCheckUser]}
+                    class="checked"
+                  >
+                    ✓
+                  </button>
+                </div>
+              </div>
+              <div class="onboarding-user-list-row">
+                <div class="onboarding-user-list-key">
+                  <img
+                    src="dev.jpg"
+                    alt="dev.to staff"
+                   />
+                  <div>dev.to staff</div>
+                  <div class="onboarding-user-list-row__summary">
+                    <em></em>
+                  </div>
+                </div>
+                <div class="onboarding-user-list-checkbox">
+                  <button
+                    onClick={[Function bound bound handleCheckUser]}
+                    class="checked"
+                  >
+                    ✓
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator pageindicator--active"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Follow tag page renders properly 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">FOLLOW TAGS</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="tags-slide">
+          <div class="onboarding-user-cta">Personalize your home feed</div>
+          <div class="tags-col-container">
+            <div
+              class="onboarding-tag-container"
+              id="onboarding-tag-container-discuss"
+              style="background: "
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                #discuss
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-discuss"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                +
+              </a>
+            </div>
+            <div
+              class="onboarding-tag-container followed-tag"
+              id="onboarding-tag-container-javascript"
+              style="background: #f7df1e"
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:#000000"
+                onClick={[Function bound onClick]}
+              >
+                #javascript
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-javascript"
+                style="color:#000000"
+                onClick={[Function bound onClick]}
+              >
+                ✓
+              </a>
+            </div>
+            <div
+              class="onboarding-tag-container"
+              id="onboarding-tag-container-career"
+              style="background: "
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                #career
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-career"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                +
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator pageindicator--active"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> User info page renders properly 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">CREATE YOUR PROFILE</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-profile-page">
+          <div class="onboarding-user-cta">Tell the us a bit about yourself ❤️</div>
+          <div class="onboarding-profile-question">What's your quick bio?</div>
+          <input
+            name="summary"
+            placeholder="e.g. I'm a passionate hacker wizard unicorn ninja"
+            maxLength="120"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">Where are you located?</div>
+          <input
+            name="location"
+            placeholder="e.g. New York City"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">What is your title?</div>
+          <input
+            name="employment_title"
+            placeholder="e.g. Frontend developer"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">Where do you work?</div>
+          <input
+            name="employer_name"
+            placeholder="e.g. Google"
+            maxLength="60"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">What are your core skills/languages?</div>
+          <input
+            name="mostly_work_with"
+            placeholder="e.g. JavaScript and MongoDB"
+            maxLength="200"
+            onChange={[Function bound handleProfileChange]}
+           />
+          <div class="onboarding-profile-question">
+            What are you currently learning/playing with?
+          </div>
+          <input
+            name="currently_learning"
+            placeholder="e.g. Rust and Docker"
+            maxLength="200"
+            onChange={[Function bound handleProfileChange]}
+           />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator pageindicator--active"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Welcome page NEXT button should work 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">FOLLOW TAGS</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="tags-slide">
+          <div class="onboarding-user-cta">Personalize your home feed</div>
+          <div class="tags-col-container">
+            <div
+              class="onboarding-tag-container"
+              id="onboarding-tag-container-discuss"
+              style="background: "
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                #discuss
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-discuss"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                +
+              </a>
+            </div>
+            <div
+              class="onboarding-tag-container followed-tag"
+              id="onboarding-tag-container-javascript"
+              style="background: #f7df1e"
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:#000000"
+                onClick={[Function bound onClick]}
+              >
+                #javascript
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-javascript"
+                style="color:#000000"
+                onClick={[Function bound onClick]}
+              >
+                ✓
+              </a>
+            </div>
+            <div
+              class="onboarding-tag-container"
+              id="onboarding-tag-container-career"
+              style="background: "
+            >
+              <a
+                class="onboarding-tag-link"
+                href="#"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                #career
+              </a>
+              <a
+                class="onboarding-tag-link-follow"
+                href="#"
+                id="onboarding-tag-link-follow-career"
+                style="color:"
+                onClick={[Function bound onClick]}
+              >
+                +
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left">
+        <button
+          class="button cta"
+          type="button"
+          onClick={[Function bound handleBackButton]}
+        >
+           BACK 
+        </button>
+      </div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator pageindicator--active"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> Welcome page renders properly 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="global-modal"
+  style="display:none"
+>
+  <div class="global-modal-bg">
+    <button
+      class="close-button"
+      onClick={[Function bound closeOnboarding]}
+    >
+      <img
+        src=""
+        alt="cancel button"
+       />
+    </button>
+  </div>
+  <div class="global-modal-inner">
+    <div class="modal-header">
+      <div class="triangle-isosceles">WELCOME!</div>
+    </div>
+    <div class="modal-body">
+      <div
+        id="sloan-mascot-onboarding-area"
+        class="sloan-bar wiggle"
+      >
+        <img
+          src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+          class="sloan-img"
+         />
+      </div>
+      <div class="body-message">
+        <div class="onboarding-initial-welcome">
+          <p>Thank you for joining the DEV Community.</p>
+          <p>
+            Keep up with the people and software trends you care about. ❤️
+          </p>
+          <p>
+            <em>
+              <strong class="green">Let's get started!</strong>
+            </em>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-left"></div>
+      <div class="modal-footer-center">
+        <div class="pageindicators">
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+          <div class="pageindicator"></div>
+        </div>
+      </div>
+      <div class="modal-footer-right">
+        <button
+          class="button cta"
+          onClick={[Function bound handleNextButton]}
+          onMouseOver={[Function bound handleNextHover]}
+          onFocus={[Function bound handleNextHover]}
+          type="button"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
+
+exports[`<Onboarding /> when user is not logged in nothing should be rendered 1`] = `
+preact-render-spy (1 nodes)
+-------
+{undefined}
+
 `;

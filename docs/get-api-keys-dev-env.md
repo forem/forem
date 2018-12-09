@@ -25,9 +25,11 @@ Choose OAuth or Email Sign Up
 
 7.  Change your keys accordingly (name of Algolia key -> name of our application key):
 
-* `Application ID -> ALGOLIASEARCH_APPLICATION_ID`
-* `Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY`
-* `Admin API KEY -> ALGOLIASEARCH_API_KEY`
+```
+Application ID -> ALGOLIASEARCH_APPLICATION_ID
+Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY
+Admin API KEY -> ALGOLIASEARCH_API_KEY
+```
 
 ![screen shot 2018-05-02 at 4 26 27 pm](https://user-images.githubusercontent.com/17884966/39547471-b24f2e36-4e25-11e8-9a0e-b988d6a8253f.png)
 
@@ -62,9 +64,11 @@ Choose OAuth or Email Sign Up
 
 7.  Change your keys accordingly (name of Algolia key -> name of our application key):
 
-* `Application ID -> ALGOLIASEARCH_APPLICATION_ID`
-* `Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY`
-* `Admin API KEY -> ALGOLIASEARCH_API_KEY`
+```
+Application ID -> ALGOLIASEARCH_APPLICATION_ID
+Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY
+Admin API KEY -> ALGOLIASEARCH_API_KEY
+```
 
 ![screen shot 2018-05-02 at 4 26 27 pm](https://user-images.githubusercontent.com/17884966/39547471-b24f2e36-4e25-11e8-9a0e-b988d6a8253f.png)
 
@@ -92,8 +96,10 @@ The only important field is the "Callback URL" `http://localhost:3000/users/auth
 
 5.  Change your keys accordingly: (name of Twitter key -> name of our application key):
 
-* `Access Token -> TWITTER_KEY`
-* `Access Token Secret -> TWITTER_SECRET`
+```
+Access Token -> TWITTER_KEY
+Access Token Secret -> TWITTER_SECRET
+```
 
 6.  Done!
 
@@ -104,37 +110,34 @@ The only important field is the "Callback URL" `http://localhost:3000/users/auth
     ![screen shot 2018-04-26 at 4 08 01 pm](https://user-images.githubusercontent.com/17884966/39329488-77cbf554-496c-11e8-941e-dd257b5223ee.png)
 3.  Change your keys accordingly; (name of GitHub key -> name of our application key):
 
-* `Client ID -> GITHUB_KEY`
-* `Client Secret -> GITHUB_SECRET`
+```
+Client ID -> GITHUB_KEY
+Client Secret -> GITHUB_SECRET
+```
 
 4.  Done!
 
-# Stream
+# Pusher
 
-1.  [Sign up for an account with this link](https://getstream.io/accounts/signup/), using either your email or GitHub.
+1. [Sign up for a free account with this link](https://dashboard.pusher.com/accounts/sign_up).
 
-![stream step 1](https://user-images.githubusercontent.com/17884966/39548654-47db0f08-4e29-11e8-9cc3-c17d1b7228eb.png)
+   ![screen shot 2018-10-03 at 5 48 09 pm](https://user-images.githubusercontent.com/7942714/46447013-85187700-c734-11e8-92f7-89a17240ea0f.png)
 
-2.  Click "View Dashboard" at the top right corner.
+2. Once signed in, fill out the prompt to create a new Pusher Channels app. Only an app name is required.
 
-![stream step 2](https://user-images.githubusercontent.com/17884966/39548718-6f1928ca-4e29-11e8-9034-52ef1c1cc9d6.png)
+   ![screen shot 2018-10-03 at 5 35 14 pm](https://user-images.githubusercontent.com/7942714/46446837-69f93780-c733-11e8-82d9-52ad97812d4b.png)
 
-3.  **In the next page, click "Add New Feed Group".**
+3. In your new Pusher Channels app, click the "App Keys" tab.
 
-![stream step 3](https://user-images.githubusercontent.com/17884966/39548743-85bd4e44-4e29-11e8-9b6e-43567c4f7c22.png)
+   ![screen shot 2018-10-03 at 5 41 43 pm](https://user-images.githubusercontent.com/7942714/46446905-c0667600-c733-11e8-9c55-8fabf28a27fe.png)
 
-<hr>
+4. Change your keys accordingly (name of Pusher key -> name of our application key):
 
-4.  Add a new feed group with the type "Notification" and name it `notifications` (case sensitive).
+```
+app_id -> PUSHER_APP_ID
+key -> PUSHER_KEY
+secret -> PUSHER_SECRET
+cluster -> PUSHER_CLUSTER
+```
 
-![stream step 4](https://user-images.githubusercontent.com/17884966/39548890-f0ad7742-4e29-11e8-84a3-ed823e720052.png)
-
-5.  Make sure you have a feed group with the type "Flat" and named `user` (case sensitive). You probably do, but if you don't, create one like you did with the notifications feed group.
-
-6.  Change your keys accordingly: (name of Stream key -> name of our application key):
-
-* `Key -> STREAM_RAILS_KEY`
-* `Secret -> STREAM_RAILS_SECRET`
-* `"https://us-east-api.stream-io-api.com/api/v1.0/" -> STREAM_URL`
-
-7.  Done!
+5. Done!

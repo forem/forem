@@ -5,6 +5,7 @@ $green: #66e2d5;
 $light-green: lighten($green,30%);
 $dark-purple: #4e57ef;
 $purple: #cfd7ff;
+$light-medium-purple: lighten($purple, 4%);
 $light-purple: lighten($purple, 7%);
 $blue: #1395b8;
 $sky-blue: #557de8;
@@ -27,4 +28,37 @@ $helvetica-condensed: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed
 
 $outline-color: darken($light-medium-gray, 2%);
 $shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.18);
+$light-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.1);
+$dark-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.25);
 $bold-shadow: 3px 3px 0px darken($light-medium-gray, 13%);
+
+body {
+  &.night-theme {
+    background-color: black !important;
+
+    &,
+    & .highlight,
+    & iframe,
+    & video {
+      -webkit-filter: invert(100%);
+      filter: invert(100%);
+    }
+
+    & * {
+      background-blend-mode: difference;
+    }
+
+    img,
+    .image.image {
+      -webkit-transition: -webkit-filter 0.5s ease-in, filter 0.5s ease-in;
+      -webkit-filter: invert(100%) grayscale(100%);
+      transition: -webkit-filter 0.5s ease-in, filter 0.5s ease-in;
+      filter: invert(100%) grayscale(100%);
+
+      &:hover {
+        -webkit-filter: invert(100%) grayscale(0%);
+        filter: invert(100%) grayscale(0%);
+      }
+    }
+  }
+}

@@ -33,7 +33,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     approved: Field::Boolean,
     cta_button_text: Field::String,
     cta_button_url: Field::String,
-    cta_body_markdown: Field::Text,
+    cta_body_markdown: Field::Text
   }.freeze
 
   # COLLECTION_ATTRIBUTES

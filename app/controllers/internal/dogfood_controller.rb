@@ -12,7 +12,7 @@ class Internal::DogfoodController < Internal::ApplicationController
     user_ids = @team_members.map(&:id)
 
     @comment_totals_this_week = Comment.
-      users_with_number_of_comments(user_ids, Date.today.beginning_of_week)
+      users_with_number_of_comments(user_ids, Time.zone.today.beginning_of_week)
 
     @comment_totals_24_hours = Comment.
       users_with_number_of_comments(user_ids, 24.hours.ago)
