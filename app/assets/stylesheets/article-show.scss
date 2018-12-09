@@ -672,7 +672,59 @@ header{
       margin-left: -1px;
       margin-right: -1px;
       width: 880px;
-      padding: calc(0px + 0.92vh) 0px;
+      padding: calc(0px + 0.8vh) 0px;
+    }
+    @media screen and ( min-width: 1530px ){
+      margin-left: -1px;
+      margin-right: -1px;
+      width: 140px;
+      top: 30%;
+      bottom: 20%;
+      left: calc(50% - 755px);
+      border-radius: 20px;
+      background: transparent;
+      border: 0px;
+      box-shadow: none;
+      .article-share-action-block {
+        width: 100% !important;
+      }
+      button, a {
+        margin-bottom: 10px !important;
+        display: block !important;
+        width: 100% !important;
+        padding: 6px 0px !important;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+        border-radius: 100px !important;
+        border: 0px !important;
+        transition-delay: 0.1s;
+        &.user-animated {
+          animation: wide-reaction-animation 0.25s !important;
+        }
+        &:not(.user-activated) {
+          background: darken($light-gray, 1%) !important;
+        }
+        &:focus {
+          outline:0;
+          box-shadow: 0px 0px 7px $medium-gray !important;
+        }
+      }
+      a {
+        margin-top: 5px !important;
+        font-size: 0.79em !important;
+        padding: 10px 0px 9px !important;
+        &.article-actions-comments-count {
+          padding: 12px 0px !important;
+        }
+      }
+      .dropdown-content{ 
+        left: 150px !important;
+        bottom: 0px !important;
+        a {
+          background: transparent !important;
+          padding-left: 10px !important;
+        }
+      }
     }
     button{
       background:transparent;
@@ -892,24 +944,38 @@ header{
   }
 }
 .showpage-signin-cta{
-  background: lighten($yellow, 16%);
-  border: 1px solid darken($yellow, 15%);
-  box-shadow: 5px 6px 0px darken($yellow, 15%);
+  background: lighten($light-gray, 1%);
+  border: 1px solid darken($light-medium-gray, 15%);
+  box-shadow: $bold-shadow;
   width: 680px;
-  max-width:88%;
+  max-width:82%;
   margin: auto;
   text-align: center;
   padding: 40px 5%;
-  font-size: 1.11em;
+  font-size: 1.2em;
   line-height: 1.33em;
   margin-bottom: 30px;
+  border-radius: 3px;
+  position: relative;
   a{
     color: $black;
     text-decoration: underline;
     display: inline-block;
     &.primary-cta-link{
-      font-size: 1.35em;
+      font-size: 1.5em;
+      background: $bold-blue;
+      border-radius: 100px;
+      text-decoration: none;
+      padding: 18px 0px;
+      color: white;
+      width: 300px;
     }
+  }
+  .showpage-signin-cta-subtext {
+    font-family: $monospace;
+    font-size:0.77em;
+    color: lighten($medium-gray, 18%);
+    font-weight: bold;
   }
 }
 
@@ -1052,3 +1118,16 @@ header{
   100% {
   }
 }
+
+@keyframes wide-reaction-animation {
+  0% {
+  }
+  50% {
+    margin-left: -5px;
+    margin-right: -5px;
+    width: calc(100% + 10px);
+  }
+  100% {
+  }
+}
+

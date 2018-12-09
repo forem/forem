@@ -9,7 +9,7 @@ function setReactionCount(reactionName, newCount) {
   }
   else {
     reactionClassList.remove("activated");
-    reactionNumber.innerHTML = "";
+    reactionNumber.innerHTML = "0";
   }
 }
 
