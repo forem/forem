@@ -8,7 +8,7 @@
 		<% cache "internal-user-info-#{article.user_id}-#{article.user&.updated_at}", expires_in: 4.hours do %>
 			<% if article.user&.warned %>
 				<h1 style="margin:0;background:orange;"> USER WARNED </h1>
-				<p>Reason for warning: <%= @user.reason_for_warning %></p>
+				<p>Reason for warning: <%= article.user.reason_for_warning %></p>
 			<% end %>
 			<% if article.user&.notes&.any? %>
 				<h2>User Notes (<%= article.user&.notes.size %> total)</h2>
