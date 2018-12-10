@@ -36,23 +36,23 @@ class MarkdownParser
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
-                       br ul ol li small sup sub img a span hr blockquote)
-    attribute_whitelist = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub img a span hr blockquote)
+    allowed_attributes = %w(href strong em ref rel src title alt class)
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: tag_whitelist,
-    attributes: attribute_whitelist
+    tags: allowed_tags,
+    attributes: allowed_attributes
   end
 
   def evaluate_limited_markdown
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong i u b em p br code)
-    attribute_whitelist = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w(strong i u b em p br code)
+    allowed_attributes = %w(href strong em ref rel src title alt class)
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: tag_whitelist,
-    attributes: attribute_whitelist
+    tags: allowed_tags,
+    attributes: allowed_attributes
   end
 
   def evaluate_inline_markdown
@@ -87,7 +87,7 @@ class MarkdownParser
       src = img.attr("src")
       next unless src
       # allow image to render as-is
-      next if whitelisted_image_host?(src)
+      next if allowed_image_host?(src)
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else
@@ -106,7 +106,7 @@ class MarkdownParser
     end
   end
 
-  def whitelisted_image_host?(src)
+  def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
     src.start_with?("https://camo.githubusercontent.com/")
   end

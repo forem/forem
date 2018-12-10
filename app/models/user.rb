@@ -121,7 +121,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
   validate  :conditionally_validate_summary
-  validate  :mastodon_url_whitelist
+  validate  :validate_mastodon_url
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
@@ -473,11 +473,11 @@ class User < ApplicationRecord
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
   end
 
-  def mastodon_url_whitelist
+  def validate_mastodon_url
     return unless mastodon_url.present?
     uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::MASTODON_INSTANCE_WHITELIST)
-    errors.add(:mastodon_url, "is not a whitelisted Mastodon instance")
+    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   end
 
   def title
