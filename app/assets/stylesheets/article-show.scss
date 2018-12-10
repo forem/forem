@@ -686,12 +686,8 @@ header{
       background: transparent;
       border: 0px;
       box-shadow: none;
-      opacity: 0.8;
       transition: opacity 0.25s;
       padding-right: 2px;
-      &:hover,&:focus-within {
-        opacity: 1;
-      }
       .article-share-action-block {
         width: 100% !important;
       }
