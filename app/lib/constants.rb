@@ -1,5 +1,5 @@
 module Constants
-  MASTODON_INSTANCE_WHITELIST = [
+  ALLOWED_MASTODON_INSTANCES = [
     "acg.mn",
     "bitcoinhackers.org",
     "chaos.social",
