@@ -31,7 +31,7 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).to be_valid
     end
 
-    it "does not allow reactions outside of whitelist" do
+    it "does not allow reactions outside of allowed list" do
       reaction.category = "woozlewazzle"
       expect(reaction).not_to be_valid
     end
