@@ -59,7 +59,7 @@ class GiveawaysController < ApplicationController
 
   private
 
-  # Never trust parameters from the scary internet, only allow the allow list through.
+  # Never trust parameters from the scary internet, only allow a subset to go through.
   def user_params
     accessible = %i[
       email
