@@ -10,7 +10,7 @@
 .live-chat{
   height: calc(100vh - 80px);
   &.live-chat--iossafari{
-    height: calc(100vh - 190px);
+    height: 100vh;
   }
   overflow-y: hidden;
   @media screen and ( min-width: 400px ){
@@ -23,7 +23,7 @@
   display: flex;
   height: calc(100vh - 91px);
   &.chat--iossafari{
-    height: calc(100vh - 201px);
+    height: calc(100vh - 100px);
   }
   padding-right: 3px;
   @media screen and ( min-width: 400px ){
