@@ -45,6 +45,7 @@ module Constants
     "qiitadon.com",
     "radical.town",
     "ro-mastodon.puyo.jp",
+    "ruby.social",
     "ruhr.social",
     "social.targaryen.house",
     "social.tchncs.de",
