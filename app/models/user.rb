@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship
+  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship, :quick_match
 
   rolify
   include AlgoliaSearch
@@ -112,6 +112,7 @@ class User < ApplicationRecord
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
               length: { maximum: 100 }
+  validates :mastodon_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :employment_title, :education, :location,
               length: { maximum: 100 }
   validates :mostly_work_with, :currently_learning,
@@ -120,6 +121,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
   validate  :conditionally_validate_summary
+  validate  :validate_mastodon_url
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
@@ -350,8 +352,8 @@ class User < ApplicationRecord
   def resave_articles
     cache_buster = CacheBuster.new
     articles.each do |article|
-      cache_buster.bust(article.path)
-      cache_buster.bust(article.path + "?i=i")
+      cache_buster.bust(article.path) if article.path
+      cache_buster.bust(article.path + "?i=i") if article.path
       article.save
     end
   end
@@ -469,6 +471,13 @@ class User < ApplicationRecord
   def validate_feed_url
     return unless feed_url.present?
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
+  end
+
+  def validate_mastodon_url
+    return unless mastodon_url.present?
+    uri = URI.parse(mastodon_url)
+    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   end
 
   def title

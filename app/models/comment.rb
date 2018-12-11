@@ -20,6 +20,7 @@ class Comment < ApplicationRecord
   after_create   :after_create_checks
   after_save     :calculate_score
   after_save     :bust_cache
+  after_save     :synchronous_bust
   before_destroy :before_destroy_actions
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
@@ -208,7 +209,9 @@ class Comment < ApplicationRecord
   end
 
   def remove_notifications
-    Notification.remove_all(id: id, class_name: "Comment")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Moderation")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Reaction")
   end
 
   def send_to_moderator
@@ -281,6 +284,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
+    remove_notifications
     bust_cache_without_delay
     remove_algolia_index
   end
@@ -289,10 +293,14 @@ class Comment < ApplicationRecord
     Comment.comment_async_bust(commentable, user.username)
     expire_root_fragment
     cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
   end
   handle_asynchronously :bust_cache
+
+  def synchronous_bust
+    cache_buster = CacheBuster.new
+    cache_buster.bust(commentable.path.to_s) if commentable
+  end
 
   def send_email_notification
     NotifyMailer.new_reply_email(self).deliver

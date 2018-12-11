@@ -84,7 +84,7 @@
     <br>
     <%= f.label :add_mentee %>
     <%= f.text_field :add_mentee, placeholder:"user id#" %>
-    <h3><u>Mentorship Notes</u></h3>
+    <h3><u>Notes</u></h3>
     <% if @user.notes.count > 0 %>
       <% @user.notes.each do |note| %>
         <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
@@ -100,17 +100,43 @@
   <% end %>
 </div>
 
-<% if @user.seeking_mentorship %>
+<% if @user.seeking_mentorship && @user.mentee_description.present? %>
   <h2> Mentee Description </h2>
-        <p style="position:sticky;top:50px;background:white;z-index:1000;padding:15px;border:2px solid black"><%= @user.mentee_description %></p>
+    <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
+      <div class="col-md-2">
+        <img src="<%= @user.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+        <br/>
+        <a href="/<%= @user.username %>" target="_blank">@<%= @user.username %></a>
+        <br/>
+      </div>
+      <div class="col-md-3" style="border-left:1px solid black">
+        <h4>Tags</h4>
+        <%= @user.cached_followed_tag_names.join(", ") %>
+      </div>
+      <div class="col-md-3" style="max-height: 22vh;overflow:auto">
+        <h4>Mentee description</h4>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+      </div>
+      <div class="col-md-3">
+        <h4>Skills/Languages</h4>
+        <%= @user.mostly_work_with %>
+      </div>
+      <div class="col-md-1">
+      </div>
+    </div>
 
   <h2> Possible Mentors </h2>
   <% count = 0 %>
   <% MentorRelationship.
       unmatched_mentors.where.not(mentor_form_updated_at: nil, id: @user.id).
+      where.not(mentor_description: nil).
       order("mentor_form_updated_at DESC").limit(175).
       sort_by { |possible_mentor| UserSimilarity.new(@user, possible_mentor).score }.reverse.
-      first(20).each do |possible_mentor| %>
+      first(40).each do |possible_mentor| %>
     <div class="row" style="font-size:0.9em">
       <div class="col-md-2">
         <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />

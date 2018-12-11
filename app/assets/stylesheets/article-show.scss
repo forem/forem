@@ -95,6 +95,7 @@ header{
     z-index:5;
   }
   .title{
+    z-index:6;
     position:relative;
     width:81%;
     font-family: $helvetica;
@@ -263,6 +264,8 @@ header{
       width:92%;
       max-width:718px;
       margin-bottom: 1.1vw;
+      position: relative;
+      z-index: 8;
       a{
         color:$black;
         padding:calc(0.3vw + 14px);
@@ -315,6 +318,8 @@ header{
       &.anchor{
         padding-top: 50px;
         margin-top: -50px;
+        display: block;
+        visibility: hidden;
         -webkit-background-clip: content-box;
         background-clip: content-box;
       }
@@ -404,7 +409,9 @@ header{
       line-height:1.4em;
       color:darken($medium-gray,8%);
       display:block;
-      margin-top:-0.8em;
+    }
+    p~figcaption{
+      margin-top: -0.8em;
     }
     @media screen and ( max-width:550px) {
       width:90%;

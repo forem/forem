@@ -26,25 +26,39 @@ const channelDetails = mod => {
     id: '12345',
     channel_users: [
       {
+        path: '/user_path1',
+        title: 'i am channel user 1',
         name: 'channel user 1',
         username: 'channeluser1',
+        id: 'userid1',
+        profile_image_url: 'channeluser1pic.png',
       },
       {
+        path: '/user_path2',
+        title: 'i am channel user 2',
         name: 'channel user 2',
         username: 'channeluser2',
+        id: 'userid2',
+        profile_image_url: 'channeluser2pic.png',
       },
     ],
     type_of: 'channel-details',
     pending_users_select_fields: [
       {
-        username: 'pendinguser1',
-        id: 'pendingid1',
+        path: '/pending_path1',
+        title: 'i am pending user 1',
         name: 'pending user 1',
+        username: 'pendinguser1',
+        id: 'pendinguserid1',
+        profile_image_url: 'pendinguser1pic.png',
       },
       {
-        username: 'pendinguser2',
-        id: 'pendingid2',
+        path: '/pending_path2',
+        title: 'i am pending user 2',
         name: 'pending user 2',
+        username: 'pendinguser2',
+        id: 'pendinguserid2',
+        profile_image_url: 'pendinguser2pic.png',
       },
     ],
     channel_mod_ids: id,
@@ -84,13 +98,13 @@ describe('<ChannelDetails />', () => {
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('href'),
         ).toEqual(`/${moddetails.channel_users[i].username}`);
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('data-content'),
         ).toEqual(
           `users/by_username?url=${moddetails.channel_users[i].username}`,
@@ -142,19 +156,34 @@ describe('<ChannelDetails />', () => {
       const searchedusers = {
         searchedUsers: [
           {
-            path: '/some_path1',
-            title: 'i am user1',
-            id: 'user_id1',
+            path: '/user_path1',
+            title: 'i am channel user 1',
+            user: {
+              name: 'channel user 1',
+              username: 'channeluser1',
+              profile_image_90: 'channeluser1pic.png',
+            },
+            id: 'userid1',
           },
           {
-            path: '/some_path2',
-            title: 'i am user2',
-            id: 'user_id2',
+            path: '/pending_path1',
+            title: 'i am pending user 1',
+            user: {
+              name: 'pending user 1',
+              username: 'pendinguser1',
+              profile_image_90: 'pendinguser1pic.png',
+            },
+            id: 'pendinguserid1',
           },
           {
-            path: '/some_path3',
-            title: 'i am user3',
-            id: 'user_id3',
+            path: '/search_path3',
+            title: 'i am searched user 3',
+            user: {
+              name: 'searched user 3',
+              username: 'searcheduser3',
+              profile_image_90: 'searcheduser3pic.png',
+            },
+            id: 'searched_userid3',
           },
         ],
       };
@@ -163,35 +192,63 @@ describe('<ChannelDetails />', () => {
       context.rerender();
       const searchedusersdivs = context.find('.channeldetails__searchedusers');
       expect(searchedusersdivs.exists()).toEqual(true);
-      expect(searchedusersdivs.length).toEqual(3);
+      expect(searchedusersdivs.length).toEqual(2);
 
+      let inviteMessage;
+      let inviteAttr;
+      let inviteAttrAns;
+      const included = (list, el) => {
+        const keys = Object.keys(list);
+        for (var key of keys) {
+          if (list[key].id === el.id) {
+            return true;
+          }
+        }
+      };
       for (let i = 0; i < searchedusersdivs.length; i += 1) {
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(0)
-            .attr('href'),
-        ).toEqual(searchedusers.searchedUsers[i].path);
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(0)
-            .text(),
-        ).toEqual(searchedusers.searchedUsers[i].title);
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(2)
-            .attr('data-content'),
-        ).toEqual(searchedusers.searchedUsers[i].id);
-        expect(
-          searchedusersdivs
-            .at(i)
-            .childAt(2)
-            .text(),
-        ).toEqual('Invite');
-      }
+        if (!included(
+            moddetails.pending_users_select_fields,
+            searchedusers.searchedUsers[i])) {
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(0)
+              .attr('href'),
+          ).toEqual(searchedusers.searchedUsers[i].path);
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(0)
+              .text(),
+          ).toEqual(
+            `@${searchedusers.searchedUsers[i].user.username} - ${
+              searchedusers.searchedUsers[i].title
+            }`,
+          );
 
+          if (included(moddetails.channel_users, searchedusers.searchedUsers[i])) {
+            inviteMessage = `is already in ${moddetails.channel_name}`;
+            inviteAttr = 'className';
+            inviteAttrAns = 'channel__member';
+          } else {
+            inviteMessage = 'Invite';
+            inviteAttr = 'data-content';
+            inviteAttrAns = searchedusers.searchedUsers[i].id;
+          }
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(2)
+              .text(),
+          ).toEqual(inviteMessage);
+          expect(
+            searchedusersdivs
+              .at(i)
+              .childAt(2)
+              .attr(inviteAttr),
+          ).toEqual(inviteAttrAns);
+          }
+        }
       const tree = render(context);
       expect(tree).toMatchSnapshot();
     });
@@ -224,13 +281,13 @@ describe('<ChannelDetails />', () => {
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('href'),
         ).toEqual(`/${userdetails.channel_users[i].username}`);
         expect(
           channelmembers
             .at(i)
-            .childAt(0)
+            .childAt(1)
             .attr('data-content'),
         ).toEqual(
           `users/by_username?url=${userdetails.channel_users[i].username}`,

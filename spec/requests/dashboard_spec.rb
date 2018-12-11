@@ -70,6 +70,14 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/following_users"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
+      it "renders the current user's tag followings" do
+        user.follow second_user
+        tag = create(:tag)
+        user.follow tag
+        login_as user
+        get "/dashboard/following"
+        expect(response.body).to include CGI.escapeHTML(tag.name)
+      end
     end
   end
 

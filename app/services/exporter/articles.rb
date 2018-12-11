@@ -18,7 +18,7 @@ module Exporter
 
     private
 
-    def whitelisted_attributes
+    def allowed_attributes
       %i[
         body_markdown
         cached_tag_list
@@ -61,7 +61,7 @@ module Exporter
       articles.find_each do |article|
         articles_to_jsonify << article
       end
-      articles_to_jsonify.to_json(only: whitelisted_attributes)
+      articles_to_jsonify.to_json(only: allowed_attributes)
     end
   end
 end

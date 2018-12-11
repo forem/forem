@@ -578,11 +578,11 @@
         text-align:center;
         bottom:12px;
         // border: 2px solid darken($purple, 30%);
-        background: darken($purple, 26%);
+        background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
         &:hover{
-          background: darken($purple, 30%);
+          background: darken($purple, 50%);
         }
         img{
           height:17px;
@@ -1039,7 +1039,7 @@
         padding-bottom:5px;
         &.body-scrollable{
           height: calc(100vh - 300px);
-          max-height: 500px;
+          max-height: 390px;
           overflow-y: scroll;
         }
         &.signup-cta-widget-body{
@@ -1242,7 +1242,7 @@
         margin-top:8px;
         padding:8px 0px;
         font-size:0.93em;
-        color: $sky-blue;
+        color: darken($sky-blue, 17%);
         background: white;
         display:block;
         width:92%;

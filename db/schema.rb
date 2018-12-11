@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120170350) do
+ActiveRecord::Schema.define(version: 20181130224531) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
     t.integer "reactions_count", default: 0, null: false
+    t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
     t.integer "score", default: 0
@@ -323,6 +324,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "followable_type", null: false
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "points", default: 1.0
     t.datetime "updated_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
@@ -598,6 +600,18 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
   end
 
+  create_table "tag_adjustments", force: :cascade do |t|
+    t.string "adjustment_type"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.string "reason_for_adjustment"
+    t.string "status"
+    t.integer "tag_id"
+    t.string "tag_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
+
   create_table "taggings", id: :serial, force: :cascade do |t|
     t.string "context", limit: 128
     t.datetime "created_at"
@@ -733,12 +747,14 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"

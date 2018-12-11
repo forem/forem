@@ -97,6 +97,7 @@ function reactToArticle(articleId, reaction) {
     }
   }
   var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+  sendHapticMessage('medium');
   if (userStatus == "logged-out") {
     showModal("react-to-article");
     return;

@@ -18,11 +18,13 @@ function initializeUserSidebar(user) {
     }
     followedTags.forEach(function(t){
       renderedTagsCount++
-      tagHTML = tagHTML + '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">\
+      if (t.points > 0.0) {
+        tagHTML = tagHTML + '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">\
                             <a class="sidebar-nav-link" href="/t/'+t.name+'">\
                             <span class="sidebar-nav-tag-text">#'+t.name+'</span>\
                             </a>\
                             </div>';
+      }
       if (document.getElementById("default-sidebar-element-"+t.name)){
         document.getElementById("default-sidebar-element-"+t.name).remove();
       }
@@ -33,7 +35,7 @@ function initializeUserSidebar(user) {
 }
 
 function initializeUserProfileContent(user) {
-  document.getElementById("sidebar-profile-pic").innerHTML = '<img class="sidebar-profile-pic-img" src="'+user.profile_image_90+'" />'
+  document.getElementById("sidebar-profile-pic").innerHTML = '<img alt="" class="sidebar-profile-pic-img" src="'+user.profile_image_90+'" />'
   document.getElementById("sidebar-profile-name").innerHTML =  filterXSS(user.name);
   document.getElementById("sidebar-profile-username").innerHTML = '@'+user.username;
   document.getElementById("sidebar-profile-snapshot-inner").href = "/"+user.username;
