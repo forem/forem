@@ -179,7 +179,7 @@
   }
   .org-publish-check-wrapper{
     font-family: $helvetica;
-    background:$lightest-gray;
+    background:var(--theme-background, $lightest-gray);
     padding:20px 14px;
     text-align:center;
     font-size:24px;
