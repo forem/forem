@@ -9,7 +9,7 @@ function setReactionCount(reactionName, newCount) {
   }
   else {
     reactionClassList.remove("activated");
-    reactionNumber.innerHTML = "";
+    reactionNumber.innerHTML = "0";
   }
 }
 
@@ -79,6 +79,9 @@ function initializeArticleReactions() {
           behavior: 'instant',
           block: 'start',
         });
+        setTimeout(function(){
+          e.target.blur();
+        },100)
       };
     }
   }, 3)
