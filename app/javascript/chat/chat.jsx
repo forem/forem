@@ -476,11 +476,9 @@ export default class Chat extends Component {
     } else if (target.dataset.content && target.dataset.content.startsWith('users/')) {
       newActiveContent[this.state.activeChannelId] = {type_of: "loading-user"}
       getContent('/api/'+target.dataset.content, this.setActiveContent, null)
-      this.setState({activeContent: newActiveContent})
     } else if (target.dataset.content && target.dataset.content.startsWith('articles/')) {
       newActiveContent[this.state.activeChannelId] = {type_of: "loading-post"}
       getContent('/api/'+target.dataset.content, this.setActiveContent, null)
-      this.setState({activeContent: newActiveContent})
     } else if (target.dataset.content === "exit") {
       newActiveContent[this.state.activeChannelId] = null
       this.setState({activeContent: newActiveContent})
