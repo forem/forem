@@ -1,7 +1,7 @@
 <% if user_signed_in? %>
   <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
   <% @sticky_articles = @sticky_collection.suggested_stickies %>
-  <% @user_stickies = @sticky_collection.user_stickies %>
+  <% @user_stickies = @sticky_collection.user_stickies unless current_user.username == @user.username %>
 <% end %>
 
 <% @actor = @article.organization || @article.user %>
