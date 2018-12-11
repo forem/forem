@@ -32,25 +32,27 @@ $light-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.1);
 $dark-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.25);
 $bold-shadow: 3px 3px 0px darken($light-medium-gray, 13%);
 
-#top-bar,
-#page-content,
-footer {
-  & {
-    background-color: #ececcc !important;
+body.night-theme {
+  #top-bar,
+  #page-content,
+  footer {
+    & {
+      background-color: #ececcc !important;
 
-    &,
-    & *:not(.highlight) > .highlight,
-    & iframe,
-    & video,
-    & img,
-    & .image.image,
-    & [style*="background-image"] {
-      -webkit-filter: invert(100%);
-      filter: invert(100%);
-    }
+      &,
+      & *:not(.highlight) > .highlight,
+      & iframe,
+      & video,
+      & img,
+      & .image.image,
+      & [style*="background-image"] {
+        -webkit-filter: invert(100%);
+        filter: invert(100%);
+      }
 
-    & * {
-      background-blend-mode: difference;
+      & * {
+        background-blend-mode: difference;
+      }
     }
   }
 }
