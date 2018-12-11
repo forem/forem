@@ -1,50 +1,48 @@
 class Reaction < ApplicationRecord
+  CATEGORY = %w(like readinglist unicorn thinking hands thumbsdown vomit).freeze
+
   belongs_to :reactable, polymorphic: true
+  belongs_to :user
+
   counter_culture :reactable,
     column_name: proc { |model|
       model.points.positive? ? "positive_reactions_count" : "reactions_count"
     }
   counter_culture :user
-  belongs_to :user
 
-  validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
+  validates :category, inclusion: { in: CATEGORY }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
   validates :status, inclusion: { in: %w(valid invalid confirmed) }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
   before_save :assign_points
-  after_save :update_reactable
-  after_save :touch_user
-  after_save :async_bust
-  before_destroy :update_reactable_without_delay
-  before_destroy :clean_up_before_destroy
+  after_save :update_reactable, :touch_user, :async_bust
+  before_destroy :update_reactable_without_delay, :clean_up_before_destroy
 
-  scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }
-
-  def self.count_for_article(id)
-    Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
-      reactions = Reaction.for_article(id)
-
-      ["like", "readinglist", "unicorn"].map do |type|
-        { category: type, count: reactions.where(category: type).size }
+  class << self
+    def count_for_article(id)
+      Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
+        reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
+        %w(like readinglist unicorn).map do |type|
+          { category: type, count: reactions.where(category: type).size }
+        end
       end
     end
-  end
 
-  def self.for_display(user)
-    includes(:reactable).
-      where(reactable_type: "Article", user_id: user.id).
-      where("created_at > ?", 5.days.ago).
-      select("distinct on (reactable_id) *").
-      take(15)
-  end
+    def for_display(user)
+      includes(:reactable).
+        where(reactable_type: "Article", user: user).
+        where("created_at > ?", 5.days.ago).
+        select("distinct on (reactable_id) *").
+        take(15)
+    end
 
-  def self.cached_any_reactions_for?(reactable, user, category)
-    Rails.cache.fetch("any_reactions_for-#{reactable.class.name}-#{reactable.id}-#{user.updated_at}-#{category}", expires_in: 24.hours) do
-      Reaction.
-        where(reactable_id: reactable.id, reactable_type: reactable.class.name, user_id: user.id, category: category).
-        any?
+    def cached_any_reactions_for?(reactable, user, category)
+      cache_name = "any_reactions_for-#{reactable.class.name}-#{reactable.id}-#{user.updated_at}-#{category}"
+      Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+        Reaction.where(reactable: reactable, user: user, category: category).any?
+      end
     end
   end
 
@@ -56,6 +54,7 @@ class Reaction < ApplicationRecord
     elsif reactable_type == "Comment" && reactable
       update_comment
     end
+    # send("update_#{reactable_type.downcase}")
     occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
