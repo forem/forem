@@ -54,6 +54,7 @@ class Reaction < ApplicationRecord
     elsif reactable_type == "Comment" && reactable
       update_comment
     end
+    # send("update_#{reactable_type.downcase}")
     occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
