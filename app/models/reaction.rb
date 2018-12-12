@@ -49,7 +49,11 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
-    ReactionCascadeJob.perform_later(reactable, user)
+    if destroyed?
+      Reaction::UpdateRecordsJob.perform_now(reactable, user)
+    else
+      Reaction::UpdateRecordsJob.perform_later(reactable, user)
+    end
   end
 
   def async_bust
