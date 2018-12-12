@@ -1,4 +1,4 @@
-module Reaction
+class Reaction
   class UpdateRecordsJob < ApplicationJob
     queue_as :default
 
