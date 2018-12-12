@@ -18,7 +18,7 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_save :update_reactable, :async_bust
-  before_destroy :update_reactable, :clean_up_before_destroy
+  after_destroy :update_reactable, :clean_up_before_destroy
 
   class << self
     def count_for_article(id)
