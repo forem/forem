@@ -2,10 +2,15 @@
 require "rails_helper"
 
 RSpec.describe Reaction, type: :model do
-  let(:user) { create(:user) }
-  let(:article) { create(:article, featured: true) }
-  let(:comment) { create(:comment, user: user, commentable: article) }
-  let(:reaction) { build(:reaction, reactable: comment) }
+  let(:user)        { create(:user) }
+  let(:author)      { create(:user) }
+  let(:article)     { create(:article, user_id: author.id, featured: true) }
+  let(:comment) do
+    create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
+  end
+  let(:reaction) do
+    build(:reaction, reactable: comment, reactable_type: "Comment")
+  end
 
   describe "actual validation" do
     subject { Reaction.new(reactable: article, reactable_type: "Article", user: user) }
@@ -13,7 +18,7 @@ RSpec.describe Reaction, type: :model do
     before { user.add_role(:trusted) }
 
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to validate_inclusion_of(:category).in_array(Reaction::CATEGORIES) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(%w(like thinking hands unicorn thumbsdown vomit readinglist)) }
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
 
     # Thumbsdown and Vomits test needed
@@ -42,10 +47,14 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "does not allow reaction on unpublished article" do
-      reaction = build(:reaction, user: user, reactable: article)
+      reaction = build(
+        :reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article"
+      )
       expect(reaction).to be_valid
       article.update_column(:published, false)
-      reaction = build(:reaction, user: user, reactable: article)
+      reaction = build(
+        :reaction, user_id: user.id, reactable_id: article.id, reactable_type: "Article"
+      )
       expect(reaction).not_to be_valid
     end
 
@@ -79,8 +88,8 @@ RSpec.describe Reaction, type: :model do
     it "runs async jobs effectively" do
       u2 = create(:user)
       c2 = create(:comment, commentable_id: article.id)
-      create(:reaction, user: u2, reactable: c2)
-      create(:reaction, user: u2, reactable: article)
+      create(:reaction, user_id: u2.id, reactable_id: c2.id, reactable_type: "Comment")
+      create(:reaction, user_id: u2.id, reactable_id: article.id, reactable_type: "Article")
       expect(reaction).to be_valid
     end
   end
