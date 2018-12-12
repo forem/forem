@@ -18,7 +18,7 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_save :update_reactable, :async_bust
-  before_destroy :update_reactable_without_delay, :clean_up_before_destroy
+  before_destroy :update_reactable, :clean_up_before_destroy
 
   class << self
     def count_for_article(id)
@@ -49,7 +49,7 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
-    Engagement::UpdateReactableJob.perform_later(reactable, user)
+    ReactionCascadeJob.perform_later(reactable, user)
   end
 
   def async_bust
