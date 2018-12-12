@@ -43,9 +43,7 @@ body.night-theme {
       & *:not(.highlight) > .highlight,
       & iframe,
       & video,
-      & img,
-      & .image.image,
-      & [style*="background-image"] {
+      & img {
         -webkit-filter: invert(100%);
         filter: invert(100%);
       }
