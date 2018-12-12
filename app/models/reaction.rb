@@ -95,13 +95,6 @@ class Reaction < ApplicationRecord
     end
   end
 
-  def occasionally_sync_reaction_counts
-    # Fixes any out-of-sync positive_reactions_count
-    if rand(6) == 1 || reactable.positive_reactions_count.negative?
-      reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
-    end
-  end
-
   def negative_reaction_from_untrusted_user?
     negative? && !user.trusted
   end
