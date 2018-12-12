@@ -2,12 +2,13 @@ class Reaction < ApplicationRecord
   CATEGORIES = %w(like readinglist unicorn thinking hands thumbsdown vomit).freeze
 
   belongs_to :reactable, polymorphic: true
+  belongs_to :user
+
   counter_culture :reactable,
     column_name: proc { |model|
       model.points.positive? ? "positive_reactions_count" : "reactions_count"
     }
   counter_culture :user
-  belongs_to :user
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
@@ -16,13 +17,8 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  after_save :update_reactable
-  after_save :touch_user
-  after_save :async_bust
-  before_destroy :update_reactable_without_delay
-  before_destroy :clean_up_before_destroy
-
-  scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }
+  after_save :update_reactable, :touch_user, :async_bust
+  before_destroy :update_reactable_without_delay, :clean_up_before_destroy
 
   class << self
     def count_for_article(id)
