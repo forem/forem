@@ -1,4 +1,6 @@
 class Reaction < ApplicationRecord
+  CATEGORIES = %w(like readinglist unicorn thinking hands thumbsdown vomit).freeze
+
   belongs_to :reactable, polymorphic: true
   counter_culture :reactable,
     column_name: proc { |model|
@@ -7,7 +9,7 @@ class Reaction < ApplicationRecord
   counter_culture :user
   belongs_to :user
 
-  validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
+  validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
   validates :status, inclusion: { in: %w(valid invalid confirmed) }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
