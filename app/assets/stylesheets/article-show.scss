@@ -955,7 +955,7 @@ header{
   margin: auto;
   text-align: center;
   padding: 40px 5%;
-  font-size: 1.2em;
+  font-size: 1.1em;
   line-height: 1.33em;
   margin-bottom: 30px;
   border-radius: 3px;
@@ -965,19 +965,19 @@ header{
     text-decoration: underline;
     display: inline-block;
     &.primary-cta-link{
-      font-size: 1.5em;
+      font-size: calc(1.3em + 0.2vw);
       background: $bold-blue;
       border-radius: 100px;
       text-decoration: none;
-      padding: 18px 0px;
+      padding: 16px 0px;
       color: white;
       width: 300px;
     }
   }
   .showpage-signin-cta-subtext {
     font-family: $monospace;
-    font-size:0.77em;
-    color: lighten($medium-gray, 18%);
+    font-size:calc(0.62em + 0.13vw);
+    color: lighten($medium-gray, 10%);
     font-weight: bold;
   }
 }
