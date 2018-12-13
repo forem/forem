@@ -1,0 +1,67 @@
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div class="sidebar-bg" id="sidebar-bg-left"></div>
+  <div class="side-bar">
+    <% if @tag_model && @tag_model.short_summary.present? %>
+      <div class="widget">
+        <header>
+          #<%= @tag %> 👋
+        </header>
+        <div class="widget-body">
+          <%= @tag_model.short_summary.html_safe %>
+        </div>
+      </div>
+    <% end %>
+    <% if @tag_model && @tag_model.rules_html.present? %>
+      <div class="widget">
+        <header>
+          submission guidelines
+        </header>
+        <div class="widget-body">
+          <%= @tag_model.rules_html.html_safe %>
+          <a class="cta cta-button" href="/new/<%= @tag %>" >
+            WRITE A POST
+          </a>
+        </div>
+      </div>
+    <% end %>
+    <% if @tag_model && @tag_model.wiki_body_html.present? %>
+      <div class="widget">
+        <header>
+          about #<%= @tag %>
+        </header>
+        <div class="widget-body">
+          <%= @tag_model.wiki_body_html.html_safe %>
+        </div>
+      </div>
+    <% end %>
+    <% if @tag == "javascript" %>
+      <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
+        <header>
+          <a href="/sponsors">community sponsors</a>
+          <span class="emoji">
+            <img alt="emoji heart" src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
+          </span>
+        </header>
+        <div class="widget-body">
+          <div class="sidebar-sponsor">
+            <a class="partner-link" href="https://developer.jwplayer.com/jw-player/demos/?utm_source=dev.to" target="_blank" data-details="jwplayer__image">
+              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lc2gkdj9dbmkul4z26g0.png") %>" style="margin-bottom:8px;" alt="Cloudinary K" />
+
+            </a>
+            <div class="sponsor-tagline" style="display:inline;">
+              The Most Powerful & Flexible JavaScript Video API.
+              <a class="partner-link sponsor-learn-more" href="https://developer.jwplayer.com/jw-player/demos/?utm_source=dev.to" target="_blank" data-details="jwplayer__learn-more">
+                Learn More
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <div class="sidebar-data">
+      <div>
+        <%= pluralize Article.tagged_with(@tag).where(published: true).size, "Post" %> Published
+      </div>
+    </div>
+  </div>
+</div>

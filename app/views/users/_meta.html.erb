@@ -1,0 +1,18 @@
+<link rel="canonical" href="https://dev.to/<%= @user.username %>"/>
+<meta name="description" content="<%= @user.summary %>">
+<meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://dev.to/<%= @user.username %>" />
+<meta property="og:title" content="<%= @user.name %> —  - DEV Profile" />
+<meta property="og:image" content="<%= GeneratedImage.new(@user).social_image %>" >
+<meta property="og:description" content="<%= @user.summary %>" />
+<meta property="og:site_name" content="The DEV Community" />
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ThePracticalDev">
+<meta name="twitter:creator" content="@<%=@user.twitter_username %>">
+<meta name="twitter:title" content="<%= @user.name %> — DEV Profile">
+<meta name="twitter:description" content="<%= @user.summary %>">
+<meta name="twitter:image:src" content="<%= GeneratedImage.new(@user).social_image %>" >
+<%= auto_discovery_link_tag(:rss, "https://dev.to/feed/#{@user.username}", {title: "The Practical Dev RSS Feed"}) %>
