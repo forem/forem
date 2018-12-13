@@ -1,0 +1,58 @@
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div class="sidebar-bg" id="sidebar-bg-left"></div>
+  <div class="side-bar">
+    <div class="user-sidebar">
+      <% if @user.mostly_work_with.present? %>
+        <div class="widget">
+          <header>
+            skills/languages
+          </header>
+          <div class="widget-body">
+            <%= sanitized_sidebar @user.mostly_work_with %>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.currently_learning.present? %>
+        <div class="widget">
+          <header>
+            learning/trying
+          </header>
+          <div class="widget-body">
+            <%= sanitized_sidebar @user.currently_learning %>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.currently_hacking_on.present? %>
+        <div class="widget">
+          <header>
+            projects and hacks
+          </header>
+          <div class="widget-body">
+            <%= sanitized_sidebar @user.currently_hacking_on %>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.available_for.present? %>
+        <div class="widget">
+          <header>
+            available for
+          </header>
+          <div class="widget-body">
+            <%= sanitized_sidebar @user.available_for %>
+          </div>
+        </div>
+      <% end %>
+      <div class="sidebar-data">
+        <div>
+          <%= pluralize @user.articles.where(published: true).size, "Post" %> Published
+        </div>
+        <div>
+          <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written
+        </div>
+        <div>
+          <%= pluralize @user.decorate.cached_followed_tags.size, "Tag" %> Followed
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

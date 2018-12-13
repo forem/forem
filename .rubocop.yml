@@ -15,6 +15,7 @@ RSpec/DescribeClass:
     - spec/requests/*
 
 RSpec/ExampleLength:
+  Max: 10
   Exclude:
     - spec/features/**/*
 

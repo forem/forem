@@ -1,0 +1,27 @@
+<div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+  <div class="sidebar-bg" id="sidebar-bg-right"></div>
+  <div class="side-bar sidebar-additional showing" id="sidebar-additional">
+    <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
+      <a class="widget" href="<%= repo.url %>" target="_blank">
+        <header>
+          <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %>
+        </header>
+        <div class="widget-body">
+          <%= repo.description %>
+          <div class="widget-footer">
+            <% if repo.fork %>
+              <span class="widget-accent">fork</span>
+            <% end %>
+            <%= repo.language %>
+            <% if repo.stargazers_count.to_i > 0 %>
+              <img src="<%= asset_path("star.svg") %>" /> <%= repo.stargazers_count %>
+            <% end %>
+          </div>
+        </div>
+      </a>
+    <% end %>
+    <% if @user.badge_achievements_count > 0 %>
+      <%= render "articles/badges_area" %>
+    <% end %>
+  </div>
+</div>

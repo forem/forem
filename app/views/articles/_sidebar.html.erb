@@ -1,265 +1,82 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% if @user && @user.class.name == "User" %>
-      <div class="user-sidebar">
-        <% if @user.mostly_work_with.present? %>
-          <div class="widget">
-            <header>
-              skills/languages
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.mostly_work_with %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.currently_learning.present? %>
-          <div class="widget">
-            <header>
-              learning/trying
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.currently_learning %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.currently_hacking_on.present? %>
-          <div class="widget">
-            <header>
-              projects and hacks
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.currently_hacking_on %>
-            </div>
-          </div>
-        <% end %>
-        <% if @user.available_for.present? %>
-          <div class="widget">
-            <header>
-              available for
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @user.available_for %>
-            </div>
-          </div>
-        <% end %>
-        <div class="sidebar-data">
-          <div>
-            <%= pluralize @user.articles.where(published: true).size, "Post" %> Published
-          </div>
-          <div>
-            <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written
-          </div>
-          <div>
-            <%= pluralize @user.decorate.cached_followed_tags.size, "Tag" %> Followed
-          </div>
-        </div>
-      </div>
-    <% elsif @user && @user.class.name == "Organization" %>
-        <% if @organization.story.present? %>
-          <div class="widget">
-            <header>
-              our story
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @organization.story %>
-            </div>
-          </div>
-        <% end %>
-        <% if @organization.tech_stack.present? %>
-          <div class="widget">
-            <header>
-              our stack
-            </header>
-            <div class="widget-body">
-              <%= sanitized_sidebar @organization.tech_stack %>
-            </div>
-          </div>
-        <% end %>              
-    <% elsif @query %>    
-      <div class="widget fixed-widget">
+    <% cache("main-sidebar-nav--#{user_signed_in?}", :expires_in => 5.days) do %>
+      <%= render "articles/sidebar_nav" %>
+      <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
-          search results
-        </header>
-        <div class="widget-body" style="margin-bottom:16px;">
-          <a class="query-filter-button" data-filter="class_name:Article">POSTS</a>
-          <a class="query-filter-button" data-filter="class_name:PodcastEpisode">PODCASTS</a>
-          <a class="query-filter-button" data-filter="class_name:User">PEOPLE</a>
-          <hr style="opacity:0.2" />
-          <a class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</a>
-        </div>
-      </div>
-    <% elsif @tag %>
-      <% if @tag_model && @tag_model.short_summary.present? %>
-        <div class="widget">
-          <header>
-            #<%= @tag %> 👋
-          </header>
-          <div class="widget-body">
-            <%= @tag_model.short_summary.html_safe %>
-          </div>  
-        </div>
-      <% end %>
-      <% if @tag_model && @tag_model.rules_html.present? %>
-        <div class="widget">
-          <header>
-            submission guidelines
-          </header>
-          <div class="widget-body">
-            <%= @tag_model.rules_html.html_safe %>
-            <a class="cta cta-button" href="/new/<%= @tag %>" >
-              WRITE A POST
-            </a>
-          </div>
-        </div>
-      <% end %>
-      <% if @tag_model && @tag_model.wiki_body_html.present? %>
-        <div class="widget">
-          <header>
-            about #<%= @tag %>
-          </header>
-          <div class="widget-body">
-            <%= @tag_model.wiki_body_html.html_safe %>
-          </div>
-        </div>
-      <% end %>
-      <% if @tag == "javascript" %>
-        <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
-          <header>
-            <a href="/sponsors">community sponsors</a>
-            <span class="emoji">
-              <img alt="emoji heart" src="<%= asset_path "emoji/emoji-one-heart.png" %>" />
-            </span>
-          </header>
-          <div class="widget-body">
-            <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://developer.jwplayer.com/jw-player/demos/?utm_source=dev.to" target="_blank" data-details="jwplayer__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lc2gkdj9dbmkul4z26g0.png") %>" style="margin-bottom:8px;" alt="Cloudinary K" />
-
-              </a>
-              <div class="sponsor-tagline" style="display:inline;">
-                The Most Powerful & Flexible JavaScript Video API.
-                <a class="partner-link sponsor-learn-more" href="https://developer.jwplayer.com/jw-player/demos/?utm_source=dev.to" target="_blank" data-details="jwplayer__learn-more">
-                  Learn More
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      <% end %>
-        <div class="sidebar-data">
-          <div>
-            <%= pluralize Article.tagged_with(@tag).where(published: true).size, "Post" %> Published
-          </div>
-        </div>
-    <% elsif @podcast_index && @podcasts %>
-      <div class="widget podcast-pic-widget">
-        <header>
-          &lt;ALL SHOWS&gt;
+          <a href="/sponsors">community sponsors</a>
+          <span class="emoji">
+            <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart"/>
+          </span>
         </header>
         <div class="widget-body">
-          <% @podcasts.each do |podcast| %>
-            <a href="/<%= podcast.slug %>">
-              <span class="podcast-pic" id="podcast-pic-<%=podcast.slug %>">
-                <img src="<%= cl_image_path(podcast.image_url,
-                :type=>"fetch",
-                :crop => "fill",
-                :width => 100,
-                :height => 100,
-                :flags => "progressive",
-                :quality => "auto",
-                :fetch_format => "auto",
-                :sign_url => true) %>"
-                alt="<%= podcast.title %>" />
-                <div class="podcast-name">
-                  <div class="podcast-name-inner">
-                    <%= podcast.title %>
-                  </div>
-                </div>
-              </span>
+          <div class="sidebar-sponsor">
+            <a class="partner-link" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__image">
+              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/85318v8gv77kzr8r2e58.png") %>" style="margin-bottom:8px;" alt="Digital Ocean logo" />
             </a>
-          <% end %>
+            <div class="sponsor-tagline" style="display:inline;">
+              The all-in-one cloud platform developers & their teams love.
+              <a class="partner-link sponsor-learn-more" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__learn-more">
+                Learn More
+              </a>
+            </div>
+          </div>
+          <div class="sidebar-sponsor">
+            <a class="partner-link" href="https://www.twilio.com/?utm_source=devto&utm_medium=banner&utm_campaign=summer_awareness_campaign" target="_blank" data-details="twilio__image">
+              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lgumfafaywo0zz90ciig.png") %>" alt="Twilio logo" />
+            </a>
+            <div class="sponsor-tagline">
+              APIs for communicating with anyone on planet Earth.
+              <a class="partner-link sponsor-learn-more" href="https://www.twilio.com/?utm_source=devto&utm_medium=banner&utm_campaign=summer_awareness_campaign" target="_blank" data-details="twilio__learn-more">
+                Learn More
+              </a>
+            </div>
+          </div>
+          <div class="sidebar-sponsor">
+            <a class="partner-link" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__image">
+              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/6a7bsz3y872g66upddt3.png") %>" alt="Raygun logo"/>
+            </a>
+            <div class="sponsor-tagline">
+              Error, crash, and performance monitoring software for devs.
+              <a class="partner-link sponsor-learn-more" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__learn-more">
+                Learn More
+              </a>
+            </div>
+          </div>
+          <div class="sponsors-love-message">
+            We are grateful for wonderful sponsors who help sustain the dev community.
+          </div>
+          <div class="sponsor-footer">
+            <p>
+              <a href="/sponsorship-info">Sponsorship Info/Policy</a>
+            </p>
+          </div>
         </div>
       </div>
-    <% elsif @podcast %>
-    <% else %>
-      <% cache("main-sidebar-nav--#{user_signed_in?}", :expires_in => 5.days) do %>
-        <%= render "articles/sidebar_nav" %>
-        <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
-          <header>
-            <a href="/sponsors">community sponsors</a>
-            <span class="emoji">
-              <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart"/>
-            </span>
-          </header>
-          <div class="widget-body">
-            <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/85318v8gv77kzr8r2e58.png") %>" style="margin-bottom:8px;" alt="Digital Ocean logo" />
-              </a>
-              <div class="sponsor-tagline" style="display:inline;">
-                The all-in-one cloud platform developers & their teams love.
-                <a class="partner-link sponsor-learn-more" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__learn-more">
-                  Learn More
-                </a>
-              </div>
-            </div>
-            <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://www.twilio.com/?utm_source=devto&utm_medium=banner&utm_campaign=summer_awareness_campaign" target="_blank" data-details="twilio__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/lgumfafaywo0zz90ciig.png") %>" alt="Twilio logo" />
-              </a>
-              <div class="sponsor-tagline">
-                APIs for communicating with anyone on planet Earth.
-                <a class="partner-link sponsor-learn-more" href="https://www.twilio.com/?utm_source=devto&utm_medium=banner&utm_campaign=summer_awareness_campaign" target="_blank" data-details="twilio__learn-more">
-                  Learn More 
-                </a>
-              </div>
-            </div>
-            <div class="sidebar-sponsor">
-              <a class="partner-link" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__image">
-                <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/6a7bsz3y872g66upddt3.png") %>" alt="Raygun logo"/>
-              </a>
-              <div class="sponsor-tagline">
-                Error, crash, and performance monitoring software for devs.
-                <a class="partner-link sponsor-learn-more" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__learn-more">
-                  Learn More 
-                </a>
-              </div>
-            </div>
-            <div class="sponsors-love-message">
-              We are grateful for wonderful sponsors who help sustain the dev community.
-            </div>
-            <div class="sponsor-footer">
-              <p>
-                <a href="/sponsorship-info">Sponsorship Info/Policy</a>
-              </p>
-            </div>
-          </div>
+      <div class="widget">
+        <header>
+          key links
+        </header>
+        <div class="widget-body">
+          <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
+          <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
+          <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
+          <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
+          <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
         </div>
-        <div class="widget">
-          <header>
-            key links
-          </header>
-          <div class="widget-body">
-            <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
-            <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
-            <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
-            <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
-            <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
-          </div>
-          <div class="side-footer">
-            <a href="/about">About</a>
-            <a href="/events">Events</a>
-            <a href="/sponsors">Sponsors</a>
-            <a href="https://shop.dev.to/">DEV Shop</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/terms">Terms of Use</a>
-            <a href="/contact">Contact</a>
-            <a href="/faq">FAQ</a>
-            <a href="/code-of-conduct">Code of Conduct</a>
-          </div>
+        <div class="side-footer">
+          <a href="/about">About</a>
+          <a href="/events">Events</a>
+          <a href="/sponsors">Sponsors</a>
+          <a href="https://shop.dev.to/">DEV Shop</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Use</a>
+          <a href="/contact">Contact</a>
+          <a href="/faq">FAQ</a>
+          <a href="/code-of-conduct">Code of Conduct</a>
         </div>
-      <% end %>
+      </div>
     <% end %>
   </div>
 </div>
