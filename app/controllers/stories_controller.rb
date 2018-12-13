@@ -15,7 +15,7 @@ class StoriesController < ApplicationController
     @featured_story = Article.new
     @article_index = true
     set_surrogate_key_header "articles-page-with-query"
-    render template: "articles/index"
+    render template: "articles/search"
   end
 
   def show
@@ -101,7 +101,7 @@ class StoriesController < ApplicationController
     @article_index = true
     set_surrogate_key_header "articles-#{@tag}", @stories.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
-    render template: "articles/index"
+    render template: "articles/tag_index"
   end
 
   def handle_base_index
@@ -155,7 +155,7 @@ class StoriesController < ApplicationController
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes.order("published_at DESC").limit(30)
     set_surrogate_key_header "podcast_episodes", (@podcast_episodes.map { |e| e["record_key"] })
-    render template: "articles/index"
+    render template: "podcast_episodes/index"
   end
 
   def handle_organization_index
@@ -169,7 +169,7 @@ class StoriesController < ApplicationController
     @article_index = true
     @organization_article_index = true
     set_surrogate_key_header "articles-org-#{@organization.id}", @stories.map(&:record_key)
-    render template: "articles/index"
+    render template: "organizations/show"
   end
 
   def handle_user_index
@@ -189,7 +189,7 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
     set_surrogate_key_header "articles-user-#{@user.id}", @stories.map(&:record_key)
-    render template: "articles/index"
+    render template: "users/show"
   end
 
   def handle_podcast_show

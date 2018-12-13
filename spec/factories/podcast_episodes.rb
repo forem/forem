@@ -7,5 +7,6 @@ FactoryBot.define do
     body          { Faker::Hipster.paragraph(1) }
     slug          { "slug-#{rand(10_000)}" }
     guid          { "guid-#{rand(10_000)}" }
+    podcast
   end
 end
