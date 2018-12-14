@@ -63,7 +63,10 @@ class Reaction < ApplicationRecord
     elsif reactable_type == "Comment" && reactable
       update_comment
     end
-    occasionally_sync_reaction_counts
+    # Fixes any out-of-sync positive_reactions_count
+    if rand(6) == 1 || reactable.positive_reactions_count.negative?
+      reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
+    end
   end
   handle_asynchronously :update_reactable
 
