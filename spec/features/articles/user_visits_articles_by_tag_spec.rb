@@ -49,19 +49,6 @@ describe "User visits articles by tag", type: :feature do
         expect(page).not_to have_text(article2.title)
       end
     end
-
-    it "displays community sponsors" do
-      within("#sponsorship-widget") do
-        expect(page).to have_link("community sponsors", href: "/sponsors")
-      end
-    end
-  end
-
-  context "when choosing non-js tag" do
-    it "doesn't display sponsors" do
-      visit "/t/IoT"
-      expect(page).not_to have_selector("#sponsorship-widget")
-    end
   end
 
   context "when user has logged in" do
