@@ -17,8 +17,8 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  after_save :update_reactable, :async_bust
-  after_destroy :update_reactable, :clean_up_before_destroy
+  after_save :update_records, :async_bust
+  after_destroy :update_article, :clean_up_before_destroy
 
   class << self
     def count_for_article(id)
@@ -48,13 +48,47 @@ class Reaction < ApplicationRecord
 
   private
 
-  def update_reactable
+  def update_records
     if destroyed?
-      Reaction::UpdateRecordsJob.perform_now(reactable, user)
+      UpdateRecordsJob.perform_now(reactable, user)
     else
-      Reaction::UpdateRecordsJob.perform_later(reactable, user)
+      UpdateRecordsJob.perform_later(reactable, user)
     end
   end
+
+  # TODO: sunset this DJ method
+  def update_reactable
+    if reactable_type == "Article"
+      update_article
+    elsif reactable_type == "Comment" && reactable
+      update_comment
+    end
+    occasionally_sync_reaction_counts
+  end
+  handle_asynchronously :update_reactable
+
+  # TODO: sunset this DJ method
+  def update_article
+    cache_buster = CacheBuster.new
+    reactable.async_score_calc
+    reactable.index!
+    cache_buster.bust "/reactions?article_id=#{reactable_id}"
+    cache_buster.bust user.path
+  end
+
+  # TODO: sunset this DJ method
+  def update_comment
+    cache_buster = CacheBuster.new
+    reactable.save unless destroyed_by_association
+    cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+    cache_buster.bust user.path
+  end
+
+  # TODO: sunset this DJ method
+  def touch_user
+    user.touch
+  end
+  handle_asynchronously :touch_user
 
   def async_bust
     featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
