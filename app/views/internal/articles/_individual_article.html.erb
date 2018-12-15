@@ -13,7 +13,7 @@
 			<% if article.user&.notes&.any? %>
 				<h2>User Notes (<%= article.user&.notes.size %> total)</h2>
 				<% article.user&.notes&.last(3).each do |note| %>
-					<p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
+					<p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= note.author_id ? User.find(note.author_id).username : "No Author" %></em> - <%= note.content %></p>
 				<% end %>
 				<p><a href="/internal/users/<%= article.user_id %>">View All</a></p>
 			<% end %>
