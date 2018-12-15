@@ -1,234 +1,28 @@
 <%= content_for :page_meta do %>
-  <% if @user %>
-    <% title "#{@user.name} - DEV Profile" %>
-    <link rel="canonical" href="https://dev.to/<%= @user.username %>"/>
-    <meta name="description" content="<%= @user.summary %>">
-    <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://dev.to/<%= @user.username %>" />
-    <meta property="og:title" content="<%= @user.name %> —  - DEV Profile" />
-    <meta property="og:image" content="<%= GeneratedImage.new(@user).social_image %>" >
-    <meta property="og:description" content="<%= @user.summary %>" />
-    <meta property="og:site_name" content="The DEV Community" />
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@ThePracticalDev">
-    <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
-    <meta name="twitter:title" content="<%= @user.name %> — DEV Profile">
-    <meta name="twitter:description" content="<%= @user.summary %>">
-    <meta name="twitter:image:src" content="<%= GeneratedImage.new(@user).social_image %>" >
-    <%= auto_discovery_link_tag(:rss, "https://dev.to/feed/#{@user.username}", {title: "The Practical Dev RSS Feed"}) %>
-  <% elsif @tag.present? %>
-    <% title "#{@tag}#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? }" %>
-    <link rel="canonical" href="https://dev.to/t/<%= @tag %>"/>
-    <meta name="description" content="<%= @tag %> content on dev.to">
-    <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://dev.to/t/<%= @tag %>" />
-    <meta property="og:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community" />
-    <meta property="og:description" content="<%= @tag %> content on dev.to" />
-    <meta property="og:site_name" content="The DEV Community" />
-
-    <meta name="twitter:site" content="@ThePracticalDev">
-    <meta name="twitter:creator" content="@<%=@tag %>">
-    <meta name="twitter:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community">
-    <meta name="twitter:description" content="<%= @tag %> content on dev.to">
-
-    <% if @tag_model %>
-      <meta name="twitter:card" content="summary_large_image">
-      <meta property="og:image" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
-      <meta name="twitter:image:src" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
-    <% else %>
-      <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
-      <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
-      <meta name="twitter:card" content="summary_large_image">
-    <% end %>
-
-  <% elsif @query.present? %>
-    <% title "Search Results" %>
-    <link rel="canonical" href="https://dev.to/search"/>
-    <meta name="description" content="Where programmers share ideas and help each other grow.">
-    <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
-
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="DEV => Search Results" />
-    <meta property="og:title" content="The DEV Community" />
-      <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
-    <meta property="og:description" content="Where programmers share ideas and help each other grow." />
-    <meta property="og:site_name" content="The DEV Community" />
-
-    <meta name="twitter:site" content="@ThePracticalDev">
-    <meta name="twitter:title" content="DEV => Search Results">
-    <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-    <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
-    <meta name="twitter:card" content="summary_large_image">
-  <% elsif @podcast_index %>
-    <%= render "podcast_episodes/meta" %>
-  <% else %>
   <% if params[:timeframe].present? %>
     <% title "DEV Community  👩‍💻👨‍💻 - top posts this #{params[:timeframe]}" %>
   <% else %>
     <% title "DEV Community  👩‍💻👨‍💻 - Where software engineers connect, build their resumes, and grow." %>
   <% end %>
-    <link rel="canonical" href="https://dev.to<%= request.path %>"/>
-    <meta name="description" content="Where programmers share ideas and help each other grow.">
-    <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <link rel="canonical" href="https://dev.to<%= request.path %>"/>
+  <meta name="description" content="Where programmers share ideas and help each other grow.">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://dev.to<%= request.path %>" />
-    <meta property="og:title" content="The DEV Community<%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %>" />
-    <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
-    <meta property="og:description" content="Where programmers share ideas and help each other grow." />
-    <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:title" content="The DEV Community<%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %>" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta property="og:description" content="Where programmers share ideas and help each other grow." />
+  <meta property="og:site_name" content="The DEV Community" />
 
-    <meta name="twitter:site" content="@ThePracticalDev">
-    <meta name="twitter:title" content="The DEV Community<%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %>">
-    <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-    <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
-    <meta name="twitter:card" content="summary_large_image">
-    <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", {title: "The Practical Dev RSS Feed"}) %>
-  <% end %>
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="The DEV Community<%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %>">
+  <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta name="twitter:card" content="summary_large_image">
+  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", {title: "The Practical Dev RSS Feed"}) %>
 <% end %>
-<% if @user %>
-  <style>
-    .widget header{
-      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
-    }
-    <% if user_colors(@user)[:bg].downcase.start_with?("#fff") %>
-      .user-profile-follow-button {
-        border: 1px solid <%= user_colors(@user)[:text] %> !important;
-      }
-    <% end %>
-  </style>
-  <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntityOfPage">
-    <meta itemprop="url" content="https://dev.to/<%=@user.username%>">
-    <div class="user-profile-header-container">
-      <div class="profile-pic-wrapper">
-        <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%=user_colors(@user)[:bg] %>;background:<%=user_colors(@user)[:bg] %>"/>
-      </div>
-      <div class="profile-details">
-        <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>"><span itemprop="name"><%= @user.name %></span>
-          <span class="user-profile-follow-button-wrapper">
-            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
-          </span>
-        </h1>
-        <p class="profile-description" itemprop="description">
-          <%= @user.summary.present? ? @user.summary : ["404 bio not found"].sample  %>
-        </p>
-        <style>
-          .profile-details .social .icon-img path{
-            fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
-          }
-        </style>
-        <p class="social">
-          <% if @user.twitter_username.present? %>
-            <a href="https://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
-              <%= inline_svg("twitter-logo.svg", class:"icon-img") %>
-            </a>
-          <% end %>
-          <% if @user.github_username.present? %>
-            <a href="https://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
-              <%= inline_svg("github-logo.svg", class:"icon-img") %>
-            </a>
-          <% end %>
-          <% if @user.class.name == "User" %>
-            <% if @user.facebook_url.present? %>
-              <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener">
-                <%= inline_svg("facebook-logo.svg", class:"icon-img") %>
-              </a>
-            <% end %>
-            <% if @user.linkedin_url.present? %>
-              <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener">
-                <%= inline_svg("linkedin_icon.svg", class:"icon-img") %>
-              </a>
-            <% end %>
-            <% if @user.behance_url.present? %>
-              <a href="<%= @user.behance_url %>" target="_blank" rel="noopener">
-                <%= inline_svg("behance_icon.svg", class:"icon-img") %>
-              </a>
-            <% end %>
-            <% if @user.stackoverflow_url.present? %>
-              <a href="<%= @user.stackoverflow_url %>" target="_blank" rel="noopener">
-                <%= inline_svg("stackoverflow-logo.svg", class:"icon-img") %>
-              </a>
-            <% end %>
-            <% if @user.dribbble_url.present? %>
-              <a href="<%= @user.dribbble_url %>" target="_blank" rel="noopener">
-                <%= inline_svg("dribbble_icon.svg", class:"icon-img") %>
-              </a>
-            <% end %>
-            <% if @user.website_url.present? %>
-              <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow">
-                <%= inline_svg("external-link-logo.svg", class:"icon-img") %>
-              </a>
-            <% end %>
-          <% end %>
-
-        </p>
-      </div>
-    </div>
-    <%= render "articles/user_metadata" %>
-  </div>
-<% elsif @tag %>
-  <style>
-    .tag-header{
-      border: 2px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
-      box-shadow: 5px 6px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
-    }
-  </style>  
-  <div class="user-profile-header tag-header">
-    <div class="tag-or-query-header-container">
-      <h1>
-        <% if @tag_model && @tag_model.pretty_name.present? %>
-          <%= @tag_model.pretty_name %>
-        <% else %>
-          <%= @tag %> 
-        <% end %>
-        <% if @tag_model %>
-            <span class="user-profile-follow-button-wrapper">
-              <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%=@tag_model.text_color_hex %>;background-color:<%=@tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id%>,"className":"Tag"}'>&nbsp;</button>
-            </span>
-        <% end %>
-      </h1>
-    </div>
-  </div>
-<% elsif @query %>
-  <div id="query-wrapper"></div>
-<% elsif @podcast_index %>
-  <% if @podcast %>
-    <div class="user-profile-header tag-header podcast-header" style="background:#<%= @podcast.main_color_hex %> url(<%= cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                                                         :type=>"fetch",
-                                                                         :quality => "auto",
-                                                                         :sign_url => true,
-                                                                         :flags => "progressive",
-                                                                         :fetch_format => "jpg") %>);color:white;">
-      <div class="tag-or-query-header-container">
-        <h1><img class="record" src="<%=cl_image_path(@podcast.image_url,
-         :type=>"fetch",
-         :crop => "fill",
-         :width => 420,
-         :height => 420,
-         :quality => "auto",
-         :sign_url => true,
-         :flags => "progressive",
-         :fetch_format => "auto",
-         :class => "main-image")
-          %>"
-          alt="<%= @podcast.title %>" /> <%= @podcast.title %></h1>
-      </div>
-      <%= render "podcast_episodes/subscribe_buttons" %>
-    </div>
-  <% else %>
-    <div class="user-profile-header tag-header">
-      <div class="tag-or-query-header-container">
-        <h1>Podcasts</h1>
-      </div>
-    </div>
-  <% end %>
-<% end %>
-<div class="home <%= "sub-home" if (@user || @tag || @query)%>" id="index-container"
+<div class="home" id="index-container"
   data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
   data-algolia-tag="<%= @user ? "#{@user.class.name.downcase}_#{@user.id}" : nil || @tag %>"
   data-feed="<%= params[:timeframe] || "base-feed"%>"
@@ -236,86 +30,58 @@
   >
   <%= render "articles/sidebar" %>
   <div class="articles-list" id="articles-list">
-    <% if @home_page || @tag %>
-      <% if @tag_model && @tag_model.supported %>
-        <style>
-          .nav-chronofiter-link.selected {
-            background: <%= @tag_model.bg_color_hex %> !important;
-            color: <%= @tag_model.text_color_hex %> !important;
-            box-shadow: 3px 4px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
-            border: 1px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
-          }
-          .narrow-nav-menu a.selected {
-            color: <%= @tag_model.text_color_hex %> !important;
-            background: <%= @tag_model.bg_color_hex %> !important;
-          }
-          .on-page-nav-controls .separator {
-            border-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
-          }
-        </style>
-      <% end %>
-      <div class="on-page-nav-controls" id="on-page-nav-controls">
-        <div class="on-page-nav-label <%= "sub-home-nav" if (@user || @tag || @query)%>">
-          <div class="wide-nav-links">
-            <a class="nav-chronofiter-link <%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
-              FEED
-            </a>
-            <span class="separator"></span>
-            <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('week') %>" href="<%= list_path %>/top/week">
-              WEEK
-            </a>
-            <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('month') %>" href="<%= list_path %>/top/month">
-              MONTH
-            </a>
-            <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('year') %>" href="<%= list_path %>/top/year">
-              YEAR
-            </a>
-            <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('infinity') %>" href="<%= list_path %>/top/infinity">
-              INFINITY
-            </a>
-            <span class="separator"></span>
-            <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('latest') %>" href="<%= list_path %>/latest">
-              LATEST
-            </a>
-          </div>
-          <div class="narrow-nav-select" aria-label="feed-filter-select">
-            <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button id="narrow-feed-butt">&lt;MY DEV FEED&gt;</button>
-            <% elsif timeframe_check('week') %>
-              <button id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
-            <% elsif timeframe_check('month') %>
-              <button id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
-            <% elsif timeframe_check('year') %>
-              <button id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
-            <% elsif timeframe_check('infinity') %>
-              <button id="narrow-feed-butt">&lt;INFINITY&gt;</button>
-            <% elsif timeframe_check('latest') %>
-              <button id="narrow-feed-butt">&lt;LATEST&gt;</button>
-            <% end %>
-          </div>
+    <div class="on-page-nav-controls" id="on-page-nav-controls">
+      <div class="on-page-nav-label <%= "sub-home-nav" if (@user || @tag || @query)%>">
+        <div class="wide-nav-links">
+          <a class="nav-chronofiter-link <%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
+            FEED
+          </a>
+          <span class="separator"></span>
+          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('week') %>" href="<%= list_path %>/top/week">
+            WEEK
+          </a>
+          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('month') %>" href="<%= list_path %>/top/month">
+            MONTH
+          </a>
+          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('year') %>" href="<%= list_path %>/top/year">
+            YEAR
+          </a>
+          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('infinity') %>" href="<%= list_path %>/top/infinity">
+            INFINITY
+          </a>
+          <span class="separator"></span>
+          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('latest') %>" href="<%= list_path %>/latest">
+            LATEST
+          </a>
         </div>
-        <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-          <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
-        </button>
-        <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
-          <img src="<%= asset_path 'lightning.svg' %>" alt="right-sidebar-nav">
-        </button>
+        <div class="narrow-nav-select" aria-label="feed-filter-select">
+          <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
+            <button id="narrow-feed-butt">&lt;MY DEV FEED&gt;</button>
+          <% elsif timeframe_check('week') %>
+            <button id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
+          <% elsif timeframe_check('month') %>
+            <button id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
+          <% elsif timeframe_check('year') %>
+            <button id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
+          <% elsif timeframe_check('infinity') %>
+            <button id="narrow-feed-butt">&lt;INFINITY&gt;</button>
+          <% elsif timeframe_check('latest') %>
+            <button id="narrow-feed-butt">&lt;LATEST&gt;</button>
+          <% end %>
+        </div>
       </div>
-    <% end %>
-    <% if @user && @user.class.name == "User" %>
-      <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
-        <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-          <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
-        </button>
-        <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
-          <img style="height:28px;width:28px;" src="<%= asset_path 'ribbon.svg' %>" alt="right-sidebar-nav">
-        </button>
-      </div>
-    <% end %>
-    <% if @user.blank? && @tag.blank? && @featured_story.id %>
-      <div id="featured-story-marker"></div>
+      <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
+        <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
+      </button>
+      <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
+        <img src="<%= asset_path 'lightning.svg' %>" alt="right-sidebar-nav">
+      </button>
+    </div>
+
+    <% if @featured_story.id %>
+      <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
       <img src="<%=cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>"/>
-      <a href="<%=@featured_story.path%>" id="article-link-<%=@featured_story.id%>" class="index-article-link" aria-label="Main Story">
+      <a href="<%=@featured_story.path%>" id="article-link-<%=@featured_story.id%>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
         <div class="single-article big-article">
           <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%=cloud_cover_url(@featured_story.main_image)%>)"></div>
           <div class="content-wrapper">
@@ -359,18 +125,8 @@
       </a>
     <% end %>
     <div class="substories" id="substories">
-      <% if @query %>
-        <div class="query-results-nothing">
-          <div class="query-results-loader"></div>
-          <br/>
-        </div>
-      <% end %>
-      <% if params[:view] == "comments" %>
-        <%= render "articles/comments_section" %>
-      <% elsif (@stories && @stories.any?) || (@comments && @comments.any?) %>
-        <%= render "articles/main_stories_feed" %>
-      <% elsif @podcast_episodes %>
-        <%= render "articles/podcast_episodes_feed" %>
+      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
+        <%= render "stories/main_stories_feed" %>
       <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">
@@ -379,43 +135,6 @@
   </div>
   <%= render "articles/sidebar_additional" %>
 </div>
-<% if @query.present? %>
-  <%= render "articles/algolia_search" %>
-<% end %>
 
-<div class="narrow-nav-menu" id="narrow-nav-menu" aria-label="feed-nav-menu">
-  <a href="<%= list_path %>/" class="<%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>">&lt;MY DEV FEED&gt;</a>
-  <a href="<%= list_path %>/top/week" class="<%= 'selected' if timeframe_check('week') %>">&lt;PAST WEEK&gt;</a>
-  <a href="<%= list_path %>/top/month" class="<%= 'selected' if timeframe_check('month') %>">&lt;PAST MONTH&gt;</a>
-  <a href="<%= list_path %>/top/year" class="<%= 'selected' if timeframe_check('year') %>">&lt;PAST YEAR&gt;</a>
-  <a href="<%= list_path %>/top/infinity" class="<%= 'selected' if timeframe_check('infinity') %>">&lt;INFINITY&gt;</a>
-  <a href="<%= list_path %>/latest" class="<%= 'selected' if timeframe_check('latest') %>">&lt;LATEST&gt;</a>
-</div>
-
-
-<script async>
-  var isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-  if (isTouchDevice) {
-    function hasClass(el, cls) {
-      return el.className && new RegExp("(\\s|^)" + cls + "(\\s|$)").test(el.className);
-    }
-    var activeLinks = document.getElementsByClassName('active');
-    Array.prototype.forEach.call(activeLinks, function(el) { el.classList.remove("active"); });
-
-    document.getElementById('articles-list').addEventListener('click', function(event) {
-        var clickedEl = event.target;
-        if (hasClass(clickedEl,"bm-initial") || hasClass(clickedEl,"bm-success")){
-          //do nothing
-        }
-        else if (hasClass(clickedEl.parentNode,"single-article")) {
-          clickedEl.parentNode.classList.add('active');
-        }
-        else if (hasClass(clickedEl.parentNode.parentNode,"single-article")) {
-          clickedEl.parentNode.parentNode.classList.add('active');
-        }
-        else if (hasClass(clickedEl.parentNode.parentNode.parentNode,"single-article")) {
-          clickedEl.parentNode.parentNode.parentNode.classList.add('active');
-        }
-    });
-  }
-</script>
+<%= render "stories/narrow_nav_menu" %>
+<%= render "stories/stories_list_script" %>

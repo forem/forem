@@ -23,6 +23,7 @@ export const SearchForm = ({
         id={searchBoxId}
         placeholder="search"
         autoComplete="off"
+        aria-label="search"
         onKeyDown={onSearch}
         value={searchTerm}
       />

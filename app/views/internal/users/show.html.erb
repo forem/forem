@@ -62,7 +62,7 @@
       </ul>
     <% else %>
       <em>This member does not have any mentorship relationships right now.</em>
-      </br>
+      <br />
     <% end %>
     <br>
     <%= f.label :add_mentor %>
@@ -84,7 +84,7 @@
     <br>
     <%= f.label :add_mentee %>
     <%= f.text_field :add_mentee, placeholder:"user id#" %>
-    <h3><u>Mentorship Notes</u></h3>
+    <h3><u>Notes</u></h3>
     <% if @user.notes.count > 0 %>
       <% @user.notes.each do |note| %>
         <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
@@ -98,6 +98,80 @@
     <br/>
     <%= f.submit %>
   <% end %>
-
 </div>
 
+<% if @user.seeking_mentorship && @user.mentee_description.present? %>
+  <h2> Mentee Description </h2>
+    <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
+      <div class="col-md-2">
+        <img src="<%= @user.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+        <br/>
+        <a href="/<%= @user.username %>" target="_blank">@<%= @user.username %></a>
+        <br/>
+      </div>
+      <div class="col-md-3" style="border-left:1px solid black">
+        <h4>Tags</h4>
+        <%= @user.cached_followed_tag_names.join(", ") %>
+      </div>
+      <div class="col-md-3" style="max-height: 22vh;overflow:auto">
+        <h4>Mentee description</h4>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+        <%= @user.mentee_description %>
+      </div>
+      <div class="col-md-3">
+        <h4>Skills/Languages</h4>
+        <%= @user.mostly_work_with %>
+      </div>
+      <div class="col-md-1">
+      </div>
+    </div>
+
+  <h2> Possible Mentors </h2>
+  <% count = 0 %>
+  <% MentorRelationship.
+      unmatched_mentors.where.not(mentor_form_updated_at: nil, id: @user.id).
+      where.not(mentor_description: nil).
+      order("mentor_form_updated_at DESC").limit(175).
+      sort_by { |possible_mentor| UserSimilarity.new(@user, possible_mentor).score }.reverse.
+      first(40).each do |possible_mentor| %>
+    <div class="row" style="font-size:0.9em">
+      <div class="col-md-2">
+        <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+        <br/>
+        <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
+        <br/>
+        <a href="/internal/users/<%= possible_mentor.id %>" target="_blank">Internal(<%= possible_mentor.id %>)</a>
+      </div>
+      <div class="col-md-3" style="border-left:1px solid black">
+        <h4>Tag Intersection</h4>
+        <%= UserSimilarity.new(@user, possible_mentor).tag_intersection.join(", ") %>
+      </div>
+      <div class="col-md-3">
+        <h4>Mentor description</h4>
+        <%= possible_mentor.mentor_description %>
+      </div>
+      <div class="col-md-3">
+        <h4>Skills/Languages</h4>
+        <%= possible_mentor.mostly_work_with %>
+      </div>
+      <div class="col-md-1">
+        <h4>Action</h4>
+        <%= form_for ([:internal, @user]) do |f| %>
+          <%= f.hidden_field :quick_match, value: true %>
+          <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
+          <%= f.submit "Match!" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<h2> Recent Emails </h2>
+<% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+  <div class="row">
+    <a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <%= email.sent_at&.strftime("%b %e '%y") %>
+  </div>
+<% end %>

@@ -12,7 +12,7 @@ RSpec.describe Article, type: :model do
   let(:article) { create(:article, user_id: user.id) }
 
   it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
-  it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id) }
+  it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id, :title) }
   it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
   it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
   it { is_expected.to validate_presence_of(:title) }
@@ -194,6 +194,12 @@ RSpec.describe Article, type: :model do
         article_with_canon_url.body_markdown = build(:article).body_markdown
         article_with_canon_url.validate
         expect(article_with_canon_url.canonical_url).to eq(initial_link)
+      end
+    end
+
+    describe "#reading_time" do
+      it "produces a correct reading time" do
+        expect(test_article.reading_time).to eq(1)
       end
     end
   end
@@ -414,15 +420,13 @@ RSpec.describe Article, type: :model do
   end
 
   it "updates main_image_background_hex_color" do
+    article = build(:article)
+    allow(article).to receive(:update_main_image_background_hex).and_call_original
     article.save
-    expect(article.update_main_image_background_hex_without_delay).to eq(true)
+    expect(article).to have_received(:update_main_image_background_hex)
   end
 
   describe "#async_score_calc" do
-    before { Delayed::Worker.delay_jobs = false }
-
-    after  { Delayed::Worker.delay_jobs = true }
-
     context "when published" do
       let(:article) { create(:article) }
 
@@ -474,6 +478,12 @@ RSpec.describe Article, type: :model do
     article.published_at = 1.years.ago
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
+  end
+
+  it "is valid as part of a collection" do
+    collection = Collection.create(user_id: article.user.id, slug: "yoyoyo")
+    article.collection_id = collection.id
+    expect(article).to be_valid
   end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

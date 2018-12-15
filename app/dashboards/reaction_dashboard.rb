@@ -15,7 +15,7 @@ class ReactionDashboard < Administrate::BaseDashboard
     category: Field::String,
     points: Field::Number.with_options(decimals: 2),
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

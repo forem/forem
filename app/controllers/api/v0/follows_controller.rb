@@ -7,6 +7,7 @@ module Api
         users.each do |user_hash|
           followable = User.find(user_hash["id"])
           current_user.delay.follow(followable)
+          # Notification.send_new_follow
         end
         render json: { outcome: "followed 50 users" }
       end

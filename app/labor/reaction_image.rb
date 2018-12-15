@@ -11,7 +11,7 @@ class ReactionImage
       "unicorn" => "emoji/emoji-one-unicorn.png",
       "hands" => "emoji/emoji-one-hands.png",
       "thinking" => "emoji/emoji-one-thinking.png",
-      "readinglist" => "emoji/emoji-one-bookmark.png",
+      "readinglist" => "emoji/emoji-one-bookmark.png"
     }.freeze
     images[category]
   end

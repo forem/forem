@@ -11,11 +11,13 @@ import Tags from './elements/tags';
 import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
+import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 import ImageUploadIcon from 'images/image-upload.svg';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/markdown/markdown';
+import ThreeDotsIcon from 'images/three-dots.svg';
+// import CodeMirror from 'codemirror';
+// import 'codemirror/mode/markdown/markdown';
 
 export default class ArticleForm extends Component {
   constructor(props) {
@@ -30,6 +32,9 @@ export default class ArticleForm extends Component {
       title: article.title || '',
       tagList: article.cached_tag_list || '',
       description: '',
+      canonicalUrl: article.canonical_url || '',
+      series: article.series || '',
+      allSeries: article.all_series || [],
       bodyMarkdown: article.body_markdown || '',
       published: article.published || false,
       previewShowing: false,
@@ -39,23 +44,23 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: article.id != null,
       imageManagementShowing: false,
-      mainImageUrl: article.main_image || null,
+      moreConfigShowing: false,
+      mainImage: article.main_image || null,
       organization,
-      postUnderOrg: false,
+      postUnderOrg: article.organization_id ? true : false,
       errors: null,
     };
   }
 
   componentDidMount() {
     initEditorResize();
-    console.log('codemirror-ify');
-    const editor = document.getElementById('article_body_markdown');
-    const myCodeMirror = CodeMirror(editor, {
-      mode: 'markdown',
-      theme: 'material',
-      highlightFormatting: true,
-    });
-    myCodeMirror.setSize('100%', '100%');
+    // const editor = document.getElementById('article_body_markdown');
+    // const myCodeMirror = CodeMirror(editor, {
+    //   mode: 'markdown',
+    //   theme: 'material',
+    //   highlightFormatting: true,
+    // });
+    // myCodeMirror.setSize('100%', '100%');
   }
 
   toggleHelp = e => {
@@ -90,6 +95,13 @@ export default class ArticleForm extends Component {
     });
   };
 
+  toggleMoreConfig = e => {
+    e.preventDefault();
+    this.setState({
+      moreConfigShowing: !this.state.moreConfigShowing,
+    });
+  };
+
   showPreview = response => {
     this.setState({
       previewShowing: true,
@@ -107,9 +119,16 @@ export default class ArticleForm extends Component {
     console.log(response);
   };
 
+  handleConfigChange = e => {
+    e.preventDefault();
+    let newState = {}
+    newState[e.target.name] = e.target.value;
+    this.setState(newState)
+  }
+
   handleMainImageUrlChange = payload => {
     this.setState({
-      mainImageUrl: payload.link,
+      mainImage: payload.link,
       imageManagementShowing: false,
     });
   };
@@ -152,38 +171,33 @@ export default class ArticleForm extends Component {
       helpHTML,
       submitting,
       imageManagementShowing,
+      moreConfigShowing,
       organization,
       postUnderOrg,
-      mainImageUrl,
+      mainImage,
       errors,
     } = this.state;
-    // <input type="image" name="cover-image" />
-
-    let bodyArea = '';
-    if (previewShowing) {
-      bodyArea = <BodyPreview previewHTML={previewHTML} />;
-    } else if (helpShowing) {
-      bodyArea = <BodyPreview previewHTML={helpHTML} />;
-    } else {
-      bodyArea = (
-        <BodyMarkdown
-          defaultValue={bodyMarkdown}
-          onChange={linkState(this, 'bodyMarkdown')}
-        />
-      );
-    }
-
     const notice = submitting ? <Notice published={published} /> : '';
-    const imageArea = mainImageUrl ? (
-      <MainImage mainImage={mainImageUrl} onEdit={this.toggleImageManagement} />
+    const imageArea = mainImage ? (
+      <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
       ''
     );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
-        mainImageUrl={mainImageUrl}
+        mainImage={mainImage}
         onMainImageUrlChange={this.handleMainImageUrlChange}
+      />
+    ) : (
+      ''
+    );
+    const moreConfig = moreConfigShowing ? (
+      <MoreConfig
+        onExit={this.toggleMoreConfig}
+        passedData={this.state}
+        onSaveDraft={this.onSaveDraft}
+        onConfigChange={this.handleConfigChange}
       />
     ) : (
       ''
@@ -198,22 +212,53 @@ export default class ArticleForm extends Component {
       ''
     );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
+    let editorView = '';
+    if (previewShowing) {
+      editorView = <div>{errorsArea}{orgArea}{imageArea}<BodyPreview previewHTML={previewHTML} articleState={this.state} version="article-preview" /></div>;
+    } else if (helpShowing) {
+      editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
+    } else {
+        editorView = <div>
+                      {errorsArea}
+                      {orgArea}
+                      {imageArea}
+                      <Title defaultValue={title} onChange={linkState(this, 'title')} />
+                      <div className="articleform__detailfields">
+                        <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--image"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--moreconfig"
+                          onClick={this.toggleMoreConfig}
+                        >
+                          <img src={ThreeDotsIcon} />
+                        </button>
+                      </div>
+                      <BodyMarkdown
+                        defaultValue={bodyMarkdown}
+                        onChange={linkState(this, 'bodyMarkdown')}
+                      />
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
+                          onClick={this.toggleImageManagement}
+                        >
+                          <img src={ImageUploadIcon} /> IMAGES
+                        </button>
+                        <button
+                          className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+                          onClick={this.toggleMoreConfig}
+                        >
+                          <img src={ThreeDotsIcon} />
+                        </button>
+                      </div>
+    }
     return (
       <form className="articleform__form" onSubmit={this.onSubmit}>
-        {errorsArea}
-        {orgArea}
-        {imageArea}
-        <Title defaultValue={title} onChange={linkState(this, 'title')} />
-        <div className="articleform__detailfields">
-          <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-          <button
-            className="articleform__imageButton"
-            onClick={this.toggleImageManagement}
-          >
-            <img src={ImageUploadIcon} /> IMAGES
-          </button>
-        </div>
-        {bodyArea}
+        {editorView}
         <PublishToggle
           published={published}
           previewShowing={previewShowing}
@@ -226,6 +271,7 @@ export default class ArticleForm extends Component {
         />
         {notice}
         {imageManagement}
+        {moreConfig}
       </form>
     );
   }

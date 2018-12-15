@@ -3,16 +3,14 @@ import PropTypes from 'prop-types';
 
 const PublishToggle = ({ previewShowing, onPreview, onSaveDraft, onPublish, onHelp, published, helpShowing }) => (
   <div className="articleform__buttons">
-    <button onClick={onHelp} className={helpShowing ? "active" : "inactive" }>
-      HELP
+    <button onClick={onHelp} className={helpShowing ? "articleform__buttons--small active" : "articleform__buttons--small inactive" } >
+      ?
     </button>
     <button onClick={onPreview} className={previewShowing ? "active" : "inactive" }>
       PREVIEW
     </button>
-    <button onClick={onSaveDraft}>
-      {published ? 'UNPUBLISH' : 'SAVE DRAFT' }
-    </button>
-    <button onClick={onPublish}>
+      {published ? '' : <button onClick={onSaveDraft}>SAVE DRAFT</button> }
+    <button onClick={onPublish} class="articleform__buttons--publish">
       {published ? 'SAVE CHANGES' : 'PUBLISH' }
     </button>
 

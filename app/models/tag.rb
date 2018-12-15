@@ -1,13 +1,17 @@
 class Tag < ActsAsTaggableOn::Tag
+
+  attr_accessor :points
+
   include AlgoliaSearch
   acts_as_followable
   resourcify
 
   NAMES = %w(
-    beginners career computerscience git go java javascript
+    beginners career computerscience git go java javascript react vue
     linux productivity python security webdev css php opensource
     ruby cpp dotnet swift testing devops vim kotlin rust elixir
-    scala
+    scala vscode docker aws android ios angular csharp typescript django rails
+    clojure ubuntu elm gamedev flutter bash
   ).freeze
 
   mount_uploader :profile_image, ProfileImageUploader
@@ -25,9 +29,10 @@ class Tag < ActsAsTaggableOn::Tag
   after_save :bust_cache
 
   algoliasearch per_environment: true do
-    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported
+    attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
+    searchableAttributes ["name", "short_summary"]
   end
 
   def submission_template_customized(param_0 = nil)

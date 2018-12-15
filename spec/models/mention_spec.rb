@@ -14,10 +14,7 @@ RSpec.describe Mention, type: :model do
     )
   end
 
-  before do
-    # Run workers synchronously
-    # Delayed::Worker.delay_jobs = false
-  end
+  before { Notification.send_new_comment_notifications(comment) }
 
   it "creates mention if there is a user mentioned" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."

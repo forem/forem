@@ -37,14 +37,16 @@
       }
     }
     .field-notice {
-      background:$red;
+      background: white;
       max-width:95%;
       padding:25px 0px;
       text-align:center;
       margin:0px 0px 25px;
-      color:white;
+      color:$black;
       font-weight:bold;
       border-radius:2px;
+      border: 1px solid $light-medium-gray;
+      box-shadow: $shadow;
       .small {
         font-size:13px;
         font-weight:300;
@@ -108,7 +110,6 @@
       }
     }
     label {
-      width: 160px;
       display:inline-block;
       vertical-align:top;
       padding:14px 0px 8px;
@@ -199,13 +200,41 @@
           padding:14px 0px;
           margin-top:20px;
           font-size:1.8em;
-          cursor:pointer;
+          cursor: pointer;
           &.danger-button {
             background:$red;
           }
           &:hover {
             opacity:0.88;
           }
+        }
+      }
+      button.big-action {
+        width: 130px;
+        padding: 3px 0px;
+        font-size: 1.2em;
+        font-weight: bold;
+        border-radius: 3px;
+        border: 0;
+        &:hover {
+          opacity: 0.88;
+        }
+        cursor: pointer;
+        &.danger-button {
+          background-color: $red;
+          color: $off-white;
+        }
+        &:disabled {
+          background-color: $light-medium-gray;
+          &:hover {
+            opacity: 1.0;
+            cursor: not-allowed;
+          }
+        }
+        img {
+          vertical-align:-3px;
+          height: 1.2em;
+          width: 1.2em;
         }
       }
       .image-present {
@@ -331,6 +360,14 @@
   overflow-y: auto;
   background: white;
   box-shadow: $shadow;
+  &.loading-repos {
+    height: 400px;
+    background: white url(image_path('loading-ellipsis.svg')) no-repeat center center;
+    background-size: 50px;
+  }
+  &.github-repos-errored {
+    height: 400px;
+  }
   .github-repo-row {
     background:white;
     padding: 12px;
@@ -340,30 +377,36 @@
     }
     .github-repo-row-name {
       font-weight:bold;
+      button {
+        cursor:pointer;
+        font-size:1.2em;
+        font-weight: bold;
+        width: 130px;
+        background: white;
+        border:0px solid;
+        border-radius:3px;
+        padding: 3px 0px;
+        margin-top:-5px;
+        float: right;
+        min-height: 28.5px;
+        &:hover, &:focus {
+          background: $green;
+        }
+        &:disabled {
+          cursor: wait;
+          background: white url(image_path('loading-ellipsis.svg')) no-repeat center center;
+          background-size: 75px;
+        }
+      }
     }
     .github-repo-fork {
+      margin-left: 5px;
       font-weight:400;
       background: $purple;
       color:$bold-blue;
       border-radius: 3px;
       padding: 1px 6px;
       font-size:0.9em;
-    }
-    form {
-      display:inline-block;
-      float:right;
-      button {
-        cursor:pointer;
-        font-size:13px;
-        background: white;
-        border:1px solid $medium-gray;
-        border-radius:3px;
-        padding: 2px 8px;
-        margin-top:-5px;
-        &:hover {
-          opacity:0.9;
-        }
-      }
     }
     .github-repo-featured-indicator {
       display:inline-block;
@@ -467,4 +510,10 @@
   margin-top: 10px;
   position: initial;
   font-size: 1.2em;
+}
+
+ul.delete__account{
+  li{
+    padding-bottom: 5px;
+  }
 }

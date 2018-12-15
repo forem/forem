@@ -11,7 +11,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
   it "updates ordinary article with proper params" do
     new_title = "NEW TITLE #{rand(100)}"
     put "/articles/#{article.id}", params: {
-      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" },
+      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
     }
     expect(Article.last.title).to eq(new_title)
   end
@@ -23,7 +23,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: {
         title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo",
         job_opportunity: { remoteness: "on_premise" }
-      },
+      }
     }
     expect(JobOpportunity.count).to eq(0)
   end
@@ -34,7 +34,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: {
         title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "hiring",
         job_opportunity: { remoteness: "on_premise" }
-      },
+      }
     }
     expect(Article.last.job_opportunity.remoteness).to eq("on_premise")
   end

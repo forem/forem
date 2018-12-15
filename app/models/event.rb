@@ -12,12 +12,12 @@ class Event < ApplicationRecord
   before_validation :evaluate_markdown
 
   scope :in_the_future_and_published, -> {
-    where("starts_at > ?", Time.now).
+    where("starts_at > ?", Time.current).
       where(published: true)
   }
 
   scope :in_the_past_and_published, -> {
-    where("starts_at < ?", Time.now).
+    where("starts_at < ?", Time.current).
       where(published: true)
   }
 

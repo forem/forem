@@ -20,8 +20,8 @@ RSpec.describe "Blocks", type: :request do
         block: {
           input_css: ".blue { color: blue;}",
           input_html: "yo",
-          input_javascript: "alert('hey')",
-        },
+          input_javascript: "alert('hey')"
+        }
       }
       expect(Block.all.size).to eq(1)
     end
@@ -33,7 +33,7 @@ RSpec.describe "Blocks", type: :request do
       put "/blocks/#{block.id}", params: {
         block: { input_css: ".blue { color: red;}",
                  input_html: "yo",
-                 input_javascript: "alert('hey')" },
+                 input_javascript: "alert('hey')" }
       }
       expect(Block.last.processed_css).to include("color: red")
     end

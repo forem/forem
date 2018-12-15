@@ -1,9 +1,9 @@
-<%= f.label :cover_image %>: 
+<%= f.label :cover_image %>:
 <%= f.file_field :cover_image %>
 <br>
 <img src="<%= event.profile_image_url %>" style="width: 25%;">
 <br>
-<%= f.label :profile_image %> (for live notification): 
+<%= f.label :profile_image %> (for live notification):
 <%= f.file_field :profile_image %>
 <br>
 <%= f.label :title %>
@@ -16,10 +16,10 @@
 <%= f.select :category, ['AMA', 'Workshop', 'Talk', 'Town Hall'], required: true %>
 <br>
 <%= f.label :starts_at %>
-<%= f.datetime_select :starts_at, required: true, include_blank: true, start_year: Date.today.year, end_year: Date.today.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
+<%= f.datetime_select :starts_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
 <br>
 <%= f.label :ends_at %>
-<%= f.datetime_select :ends_at, required: true, include_blank: true, start_year: Date.today.year, end_year: Date.today.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
+<%= f.datetime_select :ends_at, required: true, include_blank: true, start_year: Time.current.year, end_year: Time.current.year + 2 %> UTC Time Only (4 hours ahead of eastern time)
 <br>
 <%= f.label :location_name %>
 <%= f.text_field :location_name, required: true %>

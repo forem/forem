@@ -22,7 +22,7 @@ class EmailMessageDashboard < Administrate::BaseDashboard
     utm_campaign: Field::String,
     sent_at: Field::DateTime,
     opened_at: Field::DateTime,
-    clicked_at: Field::DateTime,
+    clicked_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

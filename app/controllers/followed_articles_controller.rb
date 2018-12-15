@@ -27,7 +27,7 @@ class FollowedArticlesController < ApplicationController
     response.headers["Cache-Control"] = "public, max-age=150"
     render json: {
       articles: @articles,
-      classic_article: (article_json(classic_article) if classic_article),
+      classic_article: (article_json(classic_article) if classic_article)
     }.to_json
   end
 
@@ -55,9 +55,9 @@ class FollowedArticlesController < ApplicationController
         user: {
           name: article.user.name,
           username: article.user.username,
-          profile_image_90: ProfileImage.new(article.user).get(90),
+          profile_image_90: ProfileImage.new(article.user).get(90)
         },
-        flare_tag: FlareTag.new(article).tag_hash,
+        flare_tag: FlareTag.new(article).tag_hash
       }
     end
   end

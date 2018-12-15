@@ -37,7 +37,7 @@ rspec_options = {
   cmd: "bin/spring rspec -p",
   #############################
   failed_mode: :focus,
-  bundler_env: :clean_env,
+  bundler_env: :clean_env
 }
 
 guard :rspec, rspec_options do
@@ -65,7 +65,7 @@ guard :rspec, rspec_options do
     [
       rspec.spec.call("routing/#{m[1]}_routing"),
       rspec.spec.call("controllers/#{m[1]}_controller"),
-      rspec.spec.call("acceptance/#{m[1]}"),
+      rspec.spec.call("acceptance/#{m[1]}")
     ]
   end
 

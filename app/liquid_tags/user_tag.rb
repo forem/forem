@@ -1,5 +1,6 @@
 class UserTag < LiquidTagBase
   include ApplicationHelper
+  include ActionView::Helpers::TagHelper
   attr_reader :user
 
   def initialize(_tag_name, user, _tokens)

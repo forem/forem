@@ -3,8 +3,12 @@
  * It is a slightly modified version of the solution found here.
  * stackoverflow.com/questions/18262729/ how-to-stop-window-jumping-when-typing-in-autoresizing-textarea
  */
+// eslint-disable-next-line no-unused-vars
 function initEditorResize() {
-  var observe, scrollLeft, scrollTop;
+  var observe;
+  var scrollLeft;
+  var scrollTop;
+  var lastText;
   var textarea = document.getElementById('article_body_markdown');
   var oldEditor = document.getElementById('markdown-editor-main');
 
@@ -39,15 +43,26 @@ function initEditorResize() {
   }
 
   function resize() {
+    var len;
+    var newText = textarea.value;
+    // Don't resize or scroll if not modifying the text
+    if (newText === lastText) {
+      return;
+    }
+    lastText = newText;
     textarea.style.height = 'auto';
     textarea.style.height = textarea.scrollHeight - 29 + 'px';
     window.scrollTo(scrollLeft, scrollTop);
     if (oldEditor) {
       return;
     }
-    var len = textarea.value.length;
+    len = textarea.value.length;
     // If character entered is at the end of the textarea (therefore cursor)
-    if((textarea.selectionEnd > (len - 10)) && len > 50 && document.activeElement === textarea ) {
+    if (
+      textarea.selectionEnd > len - 15 &&
+      len > 400 &&
+      document.activeElement === textarea
+    ) {
       window.scrollTo(scrollLeft, 10000);
     } else {
       window.scrollTo(scrollLeft, scrollTop);

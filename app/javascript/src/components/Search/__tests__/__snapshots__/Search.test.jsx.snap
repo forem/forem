@@ -16,6 +16,7 @@ exports[`<Search /> renders properly 1`] = `
       value="✓"
     />
     <input
+      aria-label="search"
       autoComplete="off"
       class="nav-search-form__input"
       id="nav-search"

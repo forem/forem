@@ -21,7 +21,7 @@ module ActionController
       cookies.encrypted[COOKIE_NAME] ||= {
         value: csrf_token,
         expires: 1.year.from_now,
-        httponly: true,
+        httponly: true
       }
       session[:_csrf_token] = csrf_token
       Base64.strict_decode64(csrf_token)

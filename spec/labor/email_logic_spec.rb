@@ -41,7 +41,7 @@ RSpec.describe EmailLogic do
         create_list(:article, 3, user_id: author.id, positive_reactions_count: 20)
         10.times do
           Ahoy::Message.create(mailer: "DigestMailer#digest_email",
-                               user_id: user.id, sent_at: Time.now.utc)
+                               user_id: user.id, sent_at: Time.current.utc)
         end
       end
 
@@ -55,15 +55,15 @@ RSpec.describe EmailLogic do
       before do
         10.times do
           Ahoy::Message.create(mailer: "DigestMailer#digest_email", user_id: user.id,
-                               sent_at: Time.now.utc, opened_at: Time.now.utc)
+                               sent_at: Time.current.utc, opened_at: Time.current.utc)
           author = create(:user)
           user.follow(author)
           create_list(:article, 3, user_id: author.id, positive_reactions_count: 40)
         end
       end
 
-      it "evaluates that user is ready to recieve an email" do
-        Timecop.freeze(Date.today + 3) do
+      it "evaluates that user is ready to receive an email" do
+        Timecop.freeze(3.days.from_now) do
           h = described_class.new(user).analyze
           expect(h.should_receive_email?).to eq(true)
         end

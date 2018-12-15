@@ -1,23 +1,4 @@
-<style>
-  .top-nav{
-    line-height: 1.4em;
-  }
-  @media (max-width:991px) and (min-width:768px) {
-    .top-nav{
-      margin-top: 100px;
-    }
-    .alert{
-      margin-top: 100px;
-    }
-  }
-  .top-nav a {
-    display: inline-block;
-    padding: 10px;
-  }
-  .active-state {
-    background-color:#89ffba;
-  }
-</style>
+<%= render "style" %>
 
 <h3 class="top-nav">
   <a href="/internal/reports?state=abuse-reports&status=Open" class="<%= "active-state" if @feedback_type == "abuse-reports" %>">Abuse Reports</a> |
@@ -31,6 +12,34 @@
 <h1><%= @feedback_type.titleize %></h1>
 
 <%= paginate @feedback_messages %>
+
+  <% if @feedback_type == "abuse-reports" %>
+    <% @vomits.each do |reaction| %>
+        <% next unless reaction.user && reaction.reactable %>
+        <div class="row">
+          <div class="inner-row col-md-3">
+            <strong>🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a></strong>
+          </div>
+          <div class="inner-row col-md-<%= (params[:status] == "Open" || params[:status].blank?) ? "5" : "9" %>">
+            <strong><%= reaction.reactable_type %>:</strong> <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %></a>
+          </div>
+          <% if params[:status] == "Open" || params[:status].blank? %>
+            <div class="inner-row col-md-2">
+              <%= form_for [:internal, reaction] do |f| %>
+                <%= f.hidden_field :status, value: "confirmed" %>
+                <%= f.submit "CONFIRMED", class: "btn btn-success btn-lg" %>
+              <% end %>
+            </div>
+            <div class="inner-row col-md-2">
+              <%= form_for [:internal, reaction] do |f| %>
+                <%= f.hidden_field :status, value: "invalid" %>
+                <%= f.submit "INVALID", class: "btn btn-danger btn-lg" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+    <% end %>
+  <% end %>
 
   <% @feedback_messages.each do |feedback_message| %>
     <%= form_for [:internal, feedback_message] do |f| %>

@@ -35,9 +35,9 @@ RSpec.describe MailchimpBot do
           EXPERIENCE: user.experience_level || 666,
           COUNTRY: user.shipping_country.to_s,
           STATE: user.shipping_state.to_s,
-          POSTAL_ZIP: user.shipping_postal_code.to_s,
-        },
-      },
+          POSTAL_ZIP: user.shipping_postal_code.to_s
+        }
+      }
     }
   end
 
@@ -107,5 +107,17 @@ RSpec.describe MailchimpBot do
       end
     end
     # rubocop:enable RSpec/ExampleLength
+  end
+
+  describe "#unsubscribe_all_newsletters" do
+    context "when called" do
+      before { allow(my_gibbon_client).to receive(:update).and_return(true) }
+
+      it "unsubscribes the user from the weekly newsletter" do
+        described_class.new(user).unsubscribe_all_newsletters
+        expect(my_gibbon_client).to have_received(:update).
+          with(hash_including(body: hash_including(status: "unsubscribed")))
+      end
+    end
   end
 end

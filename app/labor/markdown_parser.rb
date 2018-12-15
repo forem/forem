@@ -7,71 +7,6 @@ class MarkdownParser
   end
 
   def finalize
-    parse_it
-  end
-
-  def evaluate_markdown
-    return if @content.blank?
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong em p h1 h2 h3 h4 h5 h6 i u b code pre
-                       br ul ol li small sup sub img a span hr blockquote)
-    attribute_whitelist = %w(href strong em ref rel src title alt class)
-    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: tag_whitelist,
-    attributes: attribute_whitelist
-  end
-
-  def evaluate_limited_markdown
-    return if @content.blank?
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong i u b em p br)
-    attribute_whitelist = %w(href strong em ref rel src title alt class)
-    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: tag_whitelist,
-    attributes: attribute_whitelist
-  end
-
-  def evaluate_inline_markdown
-    return if @content.blank?
-    renderer_options = {
-      hard_wrap: true,
-      filter_html: false,
-      link_attributes: { rel: "noopener noreferrer", target: "_blank" },
-    }
-    renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
-    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    ActionController::Base.helpers.sanitize(markdown.render(@content).html_safe,
-      tags: %w(strong i u b em code a br pre), attributes: %w(href rel target))
-  end
-
-  def tags_used
-    return [] unless @content.present?
-    cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
-    tags = []
-    Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
-      if node.class.superclass.to_s == LiquidTagBase.to_s
-        tags << node.class
-      end
-    end
-    tags.uniq
-  end
-
-  def prefix_all_images(html, width = 880)
-    doc = Nokogiri::HTML.fragment(html)
-    doc.css("img").each do |img|
-      if img.attr("src") && check_image_rehost_whitelist(img.attr("src"))
-        src = img.attr("src")
-        img["src"] = img_of_size(src, width)
-      end
-    end
-    doc.to_html
-  end
-
-  private
-
-  def parse_it
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
@@ -92,6 +27,78 @@ class MarkdownParser
     wrap_mentions_with_links!(html)
   end
 
+  def calculate_reading_time
+    word_count = @content.split(/\W+/).count
+    (word_count / 275.0).ceil
+  end
+
+  def evaluate_markdown
+    return if @content.blank?
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub img a span hr blockquote)
+    allowed_attributes = %w(href strong em ref rel src title alt class)
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+    tags: allowed_tags,
+    attributes: allowed_attributes
+  end
+
+  def evaluate_limited_markdown
+    return if @content.blank?
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w(strong i u b em p br code)
+    allowed_attributes = %w(href strong em ref rel src title alt class)
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+    tags: allowed_tags,
+    attributes: allowed_attributes
+  end
+
+  def evaluate_inline_markdown
+    return if @content.blank?
+    renderer_options = {
+      hard_wrap: true,
+      filter_html: false,
+      link_attributes: { rel: "noopener noreferrer", target: "_blank" }
+    }
+    renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    ActionController::Base.helpers.sanitize(markdown.render(@content).html_safe,
+      tags: %w(strong i u b em code a br pre), attributes: %w(href rel target))
+  end
+
+  def tags_used
+    return [] unless @content.present?
+    cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
+    tags = []
+    Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
+      if node.class.superclass.to_s == LiquidTagBase.to_s
+        tags << node.class
+      end
+    end
+    tags.uniq
+  end
+
+  def prefix_all_images(html, width = 880)
+    # wrap with Cloudinary or allow if from giphy or githubusercontent.com
+    doc = Nokogiri::HTML.fragment(html)
+    doc.css("img").each do |img|
+      src = img.attr("src")
+      next unless src
+      # allow image to render as-is
+      next if allowed_image_host?(src)
+      img["src"] = if giphy_img?(src)
+                     src.gsub("https://media.", "https://i.")
+                   else
+                     img_of_size(src, width)
+                   end
+    end
+    doc.to_html
+  end
+
+  private
+
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
@@ -99,14 +106,24 @@ class MarkdownParser
     end
   end
 
-  def check_image_rehost_whitelist(src)
+  def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    !src.start_with?("https://camo.githubusercontent.com/")
+    src.start_with?("https://camo.githubusercontent.com/")
+  end
+
+  def giphy_img?(source)
+    uri = URI.parse(source)
+    return false if uri.scheme != "https"
+    return false if uri.userinfo || uri.fragment || uri.query
+    return false if uri.host != "media.giphy.com" && uri.host != "i.giphy.com"
+    return false if uri.port != 443 # I think it has to be this if its https?
+
+    uri.path.ends_with?(".gif")
   end
 
   def remove_nested_linebreak_in_list(html)
     html_doc = Nokogiri::HTML(html)
-    html_doc.xpath("//*[self::ul or self::ol or self::li]/br[last()]").each(&:remove)
+    html_doc.xpath("//*[self::ul or self::ol or self::li]/br").each(&:remove)
     html_doc.to_html
   end
 

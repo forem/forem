@@ -33,14 +33,6 @@ class AuthorizationService
     end
   end
 
-  def see_onboarding?
-    !cta_variant.nil? &&
-      (cta_variant == "navbar_basic" ||
-        cta_variant&.include?("notifications") ||
-        cta_variant&.include?("welcome-widget") ||
-        cta_variant&.include?("in-feed-cta"))
-  end
-
   def build_identity
     identity = Identity.find_for_oauth(auth)
     identity.token = auth.credentials.token
@@ -69,7 +61,7 @@ class AuthorizationService
       user.remember_me!
       user.remember_me = true
       add_social_identity_data(user)
-      user.saw_onboarding = !see_onboarding?
+      user.saw_onboarding = false
       user.save!
     end
     user
@@ -114,9 +106,9 @@ class AuthorizationService
   def account_less_than_a_week_old?(user, logged_in_identity)
     user_identity_age = user.github_created_at ||
       user.twitter_created_at ||
-      Time.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
+      Time.zone.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
     # last one is a fallback in case both are nil
-    range = (Time.now.beginning_of_day - 1.week)..(Time.now)
+    range = 1.week.ago.beginning_of_day..Time.current
     range.cover?(user_identity_age)
   end
 

@@ -40,11 +40,13 @@ class GiveawaysController < ApplicationController
         render :edit
         return
       end
+
+      now = Time.current
       @user.onboarding_package_requested_again = true if @user.onboarding_package_requested
       @user.onboarding_package_requested = true
-      @user.onboarding_package_form_submmitted_at = Time.now.to_datetime
-      @user.personal_data_updated_at = Time.now.to_datetime
-      @user.shipping_validated_at = Time.now.to_datetime if user_params[:shipping_validated] == "1"
+      @user.onboarding_package_form_submmitted_at = now
+      @user.personal_data_updated_at = now
+      @user.shipping_validated_at = now if user_params[:shipping_validated] == "1"
       if @user.save!
         format.html { redirect_to "/freestickers/edit" }
         format.json { render :show, status: :ok, location: @user }
@@ -57,7 +59,7 @@ class GiveawaysController < ApplicationController
 
   private
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow a subset to go through.
   def user_params
     accessible = %i[
       email

@@ -19,7 +19,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
       before do
         post "/stripe_subscriptions", params: {
           amount: "12",
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
       end
 
@@ -44,7 +44,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
     it "can't accept anything less than $1" do
       post "/stripe_subscriptions", params: {
         amount: rand(100) / 100,
-        stripe_token: stripe_helper.generate_card_token,
+        stripe_token: stripe_helper.generate_card_token
       }
       expect(response).to redirect_to("/membership")
       user.reload
@@ -95,14 +95,14 @@ RSpec.describe "StripeSubscriptions", type: :request do
       before do
         post "/stripe_subscriptions", params: {
           amount: "12",
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
       end
 
       it "assigns the proper role with a new subscription" do
         put "/stripe_subscriptions/current_user", params: {
           amount: "30",
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
         expect(user.has_role?("level_4_member")).to eq(true)
       end
@@ -110,7 +110,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
       it "updates the user's monthly_dues with the proper amount" do
         put "/stripe_subscriptions/current_user", params: {
           amount: "30",
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
         user.reload
         expect(user.monthly_dues).to eq(3000)
@@ -121,7 +121,7 @@ RSpec.describe "StripeSubscriptions", type: :request do
         allow(mock_instance).to receive(:update_subscription).and_return(nil)
         put "/stripe_subscriptions/current_user", params: {
           amount: "30",
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
         expect(response).to redirect_to("/settings/membership")
       end
@@ -141,21 +141,21 @@ RSpec.describe "StripeSubscriptions", type: :request do
       user.add_role(:level_2_member)
       post "/stripe_subscriptions", params: {
         amount: "12",
-        stripe_token: stripe_helper.generate_card_token,
+        stripe_token: stripe_helper.generate_card_token
       }
     end
 
     context "when a valid request is made" do
       it "deletes membership" do
         delete "/stripe_subscriptions/current_user", params: {
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
         expect(user.has_role?("level_2_member")).to eq(false)
       end
 
       it "returns user monthly dues to zero" do
         delete "/stripe_subscriptions/current_user", params: {
-          stripe_token: stripe_helper.generate_card_token,
+          stripe_token: stripe_helper.generate_card_token
         }
         user.reload
         expect(user.monthly_dues).to eq(0)

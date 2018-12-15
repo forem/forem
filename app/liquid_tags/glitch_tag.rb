@@ -12,7 +12,7 @@ class GlitchTag < LiquidTagBase
     html = <<-HTML
       <div class="glitch-embed-wrap" style="height: 450px; width: 100%;margin: 1em auto 1.3em">
         <iframe
-          sandbox="allow-same-origin allow-scripts allow-forms"
+          sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation-by-user-activation"
           src="#{@uri}"
           alt="#{@id} on glitch"
           style="height: 100%; width: 100%; border: 0;margin:0;padding:0"></iframe>
@@ -57,7 +57,7 @@ class GlitchTag < LiquidTagBase
     params = options.map { |x| option_to_query_pair(x) }.compact
 
     # Deal with the file option if present or use default
-    file_option = options.select { |x| x.start_with?("file=") }.first
+    file_option = options.detect { |x| x.start_with?("file=") }
     path = file_option ? (file_option.sub! "file=", "") : "index.html"
     params.push ["path", path]
 
