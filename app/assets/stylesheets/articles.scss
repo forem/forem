@@ -221,6 +221,11 @@
           margin-top:12px;
         }
       }
+      h4{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
       .article-organization-headline {
         display:block;
         margin-bottom:calc(-1px - 0.6vw);
@@ -345,6 +350,9 @@
         left:62px;
         position:absolute;
         bottom:80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         a{
           color: #666666;
         }
@@ -497,6 +505,10 @@
       font-weight:bold;
       margin-top:-101px;
       position:absolute;
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       z-index:10;
       left:62px;
       font-size:14px;
@@ -867,6 +879,7 @@
               font-family: $helvetica;
               padding-bottom: 10px;
               padding-left:8px;
+              
               a{
                 color: $medium-gray;
                 padding: 7px 12px;
