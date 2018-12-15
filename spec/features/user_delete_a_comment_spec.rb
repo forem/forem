@@ -13,6 +13,7 @@ RSpec.describe "Deleting Comment", type: :feature, js: true do
   end
 
   it "works" do
+    visit "/"
     visit comment.path + "/delete_confirm"
     click_link("DELETE")
     expect(page).to have_current_path(article.path)

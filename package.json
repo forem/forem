@@ -56,7 +56,7 @@
     "@storybook/react": "^3.4.11",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
-    "eslint": "^5.9.0",
+    "eslint": "^5.10.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^3.3.0",
@@ -85,12 +85,12 @@
     "intersection-observer": "^0.5.1",
     "linkstate": "^1.1.1",
     "marked": "^0.5.2",
-    "preact": "^8.3.1",
+    "preact": "^8.4.2",
     "preact-compat": "^3.18.4",
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.6.2",
     "pusher-js": "^4.3.1",
-    "twilio-video": "^1.14.1"
+    "twilio-video": "^1.14.2"
   },
   "husky": {
     "hooks": {

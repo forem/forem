@@ -128,6 +128,7 @@
       if (textEl) {
         if (_shared.state === 'releasing') {
           textEl.innerHTML = handler.instructionsReleaseToRefresh;
+          sendHapticMessage('medium');
         }
 
         if (_shared.state === 'pulling' || _shared.state === 'pending') {

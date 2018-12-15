@@ -1,0 +1,25 @@
+<% title "#{@tag}#{ " - top this #{params[:timeframe]}" if params[:timeframe].present? }" %>
+<link rel="canonical" href="https://dev.to/t/<%= @tag %>"/>
+<meta name="description" content="<%= @tag %> content on dev.to">
+<meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://dev.to/t/<%= @tag %>" />
+<meta property="og:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community" />
+<meta property="og:description" content="<%= @tag %> content on dev.to" />
+<meta property="og:site_name" content="The DEV Community" />
+
+<meta name="twitter:site" content="@ThePracticalDev">
+<meta name="twitter:creator" content="@<%=@tag %>">
+<meta name="twitter:title" content="<%= @tag %><%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %> - The DEV Community">
+<meta name="twitter:description" content="<%= @tag %> content on dev.to">
+
+<% if @tag_model %>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
+  <meta name="twitter:image:src" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
+<% else %>
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>

@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
     t.integer "reactions_count", default: 0, null: false
+    t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
     t.integer "score", default: 0
@@ -746,6 +747,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
@@ -812,7 +814,6 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
-    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"
