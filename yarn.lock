@@ -296,14 +296,15 @@
     global "^4.3.2"
     prop-types "^15.6.1"
 
-"@storybook/addon-links@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-4.0.0.tgz#8b25148b2a3e30f0188070809c052a33abfb1617"
-  integrity sha512-a+durpAdlfWrQ1FYgJeWatMWohNk0PsxKBJBQ1OjgOaL3Al0J6GEcap2hr6fTzPBqnuhFwHD4pGGCEsWaqFwGA==
+"@storybook/addon-links@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-4.1.2.tgz#f5fce2a96b86574a4f8d3195dc249093dafe4055"
+  integrity sha512-/nmFJ+85/K0jS+9mQyWjGYNO4J/n6dK/J5ks6gMn8xXU4iys1l2vHEJupUHq5nERuLANYxJGogzko1kgvqIiCg==
   dependencies:
-    "@storybook/addons" "4.0.0"
-    "@storybook/components" "4.0.0"
-    "@storybook/core-events" "4.0.0"
+    "@storybook/addons" "4.1.2"
+    "@storybook/components" "4.1.2"
+    "@storybook/core-events" "4.1.2"
+    core-js "^2.5.7"
     global "^4.3.2"
     prop-types "^15.6.2"
 
@@ -322,7 +323,7 @@
     global "^4.3.2"
     util-deprecate "^1.0.2"
 
-"@storybook/addons@^4.1.2":
+"@storybook/addons@4.1.2", "@storybook/addons@^4.1.2":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-4.1.2.tgz#c5b21f19b9d648a52800f6854f8ca99d08e71aef"
   integrity sha512-b9GrSzD6HTFK1U06zbZaFNKlBanrBBpaDfHPByEdkefzGmGMVpDehC+wG8xuUoENjYlbZH7D6GnlTKdHviXkGg==
@@ -406,6 +407,11 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-4.0.0.tgz#9fc5e094044f161e4484139833c4cc2e743ec34c"
   integrity sha512-RShVYSb8oB5ZGjxqZGAQuiHCYn+LCI9yFE2VLAc8a0UM4C+kQWxtFxIxjYgmF/ewTctz+Vl8miBAH3MhEDNXyA==
+
+"@storybook/core-events@4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@storybook/core-events/-/core-events-4.1.2.tgz#73c36938537158d1f22767cd183a59576089c1d7"
+  integrity sha512-tyYqmVRmkHUWjgJ7A4hjSJ6qreaZhWWlvoGCCrPMQ09QSwtNkC41Ie6yLW64ZXp7PS4FK6yvVw+30YHNA53KZQ==
 
 "@storybook/core@3.4.11":
   version "3.4.11"
@@ -2982,6 +2988,11 @@ core-js@^2.4.0, core-js@^2.5.0, core-js@^2.5.3:
   version "2.5.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.7.tgz#f972608ff0cead68b841a16a932d0b183791814e"
   integrity sha512-RszJCAxg/PP6uzXVXL6BsxSXx/B05oJAQ2vkJRjyjrEcNVycaqOmNb5OTxZPE3xa5gwZduqza6L9JOCenh/Ecw==
+
+core-js@^2.5.7:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.0.tgz#1e30793e9ee5782b307e37ffa22da0eacddd84d4"
+  integrity sha512-kLRC6ncVpuEW/1kwrOXYX6KQASCVtrh1gQr/UiaVgFlf9WE5Vp+lNe5+h3LuMr5PAucWnnEXwH0nQHRH/gpGtw==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
