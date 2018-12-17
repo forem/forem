@@ -17,7 +17,7 @@ describe "User index", type: :feature do
     end
 
     it "shows proper title tag" do
-      expect(page).to .to have_title("#{user.name} - DEV Community 👩‍💻👨‍💻")
+      expect(page).to have_title("#{user.name} - DEV Community 👩‍💻👨‍💻")
     end
 
     it "shows user's articles" do
