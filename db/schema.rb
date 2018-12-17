@@ -581,7 +581,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
   end
 
   create_table "sail_settings", force: :cascade do |t|
-    t.integer "cast_type", limit: 1, null: false
+    t.integer "cast_type", limit: 2, null: false
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name", null: false
@@ -749,6 +749,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
@@ -815,7 +816,6 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
-    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
     root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
   end
-  mount Sail::Engine => "/sail"
+  mount Sail::Engine => "/internal/sail"
 
   namespace :internal do
     resources :comments
