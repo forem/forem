@@ -24,6 +24,7 @@
   position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
+  box-sizing: border-box;
   nav {
     max-width: 100%;
     width: 1250px;
@@ -220,7 +221,7 @@
       border-top: 0px;
       display: none;
       width: calc(100vw - 18px);
-      top: 45px;
+      top: 48px;
       @media screen and (min-width: 380px) {
         position: fixed;
         width: 230px;
