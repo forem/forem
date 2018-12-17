@@ -28,14 +28,13 @@ to display a collection of resources in an HTML table.
         scope="col"
         role="columnheader"
         aria-sort="<%= sort_order(collection_presenter.ordered_html_class(attr_name)) %>">
-        <%= link_to(sanitized_order_params.merge(
-          collection_presenter.order_params_for(attr_name)
+        <%= link_to(sanitized_order_params(page, collection_field_name).merge(
+          collection_presenter.order_params_for(attr_name, key: collection_field_name)
         )) do %>
         <%= t(
           "helpers.label.#{collection_presenter.resource_name}.#{attr_name}",
           default: attr_name.to_s,
         ).titleize %>
-
             <% if collection_presenter.ordered_by?(attr_name) %>
               <span class="cell-label__sort-indicator cell-label__sort-indicator--<%= collection_presenter.ordered_html_class(attr_name) %>">
                 <svg aria-hidden="true">
@@ -63,11 +62,13 @@ to display a collection of resources in an HTML table.
           >
         <% collection_presenter.attributes_for(resource).each do |attribute| %>
           <td class="cell-data cell-data--<%= attribute.html_class %>">
-            <a href="<%= polymorphic_path([namespace, resource]) -%>"
-               class="action-show"
-               >
-              <%= render_field attribute %>
-            </a>
+            <% if show_action? :show, resource -%>
+              <a href="<%= polymorphic_path([namespace, resource]) -%>"
+                 class="action-show"
+                 >
+                <%= render_field attribute %>
+              </a>
+            <% end -%>
           </td>
         <% end %>
 
@@ -76,7 +77,7 @@ to display a collection of resources in an HTML table.
             t("administrate.actions.edit"),
             [:edit, namespace, resource],
             class: "action-edit",
-          ) %></td>
+          ) if show_action? :edit, resource %></td>
         <% end %>
 
         <% if valid_action? :destroy, collection_presenter.resource_name %>
@@ -86,7 +87,7 @@ to display a collection of resources in an HTML table.
             class: "text-color-red",
             method: :delete,
             data: { confirm: t("administrate.actions.confirm") }
-          ) %></td>
+          ) if show_action? :destroy, resource %></td>
         <% end %>
       </tr>
     <% end %>
