@@ -102,7 +102,7 @@ RSpec.describe "Pages", type: :request do
 
       it "shows a sign in page for logged out users" do
         get "/live"
-        expect(response.body).to include("Sign In or Create Your Account")
+        expect(response.body).to include("Great to have you")
       end
 
       it "shows the video for logged in users" do

@@ -1,0 +1,31 @@
+<%= content_for :page_meta do %>
+  <%= render "articles/search/meta" %>
+<% end %>
+<div id="query-wrapper"></div>
+<div class="home sub-home" id="index-container"
+  data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
+  data-algolia-tag=""
+  data-feed="<%= params[:timeframe] || "base-feed"%>"
+  data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
+  >
+  <%= render "articles/search/sidebar" %>
+  <div class="articles-list" id="articles-list">
+    <div class="substories" id="substories">
+      <div class="query-results-nothing">
+        <div class="query-results-loader"></div>
+        <br/>
+      </div>
+      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
+        <%= render "stories/main_stories_feed" %>
+      <% end %>
+    </div>
+    <div class="loading-articles" id="loading-articles">
+      loading...
+    </div>
+  </div>
+  <%= render "articles/search/sidebar_additional" %>
+</div>
+<%= render "articles/algolia_search" %>
+
+<%= render "stories/narrow_nav_menu" %>
+<%= render "stories/stories_list_script" %>

@@ -11,10 +11,9 @@ class PodcastEpisodesController < ApplicationController
                                @podcast_episodes.map { |e| e["record_key"] })
     end
     @featured_story = Article.new
-    @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
-    render template: "articles/index"
+    render template: "podcast_episodes/index"
   end
 
   private
