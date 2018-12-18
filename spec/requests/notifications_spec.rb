@@ -307,7 +307,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the reaction as previously reacted if it was reacted on" do
-        Reaction.create(user: user, reactable: article, category: "like")
+        Reaction.create(user: user2, reactable: article, category: "like")
         get "/notifications"
         expect(response.body).to include "reaction-button reacted"
       end
