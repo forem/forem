@@ -87,7 +87,7 @@ RSpec.describe "Pages", type: :request do
         test_strategy.switch!(:live_starting_soon, false)
       end
 
-      it "shows the correct message" do
+      xit "shows the correct message" do
         expect(response.body).to include("Our event is starting soon")
       end
     end
