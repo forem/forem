@@ -4,13 +4,13 @@ RSpec.describe "NotificationsIndex", type: :request do
   let(:user) { create(:user) }
 
   describe "GET notifications" do
-    xit "renders page with the proper heading" do
+    it "renders page with the proper heading" do
       get "/notifications"
       expect(response.body).to include("Notifications")
     end
 
     context "when signed out" do
-      xit "renders the signup cue" do
+      it "renders the signup cue" do
         get "/notifications"
         expect(response.body).to include "<div class=\"signup-cue"
       end
@@ -19,7 +19,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when signed in" do
       before { sign_in user }
 
-      xit "does not render the signup cue" do
+      it "does not render the signup cue" do
         get "/notifications"
         expect(response.body).not_to include "Create your account"
       end
