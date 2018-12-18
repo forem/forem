@@ -82,6 +82,7 @@ gem "rolify", "~> 5.2"
 gem "rouge", "~> 3.3"
 gem "rubyzip", "~> 1.2", ">= 1.2.2"
 gem "s3_direct_upload", "~> 0.1"
+gem "sail", "~> 1.5"
 gem "sass-rails", "~> 5.0"
 gem "sdoc", "~> 0.4", group: :doc
 gem "serviceworker-rails", "~> 0.5"
