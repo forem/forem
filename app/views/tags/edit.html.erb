@@ -13,7 +13,7 @@
 </style>
 <br>
 <br>
-<br> 
+<br>
   <div class="user-profile-header tag-header" style="background-color:<%=@tag.bg_color_hex %>;color:<%=@tag.text_color_hex %>;">
     <div class="slanty-accent"></div>
     <div class="tag-or-query-header-container tag-edit-tag">
@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  
+
   <%= form_tag("/tag/#{@tag.id}", method: :patch, class: "tag-edit-form") do %>
     <div class="tag-edit-container">
       <% if flash[:success] %>
@@ -37,7 +37,7 @@
           </ul>
       <% end %>
       <h4>
-        <a target="_blank" href="https://thepracticaldev.s3.amazonaws.com/i/47bnwguw2rv8npa85egm.png">
+        <a target="_blank" href="https://thepracticaldev.s3.amazonaws.com/i/myeca1z2tq0k0ty6aqxf.png">
           Click here to see an example of attributes.
         </a>
       </h4>
@@ -64,12 +64,12 @@
       <div class="tag-form-field">
         <%= label_tag :rules_markdown %>
         <br>
-        <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: "", class: "tag-form-text-field tag-area-text" %>
+        <%= text_area_tag "tag[rules_markdown]", @tag.rules_markdown, placeholder: "i.e. submission guidelines", class: "tag-form-text-field tag-area-text" %>
       </div>
       <div class="tag-form-field">
         <%= label_tag :wiki_body_markdown %>
         <br>
-        <%= text_area_tag "tag[wiki_body_markdown]", @tag.wiki_body_markdown, placeholder: "", class: "tag-form-text-field tag-area-text" %>
+        <%= text_area_tag "tag[wiki_body_markdown]", @tag.wiki_body_markdown, placeholder: "This is an 'about' section. Feel free to add an FAQ, additional resources, etc.", class: "tag-form-text-field tag-area-text" %>
       </div>
       <div class="tag-form-field">
         <%= submit_tag "Save Changes", class: "tag-edit-submit" %>
