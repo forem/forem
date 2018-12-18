@@ -173,6 +173,16 @@ RSpec.describe "NotificationsIndex", type: :request do
       xit "renders the comment's processed HTML" do
         expect(response.body).to include CGI.escapeHTML(comment.processed_html)
       end
+
+      it "renders the reaction as previously reacted if it was reacted on" do
+        Reaction.create(user: user, reactable: comment, category: "like")
+        get "/notifications"
+        expect(response.body).to include "reaction-button reacted"
+      end
+
+      it "does not render the reaction as reacted if it was not reacted on" do
+        expect(response.body).not_to include "reaction-button reacted"
+      end
     end
 
     context "when a user has a new moderation notification" do
@@ -294,6 +304,16 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       xit "renders the author's name" do
         expect(response.body).to include CGI.escapeHTML(article.user.name)
+      end
+
+      it "renders the reaction as previously reacted if it was reacted on" do
+        Reaction.create(user: user, reactable: article, category: "like")
+        get "/notifications"
+        expect(response.body).to include "reaction-button reacted"
+      end
+
+      it "does not render the reaction as reacted if it was not reacted on" do
+        expect(response.body).not_to include "reaction-button reacted"
       end
     end
   end
