@@ -28,6 +28,10 @@ describe "Organization index", type: :feature do
         expect(page).to have_link(nil, href: org_user.path)
       end
     end
+
+    it "shows the proper title tag" do
+      expect(page).to have_title("#{organization.name} - DEV Community 👩‍💻👨‍💻")
+    end
   end
 
   context "when user follows an organization" do
