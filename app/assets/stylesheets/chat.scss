@@ -33,6 +33,7 @@
 
 .chat--expanded{
   min-width: 500px;
+  width: calc(100%-3px);
   @media screen and ( min-width: 500px ){
     min-width: 300px;
   }
@@ -58,6 +59,7 @@
 
 .chat__channels {
   width: 45px;
+  min-width: 45px;
   height: inherit;
   position: relative;
   overflow: hidden;
@@ -65,17 +67,21 @@
 
 .chat__channels--expanded{
   width: 200px;
+  min-width: 200px;
   @media screen and ( min-width: 400px ){
     width: 160px;
+    min-width: 160px;
   }
   @media screen and ( min-width: 1000px ){
     width: 200px;
+    min-width: 200px;
     .chat__channelstogglebutt{
       display: none;
     }
   }
   @media screen and ( min-width: 1300px ){
     width: calc(280px + 3vw);
+    min-width: calc(280px);
   }
   &.chat__channels--placeholder{
     @media screen and ( max-width: 599px ){
@@ -163,7 +169,11 @@
 
 .chat__activechat {
   height: inherit;
-  width: calc(100% - 45px);
+  max-width: calc(100% - 45px);
+  min-width: calc(100% - 200px);
+  @media screen and ( min-width: 1300px ){
+    min-width: calc(100% - calc(280px + 3vw));
+  }
 }
 
 .chat__videocall{
@@ -287,13 +297,16 @@
   border: 1px solid $outline-color;
   box-shadow: $bold-shadow;
   background: white;
+  flex-flow: row nowrap;
 }
 
 .activechatchannel__conversation{
+  order: 1;
   display: flex;
   flex-direction: column;
+  flex: 0 1 auto;
   width: 100%;
-  flex-grow: 3;
+  min-width: 55%;
 }
 
 .activechatchannel__header{
@@ -345,18 +358,6 @@
   height: 70px;
 }
 
-// Chatmessage
-.chatmessage {
-  padding: 3px 10px;
-  display: flex;
-  // justify-content: space-between;
-
-  &:hover {
-    background: $light-gray;
-  }
-
-}
-
 .activechatchannel__incomingcall{
   border: 2px solid $green;
   box-shadow: 6px 6px 0px $green;
@@ -370,13 +371,15 @@
 }
 
 .activechatchannel__activecontent{
+  order: 2;
+  flex: 0 1 auto;
   border: 1px solid $outline-color;
   border-left: 2px solid $outline-color;
   padding: 13px;
-  min-width: 310px;
-  margin-left: -180px;
+  min-width: 45%;
+  // margin-left: -50%;
   background: white;
-  flex-basis: 80%;
+  // flex-basis: 80%;
   z-index: 200;
   position: relative;
   box-sizing: border-box;
@@ -384,13 +387,13 @@
   max-width:96%;
   @media screen and ( min-width: 1000px ){
     margin-left: initial;
-    min-width: 0px;
+    // min-width: 0px;
     padding: 18px;
     max-width:480px;
   }
   @media screen and ( min-width: 1300px ){
     margin-left: initial;
-    min-width: 0px;
+    // min-width: 0px;
     padding: 18px;
     max-width:620px;
   }
@@ -550,6 +553,7 @@
   height: inherit;
   width: 99%;
 }
+
 .chatchanneltabbutton{
   width: 93%;
   border: none;
@@ -563,6 +567,7 @@
     }
   }
 }
+
 .chatchanneltab {
   display:inline-block;
   width: 90%;
@@ -600,20 +605,25 @@
   border-radius: 100px;
   // vertical-align: -0.05em;
   margin-right: 3px;
+
   img {
     height: calc(20px + 0.3vw);
     width: calc(20px + 0.3vw);
     vertical-align: calc(-7px - 0.14vw);
     border: 2px solid transparent;
+
     &.chatchanneltabindicatordirectimage{
       border: 2px solid $light-medium-gray;
       border-radius: 100px;
     }
+
   }
+
   .chatchanneltabgroupicon{
     display: inline-block;
     margin-left: calc(20px + 0.3vw);
   }
+
 }
 
 .chatchanneltabindicator--new{
@@ -698,19 +708,52 @@
   border-top: 1px solid #c9c9c9
 }
 
+// Chatmessage
+.chatmessage {
+  padding: 3px 10px;
+  display: flex;
+  // justify-content: space-between;
+  max-width: 100%;
+  &:hover {
+    background: $light-gray;
+  }
+}
+
+.chatmessage__profileimage {
+
+}
+
 .chatmessage__body {
   flex-grow: 1;
+  max-width: calc(100% - 37px)
+}
+
+.chatmessagebody__username {
+  font-weight: 600;
+}
+
+.chatmessage__timestamp {
+  font-size: 11px;
+  color: darken($light-medium-gray, 6%);
+  min-width: 85px;
+  text-align:right;
+  padding-left: 4px;
+  vertical-align: 1px;
+}
+
+.chatmessage__bodytext{
+  margin: 3px 1px 4px;
   overflow-wrap: break-word;
   word-wrap: break-word;
-  word-break: break-all;
+  word-break: break-word;
+}
+
+.chatmessagebody__message {
   pre {
+
     background:$lightest-gray;
   }
   code {
-    white-space: pre-wrap;       /* css-3 */
-    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
-    white-space: -pre-wrap;      /* Opera 4-6 */
-    white-space: -o-pre-wrap;    /* Opera 7 */
     background:$lightest-gray;
     padding:0.1em 0.3em 0px;
     border-radius:2px;
@@ -721,19 +764,6 @@
     line-height:1.4em;
     font-family: $monospace;
   }
-}
-
-.chatmessage__bodytext{
-  margin: 3px 1px 4px;
-}
-
-.chatmessage__timestamp {
-  font-size: 11px;
-  color: darken($light-medium-gray, 6%);
-  min-width: 85px;
-  text-align:right;
-  padding-left: 4px;
-  vertical-align: 1px;
 }
 
 .chatmessagebody__profileimage {
@@ -748,19 +778,12 @@
   }
 }
 
-.chatmessagebody__username {
-  font-weight: 600;
-}
-
 .chatmessagebody__username--link {
   color: inherit;
 }
 
 .chatmessagebody__divider {
 
-}
-
-.chatmessagebody__message {
 }
 
 .chatmessagebody__currentuser {
