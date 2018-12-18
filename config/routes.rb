@@ -49,7 +49,6 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    mount Flipflop::Engine => "/features"
   end
 
   namespace :api, defaults: { format: "json" } do
