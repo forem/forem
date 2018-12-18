@@ -1,5 +1,5 @@
 module Constants
-  MASTODON_INSTANCE_WHITELIST = [
+  ALLOWED_MASTODON_INSTANCES = [
     "acg.mn",
     "bitcoinhackers.org",
     "chaos.social",
@@ -45,6 +45,7 @@ module Constants
     "qiitadon.com",
     "radical.town",
     "ro-mastodon.puyo.jp",
+    "ruby.social",
     "ruhr.social",
     "social.targaryen.house",
     "social.tchncs.de",

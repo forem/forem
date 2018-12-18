@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
     t.integer "reactions_count", default: 0, null: false
+    t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
     t.integer "score", default: 0
@@ -307,13 +308,6 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
-  end
-
-  create_table "flipflop_features", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.boolean "enabled", default: false, null: false
-    t.string "key", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "follows", id: :serial, force: :cascade do |t|
@@ -587,6 +581,16 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "sail_settings", force: :cascade do |t|
+    t.integer "cast_type", limit: 2, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.string "value", null: false
+    t.index ["name"], name: "index_settings_on_name", unique: true
+  end
+
   create_table "search_keywords", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "google_checked_at"
@@ -746,6 +750,7 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
@@ -812,7 +817,6 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "username"
     t.string "website_url"
     t.datetime "workshop_expiration"
-    t.string "mastodon_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"

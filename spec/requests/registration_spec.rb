@@ -7,7 +7,7 @@ RSpec.describe "Registrations", type: :request do
     context "when not logged in" do
       it "shows the sign in page" do
         get "/enter"
-        expect(response.body).to include "Sign In or Create Your Account"
+        expect(response.body).to include "Great to have you"
       end
     end
 

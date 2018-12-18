@@ -20,7 +20,7 @@
   z-index: 1000;
   font-size: 17px;
   height: 48px;
-  background: $tan;
+  background: var(--theme-top-bar-background, $tan);
   position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
@@ -29,7 +29,6 @@
     width: 1250px;
     margin: auto;
     position: relative;
-    background: $tan;
     a {
       &:active {
         opacity: 0.8;

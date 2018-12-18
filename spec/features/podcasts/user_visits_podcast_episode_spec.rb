@@ -4,7 +4,7 @@ describe "User visits podcast show page", type: :feature do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
 
-  it "they see the content of the hero" do
+  it "they see the content of the hero", retry: 3 do
     visit podcast_episode.path.to_s
     expect(page).to have_text(podcast_episode.title)
     expect(page).to have_css ".record"

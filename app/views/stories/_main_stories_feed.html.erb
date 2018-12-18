@@ -27,7 +27,7 @@
     <% end %>
     <%= render "articles/single_story", story: story %>
     <% if i == 0 && @comments && @comments.size > 0 && @user %>
-      <%= render "articles/comments_section" %>
+      <%= render "users/comments_section" %>
     <% end %>
   <% end %>
 <% else %>
@@ -68,7 +68,7 @@
 
 
 <% if @stories.length == 0 && @comments && @comments.size > 0 && @user %>
-  <%= render "articles/comments_section" %>
+  <%= render "users/comments_section" %>
 <% end %>
 <% if @stories.size > 1 %>
   <div class="placeholder-div">

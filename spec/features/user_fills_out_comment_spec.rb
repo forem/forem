@@ -20,6 +20,7 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
 
   # rubocop:disable RSpec/ExampleLength
   it "User fill out commen box then click previews and submit" do
+    visit user.path
     visit article.path.to_s
     fill_in "text-area", with: raw_comment
     find(".checkbox").click
