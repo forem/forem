@@ -111,7 +111,7 @@ export default class Chat extends Component {
   componentDidUpdate() {
     if (document.getElementById('messagelist')) {
       if (!this.state.scrolled) {
-        `scrollToBottom`();
+        scrollToBottom();
       }
     }
   }
