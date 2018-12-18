@@ -111,7 +111,7 @@ export default class Chat extends Component {
   componentDidUpdate() {
     if (document.getElementById('messagelist')) {
       if (!this.state.scrolled) {
-        scrollToBottom();
+        `scrollToBottom`();
       }
     }
   }
@@ -273,8 +273,6 @@ export default class Chat extends Component {
 
   receiveNewMessage = message => {
     const receivedChatChannelId = message.chat_channel_id;
-    console.log(receivedChatChannelId, "receivedChatChannelId")
-    console.log(this.state.activeChannelId, "activeChannelId")
     if (!this.state.messages[receivedChatChannelId]) {
       return;
     }
