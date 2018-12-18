@@ -142,6 +142,16 @@ RSpec.describe NotifyMailer, type: :mailer do
       end
     end
 
+    describe "#tag_moderator_confirmation_email" do
+      let(:user) { create(:user) }
+      let(:tag) { create(:tag) }
+
+      it "renders proper subject" do
+        moderator_email = described_class.tag_moderator_confirmation_email(user, tag.name)
+        expect(moderator_email.subject).to eq "Congrats! You're the moderator for ##{tag.name}"
+      end
+    end
+
     describe "#export_email" do
       it "renders proper subject" do
         export_email = described_class.export_email(user, "attachment")
