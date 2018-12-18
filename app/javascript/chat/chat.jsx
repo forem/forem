@@ -109,9 +109,11 @@ export default class Chat extends Component {
   }
 
   componentDidUpdate() {
-    if (!this.state.scrolled) {
-      scrollToBottom();
-    }
+    // if (document.getElementById('messagelist')) {
+      if (!this.state.scrolled) {
+        scrollToBottom();
+      }
+    // }
   }
 
   liveCoding = e => {
@@ -143,7 +145,7 @@ export default class Chat extends Component {
 
   subscribePusher = channelName => {
     if (this.state.subscribedPusherChannels.includes(channelName)) {
-      
+
     } else {
       setupPusher(this.props.pusherKey, {
         channelId: channelName,
@@ -194,7 +196,7 @@ export default class Chat extends Component {
       const channel = channels[0];
       const channelSlug =
         channel.channel_type === 'direct'
-          ? `@${ 
+          ? `@${
             channel.slug
               .replace(`${window.currentUser.username}/`, '')
               .replace(`/${window.currentUser.username}`, '')}`
@@ -271,6 +273,8 @@ export default class Chat extends Component {
 
   receiveNewMessage = message => {
     const receivedChatChannelId = message.chat_channel_id;
+    console.log(receivedChatChannelId, "receivedChatChannelId")
+    console.log(this.state.activeChannelId, "activeChannelId")
     if (!this.state.messages[receivedChatChannelId]) {
       return;
     }
@@ -648,7 +652,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
 .
@@ -659,7 +663,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
+              You have joined
               {' '}
               {activeChannel.channel_name}
 ! All interactions
@@ -668,7 +672,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
 .
@@ -812,7 +816,7 @@ export default class Chat extends Component {
             {notificationsState}
           </div>
         );
-      } 
+      }
         return (
           <div className="chat__channels">
             {notificationsButton}
@@ -835,7 +839,7 @@ export default class Chat extends Component {
             {notificationsState}
           </div>
         );
-      
+
     }
     return '';
   };
@@ -948,8 +952,8 @@ export default class Chat extends Component {
     return (
       <div
         className={
-          `chat chat--${ 
-          this.state.expanded ? 'expanded' : 'contracted' 
+          `chat chat--${
+          this.state.expanded ? 'expanded' : 'contracted'
           }${detectIOSSafariClass}`
         }
         data-no-instant
