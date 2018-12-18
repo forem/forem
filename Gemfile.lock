@@ -272,6 +272,8 @@ GEM
     equalizer (0.0.11)
     errbase (0.1.0)
     erubi (1.7.1)
+    et-orbi (1.1.6)
+      tzinfo
     eventmachine (1.2.5)
     excon (0.60.0)
     execjs (2.7.0)
@@ -303,8 +305,6 @@ GEM
       thor (~> 0.14)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
-    flipflop (2.4.0)
-      activesupport (>= 4.0)
     fog (1.41.0)
       fog-aliyun (>= 0.1.0)
       fog-atmos
@@ -452,6 +452,9 @@ GEM
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
     front_matter_parser (0.2.0)
+    fugit (1.1.6)
+      et-orbi (~> 1.1, >= 1.1.6)
+      raabro (~> 1.1)
     get_process_mem (0.2.2)
     gibbon (2.2.5)
       faraday (>= 0.9.1)
@@ -651,6 +654,7 @@ GEM
       caze
       rest-client
     pusher-signature (0.1.8)
+    raabro (1.1.6)
     rack (2.0.6)
     rack-host-redirect (1.3.0)
       rack
@@ -769,6 +773,11 @@ GEM
     safe_yaml (1.0.4)
     safely_block (0.2.1)
       errbase
+    sail (1.5.1)
+      fugit
+      jquery-rails
+      rails
+      sass-rails
     sass (3.7.2)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -959,7 +968,6 @@ DEPENDENCIES
   feedjira (~> 2.2)
   figaro (~> 1.1)
   fix-db-schema-conflicts!
-  flipflop (~> 2.4)
   fog (~> 1.41)
   front_matter_parser (~> 0.2)
   gibbon (~> 2.2)
@@ -1014,6 +1022,7 @@ DEPENDENCIES
   ruby-prof (~> 0.17)
   rubyzip (~> 1.2, >= 1.2.2)
   s3_direct_upload (~> 0.1)
+  sail (~> 1.5)
   sass-rails (~> 5.0)
   sdoc (~> 0.4)
   selenium-webdriver (~> 3.141)

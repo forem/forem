@@ -25,11 +25,10 @@
 <% end %>
 </style>
 
-<% if (user_signed_in? && Flipflop.live_is_live?) || current_user&.has_role?(:super_admin) %>
+<% if current_user&.has_role?(:super_admin) %>
   <div class="live-container">
     <div class="live-component">
       <div>
-        <!--<script src="//player.dacast.com/js/player.js" width="1920" height="1080" id="<%= ENV["DACAST_STREAM_CODE"]%>" player="jw7" jwurl="juQPHW/th8VUHaO/2KkeVlAdGN9ksJZog2z6SH+TyMU=" class="dacast-video"></script>-->
         <iframe class="live-video" src="//iframe.dacast.com/b/105417/c/465464" width="1920" height="1080" frameborder="0" scrolling="no" allow="autoplay" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
       </div>
       <div class="live-chat-wrapper">
@@ -38,7 +37,7 @@
     </div>
   </div>
   <div class="live-under-message">DEV Live is in beta and currently does not support Safari. We recommend Chrome or Firefox for optimal viewing experience. If you are having issues, contact <a href="mailto:members@dev.to">members@dev.to</a> for support. ❤️</div>
-<% elsif Flipflop.live_starting_soon? %>
+<% elsif false %>
   <div class="live-upcoming-info">
     <h1 style="text-align: center"><span style="display: inline-block">DEV LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 55px; height: 50px; vertical-align: text-top;" %></span></h1>
     <h4 style="text-align: center">
@@ -50,7 +49,7 @@
       window.location.reload(1);
     }, 2500);
   </script>
-<% elsif Flipflop.live_is_live? %>
+<% elsif false %>
   <div class="live-upcoming-info">
     <h1 style="text-align: center;font-size:3.5em;margin:-100px auto">DEV IS <span style="display: inline-block">LIVE <%= image_tag "emoji/emoji-one-television.png", style: "width: 60px;" %></span></h1>
     <%= render "devise/registrations/registration_form" %>
