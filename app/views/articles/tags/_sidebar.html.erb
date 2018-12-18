@@ -4,7 +4,7 @@
     <% if @tag_model && @tag_model.short_summary.present? %>
       <div class="widget">
         <header>
-          #<%= @tag %> 👋
+          <h4>#<%= @tag %> 👋</h4>
         </header>
         <div class="widget-body">
           <%= @tag_model.short_summary.html_safe %>
@@ -14,7 +14,7 @@
     <% if @tag_model && @tag_model.rules_html.present? %>
       <div class="widget">
         <header>
-          submission guidelines
+          <h4>submission guidelines</h4>
         </header>
         <div class="widget-body">
           <%= @tag_model.rules_html.html_safe %>
@@ -27,7 +27,7 @@
     <% if @tag_model && @tag_model.wiki_body_html.present? %>
       <div class="widget">
         <header>
-          about #<%= @tag %>
+          <h4>about #<%= @tag %></h4>
         </header>
         <div class="widget-body">
           <%= @tag_model.wiki_body_html.html_safe %>

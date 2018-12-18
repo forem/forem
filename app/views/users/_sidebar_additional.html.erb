@@ -4,7 +4,7 @@
     <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
       <a class="widget" href="<%= repo.url %>" target="_blank">
         <header>
-          <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %>
+          <h4><span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %></h4>
         </header>
         <div class="widget-body">
           <%= repo.description %>
