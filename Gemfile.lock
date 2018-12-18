@@ -303,8 +303,6 @@ GEM
       thor (~> 0.14)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
-    flipflop (2.4.0)
-      activesupport (>= 4.0)
     fog (1.41.0)
       fog-aliyun (>= 0.1.0)
       fog-atmos
@@ -959,7 +957,6 @@ DEPENDENCIES
   feedjira (~> 2.2)
   figaro (~> 1.1)
   fix-db-schema-conflicts!
-  flipflop (~> 2.4)
   fog (~> 1.41)
   front_matter_parser (~> 0.2)
   gibbon (~> 2.2)
