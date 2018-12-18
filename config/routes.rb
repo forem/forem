@@ -20,7 +20,6 @@ Rails.application.routes.draw do
 
     root controller: DashboardManifest::ROOT_DASHBOARD, action: :index
   end
-  mount Sail::Engine => "/internal/sail"
 
   namespace :internal do
     resources :comments
@@ -50,6 +49,7 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
+    mount Flipflop::Engine => "/features"
   end
 
   namespace :api, defaults: { format: "json" } do

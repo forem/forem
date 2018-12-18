@@ -1,4 +1,7 @@
 Rails.application.configure do
+  # Replace with a lambda or method name defined in ApplicationController
+  # to implement access control for the Flipflop dashboard.
+  config.flipflop.dashboard_access_filter = nil
   # Settings specified here will take precedence over those in config/application.rb.
 
   # The test environment is used exclusively to run your application's
