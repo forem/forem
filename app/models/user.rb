@@ -13,6 +13,7 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
+  has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
