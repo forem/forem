@@ -1,0 +1,72 @@
+<% title "Tag Moderation Guide for dev.to()" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/tag-moderation"/>
+  <meta name="description" content="Tag Moderation Guide for dev.to()">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/tag-moderation" />
+  <meta property="og:title" content="Tag Moderation Guide for dev.to()" />
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" />
+  <meta property="og:description" content="Things to know!" />
+  <meta property="og:site_name" content="The Practical Dev" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="Tag Moderation Guide for dev.to()">
+  <meta name="twitter:description" content="Things to know!">
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+<% end %>
+<style>
+  img {
+    border: solid #444444;
+  }
+</style>
+
+<header>
+  <div class="blank-space"></div>
+</header>
+<div class="container article">
+  <div class="title">
+    <h1>
+      Tag Moderation Guide
+    </h1>
+  </div>
+  <div class="body">
+    <p>The DEV Tag Moderator program is currently in beta, so privileges will evolve over time.  Currently, tag moderators have the ability to:</p>
+    <ul>
+      <li>Remove tags you are moderating from certain posts</li>
+      <li>Update the tag sidebar (i.e. add a description, submission guideline, etc).</li>
+      <li>Update the tag’s ‘pretty name’ and colors.</li>
+    </ul>
+    <h3>How to remove tags from a post</h3>
+    <p>If you are the moderator of a tag, you have the ability to remove that tag from posts that should not contain it. This action helps us keep content categorized appropriately so that people can confidently follow tags, knowing that they'll see the subjects they're interested in.</p>
+    <ol>
+      <li>Visit the article in question.</li>
+      <li>Append /mod to the end of the article URL (i.e. https://dev.to/ben/devto-is-now-open-source-5n1/mod)</li>
+      <li>You'll see the below form. Update the appropriate fields. Please include the reason for removing your tag from this post. </li>
+      <li>Note: once you remove the tag, the author will not be able to add it back. Only remove tags when you are confident they are not appropriate, and please do not remove tags simply because you did not like the post.</li>
+      <li>Click remove!</li>
+    </ol>
+    <img alt="tag-removal-form" src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/u67xiw2uon9g5mhbbeff.png") %>">
+
+    <h3>How to Update the Tag Sidebar</h3>
+    <ol>
+      <li>Visit: https://dev.to/t/{tag name}/edit (i.e. https://dev.to/t/discuss/edit)</li>
+      <li>Update form. See below for a reference for each field.</li>
+      <li>Click Save!</li>
+    </ol>
+    <img alt="tag-edit-form" src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/my9u83otmqzep38lo3ib.png") %>">
+    <br>
+    <img alt="example-tag-page" src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/cc8vz48djnhty6c31jog.png") %>">
+    <h4>Examples of supported tags:</h4>
+      <ul>
+        <li><a href="https://dev.to/t/shecoded">#shecoded</a></li>
+        <li><a href="https://dev.to/t/weeklyui">#weeklyui</a></li>
+        <li><a href="https://dev.to/t/meta">#meta</a></li>
+      </ul>
+    <h3>How to become a moderator</h3>
+    <p>If you're interested in becoming a tag moderator, please email yo@dev.to!</p>
+  </div>
+</div>

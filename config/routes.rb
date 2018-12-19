@@ -222,6 +222,7 @@ Rails.application.routes.draw do
   get "/scholarships", to: redirect("/p/scholarships")
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
+  get "/tag-moderation" => "pages#tag_moderation"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
