@@ -4,7 +4,7 @@
     <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
       <div class="widget">
         <header>
-          #discuss
+          <h4>#discuss</h4>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -26,7 +26,7 @@
         <% if @boostable_posts.any? %>
           <div class="widget">
             <header>
-              trending guides/resources
+              <h4>trending guides/resources</h4>
             </header>
             <div class="widget-body">
               <div class="widget-link-list">

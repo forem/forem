@@ -5,7 +5,7 @@
       <% if @user.mostly_work_with.present? %>
         <div class="widget">
           <header>
-            skills/languages
+            <h4>skills/languages</h4>
           </header>
           <div class="widget-body">
             <%= sanitized_sidebar @user.mostly_work_with %>
@@ -15,7 +15,7 @@
       <% if @user.currently_learning.present? %>
         <div class="widget">
           <header>
-            learning/trying
+            <h4>learning/trying</h4>
           </header>
           <div class="widget-body">
             <%= sanitized_sidebar @user.currently_learning %>
@@ -25,7 +25,7 @@
       <% if @user.currently_hacking_on.present? %>
         <div class="widget">
           <header>
-            projects and hacks
+            <h4>projects and hacks</h4>
           </header>
           <div class="widget-body">
             <%= sanitized_sidebar @user.currently_hacking_on %>
@@ -35,7 +35,7 @@
       <% if @user.available_for.present? %>
         <div class="widget">
           <header>
-            available for
+            <h4>available for</h4>
           </header>
           <div class="widget-body">
             <%= sanitized_sidebar @user.available_for %>
