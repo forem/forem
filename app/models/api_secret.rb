@@ -1,0 +1,2 @@
+class ApiSecret < ApplicationRecord
+end
