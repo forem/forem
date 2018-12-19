@@ -9,7 +9,7 @@ RSpec.describe AssignTagModerator do
   before do
     user_ids = [user_one.id, user_two.id]
     tag_names = [tag_one.name, tag_two.name]
-    ChatChannel.create(slug: "tag_moderators", channel_name: "Tag Moderators", channel_type: "invite_only")
+    ChatChannel.create(slug: "tag-moderators", channel_name: "Tag Moderators", channel_type: "invite_only")
     described_class.add_tag_moderators(user_ids, tag_names)
   end
 
@@ -18,7 +18,7 @@ RSpec.describe AssignTagModerator do
   end
 
   it "adds user to tag moderator channel" do
-    channel = ChatChannel.find_by(slug: "tag_moderators")
+    channel = ChatChannel.find_by(slug: "tag-moderators")
     expect(channel.users.count).to eq(2)
   end
 end
