@@ -68,6 +68,7 @@ function initReactions() {
         var butt = butts[i];
         butt.onclick = function (event) {
           event.preventDefault();
+          sendHapticMessage('medium');
           var thisButt = this;
           thisButt.classList.add('reacted');
 
