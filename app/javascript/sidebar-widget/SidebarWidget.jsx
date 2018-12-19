@@ -79,7 +79,7 @@ class SidebarWidget extends Component {
       return (
         <div className="widget" id="widget-00001">
           <div className="widget-suggested-follows-container">
-            <header>{'who to follow'}</header>
+            <header><h4>who to follow</h4></header>
             <div className="widget-body">{users}</div>
           </div>
         </div>

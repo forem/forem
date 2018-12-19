@@ -4,7 +4,7 @@
     <% unless user_signed_in? %>
       <div class="widget signin-cta-widget">
         <header>
-          DEV.TO(GETHER)
+          <h4>DEV.TO(GETHER)</h4>
         </header>
         <div class="widget-body">
           <center style="margin-bottom: 2px;">
@@ -28,7 +28,7 @@
     <% ApplicationConfig["TRENDING_TAGS"].split(",").each do |tag| %>
       <div class="widget">
         <header>
-          <a href="/t/<%= tag %>">#<%= tag %></a>
+          <a href="/t/<%= tag %>"><h4>#<%= tag %></h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -44,7 +44,7 @@
     <% if Article.active_help.any? %>
       <div class="widget">
         <header>
-          <a href="/t/help">#help</a>
+          <a href="/t/help"><h4>#help</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -59,7 +59,7 @@
     <% if Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime).any? %>
       <div class="widget">
         <header>
-          <a href="/t/ama">#ama</a>
+          <a href="/t/ama"><h4>#ama</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -75,7 +75,7 @@
     <% if Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime).any? %>
       <div class="widget">
         <header>
-          <a href="/t/challenge">#challenge</a>
+          <a href="/t/challenge"><h4>#challenge</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -90,7 +90,7 @@
     <% end %>
     <div class="widget">
       <header>
-        <a href="/t/discuss">#discuss</a>
+        <a href="/t/discuss"><h4>#discuss</h4></a>
       </header>
       <div class="widget-body">
         <div class="widget-link-list">
@@ -104,7 +104,7 @@
     </div>
     <div class="widget">
       <header>
-        <a href="/t/explainlikeimfive">#explainlikeimfive</a>
+        <a href="/t/explainlikeimfive"><h4>#explainlikeimfive</h4></a>
       </header>
       <div class="widget-body">
         <div class="widget-link-list">
@@ -118,7 +118,7 @@
     </div>
     <div class="widget">
       <header>
-        <a href="/t/healthydebate">#healthydebate</a>
+        <a href="/t/healthydebate"><h4>#healthydebate</h4></a>
       </header>
       <div class="widget-body">
         <div class="widget-link-list">
@@ -132,7 +132,7 @@
     </div>
     <div class="widget">
       <header>
-        <a href="/t/meta">#meta</a>
+        <a href="/t/meta"><h4>#meta</h4></a>
       </header>
       <div class="widget-body">
         <div class="widget-link-list">
@@ -147,7 +147,7 @@
     <% if user_signed_in? %>
       <div class="widget" id="podcast-widget">
         <header>
-          <a href="/pod">latest podcasts</a>
+          <a href="/pod"><h4>latest podcasts</h4></a>
         </header>
         <div class="widget-body">
             <% @podcast_episodes.each do |ep| %>
@@ -167,7 +167,7 @@
         <% if @boostable_posts.any? %>
           <div class="widget">
             <header>
-              trending guides/resources
+              <h4>trending guides/resources</h4>
             </header>
             <div class="widget-body">
               <div class="widget-link-list">
