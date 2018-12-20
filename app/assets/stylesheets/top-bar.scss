@@ -312,10 +312,12 @@
     font-size: 0.9em;
     background: #e8e7e7;
     background: var(--theme-top-bar-search-background, #e8e7e7);
+    color: var(--theme-top-bar-search-color, $black);
     -webkit-appearance: none;
     &::placeholder {
-      color: #777;
-      color: var(--theme-top-bar-search-color, #777);
+      opacity: 0.5;
+      color: $black;
+      color: var(--theme-top-bar-search-color, $black);
     }
   }
 }
