@@ -227,7 +227,7 @@ Rails.application.routes.draw do
   post "/fallback_activity_recorder" => "ga_events#create"
 
   scope "p" do
-    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide information
+    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
                        markdown_basics scholarships wall_of_patrons membership_form badges]
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
