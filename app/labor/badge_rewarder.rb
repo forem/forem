@@ -1,15 +1,7 @@
 module BadgeRewarder
   def self.award_yearly_club_badges
-    message = "Happy DEV birthday!"
-    User.where("created_at < ? AND created_at > ?", 1.year.ago, 367.days.ago).each do |user|
-      achievement = BadgeAchievement.create(
-        user_id: user.id,
-        badge_id: 2,
-        rewarding_context_message_markdown: message,
-      )
-      user.save if achievement.valid?
-      # ID 2 is the proper ID in prod. We should change in future to ENV var.
-    end
+    award_one_year_badges
+    award_two_year_badges
   end
 
   def self.award_beloved_comment_badges
@@ -59,6 +51,30 @@ module BadgeRewarder
         rewarding_context_message_markdown: message_markdown,
       )
       user.save
+    end
+  end
+
+  def self.award_one_year_badges
+    message = "Happy DEV birthday!"
+    User.where("created_at < ? AND created_at > ?", 1.year.ago, 367.days.ago).each do |user|
+      achievement = BadgeAchievement.create(
+        user_id: user.id,
+        badge_id: Badge.find_by_slug("one-year-club").id,
+        rewarding_context_message_markdown: message,
+      )
+      user.save if achievement.valid?
+    end
+  end
+
+  def self.award_two_year_badges
+    message = "Happy DEV birthday! Can you believe it's been two years?"
+    User.where("created_at < ? AND created_at > ?", 2.year.ago, 732.days.ago).each do |user|
+      achievement = BadgeAchievement.create(
+        user_id: user.id,
+        badge_id: Badge.find_by_slug("two-year-club").id,
+        rewarding_context_message_markdown: message,
+      )
+      user.save if achievement.valid?
     end
   end
 end
