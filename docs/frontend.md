@@ -20,3 +20,13 @@ To get Storybook running on your local:
 * 📦 Run `npm install` or `yarn` to ensure all your dependencies are installed.
 * 🏁 Run `npm run storybook` or `yarn storybook` to start Storybook.
 * 🏗️ Start working on your component and see the changes in Storybook as you save.
+
+### Browser Support
+
+#### Chrome >= 59
+#### Firefox >= 52
+#### Safari >= 10
+#### Opera >= 50
+#### Edge >= 16
+
+We do not officially support any version of IE or any browser not listed here, but don't go out of your way to not support it! And if there is anything we should change about this, open an issue.
