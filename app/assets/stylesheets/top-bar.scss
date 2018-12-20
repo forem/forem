@@ -311,6 +311,11 @@
     padding: 8px;
     font-size: 0.9em;
     background: #e8e7e7;
+    background: var(--theme-top-bar-search-background, #e8e7e7);
     -webkit-appearance: none;
+    &::placeholder {
+      color: #777;
+      color: var(--theme-top-bar-search-color, #777);
+    }
   }
 }
