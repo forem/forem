@@ -71,6 +71,7 @@
       z-index: 10;
       top: 1px;
       right: 90px;
+      fill: var(--theme-top-bar-color, $black);
       @media screen and (min-width: 700px) {
         right: 110px;
       }
@@ -109,6 +110,7 @@
       display: block;
       text-align: center;
       z-index: 10;
+      fill: var(--theme-top-bar-color, $black);
       @media screen and (min-width: 700px) {
         right: 73px;
       }
