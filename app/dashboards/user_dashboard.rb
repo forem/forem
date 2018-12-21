@@ -108,7 +108,7 @@ class UserDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how users are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(user)
-  #   user.username
-  # end
+  def display_resource(user)
+    "ID: ##{user.id} - #{user.username}"
+  end
 end

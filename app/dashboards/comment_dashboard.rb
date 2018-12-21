@@ -61,13 +61,14 @@ class CommentDashboard < Administrate::BaseDashboard
   FORM_ATTRIBUTES = %i[
     user_id
     body_markdown
+    score
     deleted
   ].freeze
 
   # Overwrite this method to customize how comments are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(comment)
-  #   "Comment ##{comment.id}"
-  # end
+  def display_resource(comment)
+    "Comment #{comment.id} - ##{comment.title}"
+  end
 end

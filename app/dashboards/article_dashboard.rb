@@ -100,6 +100,6 @@ class ArticleDashboard < Administrate::BaseDashboard
   # across all pages of the admin dashboard.
   #
   def display_resource(article)
-    article.title
+    "Article ##{article.id} - #{article.title}"
   end
 end
