@@ -64,7 +64,8 @@ class User < ApplicationRecord
   validates :github_username, uniqueness: { allow_blank: true }
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  validates :website_url, :employer_url, :mastodon_url,
+    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   # rubocop:disable Metrics/LineLength
   validates :facebook_url,
               format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
@@ -90,7 +91,6 @@ class User < ApplicationRecord
               allow_blank: true,
               format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   # rubocop:enable Metrics/LineLength
-  validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
                            message: "%{value} is not a valid shirt style" },
@@ -109,10 +109,8 @@ class User < ApplicationRecord
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true
-  validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
               length: { maximum: 100 }
-  validates :mastodon_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :employment_title, :education, :location,
               length: { maximum: 100 }
   validates :mostly_work_with, :currently_learning,
