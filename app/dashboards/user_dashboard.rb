@@ -99,6 +99,12 @@ class UserDashboard < Administrate::BaseDashboard
     text_color_hex
     reputation_modifier
     feed_url
+    facebook_url
+    behance_url
+    dribbble_url
+    medium_url
+    gitlab_url
+    linkedin_url
     saw_onboarding
   ].freeze
 
