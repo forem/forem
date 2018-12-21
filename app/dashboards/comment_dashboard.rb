@@ -11,7 +11,6 @@ class CommentDashboard < Administrate::BaseDashboard
     commentable: Field::Polymorphic,
     user: Field::BelongsTo,
     user_id: UserIdField,
-    name_of_user: NameOfUserField,
     reactions: Field::HasMany,
     id: Field::Number,
     body_markdown: Field::Text.with_options(searchable: true),
@@ -32,7 +31,7 @@ class CommentDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
-    name_of_user
+    user
     body_markdown
     reactions
   ].freeze
@@ -42,7 +41,6 @@ class CommentDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     commentable
     user
-    name_of_user
     reactions
     id
     body_markdown
