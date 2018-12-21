@@ -30,7 +30,6 @@ class UserDashboard < Administrate::BaseDashboard
     updated_at: Field::DateTime,
     articles: Field::HasMany,
     comments: Field::HasMany,
-    sign_in_count: Field::Number,
     reputation_modifier: Field::Number,
     signup_cta_variant: Field::String,
     onboarding_package_requested: Field::Boolean,
