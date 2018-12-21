@@ -55,6 +55,8 @@
       border-radius: 3px;
       border: 2px solid $black;
       border: 2px solid var(--theme-top-bar-write-color, $black);
+      color: var(--theme-top-bar-write-color, $black);
+      background: var(--theme-top-bar-write-background, $green);
       @media screen and (min-width: 560px) {
         display: block;
         right: 140px;
