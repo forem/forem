@@ -67,6 +67,6 @@ class CommentDashboard < Administrate::BaseDashboard
   # across all pages of the admin dashboard.
   #
   def display_resource(comment)
-    "Comment #{comment.id} - ##{comment.title}"
+    "Comment ##{comment.id} - #{comment.title}"
   end
 end
