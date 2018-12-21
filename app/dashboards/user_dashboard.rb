@@ -61,14 +61,11 @@ class UserDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     profile_image
     id
-    created_at
     username
-    name
     twitter_username
     github_username
-    following_tags_count
-    saw_onboarding
-    monthly_dues
+    name
+    banned
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
