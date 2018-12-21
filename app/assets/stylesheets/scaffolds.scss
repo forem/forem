@@ -80,7 +80,9 @@ pre{
 
 .cta {
   color: $black;
+  color: var(--theme-top-bar-write-color, $black);
   background: $green;
+  background: var(--theme-top-bar-write-background, $green);
   font-family: $helvetica-condensed;
   -webkit-appearance: none;
   font-stretch:condensed;
