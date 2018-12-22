@@ -18,7 +18,7 @@
 <p>You can generate personal access tokens to use for authentication with the DEV API.</p>
 <h3>Generate an access token</h3>
 <h4>Token description</h4>
-<%= form_tag "/users/api_secrets", method: :post do %>
+<%= form_tag users_api_secrets_path, method: :post do %>
   <div class="field">
     <%= text_field_tag(:description, nil, placeholder: "What's this token for?", required: true) %>
   </div>
@@ -28,7 +28,20 @@
 <% end %>
 
 <h3>Active access tokens</h3>
-(another widget here?)
+<% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
+  <div class='api__secret__container'>
+    <div class='api__secret__desc'>
+      <p class='title'><%= api_secret.description %></h4>
+      <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
+    </div>
+    <div class='api__secret__revoke'>
+      <%= form_tag users_api_secrets_path(id: api_secret.id), method: :delete do %>
+        <%= button_tag('Revoke', class: 'big-action danger-button') %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
 
 <h2 style="color: #ff0000;">Danger Zone</h2>
 <% if @user.identities.count == 2 %>

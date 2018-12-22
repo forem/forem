@@ -9,7 +9,13 @@ class ApiSecretsController < ApplicationController
     end
   end
 
-  def destroy; end
+  def destroy
+    @secret = ApiSecret.find_by_id(params[:id])
+    if @secret.destroy
+      flash[:notice] = "Your access token has been destroyed."
+      redirect_back(fallback_location: root_path)
+    end
+  end
 
   private
 

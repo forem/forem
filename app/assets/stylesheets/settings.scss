@@ -85,7 +85,7 @@
       max-width:700px;
       float: left;
       h2{
-       font-size: 2.5em; 
+       font-size: 2.5em;
       }
       @media screen and ( min-width: 835px ) {
         width: 66%;
@@ -515,5 +515,36 @@
 ul.delete__account{
   li{
     padding-bottom: 5px;
+  }
+}
+
+.api__secret {
+  &__container {
+    background-color: $off-white;
+    height: 3rem;
+    margin: 1rem 0;
+    padding: 0.5rem;
+  }
+
+  &__desc {
+    width: 70%;
+    float: left;
+
+    .title {
+      font-weight: bold;
+      margin: 0;
+      padding-bottom: 0.25rem;
+    }
+    .subtitle {
+      margin: 0;
+      color: $light-medium-gray;
+    }
+  }
+
+  &__revoke {
+    float: left;
+    width: 30%;
+    text-align: right;
+    margin: 0 auto;
   }
 }

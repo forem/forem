@@ -183,6 +183,7 @@ Rails.application.routes.draw do
   delete "users/destroy", to: "users#destroy"
   post "organizations/generate_new_secret" => "organizations#generate_new_secret"
   post "users/api_secrets" => "api_secrets#create"
+  delete "users/api_secrets" => "api_secrets#destroy"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
