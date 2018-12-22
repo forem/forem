@@ -17,7 +17,16 @@
 <h2>Access Tokens</h2>
 <p>You can generate personal access tokens to use for authentication with the DEV API.</p>
 <h3>Generate an access token</h3>
-(widget here?)
+<h4>Token description</h4>
+<%= form_tag "/users/api_secrets", method: :post do %>
+  <div class="field">
+    <%= text_field_tag(:description, nil, placeholder: "What's this token for?", required: true) %>
+  </div>
+  <button class="big-action" id="new__api__secret__btn" type="submit">
+    Generate Token
+  </button>
+<% end %>
+
 <h3>Active access tokens</h3>
 (another widget here?)
 
