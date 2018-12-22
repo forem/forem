@@ -28,6 +28,9 @@
 <% end %>
 
 <h3>Active access tokens</h3>
+<% if @user.api_secrets.empty? %>
+  <p>None yet!</p>
+<% end %>
 <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
   <div class='api__secret__container'>
     <div class='api__secret__desc'>
