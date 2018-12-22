@@ -14,6 +14,13 @@
   </div>
 <% end %>
 
+<h2>Access Tokens</h2>
+<p>You can generate personal access tokens to use for authentication with the DEV API.</p>
+<h3>Generate an access token</h3>
+(widget here?)
+<h3>Active access tokens</h3>
+(another widget here?)
+
 <h2 style="color: #ff0000;">Danger Zone</h2>
 <% if @user.identities.count == 2 %>
   <h3>Remove OAuth Associations</h3>
@@ -28,7 +35,7 @@
     </ul>
     <strong>
       Note that this does not revoke our OAuth app access; you will have to do so in your
-      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your 
+      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your
       <a href="https://github.com/settings/applications">GitHub profile settings</a>.
     </strong>
     <br>
