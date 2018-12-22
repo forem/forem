@@ -1187,6 +1187,7 @@
         color: $black;
         &:hover{
           background: lighten($bold-blue, 38%);
+          cursor: pointer;
         }
         &.selected{
           background: lighten($bold-blue, 10%);
