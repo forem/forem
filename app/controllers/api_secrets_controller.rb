@@ -4,7 +4,7 @@ class ApiSecretsController < ApplicationController
   def create
     @secret = ApiSecret.new(description: params[:description], user_id: @user.id)
     if @secret.save
-      flash[:notice] = "Your access token has been generated."
+      flash[:notice] = "Your access token has been generated: #{@secret.secret}. Be sure to copy it to somewhere safe now. You won’t be able to see it again!"
       redirect_back(fallback_location: root_path)
     end
   end
@@ -12,7 +12,7 @@ class ApiSecretsController < ApplicationController
   def destroy
     @secret = ApiSecret.find_by_id(params[:id])
     if @secret.destroy
-      flash[:notice] = "Your access token has been destroyed."
+      flash[:notice] = "Your access token has been revoked."
       redirect_back(fallback_location: root_path)
     end
   end
