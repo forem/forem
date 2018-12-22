@@ -307,6 +307,9 @@
   flex: 0 1 auto;
   width: 100%;
   min-width: 55%;
+  @media screen and ( max-width: 426px ) {
+    overflow-x: hidden;
+  }
 }
 
 .activechatchannel__header{
@@ -385,15 +388,20 @@
   box-sizing: border-box;
   overflow-y: scroll;
   max-width:96%;
+  @media screen and ( max-width: 426px ) {
+    padding: 10px;
+    min-width: 50%;
+    width: calc(95% - 45px);
+    position: fixed;
+    height: calc(100% - 90px);
+  }
   @media screen and ( min-width: 1000px ){
     margin-left: initial;
-    // min-width: 0px;
     padding: 18px;
     max-width:480px;
   }
   @media screen and ( min-width: 1300px ){
     margin-left: initial;
-    // min-width: 0px;
     padding: 18px;
     max-width:620px;
   }
@@ -489,12 +497,13 @@
   border-top: 1px solid $light-medium-gray;
   button {
     border: 1px solid $light-medium-gray;
-    padding: 3px 20px;
+    padding: 3px 15px;
     border-radius: 3px;
     margin-right: 15px;
+    width: 54px;
     &.active {
       border: 2px solid $black;
-      padding: 2px 19px;
+      padding: 2px 14px;
       background-color:$green;
       &.unicorn-reaction-button{
         background-color:$purple;
