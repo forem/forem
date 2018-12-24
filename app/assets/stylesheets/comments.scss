@@ -15,7 +15,8 @@ a.header-link{
 }
 
 .comments{
-  background-color:$light-gray;
+  background:$light-gray;
+  background:var(--theme-background,$light-gray);
   .picture{
     height:180px;
     max-width:900px;
