@@ -4,6 +4,7 @@ body {
   background: $lightest-gray;
   background: var(--theme-background, $lightest-gray);
   color: $black;
+  color: var(--theme-color, $black);
   font-family: $helvetica;
   font-size: 18px;
   padding:0 !important;
