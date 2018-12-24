@@ -1185,6 +1185,7 @@
         text-align:left;
         border-radius: 0px;
         color: $black;
+        cursor: pointer;
         &:hover{
           background: lighten($bold-blue, 38%);
         }
