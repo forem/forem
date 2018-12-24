@@ -1,6 +1,7 @@
 @import 'variables';
 
 body {
+  background: $lightest-gray;
   background: var(--theme-background, $lightest-gray);
   color: $black;
   font-family: $helvetica;
