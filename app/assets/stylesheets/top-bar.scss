@@ -20,6 +20,7 @@
   z-index: 1000;
   font-size: 17px;
   height: 48px;
+  background: $tan;
   background: var(--theme-top-bar-background, $tan);
   position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);

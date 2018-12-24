@@ -1,6 +1,7 @@
 @import 'variables';
 
 .stories-show{
+  background:$lightest-gray;
   background:var(--theme-background, $lightest-gray);
 }
 
@@ -563,6 +564,7 @@ article{
       th{
         border: 1px solid $light-medium-gray;
         padding:5px 1vw;
+        background:$lightest-gray;
         background:var(--theme-background, $lightest-gray);
         text-align:left;
       }
