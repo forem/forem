@@ -287,7 +287,8 @@
   flex-direction: row;
   justify-content: space-between;
   border: 1px solid $outline-color;
-  box-shadow: $bold-shadow;
+  box-shadow: $bold-shadow;  
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   background: white;
 }
 
