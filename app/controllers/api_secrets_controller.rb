@@ -9,7 +9,7 @@ class ApiSecretsController < ApplicationController
     if @secret.save
       flash[:notice] = "Your access token has been generated: #{@secret.secret}. Be sure to copy it to somewhere safe now. You won’t be able to see it again!"
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
+      flash[:error] = @secret.errors.full_messages.to_sentence
     end
     redirect_back(fallback_location: root_path)
   end
