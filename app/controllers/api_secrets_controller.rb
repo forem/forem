@@ -1,8 +1,11 @@
 class ApiSecretsController < ApplicationController
-  before_action :set_user
+  before_action :set_api_secret, only: :destroy
+  after_action :verify_authorized
 
   def create
-    @secret = ApiSecret.new(description: params[:description], user_id: @user.id)
+    authorize ApiSecret
+    @secret = ApiSecret.new(permitted_attributes(ApiSecret))
+    @secret.user_id = current_user.id
     if @secret.save
       flash[:notice] = "Your access token has been generated: #{@secret.secret}. Be sure to copy it to somewhere safe now. You won’t be able to see it again!"
       redirect_back(fallback_location: root_path)
@@ -10,7 +13,7 @@ class ApiSecretsController < ApplicationController
   end
 
   def destroy
-    @secret = ApiSecret.find_by_id(params[:id])
+    authorize @secret
     if @secret.destroy
       flash[:notice] = "Your access token has been revoked."
       redirect_back(fallback_location: root_path)
@@ -19,7 +22,7 @@ class ApiSecretsController < ApplicationController
 
   private
 
-  def set_user
-    @user = current_user
+  def set_api_secret
+    @secret = ApiSecret.find_by_id(params[:id]) || not_found
   end
 end
