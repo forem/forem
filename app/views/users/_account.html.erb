@@ -19,9 +19,11 @@
 <h3>Generate an access token</h3>
 <h4>Token description</h4>
 <%= form_tag users_api_secrets_path, method: :post do %>
-  <div class="field">
-    <%= text_field_tag(:description, nil, placeholder: "What's this token for?", required: true) %>
-  </div>
+  <%= fields_for :api_secret do |api_secret| %>
+    <div class="field">
+      <%= api_secret.text_field(:description, placeholder: "What's this token for?", required: true) %>
+    </div>
+  <% end %>
   <button class="big-action cta" id="new__api__secret__btn" type="submit">
     Generate Token
   </button>
