@@ -6,8 +6,8 @@
     padding-top: calc(98px + 0.2vw);
   }
   padding-bottom: calc(94px + 2vw);
-  background: white;
   background: $light-gray;
+  background: var(--theme-background, $light-gray);
 }
 
 .articleform {
