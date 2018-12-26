@@ -81,6 +81,7 @@
     margin-left: 10px;
     border: 1px solid $outline-color;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     color: $black;
     width: 262px;
     border-radius: 3px;

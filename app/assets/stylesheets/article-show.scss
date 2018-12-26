@@ -81,7 +81,7 @@ article{
   margin:68px auto 20px;
   text-align: left;
   box-shadow: $bold-shadow;
-
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   @media screen and ( min-width: 880px ){
     border: 1px solid darken($light-medium-gray, 2%);
   }
@@ -668,6 +668,7 @@ article{
     background: white;
     border: 1px solid darken($light-medium-gray, 2%);
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     width: 100%;
     background: $tan;
     @media screen and ( min-width: 880px ){
