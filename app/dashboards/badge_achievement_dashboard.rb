@@ -10,7 +10,6 @@ class BadgeAchievementDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     user: Field::BelongsTo,
     user_id: UserIdField,
-    name_of_user: NameOfUserField,
     badge: Field::BelongsTo,
     rewarder: Field::BelongsTo.with_options(class_name: "User"),
     rewarding_context_message_markdown: Field::String,
@@ -38,7 +37,6 @@ class BadgeAchievementDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     user
-    name_of_user
     badge
     rewarding_context_message
     rewarder

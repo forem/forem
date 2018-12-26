@@ -166,11 +166,6 @@ class Comment < ApplicationRecord
     nil
   end
 
-  # Administrate field
-  def name_of_user
-    user.name
-  end
-
   def readable_publish_date
     if created_at.year == Time.current.year
       created_at.strftime("%b %e")
