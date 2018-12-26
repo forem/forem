@@ -199,6 +199,7 @@
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       border-radius:3px;
       width:94%;
       margin:auto;
@@ -774,6 +775,7 @@
         width: calc(100% - 3px);
         border: 1px solid $outline-color;
         box-shadow: $bold-shadow;
+        box-shadow: var(--theme-container-box-shadow, $bold-shadow);
         // background:red;
         .sidebar-profile-snapshot-inner{
           display:inline-block;
