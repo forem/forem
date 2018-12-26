@@ -86,7 +86,7 @@ class User < ApplicationRecord
               format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
   validates :medium_url,
               allow_blank: true,
-              format: /\A(h(ttp(s)?:\/\/)?)(www.medium.com|medium.com)\/.*\Z/
+              format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
   validates :gitlab_url,
               allow_blank: true,
               format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
