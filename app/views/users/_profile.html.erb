@@ -16,7 +16,7 @@
   </div>
 <% end %>
 <h4>
-  <a href="https://dev.to/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28"style="vertical-align:-7px;margin-right:4px;"/></a>
+  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28"style="vertical-align:-7px;margin-right:4px;"/></a>
   Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
