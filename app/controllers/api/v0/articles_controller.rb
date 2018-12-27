@@ -8,6 +8,7 @@ module Api
       respond_to :json
 
       before_action :cors_preflight_check
+      before_action :set_user
       after_action :cors_set_access_control_headers
 
       def index
@@ -52,7 +53,7 @@ module Api
       end
 
       def create
-        @article = ArticleCreationService.new(current_user, article_params, {}).create!
+        @article = ArticleCreationService.new(@user, article_params, {}).create!
         render json:  if @article.persisted?
                         @article.to_json(only: [:id], methods: [:current_state_path])
                       else
@@ -62,6 +63,7 @@ module Api
 
       def update
         @article = Article.find(params[:id])
+        not_found if @article.user_id != @user.id && @user.has_role?(:super_admin)
         render json: if @article.update(article_params)
                        @article.to_json(only: [:id], methods: [:current_state_path])
                      else
@@ -69,15 +71,21 @@ module Api
                      end
       end
 
+      private
+
+      def set_user
+        @user = current_user
+      end
+
       def article_params
         params["article"].transform_keys!(&:underscore)
         if params["article"]["post_under_org"]
-          params["article"]["organization_id"] = current_user.organization_id
+          params["article"]["organization_id"] = @user.organization_id
         else
           params["article"]["organization_id"] = nil
         end
         if params["article"]["series"].present?
-          params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], current_user)&.id
+          params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
         elsif params["article"]["series"] == ""
           params["article"]["collection_id"] = nil
         end
