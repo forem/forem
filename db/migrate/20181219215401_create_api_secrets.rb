@@ -3,6 +3,7 @@ class CreateApiSecrets < ActiveRecord::Migration[5.1]
     create_table :api_secrets do |t|
       t.string :secret
       t.integer :user_id
+      t.string :description, null: false
 
       t.timestamps
     end
