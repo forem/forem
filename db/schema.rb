@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181130224531) do
+ActiveRecord::Schema.define(version: 20181227192353) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -481,6 +481,8 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "location"
     t.string "name"
     t.string "nav_image"
+    t.string "old_old_slug"
+    t.string "old_slug"
     t.string "profile_image"
     t.text "proof"
     t.string "secret"
