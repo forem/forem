@@ -75,7 +75,7 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-    <section itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
+    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
       <meta itemprop="url" content="https://dev.to<%=@article.path%>">
       <meta itemprop="image" content="<%= cloud_social_image(@article) %>">
       <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
@@ -86,7 +86,7 @@
         </div>
         <meta itemprop="name" content="DEV Community">
       </div>
-      <header>
+      <section>
         <% if !@article.published %>
           <a href="<%=@article.path %>/edit" class="unpublished">
             Unpublished Post. This URL is public but secret, so share at your own discretion. <em style="display: inline-block;">Click to edit.</em>
@@ -100,8 +100,8 @@
         <% else %>
           <div class="blank-space"></div>
         <% end %>
-      </header>
-      <div class="title" id="main-title">
+      </section>
+      <header class="title" id="main-title">
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
             <div class="org-branded-title">
@@ -159,7 +159,7 @@
             <a class="tag" href="/t/<%= tag %>" style="background-color:<%=tag_colors(tag)[:background] %>;color:<%=tag_colors(tag)[:color] %>">#<%= tag %></a>
           <% end %>
         </div>
-      </div>
+      </header>
       <%= render "articles/collection", position: "top" %>
       <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
         <%= @article.processed_html.html_safe %>
@@ -168,7 +168,7 @@
         <%= render "articles/collection", position: "bottom" %>
       <% end %>
       <%= render 'articles/actions' %>
-    </section>
+    </article>
     <% if @article.body_markdown && @article.body_markdown.size > 900 %>
       <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", :expires_in => 100.hours) do %>
         <%= render 'articles/about_author' %>

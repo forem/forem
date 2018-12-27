@@ -71,7 +71,6 @@ RSpec.describe "internal/users", type: :request do
         banish_user
         # failed = Delayed::Job.where("failed_at IS NOT NULL").first
         # failed = YAML.load(failed.handler) if failed
-        # binding.pry
         expect(Delayed::Job.where("failed_at IS NOT NULL").count).to eq(0)
         expect(user.old_username).to eq(nil)
         expect(user.twitter_username).to eq("")

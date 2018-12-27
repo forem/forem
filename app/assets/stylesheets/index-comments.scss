@@ -7,6 +7,7 @@
   border-radius:3px;
   border:1px solid $outline-color;
   box-shadow: $bold-shadow;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   margin:auto;
   margin-top:8px;
   width:94%;
@@ -34,6 +35,10 @@
     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     @media screen and ( min-width: 430px ){
       font-size:19px;
+    }
+    h4{
+      margin: 0;
+      font-weight: 500;
     }
   }
   a{

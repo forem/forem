@@ -7,30 +7,52 @@ class MarkdownParser
   end
 
   def finalize
-    parse_it
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    catch_xss_attempts(@content)
+    escaped_content = escape_liquid_tags_in_codeblock(@content)
+    html = markdown.render(escaped_content)
+    sanitized_content = sanitize_rendered_markdown(html)
+    begin
+      parsed_liquid = Liquid::Template.parse(sanitized_content)
+    rescue StandardError => e
+      raise StandardError, e.message
+    end
+    html = markdown.render(parsed_liquid.render)
+    html = remove_nested_linebreak_in_list(html)
+    html = prefix_all_images(html)
+    html = wrap_all_images_in_links(html)
+    html = wrap_all_tables(html)
+    html = remove_empty_paragraphs(html)
+    wrap_mentions_with_links!(html)
+  end
+
+  def calculate_reading_time
+    word_count = @content.split(/\W+/).count
+    (word_count / 275.0).ceil
   end
 
   def evaluate_markdown
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
-                       br ul ol li small sup sub img a span hr blockquote)
-    attribute_whitelist = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub img a span hr blockquote)
+    allowed_attributes = %w(href strong em ref rel src title alt class)
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: tag_whitelist,
-    attributes: attribute_whitelist
+    tags: allowed_tags,
+    attributes: allowed_attributes
   end
 
   def evaluate_limited_markdown
     return if @content.blank?
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    tag_whitelist = %w(strong i u b em p br code)
-    attribute_whitelist = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w(strong i u b em p br code)
+    allowed_attributes = %w(href strong em ref rel src title alt class)
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: tag_whitelist,
-    attributes: attribute_whitelist
+    tags: allowed_tags,
+    attributes: allowed_attributes
   end
 
   def evaluate_inline_markdown
@@ -65,7 +87,7 @@ class MarkdownParser
       src = img.attr("src")
       next unless src
       # allow image to render as-is
-      next if whitelisted_image_host?(src)
+      next if allowed_image_host?(src)
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else
@@ -77,27 +99,6 @@ class MarkdownParser
 
   private
 
-  def parse_it
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    catch_xss_attempts(@content)
-    escaped_content = escape_liquid_tags_in_codeblock(@content)
-    html = markdown.render(escaped_content)
-    sanitized_content = sanitize_rendered_markdown(html)
-    begin
-      parsed_liquid = Liquid::Template.parse(sanitized_content)
-    rescue StandardError => e
-      raise StandardError, e.message
-    end
-    html = markdown.render(parsed_liquid.render)
-    html = remove_nested_linebreak_in_list(html)
-    html = prefix_all_images(html)
-    html = wrap_all_images_in_links(html)
-    html = wrap_all_tables(html)
-    html = remove_empty_paragraphs(html)
-    wrap_mentions_with_links!(html)
-  end
-
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
@@ -105,7 +106,7 @@ class MarkdownParser
     end
   end
 
-  def whitelisted_image_host?(src)
+  def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
     src.start_with?("https://camo.githubusercontent.com/")
   end

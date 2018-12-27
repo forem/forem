@@ -49,7 +49,8 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
     - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+  - [Standard Installation](#standard-installation)
+  - [Docker Installation (BETA)](#docker-installation-beta)
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
 - [Additional docs](#additional-docs)
@@ -182,6 +183,7 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 1. Set environment variables above as described in the "Basic Installation"
 1. run `docker-compose build`
 1. run `docker-compose run web rails db:setup`
+1. run `docker-compose run web yarn install`
 1. run `docker-compose up`
 1. That's it! Navigate to `localhost:3000`
 

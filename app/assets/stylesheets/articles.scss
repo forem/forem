@@ -143,6 +143,7 @@
           }
           .wide-nav-links{
             display: block;
+            cursor: default;
           }
         }
         @media screen and ( min-width: 950px ){
@@ -198,6 +199,7 @@
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       border-radius:3px;
       width:94%;
       margin:auto;
@@ -220,6 +222,11 @@
         @media screen and ( min-width: 430px ){
           margin-top:12px;
         }
+      }
+      h4{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .article-organization-headline {
         display:block;
@@ -345,6 +352,9 @@
         left:62px;
         position:absolute;
         bottom:80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         a{
           color: #666666;
         }
@@ -497,6 +507,10 @@
       font-weight:bold;
       margin-top:-101px;
       position:absolute;
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       z-index:10;
       left:62px;
       font-size:14px;
@@ -761,6 +775,7 @@
         width: calc(100% - 3px);
         border: 1px solid $outline-color;
         box-shadow: $bold-shadow;
+        box-shadow: var(--theme-container-box-shadow, $bold-shadow);
         // background:red;
         .sidebar-profile-snapshot-inner{
           display:inline-block;
@@ -867,6 +882,7 @@
               font-family: $helvetica;
               padding-bottom: 10px;
               padding-left:8px;
+              
               a{
                 color: $medium-gray;
                 padding: 7px 12px;
@@ -951,6 +967,9 @@
       &:hover{
         opacity:1;
       }
+      h4{
+        margin: 0;
+      }
       &.signin-cta-widget{
         background: lighten($purple, 3%);
         border: 1px solid  darken($bold-blue, 5%);
@@ -1017,6 +1036,10 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         a{
           color: $black;
+          h4{
+            display: inline-block;
+            margin: 0;
+          }
           &:hover{
             text-decoration: underline;
           }
@@ -1039,7 +1062,7 @@
         padding-bottom:5px;
         &.body-scrollable{
           height: calc(100vh - 300px);
-          max-height: 500px;
+          max-height: 390px;
           overflow-y: scroll;
         }
         &.signup-cta-widget-body{
@@ -1165,6 +1188,7 @@
         text-align:left;
         border-radius: 0px;
         color: $black;
+        cursor: pointer;
         &:hover{
           background: lighten($bold-blue, 38%);
         }
@@ -1242,7 +1266,7 @@
         margin-top:8px;
         padding:8px 0px;
         font-size:0.93em;
-        color: $sky-blue;
+        color: darken($sky-blue, 17%);
         background: white;
         display:block;
         width:92%;

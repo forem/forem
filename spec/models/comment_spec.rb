@@ -141,10 +141,6 @@ RSpec.describe Comment, type: :model do
     expect(comment.path).not_to be(nil)
   end
 
-  it "returns name_of_user" do
-    expect(comment.name_of_user).to eq(comment.user.name)
-  end
-
   it "returns the properly formed path" do
     expect(comment.path).to eq("/#{comment.user.username}/comment/#{comment.id_code_generated}")
   end

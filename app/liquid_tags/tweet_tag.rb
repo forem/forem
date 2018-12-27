@@ -28,7 +28,7 @@ class TweetTag < LiquidTagBase
 
     if @tweet.is_quote_status && @tweet.full_fetched_object_serialized[:quoted_status]
       quoted_status = @tweet.full_fetched_object_serialized[:quoted_status]
-      quote_div = "<div class='ltag__twitter-tweet__quote'><div class='ltag__twitter-tweet__quote__header'><span class='ltag__twitter-tweet__quote__header__name'>#{quoted_status[:user][:name]}</span> @#{quoted_status[:user][:screen_name]}</div>#{quoted_status[:text]}</div>"
+      quote_div = "<div class='ltag__twitter-tweet__quote'><div class='ltag__twitter-tweet__quote__header'><span class='ltag__twitter-tweet__quote__header__name'>#{quoted_status[:user][:name]}</span> @#{quoted_status[:user][:screen_name]}</div>#{quoted_status[:full_text]}</div>"
     end
     "<blockquote "\
       'class="ltag__twitter-tweet" data-url="https://twitter.com/' + @tweet.twitter_username + "/status/" + @id + '">'\

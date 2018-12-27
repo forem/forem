@@ -7,11 +7,12 @@
       <p>Part of a series</p>
     <% end %>
     <div class="article-collection">
-      <% @collection.articles.where(published: true).order("published_at ASC").each_with_index do |article,i| %>
+      <% @collection.articles.where(published: true).order("published_at ASC").each_with_index do |article, i| %>
           <a
             href="<%= article.path if article.published %>"
-            class="<%= collection_link_class(@article,article) %>"
+            class="<%= collection_link_class(@article, article) %>"
             data-preload-image="<%=cloud_cover_url(article.main_image) %>"
+            title="Part <%= i + 1 %>: <%= article.title %>"
           >
           </a>
       <% end %>

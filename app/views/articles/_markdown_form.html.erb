@@ -85,13 +85,13 @@
 
 <div id="article-preview" class="editor-view editor-article-view hidden">
   <div class="container article" style="padding-bottom: 50px;">
-    <header id="image_area">
+    <article id="image_area">
       <div id="image_preview">
         <div class="image" id="main_image"></div>
       </div>
       <div class="blank-space" id="blank_space">
       </div>
-    </header>
+    </article>
     <div class="title">
       <% if current_user.organization %>
         <a href="<%= current_user.organization.path %>" class="org-branded-title-link">
@@ -100,7 +100,7 @@
           </div>
         </a>
       <% end %>
-      <h1 id="article_title" >
+      <h1 id="article_title">
       </h1>
       <h3>
         <a href="/<%= @user.username %>">

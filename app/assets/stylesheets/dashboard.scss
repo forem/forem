@@ -132,6 +132,7 @@
   .single-article{
     border: 1px solid $light-medium-gray;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     padding:5px 15px;
     margin-bottom:13px;
     border-radius:3px;
