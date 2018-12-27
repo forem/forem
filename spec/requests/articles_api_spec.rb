@@ -132,6 +132,24 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.title).to eq(new_title)
     end
+    it "does not allow user to update a different article" do
+      new_title = "NEW TITLE #{rand(100)}"
+      @article.update_column(:user_id, user2.id)
+
+      expect {
+        put "/api/articles/#{@article.id}",
+          params: { article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+             }}.to raise_error(ActionController::RoutingError)
+    end
+    it "does allow super user to update a different article" do
+      new_title = "NEW TITLE #{rand(100)}"
+      @article.update_column(:user_id, user2.id)
+      user1.add_role(:super_admin)
+      put "/api/articles/#{@article.id}", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+      }
+      expect(Article.last.title).to eq(new_title)
+    end
     it "allows collection to be assigned via api" do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: @article.user_id, slug: "yoyoyo")
