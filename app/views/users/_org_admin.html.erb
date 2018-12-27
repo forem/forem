@@ -62,7 +62,7 @@
   <div class="field">
     <%=  f.label :username %>
     <%= f.text_field :slug, maxlength: 18, minlength: 2 %>
-    <i>This is your organization's URL. For example: https://dev.to/<%= @organization.slug %></i>
+    <i>Your organization's URL is: https://dev.to/<%= @organization.slug %></i>
   </div>
   <%= f.label :profile_image %>
   <div class="field">
