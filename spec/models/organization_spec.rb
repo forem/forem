@@ -92,4 +92,38 @@ RSpec.describe Organization, type: :model do
       expect(organization).not_to be_valid
     end
   end
+
+  describe "#check_for_slug_change" do
+    def create_article_for_organization
+      user.update(organization_id: organization.id, org_admin: true)
+      create(:article, organization_id: organization.id, user_id: user.id)
+    end
+
+    it "properly updates the slug/username" do
+      random_new_slug = "slug_#{rand(10000)}"
+      organization.update(slug: random_new_slug)
+      expect(organization.slug).to eq random_new_slug
+    end
+
+    it "updates old_slug to original slug if slug was changed" do
+      original_slug = organization.slug
+      organization.update(slug: "slug_#{rand(10000)}")
+      expect(organization.old_slug).to eq original_slug
+    end
+
+    it "updates old_old_slug properly if slug was changed and there was an old_slug" do
+      original_slug = organization.slug
+      organization.update(slug: "something_else")
+      organization.update(slug: "another_slug")
+      expect(organization.old_old_slug).to eq original_slug
+    end
+
+    it "updates the paths of the organization's articles" do
+      create_article_for_organization
+      new_slug = "slug_#{rand(10000)}"
+      organization.update(slug: new_slug)
+      article = Article.find_by(organization_id: organization.id)
+      expect(article.path).to include new_slug
+    end
+  end
 end
