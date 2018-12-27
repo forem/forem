@@ -25,7 +25,7 @@ gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
 gem "autoprefixer-rails", "~> 9.4"
 gem "aws-sdk-lambda", "~> 1.16" # Just Lambda. For more, install aws-sdk gem
-gem 'bootsnap', '>= 1.1.0', require: false
+gem "bootsnap", ">= 1.1.0", require: false
 gem "bourbon", "~> 5.1"
 gem "buffer", "~> 0.1"
 gem "carrierwave", "~> 1.3"
