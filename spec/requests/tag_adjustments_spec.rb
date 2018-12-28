@@ -13,6 +13,7 @@ RSpec.describe "TagAdjustments", type: :request do
         user.add_role(:trusted)
         sign_in user
       end
+
       it "removes the tag" do
         article = Article.create!(user_id: user2.id, title: "test TEST", body_markdown: "Yo ho h o#{rand(100)}", tag_list: "#{tag.name}, yoyo, bobo", published: true)
         post "/tag_adjustments", params: {

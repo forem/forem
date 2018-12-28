@@ -5,7 +5,7 @@ RSpec.describe UserSimilarity, vcr: {} do
   let(:similar_user) { create(:user, summary: "I like JavaScript and Go") }
   let(:dissimilar_user) { create(:user, summary: "I like Haskell and functional programming") }
 
-  it "It returns similar user" do
+  it "returns similar user" do
     simialar_score = UserSimilarity.new(user, similar_user).score
     dissimialar_score = UserSimilarity.new(user, dissimilar_user).score
     expect(simialar_score).to be > dissimialar_score

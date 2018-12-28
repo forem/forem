@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe TagAdjustment, type: :model do
+  before do
+    mod_user.add_role(:tag_moderator, tag)
+    admin_user.add_role(:admin)
+  end
+
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.to validate_presence_of(:article_id) }
   it { is_expected.to validate_presence_of(:tag_id) }
@@ -13,11 +18,6 @@ RSpec.describe TagAdjustment, type: :model do
   let(:admin_user) { create(:user) }
   let(:tag) { create(:tag) }
   let(:article) { create(:article) }
-
-  before do
-    mod_user.add_role(:tag_moderator, tag)
-    admin_user.add_role(:admin)
-  end
 
   describe "privileges" do
     it "allows tag mods to create for their tags" do

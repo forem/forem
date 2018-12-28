@@ -17,55 +17,10 @@ Metrics/PerceivedComplexity:
   Max: 15
 
 # Offense count: 1
-# Cop supports --auto-correct.
-RSpec/EmptyLineAfterExampleGroup:
-  Exclude:
-    - 'spec/requests/internal_reactions_spec.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-RSpec/EmptyLineAfterFinalLet:
-  Exclude:
-    - 'spec/models/user_spec.rb'
-    - 'spec/policies/html_variant_policy_spec.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-RSpec/EmptyLineAfterHook:
-  Exclude:
-    - 'spec/requests/internal_reactions_spec.rb'
-    - 'spec/requests/tag_adjustments_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: CustomTransform, IgnoredWords.
-RSpec/ExampleWording:
-  Exclude:
-    - 'spec/labor/user_similarity_spec.rb'
-
-# Offense count: 1
 # Configuration parameters: CustomTransform, IgnoreMethods.
 RSpec/FilePath:
   Exclude:
     - 'spec/liquid_tags/raw_tag_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-RSpec/HooksBeforeExamples:
-  Exclude:
-    - 'spec/models/tag_adjustment_spec.rb'
-
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: single_line_only, single_statement_only, disallow
-RSpec/ImplicitSubject:
-  Exclude:
-    - 'spec/models/feedback_message_spec.rb'
-    - 'spec/policies/comment_policy_spec.rb'
-    - 'spec/policies/organization_policy_spec.rb'
-    - 'spec/requests/dashboard_spec.rb'
-    - 'spec/requests/registration_spec.rb'
 
 # Offense count: 23
 # Configuration parameters: AssignmentOnly.

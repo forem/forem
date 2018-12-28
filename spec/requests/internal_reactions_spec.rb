@@ -11,6 +11,7 @@ RSpec.describe "/internal/reactions", type: :request do
       @reaction = create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id)
       login_as admin
     end
+
     it "updates reaction to be confirmed" do
       put "/internal/reactions/#{@reaction.id}", params: {
         reaction: { status: "confirmed" }
@@ -24,12 +25,14 @@ RSpec.describe "/internal/reactions", type: :request do
       expect(@reaction.reload.status).not_to eq("confirmedsssss")
     end
   end
+
   describe "PUT /internal/reactions as non-admin" do
     before do
       user.add_role(:trusted)
       @reaction = create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id)
       login_as user
     end
+
     it "updates reaction to be confirmed" do
       expect {
         put "/internal/reactions/#{@reaction.id}", params: {
