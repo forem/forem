@@ -118,12 +118,13 @@ RSpec.describe "ArticlesApi", type: :request do
   describe "PUT /api/articles/:id w/ current_user" do
     before do
       sign_in user1
-      @article = create(:article, user: user1)
     end
+
+    let(:article) { create(:article, user: user1) }
 
     it "updates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
-      put "/api/articles/#{@article.id}", params: {
+      put "/api/articles/#{article.id}", params: {
         article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
       }
       expect(Article.last.title).to eq(new_title)
@@ -131,7 +132,7 @@ RSpec.describe "ArticlesApi", type: :request do
 
     it "updates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
-      put "/api/articles/#{@article.id}", params: {
+      put "/api/articles/#{article.id}", params: {
         article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
       }
       expect(Article.last.title).to eq(new_title)
@@ -139,19 +140,19 @@ RSpec.describe "ArticlesApi", type: :request do
 
     it "does not allow user to update a different article" do
       new_title = "NEW TITLE #{rand(100)}"
-      @article.update_column(:user_id, user2.id)
+      article.update_column(:user_id, user2.id)
 
       expect {
-        put "/api/articles/#{@article.id}",
+        put "/api/articles/#{article.id}",
           params: { article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" } }
       } .to raise_error(ActionController::RoutingError)
     end
 
     it "does allow super user to update a different article" do
       new_title = "NEW TITLE #{rand(100)}"
-      @article.update_column(:user_id, user2.id)
+      article.update_column(:user_id, user2.id)
       user1.add_role(:super_admin)
-      put "/api/articles/#{@article.id}", params: {
+      put "/api/articles/#{article.id}", params: {
         article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
       }
       expect(Article.last.title).to eq(new_title)
@@ -159,8 +160,8 @@ RSpec.describe "ArticlesApi", type: :request do
 
     it "allows collection to be assigned via api" do
       new_title = "NEW TITLE #{rand(100)}"
-      collection = Collection.create(user_id: @article.user_id, slug: "yoyoyo")
-      put "/api/articles/#{@article.id}", params: {
+      collection = Collection.create(user_id: article.user_id, slug: "yoyoyo")
+      put "/api/articles/#{article.id}", params: {
         article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id }
       }
       expect(Article.last.collection_id).to eq(collection.id)
@@ -169,7 +170,7 @@ RSpec.describe "ArticlesApi", type: :request do
     it "does not allow collection which is not of user" do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: 3333, slug: "yoyoyo")
-      put "/api/articles/#{@article.id}", params: {
+      put "/api/articles/#{article.id}", params: {
         article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id }
       }
       expect(Article.last.collection_id).not_to eq(collection.id)

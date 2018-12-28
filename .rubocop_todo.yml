@@ -24,19 +24,12 @@ RSpec/FilePath:
 
 # Offense count: 23
 # Configuration parameters: AssignmentOnly.
-RSpec/InstanceVariable:
-  Exclude:
-    - 'spec/requests/articles_api_spec.rb'
-    - 'spec/requests/internal_reactions_spec.rb'
-    - 'spec/services/tag_adjustment_creation_service_spec.rb'
-    - 'spec/services/tag_adjustment_update_service_spec.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# RSpec/LetBeforeExamples:
+# RSpec/InstanceVariable:
 #   Exclude:
-#     - 'spec/models/html_variant_spec.rb'
-#     - 'spec/models/tag_adjustment_spec.rb'
+#     - 'spec/requests/articles_api_spec.rb'
+#     - 'spec/requests/internal_reactions_spec.rb'
+#     - 'spec/services/tag_adjustment_creation_service_spec.rb'
+#     - 'spec/services/tag_adjustment_update_service_spec.rb'
 
 # Offense count: 15
 # Configuration parameters: AggregateFailuresByDefault.
