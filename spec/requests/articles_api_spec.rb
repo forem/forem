@@ -72,6 +72,7 @@ RSpec.describe "ArticlesApi", type: :request do
     before do
       sign_in user1
     end
+
     it "creates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
       post "/api/articles", params: {
@@ -79,7 +80,7 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.user_id).to eq(user1.id)
     end
-    # rubocop:disable RSpec/ExampleLength
+
     it "creates article with front matter params" do
       post "/api/articles", params: {
         article: {
@@ -89,6 +90,7 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.title).to eq("hey hey hahuu")
     end
+
     it "creates article w/ series param" do
       new_title = "NEW TITLE #{rand(100)}"
       post "/api/articles", params: {
@@ -100,6 +102,7 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
       expect(Article.last.collection.user_id).to eq(Article.last.user_id)
     end
+
     it "creates article with front matter params" do
       post "/api/articles", params: {
         article: {
@@ -117,6 +120,7 @@ RSpec.describe "ArticlesApi", type: :request do
       sign_in user1
       @article = create(:article, user: user1)
     end
+
     it "updates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
       put "/api/articles/#{@article.id}", params: {
@@ -124,6 +128,7 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.title).to eq(new_title)
     end
+
     it "updates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
       put "/api/articles/#{@article.id}", params: {
@@ -131,6 +136,7 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.title).to eq(new_title)
     end
+
     it "does not allow user to update a different article" do
       new_title = "NEW TITLE #{rand(100)}"
       @article.update_column(:user_id, user2.id)
@@ -140,6 +146,7 @@ RSpec.describe "ArticlesApi", type: :request do
           params: { article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" } }
       } .to raise_error(ActionController::RoutingError)
     end
+
     it "does allow super user to update a different article" do
       new_title = "NEW TITLE #{rand(100)}"
       @article.update_column(:user_id, user2.id)
@@ -149,6 +156,7 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.title).to eq(new_title)
     end
+
     it "allows collection to be assigned via api" do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: @article.user_id, slug: "yoyoyo")
@@ -157,6 +165,7 @@ RSpec.describe "ArticlesApi", type: :request do
       }
       expect(Article.last.collection_id).to eq(collection.id)
     end
+
     it "does not allow collection which is not of user" do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: 3333, slug: "yoyoyo")
