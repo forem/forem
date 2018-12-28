@@ -35,12 +35,14 @@ class StoriesController < ApplicationController
   private
 
   def redirect_to_changed_username_profile
-    if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
+    potential_username = params[:username].tr("@", "").downcase
+    @user = User.find_by_old_username(potential_username) || User.find_by_old_old_username(potential_username)
+    @organization = Organization.find_by_old_slug(potential_username) || Organization.find_by_old_old_slug(potential_username)
+    if @user
       redirect_to @user.path
       return
-    end
-    if @user = User.find_by_old_old_username(params[:username].tr("@", "").downcase)
-      redirect_to @user.path
+    elsif @organization
+      redirect_to @organization.path
       return
     end
     not_found
