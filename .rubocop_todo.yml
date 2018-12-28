@@ -6,12 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 4
-Lint/IneffectiveAccessModifier:
-  Exclude:
-    - 'app/black_box/black_box.rb'
-    - 'app/models/tweet.rb'
-
 # Offense count: 1
 # Configuration parameters: MaximumRangeSize.
 Lint/MissingCopEnableDirective:
