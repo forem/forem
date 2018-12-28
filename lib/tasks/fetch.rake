@@ -111,7 +111,7 @@ task remove_old_html_variant_data: :environment do
   HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariant.find_each do |html_variant|
     if html_variant.html_variant_successes.size > 3
-    html_variant.calculate_success_rate!
+      html_variant.calculate_success_rate!
     end
   end
 end

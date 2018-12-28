@@ -7,12 +7,15 @@ RSpec.describe TagAdjustmentUpdateService do
 
   before do
     user.add_role(:tag_moderator, tag)
-    @tag_adjustment = TagAdjustmentCreationService.new(user, {
-      adjustment_type: "removal",
-      status: "committed",
-      tag_name: tag.name,
-      article_id: article.id
-    }).create
+    @tag_adjustment = TagAdjustmentCreationService.new(
+      user,
+      {
+        adjustment_type: "removal",
+        status: "committed",
+        tag_name: tag.name,
+        article_id: article.id
+      }
+    ).create
   end
 
   xit "creates tag adjustment" do

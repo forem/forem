@@ -6,28 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Layout/IndentHash:
-  EnforcedStyle: consistent
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: normal, rails
-Layout/IndentationConsistency:
-  Exclude:
-    - 'app/observers/organization_observer.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Width, IgnoredPatterns.
-Layout/IndentationWidth:
-  Exclude:
-    - 'lib/tasks/fetch.rake'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Layout/LeadingCommentSpace:
