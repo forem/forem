@@ -35,50 +35,6 @@ Security/Open:
 
 # Offense count: 2
 # Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ProceduralMethods, FunctionalMethods, IgnoredMethods.
-# SupportedStyles: line_count_based, semantic, braces_for_chaining
-# ProceduralMethods: benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
-# FunctionalMethods: let, let!, subject, watch
-# IgnoredMethods: lambda, proc, it
-Style/BlockDelimiters:
-  Exclude:
-    - 'spec/requests/articles_api_spec.rb'
-    - 'spec/requests/internal_reactions_spec.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'app/controllers/tag_adjustments_controller.rb'
-    - 'spec/services/tag_adjustment_creation_service_spec.rb'
-    - 'spec/services/tag_adjustment_update_service_spec.rb'
-
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'app/controllers/api/v0/api_controller.rb'
-    - 'app/controllers/internal/application_controller.rb'
-    - 'app/controllers/internal/articles_controller.rb'
-    - 'app/controllers/internal/broadcasts_controller.rb'
-    - 'app/controllers/internal/buffer_updates_controller.rb'
-    - 'app/controllers/internal/comments_controller.rb'
-    - 'app/controllers/internal/dogfood_controller.rb'
-    - 'app/controllers/internal/feedback_messages_controller.rb'
-    - 'app/controllers/internal/members_controller.rb'
-    - 'app/controllers/internal/reactions_controller.rb'
-    - 'app/controllers/internal/tags_controller.rb'
-    - 'app/controllers/internal/users_controller.rb'
-    - 'app/controllers/internal/welcome_controller.rb'
-    - 'app/controllers/notifications/counts_controller.rb'
-    - 'app/controllers/notifications/reads_controller.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
 # SupportedStyles: assign_to_condition, assign_inside_condition
 Style/ConditionalAssignment:

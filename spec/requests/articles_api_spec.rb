@@ -134,10 +134,10 @@ RSpec.describe "ArticlesApi", type: :request do
       new_title = "NEW TITLE #{rand(100)}"
       article.update_column(:user_id, user2.id)
 
-      expect {
+      expect do
         put "/api/articles/#{article.id}",
           params: { article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" } }
-      } .to raise_error(ActionController::RoutingError)
+      end .to raise_error(ActionController::RoutingError)
     end
 
     it "does allow super user to update a different article" do

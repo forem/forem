@@ -8,12 +8,10 @@ RSpec.describe TagAdjustmentUpdateService do
   def create_tag_adjustment
     TagAdjustmentCreationService.new(
       user,
-      {
-        adjustment_type: "removal",
-        status: "committed",
-        tag_name: tag.name,
-        article_id: article.id
-      }
+      adjustment_type: "removal",
+      status: "committed",
+      tag_name: tag.name,
+      article_id: article.id,
     ).create
   end
 
@@ -23,7 +21,7 @@ RSpec.describe TagAdjustmentUpdateService do
 
   xit "creates tag adjustment" do
     tag_adjustment = create_tag_adjustment
-    described_class.new(tag_adjustment, { status: "resolved" }).update
+    described_class.new(tag_adjustment, status: "resolved").update
 
     expect(tag_adjustment).to be_valid
     expect(tag_adjustment.tag_id).to eq(tag.id)
@@ -32,7 +30,7 @@ RSpec.describe TagAdjustmentUpdateService do
 
   xit "updates notification" do
     tag_adjustment = create_tag_adjustment
-    described_class.new(tag_adjustment, { status: "resolved" }).update
+    described_class.new(tag_adjustment, status: "resolved").update
 
     expect(Notification.last.user_id).to eq(article.user_id)
     expect(Notification.last.json_data["status"]).to eq("resolved")
