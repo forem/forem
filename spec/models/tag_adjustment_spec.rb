@@ -8,11 +8,11 @@ RSpec.describe TagAdjustment, type: :model do
   it { is_expected.to validate_presence_of(:adjustment_type) }
   it { is_expected.to validate_presence_of(:status) }
 
-  let(:regular_user) { create(:user)}
-  let(:mod_user) { create(:user)}
-  let(:admin_user) { create(:user)}
-  let(:tag) { create(:tag)}
-  let(:article) { create(:article)}
+  let(:regular_user) { create(:user) }
+  let(:mod_user) { create(:user) }
+  let(:admin_user) { create(:user) }
+  let(:tag) { create(:tag) }
+  let(:article) { create(:article) }
 
   before do
     mod_user.add_role(:tag_moderator, tag)

@@ -45,7 +45,7 @@ class FollowsController < ApplicationController
       redirect_to "/dashboard/following"
     end
   end
-  
+
   private
 
   def follow_params

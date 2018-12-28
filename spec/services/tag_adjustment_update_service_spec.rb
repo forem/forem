@@ -19,14 +19,14 @@ RSpec.describe TagAdjustmentUpdateService do
   end
 
   xit "creates tag adjustment" do
-    described_class.new(@tag_adjustment, {status: "resolved"}).update
+    described_class.new(@tag_adjustment, { status: "resolved" }).update
     expect(@tag_adjustment).to be_valid
     expect(@tag_adjustment.tag_id).to eq(tag.id)
     expect(@tag_adjustment.status).to eq("resolved")
   end
 
   xit "updates notification" do
-    described_class.new(@tag_adjustment, {status: "resolved"}).update
+    described_class.new(@tag_adjustment, { status: "resolved" }).update
     expect(Notification.last.user_id).to eq(article.user_id)
     expect(Notification.last.json_data["status"]).to eq("resolved")
   end

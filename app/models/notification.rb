@@ -193,7 +193,7 @@ class Notification < ApplicationRecord
     def send_tag_adjustment_notification(notifiable)
       article = notifiable.article
       json_data = {
-        article: {title: article.title, path: article.path},
+        article: { title: article.title, path: article.path },
         adjustment_type: notifiable.adjustment_type,
         status: notifiable.status,
         reason_for_adjustment: notifiable.reason_for_adjustment,

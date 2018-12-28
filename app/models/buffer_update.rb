@@ -3,7 +3,7 @@ class BufferUpdate < ApplicationRecord
 
   validate :validate_body_text_recent_uniqueness
 
-  def self.buff!(article_id, text, buffer_profile_id_code, social_service_name="twitter", tag_id=nil)
+  def self.buff!(article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil)
     buffer_response = send_to_buffer(text, buffer_profile_id_code)
     self.create(
       article_id: article_id,

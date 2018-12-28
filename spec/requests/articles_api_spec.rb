@@ -95,8 +95,7 @@ RSpec.describe "ArticlesApi", type: :request do
         article: { title: new_title,
                    body_markdown: "Yo ho ho#{rand(100)}",
                    tag_list: "yo",
-                   series: "helloyo",
-                  }
+                   series: "helloyo", }
       }
       expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
       expect(Article.last.collection.user_id).to eq(Article.last.user_id)
@@ -138,8 +137,8 @@ RSpec.describe "ArticlesApi", type: :request do
 
       expect {
         put "/api/articles/#{@article.id}",
-          params: { article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
-             }}.to raise_error(ActionController::RoutingError)
+          params: { article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" } }
+      } .to raise_error(ActionController::RoutingError)
     end
     it "does allow super user to update a different article" do
       new_title = "NEW TITLE #{rand(100)}"
