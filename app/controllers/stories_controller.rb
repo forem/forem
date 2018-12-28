@@ -252,7 +252,7 @@ class StoriesController < ApplicationController
 
   def assign_user_comments
     comment_count = params[:view] == "comments" ? 250 : 8
-    @comments = if @user.comments_count > 0
+    @comments = if @user.comments_count.positive?
                   @user.comments.where(deleted: false).
                     order("created_at DESC").includes(:commentable).limit(comment_count)
                 else

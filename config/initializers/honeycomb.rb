@@ -1,4 +1,4 @@
-require 'libhoney'
+require "libhoney"
 
 key = ApplicationConfig["HONEYCOMB_API_KEY"]
 dataset = "dev.to-#{Rails.env}"

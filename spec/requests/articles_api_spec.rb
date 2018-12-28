@@ -97,7 +97,7 @@ RSpec.describe "ArticlesApi", type: :request do
         article: { title: new_title,
                    body_markdown: "Yo ho ho#{rand(100)}",
                    tag_list: "yo",
-                   series: "helloyo", }
+                   series: "helloyo" }
       }
       expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
       expect(Article.last.collection.user_id).to eq(Article.last.user_id)

@@ -21,7 +21,7 @@ RSpec.describe "TagAdjustments", type: :request do
             tag_name: tag.name,
             article_id: article.id,
             reason_for_adjustment: "Test #{rand(100)}"
-          },
+          }
         }
         expect(article.reload.tag_list.include?(tag.name)).to eq(false)
       end
@@ -44,7 +44,7 @@ RSpec.describe "TagAdjustments", type: :request do
             tag_name: tag.name,
             article_id: article.id,
             reason_for_adjustment: "Test #{rand(100)}"
-          },
+          }
         }
         expect(article.reload.tag_list.include?(tag.name)).to eq(false)
       end
@@ -55,7 +55,7 @@ RSpec.describe "TagAdjustments", type: :request do
             tag_name: tag.name,
             article_id: article.id,
             reason_for_adjustment: "Test #{rand(100)}"
-          },
+          }
         }
         expect(article.reload.tag_list.include?("heyheyhey")).to eq(true)
       end

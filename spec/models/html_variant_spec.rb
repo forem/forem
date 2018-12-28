@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe HtmlVariant, type: :model do
   let(:html_variant) { create(:html_variant, approved: true, published: true) }

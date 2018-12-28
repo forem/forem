@@ -63,7 +63,7 @@ class Follow < ApplicationRecord
       channel = follower.chat_channels.
         where("slug LIKE ? OR slug like ?", "%/#{followable.username}%", "%#{followable.username}/%").
         first
-      channel.update(status: "inactive") if channel
+      channel&.update(status: "inactive")
     end
   end
 end

@@ -21,7 +21,7 @@ module Api
           params[:signature],
           params[:state],
         ]
-        set_surrogate_key_header key_headers.join('_')
+        set_surrogate_key_header key_headers.join("_")
       end
 
       def show
