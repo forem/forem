@@ -11,8 +11,8 @@ RSpec.describe TagAdjustment, type: :model do
   let(:regular_user) { create(:user)}
   let(:mod_user) { create(:user)}
   let(:admin_user) { create(:user)}
-  let(:tag)       { create(:tag)}
-  let(:article)       { create(:article)}
+  let(:tag) { create(:tag)}
+  let(:article) { create(:article)}
 
   before do
     mod_user.add_role(:tag_moderator, tag)

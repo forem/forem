@@ -26,6 +26,7 @@ class Message < ApplicationRecord
       where.not(user_id: user.id).pluck(:user_id)
     PushNotificationSubscription.where(user_id: reciever_ids).each do |sub|
       return if no_push_necessary?(sub)
+
       Webpush.payload_send(
         endpoint: sub.endpoint,
         message: ActionView::Base.full_sanitizer.sanitize(message_html),
@@ -43,6 +44,7 @@ class Message < ApplicationRecord
 
   def direct_receiver
     return if chat_channel.channel_type != "direct"
+
     chat_channel.users.where.not(id: user.id).first
   end
 

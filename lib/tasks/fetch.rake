@@ -68,6 +68,7 @@ end
 
 task send_email_digest: :environment do
   return if Time.current.wday < 3
+
   EmailDigest.send_periodic_digest_email
 end
 

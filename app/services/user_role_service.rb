@@ -21,6 +21,7 @@ class UserRoleService
       tag.errors[:moderator_ids] << ": user id #{id} was not found"
     end
     return false if !tag.errors[:moderator_ids].blank?
+
     # Don't have to worry about comparing old and new values.
     tag.tag_moderator_ids.each do |id|
       User.find(id).remove_role(:tag_moderator, tag)

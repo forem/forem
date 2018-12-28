@@ -93,6 +93,7 @@ class Notification < ApplicationRecord
     def send_reaction_notification(notifiable)
       return if notifiable.user_id == notifiable.reactable.user_id
       return if notifiable.points.negative?
+
       aggregated_reaction_siblings = notifiable.reactable.reactions.
         reject { |r| r.user_id == notifiable.reactable.user_id }.
         map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
@@ -150,6 +151,7 @@ class Notification < ApplicationRecord
     def send_welcome_notification(receiver_id)
       welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
       return if welcome_broadcast == nil
+
       dev_account = User.find_by_id(ENV["DEVTO_USER_ID"])
       json_data = {
         user: user_data(dev_account),
@@ -170,6 +172,7 @@ class Notification < ApplicationRecord
     def send_moderation_notification(notifiable)
       available_moderators = User.with_role(:trusted).where("last_moderation_notification < ?", 28.hours.ago)
       return if available_moderators.empty?
+
       moderator = available_moderators.sample
       dev_account = User.find_by_id(ENV["DEVTO_USER_ID"])
       json_data = {
@@ -206,7 +209,6 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_tag_adjustment_notification
 
-
     def remove_all(notifiable_hash)
       Notification.where(
         notifiable_id: notifiable_hash[:id],
@@ -235,6 +237,7 @@ class Notification < ApplicationRecord
         action: action,
       )
       return if notifications.blank?
+
       new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
       notifications.update_all(json_data: new_json_data)
@@ -287,6 +290,7 @@ class Notification < ApplicationRecord
 
     def send_push_notifications(user_id, title, body, path)
       return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
+
       payload = {
         apns: {
           aps: {

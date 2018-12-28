@@ -107,6 +107,7 @@ module ApplicationHelper
     Rails.cache.fetch(cache_key, expires_in: 1.hour) do
       src = GeneratedImage.new(article).social_image
       return src if src.start_with? "https://res.cloudinary.com/"
+
       cl_image_path(src,
         type: "fetch",
         width:  "1000",

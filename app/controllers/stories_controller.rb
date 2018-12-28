@@ -6,6 +6,7 @@ class StoriesController < ApplicationController
     add_param_context(:username, :tag)
     return handle_user_or_organization_or_podcast_index if params[:username]
     return handle_tag_index if params[:tag]
+
     handle_base_index
   end
 
@@ -188,6 +189,7 @@ class StoriesController < ApplicationController
     @list_of = "articles"
     redirect_if_view_param
     return if performed?
+
     set_surrogate_key_header "articles-user-#{@user.id}", @stories.map(&:record_key)
     render template: "users/show"
   end
@@ -226,6 +228,7 @@ class StoriesController < ApplicationController
     set_surrogate_key_header @article.record_key
     redirect_if_show_view_param
     return if performed?
+
     render template: "articles/show"
   end
 

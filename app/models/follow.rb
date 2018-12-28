@@ -52,6 +52,7 @@ class Follow < ApplicationRecord
       return if EmailMessage.where(user_id: followable.id).
           where("sent_at > ?", rand(15..35).hours.ago).
           where("subject LIKE ?", "%followed you on dev.to%").any?
+
       NotifyMailer.new_follower_email(self).deliver
     end
   end

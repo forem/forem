@@ -48,6 +48,7 @@ class Internal::UsersController < Internal::ApplicationController
     if @new_mentee.blank? && @new_mentor.blank?
       return
     end
+
     make_matches
   end
 

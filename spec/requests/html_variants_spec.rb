@@ -105,6 +105,4 @@ RSpec.describe "HtmlVariants", type: :request do
       expect(html_variant.reload.html).not_to eq(new_html)
     end
   end
-
-
 end

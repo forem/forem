@@ -23,6 +23,7 @@ RSpec.describe Exporter::Service do
       loop do
         entry = stream.get_next_entry
         break if entry.blank?
+
         exports[entry.name] = stream.read
       end
     end

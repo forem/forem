@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "TagAdjustments", type: :request do
-  let(:user)    { create(:user) }
-  let(:user2)    { create(:user) }
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
   let(:tag) { create(:tag) }
   # let(:article) { create(:article, ) }
 

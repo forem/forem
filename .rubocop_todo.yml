@@ -6,49 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 110
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Layout/EmptyLines:
-  Exclude:
-    - 'app/models/buffer_update.rb'
-    - 'app/models/mentor_relationship.rb'
-    - 'app/models/notification.rb'
-    - 'spec/requests/html_variants_spec.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, no_empty_lines
-Layout/EmptyLinesAroundBlockBody:
-  Exclude:
-    - 'spec/factories/podcasts.rb'
-    - 'spec/models/comment_spec.rb'
-    - 'spec/requests/html_variants_spec.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: empty_lines, empty_lines_except_namespace, empty_lines_special, no_empty_lines, beginning_only, ending_only
-Layout/EmptyLinesAroundClassBody:
-  Exclude:
-    - 'app/models/buffer_update.rb'
-    - 'app/models/tag.rb'
-    - 'app/models/tag_adjustment.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Exclude:
-    - 'spec/factories/podcasts.rb'
-    - 'spec/models/tag_adjustment_spec.rb'
-    - 'spec/requests/tag_adjustments_spec.rb'
-
 # Offense count: 6
 # Cop supports --auto-correct.
 # Configuration parameters: IndentationWidth.

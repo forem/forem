@@ -261,6 +261,7 @@ class Article < ApplicationRecord
 
   def username
     return organization.slug if organization
+
     user.username
   end
 
@@ -291,6 +292,7 @@ class Article < ApplicationRecord
 
   def set_caches
     return unless user
+
     self.cached_user_name = user_name
     self.cached_user_username = user_username
     self.path = calculated_path
@@ -323,12 +325,14 @@ class Article < ApplicationRecord
 
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
+
     update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
   end
   handle_asynchronously :update_main_image_background_hex
 
   def detect_human_language
     return if language.present?
+
     update_column(:language, LanguageDetector.new(self).detect)
   end
   handle_asynchronously :detect_human_language
@@ -423,8 +427,10 @@ class Article < ApplicationRecord
   def parsed_date(date)
     now = Time.current
     return published_at || now unless date
+
     error_msg = "must be entered in DD/MM/YYYY format with current or past date"
     return errors.add(:date_time, error_msg) if date > now
+
     date
   end
 
@@ -435,6 +441,7 @@ class Article < ApplicationRecord
       self.tag_list = tag_list
     end
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
+
     tag_list.each do |tag|
       if tag.length > 20
         errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)")
@@ -472,6 +479,7 @@ class Article < ApplicationRecord
 
   def create_password
     return unless password.blank?
+
     self.password = SecureRandom.hex(60)
   end
 

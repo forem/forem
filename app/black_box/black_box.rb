@@ -1,6 +1,7 @@
 class BlackBox
   def self.article_hotness_score(article)
     return (article.featured_number || 10000) / 10000 unless Rails.env.production?
+
     reaction_points = article.score
     super_super_recent_bonus = article.published_at > 1.hours.ago ? 18 : 0
     super_recent_bonus = article.published_at > 3.hours.ago ? 11 : 0
@@ -24,6 +25,7 @@ class BlackBox
     # accepts comment or article as story
     return 0 unless Rails.env.production?
     return 100 unless story.user
+
     FunctionCaller.new("blackbox-production-spamScore",
       { story: story, user: story.user }.to_json).call
   end
