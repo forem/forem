@@ -6,12 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/RescueEnsureAlignment:
-  Exclude:
-    - 'app/services/user_role_service.rb'
-
 # Offense count: 8
 # Configuration parameters: CountComments, ExcludedMethods.
 # ExcludedMethods: refine
