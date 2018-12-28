@@ -27,17 +27,6 @@ RSpec/FilePath:
 RSpec/MultipleExpectations:
   Max: 6
 
-# Offense count: 6
-RSpec/RepeatedDescription:
-  Exclude:
-    - 'spec/models/buffer_update_spec.rb'
-    - 'spec/requests/articles_api_spec.rb'
-
-# Offense count: 2
-RSpec/RepeatedExample:
-  Exclude:
-    - 'spec/requests/articles_api_spec.rb'
-
 # Offense count: 3
 Security/Open:
   Exclude:

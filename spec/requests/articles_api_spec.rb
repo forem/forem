@@ -103,7 +103,7 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(Article.last.collection.user_id).to eq(Article.last.user_id)
     end
 
-    it "creates article with front matter params" do
+    it "creates article within series with front matter params" do
       post "/api/articles", params: {
         article: {
           body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
@@ -121,14 +121,6 @@ RSpec.describe "ArticlesApi", type: :request do
     end
 
     let(:article) { create(:article, user: user1) }
-
-    it "updates ordinary article with proper params" do
-      new_title = "NEW TITLE #{rand(100)}"
-      put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
-      }
-      expect(Article.last.title).to eq(new_title)
-    end
 
     it "updates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
