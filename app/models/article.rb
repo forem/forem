@@ -7,6 +7,7 @@ class Article < ApplicationRecord
   acts_as_taggable_on :tags
 
   attr_accessor :publish_under_org
+  attr_writer :series
 
   belongs_to :user
   belongs_to :job_opportunity, optional: true
