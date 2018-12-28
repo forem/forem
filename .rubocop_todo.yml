@@ -17,18 +17,6 @@ Metrics/PerceivedComplexity:
   Max: 15
 
 # Offense count: 1
-Naming/ConstantName:
-  Exclude:
-    - 'app/liquid_tags/raw_tag.rb'
-
-# Offense count: 1
-# Configuration parameters: MinNameLength, AllowNamesEndingInNumbers, AllowedNames, ForbiddenNames.
-# AllowedNames: io, id, to, by, on, in, at, ip, db
-Naming/UncommunicativeMethodParamName:
-  Exclude:
-    - 'app/models/message.rb'
-
-# Offense count: 1
 # Cop supports --auto-correct.
 RSpec/EmptyLineAfterExampleGroup:
   Exclude:

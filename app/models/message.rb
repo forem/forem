@@ -103,9 +103,9 @@ class Message < ApplicationRecord
     membership.last_opened_at > 40.seconds.ago
   end
 
-  def rich_link_article(a)
-    if a["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && a["href"].split("/")[4]
-      Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
+  def rich_link_article(link)
+    if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+      Article.find_by_slug(link["href"].split("/")[4].split("?")[0])
     end
   end
 
