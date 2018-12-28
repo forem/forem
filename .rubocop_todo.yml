@@ -33,15 +33,6 @@ Security/Open:
     - 'app/labor/podcast_feed.rb'
     - 'app/labor/rss_reader.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SingleLineConditionsOnly, IncludeTernaryExpressions.
-# SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Exclude:
-    - 'app/controllers/api/v0/articles_controller.rb'
-    - 'config/initializers/honeycomb.rb'
-
 # Offense count: 1
 Style/EvalWithLocation:
   Exclude:
