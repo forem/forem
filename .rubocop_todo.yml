@@ -33,10 +33,10 @@ RSpec/InstanceVariable:
 
 # Offense count: 6
 # Cop supports --auto-correct.
-RSpec/LetBeforeExamples:
-  Exclude:
-    - 'spec/models/html_variant_spec.rb'
-    - 'spec/models/tag_adjustment_spec.rb'
+# RSpec/LetBeforeExamples:
+#   Exclude:
+#     - 'spec/models/html_variant_spec.rb'
+#     - 'spec/models/tag_adjustment_spec.rb'
 
 # Offense count: 15
 # Configuration parameters: AggregateFailuresByDefault.

@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe HtmlVariant, type: :model do
+  let(:html_variant) { create(:html_variant, approved: true, published: true) }
+
   it { is_expected.to validate_uniqueness_of(:name) }
   it { is_expected.to validate_presence_of(:html) }
   it { is_expected.to belong_to(:user) }
-
-  let(:html_variant) { create(:html_variant, approved: true, published: true) }
 
   it "calculates success rate" do
     HtmlVariantTrial.create!(html_variant_id: html_variant.id)

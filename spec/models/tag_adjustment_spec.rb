@@ -6,18 +6,18 @@ RSpec.describe TagAdjustment, type: :model do
     admin_user.add_role(:admin)
   end
 
+  let(:article) { create(:article) }
+  let(:tag) { create(:tag) }
+  let(:admin_user) { create(:user) }
+  let(:mod_user) { create(:user) }
+  let(:regular_user) { create(:user) }
+
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.to validate_presence_of(:article_id) }
   it { is_expected.to validate_presence_of(:tag_id) }
   it { is_expected.to validate_presence_of(:tag_name) }
   it { is_expected.to validate_presence_of(:adjustment_type) }
   it { is_expected.to validate_presence_of(:status) }
-
-  let(:regular_user) { create(:user) }
-  let(:mod_user) { create(:user) }
-  let(:admin_user) { create(:user) }
-  let(:tag) { create(:tag) }
-  let(:article) { create(:article) }
 
   describe "privileges" do
     it "allows tag mods to create for their tags" do
