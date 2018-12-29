@@ -1,11 +1,9 @@
-module Internal
-  class ApplicationController < ::ApplicationController
-    before_action :authorize_admin
+class Internal::ApplicationController < ApplicationController
+  before_action :authorize_admin
 
-    private
+  private
 
-    def authorize_admin
-      authorize :admin, :minimal?
-    end
+  def authorize_admin
+    authorize :admin, :minimal?
   end
 end

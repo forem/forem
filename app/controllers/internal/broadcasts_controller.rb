@@ -1,36 +1,34 @@
-module Internal
-  class BroadcastsController < ApplicationController
-    layout "internal"
+class Internal::BroadcastsController < Internal::ApplicationController
+  layout "internal"
 
-    def create
-      @broadcast = Broadcast.new(broadcast_params)
-      redirect_to "/internal/broadcasts"
-    end
+  def create
+    @broadcast = Broadcast.new(broadcast_params)
+    redirect_to "/internal/broadcasts"
+  end
 
-    def update
-      @broadcast = Broadcast.find(params[:id])
-      @broadcast.update(broadcast_params)
-      redirect_to "/internal/broadcasts"
-    end
+  def update
+    @broadcast = Broadcast.find(params[:id])
+    @broadcast.update(broadcast_params)
+    redirect_to "/internal/broadcasts"
+  end
 
-    def new
-      @broadcast = Broadcast.new
-    end
+  def new
+    @broadcast = Broadcast.new
+  end
 
-    def edit
-      @broadcast = Broadcast.find(params[:id])
-    end
+  def edit
+    @broadcast = Broadcast.find(params[:id])
+  end
 
-    def index
-      @broadcasts = Broadcast.all
-    end
+  def index
+    @broadcasts = Broadcast.all
+  end
 
-    private
+  private
 
-    def broadcast_params
-      params.permit(:title, :processed_html, :type_of, :sent)
-      # left out body_markdown and processed_html attributes
-      #   until we decide we're using them
-    end
+  def broadcast_params
+    params.permit(:title, :processed_html, :type_of, :sent)
+    # left out body_markdown and processed_html attributes
+    #   until we decide we're using them
   end
 end

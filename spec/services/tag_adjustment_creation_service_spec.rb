@@ -8,12 +8,14 @@ RSpec.describe TagAdjustmentCreationService do
   def create_tag_adjustment
     described_class.new(
       user,
+      {
         adjustment_type: "removal",
         status: "committed",
         tag_name: tag.name,
         article_id: article.id,
-        reason_for_adjustment: "Test",
-      ).create
+        reason_for_adjustment: "Test"
+      }
+    ).create
   end
 
   before do
