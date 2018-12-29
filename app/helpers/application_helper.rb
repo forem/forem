@@ -49,6 +49,23 @@ module ApplicationHelper
     derived_title
   end
 
+  def title_with_timeframe(page_title:, timeframe:, content_for: false)
+    if timeframe.blank?
+      return content_for ? title(page_title) : page_title
+    end
+
+    sub_titles = {
+      "week" => "Top posts this week",
+      "month" => "Top posts this month",
+      "year" => "Top posts this year",
+      "infinity" => "All posts",
+      "latest" => "Latest posts"
+    }
+
+    title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
+    content_for ? title(title_text) : title_text
+  end
+
   def icon(name, pixels = "20")
     image_tag icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels
   end
