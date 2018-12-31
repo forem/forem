@@ -957,6 +957,7 @@
       border-radius:3px;
       border: 1px solid $outline-color;
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;
