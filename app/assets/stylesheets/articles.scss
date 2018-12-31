@@ -28,6 +28,7 @@
     font-size:1.2em;
     background: white;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius:3px;
     border:1px solid $outline-color;;
     width:94%;
