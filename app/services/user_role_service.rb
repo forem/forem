@@ -17,7 +17,7 @@ class UserRoleService
   def update_tag_moderators(user_ids, tag)
     users = user_ids.map do |id|
       User.find(id)
-    rescue StandardError
+    rescue ActiveRecord::RecordNotFound
       tag.errors[:moderator_ids] << ": user id #{id} was not found"
     end
     return false if !tag.errors[:moderator_ids].blank?
