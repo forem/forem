@@ -64,15 +64,16 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def add_note
-    if user_params[:mentorship_note]
-      Note.create(
-        author_id: @current_user.id,
-        noteable_id: @user.id,
-        noteable_type: "User",
-        reason: "mentorship",
-        content: user_params[:mentorship_note],
-      )
+  def add_note(options = {})
+    return unless user_params[:note]
+    note = Note.create(
+      author_id: @current_user.id,
+      noteable_id: @user.id,
+      noteable_type: "User",
+      content: user_params[:note],
+    )
+    if !options.blank?
+      note.update(reason: options)
     end
   end
 
@@ -87,6 +88,7 @@ class Internal::UsersController < Internal::ApplicationController
     mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
     deactivate_mentorship(mentee_relationships)
     deactivate_mentorship(mentor_relationships)
+    add_note("banned from mentorship")
   end
 
   def deactivate_mentorship(relationships)
@@ -113,7 +115,7 @@ class Internal::UsersController < Internal::ApplicationController
                                 :add_mentor,
                                 :quick_match,
                                 :add_mentee,
-                                :mentorship_note,
+                                :note,
                                 :ban_from_mentorship)
   end
 end

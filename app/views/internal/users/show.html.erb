@@ -90,10 +90,10 @@
         <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
       <% end %>
       <br>
-      <h4>Add new mentorship note</h4>
-      <%= f.text_area :mentorship_note %>
+      <h4>Add Note</h4>
+      <%= f.text_area :note %>
     <% else %>
-      <%= f.text_area :mentorship_note %>
+      <%= f.text_area :note %>
     <% end %>
     <br/>
     <%= f.submit %>
