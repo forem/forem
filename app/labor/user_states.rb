@@ -27,7 +27,7 @@ class UserStates
   end
 
   def fill_out_your_profile
-    user.summary.present? && !user.summary.empty?
+    user.summary.present?
   end
 
   def leave_reactions
