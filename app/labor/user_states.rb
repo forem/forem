@@ -19,11 +19,11 @@ class UserStates
   end
 
   def made_first_article
-    !user.articles.where(published: true).empty?
+    user.articles.where(published: true).any?
   end
 
   def follows_a_tag
-    !user.follows.where(followable_type: "ActsAsTaggableOn::Tag").empty?
+    user.follows.where(followable_type: "ActsAsTaggableOn::Tag").any?
   end
 
   def fill_out_your_profile
@@ -31,14 +31,14 @@ class UserStates
   end
 
   def leave_reactions
-    !user.reactions.empty?
+    user.reactions.any?
   end
 
   def follow_people
-    !user.follows.where(followable_type: "User").empty?
+    user.follows.where(followable_type: "User").any?
   end
 
   def leave_comments
-    !user.comments.empty?
+    user.comments.any?
   end
 end
