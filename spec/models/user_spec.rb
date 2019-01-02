@@ -371,6 +371,7 @@ RSpec.describe User, type: :model do
     let(:tag2)  { create(:tag) }
     let(:tag3)  { create(:tag) }
     let(:tag4)  { create(:tag) }
+
     it "returns empty if no tags followed" do
       expect(user.decorate.cached_followed_tags.size).to eq(0)
     end

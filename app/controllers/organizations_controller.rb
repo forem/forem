@@ -35,6 +35,7 @@ class OrganizationsController < ApplicationController
 
   def generate_new_secret
     raise unless current_user.org_admin
+
     @organization = current_user.organization
     authorize @organization
     @organization.secret = @organization.generated_random_secret

@@ -41,7 +41,6 @@ class MentorRelationship < ApplicationRecord
     User.where(id: record_ids)
   end
 
-
   private
 
   def mutual_follow

@@ -21,7 +21,7 @@ module Api
           params[:signature],
           params[:state],
         ]
-        set_surrogate_key_header key_headers.join('_')
+        set_surrogate_key_header key_headers.join("_")
       end
 
       def show
@@ -79,11 +79,9 @@ module Api
 
       def article_params
         params["article"].transform_keys!(&:underscore)
-        if params["article"]["post_under_org"]
-          params["article"]["organization_id"] = @user.organization_id
-        else
-          params["article"]["organization_id"] = nil
-        end
+        params["article"]["organization_id"] = if params["article"]["post_under_org"]
+                                                 @user.organization_id
+                                               end
         if params["article"]["series"].present?
           params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
         elsif params["article"]["series"] == ""
