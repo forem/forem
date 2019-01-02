@@ -1209,8 +1209,9 @@
         margin:14px 0px 8px;
       }
       ul{
-        list-style-type: none;
         padding-left:10px;
+        display: flex;
+        flex-direction: column;
       }
       li{
         font-size:1em;
