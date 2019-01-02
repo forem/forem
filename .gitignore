@@ -42,7 +42,7 @@ latest.dump
 config/database.yml
 
 # Ignore storybook static site generation
-storybook-static/
+docs/storybook/
 yarn-error.log
 
 # Ignore package-lock.json because we use yarn
@@ -50,4 +50,3 @@ package-lock.json
 
 #Jetbrains Tools
 .idea/
-
