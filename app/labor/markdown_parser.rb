@@ -34,6 +34,7 @@ class MarkdownParser
 
   def evaluate_markdown
     return if @content.blank?
+
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     allowed_tags = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
@@ -46,6 +47,7 @@ class MarkdownParser
 
   def evaluate_limited_markdown
     return if @content.blank?
+
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     allowed_tags = %w(strong i u b em p br code)
@@ -57,6 +59,7 @@ class MarkdownParser
 
   def evaluate_inline_markdown
     return if @content.blank?
+
     renderer_options = {
       hard_wrap: true,
       filter_html: false,
@@ -70,6 +73,7 @@ class MarkdownParser
 
   def tags_used
     return [] unless @content.present?
+
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []
     Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
@@ -88,6 +92,7 @@ class MarkdownParser
       next unless src
       # allow image to render as-is
       next if allowed_image_host?(src)
+
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else

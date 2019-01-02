@@ -161,6 +161,7 @@ class PodcastEpisode < ApplicationRecord
 
   def prefix_all_images
     return unless body.present?
+
     self.processed_html = body.gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
     self.processed_html = "<p>#{processed_html}</p>" unless processed_html.include?("<p>")
     doc = Nokogiri::HTML(processed_html)

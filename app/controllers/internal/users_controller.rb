@@ -50,7 +50,6 @@ class Internal::UsersController < Internal::ApplicationController
       @user.remove_role :warned
       create_note("good_standing", user_params[:note_for_current_role])
     end
-  end
 
   def add_note
     return unless !user_params[:note].blank?

@@ -17,6 +17,7 @@ class RssReader
     User.where.not(feed_url: nil).each do |u|
       feed_url = u.feed_url.strip
       next if feed_url == ""
+
       create_articles_for_user(u)
     end
   end
@@ -82,6 +83,7 @@ class RssReader
                 item_title: item.title,
                 item_summary_size: item.summary&.size) do |metadata|
       return if medium_reply?(item) || article_exist?(user, item)
+
       article_params = {
         feed_source_url: feed_source_url = item.url.strip.split("?source=")[0],
         user_id: user.id,
@@ -95,6 +97,7 @@ class RssReader
         Article.create!(article_params)
       end
       return unless Rails.env.production?
+
       SlackBot.delay.ping(
         "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
         channel: "activity",
@@ -155,6 +158,7 @@ class RssReader
     html_doc.css("iframe").each do |iframe|
       a_tag = iframe.css("a")
       next if a_tag.empty?
+
       possible_link = a_tag[0].inner_html
       if /medium\.com\/media\/.+\/href/.match?(possible_link)
         real_link = ""
@@ -162,6 +166,7 @@ class RssReader
           real_link = h.base_uri.to_s
         end
         return unless real_link.include?("gist.github.com")
+
         iframe.name = "p"
         iframe.keys.each { |attr| iframe.remove_attribute(attr) }
         iframe.inner_html = "{% gist #{real_link} %}"
@@ -176,6 +181,7 @@ class RssReader
     html_doc.css("blockquote").each do |bq|
       bq_with_p = bq.css("p")
       next if bq_with_p.empty?
+
       second_content = bq_with_p.css("p")[1].css("a")[0].attributes["href"].value
       if bq_with_p.length == 2 && second_content.include?("twitter.com")
         bq.name = "p"
@@ -207,6 +213,7 @@ class RssReader
     html_doc.css("a").each do |a_tag|
       link = a_tag.attributes["href"]&.value
       next unless link
+
       found_article = Article.find_by(feed_source_url: link)&.decorate
       if found_article
         a_tag.attributes["href"].value = found_article.url
