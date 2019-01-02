@@ -27,12 +27,6 @@ RSpec/FilePath:
 RSpec/MultipleExpectations:
   Max: 6
 
-# Offense count: 3
-Security/Open:
-  Exclude:
-    - 'app/labor/podcast_feed.rb'
-    - 'app/labor/rss_reader.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, ProceduralMethods, FunctionalMethods, IgnoredMethods.
