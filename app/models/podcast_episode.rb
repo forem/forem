@@ -1,5 +1,4 @@
 include CloudinaryHelper
-include ActionView::Helpers::SanitizeHelper
 
 class PodcastEpisode < ApplicationRecord
   include AlgoliaSearch
@@ -92,7 +91,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def description
-    strip_tags(body)
+    ActionView::Base.full_sanitizer.sanitize(body)
   end
 
   def main_image
