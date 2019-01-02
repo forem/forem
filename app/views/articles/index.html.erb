@@ -1,27 +1,29 @@
 <%= content_for :page_meta do %>
-  <% if params[:timeframe].present? %>
-    <% title "DEV Community  👩‍💻👨‍💻 - top posts this #{params[:timeframe]}" %>
-  <% else %>
-    <% title "DEV Community  👩‍💻👨‍💻 - Where software engineers connect, build their resumes, and grow." %>
-  <% end %>
+  <% title_with_timeframe(
+    page_title: "DEV Community  👩‍💻👨‍💻",
+    timeframe: params[:timeframe],
+    content_for: true)
+  %>
+
   <link rel="canonical" href="https://dev.to<%= request.path %>"/>
   <meta name="description" content="Where programmers share ideas and help each other grow.">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
-  <meta property="og:title" content="The DEV Community<%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %>" />
+  <meta property="og:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
   <meta property="og:site_name" content="The DEV Community" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="The DEV Community<%= " - top this #{params[:timeframe]}" if params[:timeframe].present? %>">
+  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>" >
   <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
   <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", {title: "The Practical Dev RSS Feed"}) %>
 <% end %>
+
 <div class="home" id="index-container"
   data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
   data-algolia-tag="<%= @user ? "#{@user.class.name.downcase}_#{@user.id}" : nil || @tag %>"

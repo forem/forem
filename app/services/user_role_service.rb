@@ -17,11 +17,10 @@ class UserRoleService
   def update_tag_moderators(user_ids, tag)
     users = user_ids.map do |id|
       User.find(id)
-    rescue StandardError # rubocop:disable Layout/RescueEnsureAlignment
+    rescue ActiveRecord::RecordNotFound
       tag.errors[:moderator_ids] << ": user id #{id} was not found"
     end
-    return false if !tag.errors[:moderator_ids].blank?
-
+    return false if tag.errors[:moderator_ids].present?
     # Don't have to worry about comparing old and new values.
     tag.tag_moderator_ids.each do |id|
       User.find(id).remove_role(:tag_moderator, tag)
