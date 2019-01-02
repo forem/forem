@@ -103,7 +103,7 @@
   </div>
   <div class="field">
     <%= f.label :currently_learning, "I'm getting into" %>
-    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in 2019?", maxlength: 640 %>
+    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.current.year}?", maxlength: 640 %>
   </div>
   <div class="field">
     <%= f.label :currently_hacking_on, "My projects and hacks" %>
