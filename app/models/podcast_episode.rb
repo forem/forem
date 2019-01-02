@@ -160,10 +160,8 @@ class PodcastEpisode < ApplicationRecord
     return unless body.present?
 
     self.processed_html = body.
-      gsub("\r\n<p>&nbsp;</p>\r\n", "").
-      gsub("\r\n<p>&nbsp;</p>\r\n", "").
-      gsub("\r\n<h3>&nbsp;</h3>\r\n", "").
-      gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
+      gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").
+      gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
 
     self.processed_html = "<p>#{processed_html}</p>" unless processed_html.include?("<p>")
 
@@ -172,11 +170,8 @@ class PodcastEpisode < ApplicationRecord
       img_src = img.attr("src")
 
       if img_src
-        quality = if img_src.include?(".gif")
-                    66
-                  else
-                    "auto"
-                  end
+        quality = "auto"
+        quality = 66 if img_src.include?(".gif")
 
         cloudinary_img_src = ActionController::Base.helpers.
           cl_image_path(img_src,
