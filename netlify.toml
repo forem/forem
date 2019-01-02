@@ -7,7 +7,6 @@
 
 [build]
   base = "docs/"
-  command = "npm install && npm run build-storybook;"
 [[redirects]]
   from = "http://docs.dev.to"
   to = "https://docs.dev.to"
@@ -35,8 +34,4 @@
 [[redirects]]
   from = "https://devto.netlify.com/*"
   to = "https://docs.dev.to/:splat"
-  status = 301
-  [[redirects]]
-  from = "/storybook/*"
-  to = "https://storybook.dev.to/:splat"
   status = 301
