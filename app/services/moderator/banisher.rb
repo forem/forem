@@ -13,6 +13,7 @@ module Moderator
 
     def banish
       return unless user.comments.where("created_at < ?", 150.days.ago).empty?
+
       new_name = "spam_#{rand(10000)}"
       new_username = "spam_#{rand(10000)}"
       if User.find_by(name: new_name) || User.find_by(username: new_username)

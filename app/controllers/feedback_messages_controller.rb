@@ -49,6 +49,7 @@ class FeedbackMessagesController < ApplicationController
 
   def generate_user_detail
     return "*Anonymous report:*" unless current_user
+
     <<~HEREDOC
       *Logged in user:*
       reporter: #{current_user.username} - https://dev.to/#{current_user.username}

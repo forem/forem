@@ -17,7 +17,7 @@ RSpec.describe "HtmlVariantTrials", type: :request do
     it "rejects non-permissioned user" do
       post "/html_variant_trials", params: {
         article_id: article.id,
-        html_variant_id: html_variant.id,
+        html_variant_id: html_variant.id
       }
       expect(HtmlVariantTrial.all.size).to eq(1)
     end

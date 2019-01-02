@@ -205,6 +205,5 @@ RSpec.describe Comment, type: :model do
       expect(ShareMeowClient).to have_received(:image_url)
     end
   end
-
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

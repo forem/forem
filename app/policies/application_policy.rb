@@ -3,6 +3,7 @@ class ApplicationPolicy
 
   def initialize(user, record)
     raise Pundit::NotAuthorizedError, "You must be logged in" unless user
+
     @user = user
     @record = record
   end
@@ -44,6 +45,7 @@ class ApplicationPolicy
 
     def initialize(user, scope)
       raise Pundit::NotAuthorizedError, "must be logged in" unless user
+
       @user = user
       @scope = scope
     end

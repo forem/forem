@@ -124,6 +124,7 @@ module ApplicationHelper
     Rails.cache.fetch(cache_key, expires_in: 1.hour) do
       src = GeneratedImage.new(article).social_image
       return src if src.start_with? "https://res.cloudinary.com/"
+
       cl_image_path(src,
         type: "fetch",
         width:  "1000",
@@ -171,7 +172,7 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full")
-    tag :button, #Yikes
+    tag :button, # Yikes
       class: "cta follow-action-button",
       data: {
         info: { id: followable.id, className: followable.class.name, style: style }.to_json,

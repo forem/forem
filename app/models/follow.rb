@@ -50,8 +50,9 @@ class Follow < ApplicationRecord
   def send_email_notification
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications
       return if EmailMessage.where(user_id: followable.id).
-          where("sent_at > ?", rand(15..35).hours.ago).
-          where("subject LIKE ?", "%followed you on dev.to%").any?
+        where("sent_at > ?", rand(15..35).hours.ago).
+        where("subject LIKE ?", "%followed you on dev.to%").any?
+
       NotifyMailer.new_follower_email(self).deliver
     end
   end
@@ -62,7 +63,7 @@ class Follow < ApplicationRecord
       channel = follower.chat_channels.
         where("slug LIKE ? OR slug like ?", "%/#{followable.username}%", "%#{followable.username}/%").
         first
-      channel.update(status: "inactive") if channel
+      channel&.update(status: "inactive")
     end
   end
 end

@@ -83,7 +83,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     <<~HEREDOC
       *New note from #{params['author_name']}:*
       *Report status: #{params['feedback_message_status']}*
-      Report page: https://#{ApplicationConfig["APP_DOMAIN"]}/internal/reports/#{params['noteable_id']}
+      Report page: https://#{ApplicationConfig['APP_DOMAIN']}/internal/reports/#{params['noteable_id']}
       --------
       Message: #{params['content']}
     HEREDOC

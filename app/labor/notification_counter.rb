@@ -5,6 +5,7 @@ class NotificationCounter
 
   def unread_notification_count
     return 0 if Rails.env.test?
+
     @user.notifications.where(read: false).count
   end
 
