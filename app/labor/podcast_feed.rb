@@ -1,6 +1,5 @@
 require "rss"
 require "rss/itunes"
-require "open-uri"
 
 class PodcastFeed
   def get_all_episodes
@@ -10,7 +9,7 @@ class PodcastFeed
   end
 
   def get_episodes(podcast, num = 1000)
-    rss = open(podcast.feed_url).read
+    rss = HTTParty.get(podcast.feed_url).body
     feed = RSS::Parser.parse(rss, false)
     feed.items.first(num).each do |item|
       if !existing_episode(item, podcast)
@@ -65,7 +64,7 @@ class PodcastFeed
 
   def get_media_url(episode, item, podcast)
     episode.media_url = if Rails.env.test? ||
-        open(item.enclosure.url.gsub(/http:/, "https:")).status[0] == "200"
+        HTTParty.head(item.enclosure.url.gsub(/http:/, "https:")).code == 200
                           item.enclosure.url.gsub(/http:/, "https:")
                         else
                           item.enclosure.url

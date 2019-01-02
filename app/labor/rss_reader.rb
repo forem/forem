@@ -161,10 +161,7 @@ class RssReader
 
       possible_link = a_tag[0].inner_html
       if /medium\.com\/media\/.+\/href/.match?(possible_link)
-        real_link = ""
-        open(possible_link) do |h|
-          real_link = h.base_uri.to_s
-        end
+        real_link = HTTParty.head(possible_link).request.last_uri.to_s
         return unless real_link.include?("gist.github.com")
 
         iframe.name = "p"
