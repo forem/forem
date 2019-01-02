@@ -34,7 +34,7 @@ rspec_options = {
   # slow but good coverage
   # cmd: "bin/rspec -p",
   # fast but no coverage
-  cmd: "bin/spring rspec -p",
+  cmd: "bin/spring rspec -p -f documentation",
   #############################
   failed_mode: :focus,
   bundler_env: :clean_env
