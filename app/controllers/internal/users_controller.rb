@@ -29,10 +29,6 @@ class Internal::UsersController < Internal::ApplicationController
   def update
     @user = User.find(params[:id])
     ban_from_mentorship
-<<<<<<< HEAD
-    handle_mentorship
-=======
->>>>>>> d384f4271621b42056224f6d05ee63cc91341dc4
     warn_or_ban_user
     add_note
     @user.update!(user_params)
