@@ -7,7 +7,7 @@
 
 [build]
   base = "docs/"
-  command = "yarn install && yarn build-storybook;"
+  command = "npm install && npm run build-storybook;"
 [[redirects]]
   from = "http://docs.dev.to"
   to = "https://docs.dev.to"
