@@ -50,13 +50,11 @@ class Internal::UsersController < Internal::ApplicationController
       @user.remove_role :warned
       create_note("good_standing", user_params[:note_for_current_role])
     end
-<<<<<<< HEAD
   end
-=======
->>>>>>> d384f4271621b42056224f6d05ee63cc91341dc4
 
   def add_note
     return unless !user_params[:note].blank?
+
     create_note("misc_note", user_params[:note])
   end
 
@@ -77,6 +75,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def ban_from_mentorship
     return unless user_params[:ban_from_mentorship] == "1"
+
     @user.add_role :banned_from_mentorship
     mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
     mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
