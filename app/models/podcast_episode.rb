@@ -1,5 +1,3 @@
-include CloudinaryHelper
-
 class PodcastEpisode < ApplicationRecord
   include AlgoliaSearch
 
@@ -172,14 +170,14 @@ class PodcastEpisode < ApplicationRecord
                 end
       if img.attr("src")
         self.processed_html = processed_html.gsub(img.attr("src"),
-          cl_image_path(img.attr("src"),
-           type: "fetch",
-           width: 725,
-           crop: "limit",
-           quality: quality,
-           flags: "progressive",
-           fetch_format: "auto",
-           sign_url: true))
+          ActionController::Base.helpers.cl_image_path(img.attr("src"),
+            type: "fetch",
+            width: 725,
+            crop: "limit",
+            quality: quality,
+            flags: "progressive",
+            fetch_format: "auto",
+            sign_url: true))
       end
     end
   end
