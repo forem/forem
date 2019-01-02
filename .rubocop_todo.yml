@@ -22,7 +22,7 @@ RSpec/FilePath:
   Exclude:
     - 'spec/liquid_tags/raw_tag_spec.rb'
 
-# Offense count: 16
+# Offense count: 15
 # Configuration parameters: AggregateFailuresByDefault.
 RSpec/MultipleExpectations:
   Max: 6
@@ -76,7 +76,7 @@ Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
 
-# Offense count: 1182
+# Offense count: 1181
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
