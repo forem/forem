@@ -28,7 +28,10 @@ class Internal::UsersController < Internal::ApplicationController
 
   def update
     @user = User.find(params[:id])
+    @new_mentee = user_params[:add_mentee]
+    @new_mentor = user_params[:add_mentor]
     ban_from_mentorship
+    make_matches
     warn_or_ban_user
     add_note
     @user.update!(user_params)
@@ -73,6 +76,19 @@ class Internal::UsersController < Internal::ApplicationController
     relationship.update(active: false)
   end
 
+  def make_matches
+    return if @new_mentee.blank? && @new_mentor.blank?
+
+    if !@new_mentee.blank?
+      mentee = User.find(@new_mentee)
+      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
+    end
+    if !@new_mentor.blank?
+      mentor = User.find(@new_mentor)
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
+    end
+  end
+
   def ban_from_mentorship
     return unless user_params[:ban_from_mentorship] == "1"
 
@@ -107,6 +123,8 @@ class Internal::UsersController < Internal::ApplicationController
                                 :offering_mentorship,
                                 :quick_match,
                                 :note,
+                                :add_mentor,
+                                :add_mentee,
                                 :ban_from_mentorship,
                                 :ban_user,
                                 :warn_user,

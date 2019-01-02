@@ -69,8 +69,8 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "creates mentorship note" do
-      put "/internal/users/#{mentor.id}", params: { user: { note: "some note" } }
-      expect(mentor.notes[0].content).to eq("some note")
+      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: "1", note_for_mentorship_ban: "uncommunicative" } }
+      expect(mentor.notes[0].reason).to eq("banned_from_mentorship")
     end
   end
 
