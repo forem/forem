@@ -31,6 +31,7 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
     handle_mentorship
+    warn_or_ban_user
     add_note
     @user.update!(user_params)
     if user_params[:quick_match]
@@ -51,6 +52,16 @@ class Internal::UsersController < Internal::ApplicationController
     make_matches
   end
 
+  def warn_or_ban_user
+    if user_params[:ban_user] == "1"
+      @user.add_role :banned
+    elsif user_params[:warn_user] == "1"
+      @user.add_role :warned
+    elsif user_params[:good_standing_user] == "1"
+      @user.remove_role :warned
+    end
+  end
+
   def make_matches
     if !@new_mentee.blank?
       mentee = User.find(@new_mentee)
@@ -63,7 +74,7 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def add_note(options = {})
+  def add_note
     return unless user_params[:note]
     note = Note.create(
       author_id: @current_user.id,
@@ -71,9 +82,6 @@ class Internal::UsersController < Internal::ApplicationController
       noteable_type: "User",
       content: user_params[:note],
     )
-    if !options.blank?
-      note.update(reason: options)
-    end
   end
 
   def inactive_mentorship(mentor, mentee)
@@ -87,7 +95,6 @@ class Internal::UsersController < Internal::ApplicationController
     mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
     deactivate_mentorship(mentee_relationships)
     deactivate_mentorship(mentor_relationships)
-    add_note("banned from mentorship")
   end
 
   def deactivate_mentorship(relationships)
@@ -115,6 +122,9 @@ class Internal::UsersController < Internal::ApplicationController
                                 :quick_match,
                                 :add_mentee,
                                 :note,
-                                :ban_from_mentorship)
+                                :ban_from_mentorship,
+                                :ban_user,
+                                :warn_user,
+                                :good_standing_user)
   end
 end
