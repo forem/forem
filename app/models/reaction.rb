@@ -18,7 +18,7 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_save :update_records, :async_bust
-  after_destroy :update_records, :clean_up_before_destroy
+  after_destroy :update_records, :clean_up_after_destroy
 
   class << self
     def count_for_article(id)
@@ -50,9 +50,9 @@ class Reaction < ApplicationRecord
 
   def update_records
     if destroyed?
-      UpdateRecordsJob.perform_now(reactable, user)
+      Reaction::UpdateRecordsJob.perform_now(reactable, user)
     else
-      UpdateRecordsJob.perform_later(reactable, user)
+      Reaction::UpdateRecordsJob.perform_later(reactable, user)
     end
   end
 
@@ -106,7 +106,7 @@ class Reaction < ApplicationRecord
   end
   handle_asynchronously :async_bust
 
-  def clean_up_before_destroy
+  def clean_up_after_destroy
     reactable.index! if reactable_type == "Article"
   end
 
