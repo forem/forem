@@ -37,11 +37,13 @@ RSpec.describe "/internal/reactions", type: :request do
     let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id) }
 
     it "updates reaction to be confirmed" do
-      expect {
+      invalid_request = -> do
         put "/internal/reactions/#{reaction.id}", params: {
           reaction: { status: "confirmed" }
         }
-      }.to raise_error(Pundit::NotAuthorizedError)
+      end
+
+      expect(invalid_request).to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end
