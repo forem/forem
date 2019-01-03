@@ -18,6 +18,7 @@
 				<p><a href="/internal/users/<%= article.user_id %>">View All</a></p>
 			<% end %>
 		<% end %>
+		<p><a href="/internal/users/<%= article.user_id %>">Manage User	</a></p>
 		<% if article.published_from_feed? && !article.published? %>
 			<p style="padding:5px;background:#f7ff1e;color:black;display:inline;font-weight:bold">
 				RSS Import <%= article.created_at.strftime("%b %d, %Y") %>
@@ -26,7 +27,7 @@
 				Originally Published <%= article.published_at&.strftime("%b %d, %Y") %>
 			</p>
 		<% elsif article.crossposted_at? %>
-		<p> 
+		<p>
 			Crossposted <%= article.crossposted_at.strftime("%b %d, %Y") %> & Published <%= article.published_at&.strftime("%b %d, %Y") %>
 		</p>
 		<% else %>
@@ -36,7 +37,7 @@
 		<% end %>
 		<% if article.main_image.present? %>
 				<div style="max-height:450px;overflow:hidden;">
-						<img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;" alt="cover image"/><br/> 
+						<img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;" alt="cover image"/><br/>
 				</div>
 		<% end %>
 		<b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b> <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a>
@@ -63,9 +64,9 @@
 
 				<% if params[:state]&.include?("classic") %>
 					<br/><br>
-					<textarea cols="70" rows="6" wrap="hard" name="article[body_markdown]" /><%= article.body_markdown %></textarea>         
+					<textarea cols="70" rows="6" wrap="hard" name="article[body_markdown]" /><%= article.body_markdown %></textarea>
 				<% end %>
-				
+
 				&nbsp &nbsp <button class="btn btn-primary">SUBMIT</button>
 			</form>
 			<div>
@@ -107,7 +108,7 @@
 						<input type="hidden" name="social_channel" value="main_twitter" />
 						<input type="hidden" name="article_id" value="<%= article.id %>" />
 						<p> Twitter MAIN</p>
-						<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>         
+						<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>
 						<button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @ThePracticalDev</button>
 					<% end %>
 					<% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
@@ -115,7 +116,7 @@
 							<input type="hidden" name="social_channel" value="satellite_twitter" />
 							<input type="hidden" name="article_id" value="<%= article.id %>" />
 							<p> Twitter Satellite</p>
-							<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>         
+							<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>
 							<button class="btn btn-info" style="font-size:1em;">🐦 Tweet to satellites</button>
 						<% end %>
 					<% end %>
