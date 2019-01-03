@@ -72,10 +72,10 @@ module ApplicationHelper
 
   def icon_url(name)
     postfix = {
-      "twitter"     => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
-      "github"      => "v1456342401/github-logo_m841aq.png",
-      "link"        => "v1456342401/link-symbol_apfbll.png",
-      "volume"      => "v1461589297/technology_1_aefet2.png",
+      "twitter" => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
+      "github" => "v1456342401/github-logo_m841aq.png",
+      "link" => "v1456342401/link-symbol_apfbll.png",
+      "volume" => "v1461589297/technology_1_aefet2.png",
       "volume-mute" => "v1461589297/technology_jiugwb.png"
     }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
 
@@ -127,7 +127,7 @@ module ApplicationHelper
 
       cl_image_path(src,
         type: "fetch",
-        width:  "1000",
+        width: "1000",
         height: "500",
         crop: "imagga_scale",
         quality: "auto",
