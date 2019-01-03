@@ -40,7 +40,8 @@ RSpec.describe "/internal/reactions", type: :request do
       expect {
         put "/internal/reactions/#{reaction.id}", params: {
           reaction: { status: "confirmed" }
-        } }.to raise_error(Pundit::NotAuthorizedError)
+        }
+      }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end
