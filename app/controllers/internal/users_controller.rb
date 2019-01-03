@@ -63,7 +63,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def create_note(reason, content)
     Note.create(
-      author_id: @current_user.id,
+      author_id: current_user.id,
       noteable_id: @user.id,
       noteable_type: "User",
       reason: reason,
