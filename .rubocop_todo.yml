@@ -39,16 +39,6 @@ Style/BlockDelimiters:
     - 'spec/requests/articles_api_spec.rb'
     - 'spec/requests/internal_reactions_spec.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'app/controllers/tag_adjustments_controller.rb'
-    - 'spec/services/tag_adjustment_creation_service_spec.rb'
-    - 'spec/services/tag_adjustment_update_service_spec.rb'
-
 # Offense count: 15
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.
