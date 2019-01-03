@@ -54,11 +54,11 @@ module Api
 
       def create
         @article = ArticleCreationService.new(@user, article_params, {}).create!
-        render json:  if @article.persisted?
-                        @article.to_json(only: [:id], methods: [:current_state_path])
-                      else
-                        @article.errors.to_json
-                      end
+        render json: if @article.persisted?
+                       @article.to_json(only: [:id], methods: [:current_state_path])
+                     else
+                       @article.errors.to_json
+                     end
       end
 
       def update
