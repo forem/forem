@@ -52,4 +52,7 @@ Rails.application.configure do
   logger = Timber::Logger.new(nil)
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
+
+  # When enqueuing jobs with the Inline adapter the job will be executed immediately.
+  config.active_job.queue_adapter = :inline
 end

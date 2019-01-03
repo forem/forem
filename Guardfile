@@ -32,7 +32,7 @@ rspec_options = {
   # BECAUSE spring doesn't seem to work well with simplecov, choose
   # between the following two.
   # slow but good coverage
-  # cmd: "bin/rspec -p",
+  # cmd: "bin/rspec -p  -f documentation",
   # fast but no coverage
   cmd: "bin/spring rspec -p -f documentation",
   #############################
