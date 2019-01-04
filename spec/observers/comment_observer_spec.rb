@@ -13,6 +13,6 @@ RSpec.describe CommentObserver, type: :observer do
     Comment.observers.enable :comment_observer do
       create(:comment, user_id: user.id, commentable_id: article.id)
     end
-    expect(SlackBot).to have_received(:ping).twice
+    expect(SlackBot).to have_received(:ping)
   end
 end
