@@ -27,18 +27,6 @@ RSpec/FilePath:
 RSpec/MultipleExpectations:
   Max: 6
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ProceduralMethods, FunctionalMethods, IgnoredMethods.
-# SupportedStyles: line_count_based, semantic, braces_for_chaining
-# ProceduralMethods: benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
-# FunctionalMethods: let, let!, subject, watch
-# IgnoredMethods: lambda, proc, it
-Style/BlockDelimiters:
-  Exclude:
-    - 'spec/requests/articles_api_spec.rb'
-    - 'spec/requests/internal_reactions_spec.rb'
-
 # Offense count: 15
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.
@@ -66,12 +54,7 @@ Style/EvalWithLocation:
   Exclude:
     - 'app/controllers/omniauth_callbacks_controller.rb'
 
-# Offense count: 2
-Style/MixinUsage:
-  Exclude:
-    - 'app/models/podcast_episode.rb'
-
-# Offense count: 1180
+# Offense count: 1181
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:

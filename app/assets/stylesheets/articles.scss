@@ -29,7 +29,8 @@
     background: white;
     box-shadow: $bold-shadow;
     border-radius:3px;
-    border:1px solid $outline-color;;
+    border:1px solid $outline-color;
+    border: var(--theme-container-border, 1px solid $outline-color);
     width:94%;
     margin:auto;
     margin-top:12px;
@@ -198,6 +199,7 @@
       background:$white;
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
       box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       border-radius:3px;
@@ -1209,8 +1211,9 @@
         margin:14px 0px 8px;
       }
       ul{
-        list-style-type: none;
         padding-left:10px;
+        display: flex;
+        flex-direction: column;
       }
       li{
         font-size:1em;
