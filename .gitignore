@@ -51,3 +51,5 @@ package-lock.json
 #Jetbrains Tools
 .idea/
 
+#sitemap
+/public/sitemap.xml.gz
