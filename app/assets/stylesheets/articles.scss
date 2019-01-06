@@ -28,6 +28,7 @@
     font-size:1.2em;
     background: white;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius:3px;
     border:1px solid $outline-color;
     border: var(--theme-container-border, 1px solid $outline-color);
@@ -958,6 +959,7 @@
       border-radius:3px;
       border: 1px solid $outline-color;
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;
