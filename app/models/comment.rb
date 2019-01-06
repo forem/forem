@@ -192,7 +192,6 @@ class Comment < ApplicationRecord
 
   def self.comment_async_bust(commentable, username)
     commentable.touch
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end
@@ -280,6 +279,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     remove_notifications
     bust_cache_without_delay
     remove_algolia_index
@@ -294,6 +294,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :bust_cache
 
   def synchronous_bust
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
   end
