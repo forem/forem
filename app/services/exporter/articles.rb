@@ -13,7 +13,7 @@ module Exporter
       articles = articles.where(slug: slug) if slug.present?
       json_articles = jsonify_articles(articles)
 
-      { "articles.json" => json_articles }
+      { "#{name}.json" => json_articles }
     end
 
     private
