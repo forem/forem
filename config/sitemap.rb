@@ -16,17 +16,17 @@ SitemapGenerator::Sitemap.default_host = "#{ApplicationConfig['APP_PROTOCOL']}#{
 
 SitemapGenerator::Sitemap.create do
   Article.where(published: true).
-    where("reactions_count > ? OR featured = ?", 20, true).
+    where("score > ? OR featured = ?", 13, true).
     where(published: true).
-    order("last_comment_at DESC").limit(1000).find_each do |article|
-    add article.path, lastmod: article.last_comment_at
+    order("last_comment_at DESC").limit(25000).find_each do |article|
+    add article.path, lastmod: article.last_comment_at, changefreq: "daily"
   end
 
-  User.order("comments_count DESC").where("updated_at > ?", 5.days.ago).limit(250).find_each do |user|
+  User.order("comments_count DESC").where("updated_at > ?", 5.days.ago).limit(8000).find_each do |user|
     add "/#{user.username}", changefreq: "daily"
   end
 
-  Tag.order("hotness_score DESC").limit(100).find_each do |tag|
+  Tag.order("hotness_score DESC").limit(250).find_each do |tag|
     add "/t/#{tag.name}", changefreq: "daily"
   end
 end
