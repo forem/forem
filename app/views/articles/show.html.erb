@@ -140,7 +140,7 @@
           <% end %>
           <span class="action-space" id="action-space"></span>
         </h3>
-        <% if @article.job_opportunity.present? %>
+        <% if @article.job_opportunity_id && @article.job_opportunity.present? %>
           <div class="tags" style="margin-bottom: 10px;">
             <% if @article.job_opportunity.location_city.present? %>
               <a class="tag" target="_blank" style="color:white;background:#0eb268;" href="https://www.google.com/maps/place/<%= JobOpportunity.last.location_given %>">
@@ -160,7 +160,9 @@
           <% end %>
         </div>
       </header>
-      <%= render "articles/collection", position: "top" %>
+      <% if @article.collection_id %>
+        <%= render "articles/collection", position: "top" %>
+      <% end %>
       <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
         <%= @article.processed_html.html_safe %>
       </div>
@@ -175,32 +177,34 @@
       <% end %>
     <% end %>
     <%= render 'articles/org_branding', organization: @organization %>
-    <div id="comments" style="margin-top: -56px;padding-bottom:56px;position:relative;z-index:-100"></div>
-    <% if @article.show_comments %>
-      <div class="comments-container-container">
-        <div
-          class="comments-container"
-          id="comments-container"
-          data-commentable-id="<%= @article.id %>"
-          data-commentable-type="Article">
-          <%= render "/comments/form",
-              commentable: @article,
-              commentable_type: "Article" %>
-          <div class="comment-trees" id="comment-trees-container">
-            <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
-              <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-                <%= tree_for(comment, @article) %>
+    <% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", :expires_in => 2.hours) do %>
+      <div id="comments" style="margin-top: -56px;padding-bottom:56px;position:relative;z-index:-100" data-updated-at="<%= Time.current %>"></div>
+      <% if @article.show_comments %>
+        <div class="comments-container-container">
+          <div
+            class="comments-container"
+            id="comments-container"
+            data-commentable-id="<%= @article.id %>"
+            data-commentable-type="Article">
+            <%= render "/comments/form",
+                commentable: @article,
+                commentable_type: "Article" %>
+            <div class="comment-trees" id="comment-trees-container">
+              <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
+                <% cache ["comment_root_cached_tree", comment] do %>
+                  <%= tree_for(comment, @article) %>
+                <% end %>
               <% end %>
-            <% end %>
+            </div>
+          </div>
+          <div class="show-comments-footer">
+            <%= render 'articles/comments_actions' %>
           </div>
         </div>
-        <div class="show-comments-footer">
-          <%= render 'articles/comments_actions' %>
-        </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
-  <% cache("article-bottom-content-#{@article.cached_tag_list_array.sort}", :expires_in => 6.hours) do %>
+  <% cache("article-bottom-content-#{@article.cached_tag_list_array.sort}", :expires_in => 12.hours) do %>
     <% @classic_article = Suggester::Articles::Classic.new(@article).get %>
     <% if @classic_article %>
       <%= render "additional_content_boxes/article_box",
@@ -229,7 +233,7 @@
   <script async defer src="//platform.instagram.com/en_US/embeds.js"></script>
 <% end %>
 
-<% cache("article-show-scripts", expires_in: 6.hours) do %>
+<% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%= TweetTag.script.html_safe %>
     <%= YoutubeTag.script.html_safe %>
