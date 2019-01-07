@@ -1,4 +1,5 @@
 class TweetTag < LiquidTagBase
+  include ActionView::Helpers::AssetTagHelper
   attr_reader :tweet
 
   def initialize(tag_name, id, tokens)
