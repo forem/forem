@@ -461,6 +461,8 @@
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
           border-bottom:1px solid darken($lightest-gray,4%);
+          border-top:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
+          border-bottom:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
           padding-bottom:105px;
           border-radius:3px;
           h3{
