@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "TagAdjustments", type: :request do
-  let(:user)    { create(:user) }
-  let(:user2)    { create(:user) }
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
   let(:tag) { create(:tag) }
   # let(:article) { create(:article, ) }
 
@@ -13,6 +13,7 @@ RSpec.describe "TagAdjustments", type: :request do
         user.add_role(:trusted)
         sign_in user
       end
+
       it "removes the tag" do
         article = Article.create!(user_id: user2.id, title: "test TEST", body_markdown: "Yo ho h o#{rand(100)}", tag_list: "#{tag.name}, yoyo, bobo", published: true)
         post "/tag_adjustments", params: {
@@ -20,7 +21,7 @@ RSpec.describe "TagAdjustments", type: :request do
             tag_name: tag.name,
             article_id: article.id,
             reason_for_adjustment: "Test #{rand(100)}"
-          },
+          }
         }
         expect(article.reload.tag_list.include?(tag.name)).to eq(false)
       end
@@ -43,7 +44,7 @@ RSpec.describe "TagAdjustments", type: :request do
             tag_name: tag.name,
             article_id: article.id,
             reason_for_adjustment: "Test #{rand(100)}"
-          },
+          }
         }
         expect(article.reload.tag_list.include?(tag.name)).to eq(false)
       end
@@ -54,7 +55,7 @@ RSpec.describe "TagAdjustments", type: :request do
             tag_name: tag.name,
             article_id: article.id,
             reason_for_adjustment: "Test #{rand(100)}"
-          },
+          }
         }
         expect(article.reload.tag_list.include?("heyheyhey")).to eq(true)
       end

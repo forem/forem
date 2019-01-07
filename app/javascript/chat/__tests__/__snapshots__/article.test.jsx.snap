@@ -24,7 +24,7 @@ exports[`<Article /> should load article 1`] = `
   <div
     class="container"
   >
-    <header>
+    <section>
       <div
         class="image image-final"
         style={
@@ -33,7 +33,7 @@ exports[`<Article /> should load article 1`] = `
           }
         }
       />
-    </header>
+    </section>
     <div
       class="title"
     >

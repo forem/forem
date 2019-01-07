@@ -22,10 +22,6 @@ class BadgeAchievement < ApplicationRecord
     self.rewarding_context_message = final_html
   end
 
-  def name_of_user
-    user.name
-  end
-
   private
 
   def notify_recipient

@@ -1,0 +1,26 @@
+<script defer>
+  var isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  if (isTouchDevice) {
+    function hasClass(el, cls) {
+      return el.className && new RegExp("(\\s|^)" + cls + "(\\s|$)").test(el.className);
+    }
+    var activeLinks = document.getElementsByClassName('active');
+    Array.prototype.forEach.call(activeLinks, function(el) { el.classList.remove("active"); });
+
+    document.getElementById('articles-list').addEventListener('click', function(event) {
+        var clickedEl = event.target;
+        if (hasClass(clickedEl,"bm-initial") || hasClass(clickedEl,"bm-success")){
+          //do nothing
+        }
+        else if (hasClass(clickedEl.parentNode,"single-article")) {
+          clickedEl.parentNode.classList.add('active');
+        }
+        else if (hasClass(clickedEl.parentNode.parentNode,"single-article")) {
+          clickedEl.parentNode.parentNode.classList.add('active');
+        }
+        else if (hasClass(clickedEl.parentNode.parentNode.parentNode,"single-article")) {
+          clickedEl.parentNode.parentNode.parentNode.classList.add('active');
+        }
+    });
+  }
+</script>

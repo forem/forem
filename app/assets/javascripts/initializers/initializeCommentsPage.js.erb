@@ -60,6 +60,7 @@ function initializeCommentsPage() {
       butt.onclick = function (event) {
         event.preventDefault();
         var thisButt = this;
+        sendHapticMessage('medium');
         var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
           showModal('react-to-comment');

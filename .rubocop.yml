@@ -7,12 +7,17 @@ require: rubocop-rspec
 RSpec/MultipleExpectations:
   # Max: 1
   Exclude:
-    - "spec/features/*"
+    - "spec/features/**/*"
 
 RSpec/DescribeClass:
   Exclude:
-    - spec/features/*
+    - spec/features/**/*
     - spec/requests/*
+
+RSpec/ExampleLength:
+  Max: 10
+  Exclude:
+    - spec/features/**/*
 
 # TODO: Uncomment it after fix rubocop-todo Metrics/LineLength
 # Metrics/LineLength:
@@ -180,11 +185,6 @@ Style/FrozenStringLiteralComment:
   Description: >-
     Add the frozen_string_literal comment to the top of files
     to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: false
-
-Style/FlipFlop:
-  Description: 'Checks for flip flops'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-flip-flops'
   Enabled: false
 
 Style/FormatString:

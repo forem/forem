@@ -5,6 +5,7 @@ class CacheBuster
 
   def bust(path)
     return unless Rails.env.production?
+
     HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
     headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
     HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
@@ -79,6 +80,7 @@ class CacheBuster
 
   def bust_tag_pages(article)
     return unless article.published
+
     article.tag_list.each do |tag|
       if article.published_at.to_i > 3.minutes.ago.to_i
         bust("/t/#{tag}/latest")

@@ -6,7 +6,7 @@ class UserDecorator < ApplicationDecorator
       follows_query = Follow.where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag").pluck(:followable_id, :points)
       tags = Tag.where(id: follows_query.map { |f| f[0] }).order("hotness_score DESC")
       tags.each do |t|
-        follow_query_item = follows_query.detect{|f| f[0] == t.id}
+        follow_query_item = follows_query.detect { |f| f[0] == t.id }
         t.points = follow_query_item[1]
       end
       tags

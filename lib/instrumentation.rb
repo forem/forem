@@ -12,6 +12,8 @@ module Instrumentation
   end
 
   def append_to_honeycomb(request, controller_name)
+    return if honeycomb_metadata.nil?
+
     honeycomb_metadata["trace.trace_id"] = request.request_id
     honeycomb_metadata["trace.span_id"] = request.request_id
     honeycomb_metadata[:service_name] = "rails"

@@ -28,8 +28,10 @@
     font-size:1.2em;
     background: white;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius:3px;
-    border:1px solid $outline-color;;
+    border:1px solid $outline-color;
+    border: var(--theme-container-border, 1px solid $outline-color);
     width:94%;
     margin:auto;
     margin-top:12px;
@@ -143,6 +145,7 @@
           }
           .wide-nav-links{
             display: block;
+            cursor: default;
           }
         }
         @media screen and ( min-width: 950px ){
@@ -197,7 +200,9 @@
       background:$white;
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       border-radius:3px;
       width:94%;
       margin:auto;
@@ -220,6 +225,11 @@
         @media screen and ( min-width: 430px ){
           margin-top:12px;
         }
+      }
+      h4{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .article-organization-headline {
         display:block;
@@ -345,6 +355,9 @@
         left:62px;
         position:absolute;
         bottom:80px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         a{
           color: #666666;
         }
@@ -448,6 +461,8 @@
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
           border-bottom:1px solid darken($lightest-gray,4%);
+          border-top:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
+          border-bottom:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
           padding-bottom:105px;
           border-radius:3px;
           h3{
@@ -497,6 +512,10 @@
       font-weight:bold;
       margin-top:-101px;
       position:absolute;
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       z-index:10;
       left:62px;
       font-size:14px;
@@ -578,11 +597,11 @@
         text-align:center;
         bottom:12px;
         // border: 2px solid darken($purple, 30%);
-        background: darken($purple, 26%);
+        background: darken($purple, 38%);
         color: white;
         letter-spacing: 1px;
         &:hover{
-          background: darken($purple, 30%);
+          background: darken($purple, 50%);
         }
         img{
           height:17px;
@@ -760,7 +779,9 @@
         border-radius:3px;
         width: calc(100% - 3px);
         border: 1px solid $outline-color;
+        border: var(--theme-container-border, 1px solid $outline-color);
         box-shadow: $bold-shadow;
+        box-shadow: var(--theme-container-box-shadow, $bold-shadow);
         // background:red;
         .sidebar-profile-snapshot-inner{
           display:inline-block;
@@ -867,6 +888,7 @@
               font-family: $helvetica;
               padding-bottom: 10px;
               padding-left:8px;
+              
               a{
                 color: $medium-gray;
                 padding: 7px 12px;
@@ -939,7 +961,9 @@
       color: $black;
       border-radius:3px;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;
@@ -950,6 +974,9 @@
       }
       &:hover{
         opacity:1;
+      }
+      h4{
+        margin: 0;
       }
       &.signin-cta-widget{
         background: lighten($purple, 3%);
@@ -1017,6 +1044,10 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         a{
           color: $black;
+          h4{
+            display: inline-block;
+            margin: 0;
+          }
           &:hover{
             text-decoration: underline;
           }
@@ -1039,7 +1070,7 @@
         padding-bottom:5px;
         &.body-scrollable{
           height: calc(100vh - 300px);
-          max-height: 500px;
+          max-height: 390px;
           overflow-y: scroll;
         }
         &.signup-cta-widget-body{
@@ -1165,6 +1196,7 @@
         text-align:left;
         border-radius: 0px;
         color: $black;
+        cursor: pointer;
         &:hover{
           background: lighten($bold-blue, 38%);
         }
@@ -1185,8 +1217,9 @@
         margin:14px 0px 8px;
       }
       ul{
-        list-style-type: none;
         padding-left:10px;
+        display: flex;
+        flex-direction: column;
       }
       li{
         font-size:1em;
@@ -1242,7 +1275,7 @@
         margin-top:8px;
         padding:8px 0px;
         font-size:0.93em;
-        color: $sky-blue;
+        color: darken($sky-blue, 17%);
         background: white;
         display:block;
         width:92%;

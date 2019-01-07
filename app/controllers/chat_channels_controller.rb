@@ -127,6 +127,7 @@ class ChatChannelsController < ApplicationController
 
   def render_channels_html
     return unless current_user
+
     if params[:slug]
       slug = if params[:slug]&.start_with?("@")
                [current_user.username, params[:slug].gsub("@", "")].sort.join("/")

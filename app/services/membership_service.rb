@@ -11,26 +11,26 @@ class MembershipService
 
   def subscribe_customer
     true if create_subscription &&
-        assign_membership_role &&
-        user.update(monthly_dues: monthly_dues,
-                    membership_started_at: Time.current,
-                    email_membership_newsletter: true,
-                    stripe_id_code: customer.id) &&
-        send_welcome_email
+      assign_membership_role &&
+      user.update(monthly_dues: monthly_dues,
+                  membership_started_at: Time.current,
+                  email_membership_newsletter: true,
+                  stripe_id_code: customer.id) &&
+      send_welcome_email
   end
 
   def update_subscription
     true if update_stripe_plan_for_subscription &&
-        assign_membership_role &&
-        user.update(monthly_dues: monthly_dues) &&
-        send_update_email
+      assign_membership_role &&
+      user.update(monthly_dues: monthly_dues) &&
+      send_update_email
   end
 
   def unsubscribe_customer
     true if cancel_subscription &&
-        remove_all_membership_roles &&
-        user.update(monthly_dues: 0, email_membership_newsletter: false) &&
-        send_cancellation_email
+      remove_all_membership_roles &&
+      user.update(monthly_dues: 0, email_membership_newsletter: false) &&
+      send_cancellation_email
   end
 
   def find_subscription

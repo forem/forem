@@ -10,14 +10,14 @@
       <div class="breadcrumb"><a href="<%= @user.path %>">View All Activity</a></div>
       <header>
         <% if @user.comments_count > 250 %>
-          Last 250 Comments
+          <h4>Last 250 Comments</h4>
         <% else %>
-          All <%= @user.comments_count %> Comments
+          <h4>All <%= @user.comments_count %> Comments</h4>
         <% end %>
       </header>
       <% else %>
         <header>
-          Recent Comments
+          <h4>Recent Comments</h4>
         </header>
       <% end %>
     <% end %>

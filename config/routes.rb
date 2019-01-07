@@ -49,7 +49,6 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    mount Flipflop::Engine => "/features"
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -223,11 +222,12 @@ Rails.application.routes.draw do
   get "/scholarships", to: redirect("/p/scholarships")
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
+  get "/tag-moderation" => "pages#tag_moderation"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
   scope "p" do
-    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide information
+    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
                        markdown_basics scholarships wall_of_patrons membership_form badges]
     pages_actions.each do |action|
       get action, action: action, controller: "pages"

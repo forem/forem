@@ -31,6 +31,7 @@ It renders the `_table` partial to display details about the resources.
   <h1 class="main-content__page-title" id="page-title">
     <%= content_for(:title) %>
   </h1>
+
   <% if show_search_bar %>
     <%= render(
       "search",
@@ -41,10 +42,13 @@ It renders the `_table` partial to display details about the resources.
 
   <div>
     <%= link_to(
-      "#{t("administrate.actions.new")} #{page.resource_name.titleize.downcase}",
+      t(
+        "administrate.actions.new_resource",
+        name: page.resource_name.titleize.downcase
+      ),
       [:new, namespace, page.resource_path],
       class: "button",
-    ) if valid_action? :new %>
+    ) if valid_action?(:new) && show_action?(:new, new_resource) %>
   </div>
 </header>
 
@@ -52,6 +56,8 @@ It renders the `_table` partial to display details about the resources.
   <%= render(
     "collection",
     collection_presenter: page,
+    collection_field_name: resource_name,
+    page: page,
     resources: resources,
     table_title: "page-title"
   ) %>

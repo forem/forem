@@ -1,7 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user, :good_standing_user,
+  :note_for_mentorship_ban, :reason_for_mentorship_ban,
+  :note_for_current_role, :add_mentor, :add_mentee
 
   rolify
   include AlgoliaSearch
@@ -64,33 +66,33 @@ class User < ApplicationRecord
   validates :github_username, uniqueness: { allow_blank: true }
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  validates :website_url, :employer_url, :mastodon_url,
+    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   # rubocop:disable Metrics/LineLength
   validates :facebook_url,
-              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/[a-zA-Z0-9.]{5,50}\/?\Z/,
+              format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
               format:
-              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/([\S]{3,100})\Z/
+              /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
   validates :behance_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\/?\Z/
+              format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
   validates :linkedin_url,
               allow_blank: true,
               format:
-                /\Ahttps:\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/in\/([a-zA-Z0-9\-]{3,100})\/?\Z/
+                /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
   validates :dribbble_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
+              format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
   validates :medium_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.medium.com|medium.com)\/([a-zA-Z0-9\-\_\@\.]{2,32})\/?\Z/
+              format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
   validates :gitlab_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.gitlab.com|gitlab.com)\/([a-zA-Z0-9_\-\.]{1,100})\/?\Z/
+              format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   # rubocop:enable Metrics/LineLength
-  validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
                            message: "%{value} is not a valid shirt style" },
@@ -109,10 +111,8 @@ class User < ApplicationRecord
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true
-  validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
               length: { maximum: 100 }
-  validates :mastodon_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :employment_title, :education, :location,
               length: { maximum: 100 }
   validates :mostly_work_with, :currently_learning,
@@ -121,7 +121,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
   validate  :conditionally_validate_summary
-  validate  :mastodon_url_whitelist
+  validate  :validate_mastodon_url
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
@@ -299,11 +299,13 @@ class User < ApplicationRecord
 
   def reason_for_ban
     return if notes.where(reason: "banned").blank?
+
     Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
   end
 
   def reason_for_warning
     return if notes.where(reason: "warned").blank?
+
     Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
   end
 
@@ -463,6 +465,7 @@ class User < ApplicationRecord
   def conditionally_validate_summary
     # Grandfather people who had a too long summary before.
     return if summary_was && summary_was.size > 200
+
     if summary.present? && summary.size > 200
       errors.add(:summary, "is too long.")
     end
@@ -470,14 +473,17 @@ class User < ApplicationRecord
 
   def validate_feed_url
     return unless feed_url.present?
+
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
   end
 
-  def mastodon_url_whitelist
+  def validate_mastodon_url
     return unless mastodon_url.present?
+
     uri = URI.parse(mastodon_url)
-    return if uri.host&.in?(Constants::MASTODON_INSTANCE_WHITELIST)
-    errors.add(:mastodon_url, "is not a whitelisted Mastodon instance")
+    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+
+    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   end
 
   def title
@@ -557,7 +563,8 @@ class User < ApplicationRecord
 
   def destroy_empty_dm_channels
     return if chat_channels.empty? ||
-        chat_channels.where(channel_type: "direct").empty?
+      chat_channels.where(channel_type: "direct").empty?
+
     empty_dm_channels = chat_channels.where(channel_type: "direct").
       select { |chat_channel| chat_channel.messages.empty? }
     empty_dm_channels.destroy_all

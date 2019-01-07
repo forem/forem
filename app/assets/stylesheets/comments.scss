@@ -15,7 +15,8 @@ a.header-link{
 }
 
 .comments{
-  background-color:$light-gray;
+  background:$light-gray;
+  background:var(--theme-background,$light-gray);
   .picture{
     height:180px;
     max-width:900px;
@@ -528,6 +529,7 @@ a.header-link{
       margin:auto;
       white-space: nowrap;
       background:$lightest-gray;
+      background:var(--theme-background, $lightest-gray);
       padding:1px 5px 0px;
       border-radius:2px;
       color:#333842;

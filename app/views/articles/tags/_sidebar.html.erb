@@ -1,0 +1,43 @@
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div class="sidebar-bg" id="sidebar-bg-left"></div>
+  <div class="side-bar">
+    <% if @tag_model && @tag_model.short_summary.present? %>
+      <div class="widget">
+        <header>
+          <h4>#<%= @tag %> 👋</h4>
+        </header>
+        <div class="widget-body">
+          <%= @tag_model.short_summary.html_safe %>
+        </div>
+      </div>
+    <% end %>
+    <% if @tag_model && @tag_model.rules_html.present? %>
+      <div class="widget">
+        <header>
+          <h4>submission guidelines</h4>
+        </header>
+        <div class="widget-body">
+          <%= @tag_model.rules_html.html_safe %>
+          <a class="cta cta-button" href="/new/<%= @tag %>" >
+            WRITE A POST
+          </a>
+        </div>
+      </div>
+    <% end %>
+    <% if @tag_model && @tag_model.wiki_body_html.present? %>
+      <div class="widget">
+        <header>
+          <h4>about #<%= @tag %></h4>
+        </header>
+        <div class="widget-body">
+          <%= @tag_model.wiki_body_html.html_safe %>
+        </div>
+      </div>
+    <% end %>
+    <div class="sidebar-data">
+      <div>
+        <%= pluralize Article.tagged_with(@tag).where(published: true).size, "Post" %> Published
+      </div>
+    </div>
+  </div>
+</div>

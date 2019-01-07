@@ -150,6 +150,7 @@
   display: inline-block;
   border-radius: 3px;
   background: $lightest-gray;
+  background: var(--theme-background, $lightest-gray);
   border: 1px solid $light-medium-gray;
   font-weight: bold;
   cursor: default;
@@ -263,6 +264,7 @@
   margin-bottom: 10px;
   max-width: 900px;
   box-shadow: $bold-shadow;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   h2{
     margin:5px auto 5px;
   }
@@ -295,7 +297,9 @@
   flex-direction: row;
   justify-content: space-between;
   border: 1px solid $outline-color;
-  box-shadow: $bold-shadow;
+  border: var(--theme-container-border, 1px solid $outline-color);
+  box-shadow: $bold-shadow;  
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   background: white;
   flex-flow: row nowrap;
 }
@@ -356,6 +360,7 @@
 
 .activechatchannel__form {
   border-top: 1px solid $outline-color;
+  border-top: var(--theme-container-border, 1px solid $outline-color);
   background: #ededed;
   width: 100%;
   height: 70px;
@@ -680,6 +685,7 @@
   left: 0;
   right: 0;
   background: $lightest-gray;
+  background: var(--theme-background, $lightest-gray);
   border-top: 1px solid $light-medium-gray;
   padding: 8px 10px 20px;
   font-weight: bold;

@@ -180,6 +180,7 @@
   .org-publish-check-wrapper{
     font-family: $helvetica;
     background:$lightest-gray;
+    background:var(--theme-background, $lightest-gray);
     padding:20px 14px;
     text-align:center;
     font-size:24px;
@@ -432,8 +433,17 @@
   max-width:94%;
   margin:auto;
   text-align:center;
+  .registration-rainbow {
+    .rainbow-logo {
+      height: calc(170px + 2vw);
+      width: calc(170px + 2vw);
+      transform: rotate(6deg);
+      border-radius: 18px;
+      margin-top: 26px;
+    }
+  }
   h1{
-    font-size:45px;
+    font-size:calc(30px + 1vw);
     font-weight:800;
   }
   h2{
@@ -451,8 +461,9 @@
     font-size:30px;
   }
   p{
-    font-size:20px;
+    font-size:16px;
     line-height:25px;
+    font-family: $monospace;
   }
   img.gif{
     width:500px;
@@ -461,18 +472,23 @@
   .links{
     margin:50px auto;
     .sign-up-link{
-      padding:14px 0px;
+      padding:22px 0px;
       margin:2%;
-      border:3px solid $purple;
-      background: $purple;
+      border:3px solid $bold-blue;
+      background: $bold-blue;
       font-family: $helvetica-condensed;
       display:inline-block;
       text-align:center;
-      width:250px;
+      width:290px;
       border-radius: 100px;
-      color: $bold-blue;
-      img{
-        vertical-align:-3px;
+      color: white;
+      font-size:1.1em;
+      .icon-img{
+        vertical-align:-7px;
+        fill: white;
+        height: 30px;
+        width: 30px;
+        margin-right: 4px;
       }
     }
   }

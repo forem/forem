@@ -1,7 +1,8 @@
 module Constants
-  MASTODON_INSTANCE_WHITELIST = [
+  ALLOWED_MASTODON_INSTANCES = [
     "acg.mn",
     "bitcoinhackers.org",
+    "chaos.social",
     "cmx.im",
     "framapiaf.org",
     "friends.nico",
@@ -10,6 +11,7 @@ module Constants
     "horiedon.com",
     "hostux.social",
     "imastodon.net",
+    "infosec.exchange",
     "kirakiratter.com",
     "knzk.me",
     "lou.lt",
@@ -41,11 +43,15 @@ module Constants
     "otajodon.com",
     "pawoo.net",
     "qiitadon.com",
+    "radical.town",
     "ro-mastodon.puyo.jp",
+    "ruby.social",
+    "ruhr.social",
     "social.targaryen.house",
     "social.tchncs.de",
     "switter.at",
     "todon.nl",
-    "wikitetas.club"
+    "toot.cafe",
+    "wikitetas.club",
   ].freeze
 end

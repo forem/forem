@@ -10,6 +10,7 @@ class AuthorizationService
   def get_user
     identity = build_identity
     return signed_in_resource if user_identity_exists(identity)
+
     user = proper_user(identity)
     user = if user.nil?
              build_user(identity)
@@ -24,6 +25,7 @@ class AuthorizationService
 
   def add_social_identity_data(user)
     return unless auth&.provider && auth&.extra && auth.extra.raw_info
+
     if auth.provider == "twitter"
       user.twitter_created_at = auth.extra.raw_info.created_at
       user.twitter_followers_count = auth.extra.raw_info.followers_count.to_i

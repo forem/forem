@@ -24,7 +24,6 @@ function initializeBaseTracking() {
       fallbackActivityRecording();
     }
   }, 25);
-  facebookTrackingScript();
   eventListening();
   trackCustomImpressions();
 }
@@ -60,35 +59,6 @@ function fallbackActivityRecording() {
     credentials: 'same-origin'
   });
 }
-
-function fbTrack() {
-  fbq('track', 'PageView');
-  if (document.location.search.indexOf('newly-registered-user=true') > -1) {
-    fbq('track', 'CompleteRegistration');
-    history.replaceState(null, document.title, window.location.href.replace('?newly-registered-user=true', ''));
-  }
-}
-
-function facebookTrackingScript() {
-  if('<%= Rails.env.production? %>' !== 'true') { return; }
-
-  if (typeof fbq === 'undefined') {
-    // Also don't lint this minified function
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '<%= ApplicationConfig["FACEBOOK_PIXEL_ID"] %>');
-    fbTrack();
-  } else {
-    fbTrack();
-  }
-}
-
 
 function eventListening(){
   var registerNowButt = document.getElementById("cta-comment-register-now-link");

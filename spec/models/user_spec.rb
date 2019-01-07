@@ -64,7 +64,7 @@ RSpec.describe User, type: :model do
       expect(user).to be_valid
     end
 
-    it "does not accept a non whitelisted mastodon instance" do
+    it "does not accept a denied mastodon instance" do
       user.mastodon_url = "https://SpammyMcSpamface.com/"
       expect(user).not_to be_valid
     end
@@ -371,6 +371,7 @@ RSpec.describe User, type: :model do
     let(:tag2)  { create(:tag) }
     let(:tag3)  { create(:tag) }
     let(:tag4)  { create(:tag) }
+
     it "returns empty if no tags followed" do
       expect(user.decorate.cached_followed_tags.size).to eq(0)
     end
