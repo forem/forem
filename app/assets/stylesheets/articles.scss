@@ -456,6 +456,7 @@
         }
         .content-wrapper{
           background:white;
+          background: var(--theme-container-background,	#fff);
           color:$black;
           position:relative;
           z-index:5;
