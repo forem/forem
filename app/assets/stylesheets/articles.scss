@@ -198,6 +198,7 @@
     .single-article{
       text-align:left;
       background:$white;
+      background: var(--theme-container-background,	$white);
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
       border: var(--theme-container-border, 1px solid $outline-color);
