@@ -773,6 +773,7 @@
       .sidebar-profile-snapshot{
         overflow: hidden;
         background:white;
+        background: var(--theme-container-background,	#fff);
         margin-bottom:14px;
         border-radius:3px;
         width: calc(100% - 3px);
