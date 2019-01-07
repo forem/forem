@@ -16,6 +16,13 @@ RSpec.describe TweetTag, type: :liquid_template do
     end
   end
 
+  it "render properly", :vcr do
+    VCR.use_cassette("twitter_gem") do
+      liquid = generate_tweet_liquid_tag(twitter_id)
+      expect(liquid.render).not_to eq("liquid error: internal")
+    end
+  end
+
   context "when given invalid id" do
     it "rejects it (normal invalid id)" do
       expect do
