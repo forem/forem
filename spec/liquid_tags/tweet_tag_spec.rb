@@ -18,8 +18,10 @@ RSpec.describe TweetTag, type: :liquid_template do
 
   it "render properly", :vcr do
     VCR.use_cassette("twitter_gem") do
-      liquid = generate_tweet_liquid_tag(twitter_id)
-      expect(liquid.render).not_to eq("liquid error: internal")
+      Time.use_zone("Asia/Tokyo") do
+        rendered = generate_tweet_liquid_tag(twitter_id).render
+        Approvals.verify(rendered, name: "liquid_tweet_tag_spec", format: :html)
+      end
     end
   end
 
