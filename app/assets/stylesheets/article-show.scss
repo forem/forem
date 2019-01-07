@@ -309,6 +309,7 @@ article{
     font-size: 21px;
     line-height: 32px;
     background:white;
+    background: var(--theme-container-background,	#fff);
     position:relative;
     z-index:5;
     padding-bottom:5px;
