@@ -198,6 +198,7 @@
     .single-article{
       text-align:left;
       background:$white;
+      background: var(--theme-container-background,	$white);
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
       border: var(--theme-container-border, 1px solid $outline-color);
@@ -456,6 +457,7 @@
         }
         .content-wrapper{
           background:white;
+          background: var(--theme-container-background,	#fff);
           color:$black;
           position:relative;
           z-index:5;
@@ -775,6 +777,7 @@
       .sidebar-profile-snapshot{
         overflow: hidden;
         background:white;
+        background: var(--theme-container-background,	#fff);
         margin-bottom:14px;
         border-radius:3px;
         width: calc(100% - 3px);
@@ -957,6 +960,7 @@
       position:relative;
       overflow:hidden;
       background:white;
+      background: var(--theme-container-background,	#fff);
       display:block;
       color: $black;
       border-radius:3px;
