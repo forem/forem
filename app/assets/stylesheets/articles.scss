@@ -461,6 +461,8 @@
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
           border-bottom:1px solid darken($lightest-gray,4%);
+          border-top:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
+          border-bottom:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
           padding-bottom:105px;
           border-radius:3px;
           h3{
@@ -777,6 +779,7 @@
         border-radius:3px;
         width: calc(100% - 3px);
         border: 1px solid $outline-color;
+        border: var(--theme-container-border, 1px solid $outline-color);
         box-shadow: $bold-shadow;
         box-shadow: var(--theme-container-box-shadow, $bold-shadow);
         // background:red;
@@ -958,6 +961,7 @@
       color: $black;
       border-radius:3px;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
       box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
