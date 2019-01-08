@@ -1,5 +1,5 @@
 @import 'variables';
-$indent-distance: calc(1.2vw + 12px);
+$indent-distance: calc(1.1vw + 12px);
 
 @keyframes fade-out {
     0%   {background-color: rgb(208, 255, 235);}
@@ -352,7 +352,7 @@ a.header-link{
       }
       &[open] {
         > summary {
-          width: 22px;
+          width: calc(1.1vw + 11px); //slightly smaller than indent distance
           padding-bottom: 100px;
         }
       }
@@ -362,7 +362,7 @@ a.header-link{
       color: lighten($medium-gray, 15%);
       font-size: 13.5px;
       font-style: oblique;
-      padding: 1px 0px;
+      padding: 2px 0px;
       padding-left: 4px;
       &:active {
         outline:0;
@@ -422,7 +422,7 @@ a.header-link{
 }
 
 .single-comment-node{
-  padding:2px 0px 2px $indent-distance;
+  padding:2px 0px 0px $indent-distance;
   text-align: left;
   &.root{
     padding:0px 0px 2px 0;
