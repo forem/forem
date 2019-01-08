@@ -46,6 +46,7 @@ class HtmlVariant < ApplicationRecord
       src = img.attr("src")
       next unless src
       next if allowed_image_host?(src)
+
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else

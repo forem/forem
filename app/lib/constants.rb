@@ -52,6 +52,6 @@ module Constants
     "switter.at",
     "todon.nl",
     "toot.cafe",
-    "wikitetas.club"
+    "wikitetas.club",
   ].freeze
 end

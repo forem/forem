@@ -1,7 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship, :quick_match
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user, :good_standing_user,
+  :note_for_mentorship_ban, :reason_for_mentorship_ban,
+  :note_for_current_role, :add_mentor, :add_mentee
 
   rolify
   include AlgoliaSearch
@@ -13,6 +15,7 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
+  has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
@@ -297,11 +300,13 @@ class User < ApplicationRecord
 
   def reason_for_ban
     return if notes.where(reason: "banned").blank?
+
     Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
   end
 
   def reason_for_warning
     return if notes.where(reason: "warned").blank?
+
     Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
   end
 
@@ -461,6 +466,7 @@ class User < ApplicationRecord
   def conditionally_validate_summary
     # Grandfather people who had a too long summary before.
     return if summary_was && summary_was.size > 200
+
     if summary.present? && summary.size > 200
       errors.add(:summary, "is too long.")
     end
@@ -468,13 +474,16 @@ class User < ApplicationRecord
 
   def validate_feed_url
     return unless feed_url.present?
+
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
   end
 
   def validate_mastodon_url
     return unless mastodon_url.present?
+
     uri = URI.parse(mastodon_url)
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   end
 
@@ -555,7 +564,8 @@ class User < ApplicationRecord
 
   def destroy_empty_dm_channels
     return if chat_channels.empty? ||
-        chat_channels.where(channel_type: "direct").empty?
+      chat_channels.where(channel_type: "direct").empty?
+
     empty_dm_channels = chat_channels.where(channel_type: "direct").
       select { |chat_channel| chat_channel.messages.empty? }
     empty_dm_channels.destroy_all

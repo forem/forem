@@ -5,6 +5,7 @@ class Organization < ApplicationRecord
 
   has_many :job_listings
   has_many :users
+  has_many :api_secrets, through: :users
   has_many :articles
   has_many :collections
   has_many :display_ads

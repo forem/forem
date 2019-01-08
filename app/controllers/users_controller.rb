@@ -137,11 +137,13 @@ class UsersController < ApplicationController
 
   def follow_hiring_tag(user)
     return unless user.looking_for_work?
+
     user.delay.follow(Tag.find_by(name: "hiring"))
   end
 
   def handle_settings_tab
     return @tab = "profile" if @tab.blank?
+
     case @tab
     when "organization"
       @organization = @user.organization || Organization.new
@@ -155,6 +157,7 @@ class UsersController < ApplicationController
     when "billing"
       stripe_code = current_user.stripe_id_code
       return if stripe_code == "special"
+
       @customer = Stripe::Customer.retrieve(stripe_code) if !stripe_code.blank?
     when "membership"
       if current_user.monthly_dues.zero?

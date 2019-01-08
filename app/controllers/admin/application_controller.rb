@@ -17,6 +17,7 @@ module Admin
       # Temp monkey patch. Since we use https at the edge via fastly I think our protocol expectations
       # are out of wack.
       raise InvalidAuthenticityToken, NULL_ORIGIN_MESSAGE if request.origin == "null"
+
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
 

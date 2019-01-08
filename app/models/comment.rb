@@ -192,7 +192,6 @@ class Comment < ApplicationRecord
 
   def self.comment_async_bust(commentable, username)
     commentable.touch
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end
@@ -211,6 +210,7 @@ class Comment < ApplicationRecord
 
   def send_to_moderator
     return if user && user.comments_count > 10
+
     Notification.send_moderation_notification(self)
   end
 
@@ -230,12 +230,12 @@ class Comment < ApplicationRecord
 
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
+
     self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>" }
   end
 
   def shorten_urls!
     doc = Nokogiri::HTML.parse(processed_html)
-    # raise doc.to_s
     doc.css("a").each do |a|
       unless a.to_s.include?("<img") || a.attr("class")&.include?("ltag")
         a.content = strip_url(a.content) unless a.to_s.include?("<img")
@@ -279,6 +279,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     remove_notifications
     bust_cache_without_delay
     remove_algolia_index
@@ -293,6 +294,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :bust_cache
 
   def synchronous_bust
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
   end

@@ -13,6 +13,7 @@ RSpec.describe User, type: :model do
   before { mock_auth_hash }
 
   describe "validations" do
+    it { is_expected.to have_many(:api_secrets) }
     it { is_expected.to have_many(:articles) }
     it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
     it { is_expected.to have_many(:badges).through(:badge_achievements) }
@@ -371,6 +372,7 @@ RSpec.describe User, type: :model do
     let(:tag2)  { create(:tag) }
     let(:tag3)  { create(:tag) }
     let(:tag4)  { create(:tag) }
+
     it "returns empty if no tags followed" do
       expect(user.decorate.cached_followed_tags.size).to eq(0)
     end

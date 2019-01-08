@@ -26,6 +26,7 @@ class AdditionalContentBoxesController < ApplicationController
 
   def randomize
     return true unless Rails.env.production?
+
     rand(2) == 1
   end
 end

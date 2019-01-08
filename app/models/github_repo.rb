@@ -44,6 +44,7 @@ class GithubRepo < ApplicationRecord
 
   def clear_caches
     return if user.blank?
+
     user.touch
     cache_buster = CacheBuster.new
     cache_buster.bust user.path

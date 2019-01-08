@@ -6,6 +6,7 @@ class StoriesController < ApplicationController
     add_param_context(:username, :tag)
     return handle_user_or_organization_or_podcast_index if params[:username]
     return handle_tag_index if params[:tag]
+
     handle_base_index
   end
 
@@ -123,7 +124,7 @@ class StoriesController < ApplicationController
         where("reactions_count > ? OR featured = ?", 10, true).
         order("hotness_score DESC")
       if user_signed_in?
-        offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7].sample #random offset, weighted more towards zero
+        offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
@@ -186,6 +187,7 @@ class StoriesController < ApplicationController
     @list_of = "articles"
     redirect_if_view_param
     return if performed?
+
     set_surrogate_key_header "articles-user-#{@user.id}", @stories.map(&:record_key)
     render template: "users/show"
   end
@@ -224,6 +226,7 @@ class StoriesController < ApplicationController
     set_surrogate_key_header @article.record_key
     redirect_if_show_view_param
     return if performed?
+
     render template: "articles/show"
   end
 
@@ -247,7 +250,7 @@ class StoriesController < ApplicationController
 
   def assign_user_comments
     comment_count = params[:view] == "comments" ? 250 : 8
-    @comments = if @user.comments_count > 0
+    @comments = if @user.comments_count.positive?
                   @user.comments.where(deleted: false).
                     order("created_at DESC").includes(:commentable).limit(comment_count)
                 else

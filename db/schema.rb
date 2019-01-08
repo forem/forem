@@ -35,6 +35,16 @@ ActiveRecord::Schema.define(version: 20181227192353) do
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
+  create_table "api_secrets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.string "secret"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
+    t.index ["user_id"], name: "index_api_secrets_on_user_id"
+  end
+
   create_table "articles", id: :serial, force: :cascade do |t|
     t.string "abuse_removal_reason"
     t.boolean "allow_big_edits", default: true

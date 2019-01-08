@@ -10,7 +10,7 @@ RSpec.describe "Dashboards", type: :request do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard"
-        is_expected.to redirect_to("/enter")
+        expect(response).to redirect_to("/enter")
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe "Dashboards", type: :request do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/organization"
-        is_expected.to redirect_to("/enter")
+        expect(response).to redirect_to("/enter")
       end
     end
 
@@ -59,7 +59,7 @@ RSpec.describe "Dashboards", type: :request do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/following_users"
-        is_expected.to redirect_to("/enter")
+        expect(response).to redirect_to("/enter")
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe "Dashboards", type: :request do
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/user_followers"
-        is_expected.to redirect_to("/enter")
+        expect(response).to redirect_to("/enter")
       end
     end
 

@@ -26,6 +26,7 @@ class Message < ApplicationRecord
       where.not(user_id: user.id).pluck(:user_id)
     PushNotificationSubscription.where(user_id: reciever_ids).each do |sub|
       return if no_push_necessary?(sub)
+
       Webpush.payload_send(
         endpoint: sub.endpoint,
         message: ActionView::Base.full_sanitizer.sanitize(message_html),
@@ -43,6 +44,7 @@ class Message < ApplicationRecord
 
   def direct_receiver
     return if chat_channel.channel_type != "direct"
+
     chat_channel.users.where.not(id: user.id).first
   end
 
@@ -101,20 +103,20 @@ class Message < ApplicationRecord
     membership.last_opened_at > 40.seconds.ago
   end
 
-  def rich_link_article(a)
-    if a["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && a["href"].split("/")[4]
-      Article.find_by_slug(a["href"].split("/")[4].split("?")[0])
+  def rich_link_article(link)
+    if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+      Article.find_by_slug(link["href"].split("/")[4].split("?")[0])
     end
   end
 
   def send_email_if_appropriate
     recipient = direct_receiver
     return if !chat_channel.direct? ||
-        recipient.updated_at > 2.hours.ago ||
-        recipient.chat_channel_memberships.order("last_opened_at DESC").
-            first.last_opened_at > 18.hours.ago ||
-        chat_channel.last_message_at > 45.minutes.ago ||
-        recipient.email_connect_messages == false
+      recipient.updated_at > 2.hours.ago ||
+      recipient.chat_channel_memberships.order("last_opened_at DESC").
+        first.last_opened_at > 18.hours.ago ||
+      chat_channel.last_message_at > 45.minutes.ago ||
+      recipient.email_connect_messages == false
 
     NotifyMailer.new_message_email(self).deliver
   end

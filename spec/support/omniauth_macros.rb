@@ -38,8 +38,8 @@ module OmniauthMacros
     uid: "1234567",
     info: INFO,
     extra: EXTRA_INFO,
-    credentials:  CREDENTIAL
-  }
+    credentials: CREDENTIAL
+  }.freeze
 
   def mock_auth_hash
     mock_twitter

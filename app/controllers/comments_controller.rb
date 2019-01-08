@@ -56,6 +56,7 @@ class CommentsController < ApplicationController
   def create
     authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
+
     @comment = Comment.new(permitted_attributes(Comment))
     add_context(commentable_id: @comment.commentable_id,
                 commentable_type: @comment.commentable_type)

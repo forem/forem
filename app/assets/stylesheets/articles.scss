@@ -28,8 +28,10 @@
     font-size:1.2em;
     background: white;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius:3px;
-    border:1px solid $outline-color;;
+    border:1px solid $outline-color;
+    border: var(--theme-container-border, 1px solid $outline-color);
     width:94%;
     margin:auto;
     margin-top:12px;
@@ -196,8 +198,10 @@
     .single-article{
       text-align:left;
       background:$white;
+      background: var(--theme-container-background,	$white);
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
       box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       border-radius:3px;
@@ -453,11 +457,14 @@
         }
         .content-wrapper{
           background:white;
+          background: var(--theme-container-background,	#fff);
           color:$black;
           position:relative;
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
           border-bottom:1px solid darken($lightest-gray,4%);
+          border-top:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
+          border-bottom:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
           padding-bottom:105px;
           border-radius:3px;
           h3{
@@ -770,10 +777,12 @@
       .sidebar-profile-snapshot{
         overflow: hidden;
         background:white;
+        background: var(--theme-container-background,	#fff);
         margin-bottom:14px;
         border-radius:3px;
         width: calc(100% - 3px);
         border: 1px solid $outline-color;
+        border: var(--theme-container-border, 1px solid $outline-color);
         box-shadow: $bold-shadow;
         box-shadow: var(--theme-container-box-shadow, $bold-shadow);
         // background:red;
@@ -951,11 +960,14 @@
       position:relative;
       overflow:hidden;
       background:white;
+      background: var(--theme-container-background,	#fff);
       display:block;
       color: $black;
       border-radius:3px;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;
@@ -1209,8 +1221,9 @@
         margin:14px 0px 8px;
       }
       ul{
-        list-style-type: none;
         padding-left:10px;
+        display: flex;
+        flex-direction: column;
       }
       li{
         font-size:1em;
