@@ -40,7 +40,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def dashboard_show?
-    current_user? || user_admin?
+    current_user? || user_admin? || minimal_admin?
   end
 
   def moderation_routes?
