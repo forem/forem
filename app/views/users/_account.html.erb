@@ -14,6 +14,40 @@
   </div>
 <% end %>
 
+<h2>Access Tokens</h2>
+<p>You can generate personal access tokens to use for authentication with the DEV API.</p>
+<h3>Generate an access token</h3>
+<h4>Token description</h4>
+<%= form_tag users_api_secrets_path, method: :post do %>
+  <%= fields_for :api_secret do |api_secret| %>
+    <div class="field">
+      <%= api_secret.text_field(:description, placeholder: "What's this token for?", required: true) %>
+    </div>
+  <% end %>
+  <button class="big-action cta" id="new__api__secret__btn" type="submit">
+    Generate Token
+  </button>
+<% end %>
+
+<h3>Active access tokens</h3>
+<% if @user.api_secrets.empty? %>
+  <p>None yet!</p>
+<% end %>
+<% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
+  <div class='api__secret__container'>
+    <div class='api__secret__desc'>
+      <p class='title'><%= api_secret.description %></h4>
+      <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
+    </div>
+    <div class='api__secret__revoke'>
+      <%= form_tag users_api_secrets_path(id: api_secret.id), method: :delete do %>
+        <%= button_tag('Revoke', class: 'big-action danger-button') %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+
 <h2 style="color: #ff0000;">Danger Zone</h2>
 <% if @user.identities.count == 2 %>
   <h3>Remove OAuth Associations</h3>
@@ -28,7 +62,7 @@
     </ul>
     <strong>
       Note that this does not revoke our OAuth app access; you will have to do so in your
-      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your 
+      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your
       <a href="https://github.com/settings/applications">GitHub profile settings</a>.
     </strong>
     <br>
