@@ -66,7 +66,7 @@ class Message < ApplicationRecord
   end
 
   def evaluate_markdown
-    html = MarkdownParser.new(message_markdown)
+    html = MarkdownParser.new(message_markdown).evaluate_inline_markdown
     html = append_rich_links(html)
     self.message_html = html
   end
