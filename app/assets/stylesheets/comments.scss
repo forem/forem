@@ -343,15 +343,15 @@ a.header-link{
   details {
     user-select: none;
     details {
-      .comment-deep-1 {
-        margin-top: -123px;
+      .comment-deep-1,.comment-deep-2 {
+        margin-top: -122px;
       }
       summary {
         z-index: 15;
         position: relative;
       }
       &[open] {
-        summary {
+        > summary {
           width: 22px;
           padding-bottom: 100px;
         }
@@ -359,10 +359,10 @@ a.header-link{
     }
     summary {
       cursor: pointer;
-      color: lighten($medium-gray, 10%);
+      color: lighten($medium-gray, 15%);
       font-size: 13.5px;
       font-style: oblique;
-      padding: 2px 0px;
+      padding: 1px 0px;
       padding-left: 4px;
       &:active {
         outline:0;
@@ -515,6 +515,7 @@ a.header-link{
     word-wrap: break-word;
     font-family: $helvetica;
     position:relative;
+    margin-left: 1px;
     h1,h2,h3,h4,h5,h6{
       padding:0px;
       margin:4px 0px calc(1.1vw + 10px);
