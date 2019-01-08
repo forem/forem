@@ -171,7 +171,7 @@ a.header-link{
   }
 
   .top-level-actions{
-    margin:0px 8px 30px;
+    margin:0px 8px 85px;
     padding:3px 0px;
     z-index:4;
     position:relative;
@@ -342,6 +342,21 @@ a.header-link{
 
   details {
     user-select: none;
+    details {
+      .comment-deep-1 {
+        margin-top: -123px;
+      }
+      summary {
+        z-index: 15;
+        position: relative;
+      }
+      &[open] {
+        summary {
+          width: 22px;
+          padding-bottom: 100px;
+        }
+      }
+    }
     summary {
       cursor: pointer;
       color: lighten($medium-gray, 10%);
