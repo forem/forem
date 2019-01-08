@@ -277,6 +277,11 @@
     .secret-field {
       margin:30px 0px;
     }
+    hr {
+      opacity: 0.3;
+      margin-top: 20px;
+      width: 70%;
+    }
   }
   .default-billing-message {
     margin:10px 0px;
@@ -521,9 +526,14 @@ ul.delete__account{
 .api__secret {
   &__container {
     background-color: $off-white;
-    height: 3rem;
-    margin: 1rem 0;
+    height: 6.5rem;
+    margin: 0.5rem 0;
     padding: 0.5rem;
+    border-radius: 3px;
+    border: 1px solid $light-medium-gray;
+    @media screen and ( min-width: 600px ){
+      height: 5rem;
+    }
   }
 
   &__desc {
@@ -535,6 +545,16 @@ ul.delete__account{
       margin: 0;
       padding-bottom: 0.25rem;
     }
+    .content {
+      margin: 0;
+      color: $medium-gray;
+      font-weight: bold;
+      font-family: $monospace;
+      padding: 5px 8px;
+      border: 1px dashed $black;
+      overflow: hidden;
+      margin: 3px 0px;
+    }
     .subtitle {
       margin: 0;
       color: $dark-medium-gray;
@@ -542,9 +562,12 @@ ul.delete__account{
   }
 
   &__revoke {
-    float: left;
-    width: 30%;
     text-align: right;
-    margin: 0 auto;
+    margin: 1.6rem auto 0;
+    display: block;
+    @media screen and ( min-width: 600px ){
+      float: left;
+      width: 30%;
+    }
   }
 }
