@@ -192,7 +192,10 @@
             <div class="comment-trees" id="comment-trees-container">
               <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
                 <% cache ["comment_root_cached_tree", comment] do %>
-                  <%= tree_for(comment, @article) %>
+                  <details open>
+                    <summary><span>&nbsp;</span></summary>
+                    <%= tree_for(comment, @article) %>
+                  </details>
                 <% end %>
               <% end %>
             </div>

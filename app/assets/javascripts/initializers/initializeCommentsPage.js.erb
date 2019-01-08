@@ -58,8 +58,9 @@ function initializeCommentsPage() {
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
       butt.onclick = function (event) {
+              var thisButt = this;
+        thisButt.blur();
         event.preventDefault();
-        var thisButt = this;
         sendHapticMessage('medium');
         var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
@@ -138,6 +139,7 @@ function initializeCommentsPage() {
       document.getElementById('new_comment').onsubmit = handleCommentSubmit;
     }
   }
+  listenForDetailsToggle();
 }
 
 function toggleCodeOfConduct() {
@@ -471,5 +473,27 @@ function handleImageUpload(event, randomIdNumber) {
           // there's currently no error handling
         })
     }
+  }
+}
+
+function listenForDetailsToggle() {
+  var detailItems = document.getElementsByTagName("DETAILS");
+  for (var i = 0; i < detailItems.length; i++) {
+    detailItems[i].addEventListener("toggle", event => {
+      var item = event.target
+      var itemSummaryContent = item.getElementsByTagName("SPAN")[0]
+      var usernames = item.getElementsByClassName("comment-username")
+      var number = "";
+      if (usernames.length > 1) {
+        number = " + " + (usernames.length - 1) + " replies"
+      }
+      var itemUsername = usernames[0].textContent + number
+      if (item.open) {
+        itemSummaryContent.innerHTML = "&nbsp;"
+      } else {
+        itemSummaryContent.innerHTML = itemUsername;
+      }
+      item.getElementsByTagName("SUMMARY")[0].blur();
+    });
   }
 }
