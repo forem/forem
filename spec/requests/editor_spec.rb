@@ -10,7 +10,7 @@ RSpec.describe "Editor", type: :request do
 
       it "asks the stray-user to 'Sign In or Create Your Account'" do
         get "/new"
-        expect(response.body).to include("Sign In or Create Your Account")
+        expect(response.body).to include("Great to have you")
       end
     end
   end

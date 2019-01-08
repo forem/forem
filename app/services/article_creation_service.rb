@@ -9,16 +9,18 @@ class ArticleCreationService
 
   def create!
     raise if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
+
     article = Article.new(article_params)
     article.user_id = user.id
     article.show_comments = true
     if user.organization_id.present? && article_params[:publish_under_org].to_i == 1
       article.organization_id = user.organization_id
     end
+    article.collection_id = Collection.find_series(article_params[:series], user).id if article_params[:series].present?
     create_job_opportunity(article)
     if article.save
       if article.published
-        Notification.send_all(article, "Published")
+        Notification.send_to_followers(article, "Published")
       end
     end
     article.decorate

@@ -3,7 +3,7 @@
 Before doing any development in the front-end, ensure that [Node.js](https://nodejs.org) is installed. To install Node.js, you can do one of the following:
 
 * [Download and install the LTS version](https://nodejs.org/en/download), or
-* [Download and install nvm](https://github.com/creationix/nvm) and follow their instructions to install the Node.js LTS version (recommended), or
+* [Download and install nvm](https://github.com/creationix/nvm) ([win](https://github.com/coreybutler/nvm-windows)) and follow their instructions to install the Node.js LTS version (recommended), or
 * [Download and install n](https://github.com/tj/n) and follow their instructions to install the Node.js LTS version, or
 * Install Node.js via Homebrew (macOS only) `brew install node`
 
@@ -20,3 +20,13 @@ To get Storybook running on your local:
 * 📦 Run `npm install` or `yarn` to ensure all your dependencies are installed.
 * 🏁 Run `npm run storybook` or `yarn storybook` to start Storybook.
 * 🏗️ Start working on your component and see the changes in Storybook as you save.
+
+### Browser Support
+
+#### Chrome >= 59
+#### Firefox >= 52
+#### Safari >= 10
+#### Opera >= 50
+#### Edge >= 16
+
+We do not officially support any version of IE or any browser not listed here, but don't go out of your way to not support it! And if there is anything we should change about this, open an issue.

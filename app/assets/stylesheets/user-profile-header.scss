@@ -30,6 +30,10 @@
         font-size:calc(0.9vw + 28px);
         font-weight:500;
       }
+      img {
+        max-height:calc(3vw + 33px);
+        max-width:calc(3vw + 33px);
+      }
     }
   }
   &.readinglist-header{
@@ -103,16 +107,6 @@
     }
     a{
       color:rgb(97, 97, 97);
-    }
-    .notifications-header{
-      font-size:calc(26px + 0.2vw);
-      padding-bottom:13px;
-      font-weight:600;
-      img{
-        width: calc(27px + 0.2vw);
-        margin-right: 9px;
-        vertical-align:-3px;
-      }
     }
     .profile-pic-wrapper{
       float:left;

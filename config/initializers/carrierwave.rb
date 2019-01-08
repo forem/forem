@@ -12,7 +12,7 @@ CarrierWave.configure do |config|
       provider: "AWS",
       aws_access_key_id: ApplicationConfig["AWS_ID"],
       aws_secret_access_key: ApplicationConfig["AWS_SECRET"],
-      region: "us-east-1",
+      region: "us-east-1"
     }
     config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
   end

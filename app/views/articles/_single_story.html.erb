@@ -2,8 +2,10 @@
     <% if story.video.present? %>
       <%= render "articles/video_player", meta_tags: false, article: story %>
     <% end %>
-    <% if @organization_article_index %>
-      <div id="organization-index-page"></div>
+    <% organization = story.organization %>
+    <% if organization && !@organization_article_index %>
+      <div class="article-organization-headline">
+        <a href="/<%= organization.slug %>" class="article-organization-headline-inner"><img src="<%= organization.profile_image_90 %>"><%= organization.name %></a><a class="org-headline-filler" href="<%= story.path %>">&nbsp;</a></div>
     <% end %>
     <a href="<%=story.user.path%>" class="small-pic-link-wrapper">
       <div class="small-pic" >
@@ -32,7 +34,7 @@
     </div>
       <% if story.comments_count > 0 %>
         <div class="article-engagement-count comments-count">
-          <a href="<%=story.path%>#comments-container">
+          <a href="<%=story.path%>#comments">
             <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
           </a>
         </div>

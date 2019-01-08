@@ -29,6 +29,8 @@ class ChatChannel < ApplicationRecord
     ranking ["desc(last_message_at)"]
   end
 
+  before_destroy :remove_from_index!
+
   def open?
     channel_type == "open"
   end
@@ -60,6 +62,7 @@ class ChatChannel < ApplicationRecord
 
   def self.create_with_users(users, channel_type = "direct", contrived_name = "New Channel")
     raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
+
     if channel_type == "direct"
       usernames = users.map(&:username).sort
       contrived_name = "Direct chat between " + usernames.join(" and ")
@@ -131,7 +134,7 @@ class ChatChannel < ApplicationRecord
     # Purely for algolia indexing
     obj = {}
     active_memberships.
-      order("last_opened_at DESC").limit(80).includes(:user).each_with_index do |m, i|
+      order("last_opened_at DESC").limit(25).includes(:user).each_with_index do |m, i|
       obj[m.user.username] = user_obj(m, i)
     end
     obj
@@ -145,14 +148,14 @@ class ChatChannel < ApplicationRecord
     mod_users.pluck(:id)
   end
 
-  def user_obj(m, i)
+  def user_obj(membership, index)
     {
-      profile_image: i < 11 ? ProfileImage.new(m.user).get(90) : nil,
-      darker_color: m.user.decorate.darker_color,
-      name: m.user.name,
-      last_opened_at: m.last_opened_at,
-      username: m.user.username,
-      id: m.user_id,
+      profile_image: index < 25 ? ProfileImage.new(membership.user).get(90) : nil,
+      darker_color: membership.user.decorate.darker_color,
+      name: membership.user.name,
+      last_opened_at: membership.last_opened_at,
+      username: membership.user.username,
+      id: membership.user_id
     }
   end
 end

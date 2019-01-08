@@ -1,5 +1,6 @@
 class AuthorizationService
   attr_accessor :auth, :signed_in_resource, :cta_variant
+
   def initialize(auth, signed_in_resource = nil, cta_variant = nil)
     @auth = auth
     @signed_in_resource = signed_in_resource
@@ -9,6 +10,7 @@ class AuthorizationService
   def get_user
     identity = build_identity
     return signed_in_resource if user_identity_exists(identity)
+
     user = proper_user(identity)
     user = if user.nil?
              build_user(identity)
@@ -23,6 +25,7 @@ class AuthorizationService
 
   def add_social_identity_data(user)
     return unless auth&.provider && auth&.extra && auth.extra.raw_info
+
     if auth.provider == "twitter"
       user.twitter_created_at = auth.extra.raw_info.created_at
       user.twitter_followers_count = auth.extra.raw_info.followers_count.to_i
@@ -30,14 +33,6 @@ class AuthorizationService
     else
       user.github_created_at = auth.extra.raw_info.created_at
     end
-  end
-
-  def see_onboarding?
-    !cta_variant.nil? &&
-      (cta_variant == "navbar_basic" ||
-        cta_variant&.include?("notifications") ||
-        cta_variant&.include?("welcome-widget") ||
-        cta_variant&.include?("in-feed-cta"))
   end
 
   def build_identity
@@ -68,21 +63,21 @@ class AuthorizationService
       user.remember_me!
       user.remember_me = true
       add_social_identity_data(user)
-      user.saw_onboarding = !see_onboarding?
+      user.saw_onboarding = false
       user.save!
     end
     user
   end
 
   def update_user(user)
+    user.remember_me!
+    user.remember_me = true
     if auth.provider == "github" && auth.info.nickname != user.github_username
       user.github_username = auth.info.nickname
     end
     if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
       user.twitter_username = auth.info.nickname
     end
-    user.remember_me!
-    user.remember_me = true
     add_social_identity_data(user)
     user.save
     user
@@ -113,9 +108,9 @@ class AuthorizationService
   def account_less_than_a_week_old?(user, logged_in_identity)
     user_identity_age = user.github_created_at ||
       user.twitter_created_at ||
-      Time.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
+      Time.zone.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
     # last one is a fallback in case both are nil
-    range = (Time.now.beginning_of_day - 1.week)..(Time.now)
+    range = 1.week.ago.beginning_of_day..Time.current
     range.cover?(user_identity_age)
   end
 

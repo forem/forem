@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CommentPolicy do
-  subject { described_class.new(user, comment) }
+  subject(:comment_policy) { described_class.new(user, comment) }
 
   let(:comment) { build(:comment) }
 
@@ -26,11 +26,17 @@ RSpec.describe CommentPolicy do
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }
 
     it do
-      is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create)
+      expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create)
     end
 
     context "with banned status" do
       before { user.add_role :banned }
+
+      it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm]) }
+    end
+
+    context "with banned_comment status" do
+      before { user.add_role :comment_banned }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm]) }
     end
@@ -51,7 +57,18 @@ RSpec.describe CommentPolicy do
       it { is_expected.to forbid_actions(%i[create]) }
 
       it do
-        is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
+      end
+    end
+
+    context "with banned_comment status" do
+      before { user.add_role :comment_banned }
+
+      it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
+      it { is_expected.to forbid_actions(%i[create]) }
+
+      it do
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
       end
     end
   end

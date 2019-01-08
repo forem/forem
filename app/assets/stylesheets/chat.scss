@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'connect/_channel-details';
 
 // High level classes
 .chat-page-wrapper{
@@ -7,7 +8,10 @@
   max-width: calc(1440px + 10vw);
 }
 .live-chat{
-  height: calc(100vh - 190px);
+  height: calc(100vh - 80px);
+  &.live-chat--iossafari{
+    height: calc(100vh - 190px);
+  }
   overflow-y: hidden;
   @media screen and ( min-width: 400px ){
     height: calc(100vh - 80px);
@@ -17,7 +21,10 @@
 //chat
 .chat {
   display: flex;
-  height: calc(100vh - 201px);
+  height: calc(100vh - 91px);
+  &.chat--iossafari{
+    height: calc(100vh - 201px);
+  }
   padding-right: 3px;
   @media screen and ( min-width: 400px ){
     height: calc(100vh - 91px);
@@ -137,6 +144,7 @@
   display: inline-block;
   border-radius: 3px;
   background: $lightest-gray;
+  background: var(--theme-background, $lightest-gray);
   border: 1px solid $light-medium-gray;
   font-weight: bold;
   cursor: default;
@@ -246,6 +254,7 @@
   margin-bottom: 10px;
   max-width: 900px;
   box-shadow: $bold-shadow;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   h2{
     margin:5px auto 5px;
   }
@@ -278,7 +287,9 @@
   flex-direction: row;
   justify-content: space-between;
   border: 1px solid $outline-color;
-  box-shadow: $bold-shadow;
+  border: var(--theme-container-border, 1px solid $outline-color);
+  box-shadow: $bold-shadow;  
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   background: white;
 }
 
@@ -307,6 +318,7 @@
   overflow-x: hidden;
   text-align: left;
   overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .activechatchannel__alerts {
@@ -332,6 +344,7 @@
 
 .activechatchannel__form {
   border-top: 1px solid $outline-color;
+  border-top: var(--theme-container-border, 1px solid $outline-color);
   background: #ededed;
   width: 100%;
   height: 70px;
@@ -440,6 +453,7 @@
     }
   }
 }
+
 
 .activechatchannel__activecontentuserdetails{
   margin-top:20px;
@@ -623,7 +637,7 @@
   padding: 3px 0 10px;
   flex-grow: 1;
   overflow: scroll;
-  padding-bottom: 25px;
+  padding-bottom: 9vw;
   overflow-x: hidden;
 }
 
@@ -652,6 +666,7 @@
   left: 0;
   right: 0;
   background: $lightest-gray;
+  background: var(--theme-background, $lightest-gray);
   border-top: 1px solid $light-medium-gray;
   padding: 8px 10px 20px;
   font-weight: bold;

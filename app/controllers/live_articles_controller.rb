@@ -14,8 +14,8 @@ class LiveArticlesController < ApplicationController
           tag_list: [],
           user: {
             name: @event.host_name,
-            profile_pic: ProfileImage.new(@event).get(50),
-          },
+            profile_pic: ProfileImage.new(@event).get(50)
+          }
         }
     elsif @article
       set_surrogate_key_header "live--article_#{@article.id}"
@@ -26,8 +26,8 @@ class LiveArticlesController < ApplicationController
           tag_list: @article.tag_list,
           user: {
             name: @article.user.name,
-            profile_pic: ProfileImage.new(@article.user).get(50),
-          },
+            profile_pic: ProfileImage.new(@article.user).get(50)
+          }
         }
     else
       set_surrogate_key_header "live--nothing"

@@ -29,6 +29,12 @@ RSpec.describe "UserProfiles", type: :request do
       get organization.path
       expect(response.body).to include CGI.escapeHTML(organization.name)
     end
+
+    it "renders organization users on sidebar" do
+      user.update(organization_id: organization.id)
+      get organization.path
+      expect(response.body).to include user.profile_image_url
+    end
   end
 
   describe "GET /user" do

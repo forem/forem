@@ -2,7 +2,7 @@ require "rails_helper"
 
 vcr_option = {
   cassette_name: "se_daily_rss_feed",
-  allow_playback_repeats: "true",
+  allow_playback_repeats: "true"
 }
 
 RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do

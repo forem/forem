@@ -19,7 +19,7 @@ class GithubTag
       username = content_json[:user][:login]
       user_html_url = content_json[:user][:html_url]
       user_avatar_url = content_json[:user][:avatar_url]
-      date = Date.parse(content_json[:created_at].to_s).strftime("%b %d, %Y")
+      date = Time.zone.parse(content_json[:created_at].to_s).utc.strftime("%b %d, %Y")
       date_link = content_json[:html_url]
       title = generate_title
       html = "" \
@@ -74,6 +74,7 @@ class GithubTag
       number = content_json[:number]
       link = content_json[:html_url]
       return unless title
+
       "<h1> " \
         "<a href=\"#{link}\">" \
           "<img class=\"github-logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\" /><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \

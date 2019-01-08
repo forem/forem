@@ -5,7 +5,7 @@ RSpec.describe FeedbackMessage, type: :model do
   let(:abuse_report) { create(:feedback_message, :abuse_report) }
 
   describe "validations for an abuse report" do
-    subject do
+    subject(:feedback_message) do
       FeedbackMessage.new(
         feedback_type: "abuse-reports",
         reported_url: "https://dev.to",
@@ -19,13 +19,13 @@ RSpec.describe FeedbackMessage, type: :model do
     it { is_expected.to validate_presence_of(:message) }
 
     it do
-      is_expected.to validate_inclusion_of(:category).
+      expect(feedback_message).to validate_inclusion_of(:category).
         in_array(["spam", "other", "rude or vulgar", "harassment", "bug"])
     end
   end
 
   describe "validations for a bug report" do
-    subject do
+    subject(:feedback_message) do
       FeedbackMessage.new(
         feedback_type: "bug-reports",
         category: "bug",
@@ -38,12 +38,8 @@ RSpec.describe FeedbackMessage, type: :model do
     it { is_expected.not_to validate_presence_of(:reported_url) }
 
     it do
-      is_expected.to validate_inclusion_of(:category).
+      expect(feedback_message).to validate_inclusion_of(:category).
         in_array(["spam", "other", "rude or vulgar", "harassment", "bug"])
     end
-  end
-
-  it "always generates a slug" do
-    expect(abuse_report.slug).not_to be_nil
   end
 end

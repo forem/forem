@@ -85,13 +85,13 @@
 
 <div id="article-preview" class="editor-view editor-article-view hidden">
   <div class="container article" style="padding-bottom: 50px;">
-    <header id="image_area">
+    <article id="image_area">
       <div id="image_preview">
         <div class="image" id="main_image"></div>
       </div>
       <div class="blank-space" id="blank_space">
       </div>
-    </header>
+    </article>
     <div class="title">
       <% if current_user.organization %>
         <a href="<%= current_user.organization.path %>" class="org-branded-title-link">
@@ -100,7 +100,7 @@
           </div>
         </a>
       <% end %>
-      <h1 id="article_title" >
+      <h1 id="article_title">
       </h1>
       <h3>
         <a href="/<%= @user.username %>">
@@ -108,10 +108,10 @@
           By <%= @user.name %>
         </a>
         <% if @user.twitter_username.present? %>
-          <a href="http://twitter.com/<%= @user.twitter_username %>"><%= icon("twitter","20") %></a>
+          <a href="https://twitter.com/<%= @user.twitter_username %>"><%= icon("twitter","20") %></a>
         <% end %>
         <% if @user.github_username.present? %>
-          <a href="http://github.com/<%= @user.github_username %>"><%= icon("github","20") %></a>
+          <a href="https://github.com/<%= @user.github_username %>"><%= icon("github","20") %></a>
         <% end %>
         <span class="published-at"><%= "on "+@article.published_at.strftime("%B %d, %Y") if @article.published_at %></span>
       </h3>
@@ -128,7 +128,7 @@
 </div>
 
 <div id="editor-help" class="editor-view editor-article-view hidden">
-  <%= render "pages/editor_guide_text" %>
+  <%= render "pages/editor_guide_text", version: "1" %>
 </div>
 
 

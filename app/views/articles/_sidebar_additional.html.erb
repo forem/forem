@@ -1,258 +1,183 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-    <% if @user && @user.class.name == "User" %>
-      <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
-        <a class="widget" href="<%= repo.url %>" target="_blank">
-          <header>
-            <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %>
-          </header>
-          <div class="widget-body">
-            <%= repo.description %>
-            <div class="widget-footer">
-              <% if repo.fork %>
-                <span class="widget-accent">fork</span>
-              <% end %>
-              <%= repo.language %>
-              <% if repo.stargazers_count > 0 %>
-                <img src="<%= asset_path("star.svg") %>" /> <%= repo.stargazers_count %>
-              <% end %>
-            </div>
-          </div>
-        </a>
-      <% end %>
-      <% if @user.badge_achievements_count > 0 %>
-        <%= render "articles/badges_area" %>
-      <% end %>
-    <% elsif @user && @user.class.name == "Organization" %>
-    <% elsif @tag  %>
-      <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
-        <div class="widget">
-          <header>
-            #discuss
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).
-                each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-          </div>
+    <% unless user_signed_in? %>
+      <div class="widget signin-cta-widget">
+        <header>
+          <h4>DEV.TO(GETHER)</h4>
+        </header>
+        <div class="widget-body">
+          <center style="margin-bottom: 2px;">
+            <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
+              SIGN IN VIA TWITTER
+            </a>
+            <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
+              SIGN IN VIA GITHUB
+            </a>
+          </center>
         </div>
-      <% end %>
-      <% if user_signed_in? %>
-        <%= javascript_pack_tag "sidebarWidget", defer: true %>
-        <div id="sidebarWidget__pack" data-tag-info="<%= @tag_model.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
+      </div>
+    <% end %>
+    <% if @sidebar_ad %>
+      <div class="widget">
+        <div class="widget-body" style="margin-top:-6px">
+          <%= @sidebar_ad.processed_html.html_safe %>
         </div>
-      <% else %>
-        <% cache("seo-boostable-posts-for-tag#{@tag}", :expires_in => 18.hours) do %>
-          <% @boostable_posts = Article.seo_boostable(@tag) %>
-          <% if @boostable_posts.any? %>
-            <div class="widget">
-              <header>
-                trending guides/resources
-              </header>
-              <div class="widget-body">
-                <div class="widget-link-list">
-                  <% @boostable_posts.first(8).
-                    each do |plucked_article| %>
-                      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
+      </div>
+    <% end %>
+    <% ApplicationConfig["TRENDING_TAGS"].split(",").each do |tag| %>
+      <div class="widget">
+        <header>
+          <a href="/t/<%= tag %>"><h4>#<%= tag %></h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).
+              each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+            <a class="cta cta-button" href="/new/<%= tag %>">MAKE A #<%= tag.upcase %> POST</a>
+        </div>
+      </div>
+    <% end %>
+    <% if Article.active_help.any? %>
+      <div class="widget">
+        <header>
+          <a href="/t/help"><h4>#help</h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_help.limit(8).pluck(:path,:title,:comments_count, :created_at).each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+          <a class="cta cta-button" href="/new/help">ASK FOR HELP</a>
+        </div>
+      </div>
+    <% end %>
+    <% if Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime).any? %>
+      <div class="widget">
+        <header>
+          <a href="/t/ama"><h4>#ama</h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime, 5).
+              each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+          <a class="cta cta-button" href="/new/ama">START AN "ASK ME ANYTHING"</a>
+        </div>
+      </div>
+    <% end %>
+    <% if Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime).any? %>
+      <div class="widget">
+        <header>
+          <a href="/t/challenge"><h4>#challenge</h4></a>
+        </header>
+        <div class="widget-body">
+          <div class="widget-link-list">
+            <% Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime, 5).
+              each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+            <% end %>
+          </div>
+          <a class="cta cta-button" href="/new/challenge">CREATE A CHALLENGE</a>
+        </div>
+      </div>
+    <% end %>
+    <div class="widget">
+      <header>
+        <a href="/t/discuss"><h4>#discuss</h4></a>
+      </header>
+      <div class="widget-body">
+        <div class="widget-link-list">
+          <% Article.active_threads(["discuss"], Timeframer.new(params[:timeframe]).datetime).
+            each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+          <% end %>
+        </div>
+          <a class="cta cta-button" href="/new/discuss">START A DISCUSSION</a>
+      </div>
+    </div>
+    <div class="widget">
+      <header>
+        <a href="/t/explainlikeimfive"><h4>#explainlikeimfive</h4></a>
+      </header>
+      <div class="widget-body">
+        <div class="widget-link-list">
+          <% Article.active_eli5(Timeframer.new(params[:timeframe]).datetime).
+            each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+          <% end %>
+        </div>
+          <a class="cta cta-button" href="/new/explainlikeimfive">ASK FOR AN EXPLANATION</a>
+      </div>
+    </div>
+    <div class="widget">
+      <header>
+        <a href="/t/healthydebate"><h4>#healthydebate</h4></a>
+      </header>
+      <div class="widget-body">
+        <div class="widget-link-list">
+          <% Article.active_threads(["healthydebate"], Timeframer.new(params[:timeframe]).datetime).
+            each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+          <% end %>
+        </div>
+          <a class="cta cta-button" href="/new/healthydebate">START A DEBATE</a>
+      </div>
+    </div>
+    <div class="widget">
+      <header>
+        <a href="/t/meta"><h4>#meta</h4></a>
+      </header>
+      <div class="widget-body">
+        <div class="widget-link-list">
+          <% Article.active_threads(["meta"], Timeframer.new(params[:timeframe]).datetime).
+            each do |plucked_article| %>
+              <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+          <% end %>
+        </div>
+          <a class="cta cta-button" href="/new/meta">START A META DISCUSSION</a>
+      </div>
+    </div>
+    <% if user_signed_in? %>
+      <div class="widget" id="podcast-widget">
+        <header>
+          <a href="/pod"><h4>latest podcasts</h4></a>
+        </header>
+        <div class="widget-body">
+            <% @podcast_episodes.each do |ep| %>
+              <div class="widget-podcast-ep">
+                <a href="<%= ep.path %>"><%= ep.title %>
+                <div class="widget-podcast-title">
+                  <a href="<%= ep.podcast.path %>"><%= ep.podcast.title %>
                 </div>
               </div>
-            </div>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% elsif @query %>
-    <% elsif @podcast_index %>
+            <% end %>
+            <a class="cta cta-button" href="/pod">VIEW ALL</a>
+        </div>
+      </div>
     <% else %>
-      <% unless user_signed_in? %>
-        <div class="widget signin-cta-widget">
-          <header>
-            DEV.TO(GETHER)
-          </header>
-          <div class="widget-body">
-            <center style="margin-bottom: 2px;">
-              <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
-                SIGN IN VIA TWITTER
-              </a>
-              <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-                SIGN IN VIA GITHUB
-              </a>
-            </center>
-          </div>
-        </div>
-      <% end %>
-      <% if @sidebar_ad %>
-        <div class="widget">
-          <div class="widget-body" style="margin-top:-6px">
-            <%= @sidebar_ad.processed_html.html_safe %>
-          </div>
-        </div>
-      <% end %>
-      <% if Flipflop.she_coded? %>
-        <div class="widget">
-          <header>
-            <#SHECODED>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.
-                where(published: true, approved: true).
-                tagged_with(["shecoded", "theycoded"], any: true).
-                order("published_at DESC").
-                limit(100).
-                pluck(:path, :title, :comments_count, :created_at).
-                each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-              <% end %>
-            </div>
-            <p><center><a class="cta cta-button" href="/t/shecoded" style="color: white; background: #8a62b4;">VIEW ALL #SHECODED</a></center></p>
-            <p><center><a class="cta cta-button" href="/new/shecoded" style="color: white; background: #8a62b4;">SUBMIT YOUR STORY</a></center></p>
-          </div>
-        </div>
-      <% end %>
-      <% if Event.in_the_future_and_published.any? && Flipflop.upcoming_events? %>
-        <div class="widget">
-          <header>
-            <a href="/events">upcoming live events</a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Event.in_the_future_and_published.limit(3).sort_by(&:starts_at).each do |event| %>
-                <%= render "events/widget_events_item", event: event %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/events">VIEW ALL EVENTS</a>
-          </div>
-        </div>
-      <% end %>
-      <% if Article.active_help.any? %>
-        <div class="widget">
-          <header>
-            <a href="/t/help">#help</a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_help.limit(8).pluck(:path,:title,:comments_count, :created_at).each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/new/help">ASK FOR HELP</a>
-          </div>
-        </div>
-      <% end %>
-      <% if Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime).any? %>
-        <div class="widget">
-          <header>
-            <a href="/t/ama">#ama</a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime, 5).
-                each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/new/ama">START AN "ASK ME ANYTHING"</a>
-          </div>
-        </div>
-      <% end %>
-      <% if Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime).any? %>
-        <div class="widget">
-          <header>
-            <a href="/t/challenge">#challenge</a>
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime, 5).
-                each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-            <a class="cta cta-button" href="/new/challenge">CREATE A CHALLENGE</a>
-          </div>
-        </div>
-      <% end %>
-      <div class="widget">
-        <header>
-          <a href="/t/discuss">#discuss</a>
-        </header>
-        <div class="widget-body">
-          <div class="widget-link-list">
-            <% Article.active_threads(["discuss"], Timeframer.new(params[:timeframe]).datetime).
-              each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-            <% end %>
-          </div>
-            <a class="cta cta-button" href="/new/discuss">START A DISCUSSION</a>
-        </div>
-      </div>
-      <div class="widget">
-        <header>
-          <a href="/t/explainlikeimfive">#explainlikeimfive</a>
-        </header>
-        <div class="widget-body">
-          <div class="widget-link-list">
-            <% Article.active_eli5(Timeframer.new(params[:timeframe]).datetime).
-              each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-            <% end %>
-          </div>
-            <a class="cta cta-button" href="/new/explainlikeimfive">ASK FOR AN EXPLANATION</a>
-        </div>
-      </div>
-      <div class="widget">
-        <header>
-          <a href="/t/healthydebate">#healthydebate</a>
-        </header>
-        <div class="widget-body">
-          <div class="widget-link-list">
-            <% Article.active_threads(["healthydebate"], Timeframer.new(params[:timeframe]).datetime).
-              each do |plucked_article| %>
-                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-            <% end %>
-          </div>
-            <a class="cta cta-button" href="/new/healthydebate">START A DEBATE</a>
-        </div>
-      </div>
-      <% if user_signed_in? %>
-        <div class="widget" id="podcast-widget">
-          <header>
-            <a href="/pod">latest podcasts</a>
-          </header>
-          <div class="widget-body">
-              <% @podcast_episodes.each do |ep| %>
-                <div class="widget-podcast-ep">
-                  <a href="<%= ep.path %>"><%= ep.title %>
-                  <div class="widget-podcast-title">
-                    <a href="<%= ep.podcast.path %>"><%= ep.podcast.title %>
-                  </div>
-                </div>
-              <% end %>
-              <a class="cta cta-button" href="/pod">VIEW ALL</a>
-          </div>
-        </div>
-      <% else %>
-        <% cache("seo-boostable-posts-homepage", :expires_in => 18.hours) do %>
-          <% @boostable_posts = Article.seo_boostable %>
-          <% if @boostable_posts.any? %>
-            <div class="widget">
-              <header>
-                trending guides/resources
-              </header>
-              <div class="widget-body">
-                <div class="widget-link-list">
-                  <% @boostable_posts.first(12).
-                    each do |plucked_article| %>
-                      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
-                </div>
+      <% cache("seo-boostable-posts-homepage", :expires_in => 18.hours) do %>
+        <% @boostable_posts = Article.seo_boostable %>
+        <% if @boostable_posts.any? %>
+          <div class="widget">
+            <header>
+              <h4>trending guides/resources</h4>
+            </header>
+            <div class="widget-body">
+              <div class="widget-link-list">
+                <% @boostable_posts.first(12).
+                  each do |plucked_article| %>
+                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+                <% end %>
               </div>
             </div>
-          <% end %>
+          </div>
         <% end %>
       <% end %>
     <% end %>

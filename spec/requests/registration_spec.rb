@@ -7,7 +7,7 @@ RSpec.describe "Registrations", type: :request do
     context "when not logged in" do
       it "shows the sign in page" do
         get "/enter"
-        expect(response.body).to include "Sign In or Create Your Account"
+        expect(response.body).to include "Great to have you"
       end
     end
 
@@ -15,7 +15,7 @@ RSpec.describe "Registrations", type: :request do
       it "redirects to /dashboard" do
         login_as user
         get "/enter"
-        is_expected.to redirect_to("/dashboard?signed-in-already&t=#{Time.now.to_i}")
+        expect(response).to redirect_to("/dashboard?signed-in-already&t=#{Time.current.to_i}")
       end
     end
   end

@@ -7,13 +7,13 @@ class PodcastEpisodesController < ApplicationController
     @podcasts = Podcast.order("title asc")
     @podcast_episodes = PodcastEpisode.order("published_at desc").first(20)
     unless params[:q].present?
-      set_surrogate_key_header "podcast_episodes_all " + params[:q].to_s, @podcast_episodes.map { |e| e["record_key"] }
+      set_surrogate_key_header("podcast_episodes_all " + params[:q].to_s,
+                               @podcast_episodes.map { |e| e["record_key"] })
     end
     @featured_story = Article.new
-    @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
-    render template: "articles/index"
+    render template: "podcast_episodes/index"
   end
 
   private

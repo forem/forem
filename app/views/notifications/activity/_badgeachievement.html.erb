@@ -1,5 +1,0 @@
-<% activity['activities'].each do |notification| %>
-  <div class="single-article single-article-small-pic <%= 'unseen' if activity['is_seen'] == false %>">
-    <%= render_activity(notification, partial_root: '/notifications/activity/activities') %>
-  </div>
-<% end %>

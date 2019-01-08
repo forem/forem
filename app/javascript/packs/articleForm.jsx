@@ -10,20 +10,27 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
   return null;
 });
 
-document.ready.then(
-  getUserDataAndCsrfToken().then(currentUser => {
+document.ready.then(function(){
+  loadForm();
+  window.InstantClick.on('change', () => {
+    if (document.getElementById('article-form')){
+      loadForm();
+    }
+  });
+});
+
+function loadForm(){
+  getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
     window.currentUser = currentUser;
+    window.csrfToken = csrfToken;
+
     const root = document.getElementById('article-form');
-    window.csrfToken = document.querySelector(
-      "meta[name='csrf-token']",
-    ).content;
+    const { article, organization } = root.dataset;
+
     render(
-      <ArticleForm
-        article={document.getElementById('article-form').dataset.article}
-        organization={document.getElementById('article-form').dataset.organization}
-       />,
+      <ArticleForm article={article} organization={organization} />,
       root,
-      root.firstElementChild
+      root.firstElementChild,
     );
-  }),
-);
+  })
+}

@@ -2,13 +2,18 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  let(:user)        { create(:user) }
-  let(:article)     { create(:article, user_id: user.id, published: true) }
-  let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
-  let(:comment_2)   { create(:comment, user_id: user.id, commentable_id: article.id) }
+  let(:user)                  { create(:user) }
+  let(:user2)                 { create(:user) }
+  let(:article)               { create(:article, user_id: user.id, published: true) }
+  let(:article_with_video)    { create(:article, :video, user_id: user.id, published: true) } # :video is a trait, see articles.rb
+  let(:comment)               { create(:comment, user_id: user2.id, commentable_id: article.id) }
+  let(:video_comment)         { create(:comment, user_id: user2.id, commentable_id: article_with_video.id) }
+  let(:comment_2)             { create(:comment, user_id: user2.id, commentable_id: article.id) }
   let(:child_comment) do
     build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id)
   end
+
+  before { Notification.send_new_comment_notifications(comment) }
 
   it "gets proper generated ID code" do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
@@ -18,8 +23,9 @@ RSpec.describe Comment, type: :model do
     expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
   end
 
-  context "when comment is already posted " do
+  context "when comment is already posted" do
     before do
+      Notification.send_new_comment_notifications(comment_2)
       comment_2.update(ancestry: comment.ancestry,
                        body_markdown: comment.body_markdown,
                        commentable_type: comment.commentable_type,
@@ -49,25 +55,23 @@ RSpec.describe Comment, type: :model do
   end
 
   it "adds timestamp url if commentable has video and timestamp" do
-    article.video = "https://video.com"
-    article.user.add_role(:video_permission)
-    article.save!
-    comment.body_markdown = "I like the part at 4:30"
-    comment.save
-    expect(comment.processed_html.include?(">4:30</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 4:30 and 5:50"
-    comment.save
-    expect(comment.processed_html.include?(">5:50</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 5:30 and :55"
-    comment.save
-    expect(comment.processed_html.include?(">:55</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 52:30"
-    comment.save
-    expect(comment.processed_html.include?(">52:30</a>")).to eq(true)
-    comment.body_markdown = "I like the part at 1:52:30 and 1:20"
-    comment.save
-    expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
-    expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
+    Notification.send_new_comment_notifications(video_comment)
+    video_comment.body_markdown = "I like the part at 4:30"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">4:30</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 4:30 and 5:50"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">5:50</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 5:30 and :55"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">:55</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 52:30"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">52:30</a>")).to eq(true)
+    video_comment.body_markdown = "I like the part at 1:52:30 and 1:20"
+    video_comment.save
+    expect(video_comment.processed_html.include?(">1:52:30</a>")).to eq(true)
+    expect(video_comment.processed_html.include?(">1:20</a>")).to eq(true)
   end
 
   it "does not add timestamp if commentable does not have video" do
@@ -137,10 +141,6 @@ RSpec.describe Comment, type: :model do
     expect(comment.path).not_to be(nil)
   end
 
-  it "returns name_of_user" do
-    expect(comment.name_of_user).to eq(comment.user.name)
-  end
-
   it "returns the properly formed path" do
     expect(comment.path).to eq("/#{comment.user.username}/comment/#{comment.id_code_generated}")
   end
@@ -163,7 +163,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "returns the root parent comment's user if root parent comment exists" do
-      expect(child_comment.parent_user).to eq(user)
+      expect(child_comment.parent_user).to eq(user2)
     end
   end
 
@@ -203,78 +203,6 @@ RSpec.describe Comment, type: :model do
       allow(ShareMeowClient).to receive(:image_url).and_return("www.test.com")
       comment.sharemeow_link
       expect(ShareMeowClient).to have_received(:image_url)
-    end
-  end
-
-  describe "::StreamRails::Activity(notification callbacks)" do
-    after { StreamRails.enabled = false }
-
-    context "when a comment without ancestor is created" do
-      before do
-        StreamRails.enabled = true
-        allow(StreamNotifier).to receive(:new).and_call_original
-      end
-
-      it "notifies the author" do
-        create(:comment, commentable_id: article.id)
-        expect(StreamNotifier).to have_received(:new).with(user.id).at_least(:once)
-      end
-
-      it " does not notify author if self is author" do
-        create(:comment, commentable_id: article.id, user_id: user.id)
-        expect(StreamNotifier).not_to have_received(:new).with(user.id)
-      end
-
-      it "does not notify anybody else" do
-        comment1 = create(:comment, commentable_id: article.id)
-        comment2 = create(:comment, commentable_id: article.id)
-        expect(StreamNotifier).not_to have_received(:new).with(comment1.user.id)
-        expect(StreamNotifier).not_to have_received(:new).with(comment2.user.id)
-      end
-    end
-
-    context "when a comment with ancestor is created" do
-      let(:nest_comment_1) { create(:comment, commentable_id: article.id) }
-      let(:nest_comment_2) do
-        create(:comment, parent_id: nest_comment_1.id, commentable_id: article.id)
-      end
-      let(:author_comment) do
-        create(:comment, parent_id: nest_comment_2.id,
-                         commentable_id: article.id, user_id: user.id)
-      end
-      let(:nest_comments_authors) { [nest_comment_1.user_id, nest_comment_2.user_id] }
-
-      before do
-        nest_comments_authors # this needs to be evoked before StreamRails is enabled
-        StreamRails.enabled = true
-        allow(StreamNotifier).to receive(:new).and_call_original
-      end
-
-      it "notifies all the ancestors" do
-        create(:comment, parent_id: nest_comment_2.id, commentable_id: article.id)
-        nest_comments_authors.each do |id|
-          expect(StreamNotifier).to have_received(:new).with(id).at_least(:once)
-        end
-      end
-
-      it "does not notifies the author" do
-        create(:comment, parent_id: nest_comment_2.id, commentable_id: article.id)
-        expect(StreamNotifier).not_to have_received(:new).with(user.id)
-      end
-
-      it "notifies all ancestors even if the author is among them" do
-        create(:comment, parent_id: author_comment.id, commentable_id: article.id)
-        nest_comments_authors.push(user.id).each do |id|
-          expect(StreamNotifier).to have_received(:new).with(id).at_least(:once)
-        end
-      end
-
-      it "does not notify self if self is among the ancestors" do
-        me = create(:user)
-        create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
-        create(:comment, parent_id: author_comment.id, commentable_id: article.id, user_id: me.id)
-        expect(StreamNotifier).not_to have_received(:new).with(me.id)
-      end
     end
   end
 end

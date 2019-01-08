@@ -28,6 +28,7 @@ Rails.application.config.assets.precompile += %w(base.js)
 Rails.application.config.assets.precompile += %w(s3_direct_upload.js)
 
 Rails.application.config.assets.precompile += %w(lib/xss.js)
+Rails.application.config.assets.precompile += %w(lib/pulltorefresh.js)
 Rails.application.config.assets.precompile += %w(internal.js)
 Rails.application.config.assets.precompile += %w(lib/js-yaml.js)
 Rails.application.config.assets.precompile += %w[serviceworker.js manifest.json]

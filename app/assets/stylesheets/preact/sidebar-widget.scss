@@ -3,6 +3,9 @@
 .sidebar-additional{
   .widget{
     .widget-suggested-follows-container{
+      h4{
+        margin: 0;
+      }
       .widget-body{
         .widget-list-item__suggestions{
           .widget-list-item__close-button{

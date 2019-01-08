@@ -1,6 +1,5 @@
 class Note < ApplicationRecord
-  belongs_to :noteable, polymorphic: true
-  validates :reason, :content, presence: true
-  validates :noteable_id, uniqueness:
-    { scope: :reason, message: "limited to one note per noteable per reason" }
+  belongs_to :noteable, polymorphic: true, touch: true
+  belongs_to :author, class_name: "User", optional: true
+  validates :content, :reason, presence: true
 end

@@ -7,7 +7,7 @@ class AsyncInfoController < ApplicationController
     unless user_signed_in?
       render json: {
         param: request_forgery_protection_token,
-        token: form_authenticity_token,
+        token: form_authenticity_token
       }
       return
     end
@@ -17,12 +17,14 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
+    # Updates article analytics periodically:
+    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if rand(20) == 1
     respond_to do |format|
       format.json do
         render json: {
           param: request_forgery_protection_token,
           token: form_authenticity_token,
-          user: user_data.to_json,
+          user: user_data.to_json
         }
       end
     end
@@ -36,15 +38,15 @@ class AsyncInfoController < ApplicationController
         username: @user.username,
         profile_image_90: ProfileImage.new(@user).get(90),
         followed_tag_names: @user.cached_followed_tag_names,
-        followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex]),
+        followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:points]),
         followed_user_ids: @user.cached_following_users_ids,
+        followed_organization_ids: @user.cached_following_organizations_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         saw_onboarding: @user.saw_onboarding,
-        onboarding_checklist: UserStates.new(@user).cached_onboarding_checklist,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,
-        trusted: @user.trusted,
+        trusted: @user.trusted
       }
     end
   end

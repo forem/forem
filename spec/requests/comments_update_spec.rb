@@ -7,12 +7,13 @@ RSpec.describe "CommentsUpdate", type: :request do
 
   before do
     sign_in user
+    Notification.send_new_comment_notifications(comment)
   end
 
   it "updates ordinary article with proper params" do
     new_body = "NEW TITLE #{rand(100)}"
     put "/comments/#{comment.id}", params: {
-      comment: { body_markdown: new_body },
+      comment: { body_markdown: new_body }
     }
     expect(Comment.last.processed_html).to include(new_body)
   end
