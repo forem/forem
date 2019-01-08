@@ -74,7 +74,12 @@ module Api
       private
 
       def set_user
-        @user = current_user
+        if params[:key]
+          @api_secret = ApiSecret.find_by_secret(params[:key]) || not_found
+          @user = User.find(@api_secret.user_id) || not_found
+        else
+          @user = current_user
+        end
       end
 
       def article_params
