@@ -1,4 +1,27 @@
+version: "2"
 plugins:
   rubocop:
     enabled: true
     channel: rubocop-0-60
+  brakeman:
+    enabled: true
+  eslint:
+    enabled: true
+    channel: "eslint-5"
+exclude_patterns:
+  - "config/"
+  - "db/"
+  - "dist/"
+  - "features/"
+  - "node_modules/"
+  - "script/"
+  - "spec/"
+  - "test/"
+  - "tests/"
+  - "vendor/"
+  - "lib/tasks/"
+  - "app/assets/javascripts/lib/"
+  - "bin/"
+  - "**/__tests__/"
+  - "**/.eslintrc.js"
+  - "*.js"
