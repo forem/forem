@@ -4,7 +4,9 @@
       <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
     </a>
   </div>
+  <hr/>
 <% end %>
+
 
 <% if @user.identities.find_by(provider:'twitter').nil? %>
   <div class="field">
@@ -12,15 +14,16 @@
       <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
     </a>
   </div>
+  <hr/>
 <% end %>
 
-<h2>Access Tokens</h2>
-<p>You can generate personal access tokens to use for authentication with the DEV API.</p>
+<h2>DEV API Access Tokens</h2>
+<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though.</p>
 <h3>Generate an access token</h3>
-<h4>Token description</h4>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
     <div class="field">
+      <%= api_secret.label(:description, "Token Description") %>
       <%= api_secret.text_field(:description, placeholder: "What's this token for?", required: true) %>
     </div>
   <% end %>
@@ -29,7 +32,7 @@
   </button>
 <% end %>
 
-<h3>Active access tokens</h3>
+<h3>Active access tokens (Never share these secrets!)</h3>
 <% if @user.api_secrets.empty? %>
   <p>None yet!</p>
 <% end %>
@@ -37,6 +40,7 @@
   <div class='api__secret__container'>
     <div class='api__secret__desc'>
       <p class='title'><%= api_secret.description %></h4>
+      <p class='content'><%= api_secret.secret %></p>
       <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
     </div>
     <div class='api__secret__revoke'>

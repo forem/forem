@@ -7,7 +7,7 @@ class ApiSecretsController < ApplicationController
     @secret = ApiSecret.new(permitted_attributes(ApiSecret))
     @secret.user_id = current_user.id
     if @secret.save
-      flash[:notice] = "Your access token has been generated: #{@secret.secret}. Be sure to copy it to somewhere safe now. You won’t be able to see it again!"
+      flash[:notice] = "Your access token has been generated: #{@secret.secret}."
     else
       flash[:error] = @secret.errors.full_messages.to_sentence
     end
