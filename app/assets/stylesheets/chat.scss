@@ -288,7 +288,7 @@
   justify-content: space-between;
   border: 1px solid $outline-color;
   border: var(--theme-container-border, 1px solid $outline-color);
-  box-shadow: $bold-shadow;  
+  box-shadow: $bold-shadow;
   box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   background: white;
 }
@@ -710,13 +710,13 @@
   word-wrap: break-word;
   word-break: break-word;
   pre{
-    background:$lightest-gray;
+    background: #29292e;
   }
   code {
-    background:$lightest-gray;
+    background: #29292e;
     padding:0.1em 0.3em 0px;
     border-radius:2px;
-    color:#333842;
+    color: #eff0f9;
     font-size:0.95em;
     vertical-align:0.05em;
     max-width:100%;
