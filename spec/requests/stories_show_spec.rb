@@ -45,6 +45,25 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
     end
 
+    context "when organization is present" do
+      let(:organization) { create(:organization) }
+
+      it "redirects to the appropriate page if given an organization's old slug" do
+        original_slug = organization.slug
+        organization.update(slug: "somethingnew")
+        get "/#{original_slug}"
+        expect(response.body).to redirect_to organization.path
+      end
+
+      it "redirects to the appropriate page if given an organization's old old slug" do
+        original_slug = organization.slug
+        organization.update(slug: "somethingnew")
+        organization.update(slug: "anothernewslug")
+        get "/#{original_slug}"
+        expect(response.body).to redirect_to organization.path
+      end
+    end
+
     it "renders second and third users if present" do
       user2 = create(:user)
       user3 = create(:user)
