@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/bufferapp/buffer-ruby.git
-  revision: 10edfe62d4d90b34e19f4356d797580cefdf0720
+  revision: 3c4bf6aec19830db21fdfe7cb394e0f5d8bf45d0
   specs:
-    buffer (0.1.2)
+    buffer (0.1.3)
       addressable
       environs
       faraday
@@ -917,7 +917,7 @@ GEM
     xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yajl-ruby (1.4.0)
+    yajl-ruby (1.4.1)
     zonebie (0.6.1)
 
 PLATFORMS
