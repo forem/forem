@@ -1,7 +1,7 @@
 class SlideshareTag < LiquidTagBase
   def initialize(tag_name, key, tokens)
     super
-    @key    = validate key
+    @key    = validate key.strip
     @height = 450
   end
 
