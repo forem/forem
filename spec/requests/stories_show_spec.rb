@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "StoriesShow", type: :request do
-  let(:user) { FactoryBot.create(:user) }
-  let(:article) { FactoryBot.create(:article, user_id: user.id) }
+  let(:user)         { create(:user) }
+  let(:article)      { create(:article, user_id: user.id) }
 
   describe "GET /:username/:slug" do
     it "renders to appropriate page" do
