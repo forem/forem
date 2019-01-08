@@ -52,19 +52,12 @@ class StoriesController < ApplicationController
   end
 
   def handle_possible_redirect
-    if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
-      if @user.articles.find_by_slug(params[:slug])
-        redirect_to "/#{@user.username}/#{params[:slug]}"
-        return
-      end
-    end
-    if @user = User.find_by_old_old_username(params[:username].tr("@", "").downcase)
-      if @user.articles.find_by_slug(params[:slug])
-        redirect_to "/#{@user.username}/#{params[:slug]}"
-        return
-      end
-    end
-    if @organization = @article.organization
+    potential_username = params[:username].tr("@", "").downcase
+    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    if @user&.articles&.find_by_slug(params[:slug])
+      redirect_to "/#{@user.username}/#{params[:slug]}"
+      return
+    elsif @organization = @article.organization
       redirect_to "/#{@organization.slug}/#{params[:slug]}"
       return
     end
