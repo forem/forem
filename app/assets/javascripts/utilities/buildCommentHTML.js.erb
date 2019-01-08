@@ -1,8 +1,10 @@
 function buildCommentHTML(comment) {
-  var depthClass = ""
-  var githubIcon = ""
-  var twitterIcon = ""
-  var customClass = ""
+  var depthClass = "";
+  var githubIcon = "";
+  var twitterIcon = "";
+  var customClass = "";
+  var detailsStartHTML = "";
+  var detailsFinishHTML = "";
   if (!comment.newly_created) {
     depthClass="child flat-node"
   } else if (comment.depth == 0 ){
@@ -21,8 +23,13 @@ function buildCommentHTML(comment) {
   if (comment.newly_created) {
     customClass = "comment-created-via-fetch"
   }
+  if (comment.depth < 3) {
+    detailsStartHTML = '<details open><summary><span>&nbsp;</span></summary>'
+    detailsFinishHTML = '</details>'
+  }
 
   return '<style>'+comment.css+'</style>\
+          '+detailsStartHTML+'\
           <div class="comment-hash-marker" id="'+comment.id_code+'"></div>\
           <div id="comment-node-'+comment.id+'" class="single-comment-node '+depthClass+' comment-deep-'+comment.depth+'" "\
           data-comment-id="'+comment.id+'" data-comment-author-id="'+comment.user.id+'" data-current-user-comment="'+comment.newly_created+'">\
@@ -55,7 +62,8 @@ function buildCommentHTML(comment) {
             </div>\
             '+actions(comment)+'\
           </div>\
-      </div>'
+      </div>\
+      '+detailsFinishHTML
 }
 
 function actions(comment) {
