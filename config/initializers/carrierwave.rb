@@ -5,6 +5,7 @@ require "carrierwave/storage/fog"
 CarrierWave.configure do |config|
   if Rails.env.development? || Rails.env.test?
     config.storage = :file
+    config.enable_processing = false
   else
     # config.fog_provider = 'fog-aws'
     config.storage = :fog
