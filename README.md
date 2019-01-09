@@ -235,6 +235,7 @@ Core team members will move issues along the project board as they progress.
 - [@peterkimfrank](https://dev.to/peter)
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
+- [@aspittel](https://dev.to/aspittel)
 
 ## License
 
