@@ -1,5 +1,5 @@
 @import 'variables';
-$indent-distance: calc(1.1vw + 12px);
+$indent-distance: calc(1.1vw + 13px);
 
 @keyframes fade-out {
     0%   {background-color: rgb(208, 255, 235);}
@@ -341,10 +341,9 @@ a.header-link{
   }
 
   details {
-    user-select: none;
     details {
       .comment-deep-1,.comment-deep-2 {
-        margin-top: -122px;
+        margin-top: -123px;
       }
       summary {
         z-index: 15;
@@ -352,18 +351,19 @@ a.header-link{
       }
       &[open] {
         > summary {
-          width: calc(1.1vw + 11px); //slightly smaller than indent distance
+          width: calc(1.1vw + 12px); //slightly smaller than indent distance
           padding-bottom: 100px;
         }
       }
     }
     summary {
       cursor: pointer;
-      color: lighten($medium-gray, 15%);
-      font-size: 13.5px;
+      color: lighten($medium-gray, 8%);
+      font-size: 14.5px;
       font-style: oblique;
-      padding: 2px 0px;
+      padding: 4px 0px;
       padding-left: 4px;
+      user-select: none;
       &:active {
         outline:0;
         box-shadow: 0px 0px 0px $light-medium-gray !important;
