@@ -20,6 +20,7 @@
   <div class="field" id="textarea-wrapper">
     <%= f.text_area :body_markdown,
       placeholder: "Add to the discussion",
+      value: @article.comment_template,
       onfocus: "handleFocus(event)",
       onblur: "handleBlur(event)",
       onkeyup: "handleKeyUp(event)",

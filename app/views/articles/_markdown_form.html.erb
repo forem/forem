@@ -55,7 +55,7 @@
             <input id="uploaded-image" style="display:none" />
           </div>
         </div>
-        <%= f.text_area :body_markdown %>
+        <%= f.text_area :body_markdown, class: "article-field" %>
         <% if hiring_form?(@tag, @article) %>
           <% if current_user.organization %>
             <div class="hiring-form-toggle">
@@ -72,6 +72,8 @@
           </div>
         <% end %>
       </div>
+      <%= f.label :comment_template %>
+      <%= f.text_area :comment_template, class: "comment-template" %>
     </div>
   </div>
 <% end %>

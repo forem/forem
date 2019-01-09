@@ -274,7 +274,12 @@
     margin-top:13px;
     right:14px;
   }
-  textarea{
+  .comment-template {
+    display: block;
+    width: 98%;
+    margin: 0 auto;
+  }
+  .article-field {
     width:calc(100% - 32px);
     min-height: 550px;
     margin:auto;
