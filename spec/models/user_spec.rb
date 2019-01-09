@@ -13,6 +13,7 @@ RSpec.describe User, type: :model do
   before { mock_auth_hash }
 
   describe "validations" do
+    it { is_expected.to have_many(:api_secrets) }
     it { is_expected.to have_many(:articles) }
     it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
     it { is_expected.to have_many(:badges).through(:badge_achievements) }

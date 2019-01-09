@@ -16,6 +16,15 @@ RSpec.describe TweetTag, type: :liquid_template do
     end
   end
 
+  it "render properly", :vcr do
+    VCR.use_cassette("twitter_gem") do
+      Time.use_zone("Asia/Tokyo") do
+        rendered = generate_tweet_liquid_tag(twitter_id).render
+        Approvals.verify(rendered, name: "liquid_tweet_tag_spec", format: :html)
+      end
+    end
+  end
+
   context "when given invalid id" do
     it "rejects it (normal invalid id)" do
       expect do

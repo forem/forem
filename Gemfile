@@ -1,6 +1,6 @@
 # rubocop:disable LineLength
 source "https://rubygems.org"
-ruby "2.5.3"
+ruby "2.6.0"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
@@ -28,7 +28,7 @@ gem "autoprefixer-rails", "~> 9.4"
 gem "aws-sdk-lambda", "~> 1.16" # Just Lambda. For more, install aws-sdk gem
 gem "bourbon", "~> 5.1"
 gem "buffer", github: "bufferapp/buffer-ruby"
-gem "carrierwave", "~> 1.2"
+gem "carrierwave", "~> 1.3"
 gem "carrierwave-bombshelter", "~> 0.2"
 gem "cloudinary", "~> 1.9"
 gem "counter_culture", "~> 2.1"
@@ -57,7 +57,7 @@ gem "jquery-rails", "~> 4.3"
 gem "kaminari", "~> 1.1"
 gem "libhoney", "~> 1.10"
 gem "liquid", "~> 4.0"
-gem "nokogiri", "~> 1.8"
+gem "nokogiri", "~> 1.10"
 gem "octokit", "~> 4.13"
 gem "omniauth", "~> 1.8"
 gem "omniauth-github", "~> 1.3"
@@ -126,7 +126,7 @@ group :development, :test do
   gem "pry-byebug", "~> 3.6"
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
-  gem "rubocop", "~> 0.59", require: false
+  gem "rubocop", "~> 0.62", require: false
   gem "rubocop-rspec", "~> 1.30"
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
@@ -151,7 +151,7 @@ group :test do
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock"
   gem "test-prof", "~> 0.7"
   gem "timecop", "~> 0.9"
-  gem "webmock", "~> 3.4"
+  gem "webmock", "~> 3.5"
   gem "zonebie", "~> 0.6.1"
 end
 # rubocop:enable LineLength

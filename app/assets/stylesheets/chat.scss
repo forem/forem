@@ -298,7 +298,7 @@
   justify-content: space-between;
   border: 1px solid $outline-color;
   border: var(--theme-container-border, 1px solid $outline-color);
-  box-shadow: $bold-shadow;  
+  box-shadow: $bold-shadow;
   box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   background: white;
   flex-flow: row nowrap;
@@ -761,18 +761,14 @@
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
-}
-
-.chatmessagebody__message {
-  pre {
-
-    background:$lightest-gray;
+  pre{
+    background: #29292e;
   }
   code {
-    background:$lightest-gray;
-    padding:0.1em 0.3em 0px;
+    background: #29292e;
+    padding:0.1em 0.3em;
     border-radius:2px;
-    color:#333842;
+    color: #eff0f9;
     font-size:0.95em;
     vertical-align:0.05em;
     max-width:100%;
