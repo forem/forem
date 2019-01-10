@@ -45,9 +45,9 @@
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
   <div class="actions" id="submit-wrapper">
-    <a href="<%=commentable.path%>">
-        <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
-    </a>
+    <%= link_to request.referer.present? ? :back : commentable.path do %>
+      <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
+    <% end %>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
     <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)", class:"comment-action-button" %>
   </div>
