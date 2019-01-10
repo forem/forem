@@ -4,9 +4,9 @@ RSpec.describe "Editing A Comment", type: :feature, js: true do
   let(:user) { create(:user) }
   let!(:article) { create(:article, show_comments: true) }
   let(:new_comment_text) { Faker::Lorem.paragraph }
+  let!(:comment) { create(:comment, commentable: article, user: user, body_markdown: Faker::Lorem.paragraph) }
 
   before do
-    comment = create(:comment, commentable: article, user: user, body_markdown: Faker::Lorem.paragraph)
     Notification.send_new_comment_notifications(comment)
     sign_in user
   end
@@ -32,6 +32,14 @@ RSpec.describe "Editing A Comment", type: :feature, js: true do
       visit user.comments.last.path.to_s
       click_link("EDIT")
       assert_updated
+    end
+  end
+
+  context "when user edits via direct path (no referer)" do
+    it "cancels to the article page" do
+      user.reload
+      visit "#{comment.path}/edit"
+      expect(page).to have_link("CANCEL", href: article.path.to_s)
     end
   end
 end
