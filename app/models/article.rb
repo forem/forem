@@ -73,7 +73,7 @@ class Article < ApplicationRecord
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url,
-    :published_at, :crossposted_at, :boost_states, :description)
+    :published_at, :crossposted_at, :boost_states, :description, :reading_time)
   }
 
   scope :limited_columns_internal_select, -> {
@@ -101,7 +101,7 @@ class Article < ApplicationRecord
                   id: :index_id,
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
-      attributes :title, :tag_list, :main_image, :id,
+      attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
                 :featured, :published, :published_at, :featured_number,
                 :comments_count, :reactions_count, :positive_reactions_count,
                 :path, :class_name, :user_name, :user_username, :comments_blob,
@@ -133,8 +133,8 @@ class Article < ApplicationRecord
                   id: :index_id,
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
-      attributes :title, :path, :class_name, :comments_count,
-        :tag_list, :positive_reactions_count, :id, :hotness_score,
+      attributes :title, :path, :class_name, :comments_count, :reading_time,
+        :tag_list, :positive_reactions_count, :id, :hotness_score, :score,
         :readable_publish_date, :flare_tag, :user_id, :organization_id
       attribute :published_at_int do
         published_at.to_i
@@ -279,7 +279,7 @@ class Article < ApplicationRecord
   end
 
   def search_score
-    score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier)
+    score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score)
     score.to_i
   end
 

@@ -46,12 +46,17 @@
         </span>
       </a>
     </div>
+    <div
+      class="article-reading-time"
+    >
+      <%= story.reading_time %>
+    </div>
     <button
       class="article-engagement-count bookmark-engage"
       data-reactable-id="<%= story.id %>"
       aria-label="Save to reading list"
       title="Save to reading list">
-      <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
+      <span class="bm-success">SAVED</span>
       <span class="bm-initial">SAVE</span>
     </button>
   </div>

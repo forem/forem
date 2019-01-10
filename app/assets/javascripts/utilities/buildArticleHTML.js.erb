@@ -78,7 +78,7 @@ function buildArticleHTML(article) {
     var saveButton = '';
     if (article.class_name === "Article") {
       var saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
-                        <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>\
+                        <span class="bm-success">SAVED</span>\
                         <span class="bm-initial">SAVE</span>\
                       </button>'
     } else if (article.class_name === "User") {
@@ -108,6 +108,7 @@ function buildArticleHTML(article) {
        <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+'\
+       <div class="article-reading-time">'+article.reading_time < 2 ? 'quick' : article.reading_time + ' min' +' read</div>\
        '+saveButton+'</div>';
   }
 }
