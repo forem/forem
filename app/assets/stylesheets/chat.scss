@@ -797,6 +797,21 @@
 
 }
 
+.chatmessagebody__message {
+  p {
+    margin-top: 0;
+    margin-bottom: 9px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  blockquote {
+    border-left: 4px solid $black;
+    margin-left: 0px;
+    padding-left: 8px;
+  }
+}
+
 .chatmessagebody__currentuser {
   background: black;
   color: white;
