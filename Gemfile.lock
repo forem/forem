@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/bufferapp/buffer-ruby.git
-  revision: 10edfe62d4d90b34e19f4356d797580cefdf0720
+  revision: 3c4bf6aec19830db21fdfe7cb394e0f5d8bf45d0
   specs:
-    buffer (0.1.2)
+    buffer (0.1.3)
       addressable
       environs
       faraday
@@ -495,7 +495,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    hashdiff (0.3.7)
+    hashdiff (0.3.8)
     hashie (3.5.7)
     heapy (0.1.3)
     hkdf (0.3.0)
@@ -526,8 +526,8 @@ GEM
       nokogiri (>= 1.6)
     io-like (0.3.0)
     ipaddress (0.8.3)
-    jaro_winkler (1.5.1)
-    jbuilder (2.7.0)
+    jaro_winkler (1.5.2)
+    jbuilder (2.8.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
     jmespath (1.4.0)
@@ -577,7 +577,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
     mini_mime (1.0.1)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.11.3)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
@@ -591,8 +591,8 @@ GEM
     nenv (0.3.0)
     netrc (0.11.0)
     nio4r (2.3.1)
-    nokogiri (1.8.5)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.10.0)
+      mini_portile2 (~> 2.4.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -751,14 +751,14 @@ GEM
     rspec-retry (0.6.1)
       rspec-core (> 3.3)
     rspec-support (3.8.0)
-    rubocop (0.59.2)
+    rubocop (0.62.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.5, != 2.5.1.1)
       powerpack (~> 0.1)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (~> 1.0, >= 1.0.1)
+      unicode-display_width (~> 1.4.0)
     rubocop-rspec (1.30.0)
       rubocop (>= 0.58.0)
     ruby-prof (0.17.0)
@@ -882,7 +882,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
-    unicode-display_width (1.4.0)
+    unicode-display_width (1.4.1)
     uniform_notifier (1.12.1)
     validate_url (1.0.2)
       activemodel (>= 3.0.0)
@@ -900,7 +900,7 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
-    webmock (3.4.2)
+    webmock (3.5.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -917,7 +917,7 @@ GEM
     xml-simple (1.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yajl-ruby (1.4.0)
+    yajl-ruby (1.4.1)
     zonebie (0.6.1)
 
 PLATFORMS
@@ -981,7 +981,7 @@ DEPENDENCIES
   html_truncator (~> 0.4)
   httparty (~> 0.16)
   inline_svg (~> 1.3)
-  jbuilder (~> 2.7)
+  jbuilder (~> 2.8)
   jquery-rails (~> 4.3)
   kaminari (~> 1.1)
   launchy (~> 2.4)
@@ -989,7 +989,7 @@ DEPENDENCIES
   liquid (~> 4.0)
   memory_profiler (~> 0.9)
   nakayoshi_fork
-  nokogiri (~> 1.8)
+  nokogiri (~> 1.10)
   octokit (~> 4.13)
   omniauth (~> 1.8)
   omniauth-github (~> 1.3)
@@ -1019,7 +1019,7 @@ DEPENDENCIES
   rouge (~> 3.3)
   rspec-rails (~> 3.8)
   rspec-retry (~> 0.6)
-  rubocop (~> 0.59)
+  rubocop (~> 0.62)
   rubocop-rspec (~> 1.30)
   ruby-prof (~> 0.17)
   rubyzip (~> 1.2, >= 1.2.2)
@@ -1053,13 +1053,13 @@ DEPENDENCIES
   validate_url (~> 1.0)
   vcr (~> 4.0)
   web-console (~> 3.5)
-  webmock (~> 3.4)
+  webmock (~> 3.5)
   webpacker (~> 3.5)
   webpush (~> 0.3)
   zonebie (~> 0.6.1)
 
 RUBY VERSION
-   ruby 2.5.3p105
+   ruby 2.6.0p0
 
 BUNDLED WITH
-   1.17.1
+   1.17.3
