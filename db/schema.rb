@@ -321,13 +321,6 @@ ActiveRecord::Schema.define(version: 20190109212351) do
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
-  create_table "flipflop_features", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.boolean "enabled", default: false, null: false
-    t.string "key", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
