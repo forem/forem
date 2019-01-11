@@ -173,33 +173,6 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
-    context "when a user has a new moderation notification" do
-      let(:user2)    { create(:user) }
-      let(:article)  { create(:article, user_id: user.id) }
-      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
-
-      before do
-        user.update(id: 1)
-        user.add_role :trusted
-        user.reload
-        sign_in user
-        Notification.send_moderation_notification_without_delay(comment)
-        get "/notifications"
-      end
-
-      it "renders the proper message" do
-        expect(response.body).to include "As a trusted member"
-      end
-
-      it "renders the article's path" do
-        expect(response.body).to include article.path
-      end
-
-      it "renders the comment's processed HTML" do
-        expect(response.body).to include comment.processed_html
-      end
-    end
-
     context "when a user has a new welcome notification" do
       before do
         user.update(id: 1)
