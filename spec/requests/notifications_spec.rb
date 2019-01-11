@@ -68,7 +68,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when a user has new reaction notifications" do
       let(:article1)                   { create(:article, user_id: user.id) }
       let(:article2)                   { create(:article, user_id: user.id) }
-      let(:special_characters_article) { create(:article, user_id: user.id, title: "Nothing like good ol' blah blah blah") }
+      let(:special_characters_article) { create(:article, user_id: user.id, title: "What's Become of Waring") }
 
       before { sign_in user }
 
