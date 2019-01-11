@@ -6,7 +6,7 @@ cache:
     - node_modules
     - $HOME/.nvm
 rvm:
-  - 2.5.3
+  - 2.6.0
 addons:
   postgresql: '9.6'
   chrome: stable

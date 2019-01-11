@@ -78,6 +78,7 @@ article{
   width:880px;
   max-width:100%;
   background:white;
+  background: var(--theme-container-background,	#fff);
   margin:68px auto 20px;
   text-align: left;
   box-shadow: $bold-shadow;
@@ -308,6 +309,7 @@ article{
     font-size: 21px;
     line-height: 32px;
     background:white;
+    background: var(--theme-container-background,	#fff);
     position:relative;
     z-index:5;
     padding-bottom:5px;
