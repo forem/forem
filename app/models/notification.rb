@@ -152,7 +152,7 @@ class Notification < ApplicationRecord
       welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
       return if welcome_broadcast == nil
 
-      dev_account = User.find_by_id(ENV["DEVTO_USER_ID"])
+      dev_account = User.dev_account
       json_data = {
         user: user_data(dev_account),
         broadcast: {
@@ -174,7 +174,7 @@ class Notification < ApplicationRecord
       return if available_moderators.empty?
 
       moderator = available_moderators.sample
-      dev_account = User.find_by_id(ENV["DEVTO_USER_ID"])
+      dev_account = User.dev_account
       json_data = {
         user: user_data(dev_account)
       }
