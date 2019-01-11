@@ -108,7 +108,7 @@ function buildArticleHTML(article) {
        <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+'\
-       <div class="article-reading-time">'+article.reading_time < 2 ? 'quick' : article.reading_time + ' min' +' read</div>\
+       <div class="article-reading-time">'+ (article.reading_time < 2 ? '1 min' : article.reading_time + ' min') +' read</div>\
        '+saveButton+'</div>';
   }
 }

@@ -49,7 +49,7 @@
     <div
       class="article-reading-time"
     >
-      <%= story.reading_time %>
+      <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
     </div>
     <button
       class="article-engagement-count bookmark-engage"
