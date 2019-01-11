@@ -27,7 +27,7 @@ gem "ancestry", "~> 3.0"
 gem "autoprefixer-rails", "~> 9.4"
 gem "aws-sdk-lambda", "~> 1.16" # Just Lambda. For more, install aws-sdk gem
 gem "bourbon", "~> 5.1"
-gem "buffer", github: "bufferapp/buffer-ruby"
+gem "buffer", "~> 0.1"
 gem "carrierwave", "~> 1.3"
 gem "carrierwave-bombshelter", "~> 0.2"
 gem "cloudinary", "~> 1.9"

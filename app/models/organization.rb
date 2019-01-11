@@ -42,6 +42,7 @@ class Organization < ApplicationRecord
   after_save  :bust_cache
   before_save :generate_secret
   before_validation :downcase_slug
+  before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
   validate :unique_slug_including_users
@@ -53,8 +54,24 @@ class Organization < ApplicationRecord
     slug
   end
 
+  def old_username
+    old_slug
+  end
+
+  def old_old_username
+    old_old_slug
+  end
+
   def website_url
     url
+  end
+
+  def check_for_slug_change
+    if slug_changed?
+      self.old_old_slug = old_slug
+      self.old_slug = slug_was
+      articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
+    end
   end
 
   def path

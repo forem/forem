@@ -39,7 +39,7 @@ RSpec.describe "internal/users", type: :request do
       create(:reaction, reactable: comment2, reactable_type: "Comment", user: user2)
       # create user3 reaction to offending article
       create(:reaction, reactable: article, reactable_type: "Article", user: user3, category: "like")
-      Delayed::Worker.new(quiet: false).work_off
+      Delayed::Worker.new(quiet: true).work_off
     end
 
     def offender_activity_on_other_content
@@ -49,7 +49,7 @@ RSpec.describe "internal/users", type: :request do
       comment = create(:comment, commentable_type: "Article", commentable: article2, user: user)
       # user3 reacts to offender comment
       create(:reaction, reactable: comment, reactable_type: "Comment", user: user3)
-      Delayed::Worker.new(quiet: false).work_off
+      Delayed::Worker.new(quiet: true).work_off
     end
 
     it "reassigns username and removes profile info" do
