@@ -1,5 +1,3 @@
-require "rss"
-require "open-uri"
 require "nokogiri"
 require "httparty"
 require "securerandom"
@@ -14,11 +12,8 @@ class RssReader
   end
 
   def get_all_articles
-    User.where.not(feed_url: nil).each do |u|
-      feed_url = u.feed_url.strip
-      next if feed_url == ""
-
-      create_articles_for_user(u)
+    User.where.not(feed_url: [nil, ""]).find_each do |user|
+      create_articles_for_user(user)
     end
   end
 
@@ -38,7 +33,7 @@ class RssReader
 
   def create_articles_for_user(user)
     with_span("create_articles_for_user", user_id: user.id, username: user.username) do |metadata|
-      feed = fetch_rss(user.feed_url)
+      feed = fetch_rss(user.feed_url.strip)
       metadata[:feed_length] = feed.entries.length if feed&.entries
       feed.entries.reverse_each do |item|
         make_from_rss_item(item, user, feed)
