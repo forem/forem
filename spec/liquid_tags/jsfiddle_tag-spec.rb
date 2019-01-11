@@ -22,14 +22,14 @@ RSpec.describe JSFiddleTag, type: :liquid_template do
       Approvals.verify(rendered_jsfiddle_iframe, name: "jsfiddle_liquid_tag", format: :html)
     end
 
-    it "accepts codepen link with a / at the end" do
+    it "accepts jsfiddle link with a / at the end" do
       jsfiddle_link = "http://jsfiddle.net/link2twenty/v2kx9jcd/"
       expect do
         generate_new_liquid(jsfiddle_link)
       end.not_to raise_error
     end
 
-    it "rejects invalid codepen link" do
+    it "rejects invalid jsfiddle link" do
       expect do
         generate_new_liquid("invalid_jsfiddle_link")
       end.to raise_error(StandardError)
