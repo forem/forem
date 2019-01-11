@@ -154,8 +154,8 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).not_to include "As a trusted member"
       end
 
-      it "renders the original article's title" do
-        expect(response.body).to include CGI.escapeHTML(article.title)
+      it "renders the article's path" do
+        expect(response.body).to include article.path
       end
 
       it "renders the comment's processed HTML" do
@@ -190,8 +190,8 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include "As a trusted member"
       end
 
-      it "renders the article's title" do
-        expect(response.body).to include CGI.escapeHTML(article.title)
+      it "renders the article's path" do
+        expect(response.body).to include article.path
       end
 
       it "renders the comment's processed HTML" do
@@ -285,8 +285,8 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include "made a new post:"
       end
 
-      it "renders the article's title" do
-        expect(response.body).to include CGI.escapeHTML(article.title)
+      it "renders the article's path" do
+        expect(response.body).to include article.path
       end
 
       it "renders the author's name" do
