@@ -41,6 +41,7 @@ class AuthorizationService
     identity.secret = auth.credentials.secret
     auth["extra"].delete("access_token") if auth["extra"]["access_token"]
     identity.auth_data_dump = auth
+    logger.error "Identity failed to save: #{identity.errors.full_messages}" if identity.invalid?
     identity.save
     identity
   end

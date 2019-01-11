@@ -24,9 +24,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
       user_errors = @user.errors.full_messages
+      logger.error "Log in error: sign in failed. User username and email: " + @user.username + " - " + @user.email
+      logger.error "Log in error: auth data hash - " + request.env["omniauth.auth"].to_s
+      logger.error "Log in error: user_errors: " + user_errors.to_s
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
+  rescue StandardError => error
+    logger.error "Log in error: " + error
+    logger.error "Log in error: auth data hash - " + request.env["omniauth.auth"].to_s
   end
 
   def persisted_and_valid?
