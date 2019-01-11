@@ -254,12 +254,10 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       before do
-        user.update(id: 1)
-        user.reload
-        sign_in user
         comment
-        Mention.create_all(comment)
+        Mention.create_all_without_delay(comment)
         Notification.send_mention_notification_without_delay(Mention.first)
+        sign_in user
         get "/notifications"
       end
 
