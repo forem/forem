@@ -1,7 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "NotificationsIndex", type: :request do
+  let(:dev_account) { create(:user) }
   let(:user) { create(:user) }
+
+  before do
+    allow(User).to receive(:dev_account).and_return(dev_account)
+  end
 
   def has_both_names(response_body)
     response_body.include?(CGI.escapeHTML(User.last.name)) && response_body.include?(CGI.escapeHTML(User.second_to_last.name))
@@ -173,9 +178,33 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
+    context "when a user has a new moderation notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+
+      before do
+        user.add_role :trusted
+        sign_in user
+        Notification.send_moderation_notification_without_delay(comment)
+        get "/notifications"
+      end
+
+      it "renders the proper message" do
+        expect(response.body).to include "As a trusted member"
+      end
+
+      it "renders the article's path" do
+        expect(response.body).to include article.path
+      end
+
+      it "renders the comment's processed HTML" do
+        expect(response.body).to include comment.processed_html
+      end
+    end
+
     context "when a user has a new welcome notification" do
       before do
-        user.update(id: 1)
         sign_in user
       end
 
