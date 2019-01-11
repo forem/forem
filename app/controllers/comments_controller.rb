@@ -72,6 +72,7 @@ class CommentsController < ApplicationController
         render json: { status: "comment already exists" }
         return
       end
+      @comment_template = @comment.parent_type == "post" ? @comment.parent_or_root_article.comment_template : ""
       render json: {  status: "created",
                       css: @comment.custom_css,
                       depth: @comment.depth,
@@ -81,6 +82,7 @@ class CommentsController < ApplicationController
                       id: @comment.id,
                       id_code: @comment.id_code_generated,
                       newly_created: true,
+                      comment_template: @comment_template,
                       user: {
                         id: current_user.id,
                         username: current_user.username,
