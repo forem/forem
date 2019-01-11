@@ -181,6 +181,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       before do
         user.update(id: 1)
         user.add_role :trusted
+        user.reload
         sign_in user
         Notification.send_moderation_notification_without_delay(comment)
         get "/notifications"
@@ -254,6 +255,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       before do
         user.update(id: 1)
+        user.reload
         sign_in user
         comment
         Mention.create_all(comment)
