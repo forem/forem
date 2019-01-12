@@ -4,7 +4,7 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 Aloglia is bla bla bla
 
-## Sign up
+## Algolia: Sign up
 
 1. Go to Algolia singing up [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
 
@@ -22,9 +22,9 @@ Aloglia is bla bla bla
 
 8. All good! You can get your API keys now.
 
-## Get API keys
+## Algolia: Get API keys
 
-1. [Sign up](https://www.algolia.com/users/sign_up) or [Sign in](https://www.algolia.com/users/sign_in) in your Algolia account.
+1. [Sign up](#algolia-sign-up) or [Sign in](https://www.algolia.com/users/sign_in) in your Algolia account.
 
 2. From your **Dashboard** click on **API Keys**.
 
@@ -37,6 +37,26 @@ Aloglia is bla bla bla
 4. Done.
 
 # Twitter App
+
+## Sign up
+
+1. [Sign in](https://developer.twitter.com/apps) your Twitter account.
+
+2. In order to get the API keys you will have to apply for a developer account. Click on **Apply** buttons.
+
+3. Setup your Twitter account. Be sure you have your phone number and email address filled in.
+
+4. Fill in your account information and give a name to your **developer account**.
+
+5. Write down the reasons that you want to use Twitter API. Mention DEV community and describe the issues and tests and things that you want you want to work on.
+
+6. Read :) and accept the Terms and Conditions.
+
+7. Verify your email address once more and you will be done.
+
+8. You are done.
+
+---
 
 1.  [Click this link and sign in/sign up for a Twitter account.](https://apps.twitter.com) Note that your Twitter account will need a phone number linked to it in order to create an app.
 2.  Create a new app, and fill out the form, like the following example image: ![](https://user-images.githubusercontent.com/17884966/41612665-952d4cae-73c1-11e8-8047-cf0bd03bffb6.png)
