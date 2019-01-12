@@ -4,7 +4,27 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 Aloglia is bla bla bla
 
-1. [Sign up]() or [Sign in]() in your Algolia account.
+## Sign up
+
+1. Go to Algolia singing up [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
+
+2. Choose one of the three methods of signing up. (email, github or google)
+
+3. Fill in your basic information.
+
+4. Select the datacenter's region.
+
+5. Fill in or skip the project information.
+
+6. You are all set up now! You can go to your dashboard.
+
+7. You can skip the tutorial, we will guide you through the process. Accept the [Terms and Conditions](https://www.algolia.com/policies/terms).
+
+8. All good! You can get your API keys now.
+
+## Get API keys
+
+1. [Sign up](https://www.algolia.com/users/sign_up) or [Sign in](https://www.algolia.com/users/sign_in) in your Algolia account.
 
 2. From your **Dashboard** click on **API Keys**.
 
