@@ -38,7 +38,7 @@ Aloglia is bla bla bla
 
 # Twitter App
 
-## Sign up
+## Twitter: Sign up
 
 1. [Sign in](https://developer.twitter.com/apps) your Twitter account.
 
@@ -48,7 +48,7 @@ Aloglia is bla bla bla
 
 4. Fill in your account information and give a name to your **developer account**.
 
-5. Write down the reasons that you want to use Twitter API. Mention DEV community and describe the issues and tests and things that you want you want to work on.
+5. Write down the reasons that you want to use Twitter API. Mention DEV community and describe the issues and tests and things that you want you want to work on. Copy it, you might use it later ;)
 
 6. Read :) and accept the Terms and Conditions.
 
@@ -56,28 +56,36 @@ Aloglia is bla bla bla
 
 8. You are done.
 
----
+## Twitter: Get API keys
 
-1.  [Click this link and sign in/sign up for a Twitter account.](https://apps.twitter.com) Note that your Twitter account will need a phone number linked to it in order to create an app.
-2.  Create a new app, and fill out the form, like the following example image: ![](https://user-images.githubusercontent.com/17884966/41612665-952d4cae-73c1-11e8-8047-cf0bd03bffb6.png)
+1. [Sign up](#twitter-sign-up) or [sign in](https://developer.twitter.com/apps) in your Twitter developer account.
 
-The only important field is the "Callback URL" `http://localhost:3000/users/auth/twitter/callback`, which redirects you properly to `localhost:3000` when signing in.
+2. From **Apps** dashboard click on **Create and app**.
 
-3.  Once done, go to your app's settings, and fill in the terms of service `http://dev.to/terms` and privacy policy URL `http://dev.to/privacy`:
+3. Fill in the app name, description and URL `https://dev.to`.
 
-![](https://user-images.githubusercontent.com/17884966/41617044-8155387a-73cd-11e8-9e1d-f14c4652bda2.png)
+4. Check the **Enable Sign in with Twitter** option and fill in the Callback URL `http://localhost:3000/users/auth/twitter/callback`.
 
-4.  Once done, go to your app's permissions, and check the "Request email addresses from users" box.
-    ![screen shot 2018-05-02 at 5 02 48 pm](https://user-images.githubusercontent.com/17884966/39549184-f2e19952-4e2a-11e8-81ad-10e06c4e8a61.png)
+5. Fill in the DEV information, **Terms of Service** `http://dev.to/terms` and **Privacy policy** `http://dev.to/privacy`.
 
-5.  Change your keys accordingly: (name of Twitter key -> name of our application key):
+6. Write down (or paste) the things that you will work on. Press **Create**.
 
-```
-Access Token -> TWITTER_KEY
-Access Token Secret -> TWITTER_SECRET
-```
+7. Review the [Twitter Developer Terms](https://developer.twitter.com/en/developer-terms/agreement-and-policy.html) and agree to do nothing sketchy.
 
-6.  Done!
+8. The app is all set!
+
+9. One more change... From the app dashboard go to **Permissions** and check **Request email addresses from users** option.
+
+10. From the same dashboard access the **Keys and tokens** and change them accordingly (name of Twitter key -> name of our `ENV` variable):
+
+    ```
+    Access Token -> TWITTER_KEY
+    Access Token Secret -> TWITTER_SECRET
+    API key -> TWITTER_ACCESS_TOKEN
+    API secret key -> TWITTER_ACCESS_TOKEN_SECRET
+    ```
+
+11. Done.
 
 # GitHub
 
