@@ -1,4 +1,4 @@
-There are a few services you'll need **_(all free)_** in order to run the development server and access the app locally. Here are the instructions for getting them:
+There are a few services you'll need **_(all free)_** in order to run the development server and access the app locally. Here are the instructions for getting them.
 
 # GitHub
 
