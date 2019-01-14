@@ -92,6 +92,12 @@ function buildArticleHTML(article) {
     if (article.readable_publish_date) {
       publishDate = '・'+article.readable_publish_date
     }
+    var readingTimeHTML = '';
+    if (article.reading_time) {
+      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ (article.reading_time < 2 ? '1 min' : article.reading_time + ' min') +' read</a>'
+    } else {
+      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">3 min read</a>'
+    }
     return '<div class="single-article single-article-small-pic">\
       '+orgHeadline+'\
       <div class="small-pic">\
@@ -107,8 +113,7 @@ function buildArticleHTML(article) {
        </a>\
        <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
-       '+commentsCountHTML+reactionsCountHTML+'\
-       <div class="article-reading-time">'+ (article.reading_time < 2 ? '1 min' : article.reading_time + ' min') +' read</div>\
+       '+commentsCountHTML+reactionsCountHTML+readingTimeHTML+'\
        '+saveButton+'</div>';
   }
 }
