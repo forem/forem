@@ -34,6 +34,7 @@ class JSFiddleTag < LiquidTagBase
     # Validation
     validated_options = options.map { |o| valid_option(o) }.reject { |e| e == nil }
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+
     options.join
   end
 
