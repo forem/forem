@@ -15,12 +15,12 @@ class RssReader
 
     def assemble
       body = <<~HEREDOC
-         ---
-         title: #{@title}
-         published: false
-         tags: #{get_tags}
-         canonical_url: #{@user.feed_mark_canonical ? @feed_source_url : ''}
-         ---
+        ---
+        title: #{@title}
+        published: false
+        tags: #{get_tags}
+        canonical_url: #{@user.feed_mark_canonical ? @feed_source_url : ''}
+        ---
 
         #{assemble_body_markdown}
       HEREDOC
