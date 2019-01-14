@@ -50,21 +50,10 @@ class Organization < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
 
-  def username
-    slug
-  end
-
-  def old_username
-    old_slug
-  end
-
-  def old_old_username
-    old_old_slug
-  end
-
-  def website_url
-    url
-  end
+  alias_attribute :username, :slug
+  alias_attribute :old_username, :old_slug
+  alias_attribute :old_old_username, :old_old_slug
+  alias_attribute :website_url, :url
 
   def check_for_slug_change
     if slug_changed?
