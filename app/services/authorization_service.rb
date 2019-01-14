@@ -39,6 +39,7 @@ class AuthorizationService
     identity = Identity.find_for_oauth(auth)
     identity.token = auth.credentials.token
     identity.secret = auth.credentials.secret
+    auth["extra"].delete("access_token") if auth["extra"]["access_token"]
     identity.auth_data_dump = auth
     identity.save
     identity

@@ -13,6 +13,7 @@ RSpec.describe User, type: :model do
   before { mock_auth_hash }
 
   describe "validations" do
+    it { is_expected.to have_many(:api_secrets) }
     it { is_expected.to have_many(:articles) }
     it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
     it { is_expected.to have_many(:badges).through(:badge_achievements) }
@@ -183,7 +184,7 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "changes old_username if old_old_username properly if username changes" do
+    it "changes old_username and old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"
       user.update(username: random_new_username)
