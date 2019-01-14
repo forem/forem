@@ -189,13 +189,13 @@ class Article < ApplicationRecord
     stories = where(published: true).
       limit(number)
     stories = if time_ago == "latest"
-                stories.order("published_at DESC")
+                stories.order("published_at DESC").where("score > ?", -5)
               elsif time_ago
                 stories.order("comments_count DESC").
-                  where("published_at > ?", time_ago)
+                  where("published_at > ? AND score > ?", time_ago, -5)
               else
                 stories.order("last_comment_at DESC").
-                  where("published_at > ?", (tags.present? ? 5 : 2).days.ago)
+                  where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
               end
 
     stories = stories.tagged_with(tags)
