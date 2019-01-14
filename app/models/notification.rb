@@ -46,7 +46,7 @@ class Notification < ApplicationRecord
 
     def send_new_comment_notifications(notifiable)
       user_ids = notifiable.ancestors.map(&:user_id).to_set
-      user_ids.add(notifiable.commentable.user.id) if user_ids.empty?
+      user_ids.add(notifiable.commentable.user_id) if user_ids.empty?
       user_ids.delete(notifiable.user_id).each do |user_id|
         json_data = {
           user: user_data(notifiable.user),
