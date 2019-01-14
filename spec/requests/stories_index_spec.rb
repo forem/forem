@@ -35,7 +35,6 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(tag.name)
     end
 
-    # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
     it "renders page with top/week etc." do
       tag = create(:tag)
       get "/t/#{tag.name}/top/week"
@@ -47,7 +46,6 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}/top/infinity"
       expect(response.body).to include(tag.name)
     end
-    # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
 
     it "renders tag after alias change" do
       tag = create(:tag)
