@@ -1,5 +1,4 @@
 <%# TODO: change to map of IDs %>
-<% siblings = notification.json_data["reaction"]["aggregated_siblings"].select{|n| n["created_at"] > 24.hours.ago } %>
 <% cache "activity-aggregated-reactions-#{siblings}" do %>
   <% actors = siblings.map { |n| n["user"] }.uniq %>
   <% reactable_data = notification.json_data["reaction"]["reactable"] %>
