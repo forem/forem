@@ -279,7 +279,7 @@ class Article < ApplicationRecord
   end
 
   def search_score
-    score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score)
+    score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
     score.to_i
   end
 
