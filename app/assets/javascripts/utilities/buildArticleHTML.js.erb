@@ -78,7 +78,7 @@ function buildArticleHTML(article) {
     var saveButton = '';
     if (article.class_name === "Article") {
       var saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
-                        <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>\
+                        <span class="bm-success">SAVED</span>\
                         <span class="bm-initial">SAVE</span>\
                       </button>'
     } else if (article.class_name === "User") {
@@ -91,6 +91,12 @@ function buildArticleHTML(article) {
     var publishDate = '';
     if (article.readable_publish_date) {
       publishDate = '・'+article.readable_publish_date
+    }
+    var readingTimeHTML = '';
+    if (article.reading_time) {
+      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ (article.reading_time < 2 ? '1 min' : article.reading_time + ' min') +' read</a>'
+    } else {
+      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">3 min read</a>'
     }
     return '<div class="single-article single-article-small-pic">\
       '+orgHeadline+'\
@@ -107,7 +113,7 @@ function buildArticleHTML(article) {
        </a>\
        <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
-       '+commentsCountHTML+reactionsCountHTML+'\
+       '+commentsCountHTML+reactionsCountHTML+readingTimeHTML+'\
        '+saveButton+'</div>';
   }
 }
