@@ -492,6 +492,8 @@ ActiveRecord::Schema.define(version: 20190109212351) do
     t.string "location"
     t.string "name"
     t.string "nav_image"
+    t.string "old_old_slug"
+    t.string "old_slug"
     t.string "profile_image"
     t.text "proof"
     t.string "secret"
