@@ -72,8 +72,10 @@
           </div>
         <% end %>
       </div>
-      <%= f.label :comment_template %>
-      <%= f.text_area :comment_template, class: "comment-template" %>
+      <% if @user.has_role?(:admin) %>
+        <%= f.label :comment_template %>
+        <%= f.text_area :comment_template, class: "comment-template" %>
+      <% end %>
     </div>
   </div>
 <% end %>
