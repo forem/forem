@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20181227192353) do
-=======
 ActiveRecord::Schema.define(version: 20190109212351) do
->>>>>>> 09dd556a8568394fec212da4e144937c69aa238e
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,7 +62,6 @@ ActiveRecord::Schema.define(version: 20190109212351) do
     t.string "canonical_url"
     t.integer "collection_id"
     t.integer "collection_position"
-    t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "crossposted_at"
