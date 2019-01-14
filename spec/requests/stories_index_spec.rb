@@ -6,6 +6,11 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).to include("key links")
     end
+    it "renders page with min read" do
+      create_list(:article, 10, featured: true)
+      get "/"
+      expect(response.body).to include("min read")
+    end
   end
 
   describe "GET query page" do
