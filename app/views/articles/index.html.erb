@@ -115,12 +115,18 @@
               </a>
             </div>
           <% end %>
+          <a
+            href="<%= @featured_story.path %>"
+            class="article-reading-time"
+          >
+              <%= @featured_story.reading_time < 1 ? 1 : @featured_story.reading_time %> min read
+          </a>
           <button
             class="article-engagement-count bookmark-engage featured-engagement-count"
             data-reactable-id="<%= @featured_story.id %>"
             aria-label="Add to reading list"
             title="Add to reading list" >
-            <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
+            <span class="bm-success">SAVED</span>
             <span class="bm-initial">SAVE</span>
           </button>
         </div>
