@@ -37,7 +37,7 @@ RSpec.describe JSFiddleTag, type: :liquid_template do
 
     it "accepts jsfiddle link with a custom-tab parameter" do
       expect do
-        generate_new_liquid(jsfiddle_link_with_custom_tab)
+        generate_new_liquid(jsfiddle_link_with_custom_tabs)
       end.not_to raise_error
     end
 
