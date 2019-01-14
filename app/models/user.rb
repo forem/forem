@@ -126,6 +126,8 @@ class User < ApplicationRecord
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
+  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
+
   after_create :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
