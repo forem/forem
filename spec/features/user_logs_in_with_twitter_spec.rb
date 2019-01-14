@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 def user_grants_authorization_on_twitter_popup(twitter_callback_hash)
   OmniAuth.config.add_mock(:twitter, twitter_callback_hash)
@@ -8,32 +8,32 @@ def user_do_not_grants_authorization_on_twitter_popup
   OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
 end
 
-RSpec.feature "Authenticating with twitter" do
+RSpec.describe "Authenticating with twitter" do
   let(:twitter_callback_hash) do
     {
-      :provider => 'twitter',
-      :uid => '111111',
-      :credentials => {
-        :token => "222222",
-        :secret => "333333"
+      provider: "twitter",
+      uid: "111111",
+      credentials: {
+        token: "222222",
+        secret: "333333"
       },
-      :extra => {
-        :access_token => "",
-        :raw_info => {
-          :name => "Bruce Wayne",
-          :created_at => "Thu Jul 4 00:00:00 +0000 2013", # This is mandatory
+      extra: {
+        access_token: "",
+        raw_info: {
+          name: "Bruce Wayne",
+          created_at: "Thu Jul 4 00:00:00 +0000 2013", # This is mandatory
         }
       },
-      :info => {
-        :nickname => "batman",
-        :name => "Bruce Wayne",
-        :email => "batman@batcave.com",
+      info: {
+        nickname: "batman",
+        name: "Bruce Wayne",
+        email: "batman@batcave.com"
       }
     }
   end
 
   context "when user is new on dev.to" do
-    scenario "logging in with twitter using valid credentials" do
+    it "logging in with twitter using valid credentials" do
       user_grants_authorization_on_twitter_popup(twitter_callback_hash)
 
       visit root_path
@@ -43,7 +43,7 @@ RSpec.feature "Authenticating with twitter" do
       expect(page).to have_link("Welcome Thread")
     end
 
-    scenario "logging in with twitter using invalid credentials" do
+    it "logging in with twitter using invalid credentials" do
       user_do_not_grants_authorization_on_twitter_popup
 
       visit root_path
