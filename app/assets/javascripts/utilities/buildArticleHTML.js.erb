@@ -93,9 +93,9 @@ function buildArticleHTML(article) {
       publishDate = '・'+article.readable_publish_date
     }
     var readingTimeHTML = '';
-    if (article.reading_time) {
+    if (article.reading_time && article.class_name === "Article") {
       readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ (article.reading_time < 2 ? '1 min' : article.reading_time + ' min') +' read</a>'
-    } else {
+    } else if (article.class_name === "Article") {
       readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">3 min read</a>'
     }
     return '<div class="single-article single-article-small-pic">\
