@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "canonical_url"
     t.integer "collection_id"
     t.integer "collection_position"
-    t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "crossposted_at"
