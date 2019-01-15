@@ -84,7 +84,7 @@ gem "rubyzip", "~> 1.2", ">= 1.2.2"
 gem "s3_direct_upload", "~> 0.1"
 gem "sail", "~> 1.5"
 gem "sass-rails", "~> 5.0"
-gem "sdoc", "~> 0.4", group: :doc
+gem "sdoc", "~> 1.0", group: :doc
 gem "serviceworker-rails", "~> 0.5"
 gem "share_meow_client", "~> 0.1"
 gem "sitemap_generator", "~> 6.0"
