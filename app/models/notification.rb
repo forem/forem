@@ -93,6 +93,7 @@ class Notification < ApplicationRecord
     def send_reaction_notification(notifiable)
       return if notifiable.user_id == notifiable.reactable.user_id
       return if notifiable.points.negative?
+      return unless notifiable.reactable.receive_notifications
 
       aggregated_reaction_siblings = notifiable.reactable.reactions.
         reject { |r| r.user_id == notifiable.reactable.user_id }.
