@@ -148,6 +148,20 @@
     <h3><strong>CodeSandbox Embed</strong></h3>
     <p>All you need is the ID of the Sandbox:</p>
     <code>{% codesandbox ppxnl191zx %}</code>
+    <p>Of CodeSandbox's many <a href="https://codesandbox.io/docs/embedding#embed-options">optional attributes</a>, the following are supported by using them in your tag, just add them after the id, separated by spaces.</p>
+    <dl>
+      <dt><code>initalpath</code></dt>
+      <dd>
+        Which url to initially load in address bar.<br/>
+        <code>{% codesandbox ppxnl191zx initalpath=/initial/load/path %}</code>
+      </dd>
+      <dl>
+      <dt><code>module</code></dt>
+      <dd>
+        Which module to open by default.<br/>
+        <code>{% codesandbox ppxnl191zx module=/path/to/module %}</code>
+      </dd>
+    </dl>
 
     <h3><strong>repl.it Embed</strong></h3>
     <p>All you need is the URL after the domain name:</p>
