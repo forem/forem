@@ -1,7 +1,7 @@
 class SpotifyTag < LiquidTagBase
   URI_REGEXP = /spotify:(track|user|artist|album).+(?<=:)\w{22}/
   URL_REGEXP = /https:\/\/open.spotify.com\/(track|user|artist|album)\/.*(?<=\/)\w{22}/
-  TYPE_LIST = {
+  TYPE_HEIGHT = {
     track: 116,
     user: 116,
     artist: 116,
@@ -11,14 +11,14 @@ class SpotifyTag < LiquidTagBase
   def initialize(tag_name, link)
     super
     @link_type, @parsed_link = parse_link(link)
-    @height = TYPE_LIST[@match_data[1]]
+    @height = TYPE_HEIGHT[@match_data[1]]
   end
 
   def render(_context)
     html = <<-HTML
       <iframe
         width="100%"
-        height="#{@height}"
+        height="#{@height}px"
         scrolling="no"
         frameborder="0"
         allowtransparency="true"
