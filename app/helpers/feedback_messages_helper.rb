@@ -18,11 +18,11 @@ module FeedbackMessagesHelper
 
   def reporter_email_details
     body = <<~HEREDOC
-      Hi!
+      Hi!,
 
       We wanted to say thank you for flagging content that may be in violation of the DEV code of conduct and/or terms of use. We'll be looking into your report.
 
-      Thank you for the support ❤️
+      Thank you for the support.
 
       DEV Team
     HEREDOC
