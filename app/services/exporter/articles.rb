@@ -11,9 +11,8 @@ module Exporter
     def export(slug: nil)
       articles = user.articles
       articles = articles.where(slug: slug) if slug.present?
-      json_articles = jsonify_articles(articles)
 
-      { "#{name}.json" => json_articles }
+      { "#{name}.json" => jsonify(articles) }
     end
 
     private
@@ -53,13 +52,14 @@ module Exporter
       ]
     end
 
-    def jsonify_articles(articles)
+    def jsonify(articles)
       articles_to_jsonify = []
-      # load articles in batches, we don't want to hog the DB
-      # if a user has lots and lots of articles
-      articles.find_each do |article|
+
+      # load articles in batches and select only needed attributes
+      articles.select([:id] + allowed_attributes).find_each do |article|
         articles_to_jsonify << article
       end
+
       articles_to_jsonify.to_json(only: allowed_attributes)
     end
   end

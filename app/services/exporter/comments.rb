@@ -11,9 +11,8 @@ module Exporter
     def export(id_code: nil)
       comments = user.comments
       comments = comments.where(id_code: id_code) if id_code.present?
-      json_comments = jsonify_comments(comments)
 
-      { "#{name}.json" => json_comments }
+      { "#{name}.json" => jsonify(comments) }
     end
 
     private
@@ -33,13 +32,14 @@ module Exporter
       ]
     end
 
-    def jsonify_comments(comments)
+    def jsonify(comments)
       comments_to_jsonify = []
-      # load comments in batches, we don't want to hog the DB
-      # if a user has lots and lots of comments
-      comments.find_each do |comment|
+
+      # load comments in batches and select only needed attributes
+      comments.select([:id] + allowed_attributes).find_each do |comment|
         comments_to_jsonify << comment
       end
+
       comments_to_jsonify.to_json(only: allowed_attributes)
     end
   end
