@@ -88,4 +88,38 @@ RSpec.describe Notification, type: :model do
       end
     end
   end
+
+  describe "#send_reaction_notification" do
+    context "when reactable is receiving notifications" do
+      it "sends a notification to the author of a comment" do
+        comment = create(:comment, user: user2, commentable: article)
+        reaction = create(:reaction, reactable: comment, user: user)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user2.notifications.count).to eq 1
+      end
+
+      it "sends a notification to the author of an article" do
+        reaction = create(:reaction, reactable: article, user: user2)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user.notifications.count).to eq 1
+      end
+    end
+
+    context "when reactable is not receiving notifications" do
+      it "does not send a notification to the author of a comment" do
+        comment = create(:comment, user: user2, commentable: article)
+        comment.update(receive_notifications: false)
+        reaction = create(:reaction, reactable: comment, user: user)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user2.notifications.count).to eq 0
+      end
+
+      it "does not send a notification to the author of an article" do
+        article.update(receive_notifications: false)
+        reaction = create(:reaction, reactable: article, user: user2)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user.notifications.count).to eq 0
+      end
+    end
+  end
 end
