@@ -725,7 +725,7 @@ article{
           padding: 12px 0px !important;
         }
       }
-      .dropdown-content{ 
+      .dropdown-content{
         left: 150px !important;
         bottom: 0px !important;
         a {
@@ -733,6 +733,9 @@ article{
           padding-left: 10px !important;
         }
       }
+    }
+    @media screen and ( min-width: 2650px ){
+      left: calc(50% - 781px);
     }
     button{
       background:transparent;
