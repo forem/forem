@@ -48,10 +48,44 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  # describe "#send_to_followers" do
-  #   before do
-  #     user2.follow user
-  #     Notification.send_to_followers(article, user.followers, "Published")
-  #   end
-  # end
+  describe "#send_new_comment_notifications" do
+    context "when all commenters are subscribed" do
+      it "sends a notification to the author of the article" do
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 1
+      end
+
+      it "does not send a notification to the author of the article if the commenter is the author" do
+        comment = create(:comment, user: user, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 0
+      end
+
+      it "does not send a notification to the author of the comment" do
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user2.notifications.count).to eq 0
+      end
+    end
+
+    context "when the author of the article is not subscribed" do
+      it "does not send a notification to the author of the article" do
+        article.update(receive_notifications: false)
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 0
+      end
+    end
+
+    context "when the author of a comment is not subscribed" do
+      it "does not send a notification to the author of the comment" do
+        original_comment = create(:comment, user: user2, commentable: article)
+        original_comment.update(receive_notifications: false)
+        comment_on_comment = create(:comment, user: user, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment_on_comment)
+        expect(user2.notifications.count).to eq 0
+      end
+    end
+  end
 end
