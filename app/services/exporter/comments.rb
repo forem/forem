@@ -35,12 +35,15 @@ module Exporter
     def jsonify(comments)
       comments_to_jsonify = []
 
-      # load comments in batches and select only needed attributes
-      comments.select([:id] + allowed_attributes).find_each do |comment|
-        comments_to_jsonify << comment
+      # the commentable polymorphic attributes are added to the select for the "includes" to work
+      attributes_to_select = %i[id commentable_id commentable_type] + allowed_attributes
+      comments.includes(:commentable).select(attributes_to_select).find_each do |comment|
+        # merge final json with the path of the commentable
+        comments_to_jsonify << comment.as_json(only: allowed_attributes).
+          merge(commentable_path: comment.commentable&.path)
       end
 
-      comments_to_jsonify.to_json(only: allowed_attributes)
+      comments_to_jsonify.to_json
     end
   end
 end

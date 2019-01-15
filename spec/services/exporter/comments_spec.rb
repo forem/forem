@@ -3,7 +3,9 @@ require "rails_helper"
 RSpec.describe Exporter::Comments do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
+  let(:podcast_episode) { create(:podcast_episode) }
   let(:comment) { create(:comment, user: user, commentable: article) }
+  let(:podcast_episode_comment) { create(:comment, user: user, commentable: podcast_episode) }
   let(:other_user) { create(:user) }
   let(:other_user_comment) { create(:comment, user: other_user, commentable: article) }
 
@@ -23,6 +25,7 @@ RSpec.describe Exporter::Comments do
       positive_reactions_count
       processed_html
       receive_notifications
+      commentable_path
     ]
   end
 
@@ -89,6 +92,22 @@ RSpec.describe Exporter::Comments do
         result = exporter.export
         comments = load_comments(result)
         expect(comments.first.keys).to eq(expected_fields)
+      end
+    end
+
+    describe "commentable path" do
+      it "contains the path of the article" do
+        exporter = valid_instance(user)
+        result = exporter.export(id_code: comment.id_code)
+        comments = load_comments(result)
+        expect(comments.first["commentable_path"]).to eq(article.path)
+      end
+
+      it "contains the path of the podcast episode" do
+        exporter = valid_instance(user)
+        result = exporter.export(id_code: podcast_episode_comment.id_code)
+        comments = load_comments(result)
+        expect(comments.first["commentable_path"]).to eq(podcast_episode.path)
       end
     end
   end
