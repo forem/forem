@@ -41,7 +41,6 @@ module Exporter
         published
         published_at
         published_from_feed
-        reactions_count
         show_comments
         slug
         social_image

@@ -29,7 +29,6 @@ module Exporter
         markdown_character_count
         positive_reactions_count
         processed_html
-        reactions_count
         receive_notifications
       ]
     end
