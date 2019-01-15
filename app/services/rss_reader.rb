@@ -126,7 +126,7 @@ class RssReader
   end
 
   def article_exist?(user, item)
-    user.articles.find_by_title(item.title.strip.gsub('"', '\"'))
+    user.articles.find_by("title = ? OR feed_source_url = ?", item.title.strip.gsub('"', '\"'), item.url.strip.split("?source=")[0])
   end
 
   def log_error(error_msg, metadata)
