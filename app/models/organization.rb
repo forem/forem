@@ -79,7 +79,7 @@ class Organization < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
       article.save
@@ -113,7 +113,7 @@ class Organization < ApplicationRecord
     cache_buster = CacheBuster.new
     cache_buster.bust("/#{slug}")
     begin
-      articles.each do |article|
+      articles.find_each do |article|
         cache_buster.bust(article.path)
       end
     rescue StandardError

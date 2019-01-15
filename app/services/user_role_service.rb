@@ -26,7 +26,7 @@ class UserRoleService
     tag.tag_moderator_ids.each do |id|
       User.find(id).remove_role(:tag_moderator, tag)
     end
-    users.each do |user|
+    users.find_each do |user|
       user.add_role(:tag_moderator, tag)
     end
     true
