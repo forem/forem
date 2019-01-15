@@ -9,22 +9,22 @@
     <% if @organization %>
       <% if @organization.location.present? %>
         <div class="row">
-          <div class="key">  
+          <div class="key">
             headquarters
           </div>
           <div class="value">
             <%= @organization.location %>
-          </div>                              
+          </div>
         </div>
       <% end %>
       <% if @organization.company_size.present? %>
         <div class="row">
-          <div class="key">  
+          <div class="key">
             employees
           </div>
           <div class="value">
             <%= @organization.company_size %>
-          </div>                              
+          </div>
         </div>
       <% end %>
       <% if @organization.email.present? %>
@@ -43,7 +43,7 @@
           @user.employer_name.present? &&
           @user.location.present? &&
           @user.education.present? &&
-          @user.education.size > 25 && 
+          @user.education.size > 25 &&
           @user.summary.to_s.size < 145
           %>
         <style>
@@ -85,6 +85,16 @@
           </div>
           <div class="value">
             <%= @user.location %>
+          </div>
+        </div>
+      <% end %>
+      <% if @user.open_inbox === true %>
+        <div class="row">
+          <div class="key">
+            open_inbox
+          </div>
+          <div class="value">
+            I'm open to chatting!
           </div>
         </div>
       <% end %>

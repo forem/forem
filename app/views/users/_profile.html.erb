@@ -58,6 +58,10 @@
     <%= f.label :contact_consent, "Recruiters can contact me about job opportunities"%>
     <%= f.check_box :contact_consent %>
   </div>
+  <div class="field checkbox-label-first">
+    <%= f.label :open_inbox, "Anyone can message you on Connect"%>
+    <%= f.check_box :open_inbox %>
+  </div>
   <div class="field">
     <%= f.label :website_url %>
     <%= f.url_field :website_url, maxlength: 64, placeholder: "http://yoursite.com" %>

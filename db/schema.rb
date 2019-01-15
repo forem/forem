@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190109212351) do
+ActiveRecord::Schema.define(version: 20190115203453) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -318,6 +318,13 @@ ActiveRecord::Schema.define(version: 20190109212351) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
+  end
+
+  create_table "flipflop_features", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: false, null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "follows", id: :serial, force: :cascade do |t|
@@ -780,6 +787,7 @@ ActiveRecord::Schema.define(version: 20190109212351) do
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
     t.boolean "onboarding_package_requested_again", default: false
+    t.boolean "open_inbox", default: false
     t.boolean "org_admin", default: false
     t.integer "organization_id"
     t.boolean "permit_adjacent_sponsors", default: true
