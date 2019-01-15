@@ -11,8 +11,10 @@ class RssReader
     @request_id = request_id
   end
 
-  def get_all_articles
+  def get_all_articles(force = true)
     User.where.not(feed_url: [nil, ""]).find_each do |user|
+      next if force == false && (rand(2) == 1 || user.feed_fetched_at > 15.minutes.ago) # Don't fetch every time.
+
       create_articles_for_user(user)
     end
   end
@@ -33,6 +35,7 @@ class RssReader
 
   def create_articles_for_user(user)
     with_span("create_articles_for_user", user_id: user.id, username: user.username) do |metadata|
+      user.update_column(:feed_fetched_at, Time.current)
       feed = fetch_rss(user.feed_url.strip)
       metadata[:feed_length] = feed.entries.length if feed&.entries
       feed.entries.reverse_each do |item|
@@ -123,7 +126,7 @@ class RssReader
   end
 
   def article_exist?(user, item)
-    user.articles.find_by_title(item.title.strip.gsub('"', '\"'))
+    user.articles.find_by("title = ? OR feed_source_url = ?", item.title.strip.gsub('"', '\"'), item.url.strip.split("?source=")[0])
   end
 
   def log_error(error_msg, metadata)
