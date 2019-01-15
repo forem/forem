@@ -135,8 +135,7 @@
   <h2> Possible Mentors </h2>
   <% count = 0 %>
   <% MentorRelationship.
-      unmatched_mentors.where.not(mentor_form_updated_at: nil, id: @user.id).
-      where.not(mentor_description: nil).
+      unmatched_mentors.where.not(mentor_form_updated_at: nil, id: @user.id, mentor_description: [nil,""]).
       order("mentor_form_updated_at DESC").limit(175).
       sort_by { |possible_mentor| UserSimilarity.new(@user, possible_mentor).score }.reverse.
       first(40).each do |possible_mentor| %>

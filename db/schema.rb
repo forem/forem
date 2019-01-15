@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181130224531) do
+ActiveRecord::Schema.define(version: 20190109212351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,16 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "utm_term"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
+  end
+
+  create_table "api_secrets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.string "secret"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
+    t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
 
   create_table "articles", id: :serial, force: :cascade do |t|
@@ -481,6 +491,8 @@ ActiveRecord::Schema.define(version: 20181130224531) do
     t.string "location"
     t.string "name"
     t.string "nav_image"
+    t.string "old_old_slug"
+    t.string "old_slug"
     t.string "profile_image"
     t.text "proof"
     t.string "secret"

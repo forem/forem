@@ -28,6 +28,7 @@
     font-size:1.2em;
     background: white;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius:3px;
     border:1px solid $outline-color;
     border: var(--theme-container-border, 1px solid $outline-color);
@@ -197,6 +198,7 @@
     .single-article{
       text-align:left;
       background:$white;
+      background: var(--theme-container-background,	$white);
       transition: opacity .35s ease-in;
       border: 1px solid $outline-color;
       border: var(--theme-container-border, 1px solid $outline-color);
@@ -455,11 +457,14 @@
         }
         .content-wrapper{
           background:white;
+          background: var(--theme-container-background,	#fff);
           color:$black;
           position:relative;
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
           border-bottom:1px solid darken($lightest-gray,4%);
+          border-top:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
+          border-bottom:var(--theme-container-border, 1px solid darken($lightest-gray,4%));
           padding-bottom:105px;
           border-radius:3px;
           h3{
@@ -554,6 +559,16 @@
         margin-top:-94px !important;
       }
     }
+    .article-reading-time {
+      position: absolute;
+      right: 75px;
+      bottom: 12px;
+      font-size:13px;
+      padding:6px 0px;
+      font-weight:600;
+      z-index: 8;
+      color: lighten($medium-gray, 10%);
+    }
     .article-engagement-count{
       font-size:13px;
       font-weight:bold;
@@ -599,17 +614,6 @@
         letter-spacing: 1px;
         &:hover{
           background: darken($purple, 50%);
-        }
-        img{
-          height:17px;
-          width:18px;
-          margin-right: 0px;
-          vertical-align:-3px;
-          @media screen and ( min-width: 430px ){
-            height:20px;
-            width:21px;
-            min-width:21px;
-          }
         }
         .bm-success{
           display:none;
@@ -772,10 +776,12 @@
       .sidebar-profile-snapshot{
         overflow: hidden;
         background:white;
+        background: var(--theme-container-background,	#fff);
         margin-bottom:14px;
         border-radius:3px;
         width: calc(100% - 3px);
         border: 1px solid $outline-color;
+        border: var(--theme-container-border, 1px solid $outline-color);
         box-shadow: $bold-shadow;
         box-shadow: var(--theme-container-box-shadow, $bold-shadow);
         // background:red;
@@ -953,11 +959,14 @@
       position:relative;
       overflow:hidden;
       background:white;
+      background: var(--theme-container-background,	#fff);
       display:block;
       color: $black;
       border-radius:3px;
       border: 1px solid $outline-color;
+      border: var(--theme-container-border, 1px solid $outline-color);
       box-shadow: $bold-shadow;
+      box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       &.fixed-widget {
         position: fixed;
         width: 254px;

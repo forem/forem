@@ -36,31 +36,24 @@ class StoriesController < ApplicationController
   private
 
   def redirect_to_changed_username_profile
-    if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
-      redirect_to @user.path
+    potential_username = params[:username].tr("@", "").downcase
+    user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
+      Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+    if user_or_org.present?
+      redirect_to user_or_org.path
       return
+    else
+      not_found
     end
-    if @user = User.find_by_old_old_username(params[:username].tr("@", "").downcase)
-      redirect_to @user.path
-      return
-    end
-    not_found
   end
 
   def handle_possible_redirect
-    if @user = User.find_by_old_username(params[:username].tr("@", "").downcase)
-      if @user.articles.find_by_slug(params[:slug])
-        redirect_to "/#{@user.username}/#{params[:slug]}"
-        return
-      end
-    end
-    if @user = User.find_by_old_old_username(params[:username].tr("@", "").downcase)
-      if @user.articles.find_by_slug(params[:slug])
-        redirect_to "/#{@user.username}/#{params[:slug]}"
-        return
-      end
-    end
-    if @organization = @article.organization
+    potential_username = params[:username].tr("@", "").downcase
+    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    if @user&.articles&.find_by_slug(params[:slug])
+      redirect_to "/#{@user.username}/#{params[:slug]}"
+      return
+    elsif @organization = @article.organization
       redirect_to "/#{@organization.slug}/#{params[:slug]}"
       return
     end

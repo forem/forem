@@ -80,6 +80,7 @@
     margin-bottom: 28px;
     background: $dark-gray;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     padding: 15px 0px;
   }
   .dashboard-analytics-header{

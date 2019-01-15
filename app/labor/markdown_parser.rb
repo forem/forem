@@ -57,20 +57,6 @@ class MarkdownParser
     attributes: allowed_attributes
   end
 
-  def evaluate_inline_markdown
-    return if @content.blank?
-
-    renderer_options = {
-      hard_wrap: true,
-      filter_html: false,
-      link_attributes: { rel: "noopener noreferrer", target: "_blank" }
-    }
-    renderer = Redcarpet::Render::HTMLRouge.new(renderer_options)
-    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    ActionController::Base.helpers.sanitize(markdown.render(@content).html_safe,
-      tags: %w(strong i u b em code a br pre), attributes: %w(href rel target))
-  end
-
   def tags_used
     return [] unless @content.present?
 

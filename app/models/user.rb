@@ -15,6 +15,7 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
+  has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
@@ -124,6 +125,8 @@ class User < ApplicationRecord
   validate  :validate_mastodon_url
   validate  :validate_feed_url
   validate  :unique_including_orgs
+
+  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -387,6 +390,12 @@ class User < ApplicationRecord
     ProfileImage.new(self).get(90)
   end
 
+  def remove_from_algolia_index
+    remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
+  end
+
   private
 
   def send_welcome_notification
@@ -553,12 +562,6 @@ class User < ApplicationRecord
     article_score = (articles_count + comments_count + reactions_count) * 10
     score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
-  end
-
-  def remove_from_algolia_index
-    remove_from_index!
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delay.delete_object("users-#{id}")
   end
 
   def destroy_empty_dm_channels

@@ -81,7 +81,7 @@ function initializeArticleReactions() {
         });
         setTimeout(function(){
           e.target.blur();
-        },100)
+        },50)
       };
     }
   }, 3)
