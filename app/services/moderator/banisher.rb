@@ -40,28 +40,28 @@ module Moderator
     end
 
     def delete_reactions
-      user.reactions.each &:delete
+      user.reactions.find_each(&:delete)
     end
 
     def delete_comments
       return unless user.comments.count.positive?
 
-      user.comments.each do |comment|
-        comment.reactions.each &:delete
+      user.comments.find_each do |comment|
+        comment.reactions.find_each(&:delete)
         CacheBuster.new.bust_comment(comment.commentable, user.username)
         comment.delete
       end
     end
 
     def delete_follows
-      user.follows.each &:delete
+      user.follows.find_each(&:delete)
     end
 
     def delete_articles
-      user.articles.each do |article|
-        article.reactions.each &:delete
-        article.comments.each do |comment|
-          comment.reactions.each &:delete
+      user.articles.find_each do |article|
+        article.reactions.find_each(&:delete)
+        article.comments.find_each do |comment|
+          comment.reactions.find_each(&:delete)
           CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
           comment.delete
         end

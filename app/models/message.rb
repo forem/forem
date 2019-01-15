@@ -22,9 +22,10 @@ class Message < ApplicationRecord
   end
 
   def send_push
-    reciever_ids = chat_channel.chat_channel_memberships.
+    receiver_ids = chat_channel.chat_channel_memberships.
       where.not(user_id: user.id).pluck(:user_id)
-    PushNotificationSubscription.where(user_id: reciever_ids).each do |sub|
+
+    PushNotificationSubscription.where(user_id: receiver_ids).find_each do |sub|
       return if no_push_necessary?(sub)
 
       Webpush.payload_send(
