@@ -80,10 +80,10 @@ RSpec.describe Notification, type: :model do
 
     context "when the author of a comment is not subscribed" do
       it "does not send a notification to the author of the comment" do
-        original_comment = create(:comment, user: user2, commentable: article)
-        original_comment.update(receive_notifications: false)
-        comment_on_comment = create(:comment, user: user, commentable: article)
-        Notification.send_new_comment_notifications_without_delay(comment_on_comment)
+        parent_comment = create(:comment, user: user2, commentable: article)
+        parent_comment.update(receive_notifications: false)
+        child_comment = create(:comment, user: user, commentable: article, ancestry: parent_comment.id.to_s)
+        Notification.send_new_comment_notifications_without_delay(child_comment)
         expect(user2.notifications.count).to eq 0
       end
     end
