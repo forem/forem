@@ -55,7 +55,7 @@
   </style>
   <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
-  
+
 <body>
   <!-- This file lives in public/500.html -->
   <div class="dialog">
@@ -64,20 +64,7 @@
       <h1>500 Error</h1>
       <h2>It's not you, it's me.</h2>
     </div>
-    <form action="/feedback_messages" accept-charset="UTF-8" method="post">
-      <input name="utf8" type="hidden" value="&#x2713;" />
-      <input name="feedback_message[feedback_type]" type="hidden" value="bug-reports" />
-      <input type="hidden" name="feedback_message[reported_url]" value="">
-      <input type="hidden" name="feedback_message[category]" value="bug">
-      <div class="field">
-        <textarea name="feedback_message[message]" placeholder="If you would like to describe the situation that lead to this error, it would be appreciated :)" required></textarea>
-      </div>
-      <div class="g-recaptcha" data-sitekey="6LeKoSQUAAAAAI8RhYb0H8NDt8_4hISOA5sN4Elx"></div>
-      <div class="actions">
-        <input type="submit" name="commit" value="Send Feedback"/>
-      </div>
-    </form>
-
+    <p style="margin: 10%">Sorry you're hitting this page. <br> Please help us by submitting a <a href="https://github.com/thepracticaldev/dev.to/issues/new?template=bug_report.md">bug report</a>. <br>Thank you!</p>
   </div>
 </body>
 </html>
