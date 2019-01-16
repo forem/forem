@@ -15,7 +15,7 @@ RSpec.describe SpotifyTag, type: :liquid_template do
     end
 
     it "raises an error if the uri is invalid" do
-      expect { generate_tag(invalid_uri) }.to raise_error(StandardError, "Invalid Spotify Link - Be sure You're linking to a specific track / album / artist / playlist")
+      expect { generate_tag(invalid_uri) }.to raise_error(StandardError, "Invalid Spotify Link - Be sure you're using the uri of a specific track, album, artist, playlist, or podcast episode.")
     end
   end
 end
