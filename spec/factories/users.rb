@@ -17,7 +17,7 @@ FactoryBot.define do
     github_username    { generate :github_username }
     summary            { Faker::Lorem.paragraph[0..rand(190)] }
     website_url        { Faker::Internet.url }
-    confirmed_at       { Time.now }
+    confirmed_at       { Time.current }
     saw_onboarding { true }
     signup_cta_variant { "navbar_basic" }
     email_digest_periodic { false }
@@ -63,6 +63,34 @@ FactoryBot.define do
 
     after(:create) do |user|
       create(:identity, user_id: user.id)
+    end
+
+    trait :two_identities do
+      after(:create) { |user| create(:identity, user_id: user.id, provider: "twitter") }
+    end
+
+    trait :with_article do
+      after(:create) do |user|
+        create(:article, user_id: user.id)
+        user.update(articles_count: 1)
+      end
+    end
+
+    trait :with_only_comment do
+      after(:create) do |user|
+        other_user = create(:user)
+        article = create(:article, user_id: other_user.id)
+        create(:comment, user_id: user.id, commentable_id: article.id)
+        user.update(comments_count: 1)
+      end
+    end
+
+    trait :with_article_and_comment do
+      after(:create) do |user|
+        article = create(:article, user_id: user.id)
+        create(:comment, user_id: user.id, commentable_id: article.id)
+        user.update(articles_count: 1, comments_count: 1)
+      end
     end
   end
 end

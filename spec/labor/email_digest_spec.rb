@@ -13,12 +13,7 @@ RSpec.describe EmailDigest do
   before do
     allow(DigestMailer).to receive(:digest_email) { mock_delegator }
     allow(mock_delegator).to receive(:deliver).and_return(true)
-    Delayed::Worker.delay_jobs = false
     user
-  end
-
-  after do
-    Delayed::Worker.delay_jobs = true
   end
 
   describe "::send_digest_email" do

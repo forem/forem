@@ -44,7 +44,7 @@ class ArticleDashboard < Administrate::BaseDashboard
     video_source_url: Field::String,
     video_thumbnail_url: Field::String,
     video_closed_caption_track_url: Field::String,
-    main_tag_name_for_social: Field::String,
+    main_tag_name_for_social: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -100,6 +100,6 @@ class ArticleDashboard < Administrate::BaseDashboard
   # across all pages of the admin dashboard.
   #
   def display_resource(article)
-    article.title
+    "Article ##{article.id} - #{article.title}"
   end
 end

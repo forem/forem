@@ -4,35 +4,68 @@ exports[`<ArticleForm /> renders properly 1`] = `
 <form
   class="articleform__form"
 >
-  <input
-    autocomplete="off"
-    class="articleform__title"
-    id="article-form-title"
-    onChange={[Function]}
-    placeholder="title"
-    type="text"
-    value=""
-  />
-  <div
-    class="articleform__detailfields"
-  >
+  <div>
+    <input
+      autocomplete="off"
+      class="articleform__title"
+      id="article-form-title"
+      onChange={[Function]}
+      placeholder="Title"
+      type="text"
+      value=""
+    />
     <div
-      class="articleform__tagswrapper"
+      class="articleform__detailfields"
     >
-      <textarea
-        class="articleform__tags"
-        id="tag-input"
-        onBlur={[Function]}
-        onFocus={[Function]}
-        onInput={[Function]}
-        onKeyDown={[Function]}
-        placeholder="tags"
-        type="text"
-        value=""
-      />
+      <div
+        class="articleform__tagswrapper"
+      >
+        <textarea
+          class="articleform__tags"
+          id="tag-input"
+          onBlur={[Function]}
+          onFocus={[Function]}
+          onInput={[Function]}
+          onKeyDown={[Function]}
+          placeholder="tags"
+          type="text"
+          value=""
+        />
+      </div>
+      <button
+        class="articleform__detailsButton articleform__detailsButton--image"
+        onClick={[Function]}
+      >
+        <img
+          src=""
+        />
+         IMAGES
+      </button>
+      <button
+        class="articleform__detailsButton articleform__detailsButton--moreconfig"
+        onClick={[Function]}
+      >
+        <img
+          src=""
+        />
+      </button>
     </div>
+    <textarea
+      class="articleform__body"
+      id="article_body_markdown"
+      name="body_markdown"
+      onChange={[Function]}
+      placeholder="Body"
+      ref={[Function]}
+      style={
+        Object {
+          "height": 0,
+        }
+      }
+      value=""
+    />
     <button
-      class="articleform__imageButton"
+      class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
       onClick={[Function]}
     >
       <img
@@ -40,29 +73,23 @@ exports[`<ArticleForm /> renders properly 1`] = `
       />
        IMAGES
     </button>
+    <button
+      class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+      onClick={[Function]}
+    >
+      <img
+        src=""
+      />
+    </button>
   </div>
-  <textarea
-    class="articleform__body"
-    id="article_body_markdown"
-    name="body_markdown"
-    onChange={[Function]}
-    placeholder="Body"
-    ref={[Function]}
-    style={
-      Object {
-        "height": 0,
-      }
-    }
-    value=""
-  />
   <div
     class="articleform__buttons"
   >
     <button
-      class="inactive"
+      class="articleform__buttons--small inactive"
       onClick={[Function]}
     >
-      HELP
+      ?
     </button>
     <button
       class="inactive"
@@ -76,6 +103,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       SAVE DRAFT
     </button>
     <button
+      class="articleform__buttons--publish"
       onClick={[Function]}
     >
       PUBLISH

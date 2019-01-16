@@ -2,102 +2,182 @@
   <h1>
     <%= @user.name%><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
   </h1>
-  <p><em>Member since <%= @user.created_at.strftime("%d %B %Y %H:%M UTC") %></em></p>
-  <% if @user.banned %>
-    <p style="background-color:red;color:white">BANNED USER</p>
-    <p>Reason for banning: <%= @user.reason_for_ban %></p>
-  <% elsif @user.warned %>
-    <p style="background-color:orange;color:white">User Status: Warned</p>
-    <p>Reason for warning: <%= @user.reason_for_warning %></p>
-  <% else %>
-    <p style="color:green">Member in good standing</p>
-  <% end %>
-  <hr/>
-  <h3><u>Basic Info</u></h3>
+  <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
   <p><strong>Email:</strong> <%= @user.email %></p>
-  <% if @user.feed_admin_publish_permission %>
-    <p><strong>Admins can publish from RSS ✅</strong></p>
-  <% else %>
-    <p>Admins cannot publish from RSS ❌<p>
-  <% end %>
-  <h3><u>Badges</u></h3>
-  <% if @user.badges.count > 0 %>
-    <% @user.badges.each do |badge| %>
-      <img style="max-width: 230px;" src="<%= badge.badge_image_url %>">
+  <h3><u>Current Roles</u></h3>
+  <ul>
+    <% @user.roles.each do |role| %>
+        <li><%= role.name %> - <em><%= role.created_at.strftime("%b %e '%y") %></em></li>
     <% end %>
-  <% end %>
-  <h3><u>Mentorship Details</u></h3>
+  </ul>
   <%= form_for ([:internal, @user]) do |f| %>
-    <% if @user.banned_from_mentorship %>
-      <p style="background-color:red; color:white;"> USER IS BANNED FROM MENTORSHIP, SEE NOTES BELOW </p>
+    <% if @user.banned %>
+      <p style="background-color:red;color:white">🚨 Banned User 🚨</p>
+      <p>You can only unban this user through the admin panel.</p>
+    <% elsif @user.warned %>
+      <p style="background-color: orange;color:white">Warned User</p>
+      <%= f.label :ban_user %>
+      <%= f.check_box :ban_user %>
+      <br>
+      <%= f.label "Un-Warn User (return to good standing)" %>
+      <%= f.check_box :good_standing_user %>
+      <br>
+      <%= f.label "Reason for action:" %>
+      <br>
+      <%= f.text_area :note_for_current_role, required: true %>
+      <br>
+      <%= f.submit "Update User Status" %>
+      <br>
     <% else %>
-      <p>Ban user from participating in mentorship program <%= f.check_box :ban_from_mentorship %></p>
+      <p style="color:green">Member in good standing</p>
+      <%= f.label :ban_user %>
+      <%= f.check_box :ban_user %>
+      <br>
+      <%= f.label :warn_user %>
+      <%= f.check_box :warn_user %>
+      <br>
+      <%= f.label "Reason for action:" %>
+      <br>
+      <%= f.text_area :note_for_current_role, required: true %>
+      <br>
+      <%= f.submit "Update User Status" %>
+      <br>
     <% end %>
-    <%= f.label :offering_mentorship %>
-    <%= f.check_box :offering_mentorship %>
-    <br>
-    <% if !@user.mentor_description.blank? %>
-      <p>"<%= @user.mentor_description %>"</p>
-    <% end %>
-    <%= f.label :seeking_mentorship %>
-    <%= f.check_box :seeking_mentorship %>
-    <br>
-    <% if !@user.mentee_description.blank? %>
-      <p>"<%= @user.mentee_description %>"</p>
-    <% end %>
-    <h3><u>Mentorship Matches</u> </h3>
-    <% if @user.mentors.count > 0 %>
-      <h4> Mentor(s):</h4>
-      <ul>
-      <% @user_mentor_relationships.each do |relationship| %>
-        <li>
-          <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
-          <% if relationship.active %>
-            <span style="color:green"><em> (active)</em></span>
-          <% else %>
-            <span style="color:red"><em> (inactive)</em></span>
-          <% end %>
-        </li>
-      <% end %>
-      </ul>
-    <% else %>
-      <em>This member does not have any mentorship relationships right now.</em>
-      </br>
-    <% end %>
-    <br>
-    <%= f.label :add_mentor %>
-    <%= f.text_field :add_mentor, placeholder:"user id#" %>
-    <% if @user.mentees.count > 0 %>
-      <h4>Mentee(s):</h4>
-      <ul>
-      <% @user_mentee_relationships.each do |relationship| %>
-        <li><a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
+  <% end %>
+</div>
+<div class="row">
+  <h3><u>Mentorship</u></h3>
+  <% if @user.mentors.count > 0 %>
+    <h4> Mentor(s):</h4>
+    <ul>
+    <% @user_mentor_relationships.each do |relationship| %>
+      <li>
+        <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
         <% if relationship.active %>
           <span style="color:green"><em> (active)</em></span>
         <% else %>
           <span style="color:red"><em> (inactive)</em></span>
         <% end %>
-        </li>
-      <% end %>
-      </ul>
+      </li>
     <% end %>
-    <br>
-    <%= f.label :add_mentee %>
-    <%= f.text_field :add_mentee, placeholder:"user id#" %>
-    <h3><u>Mentorship Notes</u></h3>
-    <% if @user.notes.count > 0 %>
-      <% @user.notes.each do |note| %>
-        <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> - <%= note.content %></p>
-      <% end %>
-      <br>
-      <h4>Add new mentorship note</h4>
-      <%= f.text_area :mentorship_note %>
-    <% else %>
-      <%= f.text_area :mentorship_note %>
+    </ul>
+  <% elsif @user.mentees.count > 0 %>
+    <h4>Mentee(s):</h4>
+    <ul>
+    <% @user_mentee_relationships.each do |relationship| %>
+      <li>
+        <a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
+        <% if relationship.active %>
+          <span style="color:green"><em> (active)</em></span>
+        <% else %>
+          <span style="color:red"><em> (inactive)</em></span>
+        <% end %>
+      </li>
     <% end %>
-    <br/>
-    <%= f.submit %>
+    </ul>
   <% end %>
-
+  <%= form_for ([:internal, @user]) do |f| %>
+    <% if @user.banned_from_mentorship %>
+      <p style="background-color:red; color:white;">User is banned from mentorship program</p>
+    <% else %>
+      <p>Ban user from mentorship program <%= f.check_box :ban_from_mentorship %></p>
+      <%= f.label "Reason: "%>
+      <%= f.text_area :note_for_mentorship_ban, required: true %>
+      <br>
+      <%= f.submit "Ban From Mentorship" %>
+    <% end %>
+  <% end %>
+</div>
+<div class="row">
+  <h3><u>Notes</u></h3>
+  <% if @user.notes.count > 0 %>
+    <% @user.notes.each do |note| %>
+      <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> -
+      <% if !note.reason.blank? %><strong><%= note.reason %>:</strong> <% end %><%= note.content %></p>
+    <% end %>
+  <% else %>
+    <p><em>No notes yet!</em></p>
+  <% end %>
+  <%= form_for ([:internal, @user]) do |f| %>
+    <%= f.label "Add new note: "%>
+    <br>
+    <%= f.text_area :note %>
+    <br/>
+    <%= f.submit "Submit Note" %>
+  <% end %>
 </div>
 
+<% if @user.seeking_mentorship && @user.mentee_description.present? %>
+  <h2> Mentee Description </h2>
+    <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
+      <div class="col-md-2">
+        <img src="<%= @user.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+        <br/>
+        <a href="/<%= @user.username %>" target="_blank">@<%= @user.username %></a>
+        <br/>
+      </div>
+      <div class="col-md-3" style="border-left:1px solid black">
+        <h4>Tags</h4>
+        <%= @user.cached_followed_tag_names.join(", ") %>
+      </div>
+      <div class="col-md-3" style="max-height: 22vh;overflow:auto">
+        <h4>Mentee description</h4>
+        <%= @user.mentee_description %>
+      </div>
+      <div class="col-md-3">
+        <h4>Skills/Languages</h4>
+        <%= @user.mostly_work_with %>
+      </div>
+      <div class="col-md-1">
+      </div>
+    </div>
+
+  <h2> Possible Mentors </h2>
+  <% count = 0 %>
+  <% MentorRelationship.
+      unmatched_mentors.where.not(mentor_form_updated_at: nil, id: @user.id, mentor_description: [nil,""]).
+      order("mentor_form_updated_at DESC").limit(175).
+      sort_by { |possible_mentor| UserSimilarity.new(@user, possible_mentor).score }.reverse.
+      first(40).each do |possible_mentor| %>
+    <div class="row" style="font-size:0.9em">
+      <div class="col-md-2">
+        <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+        <br/>
+        <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
+        <br/>
+        <a href="/internal/users/<%= possible_mentor.id %>" target="_blank">Internal(<%= possible_mentor.id %>)</a>
+      </div>
+      <div class="col-md-3" style="border-left:1px solid black">
+        <h4>Tag Intersection</h4>
+        <%= UserSimilarity.new(@user, possible_mentor).tag_intersection.join(", ") %>
+      </div>
+      <div class="col-md-3">
+        <h4>Mentor description</h4>
+        <%= possible_mentor.mentor_description %>
+      </div>
+      <div class="col-md-3">
+        <h4>Skills/Languages</h4>
+        <%= possible_mentor.mostly_work_with %>
+      </div>
+      <div class="col-md-1">
+        <h4>Action</h4>
+        <%= form_for ([:internal, @user]) do |f| %>
+          <%= f.hidden_field :quick_match, value: true %>
+          <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
+          <%= f.submit "Match!" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="row">
+<h2><u>Recent Emails</u></h2>
+<ul>
+  <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+    <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
+  <% end %>
+</ul>
+</div>
+<br>
+<br>

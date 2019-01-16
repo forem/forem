@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe OrganizationPolicy do
-  subject { described_class.new(user, organization) }
+  subject(:organization_policy) { described_class.new(user, organization) }
 
   let(:organization) { build(:organization) }
 
@@ -30,7 +30,7 @@ RSpec.describe OrganizationPolicy do
     before { user.update(organization: organization, org_admin: true) }
 
     it "allows the user to update their own org" do
-      is_expected.to permit_action(:update)
+      expect(organization_policy).to permit_action(:update)
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe OrganizationPolicy do
     before { user.update(organization: new_org, org_admin: true) }
 
     it "does not allow the user to update another org" do
-      is_expected.to forbid_action(:update)
+      expect(organization_policy).to forbid_action(:update)
     end
   end
 end

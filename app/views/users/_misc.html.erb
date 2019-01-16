@@ -9,10 +9,23 @@
   </h3>
 <% end %>
 
+<h2>Features</h2>
+<%= form_for(@user) do |f| %>
+    <div class="sub-field">
+      <%= f.label :editor_version, "Editor version: v1 or v2" %>
+      <%= f.text_field :editor_version %>
+      <sub><em>v2 is currently in beta</em></sub>
+    </div>
+    <div class="field">
+      <label></label>
+      <%= f.hidden_field :tab, value: @tab %>
+      <%= f.submit "SUBMIT", class: "cta" %>
+    </div>
+<% end %>
 <h2>Languages</h2>
 <h3>Select which languages you'd prefer to see in your feed <span style="color:#e05252">(beta)</span></h3>
 <h4 style="font-weight:400">
-  This setting which languages you are more likely to see throughout the site, but you may still see other languages, especially english.
+  This setting controls which languages you are more likely to see throughout the site, but you may still see other languages, especially English.
 </h4>
 
 <%= form_for(@user) do |f| %>
@@ -37,7 +50,7 @@
       <%= f.check_box :prefer_language_it %>
       <%= f.label :prefer_language_it, "Italian" %>
     </div>
-  </div>  
+  </div>
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
@@ -71,4 +84,33 @@
     <%= f.hidden_field :tab, value: @tab %>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
+<% end %>
+
+<h2>Export content</h2>
+
+<% if @user.export_requested? %>
+  <h4 style="font-weight:400">
+    You have recently requested an export of your content.
+    Please check your email.
+  </h4>
+<% else %>
+  <h4 style="font-weight:400">
+    You can request an export of all your content.
+    Currently we only support the export of your posts and comments.
+    They will be emailed to your inbox.
+  </h4>
+
+  <%= form_for(@user) do |f| %>
+    <div class="checkbox-field">
+      <div class="sub-field">
+        <%= f.check_box :export_requested %>
+        <%= f.label :export_requested, "Request an export of your content" %>
+      </div>
+    </div>
+    <div class="field">
+      <label></label>
+      <%= f.hidden_field :tab, value: @tab %>
+      <%= f.submit "SUBMIT", class: "cta" %>
+    </div>
+  <% end %>
 <% end %>

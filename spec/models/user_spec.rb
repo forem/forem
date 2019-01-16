@@ -12,28 +12,31 @@ RSpec.describe User, type: :model do
 
   before { mock_auth_hash }
 
-  it { is_expected.to have_many(:articles) }
-  it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
-  it { is_expected.to have_many(:badges).through(:badge_achievements) }
-  it { is_expected.to have_many(:collections).dependent(:destroy) }
-  it { is_expected.to have_many(:comments) }
-  it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
-  it { is_expected.to have_many(:identities).dependent(:destroy) }
-  it { is_expected.to have_many(:mentions).dependent(:destroy) }
-  it { is_expected.to have_many(:notes) }
-  it { is_expected.to have_many(:notifications).dependent(:destroy) }
-  it { is_expected.to have_many(:reactions).dependent(:destroy) }
-  it { is_expected.to have_many(:tweets).dependent(:destroy) }
-  it { is_expected.to have_many(:github_repos).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-  it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
-  it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-  it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
-  it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
-  it { is_expected.to validate_presence_of(:username) }
-  it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-  it { is_expected.to validate_length_of(:name).is_at_most(100) }
+  describe "validations" do
+    it { is_expected.to have_many(:api_secrets) }
+    it { is_expected.to have_many(:articles) }
+    it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
+    it { is_expected.to have_many(:badges).through(:badge_achievements) }
+    it { is_expected.to have_many(:collections).dependent(:destroy) }
+    it { is_expected.to have_many(:comments) }
+    it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
+    it { is_expected.to have_many(:identities).dependent(:destroy) }
+    it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to have_many(:notes) }
+    it { is_expected.to have_many(:notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tweets).dependent(:destroy) }
+    it { is_expected.to have_many(:github_repos).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+    it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
+    it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+    it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
+    it { is_expected.to validate_presence_of(:username) }
+    it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+    it { is_expected.to validate_length_of(:name).is_at_most(100) }
+  end
 
   # the followings are failing
   # it { is_expected.to have_many(:keys) }
@@ -54,6 +57,21 @@ RSpec.describe User, type: :model do
 
     it "does not accept invalid website url" do
       user.website_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https mastodon url" do
+      user.mastodon_url = "https://mastodon.social/@test"
+      expect(user).to be_valid
+    end
+
+    it "does not accept a denied mastodon instance" do
+      user.mastodon_url = "https://SpammyMcSpamface.com/"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept invalid mastodon url" do
+      user.mastodon_url = "mastodon.social/@test"
       expect(user).not_to be_valid
     end
 
@@ -142,7 +160,31 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "changes old_username if old_old_username properly if username changes" do
+    it "accepts valid https medium url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.medium_url = "https://medium.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid medium url" do
+      user.medium_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https gitlab url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.gitlab_url = "https://gitlab.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid gitlab url" do
+      user.gitlab_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "changes old_username and old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"
       user.update(username: random_new_username)
@@ -256,16 +298,6 @@ RSpec.describe User, type: :model do
       expect(new_user.signup_cta_variant).to eq("hey-hey-hey")
     end
 
-    it "sets saw_onboarding to false with proper signup variant" do
-      new_user = user_from_authorization_service(:twitter, nil, "welcome-widget")
-      expect(new_user.saw_onboarding).to eq(false)
-    end
-
-    it "sets saw_onboarding to true with nil signup variant" do
-      new_user = user_from_authorization_service(:twitter, nil, nil)
-      expect(new_user.saw_onboarding).to eq(true)
-    end
-
     it "does not assign signup_cta_variant to non-new users" do
       new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
@@ -332,6 +364,40 @@ RSpec.describe User, type: :model do
 
     it "returns segment of articles if limit is passed" do
       expect(user.followed_articles.limit(2).size).to eq(2)
+    end
+  end
+
+  describe "#cached_followed_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+    let(:tag4)  { create(:tag) }
+
+    it "returns empty if no tags followed" do
+      expect(user.decorate.cached_followed_tags.size).to eq(0)
+    end
+
+    it "returns array of tags if user follows them" do
+      user.follow(tag1)
+      user.follow(tag2)
+      user.follow(tag3)
+      expect(user.decorate.cached_followed_tags.size).to eq(3)
+    end
+
+    it "returns tag object with name" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
+    end
+
+    it "returns follow points for tag" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(1.0)
+    end
+
+    it "returns adjusted points for tag" do
+      user.follow(tag1)
+      Follow.last.update(points: 0.1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
   end
 
@@ -420,6 +486,7 @@ RSpec.describe User, type: :model do
 
     it "returns onboarding checklist leave_your_first_comment if has left comment" do
       create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
+      user.reload
       checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
       expect(checklist).to eq(true)
     end

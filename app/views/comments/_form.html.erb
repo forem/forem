@@ -23,8 +23,8 @@
       onfocus: "handleFocus(event)",
       onblur: "handleBlur(event)",
       onkeyup: "handleKeyUp(event)",
+      onkeydown: "handleKeyDown(event)",
       id: "text-area",
-      readonly: !user_signed_in?,
       autofocus: @comment.persisted?,
       required: true
     %>
@@ -35,18 +35,19 @@
   <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
     <img class="icon-image" src="<%= asset_path('info.svg') %>" />
   </a>
-  <% if user_signed_in? %>
-    <div class="editor-image-upload">
-      <input type="file" id="image-upload-main"  name="file" accept="image/*" style="display:none">
-      <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
-        <img class="icon-image" src="<%= asset_path('image-upload.svg') %>" />
-      </button>
-      <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
-      <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
-      <input class="uploaded-image" id="uploaded-image-main" />
-    </div>
-  <% end %>
+  <div class="editor-image-upload">
+    <input type="file" id="image-upload-main"  name="file" accept="image/*" style="display:none">
+    <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
+      <img class="icon-image" src="<%= asset_path('image-upload.svg') %>" />
+    </button>
+    <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
+    <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
+    <input class="uploaded-image" id="uploaded-image-main" />
+  </div>
   <div class="actions" id="submit-wrapper">
+    <%= link_to request.referer.present? ? :back : commentable.path do %>
+      <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
+    <% end %>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
     <%= f.submit "SUBMIT", id: "submit-button", onclick:"validateField(event)", class:"comment-action-button" %>
   </div>
@@ -69,5 +70,12 @@
         }
       },1);
     }
+  }
+</script>
+
+<script async>
+  var formElement = document.getElementById("edit_comment_<%= @comment.id if @comment %>");
+  if (formElement) {
+    formElement.getElementsByClassName("comment-action-cancel")[0].style.display = "inline-block";
   }
 </script>

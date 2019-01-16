@@ -29,6 +29,7 @@ module ApplicationHelper
       comments
       notifications
       reading_list_items
+      html_variants
     ).include?(controller_name)
   end
 
@@ -48,16 +49,33 @@ module ApplicationHelper
     derived_title
   end
 
+  def title_with_timeframe(page_title:, timeframe:, content_for: false)
+    if timeframe.blank?
+      return content_for ? title(page_title) : page_title
+    end
+
+    sub_titles = {
+      "week" => "Top posts this week",
+      "month" => "Top posts this month",
+      "year" => "Top posts this year",
+      "infinity" => "All posts",
+      "latest" => "Latest posts"
+    }
+
+    title_text = "#{page_title} - #{sub_titles.fetch(timeframe)}"
+    content_for ? title(title_text) : title_text
+  end
+
   def icon(name, pixels = "20")
     image_tag icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels
   end
 
   def icon_url(name)
     postfix = {
-      "twitter"     => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
-      "github"      => "v1456342401/github-logo_m841aq.png",
-      "link"        => "v1456342401/link-symbol_apfbll.png",
-      "volume"      => "v1461589297/technology_1_aefet2.png",
+      "twitter" => "v1456342401/twitter-logo-silhouette_1_letrqc.png",
+      "github" => "v1456342401/github-logo_m841aq.png",
+      "link" => "v1456342401/link-symbol_apfbll.png",
+      "volume" => "v1461589297/technology_1_aefet2.png",
       "volume-mute" => "v1461589297/technology_jiugwb.png"
     }.fetch(name, "v1456342953/star-in-black-of-five-points-shape_sor40l.png")
 
@@ -105,10 +123,11 @@ module ApplicationHelper
 
     Rails.cache.fetch(cache_key, expires_in: 1.hour) do
       src = GeneratedImage.new(article).social_image
-      return src if src.include? "res.cloudinary"
+      return src if src.start_with? "https://res.cloudinary.com/"
+
       cl_image_path(src,
         type: "fetch",
-        width:  "1000",
+        width: "1000",
         height: "500",
         crop: "imagga_scale",
         quality: "auto",
@@ -153,7 +172,7 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full")
-    tag :button,
+    tag :button, # Yikes
       class: "cta follow-action-button",
       data: {
         info: { id: followable.id, className: followable.class.name, style: style }.to_json,

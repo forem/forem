@@ -3,6 +3,7 @@ class ChatChannelsController < ApplicationController
   after_action :verify_authorized
 
   def index
+    add_param_context(:state)
     if params[:state] == "unopened"
       authorize ChatChannel
       render_unopened_json_response
@@ -18,11 +19,13 @@ class ChatChannelsController < ApplicationController
   def show
     @chat_channel = ChatChannel.find_by_id(params[:id]) || not_found
     authorize @chat_channel
+    add_context(chat_channel_id: @chat_channel.id)
   end
 
   def create
     authorize ChatChannel
     @chat_channel = ChatChannelCreationService.new(current_user, params[:chat_channel]).create
+    add_context(chat_channel_id: @chat_channel.id)
     if @chat_channel.valid?
       render json: { status: "success",
                      chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
@@ -35,6 +38,7 @@ class ChatChannelsController < ApplicationController
   def update
     @chat_channel = ChatChannel.find(params[:id])
     authorize @chat_channel
+    add_context(chat_channel_id: @chat_channel.id)
     ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
     if @chat_channel.valid?
       render json: { status: "success",
@@ -48,6 +52,7 @@ class ChatChannelsController < ApplicationController
   def open
     @chat_channel = ChatChannel.find(params[:id])
     authorize @chat_channel
+    add_context(chat_channel_id: @chat_channel.id)
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.seconds.from_now, has_unopened_messages: false)
     @chat_channel.index!
@@ -57,6 +62,7 @@ class ChatChannelsController < ApplicationController
   def moderate
     @chat_channel = ChatChannel.find(params[:id])
     authorize @chat_channel
+    add_context(chat_channel_id: @chat_channel.id)
     command = chat_channel_params[:command].split
     case command[0]
     when "/ban"
@@ -121,6 +127,7 @@ class ChatChannelsController < ApplicationController
 
   def render_channels_html
     return unless current_user
+
     if params[:slug]
       slug = if params[:slug]&.start_with?("@")
                [current_user.username, params[:slug].gsub("@", "")].sort.join("/")

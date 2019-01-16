@@ -5,7 +5,7 @@
 <div class="field-unit__field" style="width: 2em;">
   <%= f.check_box field.attribute %>
 </div>
-<%= f.date_field "workshop_expiration", value: (Time.now + 1.year).strftime("%Y-%m-%d"), style: "width: 25%;" %>
+<%= f.date_field "workshop_expiration", value: 1.year.from_now.strftime("%Y-%m-%d"), style: "width: 25%;" %>
 <div style="margin-left: 1em;">
   <%= f.label "Send Scholarship Email?" %>
 </div>

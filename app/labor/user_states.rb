@@ -13,32 +13,32 @@ class UserStates
         fill_out_your_profile: fill_out_your_profile,
         leave_your_first_reaction: leave_reactions,
         follow_your_first_dev: follow_people,
-        leave_your_first_comment: leave_comments,
+        leave_your_first_comment: leave_comments
       }
     end
   end
 
   def made_first_article
-    !user.articles.where(published: true).empty?
+    user.articles.where(published: true).any?
   end
 
   def follows_a_tag
-    !user.follows.where(followable_type: "ActsAsTaggableOn::Tag").empty?
+    user.follows.where(followable_type: "ActsAsTaggableOn::Tag").any?
   end
 
   def fill_out_your_profile
-    user.summary.present? && !user.summary.empty?
+    user.summary.present?
   end
 
   def leave_reactions
-    !user.reactions.empty?
+    user.reactions.any?
   end
 
   def follow_people
-    !user.follows.where(followable_type: "User").empty?
+    user.follows.where(followable_type: "User").any?
   end
 
   def leave_comments
-    !user.comments.empty?
+    user.comments.any?
   end
 end

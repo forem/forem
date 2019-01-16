@@ -5,6 +5,7 @@ class Organization < ApplicationRecord
 
   has_many :job_listings
   has_many :users
+  has_many :api_secrets, through: :users
   has_many :articles
   has_many :collections
   has_many :display_ads
@@ -34,26 +35,32 @@ class Organization < ApplicationRecord
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :cta_button_url,
-    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }, if: :approved
-  validates :cta_button_text, length: { maximum: 12 }
-  validates :cta_body_markdown, length: { maximum: 140 }
+    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  validates :cta_button_text, length: { maximum: 20 }
+  validates :cta_body_markdown, length: { maximum: 256 }
   before_save :remove_at_from_usernames
   after_save  :bust_cache
   before_save :generate_secret
   before_validation :downcase_slug
-  before_validation :evaluate_markdown, if: :approved
+  before_validation :check_for_slug_change
+  before_validation :evaluate_markdown
 
   validate :unique_slug_including_users
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
 
-  def username
-    slug
-  end
+  alias_attribute :username, :slug
+  alias_attribute :old_username, :old_slug
+  alias_attribute :old_old_username, :old_old_slug
+  alias_attribute :website_url, :url
 
-  def website_url
-    url
+  def check_for_slug_change
+    if slug_changed?
+      self.old_old_slug = old_slug
+      self.old_slug = slug_was
+      articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
+    end
   end
 
   def path
@@ -72,7 +79,7 @@ class Organization < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
       article.save
@@ -80,7 +87,11 @@ class Organization < ApplicationRecord
   end
 
   def approved_and_filled_out_cta?
-    approved && cta_body_markdown? && cta_button_text? && cta_button_url?
+    cta_processed_html?
+  end
+
+  def profile_image_90
+    ProfileImage.new(self).get(90)
   end
 
   private
@@ -102,7 +113,7 @@ class Organization < ApplicationRecord
     cache_buster = CacheBuster.new
     cache_buster.bust("/#{slug}")
     begin
-      articles.each do |article|
+      articles.find_each do |article|
         cache_buster.bust(article.path)
       end
     rescue StandardError

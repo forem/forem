@@ -2,8 +2,10 @@
     <% if story.video.present? %>
       <%= render "articles/video_player", meta_tags: false, article: story %>
     <% end %>
-    <% if @organization_article_index %>
-      <div id="organization-index-page"></div>
+    <% organization = story.organization %>
+    <% if organization && !@organization_article_index %>
+      <div class="article-organization-headline">
+        <a href="/<%= organization.slug %>" class="article-organization-headline-inner"><img src="<%= organization.profile_image_90 %>"><%= organization.name %></a><a class="org-headline-filler" href="<%= story.path %>">&nbsp;</a></div>
     <% end %>
     <a href="<%=story.user.path%>" class="small-pic-link-wrapper">
       <div class="small-pic" >
@@ -44,12 +46,18 @@
         </span>
       </a>
     </div>
+    <a
+      href="<%= story.path %>"
+      class="article-reading-time"
+    >
+      <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
+    </a>
     <button
       class="article-engagement-count bookmark-engage"
       data-reactable-id="<%= story.id %>"
       aria-label="Save to reading list"
       title="Save to reading list">
-      <span class="bm-success"><img src="<%= asset_path("readinglist-button.png") %>" alt="bookmark" /> SAVED</span>
+      <span class="bm-success">SAVED</span>
       <span class="bm-initial">SAVE</span>
     </button>
   </div>

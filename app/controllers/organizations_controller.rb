@@ -35,6 +35,7 @@ class OrganizationsController < ApplicationController
 
   def generate_new_secret
     raise unless current_user.org_admin
+
     @organization = current_user.organization
     authorize @organization
     @organization.secret = @organization.generated_random_secret
@@ -62,9 +63,11 @@ class OrganizationsController < ApplicationController
       text_color_hex
       twitter_username
       github_username
+      cta_button_text
+      cta_button_url
+      cta_body_markdown
     ]
-    approved_params = %i(cta_button_text cta_button_url cta_body_markdown)
-    @organization&.approved ? accessible + approved_params : accessible
+    accessible
   end
 
   def organization_params

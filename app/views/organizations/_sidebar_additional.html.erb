@@ -1,0 +1,21 @@
+<div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+  <div class="sidebar-bg" id="sidebar-bg-right"></div>
+  <div class="side-bar sidebar-additional showing" id="sidebar-additional">
+    <% if @organization.users.any? %>
+      <div class="widget">
+        <div class="widget-suggested-follows-container">
+          <header><h4>meet the team</h4></header>
+          <div class="widget-body">
+            <% @organization.users.each do |user| %>
+                <div class="widget-user-pic">
+                  <a href="/<%= user.username %>">
+                    <img src="<%= ProfileImage.new(user).get(90) %>" />
+                  </a>
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

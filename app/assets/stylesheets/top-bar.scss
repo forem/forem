@@ -21,6 +21,7 @@
   font-size: 17px;
   height: 48px;
   background: $tan;
+  background: var(--theme-top-bar-background, $tan);
   position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
@@ -29,7 +30,6 @@
     width: 1250px;
     margin: auto;
     position: relative;
-    background: $tan;
     a {
       &:active {
         opacity: 0.8;
@@ -55,6 +55,9 @@
       font-weight: bold;
       border-radius: 3px;
       border: 2px solid $black;
+      border: 2px solid var(--theme-top-bar-write-color, $black);
+      color: var(--theme-top-bar-write-color, $black);
+      background: var(--theme-top-bar-write-background, $green);
       @media screen and (min-width: 560px) {
         display: block;
         right: 140px;
@@ -72,6 +75,7 @@
       z-index: 10;
       top: 1px;
       right: 90px;
+      fill: var(--theme-top-bar-color, $black);
       @media screen and (min-width: 700px) {
         right: 110px;
       }
@@ -110,6 +114,7 @@
       display: block;
       text-align: center;
       z-index: 10;
+      fill: var(--theme-top-bar-color, $black);
       @media screen and (min-width: 700px) {
         right: 73px;
       }
@@ -155,6 +160,10 @@
         border-radius: 100%;
         margin-top: -1px;
         margin-left: -1px;
+        -ms-user-select:none;
+        -moz-user-select:none;
+        -webkit-user-select:none;
+        user-select:none;
       }
     }
     .bars {
@@ -173,7 +182,7 @@
         }
       }
       &.desktop {
-        &:hover {
+        &:hover,&:active,&:focus {
           .menu {
             display: block;
           }
@@ -204,7 +213,7 @@
       bottom: 0;
       background: rgba(17, 17, 17, 0.88);
       z-index: -5;
-      top: 40px;
+      top: 48px;
       display: none;
     }
     .menu {
@@ -308,6 +317,13 @@
     padding: 8px;
     font-size: 0.9em;
     background: #e8e7e7;
+    background: var(--theme-top-bar-search-background, #e8e7e7);
+    color: var(--theme-top-bar-search-color, $black);
     -webkit-appearance: none;
+    &::placeholder {
+      opacity: 0.5;
+      color: $black;
+      color: var(--theme-top-bar-search-color, $black);
+    }
   }
 }

@@ -2,10 +2,6 @@ require_relative "boot"
 
 require "rails/all"
 
-require "action_view/railtie"
-require "sprockets/railtie"
-require "sprockets/es6"
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -35,16 +31,10 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
     config.autoload_paths += Dir["#{config.root}/lib/"]
 
-    config.active_record.observers = :article_observer, :reaction_observer
+    config.active_record.observers = :article_observer, :reaction_observer, :comment_observer
     config.active_job.queue_adapter = :delayed_job
 
     config.middleware.use Rack::Deflater
-
-    # Replace with a lambda or method name defined in ApplicationController
-    # to implement access control for the Flipflop dashboard.
-    config.flipflop.dashboard_access_filter = -> {
-      head :forbidden unless current_user.has_any_role?(:super_admin)
-    }
 
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found

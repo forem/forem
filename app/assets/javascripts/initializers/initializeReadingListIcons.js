@@ -31,6 +31,7 @@ function addReadingListCountToHomePage(){
 
 function reactToReadingListButtonClick(event){
   event.preventDefault();
+  sendHapticMessage('medium');
   var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
   if (userStatus == "logged-out") {
     showModal("add-to-readinglist-from-index");

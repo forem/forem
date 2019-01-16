@@ -1,0 +1,154 @@
+<% if @user.identities.find_by(provider:'github').nil? %>
+  <div class="field">
+    <a href="/users/auth/github" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
+    </a>
+  </div>
+  <hr/>
+<% end %>
+
+
+<% if @user.identities.find_by(provider:'twitter').nil? %>
+  <div class="field">
+    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
+      <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
+    </a>
+  </div>
+  <hr/>
+<% end %>
+
+<h2>DEV API Access Tokens</h2>
+<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though.</p>
+<h3>Generate an access token</h3>
+<%= form_tag users_api_secrets_path, method: :post do %>
+  <%= fields_for :api_secret do |api_secret| %>
+    <div class="field">
+      <%= api_secret.label(:description, "Token Description") %>
+      <%= api_secret.text_field(:description, placeholder: "What's this token for?", required: true) %>
+    </div>
+  <% end %>
+  <button class="big-action cta" id="new__api__secret__btn" type="submit">
+    Generate Token
+  </button>
+<% end %>
+
+<h3>Active access tokens (Never share these secrets!)</h3>
+<% if @user.api_secrets.empty? %>
+  <p>None yet!</p>
+<% end %>
+<% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
+  <div class='api__secret__container'>
+    <div class='api__secret__desc'>
+      <p class='title'><%= api_secret.description %></h4>
+      <p class='content'><%= api_secret.secret %></p>
+      <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
+    </div>
+    <div class='api__secret__revoke'>
+      <%= form_tag users_api_secrets_path(id: api_secret.id), method: :delete do %>
+        <%= button_tag('Revoke', class: 'big-action danger-button') %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+
+<h2 style="color: #ff0000;">Danger Zone</h2>
+<% if @user.identities.count == 2 %>
+  <h3>Remove OAuth Associations</h3>
+  <h4 style="font-weight:400;">
+    You can remove one of your authentication methods. We'll still need one to authenticate you.
+    <br>
+    <br>
+    Removing an OAuth association will:
+    <ul>
+      <li>remove your ability to sign in with that account</li>
+      <li>remove the associated URL from your profile</li>
+    </ul>
+    <strong>
+      Note that this does not revoke our OAuth app access; you will have to do so in your
+      <a href="https://twitter.com/settings/sessions">Twitter profile settings</a> or your
+      <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+    </strong>
+    <br>
+    <br>
+    <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your Twitter account?');" do %>
+      <%= hidden_field_tag :provider, "twitter" %>
+      <button class="big-action danger-button small-button" type="submit">
+        <img src="<%= asset_path('twitter-logo.svg') %>" /> REMOVE TWITTER
+      </button>
+    <% end %>
+    <br/>
+    <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your GitHub account?');" do %>
+      <%= hidden_field_tag :provider, "github" %>
+      <button class="big-action danger-button small-button" type="submit">
+        <img src="<%= asset_path('github-logo.svg') %>" /> REMOVE GITHUB
+      </button>
+    <% end %>
+  </h4>
+<% end %>
+
+
+<% if @user.articles_count.zero? && @user.comments_count.zero? %>
+  <h3>Delete Account</h3>
+  <h4 style="font-weight:400;">
+    <%= form_tag "/users/destroy", method: :delete, autocomplete: "off" do %>
+    Deleting your account will:
+      <ul class="delete__account">
+        <li>delete your profile, along with your Twitter and/or GitHub associations.
+        This does not include app permissions, which you will have to remove yourself on Twitter/GitHub.</li>
+        <%# TODO: expand the delete messaging later %>
+        <li>delete any and all content you have, such as your reading list or chat messages.</li>
+        <li>allow your username to become available to anyone.</li>
+      </ul>
+      <b>To delete your account, type in your username:</b>
+      <div class="field">
+        <input type="text" id="delete__account__username__field">
+      </div>
+      <b>For verification, type the words:</b> <i>delete my account</i>
+      <div class="field">
+        <input type="text" id="delete__account__verification__field">
+      </div>
+      <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
+        DELETE ACCOUNT
+      </button>
+    <% end %>
+  </h4>
+  <br>
+    <script>
+      var deleteAccountBtn = document.getElementById('delete__account__btn')
+      var deleteAccountUsernameInput = document.getElementById('delete__account__username__field')
+      var deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field')
+
+      function bothInputsVerified () {
+        return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account"
+      }
+
+      deleteAccountUsernameInput.addEventListener('input', function() {
+        if (bothInputsVerified()) {
+          deleteAccountBtn.disabled = false;
+          // enable the button via css or removing disabled class
+        } else {
+          deleteAccountBtn.disabled = true;
+        }
+      })
+
+      deleteAcccountVerificationInput.addEventListener('input', function() {
+        if (bothInputsVerified()) {
+          deleteAccountBtn.disabled = false;
+        } else {
+        deleteAccountBtn.disabled = true;
+        }
+      })
+    </script>
+  <% end %>
+  <h3>Request Account Deletion</h3>
+  <h4 style="font-weight: 400;">
+    <br>
+    <a href="mailto:yo@dev.to?subject=Request Account Deletion&body=<%= @email_body %>">
+      Click this link to request account deletion via email.
+    </a> This includes all articles, comments, reactions, etc. as well as any personal information you have.
+    </b>
+    <br>
+    <br>
+    Be sure to change the email template to fit your needs.
+  </h4>

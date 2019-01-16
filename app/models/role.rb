@@ -29,7 +29,7 @@ class Role < ApplicationRecord
                 chatroom_beta_tester
                 banned_from_mentorship
                 comment_banned
-              ),
+              )
             }
   scopify
 end

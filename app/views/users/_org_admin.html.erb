@@ -41,7 +41,13 @@
     </div>
   <% end %>
   <h3>Grow the team</h3>
-  <h5>Invite teammates by sending them this secret. Keep the code secret and generate a new one regularly.</h5>
+  <h5>Invite teammates by sending them the secret and the following instructions:</h5>
+  <ol style="margin-bottom: 30px">
+    <li>Sign up at <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a>
+    <li>Navigate to <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
+    <li>Paste the secret code below and click <b>Join Organization</b></li>
+  </ol>
+  <h5>Your secret: (You should rotate this regularly)</h5>
   <input type="text" class="settings-org-secret" id="settings-org-secret" value="<%= @organization.secret %>" readonly>
   <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
     <button class="settings-generate-new-secret">Generate New Secret</button>
@@ -52,6 +58,11 @@
   <div class="field">
     <%= f.label :name %>
     <%= f.text_field :name, maxlength: 50 %>
+  </div>
+  <div class="field">
+    <%=  f.label :username %>
+    <%= f.text_field :slug, maxlength: 18, minlength: 2 %>
+    <i>Your organization's URL is: https://dev.to/<%= @organization.slug %></i>
   </div>
   <%= f.label :profile_image %>
   <div class="field">
@@ -101,8 +112,8 @@
     <%= f.text_field :email, maxlength: 64, placeholder: "Limit of 64 characters" %>
   </div> 
   <div class="field">
-    <%= f.label :company_size, "Company Size" %>
-    <%= f.text_field :company_size, maxlength: 64, placeholder: "Limit of 64 characters" %>
+    <%= f.label :company_size, "Organization Size" %>
+    <%= f.text_field :company_size, maxlength: 10, placeholder: "Enter a number" %>
   </div>   
   <div class="field">
     <%= f.label :story, "Our Story" %>
@@ -112,40 +123,25 @@
     <%= f.label :tech_stack, "Our Stack" %>
     <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>      
-  <% if @organization.approved %>
-    <h2>Call-to-action box</h2>
-    <div class="field">
-      <%= f.label "Button Text" %>
-      <%= f.text_field :cta_button_text, maxlength: 12, placeholder: "Limit of 12 characters" %>
-    </div>
-    <div class="field">
-      <%= f.label "Button Link" %>
-      <%= f.text_field :cta_button_url %>
-    </div>
-    <div class="field">
-      <%= f.label "Body text" %>
-      <%= f.text_area :cta_body_markdown, maxlength: 140, placeholder: "Limit of 140 characters" %>
-    </div>
-    <% if @organization.approved_and_filled_out_cta? %>
-      <div class="field">
-        Preview of Widget:
-        <div class="org-widget-preview">
-          <div class="primary-sticky-nav">
-            <div class="primary-sticky-nav-element primary-sticky-nav-author primary-sticky-nav-org">
-              <div class="primary-sticky-nav-org-summary">
-                <!-- Markdown -->
-                <%# @organization.cta_body_markdown %>
-                <%= @organization.cta_processed_html.html_safe %>
-                <button class="cta primary-sticky-nav-org-button">
-                  <%= @organization.cta_button_text.upcase || "LEARN MORE" %>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <% end %>
-  <% end %>
+  <h2>Call-to-action box</h2>
+  <h4 style="margin-top:-25px">Customizable text that appears to the right of every post for your organization</h4>
+  <h4 style="margin-top:-15px">See an example from the <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank">DEV Team</a>.</h4>
+  <div class="field">
+    <%= f.label "Body text (Limited markdown — bold/italic/etc)" %>
+    <%= f.text_area :cta_body_markdown, maxlength: 256, placeholder: "**This is an example**
+
+_italic_ and **bold** is okay. Links, and headers etc. will not show up.
+
+256 character limit." %>
+  </div>
+  <div class="field">
+    <%= f.label "Link Text" %>
+    <%= f.text_field :cta_button_text, maxlength: 20, placeholder: "Limit of 20 characters" %>
+  </div>
+  <div class="field">
+    <%= f.label "Link url" %>
+    <%= f.text_field :cta_button_url, placeholder: "https://example.com" %>
+  </div>
   <div class="field">
     <label></label>
     <%= f.submit "SUBMIT", class: "cta" %>

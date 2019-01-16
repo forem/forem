@@ -2,7 +2,7 @@ require "rails_helper"
 
 vcr_option = {
   cassette_name: "twitter_gem",
-  allow_playback_repeats: "true",
+  allow_playback_repeats: "true"
 }
 
 RSpec.describe Tweet, type: :model, vcr: vcr_option do

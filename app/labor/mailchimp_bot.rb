@@ -9,6 +9,7 @@ class MailchimpBot
 
   def upsert
     return true unless Rails.env.production? || Rails.env.test?
+
     upsert_to_membership_newsletter
     upsert_to_newsletter
   end
@@ -33,8 +34,8 @@ class MailchimpBot
             EXPERIENCE: user.experience_level || 666,
             COUNTRY: user.shipping_country.to_s,
             STATE: user.shipping_state.to_s,
-            POSTAL_ZIP: user.shipping_postal_code.to_s,
-          },
+            POSTAL_ZIP: user.shipping_postal_code.to_s
+          }
         },
       )
       success = true
@@ -46,6 +47,7 @@ class MailchimpBot
 
   def upsert_to_membership_newsletter
     return false unless a_sustaining_member?
+
     success = false
     # !!! user.monthly_due = 0 ? unsubscibe
     tiers = %i[ triple_unicorn_member
@@ -67,10 +69,32 @@ class MailchimpBot
             TWITTER: user.twitter_username.to_s,
             GITHUB: user.github_username.to_s,
             IMAGE_URL: user.profile_image_url.to_s,
-            MEMBERSHIP: membership.to_s,
-          },
+            MEMBERSHIP: membership.to_s
+          }
         },
       )
+      success = true
+    rescue Gibbon::MailChimpError => e
+      report_error(e)
+    end
+    success
+  end
+
+  def unsubscribe_all_newsletters
+    success = false
+    begin
+      gibbon.lists(ApplicationConfig["MAILCHIMP_NEWSLETTER_ID"]).members(target_md5_email).update(
+        body: {
+          status: "unsubscribed"
+        },
+      )
+      if a_sustaining_member?
+        gibbon.lists(ApplicationConfig["MAILCHIMP_SUSTAINING_MEMBERS_ID"]).members(target_md5_email).update(
+          body: {
+            status: "unsubscribed"
+          },
+        )
+      end
       success = true
     rescue Gibbon::MailChimpError => e
       report_error(e)

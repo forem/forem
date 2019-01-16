@@ -1,15 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<SearchForm /> renders properly when given search functions and a search term 1`] = `
-VNode {
-  "attributes": Object {
-    "onSearch": [MockFunction],
-    "onSubmitSearch": [MockFunction],
-    "searchBoxId": "nav-search",
-    "searchTerm": "hello",
-  },
-  "children": Array [],
-  "key": undefined,
-  "nodeName": undefined,
-}
+<undefined
+  onSubmitSearch={[Function mockConstructor]}
+  onSearch={[Function mockConstructor]}
+  searchTerm="hello"
+  searchBoxId="nav-search"
+>
+</undefined>
 `;

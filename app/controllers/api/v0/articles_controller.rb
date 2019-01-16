@@ -8,11 +8,20 @@ module Api
       respond_to :json
 
       before_action :cors_preflight_check
+      before_action :set_user
       after_action :cors_set_access_control_headers
 
       def index
         @articles = ArticleApiIndexService.new(params).get
-        set_surrogate_key_header "articles_api_#{params[:tag]}_#{params[:page]}_#{params[:userame]}_#{params[:signature]}_#{params[:state]}"
+        key_headers = [
+          "articles_api",
+          params[:tag],
+          params[:page],
+          params[:userame],
+          params[:signature],
+          params[:state],
+        ]
+        set_surrogate_key_header key_headers.join("_")
       end
 
       def show
@@ -44,16 +53,17 @@ module Api
       end
 
       def create
-        @article = ArticleCreationService.new(current_user, article_params, {}).create!
-        render json:  if @article.persisted?
-                        @article.to_json(only: [:id], methods: [:current_state_path])
-                      else
-                        @article.errors.to_json
-                      end
+        @article = ArticleCreationService.new(@user, article_params, {}).create!
+        render json: if @article.persisted?
+                       @article.to_json(only: [:id], methods: [:current_state_path])
+                     else
+                       @article.errors.to_json
+                     end
       end
 
       def update
         @article = Article.find(params[:id])
+        not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
         render json: if @article.update(article_params)
                        @article.to_json(only: [:id], methods: [:current_state_path])
                      else
@@ -61,11 +71,25 @@ module Api
                      end
       end
 
+      private
+
+      def set_user
+        @user = current_user
+      end
+
       def article_params
         params["article"].transform_keys!(&:underscore)
+        params["article"]["organization_id"] = if params["article"]["post_under_org"]
+                                                 @user.organization_id
+                                               end
+        if params["article"]["series"].present?
+          params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
+        elsif params["article"]["series"] == ""
+          params["article"]["collection_id"] = nil
+        end
         params.require(:article).permit(
           :title, :body_markdown, :user_id, :main_image, :published, :description,
-          :tag_list
+          :tag_list, :organization_id, :canonical_url, :series, :collection_id
         )
       end
     end

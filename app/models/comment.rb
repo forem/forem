@@ -20,17 +20,17 @@ class Comment < ApplicationRecord
   after_create   :after_create_checks
   after_save     :calculate_score
   after_save     :bust_cache
+  after_save     :synchronous_bust
   before_destroy :before_destroy_actions
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count
   before_create  :adjust_comment_parent_based_on_depth
+  after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
+  after_update   :remove_notifications, if: :deleted
   before_validation :evaluate_markdown
   validate :permissions
-
-  include StreamRails::Activity
-  as_activity
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
@@ -122,7 +122,7 @@ class Comment < ApplicationRecord
   def self.rooted_on(commentable_id, commentable_type)
     includes(:user, :commentable).
       select(:id, :user_id, :commentable_type, :commentable_id,
-             :deleted, :created_at, :processed_html, :ancestry, :updated_at).
+             :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
       where(commentable_id: commentable_id,
             ancestry: nil,
             commentable_type: commentable_type)
@@ -152,41 +152,10 @@ class Comment < ApplicationRecord
     id.to_s(26)
   end
 
-  # notifications
-
-  def activity_notify
-    user_ids = ancestors.map(&:user_id).to_set
-    user_ids.add(commentable.user.id) if user_ids.empty?
-    user_ids.delete(user_id).map { |id| StreamNotifier.new(id).notify }
-  end
-
   def custom_css
     MarkdownParser.new(body_markdown).tags_used.map do |tag|
       Rails.application.assets["ltags/#{tag}.css"].to_s
     end.join
-  end
-
-  def activity_object
-    self
-  end
-
-  def activity_target
-    "comment_#{Time.now}"
-  end
-
-  def remove_from_feed
-    super
-    if ancestors.empty? && user != commentable.user
-      [User.find_by(id: commentable.user.id)&.touch(:last_notification_activity)]
-    elsif ancestors
-      user_ids = ancestors.map { |comment| comment.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == commentable.user.id }
-      user_ids = user_ids.uniq.reject { |uid| uid == user_id }
-      # filters out article author and duplicate users
-      user_ids.map do |id|
-        User.find_by(id: id)&.touch(:last_notification_activity)
-      end
-    end
   end
 
   def title
@@ -197,13 +166,8 @@ class Comment < ApplicationRecord
     nil
   end
 
-  # Administrate field
-  def name_of_user
-    user.name
-  end
-
   def readable_publish_date
-    if created_at.year == Time.now.year
+    if created_at.year == Time.current.year
       created_at.strftime("%b %e")
     else
       created_at.strftime("%b %e '%y")
@@ -226,11 +190,28 @@ class Comment < ApplicationRecord
     )
   end
 
+  def self.comment_async_bust(commentable, username)
+    commentable.touch
+    CacheBuster.new.bust_comment(commentable, username)
+    commentable.index!
+  end
+
   private
+
+  def update_notifications
+    Notification.update_notifications(self)
+  end
+
+  def remove_notifications
+    Notification.remove_all_without_delay(id: id, class_name: "Comment")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Moderation")
+    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Reaction")
+  end
 
   def send_to_moderator
     return if user && user.comments_count > 10
-    ModerationService.new.send_moderation_notification(self)
+
+    Notification.send_moderation_notification(self)
   end
 
   def evaluate_markdown
@@ -249,12 +230,12 @@ class Comment < ApplicationRecord
 
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
+
     self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>" }
   end
 
   def shorten_urls!
     doc = Nokogiri::HTML.parse(processed_html)
-    # raise doc.to_s
     doc.css("a").each do |a|
       unless a.to_s.include?("<img") || a.attr("class")&.include?("ltag")
         a.content = strip_url(a.content) unless a.to_s.include?("<img")
@@ -298,27 +279,25 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
-    bust_cache
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    remove_notifications
+    bust_cache_without_delay
     remove_algolia_index
-    reactions.destroy_all
   end
 
   def bust_cache
+    Comment.comment_async_bust(commentable, user.username)
     expire_root_fragment
     cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
-    async_bust
   end
+  handle_asynchronously :bust_cache
 
-  def async_bust
-    expire_root_fragment
-    commentable.touch
-    commentable.touch(:last_comment_at)
-    CacheBuster.new.bust_comment(self)
-    commentable.index!
+  def synchronous_bust
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    cache_buster = CacheBuster.new
+    cache_buster.bust(commentable.path.to_s) if commentable
   end
-  handle_asynchronously :async_bust
 
   def send_email_notification
     NotifyMailer.new_reply_email(self).deliver

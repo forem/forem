@@ -25,7 +25,7 @@ class PodcastDashboard < Administrate::BaseDashboard
     slug: Field::String,
     status_notice: Field::Text,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

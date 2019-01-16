@@ -1,7 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :add_mentor, :add_mentee, :mentorship_note, :ban_from_mentorship
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user, :good_standing_user,
+  :note_for_mentorship_ban, :reason_for_mentorship_ban,
+  :note_for_current_role, :add_mentor, :add_mentee
 
   rolify
   include AlgoliaSearch
@@ -13,16 +15,17 @@ class User < ApplicationRecord
   acts_as_follower
 
   belongs_to  :organization, optional: true
-  has_many    :articles
+  has_many    :api_secrets, dependent: :destroy
+  has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
   has_many    :badges, through: :badge_achievements
   has_many    :collections, dependent: :destroy
-  has_many    :comments
+  has_many    :comments, dependent: :destroy
   has_many    :email_messages, class_name: "Ahoy::Message"
   has_many    :github_repos, dependent: :destroy
   has_many    :identities, dependent: :destroy
   has_many    :mentions, dependent: :destroy
-  has_many    :messages
+  has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable
   has_many    :authored_notes, as: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
@@ -32,6 +35,7 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many    :html_variants, dependent: :destroy
   has_many :mentor_relationships_as_mentee,
   class_name: "MentorRelationship", foreign_key: "mentee_id"
   has_many :mentor_relationships_as_mentor,
@@ -58,33 +62,38 @@ class User < ApplicationRecord
             uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
-            exclusion: { in: ReservedWords.all,
-                         message: "%{value} is reserved." }
+            exclusion: { in: ReservedWords.all, message: "username is reserved" }
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  validates :website_url, :employer_url, :mastodon_url,
+    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   # rubocop:disable Metrics/LineLength
   validates :facebook_url,
-              format: /\Ahttps:\/\/(www.facebook.com|facebook.com)\/[a-zA-Z0-9.]{5,50}\/?\Z/,
+              format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
               allow_blank: true
   validates :stackoverflow_url,
               allow_blank: true,
               format:
-              /\Ahttps:\/\/(www.stackoverflow.com|stackoverflow.com)\/users\/([0-9]{3,10})\/([a-zA-Z0-9\s\'\-]{3,30})\/?\Z/
+              /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
   validates :behance_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.behance.net|behance.net)\/([a-zA-Z0-9\-\_]{3,20})\/?\Z/
+              format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
   validates :linkedin_url,
               allow_blank: true,
               format:
-                /\Ahttps:\/\/(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/in\/([a-zA-Z0-9\-]{3,100})\/?\Z/
+                /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
   validates :dribbble_url,
               allow_blank: true,
-              format: /\Ahttps:\/\/(www.dribbble.com|dribbble.com)\/([a-zA-Z0-9\-\_]{2,20})\/?\Z/
+              format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
+  validates :medium_url,
+              allow_blank: true,
+              format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
+  validates :gitlab_url,
+              allow_blank: true,
+              format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   # rubocop:enable Metrics/LineLength
-  validates :employer_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :shirt_gender,
               inclusion: { in: %w(unisex womens),
                            message: "%{value} is not a valid shirt style" },
@@ -97,10 +106,12 @@ class User < ApplicationRecord
               inclusion: { in: %w(tabs spaces),
                            message: "%{value} is not a valid answer" },
               allow_blank: true
+  validates :editor_version,
+              inclusion: { in: %w(v1 v2),
+                           message: "%{value} must be either v1 or v2" }
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true
-  validates :website_url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
   validates :website_url, :employer_name, :employer_url,
               length: { maximum: 100 }
   validates :employment_title, :education, :location,
@@ -111,8 +122,11 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
   validate  :conditionally_validate_summary
+  validate  :validate_mastodon_url
   validate  :validate_feed_url
   validate  :unique_including_orgs
+
+  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -126,6 +140,7 @@ class User < ApplicationRecord
   before_destroy :remove_from_algolia_index
   before_destroy :destroy_empty_dm_channels
   before_destroy :destroy_follows
+  before_destroy :unsubscribe_from_newsletters
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
@@ -215,16 +230,21 @@ class User < ApplicationRecord
       "user-#{id}-#{updated_at}-#{following_users_count}/following_users_ids",
       expires_in: 120.hours,
     ) do
-
-      # More efficient query. May not cover future edge cases.
-      # Should probably only return users who have published lately
-      # But this should be okay for most for now.
       Follow.where(follower_id: id, followable_type: "User").limit(150).pluck(:followable_id)
     end
   end
 
+  def cached_following_organizations_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{following_orgs_count}/following_organizations_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Organization").limit(150).pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
-    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 80.hours) do
+    Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
       langs = []
       langs << "en" if prefer_language_en
       langs << "ja" if prefer_language_ja
@@ -247,7 +267,7 @@ class User < ApplicationRecord
 
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{updated_at}/followed_tag_names"
-    Rails.cache.fetch(cache_name, expires_in: 100.hours) do
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.where(
         id: Follow.where(
           follower_id: id,
@@ -282,16 +302,18 @@ class User < ApplicationRecord
 
   def reason_for_ban
     return if notes.where(reason: "banned").blank?
+
     Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
   end
 
   def reason_for_warning
     return if notes.where(reason: "warned").blank?
+
     Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
   end
 
   def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.now
+    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
   end
 
@@ -334,35 +356,50 @@ class User < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
-      cache_buster.bust(article.path)
-      cache_buster.bust(article.path + "?i=i")
+    articles.find_each do |article|
+      cache_buster.bust(article.path) if article.path
+      cache_buster.bust(article.path + "?i=i") if article.path
       article.save
     end
   end
 
+  def cache_bust_all_articles
+    cache_buster = CacheBuster.new
+    articles.find_each do |article|
+      cache_buster.bust(article.path)
+      cache_buster.bust(article.path + "?i=i")
+    end
+  end
+
   def settings_tab_list
-    tab_list = ["Profile",
-                "Mentorship",
-                "Integrations",
-                "Notifications",
-                "Publishing from RSS",
-                "Organization",
-                "Billing"]
+    tab_list = %w(
+      Profile
+      Mentorship
+      Integrations
+      Notifications
+      Publishing\ from\ RSS
+      Organization
+      Billing
+    )
     tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list << "Misc"
-    tab_list
+    tab_list.push("Account", "Misc")
   end
 
   def profile_image_90
     ProfileImage.new(self).get(90)
   end
 
+  def remove_from_algolia_index
+    remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
+  end
+
   private
 
   def send_welcome_notification
-    Broadcast.send_welcome_notification(id)
+    Notification.send_welcome_notification(id)
   end
 
   def set_username
@@ -412,7 +449,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    if core_profile_details_changed?
+    if core_profile_details_changed? && !user.banned
       delay.resave_articles
     end
   end
@@ -437,6 +474,7 @@ class User < ApplicationRecord
   def conditionally_validate_summary
     # Grandfather people who had a too long summary before.
     return if summary_was && summary_was.size > 200
+
     if summary.present? && summary.size > 200
       errors.add(:summary, "is too long.")
     end
@@ -444,7 +482,17 @@ class User < ApplicationRecord
 
   def validate_feed_url
     return unless feed_url.present?
+
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
+  end
+
+  def validate_mastodon_url
+    return unless mastodon_url.present?
+
+    uri = URI.parse(mastodon_url)
+    return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)
+
+    errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   end
 
   def title
@@ -516,13 +564,10 @@ class User < ApplicationRecord
     score.to_i
   end
 
-  def remove_from_algolia_index
-    remove_from_index!
-  end
-
   def destroy_empty_dm_channels
     return if chat_channels.empty? ||
-        chat_channels.where(channel_type: "direct").empty?
+      chat_channels.where(channel_type: "direct").empty?
+
     empty_dm_channels = chat_channels.where(channel_type: "direct").
       select { |chat_channel| chat_channel.messages.empty? }
     empty_dm_channels.destroy_all
@@ -534,13 +579,17 @@ class User < ApplicationRecord
     follows.destroy_all
   end
 
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
+  end
+
   def mentorship_status_update
     if mentor_description_changed? || offering_mentorship_changed?
-      self.mentor_form_updated_at = Time.now
+      self.mentor_form_updated_at = Time.current
     end
 
     if mentee_description_changed? || seeking_mentorship_changed?
-      self.mentee_form_updated_at = Time.now
+      self.mentee_form_updated_at = Time.current
     end
   end
 end

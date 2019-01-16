@@ -73,6 +73,7 @@ class StripeSubscriptionsController < ApplicationController
   def stripe_params
     params[:amount] = convert_amount_to_cent
     raise custom_error if invalid_amount?
+
     accessible = %i[amount existing_card_id stripe_token]
     params.permit(accessible)
   end

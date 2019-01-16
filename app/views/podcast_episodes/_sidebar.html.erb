@@ -1,0 +1,36 @@
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div class="sidebar-bg" id="sidebar-bg-left"></div>
+  <div class="side-bar">
+    <% if @podcast_index && @podcasts %>
+      <div class="widget podcast-pic-widget">
+        <header>
+          <h4>&lt;ALL SHOWS&gt;</h4>
+        </header>
+        <div class="widget-body">
+          <% @podcasts.each do |podcast| %>
+            <a href="/<%= podcast.slug %>">
+              <span class="podcast-pic" id="podcast-pic-<%=podcast.slug %>">
+                <img src="<%= cl_image_path(podcast.image_url,
+                :type=>"fetch",
+                :crop => "fill",
+                :width => 100,
+                :height => 100,
+                :flags => "progressive",
+                :quality => "auto",
+                :fetch_format => "auto",
+                :sign_url => true) %>"
+                alt="<%= podcast.title %>" />
+                <div class="podcast-name">
+                  <div class="podcast-name-inner">
+                    <%= podcast.title %>
+                  </div>
+                </div>
+              </span>
+            </a>
+          <% end %>
+        </div>
+      </div>
+    <% elsif @podcast %>
+    <% end %>
+  </div>
+</div>

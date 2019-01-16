@@ -1,55 +1,36 @@
-<% cache "activity-aggregated-reactions-#{group['activities'].first['object']['updated_at']}_#{group['activities'].last['object']['id']}_#{group['is_seen']}" do %>
-  <% unless group['activities'][0]['object'].class.name == "String" %> 
-    <div class="single-article single-article-small-pic <%= 'unseen' if group['is_seen'] == false %>">
-      <% actors = group['activities'].map { |a| a['actor']}.uniq %>
-      <% public_actors = group['activities'].map { |a| a['actor'] unless a['object']['category'] == "readinglist"}.uniq.compact %>
-      <% reaction_categories = group['activities'].map { |a| a['object']['category']} %>
-      <% reactable = group['activities'][0]['object'].reactable %>
-      <% reactable_title = reactable.title.blank? ? "your #{reactable.class.name.downcase}" : reactable.title %>
-      <% if public_actors.size > 0 %>
-        <% cache "activity-profile-pic-#{public_actors.first.id}-#{public_actors.first.profile_image_url}" do %>
-          <a href="<%= public_actors.first.path %>" class="small-pic-link-wrapper">
-            <div class="small-pic">
-              <img src="<%= ProfileImage.new(public_actors.first).get %>" alt="<%= public_actors.first.username %> profile image">
-            </div>
-          </a>
-        <% end %>
-      <% else %>
-        <div class="small-pic">
-          <img src="<%= asset_path ReactionImage.new("readinglist").path %>" alt="Reading List Icon">
-        </div>
-      <% end %>
-      <div class="content notification-content reaction-content">
-        <% if public_actors.size == 0 && actors.size == 1 %>
-          Someone reacted to
-          <a href="<%= reactable.path %>" class="notification-comment-reacted-link"><%= reactable_title %></a>
-        <% elsif public_actors.size == 0 && actors.size > 1 %>
-          <%= actors.size %> devs reacted to
-          <a href="<%= reactable.path %>" class="notification-comment-reacted-link"><%= reactable_title %></a>
-        <% elsif public_actors.size == 1 && actors.size == 1 %>
-          <a href="<%= public_actors.first.path %>"><%= public_actors.first.name %></a>
-          reacted to
-          <a href="<%= reactable.path %>" class="notification-comment-reacted-link"><%= reactable_title %></a>
-        <% elsif public_actors.size == 2 && actors.size == 2 %>
-          <a href="<%= public_actors.first.path %>"><%= public_actors.first.name %></a> and <a href="<%= public_actors.last.path %>"><%= public_actors.last.name %></a>
-          reacted to
-          <a href="<%= reactable.path %>" class="notification-comment-reacted-link"><%= reactable_title %></a>
-        <% elsif public_actors.size > 1 %>
-          <a href="<%= public_actors.first.path %>"><%= public_actors.first.name %></a> and  <%= pluralize(actors.size - 1, "other") %>
-          reacted to
-          <a href="<%= reactable.path %>" class="notification-comment-reacted-link"><%= reactable_title %></a>
-        <% else %>
-          Devs reacted to <a href="<%= reactable.path %>" class="notification-comment-reacted-link"><%= reactable_title %></a>
-        <% end %>
-        <span class="reaction-images">
-            with 
-          <% reaction_categories.each do |cat| %>
-            <% if ReactionImage.new(cat).path.present? %>
-              <%= image_tag ReactionImage.new(cat).path, class: "reaction-image", alt: "#{cat}" %>
-            <% end %>
-          <% end %>
-        </span>  
+<%# TODO: change to map of IDs %>
+<% cache "activity-aggregated-reactions-#{siblings}" do %>
+  <% actors = siblings.map { |n| n["user"] }.uniq %>
+  <% reactable_data = notification.json_data["reaction"]["reactable"] %>
+  <% cache "activity-profile-pic-#{actors.first["id"]}-#{actors.first["profile_image_90"]}" do %>
+    <a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
+      <div class="small-pic">
+        <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
       </div>
-    </div>
+    </a>
   <% end %>
+
+  <div class="content notification-content reaction-content">
+    <% if actors.size == 1 %>
+      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a>
+    <% elsif actors.size == 2 %>
+      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <a href="<%= actors.last["path"] %>"><%= actors.last["name"] %></a>
+    <% elsif actors.size > 1 %>
+      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <%= pluralize(actors.size - 1, "other") %>
+    <% end %>
+    reacted to
+      <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
+        <%# your article/comment or the actual title of the article/comment %>
+        <%= reactable_data["title"].blank? ? "your #{reactable_data["class"]["name"].downcase}" : sanitize(reactable_data["title"]) %>
+      </a>
+      <span class="reaction-images">
+          with
+        <% reaction_categories = siblings.map { |n| n["category"] } %>
+        <% reaction_categories.each do |cat| %>
+          <% if ReactionImage.new(cat).path.present? %>
+            <%= image_tag ReactionImage.new(cat).path, class: "reaction-image", alt: "#{cat}" %>
+          <% end %>
+        <% end %>
+      </span>
+  </div>
 <% end %>

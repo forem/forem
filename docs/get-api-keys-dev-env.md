@@ -1,140 +1,162 @@
-There are a few services you'll need **_(all free)_** in order to run the development server and access the app locally. Here are the instructions for getting them:
-
-# Algolia
-
-Choose OAuth or Email Sign Up
-
-## Algolia: OAuth Sign Up
-
-1.  [Click this link and sign up for an account with either GitHub or Google.](https://www.algolia.com/users/sign_up)
-    ![screen shot 2018-05-02 at 3 06 05 pm](https://user-images.githubusercontent.com/17884966/39547183-c5d8b572-4e24-11e8-80e3-5b595e0c9999.png)
-2.  Select your region, and then hit "Let's get started!"
-    ![screen shot 2018-05-01 at 2 30 52 pm](https://user-images.githubusercontent.com/17884966/39544263-80c7e39e-4e1b-11e8-802e-c9562bdf1b63.png)
-3.  Skip the tutorial (or don't) and go to your dashboard.
-    ![screen shot 2018-05-01 at 12 59 06 pm](https://user-images.githubusercontent.com/17884966/39544344-c8cc4496-4e1b-11e8-8d81-d570a48a0668.png)
-4.  Click "Go to your dashboard".
-
-![screen shot 2018-05-02 at 3 45 34 pm](https://user-images.githubusercontent.com/17884966/39547238-f4ddd1ae-4e24-11e8-942b-98a01e20c632.png)
-
-5.  Agree to Terms and Conditions.
-    ![screen shot 2018-05-02 at 3 45 49 pm](https://user-images.githubusercontent.com/17884966/39547258-05d347fa-4e25-11e8-9335-b65c72b846af.png)
-
-6.  Click "API Keys" on the left navbar.
-
-![screen shot 2018-05-02 at 4 24 30 pm](https://user-images.githubusercontent.com/17884966/39547400-7cdb854c-4e25-11e8-8442-7cfc1dc8bc1e.png)
-
-7.  Change your keys accordingly (name of Algolia key -> name of our application key):
-
-* `Application ID -> ALGOLIASEARCH_APPLICATION_ID`
-* `Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY`
-* `Admin API KEY -> ALGOLIASEARCH_API_KEY`
-
-![screen shot 2018-05-02 at 4 26 27 pm](https://user-images.githubusercontent.com/17884966/39547471-b24f2e36-4e25-11e8-9a0e-b988d6a8253f.png)
-
-8.  Done!
-
----
-
----
-
----
-
-## Algolia Email Sign Up
-
-1.  [Click this link and sign up for an account with your email address.](https://www.algolia.com/users/sign_up)
-    ![screen shot 2018-05-02 at 4 30 52 pm](https://user-images.githubusercontent.com/17884966/39547712-5ff9d338-4e26-11e8-98e9-83852021ba90.png)
-
-2.  Fill out your name and what describes you the most.
-    ![screen shot 2018-05-01 at 12 57 03 pm](https://user-images.githubusercontent.com/17884966/39547792-9a436842-4e26-11e8-9199-c320d24476fe.png)
-
-3.  Choose your datacenter/region closest to you.
-    ![screen shot 2018-05-01 at 12 58 36 pm](https://user-images.githubusercontent.com/17884966/39548002-3f7d2640-4e27-11e8-8701-21820d852379.png)
-
-4.  Skip the step asking about your project.
-    ![screen shot 2018-05-01 at 12 58 12 pm](https://user-images.githubusercontent.com/17884966/39547930-09b2af08-4e27-11e8-8c1b-d6b67d75d141.png)
-
-5.  Complete the onboarding flow and click "Go to dashboard".
-    ![screen shot 2018-05-01 at 12 58 48 pm](https://user-images.githubusercontent.com/17884966/39548519-dc0491dc-4e28-11e8-90e2-be014acd0a66.png)
-
-6.  Click "API Keys" on the left navbar.
-
-![screen shot 2018-05-02 at 4 24 30 pm](https://user-images.githubusercontent.com/17884966/39547400-7cdb854c-4e25-11e8-8442-7cfc1dc8bc1e.png)
-
-7.  Change your keys accordingly (name of Algolia key -> name of our application key):
-
-* `Application ID -> ALGOLIASEARCH_APPLICATION_ID`
-* `Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY`
-* `Admin API KEY -> ALGOLIASEARCH_API_KEY`
-
-![screen shot 2018-05-02 at 4 26 27 pm](https://user-images.githubusercontent.com/17884966/39547471-b24f2e36-4e25-11e8-9a0e-b988d6a8253f.png)
-
-8.  Done!
-
-That's it! You should try logging in with development, it should work. If it doesn't, let us know via an issue or in the contributors channel!
-
-### _The following are optional, but are probably things you'll run into. That said, if you're working on tests and other things, you shouldn't need these._
-
-### For authentication, you can choose Twitter, GitHub, or both.
-
-# Twitter App
-
-1.  [Click this link and sign in/sign up for a Twitter account.](https://apps.twitter.com) Note that your Twitter account will need a phone number linked to it in order to create an app.
-2.  Create a new app, and fill out the form, like the following example image: ![](https://user-images.githubusercontent.com/17884966/41612665-952d4cae-73c1-11e8-8047-cf0bd03bffb6.png)
-
-The only important field is the "Callback URL" `http://localhost:3000/users/auth/twitter/callback`, which redirects you properly to `localhost:3000` when signing in.
-
-3.  Once done, go to your app's settings, and fill in the terms of service `http://dev.to/terms` and privacy policy URL `http://dev.to/privacy`:
-
-![](https://user-images.githubusercontent.com/17884966/41617044-8155387a-73cd-11e8-9e1d-f14c4652bda2.png)
-
-4.  Once done, go to your app's permissions, and check the "Request email addresses from users" box.
-    ![screen shot 2018-05-02 at 5 02 48 pm](https://user-images.githubusercontent.com/17884966/39549184-f2e19952-4e2a-11e8-81ad-10e06c4e8a61.png)
-
-5.  Change your keys accordingly: (name of Twitter key -> name of our application key):
-
-* `Access Token -> TWITTER_KEY`
-* `Access Token Secret -> TWITTER_SECRET`
-
-6.  Done!
+There are a few services you'll need **_(all free)_** in order to run the development server and access the app locally. Here are the instructions for getting them.
 
 # GitHub
 
-1.  [Click this link and sign in/sign up for a GitHub account.](https://github.com/settings/applications/new)
-2.  Once signed in, create a new OAuth app. Here's an example; the URLs must match the example:
-    ![screen shot 2018-04-26 at 4 08 01 pm](https://user-images.githubusercontent.com/17884966/39329488-77cbf554-496c-11e8-941e-dd257b5223ee.png)
-3.  Change your keys accordingly; (name of GitHub key -> name of our application key):
+1. [Sign in](https://github.com/settings/applications/new) in your Github account.
 
-* `Client ID -> GITHUB_KEY`
-* `Client Secret -> GITHUB_SECRET`
+2. Fill in the form with and application name, descriptions and URLs `http://localhost:3000/`. Replace the `3000` port if you run DEV on other port.
+   ![github-1](https://user-images.githubusercontent.com/22895284/51085500-877a6c00-173a-11e9-913a-0dccad234cf3.png)
 
-4.  Done!
+3. You will be redirected in app's **Developer settings**. Here you will find the keys. Change them accordingly (name of Github key -> name of our `ENV` variable):
 
-# Stream
+   ```
+   Client ID -> GITHUB_KEY
+   Client Secret -> GITHUB_SECRET
+   ```
 
-1.  [Sign up for an account with this link](https://getstream.io/accounts/signup/), using either your email or GitHub.
+   ![github-2](https://user-images.githubusercontent.com/22895284/51085862-49337b80-173f-11e9-8503-f8251d07f458.png)
 
-![stream step 1](https://user-images.githubusercontent.com/17884966/39548654-47db0f08-4e29-11e8-9cc3-c17d1b7228eb.png)
+4. You will need a persona token as well. From the same dashboard navigate to **Personal access tokens** and generate a new token.
+   ![github-3](https://user-images.githubusercontent.com/22895284/51085863-49337b80-173f-11e9-81bf-1c1e38035a7a.png)
+5. Fill in the token description and generate the token.
 
-2.  Click "View Dashboard" at the top right corner.
+6. Be sure that you copy the token right away, because it is the only time you will see it. Change it accordingly.
 
-![stream step 2](https://user-images.githubusercontent.com/17884966/39548718-6f1928ca-4e29-11e8-9034-52ef1c1cc9d6.png)
+   ```
+   Personal access tokens -> GITHUB_TOKEN
+   ```
 
-3.  **In the next page, click "Add New Feed Group".**
+   ![github-4](https://user-images.githubusercontent.com/22895284/51085865-49cc1200-173f-11e9-86a8-7e7e1db408a0.png)
 
-![stream step 3](https://user-images.githubusercontent.com/17884966/39548743-85bd4e44-4e29-11e8-9b6e-43567c4f7c22.png)
+7. Done.
 
-<hr>
+# Twitter App
 
-4.  Add a new feed group with the type "Notification" and name it `notifications` (case sensitive).
+## Twitter: Sign up
 
-![stream step 4](https://user-images.githubusercontent.com/17884966/39548890-f0ad7742-4e29-11e8-84a3-ed823e720052.png)
+1. [Sign in](https://developer.twitter.com/apps) your Twitter account.
 
-5.  Make sure you have a feed group with the type "Flat" and named `user` (case sensitive). You probably do, but if you don't, create one like you did with the notifications feed group.
+2. In order to get the API keys you will have to apply for a developer account. Click on **Apply** buttons.
+   ![twitter-up-1](https://user-images.githubusercontent.com/22895284/51078779-53139b00-16bb-11e9-911c-f232e229872a.png)
 
-6.  Change your keys accordingly: (name of Stream key -> name of our application key):
+3. Setup your Twitter account. Be sure you have your phone number and email address filled in.
+   ![twitter-up-2](https://user-images.githubusercontent.com/22895284/51078780-53139b00-16bb-11e9-91d5-08c9365ff08f.png)
 
-* `Key -> STREAM_RAILS_KEY`
-* `Secret -> STREAM_RAILS_SECRET`
-* `"https://us-east-api.stream-io-api.com/api/v1.0/" -> STREAM_URL`
+4. Fill in your account information and give a name to your **developer account**.
+   ![twitter-up-3](https://user-images.githubusercontent.com/22895284/51078781-53ac3180-16bb-11e9-8cf4-005efbb92d8a.png)
 
-7.  Done!
+5. Write down the reasons that you want to use Twitter API. Mention DEV community and describe the issues and tests and things that you want you want to work on. Copy it, you might use it later ;)
+   ![twitter-up-4](https://user-images.githubusercontent.com/22895284/51078782-53ac3180-16bb-11e9-9937-c888ae40143c.png)
+
+6. Read :) and accept the Terms and Conditions.
+   ![twitter-up-5](https://user-images.githubusercontent.com/22895284/51078783-53ac3180-16bb-11e9-9cf1-8e009ada6e57.png)
+
+7. Verify your email address once more and you will be done.
+
+8. You are done.
+
+## Twitter: Get API keys
+
+1. [Sign up](#twitter-sign-up) or [sign in](https://developer.twitter.com/apps) in your Twitter developer account.
+
+2. From **Apps** dashboard click on **Create and app**.
+   ![twitter-1](https://user-images.githubusercontent.com/22895284/51078797-9a019080-16bb-11e9-8130-1cd13008461e.png)
+
+3. Fill in the app name, description and URL `https://dev.to`.
+   ![twitter-2](https://user-images.githubusercontent.com/22895284/51078798-9a019080-16bb-11e9-900d-d2677d7c43c4.png)
+
+4. Check the **Enable Sign in with Twitter** option and fill in the Callback URL `http://localhost:3000/users/auth/twitter/callback` (or whatever port you run DEV on).
+   ![twitter-3](https://user-images.githubusercontent.com/22895284/51078799-9a9a2700-16bb-11e9-8e88-0393260449c7.png)
+5. Fill in the DEV information, **Terms of Service** `http://dev.to/terms` and **Privacy policy** `http://dev.to/privacy`.
+   ![twitter-4](https://user-images.githubusercontent.com/22895284/51078800-9a9a2700-16bb-11e9-9b36-d325a2624f5a.png)
+
+6. Write down (or paste) the things that you will work on. Press **Create**.
+   ![twitter-5](https://user-images.githubusercontent.com/22895284/51078801-9a9a2700-16bb-11e9-9bd9-76c9ca1ba526.png)
+
+7. Review the [Twitter Developer Terms](https://developer.twitter.com/en/developer-terms/agreement-and-policy.html) and agree to do nothing sketchy.
+   ![twitter-6](https://user-images.githubusercontent.com/22895284/51078802-9a9a2700-16bb-11e9-8789-53720bcfc9d9.png)
+
+8. The app is all set!
+
+9. One more change... From the app dashboard go to **Permissions** and check **Request email addresses from users** option.
+   ![twitter-7](https://user-images.githubusercontent.com/22895284/51078803-9a9a2700-16bb-11e9-8f27-dbfe04b52031.png)
+
+10. From the same dashboard access the **Keys and tokens** and change them accordingly (name of Twitter key -> name of our `ENV` variable):
+
+    ```
+    Access Token -> TWITTER_KEY
+    Access Token Secret -> TWITTER_SECRET
+    API key -> TWITTER_ACCESS_TOKEN
+    API secret key -> TWITTER_ACCESS_TOKEN_SECRET
+    ```
+
+    ![twitter-8](https://user-images.githubusercontent.com/22895284/51078804-9a9a2700-16bb-11e9-8b9e-0c882ae47f21.png)
+
+11. Done.
+
+# Algolia
+
+## Algolia: Sign up
+
+1. Go to Algolia singing up [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
+
+2. Choose one of the three methods of signing up. (email, github or google)
+
+3. Fill in your information.
+   ![algolia-up-1](https://user-images.githubusercontent.com/22895284/51078744-ad602c00-16ba-11e9-9f59-7f9f2cc0443f.png)
+
+4. Select the datacenter's region.
+   ![algolia-up-2](https://user-images.githubusercontent.com/22895284/51078745-ad602c00-16ba-11e9-81ee-6ec3310919d9.png)
+
+5. Fill in or skip the project information.
+   ![algolia-up-3](https://user-images.githubusercontent.com/22895284/51078746-ad602c00-16ba-11e9-9927-d790ce03761e.png)
+
+6. You are all set up now! You can go to your dashboard.
+   ![algolia-up-4](https://user-images.githubusercontent.com/22895284/51078747-ad602c00-16ba-11e9-8654-67c4d0f2e651.png)
+
+7. You can skip the tutorial, we will guide you through the process. Accept the [Terms and Conditions](https://www.algolia.com/policies/terms).
+   ![algolia-up-5](https://user-images.githubusercontent.com/22895284/51078748-ad602c00-16ba-11e9-8ff6-6becac2152ac.png)
+
+8. All good! You can get your API keys now.
+
+## Algolia: Get API keys
+
+1. [Sign up](#algolia-sign-up) or [Sign in](https://www.algolia.com/users/sign_in) in your Algolia account.
+
+2. From your **Dashboard** click on **API Keys**.
+   ![algolia-1](https://user-images.githubusercontent.com/22895284/51078770-2eb7be80-16bb-11e9-9dcc-ed6d9c52d935.png)
+
+3. Change your keys accordingly (name of Algolia key -> name of our `ENV` variable):
+
+   ```
+   Application ID -> ALGOLIASEARCH_APPLICATION_ID
+   Search-Only API Key -> ALGOLIASEARCH_SEARCH_ONLY_KEY
+   Admin API KEY -> ALGOLIASEARCH_API_KEY
+   ```
+
+   ![algolia-2](https://user-images.githubusercontent.com/22895284/51078771-2eb7be80-16bb-11e9-9622-f19417f1b29c.png)
+
+4. Done.
+
+# Pusher
+
+1. [Sign up](https://dashboard.pusher.com/accounts/sign_up) or [sign in](https://dashboard.pusher.com/) in your Pusher account.
+
+2. Once signed in, fill in the prompt to create a new Pusher Channels app.
+   ![pusher-1](https://user-images.githubusercontent.com/22895284/51086056-058e4100-1742-11e9-8dca-de3e47e2bc73.png)
+
+3. In your new Pusher Channels app, click the "App Keys" tab.
+   ![pusher-2](https://user-images.githubusercontent.com/22895284/51086057-058e4100-1742-11e9-9fb7-397187aa8689.png)
+
+4. Change your keys accordingly (name of Pusher key -> name of our application key):
+
+   ```
+   app_id -> PUSHER_APP_ID
+   key -> PUSHER_KEY
+   secret -> PUSHER_SECRET
+   cluster -> PUSHER_CLUSTER
+   ```
+
+   ![pusher-3](https://user-images.githubusercontent.com/22895284/51086058-0626d780-1742-11e9-9c2a-26b9b10fa77f.png)
+
+5. Done.
