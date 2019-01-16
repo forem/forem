@@ -6,6 +6,7 @@ module Exporter
 
     EXPORTERS = [
       Articles,
+      Comments,
     ].freeze
 
     def initialize(user)
