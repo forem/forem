@@ -7,7 +7,7 @@ class Internal::ArticlesController < Internal::ApplicationController
     when /not\-buffered/
       days_ago = params[:state].split("-")[2].to_f
       @articles = Article.
-        where(last_buffered: nil).
+        where(last_buffered: nil, published: true).
         includes(:user).
         includes(:buffer_updates).
         order("positive_reactions_count DESC").
@@ -17,6 +17,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         per(50)
     when /top\-/
       @articles = Article.
+        where(published: true).
         where("published_at > ?", params[:state].split("-")[1].to_i.months.ago).
         includes(:user).
         includes(:buffer_updates).
