@@ -1,8 +1,8 @@
 require "rails_helper"
 
 describe "User visits a homepage", type: :feature do
-  let!(:article) { create(:article, reactions_count: 12, featured: true) }
-  let!(:article2) { create(:article, reactions_count: 20) }
+  let!(:article) { create(:article, reactions_count: 12, score: 12, featured: true) }
+  let!(:article2) { create(:article, reactions_count: 20, score: 12) }
   let!(:bad_article) { create(:article, reactions_count: 0) }
 
   context "when no options specified" do
