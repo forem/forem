@@ -10,7 +10,6 @@
 
 <%= paginate @feedback_messages %>
 
-
   <% @vomits.each do |reaction| %>
       <% next unless reaction.user && reaction.reactable %>
       <div class="row">
