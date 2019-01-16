@@ -1,6 +1,5 @@
 class SpotifyTag < LiquidTagBase
   URI_REGEXP = /spotify:(track|user|artist|album|episode).+(?<=:)\w{22}/.freeze
-  URL_REGEXP = /https:\/\/open.spotify.com\/(track|user|artist|album|episode)\/.*(?<=\/)\w{22}/.freeze
   TYPE_HEIGHT = {
     track: 116,
     user: 116,
@@ -9,10 +8,10 @@ class SpotifyTag < LiquidTagBase
     episode: 116
   }.freeze
 
-  def initialize(tag_name, link)
+  def initialize(tag_name, uri, tokens)
     super
-    @link_type, @parsed_link = parse_link(link)
-    @height = TYPE_HEIGHT[@match_data[1]]
+    @parsed_uri = parse_uri(uri)
+    @height = TYPE_HEIGHT[@parsed_uri[1]]
   end
 
   def render(_context)
@@ -24,7 +23,7 @@ class SpotifyTag < LiquidTagBase
         frameborder="0"
         allowtransparency="true"
         allow="encrypted-media"
-        src="#{embed_url(@link_type, @parsed_link)}">
+        src="#{generate_embed_link(@parsed_uri)}">
       </iframe>
     HTML
     finalize_html(html)
@@ -32,27 +31,16 @@ class SpotifyTag < LiquidTagBase
 
   private
 
-  def parse_link(link)
-    if URI_REGEXP.match?(link)
-      ["uri", URI_REGEXP.match(link).string]
-    elsif URL_REGEXP.match?(link)
-      ["url", URL_REGEXP.match(link).string]
-    else
-      raise_error
-    end
+  def parse_uri(uri)
+    URI_REGEXP.match(uri) || raise_error
   end
 
-  def embed_url(link_type, parsed_link)
-    case link_type
-    when "uri"
-      parsed_link.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
-    when "url"
-      parsed_link.gsub("https://open.spotify.com", "https://open.spotify.com/embed")
-    end
+  def generate_embed_link(parsed_uri)
+    parsed_uri.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
   end
 
   def raise_error
-    raise StandardError, "Invalid Spotify Link - Be sure You're linking to a specific track / album / artist / playlist"
+    raise StandardError, "Invalid Spotify Link - Be sure you're using the uri of a specific track, album, artist, playlist, or podcast episode."
   end
 end
 
