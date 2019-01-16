@@ -47,7 +47,7 @@ class JSFiddleTag < LiquidTagBase
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ /^(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/) == 0
+    (link_no_space =~ /^(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/).zero?
   end
 
   def raise_error
