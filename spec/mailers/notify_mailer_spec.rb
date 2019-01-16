@@ -155,7 +155,7 @@ RSpec.describe NotifyMailer, type: :mailer do
     describe "#export_email" do
       it "renders proper subject" do
         export_email = described_class.export_email(user, "attachment")
-        expect(export_email.subject).to include("export of your data is ready")
+        expect(export_email.subject).to include("export of your content is ready")
       end
 
       it "renders proper receiver" do
