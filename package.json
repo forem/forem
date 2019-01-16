@@ -90,7 +90,7 @@
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.6.2",
     "pusher-js": "^4.3.1",
-    "web-share-wrapper": "^0.2.1"
+    "web-share-wrapper": "^0.2.1",
     "twilio-video": "^1.15.0"
   },
   "husky": {
