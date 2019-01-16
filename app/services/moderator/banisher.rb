@@ -2,8 +2,12 @@ module Moderator
   class Banisher
     attr_reader :user, :admin
 
-    def self.call(admin:, offender:)
+    def self.call_banish(admin:, offender:)
       new(offender: offender, admin: admin).banish
+    end
+
+    def self.call_delete_activity(admin:, offender:)
+      new(offender: offender, admin: admin).full_delete
     end
 
     def initialize(admin:, offender:)
@@ -71,15 +75,24 @@ module Moderator
       end
     end
 
-    def banish
-      # return unless user.comments.where("created_at < ?", 150.days.ago).empty?
-      reassign_and_bust_username
-      remove_profile_info
-      add_banned_role
+    def delete_user_activity
       delete_reactions
       delete_comments
       delete_articles
       delete_follows
+    end
+
+    def full_delete
+      delete_user_activity
+      CacheBuster.new.bust("/#{user.old_username}")
+      user.delete
+    end
+
+    def banish
+      reassign_and_bust_username
+      remove_profile_info
+      add_banned_role
+      delete_user_activity
       user.remove_from_algolia_index
       user.save!
     end

@@ -21,3 +21,9 @@
     <% end %>
   </div>
 <% end %>
+
+<% if current_user.has_role?(:super_admin) %>
+  <%= form_for(@user, :url => full_delete_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive and irreversible.')"}) do %>
+    <button class="btn btn-danger" style="font-size:2em;">FULLY DELETE USER</button>
+  <% end %>
+<% end %>

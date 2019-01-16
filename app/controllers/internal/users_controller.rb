@@ -109,11 +109,23 @@ class Internal::UsersController < Internal::ApplicationController
   def banish
     @user = User.find(params[:id])
     begin
-      Moderator::Banisher.call(admin: current_user, offender: @user)
+      Moderator::Banisher.call_banish(admin: current_user, offender: @user)
     rescue StandardError => e
       flash[:error] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def full_delete
+    @user = User.find(params[:id])
+    username = @user.username
+    begin
+      Moderator::Banisher.call_delete_activity(admin: current_user, offender: @user)
+      flash[:notice] = "@" + username + " has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users"
   end
 
   private
