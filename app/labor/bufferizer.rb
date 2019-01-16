@@ -6,7 +6,7 @@ class Bufferizer
   end
 
   def satellite_tweet!
-    article.tags.each do |tag|
+    article.tags.find_each do |tag|
       if tag.buffer_profile_id_code.present?
         BufferUpdate.buff!(article.id, twitter_buffer_text, tag.buffer_profile_id_code, "twitter", tag.id)
       end

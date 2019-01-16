@@ -50,21 +50,10 @@ class Organization < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
 
-  def username
-    slug
-  end
-
-  def old_username
-    old_slug
-  end
-
-  def old_old_username
-    old_old_slug
-  end
-
-  def website_url
-    url
-  end
+  alias_attribute :username, :slug
+  alias_attribute :old_username, :old_slug
+  alias_attribute :old_old_username, :old_old_slug
+  alias_attribute :website_url, :url
 
   def check_for_slug_change
     if slug_changed?
@@ -90,7 +79,7 @@ class Organization < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
       article.save
@@ -124,7 +113,7 @@ class Organization < ApplicationRecord
     cache_buster = CacheBuster.new
     cache_buster.bust("/#{slug}")
     begin
-      articles.each do |article|
+      articles.find_each do |article|
         cache_buster.bust(article.path)
       end
     rescue StandardError
