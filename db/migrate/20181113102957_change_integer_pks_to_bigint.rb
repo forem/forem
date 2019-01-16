@@ -26,6 +26,7 @@ class ChangeIntegerPksToBigint < ActiveRecord::Migration[5.1]
     # reference columns
     change_column :ahoy_messages, :feedback_message_id, :bigint
     change_column :ahoy_messages, :user_id, :bigint
+    change_column :api_secrets, :user_id, :bigint
     change_column :articles, :collection_id, :bigint
     change_column :articles, :job_opportunity_id, :bigint
     change_column :articles, :organization_id, :bigint
@@ -104,6 +105,7 @@ class ChangeIntegerPksToBigint < ActiveRecord::Migration[5.1]
     # reference columns
     change_column :ahoy_messages, :feedback_message_id, :integer
     change_column :ahoy_messages, :user_id, :integer
+    change_column :api_secrets, :user_id, :integer
     change_column :articles, :collection_id, :integer
     change_column :articles, :job_opportunity_id, :integer
     change_column :articles, :organization_id, :integer

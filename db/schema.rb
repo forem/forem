@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "description", null: false
     t.string "secret"
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.bigint "user_id"
     t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
