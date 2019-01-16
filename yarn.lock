@@ -370,10 +370,10 @@
   resolved "https://registry.yarnpkg.com/@twilio/sip.js/-/sip.js-0.7.7.tgz#cff50f66f9b295d46f219737b72780c7d0e6df52"
   integrity sha1-z/UPZvmyldRvIZc3tyeAx9Dm31I=
 
-"@twilio/webrtc@^2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.1.4.tgz#d7a27440353d69852b17ef889ea97c1f191b994a"
-  integrity sha512-fQiN8EQ8TfGSVqgxIbCKoGg3EzNBO+QnZsgYM3rrKvAVcgVUlMzjZg86QVgAcrs36A5XBzikWC/KoU48SEJ5rw==
+"@twilio/webrtc@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.2.0.tgz#3cf70dcdacbaa84ccf018636a7e44aa967354595"
+  integrity sha512-zzoUu7PJyfb73voRiBwTJHBuBqEOCHkImVwprSXn8NA7UGFjHZwL6f+g8nWtEaCvgiFO5Sd8k+Oo1d7f6KomsQ==
 
 "@webscopeio/react-textarea-autocomplete@^2.3.4":
   version "2.3.5"
@@ -3670,10 +3670,10 @@ eslint-config-airbnb@^17.1.0:
     object.assign "^4.1.0"
     object.entries "^1.0.4"
 
-eslint-config-prettier@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-3.3.0.tgz#41afc8d3b852e757f06274ed6c44ca16f939a57d"
-  integrity sha512-Bc3bh5bAcKNvs3HOpSi6EfGA2IIp7EzWcg2tS4vP7stnXu/J1opihHDM7jI9JCIckyIDTgZLSWn7J3HY0j2JfA==
+eslint-config-prettier@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-3.4.0.tgz#97dd5bf33d4d85862fdadf2ea89b4d6cebf3ba4f"
+  integrity sha512-VDBMmnwA1SH4tGoyTVStbjI18xAFtozvrodjEuoqtP/P/XLJs5Ga8sFf7GSSPxAkgh65CGYT/zOXzsf2IA0aqw==
   dependencies:
     get-stdin "^6.0.0"
 
@@ -10443,13 +10443,13 @@ tweetnacl@^1.0.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
   integrity sha1-cT2LgY2kIGh0C/aDhtBHnmb8ins=
 
-twilio-video@^1.14.2:
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.14.2.tgz#d0b9094a663e5d1af704c9dbc3ebd48fc0d61adb"
-  integrity sha512-aWQjpTfFDtiPlaAIbjEoV0CfwA825POCSlTcbwTsRmVI9pLYCqdCvMfyKr/qHb3vWVLbTuuKA6NMkowvQU3Tgw==
+twilio-video@^1.15.0:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.0.tgz#c14ef1789b8a1d103d89ca0f123999afccf89c68"
+  integrity sha512-yO1M53hnPOuewm4jNodrLKqvCITDY5bNjI3LAKs+8rNpZ1EcqoPGRZgi+YrFNrO1RwrQbakc1nN/6acZ3qjXww==
   dependencies:
     "@twilio/sip.js" "^0.7.7"
-    "@twilio/webrtc" "^2.1.4"
+    "@twilio/webrtc" "^2.2.0"
     ws "^3.3.1"
     xmlhttprequest "^1.8.0"
 

@@ -1,24 +1,21 @@
-require "rss"
-require "open-uri"
 require "nokogiri"
 require "httparty"
 require "securerandom"
 
 class RssReader
-  def self.get_all_articles
-    new.get_all_articles
+  def self.get_all_articles(force = true)
+    new.get_all_articles(force)
   end
 
   def initialize(request_id = nil)
     @request_id = request_id
   end
 
-  def get_all_articles
-    User.where.not(feed_url: nil).each do |u|
-      feed_url = u.feed_url.strip
-      next if feed_url == ""
+  def get_all_articles(force = true)
+    User.where.not(feed_url: [nil, ""]).find_each do |user|
+      next if force == false && (rand(2) == 1 || user.feed_fetched_at > 15.minutes.ago) # Don't fetch every time.
 
-      create_articles_for_user(u)
+      create_articles_for_user(user)
     end
   end
 
@@ -38,7 +35,8 @@ class RssReader
 
   def create_articles_for_user(user)
     with_span("create_articles_for_user", user_id: user.id, username: user.username) do |metadata|
-      feed = fetch_rss(user.feed_url)
+      user.update_column(:feed_fetched_at, Time.current)
+      feed = fetch_rss(user.feed_url.strip)
       metadata[:feed_length] = feed.entries.length if feed&.entries
       feed.entries.reverse_each do |item|
         make_from_rss_item(item, user, feed)
@@ -90,7 +88,8 @@ class RssReader
         published_at: item.published,
         published_from_feed: true,
         show_comments: true,
-        body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
+        # body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
+        body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
         organization_id: user.organization_id.present? ? user.organization_id : nil
       }
       article = with_timer("save_article", metadata) do
@@ -104,117 +103,6 @@ class RssReader
         username: "article_bot",
         icon_emoji: ":robot_face:",
       )
-    end
-  end
-
-  def assemble_body_markdown(item, user, feed, feed_source_url)
-    with_span("assemble_body_markdown", item_title: item.title) do
-      body = <<~HEREDOC
-        ---
-        title: #{item.title.strip}
-        published: false
-        tags: #{get_tags(item[:categories])}
-        canonical_url: #{user.feed_mark_canonical ? feed_source_url : ''}
-        ---
-
-        #{finalize_reverse_markdown(item, feed)}
-
-      HEREDOC
-      body.strip
-    end
-  end
-
-  def get_tags(categories)
-    categories.first(4).map { |tag| tag[0..19] }.join(",") if categories
-  end
-
-  def get_content(item)
-    item.content || item.summary || item.description
-  end
-
-  def finalize_reverse_markdown(item, feed)
-    cleaned_item_content = HtmlCleaner.new.clean_html(get_content(item))
-    cleaned_item_content = thorough_parsing(cleaned_item_content, feed.url)
-    ReverseMarkdown.convert(cleaned_item_content, github_flavored: true).
-      gsub("```\n\n```", "").gsub(/&nbsp;|\u00A0/, " ")
-  end
-
-  def thorough_parsing(content, feed_url)
-    with_span("thorough_parsing", content_length: content.length) do
-      html_doc = Nokogiri::HTML(content)
-      find_and_replace_possible_links!(html_doc)
-      if feed_url.include?("medium.com")
-        parse_and_translate_gist_iframe!(html_doc)
-        parse_and_translate_youtube_iframe!(html_doc)
-        parse_and_translate_tweet!(html_doc)
-      else
-        clean_relative_path!(html_doc, feed_url)
-      end
-      html_doc.to_html
-    end
-  end
-
-  def parse_and_translate_gist_iframe!(html_doc)
-    html_doc.css("iframe").each do |iframe|
-      a_tag = iframe.css("a")
-      next if a_tag.empty?
-
-      possible_link = a_tag[0].inner_html
-      if /medium\.com\/media\/.+\/href/.match?(possible_link)
-        real_link = HTTParty.head(possible_link).request.last_uri.to_s
-        return unless real_link.include?("gist.github.com")
-
-        iframe.name = "p"
-        iframe.keys.each { |attr| iframe.remove_attribute(attr) }
-        iframe.inner_html = "{% gist #{real_link} %}"
-      end
-    end
-    html_doc
-  end
-
-  def parse_and_translate_tweet!(html_doc)
-    html_doc.search("style").remove
-    html_doc.search("script").remove
-    html_doc.css("blockquote").each do |bq|
-      bq_with_p = bq.css("p")
-      next if bq_with_p.empty?
-
-      second_content = bq_with_p.css("p")[1].css("a")[0].attributes["href"].value
-      if bq_with_p.length == 2 && second_content.include?("twitter.com")
-        bq.name = "p"
-        tweet_id = second_content.scan(/\/status\/(\d{10,})/).flatten.first
-        bq.inner_html = "{% tweet #{tweet_id} %}"
-      end
-    end
-  end
-
-  def parse_and_translate_youtube_iframe!(html_doc)
-    html_doc.css("iframe").each do |iframe|
-      if /youtube\.com/.match?(iframe.attributes["src"].value)
-        iframe.name = "p"
-        youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,12})%3F/).flatten.first
-        iframe.keys.each { |attr| iframe.remove_attribute(attr) }
-        iframe.inner_html = "{% youtube #{youtube_id} %}"
-      end
-    end
-  end
-
-  def clean_relative_path!(html_doc, url)
-    html_doc.css("img").each do |img_tag|
-      path = img_tag.attributes["src"].value
-      img_tag.attributes["src"].value = URI.join(url, path).to_s if path.start_with? "/"
-    end
-  end
-
-  def find_and_replace_possible_links!(html_doc)
-    html_doc.css("a").each do |a_tag|
-      link = a_tag.attributes["href"]&.value
-      next unless link
-
-      found_article = Article.find_by(feed_source_url: link)&.decorate
-      if found_article
-        a_tag.attributes["href"].value = found_article.url
-      end
     end
   end
 
@@ -238,7 +126,7 @@ class RssReader
   end
 
   def article_exist?(user, item)
-    user.articles.find_by_title(item.title.strip.gsub('"', '\"'))
+    user.articles.find_by("title = ? OR feed_source_url = ?", item.title.strip.gsub('"', '\"'), item.url.strip.split("?source=")[0])
   end
 
   def log_error(error_msg, metadata)
