@@ -42,6 +42,7 @@ class JSFiddleTag < LiquidTagBase
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first
     raise StandardError, "Invalid JSFiddle URL" unless valid_link?(the_link)
+
     the_link
   end
 
