@@ -8,7 +8,7 @@ class CodesandboxTag < LiquidTagBase
   def render(_context)
     '<iframe src="https://codesandbox.io/embed/' + @id + @query + '"
       style="width:100%; height:calc(300px + 8vw); border:0; border-radius: 4px; overflow:hidden;"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation-by-user-activation"
+      sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation-by-user-activation>"
     </iframe>'
   end
 
@@ -16,7 +16,7 @@ class CodesandboxTag < LiquidTagBase
 
   def parse_id(input)
     id = input.split(" ").first
-    raise StandardError, "Invalid codesandbox ID" unless valid_id?(id)
+    raise StandardError, "CodeSandbox Error: Invalid ID" unless valid_id?(id)
 
     id
   end
@@ -28,9 +28,7 @@ class CodesandboxTag < LiquidTagBase
   def parse_options(input)
     _, *options = input.split(" ")
 
-    # Validation
-    validated_options = options.map { |o| valid_option(o) }.reject { |e| e == nil }
-    raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+    options.map { |o| valid_option(o) }.reject { |e| e == nil }
 
     query = options.join("&")
 
@@ -41,11 +39,14 @@ class CodesandboxTag < LiquidTagBase
     end
   end
 
+  # Valid options must start with 'initialpath=' or 'module=' and a string of at least 1 length
+  # composed of letters, numbers, dashes, underscores, forward slashes, @ signs, periods/dots,
+  # and % symbols.  Invalid options will raise an exception
   def valid_option(option)
-    if option.start_with?("initalpath=", "module=")
+    if (option =~ /\A(initialpath=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(module=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z/)&.zero?
       option
     else
-      ""
+      raise StandardError, "CodeSandbox Error: Invalid options"
     end
   end
 end
