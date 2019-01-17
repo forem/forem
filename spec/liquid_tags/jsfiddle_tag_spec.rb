@@ -17,9 +17,9 @@ RSpec.describe JSFiddleTag, type: :liquid_template do
     end
 
     it "accepts jsfiddle link" do
-      liquid = generate_new_liquid(jsfiddle_link)
-      rendered_jsfiddle_iframe = liquid.render
-      Approvals.verify(rendered_jsfiddle_iframe, name: "jsfiddle_liquid_tag", format: :html)
+      expect do
+        generate_new_liquid(jsfiddle_link)
+      end.not_to raise_error
     end
 
     it "accepts jsfiddle link with a / at the end" do
