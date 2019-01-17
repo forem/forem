@@ -107,7 +107,7 @@ class StoriesController < ApplicationController
 
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("positive_reactions_count DESC")
+        order("score DESC")
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
@@ -116,7 +116,7 @@ class StoriesController < ApplicationController
     else
       @default_home_feed = true
       @stories = @stories.
-        where("reactions_count > ? OR featured = ?", 10, true).
+        where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
       if user_signed_in?
         offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7].sample # random offset, weighted more towards zero
@@ -124,10 +124,10 @@ class StoriesController < ApplicationController
       end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
       if user_signed_in?
-        @new_stories = Article.where("published_at > ? AND score > ?", 4.hours.ago, -30).
+        @new_stories = Article.where("published_at > ? AND score > ?", rand(2..6).hours.ago, -30).
           where(published: true).
           includes(:user).
-          limit(45).
+          limit(rand(15..60)).
           order("published_at DESC").
           limited_column_select.
           decorate
