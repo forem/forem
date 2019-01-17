@@ -41,17 +41,13 @@ class JSFiddleTag < LiquidTagBase
   def parse_link(link)
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first
-    raise_error unless valid_link?(the_link)
+    raise StandardError, "Invalid JSFiddle URL" unless valid_link?(the_link)
     the_link
   end
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
     (link_no_space =~ /^(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/).zero?
-  end
-
-  def raise_error
-    raise StandardError, "Invalid JSFiddle URL"
   end
 end
 
