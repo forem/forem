@@ -124,6 +124,13 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def toggle_mute
+    @article = Article.find_by(user_id: current_user.id, slug: params[:slug])
+    authorize @article
+    @article.update(receive_notifications: !@article.receive_notifications)
+    redirect_to "/dashboard"
+  end
+
   def delete_confirm
     @article = current_user.articles.find_by_slug(params[:slug])
     authorize @article

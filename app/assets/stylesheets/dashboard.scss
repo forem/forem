@@ -245,6 +245,15 @@
       &.black{
         background: $dark-gray;
       }
+      &.mute{
+        background-color: #EE7453;
+        color: $white;
+      }
+      &.unmute{
+        // inverted background color
+        background-color: $blue;
+        color: $white;
+      }
     }
     .dashboard-pageviews-indicator{
       display:inline-block;

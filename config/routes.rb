@@ -295,6 +295,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/mod" => "moderations#article"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
+  get "/:username/:slug/toggle_mute" => "articles#toggle_mute"
   get "/:username/:view" => "stories#index",
       constraints: { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
