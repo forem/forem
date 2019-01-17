@@ -84,7 +84,7 @@ class ArticleApiIndexService
   def state_articles(state)
     if state == "fresh"
       Article.where(published: true).
-        where("positive_reactions_count < ? AND featured_number > ? AND score > ?", 3, 7.hours.ago.to_i, -2)
+        where("positive_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2)
     elsif state == "rising"
       Article.where(published: true).
         where("positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?", 19, 33, 3.days.ago.to_i)

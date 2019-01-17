@@ -5,7 +5,7 @@ module BadgeRewarder
   end
 
   def self.award_beloved_comment_badges
-    Comment.where("positive_reactions_count > ?", 24).each do |comment|
+    Comment.where("positive_reactions_count > ?", 24).find_each do |comment|
       message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
@@ -35,7 +35,7 @@ module BadgeRewarder
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios"].each do |repo|
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |c| c.author.id }
-      Identity.where(provider: "github").where(uid: authors_uids).each do |i|
+      Identity.where(provider: "github", uid: authors_uids).find_each do |i|
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
           rewarding_context_message_markdown: message_markdown,
         )
@@ -44,7 +44,7 @@ module BadgeRewarder
   end
 
   def self.award_badges(usernames, slug, message_markdown)
-    User.where(username: usernames).each do |user|
+    User.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
         badge_id: Badge.find_by_slug(slug).id,
@@ -56,7 +56,7 @@ module BadgeRewarder
 
   def self.award_one_year_badges
     message = "Happy DEV birthday!"
-    User.where("created_at < ? AND created_at > ?", 1.year.ago, 367.days.ago).each do |user|
+    User.where("created_at < ? AND created_at > ?", 1.year.ago, 367.days.ago).find_each do |user|
       achievement = BadgeAchievement.create(
         user_id: user.id,
         badge_id: Badge.find_by_slug("one-year-club").id,
@@ -68,7 +68,7 @@ module BadgeRewarder
 
   def self.award_two_year_badges
     message = "Happy DEV birthday! Can you believe it's been two years?"
-    User.where("created_at < ? AND created_at > ?", 2.year.ago, 732.days.ago).each do |user|
+    User.where("created_at < ? AND created_at > ?", 2.year.ago, 732.days.ago).find_each do |user|
       achievement = BadgeAchievement.create(
         user_id: user.id,
         badge_id: Badge.find_by_slug("two-year-club").id,

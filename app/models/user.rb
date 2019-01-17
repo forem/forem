@@ -126,6 +126,8 @@ class User < ApplicationRecord
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
+  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
+
   after_create :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
@@ -354,7 +356,7 @@ class User < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path) if article.path
       cache_buster.bust(article.path + "?i=i") if article.path
       article.save
@@ -363,7 +365,7 @@ class User < ApplicationRecord
 
   def cache_bust_all_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
     end

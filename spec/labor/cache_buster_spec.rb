@@ -10,12 +10,13 @@ RSpec.describe CacheBuster do
     username = User.find(comment.user_id).username
     described_class.new.bust_comment(commentable, username)
   end
+
   it "busts article" do
     described_class.new.bust_article(article)
   end
+
   it "busts featured article" do
-    article.featured = true
-    article.save
+    article.update(featured: true)
     described_class.new.bust_article(article)
   end
 end
