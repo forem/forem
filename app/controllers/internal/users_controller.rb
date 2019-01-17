@@ -32,7 +32,7 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentor = user_params[:add_mentor]
     ban_from_mentorship
     make_matches
-    warn_or_ban_user
+    update_role
     add_note
     @user.update!(user_params)
     if user_params[:quick_match]
@@ -42,7 +42,7 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def warn_or_ban_user
+  def update_role
     if user_params[:ban_user] == "1"
       @user.add_role :banned
       create_note("banned", user_params[:note_for_current_role])
@@ -50,7 +50,8 @@ class Internal::UsersController < Internal::ApplicationController
       @user.add_role :warned
       create_note("warned", user_params[:note_for_current_role])
     elsif user_params[:good_standing_user] == "1"
-      @user.remove_role :warned
+      @user.remove_role :banned if @user.banned
+      @user.remove_role :warned if @user.warned
       create_note("good_standing", user_params[:note_for_current_role])
     end
   end
