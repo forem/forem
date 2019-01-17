@@ -39,6 +39,7 @@ latest.dump
 /public/packs
 /public/packs-test
 /node_modules
+config/database.yml
 
 # Ignore storybook static site generation
 storybook-static/
@@ -49,3 +50,6 @@ package-lock.json
 
 #Jetbrains Tools
 .idea/
+
+#sitemap
+/public/sitemap.xml.gz

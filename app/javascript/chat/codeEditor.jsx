@@ -1,33 +1,32 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import CodeMirror from 'codemirror';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/jsx/jsx';
-import 'codemirror/mode/ruby/ruby';
 
 export default class CodeEditor extends Component {
 
   componentDidMount() {
-    const editor = document.getElementById("codeeditor");
-    const myCodeMirror = CodeMirror(editor, {
-      mode:  "javascript",
-      theme: "material",
-      autofocus: true,
-    });
-    myCodeMirror.setSize("100%", "100%");
-    //Initial trigger:
-    const channel = window.pusher.channel(`presence-channel-${this.props.activeChannelId}`)
-    channel.trigger('client-livecode', {
-      context: 'initializing-live-code-channel',
-      channel: `presence-channel-${this.props.activeChannelId}`
-    });
-    //Coding trigger:
-    myCodeMirror.on('keyup', cm => {
-        channel.trigger('client-livecode', {
-          keyPressed: true,
-          value: cm.getValue(),
-          cursorPos: cm.getCursor(),
-        });
+    import('codemirror')
+    .then(CodeMirror => {
+      const editor = document.getElementById("codeeditor");
+      const myCodeMirror = CodeMirror(editor, {
+        mode:  "javascript",
+        theme: "material",
+        autofocus: true,
+      });
+      myCodeMirror.setSize("100%", "100%");
+      //Initial trigger:
+      const channel = window.pusher.channel(`presence-channel-${this.props.activeChannelId}`)
+      channel.trigger('client-livecode', {
+        context: 'initializing-live-code-channel',
+        channel: `presence-channel-${this.props.activeChannelId}`
+      });
+      //Coding trigger:
+      myCodeMirror.on('keyup', cm => {
+          channel.trigger('client-livecode', {
+            keyPressed: true,
+            value: cm.getValue(),
+            cursorPos: cm.getCursor(),
+          });
+      });
     });
   }
 

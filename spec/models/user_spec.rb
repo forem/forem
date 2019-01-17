@@ -13,6 +13,7 @@ RSpec.describe User, type: :model do
   before { mock_auth_hash }
 
   describe "validations" do
+    it { is_expected.to have_many(:api_secrets) }
     it { is_expected.to have_many(:articles) }
     it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
     it { is_expected.to have_many(:badges).through(:badge_achievements) }
@@ -56,6 +57,21 @@ RSpec.describe User, type: :model do
 
     it "does not accept invalid website url" do
       user.website_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https mastodon url" do
+      user.mastodon_url = "https://mastodon.social/@test"
+      expect(user).to be_valid
+    end
+
+    it "does not accept a denied mastodon instance" do
+      user.mastodon_url = "https://SpammyMcSpamface.com/"
+      expect(user).not_to be_valid
+    end
+
+    it "does not accept invalid mastodon url" do
+      user.mastodon_url = "mastodon.social/@test"
       expect(user).not_to be_valid
     end
 
@@ -156,7 +172,19 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "changes old_username if old_old_username properly if username changes" do
+    it "accepts valid https gitlab url" do
+      %w(jess jess/ je-ss je_ss).each do |username|
+        user.gitlab_url = "https://gitlab.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
+    it "does not accept invalid gitlab url" do
+      user.gitlab_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "changes old_username and old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"
       user.update(username: random_new_username)
@@ -336,6 +364,40 @@ RSpec.describe User, type: :model do
 
     it "returns segment of articles if limit is passed" do
       expect(user.followed_articles.limit(2).size).to eq(2)
+    end
+  end
+
+  describe "#cached_followed_tags" do
+    let(:tag1)  { create(:tag) }
+    let(:tag2)  { create(:tag) }
+    let(:tag3)  { create(:tag) }
+    let(:tag4)  { create(:tag) }
+
+    it "returns empty if no tags followed" do
+      expect(user.decorate.cached_followed_tags.size).to eq(0)
+    end
+
+    it "returns array of tags if user follows them" do
+      user.follow(tag1)
+      user.follow(tag2)
+      user.follow(tag3)
+      expect(user.decorate.cached_followed_tags.size).to eq(3)
+    end
+
+    it "returns tag object with name" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.name).to eq(tag1.name)
+    end
+
+    it "returns follow points for tag" do
+      user.follow(tag1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(1.0)
+    end
+
+    it "returns adjusted points for tag" do
+      user.follow(tag1)
+      Follow.last.update(points: 0.1)
+      expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
   end
 

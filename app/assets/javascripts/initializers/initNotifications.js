@@ -3,6 +3,7 @@ function initNotifications() {
   markNotificationsAsRead();
   initReactions();
   listenForNotificationsBellClick();
+  initPagination();
 }
 
 function markNotificationsAsRead() {
@@ -23,7 +24,7 @@ function markNotificationsAsRead() {
       xmlhttp.setRequestHeader('X-CSRF-Token', csrfToken);
       xmlhttp.send();
     }
-  }, 250);
+  }, 450);
 }
 
 function fetchNotificationsCount() {
@@ -67,6 +68,7 @@ function initReactions() {
         var butt = butts[i];
         butt.onclick = function (event) {
           event.preventDefault();
+          sendHapticMessage('medium');
           var thisButt = this;
           thisButt.classList.add('reacted');
 
@@ -115,4 +117,21 @@ function listenForNotificationsBellClick() {
       document.getElementById('notifications-number').classList.remove('showing');
     };
   }, 180);
+}
+
+function initPagination() {
+  var el = document.getElementById("notifications-pagination")
+  if (el) {
+    window.fetch(el.dataset.paginationPath, {
+      method: 'GET',
+      credentials: 'same-origin'
+    }).then(function (response) {
+      if (response.status === 200) {
+        response.text().then(function(html){
+          el.innerHTML = html
+          initReactions();
+        });
+      }
+    });
+  }
 }

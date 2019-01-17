@@ -31,7 +31,9 @@
     onRefresh: function () { return location.reload(); },
     resistanceFunction: function (t) { return Math.min(1, t / 2.5); },
     shouldPullToRefresh: function () {
-      return !window.scrollY && document.getElementById('articles-list') && !document.body.classList.contains('modal-open')
+      return !window.scrollY &&
+        (document.getElementById('articles-list') || document.getElementById("user-dashboard")) &&
+        !document.body.classList.contains('modal-open')
     },
   };
 
@@ -126,6 +128,7 @@
       if (textEl) {
         if (_shared.state === 'releasing') {
           textEl.innerHTML = handler.instructionsReleaseToRefresh;
+          sendHapticMessage('medium');
         }
 
         if (_shared.state === 'pulling' || _shared.state === 'pending') {

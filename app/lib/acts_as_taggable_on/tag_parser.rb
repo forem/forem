@@ -11,6 +11,7 @@ module ActsAsTaggableOn
     def clean(string)
       string = string.to_s
       return [] if string.blank?
+
       string.downcase.split(",").map do |t|
         t.strip.gsub(" ", "").gsub(/[^0-9a-z]/i, "")
       end

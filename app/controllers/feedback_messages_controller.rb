@@ -10,9 +10,6 @@ class FeedbackMessagesController < ApplicationController
     if recaptcha_verified? && @feedback_message.save
       send_slack_message
       redirect_to "/feedback_messages"
-    elsif feedback_message_params[:feedback_type] == "bug-reports"
-      flash[:notice] = "Make sure the forms are filled 🤖 "
-      render file: "public/500.html", status: 500, layout: false
     else
       flash[:notice] = "Make sure the forms are filled 🤖 "
       @previous_message = feedback_message_params[:message]
@@ -49,6 +46,7 @@ class FeedbackMessagesController < ApplicationController
 
   def generate_user_detail
     return "*Anonymous report:*" unless current_user
+
     <<~HEREDOC
       *Logged in user:*
       reporter: #{current_user.username} - https://dev.to/#{current_user.username}
@@ -60,8 +58,6 @@ class FeedbackMessagesController < ApplicationController
     case feedback_type
     when "abuse-reports"
       "cry"
-    when "bug-reports"
-      "face_with_head_bandage"
     else
       "robot_face"
     end

@@ -1,35 +1,57 @@
 require "rails_helper"
 
 RSpec.describe Notification, type: :model do
-  let(:user)    { create(:user) }
-  let(:user2)   { create(:user) }
-  let(:user3)   { create(:user) }
-  let(:article) { create(:article, user_id: user.id) }
+  let(:user)            { create(:user) }
+  let(:user2)           { create(:user) }
+  let(:user3)           { create(:user) }
+  let(:article)         { create(:article, user_id: user.id) }
+  let(:follow_instance) { user.follow(user2) }
 
-  it "sends notifications to all followers of article user" do
-    user2.follow(user)
-    user3.follow(user)
-    Notification.send_all_without_delay(article, "Published")
-    expect(Notification.all.size).to eq(2)
+  describe "#send_new_follower_notification" do
+    before { Notification.send_new_follower_notification(follow_instance) }
+
+    it "creates a notification belonging to the person being followed" do
+      expect(Notification.first.user_id).to eq user2.id
+    end
+
+    it "creates a notification from the follow instance" do
+      notifiable_data = { notifiable_id: Notification.first.notifiable_id, notifiable_type: Notification.first.notifiable_type }
+      follow_data = { notifiable_id: follow_instance.id, notifiable_type: follow_instance.class.name }
+      expect(notifiable_data).to eq follow_data
+    end
+
+    it "is given notifiable_at upon creation" do
+      expect(Notification.last.notified_at).not_to eq nil
+    end
+
+    it "creates positive reaction notification" do
+      reaction = Reaction.create!(
+        user_id: user2.id,
+        reactable_id: article.id,
+        reactable_type: "Article",
+        category: "like",
+      )
+      notification = Notification.send_reaction_notification_without_delay(reaction)
+      expect(notification).to be_valid
+    end
+
+    it "does not create negative notification" do
+      user2.add_role(:trusted)
+      reaction = Reaction.create!(
+        user_id: user2.id,
+        reactable_id: article.id,
+        reactable_type: "Article",
+        category: "vomit",
+      )
+      notification = Notification.send_reaction_notification_without_delay(reaction)
+      expect(notification).to eq nil
+    end
   end
 
-  # rubocop:disable RSpec/ExampleLength
-  it "sends sends a broadcast to everyone" do
-    user2.follow(user)
-    user3.follow(user)
-    broadcast = Broadcast.create!(
-      processed_html: "Hello", title: "test broadcast", type_of: "Announcement",
-    )
-    Notification.send_all_without_delay(broadcast, "Announcement")
-    expect(Notification.all.size).to eq(3)
-  end
-  # rubocop:enable RSpec/ExampleLength
-
-  it "removes all notifications" do
-    user2.follow(user)
-    user3.follow(user)
-    Notification.send_all_without_delay(article, "Published")
-    Notification.remove_all_without_delay(article, "Published")
-    expect(Notification.all.size).to eq(0)
-  end
+  # describe "#send_to_followers" do
+  #   before do
+  #     user2.follow user
+  #     Notification.send_to_followers(article, user.followers, "Published")
+  #   end
+  # end
 end

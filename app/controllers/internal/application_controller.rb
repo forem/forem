@@ -4,6 +4,6 @@ class Internal::ApplicationController < ApplicationController
   private
 
   def authorize_admin
-    authorize :admin, :show?
+    authorize :admin, :minimal?
   end
 end

@@ -5,6 +5,7 @@ class Organization < ApplicationRecord
 
   has_many :job_listings
   has_many :users
+  has_many :api_secrets, through: :users
   has_many :articles
   has_many :collections
   has_many :display_ads
@@ -41,6 +42,7 @@ class Organization < ApplicationRecord
   after_save  :bust_cache
   before_save :generate_secret
   before_validation :downcase_slug
+  before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
   validate :unique_slug_including_users
@@ -48,12 +50,17 @@ class Organization < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
 
-  def username
-    slug
-  end
+  alias_attribute :username, :slug
+  alias_attribute :old_username, :old_slug
+  alias_attribute :old_old_username, :old_old_slug
+  alias_attribute :website_url, :url
 
-  def website_url
-    url
+  def check_for_slug_change
+    if slug_changed?
+      self.old_old_slug = old_slug
+      self.old_slug = slug_was
+      articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
+    end
   end
 
   def path
@@ -72,7 +79,7 @@ class Organization < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
       article.save
@@ -106,7 +113,7 @@ class Organization < ApplicationRecord
     cache_buster = CacheBuster.new
     cache_buster.bust("/#{slug}")
     begin
-      articles.each do |article|
+      articles.find_each do |article|
         cache_buster.bust(article.path)
       end
     rescue StandardError

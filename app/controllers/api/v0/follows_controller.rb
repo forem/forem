@@ -3,10 +3,11 @@ module Api
     class FollowsController < ApplicationController
       def create
         return unless user_signed_in?
-        users = JSON.parse(params[:users])
-        users.each do |user_hash|
-          followable = User.find(user_hash["id"])
-          current_user.delay.follow(followable)
+
+        user_ids = JSON.parse(params[:users]).map { |h| h["id"] }
+        users = User.where(id: user_ids)
+        users.each do |user|
+          current_user.delay.follow(user)
         end
         render json: { outcome: "followed 50 users" }
       end

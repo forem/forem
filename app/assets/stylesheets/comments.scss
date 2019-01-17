@@ -1,5 +1,5 @@
 @import 'variables';
-$indent-distance: calc(1.2vw + 12px);
+$indent-distance: calc(1.1vw + 13px);
 
 @keyframes fade-out {
     0%   {background-color: rgb(208, 255, 235);}
@@ -15,7 +15,8 @@ a.header-link{
 }
 
 .comments{
-  background-color:$light-gray;
+  background:$light-gray;
+  background:var(--theme-background,$light-gray);
   .picture{
     height:180px;
     max-width:900px;
@@ -170,7 +171,7 @@ a.header-link{
   }
 
   .top-level-actions{
-    margin:0px 8px 30px;
+    margin:0px 8px 85px;
     padding:3px 0px;
     z-index:4;
     position:relative;
@@ -214,7 +215,7 @@ a.header-link{
     background:$light-gray;
     overflow:auto;
     position:relative;
-    margin-bottom:calc(0.8vw - 6px);
+    margin-bottom: 4px;
     z-index:4;
     margin-left:-2%;
     border-top:1px solid $light-medium-gray;
@@ -240,13 +241,13 @@ a.header-link{
       transition: height 0.3s ease;
       cursor:text;
       &.embiggened{
-        height:calc(13vw + 15px);
+        height:calc(2vw + 115px);
       }
       &.embiggened-more{
-        height:calc(20vw + 18px);
+        height:calc(5vw + 118px);
       }
       &.embiggened-max{
-        height:calc(30vw + 18px);
+        height:calc(10vw + 118px);
       }
       &.preview-loading{
         background: white url(image_path('loading-ellipsis.svg')) no-repeat center center;
@@ -339,6 +340,48 @@ a.header-link{
     }
   }
 
+  details {
+    details {
+      .comment-deep-1,.comment-deep-2 {
+        margin-top: -123px;
+      }
+      summary {
+        z-index: 15;
+        position: relative;
+      }
+      &[open] {
+        > summary {
+          width: calc(1.1vw + 12px); //slightly smaller than indent distance
+          padding-bottom: 100px;
+        }
+      }
+    }
+    summary {
+      cursor: pointer;
+      color: lighten($medium-gray, 8%);
+      font-size: 14.5px;
+      font-style: oblique;
+      padding: 4px 0px;
+      padding-left: 4px;
+      user-select: none;
+      &:active {
+        outline:0;
+        box-shadow: 0px 0px 0px $light-medium-gray !important;
+      }
+      &:focus {
+        outline:0;
+        &:not(:active) {
+          box-shadow: 0px 0px 6px $light-medium-gray !important;
+        }
+      }  
+      span {
+        display: inline-block;
+        width: calc(100% - 50px);
+        line-height: 20px;
+      }
+    }
+  }
+
   .comment-trees{
     // margin-left:-$indent-distance;
     .comment-hash-marker{
@@ -379,12 +422,12 @@ a.header-link{
 }
 
 .single-comment-node{
-  padding:2px 0px 2px $indent-distance;
+  padding:2px 0px 0px $indent-distance;
   text-align: left;
   &.root{
-    padding:10px 0px 2px 0;
+    padding:0px 0px 2px 0;
   }
-  margin-top:42px;
+  margin-top:15px;
   font-size:17px;
   position:relative;
   @media screen and ( min-width: 390px ){
@@ -431,6 +474,32 @@ a.header-link{
       opacity:1;
     }
   }
+  .low-quality-comment-marker {
+    font-size:0.66em;
+    padding: 6px 13px;
+    background: $light-gray;
+    font-weight: bold;
+    border-bottom: 1px solid $light-medium-gray;
+    a {
+      background: lighten($green, 14%);
+      color: $black;
+      padding: 1px 5px 3px;
+      border-radius: 3px;
+      vertical-align: -1px;
+      margin-left: 3px;
+    }
+    img {
+      height: 22px;
+      width: 22px;
+      border-radius: 100px;
+      border: 2px solid $medium-gray;
+      vertical-align: -0.6em;
+      margin-right: 2px;
+    }
+  }
+  .low-quality-comment {
+    opacity: 0.5;
+  }
   .body{
     padding:1px;
     padding-left:1.5%;
@@ -442,10 +511,11 @@ a.header-link{
     font-size:0.95em;
     line-height:1.35em;
     overflow:hidden;
-    margin-bottom:-30px;
+    margin-bottom:-28px;
     word-wrap: break-word;
     font-family: $helvetica;
     position:relative;
+    margin-left: 1px;
     h1,h2,h3,h4,h5,h6{
       padding:0px;
       margin:4px 0px calc(1.1vw + 10px);
@@ -502,6 +572,7 @@ a.header-link{
       margin:auto;
       white-space: nowrap;
       background:$lightest-gray;
+      background:var(--theme-background, $lightest-gray);
       padding:1px 5px 0px;
       border-radius:2px;
       color:#333842;
@@ -535,6 +606,14 @@ a.header-link{
       margin-left:0%;
       overflow-x:auto;
     }
+    a{
+      &.anchor{
+        padding-top: 50px;
+        margin-top: -50px;
+        -webkit-background-clip: content-box;
+        background-clip: content-box;
+      }
+    }
   }
   .icon-img{
     height:16px;
@@ -564,7 +643,7 @@ a.header-link{
       border: none;
       cursor: pointer;
       position: absolute;
-      top: calc(0.3vw + 11px);
+      top: calc(0.3vw + 13px);
       right: 10px;
     }
 
@@ -653,7 +732,6 @@ a.header-link{
   .reaction-button,.dropbtn{
     border:0px;
     background:transparent;
-    vertical-align:2px;
     cursor:pointer;
     border-radius:3px;
     height:32px;
@@ -664,6 +742,12 @@ a.header-link{
     margin-top:calc(-0.6vw - 4px);
     z-index:8;
     position:relative;
+    &.reaction-button {
+      padding-right: 25px;
+      padding-top: 4px;
+      margin-top: 0px;
+      height:25px;
+    }
     .reactions-count {
       font-size:calc(0.9em + 0.1vw);
       background: $light-gray;
@@ -676,10 +760,14 @@ a.header-link{
       left: 24px;
     }
     img{
-      height:20px;
-      width:20px;
+      height:21px;
+      width:21px;
       opacity:0.62;
       left:0px;
+      &.dropdown-icon {
+        height:18px;
+        width:18px;
+        }
     }
     &:hover{
       img{
@@ -690,10 +778,9 @@ a.header-link{
       display:none;
       vertical-align:0px;
       margin-left:0px;
-      height: 25px;
+      height: 22px;
       width: 22px;
       opacity:0.9;
-      animation: fadein 0.22s ease ;
       &:hover{
         opacity:1;
       }

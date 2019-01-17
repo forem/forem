@@ -45,7 +45,8 @@ class HtmlVariant < ApplicationRecord
     doc.css("img").each do |img|
       src = img.attr("src")
       next unless src
-      next if whitelisted_image_host?(src)
+      next if allowed_image_host?(src)
+
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else
@@ -65,7 +66,7 @@ class HtmlVariant < ApplicationRecord
     uri.path.ends_with?(".gif")
   end
 
-  def whitelisted_image_host?(src)
+  def allowed_image_host?(src)
     src.start_with?("https://res.cloudinary.com/")
   end
 

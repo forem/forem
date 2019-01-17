@@ -6,18 +6,23 @@
   max-width:96%;
   margin:auto;
   h1{
-    font-size:22px;
+    font-size: calc(16px + 0.3vw);
     font-family: $helvetica-condensed;
     font-stretch:condensed;
     padding-bottom: 20px;
+    text-align: center;
+    @media screen and ( min-width: 600px ){
+      text-align: left;
+    }
     a{
-      padding: 6px 25px;
+      padding: 4px 20px;
       border-radius: 100px;
-      margin-right: 18px;
+      margin-right: 5px;
       display: inline-block;
       color: $black;
+      background: lighten($light-medium-gray, 5%);
       &:hover{
-        background: lighten($light-medium-gray, 3%);
+        background: $light-medium-gray;
       }
       &.active{
         background: $dark-gray;
@@ -75,6 +80,7 @@
     margin-bottom: 28px;
     background: $dark-gray;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     padding: 15px 0px;
   }
   .dashboard-analytics-header{
@@ -127,6 +133,7 @@
   .single-article{
     border: 1px solid $light-medium-gray;
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     padding:5px 15px;
     margin-bottom:13px;
     border-radius:3px;
@@ -158,10 +165,13 @@
       }
     }
     h2{
-      font-weight:400;
-      margin-bottom:5px;
+      font-weight:500;
+      margin-bottom:10px;
       margin-top:8px;
-      font-size:36px;
+      font-size:22px;
+      @media screen and ( min-width: 800px ) {
+        font-size:34px;
+      }
       width: 100%;
       img{
         height: 40px;
@@ -173,6 +183,30 @@
         color: $medium-gray;
         font-size: 0.6em;
         vertical-align:0.16em;
+      }
+      form {
+        background: $light-gray;
+        padding: 8px 15px;
+        margin-bottom: 10px;
+        border-radius: 3px;
+        @media screen and ( min-width: 750px ) {
+          display: inline-block;
+          float: right;
+        }
+        input {
+          font-size: 16px;
+          border-radius: 3px;
+          padding: 3px 8px;
+          width: 50px;
+          border: 1px solid $black;
+          font-weight: bold;
+          &[type="submit"] {
+            width: auto;
+            background: $green;
+            font-family: $helvetica-condensed;
+            margin-left: 5px;
+          }
+        }
       }
     }
     h4{
@@ -194,6 +228,8 @@
       margin-right:5px;
       font-size:14px;
       border: 2px solid transparent;
+      margin-top: 6px;
+      display: inline-block;
       &.yellow{
         background:$yellow;
         color:$black;

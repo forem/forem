@@ -5,10 +5,11 @@ class NotificationCounter
 
   def unread_notification_count
     return 0 if Rails.env.test?
-    StreamRails.feed_manager.get_notification_feed(@user.id).get["unseen"]
+
+    @user.notifications.where(read: false).count
   end
 
   def set_to_zero
-    StreamRails.feed_manager.get_notification_feed(@user.id).get(mark_seen: true)
+    @user.notifications.where(read: false).update_all(read: true)
   end
 end

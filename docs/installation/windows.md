@@ -36,8 +36,8 @@ git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
 
-rbenv install 2.5.3
-rbenv global 2.5.3
+rbenv install 2.6.0
+rbenv global 2.6.0
 ruby -v
 ```
 
@@ -104,8 +104,14 @@ Pay attention to the username and password you setup during installation of Post
 5.  Run `rbenv rehash` when foreman installation is done.
 6.  Install our ruby dependencies with `bundle install`
     While installing, you might run into an error due to the pg gem requiring PostgreSQL libraries. If so, please run `sudo apt-get install libpq-dev` before retrying.
-7.  Install our frontend dependencies with `bin/yarn`
-8.  Set up your environment variables/secrets
+7.  Setup your database
+
+- Create `config/database.yml` by copying from the provided template (i.e. `cp config/database.yml.sample config/database.yml`)
+- Update the `config/database.yml` file if needed.
+
+8.  Install our frontend dependencies with `bin/yarn`
+
+9.  Set up your environment variables/secrets
 
 - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
 - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.

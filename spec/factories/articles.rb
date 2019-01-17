@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :article do
     transient do
-      title { Faker::Book.title }
+      title { Faker::Book.title + rand(100).to_s }
       published { true }
       date { "01/01/2015" }
       tags { Faker::Hipster.words(4).join(", ") }
@@ -32,6 +32,14 @@ FactoryBot.define do
         #{Faker::Hipster.paragraph(1)}
         #{"\n\n---\n\n something \n\n---\n funky in the code? \n---\n That's nice" if with_hr_issue}
       HEREDOC
+    end
+  end
+
+  trait :video do
+    after(:build) do |article|
+      article.video = "https://video.com"
+      article.user.add_role :video_permission
+      article.save
     end
   end
 end

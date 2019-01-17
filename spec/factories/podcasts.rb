@@ -9,7 +9,6 @@ FactoryBot.define do
     description   { Faker::Hipster.paragraph(1) }
     slug          { "slug-#{rand(10_000)}" }
     feed_url      { Faker::Internet.url }
-    after(:build) { |pod|  pod.define_singleton_method(:pull_all_episodes) {} }
-
+    after(:build) { |pod| pod.define_singleton_method(:pull_all_episodes) {} }
   end
 end

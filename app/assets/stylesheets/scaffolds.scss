@@ -2,17 +2,24 @@
 
 body {
   background: $lightest-gray;
+  background: var(--theme-background, $lightest-gray);
   color: $black;
+  color: var(--theme-color, $black);
   font-family: $helvetica;
   font-size: 18px;
   padding:0 !important;
   margin:0 !important;
   margin-top:-20px !important;
   overflow-y:scroll;
-  :focus {
-  outline: 0;
-  }
+
 }
+
+*:focus {
+  &:active {
+    outline: 0;
+  }
+}  
+
 
 .ptr--ptr{
   margin-top:70px;
@@ -95,3 +102,7 @@ button{
 input[type="submit"]{
   cursor:pointer;
 };
+
+input[type="text"],textarea, input[type="url"], input[type="email"]{
+  outline: 0;
+}

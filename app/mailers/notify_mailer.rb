@@ -2,6 +2,7 @@ class NotifyMailer < ApplicationMailer
   def new_reply_email(comment)
     @user = comment.parent_user
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
+
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_comment_notifications)
     @comment = comment
     mail(to: @user.email, subject: "#{@comment.user.name} replied to your #{@comment.parent_type}")
@@ -10,6 +11,7 @@ class NotifyMailer < ApplicationMailer
   def new_follower_email(follow)
     @user = follow.followable
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
+
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
 
@@ -19,6 +21,7 @@ class NotifyMailer < ApplicationMailer
   def new_mention_email(mention)
     @user = User.find(mention.user_id)
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
+
     @mentioner = User.find(mention.mentionable.user_id)
     @mentionable = mention.mentionable
     @mention = mention
@@ -30,6 +33,7 @@ class NotifyMailer < ApplicationMailer
   def unread_notifications_email(user)
     @user = user
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
+
     @unread_notifications_count = NotificationCounter.new(@user).unread_notification_count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
     subject = "🔥 You have #{@unread_notifications_count} unread notifications on dev.to"
@@ -93,5 +97,19 @@ class NotifyMailer < ApplicationMailer
     @mentee = mentee
     subject = "You have been matched with a new DEV mentee!"
     mail(to: @mentor.email, subject: subject, from: "Liana (from dev.to) <liana@dev.to>")
+  end
+
+  def export_email(user, attachment)
+    @user = user
+    export_filename = "devto-export-#{Date.current.iso8601}.zip"
+    attachments[export_filename] = attachment
+    mail(to: @user.email, subject: "The export of your content is ready")
+  end
+
+  def tag_moderator_confirmation_email(user, tag_name)
+    @tag_name = tag_name
+    @user = user
+    subject = "Congrats! You're the moderator for ##{tag_name}"
+    mail(to: @user.email, subject: subject)
   end
 end

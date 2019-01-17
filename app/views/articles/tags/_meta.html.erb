@@ -1,0 +1,29 @@
+<% title_with_timeframe(
+  page_title: @tag.capitalize,
+  timeframe: params[:timeframe],
+  content_for: true)
+%>
+<link rel="canonical" href="https://dev.to/t/<%= @tag %>"/>
+<meta name="description" content="<%= @tag %> content on dev.to">
+<meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://dev.to/t/<%= @tag %>" />
+<meta property="og:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>" />
+<meta property="og:description" content="<%= @tag.capitalize %> content on dev.to" />
+<meta property="og:site_name" content="The DEV Community" />
+
+<meta name="twitter:site" content="@ThePracticalDev">
+<meta name="twitter:creator" content="@<%=@tag.capitalize %>">
+<meta name="twitter:title" content="<%= title_with_timeframe(page_title: @tag.capitalize, timeframe: params[:timeframe]) %>" >
+<meta name="twitter:description" content="<%= @tag.capitalize %> content on dev.to">
+
+<% if @tag_model %>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:image" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
+  <meta name="twitter:image:src" content="<%= GeneratedImage.new(@tag_model).social_image %>" >
+<% else %>
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>

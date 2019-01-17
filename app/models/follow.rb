@@ -2,9 +2,6 @@ class Follow < ApplicationRecord
   extend ActsAsFollower::FollowerLib
   extend ActsAsFollower::FollowScopes
 
-  include StreamRails::Activity
-  as_activity
-
   # NOTE: Follows belong to the "followable" interface, and also to followers
   belongs_to :followable, polymorphic: true
   belongs_to :follower,   polymorphic: true
@@ -31,26 +28,6 @@ class Follow < ApplicationRecord
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
 
-  def activity_actor
-    follower
-  end
-
-  def activity_notify
-    return if followable.class.name != "User"
-    [StreamNotifier.new(followable.id).notify]
-  end
-
-  def activity_object
-    followable
-  end
-
-  def remove_from_feed
-    super
-    if followable_type == "User"
-      User.find_by(id: followable.id)&.touch(:last_notification_activity)
-    end
-  end
-
   private
 
   def touch_user
@@ -73,8 +50,9 @@ class Follow < ApplicationRecord
   def send_email_notification
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications
       return if EmailMessage.where(user_id: followable.id).
-          where("sent_at > ?", rand(15..35).hours.ago).
-          where("subject LIKE ?", "%followed you on dev.to%").any?
+        where("sent_at > ?", rand(15..35).hours.ago).
+        where("subject LIKE ?", "%followed you on dev.to%").any?
+
       NotifyMailer.new_follower_email(self).deliver
     end
   end
@@ -82,9 +60,10 @@ class Follow < ApplicationRecord
 
   def modify_chat_channel_status
     if followable_type == "User" && followable.following?(follower)
-      follower.chat_channels.
+      channel = follower.chat_channels.
         where("slug LIKE ? OR slug like ?", "%/#{followable.username}%", "%#{followable.username}/%").
-        first.update(status: "inactive")
+        first
+      channel&.update(status: "inactive")
     end
   end
 end

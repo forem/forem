@@ -1,0 +1,20 @@
+<% notification_count = 0 %>
+<% @notifications.each do |notification| %>
+  <% next if (notification.notified_at < 24.hours.ago && notification.aggregated?) %>
+  <% notification_count = notification_count + 1 %>
+  <div class="single-article single-article-small-pic <%= "unseen" unless notification.read? %>" data-notification-id="<%= notification.id %>" >
+    <%= render "#{notification.notifiable_type.downcase}", notification: notification %>
+  </div>
+<% rescue => e %>
+  <% logger.error("Notifification error - #{e.message} - #{notification.id}") %>
+    <div class="small-pic">
+      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--LnVw15KE--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
+      alt="">
+    </div>
+    <div class="content notification-content comment-content">
+      An error occurred! This has been logged and we're tracking it.
+      <br>
+      If you see too many of these, please report it to <a href="mailto:yo@dev.to">yo@dev.to</a>!
+    </div>
+  </div>
+<% end %>

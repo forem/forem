@@ -11,5 +11,6 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find_by(slug: params[:id])
+    add_context(event_id: @event.id)
   end
 end

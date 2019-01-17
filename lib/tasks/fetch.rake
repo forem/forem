@@ -24,7 +24,7 @@ end
 
 task fetch_all_rss: :environment do
   Rails.application.eager_load!
-  RssReader.get_all_articles
+  RssReader.get_all_articles(false) # False means don't force fetch. Fetch "random" subset instead of all of them.
 end
 
 task resave_supported_tags: :environment do
@@ -68,6 +68,7 @@ end
 
 task send_email_digest: :environment do
   return if Time.current.wday < 3
+
   EmailDigest.send_periodic_digest_email
 end
 
@@ -110,7 +111,7 @@ task remove_old_html_variant_data: :environment do
   HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariant.find_each do |html_variant|
     if html_variant.html_variant_successes.size > 3
-    html_variant.calculate_success_rate!
+      html_variant.calculate_success_rate!
     end
   end
 end

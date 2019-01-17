@@ -35,6 +35,9 @@
       padding: 10px 0px 5px;
       font-style: italic;
       font-size:0.88em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      overflow-wrap: break-word;
     }
     .primary-sticky-nav-author-follow{
       padding-top:8px;
@@ -74,10 +77,13 @@
     font-size:0.9em;
     font-weight: bold;
     background: white;
+    background: var(--theme-container-background,	#fff);
     margin-bottom: 10px;
     margin-left: 10px;
     border: 1px solid $outline-color;
+    border: var(--theme-container-border, 1px solid $outline-color);
     box-shadow: $bold-shadow;
+    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     color: $black;
     width: 262px;
     border-radius: 3px;

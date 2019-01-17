@@ -120,6 +120,7 @@ RSpec.describe NotifyMailer, type: :mailer do
         mentee_email = described_class.mentee_email(mentee, mentor)
         expect(mentee_email.subject).to eq "You have been matched with a DEV mentor!"
       end
+
       it "renders proper from" do
         mentee_email = described_class.mentee_email(mentee, mentor)
         expect(mentee_email.from).to include "liana@dev.to"
@@ -134,9 +135,43 @@ RSpec.describe NotifyMailer, type: :mailer do
         mentor_email = described_class.mentor_email(mentor, mentee)
         expect(mentor_email.subject).to eq "You have been matched with a new DEV mentee!"
       end
-      it "renders proper subject" do
+
+      it "renders proper from" do
         mentor_email = described_class.mentor_email(mentor, mentee)
         expect(mentor_email.from).to include "liana@dev.to"
+      end
+    end
+
+    describe "#tag_moderator_confirmation_email" do
+      let(:user) { create(:user) }
+      let(:tag) { create(:tag) }
+
+      it "renders proper subject" do
+        moderator_email = described_class.tag_moderator_confirmation_email(user, tag.name)
+        expect(moderator_email.subject).to eq "Congrats! You're the moderator for ##{tag.name}"
+      end
+    end
+
+    describe "#export_email" do
+      it "renders proper subject" do
+        export_email = described_class.export_email(user, "attachment")
+        expect(export_email.subject).to include("export of your content is ready")
+      end
+
+      it "renders proper receiver" do
+        export_email = described_class.export_email(user, "attachment")
+        expect(export_email.to).to eq([user.email])
+      end
+
+      it "attaches a zip file" do
+        export_email = described_class.export_email(user, "attachment")
+        expect(export_email.attachments[0].content_type).to include("application/zip")
+      end
+
+      it "adds the correct filename" do
+        export_email = described_class.export_email(user, "attachment")
+        expected_filename = "devto-export-#{Date.current.iso8601}.zip"
+        expect(export_email.attachments[0].filename).to eq(expected_filename)
       end
     end
   end

@@ -56,13 +56,17 @@ class CommentsController < ApplicationController
   def create
     authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
+
     @comment = Comment.new(permitted_attributes(Comment))
+    add_context(commentable_id: @comment.commentable_id,
+                commentable_type: @comment.commentable_type)
     @comment.user_id = current_user.id
     if @comment.save
       if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
         current_user.update(checked_code_of_conduct: true)
       end
       Mention.create_all(@comment)
+      Notification.send_new_comment_notifications_without_delay(@comment)
       if @comment.invalid?
         @comment.destroy
         render json: { status: "comment already exists" }

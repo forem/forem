@@ -10,6 +10,17 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       order("feedback_messages.created_at DESC").
       page(params[:page] || 1).per(5)
     @email_messages = EmailMessage.find_for_reports(@feedback_messages.pluck(:id))
+    @vomits = get_vomits
+  end
+
+  def get_vomits
+    if params[:status] == "Open" || params[:status].blank?
+      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
+    elsif params[:status] == "Resolved"
+      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    else
+      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    end
   end
 
   def save_status
@@ -72,7 +83,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     <<~HEREDOC
       *New note from #{params['author_name']}:*
       *Report status: #{params['feedback_message_status']}*
-      Report page: https://dev.to/internal/reports/#{params['noteable_id']}
+      Report page: https://#{ApplicationConfig['APP_DOMAIN']}/internal/reports/#{params['noteable_id']}
       --------
       Message: #{params['content']}
     HEREDOC

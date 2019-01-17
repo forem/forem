@@ -6,7 +6,19 @@ RSpec.describe BadgeRewarder do
     user = create(:user, created_at: 366.days.ago)
     newer_user = create(:user, created_at: 6.days.ago)
     older_user = create(:user, created_at: 390.days.ago)
-    create(:badge, title: "heyhey")
+    create(:badge, title: "one-year-club")
+    create(:badge, title: "heysddssdhey")
+    described_class.award_yearly_club_badges
+    expect(user.badge_achievements.size).to eq(1)
+    expect(newer_user.badge_achievements.size).to eq(0)
+    expect(older_user.badge_achievements.size).to eq(0)
+  end
+
+  it "rewards 2-year birthday badge to birthday folks who registered a year ago" do
+    user = create(:user, created_at: 731.days.ago)
+    newer_user = create(:user, created_at: 6.days.ago)
+    older_user = create(:user, created_at: 800.days.ago)
+    create(:badge, title: "two-year-club")
     create(:badge, title: "heysddssdhey")
     described_class.award_yearly_club_badges
     expect(user.badge_achievements.size).to eq(1)

@@ -11,7 +11,7 @@
 <br/>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.5.3-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.6.0-green.svg" alt="ruby version"/>
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
@@ -49,7 +49,8 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
     - [Husky hooks](#husky-hooks)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
+  - [Standard Installation](#standard-installation)
+  - [Docker Installation (BETA)](#docker-installation-beta)
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
 - [Additional docs](#additional-docs)
@@ -82,6 +83,8 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 3.  Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
 4.  Push to the branch: `git push origin feature/that-new-feature`
 5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
+
+Note: be sure to [maintain your fork](https://docs.dev.to/maintaining-your-fork)!
 
 ## Contribution guideline
 
@@ -152,10 +155,10 @@ This section provides a high-level requirement & quick start guide. For detailed
 0.  Make sure all the prerequisites are installed.
 1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
 1.  Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
-1.  `gem install bundler`
 1.  `gem install foreman`
-1.  `bundle install`
-1.  `bin/yarn`
+1.  Setup your database
+    - Create `config/database.yml` by copying from the provided template (i.e. `cp config/database.yml.sample config/database.yml`)
+    - Update the `config/database.yml` file if needed.
 1.  Set up your environment variables/secrets
     - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
     - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
@@ -241,6 +244,7 @@ Core team members will move issues along the project board as they progress.
 - [@peterkimfrank](https://dev.to/peter)
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
+- [@aspittel](https://dev.to/aspittel)
 
 ## License
 
