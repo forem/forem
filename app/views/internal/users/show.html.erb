@@ -125,7 +125,7 @@
   <% end %>
 </div>
 
-<% if @user.seeking_mentorship && @user.mentee_description.present? %>
+<% if @user.seeking_mentorship && @user.mentee_description.present? && !@user.has_role?(:banned_from_mentorship)  %>
   <h2> Mentee Description </h2>
     <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
       <div class="col-md-2">

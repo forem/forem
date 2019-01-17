@@ -98,6 +98,7 @@ class Internal::UsersController < Internal::ApplicationController
     mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
     deactivate_mentorship(mentee_relationships)
     deactivate_mentorship(mentor_relationships)
+    @user.update(offering_mentorship: false, seeking_mentorship: false)
     create_note("banned_from_mentorship", user_params[:note_for_mentorship_ban])
   end
 
