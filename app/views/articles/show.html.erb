@@ -171,7 +171,7 @@
       </div>
       <% if @article.body_markdown && @article.body_markdown.size > 900 && @article.collection_id %>
         <% cache("article-series-collection-#{@article.collection_id}") do %>
-          <%= render "articles/collection", position: "top" %>
+          <%= render "articles/collection", position: "bottom" %>
         <% end %>
       <% end %>
       <%= render 'articles/actions' %>
