@@ -15,12 +15,12 @@ function initializeUserSidebar(user) {
   document.getElementById("tag-separator").innerHTML = followedTags.length === 0 ? "Follow tags to improve your feed" : "Other Popular Tags";
   followedTags.forEach(function(t){
     var element = document.getElementById("default-sidebar-element-"+t.name);
-    tagHTML = tagHTML + (t.points > 0.0 ?
+    tagHTML += t.points > 0.0 ?
       '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">' +
       '<a class="sidebar-nav-link" href="/t/'+t.name+'">' +
       '<span class="sidebar-nav-tag-text">#'+t.name+'</span>' +
-      '</a>'+
-      '</div>':"");
+      '</a>' +
+      '</div>' : '';
     if(element) element.remove();
   });
   document.getElementById("sidebar-nav-followed-tags").innerHTML = tagHTML;
