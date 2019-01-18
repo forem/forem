@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190115203453) do
+ActiveRecord::Schema.define(version: 20190118200753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -760,6 +760,7 @@ ActiveRecord::Schema.define(version: 20190115203453) do
     t.datetime "github_created_at"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "inbox", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
@@ -788,7 +789,6 @@ ActiveRecord::Schema.define(version: 20190115203453) do
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
     t.boolean "onboarding_package_requested_again", default: false
-    t.boolean "open_inbox", default: false
     t.boolean "org_admin", default: false
     t.integer "organization_id"
     t.boolean "permit_adjacent_sponsors", default: true

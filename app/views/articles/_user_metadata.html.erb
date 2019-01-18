@@ -88,10 +88,10 @@
           </div>
         </div>
       <% end %>
-      <% if @user.open_inbox === true %>
+      <% if @user.inbox == "open" %>
         <div class="row">
           <div class="key">
-            open_inbox
+            inbox
           </div>
           <div class="value">
             I'm open to chatting!
