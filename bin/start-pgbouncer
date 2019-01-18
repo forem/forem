@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+# Adapted from https://github.com/ryandotsmith/nginx-buildpack/
+
+main() {
+  if ! is-enabled "${PGBOUNCER_ENABLED:-1}"; then
+    at pgbouncer-disabled
+    exec "$@"
+  fi
+
+  at pgbouncer-enabled
+  run-pgbouncer "$@"
+}
+
+run-pgbouncer() {
+  declare psmgr=/tmp/pgbouncer-buildpack-wait
+  declare -A pids signals
+
+  config-gen
+
+  # Use named pipe to detect exit of any subprocess.
+  rm -f "$psmgr"
+  mkfifo "$psmgr"
+
+  # Start processes.
+  aux-start pgbouncer SIGINT vendor/pgbouncer/bin/pgbouncer vendor/pgbouncer/pgbouncer.ini
+  app-start SIGTERM "$@"
+  pid=$!
+  pgid=$(ps -o pgid= $pid | xargs)
+
+  # Don't exit top script until all subprocesses are done.
+  trap '' SIGTERM
+
+  # This read will block the process waiting on a msg to be put into the
+  # fifo. If any of the processes defined above should exit, a msg will be
+  # put into the fifo causing the read operation to un-block. The process
+  # putting the msg into the fifo will use it's process name as a msg so that
+  # we can print the offending process to stdout.
+  declare exit_process
+  read exit_process < "$psmgr"
+  at "exit process=$exit_process"
+
+  # Remove the FIFO. This allows following writes to simply create a file,
+  # rather than blocking because there's nothing reading the other end.
+  rm -f "$psmgr"
+
+  # Clean up any running processes.
+  # SIGTERM the application's process group (hence the negative PID), just in
+  # case something else crashed. If the dyno is shutting down, then SIGTERM
+  # has already been sent.
+  at "kill-app pid=$pid"
+  kill -SIGTERM -$pgid
+
+  # Wait for the app to finish.
+  at "wait-app pid=$pid"
+  wait $pid
+
+  # Kill the auxiliary processes.
+  # Send each one SIGHUP which will be translated by the trap in aux-start.
+  declare name
+  for name in "${!pids[@]}"; do
+    at "kill-aux name=$name pid=${pids[$name]} signal=${signals[$name]}"
+    kill -SIGHUP "${pids[$name]}"
+  done
+}
+
+config-gen() {
+  # Generate config files
+  at config-gen-start
+  source bin/gen-pgbouncer-conf.sh
+  at config-gen-end
+
+  # Overwrite config vars with pgbouncer targets
+  POSTGRES_URLS=${PGBOUNCER_URLS:-DATABASE_URL}
+
+  for POSTGRES_URL in $POSTGRES_URLS; do
+    at "config-gen-override $POSTGRES_URL"
+    eval "$POSTGRES_URL=\$${POSTGRES_URL}_PGBOUNCER"
+  done
+}
+
+aux-start() {
+  declare name=$1 signal=$2
+  shift 2
+
+  (
+    at "$name-start"
+
+    # Ignore SIGTERM; this is inherited by the child process.
+    trap '' SIGTERM
+
+    # Start child in the background.
+    "$@" &
+
+    # Translate SIGHUP to the appropriate signal to stop the child (anything
+    # except SIGTERM which is ignored). This *will* cancel the wait and may
+    # lead to the outer subshell exiting before the aux process
+    trap "kill -$signal $!" SIGHUP
+
+    # Wait for child to finish, either by crash or by $signal
+    wait
+
+    # Notify FIFO if this finishes first
+    echo "$name" > "$psmgr"
+
+    at "$name-end"
+  ) &
+
+  pids[$name]=$!
+  signals[$name]=$signal
+  at "$name-launched pid=$! signal=$signal"
+}
+
+app-start() {
+  declare name=app signal=$1
+  shift
+
+  (
+    at "$name-start"
+
+    # Start child in the background. This is before the trap because
+    # the app needs to be able to receive when the dyno broadcasts
+    # SIGTERM on shutdown.
+    "$@" &
+
+    # Translate SIGHUP to the appropriate signal to stop the child
+    # (probably SIGTERM in this case). This *will* cancel the wait and may
+    # lead to the outer subshell exiting before the app.
+    trap "kill -$signal $!" SIGHUP
+
+    # Ignore SIGTERM because the dyno will broadcast it to all children --
+    # there is no need to translate it.
+    trap "" SIGTERM
+
+    # Wait for the app to finish, either by crash or by $signal
+    wait
+
+    # Notify FIFO if this finishes first
+    echo "$name" > $psmgr
+
+    at "$name-end"
+  ) &
+
+  at "$name-launched pid=$!"
+}
+
+at() {
+  echo "buildpack=pgbouncer at=$*"
+}
+
+is-enabled() {
+  ( shopt -s extglob nocasematch
+    [[ $1 == @(1|true|yes|on) ]]
+  )
+}
+
+[[ "$0" != "$BASH_SOURCE" ]] || main "$@"
