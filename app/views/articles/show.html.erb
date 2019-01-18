@@ -162,7 +162,7 @@
         </div>
       </header>
       <% if @article.collection_id %>
-        <% cache("article-series-collection-#{@article.collection_id?}") do %>
+        <% cache("article-series-collection-#{@article.collection_id}") do %>
           <%= render "articles/collection", position: "top" %>
         <% end %>
       <% end %>
