@@ -45,6 +45,12 @@ function insertNewArticles(user){
       if (containsOrganizationID) {
         articlePoints = articlePoints + 16
       }
+      var rand = Math.random();
+      if (rand < 0.3) {
+        articlePoints = articlePoints + 1
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 2
+      }
       article['points'] = articlePoints
     });
     var sortedArticles = articlesJSON.sort(function(a, b) {
@@ -82,6 +88,12 @@ function insertTopArticles(user){
       if (containsOrganizationID) {
         articlePoints = articlePoints + 1
       }
+      var rand = Math.random();
+      if (rand < 0.3) {
+        articlePoints = articlePoints + 1
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 2
+      }
       article['points'] = articlePoints
     });
     var sortedArticles = articlesJSON.sort(function(a, b) {
@@ -107,7 +119,6 @@ function algoliaFollowedArticles(){
       var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
       var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
       var index = client.initIndex('ordered_articles_<%= Rails.env %>');
-      
       var searchObj = {
           hitsPerPage: 20,
           page: "0",

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181219215401) do
+ActiveRecord::Schema.define(version: 20190115155656) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -491,6 +491,8 @@ ActiveRecord::Schema.define(version: 20181219215401) do
     t.string "location"
     t.string "name"
     t.string "nav_image"
+    t.string "old_old_slug"
+    t.string "old_slug"
     t.string "profile_image"
     t.text "proof"
     t.string "secret"
@@ -742,6 +744,7 @@ ActiveRecord::Schema.define(version: 20181219215401) do
     t.datetime "exported_at"
     t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
+    t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
     t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false

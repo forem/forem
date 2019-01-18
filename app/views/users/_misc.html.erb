@@ -86,25 +86,25 @@
   </div>
 <% end %>
 
-<h2>Export posts</h2>
+<h2>Export content</h2>
 
 <% if @user.export_requested? %>
   <h4 style="font-weight:400">
-    You have recently requested an export of your data.
+    You have recently requested an export of your content.
     Please check your email.
   </h4>
 <% else %>
   <h4 style="font-weight:400">
-    You can request an export of all your data.
-    Currently we only support the export of posts.
-    It will be emailed to your inbox.
+    You can request an export of all your content.
+    Currently we only support the export of your posts and comments.
+    They will be emailed to your inbox.
   </h4>
 
   <%= form_for(@user) do |f| %>
     <div class="checkbox-field">
       <div class="sub-field">
         <%= f.check_box :export_requested %>
-        <%= f.label :export_requested, "Request an export of your data" %>
+        <%= f.label :export_requested, "Request an export of your content" %>
       </div>
     </div>
     <div class="field">

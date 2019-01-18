@@ -126,6 +126,8 @@ class User < ApplicationRecord
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
+  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
+
   after_create :send_welcome_notification
   after_save  :bust_cache
   after_save  :subscribe_to_mailchimp_newsletter
@@ -354,7 +356,7 @@ class User < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path) if article.path
       cache_buster.bust(article.path + "?i=i") if article.path
       article.save
@@ -363,7 +365,7 @@ class User < ApplicationRecord
 
   def cache_bust_all_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
     end
@@ -386,6 +388,12 @@ class User < ApplicationRecord
 
   def profile_image_90
     ProfileImage.new(self).get(90)
+  end
+
+  def remove_from_algolia_index
+    remove_from_index!
+    index = Algolia::Index.new("searchables_#{Rails.env}")
+    index.delay.delete_object("users-#{id}")
   end
 
   private
@@ -554,12 +562,6 @@ class User < ApplicationRecord
     article_score = (articles_count + comments_count + reactions_count) * 10
     score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
     score.to_i
-  end
-
-  def remove_from_algolia_index
-    remove_from_index!
-    index = Algolia::Index.new("searchables_#{Rails.env}")
-    index.delay.delete_object("users-#{id}")
   end
 
   def destroy_empty_dm_channels

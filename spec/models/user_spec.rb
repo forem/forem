@@ -184,7 +184,7 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
-    it "changes old_username if old_old_username properly if username changes" do
+    it "changes old_username and old_old_username properly if username changes" do
       old_username = user.username
       random_new_username = "username_#{rand(100000000)}"
       user.update(username: random_new_username)

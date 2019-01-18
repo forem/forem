@@ -43,7 +43,7 @@
   <h3>Grow the team</h3>
   <h5>Invite teammates by sending them the secret and the following instructions:</h5>
   <ol style="margin-bottom: 30px">
-    <li>Sign up at <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %>/a>
+    <li>Sign up at <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a>
     <li>Navigate to <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
     <li>Paste the secret code below and click <b>Join Organization</b></li>
   </ol>
@@ -58,6 +58,11 @@
   <div class="field">
     <%= f.label :name %>
     <%= f.text_field :name, maxlength: 50 %>
+  </div>
+  <div class="field">
+    <%=  f.label :username %>
+    <%= f.text_field :slug, maxlength: 18, minlength: 2 %>
+    <i>Your organization's URL is: https://dev.to/<%= @organization.slug %></i>
   </div>
   <%= f.label :profile_image %>
   <div class="field">

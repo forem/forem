@@ -121,6 +121,10 @@
       <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
       <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
     </ul>
+      
+    <h3><strong>SlideShare Embed</strong></h3>
+    <p>All you need is the SlideShare <code>key</code></p>
+    <code>{% slideshare rdOzN9kr1yK5eE %}</code>
 
     <h3><strong>CodePen Embed</strong></h3>
     <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
@@ -144,6 +148,17 @@
     <h3><strong>CodeSandbox Embed</strong></h3>
     <p>All you need is the ID of the Sandbox:</p>
     <code>{% codesandbox ppxnl191zx %}</code>
+      
+    <h3><strong>JSFiddle Embed</strong></h3>
+    <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
+    <code>{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}</code>
+
+    <dl>
+    <dt><code>Custom tabs</code></dt>
+    <dd>
+      You can add a custom tab order to you JSFiddle embed tag. Defaults to <i>js,html,css,result</i><br/>
+      <code>{% jsfiddle https://jsfiddle.net/webdevem/Q8KVC result,html,css %}</code>
+    </dd>
 
     <h3><strong>repl.it Embed</strong></h3>
     <p>All you need is the URL after the domain name:</p>

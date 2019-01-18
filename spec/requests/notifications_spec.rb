@@ -1,7 +1,16 @@
 require "rails_helper"
 
 RSpec.describe "NotificationsIndex", type: :request do
+  let(:dev_account) { create(:user) }
   let(:user) { create(:user) }
+
+  before do
+    allow(User).to receive(:dev_account).and_return(dev_account)
+  end
+
+  def has_both_names(response_body)
+    response_body.include?(CGI.escapeHTML(User.last.name)) && response_body.include?(CGI.escapeHTML(User.second_to_last.name))
+  end
 
   describe "GET notifications" do
     it "renders page with the proper heading" do
@@ -12,23 +21,20 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when signed out" do
       it "renders the signup cue" do
         get "/notifications"
-        expect(response.body).to include "<div class=\"signup-cue"
+        expect(response.body).to include "signup-cue"
       end
     end
 
     context "when signed in" do
-      before { sign_in user }
-
       it "does not render the signup cue" do
+        sign_in user
         get "/notifications"
         expect(response.body).not_to include "Create your account"
       end
     end
 
     context "when a user has new follow notifications" do
-      before do
-        sign_in user
-      end
+      before { sign_in user }
 
       def mock_follow_notifications(amount)
         create_list :user, amount
@@ -36,21 +42,19 @@ RSpec.describe "NotificationsIndex", type: :request do
         follow_instances.each { |follow| Notification.send_new_follower_notification_without_delay(follow) }
       end
 
-      xit "renders the proper message for a single notification" do
+      it "renders the proper message for a single notification" do
         mock_follow_notifications(1)
         get "/notifications"
-        follow_message = "#{User.last.name}</a> followed you!"
-        expect(response.body).to include follow_message
+        expect(response.body).to include CGI.escapeHTML(User.last.name)
       end
 
-      xit "renders the proper message for two notifications in the same day" do
+      it "renders the proper message for two notifications in the same day" do
         mock_follow_notifications(2)
         get "/notifications"
-        follow_message = "#{CGI.escapeHTML(User.last.name)}</a> and\n        <a href=\"/#{CGI.escapeHTML(User.second_to_last.username)}\">#{CGI.escapeHTML(User.second_to_last.name)}</a> followed you!"
-        expect(response.body).to include CGI.escapeHTML(follow_message)
+        expect(has_both_names(response.body)).to be true
       end
 
-      xit "renders the proper message for three or more notifications in the same day" do
+      it "renders the proper message for three or more notifications in the same day" do
         mock_follow_notifications(rand(3..10))
         get "/notifications"
         follow_message = "others followed you!"
@@ -69,11 +73,9 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when a user has new reaction notifications" do
       let(:article1)                   { create(:article, user_id: user.id) }
       let(:article2)                   { create(:article, user_id: user.id) }
-      let(:special_characters_article) { create(:article, user_id: user.id, title: "Nothing like good ol' blah blah blah") }
+      let(:special_characters_article) { create(:article, user_id: user.id, title: "What's Become of Waring") }
 
-      before do
-        sign_in user
-      end
+      before { sign_in user }
 
       def mock_heart_reaction_notifications(amount, categories, reactable = article1)
         create_list :user, amount
@@ -89,32 +91,23 @@ RSpec.describe "NotificationsIndex", type: :request do
         reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction) }
       end
 
-      xit "renders the proper message for a single public reaction" do
+      it "renders the correct user for a single reaction" do
         mock_heart_reaction_notifications(1, %w(like unicorn))
         get "/notifications"
-        message = "#{CGI.escapeHTML(User.last.name)}</strong></a> reacted to"
-        expect(response.body).to include message
+        expect(response.body).to include CGI.escapeHTML(User.last.name)
       end
 
-      xit "renders the proper message for a single private reaction" do
-        mock_heart_reaction_notifications(1, %w(readinglist))
-        get "/notifications"
-        message = "Someone reacted to"
-        expect(response.body).to include message
-      end
-
-      xit "renders the proper message for two or more public reactions" do
+      it "renders the correct usernames for two or more reactions" do
         mock_heart_reaction_notifications(2, %w(like unicorn))
         get "/notifications"
-        message = "#{User.last.name}</a> and <a href=\"/#{CGI.escapeHTML(User.second_to_last.username)}\">#{CGI.escapeHTML(User.second_to_last.name)}</a>\n    reacted to"
-        expect(response.body).to include CGI.escapeHTML(message)
+        expect(has_both_names(response.body)).to be true
       end
 
-      xit "renders the proper message for multiple public reactions" do
-        mock_heart_reaction_notifications(3, %w(unicorn like))
+      it "renders the proper message for multiple reactions" do
+        random_amount = rand(3..10)
+        mock_heart_reaction_notifications(random_amount, %w(unicorn like))
         get "/notifications"
-        message = "#{User.last.name}</a> and 2 others\n    reacted to"
-        expect(response.body).to include CGI.escapeHTML(message)
+        expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
       end
 
       xit "does not group notifications that are on different days but have the same reactable" do
@@ -125,7 +118,7 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(notifications.count).to eq 2
       end
 
-      xit "does not group notifications that are on the same day but have different reactables" do
+      it "does not group notifications that are on the same day but have different reactables" do
         mock_heart_reaction_notifications(1, %w(unicorn like readinglist), article1)
         mock_heart_reaction_notifications(1, %w(unicorn like readinglist), article2)
         get "/notifications"
@@ -158,20 +151,20 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      xit "renders the correct message" do
+      it "renders the correct message" do
         expect(response.body).to include "commented on"
       end
 
-      xit "does not render the moderation message" do
+      it "does not render the moderation message" do
         expect(response.body).not_to include "As a trusted member"
       end
 
-      xit "renders the original article's title" do
-        expect(response.body).to include CGI.escapeHTML(article.title)
+      it "renders the article's path" do
+        expect(response.body).to include article.path
       end
 
-      xit "renders the comment's processed HTML" do
-        expect(response.body).to include CGI.escapeHTML(comment.processed_html)
+      it "renders the comment's processed HTML" do
+        expect(response.body).to include comment.processed_html
       end
 
       it "renders the reaction as previously reacted if it was reacted on" do
@@ -191,37 +184,35 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        user.update(id: 1)
         user.add_role :trusted
         sign_in user
         Notification.send_moderation_notification_without_delay(comment)
         get "/notifications"
       end
 
-      xit "renders the proper message" do
+      it "renders the proper message" do
         expect(response.body).to include "As a trusted member"
       end
 
-      xit "renders the article's title" do
-        expect(response.body).to include CGI.escapeHTML(article.title)
+      it "renders the article's path" do
+        expect(response.body).to include article.path
       end
 
-      xit "renders the comment's processed HTML" do
-        expect(response.body).to include CGI.escapeHTML(comment.processed_html)
+      it "renders the comment's processed HTML" do
+        expect(response.body).to include comment.processed_html
       end
     end
 
     context "when a user has a new welcome notification" do
       before do
-        user.update(id: 1)
         sign_in user
       end
 
-      xit "renders the welcome notification" do
+      it "renders the welcome notification" do
         broadcast = create(:broadcast, :onboarding)
         Notification.send_welcome_notification_without_delay(user.id)
         get "/notifications"
-        expect(response.body).to include CGI.escapeHTML(broadcast.processed_html)
+        expect(response.body).to include broadcast.processed_html
       end
     end
 
@@ -234,20 +225,19 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      xit "renders the proper message with the badge's title" do
-        message = "You received the <strong>#{Badge.first.title}"
-        expect(response.body).to include CGI.escapeHTML(message)
+      it "renders the badge's title" do
+        expect(response.body).to include Badge.first.title
       end
 
-      xit "renders the rewarding context message" do
-        expect(response.body).to include CGI.escapeHTML(user.badge_achievements.first.rewarding_context_message)
+      it "renders the rewarding context message" do
+        expect(response.body).to include user.badge_achievements.first.rewarding_context_message
       end
 
-      xit "renders the badge's description" do
+      it "renders the badge's description" do
         expect(response.body).to include CGI.escapeHTML(Badge.first.description)
       end
 
-      xit "renders the CHECK YOUR PROFILE button" do
+      it "renders the CHECK YOUR PROFILE button" do
         expect(response.body).to include "CHECK YOUR PROFILE"
       end
     end
@@ -266,20 +256,19 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       before do
-        user.update(id: 1)
-        sign_in user
         comment
-        Mention.create_all(comment)
+        Mention.create_all_without_delay(comment)
         Notification.send_mention_notification_without_delay(Mention.first)
+        sign_in user
         get "/notifications"
       end
 
-      xit "renders the proper message" do
+      it "renders the proper message" do
         expect(response.body).to include "mentioned you in a comment"
       end
 
-      xit "renders the processed HTML of the comment where they were mentioned" do
-        expect(response.body).to include CGI.escapeHTML(comment.processed_html)
+      it "renders the processed HTML of the comment where they were mentioned" do
+        expect(response.body).to include comment.processed_html
       end
     end
 
@@ -294,15 +283,15 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      xit "renders the proper message" do
+      it "renders the proper message" do
         expect(response.body).to include "made a new post:"
       end
 
-      xit "renders the article's title" do
-        expect(response.body).to include CGI.escapeHTML(article.title)
+      it "renders the article's path" do
+        expect(response.body).to include article.path
       end
 
-      xit "renders the author's name" do
+      it "renders the author's name" do
         expect(response.body).to include CGI.escapeHTML(article.user.name)
       end
 

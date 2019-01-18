@@ -6,7 +6,7 @@ class Bufferizer
   end
 
   def satellite_tweet!
-    article.tags.each do |tag|
+    article.tags.find_each do |tag|
       if tag.buffer_profile_id_code.present?
         BufferUpdate.buff!(article.id, twitter_buffer_text, tag.buffer_profile_id_code, "twitter", tag.id)
       end
@@ -28,10 +28,7 @@ class Bufferizer
   private
 
   def twitter_buffer_text
-    twit_name = article.user.twitter_username
-    if twit_name.present? && text.size < 245
-      "#{text}\n{ author: @#{twit_name} }\nhttps://dev.to#{article.path}"
-    else
+    if text.size <= 255
       "#{text} https://dev.to#{article.path}"
     end
   end

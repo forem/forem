@@ -559,6 +559,16 @@
         margin-top:-94px !important;
       }
     }
+    .article-reading-time {
+      position: absolute;
+      right: 75px;
+      bottom: 12px;
+      font-size:13px;
+      padding:6px 0px;
+      font-weight:600;
+      z-index: 8;
+      color: lighten($medium-gray, 10%);
+    }
     .article-engagement-count{
       font-size:13px;
       font-weight:bold;
@@ -604,17 +614,6 @@
         letter-spacing: 1px;
         &:hover{
           background: darken($purple, 50%);
-        }
-        img{
-          height:17px;
-          width:18px;
-          margin-right: 0px;
-          vertical-align:-3px;
-          @media screen and ( min-width: 430px ){
-            height:20px;
-            width:21px;
-            min-width:21px;
-          }
         }
         .bm-success{
           display:none;
