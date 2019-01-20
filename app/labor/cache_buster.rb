@@ -54,7 +54,6 @@ class CacheBuster
       article.collection&.articles&.find_each do |a|
         bust(a.path)
       end
-      Rails.cache.delete "views/article-series-collection-#{article.collection_id}"
     end
   end
 
