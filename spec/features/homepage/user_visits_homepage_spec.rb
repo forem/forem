@@ -49,6 +49,9 @@ describe "User visits a homepage", type: :feature do
     context "when user follows tags" do
       before do
         user.follows.create!(followable: ruby_tag)
+        user.follows.create!(followable: create(:tag, name: "go", hotness_score: 99))
+        user.follows.create!(followable: create(:tag, name: "javascript"), points: 3)
+
         visit "/"
       end
 
@@ -56,6 +59,12 @@ describe "User visits a homepage", type: :feature do
         expect(page).to have_text("my tags")
         within("#sidebar-nav-followed-tags") do
           expect(page).to have_link("#ruby", href: "/t/ruby")
+        end
+      end
+
+      it "shows followed tags ordered by weight and name", js: true do
+        within("#sidebar-nav-followed-tags") do
+          expect(all(".sidebar-nav-tag-text").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
 
