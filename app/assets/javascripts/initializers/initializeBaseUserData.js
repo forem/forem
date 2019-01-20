@@ -16,8 +16,14 @@ function initializeUserSidebar(user) {
     if (followedTags.length === 0) {
         document.getElementById("tag-separator").innerHTML = "Follow tags to improve your feed"
     }
+
+    // sort tags by descending weigth, descending popularity and name
+    followedTags.sort(function(tagA, tagB) {
+      return tagB.points - tagA.points || tagB.hotness_score - tagA.hotness_score || tagA.name.localeCompare(tagB.name);
+    });
+
     followedTags.forEach(function(t){
-      renderedTagsCount++
+      renderedTagsCount++;
       if (t.points > 0.0) {
         tagHTML = tagHTML + '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">\
                             <a class="sidebar-nav-link" href="/t/'+t.name+'">\
