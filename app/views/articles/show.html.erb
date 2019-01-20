@@ -205,7 +205,7 @@
       <% end %>
     <% end %>
   </div>
-  <% cache("article-bottom-content-#{@article.cached_tag_list_array.sort}", :expires_in => 12.hours) do %>
+  <% cache("article-bottom-content-#{@article.cached_tag_list_array.sample}", :expires_in => 18.hours) do %>
     <% @classic_article = Suggester::Articles::Classic.new(@article).get %>
     <% if @classic_article %>
       <%= render "additional_content_boxes/article_box",
@@ -220,7 +220,7 @@
   </div>
 </div>
 
-<% cache("sticky-sidebar-#{@article.id}-#{@article.updated_at}-#{(@organization || @user).updated_at}-#{user_signed_in?}", :expires_in => 8.hours) do %>
+<% cache("sticky-sidebar-#{@article.id}-#{(@organization || @user).updated_at}-#{user_signed_in?}", :expires_in => 18.hours) do %>
   <%= render "articles/sticky_nav" %>
 <% end %>
 
