@@ -3,7 +3,7 @@
 <% end %>
 <div id="query-wrapper"></div>
 <div class="home sub-home" id="index-container"
-  data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
+  data-params="<%= params.to_json(only: [:tag, :username, :q]) %>" data-which="<%= @list_of %>"
   data-algolia-tag=""
   data-feed="<%= params[:timeframe] || "base-feed"%>"
   data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
@@ -15,9 +15,6 @@
         <div class="query-results-loader"></div>
         <br/>
       </div>
-      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
-        <%= render "stories/main_stories_feed" %>
-      <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">
       loading...
