@@ -67,15 +67,13 @@
       </div>
     <% end %>
   </div>
-  <% if params[:html_variant_id] %>
-    <% @html_variant = HtmlVariant.where(group: "article_show_sidebar_cta", id: params[:html_variant_id].to_i ).first %>
-  <% else %>
+  <% cache("html-variant-sidebar#{rand(20)}", :expires_in => 8.hours) do %>
     <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
-  <% end %>
-  <% if ( params[:html_variant_id] || !user_signed_in? ) && @html_variant %>
-    <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>" >
-      <%= @html_variant.html.html_safe %>
-    </div>
+    <% if !user_signed_in? && @html_variant %>
+      <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>" >
+        <%= @html_variant.html.html_safe %>
+      </div>
+    <% end %>
   <% end %>
 
   <% if user_signed_in? && @user_stickies && @user_stickies.any? %>

@@ -1,19 +1,15 @@
 <div class="article-actions" id="article-reaction-actions">
-  <% unless user_signed_in? %>
-    <div class="showpage-reaction-cta cta" id="showpage-reaction-cta">
-      Did you find this post useful? Show some love!
-      <div class="down-arrow"> </div>
-    </div>
+  <% cache("article-main-reactions", :expires_in => 200.hours) do %>
+    <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
+      <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
+    </button>
+    <button id="reaction-butt-unicorn" class="article-reaction-butt unicorn-reaction-button" data-category="unicorn" alt="unicorn-emoji" title="unicorn">
+      <img src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
+    </button>
+    <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
+      <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
+    </button>
   <% end %>
-  <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
-    <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
-  </button>
-  <button id="reaction-butt-unicorn" class="article-reaction-butt unicorn-reaction-button" data-category="unicorn" alt="unicorn-emoji" title="unicorn">
-    <img src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
-  </button>
-  <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
-    <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
-  </button>
   <a class="article-actions-tweet-button"
       target='_blank'
       href='https://twitter.com/intent/tweet?text="<%=u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
