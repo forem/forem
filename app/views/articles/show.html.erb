@@ -162,17 +162,13 @@
         </div>
       </header>
       <% if @article.collection_id %>
-        <% cache("article-series-collection-#{@article.collection_id}") do %>
           <%= render "articles/collection", position: "top" %>
-        <% end %>
       <% end %>
       <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
         <%= @article.processed_html.html_safe %>
       </div>
       <% if @article.body_markdown && @article.body_markdown.size > 900 && @article.collection_id %>
-        <% cache("article-series-collection-#{@article.collection_id}") do %>
           <%= render "articles/collection", position: "bottom" %>
-        <% end %>
       <% end %>
       <%= render 'articles/actions' %>
     </article>
