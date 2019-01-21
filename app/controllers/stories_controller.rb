@@ -12,8 +12,6 @@ class StoriesController < ApplicationController
 
   def search
     @query = "...searching"
-    @stories = Article.none
-    @featured_story = Article.new
     @article_index = true
     set_surrogate_key_header "articles-page-with-query"
     render template: "articles/search"
@@ -91,7 +89,6 @@ class StoriesController < ApplicationController
     @stories = stories_by_timeframe
     @stories = @stories.decorate
 
-    @featured_story = Article.new
     @article_index = true
     set_surrogate_key_header "articles-#{@tag}", @stories.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
@@ -104,10 +101,9 @@ class StoriesController < ApplicationController
     num_articles = 25
     @stories = article_finder(num_articles)
     add_param_context(:page, :timeframe)
-
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("positive_reactions_count DESC")
+        order("score DESC")
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
@@ -116,7 +112,7 @@ class StoriesController < ApplicationController
     else
       @default_home_feed = true
       @stories = @stories.
-        where("reactions_count > ? OR featured = ?", 10, true).
+        where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
       if user_signed_in?
         offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7].sample # random offset, weighted more towards zero
@@ -124,10 +120,10 @@ class StoriesController < ApplicationController
       end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
       if user_signed_in?
-        @new_stories = Article.where("published_at > ? AND score > ?", 4.hours.ago, -30).
+        @new_stories = Article.where("published_at > ? AND score > ?", rand(2..6).hours.ago, -30).
           where(published: true).
           includes(:user).
-          limit(45).
+          limit(rand(15..60)).
           order("published_at DESC").
           limited_column_select.
           decorate
@@ -143,7 +139,6 @@ class StoriesController < ApplicationController
   end
 
   def handle_podcast_index
-    @featured_story = Article.new
     @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
@@ -159,7 +154,6 @@ class StoriesController < ApplicationController
       limited_column_select.
       includes(:user).
       order("published_at DESC").page(@page).per(8))
-    @featured_story = Article.new
     @article_index = true
     @organization_article_index = true
     set_surrogate_key_header "articles-org-#{@organization.id}", @stories.map(&:record_key)
@@ -177,7 +171,6 @@ class StoriesController < ApplicationController
       articles.where(published: true).
       limited_column_select.
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
-    @featured_story = Article.new
     @article_index = true
     @list_of = "articles"
     redirect_if_view_param

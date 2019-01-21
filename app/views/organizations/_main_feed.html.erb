@@ -1,0 +1,11 @@
+<div id="organization-article-index"></div>
+<% @stories.each_with_index do |story, i| %>
+  <% if !user_signed_in? && i == 4 %>
+    <%= render 'stories/sign_in_invitation' %>
+  <% end %>
+  <%= render "articles/single_story", story: story %>
+<% end %>
+<% if @stories.size > 1 %>
+  <div class="placeholder-div"></div>
+<% end %>
+<div class="single-article-small-pic" id="article-index-hidden-div" style="display:none"></div>

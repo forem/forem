@@ -38,6 +38,24 @@ RSpec.describe RssReader, vcr: vcr_option do
       end
     end
 
+    it "sets time current" do
+      described_class.new.get_all_articles
+      expect(User.find_by(feed_url: nonpermanent_link).feed_fetched_at).to be > 2.minutes.ago
+    end
+
+    it "does not refetch same user over and over" do
+      user = User.find_by(feed_url: nonpermanent_link)
+      user.update_column(:feed_fetched_at, Time.current)
+      fetched_at_time = user.feed_fetched_at
+      sleep(1)
+      described_class.new.get_all_articles
+      described_class.new.get_all_articles
+      described_class.new.get_all_articles
+      described_class.new.get_all_articles
+      described_class.new.get_all_articles
+      expect(user.feed_fetched_at).to eq(fetched_at_time)
+    end
+
     it "gets articles for user" do
       # the result within the approval file depends on the feed
       described_class.new.fetch_user(User.first)

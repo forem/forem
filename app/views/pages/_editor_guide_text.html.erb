@@ -155,13 +155,22 @@
         Which url to initially load in address bar.<br/>
         <code>{% codesandbox ppxnl191zx initialpath=/initial/load/path %}</code>
       </dd>
-      <dl>
       <dt><code>module</code></dt>
       <dd>
         Which module to open by default.<br/>
         <code>{% codesandbox ppxnl191zx module=/path/to/module %}</code>
       </dd>
-    </dl>
+      
+    <h3><strong>JSFiddle Embed</strong></h3>
+    <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
+    <code>{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}</code>
+
+    <dl>
+    <dt><code>Custom tabs</code></dt>
+    <dd>
+      You can add a custom tab order to you JSFiddle embed tag. Defaults to <i>js,html,css,result</i><br/>
+      <code>{% jsfiddle https://jsfiddle.net/webdevem/Q8KVC result,html,css %}</code>
+    </dd>
 
     <h3><strong>repl.it Embed</strong></h3>
     <p>All you need is the URL after the domain name:</p>
@@ -186,6 +195,15 @@
     <h3><strong>Soundcloud Embed</strong></h3>
     <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
     <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
+
+    <h3><strong>Spotify Embed</strong></h3>
+    <p>
+      Enter the Spotify URI of the Spotify track / playlist /
+      album / artist / podcast episode you are trying to embed.
+    </p>
+    <pre>
+      {% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}
+    </pre>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
     <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>

@@ -108,7 +108,7 @@
 						<input type="hidden" name="social_channel" value="main_twitter" />
 						<input type="hidden" name="article_id" value="<%= article.id %>" />
 						<p> Twitter MAIN</p>
-						<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>
+						<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255" /><%= article.title %><% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
 						<button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @ThePracticalDev</button>
 					<% end %>
 					<% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
@@ -116,7 +116,7 @@
 							<input type="hidden" name="social_channel" value="satellite_twitter" />
 							<input type="hidden" name="article_id" value="<%= article.id %>" />
 							<p> Twitter Satellite</p>
-							<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="242" /><%= article.title %></textarea>
+							<textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"/><%= article.title %><% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
 							<button class="btn btn-info" style="font-size:1em;">🐦 Tweet to satellites</button>
 						<% end %>
 					<% end %>

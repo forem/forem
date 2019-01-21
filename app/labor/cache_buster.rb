@@ -24,7 +24,7 @@ class CacheBuster
     end
     bust("#{commentable.path}/comments/")
     bust(commentable.path.to_s)
-    commentable.comments.each do |c|
+    commentable.comments.find_each do |c|
       bust(c.path)
       bust(c.path + "?i=i")
     end
@@ -50,9 +50,10 @@ class CacheBuster
     bust_tag_pages(article)
     bust("/api/articles/#{article.id}")
     bust("/api/articles/by_path?url=#{article.path}")
-
-    article.collection&.articles&.each do |a|
-      bust(a.path)
+    if article.collection_id
+      article.collection&.articles&.find_each do |a|
+        bust(a.path)
+      end
     end
   end
 
