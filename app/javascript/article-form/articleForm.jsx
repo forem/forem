@@ -157,12 +157,6 @@ export default class ArticleForm extends Component {
     });
   };
 
-  handleTagUpdate = value => {
-    this.setState({
-      tagList: value,
-    });
-  };
-
   render() {
     // cover image url should asking for url OR providing option to upload an image
     const {
@@ -187,8 +181,8 @@ export default class ArticleForm extends Component {
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
-      ''
-    );
+        ''
+      );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -196,8 +190,8 @@ export default class ArticleForm extends Component {
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const moreConfig = moreConfigShowing ? (
       <MoreConfig
         onExit={this.toggleMoreConfig}
@@ -206,8 +200,8 @@ export default class ArticleForm extends Component {
         onConfigChange={this.handleConfigChange}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const orgArea = organization ? (
       <OrgSettings
         organization={organization}
@@ -215,8 +209,8 @@ export default class ArticleForm extends Component {
         onToggle={this.toggleOrgPosting}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
@@ -249,7 +243,7 @@ export default class ArticleForm extends Component {
             >
               <img src={ImageUploadIcon} />
               {' '}
-IMAGES
+              IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -268,7 +262,7 @@ IMAGES
           >
             <img src={ImageUploadIcon} />
             {' '}
-IMAGES
+            IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
