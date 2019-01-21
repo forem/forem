@@ -26,7 +26,7 @@
       href="<%= article.path %>/toggle_mute"
       class="cta pill <%= article.receive_notifications ? "mute" : "unmute" %>"
       data-no-instant>
-      <%= article.receive_notifications ? "MUTE COMMENTS" : "COMMENTS MUTED" %>
+      <%= article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED" %>
     </a>
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
