@@ -132,8 +132,7 @@ class StoriesController < ApplicationController
     @stories = @stories.decorate
     assign_podcasts
     @article_index = true
-    @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar").first
-    set_surrogate_key_header "articles", @stories.map(&:record_key)
+    set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/index"
   end
