@@ -52,6 +52,22 @@ RSpec.describe "internal/users", type: :request do
     end
   end
 
+  context "when banning from mentorship" do
+    before do
+      user.update(offering_mentorship: true, mentor_description: "I want to be a mentor")
+    end
+
+    it "adds banned from mentorship role" do
+      put "/internal/users/#{user.id}", params: { user: { ban_from_mentorship: "1", note_for_mentorship_ban: "banned" } }
+      expect(user.roles.first.name).to eq("banned_from_mentorship")
+    end
+
+    it "returns user to good standing if unbanned" do
+      put "/internal/users/#{user.id}", params: { user: { good_standing_user: "1" } }
+      expect(user.roles.count).to eq(0)
+    end
+  end
+
   context "when banishing user" do
     def banish_user
       post "/internal/users/#{user.id}/banish"
