@@ -266,7 +266,7 @@ GEM
     environs (1.1.0)
     equalizer (0.0.11)
     errbase (0.1.0)
-    erubi (1.7.1)
+    erubi (1.8.0)
     et-orbi (1.1.6)
       tzinfo
     eventmachine (1.2.5)
@@ -512,7 +512,7 @@ GEM
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
-    i18n (1.5.1)
+    i18n (1.5.2)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
     inflecto (0.0.2)
@@ -652,7 +652,7 @@ GEM
       rack
     rack-protection (2.0.4)
       rack
-    rack-proxy (0.6.4)
+    rack-proxy (0.6.5)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -895,7 +895,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpacker (3.5.3)
+    webpacker (3.5.5)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
