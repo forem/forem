@@ -309,7 +309,7 @@ class Comment < ApplicationRecord
       parent_user != user &&
       parent_user.email_comment_notifications &&
       parent_user.email &&
-      parent.receive_notifications
+      parent_or_root_article.receive_notifications
   end
 
   def strip_url(url)
