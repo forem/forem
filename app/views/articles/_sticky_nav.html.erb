@@ -1,9 +1,3 @@
-<% if user_signed_in? %>
-  <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
-  <% @sticky_articles = @sticky_collection.suggested_stickies %>
-  <% @user_stickies = @sticky_collection.user_stickies %>
-<% end %>
-
 <% @actor = @article.organization || @article.user %>
 <style>
   .primary-sticky-nav-author,.primary-sticky-nav-author-element{
@@ -67,57 +61,64 @@
       </div>
     <% end %>
   </div>
+<% if !user_signed_in? %>
   <% cache("html-variant-sidebar#{rand(20)}", :expires_in => 8.hours) do %>
     <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
-    <% if !user_signed_in? && @html_variant %>
+    <% if @html_variant %>
       <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>" >
         <%= @html_variant.html.html_safe %>
       </div>
     <% end %>
   <% end %>
-
-  <% if user_signed_in? && @user_stickies && @user_stickies.any? %>
-    <% @user_stickies.each_with_index do |article, index| %>
-      <div class="primary-sticky-nav-element-wrapper">
-        <% if index == 0 %>
-          <div class="primary-sticky-nav-title">
-            <% if @actor.username.size < 18 %>
-              More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
-            <% else %>
-              More from<br/><a href="<%= @actor.path %>">@<%= @actor.username %></a>
+<% else  %>
+  <% cache("article-sticky-nav-articles-#{@article.id}-#{@article.updated_at}", :expires_in => 10.hours) do %>
+      <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
+      <% @sticky_articles = @sticky_collection.suggested_stickies %>
+      <% @user_stickies = @sticky_collection.user_stickies %>
+      <% if @user_stickies && @user_stickies.any? %>
+        <% @user_stickies.each_with_index do |article, index| %>
+          <div class="primary-sticky-nav-element-wrapper">
+            <% if index == 0 %>
+              <div class="primary-sticky-nav-title">
+                <% if @actor.username.size < 18 %>
+                  More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
+                <% else %>
+                  More from<br/><a href="<%= @actor.path %>">@<%= @actor.username %></a>
+                <% end %>
+              </div>
             <% end %>
+            <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+              <%= article.title %>
+              <div class="primary-sticky-nav-element-details">
+                <% article.decorate.cached_tag_list_array.each do |tag| %>
+                  <span>#<%= tag %></span>
+                <% end %>
+              </div>
+            </a>
           </div>
         <% end %>
-        <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
-          <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
-          <%= article.title %>
-          <div class="primary-sticky-nav-element-details">
-            <% article.decorate.cached_tag_list_array.each do |tag| %>
-              <span>#<%= tag %></span>
+      <% end %>
+      <% if user_signed_in? && @sticky_articles %>
+        <% @sticky_articles.each_with_index do |article, index| %>
+          <div class="primary-sticky-nav-element-wrapper">
+            <% if index == 0 %>
+              <div class="primary-sticky-nav-title">
+                <img src="<%= asset_path "emoji/apple-fire.png"%>"/> Trending on <a href="https://dev.to">dev.to</a>
+              </div>
             <% end %>
-          </div>
-        </a>
-      </div>
-    <% end %>
-  <% end %>
-  <% if user_signed_in? && @sticky_articles %>
-    <% @sticky_articles.each_with_index do |article, index| %>
-      <div class="primary-sticky-nav-element-wrapper">
-        <% if index == 0 %>
-          <div class="primary-sticky-nav-title">
-            <img src="<%= asset_path "emoji/apple-fire.png"%>"/> Trending on <a href="https://dev.to">dev.to</a>
+            <a class="primary-sticky-nav-element" href="<%= article.path %>">
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
+              <%= article.title %>
+              <div class="primary-sticky-nav-element-details">
+                <% article.decorate.cached_tag_list_array.each do |tag| %>
+                  <span>#<%= tag %></span>
+                <% end %>
+              </div>
+            </a>
           </div>
         <% end %>
-        <a class="primary-sticky-nav-element" href="<%= article.path %>">
-          <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" />
-          <%= article.title %>
-          <div class="primary-sticky-nav-element-details">
-            <% article.decorate.cached_tag_list_array.each do |tag| %>
-              <span>#<%= tag %></span>
-            <% end %>
-          </div>
-        </a>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   <% end %>
-</div>
+<% end %>
