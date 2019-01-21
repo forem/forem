@@ -1,7 +1,7 @@
 <% if followable.class.name == "Organization" && followable.nav_image.present? %>
 <div class="profile-pic-wrapper wide-profile-image-wrapper">
     <a href="<%= followable.path + article.decorate.internal_utm_params %>" />
-        <img class="wide-image" src="<%= CloudinaryHelper.cl_image_path(followable.nav_image_url,
+        <img class="wide-image" src="<%= cl_image_path(followable.nav_image_url,
                                     type: "fetch",
                                     crop: "fill",
                                     width: 220,
