@@ -1,60 +1,64 @@
 <% title @article.title %>
 
-<% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
-  <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', defer: true %>
-  <script defer>
-    var waitingOnPostscribe = setInterval(function() {
-      if (typeof(postscribe) === "function") {
-        clearInterval(waitingOnPostscribe);
-        var els = document.getElementsByClassName("ltag_gist-liquid-tag");
-        for (var i = 0; i < els.length; i++) {
-          var current = els[i];
-          postscribe(current, current.firstElementChild.outerHTML, { beforeWrite: function(context) {
-            return function(text) {
-              if (context.childElementCount > 3) {
-                return "";
+<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", :expires_in => 30.hours) do %>
+  <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
+    <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js', defer: true %>
+    <script defer>
+      var waitingOnPostscribe = setInterval(function() {
+        if (typeof(postscribe) === "function") {
+          clearInterval(waitingOnPostscribe);
+          var els = document.getElementsByClassName("ltag_gist-liquid-tag");
+          for (var i = 0; i < els.length; i++) {
+            var current = els[i];
+            postscribe(current, current.firstElementChild.outerHTML, { beforeWrite: function(context) {
+              return function(text) {
+                if (context.childElementCount > 3) {
+                  return "";
+                }
+                return text;
               }
-              return text;
-            }
-          }(current)});
+            }(current)});
+          }
         }
-      }
-    }, 500)
-  </script>
+      }, 500)
+    </script>
+  <% end %>
+
+  <% if @article.processed_html.include? "runkit-element" %>
+    <%= javascript_include_tag 'https://embed.runkit.com' %>
+  <% end %>
 <% end %>
 
-<% if @article.processed_html.include? "runkit-element" %>
-  <%= javascript_include_tag 'https://embed.runkit.com' %>
-<% end %>
+<% if !internal_navigation? %>
+  <%= content_for :page_meta do %>
+    <% if @article.canonical_url.present? %>
+      <link rel="canonical" href="<%= @article.canonical_url %>"/>
+    <% else %>
+      <link rel="canonical" href="https://dev.to<%=@article.path%>"/>
+    <% end %>
+    <meta name="description" content="<%=@article.description || "An article from the community" %>">
+    <meta name="keywords" content="software development, inclusive, community,engineering,<%= @article.cached_tag_list %>">
 
-<%= content_for :page_meta do %>
-  <% if @article.canonical_url.present? %>
-    <link rel="canonical" href="<%= @article.canonical_url %>"/>
-  <% else %>
-    <link rel="canonical" href="https://dev.to<%=@article.path%>"/>
-  <% end %>
-  <meta name="description" content="<%=@article.description || "An article from the community" %>">
-  <meta name="keywords" content="software development, inclusive, community,engineering,<%= @article.cached_tag_list %>">
-
-  <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to<%=@article.path%>" />
-  <meta property="og:title" content="<%=@article.title %>" />
-  <meta property="og:description" content="<%=@article.description || "An article from the community" %>" />
-  <meta property="og:site_name" content="The Practical Dev" />
-  <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
-  <meta name="twitter:title" content="<%=@article.title %>">
-  <meta name="twitter:description" content="<%=@article.description || "An article from the community" %>">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:widgets:new-embed-design" content="on">
-  <% if @article.published %>
-    <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
-    <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
-  <% end %>
-  <% if !@article.published || (@article.positive_reactions_count < 7 && @article.user.comments_count < 1 && !@article.featured) ||
-    @article.featured_number.to_i < 1500000000 || @article.score < -10 %>
-    <meta name="googlebot" content="noindex">
-    <meta name="googlebot" content="nofollow">
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://dev.to<%=@article.path%>" />
+    <meta property="og:title" content="<%=@article.title %>" />
+    <meta property="og:description" content="<%=@article.description || "An article from the community" %>" />
+    <meta property="og:site_name" content="The Practical Dev" />
+    <meta name="twitter:site" content="@ThePracticalDev">
+    <meta name="twitter:creator" content="@<%=@user.twitter_username %>">
+    <meta name="twitter:title" content="<%=@article.title %>">
+    <meta name="twitter:description" content="<%=@article.description || "An article from the community" %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:widgets:new-embed-design" content="on">
+    <% if @article.published %>
+      <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
+      <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
+    <% end %>
+    <% if !@article.published || (@article.positive_reactions_count < 7 && @article.user.comments_count < 1 && !@article.featured) ||
+      @article.featured_number.to_i < 1500000000 || @article.score < -10 %>
+      <meta name="googlebot" content="noindex">
+      <meta name="googlebot" content="nofollow">
+    <% end %>
   <% end %>
 <% end %>
 
@@ -176,7 +180,7 @@
     <%= render 'articles/org_branding', organization: @organization %>
     <% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", :expires_in => 2.hours) do %>
       <div id="comments" style="margin-top: -56px;padding-bottom:56px;position:relative;z-index:-100" data-updated-at="<%= Time.current %>"></div>
-      <% if @article.show_comments && @article.comments_count > 0 %>
+      <% if @article.show_comments%>
         <div class="comments-container-container">
           <div
             class="comments-container"
@@ -186,13 +190,15 @@
             <%= render "/comments/form",
                 commentable: @article,
                 commentable_type: "Article" %>
-            <div class="comment-trees" id="comment-trees-container">
-              <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
-                <% cache ["comment_root_cached_tree", comment] do %>
-                  <%= tree_for(comment, @article) %>
+            <% if @article.comments_count > 0  %>
+              <div class="comment-trees" id="comment-trees-container">
+                <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
+                  <% cache ["comment_root_cached_tree", comment] do %>
+                    <%= tree_for(comment, @article) %>
+                  <% end %>
                 <% end %>
-              <% end %>
-            </div>
+              </div>
+            <% end %>
           </div>
           <div class="show-comments-footer">
             <%= render 'articles/comments_actions' %>
