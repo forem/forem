@@ -64,7 +64,7 @@ describe('<Tags />', () => {
 
     return component
       .handleInput({
-        target: { value: 'gi,javascript,linux', selectionStart: 2 },
+        target: { value: 'gi, javascript, linux', selectionStart: 2 },
       })
       .then(() => {
         expect(component.state).toMatchSnapshot();
@@ -72,16 +72,13 @@ describe('<Tags />', () => {
   });
 
   it('only allows 4 tags', () => {
-    const component = preactRender(
-      <Tags defaultValue="" onInput={jest.fn()} />,
-      document.body,
-      document.body.firstElementChild,
-    )._component;
+    const component = shallow(<Tags defaultValue="" onInput={jest.fn()} />);
 
-    component.handleInput({
-      target: { value: 'java,javascript,linux,productivity' },
+    component.simulate('input', {
+      target: { value: 'java, javascript, linux, productivity' },
     });
-    component.handleKeyDown({ keyCode: 188, preventDefault: jest.fn() });
-    expect(component.state).toMatchSnapshot();
+
+    component.simulate('keydown', { keyCode: 188, preventDefault: jest.fn() });
+    expect(component.state()).toMatchSnapshot();
   });
 });

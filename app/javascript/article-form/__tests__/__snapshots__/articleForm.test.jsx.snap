@@ -28,6 +28,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
           onInput={[Function]}
           onKeyDown={[Function]}
           placeholder="tags"
+          ref={[Function]}
           type="text"
           value=""
         />

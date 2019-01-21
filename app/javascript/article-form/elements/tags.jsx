@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, createRef } from 'preact';
 import PropTypes from 'prop-types';
 
 class Tags extends Component {
@@ -8,6 +8,8 @@ class Tags extends Component {
     this.state = {
       selectedIndex: -1,
       searchResults: [],
+      cursorIdx: 0,
+      prevLen: 0
     };
 
     const algoliaId = document.querySelector("meta[name='algolia-public-id']")
@@ -26,6 +28,13 @@ class Tags extends Component {
       .filter(item => item.length > 0);
   }
 
+  componentDidUpdate(e) {
+    // stop cursor jumping if the user goes back to edit previous tags
+    if (this.state.cursorIdx < this.textArea.value.length && this.textArea.value.length < this.state.prevLen + 1) {
+      this.textArea.selectionStart = this.textArea.selectionEnd = this.state.cursorIdx;
+    }
+  }
+
   render() {
     let searchResultsHTML = '';
     const searchResultsRows = this.state.searchResults.map((tag, index) => (
@@ -33,7 +42,7 @@ class Tags extends Component {
         tabIndex="-1"
         className={`articleform__tagoptionrow articleform__tagoptionrow--${
           this.state.selectedIndex === index ? 'active' : 'inactive'
-        }`}
+          }`}
         onClick={this.handleTagClick}
         data-content={tag.name}
       >
@@ -54,6 +63,7 @@ class Tags extends Component {
         <textarea
           id="tag-input"
           type="text"
+          ref={t => this.textArea = t}
           className="articleform__tags"
           placeholder="tags"
           value={this.props.defaultValue}
@@ -98,7 +108,13 @@ class Tags extends Component {
       e.target.value,
       e.target.selectionStart - 1,
     );
-    this.setState({selectedIndex: 0})
+
+    this.setState({
+      selectedIndex: 0,
+      cursorIdx: e.target.selectionStart,
+      prevLen: this.textArea.value.length
+    })
+
     return this.search(query);
   };
 
@@ -190,7 +206,7 @@ class Tags extends Component {
     } else if (e.keyCode === KEYS.DELETE) {
       if (
         component.props.defaultValue[
-          component.props.defaultValue.length - 1
+        component.props.defaultValue.length - 1
         ] === ','
       ) {
         this.clearSelectedSearchResult();
