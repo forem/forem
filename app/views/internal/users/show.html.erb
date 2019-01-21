@@ -125,7 +125,7 @@
   <% end %>
 </div>
 
-<% if @user.seeking_mentorship && @user.mentee_description.present? && !@user.has_role?(:banned_from_mentorship)  %>
+<% if @user.seeking_mentorship && @user.mentee_description.present? && !@user.banned_from_mentorship  %>
   <h2> Mentee Description </h2>
     <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
       <div class="col-md-2">
@@ -157,35 +157,38 @@
       order("mentor_form_updated_at DESC").limit(175).
       sort_by { |possible_mentor| UserSimilarity.new(@user, possible_mentor).score }.reverse.
       first(40).each do |possible_mentor| %>
-    <div class="row" style="font-size:0.9em">
-      <div class="col-md-2">
-        <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
-        <br/>
-        <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
-        <br/>
-        <a href="/internal/users/<%= possible_mentor.id %>" target="_blank">Internal Profile (id #<%= possible_mentor.id %>)</a>
+
+    <% if !possible_mentor.banned_from_mentorship %>
+      <div class="row" style="font-size:0.9em">
+        <div class="col-md-2">
+          <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+          <br/>
+          <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
+          <br/>
+          <a href="/internal/users/<%= possible_mentor.id %>" target="_blank">Internal Profile (id #<%= possible_mentor.id %>)</a>
+        </div>
+        <div class="col-md-3" style="border-left:1px solid black">
+          <h4>Tag Intersection</h4>
+          <%= UserSimilarity.new(@user, possible_mentor).tag_intersection.join(", ") %>
+        </div>
+        <div class="col-md-3">
+          <h4>Mentor description</h4>
+          <%= possible_mentor.mentor_description %>
+        </div>
+        <div class="col-md-3">
+          <h4>Skills/Languages</h4>
+          <%= possible_mentor.mostly_work_with %>
+        </div>
+        <div class="col-md-1">
+          <h4>Action</h4>
+          <%= form_for ([:internal, @user]) do |f| %>
+            <%= f.hidden_field :quick_match, value: true %>
+            <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
+            <%= f.submit "Match!" %>
+          <% end %>
+        </div>
       </div>
-      <div class="col-md-3" style="border-left:1px solid black">
-        <h4>Tag Intersection</h4>
-        <%= UserSimilarity.new(@user, possible_mentor).tag_intersection.join(", ") %>
-      </div>
-      <div class="col-md-3">
-        <h4>Mentor description</h4>
-        <%= possible_mentor.mentor_description %>
-      </div>
-      <div class="col-md-3">
-        <h4>Skills/Languages</h4>
-        <%= possible_mentor.mostly_work_with %>
-      </div>
-      <div class="col-md-1">
-        <h4>Action</h4>
-        <%= form_for ([:internal, @user]) do |f| %>
-          <%= f.hidden_field :quick_match, value: true %>
-          <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
-          <%= f.submit "Match!" %>
-        <% end %>
-      </div>
-    </div>
+    <% end %>
   <% end %>
 <% end %>
 <h2><u>Recent Emails</u></h2>
