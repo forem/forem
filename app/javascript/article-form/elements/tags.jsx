@@ -34,7 +34,6 @@ class Tags extends Component {
   }
 
   get selected() {
-    
     return this.props.defaultValue
       .split(',')
       .map(item => item !== undefined && item.trim())
@@ -58,7 +57,7 @@ class Tags extends Component {
         tabIndex="-1"
         className={`articleform__tagoptionrow articleform__tagoptionrow--${
           this.state.selectedIndex === index ? 'active' : 'inactive'
-          }`}
+        }`}
         onClick={this.handleTagClick}
         data-content={tag.name}
       >
@@ -222,7 +221,7 @@ class Tags extends Component {
     } else if (e.keyCode === KEYS.DELETE) {
       if (
         component.props.defaultValue[
-        component.props.defaultValue.length - 1
+          component.props.defaultValue.length - 1
         ] === ','
       ) {
         this.clearSelectedSearchResult();
