@@ -1,8 +1,8 @@
 import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
-import Tags from '../tags';
 import { JSDOM } from 'jsdom';
+import Tags from '../tags';
 import algoliasearch from '../__mocks__/algoliasearch';
 
 describe('<Tags />', () => {
