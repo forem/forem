@@ -190,15 +190,15 @@
             <%= render "/comments/form",
                 commentable: @article,
                 commentable_type: "Article" %>
-            <% if @article.comments_count > 0  %>
-              <div class="comment-trees" id="comment-trees-container">
+            <div class="comment-trees" id="comment-trees-container">
+              <% if @article.comments_count > 0  %>
                 <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
                   <% cache ["comment_root_cached_tree", comment] do %>
                     <%= tree_for(comment, @article) %>
                   <% end %>
                 <% end %>
-              </div>
-            <% end %>
+              <% end %>
+            </div>
           </div>
           <div class="show-comments-footer">
             <%= render 'articles/comments_actions' %>
