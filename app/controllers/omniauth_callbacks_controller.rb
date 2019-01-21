@@ -10,6 +10,17 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     callback_for("github")
   end
 
+  def failure
+    logger.error "Log in error",
+      log_in_error: {
+        omniauth_error: request.env["omniauth.error"],
+        omniauth_error_type: request.env["omniauth.error.type"],
+        omniauth_strategy: request.env["omniauth.strategy"],
+        cookie: request.env["rack.request.cookie_hash"]
+      }
+    super
+  end
+
   private
 
   def callback_for(provider)
