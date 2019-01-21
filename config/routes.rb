@@ -94,6 +94,7 @@ Rails.application.routes.draw do
   resources :chat_channels, only: %i[index show create update]
   resources :chat_channel_memberships, only: %i[create update destroy]
   resources :articles, only: %i[update create destroy]
+  resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy]
   resources :users, only: [:update]
   resources :reactions, only: %i[index create]
@@ -295,7 +296,6 @@ Rails.application.routes.draw do
   get "/:username/:slug/mod" => "moderations#article"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
-  get "/:username/:slug/toggle_mute" => "articles#toggle_mute"
   get "/:username/:view" => "stories#index",
       constraints: { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
