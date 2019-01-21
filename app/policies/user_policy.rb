@@ -91,7 +91,7 @@ class UserPolicy < ApplicationPolicy
        mostly_work_with
        name
        offering_mentorship
-       inbox
+       inbox_type
        permit_adjacent_sponsors
        password
        password_confirmation

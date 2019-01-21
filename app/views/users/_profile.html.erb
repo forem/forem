@@ -59,8 +59,8 @@
     <%= f.check_box :contact_consent %>
   </div>
   <div class="field checkbox-label-first">
-    <%= f.label :inbox, "Anyone can message you on Connect"%>
-    <%= f.select :inbox, [['Open','open'],['Private','private'],['Closed','closed']] %>
+    <%= f.label :inbox_type, "Anyone can message you on Connect"%>
+    <%= f.select :inbox_type, [['Open','open'],['Private','private'],['Closed','closed']] %>
     <%= f.submit %>
   </div>
   <div class="field">
