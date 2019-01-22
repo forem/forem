@@ -146,10 +146,8 @@ class UsersController < ApplicationController
     visitor = current_user
     user = User.find(params[:id])
 
-    unless (visitor.chat_channels.ids & user.chat_channels.ids).length == 1
-      ChatChannel.create_with_users([visitor, user], "direct")
-    end
-    redirect_to "/connect/@#{user.username}"
+    ChatChannel.create_with_users([visitor, user], "direct") unless (visitor.chat_channels.ids & user.chat_channels.ids).length == 1
+    redirect_to("/connect/@#{user.username}") && return
   end
 
   def handle_settings_tab

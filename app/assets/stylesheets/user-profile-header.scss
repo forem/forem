@@ -279,13 +279,13 @@
       text-align:left;
     }
   }
-  .user-profile-follow-button-wrapper{
+  .user-profile-follow-button-wrapper {
     position:relative;
     z-index:5;
     display:inline-block;
     margin-left: 5px;
   }
-  .user-profile-follow-button{
+  .user-profile-follow-button {
     background: $green;
     color:white;
     border:0;
@@ -314,4 +314,42 @@
       min-width: 140px;
     }
   }
+
+  .user-profile-chat-button-wrapper {
+    position:relative;
+    z-index:5;
+    display:inline-block;
+    margin-left: 5px;
+  }
+
+  .user-profile-chat-button {
+    background: $green;
+    color:white;
+    border:0;
+    font-size:17px;
+    border-radius:3px;
+    vertical-align:3px;
+    padding:2px 6px;
+    cursor:pointer;
+    min-width: 120px;
+    opacity:0.7;
+    &.showing{
+      opacity:1;
+    }
+    @media screen and ( min-width: 430px ){
+      font-size:18px;
+      padding:3px 8px;
+      vertical-align:7px;
+      border-radius:5px;
+      min-width: 140px;
+    }
+    @media screen and ( min-width: 950px ){
+      font-size:22px;
+      padding:4px 8px;
+      vertical-align:12px;
+      border-radius:5px;
+      min-width: 140px;
+    }
+  }
+
 }
