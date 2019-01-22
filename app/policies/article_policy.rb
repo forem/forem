@@ -19,6 +19,10 @@ class ArticlePolicy < ApplicationPolicy
     update?
   end
 
+  def toggle_mute?
+    update?
+  end
+
   def preview?
     true
   end

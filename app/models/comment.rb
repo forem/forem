@@ -307,7 +307,8 @@ class Comment < ApplicationRecord
     parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
-      parent_user.email
+      parent_user.email &&
+      parent_or_root_article.receive_notifications
   end
 
   def strip_url(url)
