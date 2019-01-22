@@ -141,6 +141,17 @@ class UsersController < ApplicationController
     user.delay.follow(Tag.find_by(name: "hiring"))
   end
 
+  def open_chat
+    skip_authorization
+    visitor = current_user
+    user = User.find(params[:id])
+
+    unless (visitor.chat_channels.ids & user.chat_channels.ids).length == 1
+      ChatChannel.create_with_users([visitor, user], "direct")
+    end
+    redirect_to "/connect/@#{user.username}"
+  end
+
   def handle_settings_tab
     return @tab = "profile" if @tab.blank?
 
