@@ -11,11 +11,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def failure
-    logger.error "Log in error",
-      log_in_error: {
-        omniauth_error: request.env["omniauth.error"],
-        omniauth_error_type: request.env["omniauth.error.type"],
-        omniauth_strategy: request.env["omniauth.strategy"],
+    logger.error "Omniauth failure",
+      omniauth_failure: {
+        error: request.env["omniauth.error"].to_s,
+        error_type: request.env["omniauth.error.type"].to_s,
+        auth: request.env["omniauth.auth"],
+        provider: request.env["omniauth.strategy"].to_s,
         cookie: request.env["rack.request.cookie_hash"]
       }
     super
