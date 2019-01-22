@@ -89,6 +89,7 @@ module Moderator
     end
 
     def delete_user_activity
+      delete_notifications
       delete_reactions
       delete_comments
       delete_articles
@@ -96,6 +97,12 @@ module Moderator
       delete_followers
       delete_chat_channel_memberships
       delete_mentions
+      delete_badge_achievements
+      delete_github_repos
+    end
+
+    def delete_notifications
+      user.notifications.find_each(&:delete)
     end
 
     def delete_chat_channel_memberships
@@ -104,8 +111,12 @@ module Moderator
       user.chat_channel_memberships.find_each(&:delete)
     end
 
+    def delete_github_repos
+      user.github_repos.find_each(&:delete)
+    end
+
     def delete_badge_achievements
-      return unless user.badget_achievements.count.positive?
+      return unless user.badge_achievements.count.positive?
 
       user.badge_achievements.find_each(&:delete)
     end

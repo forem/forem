@@ -63,16 +63,14 @@ RSpec.describe "internal/users", type: :request do
     end
 
     before do
-      sign_in super_admin
       create_mutual_follows
-      # create_mention
+      create_mention
       create(:badge_achievement, rewarder_id: 1, rewarding_context_message: "yay", user_id: user.id)
       Delayed::Worker.new(quiet: true).work_off
     end
 
     it "raises a 'record not found' error after deletion" do
       post "/internal/users/#{user.id}/full_delete"
-      # binding.pry
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
