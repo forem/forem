@@ -43,17 +43,25 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def update_role
-    if user_params[:ban_user] == "1"
-      @user.add_role :banned
-      create_note("banned", user_params[:note_for_current_role])
-    elsif user_params[:warn_user] == "1"
-      @user.add_role :warned
-      create_note("warned", user_params[:note_for_current_role])
-    elsif user_params[:good_standing_user] == "1"
-      @user.remove_role :banned if @user.banned
-      @user.remove_role :warned if @user.warned
-      create_note("good_standing", user_params[:note_for_current_role])
-    end
+    ban_user if user_params[:ban_user] == "1"
+    warn_user if user_params[:warn_user] == "1"
+    return_to_good_standing if user_params[:good_standing_user] == "1"
+  end
+
+  def return_to_good_standing
+    @user.remove_role :banned if @user.banned
+    @user.remove_role :warned if @user.warned
+    create_note("good_standing", user_params[:note_for_current_role])
+  end
+
+  def ban_user
+    @user.add_role :banned
+    create_note("banned", user_params[:note_for_current_role])
+  end
+
+  def warn_user
+    @user.add_role :warned
+    create_note("warned", user_params[:note_for_current_role])
   end
 
   def add_note

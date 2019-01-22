@@ -44,6 +44,8 @@ module Moderator
     end
 
     def delete_reactions
+      return unless user.reactions.count.positive?
+
       user.reactions.find_each(&:delete)
     end
 
@@ -58,10 +60,21 @@ module Moderator
     end
 
     def delete_follows
+      return unless user.follows.count.positive?
+
       user.follows.find_each(&:delete)
     end
 
+    def delete_followers
+      followers = Follow.where(followable_id: user.id, followable_type: "User")
+      return unless user.followers.count.positive?
+
+      followers.find_each(&:delete)
+    end
+
     def delete_articles
+      return unless user.articles.count.positive?
+
       user.articles.find_each do |article|
         article.reactions.find_each(&:delete)
         article.comments.find_each do |comment|
@@ -80,6 +93,27 @@ module Moderator
       delete_comments
       delete_articles
       delete_follows
+      delete_followers
+      delete_chat_channel_memberships
+      delete_mentions
+    end
+
+    def delete_chat_channel_memberships
+      return unless user.chat_channel_memberships.count.positive?
+
+      user.chat_channel_memberships.find_each(&:delete)
+    end
+
+    def delete_badge_achievements
+      return unless user.badget_achievements.count.positive?
+
+      user.badge_achievements.find_each(&:delete)
+    end
+
+    def delete_mentions
+      return unless user.mentions.count.positive?
+
+      user.mentions.find_each(&:delete)
     end
 
     def full_delete
