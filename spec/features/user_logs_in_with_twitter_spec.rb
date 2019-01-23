@@ -21,7 +21,7 @@ RSpec.describe "Authenticating with twitter" do
         access_token: "",
         raw_info: {
           name: "Bruce Wayne",
-          created_at: "Thu Jul 4 00:00:00 +0000 2013", # This is mandatory
+          created_at: "Thu Jul 4 00:00:00 +0000 2013" # This is mandatory
         }
       },
       info: {

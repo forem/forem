@@ -125,8 +125,8 @@ group :development, :test do
   gem "pry-byebug", "~> 3.6"
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
-  gem "rubocop", "~> 0.62", require: false
-  gem "rubocop-rspec", "~> 1.30"
+  gem "rubocop", "~> 0.63", require: false
+  gem "rubocop-rspec", "~> 1.31"
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
   gem "vcr", "~> 4.0"
