@@ -1,7 +1,9 @@
 module Constants
   ALLOWED_MASTODON_INSTANCES = [
+    "101010.pl",
     "acg.mn",
     "bitcoinhackers.org",
+    "bsd.network",
     "chaos.social",
     "cmx.im",
     "framapiaf.org",

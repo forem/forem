@@ -191,7 +191,6 @@ class Comment < ApplicationRecord
   end
 
   def self.comment_async_bust(commentable, username)
-    commentable.touch
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end
@@ -287,7 +286,6 @@ class Comment < ApplicationRecord
 
   def bust_cache
     Comment.comment_async_bust(commentable, user.username)
-    expire_root_fragment
     cache_buster = CacheBuster.new
     cache_buster.bust("#{commentable.path}/comments") if commentable
   end
@@ -297,6 +295,7 @@ class Comment < ApplicationRecord
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
+    expire_root_fragment
   end
 
   def send_email_notification
@@ -308,7 +307,8 @@ class Comment < ApplicationRecord
     parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
-      parent_user.email
+      parent_user.email &&
+      parent_or_root_article.receive_notifications
   end
 
   def strip_url(url)

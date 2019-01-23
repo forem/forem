@@ -219,6 +219,15 @@
     }
     .dashboard-actions{
       padding: 7px 0px 10px;
+      .mute-form {
+        margin: 0;
+        padding: 0;
+        display: inline;
+          input[type="submit"] {
+            height: 30.4px;
+            border: 2px solid transparent;
+          }
+        }
     }
     .pill{
       background:$bold-blue;
@@ -244,6 +253,15 @@
       }
       &.black{
         background: $dark-gray;
+      }
+      &.mute{
+        background-color: #EE7453;
+        color: $white;
+      }
+      &.unmute{
+        // inverted background color
+        background-color: $blue;
+        color: $white;
       }
     }
     .dashboard-pageviews-indicator{

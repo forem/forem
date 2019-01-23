@@ -12,8 +12,6 @@ class StoriesController < ApplicationController
 
   def search
     @query = "...searching"
-    @stories = Article.none
-    @featured_story = Article.new
     @article_index = true
     set_surrogate_key_header "articles-page-with-query"
     render template: "articles/search"
@@ -91,7 +89,6 @@ class StoriesController < ApplicationController
     @stories = stories_by_timeframe
     @stories = @stories.decorate
 
-    @featured_story = Article.new
     @article_index = true
     set_surrogate_key_header "articles-#{@tag}", @stories.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
@@ -104,7 +101,6 @@ class StoriesController < ApplicationController
     num_articles = 25
     @stories = article_finder(num_articles)
     add_param_context(:page, :timeframe)
-
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
@@ -136,14 +132,12 @@ class StoriesController < ApplicationController
     @stories = @stories.decorate
     assign_podcasts
     @article_index = true
-    @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar").first
-    set_surrogate_key_header "articles", @stories.map(&:record_key)
+    set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/index"
   end
 
   def handle_podcast_index
-    @featured_story = Article.new
     @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
@@ -159,7 +153,6 @@ class StoriesController < ApplicationController
       limited_column_select.
       includes(:user).
       order("published_at DESC").page(@page).per(8))
-    @featured_story = Article.new
     @article_index = true
     @organization_article_index = true
     set_surrogate_key_header "articles-org-#{@organization.id}", @stories.map(&:record_key)
@@ -177,7 +170,6 @@ class StoriesController < ApplicationController
       articles.where(published: true).
       limited_column_select.
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
-    @featured_story = Article.new
     @article_index = true
     @list_of = "articles"
     redirect_if_view_param

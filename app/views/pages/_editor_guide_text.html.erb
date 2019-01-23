@@ -148,6 +148,18 @@
     <h3><strong>CodeSandbox Embed</strong></h3>
     <p>All you need is the ID of the Sandbox:</p>
     <code>{% codesandbox ppxnl191zx %}</code>
+    <p>Of CodeSandbox's many <a href="https://codesandbox.io/docs/embedding#embed-options">optional attributes</a>, the following are supported by using them in your tag, just add them after the id, separated by spaces.</p>
+    <dl>
+      <dt><code>initialpath</code></dt>
+      <dd>
+        Which url to initially load in address bar.<br/>
+        <code>{% codesandbox ppxnl191zx initialpath=/initial/load/path %}</code>
+      </dd>
+      <dt><code>module</code></dt>
+      <dd>
+        Which module to open by default.<br/>
+        <code>{% codesandbox ppxnl191zx module=/path/to/module %}</code>
+      </dd>
       
     <h3><strong>JSFiddle Embed</strong></h3>
     <p>All you need is the full JSFiddle <code>link</code>, ending in the fiddle ID code, as follows:</p>
@@ -183,6 +195,15 @@
     <h3><strong>Soundcloud Embed</strong></h3>
     <p>Just enter the full URL of the Soundcloud track you are trying to embed.</p>
     <code>{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}</code>
+
+    <h3><strong>Spotify Embed</strong></h3>
+    <p>
+      Enter the Spotify URI of the Spotify track / playlist /
+      album / artist / podcast episode you are trying to embed.
+    </p>
+    <pre>
+      {% spotify <span style="color: #1DB954;">spotify:episode:5V4XZWqZQJvbddd31n56mf</span> %}
+    </pre>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
     <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>

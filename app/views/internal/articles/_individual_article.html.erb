@@ -44,7 +44,7 @@
 		<% article.decorate.cached_tag_list_array.each do |tag| %>
 			<a href='/t/<%= tag %>'>#<%= tag %></a>
 		<% end %>
-		<a href="/internal/users/<%= article.user_id %>">@<%= article.user&.username %></a> ❤️ <%= article.positive_reactions_count %> | 💬 <%= article.comments_count %> | ID: <a href="/internal/articles/<%= article.id %>"><%= article.id %></a>
+		<a href="/internal/users/<%= article.user_id %>">@<%= article.user&.username %></a> ❤️ <%= article.positive_reactions_count %> | 💬 <%= article.comments_count %>
 		<br/><br/>
 		<div class="inner-row">
 			<form action="/internal/articles/<%= article.id %>" accept-charset="UTF-8" method="post">
@@ -52,6 +52,7 @@
 				<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 				<input type="hidden" name="_method" value="patch" />
 				Featured Number: <input name="article[featured_number]" value="<%= article.featured_number %>" id="featured_number_<%= article.id %>" style="max-width:140px"><button onclick="timeNow(<%= article.id %>);return false;">☝️</button><button onclick="sink(<%= article.id %>);return false;">👇 SPAM!</button>
+				Change author: <input size="6" name="article[user_id]" value="<%= article.user_id %>" >
 				&nbsp Featured: <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %>>
 				&nbsp Approved: <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %>>
 				&nbsp Live Now: <input name="article[live_now]" type="checkbox" <%= "checked" if article.live_now %>>
