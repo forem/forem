@@ -2,8 +2,12 @@ module Moderator
   class Banisher
     attr_reader :user, :admin
 
-    def self.call(admin:, offender:)
+    def self.call_banish(admin:, offender:)
       new(offender: offender, admin: admin).banish
+    end
+
+    def self.call_delete_activity(admin:, offender:)
+      new(offender: offender, admin: admin).full_delete
     end
 
     def initialize(admin:, offender:)
@@ -39,29 +43,23 @@ module Moderator
       end
     end
 
-    def delete_reactions
-      user.reactions.find_each(&:delete)
-    end
-
     def delete_comments
-      return unless user.comments.count.positive?
+      return unless user.comments.any?
 
       user.comments.find_each do |comment|
-        comment.reactions.find_each(&:delete)
+        comment.reactions.delete_all
         CacheBuster.new.bust_comment(comment.commentable, user.username)
         comment.delete
       end
     end
 
-    def delete_follows
-      user.follows.find_each(&:delete)
-    end
-
     def delete_articles
+      return unless user.articles.any?
+
       user.articles.find_each do |article|
-        article.reactions.find_each(&:delete)
+        article.reactions.delete_all
         article.comments.find_each do |comment|
-          comment.reactions.find_each(&:delete)
+          comment.reactions.delete_all
           CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
           comment.delete
         end
@@ -71,15 +69,30 @@ module Moderator
       end
     end
 
+    def delete_user_activity
+      user.notifications.delete_all
+      user.reactions.delete_all
+      user.follows.delete_all
+      Follow.where(followable_id: user.id, followable_type: "User").delete_all
+      user.chat_channel_memberships.delete_all
+      user.mentions.delete_all
+      user.badge_achievements.delete_all
+      user.github_repos.delete_all
+      delete_comments
+      delete_articles
+    end
+
+    def full_delete
+      delete_user_activity
+      CacheBuster.new.bust("/#{user.old_username}")
+      user.delete
+    end
+
     def banish
-      # return unless user.comments.where("created_at < ?", 150.days.ago).empty?
       reassign_and_bust_username
       remove_profile_info
       add_banned_role
-      delete_reactions
-      delete_comments
-      delete_articles
-      delete_follows
+      delete_user_activity
       user.remove_from_algolia_index
       user.save!
     end

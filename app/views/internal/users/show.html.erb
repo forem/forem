@@ -2,8 +2,18 @@
   <h1>
     <%= @user.name%><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
   </h1>
+  <p><u><a style="color: red" href="/internal/users/<%= @user.id %>/edit">click here to banish or delete user</a></u></p>
   <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
   <p><strong>Email:</strong> <%= @user.email %></p>
+  <p><strong>Activity:</strong></p>
+  <ul>
+    <li><%= @user.comments.size %> comments</li>
+    <li><%= @user.articles.size %> articles</li>
+    <li><%= @user.reactions.size %> reactions</li>
+  </ul>
+
+</div>
+<div class="row">
   <h3><u>Current Roles</u></h3>
   <ul>
     <% @user.roles.each do |role| %>
@@ -11,9 +21,17 @@
     <% end %>
   </ul>
   <%= form_for ([:internal, @user]) do |f| %>
-    <% if @user.banned %>
+    <% if @user.banned && current_user.has_role?(:super_admin) %>
       <p style="background-color:red;color:white">🚨 Banned User 🚨</p>
-      <p>You can only unban this user through the admin panel.</p>
+      <%= f.label "Un-ban User (return to good standing)" %>
+      <%= f.check_box :good_standing_user %>
+      <br>
+
+      <br>
+      <%= f.submit "Update User Status" %>
+    <% elsif @user.banned %>
+      <p style="background-color:red;color:white">🚨 Banned User 🚨</p>
+      <p>Only super-admins can unban users.</p>
     <% elsif @user.warned %>
       <p style="background-color: orange;color:white">Warned User</p>
       <%= f.label :ban_user %>
@@ -107,7 +125,7 @@
   <% end %>
 </div>
 
-<% if @user.seeking_mentorship && @user.mentee_description.present? %>
+<% if @user.seeking_mentorship && @user.mentee_description.present? && !@user.banned_from_mentorship  %>
   <h2> Mentee Description </h2>
     <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
       <div class="col-md-2">
@@ -139,39 +157,40 @@
       order("mentor_form_updated_at DESC").limit(175).
       sort_by { |possible_mentor| UserSimilarity.new(@user, possible_mentor).score }.reverse.
       first(40).each do |possible_mentor| %>
-    <div class="row" style="font-size:0.9em">
-      <div class="col-md-2">
-        <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
-        <br/>
-        <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
-        <br/>
-        <a href="/internal/users/<%= possible_mentor.id %>" target="_blank">Internal(<%= possible_mentor.id %>)</a>
+
+    <% if !possible_mentor.banned_from_mentorship %>
+      <div class="row" style="font-size:0.9em">
+        <div class="col-md-2">
+          <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+          <br/>
+          <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
+          <br/>
+          <a href="/internal/users/<%= possible_mentor.id %>" target="_blank">Internal Profile (id #<%= possible_mentor.id %>)</a>
+        </div>
+        <div class="col-md-3" style="border-left:1px solid black">
+          <h4>Tag Intersection</h4>
+          <%= UserSimilarity.new(@user, possible_mentor).tag_intersection.join(", ") %>
+        </div>
+        <div class="col-md-3">
+          <h4>Mentor description</h4>
+          <%= possible_mentor.mentor_description %>
+        </div>
+        <div class="col-md-3">
+          <h4>Skills/Languages</h4>
+          <%= possible_mentor.mostly_work_with %>
+        </div>
+        <div class="col-md-1">
+          <h4>Action</h4>
+          <%= form_for ([:internal, @user]) do |f| %>
+            <%= f.hidden_field :quick_match, value: true %>
+            <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
+            <%= f.submit "Match!" %>
+          <% end %>
+        </div>
       </div>
-      <div class="col-md-3" style="border-left:1px solid black">
-        <h4>Tag Intersection</h4>
-        <%= UserSimilarity.new(@user, possible_mentor).tag_intersection.join(", ") %>
-      </div>
-      <div class="col-md-3">
-        <h4>Mentor description</h4>
-        <%= possible_mentor.mentor_description %>
-      </div>
-      <div class="col-md-3">
-        <h4>Skills/Languages</h4>
-        <%= possible_mentor.mostly_work_with %>
-      </div>
-      <div class="col-md-1">
-        <h4>Action</h4>
-        <%= form_for ([:internal, @user]) do |f| %>
-          <%= f.hidden_field :quick_match, value: true %>
-          <%= f.hidden_field :add_mentor, value: possible_mentor.id %>
-          <%= f.submit "Match!" %>
-        <% end %>
-      </div>
-    </div>
+    <% end %>
   <% end %>
 <% end %>
-
-<div class="row">
 <h2><u>Recent Emails</u></h2>
 <ul>
   <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
