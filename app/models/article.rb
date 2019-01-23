@@ -6,7 +6,7 @@ class Article < ApplicationRecord
 
   acts_as_taggable_on :tags
 
-  attr_accessor :publish_under_org, :new_author
+  attr_accessor :publish_under_org
   attr_writer :series
 
   belongs_to :user
