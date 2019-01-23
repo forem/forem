@@ -72,7 +72,7 @@
             <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>"/>
             </button>
           </div>
-          <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%=commentable.path%>/comments/<%= comment.id_code_generated %>">
+          <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
             <span class="current-user-actions hidden" style="display:none">
               <a data-no-instant href="<%=commentable.path%>/comments/<%= comment.id_code_generated %>/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>
               <a href="<%=commentable.path%>/comments/<%= comment.id_code_generated %>/edit" class="edit-butt" rel="nofollow">EDIT</a>
