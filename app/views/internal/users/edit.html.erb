@@ -1,23 +1,45 @@
-<h1><a href="<%= @user.path %>"><%= @user.name %></a></h1>
-<h2>@<%= @user.username %></h2>
-<h4><%= @user.comments.size %> comments</h4>
-<h4><%= @user.articles.size %> articles</h4>
-<h4><%= @user.reactions.size %> reactions</h4>
-<h4>Joined <%= @user.created_at.to_formatted_s(:long_ordinal) %></h4>
-<% if @user.banned %>
-  <h1 style="color:red">User is banned</h1>
-  <% @user.notes.each do |note| %>
-    <b><%= note.reason %></b> | <%= note.content %>
-  <% end %>
-<% else %>
+<h1>
+    <%= @user.name%><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
+</h1>
+<p><u><a style="color: green" href="/internal/users/<%= @user.id %>">click here view user details & take other actions</a></u></p>
+<p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
+<p><strong>Activity:</strong></p>
+<ul>
+  <li><%= @user.comments.size %> comments</li>
+  <li><%= @user.articles.size %> articles</li>
+  <li><%= @user.reactions.size %> reactions</li>
+</ul>
   <div class="row">
-    <% if @user.comments.where("created_at < ?", 100.days.ago).empty? %>
-      <%= form_for(@user, :url => banish_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive and will change their username to @spam_###. Do not do it lightly.')"}) do %>
+    <h2>Banish User</h2>
+    <% if @user.comments.where("created_at < ?", 100.days.ago).empty? && current_user.has_role?(:super_admin) %>
+      <p><strong>This is not a new user.</strong> You are only allowed to take this action because you are a <strong>super admin.</strong></p>
+      <p><em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em></p>
+      <p><strong>Do not do this lightly.</strong></p>
+      <%= form_for(@user, :url => banish_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###. Do not do it lightly.')"}) do %>
         <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
       <% end %>
-      <em>This is extremely destructive and will change their username to @spam_###. Do not do it lightly.</em>
+    <% elsif @user.comments.where("created_at < ?", 100.days.ago).empty? %>
+        <p><em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em></p>
+        <p><strong>Do not do this lightly.</strong></p>
+         <%= form_for(@user, :url => banish_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###. Do not do it lightly.')"}) do %>
+          <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam</button>
+        <% end %>
     <% else %>
-      <em>You cannot take admin action from this view because this is not a newish user. For safety.</em>
+      <p><em>This is not a new user so you'll need to contact a super admin to banish this user.</em></p>
     <% end %>
   </div>
-<% end %>
+
+<div class="row">
+  <h2>Fully Delete User</h2>
+  <% if current_user.has_role?(:super_admin) %>
+    <p>This will <strong>completely destroy the user</strong> and all of their activity from our database. This action is irreversible.</p>
+    <p><strong>Do not do this lightly.</strong></p>
+    <%= form_for(@user, :url => full_delete_internal_user_path(@user), :html => {:method => :post, :onsubmit => "confirm('Are you sure? This is extremely destructive and irreversible.')"}) do %>
+      <button class="btn btn-danger" style="font-size:2em;">Fully Delete User & All Activity</button>
+    <% end %>
+  <% else %>
+    <p>Only super admins can fully delete users.</p>
+  <% end %>
+</div>
+
+
