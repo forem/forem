@@ -58,22 +58,12 @@ export default class ArticleForm extends Component {
   componentDidMount() {
     initEditorResize();
 
-    window.addEventListener('beforeunload', e => {
-      sessionStorage.setItem(
-        this.url,
-        JSON.stringify({
-          title: this.state.title,
-          tagList: this.state.tagList,
-          mainImage: this.state.mainImage,
-          bodyMarkdown: this.state.bodyMarkdown,
-        }),
-      );
-      e.returnValue = '';
-    });
+    window.addEventListener('beforeunload', this.sessionStoreContent);
 
     const previousContent = JSON.parse(
       sessionStorage.getItem(window.location.href),
     );
+
     if (previousContent) {
       this.setState({
         title: previousContent.title || '',
@@ -90,6 +80,19 @@ export default class ArticleForm extends Component {
     // });
     // myCodeMirror.setSize('100%', '100%');
   }
+
+  sessionStoreContent = e => {
+    sessionStorage.setItem(
+      this.url,
+      JSON.stringify({
+        title: this.state.title,
+        tagList: this.state.tagList,
+        mainImage: this.state.mainImage,
+        bodyMarkdown: this.state.bodyMarkdown,
+      }),
+    );
+    e.returnValue = '';
+  };
 
   toggleHelp = e => {
     e.preventDefault();
@@ -161,8 +164,14 @@ export default class ArticleForm extends Component {
     });
   };
 
+  removeSessionStorage = () => {
+    sessionStorage.removeItem(this.url);
+    window.removeEventListener('beforeunload', this.sessionStoreContent);
+  };
+
   onPublish = e => {
     e.preventDefault();
+    this.removeSessionStorage();
     this.setState({ submitting: true, published: true });
     const state = this.state;
     state.published = true;
@@ -171,6 +180,7 @@ export default class ArticleForm extends Component {
 
   onSaveDraft = e => {
     e.preventDefault();
+    this.removeSessionStorage();
     this.setState({ submitting: true, published: false });
     const state = this.state;
     state.published = false;
@@ -209,8 +219,8 @@ export default class ArticleForm extends Component {
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
-      ''
-    );
+        ''
+      );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -218,8 +228,8 @@ export default class ArticleForm extends Component {
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const moreConfig = moreConfigShowing ? (
       <MoreConfig
         onExit={this.toggleMoreConfig}
@@ -228,8 +238,8 @@ export default class ArticleForm extends Component {
         onConfigChange={this.handleConfigChange}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const orgArea = organization ? (
       <OrgSettings
         organization={organization}
@@ -237,8 +247,8 @@ export default class ArticleForm extends Component {
         onToggle={this.toggleOrgPosting}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
@@ -271,7 +281,7 @@ export default class ArticleForm extends Component {
             >
               <img src={ImageUploadIcon} />
               {' '}
-IMAGES
+              IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -290,7 +300,7 @@ IMAGES
           >
             <img src={ImageUploadIcon} />
             {' '}
-IMAGES
+            IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
