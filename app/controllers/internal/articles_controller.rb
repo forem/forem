@@ -73,6 +73,8 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.email_digest_eligible = article_params[:email_digest_eligible].to_s == "true"
     article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
     article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
+    article.user_id = article_params[:user_id].to_i
+
     article.update!(article_params)
     if article.live_now
       Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false)
@@ -95,6 +97,7 @@ class Internal::ArticlesController < Internal::ApplicationController
                                     :boosted_additional_articles,
                                     :boosted_dev_digest_email,
                                     :main_image_background_hex_color,
-                                    :featured_number)
+                                    :featured_number,
+                                    :user_id)
   end
 end
