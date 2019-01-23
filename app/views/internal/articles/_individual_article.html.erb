@@ -52,7 +52,6 @@
 				<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 				<input type="hidden" name="_method" value="patch" />
 				Featured Number: <input name="article[featured_number]" value="<%= article.featured_number %>" id="featured_number_<%= article.id %>" style="max-width:140px"><button onclick="timeNow(<%= article.id %>);return false;">☝️</button><button onclick="sink(<%= article.id %>);return false;">👇 SPAM!</button>
-				<a href="/internal/articles/<%= article.id %>/edit">
 				Change author: <input size="6" name="article[new_author]" value="<%= article.user.id %>" >
 				&nbsp Featured: <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %>>
 				&nbsp Approved: <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %>>
