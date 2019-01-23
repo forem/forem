@@ -207,7 +207,7 @@ class StoriesController < ApplicationController
     @article_show = true
     @comment = Comment.new
     assign_user_and_org
-    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 65 : 35
+    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
     not_found if permission_denied?
     set_surrogate_key_header @article.record_key
