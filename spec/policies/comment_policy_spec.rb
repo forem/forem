@@ -10,7 +10,7 @@ RSpec.describe CommentPolicy do
   end
 
   let(:valid_attributes_for_update) do
-    %i[body_markdown]
+    %i[body_markdown receive_notifications]
   end
 
   context "when user is not signed-in" do
