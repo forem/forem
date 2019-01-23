@@ -36,6 +36,7 @@ class ArticleAnalyticsFetcher
 
   def should_fetch(article)
     return true if @context == "force"
+
     # Mostly fetch if positive reactions count has gone up, but occasionally re-fetch anyway.
     article.positive_reactions_count > article.previous_positive_reactions_count || rand(25) == 1
   end
