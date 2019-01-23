@@ -43,42 +43,23 @@ module Moderator
       end
     end
 
-    def delete_reactions
-      return unless user.reactions.count.positive?
-
-      user.reactions.find_each(&:delete)
-    end
-
     def delete_comments
-      return unless user.comments.count.positive?
+      return unless user.comments.any?
 
       user.comments.find_each do |comment|
-        comment.reactions.find_each(&:delete)
+        comment.reactions.delete_all
         CacheBuster.new.bust_comment(comment.commentable, user.username)
         comment.delete
       end
     end
 
-    def delete_follows
-      return unless user.follows.count.positive?
-
-      user.follows.find_each(&:delete)
-    end
-
-    def delete_followers
-      followers = Follow.where(followable_id: user.id, followable_type: "User")
-      return unless user.followers.count.positive?
-
-      followers.find_each(&:delete)
-    end
-
     def delete_articles
-      return unless user.articles.count.positive?
+      return unless user.articles.any?
 
       user.articles.find_each do |article|
-        article.reactions.find_each(&:delete)
+        article.reactions.delete_all
         article.comments.find_each do |comment|
-          comment.reactions.find_each(&:delete)
+          comment.reactions.delete_all
           CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
           comment.delete
         end
@@ -89,42 +70,16 @@ module Moderator
     end
 
     def delete_user_activity
-      delete_notifications
-      delete_reactions
+      user.notifications.delete_all
+      user.reactions.delete_all
+      user.follows.delete_all
+      Follow.where(followable_id: user.id, followable_type: "User").delete_all
+      user.chat_channel_memberships.delete_all
+      user.mentions.delete_all
+      user.badge_achievements.delete_all
+      user.github_repos.delete_all
       delete_comments
       delete_articles
-      delete_follows
-      delete_followers
-      delete_chat_channel_memberships
-      delete_mentions
-      delete_badge_achievements
-      delete_github_repos
-    end
-
-    def delete_notifications
-      user.notifications.find_each(&:delete)
-    end
-
-    def delete_chat_channel_memberships
-      return unless user.chat_channel_memberships.count.positive?
-
-      user.chat_channel_memberships.find_each(&:delete)
-    end
-
-    def delete_github_repos
-      user.github_repos.find_each(&:delete)
-    end
-
-    def delete_badge_achievements
-      return unless user.badge_achievements.count.positive?
-
-      user.badge_achievements.find_each(&:delete)
-    end
-
-    def delete_mentions
-      return unless user.mentions.count.positive?
-
-      user.mentions.find_each(&:delete)
     end
 
     def full_delete
