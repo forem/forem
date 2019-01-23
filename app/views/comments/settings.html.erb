@@ -1,0 +1,38 @@
+<style>
+.pill{
+  padding:4px 20px;
+  border-radius:100px;
+  color:white;
+  margin-right:5px;
+  font-size:14px;
+  border: 2px solid transparent;
+  margin-top: 6px;
+  display: inline-block;
+}
+.mute{
+  background-color: #EE7453;
+  color: #ffffff;
+}
+.unmute{
+  /* inverted background color */
+  background-color: #1395b8;
+  color: #ffffff;
+}
+.container{
+  text-align: center;
+}
+</style>
+<div class="container">
+  <h2>Settings for: <a href="<%= @comment.path %>"><%= @comment.title %></a></h2>
+
+  <% if @comment.receive_notifications %>
+    <p>This will mute all notifications for this comment and any of your comments in the thread.</p>
+  <% else %>
+    <p>All notifications for this comment and any of your comments in the thread are currently muted.</p>
+  <% end %>
+  <%= form_for(@comment, url: "/comment_mutes/#{@comment.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
+    <%= f.hidden_field :receive_notifications, value: !@comment.receive_notifications %>
+    <%= f.submit @comment.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{@comment.receive_notifications ? "mute" : "unmute"}" %>
+  <% end %>
+  <br>
+</div>
