@@ -55,8 +55,11 @@
                 <a href="<%= comment.path %>">
                   Permalink
                 </a>
-                <span class="mod-actions hidden" style="display:none">
-                  <a href="<%=comment.path%>/mod" class="edit-butt" rel="nofollow" style="color:#0a0a0a">Moderate</a>
+                <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;">
+                  <a href="<%= comment.path %>/settings" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>
+                </span>
+                <span class="mod-actions hidden" style="display: none;">
+                  <a href="<%=comment.path%>/mod" rel="nofollow" style="color:#0a0a0a">Moderate</a>
                 </span>
                 <a href="/report-abuse?url=https://dev.to<%= comment.path %>">Report Abuse</a>
               </div>
