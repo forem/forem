@@ -396,6 +396,10 @@ class User < ApplicationRecord
     index.delay.delete_object("users-#{id}")
   end
 
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
+  end
+
   private
 
   def send_welcome_notification
@@ -577,10 +581,6 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def unsubscribe_from_newsletters
-    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   def mentorship_status_update
