@@ -148,6 +148,12 @@ class CommentsController < ApplicationController
     end
   end
 
+  def settings
+    @comment = Comment.find(params[:id_code].to_i(26))
+    authorize @comment
+    render :settings
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

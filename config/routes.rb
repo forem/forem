@@ -97,6 +97,7 @@ Rails.application.routes.draw do
   resources :articles, only: %i[update create destroy]
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy]
+  resources :comment_mutes, only: %i[update]
   resources :users, only: [:update]
   resources :reactions, only: %i[index create]
   resources :feedback_messages, only: %i[index create]
@@ -291,6 +292,7 @@ Rails.application.routes.draw do
   get "/:username/comment/:id_code/edit" => "comments#edit"
   get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
   get "/:username/comment/:id_code/mod" => "moderations#comment"
+  get "/:username/comment/:id_code/settings", to: "comments#settings"
 
   get "/:username/:slug/:view" => "stories#show",
       constraints: { view: /moderate/ }
