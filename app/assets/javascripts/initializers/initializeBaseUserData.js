@@ -57,12 +57,24 @@ function addRelevantButtonsToArticle(user) {
     }
   }
   var commentsContainer = document.getElementById('comments-container');
-  if (commentsContainer && user.trusted) {
-    var modButts = document.getElementsByClassName('mod-actions');
-    for (var i = 0; i < modButts.length; i++) {
-      var butt = modButts[i];
-      butt.className = 'mod-actions';
-      butt.style.display = 'inline-block';
+  if (commentsContainer) {
+    var settingsButts = document.getElementsByClassName('comment-actions');
+
+    for (var i = 0; i < settingsButts.length; i++) {
+      var butt = settingsButts[i];
+      if (parseInt(butt.dataset.userId) === user.id) {
+        butt.className = 'comment-actions';
+        butt.style.display = 'inline-block';
+      }
+    }
+
+    if (user.trusted) {
+      var modButts = document.getElementsByClassName('mod-actions');
+      for (var i = 0; i < modButts.length; i++) {
+        var butt = modButts[i];
+        butt.className = 'mod-actions';
+        butt.style.display = 'inline-block';
+      }
     }
   }
 }
