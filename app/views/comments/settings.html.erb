@@ -1,6 +1,6 @@
 <style>
 .pill{
-  padding:4px 20px;
+  padding:8px 20px;
   border-radius:100px;
   color:white;
   margin-right:5px;
@@ -20,13 +20,20 @@
 }
 .container{
   text-align: center;
+  padding: 30px 0px;
+}
+@media screen and (min-width: 880px) {
+.container {
+  margin-top: 100px;
+}
 }
 </style>
 <div class="container">
-  <h2>Settings for: <a href="<%= @comment.path %>"><%= @comment.title %></a></h2>
+  <h1>Comment Settings</h1>
 
   <% if @comment.receive_notifications %>
-    <p>This will mute all notifications for this comment and any of your comments in the thread.</p>
+    <h4>Don't want notifications for this thread?</h4>
+    <p><em>This will mute all notifications for this comment and any of your comments in this chain.</em></p>
   <% else %>
     <p>All notifications for this comment and any of your comments in the thread are currently muted.</p>
   <% end %>
