@@ -202,7 +202,7 @@ class ArticlesController < ApplicationController
       redirect_to @article.current_state_path, notice: "Article was successfully created."
     else
       if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = Article.find_by_body_markdown(@article.body_markdown)
+        @article = current_user.articles.find_by_body_markdown(@article.body_markdown)
         redirect_to @article.current_state_path
         return
       end
