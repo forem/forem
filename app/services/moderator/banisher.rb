@@ -83,12 +83,14 @@ module Moderator
     end
 
     def full_delete
+      user.unsubscribe_from_newsletters
       delete_user_activity
       CacheBuster.new.bust("/#{user.old_username}")
       user.delete
     end
 
     def banish
+      user.unsubscribe_from_newsletters
       reassign_and_bust_username
       remove_profile_info
       add_banned_role
