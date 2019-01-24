@@ -20,33 +20,33 @@ RSpec.describe ArticlePolicy do
     let(:user) { build(:user) }
 
     it { is_expected.to permit_actions(%i[new create preview]) }
-    it { is_expected.to forbid_actions(%i[update delete_confirm destroy analytics_index toggle_mute]) }
+    it { is_expected.to forbid_actions(%i[update delete_confirm destroy analytics_index]) }
 
     context "with banned status" do
       before { user.add_role :banned }
 
       it { is_expected.to permit_actions(%i[new preview]) }
-      it { is_expected.to forbid_actions(%i[create update delete_confirm destroy analytics_index toggle_mute]) }
+      it { is_expected.to forbid_actions(%i[create update delete_confirm destroy analytics_index]) }
     end
   end
 
   context "when user is the author" do
     let(:user) { article.user }
 
-    it { is_expected.to permit_actions(%i[update new create delete_confirm destroy preview toggle_mute]) }
+    it { is_expected.to permit_actions(%i[update new create delete_confirm destroy preview]) }
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }
 
     context "with banned status" do
       before { user.add_role :banned }
 
-      it { is_expected.to permit_actions(%i[update new delete_confirm destroy preview toggle_mute]) }
+      it { is_expected.to permit_actions(%i[update new delete_confirm destroy preview]) }
     end
   end
 
   context "when user is a super_admin" do
     let(:user) { build(:user, :super_admin) }
 
-    it { is_expected.to permit_actions(%i[update new create delete_confirm destroy preview toggle_mute]) }
+    it { is_expected.to permit_actions(%i[update new create delete_confirm destroy preview]) }
   end
 
   context "when a user with analytics tries to view someone else's article" do

@@ -19,10 +19,6 @@ class ArticlePolicy < ApplicationPolicy
     update?
   end
 
-  def toggle_mute?
-    update?
-  end
-
   def preview?
     true
   end
@@ -32,15 +28,9 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    if user_org_admin? && author_org_member?
-      %i[title body_html user_id body_markdown main_image published canonical_url
-         description allow_small_edits allow_big_edits tag_list publish_under_org
-         video video_code video_source_url video_thumbnail_url]
-    else
-      %i[title body_html body_markdown main_image published canonical_url
-         description allow_small_edits allow_big_edits tag_list publish_under_org
-         video video_code video_source_url video_thumbnail_url]
-    end
+    %i[title body_html body_markdown main_image published canonical_url
+       description allow_small_edits allow_big_edits tag_list publish_under_org
+       video video_code video_source_url video_thumbnail_url]
   end
 
   private
@@ -55,10 +45,6 @@ class ArticlePolicy < ApplicationPolicy
 
   def user_org_admin?
     user.org_admin && user.organization_id == record.organization_id
-  end
-
-  def author_org_member?
-    User.find(params[:user_id]).organization_id == record.organization_id
   end
 
   def user_can_view_analytics?
