@@ -66,12 +66,8 @@
 }
 
 .chat__channels--expanded{
-  width: 200px;
-  min-width: 200px;
-  @media screen and ( min-width: 400px ){
-    width: 160px;
-    min-width: 160px;
-  }
+  width: 160px;
+  min-width: 160px;
   @media screen and ( min-width: 1000px ){
     width: 200px;
     min-width: 200px;
@@ -170,8 +166,8 @@
 
 .chat__activechat {
   height: inherit;
+  width: calc(100% - 45px);
   max-width: calc(100% - 45px);
-  min-width: calc(100% - 200px);
   @media screen and ( min-width: 1300px ){
     min-width: calc(100% - calc(280px + 3vw));
   }
