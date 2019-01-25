@@ -41,7 +41,7 @@ class StackblitzTag < LiquidTagBase
 
     # Validation
     validated_views = input_split.map { |o| valid_view?(o) }.reject { |e| e == nil }
-    raise StandardError, "Invalid Options" unless validated_views.length.between?(0,1)
+    raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
     validated_views.length.zero? ? "" : validated_views.join("")
   end
