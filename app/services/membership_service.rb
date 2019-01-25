@@ -42,6 +42,8 @@ class MembershipService
   end
 
   def cancel_subscription
+    return true if customer.subscriptions.none?
+
     subscription.delete
   end
 
