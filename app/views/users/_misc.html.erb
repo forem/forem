@@ -114,3 +114,17 @@
     </div>
   <% end %>
 <% end %>
+
+<h2> Connect </h2>
+
+<h3> Inbox Type </h3>
+
+<%= form_for(@user) do |f| %>
+  <div class="field checkbox-label-first">
+    <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows."%>
+    <div class="sub-field">
+      <%= f.select :inbox_type, [['Open','open'],['Private','private']]%>
+    </div>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>
