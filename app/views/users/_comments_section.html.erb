@@ -26,7 +26,7 @@
         <a href="<%= comment.path %>">
           <div class="single-comment <%= "strong-comment" if comment.ancestry == nil%>">
             <span class="comment-title">re: <%= comment.commentable.title %></span>
-            <span class="comment-date" title="<%= comment.created_at&.to_formatted_s(:long) %>"><%= comment.readable_publish_date %></span>
+            <span class="comment-date" title="<%= comment.long_publish_time %>"><%= comment.readable_publish_date %></span>
             <div class="comment-preview"><%= truncate(strip_tags(comment.processed_html), length:64).html_safe %></div>
           </div>
         </a>

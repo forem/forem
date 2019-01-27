@@ -342,6 +342,11 @@ class Article < ApplicationRecord
     tags.pluck(:keywords_for_search).join
   end
 
+  def long_publish_time
+    relevant_date = crossposted_at.present? ? crossposted_at : published_at
+    relevant_date.strftime("%e %B %Y at %I:%M%p %Z")
+  end
+
   def readable_publish_date
     relevant_date = crossposted_at.present? ? crossposted_at : published_at
     if relevant_date && relevant_date.year == Time.current.year
