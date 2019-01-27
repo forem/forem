@@ -124,7 +124,7 @@
           <% if @user.github_username.present? %>
             <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
           <% end %>
-          <span class="published-at" itemprop="datePublished"><%= @article.readable_publish_date if @article.published_at %></span>
+          <span class="published-at" itemprop="datePublished" title="<%= @article.published_at&.to_formatted_s(:long) %>"><%= @article.readable_publish_date if @article.published_at %></span>
           <% if @second_user.present? %>
             <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
           <% end %>
