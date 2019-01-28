@@ -813,7 +813,7 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.4)
       tilt (~> 2.0)
-    sitemap_generator (6.0.1)
+    sitemap_generator (6.0.2)
       builder (~> 3.0)
     skylight (2.0.2)
       skylight-core (= 2.0.2)
