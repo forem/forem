@@ -8,7 +8,7 @@ RSpec.describe MarkdownParser do
     described_class.new(raw_markdown).finalize
   end
 
-  it "works" do
+  it "renders plain text as-is" do
     expect(basic_parsed_markdown.finalize).to include(random_word)
   end
 
