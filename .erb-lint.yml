@@ -1,6 +1,12 @@
 linters:
+  SelfClosingTag:
+    enabled: false
   Rubocop:
     enabled: true
     rubocop_config:
       inherit_from:
         - .rubocop.yml
+      Layout/TrailingBlankLines:
+        Enabled: false
+      Metrics/LineLength:
+        Max: 289
