@@ -81,6 +81,7 @@ RSpec.describe BadgeRewarder do
       create(:badge, title: "4 Week Streak", slug: "4-week-streak")
       user = create(:user)
       create(:article, user: user, published: true, published_at: 26.days.ago)
+      create(:article, user: user, published: true, published_at: 19.days.ago)
       create(:article, user: user, published: true, published_at: 5.days.ago)
       described_class.award_streak_badge(4)
       expect(user.badges.size).to eq(0)
