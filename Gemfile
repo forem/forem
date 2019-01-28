@@ -112,7 +112,7 @@ group :development do
   gem "guard-livereload", "~> 2.5", require: false
   gem "guard-rspec", "~> 4.7", require: false
   gem "rb-fsevent", "~> 0.10", require: false
-  gem "web-console", "~> 3.5"
+  gem "web-console", "~> 3.7"
 end
 
 group :development, :test do
