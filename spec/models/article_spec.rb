@@ -458,14 +458,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#long_publish_time" do
-    it 'shows the full published time and date, including time zone "UTC"' do
-      time_now = Time.current
-      article.published_at = time_now
-      expect(article.long_publish_time).to eq(time_now.strftime("%e %B %Y at %I:%M%p %Z"))
-    end
-  end
-
   it "detects detect_human_language" do
     article.save
     article.detect_human_language

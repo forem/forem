@@ -166,10 +166,6 @@ class Comment < ApplicationRecord
     nil
   end
 
-  def long_publish_time
-    created_at.strftime("%e %B %Y at %I:%M%p %Z")
-  end
-
   def readable_publish_date
     if created_at.year == Time.current.year
       created_at.strftime("%b %e")

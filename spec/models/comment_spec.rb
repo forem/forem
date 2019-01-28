@@ -127,14 +127,6 @@ RSpec.describe Comment, type: :model do
     expect(comment.processed_html.size).to be < 450
   end
 
-  describe "#long_publish_time" do
-    it 'shows the full created time and date, including time zone "UTC"' do
-      time_now = Time.current
-      comment.created_at = time_now
-      expect(comment.long_publish_time).to eq(time_now.strftime("%e %B %Y at %I:%M%p %Z"))
-    end
-  end
-
   it "does not show year in readable time if not current year" do
     expect(comment.readable_publish_date).to eq(comment.created_at.strftime("%b %e"))
   end

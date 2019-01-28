@@ -1,6 +1,11 @@
 class ArticleDecorator < ApplicationDecorator
   delegate_all
 
+  def long_published_at
+    relevant_date = crossposted_at.present? ? crossposted_at : published_at
+    relevant_date&.strftime("%e %B, %Y at %I:%M%p %Z")
+  end
+
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end

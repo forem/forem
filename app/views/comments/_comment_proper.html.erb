@@ -44,7 +44,7 @@
                                     commentable.decorate.cached_tag_list_array.include?("ama") %>
               <span class="op-marker">ASK ME ANYTHING</span>
             <% end %>
-            <div class="comment-date" title="<%= comment.long_publish_time %>">
+            <div class="comment-date" title="<%= comment.decorate.long_published_at %>">
               <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>
             </div>
             <button class="dropbtn">
