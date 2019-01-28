@@ -54,8 +54,16 @@ RSpec.describe "StoriesShow", type: :request do
       # Below article HTML variant
       it "renders below article html variant" do
         html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
+        article.update_column(:body_markdown, rand(36**1000).to_s(36).to_s) # min length for article
         get article.path + "?variant_version=0"
         expect(response.body).to include html_variant.html
+      end
+
+      it "Does not render below article html variant for short article" do
+        html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
+        article.update_column(:body_markdown, rand(36**100).to_s(36).to_s) # ensure too short
+        get article.path + "?variant_version=0"
+        expect(response.body).not_to include html_variant.html
       end
 
       it "Does not render below article variant when no variants published" do
