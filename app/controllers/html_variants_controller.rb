@@ -4,11 +4,11 @@ class HtmlVariantsController < ApplicationController
   def index
     authorize HtmlVariant
     @html_variants = if params[:state] == "mine"
-                       current_user.html_variants.order("created_at DESC").includes(:user)
+                       current_user.html_variants.order("created_at DESC").includes(:user).page(params[:page]).per(15)
                      elsif params[:state] == "admin"
-                       HtmlVariant.where(published: true).order("created_at DESC").includes(:user)
+                       HtmlVariant.where(published: true, approved: false).order("created_at DESC").includes(:user).page(params[:page]).per(15)
                      else
-                       HtmlVariant.where(published: true, approved: true).order("success_rate DESC").includes(:user)
+                       HtmlVariant.where(published: true, approved: true).order("success_rate DESC").includes(:user).page(params[:page]).per(15)
                      end
   end
 
@@ -38,7 +38,6 @@ class HtmlVariantsController < ApplicationController
   def create
     authorize HtmlVariant
     @html_variant = HtmlVariant.new(html_variant_params)
-    @html_variant.group = "article_show_sidebar_cta"
     @html_variant.user_id = current_user.id
     if @html_variant.save
       flash[:success] = "HTML Variant Created"
