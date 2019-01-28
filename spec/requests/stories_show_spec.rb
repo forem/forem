@@ -34,40 +34,40 @@ RSpec.describe "StoriesShow", type: :request do
       # sidebar HTML variant
       it "renders html variant" do
         html_variant = create(:html_variant, published: true, approved: true)
-        get article.path
+        get article.path + "?variant_version=1"
         expect(response.body).to include html_variant.html
       end
 
       it "Does not render variant when no variants published" do
         html_variant = create(:html_variant, published: false, approved: true)
-        get article.path
+        get article.path + "?variant_version=1"
         expect(response.body).not_to include html_variant.html
       end
 
       it "does not render html variant when user logged in" do
         html_variant = create(:html_variant, published: true, approved: true)
         sign_in user
-        get article.path
+        get article.path + "?variant_version=1"
         expect(response.body).not_to include html_variant.html
       end
 
       # Below article HTML variant
       it "renders below article html variant" do
         html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
-        get article.path
+        get article.path + "?variant_version=0"
         expect(response.body).to include html_variant.html
       end
 
       it "Does not render below article variant when no variants published" do
         html_variant = create(:html_variant, published: false, approved: true, group: "article_show_below_article_cta")
-        get article.path
+        get article.path + "?variant_version=0"
         expect(response.body).not_to include html_variant.html
       end
 
       it "does not render below article html variant when user logged in" do
         html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
         sign_in user
-        get article.path
+        get article.path + "?variant_version=0"
         expect(response.body).not_to include html_variant.html
       end
 
