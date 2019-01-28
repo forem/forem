@@ -205,6 +205,7 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     @article_show = true
+    @variant_number = rand(2)
     @comment = Comment.new
     assign_user_and_org
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30

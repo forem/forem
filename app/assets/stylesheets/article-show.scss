@@ -918,6 +918,13 @@ article{
 
     }
   }
+  .html-variant-wrapper {
+    width: 88%;
+    margin: 0px auto 25px;
+    @media screen and ( min-width: 500px ){
+      width: 82%;
+    }
+  }
 }
 
 .dev-ios-native-body {
@@ -953,41 +960,6 @@ article{
     border-left: 20px solid transparent;
     border-right: 20px solid transparent;
     border-top: 27px solid $green;
-  }
-}
-.showpage-signin-cta{
-  background: lighten($light-gray, 1%);
-  border: 1px solid darken($light-medium-gray, 15%);
-  box-shadow: $bold-shadow;
-  width: 680px;
-  max-width:82%;
-  margin: auto;
-  text-align: center;
-  padding: 40px 5%;
-  font-size: 1.1em;
-  line-height: 1.33em;
-  margin-bottom: 30px;
-  border-radius: 3px;
-  position: relative;
-  a{
-    color: $black;
-    text-decoration: underline;
-    display: inline-block;
-    &.primary-cta-link{
-      font-size: calc(1.3em + 0.2vw);
-      background: $bold-blue;
-      border-radius: 100px;
-      text-decoration: none;
-      padding: 16px 0px;
-      color: white;
-      width: 300px;
-    }
-  }
-  .showpage-signin-cta-subtext {
-    font-family: $monospace;
-    font-size:calc(0.62em + 0.13vw);
-    color: lighten($medium-gray, 10%);
-    font-weight: bold;
   }
 }
 

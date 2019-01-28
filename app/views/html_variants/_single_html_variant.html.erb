@@ -1,7 +1,7 @@
-    <div class="html-variants-page-single-variant">
-      @<%= html_variant.user.username %>:
+    <div class="html-variants-page-single-variant <%= "html-variants-page-single-big" if html_variant.group == "article_show_below_article_cta" %>">
+      <%= html_variant.group %> | @<%= html_variant.user.username %>:
       <h3>
-        <%= html_variant.name %>
+        <a href="/html_variants/<%= html_variant.id %>"><%= html_variant.name %></a>
       </h3>
       <iframe src="/html_variants/<%= html_variant.id %>"></iframe>
       <div class="html-variants-page-single-variant-details">

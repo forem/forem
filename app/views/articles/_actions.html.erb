@@ -40,11 +40,13 @@
     </div>
   </div>
 </div>
-<% unless user_signed_in? %>
-  <div class="showpage-signin-cta cta" id="showpage-signin-cta">
-    <a href="/">dev.to</a> is where software developers read, write, and level up.
-    <span style="display:block;margin-top:30px;"><a href="/enter" id="primary-cta-link" class="primary-cta-link">Sign Up Now</a></span>
-    <br/>
-     <span class="showpage-signin-cta-subtext">(open source and free forever ❤️)</span>
-  </div>
+<% if @variant_number == 0 && !user_signed_in? && @article.body_markdown.size > 900 %>
+  <% cache("below-article-html-variant-#{rand(20)}", :expires_in => 8.hours) do %>
+    <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
+    <% if @html_variant %>
+      <div class="html-variant-wrapper" id="html-variant-article-show-below-article" data-variant-id="<%= @html_variant.id %>" >
+        <%= @html_variant.html.html_safe %>
+      </div>
+    <% end %>
+  <% end %>
 <% end %>

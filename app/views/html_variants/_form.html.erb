@@ -26,14 +26,20 @@
   <div class="form-sub-details">
     <%= f.label :published %>
     <%= f.check_box :published %>
-    <%= f.label :target_tag %>
-    <%= f.text_field :target_tag, placeholder: 'One tag, e.g. javascript. Optional targeting.' %>
+    <%= f.label :group %>
+    <%= f.select(:group, options_for_select(["article_show_sidebar_cta", "article_show_below_article_cta"], @html_variant.group || "article_show_sidebar_cta")) %>
   </div>
   <%= f.submit %>
 <% end %>
 <% if @html_variant.html.present? %>
   <h1 style="text-align:center;">Preview:</h1>
-  <div class="html-variant-wrapper" style="width: 310px;margin:20px auto;">
+  <div class="html-variant-wrapper" style="width: 360px;margin:20px auto;">
     <%= @html_variant.html.html_safe %>
   </div>
+  <% if @html_variant.group == "article_show_below_article_cta" %>
+    <div class="html-variant-wrapper" style="width: 880px;margin:20px auto;">
+      <%= @html_variant.html.html_safe %>
+    </div>
+  <% end %>
+
 <% end %>

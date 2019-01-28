@@ -31,6 +31,7 @@ RSpec.describe "StoriesShow", type: :request do
         expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
       end
 
+      # sidebar HTML variant
       it "renders html variant" do
         html_variant = create(:html_variant, published: true, approved: true)
         get article.path
@@ -45,6 +46,26 @@ RSpec.describe "StoriesShow", type: :request do
 
       it "does not render html variant when user logged in" do
         html_variant = create(:html_variant, published: true, approved: true)
+        sign_in user
+        get article.path
+        expect(response.body).not_to include html_variant.html
+      end
+
+      # Below article HTML variant
+      it "renders below article html variant" do
+        html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
+        get article.path
+        expect(response.body).to include html_variant.html
+      end
+
+      it "Does not render below article variant when no variants published" do
+        html_variant = create(:html_variant, published: false, approved: true, group: "article_show_below_article_cta")
+        get article.path
+        expect(response.body).not_to include html_variant.html
+      end
+
+      it "does not render below article html variant when user logged in" do
+        html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
         sign_in user
         get article.path
         expect(response.body).not_to include html_variant.html

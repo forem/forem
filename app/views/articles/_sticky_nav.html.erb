@@ -61,7 +61,7 @@
       </div>
     <% end %>
   </div>
-<% if !user_signed_in? %>
+<% if @variant_number == 1 && !user_signed_in? %>
   <% cache("html-variant-sidebar#{rand(20)}", :expires_in => 8.hours) do %>
     <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
     <% if @html_variant %>
