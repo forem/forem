@@ -75,6 +75,7 @@ end
 task award_badges: :environment do
   BadgeRewarder.award_yearly_club_badges
   BadgeRewarder.award_beloved_comment_badges
+  BadgeRewarder.award_streak_badge(4)
 end
 
 # rake award_top_seven_badges["ben jess peter mac liana andy"]
