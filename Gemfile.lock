@@ -142,6 +142,14 @@ GEM
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
+    better_html (1.0.11)
+      actionview (>= 4.0)
+      activesupport (>= 4.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      html_tokenizer (~> 0.0.6)
+      parser (>= 2.4)
+      smart_properties
     bindex (0.5.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
@@ -265,6 +273,13 @@ GEM
       thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
+    erb_lint (0.0.28)
+      activesupport
+      better_html (~> 1.0.7)
+      html_tokenizer
+      rainbow
+      rubocop (~> 0.51)
+      smart_properties
     errbase (0.1.0)
     erubi (1.8.0)
     et-orbi (1.1.6)
@@ -497,6 +512,7 @@ GEM
     honeycomb-rails (0.8.1)
       libhoney (>= 1.9)
       rails (>= 3.0.0)
+    html_tokenizer (0.0.7)
     html_truncator (0.4.2)
       nokogiri (~> 1.5)
     http (3.3.0)
@@ -820,6 +836,7 @@ GEM
     skylight-core (2.0.2)
       activesupport (>= 4.2.0)
     slack-notifier (2.3.2)
+    smart_properties (1.13.1)
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
@@ -953,6 +970,7 @@ DEPENDENCIES
   email_validator (~> 1.6)
   emoji_regex (~> 1.0)
   envied (~> 0.9)
+  erb_lint
   factory_bot_rails (~> 4.11)
   fake_stripe (~> 0.2)
   faker!

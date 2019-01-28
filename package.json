@@ -25,6 +25,10 @@
       "bin/rubocop --require rubocop-rspec --auto-correct",
       "git add"
     ],
+    "app/**/*.html.erb": [
+      "bin/bundle exec erblint",
+      "git add"
+    ],
     "*.json": [
       "prettier --write",
       "git add"
