@@ -45,7 +45,7 @@ module BadgeRewarder
 
   def self.award_streak_badge(num_weeks)
     article_user_ids = Article.where("published_at > ?", 1.week.ago).pluck(:user_id)
-    message = "Congrats on acheiving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+    message = "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
     users = User.where(id: article_user_ids).where("articles_count > ?", 3)
     usernames = []
     users.find_each do |user|
