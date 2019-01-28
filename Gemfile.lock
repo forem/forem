@@ -22,17 +22,6 @@ GIT
     fix-db-schema-conflicts (3.0.2)
       rubocop (>= 0.38.0)
 
-PATH
-  remote: ../erb-lint
-  specs:
-    erb_lint (0.0.28)
-      activesupport
-      better_html (~> 1.0.7)
-      html_tokenizer
-      rainbow
-      rubocop (~> 0.51)
-      smart_properties
-
 GEM
   remote: https://rubygems.org/
   remote: https://rails-assets.org/
@@ -284,6 +273,13 @@ GEM
       thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
+    erb_lint (0.0.28)
+      activesupport
+      better_html (~> 1.0.7)
+      html_tokenizer
+      rainbow
+      rubocop (~> 0.51)
+      smart_properties
     errbase (0.1.0)
     erubi (1.8.0)
     et-orbi (1.1.6)
@@ -974,7 +970,7 @@ DEPENDENCIES
   email_validator (~> 1.6)
   emoji_regex (~> 1.0)
   envied (~> 0.9)
-  erb_lint!
+  erb_lint
   factory_bot_rails (~> 4.11)
   fake_stripe (~> 0.2)
   faker!
