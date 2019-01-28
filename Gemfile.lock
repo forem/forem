@@ -550,7 +550,8 @@ GEM
     kaminari-core (1.1.1)
     launchy (2.4.3)
       addressable (~> 2.3)
-    libhoney (1.10.1)
+    libhoney (1.11.0)
+      addressable (~> 2.0)
       http (>= 2.0, < 4.0)
     liquid (4.0.1)
     listen (3.1.5)
@@ -976,7 +977,7 @@ DEPENDENCIES
   jquery-rails (~> 4.3)
   kaminari (~> 1.1)
   launchy (~> 2.4)
-  libhoney (~> 1.10)
+  libhoney (~> 1.11)
   liquid (~> 4.0)
   memory_profiler (~> 0.9)
   nakayoshi_fork
