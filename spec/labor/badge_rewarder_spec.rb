@@ -65,6 +65,28 @@ RSpec.describe BadgeRewarder do
     expect(BadgeAchievement.where(badge_id: badge.id).size).to eq(2)
   end
 
+  describe "::award_streak_badge" do
+    it "rewards badge to users with four straight weeks of articles" do
+      create(:badge, title: "4 Week Streak", slug: "4-week-streak")
+      user = create(:user)
+      create(:article, user: user, published: true, published_at: 26.days.ago)
+      create(:article, user: user, published: true, published_at: 19.days.ago)
+      create(:article, user: user, published: true, published_at: 12.days.ago)
+      create(:article, user: user, published: true, published_at: 5.days.ago)
+      described_class.award_streak_badge(4)
+      expect(user.badges.size).to eq(1)
+    end
+
+    it "does not reward beloved comment to non-qualifying comment" do
+      create(:badge, title: "4 Week Streak", slug: "4-week-streak")
+      user = create(:user)
+      create(:article, user: user, published: true, published_at: 26.days.ago)
+      create(:article, user: user, published: true, published_at: 5.days.ago)
+      described_class.award_streak_badge(4)
+      expect(user.badges.size).to eq(0)
+    end
+  end
+
   describe "::award_contributor_badges_from_github" do
     let(:my_ocktokit_client) { instance_double(Octokit::Client) }
     let(:user) { create(:user) }
