@@ -68,22 +68,22 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_new_comment_notifications
 
-    def send_new_badge_notification(notifiable)
+    def send_new_badge_notification(badge_achievement)
       json_data = {
-        user: user_data(notifiable.user),
+        user: user_data(badge_achievement.user),
         badge_achievement: {
-          badge_id: notifiable.badge_id,
-          rewarding_context_message: notifiable.rewarding_context_message,
+          badge_id: badge_achievement.badge_id,
+          rewarding_context_message: badge_achievement.rewarding_context_message,
           badge: {
-            title: notifiable.badge.title,
-            description: notifiable.badge.description,
-            badge_image_url: notifiable.badge.badge_image_url
+            title: badge_achievement.badge.title,
+            description: badge_achievement.badge.description,
+            badge_image_url: badge_achievement.badge.badge_image_url
           }
         }
       }
       Notification.create(
-        user_id: notifiable.user.id,
-        notifiable_id: notifiable.id,
+        user_id: badge_achievement.user.id,
+        notifiable_id: badge_achievement.id,
         notifiable_type: "BadgeAchievement",
         action: nil,
         json_data: json_data,
