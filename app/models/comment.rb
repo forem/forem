@@ -262,6 +262,7 @@ class Comment < ApplicationRecord
 
   def touch_user
     user.touch
+    user.touch(:last_comment_at)
   end
   handle_asynchronously :touch_user
 
