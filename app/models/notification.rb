@@ -27,6 +27,7 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_new_follower_notification
 
     def send_to_followers(notifiable, action = nil)
+      # most often, notifiable = article, action = "Published"
       # followers is an array and not an activerecord object
       notifiable.user.followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
         json_data = {
