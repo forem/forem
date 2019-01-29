@@ -45,24 +45,24 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_to_followers
 
-    def send_new_comment_notifications(notifiable)
-      user_ids = notifiable.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
-      user_ids.add(notifiable.commentable.user_id) if user_ids.empty? && notifiable.commentable.receive_notifications
-      user_ids.delete(notifiable.user_id).each do |user_id|
+    def send_new_comment_notifications(comment)
+      user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
+      user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
+      user_ids.delete(comment.user_id).each do |user_id|
         json_data = {
-          user: user_data(notifiable.user),
-          comment: comment_data(notifiable)
+          user: user_data(comment.user),
+          comment: comment_data(comment)
         }
         Notification.create(
           user_id: user_id,
-          notifiable_id: notifiable.id,
-          notifiable_type: notifiable.class.name,
+          notifiable_id: comment.id,
+          notifiable_type: comment.class.name,
           action: nil,
           json_data: json_data,
         )
         # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
         if User.find_by(id: user_id)&.mobile_comment_notifications
-          send_push_notifications(user_id, "@#{notifiable.user.username} replied to you:", notifiable.title, "/notifications/comments")
+          send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments")
         end
       end
     end
