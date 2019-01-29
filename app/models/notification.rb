@@ -134,15 +134,15 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_reaction_notification
 
-    def send_mention_notification(notifiable)
-      mentioner = notifiable.mentionable.user
+    def send_mention_notification(mention)
+      mentioner = mention.mentionable.user
       json_data = {
         user: user_data(mentioner)
       }
-      json_data[:comment] = comment_data(notifiable.mentionable) if notifiable.mentionable_type == "Comment"
+      json_data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
       Notification.create(
-        user_id: notifiable.user_id,
-        notifiable_id: notifiable.id,
+        user_id: mention.user_id,
+        notifiable_id: mention.id,
         notifiable_type: "Mention",
         action: nil,
         json_data: json_data,
