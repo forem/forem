@@ -91,38 +91,38 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_new_badge_notification
 
-    def send_reaction_notification(notifiable)
-      return if notifiable.user_id == notifiable.reactable.user_id
-      return if notifiable.points.negative?
-      return unless notifiable.reactable.receive_notifications
+    def send_reaction_notification(reaction)
+      return if reaction.user_id == reaction.reactable.user_id
+      return if reaction.points.negative?
+      return unless reaction.reactable.receive_notifications
 
-      aggregated_reaction_siblings = notifiable.reactable.reactions.
-        reject { |r| r.user_id == notifiable.reactable.user_id }.
+      aggregated_reaction_siblings = reaction.reactable.reactions.
+        reject { |r| r.user_id == reaction.reactable.user_id }.
         map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
       json_data = {
-        user: user_data(notifiable.user),
+        user: user_data(reaction.user),
         reaction: {
-          category: notifiable.category,
-          reactable_type: notifiable.reactable_type,
-          reactable_id: notifiable.reactable_id,
+          category: reaction.category,
+          reactable_type: reaction.reactable_type,
+          reactable_id: reaction.reactable_id,
           reactable: {
-            path: notifiable.reactable.path,
-            title: notifiable.reactable.title,
+            path: reaction.reactable.path,
+            title: reaction.reactable.title,
             class: {
-              name: notifiable.reactable.class.name
+              name: reaction.reactable.class.name
             }
           },
           aggregated_siblings: aggregated_reaction_siblings,
-          updated_at: notifiable.updated_at
+          updated_at: reaction.updated_at
         }
       }
       if aggregated_reaction_siblings.size.zero?
-        notification = Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
+        notification = Notification.where(notifiable_type: reaction.reactable.class.name, notifiable_id: reaction.reactable.id, action: "Reaction").destroy_all
       else
         previous_siblings_size = 0
-        notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
+        notification = Notification.find_or_create_by(notifiable_type: reaction.reactable.class.name, notifiable_id: reaction.reactable.id, action: "Reaction")
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
-        notification.user_id = notifiable.reactable.user.id
+        notification.user_id = reaction.reactable.user.id
         notification.json_data = json_data
         notification.notified_at = Time.current
         if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
