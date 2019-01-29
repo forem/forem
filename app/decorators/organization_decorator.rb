@@ -25,4 +25,10 @@ class OrganizationDecorator < ApplicationDecorator
       text: "#ffffff"
     }
   end
+
+  def key_profile_attributes
+    "#{bg_color_hex}-#{text_color_hex}-#{path}-#{tag_line}-
+    #{email}-#{company_size}-#{location}-#{summary}-#{cta_processed_html}-
+    #{cta_button_url}-#{cta_button_text}-#{profile_image_url}-#{name}"
+  end
 end
