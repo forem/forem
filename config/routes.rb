@@ -112,6 +112,7 @@ Rails.application.routes.draw do
   resources :tags, only: [:index]
   resources :stripe_subscriptions, only: %i[create update destroy]
   resources :stripe_active_cards, only: %i[create update destroy]
+  resources :stripe_cancellations, only: [:create]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[create update]
   resources :buffered_articles, only: [:index]
