@@ -119,6 +119,7 @@ end
 group :development, :test do
   gem "capybara", "~> 3.12"
   gem "derailed", "~> 0.1"
+  gem "erb_lint", "~> 0.0.28", require: false
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
