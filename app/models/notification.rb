@@ -172,6 +172,7 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_welcome_notification
 
     def send_moderation_notification(notifiable)
+      # notifiable is currently only comment
       available_moderators = User.with_role(:trusted).where("last_moderation_notification < ?", 28.hours.ago)
       return if available_moderators.empty?
 
