@@ -11,6 +11,8 @@ class ArticleAnalyticsFetcher
     fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
   end
 
+  private
+
   def fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
     qualified_articles.each_slice(15).to_a.each do |chunk|
       pageviews = GoogleAnalytics.new(chunk.pluck(:id), user_id).get_pageviews
@@ -37,7 +39,12 @@ class ArticleAnalyticsFetcher
   def should_fetch(article)
     return true if @context == "force"
 
-    # Mostly fetch if positive reactions count has gone up, but occasionally re-fetch anyway.
-    article.positive_reactions_count > article.previous_positive_reactions_count || rand(25) == 1
+    article.positive_reactions_count > article.previous_positive_reactions_count || occasionally_force_fetch?
+  end
+
+  def occasionally_force_fetch?
+    if Rails.env.production?
+      rand(25) == 1
+    end
   end
 end

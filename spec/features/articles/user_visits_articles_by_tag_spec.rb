@@ -30,7 +30,7 @@ describe "User visits articles by tag", type: :feature do
         end
       end
 
-      it "shows correct articles count", js: true do
+      it "shows correct articles count" do
         expect(page).to have_selector(".single-article", count: 2)
       end
 
