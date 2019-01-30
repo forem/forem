@@ -18,7 +18,7 @@
         </div>
       </div>
     <% end %>
-    <% cache("main-article-right-sidebar-discussions", :expires_in => 90.seconds) do %>
+    <% cache("main-article-right-sidebar-discussions-#{params[:timeframe]}", :expires_in => (params[:timeframe].blank? ? 120 : 360 ).seconds) do %>
       <% @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar").first %>
       <% if @sidebar_ad %>
         <div class="widget">
