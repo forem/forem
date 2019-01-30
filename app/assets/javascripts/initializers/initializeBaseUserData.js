@@ -8,30 +8,29 @@ function initializeBaseUserData(){
 }
 
 function initializeUserSidebar(user) {
-  if (document.getElementById("sidebar-nav")) {
-    initializeUserProfileContent(user);
-    var tagHTML = "";
-    var renderedTagsCount = 0;
-    var followedTags = JSON.parse(user.followed_tags);
-    if (followedTags.length === 0) {
-        document.getElementById("tag-separator").innerHTML = "Follow tags to improve your feed"
-    }
-    followedTags.forEach(function(t){
-      renderedTagsCount++
-      if (t.points > 0.0) {
-        tagHTML = tagHTML + '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">\
-                            <a class="sidebar-nav-link" href="/t/'+t.name+'">\
-                            <span class="sidebar-nav-tag-text">#'+t.name+'</span>\
-                            </a>\
-                            </div>';
-      }
-      if (document.getElementById("default-sidebar-element-"+t.name)){
-        document.getElementById("default-sidebar-element-"+t.name).remove();
-      }
-    });
-    document.getElementById("sidebar-nav-followed-tags").innerHTML = tagHTML;
-    document.getElementById("sidebar-nav-default-tags").classList.add("showing");
-  }
+  if (!document.getElementById("sidebar-nav")) return;
+  initializeUserProfileContent(user);
+  var tagHTML = "";
+  var followedTags = JSON.parse(user.followed_tags);
+  document.getElementById("tag-separator").innerHTML = followedTags.length === 0 ? "Follow tags to improve your feed" : "Other Popular Tags";
+  
+  // sort tags by descending weigth, descending popularity and name
+  followedTags.sort(function(tagA, tagB) {
+    return tagB.points - tagA.points || tagB.hotness_score - tagA.hotness_score || tagA.name.localeCompare(tagB.name);
+  });
+  
+  followedTags.forEach(function(t){
+    var element = document.getElementById("default-sidebar-element-"+t.name);
+    tagHTML += t.points > 0.0 ?
+      '<div class="sidebar-nav-element" id="sidebar-element-'+t.name+'">' +
+      '<a class="sidebar-nav-link" href="/t/'+t.name+'">' +
+      '<span class="sidebar-nav-tag-text">#'+t.name+'</span>' +
+      '</a>' +
+      '</div>' : '';
+    if(element) element.remove();
+  });
+  document.getElementById("sidebar-nav-followed-tags").innerHTML = tagHTML;
+  document.getElementById("sidebar-nav-default-tags").classList.add("showing");
 }
 
 function initializeUserProfileContent(user) {
@@ -51,12 +50,24 @@ function addRelevantButtonsToArticle(user) {
     }
   }
   var commentsContainer = document.getElementById('comments-container');
-  if (commentsContainer && user.trusted) {
-    var modButts = document.getElementsByClassName('mod-actions');
-    for (var i = 0; i < modButts.length; i++) {
-      var butt = modButts[i];
-      butt.className = 'mod-actions';
-      butt.style.display = 'inline-block';
+  if (commentsContainer) {
+    var settingsButts = document.getElementsByClassName('comment-actions');
+
+    for (var i = 0; i < settingsButts.length; i++) {
+      var butt = settingsButts[i];
+      if (parseInt(butt.dataset.userId) === user.id) {
+        butt.className = 'comment-actions';
+        butt.style.display = 'inline-block';
+      }
+    }
+
+    if (user.trusted) {
+      var modButts = document.getElementsByClassName('mod-actions');
+      for (var i = 0; i < modButts.length; i++) {
+        var butt = modButts[i];
+        butt.className = 'mod-actions';
+        butt.style.display = 'inline-block';
+      }
     }
   }
 }

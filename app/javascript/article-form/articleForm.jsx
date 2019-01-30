@@ -1,6 +1,8 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
+import ImageUploadIcon from 'images/image-upload.svg';
+import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
@@ -14,8 +16,6 @@ import ImageManagement from './elements/imageManagement';
 import MoreConfig from './elements/moreConfig';
 import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
-import ImageUploadIcon from 'images/image-upload.svg';
-import ThreeDotsIcon from 'images/three-dots.svg';
 // import CodeMirror from 'codemirror';
 // import 'codemirror/mode/markdown/markdown';
 
@@ -47,7 +47,7 @@ export default class ArticleForm extends Component {
       moreConfigShowing: false,
       mainImage: article.main_image || null,
       organization,
-      postUnderOrg: article.organization_id ? true : false,
+      postUnderOrg: !!article.organization_id,
       errors: null,
     };
   }
@@ -121,10 +121,10 @@ export default class ArticleForm extends Component {
 
   handleConfigChange = e => {
     e.preventDefault();
-    let newState = {}
+    const newState = {};
     newState[e.target.name] = e.target.value;
-    this.setState(newState)
-  }
+    this.setState(newState);
+  };
 
   handleMainImageUrlChange = payload => {
     this.setState({
@@ -181,8 +181,8 @@ export default class ArticleForm extends Component {
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
-      ''
-    );
+        ''
+      );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -190,8 +190,8 @@ export default class ArticleForm extends Component {
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const moreConfig = moreConfigShowing ? (
       <MoreConfig
         onExit={this.toggleMoreConfig}
@@ -200,8 +200,8 @@ export default class ArticleForm extends Component {
         onConfigChange={this.handleConfigChange}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const orgArea = organization ? (
       <OrgSettings
         organization={organization}
@@ -209,52 +209,69 @@ export default class ArticleForm extends Component {
         onToggle={this.toggleOrgPosting}
       />
     ) : (
-      ''
-    );
+        ''
+      );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
-      editorView = <div>{errorsArea}{orgArea}{imageArea}<BodyPreview previewHTML={previewHTML} articleState={this.state} version="article-preview" /></div>;
+      editorView = (
+        <div>
+          {errorsArea}
+          {orgArea}
+          {imageArea}
+          <BodyPreview
+            previewHTML={previewHTML}
+            articleState={this.state}
+            version="article-preview"
+          />
+        </div>
+      );
     } else if (helpShowing) {
       editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
     } else {
-        editorView = <div>
-                      {errorsArea}
-                      {orgArea}
-                      {imageArea}
-                      <Title defaultValue={title} onChange={linkState(this, 'title')} />
-                      <div className="articleform__detailfields">
-                        <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-                        <button
-                          className="articleform__detailsButton articleform__detailsButton--image"
-                          onClick={this.toggleImageManagement}
-                        >
-                          <img src={ImageUploadIcon} /> IMAGES
-                        </button>
-                        <button
-                          className="articleform__detailsButton articleform__detailsButton--moreconfig"
-                          onClick={this.toggleMoreConfig}
-                        >
-                          <img src={ThreeDotsIcon} />
-                        </button>
-                      </div>
-                      <BodyMarkdown
-                        defaultValue={bodyMarkdown}
-                        onChange={linkState(this, 'bodyMarkdown')}
-                      />
-                        <button
-                          className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
-                          onClick={this.toggleImageManagement}
-                        >
-                          <img src={ImageUploadIcon} /> IMAGES
-                        </button>
-                        <button
-                          className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-                          onClick={this.toggleMoreConfig}
-                        >
-                          <img src={ThreeDotsIcon} />
-                        </button>
-                      </div>
+      editorView = (
+        <div>
+          {errorsArea}
+          {orgArea}
+          {imageArea}
+          <Title defaultValue={title} onChange={linkState(this, 'title')} />
+          <div className="articleform__detailfields">
+            <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+            <button
+              className="articleform__detailsButton articleform__detailsButton--image"
+              onClick={this.toggleImageManagement}
+            >
+              <img src={ImageUploadIcon} />
+              {' '}
+              IMAGES
+            </button>
+            <button
+              className="articleform__detailsButton articleform__detailsButton--moreconfig"
+              onClick={this.toggleMoreConfig}
+            >
+              <img src={ThreeDotsIcon} />
+            </button>
+          </div>
+          <BodyMarkdown
+            defaultValue={bodyMarkdown}
+            onChange={linkState(this, 'bodyMarkdown')}
+          />
+          <button
+            className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
+            onClick={this.toggleImageManagement}
+          >
+            <img src={ImageUploadIcon} />
+            {' '}
+            IMAGES
+          </button>
+          <button
+            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+            onClick={this.toggleMoreConfig}
+          >
+            <img src={ThreeDotsIcon} />
+          </button>
+        </div>
+      );
     }
     return (
       <form className="articleform__form" onSubmit={this.onSubmit}>

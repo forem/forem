@@ -33,7 +33,6 @@ RSpec.describe Exporter::Articles do
       published
       published_at
       published_from_feed
-      reactions_count
       show_comments
       slug
       social_image

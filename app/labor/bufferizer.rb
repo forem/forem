@@ -28,10 +28,7 @@ class Bufferizer
   private
 
   def twitter_buffer_text
-    twit_name = article.user.twitter_username
-    if twit_name.present? && text.size < 245
-      "#{text}\n{ author: @#{twit_name} }\nhttps://dev.to#{article.path}"
-    else
+    if text.size <= 255
       "#{text} https://dev.to#{article.path}"
     end
   end

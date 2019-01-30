@@ -5,7 +5,7 @@
 <% end %>
 <%= render "users/profile_header" %>
 <div class="home sub-home" id="index-container"
-  data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%= @list_of %>"
+  data-params="<%= params.to_json(only: [:tag, :username, :q]) %>" data-which="<%= @list_of %>"
   data-algolia-tag="<%= "organization_#{@organization.id}" %>"
   data-feed="<%= params[:timeframe] || "base-feed"%>"
   data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
@@ -13,8 +13,8 @@
   <%= render "organizations/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">
-      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
-        <%= render "stories/main_stories_feed" %>
+      <% if @stories.any? %>
+        <%= render "organizations/main_feed" %>
       <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">

@@ -14,7 +14,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   def valid_codeblock_div?(node)
     node.name == "div" &&
       node.attributes.count == 1 &&
-      node.children.first.name == "pre" &&
+      node.children.first&.name == "pre" &&
       node.parent.name == "#document-fragment" &&
       node.attributes.values.any? do |attribute_value|
         attribute_value.value == "highlight"
