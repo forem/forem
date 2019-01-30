@@ -4,12 +4,21 @@ class Internal::UsersController < Internal::ApplicationController
   def index
     @users = case params[:state]
              when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(20)
+               User.where(offering_mentorship: true).page(params[:page]).per(50)
              when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(20)
+               User.where(seeking_mentorship: true).page(params[:page]).per(50)
+             when /role\-/
+               User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
              else
-               User.order("created_at DESC").page(params[:page]).per(20)
+               User.order("created_at DESC").page(params[:page]).per(50)
              end
+    if params[:search].present?
+      @users = @users.where('users.name ILIKE :search OR
+        users.username ILIKE :search OR
+        users.github_username ILIKE :search OR
+        users.email ILIKE :search OR
+        users.twitter_username ILIKE :search', search: "%#{params[:search].strip}%")
+    end
   end
 
   def edit
