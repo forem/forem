@@ -213,11 +213,11 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     @article_show = true
-    @comment = Comment.new
     assign_user_and_org
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 65 : 35
     assign_second_and_third_user
     not_found if permission_denied?
+    @comment = Comment.new(body_markdown: @article&.comment_template)
     set_surrogate_key_header @article.record_key
     redirect_if_show_view_param
     return if performed?
