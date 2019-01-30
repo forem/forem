@@ -485,5 +485,15 @@ RSpec.describe Article, type: :model do
     article.collection_id = collection.id
     expect(article).to be_valid
   end
+
+  describe "comment templates" do
+    it "can have no template" do
+      expect(build(:article).valid?).to be(true)
+    end
+
+    it "can have a template" do
+      expect(build(:article, comment_template: "my comment template").comment_template).to eq("my comment template")
+    end
+  end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

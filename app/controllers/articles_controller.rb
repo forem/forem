@@ -184,6 +184,7 @@ class ArticlesController < ApplicationController
     params[:article][:published] = true if params[:submit_button] == "PUBLISH"
     modified_params = policy(Article).permitted_attributes
     modified_params << :user_id if org_admin_user_change_privilege
+    modified_params << :comment_template if current_user.has_role?(:admin)
     params.require(:article).permit(modified_params)
   end
 

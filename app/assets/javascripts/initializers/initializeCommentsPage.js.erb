@@ -51,14 +51,14 @@ function initializeCommentsPage() {
       }
     };
     var timeString = (Date.now()).toString();
-    ajaxReq.open("GET", "/reactions?commentable_id="+commentableId+"&commentable_type="+commentableType, true);
+    ajaxReq.open("GET", "/reactions?commentable_id=" + commentableId + "&commentable_type=" + commentableType, true);
     ajaxReq.send();
 
     var butts = document.getElementsByClassName('reaction-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
       butt.onclick = function (event) {
-              var thisButt = this;
+        var thisButt = this;
         thisButt.blur();
         event.preventDefault();
         sendHapticMessage('medium');
@@ -99,9 +99,9 @@ function initializeCommentsPage() {
     var replyButts = document.getElementsByClassName('toggle-reply-form');
     for (var i = 0; i < replyButts.length; i++) {
       var butt = replyButts[i];
-      butt.onclick = function(event) {
+      butt.onclick = function (event) {
         event.preventDefault();
-        if (event.target.classList.contains("thread-indication")){
+        if (event.target.classList.contains("thread-indication")) {
           return false;
         } else {
           var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
@@ -111,7 +111,7 @@ function initializeCommentsPage() {
           }
           var actionNode = event.target.parentNode;
           var parentId = actionNode.dataset.commentId;
-          document.getElementById("button-for-comment-"+actionNode.dataset.commentId).style.zIndex = "5";
+          document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
           var waitingOnCSRF = setInterval(function () {
             var metaTag = document.querySelector("meta[name='csrf-token']");
             if (metaTag) {
@@ -144,7 +144,7 @@ function initializeCommentsPage() {
 
 function toggleCodeOfConduct() {
   var user = userData();
-  if (!user){
+  if (!user) {
     return;
   }
   var codeOfConduct = user.checked_code_of_conduct
@@ -159,18 +159,18 @@ function toggleCodeOfConduct() {
 function replaceActionButts(el) {
   var loggedInActionButts = "";
   var wrapper = el.getElementsByClassName("actions")[0]
-  if ( el.dataset.currentUserComment == "true"){
+  if (el.dataset.currentUserComment == "true") {
     loggedInActionButts = '<a data-no-instant href="' + el.parentNode.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
                             <a href="' + el.parentNode.parentNode.dataset.path + '/edit">EDIT</a>'
   }
-  wrapper.innerHTML = '<span class="current-user-actions">'+loggedInActionButts+'</span><a href="#" class="toggle-reply-form">REPLY</a>';
+  wrapper.innerHTML = '<span class="current-user-actions">' + loggedInActionButts + '</span><a href="#" class="toggle-reply-form">REPLY</a>';
 }
 
 function handleCommentSubmit(event) {
   event.preventDefault();
   var form = event.target;
   form.classList.add('submitting');
-  var parentComment = document.getElementById("comment-node-"+event.target.dataset.commentId);
+  var parentComment = document.getElementById("comment-node-" + event.target.dataset.commentId);
 
   var body = JSON.stringify({
     comment: {
@@ -185,7 +185,7 @@ function handleCommentSubmit(event) {
     .then(sendFetch('comment-creation', body))
     .then(function (response) {
       if (response.status === 200) {
-        response.json().then(function(newComment) {
+        response.json().then(function (newComment) {
           var newNode = document.createElement('div');
           if (newComment.status == "comment already exists") {
             return false;
@@ -219,10 +219,10 @@ function handleCommentSubmit(event) {
 
           else if (mainCommentsForm) {
             var mainCommentsForm = document.getElementById("new_comment");
-            var textArea = document.getElementById("text-area");
             mainCommentsForm.classList.remove("submitting");
-            textArea.value = "";
+            const textArea = document.getElementById("text-area");
             textArea.classList = "";
+            textArea.value = newComment.comment_template;
             var preview = document.getElementById("preview-div");
             preview.classList.add("preview-toggle");
             preview.innerHTML = "";
@@ -231,7 +231,7 @@ function handleCommentSubmit(event) {
           }
           else if (document.getElementById("notifications-container")) {
             var newDiv = document.createElement("span")
-            newDiv.innerHTML = '<div class="reply-sent-notice">Reply sent — <a href="'+newComment.url+'">Check it out</a></div>'
+            newDiv.innerHTML = '<div class="reply-sent-notice">Reply sent — <a href="' + newComment.url + '">Check it out</a></div>'
             form.replaceWith(newDiv);
           }
           else {
@@ -280,7 +280,7 @@ function handleSubmit(event) {
   // Get user details and extract code of conduct & comment count
   var user = userData();
   if (!user) {
-      return;
+    return;
   }
 
   var commentCount = user.number_of_comments;
@@ -308,7 +308,7 @@ function handleBoldAndItalic(event) {
 
   var selection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
   var selectionStart = textArea.selectionStart;
-  var surroundingStr =  event.keyCode === KEY_CODE_B ? "**" : "_";
+  var surroundingStr = event.keyCode === KEY_CODE_B ? "**" : "_";
 
   replaceSelectedText(textArea, `${surroundingStr}${selection}${surroundingStr}`);
 
@@ -336,10 +336,10 @@ function handleLink(event) {
 
 function replaceSelectedText(textArea, text) {
   // Chrome and other modern browsers (except FF and IE 8,9,10,11)
-  if(document.execCommand('insertText', false, text)) {
+  if (document.execCommand('insertText', false, text)) {
   }
   // Firefox (non-standard method)
-  else if(typeof textArea.setRangeText === "function") {
+  else if (typeof textArea.setRangeText === "function") {
     textArea.setRangeText(text);
   }
 
@@ -424,16 +424,16 @@ function generateUploadFormdata(image) {
 function handleImageUpload(event, randomIdNumber) {
   var commentableId = document.getElementById('comments-container').dataset.commentableId;
   event.preventDefault();
-  document.getElementById('image-upload-'+ randomIdNumber).click();
-  document.getElementById('image-upload-'+ randomIdNumber).onchange = function (e) {
-    var image = document.getElementById('image-upload-'+ randomIdNumber).files;
+  document.getElementById('image-upload-' + randomIdNumber).click();
+  document.getElementById('image-upload-' + randomIdNumber).onchange = function (e) {
+    var image = document.getElementById('image-upload-' + randomIdNumber).files;
     if (image.length > 0) {
       document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#888888';
       document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Uploading...";
       document.getElementById("image-upload-submit-" + randomIdNumber).value = "uploading";
-      setTimeout(function(){
-        document.getElementById("image-upload-submit-" + randomIdNumber).click(function(){});
-      },50)
+      setTimeout(function () {
+        document.getElementById("image-upload-submit-" + randomIdNumber).click(function () { });
+      }, 50)
     }
   }
 
