@@ -202,11 +202,11 @@ export default class ArticleForm extends Component {
   };
 
   toggleEdit = () => {
-    if (this.state.edited) return
+    if (this.state.edited) return;
     this.setState({
-      edited: true
-    })
-  }
+      edited: true,
+    });
+  };
 
   render() {
     // cover image url should asking for url OR providing option to upload an image
@@ -321,7 +321,11 @@ export default class ArticleForm extends Component {
       );
     }
     return (
-      <form className="articleform__form" onSubmit={this.onSubmit} onInput={this.toggleEdit}>
+      <form
+        className="articleform__form"
+        onSubmit={this.onSubmit}
+        onInput={this.toggleEdit}
+      >
         {editorView}
         <PublishToggle
           published={published}
