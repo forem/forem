@@ -52,26 +52,32 @@ export default class ArticleForm extends Component {
       organization,
       postUnderOrg: !!article.organization_id,
       errors: null,
+      edited: false,
     };
   }
 
   componentDidMount() {
     initEditorResize();
 
-    window.addEventListener('beforeunload', this.sessionStoreContent);
-
     const previousContent = JSON.parse(
       sessionStorage.getItem(window.location.href),
     );
 
-    if (previousContent) {
+    if (
+      previousContent &&
+      this.state.bodyMarkdown !== previousContent.bodyMarkdown
+    ) {
       this.setState({
         title: previousContent.title || '',
         tagList: previousContent.tagList || '',
         mainImage: previousContent.mainImage || null,
         bodyMarkdown: previousContent.bodyMarkdown || '',
+        edited: true,
       });
     }
+
+    window.addEventListener('beforeunload', this.sessionStoreContent);
+
     // const editor = document.getElementById('article_body_markdown');
     // const myCodeMirror = CodeMirror(editor, {
     //   mode: 'markdown',
@@ -195,6 +201,13 @@ export default class ArticleForm extends Component {
     });
   };
 
+  toggleEdit = () => {
+    if (this.state.edited) return
+    this.setState({
+      edited: true
+    })
+  }
+
   render() {
     // cover image url should asking for url OR providing option to upload an image
     const {
@@ -219,8 +232,8 @@ export default class ArticleForm extends Component {
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
-        ''
-      );
+      ''
+    );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -228,8 +241,8 @@ export default class ArticleForm extends Component {
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
     ) : (
-        ''
-      );
+      ''
+    );
     const moreConfig = moreConfigShowing ? (
       <MoreConfig
         onExit={this.toggleMoreConfig}
@@ -238,8 +251,8 @@ export default class ArticleForm extends Component {
         onConfigChange={this.handleConfigChange}
       />
     ) : (
-        ''
-      );
+      ''
+    );
     const orgArea = organization ? (
       <OrgSettings
         organization={organization}
@@ -247,8 +260,8 @@ export default class ArticleForm extends Component {
         onToggle={this.toggleOrgPosting}
       />
     ) : (
-        ''
-      );
+      ''
+    );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
@@ -279,9 +292,7 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} />
-              {' '}
-              IMAGES
+              <img src={ImageUploadIcon} /> IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -298,9 +309,7 @@ export default class ArticleForm extends Component {
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} />
-            {' '}
-            IMAGES
+            <img src={ImageUploadIcon} /> IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
@@ -312,7 +321,7 @@ export default class ArticleForm extends Component {
       );
     }
     return (
-      <form className="articleform__form" onSubmit={this.onSubmit}>
+      <form className="articleform__form" onSubmit={this.onSubmit} onInput={this.toggleEdit}>
         {editorView}
         <PublishToggle
           published={published}
@@ -322,6 +331,7 @@ export default class ArticleForm extends Component {
           onPublish={this.onPublish}
           onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
+          edited={this.state.edited}
           onChange={linkState(this, 'published')}
         />
         {notice}

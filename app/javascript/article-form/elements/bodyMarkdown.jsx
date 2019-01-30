@@ -8,7 +8,7 @@ const BodyMarkdown = ({ onChange, onKeyUp, defaultValue }) => (
     id="article_body_markdown"
     placeholder="Body"
     value={defaultValue}
-    onChange={onChange}
+    onInput={onChange}
     name="body_markdown"
   />
 );
