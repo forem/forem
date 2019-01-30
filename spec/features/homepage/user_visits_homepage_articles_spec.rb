@@ -13,7 +13,7 @@ describe "User visits a homepage", type: :feature do
       expect(page).to have_selector(".big-article", visible: true)
     end
 
-    it "shows correct articles", js: true do
+    it "shows correct articles" do
       article.update_column(:score, 15)
       article2.update_column(:score, 15)
       expect(page).to have_selector(".single-article", count: 2)
