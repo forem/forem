@@ -22,7 +22,7 @@ module Moderator
         new_name = "spam_#{rand(10000)}"
         new_username = "spam_#{rand(10000)}"
       end
-      user.update_columns(name: new_name, username: new_username, old_username: user.name)
+      user.update_columns(name: new_name, username: new_username, old_username: user.username)
       CacheBuster.new.bust("/#{user.old_username}")
     end
 
