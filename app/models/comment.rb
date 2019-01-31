@@ -25,12 +25,12 @@ class Comment < ApplicationRecord
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
-  before_save    :set_markdown_character_count
+  before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
-  before_validation :evaluate_markdown
-  validate :permissions
+  before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
+  validate :permissions, if: :commentable
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
