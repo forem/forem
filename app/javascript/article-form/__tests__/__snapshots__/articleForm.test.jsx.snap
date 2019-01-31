@@ -3,6 +3,7 @@
 exports[`<ArticleForm /> renders properly 1`] = `
 <form
   class="articleform__form"
+  onInput={[Function]}
 >
   <div>
     <input
@@ -55,6 +56,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       id="article_body_markdown"
       name="body_markdown"
       onChange={[Function]}
+      onInput={[Function]}
       placeholder="Body"
       ref={[Function]}
       style={
@@ -100,14 +102,30 @@ exports[`<ArticleForm /> renders properly 1`] = `
     <button
       onClick={[Function]}
     >
-      SAVE DRAFT
+      CLEAR CHANGES
     </button>
     <button
-      class="articleform__buttons--publish"
       onClick={[Function]}
     >
-      PUBLISH
+      SAVE DRAFT
     </button>
+    <span>
+      <p
+        style={
+          Object {
+            "visibility": "hidden",
+          }
+        }
+      >
+        New Changes
+      </p>
+      <button
+        class="articleform__buttons--publish"
+        onClick={[Function]}
+      >
+        PUBLISH
+      </button>
+    </span>
   </div>
 </form>
 `;
