@@ -34,7 +34,8 @@ RSpec.describe Comment, type: :model do
   end
 
   it "gets proper generated ID code" do
-    expect(Comment.new(id: 1).id_code_generated).to eq(comment.id.to_s(26))
+    comment = Comment.new(id: 1)
+    expect(comment.id_code_generated).to eq(comment.id.to_s(26))
   end
 
   xit "generates character count before saving" do
