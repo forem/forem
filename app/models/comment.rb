@@ -174,22 +174,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def sharemeow_link
-    user_image = ProfileImage.new(user)
-    user_image_link = Rails.env.production? ? user_image.get_link : user_image.get_external_link
-    ShareMeowClient.image_url(
-      template: "DevComment",
-      options: {
-        content: body_markdown || processed_html,
-        name: user.name,
-        subject_name: commentable.title,
-        user_image_link: user_image_link,
-        background_color: user.bg_color_hex,
-        text_color: user.text_color_hex
-      },
-    )
-  end
-
   def self.comment_async_bust(commentable, username)
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!

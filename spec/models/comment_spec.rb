@@ -1,11 +1,10 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
   let(:user)                  { create(:user) }
   let(:user2)                 { create(:user) }
   let(:article)               { create(:article, user_id: user.id, published: true) }
-  let(:article_with_video)    { create(:article, :video, user_id: user.id, published: true) } # :video is a trait, see articles.rb
+  let(:article_with_video)    { create(:article, :video, user_id: user.id, published: true) }
   let(:comment)               { create(:comment, user_id: user2.id, commentable_id: article.id) }
   let(:video_comment)         { create(:comment, user_id: user2.id, commentable_id: article_with_video.id) }
   let(:comment_2)             { create(:comment, user_id: user2.id, commentable_id: article.id) }
@@ -13,19 +12,38 @@ RSpec.describe Comment, type: :model do
     build(:comment, user_id: user.id, commentable_id: article.id, parent_id: comment.id)
   end
 
-  before { Notification.send_new_comment_notifications(comment) }
+  describe "validations" do
+    subject { Comment.new(commentable: article) }
+
+    let(:article) { Article.new }
+
+    before do
+      allow(article).to receive(:touch).and_return(true)
+    end
+
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:commentable) }
+    it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to validate_presence_of(:commentable_id) }
+    it { is_expected.to validate_presence_of(:body_markdown) }
+    it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id, :ancestry, :commentable_id, :commentable_type) }
+    it { is_expected.to validate_length_of(:body_markdown).is_at_least(1).is_at_most(25000) }
+  end
 
   it "gets proper generated ID code" do
+    comment = Comment.new
+    comment.id = 1
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
   end
 
-  it "generates character count before saving" do
+  xit "generates character count before saving" do
     expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
   end
 
   context "when comment is already posted" do
     before do
-      Notification.send_new_comment_notifications(comment_2)
+      # Notification.send_new_comment_notifications(comment_2)
       comment_2.update(ancestry: comment.ancestry,
                        body_markdown: comment.body_markdown,
                        commentable_type: comment.commentable_type,
@@ -55,7 +73,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "adds timestamp url if commentable has video and timestamp" do
-    Notification.send_new_comment_notifications(video_comment)
+    # Notification.send_new_comment_notifications(video_comment)
     video_comment.body_markdown = "I like the part at 4:30"
     video_comment.save
     expect(video_comment.processed_html.include?(">4:30</a>")).to eq(true)
@@ -197,13 +215,4 @@ RSpec.describe Comment, type: :model do
       expect(comment).not_to be_valid
     end
   end
-
-  describe "#sharemeow_link" do
-    it "uses ShareMeowClient" do
-      allow(ShareMeowClient).to receive(:image_url).and_return("www.test.com")
-      comment.sharemeow_link
-      expect(ShareMeowClient).to have_received(:image_url)
-    end
-  end
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
