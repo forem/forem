@@ -145,7 +145,7 @@ group :test do
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
-  gem "shoulda-matchers", "~> 3.1", require: false
+  gem "shoulda-matchers", "4.0.0.rc1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby
