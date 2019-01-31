@@ -23,7 +23,7 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
 
-    const article = JSON.parse(this.props.article);
+    this.article = JSON.parse(this.props.article);
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
       : null;
@@ -31,26 +31,26 @@ export default class ArticleForm extends Component {
     this.url = window.location.href;
 
     this.state = {
-      id: article.id || null,
-      title: article.title || '',
-      tagList: article.cached_tag_list || '',
+      id: this.article.id || null,
+      title: this.article.title || '',
+      tagList: this.article.cached_tag_list || '',
       description: '',
-      canonicalUrl: article.canonical_url || '',
-      series: article.series || '',
-      allSeries: article.all_series || [],
-      bodyMarkdown: article.body_markdown || '',
-      published: article.published || false,
+      canonicalUrl: this.article.canonical_url || '',
+      series: this.article.series || '',
+      allSeries: this.article.all_series || [],
+      bodyMarkdown: this.article.body_markdown || '',
+      published: this.article.published || false,
       previewShowing: false,
       helpShowing: false,
       previewHTML: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: article.id != null,
+      editing: this.article.id != null,
       imageManagementShowing: false,
       moreConfigShowing: false,
-      mainImage: article.main_image || null,
+      mainImage: this.article.main_image || null,
       organization,
-      postUnderOrg: !!article.organization_id,
+      postUnderOrg: !!this.article.organization_id,
       errors: null,
       edited: false,
     };
@@ -191,6 +191,32 @@ export default class ArticleForm extends Component {
     const state = this.state;
     state.published = false;
     submitArticle(state, this.handleArticleError);
+  };
+
+  onClearChanges = e => {
+    e.preventDefault();
+    confirm('Are you sure you want to revert to the previous save?')
+    this.setState({
+      title: this.article.title || '',
+      tagList: this.article.cached_tag_list || '',
+      description: '',
+      canonicalUrl: this.article.canonical_url || '',
+      series: this.article.series || '',
+      allSeries: this.article.all_series || [],
+      bodyMarkdown: this.article.body_markdown || '',
+      published: this.article.published || false,
+      previewShowing: false,
+      helpShowing: false,
+      previewHTML: '',
+      helpHTML: document.getElementById('editor-help-guide').innerHTML,
+      submitting: false,
+      editing: this.article.id != null,
+      imageManagementShowing: false,
+      moreConfigShowing: false,
+      mainImage: this.article.main_image || null,
+      errors: null,
+      edited: false,
+    });
   };
 
   handleArticleError = response => {
@@ -335,6 +361,7 @@ export default class ArticleForm extends Component {
           onPublish={this.onPublish}
           onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
+          onClearChanges={this.onClearChanges}
           edited={this.state.edited}
           onChange={linkState(this, 'published')}
         />

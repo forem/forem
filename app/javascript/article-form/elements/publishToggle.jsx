@@ -10,6 +10,7 @@ const PublishToggle = ({
   published,
   helpShowing,
   edited,
+  onClearChanges
 }) => (
   <div className="articleform__buttons">
     <button
@@ -28,7 +29,7 @@ const PublishToggle = ({
     >
       PREVIEW
     </button>
-    <button>CLEAR CHANGES</button>
+    <button onClick={onClearChanges}>CLEAR CHANGES</button>
     {published ? '' : <button onClick={onSaveDraft}>SAVE DRAFT</button>}
     <span>
       <p style={!edited && { visibility: 'hidden' }}>New Changes</p>
