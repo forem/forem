@@ -22,9 +22,8 @@ module Moderator
         new_name = "spam_#{rand(10000)}"
         new_username = "spam_#{rand(10000)}"
       end
-      user.update_columns(name: new_name, username: new_username)
+      user.update_columns(name: new_name, username: new_username, old_username: user.name)
       CacheBuster.new.bust("/#{user.old_username}")
-      user.update_columns(old_username: nil)
     end
 
     def remove_profile_info
