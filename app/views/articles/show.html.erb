@@ -234,6 +234,7 @@
   <script async defer src="//platform.instagram.com/en_US/embeds.js"></script>
 <% end %>
 
+
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%= TweetTag.script.html_safe %>
@@ -243,3 +244,5 @@
     <%= RunkitTag.script.html_safe %>
   </script>
 <% end %>
+
+<%= javascript_pack_tag "webShare", defer: true %>
