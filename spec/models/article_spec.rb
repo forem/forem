@@ -19,8 +19,8 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
   it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(86) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:organization) }
-  it { is_expected.to belong_to(:collection) }
+  it { is_expected.to belong_to(:organization).optional }
+  it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
