@@ -26,46 +26,23 @@ RSpec.describe Comment, type: :model do
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
     it { is_expected.to validate_presence_of(:commentable_id) }
+
     it { is_expected.to validate_presence_of(:body_markdown) }
     it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id, :ancestry, :commentable_id, :commentable_type) }
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(1).is_at_most(25000) }
+    it { is_expected.to validate_inclusion_of(:commentable_type).in_array(%w(Article PodcastEpisode)) }
   end
 
   it "gets proper generated ID code" do
-    comment = Comment.new
-    comment.id = 1
-    expect(comment.id_code_generated).to eq(comment.id.to_s(26))
+    expect(Comment.new(id: 1).id_code_generated).to eq(comment.id.to_s(26))
   end
 
   xit "generates character count before saving" do
     expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
   end
 
-  context "when comment is already posted" do
-    before do
-      # Notification.send_new_comment_notifications(comment_2)
-      comment_2.update(ancestry: comment.ancestry,
-                       body_markdown: comment.body_markdown,
-                       commentable_type: comment.commentable_type,
-                       commentable_id: comment.commentable_id)
-    end
-
-    it "does not allow for double posts" do
-      expect(comment_2).not_to be_valid
-    end
-
-    it "does allow for double posts if body is not the same" do
-      comment_2.update(body_markdown: comment.body_markdown + " hey hey")
-      expect(comment_2).to be_valid
-    end
-  end
-
   describe "#processed_html" do
-    let(:comment) do
-      create(:comment,
-              commentable_id: article.id,
-              body_markdown: "# hello\n\nhy hey hey")
-    end
+    let(:comment) { create(:comment, commentable: article, body_markdown: "# hello\n\nhy hey hey") }
 
     it "converts body_markdown to proper processed_html" do
       expect(comment.processed_html.include?("<h1>")).to eq(true)
@@ -73,7 +50,6 @@ RSpec.describe Comment, type: :model do
   end
 
   it "adds timestamp url if commentable has video and timestamp" do
-    # Notification.send_new_comment_notifications(video_comment)
     video_comment.body_markdown = "I like the part at 4:30"
     video_comment.save
     expect(video_comment.processed_html.include?(">4:30</a>")).to eq(true)
