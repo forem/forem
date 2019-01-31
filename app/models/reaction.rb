@@ -18,7 +18,7 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_save :update_reactable, :touch_user, :async_bust
-  before_destroy :update_reactable_without_delay, :clean_up_before_destroy
+  before_destroy :update_reactable_without_delay
 
   class << self
     def count_for_article(id)
@@ -49,28 +49,23 @@ class Reaction < ApplicationRecord
   private
 
   def update_reactable
+    cache_buster = CacheBuster.new
+    cache_buster.bust user.path
+
     if reactable_type == "Article"
-      update_article
+      cache_buster.bust "/reactions?article_id=#{reactable_id}"
+      update_article unless destroyed_by_association
     elsif reactable_type == "Comment" && reactable
-      update_comment
+      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+      reactable.save unless destroyed_by_association
     end
-    occasionally_sync_reaction_counts
+    occasionally_sync_reaction_counts unless destroyed_by_association
   end
   handle_asynchronously :update_reactable
 
   def update_article
-    cache_buster = CacheBuster.new
     reactable.async_score_calc
     reactable.index!
-    cache_buster.bust "/reactions?article_id=#{reactable_id}"
-    cache_buster.bust user.path
-  end
-
-  def update_comment
-    cache_buster = CacheBuster.new
-    reactable.save unless destroyed_by_association
-    cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
-    cache_buster.bust user.path
   end
 
   def touch_user
@@ -90,10 +85,6 @@ class Reaction < ApplicationRecord
     end
   end
   handle_asynchronously :async_bust
-
-  def clean_up_before_destroy
-    reactable.index! if reactable_type == "Article"
-  end
 
   BASE_POINTS = {
     "vomit" => -50.0,

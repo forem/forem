@@ -432,12 +432,16 @@ RSpec.describe Article, type: :model do
 
       it "updates the hotness score" do
         run_background_jobs_immediately { article.save }
+        article.reload
         expect(article.hotness_score > 0).to eq(true)
       end
 
       it "updates the spaminess score" do
         article.spaminess_rating = -1
         run_background_jobs_immediately { article.save }
+        article.update_column(:spaminess_rating, -1)
+        article.save
+        article.reload
         expect(article.spaminess_rating).to eq(0)
       end
     end
