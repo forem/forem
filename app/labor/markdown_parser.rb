@@ -24,6 +24,7 @@ class MarkdownParser
     html = wrap_all_images_in_links(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
+    html = EmojiConverter.call(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -119,10 +120,12 @@ class MarkdownParser
   end
 
   def escape_liquid_tags_in_codeblock(content)
-    # Escape BOTH codeblock and inline code
-    content.gsub(/`{3}.*?`{3}|`{1}.+?`{1}/m) do |codeblock|
-      if codeblock.include?("```")
+    # Escape codeblocks, code spans, and inline code
+    content.gsub(/`{3}.*?`{3}|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+      if codeblock[0..2] == "```"
         "\n{% raw %}\n" + codeblock + "\n{% endraw %}\n"
+      elsif codeblock[0..1] == "``"
+        "{% raw %}" + codeblock + "{% endraw %}"
       else
         "{% raw %}" + codeblock + "{% endraw %}"
       end

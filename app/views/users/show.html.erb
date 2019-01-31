@@ -115,8 +115,8 @@
     <div class="substories" id="substories">
       <% if params[:view] == "comments" %>
         <%= render "users/comments_section" %>
-      <% elsif (@stories && @stories.any?) || (@comments && @comments.any?) %>
-        <%= render "stories/main_stories_feed" %>
+      <% elsif @stories.any? || @comments.any? %>
+        <%= render "users/main_feed" %>
       <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">

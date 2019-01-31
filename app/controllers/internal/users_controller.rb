@@ -4,12 +4,21 @@ class Internal::UsersController < Internal::ApplicationController
   def index
     @users = case params[:state]
              when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(20)
+               User.where(offering_mentorship: true).page(params[:page]).per(50)
              when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(20)
+               User.where(seeking_mentorship: true).page(params[:page]).per(50)
+             when /role\-/
+               User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
              else
-               User.order("created_at DESC").page(params[:page]).per(20)
+               User.order("created_at DESC").page(params[:page]).per(50)
              end
+    if params[:search].present?
+      @users = @users.where('users.name ILIKE :search OR
+        users.username ILIKE :search OR
+        users.github_username ILIKE :search OR
+        users.email ILIKE :search OR
+        users.twitter_username ILIKE :search', search: "%#{params[:search].strip}%")
+    end
   end
 
   def edit
@@ -32,7 +41,7 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentor = user_params[:add_mentor]
     ban_from_mentorship
     make_matches
-    warn_or_ban_user
+    update_role
     add_note
     @user.update!(user_params)
     if user_params[:quick_match]
@@ -42,17 +51,26 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def warn_or_ban_user
-    if user_params[:ban_user] == "1"
-      @user.add_role :banned
-      create_note("banned", user_params[:note_for_current_role])
-    elsif user_params[:warn_user] == "1"
-      @user.add_role :warned
-      create_note("warned", user_params[:note_for_current_role])
-    elsif user_params[:good_standing_user] == "1"
-      @user.remove_role :warned
-      create_note("good_standing", user_params[:note_for_current_role])
-    end
+  def update_role
+    ban_user if user_params[:ban_user] == "1"
+    warn_user if user_params[:warn_user] == "1"
+    return_to_good_standing if user_params[:good_standing_user] == "1"
+  end
+
+  def return_to_good_standing
+    @user.remove_role :banned if @user.banned
+    @user.remove_role :warned if @user.warned
+    create_note("good_standing", user_params[:note_for_current_role])
+  end
+
+  def ban_user
+    @user.add_role :banned
+    create_note("banned", user_params[:note_for_current_role])
+  end
+
+  def warn_user
+    @user.add_role :warned
+    create_note("warned", user_params[:note_for_current_role])
   end
 
   def add_note
@@ -97,6 +115,7 @@ class Internal::UsersController < Internal::ApplicationController
     mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
     deactivate_mentorship(mentee_relationships)
     deactivate_mentorship(mentor_relationships)
+    @user.update(offering_mentorship: false, seeking_mentorship: false)
     create_note("banned_from_mentorship", user_params[:note_for_mentorship_ban])
   end
 
@@ -109,11 +128,22 @@ class Internal::UsersController < Internal::ApplicationController
   def banish
     @user = User.find(params[:id])
     begin
-      Moderator::Banisher.call(admin: current_user, offender: @user)
+      Moderator::Banisher.call_banish(admin: current_user, offender: @user)
     rescue StandardError => e
       flash[:error] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def full_delete
+    @user = User.find(params[:id])
+    begin
+      Moderator::Banisher.call_delete_activity(admin: current_user, offender: @user)
+      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users"
   end
 
   private

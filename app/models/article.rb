@@ -494,8 +494,6 @@ class Article < ApplicationRecord
   def set_published_date
     if published && published_at.blank?
       self.published_at = Time.current
-      user.delay.resave_articles # tack-on functionality HACK
-      organization&.delay&.resave_articles # tack-on functionality HACK
     end
   end
 
@@ -510,6 +508,8 @@ class Article < ApplicationRecord
   def set_last_comment_at
     if published_at.present? && last_comment_at == "Sun, 01 Jan 2017 05:00:00 UTC +00:00"
       self.last_comment_at = published_at
+      user.touch(:last_article_at)
+      organization&.touch(:last_article_at)
     end
   end
 
