@@ -222,7 +222,7 @@ function handleCommentSubmit(event) {
             mainCommentsForm.classList.remove("submitting");
             const textArea = document.getElementById("text-area");
             textArea.classList = "";
-            textArea.value = newComment.comment_template;
+            textArea.value = newComment.comment_template || "";
             var preview = document.getElementById("preview-div");
             preview.classList.add("preview-toggle");
             preview.innerHTML = "";
