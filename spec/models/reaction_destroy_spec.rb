@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Reaction, type: :model do
   let(:article) { create(:article, featured: true) }
-  let(:reaction) { build(:reaction, reactable: article) }
+  let!(:reaction) { build(:reaction, reactable: article) }
 
   before do
     Delayed::Worker.delay_jobs = true

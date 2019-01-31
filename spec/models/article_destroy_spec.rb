@@ -15,9 +15,8 @@ RSpec.describe Article, type: :model do
     before { create(:reaction, reactable: article) }
 
     it "doesn't create ScoreCalcJob on destroy" do
-      expect do
-        article.destroy
-      end.not_to change(Delayed::Job.where(queue: "articles_score_calc"), :count)
+      allow(Articles::ScoreCalcJob).to receive(:perform_later)
+      expect(Articles::ScoreCalcJob).not_to have_received(:perform_later)
     end
   end
 
@@ -27,6 +26,7 @@ RSpec.describe Article, type: :model do
     let!(:another_article) { create(:article, organization: organization) }
 
     it "creates Articles::ResaveJob for organization articles on destroy" do
+      allow(Articles::ResaveJob).to receive(:perform_later)
       article.destroy
       expect(Articles::ResaveJob).to have_received(:perform_later).with([another_article.id])
     end
