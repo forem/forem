@@ -90,12 +90,11 @@ module Moderator
 
     def banish
       user.unsubscribe_from_newsletters
-      reassign_and_bust_username
       remove_profile_info
       add_banned_role
       delete_user_activity
       user.remove_from_algolia_index
-      user.save!
+      reassign_and_bust_username
     end
   end
 end
