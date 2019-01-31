@@ -177,25 +177,23 @@ export default class ArticleForm extends Component {
 
   onPublish = e => {
     e.preventDefault();
-    this.removeSessionStorage();
     this.setState({ submitting: true, published: true });
     const state = this.state;
     state.published = true;
-    submitArticle(state, this.handleArticleError);
+    submitArticle(state, this.removeSessionStorage, this.handleArticleError);
   };
 
   onSaveDraft = e => {
     e.preventDefault();
-    this.removeSessionStorage();
     this.setState({ submitting: true, published: false });
     const state = this.state;
     state.published = false;
-    submitArticle(state, this.handleArticleError);
+    submitArticle(state, this.removeSessionStorage, this.handleArticleError);
   };
 
   onClearChanges = e => {
     e.preventDefault();
-    confirm('Are you sure you want to revert to the previous save?')
+    confirm('Are you sure you want to revert to the previous save?');
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',

@@ -10,7 +10,7 @@ const PublishToggle = ({
   published,
   helpShowing,
   edited,
-  onClearChanges
+  onClearChanges,
 }) => (
   <div className="articleform__buttons">
     <button
