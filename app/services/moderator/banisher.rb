@@ -22,7 +22,7 @@ module Moderator
         new_name = "spam_#{rand(10000)}"
         new_username = "spam_#{rand(10000)}"
       end
-      user.update_columns(name: new_name, username: new_username, old_username: user.name)
+      user.update_columns(name: new_name, username: new_username, old_username: user.username)
       CacheBuster.new.bust("/#{user.old_username}")
     end
 
@@ -90,12 +90,11 @@ module Moderator
 
     def banish
       user.unsubscribe_from_newsletters
-      reassign_and_bust_username
       remove_profile_info
       add_banned_role
       delete_user_activity
       user.remove_from_algolia_index
-      user.save!
+      reassign_and_bust_username
     end
   end
 end
