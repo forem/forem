@@ -1,8 +1,8 @@
 import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
-import ArticleForm from '../articleForm';
 import { JSDOM } from 'jsdom';
+import ArticleForm from '../articleForm';
 import algoliasearch from '../elements/__mocks__/algoliasearch';
 
 describe('<ArticleForm />', () => {
