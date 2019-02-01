@@ -287,7 +287,7 @@ class User < ApplicationRecord
   end
 
   def banished?
-    return true if user.notes.where(reason: "banned", content: "spam account").any? && user.banned
+    user.notes.where(reason: "banned", content: "spam account").any? && user.banned
   end
 
   def banned_from_mentorship
