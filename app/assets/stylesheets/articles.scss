@@ -791,6 +791,7 @@
           width:100%;
           line-height:20px;
           color: $black;
+          color: var(--theme-container-color, $black);
           &:hover{
             opacity:0.9;
           }
@@ -962,6 +963,7 @@
       background: var(--theme-container-background,	#fff);
       display:block;
       color: $black;
+      color: var(--theme-container-color, $black);
       border-radius:3px;
       border: 1px solid $outline-color;
       border: var(--theme-container-border, 1px solid $outline-color);
@@ -1047,6 +1049,7 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         a{
           color: $black;
+          color: var(--theme-container-color, $black);
           h4{
             display: inline-block;
             margin: 0;
