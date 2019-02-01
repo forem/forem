@@ -190,6 +190,7 @@
     }
     a{
       color:$black;
+      color: var(--theme-container-color, $black);
     }
     a.small-pic-link-wrapper,.placeholder-div{
       display:block;
@@ -459,6 +460,7 @@
           background:white;
           background: var(--theme-container-background,	#fff);
           color:$black;
+          color: var(--theme-container-color, $black);
           position:relative;
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
@@ -1304,6 +1306,7 @@
       padding-left:20px;
       a{
         color:$black;
+        color: var(--theme-container-color, $black);
         font-weight:500;
         line-height:1em;
         // display:inline-block;
