@@ -32,11 +32,28 @@ describe('<ArticleForm />', () => {
     global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
     global.window.algoliasearch = algoliasearch;
+
+    sessionStorage.clear();
+    sessionStorage.__STORE__ = {};
   });
 
   it('renders properly', () => {
     const tree = render(getArticleForm());
     expect(tree).toMatchSnapshot();
+  });
+
+  it('initally loads blank', () => {
+    const form = shallow(getArticleForm());
+    expect(form.state().bodyMarkdown).toBe('');
+  });
+
+  it('loads text from sessionstorage when available', () => {
+    sessionStorage.setItem(
+      'http://localhost/',
+      JSON.stringify({ bodyMarkdown: 'hello, world' }),
+    );
+    const form = shallow(getArticleForm());
+    expect(form.state().bodyMarkdown).toBe('hello, world');
   });
 });
 
