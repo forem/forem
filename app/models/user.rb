@@ -298,6 +298,10 @@ class User < ApplicationRecord
     has_role?(:super_admin)
   end
 
+  def any_admin?
+    has_role?(:super_admin) || has_role?(:admin)
+  end
+
   def trusted
     Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
