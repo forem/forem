@@ -1,6 +1,6 @@
 # rubocop:disable LineLength
 source "https://rubygems.org"
-ruby "2.6.0"
+ruby "2.6.1"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
