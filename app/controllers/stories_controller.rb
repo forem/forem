@@ -263,6 +263,7 @@ class StoriesController < ApplicationController
       limited_column_select.
       page(@page).
       per(num_articles)
-    articles.tagged_with(params[:tag]) if params[:tag].present?
+    articles = articles.tagged_with(params[:tag]) if params[:tag].present?
+    articles
   end
 end
