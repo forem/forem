@@ -1076,6 +1076,7 @@
         font-size:0.9em;
         line-height: 1.2em;
         padding-bottom:5px;
+        overflow-wrap: break-word;
         &.body-scrollable{
           height: calc(100vh - 300px);
           max-height: 390px;
