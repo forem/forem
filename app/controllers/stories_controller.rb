@@ -119,15 +119,6 @@ class StoriesController < ApplicationController
         @stories = @stories.offset(offset)
       end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
-      if user_signed_in?
-        @new_stories = Article.where("published_at > ? AND score > ?", rand(2..6).hours.ago, -30).
-          where(published: true).
-          includes(:user).
-          limit(rand(15..60)).
-          order("published_at DESC").
-          limited_column_select.
-          decorate
-      end
     end
     @stories = @stories.decorate
     assign_podcasts
@@ -267,11 +258,11 @@ class StoriesController < ApplicationController
   end
 
   def article_finder(num_articles)
-    Article.where(published: true).
+    articles = Article.where(published: true).
       includes(:user).
       limited_column_select.
       page(@page).
-      per(num_articles).
-      filter_excluded_tags(params[:tag])
+      per(num_articles)
+    articles.tagged_with(params[:tag]) if params[:tag].present?
   end
 end
