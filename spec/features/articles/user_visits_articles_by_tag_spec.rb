@@ -54,7 +54,7 @@ describe "User visits articles by tag", type: :feature do
 
     context "when more articles" do
       before do
-        create_list(:article, 3, tag_list: "javascript", user: author, published_at: Time.now)
+        create_list(:article, 3, tags: "javascript", user: author, published_at: Time.now)
         visit "/t/javascript"
       end
 

@@ -60,7 +60,7 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
-  scope :cached_tagged_with, -> (tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$") }
+  scope :cached_tagged_with, -> (tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :active_help, -> {
                         where(published: true).
