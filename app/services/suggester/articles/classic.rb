@@ -22,7 +22,7 @@ module Suggester
         tag_name = tag_names.sample
         Rails.cache.
           fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
-          Article.tagged_with(tag_name).
+          Article.cached_tagged_with(tag_name).
             includes(:user).
             limited_column_select.
             where(published: true, featured: true).
