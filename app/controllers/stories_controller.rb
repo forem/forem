@@ -264,7 +264,7 @@ class StoriesController < ApplicationController
       limited_column_select.
       page(@page).
       per(num_articles)
-    articles = articles.where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$") if tag.present? # More efficient than tagged_with
+    articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
     articles
   end
 end
