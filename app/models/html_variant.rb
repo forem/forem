@@ -1,7 +1,7 @@
 class HtmlVariant < ApplicationRecord
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :group, inclusion: { in: %w(article_show_sidebar_cta) }
+  validates :group, inclusion: { in: %w(article_show_sidebar_cta article_show_below_article_cta) }
   validates :success_rate, presence: true
   validate  :no_edits
   belongs_to :user, optional: true
@@ -14,27 +14,27 @@ class HtmlVariant < ApplicationRecord
     save!
   end
 
-  def self.find_for_test(tags = [])
+  def self.find_for_test(tags = [], group = "article_show_sidebar_cta")
     tags_array = tags + ["", nil]
     if rand(10) == 1 # 10% return completely random
-      find_random_for_test(tags_array)
+      find_random_for_test(tags_array, group)
     else # 90% chance return one in top 10
-      find_top_for_test(tags_array)
+      find_top_for_test(tags_array, group)
     end
   end
 
-  def self.find_top_for_test(tags_array)
-    where(group: "article_show_sidebar_cta", approved: true, published: true, target_tag: tags_array).order("success_rate DESC").limit(rand(1..15)).sample
+  def self.find_top_for_test(tags_array, group)
+    where(group: group, approved: true, published: true, target_tag: tags_array).order("success_rate DESC").limit(rand(1..15)).sample
   end
 
-  def self.find_random_for_test(tags_array)
-    where(group: "article_show_sidebar_cta", approved: true, published: true, target_tag: tags_array).order("RANDOM()").first
+  def self.find_random_for_test(tags_array, group)
+    where(group: group, approved: true, published: true, target_tag: tags_array).order("RANDOM()").first
   end
 
   private
 
   def no_edits
-    if (approved && html_changed? || name_changed? || group_changed?) && persisted?
+    if (approved && (html_changed? || name_changed? || group_changed?)) && persisted?
       errors.add(:base, "cannot change once published and approved")
     end
   end

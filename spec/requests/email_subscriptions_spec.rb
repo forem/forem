@@ -1,7 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "EmailSubscriptions", type: :request do
-  let(:user) { create(:user) }
+  let(:user) { build(:user) }
+
+  before do
+    allow(User).to receive(:find).and_return(user)
+  end
 
   def generate_token(user_id)
     Rails.application.message_verifier(:unsubscribe).generate(

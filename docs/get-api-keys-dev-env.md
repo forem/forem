@@ -4,10 +4,10 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 1. [Sign in](https://github.com/settings/applications/new) in your Github account.
 
-2. Fill in the form with and application name, descriptions and URLs `http://localhost:3000/`. Replace the `3000` port if you run DEV on other port.
+2. Fill in the form with an application name, descriptions and URLs `http://localhost:3000/`. Replace the `3000` port if you run DEV on other port.
    ![github-1](https://user-images.githubusercontent.com/22895284/51085500-877a6c00-173a-11e9-913a-0dccad234cf3.png)
 
-3. You will be redirected in app's **Developer settings**. Here you will find the keys. Change them accordingly (name of Github key -> name of our `ENV` variable):
+3. You will be redirected in the app's **Developer settings**. Here you will find the keys. Change them accordingly (name of Github key -> name of our `ENV` variable):
 
    ```
    Client ID -> GITHUB_KEY
@@ -16,7 +16,7 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
    ![github-2](https://user-images.githubusercontent.com/22895284/51085862-49337b80-173f-11e9-8503-f8251d07f458.png)
 
-4. You will need a persona token as well. From the same dashboard navigate to **Personal access tokens** and generate a new token.
+4. You will need a personal token as well. From the same dashboard, navigate to **Personal access tokens** and generate a new token.
    ![github-3](https://user-images.githubusercontent.com/22895284/51085863-49337b80-173f-11e9-81bf-1c1e38035a7a.png)
 5. Fill in the token description and generate the token.
 
@@ -34,9 +34,9 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 ## Twitter: Sign up
 
-1. [Sign in](https://developer.twitter.com/apps) your Twitter account.
+1. [Sign in](https://developer.twitter.com/apps) to your Twitter account.
 
-2. In order to get the API keys you will have to apply for a developer account. Click on **Apply** buttons.
+2. In order to get the API keys, you will have to apply for a developer account. Click the **Apply** button.
    ![twitter-up-1](https://user-images.githubusercontent.com/22895284/51078779-53139b00-16bb-11e9-911c-f232e229872a.png)
 
 3. Setup your Twitter account. Be sure you have your phone number and email address filled in.
@@ -45,7 +45,7 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 4. Fill in your account information and give a name to your **developer account**.
    ![twitter-up-3](https://user-images.githubusercontent.com/22895284/51078781-53ac3180-16bb-11e9-8cf4-005efbb92d8a.png)
 
-5. Write down the reasons that you want to use Twitter API. Mention DEV community and describe the issues and tests and things that you want you want to work on. Copy it, you might use it later ;)
+5. Write down the reasons that you want to use Twitter API. Mention DEV community and describe the issues and tests and things that you want to work on. Copy it, you might use it later ;)
    ![twitter-up-4](https://user-images.githubusercontent.com/22895284/51078782-53ac3180-16bb-11e9-9937-c888ae40143c.png)
 
 6. Read :) and accept the Terms and Conditions.
@@ -57,9 +57,9 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 ## Twitter: Get API keys
 
-1. [Sign up](#twitter-sign-up) or [sign in](https://developer.twitter.com/apps) in your Twitter developer account.
+1. [Sign up](#twitter-sign-up) or [sign in](https://developer.twitter.com/apps) to your Twitter developer account.
 
-2. From **Apps** dashboard click on **Create and app**.
+2. From **Apps** dashboard, click on **Create and app**.
    ![twitter-1](https://user-images.githubusercontent.com/22895284/51078797-9a019080-16bb-11e9-8130-1cd13008461e.png)
 
 3. Fill in the app name, description and URL `https://dev.to`.
@@ -84,10 +84,10 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 10. From the same dashboard access the **Keys and tokens** and change them accordingly (name of Twitter key -> name of our `ENV` variable):
 
     ```
-    Access Token -> TWITTER_KEY
-    Access Token Secret -> TWITTER_SECRET
-    API key -> TWITTER_ACCESS_TOKEN
-    API secret key -> TWITTER_ACCESS_TOKEN_SECRET
+    API key -> TWITTER_KEY
+    API secret key -> TWITTER_SECRET
+    Access Token -> TWITTER_ACCESS_TOKEN
+    Access Token Secret -> TWITTER_ACCESS_TOKEN_SECRET
     ```
 
     ![twitter-8](https://user-images.githubusercontent.com/22895284/51078804-9a9a2700-16bb-11e9-8b9e-0c882ae47f21.png)
@@ -98,7 +98,7 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 ## Algolia: Sign up
 
-1. Go to Algolia singing up [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
+1. Go to the Algolia sign up [page](https://www.algolia.com/apps/AJVD3Q9KL3/dashboard).
 
 2. Choose one of the three methods of signing up. (email, github or google)
 
@@ -121,9 +121,9 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 ## Algolia: Get API keys
 
-1. [Sign up](#algolia-sign-up) or [Sign in](https://www.algolia.com/users/sign_in) in your Algolia account.
+1. [Sign up](#algolia-sign-up) or [Sign in](https://www.algolia.com/users/sign_in) to your Algolia account.
 
-2. From your **Dashboard** click on **API Keys**.
+2. From your **Dashboard**, click on **API Keys**.
    ![algolia-1](https://user-images.githubusercontent.com/22895284/51078770-2eb7be80-16bb-11e9-9dcc-ed6d9c52d935.png)
 
 3. Change your keys accordingly (name of Algolia key -> name of our `ENV` variable):
@@ -140,7 +140,7 @@ There are a few services you'll need **_(all free)_** in order to run the develo
 
 # Pusher
 
-1. [Sign up](https://dashboard.pusher.com/accounts/sign_up) or [sign in](https://dashboard.pusher.com/) in your Pusher account.
+1. [Sign up](https://dashboard.pusher.com/accounts/sign_up) or [sign in](https://dashboard.pusher.com/) to your Pusher account.
 
 2. Once signed in, fill in the prompt to create a new Pusher Channels app.
    ![pusher-1](https://user-images.githubusercontent.com/22895284/51086056-058e4100-1742-11e9-8dca-de3e47e2bc73.png)

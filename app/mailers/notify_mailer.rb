@@ -103,7 +103,7 @@ class NotifyMailer < ApplicationMailer
     @user = user
     export_filename = "devto-export-#{Date.current.iso8601}.zip"
     attachments[export_filename] = attachment
-    mail(to: @user.email, subject: "The export of your data is ready")
+    mail(to: @user.email, subject: "The export of your content is ready")
   end
 
   def tag_moderator_confirmation_email(user, tag_name)

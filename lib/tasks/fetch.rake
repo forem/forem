@@ -53,7 +53,7 @@ task renew_hired_articles: :environment do
 end
 
 task clear_memory_if_too_high: :environment do
-  if Rails.cache.stats.flatten[1]["bytes"].to_i > 4600000000
+  if Rails.cache.stats.flatten[1]["bytes"].to_i > 9650000000
     Rails.cache.clear
   end
 end
@@ -75,6 +75,7 @@ end
 task award_badges: :environment do
   BadgeRewarder.award_yearly_club_badges
   BadgeRewarder.award_beloved_comment_badges
+  BadgeRewarder.award_streak_badge(4)
 end
 
 # rake award_top_seven_badges["ben jess peter mac liana andy"]

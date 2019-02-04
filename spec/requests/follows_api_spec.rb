@@ -21,5 +21,13 @@ RSpec.describe "FollowsApi", type: :request do
       post "/api/follows", params: { users: users_hash }
       expect(response.body).to include("outcome")
     end
+
+    it "creates follows" do
+      sign_in user
+      run_background_jobs_immediately do
+        post "/api/follows", params: { users: users_hash }
+      end
+      expect(Follow.all.size).to eq(JSON.parse(users_hash).size)
+    end
   end
 end

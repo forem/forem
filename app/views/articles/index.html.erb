@@ -26,14 +26,14 @@
 
 <div class="home" id="index-container"
   data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
-  data-algolia-tag="<%= @user ? "#{@user.class.name.downcase}_#{@user.id}" : nil || @tag %>"
+  data-algolia-tag=""
   data-feed="<%= params[:timeframe] || "base-feed"%>"
   data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
   >
   <%= render "articles/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="on-page-nav-controls" id="on-page-nav-controls">
-      <div class="on-page-nav-label <%= "sub-home-nav" if (@user || @tag || @query)%>">
+      <div class="on-page-nav-label">
         <div class="wide-nav-links">
           <a class="nav-chronofiter-link <%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
             FEED
@@ -133,7 +133,7 @@
       </a>
     <% end %>
     <div class="substories" id="substories">
-      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
+      <% if @stories.any? %>
         <%= render "stories/main_stories_feed" %>
       <% end %>
     </div>
