@@ -29,7 +29,9 @@ const PublishToggle = ({
     >
       PREVIEW
     </button>
-    <button onClick={onClearChanges}>CLEAR CHANGES</button>
+    <button onClick={onClearChanges} className="clear">
+      CLEAR CHANGES
+    </button>
     {published ? '' : <button onClick={onSaveDraft}>SAVE DRAFT</button>}
     <span>
       <p style={!edited && { visibility: 'hidden' }}>New Changes</p>

@@ -55,6 +55,12 @@ describe('<ArticleForm />', () => {
     const form = shallow(getArticleForm());
     expect(form.state().bodyMarkdown).toBe('hello, world');
   });
+
+  it('resets the post on reset press', () => {
+    const form = shallow(getArticleForm());
+    form.find('.clear').simulate('click');
+    expect(form.state().bodyMarkdown).toBe('');
+  });
 });
 
 const getArticleForm = () => (
