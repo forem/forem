@@ -60,9 +60,11 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
+  scope :cached_tagged_with, -> (tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+
   scope :active_help, -> {
                         where(published: true).
-                          tagged_with("help").
+                          cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
                       }
@@ -197,14 +199,12 @@ class Article < ApplicationRecord
                 stories.order("last_comment_at DESC").
                   where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
               end
-
-    stories = stories.tagged_with(tags)
-
+    stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
   def self.active_eli5(time_ago)
-    stories = where(published: true).tagged_with("explainlikeimfive")
+    stories = where(published: true).cached_tagged_with("explainlikeimfive")
 
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").limit(3)

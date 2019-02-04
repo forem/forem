@@ -8,7 +8,11 @@ RSpec.describe Notification, type: :model do
   let(:follow_instance) { user.follow(user2) }
 
   describe "#send_new_follower_notification" do
-    before { Notification.send_new_follower_notification(follow_instance) }
+    before do
+      run_background_jobs_immediately do
+        Notification.send_new_follower_notification(follow_instance)
+      end
+    end
 
     it "creates a notification belonging to the person being followed" do
       expect(Notification.first.user_id).to eq user2.id
