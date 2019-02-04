@@ -9,7 +9,7 @@ const Title = ({ onChange, defaultValue }) => (
     placeholder="Title"
     autocomplete="off"
     value={defaultValue}
-    onChange={onChange}
+    onInput={onChange}
   />
 );
 
