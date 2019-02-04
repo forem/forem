@@ -85,6 +85,7 @@
     box-shadow: $bold-shadow;
     box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     color: $black;
+    color: var(--theme-container-color, $black);
     width: 262px;
     border-radius: 3px;
     &.sticky-join-cta{
