@@ -113,12 +113,12 @@ exports[`<ArticleForm /> renders properly 1`] = `
         }
       >
         New Changes (
-        <span
-          class="clear"
+        <button
+          class="clear-button"
           onClick={[Function]}
         >
           clear
-        </span>
+        </button>
         )
       </p>
       <button

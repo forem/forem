@@ -83,12 +83,11 @@ export default class ArticleForm extends Component {
     // myCodeMirror.setSize('100%', '100%');
   }
 
-  checkContentChanges = previousContent => (
-      this.state.bodyMarkdown !== previousContent.bodyMarkdown ||
-      this.state.title !== previousContent.title ||
-      this.state.mainImage !== previousContent.mainImage ||
-      this.state.tagList !== previousContent.tagList
-    );
+  checkContentChanges = previousContent =>
+    this.state.bodyMarkdown !== previousContent.bodyMarkdown ||
+    this.state.title !== previousContent.title ||
+    this.state.mainImage !== previousContent.mainImage ||
+    this.state.tagList !== previousContent.tagList;
 
   sessionStoreContent = e => {
     sessionStorage.setItem(

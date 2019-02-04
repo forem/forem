@@ -288,17 +288,49 @@
     button {
       margin-top: 0px;
     }
-    span {
-      text-decoration: underline;
-      margin-left: 0px;
-      margin-right: 0px;
+    .clear-button {
+      // in part from https://css-tricks.com/overriding-default-button-styles/
+      display: inline-block;
+      border: none;
+      margin: 0;
+      text-decoration: none;
+      background: none;
+      border: none;
+      box-shadow: none;
+      color: #666;
+      font-family: sans-serif;
+      font-size: 1rem;
       cursor: pointer;
+      text-align: center;
+      transition: background 250ms ease-in-out, transform 150ms ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-decoration: underline;
+      margin: 0px;
+      padding: 0px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-style: italic;
+      display: inline;
+      width: fit-content;
+    }
+    .clear-button:hover {
+      background: none;
+      color: #666;
+    }
+    .clear-button:focus {
+      outline: 1px solid #fff;
+      outline-offset: -4px;
+    }
+
+    .clear-button:active {
+      transform: scale(0.99);
     }
   }
   button,
   a {
-    margin-top: 26.5px;
-    margin-bottom: 26.5px;
+    margin-top: 25px;
+    margin-bottom: 25px;
     cursor: pointer;
     background: $light-gray;
     font-family: $helvetica-condensed;
