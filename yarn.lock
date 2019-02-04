@@ -370,10 +370,10 @@
   resolved "https://registry.yarnpkg.com/@twilio/sip.js/-/sip.js-0.7.7.tgz#cff50f66f9b295d46f219737b72780c7d0e6df52"
   integrity sha1-z/UPZvmyldRvIZc3tyeAx9Dm31I=
 
-"@twilio/webrtc@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.2.0.tgz#3cf70dcdacbaa84ccf018636a7e44aa967354595"
-  integrity sha512-zzoUu7PJyfb73voRiBwTJHBuBqEOCHkImVwprSXn8NA7UGFjHZwL6f+g8nWtEaCvgiFO5Sd8k+Oo1d7f6KomsQ==
+"@twilio/webrtc@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.2.1.tgz#fa950e6f5dd3a0775ff0b6a24d59de8d310bd7a7"
+  integrity sha512-XC949WBoN0PikP808uuWvVve+EsGGtOOhUtzK5jg0/VFLF57uqjVtmeOeuI4fi3miUksrgc97a0mFtNDotrxPA==
 
 "@webscopeio/react-textarea-autocomplete@^2.3.4":
   version "2.3.5"
@@ -10436,13 +10436,13 @@ tweetnacl@^1.0.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
   integrity sha1-cT2LgY2kIGh0C/aDhtBHnmb8ins=
 
-twilio-video@^1.15.0:
-  version "1.15.0"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.0.tgz#c14ef1789b8a1d103d89ca0f123999afccf89c68"
-  integrity sha512-yO1M53hnPOuewm4jNodrLKqvCITDY5bNjI3LAKs+8rNpZ1EcqoPGRZgi+YrFNrO1RwrQbakc1nN/6acZ3qjXww==
+twilio-video@^1.15.1:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.1.tgz#b294f00446fd391087614af71203d4e151490d85"
+  integrity sha512-03zw304yfg3e6i6LIJsHbOQqLtp8rPGyJGfjxA0DGRCIBD4YxYiAwhLporRUh3VDjERw9GsNXsK4yP3GXd7B1A==
   dependencies:
     "@twilio/sip.js" "^0.7.7"
-    "@twilio/webrtc" "^2.2.0"
+    "@twilio/webrtc" "2.2.1"
     ws "^3.3.1"
     xmlhttprequest "^1.8.0"
 
