@@ -211,13 +211,6 @@
       return
     }
 
-    if(emailBody.includes("[*") || emailBody.includes("*]")) {
-      alert.style.display = 'inline-block';
-      alert.classList.add("alert-warning");
-      alert.innerHTML = "Username or (comment/post) wasn't changed!"
-      return
-    }
-
     var formData = new FormData();
     formData.append('feedback_message_id', id);
     formData.append('email_to', emailToAddress);

@@ -16,8 +16,3 @@ on_worker_boot do
   # See: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#on-worker-boot
   ActiveRecord::Base.establish_connection
 end
-
-before_fork do
-  require "puma_worker_killer"
-  PumaWorkerKiller.enable_rolling_restart(12 * 3600) # 12 hours in seconds
-end

@@ -48,10 +48,78 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  # describe "#send_to_followers" do
-  #   before do
-  #     user2.follow user
-  #     Notification.send_to_followers(article, user.followers, "Published")
-  #   end
-  # end
+  describe "#send_new_comment_notifications" do
+    context "when all commenters are subscribed" do
+      it "sends a notification to the author of the article" do
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 1
+      end
+
+      it "does not send a notification to the author of the article if the commenter is the author" do
+        comment = create(:comment, user: user, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 0
+      end
+
+      it "does not send a notification to the author of the comment" do
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user2.notifications.count).to eq 0
+      end
+    end
+
+    context "when the author of the article is not subscribed" do
+      it "does not send a notification to the author of the article" do
+        article.update(receive_notifications: false)
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 0
+      end
+    end
+
+    context "when the author of a comment is not subscribed" do
+      it "does not send a notification to the author of the comment" do
+        parent_comment = create(:comment, user: user2, commentable: article)
+        parent_comment.update(receive_notifications: false)
+        child_comment = create(:comment, user: user, commentable: article, ancestry: parent_comment.id.to_s)
+        Notification.send_new_comment_notifications_without_delay(child_comment)
+        expect(user2.notifications.count).to eq 0
+      end
+    end
+  end
+
+  describe "#send_reaction_notification" do
+    context "when reactable is receiving notifications" do
+      it "sends a notification to the author of a comment" do
+        comment = create(:comment, user: user2, commentable: article)
+        reaction = create(:reaction, reactable: comment, user: user)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user2.notifications.count).to eq 1
+      end
+
+      it "sends a notification to the author of an article" do
+        reaction = create(:reaction, reactable: article, user: user2)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user.notifications.count).to eq 1
+      end
+    end
+
+    context "when reactable is not receiving notifications" do
+      it "does not send a notification to the author of a comment" do
+        comment = create(:comment, user: user2, commentable: article)
+        comment.update(receive_notifications: false)
+        reaction = create(:reaction, reactable: comment, user: user)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user2.notifications.count).to eq 0
+      end
+
+      it "does not send a notification to the author of an article" do
+        article.update(receive_notifications: false)
+        reaction = create(:reaction, reactable: article, user: user2)
+        Notification.send_reaction_notification_without_delay(reaction)
+        expect(user.notifications.count).to eq 0
+      end
+    end
+  end
 end

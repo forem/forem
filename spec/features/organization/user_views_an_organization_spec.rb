@@ -9,28 +9,39 @@ describe "Organization index", type: :feature do
   end
 
   context "when user is unauthorized" do
-    before { visit "/#{organization.slug}" }
+    context "when 2 articles" do
+      before { visit "/#{organization.slug}" }
 
-    it "shows the header", js: true do
-      within("h1") { expect(page).to have_content(organization.name) }
-      within("div.profile-details") do
-        expect(page).to have_button("+ FOLLOW")
+      it "shows the header", js: true do
+        within("h1") { expect(page).to have_content(organization.name) }
+        within("div.profile-details") do
+          expect(page).to have_button("+ FOLLOW")
+        end
+      end
+
+      it "shows articles" do
+        expect(page).to have_selector("div.single-article", count: 2)
+      end
+
+      it "shows the sidebar" do
+        within("div.sidebar-additional") do
+          expect(page).to have_content("meet the team")
+          expect(page).to have_link(nil, href: org_user.path)
+        end
+      end
+
+      it "shows the proper title tag" do
+        expect(page).to have_title("#{organization.name} - DEV Community 👩‍💻👨‍💻")
       end
     end
 
-    it "shows articles" do
-      expect(page).to have_selector("div.single-article", count: 2)
-    end
-
-    it "shows the sidebar" do
-      within("div.sidebar-additional") do
-        expect(page).to have_content("meet the team")
-        expect(page).to have_link(nil, href: org_user.path)
+    context "when more articles" do
+      before do
+        create_list(:article, 3, organization: organization)
+        visit "/#{organization.slug}"
       end
-    end
 
-    it "shows the proper title tag" do
-      expect(page).to have_title("#{organization.name} - DEV Community 👩‍💻👨‍💻")
+      include_examples "shows the sign_in invitation"
     end
   end
 

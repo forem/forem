@@ -31,49 +31,9 @@ RSpec.describe Exporter::Service do
     exports
   end
 
-  def expected_fields
-    [
-      "body_html",
-      "body_markdown",
-      "cached_tag_list",
-      "cached_user_name",
-      "cached_user_username",
-      "canonical_url",
-      "comments_count",
-      "created_at",
-      "crossposted_at",
-      "description",
-      "edited_at",
-      "feed_source_url",
-      "language",
-      "last_comment_at",
-      "lat",
-      "long",
-      "main_image",
-      "main_image_background_hex_color",
-      "path",
-      "positive_reactions_count",
-      "processed_html",
-      "published",
-      "published_at",
-      "published_from_feed",
-      "reactions_count",
-      "show_comments",
-      "slug",
-      "social_image",
-      "title",
-      "updated_at",
-      "video",
-      "video_closed_caption_track_url",
-      "video_code",
-      "video_source_url",
-      "video_thumbnail_url",
-    ]
-  end
-
   describe "EXPORTERS" do
     it "is a list of supported exporters" do
-      expect(described_class::EXPORTERS).to eq([Exporter::Articles])
+      expect(described_class::EXPORTERS).to eq([Exporter::Articles, Exporter::Comments])
     end
   end
 
@@ -89,14 +49,14 @@ RSpec.describe Exporter::Service do
       service = valid_instance(article.user)
       zipped_exports = service.export
       exports = extract_zipped_exports(zipped_exports)
-      expect(exports.keys).to eq(["articles.json"])
+      expect(exports.keys).to eq(["articles.json", "comments.json"])
     end
 
     it "passes configuration to an exporter" do
       service = valid_instance(article.user)
       zipped_exports = service.export(config: { articles: { slug: article.slug } })
       exports = extract_zipped_exports(zipped_exports)
-      expect(exports.length).to eq(1)
+      expect(exports.length).to eq(described_class::EXPORTERS.size)
     end
 
     context "when emailing the user" do

@@ -356,7 +356,7 @@ class User < ApplicationRecord
 
   def resave_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path) if article.path
       cache_buster.bust(article.path + "?i=i") if article.path
       article.save
@@ -365,7 +365,7 @@ class User < ApplicationRecord
 
   def cache_bust_all_articles
     cache_buster = CacheBuster.new
-    articles.each do |article|
+    articles.find_each do |article|
       cache_buster.bust(article.path)
       cache_buster.bust(article.path + "?i=i")
     end
@@ -394,6 +394,10 @@ class User < ApplicationRecord
     remove_from_index!
     index = Algolia::Index.new("searchables_#{Rails.env}")
     index.delay.delete_object("users-#{id}")
+  end
+
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   private
@@ -577,10 +581,6 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def unsubscribe_from_newsletters
-    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   def mentorship_status_update

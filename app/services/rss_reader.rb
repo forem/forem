@@ -3,8 +3,8 @@ require "httparty"
 require "securerandom"
 
 class RssReader
-  def self.get_all_articles
-    new.get_all_articles
+  def self.get_all_articles(force = true)
+    new.get_all_articles(force)
   end
 
   def initialize(request_id = nil)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190121191754) do
+ActiveRecord::Schema.define(version: 20190129173611) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20190121191754) do
     t.string "canonical_url"
     t.integer "collection_id"
     t.integer "collection_position"
+    t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "crossposted_at"
@@ -495,6 +496,7 @@ ActiveRecord::Schema.define(version: 20190121191754) do
     t.string "github_username"
     t.string "jobs_email"
     t.string "jobs_url"
+    t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.string "location"
     t.string "name"
     t.string "nav_image"
@@ -762,6 +764,8 @@ ActiveRecord::Schema.define(version: 20190121191754) do
     t.string "gitlab_url"
     t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
+    t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
