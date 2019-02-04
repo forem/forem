@@ -62,7 +62,6 @@ export default class ArticleForm extends Component {
     const previousContent = JSON.parse(
       sessionStorage.getItem(window.location.href),
     );
-    console.log(previousContent);
     if (previousContent && this.checkContentChanges(previousContent)) {
       this.setState({
         title: previousContent.title || '',
