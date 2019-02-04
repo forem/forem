@@ -106,7 +106,7 @@ module BadgeRewarder
         user_id: user.id,
         badge_id: Badge.find_by_slug("three-year-club").id,
         rewarding_context_message_markdown: message,
-        )
+      )
       user.save if achievement.valid?
     end
   end
