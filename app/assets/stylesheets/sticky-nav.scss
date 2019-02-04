@@ -17,6 +17,7 @@
   .primary-sticky-nav-author{
     a{
       color: $black;
+      color: var(--theme-container-color, $black);
     }
     .primary-sticky-nav-author-top-profile-image{
       width: 35px;
@@ -68,6 +69,7 @@
     }
     a{
       color: $black;
+      color: var(--theme-container-color, $black);
       display: inline-block;
     }
   }
@@ -85,6 +87,7 @@
     box-shadow: $bold-shadow;
     box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     color: $black;
+    color: var(--theme-container-color, $black);
     width: 262px;
     border-radius: 3px;
     &.sticky-join-cta{
@@ -112,7 +115,6 @@
       color: $medium-gray;
     }
     &:hover{
-      color: $black;
       border: 1px solid darken($light-medium-gray, 17%);
       box-shadow: 3px 4px 0px darken($light-medium-gray, 17%);
     }
