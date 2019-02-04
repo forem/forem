@@ -144,10 +144,9 @@ class UsersController < ApplicationController
   def open_chat
     skip_authorization
     visitor = current_user
-    user = User.find(params[:id])
+    user = User.find(params[:user_id])
 
     ChatChannel.create_with_users([visitor, user], "direct") unless (visitor.chat_channels.ids & user.chat_channels.ids).length == 1
-    redirect_to("/connect/@#{user.username}")
     nil
   end
 

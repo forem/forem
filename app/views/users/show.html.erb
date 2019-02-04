@@ -25,13 +25,9 @@
         <span class="user-profile-follow-button-wrapper">
           <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
         </span>
-        <% if @user.id != @current_user.id %>
-          <% if @user.inbox_type == "open" || (@user.follows.length > 0 && current_user.follows.length > 0 && @user.follows.where(followable_id: @current_user.id)[0].followable_id == @current_user.id && @current_user.follows.where(followable_id: @user.id)[0].followable_id == @user.id) %>
-            <span class="user-profile-chat-button-wrapper">
-              <%= button_to "CHAT",{controller: "users", action: "open_chat", id: @user.id}, :class => "chat-action-button user-profile-chat-button", :style => "color:#{user_colors(@user)[:text]}; background:#{user_colors(@user)[:bg]}" %>
-            </span>
-          <% end %>
-        <% end %>
+        <span class="user-profile-follow-button-wrapper">
+          <button id="user-chat-button" class="cta chat-action-button user-profile-chat-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>; display:none" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>", "userFollowing":<%=@user.follows.map{|x| x.followable_id} %>}'>&nbsp;</button>
+        </span>
       </h1>
       <p class="profile-description" itemprop="description">
         <%= @user.summary.presence || ["404 bio not found"].sample  %>
