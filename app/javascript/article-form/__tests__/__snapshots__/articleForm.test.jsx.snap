@@ -7,10 +7,10 @@ exports[`<ArticleForm /> renders properly 1`] = `
 >
   <div>
     <input
-      autocomplete="off"
+      autoComplete="off"
       class="articleform__title"
       id="article-form-title"
-      onChange={[Function]}
+      onInput={[Function]}
       placeholder="Title"
       type="text"
       value=""
@@ -100,12 +100,6 @@ exports[`<ArticleForm /> renders properly 1`] = `
       PREVIEW
     </button>
     <button
-      class="clear"
-      onClick={[Function]}
-    >
-      CLEAR CHANGES
-    </button>
-    <button
       onClick={[Function]}
     >
       SAVE DRAFT
@@ -118,7 +112,14 @@ exports[`<ArticleForm /> renders properly 1`] = `
           }
         }
       >
-        New Changes
+        New Changes (
+        <span
+          class="clear"
+          onClick={[Function]}
+        >
+          clear
+        </span>
+        )
       </p>
       <button
         class="articleform__buttons--publish"
