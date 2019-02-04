@@ -119,7 +119,7 @@ end
 group :development, :test do
   gem "capybara", "~> 3.12"
   gem "derailed", "~> 0.1"
-  gem "erb_lint", "~> 0.0.28", require: false
+  gem "erb_lint", "~> 0.0", require: false
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
@@ -145,7 +145,7 @@ group :test do
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
-  gem "shoulda-matchers", "~> 3.1", require: false
+  gem "shoulda-matchers", "4.0.0.rc1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby
