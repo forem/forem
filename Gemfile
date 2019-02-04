@@ -117,7 +117,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.12"
+  gem "capybara", "~> 2.15"
   gem "derailed", "~> 0.1"
   gem "erb_lint", "~> 0.0", require: false
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
@@ -137,7 +137,6 @@ end
 group :test do
   gem "approvals", "~> 0.0"
   gem "chromedriver-helper", "~> 2.1"
-  gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
   gem "fake_stripe", "~> 0.2"
   gem "launchy", "~> 2.4"
