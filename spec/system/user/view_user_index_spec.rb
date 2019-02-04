@@ -1,14 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "User index", type: :system do
-  let!(:user) { create(:user, username: "user3000") }
+  let!(:user) { create(:user, username: "userindextest") }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
 
   context "when user is unauthorized" do
     context "when 1 article" do
-      before { visit "/user3000" }
+      before { visit user.username }
 
       it "shows the header", js: true do
         within("h1") { expect(page).to have_content(user.name) }
@@ -45,7 +45,7 @@ RSpec.describe "User index", type: :system do
     context "when more articles" do
       before do
         create_list(:article, 4, user: user)
-        visit "/user3000"
+        visit user.username
       end
 
       include_examples "shows the sign_in invitation"
@@ -55,7 +55,7 @@ RSpec.describe "User index", type: :system do
   context "when visiting own profile" do
     before do
       sign_in user
-      visit "/user3000"
+      visit user.username
     end
 
     it "shows the header", js: true do
