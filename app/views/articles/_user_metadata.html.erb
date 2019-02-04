@@ -88,16 +88,6 @@
           </div>
         </div>
       <% end %>
-      <% if @user.inbox_type == "open" %>
-        <div class="row">
-          <div class="key">
-            inbox
-          </div>
-          <div class="value">
-            I'm open to chatting!
-          </div>
-        </div>
-      <% end %>
       <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
         <div class="row">
           <div class="key">
