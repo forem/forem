@@ -27,7 +27,7 @@ require "test_prof/recipes/rspec/before_all"
 # require only the support files necessary.
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/features/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -39,10 +39,12 @@ WebMock.disable_net_connect!(allow_localhost: true)
 RSpec.configure do |config|
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
+  config.use_transactional_fixtures = true
+
   config.include ApplicationHelper
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
-  config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros

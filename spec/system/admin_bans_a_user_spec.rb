@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Admin bans user" do
+RSpec.describe "Admin bans user", type: :system do
   let(:admin)  { create(:user, :super_admin) }
   let(:user)   { create(:user) }
 

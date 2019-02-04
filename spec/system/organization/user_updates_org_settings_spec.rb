@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Organization setting page(/settings/organization)", type: :feature, js: true do
+RSpec.describe "Organization setting page(/settings/organization)", type: :system, js: true do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
 

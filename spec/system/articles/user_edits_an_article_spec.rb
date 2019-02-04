@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Editing with an editor", type: :feature do
+describe "Editing with an editor", type: :system do
   let(:user) { create(:user) }
   let(:dir) { "../../support/fixtures/sample_article.txt" }
   let(:template) { File.read(File.join(File.dirname(__FILE__), dir)) }

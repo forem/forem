@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "User visits /pod page", type: :feature do
+describe "User visits /pod page", type: :system do
   let!(:podcast_episode) { create(:podcast_episode) }
   let!(:podcast_episode2) { create(:podcast_episode) }
 

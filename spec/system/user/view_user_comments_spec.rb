@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "User comments", type: :feature do
+describe "User comments", type: :system do
   let!(:user) { create(:user, username: "user3000") }
   let!(:article) { create(:article, user: user) }
   let!(:comment) { create(:comment, user: user, commentable: create(:article)) }

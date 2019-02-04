@@ -1,6 +1,6 @@
 # require "rails_helper"
 
-# RSpec.describe "User edits their profile", type: :feature, js: true do
+# RSpec.describe "User edits their profile", type: :system, js: true do
 #   let(:user) { create(:user, saw_onboarding: true) }
 
 #   before do
