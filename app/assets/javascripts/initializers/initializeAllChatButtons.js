@@ -74,12 +74,5 @@ function assignChatState(button) {
   if (button.dataset.info) {
     style = JSON.parse(button.dataset.info).style;
   }
-  addChatText(button, style);
-}
-
-function addChatText(button, style) {
   button.innerHTML = 'CHAT';
-  if (style === 'small') {
-    button.innerHTML = 'asdf';
-  }
 }
