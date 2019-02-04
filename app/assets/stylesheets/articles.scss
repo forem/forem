@@ -929,6 +929,7 @@
           }
           a.sidebar-nav-link{
             color:$black;
+            color: var(--theme-container-color, $black);
             padding:5px;
             display:inline-block;
             width:calc(100% - 10px);
@@ -1342,6 +1343,7 @@
         display:block;
         margin: 10px 10px;
         color: $black;
+        color: var(--theme-container-color, $black);
       }
     }
     .search-partner-mention{
