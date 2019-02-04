@@ -2,7 +2,7 @@
 function initializeAllChatButtons() {
   var chatButtons = document.getElementsByClassName('chat-action-button');
   var i;
-  for (i = 0; i < chatButtons.length; i = i + 1) {
+  for (i = 0; i < chatButtons.length; i += 1) {
     initializeChatButton(chatButtons[i]);
   }
 }
@@ -19,8 +19,11 @@ function initializeChatButton(button) {
     return;
   }
 
-  // check if users follow each other, or if user has inbox type as open
-  if (
+  // don't show chat button when looking at own profile
+  if (user.id === buttonInfo.id) {
+    
+  } else if (
+    // check if users follow each other, or if user has inbox type as open
     (user.followed_user_ids.includes(buttonInfo.id) &&
       buttonInfo.userFollowing.includes(user.id)) ||
     buttonInfo.showChat === 'open'
