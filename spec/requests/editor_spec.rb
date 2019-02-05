@@ -21,7 +21,7 @@ RSpec.describe "Editor", type: :request do
 
     context "when not logged-in" do
       it "redirects to /enter" do
-        get "/#{user.username}/#{article.slug}/edit"
+        get "/username/article/edit"
         expect(response).to redirect_to("/enter")
       end
     end

@@ -11,6 +11,7 @@ require "algolia/webmock"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
+require "test_prof/recipes/rspec/before_all"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -42,9 +43,9 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
-  config.include RequestSpecHelper, type: :request
 
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!

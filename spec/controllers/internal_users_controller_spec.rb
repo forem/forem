@@ -12,13 +12,9 @@ RSpec.describe "internal/users", type: :request do
     sign_in super_admin
     user
     user2
-    Delayed::Worker.delay_jobs = true
+    Delayed::Worker.new(quiet: true).work_off
     dependents_for_offending_user_article
     offender_activity_on_other_content
-  end
-
-  after do
-    Delayed::Worker.delay_jobs = false
   end
 
   def dependents_for_offending_user_article
