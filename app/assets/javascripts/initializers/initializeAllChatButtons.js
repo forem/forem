@@ -15,33 +15,43 @@ function initializeChatButton(button) {
   var user = userData();
   var buttonInfo = JSON.parse(button.dataset.info);
 
-  if (userStatus === 'logged-out') {
+  if (userStatus === 'logged-out' || user.id === buttonInfo.id || button.dataset.fetched === 'fetched') {
     return;
   }
+  fetchButton(button, buttonInfo);
+}
 
-  // don't show chat button when looking at own profile
-  if (user.id === buttonInfo.id) {
-
-  } else if (
-    // check if users follow each other, or if user has inbox type as open
-    (user.followed_user_ids.includes(buttonInfo.id) &&
-      buttonInfo.userFollowing.includes(user.id)) ||
-    buttonInfo.showChat === 'open'
-  ) {
-    button.style.display = 'initial'; // show button
-    if (button.dataset.fetched === 'fetched') {
-      return;
+function fetchButton(button, buttonInfo) {
+  button.dataset.fetched = 'fetched'; // telling initialize that this button has been fetched
+  var dataRequester;
+  if (window.XMLHttpRequest) {
+      dataRequester = new XMLHttpRequest();
+  } else {
+      dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+  dataRequester.onreadystatechange = function() {
+    if (dataRequester.readyState === XMLHttpRequest.DONE && dataRequester.status === 200) {
+      addButtonClickHandle(dataRequester.response, button);
     }
-    fetchButton(button);
+  }
+  dataRequester.open('GET', '/follows/' + buttonInfo.id + '?followable_type=' + buttonInfo.className);
+  dataRequester.send();
+}
+
+function addButtonClickHandle(response, button) {
+  // currently lacking error handling
+  assignInitialButtonResponse(response, button);
+  button.onclick = function() {
+    handleOptimisticButtonRender(button);
   }
 }
 
-function fetchButton(button) {
-  button.dataset.fetched = 'fetched'; // telling initialize that this button has been fetched
-  assignChatState(button);
-  button.onclick = () => {
-    handleOptimisticButtonRender(button);
-  };
+function assignInitialButtonResponse(response, button) {
+  button.classList.add('showing');
+  if (response === 'mutual' || JSON.parse(button.dataset.info).showChat === "open") {
+    button.style.display = 'initial'; // show button
+    assignChatState(button);
+  }
 }
 
 function handleOptimisticButtonRender(button) {
