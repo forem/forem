@@ -3,11 +3,11 @@ class Internal::TagsController < Internal::ApplicationController
 
   def index
     @tags = if params[:state] == "supported"
-              Tag.where(supported: true).order("taggings_count DESC").limit(120)
+              Tag.where(supported: true).order("taggings_count DESC").page(params[:page]).per(50)
             elsif params[:state] == "unsupported"
-              Tag.where(supported: false).order("taggings_count DESC").limit(120)
+              Tag.where(supported: false).order("taggings_count DESC").page(params[:page]).per(50)
             else
-              Tag.order("taggings_count DESC").limit(120)
+              Tag.order("taggings_count DESC").page(params[:page]).per(50)
             end
     if params[:search].present?
       @tags = @tags.where("tags.name ILIKE :search", search: "%#{params[:search]}%")
