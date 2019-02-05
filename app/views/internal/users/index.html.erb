@@ -2,6 +2,15 @@
   .alert {
     border: 2px red solid;
   }
+  .wrapper {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    padding: 2px;
+  }
+
+  .grid-item {
+    word-wrap: break-word;
+  }
 </style>
 <h3 class="top-nav" style="font-weight:400;font-size:0.9em;">
   <a href="/internal/users" style="<%= "font-weight:bold" if params[:state].blank? %>">All</a> |
@@ -22,10 +31,22 @@
   <em style="font-size:0.78em;">(<b>fields:</b> name, username, twitter_username, github_username, email)</em>
 <% end %>
 <%= paginate @users %>
+<br>
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black;">
+  <div>User</div>
+  <div>ID</div>
+  <div>Name</div>
+  <div>Twitter</div>
+  <div>GitHub</div>
+</div>
+
 <% @users.each do |user| %>
-  <div class="row">
-    <h2><%= user.name %></h2>
-    <h3><a href="/internal/users/<%= user.id %>" target="_blank">@<%= user.username %></a></h3>
+  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
+    <div class="grid-item"><a href="/internal/users/<%= user.id %>" target="_blank">@<%= user.username %></a></div>
+    <div class="grid-item"><%= user.id %></div>
+    <div class="grid-item"><%= user.name %></div>
+    <div class="grid-item"><%= user.twitter_username %></div>
+    <div class="grid-item"><%= user.github_username %></div>
   </div>
 <% end %>
 <%= paginate @users %>
