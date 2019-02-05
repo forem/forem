@@ -74,6 +74,7 @@ class StoriesController < ApplicationController
     @tag = params[:tag].downcase
     @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by_name(@tag) || not_found
+    @moderators = User.with_role(:tag_moderator, @tag_model)
     add_param_context(:tag, :page)
     if @tag_model.alias_for.present?
       redirect_to "/t/#{@tag_model.alias_for}"

@@ -18,7 +18,7 @@
         </header>
         <div class="widget-body">
           <%= @tag_model.rules_html.html_safe %>
-          <a class="cta cta-button" href="/new/<%= @tag %>" >
+          <a class="cta cta-button" href="/new/<%= @tag %>">
             WRITE A POST
           </a>
         </div>
@@ -31,6 +31,22 @@
         </header>
         <div class="widget-body">
           <%= @tag_model.wiki_body_html.html_safe %>
+        </div>
+      </div>
+    <% end %>
+    <% if @moderators.present? %>
+      <div class="widget">
+        <header>
+          <h4>tag moderators</h4>
+        </header>
+        <div class="widget-body">
+          <% @moderators.each do |user| %>
+            <div class="widget-user-pic">
+              <a href="/<%= user.username %>">
+                <img src="<%= ProfileImage.new(user).get(90) %>" />
+              </a>
+            </div>
+          <% end %>
         </div>
       </div>
     <% end %>
