@@ -41,6 +41,7 @@
           <img
             src="<%= cloudinary achievement.badge.badge_image_url, 180 %>"
             alt="<%= achievement.badge.title %>"
+            title="<%= achievement.badge.title %>"
             class="badge-achievement-image"
             style="transform: rotate(<%= -25 + (achievement.id.digits.first*5) %>deg);
               margin-left: <%=achievement.id.digits.first*3 %>px;
