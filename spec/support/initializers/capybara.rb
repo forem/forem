@@ -3,7 +3,14 @@ require "selenium/webdriver"
 
 Capybara.server = :puma, { Silent: true }
 Capybara.default_max_wait_time = 5
-# Capybara::Screenshot.autosave_on_failure = ENV["CI"] ? false : true
+
+Capybara.register_driver :headless_chrome do |app|
+  Capybara::Selenium::Driver.new app,
+    browser: :chrome,
+    desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
+      chromeOptions: { args: %w(headless disable-gpu no-sandbox window-size=1400,2000) },
+    )
+end
 
 RSpec.configure do |config|
   config.before(:each, type: :system) do
@@ -11,6 +18,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by :selenium_chrome_headless, screen_size: [1400, 1400]
+    driven_by :headless_chrome
   end
 end
