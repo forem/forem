@@ -1,9 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "User visits a homepage", type: :system do
-  let!(:ruby_tag) { create(:tag, name: "ruby") }
-
-  before { create(:tag, name: "webdev") }
+  before do
+    create(:tag, name: "webdev")
+    create(:tag, name: "ruby")
+  end
 
   context "when user hasn't logged in" do
     before { visit "/" }
