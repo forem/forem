@@ -99,10 +99,5 @@
     "prop-types": "^15.6.2",
     "pusher-js": "^4.3.1",
     "twilio-video": "^1.15.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
