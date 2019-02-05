@@ -16,14 +16,28 @@
 
 <h2>
     <a href="/internal/tags"
-        style="<%= 'background: yellow' if params[:state].blank? %>">All</a> |
+        style="<%= "background: yellow" if params[:state].blank? %>">All</a> |
     <a href="/internal/tags?state=supported"
-        style="<%= 'background: yellow' if params[:state] == "supported" %>">Supported</a> |
+        style="<%= "background: yellow" if params[:state] == "supported" %>">Supported</a> |
     <a href="/internal/tags?state=unsupported"
-        style="<%= 'background: yellow' if params[:state] == "unsupported" %>">Unsupported</a> |
+        style="<%= "background: yellow" if params[:state] == "unsupported" %>">Unsupported</a> |
 </h2>
+<hr>
+<br>
+<div class="wrapper" style="font-weight: 600; border-bottom: 2px solid black;">
+  <div>Tag</div>
+  <div>ID</div>
+  <div>Alias For</div>
+  <div>Taggings Count</div>
+  <div>Is Moderated?</div>
+</div>
 
-<hr/><hr/>
 <% @tags.each do |tag| %>
-
+  <div class="wrapper" style="border-bottom: 1px solid grey; padding: 10px;">
+    <div class="grid-item"><a href="/internal/tags/<%= tag.id %>" target="_blank">#<%= tag.name %></a></div>
+    <div><%= tag.id %></div>
+    <div><%= tag.alias_for %></div>
+    <div><%= tag.taggings_count %></div>
+    <div><%= tag.tag_moderator_ids.any? %></div>
+  </div>
 <% end %>

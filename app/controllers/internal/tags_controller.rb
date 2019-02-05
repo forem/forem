@@ -49,6 +49,7 @@ class Internal::TagsController < Internal::ApplicationController
                                 :bg_color_hex,
                                 :text_color_hex,
                                 :tag_moderator_id,
-                                :remove_moderator_id)
+                                :remove_moderator_id,
+                                :alias_for)
   end
 end
