@@ -144,7 +144,21 @@ class UsersController < ApplicationController
   def open_chat
     visitor = current_user
     user = User.find(params[:user_id])
-    ChatChannel.create_with_users([visitor, user], "direct") unless (visitor.chat_channels.ids & user.chat_channels.ids).length == 1
+    common_direct_chats = (visitor.chat_channels & user.chat_channels).select{ |channel| channel.channel_type == 'direct'}
+
+    if common_direct_chats.length == 0
+      ChatChannel.create_with_users([visitor, user], "direct")
+      # send first message
+      nil
+    else
+      active = common_direct_chats.select{ |channel| channel.status == 'active' }.length != 0
+      if active
+        nil # just redirect
+      else
+        common_direct_chats[0].update(status: "active")
+        nil
+      end
+    end
     nil
   end
 
