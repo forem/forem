@@ -39,7 +39,6 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
-    ban_from_mentorship
     make_matches
     update_role
     add_note
@@ -52,25 +51,41 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def update_role
-    ban_user if user_params[:ban_user] == "1"
-    warn_user if user_params[:warn_user] == "1"
-    return_to_good_standing if user_params[:good_standing_user] == "1"
-  end
-
-  def return_to_good_standing
-    @user.remove_role :banned if @user.banned
-    @user.remove_role :warned if @user.warned
-    create_note("good_standing", user_params[:note_for_current_role])
+    ban_user if user_params[:ban_user]
+    warn_user if user_params[:warn_user]
+    trust_user if user_params[:trusted_user]
+    ban_from_mentorship if user_params[:ban_from_mentroship]
   end
 
   def ban_user
-    @user.add_role :banned
-    create_note("banned", user_params[:note_for_current_role])
+    if user_params[:ban_user] == "1"
+      @user.add_role :banned
+      @user.add_role :warned
+      @user.remove_role :trusted
+      create_note("banned", user_params[:note_for_current_role])
+    else
+      @user.remove_role :banned
+      create_note("good_standing", user_params[:note_for_current_role])
+    end
+  end
+
+  def trust_user
+    if user_params[:trusted_user] == "1"
+      @user.add_role :trusted
+    else
+      @user.remove_role :trusted
+    end
   end
 
   def warn_user
-    @user.add_role :warned
-    create_note("warned", user_params[:note_for_current_role])
+    if user_params[:warned] == "1"
+      @user.add_role :warned
+      @user.remove_role :trusted
+      create_note("warned", user_params[:note_for_current_role])
+    else
+      @user.remove_role :warned
+      create_note("good_standing", user_params[:note_for_current_role])
+    end
   end
 
   def add_note
@@ -108,15 +123,17 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def ban_from_mentorship
-    return unless user_params[:ban_from_mentorship] == "1"
-
-    @user.add_role :banned_from_mentorship
-    mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-    mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
-    deactivate_mentorship(mentee_relationships)
-    deactivate_mentorship(mentor_relationships)
-    @user.update(offering_mentorship: false, seeking_mentorship: false)
-    create_note("banned_from_mentorship", user_params[:note_for_mentorship_ban])
+    if user_params[:ban_from_mentorship] == "1"
+      @user.add_role :banned_from_mentorship
+      mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
+      mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+      deactivate_mentorship(mentee_relationships)
+      deactivate_mentorship(mentor_relationships)
+      @user.update(offering_mentorship: false, seeking_mentorship: false)
+      create_note("banned_from_mentorship", user_params[:note_for_mentorship_ban])
+    else
+      @user.remove_role :banned_from_mentorship
+    end
   end
 
   def deactivate_mentorship(relationships)
@@ -158,8 +175,9 @@ class Internal::UsersController < Internal::ApplicationController
                                 :ban_from_mentorship,
                                 :ban_user,
                                 :warn_user,
-                                :good_standing_user, :note_for_mentorship_ban,
+                                :note_for_mentorship_ban,
                                 :note_for_current_role,
-                                :reason_for_mentorship_ban)
+                                :reason_for_mentorship_ban,
+                                :trusted_user)
   end
 end
