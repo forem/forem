@@ -147,8 +147,16 @@ class UsersController < ApplicationController
     common_direct_chats = (visitor.chat_channels & user.chat_channels).select{ |channel| channel.channel_type == 'direct'}
 
     if common_direct_chats.length == 0
-      ChatChannel.create_with_users([visitor, user], "direct")
-      # send first message
+      chat = ChatChannel.create_with_users([visitor, user], "direct")
+      message = Message.new()
+      message.id = Message.ids.max + 1
+      message.chat_channel_id = chat.id
+      message.created_at = Time.now
+      message.message_markdown = "Hi #{user.username}! I am #{visitor.username}. I can message you on DEV Connect because your inbox is open"
+      message.message_html = "<p>#{message.message_markdown}</p>\n"
+      message.updated_at = Time.now
+      message.user_id = visitor.id
+      chat.messages.append(message)
       nil
     else
       active = common_direct_chats.select{ |channel| channel.status == 'active' }.length != 0
