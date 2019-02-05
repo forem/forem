@@ -51,16 +51,15 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def update_role
-    ban_user if user_params[:ban_user]
-    warn_user if user_params[:warn_user]
-    trust_user if user_params[:trusted_user]
-    ban_from_mentorship if user_params[:ban_from_mentroship]
+    toggle_ban_user if user_params[:ban_user]
+    toggle_warn_user if user_params[:warn_user]
+    toggle_trust_user if user_params[:trusted_user]
+    toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
   end
 
-  def ban_user
+  def toggle_ban_user
     if user_params[:ban_user] == "1"
       @user.add_role :banned
-      @user.add_role :warned
       @user.remove_role :trusted
       create_note("banned", user_params[:note_for_current_role])
     else
@@ -69,7 +68,7 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def trust_user
+  def toggle_trust_user
     if user_params[:trusted_user] == "1"
       @user.add_role :trusted
     else
@@ -77,8 +76,8 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def warn_user
-    if user_params[:warned] == "1"
+  def toggle_warn_user
+    if user_params[:warn_user] == "1"
       @user.add_role :warned
       @user.remove_role :trusted
       create_note("warned", user_params[:note_for_current_role])
@@ -122,7 +121,7 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def ban_from_mentorship
+  def toggle_ban_from_mentorship
     if user_params[:ban_from_mentorship] == "1"
       @user.add_role :banned_from_mentorship
       mentee_relationships = MentorRelationship.where(mentor_id: @user.id)

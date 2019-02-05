@@ -54,7 +54,9 @@
         <%= f.check_box :trusted_user, checked: @user.trusted %></p>
         <%= f.submit "Update Moderation Privileges" %>
       <% end %>
-  <% end %>
+    <% else %>
+      User must be in good standing to be a moderator of any kind.
+    <% end %>
   <br>
   <h3><u>Warn or Ban User</u></h3>
   <% if @user.banned %>
