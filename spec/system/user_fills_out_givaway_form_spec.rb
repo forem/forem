@@ -26,7 +26,7 @@ describe "Freestickers giveaway (wind-down)" do
     fill_in "Specialty (web development, sysadmin, etc.)", with: "Software Developer"
   end
 
-  before { login_as(user) }
+  before { sign_in(user) }
 
   it "user fills out giveaway form correctly" do
     visit "freestickers/edit"

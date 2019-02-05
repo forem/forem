@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "User visits a homepage", type: :system do
   before do
     create(:tag, name: "webdev")
-    create(:tag, name: "ruby")
+    @ruby = create(:tag, name: "ruby")
   end
 
   context "when user hasn't logged in" do
@@ -29,7 +29,7 @@ RSpec.describe "User visits a homepage", type: :system do
     let(:user) { create(:user) }
 
     before do
-      login_as(user)
+      sign_in user
     end
 
     it "shows profile content", js: true do
@@ -49,7 +49,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
     context "when user follows tags" do
       before do
-        user.follows.create!(followable: ruby_tag)
+        user.follows.create!(followable: @ruby)
         user.follows.create!(followable: create(:tag, name: "go", hotness_score: 99))
         user.follows.create!(followable: create(:tag, name: "javascript"), points: 3)
 
