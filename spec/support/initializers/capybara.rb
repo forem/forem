@@ -3,7 +3,7 @@ require "selenium/webdriver"
 
 Capybara.server = :puma, { Silent: true }
 Capybara.default_max_wait_time = 5
-Capybara::Screenshot.autosave_on_failure = ENV["CI"] ? false : true
+# Capybara::Screenshot.autosave_on_failure = ENV["CI"] ? false : true
 
 RSpec.configure do |config|
   config.before(:each, type: :system) do
