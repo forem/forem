@@ -21,7 +21,7 @@ function initializeChatButton(button) {
 
   // don't show chat button when looking at own profile
   if (user.id === buttonInfo.id) {
-    
+
   } else if (
     // check if users follow each other, or if user has inbox type as open
     (user.followed_user_ids.includes(buttonInfo.id) &&
@@ -68,8 +68,11 @@ function handleChatButtonPress(button) {
   var formData = new FormData();
   formData.append('user_id', buttonDataInfo.id);
   formData.append('controller', 'users');
-  getCsrfToken().then(sendFetch('chat-creation', formData));
-  window.location.href = `/connect/@${buttonDataInfo.username}`;
+  getCsrfToken()
+    .then(sendFetch('chat-creation', formData))
+    .then(() => {
+      window.location.href = `/connect/@${buttonDataInfo.username}`;
+    });
 }
 
 function assignChatState(button) {
