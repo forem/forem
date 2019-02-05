@@ -25,12 +25,12 @@ class Comment < ApplicationRecord
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
-  before_save    :set_markdown_character_count
+  before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
-  before_validation :evaluate_markdown
-  validate :permissions
+  before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
+  validate :permissions, if: :commentable
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
@@ -172,22 +172,6 @@ class Comment < ApplicationRecord
     else
       created_at.strftime("%b %e '%y")
     end
-  end
-
-  def sharemeow_link
-    user_image = ProfileImage.new(user)
-    user_image_link = Rails.env.production? ? user_image.get_link : user_image.get_external_link
-    ShareMeowClient.image_url(
-      template: "DevComment",
-      options: {
-        content: body_markdown || processed_html,
-        name: user.name,
-        subject_name: commentable.title,
-        user_image_link: user_image_link,
-        background_color: user.bg_color_hex,
-        text_color: user.text_color_hex
-      },
-    )
   end
 
   def self.comment_async_bust(commentable, username)

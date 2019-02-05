@@ -14,7 +14,7 @@ RSpec.describe "Messages", type: :request do
     end
 
     it "requires user to be signed in" do
-      post "/messages", params: { message: new_message }
+      post "/messages", params: { message: {} }
       expect(response.status).to eq(302)
     end
     # Pusher::Error
