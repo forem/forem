@@ -126,7 +126,6 @@ group :development, :test do
   gem "parallel_tests", "~> 2.27"
   gem "pry-byebug", "~> 3.6"
   gem "rspec-rails", "~> 3.8"
-  gem "rspec-retry", "~> 0.6"
   gem "rubocop", "~> 0.63", require: false
   gem "rubocop-rspec", "~> 1.31"
   gem "spring", "~> 2.0"
@@ -142,6 +141,7 @@ group :test do
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
   gem "rails-controller-testing", "~> 1.0"
+  gem "rspec-retry", "~> 0.6"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
   gem "shoulda-matchers", "4.0.0.rc1", require: false
