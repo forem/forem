@@ -28,7 +28,7 @@ class ArticlesController < ApplicationController
     else
       @articles = Article.where(published: true, featured: true).
         includes(:user).
-        select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title, :path).
+        select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
         order("published_at DESC").
         page(@page).per(12)
     end
