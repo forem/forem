@@ -1,7 +1,7 @@
+require "capybara/rails"
 require "capybara/rspec"
 require "selenium/webdriver"
 
-Capybara.server = :puma, { Silent: true }
 Capybara.default_max_wait_time = 5
 
 Capybara.register_driver :headless_chrome do |app|
