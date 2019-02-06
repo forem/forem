@@ -12,16 +12,15 @@ class ArticlesController < ApplicationController
     if params[:username]
       if @user = User.find_by_username(params[:username])
         @articles = Article.where(published: true, user_id: @user.id).
-          includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
+          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
           order("published_at DESC").
-          page(@page).per(15)
+          page(@page).per(12)
       elsif @user = Organization.find_by_slug(params[:username])
         @articles = Article.where(published: true, organization_id: @user.id).
           includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
+          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title, :path).
           order("published_at DESC").
-          page(@page).per(15)
+          page(@page).per(12)
       else
         render body: nil
         return
@@ -29,9 +28,9 @@ class ArticlesController < ApplicationController
     else
       @articles = Article.where(published: true, featured: true).
         includes(:user).
-        select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
+        select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title, :path).
         order("published_at DESC").
-        page(@page).per(15)
+        page(@page).per(12)
     end
     set_surrogate_key_header "feed", @articles.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
