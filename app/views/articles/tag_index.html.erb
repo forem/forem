@@ -49,7 +49,7 @@
       </style>
     <% end %>
     <div class="on-page-nav-controls" id="on-page-nav-controls">
-      <div class="on-page-nav-label <%= "sub-home-nav" if (@user || @tag || @query)%>">
+      <div class="on-page-nav-label sub-home-nav">
         <div class="wide-nav-links">
           <a class="nav-chronofiter-link <%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
             FEED
@@ -97,8 +97,8 @@
     </div>
 
     <div class="substories" id="substories">
-      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
-        <%= render "stories/main_stories_feed" %>
+      <% if @stories.any? %>
+        <%= render "articles/tags/main_feed" %>
       <% end %>
     </div>
     <div class="loading-articles" id="loading-articles">

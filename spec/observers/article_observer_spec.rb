@@ -10,7 +10,9 @@ RSpec.describe ArticleObserver, type: :observer do
   it "pings slack if user with warned role creates an article" do
     user.add_role :warned
     Article.observers.enable :article_observer do
-      create(:article, user_id: user.id)
+      run_background_jobs_immediately do
+        create(:article, user_id: user.id)
+      end
     end
     expect(SlackBot).to have_received(:ping).twice
   end

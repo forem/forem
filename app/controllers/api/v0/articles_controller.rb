@@ -88,7 +88,7 @@ module Api
           params["article"]["collection_id"] = nil
         end
         params.require(:article).permit(
-          :title, :body_markdown, :user_id, :main_image, :published, :description,
+          :title, :body_markdown, :main_image, :published, :description,
           :tag_list, :organization_id, :canonical_url, :series, :collection_id
         )
       end

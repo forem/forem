@@ -1,6 +1,18 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
+const KEYS = {
+  UP: 38,
+  DOWN: 40,
+  LEFT: 37,
+  RIGHT: 39,
+  TAB: 9,
+  RETURN: 13,
+  COMMA: 188,
+  DELETE: 8,
+};
+
+const MAX_TAGS = 4;
 class Tags extends Component {
   constructor(props) {
     super(props);
@@ -8,6 +20,8 @@ class Tags extends Component {
     this.state = {
       selectedIndex: -1,
       searchResults: [],
+      cursorIdx: 0,
+      prevLen: 0,
     };
 
     const algoliaId = document.querySelector("meta[name='algolia-public-id']")
@@ -22,8 +36,18 @@ class Tags extends Component {
   get selected() {
     return this.props.defaultValue
       .split(',')
-      .map(item => item != undefined && item.trim())
+      .map(item => item !== undefined && item.trim())
       .filter(item => item.length > 0);
+  }
+
+  componentDidUpdate() {
+    // stop cursor jumping if the user goes back to edit previous tags
+    if (
+      this.state.cursorIdx < this.textArea.value.length &&
+      this.textArea.value.length < this.state.prevLen + 1
+    ) {
+      this.textArea.selectionStart = this.textArea.selectionEnd = this.state.cursorIdx;
+    }
   }
 
   render() {
@@ -54,6 +78,7 @@ class Tags extends Component {
         <textarea
           id="tag-input"
           type="text"
+          ref={t => (this.textArea = t)}
           className="articleform__tags"
           placeholder="tags"
           value={this.props.defaultValue}
@@ -98,7 +123,13 @@ class Tags extends Component {
       e.target.value,
       e.target.selectionStart - 1,
     );
-    this.setState({selectedIndex: 0})
+
+    this.setState({
+      selectedIndex: 0,
+      cursorIdx: e.target.selectionStart,
+      prevLen: this.textArea.value.length,
+    });
+
     return this.search(query);
   };
 
@@ -297,18 +328,5 @@ class Tags extends Component {
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
 };
-
-const KEYS = {
-  UP: 38,
-  DOWN: 40,
-  LEFT: 37,
-  RIGHT: 39,
-  TAB: 9,
-  RETURN: 13,
-  COMMA: 188,
-  DELETE: 8,
-};
-
-const MAX_TAGS = 4;
 
 export default Tags;

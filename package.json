@@ -12,8 +12,12 @@
     "test": "jest app/javascript/ --coverage",
     "test:watch": "jest app/javascript/ --watch",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/javascript/.storybook/assets",
-    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets",
-    "precommit": "lint-staged"
+    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/javascript/.storybook/assets"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.{js,jsx}": [
@@ -23,6 +27,10 @@
     ],
     "{app,spec}/**/*.rb": [
       "bin/rubocop --require rubocop-rspec --auto-correct",
+      "git add"
+    ],
+    "app/**/*.html.erb": [
+      "bin/bundle exec erblint",
       "git add"
     ],
     "*.json": [
@@ -56,25 +64,25 @@
     "@storybook/react": "^3.4.11",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
-    "eslint": "^5.12.1",
+    "eslint": "^5.13.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^3.4.0",
+    "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-ignore-erb": "^0.1.1",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.12.3",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
     "faker": "^4.1.0",
     "husky": "^1.3.1",
     "jest": "^23.5.0",
     "jest-fetch-mock": "^2.1.0",
     "jest-localstorage-mock": "^2.4.0",
-    "jsdom": "^13.1.0",
-    "lint-staged": "^8.1.0",
+    "jsdom": "^13.2.0",
+    "lint-staged": "^8.1.3",
     "preact-render-spy": "^1.3.0",
     "preact-render-to-json": "^3.6.6",
-    "prettier": "^1.15.3",
+    "prettier": "^1.16.4",
     "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
@@ -82,7 +90,7 @@
     "@webscopeio/react-textarea-autocomplete": "^2.3.4",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
-    "codemirror": "^5.42.2",
+    "codemirror": "^5.43.0",
     "intersection-observer": "^0.5.1",
     "linkstate": "^1.1.1",
     "marked": "^0.6.0",
@@ -91,7 +99,7 @@
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.6.2",
     "pusher-js": "^4.3.1",
-    "twilio-video": "^1.15.0"
+    "twilio-video": "^1.15.1"
   },
   "husky": {
     "hooks": {
