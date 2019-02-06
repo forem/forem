@@ -1,12 +1,10 @@
 module Suggester
   module Articles
     class Boosted
-      attr_accessor :user, :article, :tags, :not_ids, :area
+      attr_accessor :tag, :not_ids, :area
 
-      def initialize(user, article, options)
-        @user = user
-        @article = article
-        @tags = (user&.cached_followed_tag_names.to_a + article.decorate.cached_tag_list_array)
+      def initialize(tag, options)
+        @tag = tag
         @not_ids = options[:not_ids]
         @area = options[:area]
       end
@@ -15,7 +13,7 @@ module Suggester
         base_articles = Article.includes(:user).
           includes(:organization).
           where.not(id: not_ids, organization_id: nil).
-          tagged_with(tags + article.boosted_additional_tags.split, any: true)
+          cached_tagged_with(tag)
 
         if area == "additional_articles"
           base_articles.boosted_via_additional_articles.sample

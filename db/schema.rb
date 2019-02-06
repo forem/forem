@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190129173611) do
+ActiveRecord::Schema.define(version: 20190206164319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -652,6 +652,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.string "alias_for"
     t.string "bg_color_hex"
     t.string "buffer_profile_id_code"
+    t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"
@@ -667,6 +668,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
+    t.datetime "updated_at"
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true

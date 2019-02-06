@@ -10,7 +10,7 @@ RSpec.describe Suggester::Articles::Boosted do
   it "returns an article" do
     user.follow(tag)
     article2 = create(:article, tags: [tag.name], featured: true, boosted_additional_articles: true, organization_id: organization.id) # rubocop:disable Metrics/LineLength
-    suggested_id = described_class.new(user, article, area: "additional_articles").suggest.id
+    suggested_id = described_class.new(tag.name, area: "additional_articles").suggest.id
     expect(suggested_id).to eq article2.id
   end
 end
