@@ -33,4 +33,9 @@ RSpec.describe Tag, type: :model do
     tag.save
     expect(tag.rules_html.include?("href")).to be(true)
   end
+
+  it "marks as updated after save" do
+    tag.save
+    expect(tag.reload.updated_at).to be > 1.minute.ago
+  end
 end
