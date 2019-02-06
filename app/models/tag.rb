@@ -13,6 +13,8 @@ class Tag < ActsAsTaggableOn::Tag
     clojure ubuntu elm gamedev flutter bash
   ).freeze
 
+  attr_accessor :tag_moderator_id, :remove_moderator_id
+
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
