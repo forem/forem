@@ -18,7 +18,7 @@ class ArticlesController < ApplicationController
       elsif @user = Organization.find_by_slug(params[:username])
         @articles = Article.where(published: true, organization_id: @user.id).
           includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title, :path).
+          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
           order("published_at DESC").
           page(@page).per(12)
       else
