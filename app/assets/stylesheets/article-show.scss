@@ -219,11 +219,11 @@ article{
           line-height:1.1em;
           font-family: $helvetica-condensed;
           font-stretch:condensed;
-          @media screen and ( max-width: 340px ){
+          @media screen and ( max-width: 376px ){
             padding:2px 3px 3px;
             margin-left:3px;
             margin-left:5px;
-            margin-top: 10px;
+            margin-top: 5px;
             .post-word{
               display:none;
             }
