@@ -114,7 +114,7 @@ class ArticlesController < ApplicationController
         Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
         path = @article.path
       else
-        Notification.remove_all_without_delay(id: @article.id, class_name: "Article", action: "Published")
+        Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
       redirect_to (params[:destination] || path)
@@ -131,8 +131,8 @@ class ArticlesController < ApplicationController
   def destroy
     authorize @article
     @article.destroy!
-    Notification.remove_all_without_delay(id: @article.id, class_name: "Article", action: "Published")
-    Notification.remove_all(id: @article.id, class_name: "Article", action: "Reaction")
+    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+    Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }

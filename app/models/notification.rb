@@ -218,8 +218,8 @@ class Notification < ApplicationRecord
 
     def remove_all(notifiable_hash)
       Notification.where(
-        notifiable_id: notifiable_hash[:id],
-        notifiable_type: notifiable_hash[:class_name],
+        notifiable_id: notifiable_hash[:notifiable_id],
+        notifiable_type: notifiable_hash[:notifiable_type],
         action: notifiable_hash[:action],
       ).delete_all
     end

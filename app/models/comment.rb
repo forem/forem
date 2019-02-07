@@ -186,9 +186,9 @@ class Comment < ApplicationRecord
   end
 
   def remove_notifications
-    Notification.remove_all_without_delay(id: id, class_name: "Comment")
-    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Moderation")
-    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Reaction")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Moderation")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Reaction")
   end
 
   def send_to_moderator
