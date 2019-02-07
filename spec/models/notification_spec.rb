@@ -71,6 +71,15 @@ RSpec.describe Notification, type: :model do
         Notification.send_new_comment_notifications_without_delay(comment)
         expect(user2.notifications.count).to eq 0
       end
+
+      it "sends a notification to the organization" do
+        org = create(:organization)
+        user.update(organization: org)
+        article.update(organization: org)
+        comment = create(:comment, user: user2, commentable: article)
+        Notification.send_new_comment_notifications_without_delay(comment)
+        expect(org.notifications.count).to eq 1
+      end
     end
 
     context "when the author of the article is not subscribed" do
@@ -123,6 +132,21 @@ RSpec.describe Notification, type: :model do
         reaction = create(:reaction, reactable: article, user: user2)
         Notification.send_reaction_notification_without_delay(reaction)
         expect(user.notifications.count).to eq 0
+      end
+    end
+
+    context "when the reactable is an organization's article" do
+      let(:org) { create(:organization) }
+
+      before do
+        user.update(organization: org, org_admin: true)
+        article.update(organization: org)
+      end
+
+      it "creates a notification with the organization's ID" do
+        reaction = create(:reaction, reactable: article, user: user2)
+        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+        expect(org.notifications.count).to eq 1
       end
     end
   end
