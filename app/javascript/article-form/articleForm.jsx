@@ -72,6 +72,7 @@ export default class ArticleForm extends Component {
       });
     }
 
+    window.onbeforeunload = null;
     window.addEventListener('beforeunload', this.sessionStoreContent);
 
     // const editor = document.getElementById('article_body_markdown');
@@ -90,6 +91,7 @@ export default class ArticleForm extends Component {
     this.state.tagList !== previousContent.tagList;
 
   sessionStoreContent = e => {
+    e.preventDefault();
     sessionStorage.setItem(
       this.url,
       JSON.stringify({
@@ -99,7 +101,6 @@ export default class ArticleForm extends Component {
         bodyMarkdown: this.state.bodyMarkdown,
       }),
     );
-    e.returnValue = '';
   };
 
   toggleHelp = e => {
@@ -318,9 +319,7 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} />
-              {' '}
-IMAGES
+              <img src={ImageUploadIcon} /> IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -337,9 +336,7 @@ IMAGES
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} />
-            {' '}
-IMAGES
+            <img src={ImageUploadIcon} /> IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
