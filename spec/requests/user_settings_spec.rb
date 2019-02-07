@@ -58,6 +58,12 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.summary).to eq("Hello new summary")
     end
 
+    it "updates profile_updated_at" do
+      user.update_column(:profile_updated_at, 2.weeks.ago)
+      put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
+      expect(user.reload.profile_updated_at).to be > 2.minutes.ago
+    end
+
     it "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")

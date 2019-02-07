@@ -15,6 +15,7 @@ module Api
       def update_or_create
         @client = create_octokit_client
         @repo = GithubRepo.find_or_create(fetched_repo_params)
+        current_user.touch(:github_repos_updated_at)
         if @repo.valid?
           render json: { featured: @repo.featured }
         else

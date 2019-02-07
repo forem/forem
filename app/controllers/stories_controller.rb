@@ -196,7 +196,7 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     @article_show = true
-    @variant_number = params[:variant_version] || rand(2)
+    @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
     assign_user_and_org
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
