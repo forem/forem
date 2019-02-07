@@ -54,7 +54,8 @@ class ReactionsController < ApplicationController
     if reaction
       reaction.user.touch
       reaction.destroy
-      Notification.send_reaction_notification_without_delay(reaction)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if reaction.reactable_type == "Article" && reaction.reactable.organization_id
       @result = "destroy"
     else
       reaction = Reaction.create!(
@@ -64,7 +65,8 @@ class ReactionsController < ApplicationController
         category: category,
       )
       @result = "create"
-      Notification.send_reaction_notification(reaction)
+      Notification.send_reaction_notification(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reactable_type == "Article" && reaction.reactable.organization_id
     end
     render json: { result: @result, category: category }
   end

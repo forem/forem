@@ -88,7 +88,7 @@ RSpec.describe "NotificationsIndex", type: :request do
             category: categories.sample,
           )
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction) }
+        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user) }
       end
 
       it "renders the correct user for a single reaction" do
