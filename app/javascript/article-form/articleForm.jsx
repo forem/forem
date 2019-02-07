@@ -194,7 +194,8 @@ export default class ArticleForm extends Component {
 
   onClearChanges = e => {
     e.preventDefault();
-    confirm('Are you sure you want to revert to the previous save?');
+    let revert = confirm('Are you sure you want to revert to the previous save?');
+    if (!revert) return;
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
