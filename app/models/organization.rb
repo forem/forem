@@ -77,6 +77,7 @@ class Organization < ApplicationRecord
     SecureRandom.hex(50)
   end
 
+  # TODO: remove the unused method
   def resave_articles
     cache_buster = CacheBuster.new
     articles.find_each do |article|
