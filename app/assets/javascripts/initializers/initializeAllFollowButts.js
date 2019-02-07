@@ -73,8 +73,11 @@ function handleTagButtAssignment(user, butt, buttInfo) {
 
 function assignInitialButtResponse(response, butt) {
   butt.classList.add('showing');
-  if (response === 'true') {
+  if (response === 'true' || response === 'mutual') {
     assignState(butt, 'unfollow');
+  }
+  else if (response === 'follow-back') {
+    assignState(butt, 'follow-back')
   }
   else if (response === 'false') {
     assignState(butt, 'follow');
@@ -114,7 +117,7 @@ function handleOptimisticButtRender(butt) {
             }catch (err) {return}
         });
     }catch (err) {return}
-    
+
     handleFollowButtPress(butt);
   }
 }
@@ -134,10 +137,14 @@ function assignState(butt, newState) {
     style = JSON.parse(butt.dataset.info).style;
   }
   butt.classList.add('showing');
-  if (newState === 'follow') {
+  if (newState === 'follow' || newState === 'follow-back') {
     butt.dataset.verb = 'unfollow';
     butt.classList.remove('following-butt');
-    addFollowText(butt, style);
+    if (newState === 'follow-back') {
+      addFollowText(butt, newState);
+    } else if (newState === 'follow') {
+      addFollowText(butt, style);
+    }
   } else if (newState === 'login') {
     addFollowText(butt, style);
   } else if (newState === 'self') {
@@ -167,4 +174,3 @@ function addFollowingText(butt, style) {
     butt.innerHTML = '✓ FOLLOWING';
   }
 }
-
