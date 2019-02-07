@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190129173611) do
+ActiveRecord::Schema.define(version: 20190206222055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -503,6 +503,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.text "proof"
     t.string "secret"
     t.string "slug"
@@ -659,6 +660,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.string "alias_for"
     t.string "bg_color_hex"
     t.string "buffer_profile_id_code"
+    t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"
@@ -674,6 +676,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
+    t.datetime "updated_at"
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -760,6 +763,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
+    t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
     t.string "inbox_type", default: "private"
@@ -798,6 +802,7 @@ ActiveRecord::Schema.define(version: 20190129173611) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "reactions_count", default: 0, null: false
     t.datetime "remember_created_at"
     t.string "remember_token"

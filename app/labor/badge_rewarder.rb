@@ -2,6 +2,7 @@ module BadgeRewarder
   def self.award_yearly_club_badges
     award_one_year_badges
     award_two_year_badges
+    award_three_year_badges
   end
 
   def self.award_beloved_comment_badges
@@ -92,6 +93,18 @@ module BadgeRewarder
       achievement = BadgeAchievement.create(
         user_id: user.id,
         badge_id: Badge.find_by_slug("two-year-club").id,
+        rewarding_context_message_markdown: message,
+      )
+      user.save if achievement.valid?
+    end
+  end
+
+  def self.award_three_year_badges
+    message = "Happy DEV birthday! Can you believe it's been three years already?!"
+    User.where("created_at < ? AND created_at > ?", 3.year.ago, 1097.days.ago).find_each do |user|
+      achievement = BadgeAchievement.create(
+        user_id: user.id,
+        badge_id: Badge.find_by_slug("three-year-club").id,
         rewarding_context_message_markdown: message,
       )
       user.save if achievement.valid?
