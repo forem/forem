@@ -67,6 +67,13 @@ RSpec.describe MarkdownParser do
     end
   end
 
+  context "when provided with kbd tag" do
+    it "leaves the kbd tag in place" do
+      inline_kbd = generate_and_parse_markdown("<kbd>Ctrl</kbd> + <kbd>,</kbd>")
+      expect(inline_code).to eq('<kbd>Ctrl</kbd> + <kbd>,</kbd>')
+    end
+  end
+
   describe "#tags_used" do
     let(:parsed_markdown) { described_class.new("{% youtube oHg5SJYRHA0 %}") }
 
