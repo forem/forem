@@ -77,6 +77,16 @@ class Notification < ApplicationRecord
           send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments")
         end
       end
+      if comment.commentable.organization_id
+        Notification.create(
+          organization_id: comment.commentable.organization_id,
+          notifiable_id: comment.id,
+          notifiable_type: comment.class.name,
+          action: nil,
+          json_data: json_data,
+        )
+        # no push notifications for organizations yet
+      end
     end
     handle_asynchronously :send_new_comment_notifications
 
