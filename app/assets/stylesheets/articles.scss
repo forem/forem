@@ -75,6 +75,17 @@
       @media screen and ( min-width: 950px ){
         display: none;
       }
+      .organization-name {
+        font-size: 15px;
+        font-weight: bold;
+        border: 0px;
+        display: inline-block;
+        width: 27%;
+        padding: 9px 0px;
+        text-align: center;
+        color: $black;
+        margin: 1%;
+      }
       .query-filter-button{
         font-size: 12px;
         font-weight: bold;
