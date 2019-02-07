@@ -9,6 +9,7 @@ class Organization < ApplicationRecord
   has_many :articles
   has_many :collections
   has_many :display_ads
+  has_many :notifications
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
