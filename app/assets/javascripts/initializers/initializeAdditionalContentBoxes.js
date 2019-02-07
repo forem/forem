@@ -8,7 +8,7 @@ function initializeAdditionalContentBoxes() {
       .substring(0, 5);
     var user = userData();
     var stateParam = 'include_sponsors';
-    if (!user.display_sponsors) {
+    if (user && !user.display_sponsors) {
       stateParam = 'do_not_include_sponsors';
     }
     window
