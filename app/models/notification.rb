@@ -1,6 +1,10 @@
 class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
-  belongs_to :user
+  belongs_to :user, optional: true
+  belongs_to :organization, optional: true
+
+  validates :user_id, presence: true, if: Proc.new { |n| n.organization_id.nil? }
+  validates :organization_id, presence: true, if: Proc.new { |n| n.user_id.nil? }
 
   before_create :mark_notified_at_time
 
