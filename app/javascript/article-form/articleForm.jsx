@@ -60,7 +60,7 @@ export default class ArticleForm extends Component {
     initEditorResize();
 
     const previousContent = JSON.parse(
-      sessionStorage.getItem(window.location.href),
+      localStorage.getItem(window.location.href),
     );
     if (previousContent && this.checkContentChanges(previousContent)) {
       this.setState({
@@ -72,7 +72,7 @@ export default class ArticleForm extends Component {
       });
     }
 
-    window.addEventListener('beforeunload', this.sessionStoreContent);
+    window.addEventListener('beforeunload', this.localStoreContent);
 
     // const editor = document.getElementById('article_body_markdown');
     // const myCodeMirror = CodeMirror(editor, {
@@ -89,9 +89,8 @@ export default class ArticleForm extends Component {
     this.state.mainImage !== previousContent.mainImage ||
     this.state.tagList !== previousContent.tagList;
 
-  sessionStoreContent = e => {
-    e.preventDefault();
-    sessionStorage.setItem(
+  localStoreContent = e => {
+    localStorage.setItem(
       this.url,
       JSON.stringify({
         title: this.state.title,
@@ -172,9 +171,9 @@ export default class ArticleForm extends Component {
     });
   };
 
-  removeSessionStorage = () => {
-    sessionStorage.removeItem(this.url);
-    window.removeEventListener('beforeunload', this.sessionStoreContent);
+  removeLocalStorage = () => {
+    localStorage.removeItem(this.url);
+    window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
   onPublish = e => {
@@ -182,7 +181,7 @@ export default class ArticleForm extends Component {
     this.setState({ submitting: true, published: true });
     const state = this.state;
     state.published = true;
-    submitArticle(state, this.removeSessionStorage, this.handleArticleError);
+    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
   onSaveDraft = e => {
@@ -190,7 +189,7 @@ export default class ArticleForm extends Component {
     this.setState({ submitting: true, published: false });
     const state = this.state;
     state.published = false;
-    submitArticle(state, this.removeSessionStorage, this.handleArticleError);
+    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
   onClearChanges = e => {
@@ -228,6 +227,7 @@ export default class ArticleForm extends Component {
   };
 
   toggleEdit = () => {
+    this.localStoreContent();
     if (this.state.edited) return;
     this.setState({
       edited: true,
@@ -318,9 +318,7 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} />
-              {' '}
-IMAGES
+              <img src={ImageUploadIcon} /> IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -337,9 +335,7 @@ IMAGES
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} />
-            {' '}
-IMAGES
+            <img src={ImageUploadIcon} /> IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
