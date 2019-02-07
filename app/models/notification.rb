@@ -52,11 +52,11 @@ class Notification < ApplicationRecord
     def send_new_comment_notifications(comment)
       user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
       user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
+      json_data = {
+        user: user_data(comment.user),
+        comment: comment_data(comment)
+      }
       user_ids.delete(comment.user_id).each do |user_id|
-        json_data = {
-          user: user_data(comment.user),
-          comment: comment_data(comment)
-        }
         Notification.create(
           user_id: user_id,
           notifiable_id: comment.id,
