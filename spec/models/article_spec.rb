@@ -19,8 +19,8 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
   it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(86) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:organization) }
-  it { is_expected.to belong_to(:collection) }
+  it { is_expected.to belong_to(:organization).optional }
+  it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
@@ -428,16 +428,16 @@ RSpec.describe Article, type: :model do
 
   describe "#async_score_calc" do
     context "when published" do
-      let(:article) { create(:article) }
+      let(:article) { build(:article) }
 
       it "updates the hotness score" do
-        article.save
+        run_background_jobs_immediately { article.save }
         expect(article.hotness_score > 0).to eq(true)
       end
 
       it "updates the spaminess score" do
-        article.update_column(:spaminess_rating, -1)
-        article.save
+        article.spaminess_rating = -1
+        run_background_jobs_immediately { article.save }
         expect(article.spaminess_rating).to eq(0)
       end
     end
@@ -484,6 +484,16 @@ RSpec.describe Article, type: :model do
     collection = Collection.create(user_id: article.user.id, slug: "yoyoyo")
     article.collection_id = collection.id
     expect(article).to be_valid
+  end
+
+  describe "comment templates" do
+    it "can have no template" do
+      expect(build(:article).valid?).to be(true)
+    end
+
+    it "can have a template" do
+      expect(build(:article, comment_template: "my comment template").comment_template).to eq("my comment template")
+    end
   end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

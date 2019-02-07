@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-    <% if @organization.users.any? %>
+    <% if @organization.users.present? %>
       <div class="widget">
         <div class="widget-suggested-follows-container">
           <header><h4>meet the team</h4></header>

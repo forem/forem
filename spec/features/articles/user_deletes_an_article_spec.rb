@@ -1,24 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Article", js: true, type: :feature do
-  let(:author)                    { create(:user) }
-  let(:article)                   { create(:article, user_id: author.id) }
-
-  def delete_article_via_dashboard
-    visit "/dashboard"
-    delete_link = find_link("DELETE")
-    delete_link.click
-    second_link = find_link("DELETE")
-    second_link.click
-  end
-
-  before do
-    Notification.send_to_followers(article, "Published")
-  end
+RSpec.describe "Deleting Article", type: :feature do
+  let(:article) { create(:article) }
 
   it "author of article deletes own article" do
-    sign_in author
-    delete_article_via_dashboard
+    sign_in article.user
+    visit "/dashboard"
+    click_on "DELETE"
+    click_on "DELETE" # This is for confirming deletion
     expect(page).to have_text("Write your first post now")
   end
 end

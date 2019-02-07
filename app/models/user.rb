@@ -1,9 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user, :good_standing_user,
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee
+  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :video_permission
 
   rolify
   include AlgoliaSearch
@@ -286,12 +286,20 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
+  def banished?
+    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
+  end
+
   def banned_from_mentorship
     has_role? :banned_from_mentorship
   end
 
   def admin?
     has_role?(:super_admin)
+  end
+
+  def any_admin?
+    has_role?(:super_admin) || has_role?(:admin)
   end
 
   def trusted
@@ -394,6 +402,10 @@ class User < ApplicationRecord
     remove_from_index!
     index = Algolia::Index.new("searchables_#{Rails.env}")
     index.delay.delete_object("users-#{id}")
+  end
+
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   private
@@ -577,10 +589,6 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def unsubscribe_from_newsletters
-    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   def mentorship_status_update

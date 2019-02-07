@@ -57,7 +57,8 @@ RSpec.describe "HtmlVariants", type: :request do
         html_variant: {
           name: "New post",
           html: "Yo ho ho#{rand(100)}", tag_list: "yoyo",
-          published: true
+          published: true,
+          group: "article_show_sidebar_cta"
         }
       }
       expect(HtmlVariant.all.size).to eq(1)
@@ -72,7 +73,7 @@ RSpec.describe "HtmlVariants", type: :request do
           published: true
         }
       }
-      expect(HtmlVariant.all.size).to eq(1)
+      expect(HtmlVariant.all.size).to eq(0)
     end
   end
 
