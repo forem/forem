@@ -127,6 +127,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
 
   get "/notifications/:filter" => "notifications#index"
+  get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
