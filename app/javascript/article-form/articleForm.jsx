@@ -72,7 +72,6 @@ export default class ArticleForm extends Component {
       });
     }
 
-    window.onbeforeunload = null;
     window.addEventListener('beforeunload', this.sessionStoreContent);
 
     // const editor = document.getElementById('article_body_markdown');
@@ -319,7 +318,9 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} /> IMAGES
+              <img src={ImageUploadIcon} />
+              {' '}
+IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -336,7 +337,9 @@ export default class ArticleForm extends Component {
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} /> IMAGES
+            <img src={ImageUploadIcon} />
+            {' '}
+IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
