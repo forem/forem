@@ -12,7 +12,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     response_body.include?(CGI.escapeHTML(User.last.name)) && response_body.include?(CGI.escapeHTML(User.second_to_last.name))
   end
 
-  describe "GET notifications" do
+  describe "GET /notifications" do
     it "renders page with the proper heading" do
       get "/notifications"
       expect(response.body).to include("Notifications")
