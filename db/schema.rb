@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190206164319) do
+ActiveRecord::Schema.define(version: 20190206222055) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -496,6 +496,7 @@ ActiveRecord::Schema.define(version: 20190206164319) do
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.text "proof"
     t.string "secret"
     t.string "slug"
@@ -755,6 +756,7 @@ ActiveRecord::Schema.define(version: 20190206164319) do
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
+    t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
     t.jsonb "language_settings", default: {}, null: false
@@ -792,6 +794,7 @@ ActiveRecord::Schema.define(version: 20190206164319) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "reactions_count", default: 0, null: false
     t.datetime "remember_created_at"
     t.string "remember_token"
