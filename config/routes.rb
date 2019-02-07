@@ -221,6 +221,7 @@ Rails.application.routes.draw do
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
+  get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")

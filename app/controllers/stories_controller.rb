@@ -31,6 +31,13 @@ class StoriesController < ApplicationController
     end
   end
 
+  def warm_comments
+    @article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
+    @warm_only = true
+    assign_article_show_variables
+    render partial: "articles/full_comment_area"
+  end
+
   private
 
   def redirect_to_changed_username_profile
@@ -195,6 +202,15 @@ class StoriesController < ApplicationController
   end
 
   def handle_article_show
+    assign_article_show_variables
+    set_surrogate_key_header @article.record_key
+    redirect_if_show_view_param
+    return if performed?
+
+    render template: "articles/show"
+  end
+
+  def assign_article_show_variables
     @article_show = true
     @variant_number = params[:variant_version] || rand(2)
     assign_user_and_org
@@ -202,11 +218,6 @@ class StoriesController < ApplicationController
     assign_second_and_third_user
     not_found if permission_denied?
     @comment = Comment.new(body_markdown: @article&.comment_template)
-    set_surrogate_key_header @article.record_key
-    redirect_if_show_view_param
-    return if performed?
-
-    render template: "articles/show"
   end
 
   def permission_denied?
