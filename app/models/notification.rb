@@ -12,14 +12,22 @@ class Notification < ApplicationRecord
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      user = follow.followable
-      recent_follows = Follow.where(followable_type: "User", followable_id: user.id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
-      aggregated_siblings = recent_follows.map { |f| user_data(f.follower) }
+      recent_follows = Follow.where(followable_type: follow.followable_type, followable_id: follow.followable_id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
+
+      notification_params = { action: "Follow" }
+      if follow.followable_type == "User"
+        notification_params[:user_id] = follow.followable_id
+      elsif follow.followable_type == "Organization"
+        notification_params[:organization_id] = follow.followable_id
+      end
+
+      followers = User.where(id: recent_follows.pluck(:follower_id))
+      aggregated_siblings = followers.map { |follower| user_data(follower) }
       if aggregated_siblings.size.zero?
-        Notification.find_or_create_by(user_id: user.id, action: "Follow").destroy
+        Notification.find_or_create_by(notification_params).destroy
       else
         json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings }
-        notification = Notification.find_or_create_by(user_id: user.id, action: "Follow")
+        notification = Notification.find_or_create_by(notification_params)
         notification.notifiable_id = recent_follows.first.id
         notification.notifiable_type = "Follow"
         notification.json_data = json_data
