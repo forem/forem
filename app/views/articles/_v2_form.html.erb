@@ -25,9 +25,9 @@
     <textarea class="articleform__body" placeholder="Body" name="body_markdown"><%= @article.body_markdown %></textarea>
     <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"><img src="<%= asset_path 'image-upload.svg' %>"> IMAGES</button><button class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"><img src="<%= asset_path 'three-dots.svg' %>"></button>
     <% if @article.published %>
-      <div class="articleform__buttons"><button class="articleform__buttons--small inactive">?</button><button class="inactive">PREVIEW</button><button class="articleform__buttons--publish">SAVE CHANGES</button></div>    </form>
+      <div class="articleform__buttons"><button class="articleform__buttons--small inactive">?</button><button class="inactive">PREVIEW</button><span><p class="hidden" style="visibility:hidden;">New Changes (clear)</p><button class="articleform__buttons--publish">SAVE CHANGES</button><span></div>    </form>
     <% else %>
-      <div class="articleform__buttons"><button class="articleform__buttons--small inactive">?</button><button class="inactive">PREVIEW</button><button>SAVE DRAFT</button><button class="articleform__buttons--publish">PUBLISH</button></div>    </form>
+      <div class="articleform__buttons"><button class="articleform__buttons--small inactive">?</button><button class="inactive">PREVIEW</button><button>SAVE DRAFT</button><span><p class="hidden" style="visibility:hidden;">New Changes (clear)</p><button class="articleform__buttons--publish">PUBLISH</button></span></div>    </form>
     <% end %>
     <div style="display:none">
       <%= render "pages/editor_guide_text", version: "2" %>

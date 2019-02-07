@@ -273,6 +273,7 @@
   * {
     margin: 4px calc(0.7vw);
   }
+
   span {
     display: -webkit-inline-flex;
     display: -ms-inline-flexbox;
@@ -284,10 +285,14 @@
       font-size: 12.5px;
       color: $medium-gray;
       font-style: italic;
+      margin-left: -2px;
     }
     button {
       margin-top: 0px;
-      // padding: 2px;
+      margin-left: -1px;
+    }
+    .hidden {
+      visibility: 'hidden';
     }
     .clear-button {
       // in part from https://css-tricks.com/overriding-default-button-styles/
@@ -331,7 +336,7 @@
   button,
   a {
     margin-top: 20px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     cursor: pointer;
     background: $light-gray;
     font-family: $helvetica-condensed;

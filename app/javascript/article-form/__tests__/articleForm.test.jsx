@@ -33,8 +33,8 @@ describe('<ArticleForm />', () => {
 
     global.window.algoliasearch = algoliasearch;
 
-    sessionStorage.clear();
-    sessionStorage.__STORE__ = {};
+    localStorage.clear();
+    localStorage.__STORE__ = {};
   });
 
   it('renders properly', () => {
@@ -48,7 +48,7 @@ describe('<ArticleForm />', () => {
   });
 
   it('loads text from sessionstorage when available', () => {
-    sessionStorage.setItem(
+    localStorage.setItem(
       'http://localhost/',
       JSON.stringify({ bodyMarkdown: 'hello, world' }),
     );
