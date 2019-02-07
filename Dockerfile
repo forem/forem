@@ -1,4 +1,4 @@
-FROM ruby:2.6.0
+FROM ruby:2.6.1
 
 # Make nodejs and yarn as dependencies
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -

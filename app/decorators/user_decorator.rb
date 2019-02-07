@@ -76,11 +76,4 @@ class UserDecorator < ApplicationDecorator
     ]
     colors[id % 10]
   end
-
-  def key_profile_attributes
-    "#{bg_color_hex}-#{text_color_hex}-#{path}-#{tag_line}-
-    #{email}-#{email_public}-#{employer_name}-#{employment_title}-
-    #{employer_url}-#{location}-#{education}-#{summary}-
-    #{looking_for_work_publicly}-#{created_at}-#{profile_image_url}-#{name}"
-  end
 end

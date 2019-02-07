@@ -1,6 +1,6 @@
 # rubocop:disable LineLength
 source "https://rubygems.org"
-ruby "2.6.0"
+ruby "2.6.1"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
@@ -30,7 +30,7 @@ gem "bourbon", "~> 5.1"
 gem "buffer", "~> 0.1"
 gem "carrierwave", "~> 1.3"
 gem "carrierwave-bombshelter", "~> 0.2"
-gem "cloudinary", "~> 1.9"
+gem "cloudinary", "~> 1.11"
 gem "counter_culture", "~> 2.1"
 gem "csv_shaper", "~> 1.3"
 gem "dalli", "~> 2.7"

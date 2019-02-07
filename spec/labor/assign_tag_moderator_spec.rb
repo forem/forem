@@ -8,9 +8,9 @@ RSpec.describe AssignTagModerator do
 
   before do
     user_ids = [user_one.id, user_two.id]
-    tag_names = [tag_one.name, tag_two.name]
+    tag_ids = [tag_one.id, tag_two.id]
     ChatChannel.create(slug: "tag-moderators", channel_name: "Tag Moderators", channel_type: "invite_only")
-    described_class.add_tag_moderators(user_ids, tag_names)
+    described_class.add_tag_moderators(user_ids, tag_ids)
   end
 
   it "assigns the correct moderators and tags" do

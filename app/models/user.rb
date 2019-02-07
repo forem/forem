@@ -1,9 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user, :good_standing_user,
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee
+  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :video_permission
 
   rolify
   include AlgoliaSearch
@@ -287,7 +287,7 @@ class User < ApplicationRecord
   end
 
   def banished?
-    user.notes.where(reason: "banned", content: "spam account").any? && user.banned
+    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
   end
 
   def banned_from_mentorship
@@ -296,6 +296,10 @@ class User < ApplicationRecord
 
   def admin?
     has_role?(:super_admin)
+  end
+
+  def any_admin?
+    has_role?(:super_admin) || has_role?(:admin)
   end
 
   def trusted
