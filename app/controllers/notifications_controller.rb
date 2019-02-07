@@ -3,11 +3,7 @@ class NotificationsController < ApplicationController
   def index
     if user_signed_in?
       @notifications_index = true
-      @user = if params[:username] && current_user.admin?
-                User.find_by_username(params[:username])
-              else
-                current_user
-              end
+      @user = user_to_view
       if params[:page]
         num = 45
         notified_at_offset = Notification.find(params[:page])&.notified_at
@@ -33,6 +29,14 @@ class NotificationsController < ApplicationController
   end
 
   private
+
+  def user_to_view
+    if params[:username] && current_user.admin?
+      User.find_by_username(params[:username])
+    else
+      current_user
+    end
+  end
 
   def filtered_notifications
     if params[:filter].to_s.casecmp("posts").zero?
