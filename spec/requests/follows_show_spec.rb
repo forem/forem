@@ -21,7 +21,7 @@ RSpec.describe "Follows #show", type: :request do
     expect(response.body).to eq("not-logged-in")
   end
 
-  it "returns false when not followeing" do
+  it "returns false when not following" do
     expect(get_following_status.uniq[0]).to eq("false")
   end
 
