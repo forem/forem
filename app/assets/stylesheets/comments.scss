@@ -96,7 +96,7 @@ a.header-link {
         max-height: 350px;
       }
       kbd {
-        @extend .kbd;
+        @extend %kbd;
       }
     }
   }
@@ -288,7 +288,7 @@ a.header-link {
         overflow-x: auto;
       }
       kbd {
-        @extend .kbd;
+        @extend %kbd;
       }
     }
     .actions {
@@ -639,7 +639,7 @@ a.header-link {
       }
     }
     kbd {
-      @extend .kbd;
+      @extend %kbd;
     }
   }
   .icon-img {

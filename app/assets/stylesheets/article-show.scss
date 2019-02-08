@@ -492,7 +492,7 @@ article {
       line-height: 1.6em;
     }
     kbd {
-      @extend .kbd;
+      @extend %kbd;
     }
     pre {
       background: #29292e;
