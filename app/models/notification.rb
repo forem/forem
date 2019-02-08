@@ -39,13 +39,19 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_new_follower_notification
 
     def send_to_followers(notifiable, action = nil)
-      # most often, notifiable = article, action = "Published"
-      # followers is an array and not an activerecord object
+      # for now, arguments are always: notifiable = article, action = "Published"
       json_data = {
         user: user_data(notifiable.user),
         article: article_data(notifiable)
       }
-      notifiable.user.followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
+      followers = if notifiable.organization_id
+                    json_data[:organization] = organization_data(notifiable.organization)
+                    (notifiable.user.followers + notifiable.organization.followers).uniq
+                  else
+                    notifiable.user.followers
+                  end
+      # followers is an array and not an activerecord object
+      followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
         Notification.create(
           user_id: follower.id,
           notifiable_id: notifiable.id,
@@ -277,6 +283,10 @@ class Notification < ApplicationRecord
 
       new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
+      new_json_data[:user] = user_data(notifiable.user)
+      if notifiable.is_a?(Article) && notifiable.organization_id
+        new_json_data[:organization] = organization_data(notifiable.organization)
+      end
       notifications.update_all(json_data: new_json_data)
     end
     handle_asynchronously :update_notifications
@@ -293,6 +303,17 @@ class Notification < ApplicationRecord
         profile_image_90: user.profile_image_90,
         comments_count: user.comments_count,
         created_at: user.created_at
+      }
+    end
+
+    def organization_data(organization)
+      {
+        id: organization.id,
+        class: { name: "Organization" },
+        name: organization.name,
+        slug: organization.slug,
+        path: organization.path,
+        profile_image_90: organization.profile_image_90
       }
     end
 
