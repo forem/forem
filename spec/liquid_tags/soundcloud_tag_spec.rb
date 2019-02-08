@@ -20,7 +20,7 @@ RSpec.describe SoundcloudTag, type: :liquid_template do
     it "accepts soundcloud link" do
       liquid = generate_new_liquid(soundcloud_link)
       rendered_soundcloud_iframe = liquid.render
-      Approvals.verify(rendered_soundcloud_iframe, name: "soundcloud_liquid_tag", format: :html)
+      verify(format: :html) { rendered_soundcloud_iframe }
     end
 
     it "rejects invalid soundcloud link" do

@@ -32,7 +32,7 @@ describe "Using the editor" do
       page.execute_script("window.scrollTo(0, -100000)")
       find("button#previewbutt").click
       article_body = find(:xpath, "//div[@id='article_body']")["innerHTML"]
-      Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
+      verify(format: :html) { article_body }
     end
   end
 
@@ -41,7 +41,7 @@ describe "Using the editor" do
       fill_markdown_with(read_from_file(raw_text))
       click_button("article-submit")
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
-      Approvals.verify(article_body, name: "user_submit_article", format: :html)
+      verify(format: :html) { article_body }
     end
 
     it "user write and publish an article" do
