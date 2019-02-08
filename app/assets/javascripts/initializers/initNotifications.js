@@ -12,7 +12,7 @@ function markNotificationsAsRead() {
       var xmlhttp;
       var locationAsArray = window.location.pathname.split("/");
       // Use regex to ensure only numbers in the original string are converted to integers
-      var parsedLastParam = parseInt(locationAsArray[locationAsArray.length - 1].replace(/[^0-9]/g, ''));
+      var parsedLastParam = parseInt(locationAsArray[locationAsArray.length - 1].replace(/[^0-9]/g, ''), 10);
 
       if (window.XMLHttpRequest) {
         xmlhttp = new XMLHttpRequest();
