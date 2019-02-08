@@ -13,13 +13,11 @@
     <div style="background: white;border: 1px dashed black;padding: 18px;border-radius:3px">
       <span style="font-weight:bold;font-size:1.3em">🎟 25% Off Everything:
       <em style="color:darkcyan;font-weight:700">
-        <%= CouponGenerator.new(current_user.id,"member_discount").generate %>
-      </em></span>
+              </em></span>
       <br/><br/>
       <% if current_user.monthly_dues >= 2500 %>
         <span style="font-weight:bold;font-size:1.3em">🎟 Level 3 Merch Gift (one time use):
         <em style="color:darkcyan;font-weight:700">
-          <%= CouponGenerator.new(current_user.id,"tee_pack").generate %>
         </em></span>
         <br/><br/>
         👆 This coupon will give you 100% off:<br/>
@@ -35,7 +33,6 @@
       <% else %>
         <span style="font-weight:bold;font-size:1.3em">🎟 Level 2 Sticker Gift (one time use):
         <em style="color:darkcyan;font-weight:700">
-          <%= CouponGenerator.new(current_user.id,"sticker_pack").generate %>
         </em></span>
         <br/><br/>
         👆 This coupon will give you 100% off
