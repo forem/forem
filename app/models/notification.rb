@@ -41,11 +41,11 @@ class Notification < ApplicationRecord
     def send_to_followers(notifiable, action = nil)
       # most often, notifiable = article, action = "Published"
       # followers is an array and not an activerecord object
+      json_data = {
+        user: user_data(notifiable.user),
+        article: article_data(notifiable)
+      }
       notifiable.user.followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
-        json_data = {
-          user: user_data(notifiable.user),
-          article: article_data(notifiable)
-        }
         Notification.create(
           user_id: follower.id,
           notifiable_id: notifiable.id,
