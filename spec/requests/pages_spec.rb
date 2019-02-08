@@ -65,6 +65,14 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /badge" do
+    it "has proper headline" do
+      html_variant = create(:html_variant, group: "badge_landing_page", published: true, approved: true)
+      get "/badge"
+      expect(response.body).to include(html_variant.html)
+    end
+  end
+
   describe "GET /live" do
     let(:user) { create(:user) }
 

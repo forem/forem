@@ -1,4 +1,4 @@
-p "1/8 Creating Organizations"
+p "1/9 Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -17,7 +17,7 @@ end
 
 ##############################################################################
 
-p "2/8 Creating Users"
+p "2/9 Creating Users"
 
 roles = %i(level_1_member level_2_member level_3_member level_4_member
            workshop_pass)
@@ -50,7 +50,7 @@ end
 
 ##############################################################################
 
-p "3/8 Creating Tags"
+p "3/9 Creating Tags"
 
 tags = %w(beginners career computerscience git go
           java javascript linux productivity python security webdev)
@@ -66,7 +66,7 @@ end
 
 ##############################################################################
 
-p "4/8 Creating Articles"
+p "4/9 Creating Articles"
 
 Article.clear_index!
 25.times do |i|
@@ -97,7 +97,7 @@ end
 
 ##############################################################################
 
-p "5/8 Creating Comments"
+p "5/9 Creating Comments"
 
 Comment.clear_index!
 30.times do
@@ -112,7 +112,7 @@ end
 
 ##############################################################################
 
-p "6/8 Creating Podcasts"
+p "6/9 Creating Podcasts"
 
 image_file = File.join(
   Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"
@@ -177,7 +177,7 @@ end
 
 ##############################################################################
 
-p "7/8 Creating Broadcasts"
+p "7/9 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
@@ -188,7 +188,7 @@ Broadcast.create!(
 
 ##############################################################################
 
-p "8/8 Creating chat_channel"
+p "8/9 Creating chat_channel"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
@@ -202,6 +202,17 @@ ChatChannel.without_auto_index do
 end
 ChatChannel.reindex!
 
+p "9/9 Creating html_variant"
+
+HtmlVariant.create(
+  name: rand(100).to_s,
+  group: "badge_landing_page",
+  html: rand(1000).to_s,
+  success_rate: 0,
+  published: true,
+  approved: true,
+  user_id: User.first.id,
+)
 ##############################################################################
 
 puts <<-ASCII
