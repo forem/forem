@@ -1,6 +1,6 @@
-<% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", :expires_in => 2.hours) do %>
+<% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", expires_in: 2.hours) do %>
   <div id="comments" style="margin-top: -56px;padding-bottom:56px;position:relative;z-index:-100" data-updated-at="<%= Time.current %>"></div>
-  <% if @article.show_comments%>
+  <% if @article.show_comments %>
     <div class="comments-container-container">
       <div
         class="comments-container"
@@ -11,17 +11,17 @@
             commentable: @article,
             commentable_type: "Article" %>
         <div class="comment-trees" id="comment-trees-container">
-          <% if @article.comments_count > 0  %>
-            <% Comment.rooted_on(@article.id, "Article").order("score DESC").limit(@comments_to_show_count).each_with_index do |comment, i| %>
+          <% if @article.comments_count > 0 %>
+            <% @article.comments.includes(:user).arrange(order: "score DESC").to_a[0, @comments_to_show_count].to_h.each do |comment, sub_comments| %>
               <% cache ["comment_root_cached_tree", comment] do %>
-                <%= tree_for(comment, @article) %>
+                <%= tree_for(comment, @article, sub_comments) %>
               <% end %>
             <% end %>
           <% end %>
         </div>
       </div>
       <div class="show-comments-footer">
-        <%= render 'articles/comments_actions' %>
+        <%= render "articles/comments_actions" %>
       </div>
     </div>
   <% end %>
