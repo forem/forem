@@ -47,7 +47,7 @@ RSpec.describe "StoriesShow", type: :request do
       it "does not render html variant when user logged in" do
         html_variant = create(:html_variant, published: true, approved: true)
         sign_in user
-        get article.path + "?variant_version=1"
+        get article.path
         expect(response.body).not_to include html_variant.html
       end
 

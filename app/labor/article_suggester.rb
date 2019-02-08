@@ -32,6 +32,6 @@ class ArticleSuggester
   end
 
   def offsets
-    Rails.env.production? ? [10, 50] : [0, 0]
+    Rails.env.production? ? [10, 120] : [0, 0]
   end
 end

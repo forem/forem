@@ -208,6 +208,7 @@ Rails.application.routes.draw do
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
+  get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
@@ -221,6 +222,7 @@ Rails.application.routes.draw do
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
+  get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")

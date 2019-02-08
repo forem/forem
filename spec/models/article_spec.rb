@@ -428,16 +428,19 @@ RSpec.describe Article, type: :model do
 
   describe "#async_score_calc" do
     context "when published" do
+      before { ActiveJob::Base.queue_adapter = :inline }
+
       let(:article) { build(:article) }
 
       it "updates the hotness score" do
-        run_background_jobs_immediately { article.save }
+        article.save
+        article.reload
         expect(article.hotness_score > 0).to eq(true)
       end
 
       it "updates the spaminess score" do
         article.spaminess_rating = -1
-        run_background_jobs_immediately { article.save }
+        article.save
         expect(article.spaminess_rating).to eq(0)
       end
     end

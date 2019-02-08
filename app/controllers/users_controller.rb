@@ -32,6 +32,7 @@ class UsersController < ApplicationController
       end
 
       follow_hiring_tag(@user)
+      @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}", notice: notice
     else
       render :edit
