@@ -14,6 +14,12 @@ class PagesController < ApplicationController
     set_surrogate_key_header "about_page"
   end
 
+  def badge
+    @html_variant = HtmlVariant.find_for_test([], "badge_landing_page")
+    render layout: false
+    set_surrogate_key_header "badge_page"
+  end
+
   def membership
     flash[:notice] = ""
     flash[:error] = ""
