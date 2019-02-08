@@ -382,14 +382,6 @@
   resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.2.1.tgz#fa950e6f5dd3a0775ff0b6a24d59de8d310bd7a7"
   integrity sha512-XC949WBoN0PikP808uuWvVve+EsGGtOOhUtzK5jg0/VFLF57uqjVtmeOeuI4fi3miUksrgc97a0mFtNDotrxPA==
 
-"@webscopeio/react-textarea-autocomplete@^2.3.4":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@webscopeio/react-textarea-autocomplete/-/react-textarea-autocomplete-2.3.5.tgz#26fb341c9edf53ec91bfa3d6747aed4288c200cd"
-  integrity sha512-itupJu/4Nek+YPuxldZzjYc3+963vxDvgD8eN0B6hSppL+lT4ACED07v2ITB1aXtbclOUajHQyETfSBldIwmSA==
-  dependencies:
-    custom-event "^1.0.1"
-    textarea-caret "3.0.2"
-
 abab@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.0.tgz#aba0ab4c5eee2d4c79d3487d85450fb2376ebb0f"
@@ -3055,11 +3047,6 @@ currently-unhandled@^0.4.1:
   integrity sha1-mI3zP+qxke95mmE2nddsF635V+o=
   dependencies:
     array-find-index "^1.0.1"
-
-custom-event@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/custom-event/-/custom-event-1.0.1.tgz#5d02a46850adf1b4a317946a3928fccb5bfd0425"
-  integrity sha1-XQKkaFCt8bSjF5RqOSj8y1v9BCU=
 
 cyclist@~0.2.2:
   version "0.2.2"
@@ -10273,11 +10260,6 @@ text-table@0.2.0, text-table@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
-
-textarea-caret@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/textarea-caret/-/textarea-caret-3.0.2.tgz#f360c48699aa1abf718680a43a31a850665c2caf"
-  integrity sha1-82DEhpmqGr9xhoCkOjGoUGZcLK8=
 
 throat@^4.0.0:
   version "4.1.0"
