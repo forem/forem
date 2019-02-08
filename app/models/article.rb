@@ -367,12 +367,8 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
-    update_column(:score, reactions.sum(:points))
-    update_column(:hotness_score, BlackBox.article_hotness_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if tag_list.exclude?("hiring")
+    Articles::ScoreCalcJob.perform_later(id)
   end
-  handle_asynchronously :async_score_calc
 
   def series
     # name of series article is part of
@@ -399,7 +395,7 @@ class Article < ApplicationRecord
     bust_cache
     remove_algolia_index
     user.cache_bust_all_articles
-    organization&.delay&.resave_articles
+    Articles::ResaveJob.perform_later(organization.article_ids - [id]) if organization
   end
 
   def evaluate_front_matter(front_matter)

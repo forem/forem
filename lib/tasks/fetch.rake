@@ -8,14 +8,8 @@ end
 
 task periodic_cache_bust: :environment do
   cache_buster = CacheBuster.new
-  cache_buster.bust("/enter")
-  cache_buster.bust("/new")
-  cache_buster.bust("/dashboard")
-  cache_buster.bust("/users/auth/twitter")
-  cache_buster.bust("/users/auth/github")
-  cache_buster.bust("/feed")
-  cache_buster.bust("/feed")
   cache_buster.bust("/feed.xml")
+  cache_buster.bust("/badge")
 end
 
 task hourly_bust: :environment do
