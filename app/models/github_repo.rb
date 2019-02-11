@@ -34,6 +34,7 @@ class GithubRepo < ApplicationRecord
           stargazers_count: fetched_repo.stargazers_count,
           info_hash: fetched_repo.to_hash,
         )
+        repo.user&.touch(:github_repos_updated_at)
       rescue StandardError => e
         repo.destroy if e.message.include?("404 - Not Found")
       end

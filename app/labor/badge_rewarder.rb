@@ -2,6 +2,7 @@ module BadgeRewarder
   def self.award_yearly_club_badges
     award_one_year_badges
     award_two_year_badges
+    award_three_year_badges
   end
 
   def self.award_beloved_comment_badges
@@ -43,6 +44,26 @@ module BadgeRewarder
     end
   end
 
+  def self.award_streak_badge(num_weeks)
+    article_user_ids = Article.where(published: true).where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
+    message = "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+    users = User.where(id: article_user_ids).where("articles_count >= ?", num_weeks)
+    usernames = []
+    users.find_each do |user|
+      count = 0
+      num_weeks.times do |i|
+        num = i + 1
+        if user.articles.where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
+          count = count + 1
+        end
+      end
+      if count >= num_weeks
+        usernames << user.username
+      end
+    end
+    award_badges(usernames, "#{num_weeks}-week-streak", message)
+  end
+
   def self.award_badges(usernames, slug, message_markdown)
     User.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
@@ -72,6 +93,18 @@ module BadgeRewarder
       achievement = BadgeAchievement.create(
         user_id: user.id,
         badge_id: Badge.find_by_slug("two-year-club").id,
+        rewarding_context_message_markdown: message,
+      )
+      user.save if achievement.valid?
+    end
+  end
+
+  def self.award_three_year_badges
+    message = "Happy DEV birthday! Can you believe it's been three years already?!"
+    User.where("created_at < ? AND created_at > ?", 3.year.ago, 1097.days.ago).find_each do |user|
+      achievement = BadgeAchievement.create(
+        user_id: user.id,
+        badge_id: Badge.find_by_slug("three-year-club").id,
         rewarding_context_message_markdown: message,
       )
       user.save if achievement.valid?

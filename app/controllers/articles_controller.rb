@@ -12,16 +12,15 @@ class ArticlesController < ApplicationController
     if params[:username]
       if @user = User.find_by_username(params[:username])
         @articles = Article.where(published: true, user_id: @user.id).
-          includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
+          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
           order("published_at DESC").
-          page(@page).per(15)
+          page(@page).per(12)
       elsif @user = Organization.find_by_slug(params[:username])
         @articles = Article.where(published: true, organization_id: @user.id).
           includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
+          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
           order("published_at DESC").
-          page(@page).per(15)
+          page(@page).per(12)
       else
         render body: nil
         return
@@ -29,9 +28,9 @@ class ArticlesController < ApplicationController
     else
       @articles = Article.where(published: true, featured: true).
         includes(:user).
-        select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
+        select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
         order("published_at DESC").
-        page(@page).per(15)
+        page(@page).per(12)
     end
     set_surrogate_key_header "feed", @articles.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
@@ -182,7 +181,10 @@ class ArticlesController < ApplicationController
 
   def article_params
     params[:article][:published] = true if params[:submit_button] == "PUBLISH"
-    params.require(:article).permit(policy(Article).permitted_attributes)
+    modified_params = policy(Article).permitted_attributes
+    modified_params << :user_id if org_admin_user_change_privilege
+    modified_params << :comment_template if current_user.has_role?(:admin)
+    params.require(:article).permit(modified_params)
   end
 
   def job_opportunity_params
@@ -200,11 +202,18 @@ class ArticlesController < ApplicationController
       redirect_to @article.current_state_path, notice: "Article was successfully created."
     else
       if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = Article.find_by_body_markdown(@article.body_markdown)
+        @article = current_user.articles.find_by_body_markdown(@article.body_markdown)
         redirect_to @article.current_state_path
         return
       end
       render :new
     end
+  end
+
+  def org_admin_user_change_privilege
+    params[:article][:user_id] &&
+      current_user.org_admin &&
+      current_user.organization_id == @article.organization_id &&
+      User.find(params[:article][:user_id])&.organization_id == @article.organization_id
   end
 end

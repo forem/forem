@@ -6,7 +6,7 @@ RSpec.describe BadgeAchievement, type: :model do
 
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:badge) }
-    it { is_expected.to belong_to(:rewarder).class_name("User") }
+    it { is_expected.to belong_to(:rewarder).class_name("User").optional }
     it { is_expected.to validate_uniqueness_of(:badge_id).scoped_to(:user_id) }
   end
 

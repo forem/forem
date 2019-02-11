@@ -23,6 +23,7 @@
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
+      <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
       <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? "mute" : "unmute"}" %>
     <% end %>
     <% if article.published %>

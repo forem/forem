@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     resources :users do
       member do
         post "banish"
+        post "full_delete"
       end
     end
     resources :events
@@ -96,6 +97,7 @@ Rails.application.routes.draw do
   resources :articles, only: %i[update create destroy]
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy]
+  resources :comment_mutes, only: %i[update]
   resources :users, only: [:update]
   resources :reactions, only: %i[index create]
   resources :feedback_messages, only: %i[index create]
@@ -206,6 +208,7 @@ Rails.application.routes.draw do
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
+  get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
@@ -219,6 +222,7 @@ Rails.application.routes.draw do
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
+  get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")
@@ -290,6 +294,7 @@ Rails.application.routes.draw do
   get "/:username/comment/:id_code/edit" => "comments#edit"
   get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
   get "/:username/comment/:id_code/mod" => "moderations#comment"
+  get "/:username/comment/:id_code/settings", to: "comments#settings"
 
   get "/:username/:slug/:view" => "stories#show",
       constraints: { view: /moderate/ }

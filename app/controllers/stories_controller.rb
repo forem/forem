@@ -31,6 +31,13 @@ class StoriesController < ApplicationController
     end
   end
 
+  def warm_comments
+    @article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
+    @warm_only = true
+    assign_article_show_variables
+    render partial: "articles/full_comment_area"
+  end
+
   private
 
   def redirect_to_changed_username_profile
@@ -119,15 +126,6 @@ class StoriesController < ApplicationController
         @stories = @stories.offset(offset)
       end
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
-      if user_signed_in?
-        @new_stories = Article.where("published_at > ? AND score > ?", rand(2..6).hours.ago, -30).
-          where(published: true).
-          includes(:user).
-          limit(rand(15..60)).
-          order("published_at DESC").
-          limited_column_select.
-          decorate
-      end
     end
     @stories = @stories.decorate
     assign_podcasts
@@ -204,17 +202,22 @@ class StoriesController < ApplicationController
   end
 
   def handle_article_show
-    @article_show = true
-    @comment = Comment.new
-    assign_user_and_org
-    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 65 : 35
-    assign_second_and_third_user
-    not_found if permission_denied?
+    assign_article_show_variables
     set_surrogate_key_header @article.record_key
     redirect_if_show_view_param
     return if performed?
 
     render template: "articles/show"
+  end
+
+  def assign_article_show_variables
+    @article_show = true
+    @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
+    assign_user_and_org
+    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+    assign_second_and_third_user
+    not_found if permission_denied?
+    @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
   def permission_denied?
@@ -266,11 +269,13 @@ class StoriesController < ApplicationController
   end
 
   def article_finder(num_articles)
-    Article.where(published: true).
+    tag = params[:tag]
+    articles = Article.where(published: true).
       includes(:user).
       limited_column_select.
       page(@page).
-      per(num_articles).
-      filter_excluded_tags(params[:tag])
+      per(num_articles)
+    articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
+    articles
   end
 end

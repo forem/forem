@@ -190,6 +190,7 @@
     }
     a{
       color:$black;
+      color: var(--theme-container-color, $black);
     }
     a.small-pic-link-wrapper,.placeholder-div{
       display:block;
@@ -459,6 +460,7 @@
           background:white;
           background: var(--theme-container-background,	#fff);
           color:$black;
+          color: var(--theme-container-color, $black);
           position:relative;
           z-index:5;
           border-top:1px solid darken($lightest-gray,4%);
@@ -791,6 +793,7 @@
           width:100%;
           line-height:20px;
           color: $black;
+          color: var(--theme-container-color, $black);
           &:hover{
             opacity:0.9;
           }
@@ -926,6 +929,7 @@
           }
           a.sidebar-nav-link{
             color:$black;
+            color: var(--theme-container-color, $black);
             padding:5px;
             display:inline-block;
             width:calc(100% - 10px);
@@ -962,6 +966,7 @@
       background: var(--theme-container-background,	#fff);
       display:block;
       color: $black;
+      color: var(--theme-container-color, $black);
       border-radius:3px;
       border: 1px solid $outline-color;
       border: var(--theme-container-border, 1px solid $outline-color);
@@ -1047,6 +1052,7 @@
         font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
         a{
           color: $black;
+          color: var(--theme-container-color, $black);
           h4{
             display: inline-block;
             margin: 0;
@@ -1071,6 +1077,7 @@
         font-size:0.9em;
         line-height: 1.2em;
         padding-bottom:5px;
+        overflow-wrap: break-word;
         &.body-scrollable{
           height: calc(100vh - 300px);
           max-height: 390px;
@@ -1301,6 +1308,7 @@
       padding-left:20px;
       a{
         color:$black;
+        color: var(--theme-container-color, $black);
         font-weight:500;
         line-height:1em;
         // display:inline-block;
@@ -1335,6 +1343,7 @@
         display:block;
         margin: 10px 10px;
         color: $black;
+        color: var(--theme-container-color, $black);
       }
     }
     .search-partner-mention{
