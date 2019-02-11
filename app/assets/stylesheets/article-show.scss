@@ -219,7 +219,7 @@ article {
           line-height: 1.1em;
           font-family: $helvetica-condensed;
           font-stretch: condensed;
-          @media screen and (max-width: 340px) {
+          @media screen and (max-width: 376px) {
             padding: 2px 3px 3px;
             margin-left: 3px;
             margin-left: 5px;
@@ -921,6 +921,13 @@ article {
         padding: 3px 0 3px;
         vertical-align: 5px;
       }
+    }
+  }
+  .html-variant-wrapper {
+    width: 88%;
+    margin: 0px auto 25px;
+    @media screen and (min-width: 500px) {
+      width: 82%;
     }
   }
 }
