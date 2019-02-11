@@ -105,7 +105,7 @@
         <div class="comment-trees" id="comment-trees-container">
           <% @episode.comments.includes(:user).arrange(order: "score DESC").to_a[0, 12].to_h.each do |comment, sub_comments| %>
             <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-              <%= tree_for(comment, @episode, sub_comments) %>
+              <%= tree_for(comment, sub_comments, @episode) %>
             <% end %>
           <% end %>
         </div>

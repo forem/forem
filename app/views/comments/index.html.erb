@@ -85,13 +85,13 @@
     <% if @root_comment.present? %>
       <div class="root-comment">
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= tree_for(@root_comment, @commentable, @root_comment.subtree.arrange[@root_comment]) %>
+          <%= tree_for(@root_comment, @root_comment.subtree.arrange[@root_comment], @commentable) %>
         <% end %>
       </div>
     <% else %>
       <% @commentable.comments.includes(:user).arrange(order: "score DESC").each do |comment, sub_comments| %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-          <%= tree_for(comment, @commentable, sub_comments) %>
+          <%= tree_for(comment, sub_comments, @commentable) %>
         <% end %>
       <% end %>
     <% end %>

@@ -29,6 +29,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/observers/"]
     config.autoload_paths += Dir["#{config.root}/app/black_box/"]
     config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
+    config.autoload_paths += Dir["#{config.root}/app/view_objects"]
     config.autoload_paths += Dir["#{config.root}/lib/"]
 
     config.active_record.observers = :article_observer, :reaction_observer, :comment_observer
