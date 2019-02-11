@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const BodyMarkdown = ({ onChange, onKeyUp, defaultValue }) => (
+const BodyMarkdown = ({ onChange, defaultValue }) => (
   <textarea
     className="articleform__body"
     id="article_body_markdown"
     placeholder="Body"
-    defaultValue={defaultValue}
+    value={defaultValue}
     onInput={onChange}
     name="body_markdown"
   />

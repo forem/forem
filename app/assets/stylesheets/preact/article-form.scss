@@ -250,6 +250,7 @@
   resize: none;
   padding: 20px 6px;
   font-family: $monospace;
+  // overflow: initial;
   @media screen and (min-width: 600px) {
     font-size: 18px;
     min-height: calc(90vh - 280px);
