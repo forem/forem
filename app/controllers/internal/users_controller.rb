@@ -81,8 +81,10 @@ class Internal::UsersController < Internal::ApplicationController
   def toggle_trust_user
     if user_params[:trusted_user] == "1"
       @user.add_role :trusted
+      @user.trusted
     else
       @user.remove_role :trusted
+      Rails.cache.delete("user-#{@user.id}/has_trusted_role")
     end
   end
 
