@@ -4,17 +4,14 @@ function initializeDrawerSliders() {
     initializeSwipeGestures();
   }
   if (document.getElementById("on-page-nav-controls")){
-    if (document.getElementById("sidebar-wrapper-left")){
-      document.getElementById("sidebar-wrapper-left").onclick = function(e){
-        if (e.target.closest(".side-bar")) return;
+    if (document.getElementById("sidebar-bg-left")){
+      document.getElementById("sidebar-bg-left").onclick = function(){
         swipeState = "middle";
         slideSidebar("left","outOfView");
       }
     }
-
-    if (document.getElementById("sidebar-wrapper-right")){
-      document.getElementById("sidebar-wrapper-right").onclick = function(e){
-        if (e.target.closest(".side-bar")) return;
+    if (document.getElementById("sidebar-bg-right")){
+      document.getElementById("sidebar-bg-right").onclick = function(){
         swipeState = "middle";
         slideSidebar("right","outOfView");
       }
