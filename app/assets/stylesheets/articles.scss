@@ -730,6 +730,17 @@
       width: 200%;
       display: none;
       -webkit-overflow-scrolling: touch;
+      .sidebar-bg{
+        top:0;
+        left:0;
+        right:0;
+        bottom:0;
+        height:1000%;
+        overflow:scroll;
+        position:fixed;
+        background:rgba(0,0,0,0.5);
+        animation: fade-in 0.48s;
+      }
       &.swiped-in{
         display:block;
         .side-bar{
@@ -739,7 +750,6 @@
           top:0px;
           bottom:0px;
           min-height:calc(100vh - 44px);
-          animation: fade-shadow 0.48s forwards;
           .widget,
           .sidebar-profile-snapshot{
             border-radius:0px;
@@ -1393,12 +1403,12 @@
   }
 }
 
-@keyframes fade-shadow {
+@keyframes fade-in {
   0% {
-    box-shadow: 0 0 0 100vw rgba(0,0,0,0);
+    opacity: 0;
   }
   100% {
-    box-shadow: 0 0 0 100vw rgba(0,0,0,0.5);
+    opacity: 1;
   }
 }
 @keyframes spin {
