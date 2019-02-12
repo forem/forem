@@ -8554,13 +8554,13 @@ prompts@^0.1.9:
     kleur "^2.0.1"
     sisteransi "^0.1.1"
 
-prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2:
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
-  integrity sha512-3pboPvLiWD7dkI3qf3KbUe6hKFKa52w+AE0VCqECtf+QHAKgOL37tTaNCnuX1nAAQ4ZhyP+kYVKf8rLmJ/feDQ==
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.1:
+  version "15.7.1"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.1.tgz#2fa61e0a699d428b40320127733ee2931f05d9d1"
+  integrity sha512-f8Lku2z9kERjOCcnDOPm68EBJAO2K00Q5mSgPAUE/gJuBgsYLbVy6owSrtcHj90zt8PvW+z0qaIIgsIhHOa1Qw==
   dependencies:
-    loose-envify "^1.3.1"
     object-assign "^4.1.1"
+    react-is "^16.8.1"
 
 property-expr@^1.5.0:
   version "1.5.1"
@@ -8838,6 +8838,11 @@ react-inspector@^2.2.2:
     babel-runtime "^6.26.0"
     is-dom "^1.0.9"
     prop-types "^15.6.1"
+
+react-is@^16.8.1:
+  version "16.8.1"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.1.tgz#a80141e246eb894824fb4f2901c0c50ef31d4cdb"
+  integrity sha512-ioMCzVDWvCvKD8eeT+iukyWrBGrA3DiFYkXfBsVYIRdaREZuBjENG+KjrikavCLasozqRWTwFUagU/O4vPpRMA==
 
 react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
@@ -10448,10 +10453,10 @@ tweetnacl@^1.0.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
   integrity sha1-cT2LgY2kIGh0C/aDhtBHnmb8ins=
 
-twilio-video@^1.15.1:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.1.tgz#b294f00446fd391087614af71203d4e151490d85"
-  integrity sha512-03zw304yfg3e6i6LIJsHbOQqLtp8rPGyJGfjxA0DGRCIBD4YxYiAwhLporRUh3VDjERw9GsNXsK4yP3GXd7B1A==
+twilio-video@^1.15.2:
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.2.tgz#da3379c0e256def317689d9a980c683277f61baf"
+  integrity sha512-C3KQcHmqqJObFWU2I+bMVqwIEUISXV+DSFJHdPrrw9Z+tDE7Y5SNNj+r4e9ArABx7mtWZlEUa4+Ela/dOQLEjA==
   dependencies:
     "@twilio/sip.js" "^0.7.7"
     "@twilio/webrtc" "2.2.1"
@@ -10798,6 +10803,11 @@ wbuf@^1.1.0, wbuf@^1.7.2:
   integrity sha512-O84QOnr0icsbFGLS0O3bI5FswxzRr8/gHwWkDlQFskhSPryQXvrTMxjxGP4+iWYoauLoBvfDpkrOauZ+0iZpDA==
   dependencies:
     minimalistic-assert "^1.0.0"
+
+web-share-wrapper@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/web-share-wrapper/-/web-share-wrapper-0.2.1.tgz#679a8daf339fe6da17f5999c1744fb89552f99ee"
+  integrity sha512-YEHwLgxLP3qOiP7/pKNdwSLdXfJ8+U9b1A12jbALzE9nSX/sbu4TTZXxQWu1nFjAfzxeqbwokAhcMDWe/4ey0Q==
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
