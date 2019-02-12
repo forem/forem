@@ -89,7 +89,7 @@
         <% end %>
       </div>
     <% else %>
-      <% @commentable.comments.includes(:user).arrange(order: "score DESC").each do |comment, sub_comments| %>
+      <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
         <% cache ["comment_root_#{user_signed_in?}", comment] do %>
           <%= tree_for(comment, sub_comments, @commentable) %>
         <% end %>
