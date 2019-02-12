@@ -35,6 +35,22 @@
           </div>
         </div>
       <% end %>
+      <% if @moderators.present? %>
+        <div class="widget">
+          <header>
+            <h4>tag moderators</h4>
+          </header>
+          <div class="widget-body">
+            <% @moderators.each do |user| %>
+              <div class="widget-user-pic">
+                <a href="/<%= user.username %>" title="<%= user.username %>">
+                  <img src="<%= ProfileImage.new(user).get(90) %>" />
+                </a>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
       <div class="sidebar-data">
         <div>
           <%= pluralize Article.cached_tagged_with(@tag).where(published: true).size, "Post" %> Published
