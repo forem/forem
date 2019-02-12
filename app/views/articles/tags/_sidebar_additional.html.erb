@@ -1,4 +1,5 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+  <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
     <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
       <div class="widget">
