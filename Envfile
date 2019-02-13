@@ -130,6 +130,7 @@ variable :SLACK_WEBHOOK_URL, :String, default: "Optional"
 # Stripe for payment system
 variable :STRIPE_PUBLISHABLE_KEY, :String, default: "Optional"
 variable :STRIPE_SECRET_KEY, :String, default: "Optional"
+variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 
 # For browser webpush notifications (webpush gem) (totally random base64 nums)
 variable :VAPID_PUBLIC_KEY, :String, default: "dGhpcyBpcyBkZXYudG8gdGVzdCBkYXRh"
