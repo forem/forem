@@ -48,7 +48,8 @@ class UserPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[available_for
+    %i[allows_article_edits
+       available_for
        behance_url
        bg_color_hex
        contact_consent
