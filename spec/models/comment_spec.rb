@@ -201,6 +201,8 @@ RSpec.describe Comment, type: :model do
     let!(:child) { create(:comment, commentable: article2, parent: tree_comment) }
     let!(:tree_comment2) { create(:comment, commentable: article2) }
 
+    before { tree_comment.update_column(:score, 1) }
+
     it "returns a full tree" do
       comments = described_class.tree_for(article2)
       expect(comments).to eq(tree_comment => { child => {} }, tree_comment2 => {})
