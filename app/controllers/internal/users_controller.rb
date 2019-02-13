@@ -84,6 +84,8 @@ class Internal::UsersController < Internal::ApplicationController
     else
       @user.remove_role :trusted
     end
+    Rails.cache.delete("user-#{@user.id}/has_trusted_role")
+    @user.trusted
   end
 
   def toggle_warn_user
