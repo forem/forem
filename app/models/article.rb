@@ -60,7 +60,7 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
-  scope :cached_tagged_with, -> (tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+  scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :active_help, -> {
                         where(published: true).
@@ -312,8 +312,13 @@ class Article < ApplicationRecord
 
   def has_frontmatter?
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed.front_matter["title"]
+    begin
+      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+      parsed.front_matter["title"]
+    rescue Psych::SyntaxError
+      # if frontmatter is invalid, still render editor with errors instead of 500ing
+      true
+    end
   end
 
   def class_name
