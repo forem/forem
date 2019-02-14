@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::ResaveJob, type: :job do
+RSpec.describe Articles::BustCacheJob, type: :job do
   describe "#perform_later" do
     it "enqueues the job" do
       ActiveJob::Base.queue_adapter = :test
