@@ -319,12 +319,12 @@ article{
         color:$sky-blue;
       }
       &.anchor{
-        padding-top: 50px;
-        margin-top: -50px;
+        padding-top: 0px;
+        margin-top:  0px;
+        top: -50px;
         display: block;
         visibility: hidden;
-        -webkit-background-clip: content-box;
-        background-clip: content-box;
+        position: relative;
       }
     }
     h1,h2,h3,h4,h5,h6{
