@@ -16,6 +16,10 @@
       <%= f.text_field :editor_version %>
       <sub><em>v2 is currently in beta</em></sub>
     </div>
+    <div class="field checkbox-label-first">
+      <%= f.label :allows_article_edits, "Allow admins to edit typos or adjust formatting in my articles" %>
+      <%= f.check_box :allows_article_edits %>
+    </div>
     <div class="field">
       <label></label>
       <%= f.hidden_field :tab, value: @tab %>
