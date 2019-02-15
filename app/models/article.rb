@@ -97,7 +97,7 @@ class Article < ApplicationRecord
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
-  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
                   id: :index_id,
@@ -229,11 +229,10 @@ class Article < ApplicationRecord
   end
 
   def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.index_or_remove_from_index_where_appropriate
-    end
+    # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
+    return if remove
+
+    record.index_or_remove_from_index_where_appropriate
   end
 
   def index_or_remove_from_index_where_appropriate
