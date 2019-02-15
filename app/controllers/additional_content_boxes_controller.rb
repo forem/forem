@@ -1,26 +1,22 @@
 class AdditionalContentBoxesController < ApplicationController
   # No authorization required for entirely public controller
 
-  before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+  before_action :set_cache_control_headers, only: [:index]
 
   def index
     article_ids = params[:article_id].split(",")
     @article = Article.find(article_ids[0])
-    @for_user_article = Suggester::Articles::Classic.
-      new(current_user || @article, not_ids: article_ids).get
-    if (!user_signed_in? || current_user&.display_sponsors) &&
+    @suggested_articles = Suggester::Articles::Classic.
+      new(@article, not_ids: article_ids).get(2)
+    if (!user_signed_in? || params[:state] == "include_sponsors") &&
         @article.user.permit_adjacent_sponsors &&
         randomize
       @boosted_article = Suggester::Articles::Boosted.new(
-        current_user,
-        @article,
-        not_ids: (article_ids + [@for_user_article&.id]), area: "additional_articles",
+        (@article.decorate.cached_tag_list_array + @article.boosted_additional_tags.split).sample,
+        not_ids: (article_ids + @suggested_articles.pluck(:id)), area: "additional_articles",
       ).suggest
-    else
-      @alt_classic = Suggester::Articles::Classic.
-        new(@article, not_ids: (article_ids + [@for_user_article&.id])).get
     end
-    set_surrogate_key_header "additional_content_boxes_" + params.to_s unless current_user
+    set_surrogate_key_header "additional_content_boxes_" + params.to_s
     render "boxes", layout: false
   end
 

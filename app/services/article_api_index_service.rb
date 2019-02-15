@@ -58,7 +58,7 @@ class ArticleApiIndexService
         includes(:organization).
         page(page).
         per(30).
-        filter_excluded_tags(tag)
+        cached_tagged_with(tag)
     elsif top.present?
       Article.
         where(published: true).
@@ -68,7 +68,7 @@ class ArticleApiIndexService
         includes(:organization).
         page(page).
         per(30).
-        filter_excluded_tags(tag)
+        cached_tagged_with(tag)
     else
       Article.
         where(published: true).
@@ -77,7 +77,7 @@ class ArticleApiIndexService
         includes(:organization).
         page(page).
         per(30).
-        filter_excluded_tags(tag)
+        cached_tagged_with(tag)
     end
   end
 

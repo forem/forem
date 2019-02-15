@@ -1,6 +1,6 @@
 # rubocop:disable LineLength
 source "https://rubygems.org"
-ruby "2.6.0"
+ruby "2.6.1"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
@@ -30,7 +30,7 @@ gem "bourbon", "~> 5.1"
 gem "buffer", "~> 0.1"
 gem "carrierwave", "~> 1.3"
 gem "carrierwave-bombshelter", "~> 0.2"
-gem "cloudinary", "~> 1.9"
+gem "cloudinary", "~> 1.11"
 gem "counter_culture", "~> 2.1"
 gem "csv_shaper", "~> 1.3"
 gem "dalli", "~> 2.7"
@@ -105,7 +105,7 @@ gem "webpush", "~> 0.3"
 group :development do
   gem "better_errors", "~> 2.5"
   gem "binding_of_caller", "~> 0.8"
-  gem "brakeman", "~> 4.3", require: false
+  gem "brakeman", "~> 4.4", require: false
   gem "bullet", "~> 5.9"
   gem "bundler-audit", "~> 0.6"
   gem "derailed_benchmarks", "~> 1.3"
@@ -119,7 +119,7 @@ end
 group :development, :test do
   gem "capybara", "~> 3.12"
   gem "derailed", "~> 0.1"
-  gem "erb_lint", "~> 0.0.28", require: false
+  gem "erb_lint", "~> 0.0", require: false
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
@@ -145,7 +145,7 @@ group :test do
   gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
-  gem "shoulda-matchers", "~> 3.1", require: false
+  gem "shoulda-matchers", "4.0.0.rc1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby

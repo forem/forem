@@ -8,7 +8,7 @@ class GithubTag < LiquidTagBase
   end
 
   def issue_or_readme
-    if @link.include?("issues")
+    if @link.include?("issues") || @link.include?("pull")
       "issue"
     else
       "readme"

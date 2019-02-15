@@ -19,8 +19,8 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
   it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(86) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:organization) }
-  it { is_expected.to belong_to(:collection) }
+  it { is_expected.to belong_to(:organization).optional }
+  it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
@@ -428,15 +428,18 @@ RSpec.describe Article, type: :model do
 
   describe "#async_score_calc" do
     context "when published" do
-      let(:article) { create(:article) }
+      before { ActiveJob::Base.queue_adapter = :inline }
+
+      let(:article) { build(:article) }
 
       it "updates the hotness score" do
         article.save
+        article.reload
         expect(article.hotness_score > 0).to eq(true)
       end
 
       it "updates the spaminess score" do
-        article.update_column(:spaminess_rating, -1)
+        article.spaminess_rating = -1
         article.save
         expect(article.spaminess_rating).to eq(0)
       end

@@ -4,7 +4,7 @@ class DashboardsController < ApplicationController
   after_action :verify_authorized
 
   def show
-    @user = if params[:username] && current_user.admin?
+    @user = if params[:username] && current_user.any_admin?
               User.find_by_username(params[:username])
             else
               current_user

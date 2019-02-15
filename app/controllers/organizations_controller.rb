@@ -18,7 +18,6 @@ class OrganizationsController < ApplicationController
     end
   end
 
-  # GET /users/:id/edit
   def update
     @user = current_user
     @tab = "organization"
@@ -27,6 +26,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
 
     if @organization.update(organization_params)
+      @organization.touch(:profile_updated_at)
       redirect_to "/settings/organization", notice: "Your organization was successfully updated."
     else
       render template: "users/edit"

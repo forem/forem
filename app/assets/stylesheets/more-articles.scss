@@ -95,6 +95,7 @@
 
   a{
     color: $black;
+    color: var(--theme-container-color, $black);
   }
   .content-classification{
     margin: 15px 20px -8px;

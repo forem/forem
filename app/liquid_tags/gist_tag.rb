@@ -29,7 +29,7 @@ class GistTag < LiquidTagBase
   def parse_link(link)
     link = ActionController::Base.helpers.strip_tags(link)
     input_no_space = link.delete(" ").gsub(".js", "")
-    if valid_link?(link)
+    if valid_link?(input_no_space)
       input_no_space
     else
       raise StandardError,
@@ -38,7 +38,7 @@ class GistTag < LiquidTagBase
   end
 
   def valid_link?(link)
-    (link =~ /\Ahttps\:\/\/gist\.github\.com\/([a-zA-Z0-9\-]){1,39}\/([a-zA-Z0-9]){32}\s\Z/)&.
+    (link =~ /\Ahttps\:\/\/gist\.github\.com\/([a-zA-Z0-9\-]){1,39}\/([a-zA-Z0-9]){32}\Z/)&.
       zero?
   end
 end

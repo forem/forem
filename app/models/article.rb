@@ -60,9 +60,11 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
+  scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+
   scope :active_help, -> {
                         where(published: true).
-                          tagged_with("help").
+                          cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
                       }
@@ -197,14 +199,12 @@ class Article < ApplicationRecord
                 stories.order("last_comment_at DESC").
                   where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
               end
-
-    stories = stories.tagged_with(tags)
-
+    stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
   def self.active_eli5(time_ago)
-    stories = where(published: true).tagged_with("explainlikeimfive")
+    stories = where(published: true).cached_tagged_with("explainlikeimfive")
 
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").limit(3)
@@ -312,8 +312,13 @@ class Article < ApplicationRecord
 
   def has_frontmatter?
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed.front_matter["title"]
+    begin
+      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+      parsed.front_matter["title"]
+    rescue Psych::SyntaxError
+      # if frontmatter is invalid, still render editor with errors instead of 500ing
+      true
+    end
   end
 
   def class_name
@@ -367,12 +372,8 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
-    update_column(:score, reactions.sum(:points))
-    update_column(:hotness_score, BlackBox.article_hotness_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if tag_list.exclude?("hiring")
+    Articles::ScoreCalcJob.perform_later(id)
   end
-  handle_asynchronously :async_score_calc
 
   def series
     # name of series article is part of
@@ -399,7 +400,7 @@ class Article < ApplicationRecord
     bust_cache
     remove_algolia_index
     user.cache_bust_all_articles
-    organization&.delay&.resave_articles
+    Articles::ResaveJob.perform_later(organization.article_ids - [id]) if organization
   end
 
   def evaluate_front_matter(front_matter)

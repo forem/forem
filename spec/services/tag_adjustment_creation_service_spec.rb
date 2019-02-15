@@ -29,9 +29,10 @@ RSpec.describe TagAdjustmentCreationService do
   end
 
   it "creates notification" do
-    tag_adjustment = create_tag_adjustment
-
-    expect(Notification.last.user_id).to eq(article.user_id)
-    expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
+    run_background_jobs_immediately do
+      tag_adjustment = create_tag_adjustment
+      expect(Notification.last.user_id).to eq(article.user_id)
+      expect(Notification.last.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
+    end
   end
 end
