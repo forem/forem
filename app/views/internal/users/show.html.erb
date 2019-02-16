@@ -52,8 +52,6 @@
       <%= form_for [:internal, @user] do |f| %>
         <p>Add Trusted Role (Community Moderator)
         <%= f.check_box :trusted_user, checked: @user.trusted %></p>
-        <p>Allow Video Uploads
-        <%= f.check_box :video_permission, checked: @user.has_role?(:video_permission) %> </p>
         <%= f.submit "Update Privileges" %>
       <% end %>
     <% else %>

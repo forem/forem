@@ -311,6 +311,7 @@ GEM
       loofah (>= 2.0)
       sax-machine (>= 1.0)
     ffi (1.9.25)
+    ffprober (0.5.3)
     figaro (1.1.1)
       thor (~> 0.14)
     fission (0.5.0)
@@ -979,6 +980,7 @@ DEPENDENCIES
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
   feedjira (~> 2.2)
+  ffprober (~> 0.5)
   figaro (~> 1.1)
   fix-db-schema-conflicts!
   fog (~> 1.41)
