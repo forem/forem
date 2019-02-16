@@ -226,6 +226,16 @@ RSpec.describe Article, type: :model do
       article.save
       expect(article).to be_valid
     end
+
+    it "has padded video_duration_in_minutes" do
+      article.video_duration_in_seconds = 1141
+      expect(article.video_duration_in_minutes).to eq("19:01")
+    end
+
+    it "has correctly non-padded seconds in video_duration_in_minutes" do
+      article.video_duration_in_seconds = 1161
+      expect(article.video_duration_in_minutes).to eq("19:21")
+    end
   end
 
   describe "queries" do

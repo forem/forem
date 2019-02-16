@@ -393,6 +393,7 @@ class Article < ApplicationRecord
   def video_duration_in_minutes
     minutes = (video_duration_in_seconds.to_i / 60) % 60
     seconds = video_duration_in_seconds.to_i % 60
+    seconds = "0#{seconds}" if seconds.to_s.size == 1
     "#{minutes}:#{seconds}"
   end
 
