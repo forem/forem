@@ -39,7 +39,7 @@ FactoryBot.define do
     end
 
     trait :video_permission do
-      after(:build) { |user| user.update_column(:created_at, 3.weeks.ago) }
+      after(:build) { |user| user.created_at = 3.weeks.ago }
     end
 
     trait :ignore_after_callback do

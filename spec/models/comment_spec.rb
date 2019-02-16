@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  let(:user)                  { create(:user) }
+  let(:user)                  { create(:user, created_at: 3.weeks.ago) }
   let(:user2)                 { create(:user) }
   let(:article)               { create(:article, user_id: user.id, published: true) }
   let(:article_with_video)    { create(:article, :video, user_id: user.id, published: true) }
