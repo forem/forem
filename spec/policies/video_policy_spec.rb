@@ -20,7 +20,7 @@ RSpec.describe VideoPolicy do
   context "when does have video permission" do
     let(:user) { build(:user) }
 
-    before { user.update_column(:created_at, 3.weeks.ago) }
+    before { user.created_at = 3.weeks.ago }
 
     it { is_expected.to permit_actions(%i[new create]) }
   end
