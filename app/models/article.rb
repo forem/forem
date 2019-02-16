@@ -397,10 +397,12 @@ class Article < ApplicationRecord
   end
 
   def fetch_video_duration
-    if video.present? && video_duration_in_seconds == 0
+    if video.present? && video_duration_in_seconds.zero?
       info = Ffprober::Parser.from_url video
       self.video_duration_in_seconds = info.json[:format][:duration].to_f
     end
+  rescue StandardError => e
+    logger.error(e.message)
   end
 
   private
