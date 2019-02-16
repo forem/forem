@@ -402,7 +402,7 @@ class Article < ApplicationRecord
       self.video_duration_in_seconds = info.json[:format][:duration].to_f
     end
   rescue StandardError => e
-    logger.error(e.message)
+    puts e.message
   end
 
   private
