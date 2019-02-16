@@ -387,6 +387,8 @@ class Article < ApplicationRecord
   end
 
   def cloudinary_video_url
+    return if video_thumbnail_url.blank?
+
     ApplicationController.helpers.cloudinary(video_thumbnail_url, 880)
   end
 
