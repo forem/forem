@@ -137,9 +137,8 @@ class Article < ApplicationRecord
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time,
-        :tag_list, :positive_reactions_count, :id, :hotness_score, :score,
-        :readable_publish_date, :flare_tag, :user_id, :organization_id,
-        :cloudinary_video_url, :video_duration_in_minutes
+        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date,
+        :flare_tag, :user_id, :organization_id, :cloudinary_video_url, :video_duration_in_minutes
       attribute :published_at_int do
         published_at.to_i
       end
