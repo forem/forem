@@ -1,13 +1,15 @@
   <div class="single-article single-article-small-pic">
-    <% if story.video.present? %>
-      <%= render "articles/video_player", meta_tags: false, article: story %>
+    <% if story.video.present? && story.video_thumbnail_url.present? %>
+      <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" >
+        <div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" /><%= story.video_duration_in_minutes %></div>
+      </a>
     <% end %>
     <% organization = story.organization %>
     <% if organization && !@organization_article_index %>
       <div class="article-organization-headline">
         <a href="/<%= organization.slug %>" class="article-organization-headline-inner"><img src="<%= organization.profile_image_90 %>"><%= organization.name %></a><a class="org-headline-filler" href="<%= story.path %>">&nbsp;</a></div>
     <% end %>
-    <a href="<%=story.user.path%>" class="small-pic-link-wrapper">
+    <a href="<%= story.user.path%>" class="small-pic-link-wrapper">
       <div class="small-pic" >
         <% if story.cached_tag_list_array.include?("hiring") && story.organization_id.present? && !@organization_article_index %>
           <img src="<%= ProfileImage.new(story.organization).get(90) %>" alt="<%= story.organization.username %> profile" />
@@ -16,7 +18,7 @@
         <% end %>
       </div>
     </a>
-    <a href="<%=story.path%>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%=cloud_cover_url(story.main_image) %>" id="article-link-<%=story.id%>">
+    <a href="<%= story.path %>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%=cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id%>">
       <div class="content">
         <h3>
             <%= render "articles/tag_identifier", story: story, tag: @tag %>
@@ -24,7 +26,7 @@
       </div>
     </a>
     <h4>
-      <a href="<%=story.user.path%>"><%= story.user.name %>・<%= story.readable_publish_date %></a>
+      <a href="<%= story.user.path %>"><%= story.user.name %>・<%= story.readable_publish_date %></a>
       
     </h4>
     <div class="tags">
@@ -34,13 +36,13 @@
     </div>
       <% if story.comments_count > 0 %>
         <div class="article-engagement-count comments-count">
-          <a href="<%=story.path%>#comments">
+          <a href="<%= story.path %>#comments">
             <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
           </a>
         </div>
       <% end %>
     <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
-      <a href="<%=story.path%>">
+      <a href="<%= story.path %>">
           <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
           <%= story.positive_reactions_count %>
         </span>

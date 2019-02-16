@@ -233,6 +233,36 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
+      .single-article-video-preview {
+        img {
+          width: 100%;
+        }
+        position: relative;
+        padding-top: 56%;
+        display: block;
+        background: $black no-repeat center center;
+        background-size: cover;
+        &:hover {
+          opacity: 1;
+        }
+        .single-article-video-duration {
+          position: absolute;
+          bottom: 8px;
+          right: 7px;
+          background: rgba(0,0,0,0.8);
+          color: white;
+          border-radius: 3px;
+          padding: 2px 5px 3px;
+          font-size: 0.75em;
+          font-weight: 500;
+          img {
+            width: 12px;
+            height: 12px;
+            margin-right: 4px;
+            vertical-align: -1px;
+          }
+        }
+      }
       .article-organization-headline {
         display:block;
         margin-bottom:calc(-1px - 0.6vw);

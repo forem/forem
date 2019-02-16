@@ -206,7 +206,7 @@ RSpec.describe Article, type: :model do
 
   describe "#video" do
     it "must be a url" do
-      article.user.add_role(:video_permission)
+      article.user.update_column(:created_at, 3.weeks.ago)
       article.video = "hey"
       expect(article).not_to be_valid
       article.video = "http://hey.com"
@@ -216,7 +216,14 @@ RSpec.describe Article, type: :model do
     it "must belong to permissioned user" do
       article.video = "http://hey.com"
       expect(article).not_to be_valid
-      article.user.add_role(:video_permission)
+      article.user.update_column(:created_at, 3.weeks.ago)
+      expect(article).to be_valid
+    end
+
+    it "saves with video" do
+      article.user.update_column(:created_at, 3.weeks.ago)
+      article.video = "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b"
+      article.save
       expect(article).to be_valid
     end
   end

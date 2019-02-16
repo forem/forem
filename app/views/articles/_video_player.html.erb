@@ -40,6 +40,7 @@
       playerInstance.setup({
           file: "<%= article.video_source_url %>",
           mediaid: "<%= article.video_code %>",
+          autostart: <%= internal_navigation? %>,
           image: "<%= cloudinary(article.video_thumbnail_url, 880) %>",
           playbackRateControls: true,
           tracks: [{

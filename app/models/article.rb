@@ -49,6 +49,7 @@ class Article < ApplicationRecord
   before_save       :set_all_dates
   before_save       :calculate_base_scores
   before_save       :set_caches
+  before_save       :fetch_video_duration
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
@@ -75,7 +76,7 @@ class Article < ApplicationRecord
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url,
-    :published_at, :crossposted_at, :boost_states, :description, :reading_time)
+    :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
   scope :limited_columns_internal_select, -> {
@@ -137,7 +138,8 @@ class Article < ApplicationRecord
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time,
         :tag_list, :positive_reactions_count, :id, :hotness_score, :score,
-        :readable_publish_date, :flare_tag, :user_id, :organization_id
+        :readable_publish_date, :flare_tag, :user_id, :organization_id,
+        :cloudinary_video_url, :video_duration_in_minutes
       attribute :published_at_int do
         published_at.to_i
       end
@@ -384,6 +386,23 @@ class Article < ApplicationRecord
     user&.collections&.pluck(:slug)
   end
 
+  def cloudinary_video_url
+    ApplicationController.helpers.cloudinary(video_thumbnail_url, 880)
+  end
+
+  def video_duration_in_minutes
+    minutes = (video_duration_in_seconds.to_i / 60) % 60
+    seconds = video_duration_in_seconds.to_i % 60
+    "#{minutes}:#{seconds}"
+  end
+
+  def fetch_video_duration
+    if video.present? && video_duration_in_seconds == 0
+      info = Ffprober::Parser.from_url video
+      self.video_duration_in_seconds = info.json[:format][:duration].to_f
+    end
+  end
+
   private
 
   def update_notifications
@@ -454,7 +473,7 @@ class Article < ApplicationRecord
     if published && video_state == "PROGRESSING"
       return errors.add(:published, "cannot be set to true if video is still processing")
     end
-    if video.present? && !user.has_role?(:video_permission)
+    if video.present? && user.created_at > 2.weeks.ago
       return errors.add(:video, "cannot be added member without permission")
     end
   end
