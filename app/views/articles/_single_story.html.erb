@@ -1,6 +1,6 @@
   <div class="single-article single-article-small-pic">
     <% if story.video.present? && story.video_thumbnail_url.present? %>
-      <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" >
+      <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>" >
         <div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" /><%= story.video_duration_in_minutes %></div>
       </a>
     <% end %>
