@@ -96,7 +96,7 @@
     "preact": "^8.4.2",
     "preact-compat": "^3.18.4",
     "preact-textarea-autosize": "^4.0.7",
-    "prop-types": "^15.7.1",
+    "prop-types": "^15.7.2",
     "pusher-js": "^4.4.0",
     "web-share-wrapper": "^0.2.1",
     "twilio-video": "^1.15.2"
