@@ -1,5 +1,8 @@
 .dockerignore
  .git
+ .gitignore
  logs/
  tmp/
  node_modules/
+
+_docker-storage/

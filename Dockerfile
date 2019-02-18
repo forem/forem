@@ -86,6 +86,31 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 # ruby dependencies (postgresql-dev, tzdata)
 RUN apk add --no-cache alpine-sdk postgresql-dev tzdata
 
+# Im installing bash, as im a bash addict (not that great with sh)
+RUN apk add bash
+
+#####################################################
+#
+# Lets prepare the dev.to source code files
+# WITHOUT docker related files
+#
+# This allow us to modify the docker
+# entrypoint / run file without recompiling
+# the entire application 
+# (especially when creating this buidl script =| )
+#
+# (@TODO - improve and review ignore to blacklist unneded items)
+#
+#####################################################
+FROM alpine-ruby-node AS source-code-container
+
+# The workdir
+WORKDIR /usr/src/app
+# Copy source code
+COPY ./ ./bin /usr/src/app/
+# remove docker related files
+RUN rm Dockerfile && rm docker-*
+
 #####################################################
 #
 # Lets build the dev.to image
@@ -98,20 +123,27 @@ FROM alpine-ruby-node
 WORKDIR /usr/src/app
 ENV RAILS_ENV development
 
-# Install ruby dependencies
-COPY Gemfile* /usr/src/app/
+# Copy over the application code (without docker related files)
+COPY --from=source-code-container /usr/src/app/ /usr/src/app/
+
+# Reruns installer
 RUN gem install bundler
 RUN bundle install --jobs 20 --retry 5
-
-# Install nodejs/yarn dependencies
-COPY yarn.lock /usr/src/app/
-ENV YARN_INTEGRITY_ENABLED "false"
 RUN yarn install && yarn check --integrity
 
-# Copy over the rest of the code
-# (@TODO - a docker ignore to blacklist unneded items)
-COPY ./ /usr/src/app/
+# Copy over docker related files
+COPY Dockerfile [(docker-)]* /usr/src/app/
+
+#
+# Execution environment variables
+#
+# timeout extension requried to ensure 
+# system work properly on first time load
+#
+ENV RACK_TIMEOUT_WAIT_TIMEOUT=10000 \ 
+  RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \ 
+  STATEMENT_TIMEOUT=10000
 
 # Entrypoint and command to start the server
-ENTRYPOINT ["bundle", "exec"]
-CMD ["rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
+CMD []
