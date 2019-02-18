@@ -1,6 +1,7 @@
 #####################################################
 #
 # Alpine container with 
+# (this is used in DEV mode)
 # 
 # + ruby:2.6.1
 # + node:8.15.0
@@ -89,6 +90,11 @@ RUN apk add --no-cache alpine-sdk postgresql-dev tzdata
 # Im installing bash, as im a bash addict (not that great with sh)
 RUN apk add bash
 
+# Lets setup the rails directory
+# (@TODO - consider a production version?)
+WORKDIR /usr/src/app
+ENV RAILS_ENV development
+
 #####################################################
 #
 # Lets prepare the dev.to source code files
@@ -107,21 +113,16 @@ FROM alpine-ruby-node AS source-code-container
 # The workdir
 WORKDIR /usr/src/app
 # Copy source code
-COPY ./ ./bin /usr/src/app/
+COPY ./ /usr/src/app/
 # remove docker related files
 RUN rm Dockerfile && rm docker-*
 
 #####################################################
 #
-# Lets build the dev.to image
+# Lets build the DEMO dev.to image
 #
 #####################################################
 FROM alpine-ruby-node
-
-# Lets setup the rails directory
-# (@TODO - consider a production version?)
-WORKDIR /usr/src/app
-ENV RAILS_ENV development
 
 # Copy over the application code (without docker related files)
 COPY --from=source-code-container /usr/src/app/ /usr/src/app/
@@ -141,8 +142,15 @@ COPY Dockerfile [(docker-)]* /usr/src/app/
 # system work properly on first time load
 #
 ENV RACK_TIMEOUT_WAIT_TIMEOUT=10000 \ 
-  RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \ 
-  STATEMENT_TIMEOUT=10000
+	RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \ 
+	STATEMENT_TIMEOUT=10000 \
+	RUN_MODE="demo"
+
+#
+# Lets setup the public uploads folder volume
+#
+RUN mkdir -p /usr/src/app/public/uploads
+VOLUME /usr/src/app/public/uploads
 
 # Entrypoint and command to start the server
 ENTRYPOINT ["/usr/src/app/docker-entrypoint.sh"]
