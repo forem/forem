@@ -98,7 +98,12 @@ function buildArticleHTML(article) {
     } else if (article.class_name === "Article") {
       readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">3 min read</a>'
     }
+    var videoHTML = '';
+    if (article.cloudinary_video_url) {
+      videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" />'+article.video_duration_in_minutes+'</div></a>'
+    }
     return '<div class="single-article single-article-small-pic">\
+      '+videoHTML+'\
       '+orgHeadline+'\
       <div class="small-pic">\
        <a href="/'+profileUsername+'" class="small-pic-link-wrapper">\

@@ -1,5 +1,5 @@
 class SpotifyTag < LiquidTagBase
-  URI_REGEXP = /spotify:(track|user|artist|album|episode).+(?<=:)\w{22}/.freeze
+  URI_REGEXP = /spotify:(track|user|artist|album|episode):\w{22}/.freeze
   TYPE_HEIGHT = {
     track: 80,
     user: 330,
