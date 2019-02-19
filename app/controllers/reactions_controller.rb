@@ -55,7 +55,7 @@ class ReactionsController < ApplicationController
       reaction.user.touch
       reaction.destroy
       Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if reaction.reactable_type == "Article" && reaction.reactable.organization_id
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
       @result = "destroy"
     else
       reaction = Reaction.create!(
@@ -66,7 +66,7 @@ class ReactionsController < ApplicationController
       )
       @result = "create"
       Notification.send_reaction_notification(reaction, reaction.reactable.user)
-      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reactable_type == "Article" && reaction.reactable.organization_id
+      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
     render json: { result: @result, category: category }
   end
@@ -76,5 +76,11 @@ class ReactionsController < ApplicationController
       Reaction.where(user_id: user.id).
         where("points > ?", 0)
     end
+  end
+
+  private
+
+  def organization_article?(reaction)
+    reaction.reactable_type == "Article" && reaction.reactable.organization_id
   end
 end
