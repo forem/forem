@@ -381,10 +381,10 @@ docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER
 echo "#---"
 echo "# Waiting for postgres server ... "
 
-RETRIES=10
+RETRIES=6
 until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 	echo "# $((RETRIES--)) remaining attempts..."
-	sleep 3
+	sleep 10
 done
 
 echo "# Waiting completed, moving on ... "
