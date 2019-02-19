@@ -157,6 +157,7 @@ if [ -z "$RUN_MODE" ]
 then
 	RUN_MODE="DEMO"
 fi
+# Argument processing
 if [ "$1" = "DEMO" ] || [ "$1" = "DEV" ] || [ "$1" = "RESET-DEV" ] || [ "$1" = "RESET-DEMO" ]
 then
 	# The mode is passed into the command line script, process it
@@ -164,8 +165,15 @@ then
 	# Process argument array without RUN_MODE
 	ARG_ARRAY_STR="${@:2}"
 else
-	# Process argument array with $0
-	ARG_ARRAY_STR="${@:1}"
+	if [ "$1" = "INTERACTIVE-DEMO" ]
+	then
+		RUN_MODE="DEMO"
+		# Process argument array without RUN_MODE
+		ARG_ARRAY_STR="${@:2}"
+	else
+		# Process argument array with $0
+		ARG_ARRAY_STR="${@:1}"
+	fi
 fi
 if [ "$RUN_MODE" = "DEMO" ] || [ "$RUN_MODE" = "DEV" ] || [ "$RUN_MODE" = "RESET-DEV" ] || [ "$RUN_MODE" = "RESET-DEMO" ]
 then
@@ -176,7 +184,7 @@ else
 	echo "#---"
 	echo "# [FATAL ERROR] Invalid RUN_MODE : $RUN_MODE (see example above)"
 	echo "#---"
-	exit 1
+	exit 2
 fi
 
 # Initialize : the currrent repository directory (and navigate to it)
@@ -270,6 +278,7 @@ do
 	if [ ! -z "$(printenv $i)" ]
 	then
 		echo "[detected env variable] - $i"
+		DEVTO_DOCKER_FLAGS="$DEVTO_DOCKER_FLAGS -e $i=\"$(printenv $i)\""
 		continue
 	fi
 
@@ -290,7 +299,7 @@ then
 			echo "#---"
 			echo "# [FATAL ERROR] Missing required DEMO env setting / argument for $i (see example above)"
 			echo "#---"
-			exit 2
+			exit 3
 		fi
 	done
 fi
@@ -395,7 +404,7 @@ then
 	dev-to:dev
 else
 	# in DEMO mode - lets run it in background mode
-	docker run -it -p 3000:3000 \
+	docker run -d -p 3000:3000 \
 	--name dev-to-app \
 	--link dev-to-postgres:db \
 	-v "$UPLOAD_DIR:/usr/src/app/public/uploads/" \
