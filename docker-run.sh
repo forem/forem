@@ -15,68 +15,68 @@ then
 	# Configure RUN_MODE as DEMO
 	RUN_MODE="DEMO"
 
-	echo ">>---"
-	echo ">>"
-	echo ">> Welcome to DEV.TO interactive docker demo setup guide."
-	echo ">>"
-	echo ">> For this container to work we will need at minimum ALGOLIA API keys"
-	echo ">> For logins to work, we will need either GITHUB or TWITTER API keys"
-	echo ">>"
-	echo ">> See ( https://docs.dev.to/get-api-keys-dev-env/ ) "
-	echo ">> for instructions on how to get the various API keys "
-	echo ">>"
-	echo ">> Once you got your various needed keys, please proceed to the next step"
-	echo ">>"
-	echo ">>---"
+	echo "|---"
+	echo "|"
+	echo "| Welcome to DEV.TO interactive docker demo setup guide."
+	echo "|"
+	echo "| For this container to work, we will need at minimum ALGOLIA API keys"
+	echo "| For logins to work, we will need either GITHUB or TWITTER API keys"
+	echo "|"
+	echo "| See ( https://docs.dev.to/get-api-keys-dev-env/ ) "
+	echo "| for instructions on how to get the various API keys "
+	echo "|"
+	echo "| Once you got your various API keys, please proceed to the next step"
+	echo "|"
+	echo "|---"
 
-	echo ">>---"
-	echo ">> Setting up ALGOLIASEARCH keys (required)"
-	echo ">>---"
-	echo -n ">> Please indicate your ALGOLIASEARCH_APPLICATION_ID : "
+	echo "|---"
+	echo "| Setting up ALGOLIASEARCH keys (required)"
+	echo "|---"
+	echo -n "| Please indicate your ALGOLIASEARCH_APPLICATION_ID : "
 	read ALGOLIASEARCH_APPLICATION_ID
 	export ALGOLIASEARCH_APPLICATION_ID
 
-	echo -n ">> Please indicate your ALGOLIASEARCH_SEARCH_ONLY_KEY : "
+	echo -n "| Please indicate your ALGOLIASEARCH_SEARCH_ONLY_KEY : "
 	read ALGOLIASEARCH_SEARCH_ONLY_KEY
 	export ALGOLIASEARCH_SEARCH_ONLY_KEY
 
-	echo -n ">> Please indicate your ALGOLIASEARCH_API_KEY (aka admin key) : "
+	echo -n "| Please indicate your ALGOLIASEARCH_API_KEY (aka admin key) : "
 	read ALGOLIASEARCH_API_KEY
 	export ALGOLIASEARCH_API_KEY
 
-	echo ">>---"
-	echo ">> Setting up GITHUB keys"
-	echo ">> (OPTIONAL, leave blank and press enter to skip)"
-	echo ">>---"
-	echo -n ">> Please indicate your GITHUB_KEY : "
+	echo "|---"
+	echo "| Setting up GITHUB keys"
+	echo "| (OPTIONAL, leave blank and press enter to skip)"
+	echo "|---"
+	echo -n "| Please indicate your GITHUB_KEY : "
 	read GITHUB_KEY
 	export GITHUB_KEY
 
-	echo -n ">> Please indicate your GITHUB_SECRET : "
+	echo -n "| Please indicate your GITHUB_SECRET : "
 	read GITHUB_SECRET
 	export GITHUB_SECRET
 
-	echo -n ">> Please indicate your GITHUB_TOKEN : "
+	echo -n "| Please indicate your GITHUB_TOKEN : "
 	read GITHUB_TOKEN
 	export GITHUB_TOKEN
 
-	echo ">>---"
-	echo ">> Setting up TWITTER keys"
-	echo ">> (OPTIONAL, leave blank and press enter to skip)"
-	echo ">>---"
-	echo -n ">> Please indicate your TWITTER_ACCESS_TOKEN : "
+	echo "|---"
+	echo "| Setting up TWITTER keys"
+	echo "| (OPTIONAL, leave blank and press enter to skip)"
+	echo "|---"
+	echo -n "| Please indicate your TWITTER_ACCESS_TOKEN : "
 	read TWITTER_ACCESS_TOKEN
 	export TWITTER_ACCESS_TOKEN
 
-	echo -n ">> Please indicate your TWITTER_ACCESS_TOKEN_SECRET : "
+	echo -n "| Please indicate your TWITTER_ACCESS_TOKEN_SECRET : "
 	read TWITTER_ACCESS_TOKEN_SECRET
 	export TWITTER_ACCESS_TOKEN_SECRET
 
-	echo -n ">> Please indicate your TWITTER_KEY : "
+	echo -n "| Please indicate your TWITTER_KEY : "
 	read TWITTER_KEY
 	export TWITTER_KEY
 	
-	echo -n ">> Please indicate your TWITTER_SECRET : "
+	echo -n "| Please indicate your TWITTER_SECRET : "
 	read TWITTER_SECRET
 	export TWITTER_SECRET
 	
