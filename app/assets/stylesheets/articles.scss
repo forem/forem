@@ -731,27 +731,27 @@
       height: calc(100% - 48px);
       display: none;
       -webkit-overflow-scrolling: touch;
-      .sidebar-bg{
-        top:0;
-        left:0;
-        right:0;
-        bottom:0;
-        overflow:scroll;
-        position:fixed;
-        background:rgba(0,0,0,0.5);
+      .sidebar-bg {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: scroll;
+        position: fixed;
+        background: rgba(0, 0, 0, 0.5);
         animation: fade-in 0.48s;
       }
-      &.swiped-in{
-        display:block;
-        .side-bar{
-          padding-top:2px;
-          display:block;
-          background:white;
+      &.swiped-in {
+        display: block;
+        .side-bar {
+          padding-top: 2px;
+          display: block;
+          background: white;
           height: calc(100% - 2px);
           overflow-y: auto;
           .widget,
           .sidebar-profile-snapshot {
-            border-radius:0px;
+            border-radius: 0px;
             box-shadow: none;
             margin-bottom: 0;
           }
