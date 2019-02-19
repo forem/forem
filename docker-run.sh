@@ -278,7 +278,7 @@ do
 	if [ ! -z "$(printenv $i)" ]
 	then
 		echo "[detected env variable] - $i"
-		DEVTO_DOCKER_FLAGS="$DEVTO_DOCKER_FLAGS -e $i=\"$(printenv $i)\""
+		DEVTO_DOCKER_FLAGS="$DEVTO_DOCKER_FLAGS -e $i=$(printenv $i)"
 		continue
 	fi
 
@@ -378,15 +378,18 @@ echo "#---"
 mkdir -p "$POSTGRES_DIR"
 docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER=devto -e POSTGRES_DB=PracticalDeveloper_development -v "$POSTGRES_DIR:/var/lib/postgresql/data" postgres:10.7-alpine
 
+#
+# Wait for postgresql server
+# this waits up to ~6*10 seconds
+#
 echo "#---"
-echo "# Waiting for postgres server ... "
-
+echo "# Waiting for postgres server (this commonly takes 10 ~ 60 seconds) ... "
+echo "#"
 RETRIES=6
 until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 	echo "# $((RETRIES--)) remaining attempts..."
 	sleep 10
 done
-
 echo "# Waiting completed, moving on ... "
 echo "#---"
 
@@ -402,9 +405,11 @@ echo "# UPLOAD_DIR : $UPLOAD_DIR"
 echo "#---"
 mkdir -p "$UPLOAD_DIR"
 
+#
+# in DEV mode - lets run in interactive mode
+#
 if [ "$RUN_MODE" = "DEV" ] 
 then
-	# in DEV mode - lets run in interactive mode
 	docker run -it -p 3000:3000 \
 	--name dev-to-app \
 	--link dev-to-postgres:db \
@@ -414,22 +419,50 @@ then
 	--entrypoint "/usr/src/app/docker-entrypoint.sh" \
 	$DEVTO_DOCKER_FLAGS \
 	dev-to:dev
-else
-	# in DEMO mode - lets run it in background mode
-	docker run -d -p 3000:3000 \
-	--name dev-to-app \
-	--link dev-to-postgres:db \
-	-v "$UPLOAD_DIR:/usr/src/app/public/uploads/" \
-	-e RUN_MODE="DEMO" \
-	-e DATABASE_URL=postgresql://devto:devto@db:5432/PracticalDeveloper_development \
-	$DEVTO_DOCKER_FLAGS \
-	dev-to:demo
 
-	# Dumping out docker info
-	docker ps | grep dev-to-
-
-	# Finishing message
-	echo "#---"
-	echo "# Container deployed on port ( http://localhost:3000 )"
-	echo "#---"
+	# End of dev mode
+	exit 0;
 fi
+
+#
+# in DEMO mode - lets run it in the background
+#
+docker run -d -p 3000:3000 \
+--name dev-to-app \
+--link dev-to-postgres:db \
+-v "$UPLOAD_DIR:/usr/src/app/public/uploads/" \
+-e RUN_MODE="DEMO" \
+-e DATABASE_URL=postgresql://devto:devto@db:5432/PracticalDeveloper_development \
+$DEVTO_DOCKER_FLAGS \
+dev-to:demo
+
+#
+# Wait for dev.to server
+# this waits up to ~20*30 seconds
+#
+echo "#---"
+echo "# Waiting for dev.to server... " 
+echo "#"
+echo "# this commonly takes 2 ~ 10 minutes, with validation attempts easily hanging for over a minute "
+echo "# basically, a very long time .... " 
+echo "#"
+RETRIES=20
+until docker exec dev-to-app curl -I -f http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
+	echo "# $((RETRIES--)) remaining attempts..."
+	sleep 30
+done
+echo "# Waiting completed, moving on ... "
+echo "#---"
+
+echo "#---"
+echo "# Displaying relevant docker information"
+echo "#---"
+# Dumping out docker info
+docker ps | grep dev-to-
+
+# Finishing message
+echo "#---"
+echo "# Container deployed on port ( http://localhost:3000 )"
+echo "# "
+echo "# Time to dev.to(gether)"
+echo "#---"
