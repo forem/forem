@@ -378,6 +378,18 @@ echo "#---"
 mkdir -p "$POSTGRES_DIR"
 docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER=devto -e POSTGRES_DB=PracticalDeveloper_development -v "$POSTGRES_DIR:/var/lib/postgresql/data" postgres:10.7-alpine
 
+echo "#---"
+echo "# Waiting for postgres server ... "
+
+RETRIES=10
+until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
+	echo "# $((RETRIES--)) remaining attempts..."
+	sleep 3
+done
+
+echo "# Waiting completed, moving on ... "
+echo "#---"
+
 #
 # Deploy dev-to container
 #
@@ -412,4 +424,9 @@ else
 	-e DATABASE_URL=postgresql://devto:devto@db:5432/PracticalDeveloper_development \
 	$DEVTO_DOCKER_FLAGS \
 	dev-to:demo
+
+	# Finishing message
+	echo "#---"
+	echo "# Container deployed on port ( http://localhost:3000 )"
+	echo "#---"
 fi

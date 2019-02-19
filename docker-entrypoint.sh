@@ -5,7 +5,7 @@
 #
 echo "" > ~/.bashrc
 echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && yarn check --integrity && bin/setup'" >> ~/.bashrc
-echo "alias devto-migrate='cd /usr/src/app/ && bin/rake db:migrate'" >> ~/.bashrc
+echo "alias devto-migrate='cd /usr/src/app/ && bin/rails db:migrate'" >> ~/.bashrc
 echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0 -p 3000'" >> ~/.bashrc
 
 #
@@ -57,7 +57,7 @@ bin/setup
 # DB migration
 # (@TODO - someone please confirm if i should use bin/rake or bin/rails for this step, and also if I can safely call htis on every startup)
 #
-bin/rake db:migrate
+bin/rails db:migrate
 
 #
 # Execute rails server on port 3000
