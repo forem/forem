@@ -425,6 +425,9 @@ else
 	$DEVTO_DOCKER_FLAGS \
 	dev-to:demo
 
+	# Dumping out docker info
+	docker ps | grep dev-to-
+
 	# Finishing message
 	echo "#---"
 	echo "# Container deployed on port ( http://localhost:3000 )"
