@@ -1,8 +1,92 @@
 #!/bin/bash
 
+###########################################
 #
-# Script header guide (short description)
+# Interactive mode script handling
 #
+###########################################
+
+if [ "$1" = "INTERACTIVE-DEMO" ]
+then
+	# echo "#---"
+	# echo "# Starting up INTERACTIVE-DEMO mode"
+	# echo "#---"
+
+	# Configure RUN_MODE as DEMO
+	RUN_MODE="DEMO"
+
+	echo ">>---"
+	echo ">>"
+	echo ">> Welcome to DEV.TO interactive docker demo setup guide."
+	echo ">>"
+	echo ">> For this container to work we will need at minimum ALGOLIA API keys"
+	echo ">> For logins to work, we will need either GITHUB or TWITTER API keys"
+	echo ">>"
+	echo ">> See ( https://docs.dev.to/get-api-keys-dev-env/ ) "
+	echo ">> for instructions on how to get the various API keys "
+	echo ">>"
+	echo ">> Once you got your various needed keys, please proceed to the next step"
+	echo ">>"
+	echo ">>---"
+
+	echo ">>---"
+	echo ">> Setting up ALGOLIASEARCH keys (required)"
+	echo ">>---"
+	echo -n ">> Please indicate your ALGOLIASEARCH_APPLICATION_ID : "
+	read ALGOLIASEARCH_APPLICATION_ID
+	export ALGOLIASEARCH_APPLICATION_ID
+
+	echo -n ">> Please indicate your ALGOLIASEARCH_SEARCH_ONLY_KEY : "
+	read ALGOLIASEARCH_SEARCH_ONLY_KEY
+	export ALGOLIASEARCH_SEARCH_ONLY_KEY
+
+	echo -n ">> Please indicate your ALGOLIASEARCH_API_KEY (aka admin key) : "
+	read ALGOLIASEARCH_API_KEY
+	export ALGOLIASEARCH_API_KEY
+
+	echo ">>---"
+	echo ">> Setting up GITHUB keys"
+	echo ">> (OPTIONAL, leave blank and press enter to skip)"
+	echo ">>---"
+	echo -n ">> Please indicate your GITHUB_KEY : "
+	read GITHUB_KEY
+	export GITHUB_KEY
+
+	echo -n ">> Please indicate your GITHUB_SECRET : "
+	read GITHUB_SECRET
+	export GITHUB_SECRET
+
+	echo -n ">> Please indicate your GITHUB_TOKEN : "
+	read GITHUB_TOKEN
+	export GITHUB_TOKEN
+
+	echo ">>---"
+	echo ">> Setting up TWITTER keys"
+	echo ">> (OPTIONAL, leave blank and press enter to skip)"
+	echo ">>---"
+	echo -n ">> Please indicate your TWITTER_ACCESS_TOKEN : "
+	read TWITTER_ACCESS_TOKEN
+	export TWITTER_ACCESS_TOKEN
+
+	echo -n ">> Please indicate your TWITTER_ACCESS_TOKEN_SECRET : "
+	read TWITTER_ACCESS_TOKEN_SECRET
+	export TWITTER_ACCESS_TOKEN_SECRET
+
+	echo -n ">> Please indicate your TWITTER_KEY : "
+	read TWITTER_KEY
+	export TWITTER_KEY
+	
+	echo -n ">> Please indicate your TWITTER_SECRET : "
+	read TWITTER_SECRET
+	export TWITTER_SECRET
+	
+fi
+
+###########################################
+#
+# Script header guide 
+#
+###########################################
 
 echo "#---"
 echo "#"
@@ -18,17 +102,18 @@ echo "# To run this script properly, execute with the following (inside the dev.
 echo "# './docker-run.sh [RUN_MODE] [Additional docker envrionment arguments]'"
 echo "#"
 echo "# Alternatively to run this script in 'interactive mode' simply run"
-echo "# './docker-run.sh INTERACTIVE'"
+echo "# './docker-run.sh INTERACTIVE-DEMO'"
 echo "#"
 echo "#---"
 echo "#---"
 echo "#"
-echo "# RUN_MODE can either be the following (note if this is not configured, it defaults to DEMO)"
+echo "# RUN_MODE can either be the following"
 echo "#"
 echo "# - 'DEV'  : Start up the container into bash, with a quick start guide"
 echo "# - 'DEMO' : Start up the container, and run dev.to (requries ALGOLIA environment variables)"
-echo "# - 'RESET-DEV'  : Resets postgresql and upload data directory for a clean deployment, before running as DEV mode"
-echo "# - 'RESET-DEMO' : Resets postgresql and upload data directory for a clean deployment, before running as DEMO mode"
+echo "# - 'RESET-DEV'   : Resets postgresql and upload data directory for a clean deployment, before running as DEV mode"
+echo "# - 'RESET-DEMO'  : Resets postgresql and upload data directory for a clean deployment, before running as DEMO mode"
+echo "# - 'INTERACTIVE-DEMO' : Runs this script in 'interactive' mode to setup the 'DEMO'"
 echo "#"
 echo "# So for example to run a development container in bash its simply"
 echo "# './docker-run.sh DEV'"
@@ -46,6 +131,16 @@ echo "# Note that all of this can also be configured via ENVIRONMENT variables p
 echo "#"
 echo "#---"
 
+###########################################
+#
+# Core script logic
+#
+###########################################
+
+#
+# Arguments / Environment handling
+#
+
 # Terminate without argument
 if [ -z "$1" ]
 then
@@ -54,31 +149,6 @@ then
 	echo "# [FATAL ERROR] Missing RUN_MODE argument (see example above)"
 	echo "#---"
 	exit 1
-fi
-
-# Initialize : the currrent repository directory (and navigate to it)
-if [ -z "$REPO_DIR" ]
-then
-	REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-fi
-cd "$REPO_DIR";
-
-# Initialize : the general storage directory (used to magic bash the upload / postgres directory)
-if [ -z "$STORAGE_DIR" ]
-then
-	STORAGE_DIR="$REPO_DIR/_docker-storage"
-fi
-
-# Initialize : Postgresql data directory
-if [ -z "$POSTGRES_DIR" ]
-then
-	POSTGRES_DIR="$STORAGE_DIR/postgresql-data/"
-fi
-
-# Initialize : dev-to public upload data
-if [ -z "$UPLOAD_DIR" ]
-then
-	UPLOAD_DIR="$STORAGE_DIR/public-upload/"
 fi
 
 # Initialize : docker-run.sh RUN_MODE
@@ -109,6 +179,31 @@ else
 	exit 1
 fi
 
+# Initialize : the currrent repository directory (and navigate to it)
+if [ -z "$REPO_DIR" ]
+then
+	REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+fi
+cd "$REPO_DIR";
+
+# Initialize : the general storage directory (used to magic bash the upload / postgres directory)
+if [ -z "$STORAGE_DIR" ]
+then
+	STORAGE_DIR="$REPO_DIR/_docker-storage"
+fi
+
+# Initialize : Postgresql data directory
+if [ -z "$POSTGRES_DIR" ]
+then
+	POSTGRES_DIR="$STORAGE_DIR/postgresql-data/"
+fi
+
+# Initialize : dev-to public upload data
+if [ -z "$UPLOAD_DIR" ]
+then
+	UPLOAD_DIR="$STORAGE_DIR/public-upload/"
+fi
+
 echo "#---"
 echo "# Ok, to start with - lets assume the following settings (provided or auto default)..."
 echo "#"
@@ -126,9 +221,9 @@ echo "#---"
 #
 ENV_FORWARDING_LIST=(
 	# ALGOLIASEARCH (required for deployment)
-	"ALGOLIASEARCH_API_KEY"
 	"ALGOLIASEARCH_APPLICATION_ID"
 	"ALGOLIASEARCH_SEARCH_ONLY_KEY"
+	"ALGOLIASEARCH_API_KEY"
 	# login via GITHUB
 	"GITHUB_KEY"
 	"GITHUB_SECRET"
@@ -147,9 +242,9 @@ ENV_FORWARDING_LIST=(
 )
 ENV_FORWARDING_DEMO_COMPULSORY_LIST=(
 	# ALGOLIASEARCH (required for deployment)
-	"ALGOLIASEARCH_API_KEY"
 	"ALGOLIASEARCH_APPLICATION_ID"
 	"ALGOLIASEARCH_SEARCH_ONLY_KEY"
+	"ALGOLIASEARCH_API_KEY"
 )
 
 #
