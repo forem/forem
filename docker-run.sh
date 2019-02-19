@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+# Script header guide (short description)
+#
+
 echo "#---"
 echo "#"
 echo "# This script will perform the following steps ... "
@@ -12,6 +16,9 @@ echo "# 5) Deploy the dev-to container, with the name of 'dev-to-app', and sets 
 echo "#"
 echo "# To run this script properly, execute with the following (inside the dev.to repository folder)..."
 echo "# './docker-run.sh [RUN_MODE] [Additional docker envrionment arguments]'"
+echo "#"
+echo "# Alternatively to run this script in 'interactive mode' simply run"
+echo "# './docker-run.sh INTERACTIVE'"
 echo "#"
 echo "#---"
 echo "#---"
@@ -38,6 +45,16 @@ echo "#"
 echo "# Note that all of this can also be configured via ENVIRONMENT variables prior to running the script"
 echo "#"
 echo "#---"
+
+# Terminate without argument
+if [ -z "$1" ]
+then
+	# Invalid RUN_MODE
+	echo "#---"
+	echo "# [FATAL ERROR] Missing RUN_MODE argument (see example above)"
+	echo "#---"
+	exit 1
+fi
 
 # Initialize : the currrent repository directory (and navigate to it)
 if [ -z "$REPO_DIR" ]
