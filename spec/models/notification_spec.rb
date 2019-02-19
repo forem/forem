@@ -150,4 +150,21 @@ RSpec.describe Notification, type: :model do
       expect(notification).to eq nil
     end
   end
+
+  describe "#aggregated?" do
+    it "returns true if a notification's action is 'Reaction'" do
+      notification = build(:notification, action: "Reaction")
+      expect(notification.aggregated?).to eq true
+    end
+
+    it "returns true if a notification's action is 'Follow'" do
+      notification = build(:notification, action: "Follow")
+      expect(notification.aggregated?).to eq true
+    end
+
+    it "returns false if a notification's action is not 'Reaction' or 'Follow'" do
+      notification = build(:notification, action: "Published")
+      expect(notification.aggregated?).to eq false
+    end
+  end
 end
