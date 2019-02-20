@@ -60,7 +60,6 @@ class UserDashboard < Administrate::BaseDashboard
     twitter_username
     github_username
     name
-    banned
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
