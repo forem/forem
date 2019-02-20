@@ -20,8 +20,7 @@ class Follow < ApplicationRecord
     ["follows.followable_type = ?", "Organization"] => "following_orgs_count",
     ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
-  after_save :touch_user
-  after_save :touch_user_followed_at
+  after_save :touch_follower
   after_create :send_email_notification
   after_create :create_chat_channel
   before_destroy :modify_chat_channel_status
@@ -30,6 +29,11 @@ class Follow < ApplicationRecord
 
   private
 
+  def touch_follower
+    Follows::TouchFollowerJob.perform_later(id)
+  end
+
+  # TODO: remove #touch_user and #touch_user_followed_at
   def touch_user
     follower.touch
   end

@@ -10,14 +10,12 @@ RSpec.describe Follow, type: :model do
   end
 
   context "when creating" do
-    # before { ActiveJob::Base.queue_adapter = :inline }
+    before { ActiveJob::Base.queue_adapter = :inline }
 
     it "touches the follower user while creating" do
       user.update_columns(updated_at: Time.now - 1.day, last_followed_at: Time.now - 1.day)
       now = Time.now
-      run_background_jobs_immediately do
-        Follow.create!(follower: user, followable: user_2)
-      end
+      Follow.create!(follower: user, followable: user_2)
       user.reload
       expect(user.updated_at).to be >= now
       expect(user.last_followed_at).to be >= now
