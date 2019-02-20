@@ -2,6 +2,7 @@
 
 #
 # Lets setup the alias file
+# @TODO - add as scripts instead within /bin? - this will help auto fill
 #
 echo "" > ~/.bashrc
 echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && yarn check --integrity && bin/setup'" >> ~/.bashrc
