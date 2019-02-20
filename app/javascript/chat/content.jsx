@@ -12,11 +12,12 @@ export default class Content extends Component {
     activeChannelId: PropTypes.number,
     pusherKey: PropTypes.string,
   };
+
   render() {
     console.log(this.props);
     if (!this.props.resource) {
       return '';
-    } else {
+    } 
       return (
         <div
           className="activechatchannel__activecontent"
@@ -24,7 +25,7 @@ export default class Content extends Component {
           onClick={this.props.onTriggerContent}
         >
           <button
-            class="activechatchannel__activecontentexitbutton"
+            className="activechatchannel__activecontentexitbutton"
             data-content="exit"
           >
             ×
@@ -32,7 +33,7 @@ export default class Content extends Component {
           {display(this.props)}
         </div>
       );
-    }
+    
   }
 }
 
@@ -50,7 +51,7 @@ function display(props) {
         }}
       />
     );
-  } else if (props.resource.type_of === 'loading-user') {
+  } if (props.resource.type_of === 'loading-user') {
     return (
       <div
         style={{
@@ -62,11 +63,11 @@ function display(props) {
         }}
       />
     );
-  } else if (props.resource.type_of === 'user') {
+  } if (props.resource.type_of === 'user') {
     return <UserDetails user={props.resource} />;
-  } else if (props.resource.type_of === 'article') {
+  } if (props.resource.type_of === 'article') {
     return <Article resource={props.resource} />;
-  } else if (props.resource.type_of === 'github') {
+  } if (props.resource.type_of === 'github') {
     return (
       <GithubRepo
         activeChannelId={props.activeChannelId}
@@ -75,14 +76,14 @@ function display(props) {
         resource={props.resource}
       />
     );
-  } else if (props.resource.type_of === 'channel-details') {
+  } if (props.resource.type_of === 'channel-details') {
     return (
       <ChannelDetails
         channel={props.resource.channel}
         activeChannelId={props.activeChannelId}
       />
     );
-  } else if (props.resource.type_of === 'code_editor') {
+  } if (props.resource.type_of === 'code_editor') {
     return (
       <CodeEditor
         activeChannelId={props.activeChannelId}

@@ -92,10 +92,12 @@ export default class GithubRepo extends Component {
             <em>Authentication required</em>
           </div>
           <p>
-            You must{' '}
+            You must
+            {' '}
             <a href="/users/auth/github" data-no-instant>
               authenticate with GitHub
-            </a>{' '}
+            </a>
+            {' '}
             to use this feature.
           </p>
         </div>
@@ -119,7 +121,9 @@ export default class GithubRepo extends Component {
           data-path={item.path}
           onClick={this.handleItemClick}
         >
-          📁 {item.name}
+          📁 
+          {' '}
+          {item.name}
         </a>
       </div>
     ));
