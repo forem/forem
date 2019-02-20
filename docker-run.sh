@@ -33,53 +33,83 @@ then
 	echo "| Setting up ALGOLIASEARCH keys (required)"
 	echo "|---"
 	echo -n "| Please indicate your ALGOLIASEARCH_APPLICATION_ID : "
-	read ALGOLIASEARCH_APPLICATION_ID
-	export ALGOLIASEARCH_APPLICATION_ID
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export ALGOLIASEARCH_APPLICATION_ID="$INPUT_KEY"
+	fi
 
 	echo -n "| Please indicate your ALGOLIASEARCH_SEARCH_ONLY_KEY : "
-	read ALGOLIASEARCH_SEARCH_ONLY_KEY
-	export ALGOLIASEARCH_SEARCH_ONLY_KEY
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export ALGOLIASEARCH_SEARCH_ONLY_KEY="$INPUT_KEY"
+	fi
 
 	echo -n "| Please indicate your ALGOLIASEARCH_API_KEY (aka admin key) : "
-	read ALGOLIASEARCH_API_KEY
-	export ALGOLIASEARCH_API_KEY
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export ALGOLIASEARCH_API_KEY="$INPUT_KEY"
+	fi
 
 	echo "|---"
 	echo "| Setting up GITHUB keys"
 	echo "| (OPTIONAL, leave blank and press enter to skip)"
 	echo "|---"
 	echo -n "| Please indicate your GITHUB_KEY : "
-	read GITHUB_KEY
-	export GITHUB_KEY
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export GITHUB_KEY="$INPUT_KEY"
+	fi
 
 	echo -n "| Please indicate your GITHUB_SECRET : "
-	read GITHUB_SECRET
-	export GITHUB_SECRET
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export GITHUB_SECRET="$INPUT_KEY"
+	fi
 
 	echo -n "| Please indicate your GITHUB_TOKEN : "
-	read GITHUB_TOKEN
-	export GITHUB_TOKEN
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export GITHUB_TOKEN="$INPUT_KEY"
+	fi
 
 	echo "|---"
 	echo "| Setting up TWITTER keys"
 	echo "| (OPTIONAL, leave blank and press enter to skip)"
 	echo "|---"
 	echo -n "| Please indicate your TWITTER_ACCESS_TOKEN : "
-	read TWITTER_ACCESS_TOKEN
-	export TWITTER_ACCESS_TOKEN
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export TWITTER_ACCESS_TOKEN="$INPUT_KEY"
+	fi
 
 	echo -n "| Please indicate your TWITTER_ACCESS_TOKEN_SECRET : "
-	read TWITTER_ACCESS_TOKEN_SECRET
-	export TWITTER_ACCESS_TOKEN_SECRET
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export TWITTER_ACCESS_TOKEN_SECRET="$INPUT_KEY"
+	fi
 
 	echo -n "| Please indicate your TWITTER_KEY : "
-	read TWITTER_KEY
-	export TWITTER_KEY
-	
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export TWITTER_KEY="$INPUT_KEY"
+	fi
+
 	echo -n "| Please indicate your TWITTER_SECRET : "
-	read TWITTER_SECRET
-	export TWITTER_SECRET
-	
+	read INPUT_KEY
+	if [ ! -z "$INPUT_KEY" ]
+	then
+		export TWITTER_SECRET="$INPUT_KEY"
+	fi
+
 fi
 
 ###########################################
@@ -264,8 +294,8 @@ DEVTO_DOCKER_FLAGS="$ARG_ARRAY_STR"
 # Scan for ENV variabels to forward
 #
 echo "#---"
-echo "# Lets scan for dev.to environment variables will automatically be passed"
-echo "# forward into the continaer if detected (also useful for CI testing)"
+echo "# Lets scan for dev.to environment variables that will automatically be passed"
+echo "# forward into the continaer if present (very useful for CI testing)"
 echo "#---"
 for i in "${ENV_FORWARDING_LIST[@]}"
 do
@@ -384,13 +414,14 @@ docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER
 #
 echo "#---"
 echo "# Waiting for postgres server (this commonly takes 10 ~ 60 seconds) ... "
-echo "#"
-RETRIES=6
+echo -n "# "
+RETRIES=12
 until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
-	echo "# $((RETRIES--)) remaining attempts..."
-	sleep 10
+	echo -n "."
+	sleep 5
 done
-echo "# Waiting completed, moving on ... "
+echo ""
+echo "# Wait completed, moving on ... "
 echo "#---"
 
 #
@@ -443,24 +474,37 @@ dev-to:demo
 echo "#---"
 echo "# Waiting for dev.to server... " 
 echo "#"
-echo "# this commonly takes 2 ~ 10 minutes, with validation attempts easily hanging for over a minute "
-echo "# basically, a very long time .... " 
-echo "#"
-RETRIES=20
-until docker exec dev-to-app curl -I -f http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
-	echo "# $((RETRIES--)) remaining attempts..."
-	sleep 30
+echo "# this commonly takes 2 ~ 10 minutes, basically, a very long time .... =[ "
+
+# Side note, looped to give 4 set of distinct lines
+# espeially if long wait times occur (to make it more managable)
+for i in 1 2 3 4
+do
+	RETRIES=30
+	echo -n "# "
+	until docker exec dev-to-app curl -I --max-time 5 -f http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
+		echo -n "."
+		sleep 5
+	done
+	echo ""
 done
-echo "# Waiting completed, moving on ... "
+
+echo "# Wait completed, moving on ... "
 echo "#---"
 
+#
+# Dumping out docker info
+#
 echo "#---"
 echo "# Displaying relevant docker information"
 echo "#---"
-# Dumping out docker info
-docker ps | grep dev-to-
+DOCKER_INFO=$(docker ps)
+echo "$DOCKER_INFO" | head -1
+echo "$DOCKER_INFO" | grep dev-to-
 
+#
 # Finishing message
+#
 echo "#---"
 echo "# Container deployed on port ( http://localhost:3000 )"
 echo "# "
