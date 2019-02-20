@@ -15,11 +15,6 @@ class UserDashboard < Administrate::BaseDashboard
     username: Field::String,
     twitter_username: Field::String,
     github_username: Field::String,
-    banned: UserBannedField,
-    reason_for_ban: ReasonForBanField,
-    warned: UserWarnedField,
-    reason_for_warning: ReasonForWarningField,
-    trusted: TrustedUserField,
     scholar: UserScholarField,
     analytics: UserAnalyticsField,
     summary: Field::String,
@@ -83,11 +78,6 @@ class UserDashboard < Administrate::BaseDashboard
     github_username
     profile_image
     org_admin
-    banned
-    reason_for_ban
-    warned
-    reason_for_warning
-    trusted
     scholar
     analytics
     summary

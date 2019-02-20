@@ -61,6 +61,8 @@ class Internal::UsersController < Internal::ApplicationController
     if user_params[:ban_user] == "1"
       @user.add_role :banned
       @user.remove_role :trusted
+      @user.remove_role :video_permission
+      @user.remove_role :tag_moderator
       create_note("banned", user_params[:note_for_current_role])
     else
       @user.remove_role :banned
@@ -82,6 +84,7 @@ class Internal::UsersController < Internal::ApplicationController
     if user_params[:warn_user] == "1"
       @user.add_role :warned
       @user.remove_role :trusted
+      @user.remove_role :tag_moderator
       create_note("warned", user_params[:note_for_current_role])
     else
       @user.remove_role :warned
