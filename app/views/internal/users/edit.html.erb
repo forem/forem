@@ -41,7 +41,7 @@
   <h2>Banish User</h2>
   <% if @user.banished? %>
     <p>User has been banished.</p>
-  <% elsif @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago %>
+  <% elsif @user.created_at < 30.days.ago %>
       <p><em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em></p>
       <p><strong>Do not do this lightly.</strong></p>
       <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsumbit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
