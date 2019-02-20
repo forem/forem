@@ -142,35 +142,6 @@ class UsersController < ApplicationController
     user.delay.follow(Tag.find_by(name: "hiring"))
   end
 
-  def open_chat
-    visitor = current_user
-    user = User.find(params[:user_id])
-    common_direct_chats = (visitor.chat_channels & user.chat_channels).select { |channel| channel.channel_type == "direct" }
-
-    if common_direct_chats.empty?
-      chat = ChatChannel.create_with_users([visitor, user], "direct")
-      id = Message.ids.max ? Message.ids.max + 1 : 1
-      message_markdown = "Hi #{user.username}! I am #{visitor.username}. I can message you on DEV Connect because your inbox is open."
-      message = Message.new(
-        id: id,
-        chat_channel_id: chat.id,
-        created_at: Time.now,
-        message_markdown: message_markdown,
-        message_html: "<p>#{message_markdown}</p>\n",
-        updated_at: Time.now,
-        user_id: visitor.id
-      )
-      chat.messages.append(message)
-      nil
-    else
-      active = common_direct_chats.select { |channel| channel.status == "active" }.empty?
-      if active
-        common_direct_chats[0].update(status: "active")
-      end
-    end
-    nil
-  end
-
   def handle_settings_tab
     return @tab = "profile" if @tab.blank?
 
