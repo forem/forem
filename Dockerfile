@@ -144,7 +144,8 @@ COPY Dockerfile [(docker-)]* /usr/src/app/
 ENV RACK_TIMEOUT_WAIT_TIMEOUT=10000 \ 
 	RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \ 
 	STATEMENT_TIMEOUT=10000 \
-	RUN_MODE="demo"
+	RUN_MODE="demo" \
+  DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_development"
 
 #
 # Lets setup the public uploads folder volume
