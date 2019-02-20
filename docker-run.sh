@@ -414,7 +414,7 @@ docker run -d --name dev-to-postgres -e POSTGRES_PASSWORD=devto -e POSTGRES_USER
 #
 echo "#---"
 echo "# Waiting for postgres server (this commonly takes 10 ~ 60 seconds) ... "
-echo -n "# "
+echo -n "# ."
 RETRIES=12
 until docker exec dev-to-postgres psql -U devto -d PracticalDeveloper_development -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 	echo -n "."
@@ -481,7 +481,7 @@ echo "# this commonly takes 2 ~ 10 minutes, basically, a very long time .... =[ 
 for i in 1 2 3 4
 do
 	RETRIES=30
-	echo -n "# "
+	echo -n "# ."
 	until docker exec dev-to-app curl -I --max-time 5 -f http://localhost:3000/ > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
 		echo -n "."
 		sleep 5
