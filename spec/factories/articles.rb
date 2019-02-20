@@ -37,8 +37,7 @@ FactoryBot.define do
 
   trait :video do
     after(:build) do |article|
-      article.video = "https://video.com"
-      article.user.add_role :video_permission
+      article.video = "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b"
       article.save
     end
   end

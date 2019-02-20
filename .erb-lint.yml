@@ -1,6 +1,12 @@
 linters:
   SelfClosingTag:
     enabled: false
+  ParserErrors:
+    exclude:
+      - '**/app/views/pages/_editor_guide_text.html.erb'
+  SpaceInHtmlTag:
+    exclude:
+      - '**/app/views/pages/_editor_guide_text.html.erb'
   Rubocop:
     enabled: true
     rubocop_config:

@@ -211,7 +211,7 @@
   <% end %>
 <% end %>
 
- <% cache("article-show-scripts", expires_in: 8.hours) do %>
+<% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%= TweetTag.script.html_safe %>
     <%= YoutubeTag.script.html_safe %>
@@ -220,3 +220,5 @@
     <%= RunkitTag.script.html_safe %>
   </script>
 <% end %>
+
+<%= javascript_pack_tag "webShare", defer: true %>
