@@ -65,8 +65,6 @@ class Internal::UsersController < Internal::ApplicationController
 
   def handle_user_privileges
     toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
-<<<<<<< HEAD
-=======
     toggle_video_permission if user_params[:video_permission]
     toggle_comment_ban if user_params[:comment_ban]
   end
@@ -77,7 +75,6 @@ class Internal::UsersController < Internal::ApplicationController
     else
       @user.remove_role :video_permission
     end
->>>>>>> add comment ban and move to edit view
   end
 
   def toggle_ban_user
@@ -218,12 +215,8 @@ class Internal::UsersController < Internal::ApplicationController
                                 :note_for_mentorship_ban,
                                 :note_for_current_role,
                                 :reason_for_mentorship_ban,
-<<<<<<< HEAD
-                                :trusted_user)
-=======
                                 :trusted_user,
                                 :video_permission,
                                 :comment_ban)
->>>>>>> add comment ban and move to edit view
   end
 end

@@ -3,11 +3,7 @@ class User < ApplicationRecord
 
   attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-<<<<<<< HEAD
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user
-=======
   :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :video_permission, :comment_ban
->>>>>>> add comment ban and move to edit view
 
   rolify
   include AlgoliaSearch
