@@ -33,7 +33,13 @@ class Follow < ApplicationRecord
     Follows::TouchFollowerJob.perform_later(id)
   end
 
-  # TODO: remove #touch_user and #touch_user_followed_at
+  def create_chat_channel
+    return unless followable_type == "User"
+
+    Follows::CreateChatChannelJob.perform_later(id)
+  end
+
+  # TODO: remove methods #touch_user, #touch_user_followed_at, #create_chat_channel_without_delay
   def touch_user
     follower.touch
   end
@@ -44,12 +50,12 @@ class Follow < ApplicationRecord
   end
   handle_asynchronously :touch_user_followed_at
 
-  def create_chat_channel
+  # this method will be used if there're jobs created before introducing ActiveJob
+  def create_chat_channel_without_delay
     if followable_type == "User" && followable.following?(follower)
       ChatChannel.create_with_users([followable, follower])
     end
   end
-  handle_asynchronously :create_chat_channel
 
   def send_email_notification
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications

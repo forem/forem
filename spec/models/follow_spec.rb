@@ -23,26 +23,20 @@ RSpec.describe Follow, type: :model do
 
     it "doesn't create a channel when a followable is an org" do
       expect do
-        run_background_jobs_immediately do
-          Follow.create!(follower: user, followable: create(:organization))
-        end
+        Follow.create!(follower: user, followable: create(:organization))
       end.not_to change(ChatChannel, :count)
     end
 
     it "doesn't create a chat channel when users don't follow mutually" do
       expect do
-        run_background_jobs_immediately do
-          Follow.create!(follower: user, followable: user_2)
-        end
+        Follow.create!(follower: user, followable: user_2)
       end.not_to change(ChatChannel, :count)
     end
 
     it "creates a chat channel when users follow mutually" do
       Follow.create!(follower: user_2, followable: user)
       expect do
-        run_background_jobs_immediately do
-          Follow.create!(follower: user, followable: user_2)
-        end
+        Follow.create!(follower: user, followable: user_2)
       end.to change(ChatChannel, :count).by(1)
     end
 

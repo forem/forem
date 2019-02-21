@@ -23,7 +23,7 @@ RSpec.describe Follows::TouchFollowerJob, type: :job do
     end
 
     it "doesn't fail if follow doesn't exist" do
-      described_class.perform_now(100)
+      described_class.perform_now(Follow.maximum(:id).to_i + 1)
     end
   end
 end
