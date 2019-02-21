@@ -52,7 +52,7 @@
             </a>
           <% end %>
           <% if @user.mastodon_url? %>
-            <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener">
+            <a href="<%= @user.mastodon_url %>" target="_blank" rel="noopener me">
               <%= inline_svg("mastodon-logo.svg", class:"icon-img") %>
             </a>
           <% end %>

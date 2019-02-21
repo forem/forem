@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190206222055) do
+ActiveRecord::Schema.define(version: 20190216185753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 20190206222055) do
     t.string "video"
     t.string "video_closed_caption_track_url"
     t.string "video_code"
+    t.float "video_duration_in_seconds", default: 0.0
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"

@@ -11,8 +11,8 @@ module CommentsHelper
     comment.deleted ? 0 : comment.user_id
   end
 
-  def tree_for(comment, commentable)
-    nested_comments(tree: comment.subtree.includes(:user).arrange, commentable: commentable, is_view_root: true)
+  def tree_for(comment, sub_comments, commentable)
+    nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
   end
 
   private

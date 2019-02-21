@@ -1,7 +1,7 @@
 class RunkitTag < Liquid::Block
   def initialize(tag_name, markup, tokens)
     super
-    @preamble = ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
+    @preamble = sanitized_preamble(markup)
   end
 
   def render(context)
@@ -63,6 +63,12 @@ class RunkitTag < Liquid::Block
         }
       }, 200);
     JAVASCRIPT
+  end
+
+  def sanitized_preamble(markup)
+    raise StandardError, "Runkit tag is invalid" if markup.include? "\""
+
+    ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
   end
 end
 
