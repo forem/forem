@@ -38,30 +38,6 @@
   </ul>
 
 </div>
-<<<<<<< HEAD
-<div class="row">
-  <h3><u>Current Roles</u></h3>
-  <p>(view full history in notes below)</p>
-  <ul>
-    <% @user.roles.each do |role| %>
-        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
-    <% end %>
-  </ul>
-  <h3><u>Privileges</u></h3>
-    <% if !@user.banned && !@user.warned %>
-      <%= form_for [:internal, @user] do |f| %>
-        <p>Add Trusted Role (Community Moderator)
-        <%= f.check_box :trusted_user, checked: @user.trusted %></p>
-        <%= f.submit "Update Privileges" %>
-      <% end %>
-    <% else %>
-      User must be in good standing to have heigtened privileges of any kind.
-    <% end %>
-  <br>
-</div>
-=======
-
->>>>>>> move user status info to internal/edit
 <div class="row">
   <h3><u>Mentorship</u></h3>
   <% if @user.mentors.count > 0 %>
