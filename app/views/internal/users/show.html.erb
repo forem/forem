@@ -11,7 +11,7 @@
   <h1>
   <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
   </h1>
-  <p><u><a style="color: red" href="/internal/users/<%= @user.id %>/edit">click here to revoke user pivileges</a></u></p>
+  <p><u><a style="color: red" href="/internal/users/<%= @user.id %>/edit">click here to manage user roles/pivileges</a></u></p>
   <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
   <p><strong><u>General Info</u></strong></p>
   <dl>
@@ -34,11 +34,11 @@
     <li><%= @user.reactions.size %> reactions</li>
     <li><%= @user.followers.size %> followers</li>
     <li><%= @user.following_users_count %> users following</li>
-    <li><%= @user.badge_achievements_count %> Badges</li>
-
+    <li><%= @user.badge_achievements_count %> badges</li>
   </ul>
 
 </div>
+<<<<<<< HEAD
 <div class="row">
   <h3><u>Current Roles</u></h3>
   <p>(view full history in notes below)</p>
@@ -59,6 +59,9 @@
     <% end %>
   <br>
 </div>
+=======
+
+>>>>>>> move user status info to internal/edit
 <div class="row">
   <h3><u>Mentorship</u></h3>
   <% if @user.mentors.count > 0 %>
@@ -89,34 +92,6 @@
       </li>
     <% end %>
     </ul>
-  <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <% if @user.banned_from_mentorship %>
-      <p style="background-color:red; color:white;">User is banned from mentorship program</p>
-    <% end %>
-    <p>Ban user from mentorship program <%= f.check_box :ban_from_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
-    <%= f.label "Reason: " %>
-    <%= f.text_area :note_for_mentorship_ban, required: true %>
-    <br>
-    <%= f.submit "Update Mentorship Status" %>
-  <% end %>
-</div>
-<div class="row">
-  <h3><u>Notes</u></h3>
-  <% if @user.notes.count > 0 %>
-    <% @user.notes.each do |note| %>
-      <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> -
-      <% if !note.reason.blank? %><strong><%= note.reason %>:</strong> <% end %><%= note.content %></p>
-    <% end %>
-  <% else %>
-    <p><em>No notes yet!</em></p>
-  <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <%= f.label "Add new note: " %>
-    <br>
-    <%= f.text_area :note %>
-    <br>
-    <%= f.submit "Submit Note" %>
   <% end %>
 </div>
 

@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       member do
         post "banish"
         post "full_delete"
+        patch "user_status"
       end
     end
     resources :events

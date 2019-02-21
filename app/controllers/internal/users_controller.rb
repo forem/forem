@@ -35,13 +35,20 @@ class Internal::UsersController < Internal::ApplicationController
     @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
   end
 
+  def user_status
+    @user = User.find(params[:id])
+    handle_user_status
+    handle_user_privileges
+    add_note
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
   def update
     @user = User.find(params[:id])
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
     make_matches
-    update_role
-    add_note
+
     @user.update!(user_params)
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
@@ -50,10 +57,13 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def update_role
+  def handle_user_status
     toggle_ban_user if user_params[:ban_user]
     toggle_warn_user if user_params[:warn_user]
     toggle_trust_user if user_params[:trusted_user]
+  end
+
+  def handle_user_privileges
     toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
 <<<<<<< HEAD
 =======
