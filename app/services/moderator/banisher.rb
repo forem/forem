@@ -35,6 +35,8 @@ module Moderator
     end
 
     def add_banned_role
+      user.remove_role :trusted
+      user.remove_role :tag_moderator
       user.add_role :banned
       unless user.notes.where(reason: "banned").any?
         user.notes.
@@ -47,7 +49,9 @@ module Moderator
 
       user.comments.find_each do |comment|
         comment.reactions.delete_all
-        CacheBuster.new.bust_comment(comment.commentable, user.username)
+        if !comment.commentable.nil?
+          CacheBuster.new.bust_comment(comment.commentable, user.username)
+        end
         comment.delete
       end
     end
