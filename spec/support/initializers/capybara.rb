@@ -13,6 +13,10 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 RSpec.configure do |config|
+  config.before(:all, type: :system) do
+    Capybara.server = :puma, { Silent: true }
+  end
+
   config.before(:each, type: :system) do
     driven_by :rack_test
   end
