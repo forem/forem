@@ -21,8 +21,7 @@ class Follow < ApplicationRecord
     ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
   after_save :touch_follower
-  after_create :send_email_notification
-  after_create :create_chat_channel
+  after_create :send_email_notification, :create_chat_channel
   before_destroy :modify_chat_channel_status
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
@@ -39,7 +38,13 @@ class Follow < ApplicationRecord
     Follows::CreateChatChannelJob.perform_later(id)
   end
 
-  # TODO: remove methods #touch_user, #touch_user_followed_at, #create_chat_channel_without_delay
+  def send_email_notification
+    return unless followable.class.name == "User" && followable.email?
+
+    Follows::SendEmailNotificationJob.perform_later(id)
+  end
+
+  # TODO: remove methods #touch_user, #touch_user_followed_at, #create_chat_channel_without_delay, #send_email_notification_without_delay
   def touch_user
     follower.touch
   end
@@ -50,14 +55,14 @@ class Follow < ApplicationRecord
   end
   handle_asynchronously :touch_user_followed_at
 
-  # this method will be used if there're jobs created before introducing ActiveJob
+  # *_without_delay method will be used if there're jobs created before introducing ActiveJob
   def create_chat_channel_without_delay
     if followable_type == "User" && followable.following?(follower)
       ChatChannel.create_with_users([followable, follower])
     end
   end
 
-  def send_email_notification
+  def send_email_notification_without_delay
     if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications
       return if EmailMessage.where(user_id: followable.id).
         where("sent_at > ?", rand(15..35).hours.ago).
@@ -66,7 +71,6 @@ class Follow < ApplicationRecord
       NotifyMailer.new_follower_email(self).deliver
     end
   end
-  handle_asynchronously :send_email_notification
 
   def modify_chat_channel_status
     if followable_type == "User" && followable.following?(follower)

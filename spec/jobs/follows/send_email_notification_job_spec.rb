@@ -23,6 +23,7 @@ RSpec.describe Follows::SendEmailNotificationJob, type: :job do
     end
 
     it "sends a new_follower_email" do
+      user2.update_column(:email_follower_notifications, true)
       described_class.new(follow.id, mailer).perform_now
       expect(mailer).to have_received(:new_follower_email).once
     end
