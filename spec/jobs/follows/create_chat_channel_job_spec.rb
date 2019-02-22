@@ -6,7 +6,7 @@ RSpec.describe Follows::CreateChatChannelJob, type: :job do
       ActiveJob::Base.queue_adapter = :test
       expect do
         described_class.perform_later(3)
-      end.to have_enqueued_job.with(3).on_queue("create_chat_channel")
+      end.to have_enqueued_job.with(3).on_queue("create_chat_channel_after_follow")
     end
   end
 
