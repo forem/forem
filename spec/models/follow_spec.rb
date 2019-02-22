@@ -9,7 +9,29 @@ RSpec.describe Follow, type: :model do
     expect(user.following?(user_2)).to eq(true)
   end
 
-  context "when creating" do
+  context "when enqueuing jobs" do
+    before { ActiveJob::Base.queue_adapter = :test }
+
+    it "enqueues touch follower job on creation" do
+      expect do
+        Follow.create(follower: user, followable: user_2)
+      end.to have_enqueued_job(Follows::TouchFollowerJob)
+    end
+
+    it "enqueues create channel job" do
+      expect do
+        Follow.create(follower: user, followable: user_2)
+      end.to have_enqueued_job(Follows::CreateChatChannelJob)
+    end
+
+    it "enqueues send notification job" do
+      expect do
+        Follow.create(follower: user, followable: user_2)
+      end.to have_enqueued_job(Follows::SendEmailNotificationJob)
+    end
+  end
+
+  context "when creating and inline" do
     before { ActiveJob::Base.queue_adapter = :inline }
 
     it "touches the follower user while creating" do
