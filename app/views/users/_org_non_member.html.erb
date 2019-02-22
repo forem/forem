@@ -11,7 +11,7 @@
     <%= submit_tag "Join Organization" %>
   </div>
 <% end %>
-<br/><br/>
+<br /><br />
 <hr class="settings-hr" />
 <h3><em>Or</em> Create An Organization</h3>
 <sub><em>Starred fields are required</em></sub>
@@ -35,16 +35,16 @@
     <%= f.text_field :twitter_username %>
   </div>
   <div class="field">
-    <%= f.label :github_username, "Github Username"%>
+    <%= f.label :github_username, "Github Username" %>
     <%= f.text_field :github_username %>
   </div>
   <div class="field">
-    <%= f.label :text_color_hex, "Text color (hex)"%>
-    <%= text_field_tag "organization[text_color_hex]", nil, placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
+    <%= f.label :text_color_hex, "Text color (hex)" %>
+    <%= text_field_tag "organization[text_color_hex]", "#000000", placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
-    <%= f.label :bg_color_hex, "Background color (hex)"%>
-    <%= text_field_tag "organization[bg_color_hex]", nil, placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
+    <%= f.label :bg_color_hex, "Background color (hex)" %>
+    <%= text_field_tag "organization[bg_color_hex]", "#FFFFFF", placeholder: "Click for color picker", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
     <%= f.label :url, "Website url *" %>

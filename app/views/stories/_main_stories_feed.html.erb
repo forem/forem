@@ -9,17 +9,19 @@
         decorate %>
       <div id="new-articles-object" data-articles="
       <%= @new_stories.to_json(only:
-                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count, :organization_id, :reading_time],
+                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count, :organization_id,
+                             :reading_time, :video_thumbnail_url, :video],
                           methods:
-                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name],
+                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name, :cloudinary_video_url, :video_duration_in_minutes],
                           include: {user: {only: [:username, :name], methods: [:profile_image_90]},
                                     organization: {only: [:slug, :name], methods: [:profile_image_90]}}) %>">
     </div>
     <div id="home-articles-object" data-articles="
       <%= @stories.to_json(only:
-                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count, :organization_id, :reading_time],
+                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count, :organization_id,
+                             :reading_time, :video_thumbnail_url, :video, :video_duration_in_minutes],
                           methods:
-                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name],
+                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name, :cloudinary_video_url, :video_duration_in_minutes],
                           include: { user: {only: [:username, :name], methods: [:profile_image_90]},
                                     organization: {only: [:slug, :name], methods: [:profile_image_90]}}) %>">
       <% 3.times do %>
