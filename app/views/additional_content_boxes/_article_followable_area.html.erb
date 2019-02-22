@@ -15,7 +15,7 @@
   <div class="profile-pic-wrapper">
       <a href="<%= followable.path + article.decorate.internal_utm_params %>"
         class="<%= "partner-link" if classification == "boosted" %>"
-        data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"/>
+        data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE" />
     <img class="profile-image"
       src="<%= ProfileImage.new(followable).get(200) %>"
       data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"
@@ -28,6 +28,5 @@
   </div>
 <% end %>
 <button class="cta follow-action-button user-profile-follow-button <%= "partner-link" if classification == "boosted" %>"
-  style="color:<%= user_colors(followable)[:text] %>;background-color:<%=user_colors(followable)[:bg] %>"
-  data-info='{"id":<%= followable.id %>,"className":"<%= followable.class.name %>"}'
-  >&nbsp;</button>
+  style="color:<%= user_colors(followable)[:text] %>;background-color:<%= user_colors(followable)[:bg] %>"
+  data-info='{"id":<%= followable.id %>,"className":"<%= followable.class.name %>"}'>&nbsp;</button>
