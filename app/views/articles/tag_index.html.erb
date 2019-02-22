@@ -2,9 +2,9 @@
   <%= render "articles/tags/meta" %>
 <% end %>
 <style>
-  .tag-header{
-    border: 2px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
-    box-shadow: 5px 6px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#0000000",@tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
+  .tag-header {
+    border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
+    box-shadow: 5px 6px 0px<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;
   }
 </style>
 <div class="user-profile-header tag-header">
@@ -17,18 +17,17 @@
       <% end %>
       <% if @tag_model %>
           <span class="user-profile-follow-button-wrapper">
-            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%=@tag_model.text_color_hex %>;background-color:<%=@tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id%>,"className":"Tag"}'>&nbsp;</button>
+            <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>" data-info='{"id":<%= @tag_model.id %>,"className":"Tag"}'>&nbsp;</button>
           </span>
       <% end %>
     </h1>
   </div>
 </div>
 <div class="home sub-home" id="index-container"
-  data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which=""
-  data-algolia-tag="<%= @tag %>"
-  data-feed="<%= params[:timeframe] || "base-feed"%>"
-  data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
-  >
+     data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
+     data-algolia-tag="<%= @tag %>"
+     data-feed="<%= params[:timeframe] || "base-feed" %>"
+     data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
   <%= render "articles/tags/sidebar" %>
   <div class="articles-list" id="articles-list">
     <% if @tag_model && @tag_model.supported %>
@@ -39,10 +38,12 @@
           box-shadow: 3px 4px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
           border: 1px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
         }
+
         .narrow-nav-menu a.selected {
           color: <%= @tag_model.text_color_hex %> !important;
           background: <%= @tag_model.bg_color_hex %> !important;
         }
+
         .on-page-nav-controls .separator {
           border-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
         }
@@ -51,24 +52,24 @@
     <div class="on-page-nav-controls" id="on-page-nav-controls">
       <div class="on-page-nav-label sub-home-nav">
         <div class="wide-nav-links">
-          <a class="nav-chronofiter-link <%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
+          <a class="nav-chronofiter-link <%= "selected" if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
             FEED
           </a>
           <span class="separator"></span>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('week') %>" href="<%= list_path %>/top/week">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("week") %>" href="<%= list_path %>/top/week">
             WEEK
           </a>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('month') %>" href="<%= list_path %>/top/month">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("month") %>" href="<%= list_path %>/top/month">
             MONTH
           </a>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('year') %>" href="<%= list_path %>/top/year">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("year") %>" href="<%= list_path %>/top/year">
             YEAR
           </a>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('infinity') %>" href="<%= list_path %>/top/infinity">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("infinity") %>" href="<%= list_path %>/top/infinity">
             INFINITY
           </a>
           <span class="separator"></span>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('latest') %>" href="<%= list_path %>/latest">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("latest") %>" href="<%= list_path %>/latest">
             LATEST
           </a>
         </div>
@@ -89,10 +90,10 @@
         </div>
       </div>
       <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-        <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
+        <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
       </button>
       <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
-        <img src="<%= asset_path 'lightning.svg' %>" alt="right-sidebar-nav">
+        <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
       </button>
     </div>
 

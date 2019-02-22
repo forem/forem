@@ -17,40 +17,41 @@
     <div class="widget sidebar-nav-block">
       <div class="sidebar-nav-element sidebar-nav-readinglist">
         <a class="sidebar-nav-link" href="/readinglist">
-          <img alt="bookmarks" src="<%=asset_path("readinglist-button.png")%>" /> MY READING LIST
+          <img alt="bookmarks" src="<%= asset_path("readinglist-button.png") %>" /> MY READING LIST
           <span id="reading-list-count"></span>
         </a>
         <div class="readinglist-sidebar-subcat">
-          <a href="/readinglist">Saved Posts</a><span class="separator"></span><a href="/readinglist?v=comments">Comment Activity</a>
+          <a href="/readinglist">Saved Posts</a><span class="separator"></span><a href="/readinglist?v=comments">Comment
+          Activity</a>
         </div>
       </div>
     </div>
   <% end %>
   <div class="widget sidebar-nav-block sidebar-tag-block">
     <div class="sidebar-nav-header sidebar-nav-header-middle">
-        <% if user_signed_in? %>
-          my tags
-        <% else %>
-          design your experience
-        <% end %>
+      <% if user_signed_in? %>
+        my tags
+      <% else %>
+        design your experience
+      <% end %>
     </div>
     <div class="sidebar-nav-block-inner">
       <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
-      <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= 'showing' unless user_signed_in? %>">
+      <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
         <% if user_signed_in? %>
           <div class="sidebar-nav-subheader tag-separator" id="tag-separator">Other Popular Tags</div>
         <% end %>
-        <% Tag.where(supported:true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
+        <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
           <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
             <a class="sidebar-nav-link" href="/t/<%= tag_array.second %>">
-              <span class="sidebar-nav-tag-text" >
+              <span class="sidebar-nav-tag-text">
                 #<%= tag_array.second %>
               </span>
             </a>
             <a class="follow-action-button sidebar-nav-link-follow cta"
-              href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-              data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
-                + FOLLOW
+               href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+               data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+              + FOLLOW
             </a>
           </div>
         <% end %>
