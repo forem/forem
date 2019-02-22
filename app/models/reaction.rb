@@ -49,6 +49,10 @@ class Reaction < ApplicationRecord
 
   private
 
+  def cache_buster
+    @cache_buster ||= CacheBuster.new
+  end
+
   def update_reactable
     if reactable_type == "Article"
       reactable.async_score_calc
@@ -61,7 +65,6 @@ class Reaction < ApplicationRecord
   handle_asynchronously :update_reactable
 
   def bust_reactable_cache
-    cache_buster = CacheBuster.new
     cache_buster.bust user.path
 
     if reactable_type == "Article"
@@ -81,7 +84,6 @@ class Reaction < ApplicationRecord
     featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
     if featured_articles.include?(reactable.id)
       reactable.touch
-      cache_buster = CacheBuster.new
       cache_buster.bust "/"
       cache_buster.bust "/"
       cache_buster.bust "/?i=i"
