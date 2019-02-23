@@ -1,14 +1,14 @@
 <div class="home" id="index-container">
 
   <div class="articles-list">
-    <% @blocks.each_with_index do |block,i| %>
-      <%= render "articles/block", block: block, show_published: false, i:i %>
+    <% @blocks.each_with_index do |block, i| %>
+      <%= render "articles/block", block: block, show_published: false, i: i %>
       <center>
         <%= render "blocks/actions", block: block %>
-        <%= link_to 'Edit', edit_block_path(block), style: "color:white;display:block;font-size:35px;background:rgb(0, 93, 190);padding:10px 0px;" %>
+        <%= link_to "Edit", edit_block_path(block), style: "color:white;display:block;font-size:35px;background:rgb(0, 93, 190);padding:10px 0px;" %>
       </center>
     <% end %>
   </div>
 </div>
 
-<%= link_to 'New Block', new_block_path %>
+<%= link_to "New Block", new_block_path %>
