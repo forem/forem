@@ -38,7 +38,6 @@
           <button class="inactive">PREVIEW</button>
           <button class="articleform__buttons--publish">SAVE CHANGES</button>
         </div>
-        </form>
       <% else %>
         <div class="articleform__buttons">
           <button class="articleform__buttons--small inactive">?</button>
@@ -46,12 +45,12 @@
           <button>SAVE DRAFT</button>
           <button class="articleform__buttons--publish">PUBLISH</button>
         </div>
-        </form>
       <% end %>
-      <div style="display:none">
-        <%= render "pages/editor_guide_text", version: "2" %>
-      </div>
-      </div>
+    </form>
+    <div style="display:none">
+      <%= render "pages/editor_guide_text", version: "2" %>
+    </div>
+  </div>
 </div>
 
 <style>
