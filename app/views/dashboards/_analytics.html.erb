@@ -1,4 +1,4 @@
-<% num_views = @articles.sum(&:page_views_count) %>
+<% _num_views = @articles.sum(&:page_views_count) %>
 
 <div class="dashboard-analytics-header-wrapper">
   <div class="dashboard-analytics-header">
@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="dashboard-analytics-header" id="dashboard-analytics-header">
-    <span><%= num_views > 500 ? number_with_delimiter(num_views, delimeter: ",") : "under 500" %></span>
+    <span><%= _num_views > 500 ? number_with_delimiter(_num_views, delimeter: ",") : "under 500" %></span>
     <div class="dashboard-analytics-sub-indicator">
       <img id="dashboard-analytics-image" src="<%= asset_path "emoji/apple-eyes.png" %>" />
       Total Post Views
