@@ -108,6 +108,7 @@ group :development do
   gem "brakeman", "~> 4.4", require: false
   gem "bullet", "~> 5.9"
   gem "bundler-audit", "~> 0.6"
+  gem "delayed_job_web", "~> 1.4"
   gem "derailed_benchmarks", "~> 1.3"
   gem "guard", "~> 2.15", require: false
   gem "guard-livereload", "~> 2.5", require: false
