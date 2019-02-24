@@ -1,5 +1,5 @@
 <style>
-  .reportedurlfield{
+  .reportedurlfield {
     max-width: 99%;
     border-radius: 3px;
     font-size: 18px;
@@ -7,7 +7,8 @@
     padding: 2px;
     border: 1px solid black;
   }
-  .messagefield{
+
+  .messagefield {
     width: 100%;
     resize: none;
     font-size: 18px;
@@ -17,11 +18,11 @@
 </style>
 <%= form_for feedback_message do |f| %>
   <input name="utf8" type="hidden" value="&#x2713;" />
-  <%= f.hidden_field :feedback_type, value:"abuse-reports" %>
+  <%= f.hidden_field :feedback_type, value: "abuse-reports" %>
   <div class="field">
     <ul style="list-style-type:none; margin-left:0px;">
       <li>
-        <%= f.radio_button :category, "rude or vulgar", required: 'required' %>
+        <%= f.radio_button :category, "rude or vulgar", required: "required" %>
         <%= label_tag(:category_rude, "Rude or vulgar") %>
       </li>
       <li>
@@ -37,22 +38,22 @@
         <%= label_tag(:category_other, "Other") %>
       </li>
     </ul>
-      Reported URL:
-      <%= f.text_field :reported_url, class: "reportedurlfield", value: feedback_message.reported_url, style: "width:100%;font-size: 18px; border-radius:3px;", required: true %>
+    Reported URL:
+    <%= f.text_field :reported_url, class: "reportedurlfield", value: feedback_message.reported_url, style: "width:100%;font-size: 18px; border-radius:3px;", required: true %>
     <p style="margin-bottom:0px;">
       <%= f.label :message %>:
-      <%= f.text_area :message, class: "messagefield", placeholder:"Please provide any additional information or context that will help us understand and handle the situation.", value: @previous_message %>
+      <%= f.text_area :message, class: "messagefield", placeholder: "Please provide any additional information or context that will help us understand and handle the situation.", value: @previous_message %>
     </p>
   </div>
-<div>
-</div>
+  <div>
+  </div>
   <div class="actions">
     <% if flash[:notice] %>
-   <div class="notice" id="notice">
-    <%= flash[:notice] %>
-   </div>
-   <% end %>
-     <%= recaptcha_tags site_key: ApplicationConfig['RECAPTCHA_SITE'] %>
+      <div class="notice" id="notice">
+        <%= flash[:notice] %>
+      </div>
+    <% end %>
+    <%= recaptcha_tags site_key: ApplicationConfig["RECAPTCHA_SITE"] %>
     <input type="submit" name="commit" value="Send Feedback" style="margin-top: 40px;" />
   </div>
 <% end %>
