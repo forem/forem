@@ -1,10 +1,9 @@
 <div class="widget-events-item">
-    <a href="/events/<%= event.slug %>" class="widget-events-single-link">
+  <a href="/events/<%= event.slug %>" class="widget-events-single-link">
       <span class="utc-date" data-datetime="<%= event.starts_at.strftime("%d %B %Y %H:%M UTC") %>">
         &nbsp;
       </span>
-      <%= event.title %> (<%= event.category %>)</a>
+    <%= event.title %> (<%= event.category %>)</a>
   <br>
   <br>
 </div>
-
