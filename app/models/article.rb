@@ -426,8 +426,15 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    user.cache_bust_all_articles
-    Articles::ResaveJob.perform_later(organization.article_ids - [id]) if organization
+    article_ids = user.article_ids.dup
+    if organization
+      organization.touch(:last_article_at)
+      article_ids.concat organization.article_ids
+    end
+    # perform busting cache in chunks in case there're a lot of articles
+    (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
+      Articles::BustCacheJob.perform_later(ids)
+    end
   end
 
   def evaluate_front_matter(front_matter)

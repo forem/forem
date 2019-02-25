@@ -70,5 +70,24 @@
     </div>
     <div class="side-bar sidebar-additional"></div>
   </div>
+  <div class="articles-list" id="articles-list">
+    <% if user_signed_in? %>
+      <div class="notifications-mobile-filters">
+        <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? %>" href="/notifications/comments">COMMENTS</a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? %>" href="/notifications/posts">POSTS</a>
+      </div>
+      <%= render "notifications_list" %>
+      <% if @notifications.any? %>
+        <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:filter].to_s %>?page=<%= @notifications.last.id %>"></div>
+      <% end %>
+    <% else %>
+      <div class="content notification-content comment-content">
+        <%= render "notifications/signup_cta_test" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="side-bar sidebar-additional"></div>
+</div>
 
-  <%= render "articles/fitvids" %>
+<%= render "articles/fitvids" %>
