@@ -465,6 +465,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.integer "notifiable_id"
     t.string "notifiable_type"
     t.datetime "notified_at"
+    t.bigint "organization_id"
     t.boolean "read", default: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
