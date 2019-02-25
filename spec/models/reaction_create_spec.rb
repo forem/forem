@@ -5,25 +5,24 @@ RSpec.describe Reaction, type: :model do
   let(:user) { create(:user) }
   # let!(:reaction) { build(:reaction, reactable: article) }
 
+  context "when creating and enqueueing" do
+    before { ActiveJob::Base.queue_adapter = :test }
+
+    it "enqueues the Reactions::UpdateReactableJob" do
+      expect do
+        create(:reaction, reactable: article, user: user)
+      end.to have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once)
+    end
+  end
+
   context "when creating and inline" do
     before { ActiveJob::Base.queue_adapter = :inline }
-
-    it "updates the reactable Article" do
-      ActiveJob::Base.queue_adapter = :test
-      expect do
-        run_background_jobs_immediately do
-          create(:reaction, reactable: article, user: user)
-        end
-      end.to have_enqueued_job(Articles::ScoreCalcJob).exactly(:once).with(article.id)
-    end
 
     it "updates the reactable Comment" do
       comment = create(:comment, commentable: article)
       comment.update_columns(updated_at: Time.now - 1.day)
       now = Time.now
-      run_background_jobs_immediately do
-        create(:reaction, reactable: comment, user: user)
-      end
+      create(:reaction, reactable: comment, user: user)
       comment.reload
       expect(comment.updated_at).to be >= now
     end

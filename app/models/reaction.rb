@@ -58,6 +58,11 @@ class Reaction < ApplicationRecord
   end
 
   def update_reactable
+    Reactions::UpdateReactableJob.perform_later(id)
+  end
+
+  # TODO: remove methods #touch_user_without_delay, #update_reactable_without_delay, #occasionally_sync_reaction_counts
+  def update_reactable_without_delay
     if reactable_type == "Article"
       reactable.async_score_calc
       reactable.index!
@@ -66,7 +71,6 @@ class Reaction < ApplicationRecord
     end
     occasionally_sync_reaction_counts
   end
-  handle_asynchronously :update_reactable
 
   def bust_reactable_cache
     cache_buster.bust user.path
@@ -79,7 +83,6 @@ class Reaction < ApplicationRecord
   end
   handle_asynchronously :bust_reactable_cache
 
-  # TODO: remove methods #touch_user_without_delay
   def touch_user_without_delay
     user.touch
   end
