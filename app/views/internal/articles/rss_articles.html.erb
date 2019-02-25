@@ -10,21 +10,21 @@
 
 <% @articles.each do |article| %>
   <% published = article.published ? "published" : "" %>
-  <% featured = article.featured ? "featured": "" %>
+  <% featured = article.featured ? "featured" : "" %>
   <% publish_permission = article.user.feed_admin_publish_permission ? "admin-allowed" : "only-user" %>
-  <% other_classes = [published, featured,  publish_permission].join(" ") %>
+  <% other_classes = [published, featured, publish_permission].join(" ") %>
 
   <div class="row main-group <%= other_classes %>" data-retrieveddate="<%= article.created_at %>" style="<%= "background:#f2fff2;" if article.user.feed_admin_publish_permission %> <%= "background:#daf7ff;" if article.published %>">
-    <b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b> <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a><br/>
+    <b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b> <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a><br />
     by <b><a href="<%= article.user.path %>" target="_blank"><%= article.username %></a></b>
-    <br/>
-    <br/>
+    <br />
+    <br />
     <% article_length = article.body_markdown.length %>
     <% if article_length < 550 %>
       <div style="background:#957546;display:table-row;color:antiquewhite">
         <b> --Possibly Poor Content (only <%= article.body_markdown.length %> characters)-- </b>
       </div>
-      <br/>
+      <br />
     <% end %>
     <div class="inner-row col-xs-12">
       <form action="/internal/articles/<%= article.id %>" accept-charset="UTF-8" method="post">
@@ -32,7 +32,7 @@
         <input type="hidden" name="_method" value="patch" />
         Featured Number: <input name="article[featured_number]" value="<%= article.featured_number %>" id="featured_number_<%= article.id %>" style="max-width:140px"><button onclick="timeNow(<%= article.id %>);return false;">☝️</button>
         &nbsp Featured: <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %>>
-        &nbsp Image BG color: <input name="article[main_image_background_hex_color]" value="<%= article.main_image_background_hex_color %>" id="featured_number_<%= article.id %>"><br/><br/>
+        &nbsp Image BG color: <input name="article[main_image_background_hex_color]" value="<%= article.main_image_background_hex_color %>" id="featured_number_<%= article.id %>"><br /><br />
         Social Image: <input name="article[social_image]" value="<%= article.social_image %>" id="featured_number_<%= article.id %>">
         &nbsp &nbsp <button class="btn btn-primary">SUBMIT</button>
       </form>
@@ -50,7 +50,7 @@
 <div class="row" style="font-size:1.4em;text-align:center;">
   <%= paginate @articles %>
 </div>
-<br/><br/>
+<br /><br />
 
 <script>
   function timeNow(objectID){
