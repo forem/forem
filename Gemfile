@@ -118,7 +118,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.12"
+  gem "capybara", "~> 3.13"
   gem "derailed", "~> 0.1"
   gem "erb_lint", "~> 0.0", require: false
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
