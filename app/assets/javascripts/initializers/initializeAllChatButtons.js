@@ -16,7 +16,6 @@ function toggleModal() {
     modal.style.display = 'block';
     document.getElementById('new-message').focus();
     attachModalListeners(modal);
-
   } else { // hide
     modal.style.display = 'none';
     detachModalListeners(modal);
@@ -26,7 +25,12 @@ function toggleModal() {
 // finds all elements with chat action button class
 function initializeAllChatButtons() {
   var buttons = document.getElementsByClassName('chat-action-button');
-  var modalInfo = JSON.parse(document.getElementById('new-message-form').dataset.info)
+  var modal = document.getElementById('new-message-form');
+  if (!modal) {
+    return;
+  }
+  var modalInfo = JSON.parse(modal.dataset.info);
+
   var i;
   for (i = 0; i < buttons.length; i += 1) {
     initializeChatButton(buttons[i], modalInfo);
@@ -80,6 +84,12 @@ function addButtonClickHandle(response, button, modalInfo) {
 
 function handleChatButtonPress(form) {
   var message = document.getElementById('new-message').value;
+
+  if (message.length === 0) {
+    alert("can't send empty message!")
+    return;
+  }
+
   var formDataInfo = JSON.parse(form.dataset.info);
   var formData = new FormData();
 

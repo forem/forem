@@ -375,36 +375,74 @@
     background: rgba(0,0,0,0.85);
   }
 
-  .modal .modal-content {
+  .modal-content {
     z-index: 999;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    max-height: 90%;
+    max-height: 80%;
     overflow: auto;
     background: #fff;
     box-sizing: border-box;
     padding: 20px;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.7);
-    border-radius: 4px;
-    width: 520px; /* This just a default width */
-  }
+    border: 1px solid #d6d6d6;
+    box-shadow: 3px 3px 0px #bababa;
+    border-radius: 3px;
+    max-width: 90%;
+    width: 80%;
 
-  .modal .close-modal {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    cursor: pointer;
-    font-size: 18px;
-    opacity: 0.5;
-    background: none;
-    border: none;
-    transition: opacity 0.2s ease;
-  }
+    .message-form {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      align-items: center;
+      align-content: stretch;
 
-  .modal .close-modal:hover {
-    opacity: 0.9;
+      textarea {
+        border-radius: 3px;
+        border: 1px solid #d6d6d6;
+        font-size: 14px;
+        margin: 10px;
+        padding: 5px;
+        width: calc(100% - 100px);
+        order: 1;
+        flex-grow: 1;
+        resize: vertical;
+        max-height:30%;
+      }
+
+      .submit-message {
+        margin: 10px 10px 10px 0;
+        border-radius: 3px;
+        background: $dark-purple;
+        font-weight: 600px;
+        font-family: $helvetica-condensed;
+        width: 80px;
+        color: white;
+        font-size: 18px;
+        height: 80px;
+        order: 10;
+        flex-grow: 1;
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.5;
+      background: none;
+      border: none;
+      padding: 0 0 0 10px;
+      transition: opacity 0.2s ease;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
   }
 
 }
