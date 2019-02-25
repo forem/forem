@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <!-- Latest compiled and minified JavaScript -->
-    <%= javascript_include_tag 'internal' %>
+    <%= javascript_include_tag "internal" %>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>  </head>
     <style>
       .starter-template{padding-top:60px;font-size:1.4em;}
@@ -112,7 +112,7 @@
       <div class="starter-template">
         <% flash.each do |type, message| %>
         <div class="alert alert-<%= type %>">
-          <button class="close"data-dismiss="alert">X</button>
+          <button class="close" data-dismiss="alert">X</button>
           <%= message %>
         </div>
         <% end %>
