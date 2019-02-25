@@ -7,11 +7,11 @@
           <header><h4>meet the team</h4></header>
           <div class="widget-body">
             <% @organization.users.each do |user| %>
-                <div class="widget-user-pic">
-                  <a href="/<%= user.username %>">
-                    <img src="<%= ProfileImage.new(user).get(90) %>" />
-                  </a>
-                </div>
+              <div class="widget-user-pic">
+                <a href="/<%= user.username %>">
+                  <img src="<%= ProfileImage.new(user).get(90) %>" />
+                </a>
+              </div>
             <% end %>
           </div>
         </div>
