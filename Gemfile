@@ -125,7 +125,7 @@ group :development, :test do
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.27"
-  gem "pry-byebug", "~> 3.6"
+  gem "pry-byebug", "~> 3.7"
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
   gem "rubocop", "~> 0.63", require: false
