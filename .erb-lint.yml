@@ -14,5 +14,7 @@ linters:
         - .rubocop.yml
       Layout/TrailingBlankLines:
         Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
       Metrics/LineLength:
         Max: 289
