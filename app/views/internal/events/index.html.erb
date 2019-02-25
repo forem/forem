@@ -13,7 +13,6 @@
   <% end %>
 </div>
 
-
 <div class="event-list">
   <h1> Upcoming Events </h1>
   <% @events.each do |event| %>
@@ -21,7 +20,7 @@
       <img src="<%= event.cover_image_url %>">
       <div class="event-form">
         <%= form_for [:internal, event] do |f| %>
-          <%= render 'event_form', f:f, event: event  %>
+          <%= render "event_form", f: f, event: event %>
         <% end %>
       </div>
     <% end %>
@@ -33,15 +32,10 @@
       <img src="<%= event.cover_image_url %>">
       <div class="event-form">
         <%= form_for [:internal, event] do |f| %>
-          <%= render 'event_form', f:f, event: event  %>
+          <%= render "event_form", f: f, event: event %>
         <% end %>
       </div>
     <% end %>
     <br>
   <% end %>
 </div>
-
-
-
-
-
