@@ -1,6 +1,10 @@
 class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
-  belongs_to :user
+  belongs_to :user, optional: true
+  belongs_to :organization, optional: true
+
+  validates :user_id, presence: true, if: Proc.new { |n| n.organization_id.nil? }
+  validates :organization_id, presence: true, if: Proc.new { |n| n.user_id.nil? }
 
   before_create :mark_notified_at_time
 
@@ -8,14 +12,22 @@ class Notification < ApplicationRecord
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      user = follow.followable
-      recent_follows = Follow.where(followable_type: "User", followable_id: user.id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
-      aggregated_siblings = recent_follows.map { |f| user_data(f.follower) }
+      recent_follows = Follow.where(followable_type: follow.followable_type, followable_id: follow.followable_id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
+
+      notification_params = { action: "Follow" }
+      if follow.followable_type == "User"
+        notification_params[:user_id] = follow.followable_id
+      elsif follow.followable_type == "Organization"
+        notification_params[:organization_id] = follow.followable_id
+      end
+
+      followers = User.where(id: recent_follows.pluck(:follower_id))
+      aggregated_siblings = followers.map { |follower| user_data(follower) }
       if aggregated_siblings.size.zero?
-        Notification.find_or_create_by(user_id: user.id, action: "Follow").destroy
+        Notification.find_or_create_by(notification_params).destroy
       else
         json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings }
-        notification = Notification.find_or_create_by(user_id: user.id, action: "Follow")
+        notification = Notification.find_or_create_by(notification_params)
         notification.notifiable_id = recent_follows.first.id
         notification.notifiable_type = "Follow"
         notification.json_data = json_data
@@ -27,13 +39,19 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_new_follower_notification
 
     def send_to_followers(notifiable, action = nil)
-      # most often, notifiable = article, action = "Published"
+      # for now, arguments are always: notifiable = article, action = "Published"
+      json_data = {
+        user: user_data(notifiable.user),
+        article: article_data(notifiable)
+      }
+      followers = if notifiable.organization_id
+                    json_data[:organization] = organization_data(notifiable.organization)
+                    (notifiable.user.followers + notifiable.organization.followers).uniq
+                  else
+                    notifiable.user.followers
+                  end
       # followers is an array and not an activerecord object
-      notifiable.user.followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
-        json_data = {
-          user: user_data(notifiable.user),
-          article: article_data(notifiable)
-        }
+      followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
         Notification.create(
           user_id: follower.id,
           notifiable_id: notifiable.id,
@@ -48,11 +66,11 @@ class Notification < ApplicationRecord
     def send_new_comment_notifications(comment)
       user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
       user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
+      json_data = {
+        user: user_data(comment.user),
+        comment: comment_data(comment)
+      }
       user_ids.delete(comment.user_id).each do |user_id|
-        json_data = {
-          user: user_data(comment.user),
-          comment: comment_data(comment)
-        }
         Notification.create(
           user_id: user_id,
           notifiable_id: comment.id,
@@ -64,6 +82,16 @@ class Notification < ApplicationRecord
         if User.find_by(id: user_id)&.mobile_comment_notifications
           send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments")
         end
+      end
+      if comment.commentable.organization_id
+        Notification.create(
+          organization_id: comment.commentable.organization_id,
+          notifiable_id: comment.id,
+          notifiable_type: comment.class.name,
+          action: nil,
+          json_data: json_data,
+        )
+        # no push notifications for organizations yet
       end
     end
     handle_asynchronously :send_new_comment_notifications
@@ -91,12 +119,12 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_new_badge_notification
 
-    def send_reaction_notification(reaction)
+    def send_reaction_notification(reaction, receiver)
       return if reaction.user_id == reaction.reactable.user_id
       return if reaction.points.negative?
-      return unless reaction.reactable.receive_notifications
+      return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
 
-      aggregated_reaction_siblings = reaction.reactable.reactions.
+      aggregated_reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
         reject { |r| r.user_id == reaction.reactable.user_id }.
         map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
       json_data = {
@@ -116,13 +144,25 @@ class Notification < ApplicationRecord
           updated_at: reaction.updated_at
         }
       }
+
+      notification_params = {
+        notifiable_type: reaction.reactable.class.name,
+        notifiable_id: reaction.reactable.id,
+        action: "Reaction"
+        # user_id or organization_id: receiver.id
+      }
+      if receiver.is_a?(User)
+        notification_params[:user_id] = receiver.id
+      elsif receiver.is_a?(Organization)
+        notification_params[:organization_id] = receiver.id
+      end
+
       if aggregated_reaction_siblings.size.zero?
-        notification = Notification.where(notifiable_type: reaction.reactable.class.name, notifiable_id: reaction.reactable.id, action: "Reaction").destroy_all
+        notification = Notification.where(notification_params).delete_all
       else
         previous_siblings_size = 0
-        notification = Notification.find_or_create_by(notifiable_type: reaction.reactable.class.name, notifiable_id: reaction.reactable.id, action: "Reaction")
+        notification = Notification.find_or_create_by(notification_params)
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
-        notification.user_id = reaction.reactable.user.id
         notification.json_data = json_data
         notification.notified_at = Time.current
         if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
@@ -214,8 +254,8 @@ class Notification < ApplicationRecord
 
     def remove_all(notifiable_hash)
       Notification.where(
-        notifiable_id: notifiable_hash[:id],
-        notifiable_type: notifiable_hash[:class_name],
+        notifiable_id: notifiable_hash[:notifiable_id],
+        notifiable_type: notifiable_hash[:notifiable_type],
         action: notifiable_hash[:action],
       ).delete_all
     end
@@ -243,6 +283,10 @@ class Notification < ApplicationRecord
 
       new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
+      new_json_data[:user] = user_data(notifiable.user)
+      if notifiable.is_a?(Article) && notifiable.organization_id
+        new_json_data[:organization] = organization_data(notifiable.organization)
+      end
       notifications.update_all(json_data: new_json_data)
     end
     handle_asynchronously :update_notifications
@@ -259,6 +303,17 @@ class Notification < ApplicationRecord
         profile_image_90: user.profile_image_90,
         comments_count: user.comments_count,
         created_at: user.created_at
+      }
+    end
+
+    def organization_data(organization)
+      {
+        id: organization.id,
+        class: { name: "Organization" },
+        name: organization.name,
+        slug: organization.slug,
+        path: organization.path,
+        profile_image_90: organization.profile_image_90
       }
     end
 
