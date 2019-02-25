@@ -728,6 +728,7 @@
       z-index: 100;
       overflow-y: auto;
       width: 200%;
+      height: calc(100% - 48px);
       display: none;
       -webkit-overflow-scrolling: touch;
       .sidebar-bg {
@@ -735,7 +736,6 @@
         left: 0;
         right: 0;
         bottom: 0;
-        height: 1000%;
         overflow: scroll;
         position: fixed;
         background: rgba(0, 0, 0, 0.5);
@@ -747,9 +747,8 @@
           padding-top: 2px;
           display: block;
           background: white;
-          top: 0px;
-          bottom: 0px;
-          min-height: calc(100vh - 44px);
+          height: calc(100% - 2px);
+          overflow-y: auto;
           .widget,
           .sidebar-profile-snapshot {
             border-radius: 0px;
