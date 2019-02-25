@@ -2,7 +2,7 @@
 <% cache "activity-aggregated-reactions-#{siblings}" do %>
   <% actors = siblings.map { |n| n["user"] }.uniq %>
   <% reactable_data = notification.json_data["reaction"]["reactable"] %>
-  <% cache "activity-profile-pic-#{actors.first["id"]}-#{actors.first["profile_image_90"]}" do %>
+  <% cache "activity-profile-pic-#{actors.first['id']}-#{actors.first['profile_image_90']}" do %>
     <a href="<%= actors.first["path"] %>" class="small-pic-link-wrapper">
       <div class="small-pic">
         <img src="<%= actors.first["profile_image_90"] %>" alt="link to <%= actors.first["username"] %>'s profile">
@@ -14,21 +14,22 @@
     <% if actors.size == 1 %>
       <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a>
     <% elsif actors.size == 2 %>
-      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <a href="<%= actors.last["path"] %>"><%= actors.last["name"] %></a>
+      <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and
+      <a href="<%= actors.last["path"] %>"><%= actors.last["name"] %></a>
     <% elsif actors.size > 1 %>
       <a href="<%= actors.first["path"] %>"><%= actors.first["name"] %></a> and <%= pluralize(actors.size - 1, "other") %>
     <% end %>
     reacted to
-      <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
-        <%# your article/comment or the actual title of the article/comment %>
-        <%= reactable_data["title"].blank? ? "your #{reactable_data["class"]["name"].downcase}" : sanitize(reactable_data["title"]) %>
-      </a>
-      <span class="reaction-images">
+    <a href="<%= reactable_data["path"] %>" class="notification-comment-reacted-link">
+      <%# your article/comment or the actual title of the article/comment %>
+      <%= reactable_data["title"].blank? ? "your #{reactable_data['class']['name'].downcase}" : sanitize(reactable_data["title"]) %>
+    </a>
+    <span class="reaction-images">
           with
-        <% reaction_categories = siblings.map { |n| n["category"] } %>
-        <% reaction_categories.each do |cat| %>
+      <% reaction_categories = siblings.map { |n| n["category"] } %>
+      <% reaction_categories.each do |cat| %>
           <% if ReactionImage.new(cat).path.present? %>
-            <%= image_tag ReactionImage.new(cat).path, class: "reaction-image", alt: "#{cat}" %>
+            <%= image_tag ReactionImage.new(cat).path, class: "reaction-image", alt: cat.to_s %>
           <% end %>
         <% end %>
       </span>

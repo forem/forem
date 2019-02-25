@@ -4,44 +4,46 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.26.0/mode/javascript/javascript.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.26.0/mode/htmlmixed/htmlmixed.js"></script>
 
-
 <script>
-setTimeout(function(){
-  var myTextArea = document.getElementById("block_input_css");
-  var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
-  var myTextArea = document.getElementById("block_input_javascript");
-  var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
-  var myTextArea = document.getElementById("block_input_html");
-  var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
-  // var myCodeMirror = CodeMirror(function(elt) {
-  //   myTextArea.parentNode.replaceChild(elt, myTextArea);
-  // }, {
-  //     value: myTextArea.value,
-  //     mode:  "css"
-  //   });
-},1)
+  setTimeout(function () {
+    var myTextArea = document.getElementById("block_input_css");
+    var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
+    var myTextArea = document.getElementById("block_input_javascript");
+    var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
+    var myTextArea = document.getElementById("block_input_html");
+    var myCodeMirror = CodeMirror.fromTextArea(myTextArea);
+    // var myCodeMirror = CodeMirror(function(elt) {
+    //   myTextArea.parentNode.replaceChild(elt, myTextArea);
+    // }, {
+    //     value: myTextArea.value,
+    //     mode:  "css"
+    //   });
+  }, 1)
 
 </script>
 
 <style>
-  .form-wrapper form{
-    width:800px;
-    max-width:100%;
-    margin:auto;
-    text-align:left !important;
-    font-size:1.5em;
+  .form-wrapper form {
+    width: 800px;
+    max-width: 100%;
+    margin: auto;
+    text-align: left !important;
+    font-size: 1.5em;
   }
-  textarea{
-    opacity:0;
+
+  textarea {
+    opacity: 0;
   }
-  pre{
-    overflow:visible !important;
+
+  pre {
+    overflow: visible !important;
   }
-  .CodeMirror{
-    border:2px solid red;
-    margin-top:10px;
-    font-size:14px;
-    padding:2px;
+
+  .CodeMirror {
+    border: 2px solid red;
+    margin-top: 10px;
+    font-size: 14px;
+    padding: 2px;
   }
 </style>
 <div class="form-wrapper">
@@ -51,31 +53,31 @@ setTimeout(function(){
         <h2><%= pluralize(@block.errors.count, "error") %> prohibited this block from being saved:</h2>
 
         <ul>
-        <% @block.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
+          <% @block.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
         </ul>
       </div>
     <% end %>
     <style>
-      textarea{
-        height:250px;
-        width:600px;
-        max-width:90%;
+      textarea {
+        height: 250px;
+        width: 600px;
+        max-width: 90%;
       }
     </style>
-      <%= f.label :input_css %><br/>
-      <%= f.text_area :input_css %><br/>
-      <%= f.label :input_javascript %><br/>
-      <%= f.text_area :input_javascript %><br/>
-      <%= f.label :input_html %><br/>
-      <%= f.text_area :input_html %><br/>
-      <%= f.label :featured %><br/>
-      <%= f.check_box :featured %><br/>
-      <%= f.label :index_position %><br/>
-      <%= f.text_field :index_position %><br/>
-      <div class="actions">
-        <%= f.submit %>
-      </div>
+    <%= f.label :input_css %><br />
+    <%= f.text_area :input_css %><br />
+    <%= f.label :input_javascript %><br />
+    <%= f.text_area :input_javascript %><br />
+    <%= f.label :input_html %><br />
+    <%= f.text_area :input_html %><br />
+    <%= f.label :featured %><br />
+    <%= f.check_box :featured %><br />
+    <%= f.label :index_position %><br />
+    <%= f.text_field :index_position %><br />
+    <div class="actions">
+      <%= f.submit %>
+    </div>
   <% end %>
 </div>

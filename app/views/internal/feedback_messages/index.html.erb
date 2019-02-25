@@ -16,7 +16,7 @@
         <div class="inner-row col-md-3">
           <strong>🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a></strong>
         </div>
-        <div class="inner-row col-md-<%= (params[:status] == "Open" || params[:status].blank?) ? "5" : "9" %>">
+        <div class="inner-row col-md-<%= params[:status] == "Open" || params[:status].blank? ? "5" : "9" %>">
           <strong><%= reaction.reactable_type %>:</strong> <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %></a>
         </div>
         <% if params[:status] == "Open" || params[:status].blank? %>

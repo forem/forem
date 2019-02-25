@@ -1,5 +1,5 @@
 <% first_notification = notification.json_data["aggregated_siblings"].first %>
-<% cache "activity-profile-pic-#{first_notification["id"]}-#{first_notification["profile_image_90"]}" do %>
+<% cache "activity-profile-pic-#{first_notification['id']}-#{first_notification['profile_image_90']}" do %>
   <a href="<%= first_notification["path"] %>" class="small-pic-link-wrapper">
     <div class="small-pic">
       <img src="<%= first_notification["profile_image_90"] %>" alt="link to <%= first_notification["username"] %>'s profile">
@@ -9,7 +9,7 @@
 
 <div class="content notification-content reaction-content">
   <% if notification.json_data["aggregated_siblings"].length == 1 %>
-    <% cache "activity-follow-button-#{first_notification["path"]}-#{first_notification["name"]}" do %>
+    <% cache "activity-follow-button-#{first_notification['path']}-#{first_notification['name']}" do %>
       <a href="<%= first_notification["path"] %>"><%= first_notification["name"] %></a> followed you!
       <%= follow_button(notification.decorate.mocked_object("user"), "follow-back") %>
     <% end %>
@@ -25,7 +25,7 @@
     <br>
     <div class="notification-message">
       <a href="<%= json_data_array.first["path"] %>"><%= json_data_array.first["name"] %></a> and
-        <a href="<%= json_data_array.second["path"] %>"><%= json_data_array.second["name"] %></a> followed you!
+      <a href="<%= json_data_array.second["path"] %>"><%= json_data_array.second["name"] %></a> followed you!
     </div>
   <% else %>
     <div class="follower-pic-row">
@@ -39,6 +39,6 @@
     </div>
     <br>
     <a href="<%= first_notification["path"] %>"><%= first_notification["name"] %></a>
-      and <%= notification.json_data["aggregated_siblings"].size - 1 %> others followed you!
+    and <%= notification.json_data["aggregated_siblings"].size - 1 %> others followed you!
   <% end %>
 </div>

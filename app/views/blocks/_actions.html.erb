@@ -2,7 +2,7 @@
   Featured: <%= block.featured %> | Position: <%= block.index_position %>
   <% if block.processed_html != block.published_html || block.processed_css != block.published_css %>
     <%= form_for(block) do |f| %>
-      <%= f.hidden_field :publish_now %><br/>
+      <%= f.hidden_field :publish_now %><br />
       <button style="cursor:pointer;background:#30cb98;color:white;border:0px;padding:10px;font-size:25px;">PUBLISH</button>
     <% end %>
   <% end %>
