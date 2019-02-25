@@ -65,6 +65,10 @@ class Reaction < ApplicationRecord
     Reactions::BustReactableCacheJob.perform_later(id)
   end
 
+  def async_bust
+    Reactions::BustHomepageCacheJob.perform_later(id)
+  end
+
   # TODO: remove methods #touch_user_without_delay, #update_reactable_without_delay, #occasionally_sync_reaction_counts
   # #bust_reactable_cache_without_delay
   def update_reactable_without_delay
@@ -91,7 +95,7 @@ class Reaction < ApplicationRecord
     user.touch
   end
 
-  def async_bust
+  def async_bust_without_delay
     featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
     if featured_articles.include?(reactable.id)
       reactable.touch
@@ -101,7 +105,6 @@ class Reaction < ApplicationRecord
       cache_buster.bust "?i=i"
     end
   end
-  handle_asynchronously :async_bust
 
   BASE_POINTS = {
     "vomit" => -50.0,

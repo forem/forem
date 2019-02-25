@@ -19,6 +19,12 @@ RSpec.describe Reaction, type: :model do
         create(:reaction, reactable: article, user: user)
       end.to have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)
     end
+
+    it "enqueues the Reactions::BustHomepageCacheJob" do
+      expect do
+        create(:reaction, reactable: article, user: user)
+      end.to have_enqueued_job(Reactions::BustHomepageCacheJob).exactly(:once)
+    end
   end
 
   context "when creating and inline" do
