@@ -70,7 +70,7 @@ class Reaction < ApplicationRecord
   end
 
   # TODO: remove methods #touch_user_without_delay, #update_reactable_without_delay, #occasionally_sync_reaction_counts
-  # #bust_reactable_cache_without_delay
+  # #bust_reactable_cache_without_delay, #async_bust_without_delay
   def update_reactable_without_delay
     if reactable_type == "Article"
       reactable.async_score_calc

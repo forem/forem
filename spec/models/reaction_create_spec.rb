@@ -8,6 +8,12 @@ RSpec.describe Reaction, type: :model do
   context "when creating and enqueueing" do
     before { ActiveJob::Base.queue_adapter = :test }
 
+    it "enqueues the Users::TouchJob" do
+      expect do
+        create(:reaction, reactable: article, user: user)
+      end.to have_enqueued_job(Users::TouchJob).exactly(:once).with(user.id)
+    end
+
     it "enqueues the Reactions::UpdateReactableJob" do
       expect do
         create(:reaction, reactable: article, user: user)
