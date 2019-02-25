@@ -13,6 +13,12 @@ RSpec.describe Reaction, type: :model do
         create(:reaction, reactable: article, user: user)
       end.to have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once)
     end
+
+    it "enqueues the Reactions::BustReactableCacheJob" do
+      expect do
+        create(:reaction, reactable: article, user: user)
+      end.to have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)
+    end
   end
 
   context "when creating and inline" do
@@ -25,17 +31,6 @@ RSpec.describe Reaction, type: :model do
       create(:reaction, reactable: comment, user: user)
       comment.reload
       expect(comment.updated_at).to be >= now
-    end
-
-    it "busts the reactable cache" do
-      reaction = build(:reaction, reactable: article)
-      buster = double
-      allow(buster).to receive(:bust)
-      allow(reaction).to receive(:cache_buster).and_return(buster)
-      run_background_jobs_immediately do
-        reaction.save
-      end
-      expect(buster).to have_received(:bust).at_least(:twice)
     end
 
     it "touches the user" do
