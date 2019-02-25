@@ -20,7 +20,7 @@ gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "mas
 gem "addressable", "~> 2.5", ">= 2.5.2"
 gem "administrate", "~> 0.11"
 gem "ahoy_email", "~> 0.5"
-gem "airbrake", "~> 7.4"
+gem "airbrake", "~> 8.1"
 gem "algoliasearch-rails", "~> 1.20"
 gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
