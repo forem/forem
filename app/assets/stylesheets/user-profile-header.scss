@@ -315,6 +315,7 @@
     }
   }
 
+  // same as above, just add class to above style
   .user-profile-chat-button-wrapper {
     position:relative;
     z-index:5;
@@ -352,6 +353,58 @@
       border-radius:5px;
       min-width: 80px;
     }
+  }
+
+  // new message modal for open inbox
+  .modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 990;
+  }
+
+  .modal .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 995;
+    background: rgba(0,0,0,0.85);
+  }
+
+  .modal .modal-content {
+    z-index: 999;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 90%;
+    overflow: auto;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.7);
+    border-radius: 4px;
+    width: 520px; /* This just a default width */
+  }
+
+  .modal .close-modal {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.5;
+    background: none;
+    border: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .modal .close-modal:hover {
+    opacity: 0.9;
   }
 
 }

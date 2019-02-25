@@ -96,15 +96,17 @@ class ChatChannelsController < ApplicationController
   def open_chat
     chat_recipient = User.find(params[:user_id])
     if chat_recipient.inbox_type == "open"
-      ChatChannel.create_with_users([current_user, chat_recipient], "direct")
+      chat = ChatChannel.create_with_users([current_user, chat_recipient], "direct")
       # get message param to generate message to send
       # message_markdown = "Hi #{chat_recipient.username}! I am #{current_user.username}. I can message you on DEV Connect because your inbox is open."
-      # message = Message.new(
-      #   chat_channel: chat,
-      #   message_markdown: message_markdown,
-      #   user: current_user
-      # )
-      # chat.messages.append(message)
+      message_markdown = params[:message]
+      puts message_markdown
+      message = Message.new(
+        chat_channel: chat,
+        message_markdown: message_markdown,
+        user: current_user
+      )
+      chat.messages.append(message)
     end
     render json: { status: "success", message: "chat channel created!" }, status: 200
   end

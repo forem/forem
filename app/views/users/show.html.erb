@@ -27,10 +27,11 @@
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>
           <span class="user-profile-chat-button-wrapper">
-            <form action="/connect/@<%=@user.username%>" class="chat-action-form" style="display:none" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
-              <button type="submit" id="user-chat-button" class="cta chat-action-button user-profile-chat-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>; display: inherit;">CHAT</button>
-            </form>
+            <a href="/connect/@<%= @user.username %>" id="user-connect-redirect" style="display:none">
+              <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="display:none">Send Message</button>
+            </a>
           </span>
+
         </h1>
         <p class="profile-description" itemprop="description">
           <%= @user.summary.presence || ["404 bio not found"].sample  %>
@@ -97,6 +98,16 @@
             </a>
           <% end %>
         </p>
+      </div>
+    </div>
+    <div class="modal" style="display: none">
+      <div class="overlay"></div>
+      <div class="modal-content " id="new-message-modal">
+        <button title="Close" class="close-modal">X</button>
+        <form id="new-message-form" action="/connect/@<%=@user.username%>" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
+          <textarea id="new-message" name="message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
+          <button type="submit">Send</button>
+        </form>
       </div>
     </div>
     <%= render "articles/user_metadata", context: "profile" %>

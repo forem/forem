@@ -1,25 +1,51 @@
+function attachModalListeners(modalElm) {
+  modalElm.querySelector('.close-modal').addEventListener('click', toggleModal);
+  modalElm.querySelector('.overlay').addEventListener('click', toggleModal);
+}
+
+function detachModalListeners(modalElm) {
+  modalElm.querySelector('.close-modal').removeEventListener('click', toggleModal);
+  modalElm.querySelector('.overlay').removeEventListener('click', toggleModal);
+}
+
+function toggleModal() {
+  var modal = document.querySelector('.modal');
+  var currentState = modal.style.display;
+  console.log("TOGGLING")
+
+  // If modal is visible, hide it. Else, display it.
+  if (currentState === 'none') {
+    modal.style.display = 'block';
+    console.log(modal)
+    attachModalListeners(modal);
+  } else {
+    modal.style.display = 'none';
+    detachModalListeners(modal);
+  }
+}
+
 // finds all elements with chat action button class
 function initializeAllChatButtons() {
-  var chatForms = document.getElementsByClassName('chat-action-form');
+  var buttons = document.getElementsByClassName('chat-action-button');
+  var modalInfo = JSON.parse(document.getElementById('new-message-form').dataset.info)
   var i;
-  for (i = 0; i < chatForms.length; i += 1) {
-    initializeChatButton(chatForms[i]);
+  for (i = 0; i < buttons.length; i += 1) {
+    initializeChatButton(buttons[i], modalInfo);
   }
 }
 
-function initializeChatButton(form) {
+function initializeChatButton(button, modalInfo) {
   // if user logged out, do nothing
   var user = userData();
-  var formInfo = JSON.parse(form.dataset.info);
-  if (user === null || user.id === formInfo.id || form.dataset.fetched === 'fetched') {
+  if (user === null || user.id === modalInfo.id) {
     return;
   }
-  fetchButton(form, formInfo);
+  fetchButton(button, modalInfo);
 }
 
-function fetchButton(form, formInfo) {
+function fetchButton(button, modalInfo) {
   var dataRequester;
-  form.dataset.fetched = 'fetched'; // telling initialize that this button has been fetched
+  // button.dataset.fetched = 'fetched'; // telling initialize that this button has been fetched
   if (window.XMLHttpRequest) {
       dataRequester = new XMLHttpRequest();
   } else {
@@ -27,30 +53,41 @@ function fetchButton(form, formInfo) {
   }
   dataRequester.onreadystatechange = function() {
     if (dataRequester.readyState === XMLHttpRequest.DONE && dataRequester.status === 200) {
-      addButtonClickHandle(dataRequester.response, form);
+      addButtonClickHandle(dataRequester.response, button, modalInfo);
     }
   }
-  dataRequester.open('GET', '/follows/' + formInfo.id + '?followable_type=' + formInfo.className);
+  dataRequester.open('GET', '/follows/' + modalInfo.id + '?followable_type=' + modalInfo.className);
   dataRequester.send();
 }
 
-function addButtonClickHandle(response, form) {
+function addButtonClickHandle(response, button, modalInfo) {
   // currently lacking error handling
-  form.classList.add('showing');
-  if (JSON.parse(form.dataset.info).showChat === "open") {
-    form.onsubmit = function() {return handleChatButtonPress(form);}; // only adds function call if chat is open
-    form.style.display = 'initial'; // show form
+
+  button.classList.add('showing');
+  var linkWrap = document.getElementById("user-connect-redirect");
+  if (modalInfo.showChat === "open" && response !== "mutual") {
+    linkWrap.removeAttribute("href") // remove link
+    button.addEventListener('click', toggleModal);
+    button.style.display = 'initial'; // show button
+    linkWrap.style.display = 'initial'; // show button
+    var form = document.getElementById('new-message-form');
+    form.onsubmit = function() {handleChatButtonPress(form);};
   } else if (response === 'mutual') {
-    form.style.display = 'initial'; // show form
+    button.removeEventListener('click', toggleModal);
+    button.style.display = 'initial'; // show button
+    linkWrap.style.display = 'initial'; // show button
   }
 }
 
 function handleChatButtonPress(form) {
+  var message = document.getElementById('new-message').value;
   var formDataInfo = JSON.parse(form.dataset.info);
   var formData = new FormData();
+
   formData.append('user_id', formDataInfo.id);
+  formData.append('message', message);
   formData.append('controller', 'chat_channels');
-  console.log(formData)
+
   getCsrfToken()
     .then(sendFetch('chat-creation', formData));
 }
