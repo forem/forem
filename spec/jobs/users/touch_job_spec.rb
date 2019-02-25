@@ -9,7 +9,7 @@ RSpec.describe Users::TouchJob, type: :job do
       end.to have_enqueued_job.with(3).on_queue("touch_user")
     end
 
-    it "touches a follower" do
+    it "touches a user" do
       user = create(:user)
       user.update_columns(updated_at: Time.now - 1.day, last_followed_at: Time.now - 1.day)
       now = Time.now

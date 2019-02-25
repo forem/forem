@@ -6,7 +6,7 @@ RSpec.describe Reaction, type: :model do
   # let!(:reaction) { build(:reaction, reactable: article) }
 
   context "when creating and inline" do
-    # before { ActiveJob::Base.queue_adapter = :inline }
+    before { ActiveJob::Base.queue_adapter = :inline }
 
     it "updates the reactable Article" do
       ActiveJob::Base.queue_adapter = :test
@@ -42,9 +42,7 @@ RSpec.describe Reaction, type: :model do
     it "touches the user" do
       user.update_columns(updated_at: Time.now - 1.day)
       now = Time.now
-      run_background_jobs_immediately do
-        create(:reaction, reactable: article, user: user)
-      end
+      create(:reaction, reactable: article, user: user)
       user.reload
       expect(user.updated_at).to be >= now
     end

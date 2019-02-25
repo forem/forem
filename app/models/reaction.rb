@@ -53,6 +53,10 @@ class Reaction < ApplicationRecord
     @cache_buster ||= CacheBuster.new
   end
 
+  def touch_user
+    Users::TouchJob.perform_later(user_id)
+  end
+
   def update_reactable
     if reactable_type == "Article"
       reactable.async_score_calc
@@ -75,10 +79,10 @@ class Reaction < ApplicationRecord
   end
   handle_asynchronously :bust_reactable_cache
 
-  def touch_user
+  # TODO: remove methods #touch_user_without_delay
+  def touch_user_without_delay
     user.touch
   end
-  handle_asynchronously :touch_user
 
   def async_bust
     featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
