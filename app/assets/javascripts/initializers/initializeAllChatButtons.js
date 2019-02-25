@@ -11,14 +11,13 @@ function detachModalListeners(modalElm) {
 function toggleModal() {
   var modal = document.querySelector('.modal');
   var currentState = modal.style.display;
-  console.log("TOGGLING")
 
-  // If modal is visible, hide it. Else, display it.
-  if (currentState === 'none') {
+  if (currentState === 'none') { // show
     modal.style.display = 'block';
-    console.log(modal)
+    document.getElementById('new-message').focus();
     attachModalListeners(modal);
-  } else {
+
+  } else { // hide
     modal.style.display = 'none';
     detachModalListeners(modal);
   }
@@ -71,7 +70,7 @@ function addButtonClickHandle(response, button, modalInfo) {
     button.style.display = 'initial'; // show button
     linkWrap.style.display = 'initial'; // show button
     var form = document.getElementById('new-message-form');
-    form.onsubmit = function() {handleChatButtonPress(form);};
+    form.onsubmit = function() {handleChatButtonPress(form); return false;};
   } else if (response === 'mutual') {
     button.removeEventListener('click', toggleModal);
     button.style.display = 'initial'; // show button
@@ -89,5 +88,8 @@ function handleChatButtonPress(form) {
   formData.append('controller', 'chat_channels');
 
   getCsrfToken()
-    .then(sendFetch('chat-creation', formData));
+    .then(sendFetch('chat-creation', formData))
+    .then(() => {
+      window.location.href = `/connect/@${formDataInfo.username}`;
+    });
 }
