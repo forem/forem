@@ -36,29 +36,28 @@
   <div>
     <%= f.label :pretty_name %>
     <%= f.text_field :pretty_name %>
-  <div>
+  </div>
   <div>
     <%= f.label :short_summary %>
     <%= f.text_field :short_summary %>
-  <div>
+  </div>
   <div>
     <%= f.label :rules_markdown %>
     <br>
     <%= f.text_area :rules_markdown %>
-  <div>
+  </div>
   <div>
     <%= f.label :wiki_body_markdown %>
     <br>
     <%= f.text_area :wiki_body_markdown %>
-  <div>
   </div>
+  <div>
     <%= f.label :bg_color_hex %>
     <%= f.text_field :bg_color_hex, class: "jscolor {hash:true}", required: true %>
-  <div>
   </div>
+  <div>
     <%= f.label :text_color_hex %>
     <%= f.text_field :text_color_hex, class: "jscolor {hash:true}", required: true %>
-  <div>
   </div>
   <div>
     <%= f.submit %>
