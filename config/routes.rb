@@ -7,6 +7,10 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  if Rails.env.development?
+    match "/delayed_job" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+  end
+
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
     get "/enter" => "registrations#new", as: :new_user_registration_path
@@ -128,6 +132,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
 
   get "/notifications/:filter" => "notifications#index"
+  get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"

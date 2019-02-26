@@ -56,16 +56,17 @@
         </div>
       <% else %>
         <div class="body">
-          <%= truncate(strip_tags(@commentable.processed_html), length: 150).html_safe %> <a href="<%= @commentable.path %>"><span class="read-more">[Read Full]</span></a>
+          <%= truncate(strip_tags(@commentable.processed_html), length: 150).html_safe %>
+          <a href="<%= @commentable.path %>"><span class="read-more">[Read Full]</span></a>
         </div>
       <% end %>
     <% end %>
   </div>
 <% end %>
 <div class="comments-container comments-dedicated-page-container"
-      id="comments-container"
-      data-commentable-id="<%= @commentable.id %>"
-      data-commentable-type="<%= @commentable.class.name %>">
+     id="comments-container"
+     data-commentable-id="<%= @commentable.id %>"
+     data-commentable-type="<%= @commentable.class.name %>">
   <% if @root_comment %>
     <div class="top-level-actions">
       <h3>re: <%= @commentable.title %> <a href="<%= @commentable.path %>">VIEW POST</a></h3>
@@ -78,8 +79,8 @@
     </div>
   <% else %>
     <%= render "form",
-        commentable: @commentable,
-        commentable_type: "Article" %>
+               commentable: @commentable,
+               commentable_type: "Article" %>
   <% end %>
   <div class="comment-trees" id="comment-trees-container">
     <% if @root_comment.present? %>
