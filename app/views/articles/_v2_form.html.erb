@@ -7,7 +7,7 @@
     <form class="articleform__form">
       <% if @organization %>
         <div class="articleform__orgsettings">
-          <img src=<%= @organization.profile_image_90 %> style="opacity: <%= @article.organization ? "1.0" : "0.7" %>" />
+          <img src="<%= @organization.profile_image_90 %>" style="opacity: <%= @article.organization ? "1.0" : "0.7" %>" />
           <%= @organization.name %>
           <button class="<%= @article.organization ? "yes" : "no" %>"><%= @article.organization ? "✅ YES" : "◻️ NO" %></button>
         </div>
@@ -21,17 +21,17 @@
           <textarea type="text" class="articleform__tags" placeholder="tags"><%= @article.cached_tag_list %></textarea>
         </div>
         <button class="articleform__detailsButton articleform__detailsButton--image">
-          <img src="<%= asset_path "image-upload.svg" %>"> IMAGES
+          <img src="<%= asset_path "image-upload.svg" %>" /> IMAGES
         </button>
         <button class="articleform__detailsButton articleform__detailsButton--moreconfig">
-          <img src="<%= asset_path "three-dots.svg" %>"></button>
+          <img src="<%= asset_path "three-dots.svg" %>" /></button>
       </div>
       <textarea class="articleform__body" placeholder="Body" name="body_markdown"><%= @article.body_markdown %></textarea>
       <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom">
-        <img src="<%= asset_path "image-upload.svg" %>"> IMAGES
+        <img src="<%= asset_path "image-upload.svg" %>" /> IMAGES
       </button>
       <button class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom">
-        <img src="<%= asset_path "three-dots.svg" %>"></button>
+        <img src="<%= asset_path "three-dots.svg" %>" /></button>
       <% if @article.published %>
         <div class="articleform__buttons">
           <button class="articleform__buttons--small inactive">?</button>

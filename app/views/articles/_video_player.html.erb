@@ -5,7 +5,8 @@
     <meta itemprop="description" content="<%= @article.description %>" />
     <meta itemprop="thumbnailUrl" content="<%= cloudinary(article.video_thumbnail_url, 880) %>" />
     <meta itemprop="contentUrl" content="<%= article.video_source_url %>" />
-    <meta itemprop="duration" content="<%= "PT%sM%sS" % article.video_duration_in_minutes.split(":") %>" />
+    <% minutes, seconds = @article.video_duration_in_minutes.split(":") %>
+    <meta itemprop="duration" content="<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>" />
   <% end %>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
