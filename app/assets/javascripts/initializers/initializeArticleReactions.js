@@ -9,7 +9,7 @@ function setReactionCount(reactionName, newCount) {
   }
   else {
     reactionClassList.remove("activated");
-    reactionNumber.innerHTML = "";
+    reactionNumber.innerHTML = "0";
   }
 }
 
@@ -79,6 +79,9 @@ function initializeArticleReactions() {
           behavior: 'instant',
           block: 'start',
         });
+        setTimeout(function(){
+          e.target.blur();
+        },50)
       };
     }
   }, 3)
@@ -97,6 +100,7 @@ function reactToArticle(articleId, reaction) {
     }
   }
   var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+  sendHapticMessage('medium');
   if (userStatus == "logged-out") {
     showModal("react-to-article");
     return;

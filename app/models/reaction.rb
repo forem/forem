@@ -1,50 +1,49 @@
 class Reaction < ApplicationRecord
+  CATEGORIES = %w(like readinglist unicorn thinking hands thumbsdown vomit).freeze
+
   belongs_to :reactable, polymorphic: true
+  belongs_to :user
+
   counter_culture :reactable,
     column_name: proc { |model|
       model.points.positive? ? "positive_reactions_count" : "reactions_count"
     }
   counter_culture :user
-  belongs_to :user
 
-  validates :category, inclusion: { in: %w(like thinking hands unicorn thumbsdown vomit readinglist) }
+  validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: %w(Comment Article) }
   validates :status, inclusion: { in: %w(valid invalid confirmed) }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
   before_save :assign_points
-  after_save :update_reactable
-  after_save :touch_user
-  after_save :async_bust
-  before_destroy :update_reactable_without_delay
-  before_destroy :clean_up_before_destroy
+  after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
+  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
+  before_destroy :bust_reactable_cache_without_delay
 
-  scope :for_article, ->(id) { where(reactable_id: id, reactable_type: "Article") }
-
-  def self.count_for_article(id)
-    Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
-      reactions = Reaction.for_article(id)
-
-      ["like", "readinglist", "unicorn"].map do |type|
-        { category: type, count: reactions.where(category: type).size }
+  class << self
+    def count_for_article(id)
+      Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
+        reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
+        %w(like readinglist unicorn).map do |type|
+          { category: type, count: reactions.where(category: type).size }
+        end
       end
     end
-  end
 
-  def self.for_display(user)
-    includes(:reactable).
-      where(reactable_type: "Article", user_id: user.id).
-      where("created_at > ?", 5.days.ago).
-      select("distinct on (reactable_id) *").
-      take(15)
-  end
+    def for_display(user)
+      includes(:reactable).
+        where(reactable_type: "Article", user: user).
+        where("created_at > ?", 5.days.ago).
+        select("distinct on (reactable_id) *").
+        take(15)
+    end
 
-  def self.cached_any_reactions_for?(reactable, user, category)
-    Rails.cache.fetch("any_reactions_for-#{reactable.class.name}-#{reactable.id}-#{user.updated_at}-#{category}", expires_in: 24.hours) do
-      Reaction.
-        where(reactable_id: reactable.id, reactable_type: reactable.class.name, user_id: user.id, category: category).
-        any?
+    def cached_any_reactions_for?(reactable, user, category)
+      cache_name = "any_reactions_for-#{reactable.class.name}-#{reactable.id}-#{user.updated_at}-#{category}"
+      Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+        Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, user: user, category: category).any?
+      end
     end
   end
 
@@ -52,28 +51,26 @@ class Reaction < ApplicationRecord
 
   def update_reactable
     if reactable_type == "Article"
-      update_article
+      reactable.async_score_calc
+      reactable.index!
     elsif reactable_type == "Comment" && reactable
-      update_comment
+      reactable.save
     end
     occasionally_sync_reaction_counts
   end
   handle_asynchronously :update_reactable
 
-  def update_article
+  def bust_reactable_cache
     cache_buster = CacheBuster.new
-    reactable.async_score_calc
-    reactable.index!
-    cache_buster.bust "/reactions?article_id=#{reactable_id}"
     cache_buster.bust user.path
-  end
 
-  def update_comment
-    cache_buster = CacheBuster.new
-    reactable.save unless destroyed_by_association
-    cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
-    cache_buster.bust user.path
+    if reactable_type == "Article"
+      cache_buster.bust "/reactions?article_id=#{reactable_id}"
+    elsif reactable_type == "Comment" && reactable
+      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
+    end
   end
+  handle_asynchronously :bust_reactable_cache
 
   def touch_user
     user.touch
@@ -92,10 +89,6 @@ class Reaction < ApplicationRecord
     end
   end
   handle_asynchronously :async_bust
-
-  def clean_up_before_destroy
-    reactable.index! if reactable_type == "Article"
-  end
 
   BASE_POINTS = {
     "vomit" => -50.0,

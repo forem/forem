@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe CommentPolicy do
-  subject { described_class.new(user, comment) }
+  subject(:comment_policy) { described_class.new(user, comment) }
 
   let(:comment) { build(:comment) }
 
@@ -10,7 +10,7 @@ RSpec.describe CommentPolicy do
   end
 
   let(:valid_attributes_for_update) do
-    %i[body_markdown]
+    %i[body_markdown receive_notifications]
   end
 
   context "when user is not signed-in" do
@@ -25,9 +25,7 @@ RSpec.describe CommentPolicy do
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }
 
-    it do
-      is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create)
-    end
+    it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
 
     context "with banned status" do
       before { user.add_role :banned }
@@ -57,7 +55,7 @@ RSpec.describe CommentPolicy do
       it { is_expected.to forbid_actions(%i[create]) }
 
       it do
-        is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
       end
     end
 
@@ -68,7 +66,7 @@ RSpec.describe CommentPolicy do
       it { is_expected.to forbid_actions(%i[create]) }
 
       it do
-        is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
+        expect(comment_policy).to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update)
       end
     end
   end

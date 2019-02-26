@@ -4,6 +4,7 @@ class ReactionsController < ApplicationController
 
   def index
     skip_authorization
+    add_param_context(:article_id)
     if params[:article_id]
       id = params[:article_id]
       reactions = if efficient_current_user_id.present?
@@ -21,6 +22,7 @@ class ReactionsController < ApplicationController
         reactions: reactions
       }.to_json
     else
+      add_param_context(:commentable_id, :commentable_type)
       comments = Comment.where(
         commentable_id: params[:commentable_id],
         commentable_type: params[:commentable_type],
@@ -40,6 +42,7 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
+    add_param_context(:reactable_id, :reactable_type, :category)
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     category = params[:category] || "like"
     reaction = Reaction.where(
@@ -51,7 +54,8 @@ class ReactionsController < ApplicationController
     if reaction
       reaction.user.touch
       reaction.destroy
-      Notification.send_reaction_notification_without_delay(reaction)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if organization_article?(reaction)
       @result = "destroy"
     else
       reaction = Reaction.create!(
@@ -61,7 +65,8 @@ class ReactionsController < ApplicationController
         category: category,
       )
       @result = "create"
-      Notification.send_reaction_notification(reaction)
+      Notification.send_reaction_notification(reaction, reaction.reactable.user)
+      Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
     end
     render json: { result: @result, category: category }
   end
@@ -71,5 +76,11 @@ class ReactionsController < ApplicationController
       Reaction.where(user_id: user.id).
         where("points > ?", 0)
     end
+  end
+
+  private
+
+  def organization_article?(reaction)
+    reaction.reactable_type == "Article" && reaction.reactable.organization_id
   end
 end

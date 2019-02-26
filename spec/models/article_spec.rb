@@ -19,8 +19,8 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
   it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(86) }
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:organization) }
-  it { is_expected.to belong_to(:collection) }
+  it { is_expected.to belong_to(:organization).optional }
+  it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
@@ -196,11 +196,17 @@ RSpec.describe Article, type: :model do
         expect(article_with_canon_url.canonical_url).to eq(initial_link)
       end
     end
+
+    describe "#reading_time" do
+      it "produces a correct reading time" do
+        expect(test_article.reading_time).to eq(1)
+      end
+    end
   end
 
   describe "#video" do
     it "must be a url" do
-      article.user.add_role(:video_permission)
+      article.user.created_at = 3.weeks.ago
       article.video = "hey"
       expect(article).not_to be_valid
       article.video = "http://hey.com"
@@ -210,8 +216,25 @@ RSpec.describe Article, type: :model do
     it "must belong to permissioned user" do
       article.video = "http://hey.com"
       expect(article).not_to be_valid
-      article.user.add_role(:video_permission)
+      article.user.created_at = 3.weeks.ago
       expect(article).to be_valid
+    end
+
+    it "saves with video" do
+      article.user.created_at = 3.weeks.ago
+      article.video = "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b"
+      article.save
+      expect(article).to be_valid
+    end
+
+    it "has padded video_duration_in_minutes" do
+      article.video_duration_in_seconds = 1141
+      expect(article.video_duration_in_minutes).to eq("19:01")
+    end
+
+    it "has correctly non-padded seconds in video_duration_in_minutes" do
+      article.video_duration_in_seconds = 1161
+      expect(article.video_duration_in_minutes).to eq("19:21")
     end
   end
 
@@ -422,15 +445,18 @@ RSpec.describe Article, type: :model do
 
   describe "#async_score_calc" do
     context "when published" do
-      let(:article) { create(:article) }
+      before { ActiveJob::Base.queue_adapter = :inline }
+
+      let(:article) { build(:article) }
 
       it "updates the hotness score" do
         article.save
+        article.reload
         expect(article.hotness_score > 0).to eq(true)
       end
 
       it "updates the spaminess score" do
-        article.update_column(:spaminess_rating, -1)
+        article.spaminess_rating = -1
         article.save
         expect(article.spaminess_rating).to eq(0)
       end
@@ -478,6 +504,16 @@ RSpec.describe Article, type: :model do
     collection = Collection.create(user_id: article.user.id, slug: "yoyoyo")
     article.collection_id = collection.id
     expect(article).to be_valid
+  end
+
+  describe "comment templates" do
+    it "can have no template" do
+      expect(build(:article).valid?).to be(true)
+    end
+
+    it "can have a template" do
+      expect(build(:article, comment_template: "my comment template").comment_template).to eq("my comment template")
+    end
   end
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

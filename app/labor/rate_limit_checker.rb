@@ -27,6 +27,7 @@ class RateLimitChecker
 
   def ping_admins
     return unless user && Rails.env.production?
+
     SlackBot.ping(
       "Rate limit exceeded. https://dev.to#{user.path}",
         channel: "abuse-reports",

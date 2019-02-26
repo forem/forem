@@ -27,6 +27,7 @@ class FlareTag
 
   def tag_hash
     return unless tag
+
     { name: tag.name,
       bg_color_hex: tag.bg_color_hex,
       text_color_hex: tag.text_color_hex }

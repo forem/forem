@@ -6,6 +6,11 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).to include("key links")
     end
+    xit "renders page with min read" do
+      create_list(:article, 10, featured: true)
+      get "/"
+      expect(response.body).to include("min read")
+    end
   end
 
   describe "GET query page" do
@@ -30,7 +35,6 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(tag.name)
     end
 
-    # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
     it "renders page with top/week etc." do
       tag = create(:tag)
       get "/t/#{tag.name}/top/week"
@@ -42,7 +46,6 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}/top/infinity"
       expect(response.body).to include(tag.name)
     end
-    # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
 
     it "renders tag after alias change" do
       tag = create(:tag)

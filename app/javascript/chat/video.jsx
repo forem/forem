@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { getTwilioToken } from './actions';
-const {connect, createLocalVideoTrack} = require('twilio-video');
 
 export default class Video extends Component {
   constructor(props) {
@@ -26,38 +25,41 @@ export default class Video extends Component {
 
   setupCallChannel = (response) => {
     const component = this;
-    connect(response.token,
-      {
-        name:`private-video-channel-${this.props.activeChannelId}`,
-        audio: true,
-        type: 'peer-to-peer',
-        video: { width: 640 }
-      }).then(function(room) {
-      component.setState({token: response.token, room: room})
-      createLocalVideoTrack().then(track => {
-        let localMediaContainer = document.getElementById('videolocalscreen');
-        localMediaContainer.appendChild(track.attach());
-      });
-      let roomParticipants = []
-      room.participants.forEach(participant => {
-        component.triggerRemoteJoin(participant);
-        roomParticipants.push(participant);
-      });
-      component.setState({participants: roomParticipants})
-      room.on('participantConnected', function(participant) {
-        component.triggerRemoteJoin(participant);
+    import('twilio-video')
+    .then(({ connect, createLocalVideoTrack }) => {
+      connect(response.token,
+        {
+          name:`private-video-channel-${this.props.activeChannelId}`,
+          audio: true,
+          type: 'peer-to-peer',
+          video: { width: 640 }
+        }).then(function(room) {
+        component.setState({token: response.token, room: room})
+        createLocalVideoTrack().then(track => {
+          let localMediaContainer = document.getElementById('videolocalscreen');
+          localMediaContainer.appendChild(track.attach());
+        });
         let roomParticipants = []
         room.participants.forEach(participant => {
+          component.triggerRemoteJoin(participant);
           roomParticipants.push(participant);
         });
         component.setState({participants: roomParticipants})
-        room.on('participantDisconnected', function(participant) {
-          component.props.onExit()
-        });
-      })
-    }, function(error) {
-      document.getElementById('videoremotescreen').innerHTML = "";
-        console.error('Unable to connect to Room: ' +  error.message);
+        room.on('participantConnected', function(participant) {
+          component.triggerRemoteJoin(participant);
+          let roomParticipants = []
+          room.participants.forEach(participant => {
+            roomParticipants.push(participant);
+          });
+          component.setState({participants: roomParticipants})
+          room.on('participantDisconnected', function(participant) {
+            component.props.onExit()
+          });
+        })
+      }, function(error) {
+        document.getElementById('videoremotescreen').innerHTML = "";
+          console.error('Unable to connect to Room: ' +  error.message);
+      });
     });
   }
 

@@ -5,6 +5,7 @@ class ColorFromImage
 
   def main
     return "#000000" unless Rails.env.production?
+
     begin
       get_palette["colors"][0]["hex"]
     rescue StandardError

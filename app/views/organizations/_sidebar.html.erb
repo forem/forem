@@ -1,0 +1,25 @@
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+  <div class="sidebar-bg" id="sidebar-bg-left"></div>
+  <div class="side-bar">
+    <% if @organization.story.present? %>
+      <div class="widget">
+        <header>
+          <h4>our story</h4>
+        </header>
+        <div class="widget-body">
+          <%= sanitized_sidebar @organization.story %>
+        </div>
+      </div>
+    <% end %>
+    <% if @organization.tech_stack.present? %>
+      <div class="widget">
+        <header>
+          <h4>our stack</h4>
+        </header>
+        <div class="widget-body">
+          <%= sanitized_sidebar @organization.tech_stack %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

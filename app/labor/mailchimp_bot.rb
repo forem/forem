@@ -9,6 +9,7 @@ class MailchimpBot
 
   def upsert
     return true unless Rails.env.production? || Rails.env.test?
+
     upsert_to_membership_newsletter
     upsert_to_newsletter
   end
@@ -46,6 +47,7 @@ class MailchimpBot
 
   def upsert_to_membership_newsletter
     return false unless a_sustaining_member?
+
     success = false
     # !!! user.monthly_due = 0 ? unsubscibe
     tiers = %i[ triple_unicorn_member

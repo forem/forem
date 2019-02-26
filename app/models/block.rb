@@ -35,6 +35,7 @@ class Block < ApplicationRecord
 
   def permissions
     return if user&.has_role?(:super_admin)
+
     errors.add(:commentable_id, "is not valid.")
   end
 end

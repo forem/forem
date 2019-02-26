@@ -34,6 +34,7 @@ class GithubRepo < ApplicationRecord
           stargazers_count: fetched_repo.stargazers_count,
           info_hash: fetched_repo.to_hash,
         )
+        repo.user&.touch(:github_repos_updated_at)
       rescue StandardError => e
         repo.destroy if e.message.include?("404 - Not Found")
       end
@@ -44,6 +45,7 @@ class GithubRepo < ApplicationRecord
 
   def clear_caches
     return if user.blank?
+
     user.touch
     cache_buster = CacheBuster.new
     cache_buster.bust user.path

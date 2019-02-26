@@ -74,6 +74,7 @@ class GithubTag
       number = content_json[:number]
       link = content_json[:html_url]
       return unless title
+
       "<h1> " \
         "<a href=\"#{link}\">" \
           "<img class=\"github-logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\" /><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \

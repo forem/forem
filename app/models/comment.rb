@@ -20,16 +20,17 @@ class Comment < ApplicationRecord
   after_create   :after_create_checks
   after_save     :calculate_score
   after_save     :bust_cache
+  after_save     :synchronous_bust
   before_destroy :before_destroy_actions
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
-  before_save    :set_markdown_character_count
+  before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
-  before_validation :evaluate_markdown
-  validate :permissions
+  before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
+  validate :permissions, if: :commentable
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
@@ -127,6 +128,10 @@ class Comment < ApplicationRecord
             commentable_type: commentable_type)
   end
 
+  def self.tree_for(commentable, limit = 0)
+    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  end
+
   def path
     "/#{user.username}/comment/#{id_code_generated}"
   rescue StandardError
@@ -165,11 +170,6 @@ class Comment < ApplicationRecord
     nil
   end
 
-  # Administrate field
-  def name_of_user
-    user.name
-  end
-
   def readable_publish_date
     if created_at.year == Time.current.year
       created_at.strftime("%b %e")
@@ -178,25 +178,7 @@ class Comment < ApplicationRecord
     end
   end
 
-  def sharemeow_link
-    user_image = ProfileImage.new(user)
-    user_image_link = Rails.env.production? ? user_image.get_link : user_image.get_external_link
-    ShareMeowClient.image_url(
-      template: "DevComment",
-      options: {
-        content: body_markdown || processed_html,
-        name: user.name,
-        subject_name: commentable.title,
-        user_image_link: user_image_link,
-        background_color: user.bg_color_hex,
-        text_color: user.text_color_hex
-      },
-    )
-  end
-
   def self.comment_async_bust(commentable, username)
-    commentable.touch
-    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end
@@ -208,11 +190,14 @@ class Comment < ApplicationRecord
   end
 
   def remove_notifications
-    Notification.remove_all(id: id, class_name: "Comment")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Moderation")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Reaction")
   end
 
   def send_to_moderator
     return if user && user.comments_count > 10
+
     Notification.send_moderation_notification(self)
   end
 
@@ -232,12 +217,12 @@ class Comment < ApplicationRecord
 
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
+
     self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |s| "<a href='#{commentable.path}?t=#{s}'>#{s}</a>" }
   end
 
   def shorten_urls!
     doc = Nokogiri::HTML.parse(processed_html)
-    # raise doc.to_s
     doc.css("a").each do |a|
       unless a.to_s.include?("<img") || a.attr("class")&.include?("ltag")
         a.content = strip_url(a.content) unless a.to_s.include?("<img")
@@ -265,6 +250,7 @@ class Comment < ApplicationRecord
 
   def touch_user
     user.touch
+    user.touch(:last_comment_at)
   end
   handle_asynchronously :touch_user
 
@@ -281,18 +267,25 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    remove_notifications
     bust_cache_without_delay
     remove_algolia_index
   end
 
   def bust_cache
     Comment.comment_async_bust(commentable, user.username)
-    expire_root_fragment
     cache_buster = CacheBuster.new
-    cache_buster.bust(commentable.path.to_s) if commentable
     cache_buster.bust("#{commentable.path}/comments") if commentable
   end
   handle_asynchronously :bust_cache
+
+  def synchronous_bust
+    commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    cache_buster = CacheBuster.new
+    cache_buster.bust(commentable.path.to_s) if commentable
+    expire_root_fragment
+  end
 
   def send_email_notification
     NotifyMailer.new_reply_email(self).deliver
@@ -303,7 +296,8 @@ class Comment < ApplicationRecord
     parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
-      parent_user.email
+      parent_user.email &&
+      parent_or_root_article.receive_notifications
   end
 
   def strip_url(url)

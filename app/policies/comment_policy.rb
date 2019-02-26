@@ -19,12 +19,16 @@ class CommentPolicy < ApplicationPolicy
     edit?
   end
 
+  def settings?
+    edit?
+  end
+
   def preview?
     true
   end
 
   def permitted_attributes_for_update
-    %i[body_markdown]
+    %i[body_markdown receive_notifications]
   end
 
   def permitted_attributes_for_preview

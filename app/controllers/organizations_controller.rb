@@ -18,7 +18,6 @@ class OrganizationsController < ApplicationController
     end
   end
 
-  # GET /users/:id/edit
   def update
     @user = current_user
     @tab = "organization"
@@ -27,6 +26,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
 
     if @organization.update(organization_params)
+      @organization.touch(:profile_updated_at)
       redirect_to "/settings/organization", notice: "Your organization was successfully updated."
     else
       render template: "users/edit"
@@ -35,6 +35,7 @@ class OrganizationsController < ApplicationController
 
   def generate_new_secret
     raise unless current_user.org_admin
+
     @organization = current_user.organization
     authorize @organization
     @organization.secret = @organization.generated_random_secret

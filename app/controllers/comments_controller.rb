@@ -56,7 +56,10 @@ class CommentsController < ApplicationController
   def create
     authorize Comment
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
+
     @comment = Comment.new(permitted_attributes(Comment))
+    add_context(commentable_id: @comment.commentable_id,
+                commentable_type: @comment.commentable_type)
     @comment.user_id = current_user.id
     if @comment.save
       if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
@@ -116,7 +119,6 @@ class CommentsController < ApplicationController
   def destroy
     authorize @comment
     @commentable_path = @comment.commentable.path
-    Notification.remove_all(id: @comment.id, class_name: "Comment")
     if @comment.is_childless?
       @comment.destroy
     else
@@ -144,6 +146,12 @@ class CommentsController < ApplicationController
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: 200 }
     end
+  end
+
+  def settings
+    @comment = Comment.find(params[:id_code].to_i(26))
+    authorize @comment
+    render :settings
   end
 
   private

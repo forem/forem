@@ -17,6 +17,7 @@
   font-family: $helvetica;
   border:1px solid $light-medium-gray;
   box-shadow: $bold-shadow;
+  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   border-radius:3px;
   display: block;
   margin: 0.95em 0 1.2em;

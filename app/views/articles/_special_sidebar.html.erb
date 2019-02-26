@@ -8,7 +8,7 @@
   <a href="<%= article.path %>" style="display:block;color:#0e0e0e">
     <div class="widget">
       <header>
-        <span class="emoji">💪</span> <%= article.title %>
+        <h4><span class="emoji">💪</span> <%= article.title %></h4>
       </header>
       <img src="<%= ProfileImage.new(article.user).get(420) %>" style="cursor:pointer;" alt="<%= article.user.username %>"/>
     </div>

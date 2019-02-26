@@ -7,8 +7,11 @@ class ArticleAnalyticsFetcher
     articles_to_check = Article.where(user_id: user_id, published: true)
     qualified_articles = get_articles_that_qualify(articles_to_check)
     return if qualified_articles.none?
+
     fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
   end
+
+  private
 
   def fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
     qualified_articles.each_slice(15).to_a.each do |chunk|
@@ -17,6 +20,7 @@ class ArticleAnalyticsFetcher
       chunk.each do |article|
         article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
         next if article.page_views_count > page_views_obj[article.id].to_i
+
         article.update_columns(page_views_count: page_views_obj[article.id].to_i)
       end
     end
@@ -34,6 +38,13 @@ class ArticleAnalyticsFetcher
 
   def should_fetch(article)
     return true if @context == "force"
-    article.positive_reactions_count > article.previous_positive_reactions_count
+
+    article.positive_reactions_count > article.previous_positive_reactions_count || occasionally_force_fetch?
+  end
+
+  def occasionally_force_fetch?
+    if Rails.env.production?
+      rand(25) == 1
+    end
   end
 end

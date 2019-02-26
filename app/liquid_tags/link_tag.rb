@@ -52,12 +52,14 @@ class LinkTag < LiquidTagBase
   def find_article_by_user(hash)
     user = User.find_by_username(hash[:username])
     return unless user
+
     user.articles.where(slug: hash[:slug])&.first
   end
 
   def find_article_by_org(hash)
     org = Organization.find_by_slug(hash[:username])
     return unless org
+
     org.articles.where(slug: hash[:slug])&.first
   end
 

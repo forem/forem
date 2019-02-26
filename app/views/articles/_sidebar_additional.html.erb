@@ -1,106 +1,25 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-    <% if @user && @user.class.name == "User" %>
-      <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
-        <a class="widget" href="<%= repo.url %>" target="_blank">
-          <header>
-            <span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %>
-          </header>
-          <div class="widget-body">
-            <%= repo.description %>
-            <div class="widget-footer">
-              <% if repo.fork %>
-                <span class="widget-accent">fork</span>
-              <% end %>
-              <%= repo.language %>
-              <% if repo.stargazers_count > 0 %>
-                <img src="<%= asset_path("star.svg") %>" /> <%= repo.stargazers_count %>
-              <% end %>
-            </div>
-          </div>
-        </a>
-      <% end %>
-      <% if @user.badge_achievements_count > 0 %>
-        <%= render "articles/badges_area" %>
-      <% end %>
-    <% elsif @user && @user.class.name == "Organization" %>
-      <% if @user.users.size > 0 %>
-        <div class="widget">
-          <div class="widget-suggested-follows-container">
-            <header>meet the team</header>
-            <div class="widget-body">
-              <% @user.users.each do |user| %>
-                  <div class="widget-user-pic">
-                    <a href="/<%= user.username %>">
-                      <img src="<%= ProfileImage.new(user).get(90) %>" />
-                    </a>
-                  </div>
-              <% end %>
-            </div>
-          </div>
+    <% unless user_signed_in? %>
+      <div class="widget signin-cta-widget">
+        <header>
+          <h4>DEV.TO(GETHER)</h4>
+        </header>
+        <div class="widget-body">
+          <center style="margin-bottom: 2px;">
+            <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
+              SIGN IN VIA TWITTER
+            </a>
+            <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
+              SIGN IN VIA GITHUB
+            </a>
+          </center>
         </div>
-      <% end %>
-    <% elsif @tag  %>
-      <% if Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).any? %>
-        <div class="widget">
-          <header>
-            #discuss
-          </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% Article.active_threads([@tag,"discuss"], Timeframer.new(params[:timeframe]).datetime).
-                each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-      <% end %>
-      <% if user_signed_in? %>
-        <%= javascript_pack_tag "sidebarWidget", defer: true %>
-        <div id="sidebarWidget__pack" data-tag-info="<%= @tag_model.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
-        </div>
-      <% else %>
-        <% cache("seo-boostable-posts-for-tag#{@tag}", :expires_in => 18.hours) do %>
-          <% @boostable_posts = Article.seo_boostable(@tag) %>
-          <% if @boostable_posts.any? %>
-            <div class="widget">
-              <header>
-                trending guides/resources
-              </header>
-              <div class="widget-body">
-                <div class="widget-link-list">
-                  <% @boostable_posts.first(8).
-                    each do |plucked_article| %>
-                      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          <% end %>
-        <% end %>
-      <% end %>
-    <% elsif @query %>
-    <% elsif @podcast_index %>
-    <% else %>
-      <% unless user_signed_in? %>
-        <div class="widget signin-cta-widget">
-          <header>
-            DEV.TO(GETHER)
-          </header>
-          <div class="widget-body">
-            <center style="margin-bottom: 2px;">
-              <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
-                SIGN IN VIA TWITTER
-              </a>
-              <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-                SIGN IN VIA GITHUB
-              </a>
-            </center>
-          </div>
-        </div>
-      <% end %>
+      </div>
+    <% end %>
+    <% cache("main-article-right-sidebar-discussions-#{params[:timeframe]}", :expires_in => (params[:timeframe].blank? ? 120 : 360 ).seconds) do %>
+      <% @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar").first %>
       <% if @sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">
@@ -111,7 +30,7 @@
       <% ApplicationConfig["TRENDING_TAGS"].split(",").each do |tag| %>
         <div class="widget">
           <header>
-            <a href="/t/<%= tag %>">#<%= tag %></a>
+            <a href="/t/<%= tag %>"><h4>#<%= tag %></h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -127,7 +46,7 @@
       <% if Article.active_help.any? %>
         <div class="widget">
           <header>
-            <a href="/t/help">#help</a>
+            <a href="/t/help"><h4>#help</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -142,7 +61,7 @@
       <% if Article.active_threads(["ama"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
-            <a href="/t/ama">#ama</a>
+            <a href="/t/ama"><h4>#ama</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -158,7 +77,7 @@
       <% if Article.active_threads(["challenge"], Timeframer.new(params[:timeframe]).datetime).any? %>
         <div class="widget">
           <header>
-            <a href="/t/challenge">#challenge</a>
+            <a href="/t/challenge"><h4>#challenge</h4></a>
           </header>
           <div class="widget-body">
             <div class="widget-link-list">
@@ -173,7 +92,7 @@
       <% end %>
       <div class="widget">
         <header>
-          <a href="/t/discuss">#discuss</a>
+          <a href="/t/discuss"><h4>#discuss</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -187,7 +106,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/explainlikeimfive">#explainlikeimfive</a>
+          <a href="/t/explainlikeimfive"><h4>#explainlikeimfive</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -201,7 +120,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/healthydebate">#healthydebate</a>
+          <a href="/t/healthydebate"><h4>#healthydebate</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -215,7 +134,7 @@
       </div>
       <div class="widget">
         <header>
-          <a href="/t/meta">#meta</a>
+          <a href="/t/meta"><h4>#meta</h4></a>
         </header>
         <div class="widget-body">
           <div class="widget-link-list">
@@ -227,10 +146,12 @@
             <a class="cta cta-button" href="/new/meta">START A META DISCUSSION</a>
         </div>
       </div>
-      <% if user_signed_in? %>
+    <% end %>
+    <% if user_signed_in? %>
+      <% cache("featured-homepage-podcasts", :expires_in => 15.minutes) do %>
         <div class="widget" id="podcast-widget">
           <header>
-            <a href="/pod">latest podcasts</a>
+            <a href="/pod"><h4>latest podcasts</h4></a>
           </header>
           <div class="widget-body">
               <% @podcast_episodes.each do |ep| %>
@@ -244,24 +165,24 @@
               <a class="cta cta-button" href="/pod">VIEW ALL</a>
           </div>
         </div>
-      <% else %>
-        <% cache("seo-boostable-posts-homepage", :expires_in => 18.hours) do %>
-          <% @boostable_posts = Article.seo_boostable %>
-          <% if @boostable_posts.any? %>
-            <div class="widget">
-              <header>
-                trending guides/resources
-              </header>
-              <div class="widget-body">
-                <div class="widget-link-list">
-                  <% @boostable_posts.first(12).
-                    each do |plucked_article| %>
-                      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-                  <% end %>
-                </div>
+      <% end %>
+    <% else %>
+      <% cache("seo-boostable-posts-homepage", :expires_in => 18.hours) do %>
+        <% @boostable_posts = Article.seo_boostable %>
+        <% if @boostable_posts.any? %>
+          <div class="widget">
+            <header>
+              <h4>trending guides/resources</h4>
+            </header>
+            <div class="widget-body">
+              <div class="widget-link-list">
+                <% @boostable_posts.first(12).
+                  each do |plucked_article| %>
+                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+                <% end %>
               </div>
             </div>
-          <% end %>
+          </div>
         <% end %>
       <% end %>
     <% end %>

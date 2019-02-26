@@ -14,7 +14,7 @@ module Admin
     private
 
     def comment_params
-      accessible = %i[user_id body_markdown deleted]
+      accessible = %i[user_id body_markdown deleted score]
       params.require(:comment).permit(accessible)
     end
   end

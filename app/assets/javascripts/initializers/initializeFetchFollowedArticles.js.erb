@@ -31,12 +31,25 @@ function insertNewArticles(user){
       var articlePoints = 0
       var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
-      articlePoints = articlePoints + (intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length*2) + article.positive_reactions_count
+      var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
+      var followedPoints = 1
+      JSON.parse(user.followed_tags).map(function(tag) {
+        if (intersectedTags.includes(tag.name)) {
+          followedPoints = followedPoints + tag.points
+        }
+      })
+      articlePoints = articlePoints + (followedPoints*2) + article.positive_reactions_count
       if (containsUserID || article.user_id === user.id) {
         articlePoints = articlePoints + 16
       }
       if (containsOrganizationID) {
         articlePoints = articlePoints + 16
+      }
+      var rand = Math.random();
+      if (rand < 0.3) {
+        articlePoints = articlePoints + 1
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 2
       }
       article['points'] = articlePoints
     });
@@ -61,12 +74,25 @@ function insertTopArticles(user){
       var articlePoints = 0
       var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
-      articlePoints = articlePoints + intersect_arrays(user.followed_tag_names, article.cached_tag_list_array).length
+      var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
+      var followedPoints = 1
+      JSON.parse(user.followed_tags).map(function(tag) {
+        if (intersectedTags.includes(tag.name)) {
+          followedPoints = followedPoints + tag.points
+        }
+      })
+      articlePoints = articlePoints + followedPoints
       if (containsUserID) {
         articlePoints = articlePoints + 1
       }
       if (containsOrganizationID) {
         articlePoints = articlePoints + 1
+      }
+      var rand = Math.random();
+      if (rand < 0.3) {
+        articlePoints = articlePoints + 1
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 2
       }
       article['points'] = articlePoints
     });
@@ -93,7 +119,6 @@ function algoliaFollowedArticles(){
       var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
       var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
       var index = client.initIndex('ordered_articles_<%= Rails.env %>');
-      
       var searchObj = {
           hitsPerPage: 20,
           page: "0",

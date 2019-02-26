@@ -4,12 +4,21 @@ class Internal::UsersController < Internal::ApplicationController
   def index
     @users = case params[:state]
              when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(20)
+               User.where(offering_mentorship: true).page(params[:page]).per(50)
              when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(20)
+               User.where(seeking_mentorship: true).page(params[:page]).per(50)
+             when /role\-/
+               User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
              else
-               User.order("created_at DESC").page(params[:page]).per(20)
+               User.order("created_at DESC").page(params[:page]).per(50)
              end
+    if params[:search].present?
+      @users = @users.where('users.name ILIKE :search OR
+        users.username ILIKE :search OR
+        users.github_username ILIKE :search OR
+        users.email ILIKE :search OR
+        users.twitter_username ILIKE :search', search: "%#{params[:search].strip}%")
+    end
   end
 
   def edit
@@ -30,45 +39,70 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
-    handle_mentorship
+    make_matches
+    update_role
     add_note
     @user.update!(user_params)
-    redirect_to "/internal/users/unmatched_mentee"
+    if user_params[:quick_match]
+      redirect_to "/internal/users/unmatched_mentee"
+    else
+      redirect_to "/internal/users/#{params[:id]}"
+    end
   end
 
-  def handle_mentorship
-    if user_params[:ban_from_mentorship] == "1"
-      ban_from_mentorship
-    end
-
-    if @new_mentee.blank? && @new_mentor.blank?
-      return
-    end
-    make_matches
+  def update_role
+    toggle_ban_user if user_params[:ban_user]
+    toggle_warn_user if user_params[:warn_user]
+    toggle_trust_user if user_params[:trusted_user]
+    toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
   end
 
-  def make_matches
-    if !@new_mentee.blank?
-      mentee = User.find(@new_mentee)
-      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
+  def toggle_ban_user
+    if user_params[:ban_user] == "1"
+      @user.add_role :banned
+      @user.remove_role :trusted
+      create_note("banned", user_params[:note_for_current_role])
+    else
+      @user.remove_role :banned
+      create_note("good_standing", user_params[:note_for_current_role])
     end
+  end
 
-    if !@new_mentor.blank?
-      mentor = User.find(@new_mentor)
-      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
+  def toggle_trust_user
+    if user_params[:trusted_user] == "1"
+      @user.add_role :trusted
+    else
+      @user.remove_role :trusted
+    end
+    Rails.cache.delete("user-#{@user.id}/has_trusted_role")
+    @user.trusted
+  end
+
+  def toggle_warn_user
+    if user_params[:warn_user] == "1"
+      @user.add_role :warned
+      @user.remove_role :trusted
+      create_note("warned", user_params[:note_for_current_role])
+    else
+      @user.remove_role :warned
+      create_note("good_standing", user_params[:note_for_current_role])
     end
   end
 
   def add_note
-    if user_params[:mentorship_note]
-      Note.create(
-        author_id: @current_user.id,
-        noteable_id: @user.id,
-        noteable_type: "User",
-        reason: "mentorship",
-        content: user_params[:mentorship_note],
-      )
-    end
+    return unless !user_params[:note].blank?
+
+    create_note("misc_note", user_params[:note])
+  end
+
+  def create_note(reason, content)
+    Note.create(
+      author_id: current_user.id,
+      noteable_id: @user.id,
+      noteable_type: "User",
+      reason: reason,
+      content: content,
+    )
   end
 
   def inactive_mentorship(mentor, mentee)
@@ -76,12 +110,31 @@ class Internal::UsersController < Internal::ApplicationController
     relationship.update(active: false)
   end
 
-  def ban_from_mentorship
-    @user.add_role :banned_from_mentorship
-    mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-    mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
-    deactivate_mentorship(mentee_relationships)
-    deactivate_mentorship(mentor_relationships)
+  def make_matches
+    return if @new_mentee.blank? && @new_mentor.blank?
+
+    if !@new_mentee.blank?
+      mentee = User.find(@new_mentee)
+      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
+    end
+    if !@new_mentor.blank?
+      mentor = User.find(@new_mentor)
+      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
+    end
+  end
+
+  def toggle_ban_from_mentorship
+    if user_params[:ban_from_mentorship] == "1"
+      @user.add_role :banned_from_mentorship
+      mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
+      mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+      deactivate_mentorship(mentee_relationships)
+      deactivate_mentorship(mentor_relationships)
+      @user.update(offering_mentorship: false, seeking_mentorship: false)
+      create_note("banned_from_mentorship", user_params[:note_for_mentorship_ban])
+    else
+      @user.remove_role :banned_from_mentorship
+    end
   end
 
   def deactivate_mentorship(relationships)
@@ -92,59 +145,23 @@ class Internal::UsersController < Internal::ApplicationController
 
   def banish
     @user = User.find(params[:id])
-    Moderator::Banisher.call(admin: current_user, offender: @user)
+    begin
+      Moderator::Banisher.call_banish(admin: current_user, offender: @user)
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
-  def strip_user(user)
-    return unless user.comments.where("created_at < ?", 150.days.ago).empty?
-    new_name = "spam_#{rand(10000)}"
-    new_username = "spam_#{rand(10000)}"
-    if User.find_by(name: new_name) || User.find_by(username: new_username)
-      new_name = "spam_#{rand(10000)}"
-      new_username = "spam_#{rand(10000)}"
+  def full_delete
+    @user = User.find(params[:id])
+    begin
+      Moderator::Banisher.call_delete_activity(admin: current_user, offender: @user)
+      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
+    rescue StandardError => e
+      flash[:error] = e.message
     end
-    user.name = new_name
-    user.username = new_username
-    user.twitter_username = ""
-    user.github_username = ""
-    user.website_url = ""
-    user.summary = ""
-    user.location = ""
-    user.remote_profile_image_url = "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png" if Rails.env.production?
-    user.education = ""
-    user.employer_name = ""
-    user.employer_url = ""
-    user.employment_title = ""
-    user.mostly_work_with = ""
-    user.currently_learning = ""
-    user.currently_hacking_on = ""
-    user.available_for = ""
-    user.email_public = false
-    user.facebook_url = nil
-    user.dribbble_url = nil
-    user.medium_url = nil
-    user.stackoverflow_url = nil
-    user.behance_url = nil
-    user.linkedin_url = nil
-    user.gitlab_url = nil
-    user.add_role :banned
-    unless user.notes.where(reason: "banned").any?
-      user.notes.
-        create!(reason: "banned", content: "spam account", author_id: current_user.id)
-    end
-    user.comments.each do |comment|
-      comment.reactions.each { |rxn| rxn.delay.destroy! }
-      comment.delay.destroy!
-    end
-    user.follows.each { |follow| follow.delay.destroy! }
-    user.articles.each { |article| article.delay.destroy! }
-    user.remove_from_index!
-    user.save!
-    CacheBuster.new.bust("/#{user.old_username}")
-    user.update!(old_username: nil)
-  rescue StandardError => e
-    flash[:error] = e.message
+    redirect_to "/internal/users"
   end
 
   private
@@ -152,9 +169,16 @@ class Internal::UsersController < Internal::ApplicationController
   def user_params
     params.require(:user).permit(:seeking_mentorship,
                                 :offering_mentorship,
+                                :quick_match,
+                                :note,
                                 :add_mentor,
                                 :add_mentee,
-                                :mentorship_note,
-                                :ban_from_mentorship)
+                                :ban_from_mentorship,
+                                :ban_user,
+                                :warn_user,
+                                :note_for_mentorship_ban,
+                                :note_for_current_role,
+                                :reason_for_mentorship_ban,
+                                :trusted_user)
   end
 end

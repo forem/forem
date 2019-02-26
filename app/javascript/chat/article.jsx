@@ -100,7 +100,7 @@ export default class Article extends Component {
     });
     let coverImage = '';
     if (article.cover_image) {
-      coverImage = <header><div class="image image-final" style={{backgroundImage:`url(${article.cover_image}`}}></div></header>
+      coverImage = <section><div class="image image-final" style={{backgroundImage:`url(${article.cover_image}`}}></div></section>
     }
     return (
             <div className='activechatchannel__activeArticle'>

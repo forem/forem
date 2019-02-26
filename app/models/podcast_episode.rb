@@ -1,6 +1,3 @@
-include CloudinaryHelper
-include ActionView::Helpers::SanitizeHelper
-
 class PodcastEpisode < ApplicationRecord
   include AlgoliaSearch
 
@@ -92,7 +89,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def description
-    strip_tags(body)
+    ActionView::Base.full_sanitizer.sanitize(body)
   end
 
   def main_image
@@ -161,25 +158,31 @@ class PodcastEpisode < ApplicationRecord
 
   def prefix_all_images
     return unless body.present?
-    self.processed_html = body.gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
+
+    self.processed_html = body.
+      gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").
+      gsub("\r\n<h3>&nbsp;</h3>\r\n", "").gsub("\r\n<h3>&nbsp;</h3>\r\n", "")
+
     self.processed_html = "<p>#{processed_html}</p>" unless processed_html.include?("<p>")
+
     doc = Nokogiri::HTML(processed_html)
     doc.css("img").each do |img|
-      quality = if img.attr("src") && (img.attr("src").include? ".gif")
-                  66
-                else
-                  "auto"
-                end
-      if img.attr("src")
-        self.processed_html = processed_html.gsub(img.attr("src"),
-          cl_image_path(img.attr("src"),
-           type: "fetch",
-           width: 725,
-           crop: "limit",
-           quality: quality,
-           flags: "progressive",
-           fetch_format: "auto",
-           sign_url: true))
+      img_src = img.attr("src")
+
+      if img_src
+        quality = "auto"
+        quality = 66 if img_src.include?(".gif")
+
+        cloudinary_img_src = ActionController::Base.helpers.
+          cl_image_path(img_src,
+            type: "fetch",
+            width: 725,
+            crop: "limit",
+            quality: quality,
+            flags: "progressive",
+            fetch_format: "auto",
+            sign_url: true)
+        self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
       end
     end
   end

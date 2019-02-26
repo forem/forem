@@ -45,6 +45,8 @@ RSpec.describe MentorRelationship, type: :model do
   it "finds unmatched mentees" do
     expect(MentorRelationship.unmatched_mentees.size).to eq(0)
     new_mentee = create(:user, mentee_form_updated_at: Time.current, seeking_mentorship: true)
+    expect(MentorRelationship.unmatched_mentees.size).to eq(0)
+    new_mentee.update(mentee_description: "MENTEE")
     expect(MentorRelationship.unmatched_mentees.size).to eq(1)
     MentorRelationship.create(mentor_id: mentor.id, mentee_id: new_mentee.id)
     expect(MentorRelationship.unmatched_mentors.size).to eq(0)

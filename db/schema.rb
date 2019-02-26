@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120170350) do
+ActiveRecord::Schema.define(version: 20190216185753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -35,6 +35,16 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
 
+  create_table "api_secrets", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description", null: false
+    t.string "secret"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["secret"], name: "index_api_secrets_on_secret", unique: true
+    t.index ["user_id"], name: "index_api_secrets_on_user_id"
+  end
+
   create_table "articles", id: :serial, force: :cascade do |t|
     t.string "abuse_removal_reason"
     t.boolean "allow_big_edits", default: true
@@ -52,6 +62,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "canonical_url"
     t.integer "collection_id"
     t.integer "collection_position"
+    t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "crossposted_at"
@@ -90,6 +101,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
     t.integer "reactions_count", default: 0, null: false
+    t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.boolean "removed_for_abuse", default: false
     t.integer "score", default: 0
@@ -105,6 +117,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "video"
     t.string "video_closed_caption_track_url"
     t.string "video_code"
+    t.float "video_duration_in_seconds", default: 0.0
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
@@ -309,13 +322,6 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
   end
 
-  create_table "flipflop_features", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.boolean "enabled", default: false, null: false
-    t.string "key", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
@@ -323,6 +329,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "followable_type", null: false
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
+    t.float "points", default: 1.0
     t.datetime "updated_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
@@ -458,6 +465,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.integer "notifiable_id"
     t.string "notifiable_type"
     t.datetime "notified_at"
+    t.bigint "organization_id"
     t.boolean "read", default: false
     t.datetime "updated_at", null: false
     t.integer "user_id"
@@ -483,10 +491,14 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "github_username"
     t.string "jobs_email"
     t.string "jobs_url"
+    t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.string "location"
     t.string "name"
     t.string "nav_image"
+    t.string "old_old_slug"
+    t.string "old_slug"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.text "proof"
     t.string "secret"
     t.string "slug"
@@ -586,6 +598,16 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "sail_settings", force: :cascade do |t|
+    t.integer "cast_type", limit: 2, null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.string "value", null: false
+    t.index ["name"], name: "index_settings_on_name", unique: true
+  end
+
   create_table "search_keywords", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "google_checked_at"
@@ -596,6 +618,18 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "keyword"
     t.datetime "updated_at", null: false
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
+  end
+
+  create_table "tag_adjustments", force: :cascade do |t|
+    t.string "adjustment_type"
+    t.integer "article_id"
+    t.datetime "created_at", null: false
+    t.string "reason_for_adjustment"
+    t.string "status"
+    t.integer "tag_id"
+    t.string "tag_name"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
@@ -621,6 +655,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "alias_for"
     t.string "bg_color_hex"
     t.string "buffer_profile_id_code"
+    t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"
@@ -636,6 +671,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
+    t.datetime "updated_at"
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -715,15 +751,19 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.datetime "exported_at"
     t.string "facebook_url"
     t.boolean "feed_admin_publish_permission", default: true
+    t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
     t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
+    t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
     t.jsonb "language_settings", default: {}, null: false
+    t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
@@ -733,12 +773,14 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.string "location"
     t.boolean "looking_for_work", default: false
     t.boolean "looking_for_work_publicly", default: false
+    t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.text "mentee_description"
     t.datetime "mentee_form_updated_at"
     t.text "mentor_description"
     t.datetime "mentor_form_updated_at"
+    t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
@@ -754,6 +796,7 @@ ActiveRecord::Schema.define(version: 20181120170350) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "reactions_count", default: 0, null: false
     t.datetime "remember_created_at"
     t.string "remember_token"

@@ -9,6 +9,7 @@ class ArticleCreationService
 
   def create!
     raise if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
+
     article = Article.new(article_params)
     article.user_id = user.id
     article.show_comments = true

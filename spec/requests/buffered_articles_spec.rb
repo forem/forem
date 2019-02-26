@@ -13,7 +13,7 @@ RSpec.describe "BufferedArticles", type: :request do
     it "responds with at least one url" do
       create(:article)
       get "/buffered_articles"
-      expect(response.body).to include("https://dev.to/")
+      expect(response.body).to include(ApplicationConfig["APP_DOMAIN"])
     end
   end
 end

@@ -1,6 +1,6 @@
-<% accent_color = HexComparer.new([@tag.bg_color_hex,@tag.text_color_hex]).biggest %>
-<% color = HexComparer.new([@tag.bg_color_hex,@tag.text_color_hex]).brightness(1.4) %>
-<% dark_color = HexComparer.new([@tag.bg_color_hex,@tag.text_color_hex]).brightness(0.7) %>
+<% accent_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).biggest %>
+<% color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(1.4) %>
+<% dark_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(0.7) %>
 <style>
   body{
     background: white;
@@ -90,7 +90,7 @@
       </h2>
     <% end %>
     <div class="preview-dev-logo">
-      <%= inline_svg("devplain.svg", class: "logo", size: '9vw * 9vw') %>
+      <%= inline_svg("devplain.svg", class: "logo", size: "9vw * 9vw") %>
     </div>
   </div>
 </div>

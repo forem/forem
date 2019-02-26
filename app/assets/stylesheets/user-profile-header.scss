@@ -30,6 +30,10 @@
         font-size:calc(0.9vw + 28px);
         font-weight:500;
       }
+      img {
+        max-height:calc(3vw + 33px);
+        max-width:calc(3vw + 33px);
+      }
     }
   }
   &.readinglist-header{

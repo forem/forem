@@ -20,6 +20,7 @@ RSpec.describe YoutubeTag, type: :liquid_template do
 
     def parsed_id(id)
       return id unless id.include?("?t=")
+
       id_array = id.split("?t=")
       time_hash = {
         h: id_array[1].scan(/\d+h/)[0]&.delete("h").to_i,

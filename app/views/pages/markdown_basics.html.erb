@@ -1,26 +1,26 @@
 <% title "Markdown Basics" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/p/markdown_basics"/>
+  <link rel="canonical" href="https://dev.to/p/markdown_basics" />
   <meta name="description" content="dev.to | markdown basics">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
 <% end %>
 
-<header>
-  <div class="blank-space"></div>
-</header>
+<div class="blank-space"></div>
 <div class="container article">
   <div class="title">
     <h1>Markdown Basics 🤓</h1>
   </div>
   <div class="body">
 
-    <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a></p>
+    <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a>
+    </p>
 
     <h3><strong>Bold & Italic</strong></h3>
-    <p> <em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
-    <p> <strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
+    <p><em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
+    <p><strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
 
     <h3><strong>Links</strong></h3>
     <p><a href="https://dev.to">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
@@ -41,11 +41,14 @@
     <h6>Six '#'s for a h6 header</h6>
 
     <h2><strong><u>Liquid Tags</u></strong></h2>
-    <p>We support native <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:</p>
+    <p>We support native
+      <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
+    </p>
 
     <h3><strong>Twitter Embed</strong></h3>
-    <p>Using the twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet <code>id</code> from the url.
-    <code>{% twitter 834439977220112384 %}</code></p>
+    <p>Using the twitter Liquid tag will allow the tweet to pre-render from the server, providing your reader with a better experience. All you need is the tweet
+      <code>id</code> from the url.
+      <code>{% twitter 834439977220112384 %}</code></p>
 
     <h3><strong>GitHub Issue or Comment Embed</strong></h3>
     <p>All you need is the GitHub issue or comment URL.</p>
@@ -70,7 +73,9 @@
     <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:</p>
     <p><code>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</code></p>
 
-    <h4><a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">Here's the Markdown cheatsheet again for reference.</a></h4>
+    <h4>
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">Here's the Markdown cheatsheet again for reference.</a>
+    </h4>
     Happy posting! 📝
     <div class="blank-space"></div>
   </div>

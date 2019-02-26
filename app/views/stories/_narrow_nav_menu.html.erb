@@ -1,0 +1,8 @@
+<div class="narrow-nav-menu" id="narrow-nav-menu" aria-label="feed-nav-menu">
+  <a href="<%= list_path %>/" class="<%= "selected" if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>">&lt;MY DEV FEED&gt;</a>
+  <a href="<%= list_path %>/top/week" class="<%= "selected" if timeframe_check("week") %>">&lt;PAST WEEK&gt;</a>
+  <a href="<%= list_path %>/top/month" class="<%= "selected" if timeframe_check("month") %>">&lt;PAST MONTH&gt;</a>
+  <a href="<%= list_path %>/top/year" class="<%= "selected" if timeframe_check("year") %>">&lt;PAST YEAR&gt;</a>
+  <a href="<%= list_path %>/top/infinity" class="<%= "selected" if timeframe_check("infinity") %>">&lt;INFINITY&gt;</a>
+  <a href="<%= list_path %>/latest" class="<%= "selected" if timeframe_check("latest") %>">&lt;LATEST&gt;</a>
+</div>

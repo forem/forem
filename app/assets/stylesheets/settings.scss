@@ -37,14 +37,16 @@
       }
     }
     .field-notice {
-      background:$red;
+      background: white;
       max-width:95%;
       padding:25px 0px;
       text-align:center;
       margin:0px 0px 25px;
-      color:white;
+      color:$black;
       font-weight:bold;
       border-radius:2px;
+      border: 1px solid $light-medium-gray;
+      box-shadow: $shadow;
       .small {
         font-size:13px;
         font-weight:300;
@@ -83,7 +85,7 @@
       max-width:700px;
       float: left;
       h2{
-       font-size: 2.5em; 
+       font-size: 2.5em;
       }
       @media screen and ( min-width: 835px ) {
         width: 66%;
@@ -274,6 +276,11 @@
     }
     .secret-field {
       margin:30px 0px;
+    }
+    hr {
+      opacity: 0.3;
+      margin-top: 20px;
+      width: 70%;
     }
   }
   .default-billing-message {
@@ -513,5 +520,54 @@
 ul.delete__account{
   li{
     padding-bottom: 5px;
+  }
+}
+
+.api__secret {
+  &__container {
+    background-color: $off-white;
+    height: 6.5rem;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border-radius: 3px;
+    border: 1px solid $light-medium-gray;
+    @media screen and ( min-width: 600px ){
+      height: 5rem;
+    }
+  }
+
+  &__desc {
+    width: 70%;
+    float: left;
+
+    .title {
+      font-weight: bold;
+      margin: 0;
+      padding-bottom: 0.25rem;
+    }
+    .content {
+      margin: 0;
+      color: $medium-gray;
+      font-weight: bold;
+      font-family: $monospace;
+      padding: 5px 8px;
+      border: 1px dashed $black;
+      overflow: hidden;
+      margin: 3px 0px;
+    }
+    .subtitle {
+      margin: 0;
+      color: $dark-medium-gray;
+    }
+  }
+
+  &__revoke {
+    text-align: right;
+    margin: 1.6rem auto 0;
+    display: block;
+    @media screen and ( min-width: 600px ){
+      float: left;
+      width: 30%;
+    }
   }
 }

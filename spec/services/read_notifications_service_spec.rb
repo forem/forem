@@ -9,7 +9,7 @@ RSpec.describe ReadNotificationsService do
     allow(mock).to receive(:set_to_zero).and_return(true)
   end
 
-  it "sends to buffer" do
+  it "returns read when #mark_as_read is called" do
     expect(described_class.new(user).mark_as_read).to eq("read")
   end
 end

@@ -56,7 +56,7 @@ class ReactionDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how reactions are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(reaction)
-  #   "Reaction ##{reaction.id}"
-  # end
+  def display_resource(reaction)
+    "#{reaction.category} on #{reaction.reactable_type} ##{reaction.reactable_id}"
+  end
 end

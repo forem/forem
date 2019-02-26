@@ -1,5 +1,5 @@
 <style>
-  .error-notice{
+  .error-notice {
     background: rgba(255, 80, 80, 0.7);
     color: white;
     padding: 40px 0px 40px;
@@ -12,15 +12,15 @@
 </style>
 <% unless flash[:alert].blank? %>
   <div class="error-notice">
-  Something went wrong:
+    Something went wrong:
     <% if flash[:alert].is_a?(Array) %>
-    <ul>
-      <% flash[:alert].each do |error| %>
-        <li>
-          <%= error %>
-        </li>
-      <% end %>
-    </ul>
+      <ul>
+        <% flash[:alert].each do |error| %>
+          <li>
+            <%= error %>
+          </li>
+        <% end %>
+      </ul>
     <% else %>
       <%= flash[:alert] %>
       <br>

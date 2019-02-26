@@ -1,9 +1,22 @@
+<style>
+body {
+all: unset;
+}
+</style>
 <%= render "layouts/styles" %>
 <style>
   body{padding-top: 20px !important; }
 </style>
-<div class="primary-sticky-nav">
-  <div class="html-variant-wrapper">
-    <%= @html_variant.html.html_safe %>
+<% if @html_variant.group == "article_show_below_article_cta" %>
+  <div class="home">
+    <div class="container">
+      <%= @html_variant.html.html_safe %>
+    </div>
   </div>
-</div>
+<% else %>
+  <div class="primary-sticky-nav">
+    <div class="html-variant-wrapper">
+      <%= @html_variant.html.html_safe %>
+    </div>
+  </div>
+<% end %>

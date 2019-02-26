@@ -24,6 +24,11 @@ RSpec.describe PodcastTag, type: :liquid_template do
     end
   end
 
+  it "render properly" do
+    rendered = generate_podcast_liquid_tag(valid_long_slug).render
+    expect(rendered).not_to eq "Liquid error: internal"
+  end
+
   it "rejects invalid link" do
     expect do
       generate_podcast_liquid_tag("https://dev.to/toolsday/hardware/test/2")

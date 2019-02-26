@@ -16,14 +16,13 @@
   <% end %>
 </ul>
 
-
 <center style="margin-top:50px;">
   <em>
     <% if @user.follows.size == 0 %>
       <b>
         DEV Digest is a new periodic email featuring the best posts from our community of developers.
       </b>
-      <br/><br/>
+      <br /><br />
       Your digest is not yet customized. Follow the people and technologies on <a href="https://dev.to" style="text-decoration: none;">dev.to</a> that interest you in order to receive the most relevant posts in your inbox.
     <% else %>
       <% tip_rand = rand(5) %>

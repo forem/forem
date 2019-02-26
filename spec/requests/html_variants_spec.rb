@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "HtmlVariants", type: :request do
-  let(:user) { create(:user)}
+  let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, approved: true) }
 
   before do
@@ -57,7 +57,8 @@ RSpec.describe "HtmlVariants", type: :request do
         html_variant: {
           name: "New post",
           html: "Yo ho ho#{rand(100)}", tag_list: "yoyo",
-          published: true
+          published: true,
+          group: "article_show_sidebar_cta"
         }
       }
       expect(HtmlVariant.all.size).to eq(1)
@@ -72,7 +73,7 @@ RSpec.describe "HtmlVariants", type: :request do
           published: true
         }
       }
-      expect(HtmlVariant.all.size).to eq(1)
+      expect(HtmlVariant.all.size).to eq(0)
     end
   end
 
@@ -105,6 +106,4 @@ RSpec.describe "HtmlVariants", type: :request do
       expect(html_variant.reload.html).not_to eq(new_html)
     end
   end
-
-
 end

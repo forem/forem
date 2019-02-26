@@ -14,7 +14,7 @@ exemptLabels:
 exemptProjects: false
 
 # Set to true to ignore issues in a milestone (defaults to false)
-exemptMilestones: false
+exemptMilestones: true
 
 # Label to use when marking as stale
 staleLabel: stale

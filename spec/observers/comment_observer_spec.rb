@@ -11,7 +11,9 @@ RSpec.describe CommentObserver, type: :observer do
   it "pings slack if user with warned role creates a comment" do
     user.add_role :warned
     Comment.observers.enable :comment_observer do
-      create(:comment, user_id: user.id, commentable_id: article.id)
+      run_background_jobs_immediately do
+        create(:comment, user: user, commentable: article)
+      end
     end
     expect(SlackBot).to have_received(:ping).twice
   end

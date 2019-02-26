@@ -75,6 +75,7 @@ class EmailLogic
 
   def get_user_readiness
     return true unless @last_email_sent_at
+
     # Has it been at least x days since @user received an email?
     Time.current - @last_email_sent_at >= @days_until_next_email.days.to_i
   end
@@ -86,6 +87,7 @@ class EmailLogic
   def get_fresh_date
     a_few_days_ago = 4.days.ago.utc
     return a_few_days_ago unless @last_email_sent_at
+
     a_few_days_ago > @last_email_sent_at ? a_few_days_ago : @last_email_sent_at
   end
 

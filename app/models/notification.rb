@@ -1,6 +1,10 @@
 class Notification < ApplicationRecord
   belongs_to :notifiable, polymorphic: true
-  belongs_to :user
+  belongs_to :user, optional: true
+  belongs_to :organization, optional: true
+
+  validates :user_id, presence: true, if: Proc.new { |n| n.organization_id.nil? }
+  validates :organization_id, presence: true, if: Proc.new { |n| n.user_id.nil? }
 
   before_create :mark_notified_at_time
 
@@ -8,31 +12,46 @@ class Notification < ApplicationRecord
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
-      user = follow.followable
-      recent_follows = Follow.where(followable_type: "User", followable_id: user.id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
-      aggregated_siblings = recent_follows.map { |f| user_data(f.follower) }
+      recent_follows = Follow.where(followable_type: follow.followable_type, followable_id: follow.followable_id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
+
+      notification_params = { action: "Follow" }
+      if follow.followable_type == "User"
+        notification_params[:user_id] = follow.followable_id
+      elsif follow.followable_type == "Organization"
+        notification_params[:organization_id] = follow.followable_id
+      end
+
+      followers = User.where(id: recent_follows.pluck(:follower_id))
+      aggregated_siblings = followers.map { |follower| user_data(follower) }
       if aggregated_siblings.size.zero?
-        Notification.find_or_create_by(user_id: user.id, action: "Follow").destroy
+        Notification.find_or_create_by(notification_params).destroy
       else
-        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings}
-        notification = Notification.find_or_create_by(user_id: user.id, action: "Follow")
+        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings }
+        notification = Notification.find_or_create_by(notification_params)
         notification.notifiable_id = recent_follows.first.id
         notification.notifiable_type = "Follow"
         notification.json_data = json_data
         notification.notified_at = Time.current
         notification.read = is_read
         notification.save!
-        end
+      end
     end
     handle_asynchronously :send_new_follower_notification
 
     def send_to_followers(notifiable, action = nil)
+      # for now, arguments are always: notifiable = article, action = "Published"
+      json_data = {
+        user: user_data(notifiable.user),
+        article: article_data(notifiable)
+      }
+      followers = if notifiable.organization_id
+                    json_data[:organization] = organization_data(notifiable.organization)
+                    (notifiable.user.followers + notifiable.organization.followers).uniq
+                  else
+                    notifiable.user.followers
+                  end
       # followers is an array and not an activerecord object
-      notifiable.user.followers.sort_by(&:updated_at).reverse[0..2500].each do |follower|
-        json_data = {
-          user: user_data(notifiable.user),
-          article: article_data(notifiable)
-        }
+      followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
         Notification.create(
           user_id: follower.id,
           notifiable_id: notifiable.id,
@@ -44,41 +63,55 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_to_followers
 
-    def send_new_comment_notifications(notifiable)
-      user_ids = notifiable.ancestors.map(&:user_id).to_set
-      user_ids.add(notifiable.commentable.user.id) if user_ids.empty?
-      user_ids.delete(notifiable.user_id).each do |user_id|
-        json_data = {
-          user: user_data(notifiable.user),
-          comment: comment_data(notifiable)
-        }
+    def send_new_comment_notifications(comment)
+      user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
+      user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
+      json_data = {
+        user: user_data(comment.user),
+        comment: comment_data(comment)
+      }
+      user_ids.delete(comment.user_id).each do |user_id|
         Notification.create(
           user_id: user_id,
-          notifiable_id: notifiable.id,
-          notifiable_type: notifiable.class.name,
+          notifiable_id: comment.id,
+          notifiable_type: comment.class.name,
           action: nil,
           json_data: json_data,
         )
+        # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
+        if User.find_by(id: user_id)&.mobile_comment_notifications
+          send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments")
+        end
+      end
+      if comment.commentable.organization_id
+        Notification.create(
+          organization_id: comment.commentable.organization_id,
+          notifiable_id: comment.id,
+          notifiable_type: comment.class.name,
+          action: nil,
+          json_data: json_data,
+        )
+        # no push notifications for organizations yet
       end
     end
     handle_asynchronously :send_new_comment_notifications
 
-    def send_new_badge_notification(notifiable)
+    def send_new_badge_notification(badge_achievement)
       json_data = {
-        user: user_data(notifiable.user),
+        user: user_data(badge_achievement.user),
         badge_achievement: {
-          badge_id: notifiable.badge_id,
-          rewarding_context_message: notifiable.rewarding_context_message,
+          badge_id: badge_achievement.badge_id,
+          rewarding_context_message: badge_achievement.rewarding_context_message,
           badge: {
-            title: notifiable.badge.title,
-            description: notifiable.badge.description,
-            badge_image_url: notifiable.badge.badge_image_url
+            title: badge_achievement.badge.title,
+            description: badge_achievement.badge.description,
+            badge_image_url: badge_achievement.badge.badge_image_url
           }
         }
       }
       Notification.create(
-        user_id: notifiable.user.id,
-        notifiable_id: notifiable.id,
+        user_id: badge_achievement.user.id,
+        notifiable_id: badge_achievement.id,
         notifiable_type: "BadgeAchievement",
         action: nil,
         json_data: json_data,
@@ -86,32 +119,50 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_new_badge_notification
 
-    def send_reaction_notification(notifiable)
-      return if notifiable.user_id == notifiable.reactable.user_id
-      aggregated_reaction_siblings = notifiable.reactable.reactions.
-        select{|r| r.user_id != notifiable.reactable.user_id}.
-        map { |r| {category: r.category, created_at: r.created_at, user: user_data(r.user)} }
+    def send_reaction_notification(reaction, receiver)
+      return if reaction.user_id == reaction.reactable.user_id
+      return if reaction.points.negative?
+      return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
+
+      aggregated_reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
+        reject { |r| r.user_id == reaction.reactable.user_id }.
+        map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
       json_data = {
-        user: user_data(notifiable.user),
+        user: user_data(reaction.user),
         reaction: {
-          category: notifiable.category,
-          reactable_type: notifiable.reactable_type,
-          reactable_id: notifiable.reactable_id,
+          category: reaction.category,
+          reactable_type: reaction.reactable_type,
+          reactable_id: reaction.reactable_id,
           reactable: {
-            path: notifiable.reactable.path,
-            title: notifiable.reactable.title
+            path: reaction.reactable.path,
+            title: reaction.reactable.title,
+            class: {
+              name: reaction.reactable.class.name
+            }
           },
           aggregated_siblings: aggregated_reaction_siblings,
-          updated_at: notifiable.updated_at
+          updated_at: reaction.updated_at
         }
       }
+
+      notification_params = {
+        notifiable_type: reaction.reactable.class.name,
+        notifiable_id: reaction.reactable.id,
+        action: "Reaction"
+        # user_id or organization_id: receiver.id
+      }
+      if receiver.is_a?(User)
+        notification_params[:user_id] = receiver.id
+      elsif receiver.is_a?(Organization)
+        notification_params[:organization_id] = receiver.id
+      end
+
       if aggregated_reaction_siblings.size.zero?
-        Notification.where(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction").destroy_all
+        notification = Notification.where(notification_params).delete_all
       else
         previous_siblings_size = 0
-        notification = Notification.find_or_create_by(notifiable_type: notifiable.reactable.class.name, notifiable_id: notifiable.reactable.id, action: "Reaction")
+        notification = Notification.find_or_create_by(notification_params)
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
-        notification.user_id = notifiable.reactable.user.id
         notification.json_data = json_data
         notification.notified_at = Time.current
         if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
@@ -119,18 +170,19 @@ class Notification < ApplicationRecord
         end
         notification.save!
       end
+      notification
     end
     handle_asynchronously :send_reaction_notification
 
-    def send_mention_notification(notifiable)
-      mentioner = notifiable.mentionable.user
+    def send_mention_notification(mention)
+      mentioner = mention.mentionable.user
       json_data = {
         user: user_data(mentioner)
       }
-      json_data[:comment] = comment_data(notifiable.mentionable) if notifiable.mentionable_type == "Comment"
+      json_data[:comment] = comment_data(mention.mentionable) if mention.mentionable_type == "Comment"
       Notification.create(
-        user_id: notifiable.user_id,
-        notifiable_id: notifiable.id,
+        user_id: mention.user_id,
+        notifiable_id: mention.id,
         notifiable_type: "Mention",
         action: nil,
         json_data: json_data,
@@ -141,7 +193,8 @@ class Notification < ApplicationRecord
     def send_welcome_notification(receiver_id)
       welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
       return if welcome_broadcast == nil
-      dev_account = User.find_by_id(ENV["DEVTO_USER_ID"])
+
+      dev_account = User.dev_account
       json_data = {
         user: user_data(dev_account),
         broadcast: {
@@ -159,10 +212,12 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_welcome_notification
 
     def send_moderation_notification(notifiable)
+      # notifiable is currently only comment
       available_moderators = User.with_role(:trusted).where("last_moderation_notification < ?", 28.hours.ago)
       return if available_moderators.empty?
+
       moderator = available_moderators.sample
-      dev_account = User.find_by_id(ENV["DEVTO_USER_ID"])
+      dev_account = User.dev_account
       json_data = {
         user: user_data(dev_account)
       }
@@ -178,12 +233,31 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_moderation_notification
 
+    def send_tag_adjustment_notification(tag_adjustment)
+      article = tag_adjustment.article
+      json_data = {
+        article: { title: article.title, path: article.path },
+        adjustment_type: tag_adjustment.adjustment_type,
+        status: tag_adjustment.status,
+        reason_for_adjustment: tag_adjustment.reason_for_adjustment,
+        tag_name: tag_adjustment.tag_name
+      }
+      Notification.create(
+        user_id: article.user_id,
+        notifiable_id: tag_adjustment.id,
+        notifiable_type: tag_adjustment.class.name,
+        json_data: json_data,
+      )
+      article.user.update_column(:last_moderation_notification, Time.current)
+    end
+    handle_asynchronously :send_tag_adjustment_notification
+
     def remove_all(notifiable_hash)
       Notification.where(
-        notifiable_id: notifiable_hash[:id],
-        notifiable_type: notifiable_hash[:class_name],
+        notifiable_id: notifiable_hash[:notifiable_id],
+        notifiable_type: notifiable_hash[:notifiable_type],
         action: notifiable_hash[:action],
-      ).destroy_all
+      ).delete_all
     end
     handle_asynchronously :remove_all
 
@@ -206,8 +280,13 @@ class Notification < ApplicationRecord
         action: action,
       )
       return if notifications.blank?
+
       new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
+      new_json_data[:user] = user_data(notifiable.user)
+      if notifiable.is_a?(Article) && notifiable.organization_id
+        new_json_data[:organization] = organization_data(notifiable.organization)
+      end
       notifications.update_all(json_data: new_json_data)
     end
     handle_asynchronously :update_notifications
@@ -224,6 +303,17 @@ class Notification < ApplicationRecord
         profile_image_90: user.profile_image_90,
         comments_count: user.comments_count,
         created_at: user.created_at
+      }
+    end
+
+    def organization_data(organization)
+      {
+        id: organization.id,
+        class: { name: "Organization" },
+        name: organization.name,
+        slug: organization.slug,
+        path: organization.path,
+        profile_image_90: organization.profile_image_90
       }
     end
 
@@ -254,6 +344,25 @@ class Notification < ApplicationRecord
         path: article.path,
         updated_at: article.updated_at
       }
+    end
+
+    def send_push_notifications(user_id, title, body, path)
+      return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
+
+      payload = {
+        apns: {
+          aps: {
+            alert: {
+              title: title,
+              body: CGI.unescapeHTML(body.strip!)
+            }
+          },
+          data: {
+            url: "https://dev.to" + path
+          }
+        }
+      }
+      Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
     end
   end
 
