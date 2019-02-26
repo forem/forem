@@ -1,12 +1,12 @@
 class Comment < ApplicationRecord
   has_ancestry
   include AlgoliaSearch
+  include Reactable
   belongs_to :commentable, polymorphic: true
   counter_culture :commentable
   belongs_to :user
   counter_culture :user
-  has_many   :reactions, as: :reactable, dependent: :destroy
-  has_many   :mentions, as: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25000 },
                             uniqueness: { scope: %i[user_id
@@ -31,6 +31,8 @@ class Comment < ApplicationRecord
   after_update   :remove_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
   validate :permissions, if: :commentable
+
+  alias touch_by_reaction save
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id

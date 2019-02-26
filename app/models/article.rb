@@ -3,6 +3,7 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include AlgoliaSearch
   include Storext.model
+  include Reactable
 
   acts_as_taggable_on :tags
 
@@ -14,8 +15,7 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
-  has_many :reactions,      as: :reactable, dependent: :destroy
-  has_many :comments,       as: :commentable
+  has_many :comments, as: :commentable
   has_many :buffer_updates
   has_many  :notifications, as: :notifiable
 
@@ -254,6 +254,11 @@ class Article < ApplicationRecord
     index.delete_object("articles-#{id}")
     index = Algolia::Index.new("ordered_articles_#{Rails.env}")
     index.delete_object("articles-#{id}")
+  end
+
+  def touch_by_reaction
+    async_score_calc
+    index!
   end
 
   def comments_blob
