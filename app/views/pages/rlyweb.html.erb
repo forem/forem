@@ -1,25 +1,25 @@
 <% title "O RLY Parody Book Generator" %>
-<%= stylesheet_link_tag 'application', media: 'all' %>
+<%= stylesheet_link_tag "application", media: "all" %>
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-<%= javascript_include_tag 'application' %>
+<%= javascript_include_tag "application" %>
 
 <%= content_for :page_meta do %>
-<link rel="canonical" href="https://dev.to/rly"/>
-<meta name="description" content="Insult your co-workers with snarky O RLY parody book covers!">
-<meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <link rel="canonical" href="https://dev.to/rly" />
+  <meta name="description" content="Insult your co-workers with snarky O RLY parody book covers!">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://dev.to/rly" />
-<meta property="og:title" content="O RLY Parody Book Cover Generator" />
-<meta property="og:image" content="http://i.imgur.com/pAORVha.png" />
-<meta property="og:description" content="Insult your co-workers with snarky O RLY parody book covers!" />
-<meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dev.to/rly" />
+  <meta property="og:title" content="O RLY Parody Book Cover Generator" />
+  <meta property="og:image" content="http://i.imgur.com/pAORVha.png" />
+  <meta property="og:description" content="Insult your co-workers with snarky O RLY parody book covers!" />
+  <meta property="og:site_name" content="The Practical Dev" />
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@ThePracticalDev">
-<meta name="twitter:title" content="O RLY Parody Book Cover Generator">
-<meta name="twitter:description" content="Insult your co-workers with snarky O RLY parody book covers!">
-<meta name="twitter:image:src" content="http://i.imgur.com/pAORVha.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="O RLY Parody Book Cover Generator">
+  <meta name="twitter:description" content="Insult your co-workers with snarky O RLY parody book covers!">
+  <meta name="twitter:image:src" content="http://i.imgur.com/pAORVha.png">
 <% end %>
 
 <div class="rlyweb-container">
@@ -28,17 +28,17 @@
     <div class="gen-form">
       <form>
         <label>Title</label>
-        <input id="title" name="title" placeholder="required"/>
+        <input id="title" name="title" placeholder="required" />
         <label>Top Text</label>
-        <input id="top_text" name="top_text" placeholder="required"/>
+        <input id="top_text" name="top_text" placeholder="required" />
         <label>Author</label>
-        <input id="author" name="author" placeholder="required"/>
+        <input id="author" name="author" placeholder="required" />
         <label>Animal Code</label>
-        <input id="image_code" name="image_code" placeholder="1-40 (listed below, defaults to random)"/>
+        <input id="image_code" name="image_code" placeholder="1-40 (listed below, defaults to random)" />
         <label>Color Code</label>
-        <input id="theme" name="theme" placeholder="0-16 (listed below, defaults to random)"/>
+        <input id="theme" name="theme" placeholder="0-16 (listed below, defaults to random)" />
         <label>Guide Text</label>
-        <input id="guide_text" name="guide_text" placeholder="such as 'The Definitive Guide'"/>
+        <input id="guide_text" name="guide_text" placeholder="such as 'The Definitive Guide'" />
         <label>Guide Text Placement</label>
         <select id="guide_text_placement" name="guide_text_placement">
           <option selected value="bottom_right">Bottom Right</option>
@@ -50,16 +50,19 @@
       </form>
     </div>
     <div class="result">
-      <img src="<%= cloudinary('http://i.imgur.com/wsGjkE9.png',300) %>" alt="O RLY? Book Example" />
+      <img src="<%= cloudinary("http://i.imgur.com/wsGjkE9.png", 300) %>" alt="O RLY? Book Example" />
       <a href="#" style="visibility:hidden">Download</a>
     </div>
   </div>
   <h4>Insult your co-workers with snarky O RLY parody book covers!</h4>
-  <h4 class="ps">PS. There are a few known edge cases that do not generate. Some characters and long words won't work, etc. If you want to report an issue, feel free DM <a href="http://twitter.com/thepracticaldev">@ThePracticalDev</a> on Twitter.</h4>
-  <hr/>
+  <h4 class="ps">PS. There are a few known edge cases that do not generate. Some characters and long words won't work, etc. If you want to report an issue, feel free DM
+    <a href="http://twitter.com/thepracticaldev">@ThePracticalDev</a> on Twitter.</h4>
+  <hr />
   <div class="usage">
     <h3>Animal Codes</h3>
-    <p><i>The animal images are from the <a href="https://etc.usf.edu/clipart/" target="_blank" rel="noopener">USF ClipArt ETC</a> project.  They are used in this O RLY Cover Generator for the purposes of parody.</i></p>
+    <p><i>The animal images are from the
+      <a href="https://etc.usf.edu/clipart/" target="_blank" rel="noopener">USF ClipArt ETC</a> project. They are used in this O RLY Cover Generator for the purposes of parody.</i>
+    </p>
     <div class="animal"><%= image_tag "1.png" %>1</div>
     <div class="animal"><%= image_tag "2.png" %>2</div>
     <div class="animal"><%= image_tag "3.png" %>3</div>
@@ -121,12 +124,14 @@
     <div class="color" style="background-color:rgba(133,152,0,255)">16</div>
   </div>
   <div class="thanks">
-    <h3>But don't thank <a target="_blank" href="http://twitter.com/ThePracticalDev">@ThePracticalDev</a> for this one</h3>
+    <h3>But don't thank <a target="_blank" href="http://twitter.com/ThePracticalDev">@ThePracticalDev</a> for this one
+    </h3>
     <h4>This tool was created with love by Charles Berlin (<a target="_blank" href="http://twitter.com/AModelEngineer">@AModelEngineer</a>)
+    </h4>
   </div>
 </div>
 <script>
-  $("form").submit(function(e){
+  $("form").submit(function (e) {
     e.preventDefault();
     var title = encodeURIComponent($("#title").val());
     var topText = encodeURIComponent($("#top_text").val());
@@ -137,66 +142,61 @@
     var guide_text = encodeURIComponent($("#guide_text").val());
     var guide_text_placement = encodeURIComponent($("#guide_text_placement").val());
 
-    if(isNaN(imageCode) || imageCode.length == 0){
+    if (isNaN(imageCode) || imageCode.length == 0) {
       imageCode = Math.floor(Math.random() * 38) + 1;
     }
-    if(isNaN(theme) || theme.length == 0){
+    if (isNaN(theme) || theme.length == 0) {
       theme = Math.floor(Math.random() * 16);
     }
-    if(title.length > 0 && topText.length > 0 && author.length > 0){
-      var imagePath = 'https://orly-appstore.herokuapp.com/generate?title='+title+'&top_text='+topText+'&author='+author+'&image_code='+imageCode+'&theme='+theme+'&guide_text='+guide_text+'&guide_text_placement='+guide_text_placement;
-      $(".result").html('<img src="'+imagePath+'" alt='+title+'"/>')
-      $(".result").append('<a href="'+imagePath+'" download="'+imagePath+'">Download</a>');
-      if($(window).width()< 820){
-        $("html,body").animate({scrollTop:$('.result').offset().top - 60}, '500');
+    if (title.length > 0 && topText.length > 0 && author.length > 0) {
+      var imagePath = 'https://orly-appstore.herokuapp.com/generate?title=' + title + '&top_text=' + topText + '&author=' + author + '&image_code=' + imageCode + '&theme=' + theme + '&guide_text=' + guide_text + '&guide_text_placement=' + guide_text_placement;
+      $(".result").html('<img src="' + imagePath + '" alt=' + title + '"/>')
+      $(".result").append('<a href="' + imagePath + '" download="' + imagePath + '">Download</a>');
+      if ($(window).width() < 820) {
+        $("html,body").animate({scrollTop: $('.result').offset().top - 60}, '500');
       }
-    }
-    else{
-      if(title.length == 0){
+    } else {
+      if (title.length == 0) {
         $("#title").addClass("error");
       }
-      if(topText.length == 0){
+      if (topText.length == 0) {
         $("#top_text").addClass("error");
       }
-      if(author.length == 0){
+      if (author.length == 0) {
         $("#author").addClass("error");
       }
     }
   });
-  $("input").keyup(function(e){
-    if(e.target.value.length > 0){
+  $("input").keyup(function (e) {
+    if (e.target.value.length > 0) {
       $(this).removeClass("error")
     }
-    if($(this).attr("id") == "title" && $(this).val().length > 40){
-      $(this).val($(this).val().substring(0,41));
+    if ($(this).attr("id") == "title" && $(this).val().length > 40) {
+      $(this).val($(this).val().substring(0, 41));
       e.preventDefault();
     }
-    if($(this).attr("id") == "top_text" && $(this).val().length > 60){
-      $(this).val($(this).val().substring(0,61));
+    if ($(this).attr("id") == "top_text" && $(this).val().length > 60) {
+      $(this).val($(this).val().substring(0, 61));
       e.preventDefault();
     }
-    if($(this).attr("id") == "author" && $(this).val().length > 25){
-      $(this).val($(this).val().substring(0,26));
+    if ($(this).attr("id") == "author" && $(this).val().length > 25) {
+      $(this).val($(this).val().substring(0, 26));
       e.preventDefault();
     }
-    if($(this).attr("id") == "guide_text" && $(this).val().length > 25){
-      $(this).val($(this).val().substring(0,26));
+    if ($(this).attr("id") == "guide_text" && $(this).val().length > 25) {
+      $(this).val($(this).val().substring(0, 26));
       e.preventDefault();
     }
-    if($(this).attr("id") == "image_code" || $(this).attr("id") == "theme"){
-      if(isNaN($(this).val())){
-        $(this).val($(this).val().substring(0,$(this).val().length-1));
+    if ($(this).attr("id") == "image_code" || $(this).attr("id") == "theme") {
+      if (isNaN($(this).val())) {
+        $(this).val($(this).val().substring(0, $(this).val().length - 1));
         e.preventDefault();
-      }
-      else if ($(this).attr("id") == "image_code" && $(this).val() > 40){
-        $(this).val($(this).val().substring(0,$(this).val().length-1));
-      }
-      else if ($(this).attr("id") == "theme" && $(this).val() > 16){
-        $(this).val($(this).val().substring(0,$(this).val().length-1));
+      } else if ($(this).attr("id") == "image_code" && $(this).val() > 40) {
+        $(this).val($(this).val().substring(0, $(this).val().length - 1));
+      } else if ($(this).attr("id") == "theme" && $(this).val() > 16) {
+        $(this).val($(this).val().substring(0, $(this).val().length - 1));
       }
     }
-
-
 
     // if(e.value())
   })

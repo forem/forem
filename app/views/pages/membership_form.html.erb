@@ -1,6 +1,6 @@
 <% if user_signed_in? && current_user.monthly_dues == 0 %>
   <div id="member-email-holder" data-email="<%= current_user.email %>"></div>
-  <%= form_tag "/membership-action", id: "credit-card-form", class:"enroll-form" do %>
+  <%= form_tag "/membership-action", id: "credit-card-form", class: "enroll-form" do %>
     <div class="user-amount-wrapper">
       <%= number_field_tag :input_amount, 25, class: "amount-input", step: "any", min: "1", id: "amount-input" %>
       <div class="amount-currency-indicator">$</div>
@@ -17,13 +17,13 @@
   <div class="signin-container">
     <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />
     <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />
-    <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />               
+    <img style="width:30px; display:inline;" src="<%= asset_path("emoji/emoji-sparkling-heart.png") %>" />
     <h2>Sign in to get your membership </h2>
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button" data-no-instant>
       TWITTER
     </a>
     <a href="/users/auth/github?state=membership-cta" class="cta cta-button" data-no-instant>
       GITHUB
-    </a>              
+    </a>
   </div>
-<% end %> 
+<% end %>

@@ -1,110 +1,130 @@
 <style>
-  body{
-    background:#1598c3;
-    color:white;
+  body {
+    background: #1598c3;
+    color: white;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   }
-  .top-bar{
-    display:none;
+
+  .top-bar {
+    display: none;
   }
-  .twitter-logo{
-    margin-top:80px;
-    height:80px;
-    width:80px;
+
+  .twitter-logo {
+    margin-top: 80px;
+    height: 80px;
+    width: 80px;
     animation-name: pulse_animation;
     animation-duration: 700ms;
-    transform-origin:70% 70%;
+    transform-origin: 70% 70%;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
   }
-  h3{
-    margin-top:50px;
-    font-size:40px;
-    margin-bottom:0px;
-  }
-  h1{
-    font-size:450px;
-    margin:5px auto;
-  }
-  h2{
-    margin-top:0px;
-    margin-bottom:500px;
-    font-size:60px;
+
+  h3 {
+    margin-top: 50px;
+    font-size: 40px;
+    margin-bottom: 0px;
   }
 
-  #main-image{
-    min-width:100%;
-    margin-top:20px;
-    height:100vh;
+  h1 {
+    font-size: 450px;
+    margin: 5px auto;
   }
 
+  h2 {
+    margin-top: 0px;
+    margin-bottom: 500px;
+    font-size: 60px;
+  }
+
+  #main-image {
+    min-width: 100%;
+    margin-top: 20px;
+    height: 100vh;
+  }
 
   @keyframes pulse_animation {
-  	0% { transform: scale(1); }
-  	30% { transform: scale(1.); }
-  	40% { transform: scale(1); }
-  	50% { transform: scale(1.3); }
-  	60% { transform: scale(1.3); }
-  	70% { transform: scale(1); }
-  	80% { transform: scale(1); }
-  	100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    30% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+    }
+    60% {
+      transform: scale(1.3);
+    }
+    70% {
+      transform: scale(1);
+    }
+    80% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
 </style>
 <center>
-<% if @twitter_countdown > 0 %>
-  <img class="twitter-logo" src="http://i.imgur.com/x4Lpthl.png" alt="Twitter logo"/>
-  <h3>
-    <%= number_with_delimiter(@twitter_count, delimeter: ",") %> followers and counting
-  </h3>
-  <h1>
-    <%= @twitter_countdown %>
-  </h1>
-  <h2>Away from 100k!</h2>
-  <script>
+  <% if @twitter_countdown > 0 %>
+    <img class="twitter-logo" src="http://i.imgur.com/x4Lpthl.png" alt="Twitter logo" />
+    <h3>
+      <%= number_with_delimiter(@twitter_count, delimeter: ",") %> followers and counting
+    </h3>
+    <h1>
+      <%= @twitter_countdown %>
+    </h1>
+    <h2>Away from 100k!</h2>
+    <script>
 
-    setInterval(function(){
-      location.reload();
-    },100000)
-  </script>
-<% else %>
-  <img id="main-image" src="https://media4.giphy.com/media/s2qXK8wAvkHTO/giphy.gif" alt="Glitter throwing party time!" />
-  <audio controls autoplay style="display:none">
-    <source src="<%= asset_url("smashmouth.mp3") %>" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+      setInterval(function () {
+        location.reload();
+      }, 100000)
+    </script>
+  <% else %>
+    <img id="main-image" src="https://media4.giphy.com/media/s2qXK8wAvkHTO/giphy.gif" alt="Glitter throwing party time!" />
+    <audio controls autoplay style="display:none">
+      <source src="<%= asset_url("smashmouth.mp3") %>" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
 
-  <script>
-    var gifUrls = [
-      "https://media1.giphy.com/media/3otPotpcqz724UaL6w/giphy.gif",
-      "https://media3.giphy.com/media/axu6dFuca4HKM/giphy.gif",
-      "https://media3.giphy.com/media/26tPplGWjN0xLybiU/giphy.gif",
-      "https://media4.giphy.com/media/87NS05bya11mg/giphy.gif",
-      "https://media3.giphy.com/media/ytwDCq9aT3cgEyyYVO/giphy.gif",
-      "https://media3.giphy.com/media/l0MYIMPc1sL21MtuU/giphy.gif",
-      "https://media1.giphy.com/media/G9yZMzJe6pMYw/giphy.gif",
-      "https://media2.giphy.com/media/l0ExsxPMVSF2rjrz2/giphy.gif",
-      "https://media4.giphy.com/media/ugdx6d2VUIuPK/giphy.gif",
-      "https://media2.giphy.com/media/26uf6LevkgeEUKkcU/giphy.gif",
-      "https://media1.giphy.com/media/3o7abnemh3dNldgi5i/giphy.gif",
-      "https://media0.giphy.com/media/Zn7rsVqBTPAly/giphy.gif",
-      "https://media2.giphy.com/media/4T48716LEWUGA/giphy.gif",
-      "https://media4.giphy.com/media/kUgUnmqig0X3q/giphy.gif",
-      "https://media2.giphy.com/media/lngw0pFJezv9vWdDq/giphy.gif",
-      "https://media3.giphy.com/media/RIuHHNa7UgFKo/giphy.gif",
-      "https://media3.giphy.com/media/bws3WABS4Fsl2/giphy.gif"
-    ]
-    gifUrls.forEach(function(url){
-      var pic = new Image();
-      pic.src = url;
-    });
-    setInterval(function(){
-      var newGifUrl = gifUrls[Math.floor(Math.random()*gifUrls.length)];
-      document.getElementById("main-image").src = newGifUrl;
-    },3800);
-  </script>
+    <script>
+      var gifUrls = [
+        "https://media1.giphy.com/media/3otPotpcqz724UaL6w/giphy.gif",
+        "https://media3.giphy.com/media/axu6dFuca4HKM/giphy.gif",
+        "https://media3.giphy.com/media/26tPplGWjN0xLybiU/giphy.gif",
+        "https://media4.giphy.com/media/87NS05bya11mg/giphy.gif",
+        "https://media3.giphy.com/media/ytwDCq9aT3cgEyyYVO/giphy.gif",
+        "https://media3.giphy.com/media/l0MYIMPc1sL21MtuU/giphy.gif",
+        "https://media1.giphy.com/media/G9yZMzJe6pMYw/giphy.gif",
+        "https://media2.giphy.com/media/l0ExsxPMVSF2rjrz2/giphy.gif",
+        "https://media4.giphy.com/media/ugdx6d2VUIuPK/giphy.gif",
+        "https://media2.giphy.com/media/26uf6LevkgeEUKkcU/giphy.gif",
+        "https://media1.giphy.com/media/3o7abnemh3dNldgi5i/giphy.gif",
+        "https://media0.giphy.com/media/Zn7rsVqBTPAly/giphy.gif",
+        "https://media2.giphy.com/media/4T48716LEWUGA/giphy.gif",
+        "https://media4.giphy.com/media/kUgUnmqig0X3q/giphy.gif",
+        "https://media2.giphy.com/media/lngw0pFJezv9vWdDq/giphy.gif",
+        "https://media3.giphy.com/media/RIuHHNa7UgFKo/giphy.gif",
+        "https://media3.giphy.com/media/bws3WABS4Fsl2/giphy.gif"
+      ]
+      gifUrls.forEach(function (url) {
+        var pic = new Image();
+        pic.src = url;
+      });
+      setInterval(function () {
+        var newGifUrl = gifUrls[Math.floor(Math.random() * gifUrls.length)];
+        document.getElementById("main-image").src = newGifUrl;
+      }, 3800);
+    </script>
 
-<% end %>
+  <% end %>
 </center>
 
-<img src="https://media4.giphy.com/media/s2qXK8wAvkHTO/giphy.gif" alt="Glitter throwing party time!" style="display:none"/>
+<img src="https://media4.giphy.com/media/s2qXK8wAvkHTO/giphy.gif" alt="Glitter throwing party time!" style="display:none" />
