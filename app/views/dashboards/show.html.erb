@@ -36,19 +36,19 @@
       <h2>Followed tags (<%= @user.following_tags_count %>)</h2>
       <p><em>Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0)</em>
       </p>
-      <% _negative_follow_shown_once = false %>
+      <% negative_follow_shown_once = false %>
       <% @followed_tags.each do |follow| %>
-        <% _tag = follow.followable %>
-        <% if _tag %>
-          <% if follow.points < 0 && !_negative_follow_shown_once %>
+        <% tag = follow.followable %>
+        <% if tag %>
+          <% if follow.points < 0 && !negative_follow_shown_once %>
             <h2>Negative Tags (anti-follows)</h2>
-            <% _negative_follow_shown_once = true %>
+            <% negative_follow_shown_once = true %>
           <% end %>
-          <% _color = HexComparer.new([_tag.bg_color_hex || "#0000000", _tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-          <div class="single-article" style="border-color:<%= _color %>;box-shadow: 3px 3px 0px <%= _color %>">
+          <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+          <div class="single-article" style="border-color:<%= color %>;box-shadow: 3px 3px 0px <%= color %>">
             <h2>
-              <a href="/t/<%= _tag.name %>">
-                <%= _tag.name %>
+              <a href="/t/<%= tag.name %>">
+                <%= tag.name %>
               </a>
               <%= form_for(follow) do |f| %>
                 <%= f.label(:points, "Follow Weight:") %>
@@ -62,14 +62,14 @@
       <h2>Followed users (<%= @user.following_users_count %>)</h2>
     <% end %>
     <% @follows.each do |follow| %>
-      <% _user = params[:which].include?("followers") ? follow.follower : follow.followable %>
-      <% if _user %>
+      <% user = params[:which].include?("followers") ? follow.follower : follow.followable %>
+      <% if user %>
         <div class="single-article">
-          <a href="<%= _user.path %>" class="block-link">
+          <a href="<%= user.path %>" class="block-link">
             <h2>
-              <img alt="<%= _user.username %> profile image" src="<%= ProfileImage.new(_user).get(60) %>" />
-              <%= _user.name %>
-              <span class="dashboard-username">@<%= _user.username %></span>
+              <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
+              <%= user.name %>
+              <span class="dashboard-username">@<%= user.username %></span>
             </h2>
           </a>
         </div>
