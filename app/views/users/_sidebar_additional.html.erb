@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
-    <% @user.github_repos.where(featured: true).order({stargazers_count: :desc}, {name: :asc}).each do |repo| %>
+    <% @user.github_repos.where(featured: true).order(stargazers_count: :desc, name: :asc).each do |repo| %>
       <a class="widget" href="<%= repo.url %>" target="_blank">
         <header>
           <h4><span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" /></span><%= repo.name %></h4>
