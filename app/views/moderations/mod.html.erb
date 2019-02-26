@@ -62,11 +62,11 @@
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>"/>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" />
   </button>
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" />
   </button>
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> | <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> | <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
@@ -82,7 +82,7 @@
   <% end %>
   <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by_name(t)) }).any? if @moderatable.class.name == "Article" %>
   <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
-    <div class="tag-mod-form" >
+    <div class="tag-mod-form">
       <%= form_for(TagAdjustment.new) do |f| %>
         <h2> Remove Inappropriate Tags</h2>
         <% unless current_user.has_role?(:super_admin) %>
@@ -94,15 +94,15 @@
           </ul>
         <% end %>
         <b>Current live tags:</b> <%= @moderatable.tag_list %>
-        <br/><br/>
+        <br /><br />
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.text_field :tag_name, placeholder: "Tag Name" %>
-        <%= f.text_area  :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind)"  %>
+        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind)" %>
         <%= f.submit "Remove Tag" %>
         <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
         <% if adjustments.any? %>
-          <br/><br/>
-          <b>Removed tags: </b> 
+          <br /><br />
+          <b>Removed tags: </b>
           <% adjustments.each do |adjustment| %>
             <%= adjustment.tag_name %>
           <% end %>

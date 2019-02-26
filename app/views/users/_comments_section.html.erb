@@ -1,4 +1,4 @@
-<% cache("user-profile-comments-#{@user.last_comment_at}-#{@user.id}-#{@comments.size}", :expires_in => 2.day) do %>
+<% cache("user-profile-comments-#{@user.last_comment_at}-#{@user.id}-#{@comments.size}", expires_in: 2.day) do %>
   <style>
     .index-comments header {
       color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>
@@ -24,10 +24,10 @@
     <% @comments.each do |comment| %>
       <% if comment.commentable.present? && comment.commentable.published && !comment.deleted %>
         <a href="<%= comment.path %>">
-          <div class="single-comment <%= "strong-comment" if comment.ancestry == nil%>">
+          <div class="single-comment <%= "strong-comment" if comment.ancestry == nil %>">
             <span class="comment-title">re: <%= comment.commentable.title %></span>
             <span class="comment-date"><%= comment.readable_publish_date %></span>
-            <div class="comment-preview"><%= truncate(strip_tags(comment.processed_html), length:64).html_safe %></div>
+            <div class="comment-preview"><%= truncate(strip_tags(comment.processed_html), length: 64).html_safe %></div>
           </div>
         </a>
       <% end %>

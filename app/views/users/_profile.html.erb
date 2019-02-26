@@ -3,7 +3,7 @@
 <% unless @user.identities.exists?(provider:'github') %>
   <div class="field">
     <a href="/users/auth/github" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path('github-logo.svg') %>" /> CONNECT GITHUB ACCOUNT
+      <img src="<%= asset_path("github-logo.svg") %>" /> CONNECT GITHUB ACCOUNT
     </a>
   </div>
 <% end %>
@@ -11,12 +11,12 @@
 <% unless @user.identities.exists?(provider:'twitter') %>
   <div class="field">
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path('twitter-logo.svg') %>" /> CONNECT TWITTER ACCOUNT
+      <img src="<%= asset_path("twitter-logo.svg") %>" /> CONNECT TWITTER ACCOUNT
     </a>
   </div>
 <% end %>
 <h4>
-  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28"style="vertical-align:-7px;margin-right:4px;"/></a>
+  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28" style="vertical-align:-7px;margin-right:4px;" /></a>
   Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
@@ -51,11 +51,11 @@
     <%= f.check_box :looking_for_work %>
   </div>
   <div class="field checkbox-label-first">
-    <%= f.label :looking_for_work_publicly, "Display \"looking for work\" on profile"%>
+    <%= f.label :looking_for_work_publicly, "Display \"looking for work\" on profile" %>
     <%= f.check_box :looking_for_work_publicly %>
   </div>
   <div class="field checkbox-label-first">
-    <%= f.label :contact_consent, "Recruiters can contact me about job opportunities"%>
+    <%= f.label :contact_consent, "Recruiters can contact me about job opportunities" %>
     <%= f.check_box :contact_consent %>
   </div>
   <div class="field">
@@ -115,7 +115,7 @@
   <p><strong>Links</strong></p>
   <div class="field">
     <%= f.label :facebook_url, "Facebook URL" %>
-    <%= f.text_field :facebook_url  %>
+    <%= f.text_field :facebook_url %>
   </div>
   <div class="field">
     <%= f.label :stackoverflow_url, "Stack Overflow URL" %>
