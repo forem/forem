@@ -17,10 +17,10 @@ RSpec.describe VideoPolicy do
     it { is_expected.to forbid_actions(%i[new create]) }
   end
 
-  context "when user does not have video permission" do
+  context "when does have video permission" do
     let(:user) { build(:user) }
 
-    before { user.add_role :video_permission }
+    before { user.created_at = 3.weeks.ago }
 
     it { is_expected.to permit_actions(%i[new create]) }
   end
