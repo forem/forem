@@ -108,7 +108,11 @@ ENV RAILS_ENV development
 # (@TODO - improve and review ignore to blacklist unneded items)
 #
 #####################################################
-FROM alpine-ruby-node AS source-code-container
+
+#
+# Prepare the source code and remove any uneeded files
+#
+FROM alpine-ruby-node AS source-code-repo
 
 # The workdir
 WORKDIR /usr/src/app
@@ -116,6 +120,19 @@ WORKDIR /usr/src/app
 COPY ./ /usr/src/app/
 # remove docker related files
 RUN rm Dockerfile && rm docker-*
+
+#
+# Does the source code build
+#
+FROM alpine-ruby-node AS source-code-build
+
+# Copy over files
+COPY --from=source-code-repo /usr/src/app/ /usr/src/app/
+
+# Run the various installer
+RUN gem install bundler
+RUN bundle install --jobs 20 --retry 5
+RUN yarn install && yarn check --integrity
 
 #####################################################
 #
@@ -125,12 +142,7 @@ RUN rm Dockerfile && rm docker-*
 FROM alpine-ruby-node
 
 # Copy over the application code (without docker related files)
-COPY --from=source-code-container /usr/src/app/ /usr/src/app/
-
-# Reruns installer
-RUN gem install bundler
-RUN bundle install --jobs 20 --retry 5
-RUN yarn install && yarn check --integrity
+COPY --from=source-code-build /usr/src/app/ /usr/src/app/
 
 # Copy over docker related files
 COPY Dockerfile [(docker-)]* /usr/src/app/
