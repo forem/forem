@@ -43,8 +43,13 @@ class ArticlesController < ApplicationController
     @tag = Tag.find_by_name(params[:template])
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
-                 Article.new(body_markdown: "", cached_tag_list: @tag.name,
-                             processed_html: "", user_id: current_user&.id)
+                 if @tag&.submission_template.present?
+                   Article.new(body_markdown: @tag.submission_template_customized(@user.name), cached_tag_list: @tag.name,
+                               processed_html: "", user_id: current_user&.id)
+                 else
+                   Article.new(body_markdown: "", cached_tag_list: @tag.name,
+                               processed_html: "", user_id: current_user&.id)
+                 end
                elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
