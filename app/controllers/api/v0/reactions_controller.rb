@@ -15,8 +15,8 @@ module Api
           reactable_type: params[:reactable_type],
           category: params[:category] || "like",
         )
-        Notification.send_reaction_notification(@reaction, reaction.reactable.user)
-        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if organization_article?(reaction)
+        Notification.send_reaction_notification(@reaction, @reaction.reactable.user)
+        Notification.send_reaction_notification(@reaction, @reaction.reactable.organization) if organization_article?(@reaction)
         render json: { reaction: @reaction.to_json }
       end
 
