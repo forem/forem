@@ -14,13 +14,18 @@ RSpec.describe Article, type: :model do
   end
 
   context "with organization" do
+    let(:user) { create(:user) }
     let(:organization) { create(:organization) }
-    let!(:article) { create(:article, organization: organization) }
+    let!(:article) { create(:article, organization: organization, user: user) }
+    let!(:org_article) { create(:article, organization: organization) }
+    let!(:user_article) { create(:article, user: user) }
+    let!(:org_user_article) { create(:article, user: user, organization: organization) }
 
-    before { create(:article, organization: organization) }
-
-    it "creates Articles::ResaveJob for organization articles on destroy" do
-      expect { article.destroy }.to have_enqueued_job(Articles::ResaveJob).exactly(:once)
+    it "queues BustCacheJob with user and organization article_ids" do
+      expect do
+        article.destroy
+      end.to have_enqueued_job(Articles::BustCacheJob).exactly(:once).
+        with([user_article.id, org_user_article.id, org_article.id].sort)
     end
   end
 end

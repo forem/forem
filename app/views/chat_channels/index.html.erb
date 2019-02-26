@@ -1,14 +1,13 @@
-
 <% title "DEV Connect 👩‍💻 💬 👨‍💻" %>
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/connect"/>
+  <link rel="canonical" href="https://dev.to/connect" />
   <meta name="description" content="DEV Connect">
 <% end %>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.38.0/theme/material.min.css">
 
 <% if user_signed_in? %>
-  <%= javascript_pack_tag 'Chat', defer: true %>
+  <%= javascript_pack_tag "Chat", defer: true %>
   <div class="chat-page-wrapper">
     <div
       id="chat"
@@ -19,12 +18,11 @@
       data-algolia-index="<%= "SecuredChatChannel_#{Rails.env}" %>"
       data-github-token="<%= @github_token %>"
       data-chat-channels="<%= [] %>"
-      data-chat-options="<%= {showChannelsList:true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>"
-    >
+      data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id }.to_json %>">
       <div class="chat" id="chat_placeholder">
         <div class="chat__channels chat__channels--expanded chat__channels--placeholder">
-            <button class="chat__channelstogglebutt" onClick={this.toggleExpand}><</button>
-            <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
+          <button class="chat__channelstogglebutt" onClick={this.toggleExpand}>&lt;</button>
+          <input placeholder='Filter' onKeyUp={this.triggerChannelFilter} />
         </div>
         <div class="chat__activechat">
           <div class="activechatchannel">
@@ -35,16 +33,22 @@
         </div>
       </div>
     </div>
+  </div>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>
 <style>
-  footer {display: none}
-  #page-content {max-height:100vh}
+  footer {
+    display: none
+  }
+
+  #page-content {
+    max-height: 100vh
+  }
 </style>
 <script>
   if (navigator.userAgent.match(/iPhone/i) && !navigator.userAgent.match('CriOS')) {
     document.getElementById("chat").classList.add("live-chat--iossafari")
   }
-  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ApplicationConfig['VAPID_PUBLIC_KEY']).bytes %>);
+  window.vapidPublicKey = new Uint8Array(<%= Base64.urlsafe_decode64(ApplicationConfig["VAPID_PUBLIC_KEY"]).bytes %>);
 </script>
