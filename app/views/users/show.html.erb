@@ -105,7 +105,7 @@
       <div class="modal-content " id="new-message-modal">
         <button title="Close" class="close-modal">X</button>
         <form id="new-message-form" class="message-form" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
-          <textarea id="new-message" name="message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
+          <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
           <button type="submit" value="Submit" class="submit-message">SEND</button>
         </form>
       </div>
