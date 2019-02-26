@@ -55,22 +55,12 @@ class Internal::UsersController < Internal::ApplicationController
     toggle_warn_user if user_params[:warn_user]
     toggle_trust_user if user_params[:trusted_user]
     toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
-    toggle_video_permission if user_params[:video_permission]
-  end
-
-  def toggle_video_permission
-    if user_params[:video_permission] == "1"
-      @user.add_role :video_permission
-    else
-      @user.remove_role :video_permission
-    end
   end
 
   def toggle_ban_user
     if user_params[:ban_user] == "1"
       @user.add_role :banned
       @user.remove_role :trusted
-      @user.remove_role :video_permission
       create_note("banned", user_params[:note_for_current_role])
     else
       @user.remove_role :banned
@@ -84,6 +74,8 @@ class Internal::UsersController < Internal::ApplicationController
     else
       @user.remove_role :trusted
     end
+    Rails.cache.delete("user-#{@user.id}/has_trusted_role")
+    @user.trusted
   end
 
   def toggle_warn_user
@@ -187,7 +179,6 @@ class Internal::UsersController < Internal::ApplicationController
                                 :note_for_mentorship_ban,
                                 :note_for_current_role,
                                 :reason_for_mentorship_ban,
-                                :trusted_user,
-                                :video_permission)
+                                :trusted_user)
   end
 end

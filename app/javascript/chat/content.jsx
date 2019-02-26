@@ -12,7 +12,9 @@ export default class Content extends Component {
     activeChannelId: PropTypes.number,
     pusherKey: PropTypes.string,
   };
+
   render() {
+    console.log(this.props);
     if (!this.props.resource) {
       return '';
     }

@@ -28,21 +28,23 @@ to display a collection of resources in an HTML table.
         scope="col"
         role="columnheader"
         aria-sort="<%= sort_order(collection_presenter.ordered_html_class(attr_name)) %>">
-        <%= link_to(sanitized_order_params(page, collection_field_name).merge(
-          collection_presenter.order_params_for(attr_name, key: collection_field_name)
-        )) do %>
-        <%= t(
-          "helpers.label.#{collection_presenter.resource_name}.#{attr_name}",
-          default: attr_name.to_s,
-        ).titleize %>
-            <% if collection_presenter.ordered_by?(attr_name) %>
-              <span class="cell-label__sort-indicator cell-label__sort-indicator--<%= collection_presenter.ordered_html_class(attr_name) %>">
-                <svg aria-hidden="true">
-                  <use xlink:href="#icon-up-caret" />
-                </svg>
-              </span>
-            <% end %>
+        <%= link_to(sanitized_order_params(
+              page, collection_field_name
+            ).merge(
+              collection_presenter.order_params_for(attr_name, key: collection_field_name),
+            )) do %>
+          <%= t(
+                "helpers.label.#{collection_presenter.resource_name}.#{attr_name}",
+                default: attr_name.to_s,
+              ).titleize %>
+          <% if collection_presenter.ordered_by?(attr_name) %>
+            <span class="cell-label__sort-indicator cell-label__sort-indicator--<%= collection_presenter.ordered_html_class(attr_name) %>">
+              <svg aria-hidden="true">
+                <use xlink:href="#icon-up-caret" />
+              </svg>
+            </span>
           <% end %>
+        <% end %>
         </th>
       <% end %>
       <% [valid_action?(:edit, collection_presenter.resource_name),
@@ -58,14 +60,12 @@ to display a collection of resources in an HTML table.
           tabindex="0"
           <% if valid_action? :show, collection_presenter.resource_name %>
             <%= %(role=link data-url=#{polymorphic_path([namespace, resource])}) %>
-          <% end %>
-          >
+          <% end %>>
         <% collection_presenter.attributes_for(resource).each do |attribute| %>
           <td class="cell-data cell-data--<%= attribute.html_class %>">
             <% if show_action? :show, resource -%>
               <a href="<%= polymorphic_path([namespace, resource]) -%>"
-                 class="action-show"
-                 >
+                 class="action-show">
                 <%= render_field attribute %>
               </a>
             <% end -%>
@@ -73,21 +73,29 @@ to display a collection of resources in an HTML table.
         <% end %>
 
         <% if valid_action? :edit, collection_presenter.resource_name %>
-          <td><%= link_to(
-            t("administrate.actions.edit"),
-            [:edit, namespace, resource],
-            class: "action-edit",
-          ) if show_action? :edit, resource %></td>
+          <td>
+            <% if show_action? :edit, resource %>
+              <%= link_to(
+                    t("administrate.actions.edit"),
+                    [:edit, namespace, resource],
+                    class: "action-edit",
+                  ) %>
+            <% end %>
+          </td>
         <% end %>
 
         <% if valid_action? :destroy, collection_presenter.resource_name %>
-          <td><%= link_to(
-            t("administrate.actions.destroy"),
-            [namespace, resource],
-            class: "text-color-red",
-            method: :delete,
-            data: { confirm: t("administrate.actions.confirm") }
-          ) if show_action? :destroy, resource %></td>
+          <td>
+            <% if show_action? :destroy, resource %>
+              <%= link_to(
+                    t("administrate.actions.destroy"),
+                    [namespace, resource],
+                    class: "text-color-red",
+                    method: :delete,
+                    data: { confirm: t("administrate.actions.confirm") },
+                  ) %>
+            <% end %>
+          </td>
         <% end %>
       </tr>
     <% end %>

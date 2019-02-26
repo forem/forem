@@ -49,6 +49,7 @@ class Article < ApplicationRecord
   before_save       :set_all_dates
   before_save       :calculate_base_scores
   before_save       :set_caches
+  before_save       :fetch_video_duration
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
@@ -60,7 +61,7 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
-  scope :cached_tagged_with, -> (tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+  scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :active_help, -> {
                         where(published: true).
@@ -75,7 +76,7 @@ class Article < ApplicationRecord
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url,
-    :published_at, :crossposted_at, :boost_states, :description, :reading_time)
+    :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
   scope :limited_columns_internal_select, -> {
@@ -97,7 +98,7 @@ class Article < ApplicationRecord
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
-  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
                   id: :index_id,
@@ -136,8 +137,8 @@ class Article < ApplicationRecord
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time,
-        :tag_list, :positive_reactions_count, :id, :hotness_score, :score,
-        :readable_publish_date, :flare_tag, :user_id, :organization_id
+        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date,
+        :flare_tag, :user_id, :organization_id, :cloudinary_video_url, :video_duration_in_minutes
       attribute :published_at_int do
         published_at.to_i
       end
@@ -229,11 +230,10 @@ class Article < ApplicationRecord
   end
 
   def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.index_or_remove_from_index_where_appropriate
-    end
+    # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
+    return if remove
+
+    record.index_or_remove_from_index_where_appropriate
   end
 
   def index_or_remove_from_index_where_appropriate
@@ -312,8 +312,13 @@ class Article < ApplicationRecord
 
   def has_frontmatter?
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed.front_matter["title"]
+    begin
+      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+      parsed.front_matter["title"]
+    rescue Psych::SyntaxError
+      # if frontmatter is invalid, still render editor with errors instead of 500ing
+      true
+    end
   end
 
   def class_name
@@ -380,6 +385,33 @@ class Article < ApplicationRecord
     user&.collections&.pluck(:slug)
   end
 
+  def cloudinary_video_url
+    return if video_thumbnail_url.blank?
+
+    ApplicationController.helpers.cloudinary(video_thumbnail_url, 880)
+  end
+
+  def video_duration_in_minutes
+    minutes = (video_duration_in_seconds.to_i / 60) % 60
+    seconds = video_duration_in_seconds.to_i % 60
+    seconds = "0#{seconds}" if seconds.to_s.size == 1
+    "#{minutes}:#{seconds}"
+  end
+
+  def fetch_video_duration
+    if video.present? && video_duration_in_seconds.zero?
+      url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
+      duration = 0
+      HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
+        duration = duration + chunk.split(",")[0].to_f
+      end
+      duration
+      self.video_duration_in_seconds = duration
+    end
+  rescue StandardError => e
+    puts e.message
+  end
+
   private
 
   def update_notifications
@@ -394,8 +426,15 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    user.cache_bust_all_articles
-    Articles::ResaveJob.perform_later(organization.article_ids - [id]) if organization
+    article_ids = user.article_ids.dup
+    if organization
+      organization.touch(:last_article_at)
+      article_ids.concat organization.article_ids
+    end
+    # perform busting cache in chunks in case there're a lot of articles
+    (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
+      Articles::BustCacheJob.perform_later(ids)
+    end
   end
 
   def evaluate_front_matter(front_matter)
@@ -450,7 +489,7 @@ class Article < ApplicationRecord
     if published && video_state == "PROGRESSING"
       return errors.add(:published, "cannot be set to true if video is still processing")
     end
-    if video.present? && !user.has_role?(:video_permission)
+    if video.present? && user.created_at > 2.weeks.ago
       return errors.add(:video, "cannot be added member without permission")
     end
   end

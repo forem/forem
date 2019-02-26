@@ -22,14 +22,14 @@ export default class GithubRepo extends Component {
       getJSONContents(
         `https://api.github.com/repos/${
           this.props.resource.args
-        }/contents?access_token=${  this.state.token}`,
+        }/contents?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
       getJSONContents(
         `https://api.github.com/repos/${
           this.props.resource.args
-        }/readme?access_token=${  this.state.token}`,
+        }/readme?access_token=${this.state.token}`,
         this.loadContent,
         this.loadFailure,
       );
@@ -40,7 +40,7 @@ export default class GithubRepo extends Component {
   handleItemClick = e => {
     e.preventDefault();
     getJSONContents(
-      `${e.target.dataset.apiUrl}&access_token=${  this.state.token}`,
+      `${e.target.dataset.apiUrl}&access_token=${this.state.token}`,
       this.loadContent,
       this.loadFailure,
     );
@@ -102,7 +102,8 @@ export default class GithubRepo extends Component {
           </p>
         </div>
       );
-    } if (this.state.content) {
+    }
+    if (this.state.content) {
       return (
         <div className="activecontent__githubrepo">
           <div className="activecontent__githubrepoheader">
@@ -111,68 +112,66 @@ export default class GithubRepo extends Component {
           <pre>{this.state.content}</pre>
         </div>
       );
-    } 
-      const directories = this.state.directories.map(item => (
-        <div className="activecontent__githubrepofilerow">
-          <a
-            href={item.html_url}
-            data-api-url={item.url}
-            data-path={item.path}
-            onClick={this.handleItemClick}
-          >
-              📁 
-            {' '}
-            {item.name}
-          </a>
-        </div>
-        ));
-      const files = this.state.files.map(item => (
-        <div className="activecontent__githubrepofilerow">
-          <a
-            href={item.html_url}
-            data-api-url={item.url}
-            data-path={item.path}
-            onClick={this.handleItemClick}
-          >
-            {item.name}
-          </a>
-        </div>
-        ));
-      let readme = '';
-      if (this.state.readme) {
-        readme = (
-          <div
-            dangerouslySetInnerHTML={{ __html: marked(this.state.readme) }}
-          />
-        );
-      }
-      if (this.state.root) {
-        return (
-          <div className="activecontent__githubrepo">
-            <div className="activecontent__githubrepoheader">
-              <a href="/Users/benhalpern/dev/dev.to_core/app" />
-              {this.state.path}
-            </div>
-            <div className="activecontent__githubrepofiles">
-              {directories}
-              {files}
-            </div>
-            {readme}
+    }
+    const directories = this.state.directories.map(item => (
+      <div className="activecontent__githubrepofilerow">
+        <a
+          href={item.html_url}
+          data-api-url={item.url}
+          data-path={item.path}
+          onClick={this.handleItemClick}
+        >
+          📁 
+          {' '}
+          {item.name}
+        </a>
+      </div>
+    ));
+    const files = this.state.files.map(item => (
+      <div className="activecontent__githubrepofilerow">
+        <a
+          href={item.html_url}
+          data-api-url={item.url}
+          data-path={item.path}
+          onClick={this.handleItemClick}
+        >
+          {item.name}
+        </a>
+      </div>
+    ));
+    let readme = '';
+    if (this.state.readme) {
+      readme = (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: marked(this.state.readme, { sanitize: true }),
+          }}
+        />
+      );
+    }
+    if (this.state.root) {
+      return (
+        <div className="activecontent__githubrepo">
+          <div className="activecontent__githubrepoheader">
+            <a href="/Users/benhalpern/dev/dev.to_core/app" />
+            {this.state.path}
           </div>
-        );
-      } 
-        return (
-          <div className="activecontent__githubrepo">
-            <div className="activecontent__githubrepoheader">
-              {this.state.path}
-            </div>
-            <div className="activecontent__githubrepofiles">
-              {directories}
-              {files}
-            </div>
+          <div className="activecontent__githubrepofiles">
+            {directories}
+            {files}
           </div>
-        );
-      
-    
+          {readme}
+        </div>
+      );
+    }
+    return (
+      <div className="activecontent__githubrepo">
+        <div className="activecontent__githubrepoheader">{this.state.path}</div>
+        <div className="activecontent__githubrepofiles">
+          {directories}
+          {files}
+        </div>
+      </div>
+    );
   }
 }

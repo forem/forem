@@ -44,7 +44,7 @@
   <p>(view full history in notes below)</p>
   <ul>
     <% @user.roles.each do |role| %>
-        <li><%= role.name %> - <em><%= role.created_at.strftime("%b %e '%y") %></em></li>
+        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
     <% end %>
   </ul>
   <h3><u>Privileges</u></h3>
@@ -52,8 +52,6 @@
       <%= form_for [:internal, @user] do |f| %>
         <p>Add Trusted Role (Community Moderator)
         <%= f.check_box :trusted_user, checked: @user.trusted %></p>
-        <p>Allow Video Uploads
-        <%= f.check_box :video_permission, checked: @user.has_role?(:video_permission) %> </p>
         <%= f.submit "Update Privileges" %>
       <% end %>
     <% else %>
@@ -150,6 +148,5 @@
     <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
   <% end %>
 </ul>
-</div>
 <br>
 <br>

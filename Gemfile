@@ -20,8 +20,8 @@ gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "mas
 gem "addressable", "~> 2.5", ">= 2.5.2"
 gem "administrate", "~> 0.11"
 gem "ahoy_email", "~> 0.5"
-gem "airbrake", "~> 7.4"
-gem "algoliasearch-rails", "~> 1.20"
+gem "airbrake", "~> 8.1"
+gem "algoliasearch-rails", "~> 1.21"
 gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
 gem "autoprefixer-rails", "~> 9.4"
@@ -35,7 +35,7 @@ gem "counter_culture", "~> 2.1"
 gem "csv_shaper", "~> 1.3"
 gem "dalli", "~> 2.7"
 gem "delayed_job_active_record", "~> 4.1"
-gem "devise", "~> 4.5"
+gem "devise", "~> 4.6"
 gem "draper", "~> 3.0"
 gem "email_validator", "~> 1.6"
 gem "emoji_regex", "~> 1.0"
@@ -93,7 +93,7 @@ gem "slack-notifier", "~> 2.3"
 gem "sprockets", "~> 3.7"
 gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
-gem "stripe", "~> 3.25"
+gem "stripe", "~> 4.8"
 gem "timber", "~> 2.6"
 gem "twilio-ruby", "~> 5.15"
 gem "twitter", "~> 6.2"
@@ -108,6 +108,7 @@ group :development do
   gem "brakeman", "~> 4.4", require: false
   gem "bullet", "~> 5.9"
   gem "bundler-audit", "~> 0.6"
+  gem "delayed_job_web", "~> 1.4"
   gem "derailed_benchmarks", "~> 1.3"
   gem "guard", "~> 2.15", require: false
   gem "guard-livereload", "~> 2.5", require: false
@@ -117,14 +118,14 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.12"
+  gem "capybara", "~> 3.13"
   gem "derailed", "~> 0.1"
   gem "erb_lint", "~> 0.0", require: false
   gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
   gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.27"
-  gem "pry-byebug", "~> 3.6"
+  gem "pry-byebug", "~> 3.7"
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
   gem "rubocop", "~> 0.63", require: false

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Comment, type: :model do
-  let(:user)                  { create(:user) }
+  let(:user)                  { create(:user, created_at: 3.weeks.ago) }
   let(:user2)                 { create(:user) }
   let(:article)               { create(:article, user_id: user.id, published: true) }
   let(:article_with_video)    { create(:article, :video, user_id: user.id, published: true) }
@@ -50,6 +50,7 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it "adds timestamp url if commentable has video and timestamp" do
     video_comment.body_markdown = "I like the part at 4:30"
     video_comment.save
@@ -68,6 +69,7 @@ RSpec.describe Comment, type: :model do
     expect(video_comment.processed_html.include?(">1:52:30</a>")).to eq(true)
     expect(video_comment.processed_html.include?(">1:20</a>")).to eq(true)
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it "does not add timestamp if commentable does not have video" do
     comment.body_markdown = "I like the part at 1:52:30 and 1:20"
@@ -190,6 +192,25 @@ RSpec.describe Comment, type: :model do
       article.update_column(:published, false)
       comment = build(:comment, user_id: user.id, commentable_id: article.id)
       expect(comment).not_to be_valid
+    end
+  end
+
+  describe "tree" do
+    let(:article2) { create(:article) }
+    let!(:tree_comment) { create(:comment, commentable: article2) }
+    let!(:child) { create(:comment, commentable: article2, parent: tree_comment) }
+    let!(:tree_comment2) { create(:comment, commentable: article2) }
+
+    before { tree_comment.update_column(:score, 1) }
+
+    it "returns a full tree" do
+      comments = described_class.tree_for(article2)
+      expect(comments).to eq(tree_comment => { child => {} }, tree_comment2 => {})
+    end
+
+    it "returns part of the tree" do
+      comments = described_class.tree_for(article2, 1)
+      expect(comments).to eq(tree_comment => { child => {} })
     end
   end
 end

@@ -20,7 +20,7 @@ class GithubIssue < ApplicationRecord
     client = Octokit::Client.new(access_token: random_token)
     issue = GithubIssue.new(url: url)
     if !!(url !~ /\/issues\/comments/)
-      repo, issue_id = url.gsub(/.*github\.com\/repos\//, "").split("/issues/")
+      repo, issue_id = url.gsub(/.*github\.com\/repos\//, "").split(issue_or_pull(url))
       issue.issue_serialized = get_issue_serialized(client, repo, issue_id)
       issue.category = "issue"
     else
@@ -54,6 +54,14 @@ class GithubIssue < ApplicationRecord
       Identity.where(provider: "github").last(250).sample
     else
       Identity.where(provider: "github").last
+    end
+  end
+
+  def self.issue_or_pull(url)
+    if !url.include?("pull")
+      "/issues/"
+    else
+      "/pull/"
     end
   end
 end

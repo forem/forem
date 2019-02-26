@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :video_permission
+  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user
 
   rolify
   include AlgoliaSearch
@@ -368,14 +368,6 @@ class User < ApplicationRecord
       cache_buster.bust(article.path) if article.path
       cache_buster.bust(article.path + "?i=i") if article.path
       article.save
-    end
-  end
-
-  def cache_bust_all_articles
-    cache_buster = CacheBuster.new
-    articles.find_each do |article|
-      cache_buster.bust(article.path)
-      cache_buster.bust(article.path + "?i=i")
     end
   end
 

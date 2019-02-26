@@ -1,10 +1,11 @@
-<div <% "itemscope itemtype=\"http://schema.org/VideoObject\"" if meta_tags %> class="video-player-header">
+<div temscope itemtype="http://schema.org/VideoObject" class="video-player-header">
   <% if meta_tags %>
     <meta itemprop="uploadDate" content="<%= @article.published_at %>" />
     <meta itemprop="name" content="<%= @article.title %>" />
     <meta itemprop="description" content="<%= @article.description %>" />
     <meta itemprop="thumbnailUrl" content="<%= cloudinary(article.video_thumbnail_url, 880) %>" />
     <meta itemprop="contentUrl" content="<%= article.video_source_url %>" />
+    <meta itemprop="duration" content="<%= "PT%sM%sS" % article.video_duration_in_minutes.split(':') %>" />
   <% end %>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async> </script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
@@ -40,6 +41,7 @@
       playerInstance.setup({
           file: "<%= article.video_source_url %>",
           mediaid: "<%= article.video_code %>",
+          autostart: <%= internal_navigation? %>,
           image: "<%= cloudinary(article.video_thumbnail_url, 880) %>",
           playbackRateControls: true,
           tracks: [{
