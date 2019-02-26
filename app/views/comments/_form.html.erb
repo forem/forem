@@ -39,7 +39,7 @@
   <!-- <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
     <img class="icon-image" src="<%= asset_path('info.svg') %>" />
   </a> -->
-  <a id="markdown-guide-button" class="markdown-guide" title="Markdown Guide">
+  <a class="markdown-guide" title="Markdown Guide">
     <img class="icon-image" src="<%= asset_path('info.svg') %>" />
   </a>
   <div class="editor-image-upload">
@@ -59,32 +59,41 @@
     <%= f.submit "SUBMIT", onclick: "validateField(event)", class: "comment-action-button", id: "submit-button" %>
   </div>
   <script>
-    document.getElementById("markdown-guide-button").addEventListener('click', function() {
-      var popover = document.getElementById("markdown-guide-popover");
-      if (popover.classList.contains("hide-popover")) {
-        popover.classList.remove("hide-popover");
-        popover.classList.add("show-popover");
+    positionPopover = () => {
+      var mdPopover = document.getElementsByClassName('markdown-guide-container')[0]
+      var newComment = document.getElementsByClassName('new_comment')[0]
+      var newCommentPos = newComment.getBoundingClientRect()
 
-        document.getElementById("markdown-guide-close").addEventListener('click', function() {
-          var popover = document.getElementById("markdown-guide-popover");
-          popover.classList.remove("show-popover");
-          popover.classList.add("hide-popover");
-          console.log("can i do this")
-        })
-      } else if (popover.classList.contains("show-popover")) {
-        popover.classList.remove("show-popover");
-        popover.classList.add("hide-popover");
+      mdPopover.style.top = `calc(${newCommentPos.top + (newCommentPos.height/2) + window.scrollY}px)`;
+      // mdPopover.style.left = `${newCommentPos.left+ window.scrollX}px`;
+    };
+
+    var mdBtn = document.getElementsByClassName('markdown-guide')[0]
+    mdBtn.addEventListener('click', () => {
+      var mdPopover = document.getElementsByClassName('markdown-guide-container')[0]
+      positionPopover();
+      if (mdPopover.style.display === "none") {
+        mdPopover.style.display = "block"
+        window.addEventListener('resize', positionPopover, true);
+      } else {
+        window.removeEventListener('resize', positionPopover, true);
+        mdPopover.style.display = "none"
       }
     })
   </script>
 <% end %>
 
-<div id="markdown-guide-popover" class="markdown-guide-popover hide-popover">
-  <div>
-    <a title="Close" id="markdown-guide-close">Close</a>
-    <div>
-      <p>I AM MARKDOWN GUIDE</p>
-    </div>
+<div class="markdown-guide-container" style="display: none;">
+  <a title="Close" class="markdown-guide-close">X</a>
+  <div class="markdown-guide-content">
+    <i>Italics</i>: *italics* or _italics_ (that's one asterisk or underscore on each end)<br/>
+    <b>Bold</b>: **bold** or __bold__ (now it's two on each end)<br/>
+    <s>Strikethrough</s>: ~~strikethrough~~<br/>
+    <a href="#put-link-here">Surprise Link</a>: [Surprise Link](put-link-here)<br/>
+    <img alt="some text about the image" src=""></img>![some text about the image](put-direct-image-link-here)<br/>
+    Headers: is #h1, ##h2 ... and so on until ######h6 <br/>
+    Lists: +, -, * start unordered lists, while numbers like 1., 2. start ordered lists <br/>
+    Code: `inline code` is surrounded by backticks, while ```code blocks``` have them tripled <br/>
   </div>
 </div>
 

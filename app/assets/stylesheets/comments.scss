@@ -357,30 +357,27 @@ a.header-link {
     }
   }
 
-  .markdown-guide-popover {
-    // all things related to how the thing should look
-    position: relative;
-    overflow: scroll;
+  .markdown-guide-container {
+    position: absolute;
+    width: 90.5%;
+    left: 4.675%;
     z-index: 100;
-    height: 200px;
     background: white;
     border: 1px solid #dbdbdb;
-    &.show-popover {
-      display: block;
-    }
-    &.hide-popover {
-      display: none;
-    }
-    &>div {
-      visibility: visible;
-      width: 80%;
-      height: 200px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      padding: 2em;
-      color: #333333;
-    }
+  }
+
+  .markdown-guide-container:after {
+  	content: '';
+  	position: absolute;
+  	top: 0;
+  	left: 5%;
+  	width: 0;
+  	height: 0;
+  	border: 9px solid transparent;
+  	border-bottom-color: #dbdbdb;
+  	border-top: 0;
+  	margin-left: -9px;
+  	margin-top: -9px;
   }
 
   // .markdown-guide-modal {
