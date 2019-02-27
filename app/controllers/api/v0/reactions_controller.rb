@@ -15,7 +15,8 @@ module Api
           reactable_type: params[:reactable_type],
           category: params[:category] || "like",
         )
-        Notification.send_reaction_notification(@reaction)
+        Notification.send_reaction_notification(@reaction, @reaction.reactable.user)
+        Notification.send_reaction_notification(@reaction, @reaction.reactable.organization) if organization_article?(@reaction)
         render json: { reaction: @reaction.to_json }
       end
 
@@ -38,6 +39,10 @@ module Api
         user = User.find_by_secret(params[:key])
         user = nil if !user.has_role?(:super_admin)
         user
+      end
+
+      def organization_article?(reaction)
+        reaction.reactable_type == "Article" && reaction.reactable.organization_id
       end
     end
   end

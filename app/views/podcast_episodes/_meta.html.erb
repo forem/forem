@@ -2,14 +2,14 @@
   <% title @podcast.title + " — The Practical Dev" %>
 
   <%= content_for :page_meta do %>
-    <link rel="canonical" href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%=@podcast.slug %>"/>
+    <link rel="canonical" href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= @podcast.slug %>" />
     <meta name="description" content="<%= @podcast.description %>">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%=@podcast.slug %>" />
+    <meta property="og:url" content="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= @podcast.slug %>" />
     <meta property="og:title" content="<%= @podcast.title %>" />
-    <meta property="og:image" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= cloudinary(@podcast.image_url,300) %>">
+    <meta property="og:image" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= cloudinary(@podcast.image_url, 300) %>">
 
     <meta property="og:description" content="<%= @podcast.description %>" />
     <meta property="og:site_name" content="The Practical Dev" />
@@ -19,12 +19,12 @@
     <meta name="twitter:creator" content="@<%= @podcast.twitter_username %>">
     <meta name="twitter:title" content="<%= @podcast.title %>">
     <meta name="twitter:description" content="<%= @podcast.description %>" />
-    <meta name="twitter:image:src" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= cloudinary(@podcast.image_url,300) %>">
+    <meta name="twitter:image:src" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= cloudinary(@podcast.image_url, 300) %>">
   <% end %>
 <% else %>
   <% title "Podcasts on The Practical Dev" %>
   <%= content_for :page_meta do %>
-    <link rel="canonical" href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/pod"/>
+    <link rel="canonical" href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/pod" />
     <meta name="description" content="Discover technical podcasts for developers">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 

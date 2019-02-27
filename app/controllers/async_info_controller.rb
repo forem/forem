@@ -18,7 +18,7 @@ class AsyncInfoController < ApplicationController
     end
     @user = current_user.decorate
     # Updates article analytics periodically:
-    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if rand(20) == 1
+    occasionally_update_analytics
     respond_to do |format|
       format.json do
         render json: {
@@ -61,5 +61,13 @@ class AsyncInfoController < ApplicationController
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
     #{cookies[:remember_user_token]}"
+  end
+
+  private
+
+  def occasionally_update_analytics
+    if Rails.env.production? && rand(25) == 1
+      ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id)
+    end
   end
 end

@@ -1,11 +1,11 @@
 class ReadNotificationsService
-  def initialize(user)
-    @user = user
+  def initialize(receiver)
+    @receiver = receiver
   end
 
   def mark_as_read
-    NotificationCounter.new(@user).set_to_zero
-    # remove_notifications(@user.id)
+    NotificationCounter.new(@receiver).set_to_zero
+    # remove_notifications(@recipient.id)
     "read"
   end
 

@@ -375,14 +375,6 @@ class User < ApplicationRecord
     end
   end
 
-  def cache_bust_all_articles
-    cache_buster = CacheBuster.new
-    articles.find_each do |article|
-      cache_buster.bust(article.path)
-      cache_buster.bust(article.path + "?i=i")
-    end
-  end
-
   def settings_tab_list
     tab_list = %w(
       Profile

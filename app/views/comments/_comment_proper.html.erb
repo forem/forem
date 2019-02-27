@@ -10,16 +10,17 @@
     <div class="inner-comment">
       <% if comment.decorate.low_quality %>
         <div class="low-quality-comment-marker">
-        <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
-          type: "fetch",
-          width: 50,
-          height: 50,
-          crop: "imagga_scale",
-          quality: "auto",
-          flags: "progressive",
-          fetch_format: "auto",
-          sign_url: true), class: "sloan", alt: "sloth-mascot") %>
-          Comment marked as low quality/non-constructive by the community <a href="/code-of-conduct">View code of conduct</a>
+          <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+                                      type: "fetch",
+                                      width: 50,
+                                      height: 50,
+                                      crop: "imagga_scale",
+                                      quality: "auto",
+                                      flags: "progressive",
+                                      fetch_format: "auto",
+                                      sign_url: true), class: "sloan", alt: "sloth-mascot") %>
+          Comment marked as low quality/non-constructive by the community
+          <a href="/code-of-conduct">View code of conduct</a>
         </div>
       <% end %>
       <div class="details <%= "low-quality-comment" if comment.decorate.low_quality %>">
@@ -40,11 +41,8 @@
             <%= image_tag("github-logo.svg", class: "icon-img") %>
           </a>
         <% end %>
-        <% if commentable && (commentable.user_id == comment.user_id ||
-                                commentable.second_user_id == comment.user_id ||
-                                commentable.third_user_id == comment.user_id) &&
-                                commentable.decorate.cached_tag_list_array.include?("ama") %>
-          <span class="op-marker">ASK ME ANYTHING</span>
+        <% if commentable_author_is_op?(commentable, comment)%>
+          <span class="op-marker"><%= get_ama_or_op_banner(commentable) %></span>
         <% end %>
         <div class="comment-date">
           <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>

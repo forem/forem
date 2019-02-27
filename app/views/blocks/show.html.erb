@@ -1,9 +1,9 @@
 <div class="home" id="index-container">
   <div class="articles-list">
-    <%= render "articles/block", block: @block, show_published: false, i:0 %>
+    <%= render "articles/block", block: @block, show_published: false, i: 0 %>
     <center>
-        <%= render "blocks/actions", block: @block %>
-        <%= link_to 'Edit', edit_block_path(@block), style: "color:white;display:block;font-size:35px;background:rgb(0, 93, 190);padding:10px 0px;" %>
+      <%= render "blocks/actions", block: @block %>
+      <%= link_to "Edit", edit_block_path(@block), style: "color:white;display:block;font-size:35px;background:rgb(0, 93, 190);padding:10px 0px;" %>
     </center>
     <h1><a href="/blocks" style="color:blue">Go to Index</a></h1>
   </div>
