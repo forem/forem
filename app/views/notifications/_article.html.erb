@@ -1,16 +1,18 @@
 <% if notification.action == "Reaction" %>
   <%= render "reaction", notification: notification %>
+<% elsif notification.action.include? "Milestone" %>
+  <%= render "milestone", notification: notification %>
 <% else %>
   <% json_data = notification.json_data %>
   <% if json_data["organization"] %>
     <div class="article-organization-headline">
       <a href="<%= json_data["organization"]["path"] %>" class="article-organization-headline-inner">
-        <img src="<%= json_data["organization"]["profile_image_90"] %>" alt="link to <%= json_data["organization"]["name"] %>"> <%= json_data["organization"]["name"]  %>
+        <img src="<%= json_data["organization"]["profile_image_90"] %>" alt="link to <%= json_data["organization"]["name"] %>"> <%= json_data["organization"]["name"] %>
       </a>
       <a class="org-headline-filler" href="<%= json_data["organization"]["path"] %>">&nbsp;</a>
     </div>
   <% end %>
-  <% cache "activity-profile-pic-#{json_data["user"]["id"]}-#{json_data["user"]["profile_image_90"]}" do %>
+  <% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
     <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
       <div class="small-pic">
         <img src="<%= json_data["user"]["profile_image_90"] %>" alt="link to <%= json_data["user"]["username"] %>'s profile">

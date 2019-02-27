@@ -22,6 +22,7 @@ class ArticleAnalyticsFetcher
         next if article.page_views_count > page_views_obj[article.id].to_i
 
         article.update_columns(page_views_count: page_views_obj[article.id].to_i)
+        Notification.send_milestone_notification(type: "View", article: article)
       end
     end
   end

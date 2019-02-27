@@ -116,6 +116,7 @@ class Reaction < ApplicationRecord
     # Fixes any out-of-sync positive_reactions_count
     if rand(6) == 1 || reactable.positive_reactions_count.negative?
       reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
+      Notification.send_milestone_notification(type: "Reaction", article: article) if reactable_type == "Article"
     end
   end
 

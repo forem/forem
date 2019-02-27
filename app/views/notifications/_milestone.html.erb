@@ -1,0 +1,13 @@
+<% json_data = notification.json_data %>
+<div class="content notification-content badge-content">
+  <div class="badge-title">
+    Your post <a href="<%= json_data["article"]["path"] %>"><%= json_data["article"]["title"] %></a> just passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
+  </div>
+  <br>
+  <p style="font-size: xx-large">🎉🎉🎉🎉🎉🎉🎉🎉</p>
+  <a href="/dashboard">
+    <button class="cta follow-action-button badge-button">
+      CHECK YOUR DASHBOARD
+    </button>
+  </a>
+</div>
