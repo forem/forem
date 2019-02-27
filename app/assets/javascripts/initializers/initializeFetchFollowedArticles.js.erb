@@ -33,6 +33,7 @@ function insertNewArticles(user){
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
+      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level)
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -51,6 +52,7 @@ function insertNewArticles(user){
       } else if (rand < 0.6) {
         articlePoints = articlePoints + 2
       }
+      articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
     });
     var sortedArticles = articlesJSON.sort(function(a, b) {
@@ -70,12 +72,13 @@ function insertTopArticles(user){
   var articlesJSON = JSON.parse(el.dataset.articles)
   var insertPlace = document.getElementById("article-index-hidden-div");
   if (insertPlace) {
-      articlesJSON.forEach(function(article){
+    articlesJSON.forEach(function(article){
       var articlePoints = 0
       var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
+      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level)
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -94,6 +97,7 @@ function insertTopArticles(user){
       } else if (rand < 0.6) {
         articlePoints = articlePoints + 2
       }
+      articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
     });
     var sortedArticles = articlesJSON.sort(function(a, b) {

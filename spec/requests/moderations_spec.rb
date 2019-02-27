@@ -37,14 +37,24 @@ RSpec.describe "Moderations", type: :request do
   context "when user is trusted" do
     before { sign_in user }
 
-    it "grant acess to comment moderation" do
+    it "grant access to comment moderation" do
       get comment.path + "/mod"
       expect(response).to have_http_status(200)
     end
 
-    it "grant acess to article moderation" do
+    it "grant access to article moderation" do
       get article.path + "/mod"
       expect(response).to have_http_status(200)
+    end
+
+    it "grants access to /mod index" do
+      get "/mod"
+      expect(response).to have_http_status(200)
+    end
+    it "grants access to /mod index with articles" do
+      create(:article, published: true)
+      get "/mod"
+      expect(response.body).to include("Experience Level Target")
     end
   end
 end
