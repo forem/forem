@@ -21,7 +21,7 @@ module CommentsHelper
   end
 
   def get_ama_or_op_banner(commentable)
-    commentable.decorate.cached_tag_list_array.include?("ama") ? "ASK ME ANYTHING" : "AUTHOR"
+    commentable.decorate.cached_tag_list_array.include?("ama") ? "Ask Me Anything" : "Author"
   end
 
   def tree_for(comment, sub_comments, commentable)
