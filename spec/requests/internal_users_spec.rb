@@ -30,25 +30,14 @@ RSpec.describe "internal/users", type: :request do
 
   describe "GET /internal/users/:id" do
     it "renders to appropriate page" do
-      get "/internal/users/#{mentor.id}"
+      get "/internal/users/#{mentor.id}/edit"
       expect(response.body).to include(mentor.username)
     end
   end
 
   describe "PUT internal/users/:id" do
-    it "updates user to offer mentorship" do
-      put "/internal/users/#{mentor.id}",
-      params: { user: { offering_mentorship: true } }
-      expect(mentor.reload.offering_mentorship).to eq(true)
-    end
-
-    it "updates user to seek mentorship" do
-      put "/internal/users/#{mentee.id}", params: { user: { seeking_mentorship: true } }
-      expect(mentee.reload.seeking_mentorship).to eq(true)
-    end
-
     it "bans user from mentorship" do
-      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: "1" } }
+      patch "/internal/users/#{mentor.id}/user_status", params: { user: { ban_from_mentorship: "1" } }
       expect(mentor.reload.banned_from_mentorship).to eq(true)
     end
 
@@ -63,13 +52,15 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "deactivates existing mentorships when user is banned" do
-      put "/internal/users/#{mentor.id}", params: { user: { add_mentee: mentee.id } }
-      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: "1" } }
+      MentorRelationship.create(mentor_id: mentor.id, mentee_id: mentee.id)
+      patch "/internal/users/#{mentor.id}/user_status", params: { user: { ban_from_mentorship: "1" } }
+      expect(mentor.reload.banned_from_mentorship).to eq(true)
       expect(MentorRelationship.where(mentor_id: mentor.id)[0].active).to eq(false)
     end
 
     it "creates mentorship note" do
-      put "/internal/users/#{mentor.id}", params: { user: { ban_from_mentorship: "1", note_for_mentorship_ban: "uncommunicative" } }
+      patch "/internal/users/#{mentor.id}/user_status", params: { user: { ban_from_mentorship: "1", note_for_mentorship_ban: "uncommunicative" } }
+      expect(mentor.reload.banned_from_mentorship).to eq(true)
       expect(mentor.notes[0].reason).to eq("banned_from_mentorship")
     end
   end
@@ -77,7 +68,7 @@ RSpec.describe "internal/users", type: :request do
   describe "GET internal/users/:id/edit" do
     it "redirects from /username/moderate" do
       get "/#{mentor.username}/moderate"
-      expect(response).to redirect_to("/internal/users/#{mentor.id}/edit")
+      expect(response).to redirect_to("/internal/users/#{mentor.id}")
     end
 
     it "shows banish button for new users" do

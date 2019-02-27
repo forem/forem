@@ -96,7 +96,7 @@ class Internal::UsersController < Internal::ApplicationController
       @user.add_role :warned
       @user.remove_role :trusted
       @user.remove_role :tag_moderator
-      create_note("banned", user_params[:note_for_current_role])
+      create_note("comment_banned", user_params[:note_for_current_role])
     else
       @user.remove_role :comment_banned
       create_note("good_standing", user_params[:note_for_current_role])
