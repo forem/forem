@@ -59,10 +59,10 @@
         cursor:default;
         box-shadow: 0px 3px 6px rgba(0,0,0,0.4);
         // color:white;
-        &::before { 
+        &::before {
           content: "<";
         }
-        &::after { 
+        &::after {
           content: ">";
         }
       }
@@ -429,6 +429,11 @@
 .editor-article-view{
   margin-top:-50px;
   margin-bottom:70px;
+  video {
+    max-width: 100%;
+    padding: 0.2em;
+    margin: 0.5em 0;
+  }
 }
 
 
