@@ -44,34 +44,6 @@ class Follow < ApplicationRecord
     Follows::SendEmailNotificationJob.perform_later(id)
   end
 
-  # TODO: remove methods #touch_user, #touch_user_followed_at, #create_chat_channel_without_delay, #send_email_notification_without_delay
-  def touch_user
-    follower.touch
-  end
-  handle_asynchronously :touch_user
-
-  def touch_user_followed_at
-    follower.touch(:last_followed_at)
-  end
-  handle_asynchronously :touch_user_followed_at
-
-  # *_without_delay method will be used if there're jobs created before introducing ActiveJob
-  def create_chat_channel_without_delay
-    if followable_type == "User" && followable.following?(follower)
-      ChatChannel.create_with_users([followable, follower])
-    end
-  end
-
-  def send_email_notification_without_delay
-    if followable.class.name == "User" && followable.email.present? && followable.email_follower_notifications
-      return if EmailMessage.where(user_id: followable.id).
-        where("sent_at > ?", rand(15..35).hours.ago).
-        where("subject LIKE ?", "%followed you on dev.to%").any?
-
-      NotifyMailer.new_follower_email(self).deliver
-    end
-  end
-
   def modify_chat_channel_status
     if followable_type == "User" && followable.following?(follower)
       channel = follower.chat_channels.

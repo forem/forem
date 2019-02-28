@@ -37,11 +37,18 @@
 <div class="primary-sticky-nav" id="article-show-primary-sticky-nav">
   <div class="primary-sticky-nav-element primary-sticky-nav-author">
     <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(90) %>" class="primary-sticky-nav-author-top-profile-image" /></a>
-    <span class="primary-sticky-nav-author-name">
-      <a href="<%= @actor.path %>">
-        <%= @actor.name %>
-      </a>
-    </span>
+    <div style="display:inline-block">
+      <div class="primary-sticky-nav-author-name">
+        <a href="<%= @actor.path %>">
+          <%= @actor.name %>
+        </a>
+      </div>
+      <div class="primary-sticky-nav-author-username">
+        <a href="<%= @actor.path %>">
+          @<%= @actor.username %>
+        </a>
+      </div>
+    </div>
     <div class="primary-sticky-nav-author-summary">
       <% if @actor.tag_line.present? %>
         <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
@@ -126,3 +133,7 @@
       </div>
     <% end %>
   <% end %>
+<<<<<<< HEAD
+=======
+<% end %>
+>>>>>>> master

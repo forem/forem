@@ -11,6 +11,19 @@ module CommentsHelper
     comment.deleted ? 0 : comment.user_id
   end
 
+  def commentable_author_is_op?(commentable, comment)
+    commentable &&
+      [
+        commentable.user_id,
+        commentable.second_user_id,
+        commentable.third_user_id,
+      ].any? { |id| id == comment.user_id }
+  end
+
+  def get_ama_or_op_banner(commentable)
+    commentable.decorate.cached_tag_list_array.include?("ama") ? "Ask Me Anything" : "Author"
+  end
+
   def tree_for(comment, sub_comments, commentable)
     nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
   end

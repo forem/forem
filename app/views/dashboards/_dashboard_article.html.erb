@@ -24,7 +24,7 @@
     <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
       <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
-      <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? "mute" : "unmute"}" %>
+      <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
     <% end %>
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
@@ -35,8 +35,8 @@
   <% if org_admin %>
     <%= form_for(article) do |f| %>
       <input type="hidden" name="destination" value="/dashboard" />
-      AUTHOR: <%= f.select(:user_id, options_for_select(@user.organization.users.map {|x| [x.name, x.id] }, article.user_id )) %>
-      <%= f.submit "SUBMIT AUTHOR CHANGE", class:"cta pill black" %>
+      AUTHOR: <%= f.select(:user_id, options_for_select(@user.organization.users.map { |x| [x.name, x.id] }, article.user_id)) %>
+      <%= f.submit "SUBMIT AUTHOR CHANGE", class: "cta pill black" %>
     <% end %>
   <% end %>
 </div>
