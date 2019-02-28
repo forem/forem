@@ -69,6 +69,14 @@ class Reaction < ApplicationRecord
     Reactions::BustHomepageCacheJob.perform_later(id)
   end
 
+  def bust_reactable_cache_without_delay
+    Reactions::BustReactableCacheJob.perform_now(id)
+  end
+
+  def update_reactable_without_delay
+    Reactions::UpdateReactableJob.perform_now(id)
+  end
+
   BASE_POINTS = {
     "vomit" => -50.0,
     "thumbsdown" => -10.0
