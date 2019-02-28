@@ -213,4 +213,6 @@ RSpec.describe Comment, type: :model do
       expect(comments).to eq(tree_comment => { child => {} })
     end
   end
+
+  include_examples "#sync_reactions_count", :article_comment
 end
