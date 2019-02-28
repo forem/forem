@@ -64,6 +64,8 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_to_followers
 
     def send_new_comment_notifications(comment)
+      return if comment.commentable_type == "PodcastEpisode"
+
       user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
       user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
       json_data = {
