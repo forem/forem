@@ -14,7 +14,7 @@ class BlogcastTag < LiquidTagBase
           scrolling="no"
           id="blogcast_#{@id}"
           mozallowfullscreen="true"
-          src="//blogcast.host/embed/#{@id}"
+          src="https://blogcast.host/embed/#{@id}"
           style="width:100%;height:132px;overflow:hidden;"
           webkitallowfullscreen="true"></iframe>
       </div>
@@ -34,7 +34,7 @@ class BlogcastTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id =~ /\d{1,9}/i
+    (id =~ /\A\d{1,9}\Z/i)&.zero?
   end
 end
 
