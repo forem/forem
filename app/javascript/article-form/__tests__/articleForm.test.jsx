@@ -1,8 +1,8 @@
 import { h, render as preactRender } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
-import ArticleForm from '../articleForm';
 import { JSDOM } from 'jsdom';
+import ArticleForm from '../articleForm';
 import algoliasearch from '../elements/__mocks__/algoliasearch';
 
 describe('<ArticleForm />', () => {
@@ -32,11 +32,34 @@ describe('<ArticleForm />', () => {
     global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
     global.window.algoliasearch = algoliasearch;
+
+    localStorage.clear();
+    localStorage.__STORE__ = {};
   });
 
   it('renders properly', () => {
     const tree = render(getArticleForm());
     expect(tree).toMatchSnapshot();
+  });
+
+  it('initally loads blank', () => {
+    const form = shallow(getArticleForm());
+    expect(form.state().bodyMarkdown).toBe('');
+  });
+
+  it('loads text from sessionstorage when available', () => {
+    localStorage.setItem(
+      'http://localhost/',
+      JSON.stringify({ bodyMarkdown: 'hello, world' }),
+    );
+    const form = shallow(getArticleForm());
+    expect(form.state().bodyMarkdown).toBe('hello, world');
+  });
+
+  it('resets the post on reset press', () => {
+    const form = shallow(getArticleForm());
+    form.find('.clear').simulate('click');
+    expect(form.state().bodyMarkdown).toBe('');
   });
 });
 
