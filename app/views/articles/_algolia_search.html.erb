@@ -4,17 +4,18 @@
     qs = qs.split('+').join(' ');
 
     var params = {},
-        tokens,
-        re = /[?&]?([^=]+)=([^&]*)/g;
+      tokens,
+      re = /[?&]?([^=]+)=([^&]*)/g;
 
     while (tokens = re.exec(qs)) {
-        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
     }
 
     return params;
   }
 
   var params = getQueryParams(document.location.search);
+
   // var query = escape(params.q);
   function algoliaMain() {
     var query = filterXSS(params.q);
@@ -32,30 +33,29 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function initializeFilters(query,index,filters){
+  function initializeFilters(query, index, filters) {
     var filterButts = document.getElementsByClassName("query-filter-button");
-    for(var i = 0; i < filterButts.length; i++) {
-      if (filters == filterButts[i].dataset.filter){
+    for (var i = 0; i < filterButts.length; i++) {
+      if (filters == filterButts[i].dataset.filter) {
         filterButts[i].classList.add("selected");
       }
-      filterButts[i].onclick = function(e){
+      filterButts[i].onclick = function (e) {
         if (e.target.classList.contains("my-posts-query-button") && !checkUserLoggedIn()) {
           showModal("search-my-posts");
           return;
         }
         var filters = e.target.dataset.filter;
-        window.history.replaceState(null, null, "/search?q="+query+"&filters="+filters);
+        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
         var className = e.target.className;
-        for(var i = 0; i < filterButts.length; i++) {
+        for (var i = 0; i < filterButts.length; i++) {
           filterButts[i].classList.remove("selected");
         }
-        if (className.indexOf("selected") == -1 ) {
+        if (className.indexOf("selected") == -1) {
           e.target.classList.add("selected");
-          window.history.replaceState(null, null, "/search?q="+query+"&filters="+filters);
+          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
           search(query, index, filters);
-        }
-        else{
-          window.history.replaceState(null, null, "/search?q="+query);
+        } else {
+          window.history.replaceState(null, null, "/search?q=" + query);
           search(query, index, "");
         }
       }
@@ -64,34 +64,34 @@
 
   function search(query, index, filters) {
     var searchObj = {
-          hitsPerPage: 60,
-          page: "0",
-          queryType: "prefixNone",
-          attributesToRetrieve: [
-          'id',
-          'title',
-          'path',
-          'class_name',
-          'comments_count',
-          'tag_list',
-          'readable_publish_date',
-          'positive_reactions_count',
-          'flare_tag',
-          'user'
-        ],
-        attributesToHighlight: [],
-        exactOnSingleWordQuery: "none",
-        attributesToSnippet: ['body_text:19','comments_blob:8'],
-      }
+      hitsPerPage: 60,
+      page: "0",
+      queryType: "prefixNone",
+      attributesToRetrieve: [
+        'id',
+        'title',
+        'path',
+        'class_name',
+        'comments_count',
+        'tag_list',
+        'readable_publish_date',
+        'positive_reactions_count',
+        'flare_tag',
+        'user'
+      ],
+      attributesToHighlight: [],
+      exactOnSingleWordQuery: "none",
+      attributesToSnippet: ['body_text:19', 'comments_blob:8'],
+    }
     if (filters === "MY_POSTS" && userData()) {
-      searchObj["tagFilters"] = [['user_'+userData()['id']]]
+      searchObj["tagFilters"] = [['user_' + userData()['id']]]
     } else {
       searchObj["filters"] = filters
     }
     index.search(query, searchObj)
       .then(function searchDone(content) {
         var resultDivs = []
-        content.hits.forEach(function(story, i){
+        content.hits.forEach(function (story, i) {
           resultDivs.push(buildArticleHTML(story));
         })
         document.getElementById("substories").innerHTML = resultDivs.join("");
@@ -104,13 +104,13 @@
       });
   }
 
-  var waitingOnAlgolia = setInterval(function(){
+  var waitingOnAlgolia = setInterval(function () {
     if (typeof algoliasearch == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
       clearInterval(waitingOnAlgolia);
-      if(document.querySelectorAll('.search-results-loaded').length == 0) {
+      if (document.querySelectorAll('.search-results-loaded').length == 0) {
         algoliaMain();
       }
     }
-  },1);
+  }, 1);
 
 </script>

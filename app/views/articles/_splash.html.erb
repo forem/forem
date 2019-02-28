@@ -1,37 +1,49 @@
 <style>
   .recording-pulse {
-      border: 3px solid #d62d20;
-      -webkit-border-radius: 30px;
-      height: 0.5em;
-      width: 0.5em;
-      display:inline-block;
-      -webkit-animation: pulsate 1s ease-out;
-      -webkit-animation-iteration-count: infinite;
-      opacity: 0.0;
-      margin-right:10px;
+    border: 3px solid #d62d20;
+    -webkit-border-radius: 30px;
+    height: 0.5em;
+    width: 0.5em;
+    display: inline-block;
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite;
+    opacity: 0.0;
+    margin-right: 10px;
   }
+
   @-webkit-keyframes pulsate {
-      0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
-      50% {opacity: 1.0;}
-      100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+    0% {
+      -webkit-transform: scale(0.1, 0.1);
+      opacity: 0.0;
+    }
+    50% {
+      opacity: 1.0;
+    }
+    100% {
+      -webkit-transform: scale(1.2, 1.2);
+      opacity: 0.0;
+    }
   }
-  .home-page-splash{
-    padding-top:8px;
-    padding-bottom:0px;
-    margin-bottom:-60px;
-    text-align:center;
-    background:#161616;
-    position:relative;
-    z-index:10;
+
+  .home-page-splash {
+    padding-top: 8px;
+    padding-bottom: 0px;
+    margin-bottom: -60px;
+    text-align: center;
+    background: #161616;
+    position: relative;
+    z-index: 10;
   }
-  .home-page-splash iframe{
-    width:100%;
-    height:calc(28vw + 120px);
-    max-height:500px;
+
+  .home-page-splash iframe {
+    width: 100%;
+    height: calc(28vw + 120px);
+    max-height: 500px;
   }
+
   @media (max-width: 850px) {
-    .home-page-splash{
-      padding-top:22px;
+    .home-page-splash {
+      padding-top: 22px;
     }
   }
 </style>
