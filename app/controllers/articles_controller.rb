@@ -8,32 +8,28 @@ class ArticlesController < ApplicationController
 
   def feed
     skip_authorization
-    @page = params[:page].to_i
+
+    @articles = Article.where(published: true).
+      select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
+      order(published_at: :desc).
+      page(params[:page].to_i).per(12)
+
     if params[:username]
       if @user = User.find_by_username(params[:username])
-        @articles = Article.where(published: true, user_id: @user.id).
-          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
-          order("published_at DESC").
-          page(@page).per(12)
+        @articles.where(user_id: @user.id)
       elsif @user = Organization.find_by_slug(params[:username])
-        @articles = Article.where(published: true, organization_id: @user.id).
-          includes(:user).
-          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
-          order("published_at DESC").
-          page(@page).per(12)
+        @articles.where(user_id: @organization.id).includes(:user)
       else
         render body: nil
         return
       end
     else
-      @articles = Article.where(published: true, featured: true).
-        includes(:user).
-        select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
-        order("published_at DESC").
-        page(@page).per(12)
+      @articles.where(featured: true).includes(:user)
     end
+
     set_surrogate_key_header "feed", @articles.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+
     render layout: false
   end
 
