@@ -69,41 +69,12 @@ class Reaction < ApplicationRecord
     Reactions::BustHomepageCacheJob.perform_later(id)
   end
 
-  # TODO: remove methods #touch_user_without_delay, #update_reactable_without_delay, #occasionally_sync_reaction_counts
-  # #bust_reactable_cache_without_delay, #async_bust_without_delay
-  def update_reactable_without_delay
-    if reactable_type == "Article"
-      reactable.async_score_calc
-      reactable.index!
-    elsif reactable_type == "Comment" && reactable
-      reactable.save
-    end
-    occasionally_sync_reaction_counts
-  end
-
   def bust_reactable_cache_without_delay
-    cache_buster.bust user.path
-
-    if reactable_type == "Article"
-      cache_buster.bust "/reactions?article_id=#{reactable_id}"
-    elsif reactable_type == "Comment" && reactable
-      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
-    end
+    Reactions::BustReactableCacheJob.perform_now(id)
   end
 
-  def touch_user_without_delay
-    user.touch
-  end
-
-  def async_bust_without_delay
-    featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
-    if featured_articles.include?(reactable.id)
-      reactable.touch
-      cache_buster.bust "/"
-      cache_buster.bust "/"
-      cache_buster.bust "/?i=i"
-      cache_buster.bust "?i=i"
-    end
+  def update_reactable_without_delay
+    Reactions::UpdateReactableJob.perform_now(id)
   end
 
   BASE_POINTS = {
@@ -125,13 +96,6 @@ class Reaction < ApplicationRecord
 
     if reactable_type == "Article" && !reactable&.published
       errors.add(:reactable_id, "is not valid.")
-    end
-  end
-
-  def occasionally_sync_reaction_counts
-    # Fixes any out-of-sync positive_reactions_count
-    if rand(6) == 1 || reactable.positive_reactions_count.negative?
-      reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
     end
   end
 
