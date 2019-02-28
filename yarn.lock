@@ -5867,6 +5867,11 @@ jest-leak-detector@^23.6.0:
   dependencies:
     pretty-format "^23.6.0"
 
+jest-localstorage-mock@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/jest-localstorage-mock/-/jest-localstorage-mock-2.4.0.tgz#c6073810735dd3af74020ea6c3885ec1cc6d0d13"
+  integrity sha512-/mC1JxnMeuIlAaQBsDMilskC/x/BicsQ/BXQxEOw+5b1aGZkkOAqAF3nu8yq449CpzGtp5jJ5wCmDNxLgA2m6A==
+
 jest-matcher-utils@^23.6.0:
   version "23.6.0"
   resolved "https://registry.yarnpkg.com/jest-matcher-utils/-/jest-matcher-utils-23.6.0.tgz#726bcea0c5294261a7417afb6da3186b4b8cac80"
@@ -10467,7 +10472,7 @@ tweetnacl@^1.0.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
   integrity sha1-cT2LgY2kIGh0C/aDhtBHnmb8ins=
 
-twilio-video@^1.15.2:
+twilio-video@^1.15.1:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.2.tgz#da3379c0e256def317689d9a980c683277f61baf"
   integrity sha512-C3KQcHmqqJObFWU2I+bMVqwIEUISXV+DSFJHdPrrw9Z+tDE7Y5SNNj+r4e9ArABx7mtWZlEUa4+Ela/dOQLEjA==

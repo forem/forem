@@ -6,7 +6,7 @@ import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
-import Description from './elements/description';
+// import Description from './elements/description';
 import PublishToggle from './elements/publishToggle';
 import Notice from './elements/notice';
 import Tags from './elements/tags';
@@ -23,37 +23,57 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
 
-    const article = JSON.parse(this.props.article);
+    this.article = JSON.parse(this.props.article);
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
       : null;
+
+    this.url = window.location.href;
+
     this.state = {
-      id: article.id || null,
-      title: article.title || '',
-      tagList: article.cached_tag_list || '',
+      id: this.article.id || null,
+      title: this.article.title || '',
+      tagList: this.article.cached_tag_list || '',
       description: '',
-      canonicalUrl: article.canonical_url || '',
-      series: article.series || '',
-      allSeries: article.all_series || [],
-      bodyMarkdown: article.body_markdown || '',
-      published: article.published || false,
+      canonicalUrl: this.article.canonical_url || '',
+      series: this.article.series || '',
+      allSeries: this.article.all_series || [],
+      bodyMarkdown: this.article.body_markdown || '',
+      published: this.article.published || false,
       previewShowing: false,
       helpShowing: false,
       previewHTML: '',
       helpHTML: document.getElementById('editor-help-guide').innerHTML,
       submitting: false,
-      editing: article.id != null,
+      editing: this.article.id != null,
       imageManagementShowing: false,
       moreConfigShowing: false,
-      mainImage: article.main_image || null,
+      mainImage: this.article.main_image || null,
       organization,
-      postUnderOrg: !!article.organization_id,
+      postUnderOrg: !!this.article.organization_id,
       errors: null,
+      edited: false,
     };
   }
 
   componentDidMount() {
     initEditorResize();
+
+    const previousContent = JSON.parse(
+      localStorage.getItem(window.location.href),
+    );
+    if (previousContent && this.checkContentChanges(previousContent)) {
+      this.setState({
+        title: previousContent.title || '',
+        tagList: previousContent.tagList || '',
+        mainImage: previousContent.mainImage || null,
+        bodyMarkdown: previousContent.bodyMarkdown || '',
+        edited: true,
+      });
+    }
+
+    window.addEventListener('beforeunload', this.localStoreContent);
+
     // const editor = document.getElementById('article_body_markdown');
     // const myCodeMirror = CodeMirror(editor, {
     //   mode: 'markdown',
@@ -62,6 +82,24 @@ export default class ArticleForm extends Component {
     // });
     // myCodeMirror.setSize('100%', '100%');
   }
+
+  checkContentChanges = previousContent =>
+    this.state.bodyMarkdown !== previousContent.bodyMarkdown ||
+    this.state.title !== previousContent.title ||
+    this.state.mainImage !== previousContent.mainImage ||
+    this.state.tagList !== previousContent.tagList;
+
+  localStoreContent = e => {
+    localStorage.setItem(
+      this.url,
+      JSON.stringify({
+        title: this.state.title,
+        tagList: this.state.tagList,
+        mainImage: this.state.mainImage,
+        bodyMarkdown: this.state.bodyMarkdown,
+      }),
+    );
+  };
 
   toggleHelp = e => {
     e.preventDefault();
@@ -133,12 +171,17 @@ export default class ArticleForm extends Component {
     });
   };
 
+  removeLocalStorage = () => {
+    localStorage.removeItem(this.url);
+    window.removeEventListener('beforeunload', this.localStoreContent);
+  };
+
   onPublish = e => {
     e.preventDefault();
     this.setState({ submitting: true, published: true });
     const state = this.state;
     state.published = true;
-    submitArticle(state, this.handleArticleError);
+    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
   onSaveDraft = e => {
@@ -146,7 +189,34 @@ export default class ArticleForm extends Component {
     this.setState({ submitting: true, published: false });
     const state = this.state;
     state.published = false;
-    submitArticle(state, this.handleArticleError);
+    submitArticle(state, this.removeLocalStorage, this.handleArticleError);
+  };
+
+  onClearChanges = e => {
+    e.preventDefault();
+    let revert = confirm('Are you sure you want to revert to the previous save?');
+    if (!revert) return;
+    this.setState({
+      title: this.article.title || '',
+      tagList: this.article.cached_tag_list || '',
+      description: '',
+      canonicalUrl: this.article.canonical_url || '',
+      series: this.article.series || '',
+      allSeries: this.article.all_series || [],
+      bodyMarkdown: this.article.body_markdown || '',
+      published: this.article.published || false,
+      previewShowing: false,
+      helpShowing: false,
+      previewHTML: '',
+      helpHTML: document.getElementById('editor-help-guide').innerHTML,
+      submitting: false,
+      editing: this.article.id != null,
+      imageManagementShowing: false,
+      moreConfigShowing: false,
+      mainImage: this.article.main_image || null,
+      errors: null,
+      edited: false,
+    });
   };
 
   handleArticleError = response => {
@@ -154,6 +224,14 @@ export default class ArticleForm extends Component {
     this.setState({
       errors: response,
       submitting: false,
+    });
+  };
+
+  toggleEdit = () => {
+    this.localStoreContent();
+    if (this.state.edited) return;
+    this.setState({
+      edited: true,
     });
   };
 
@@ -241,9 +319,7 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} />
-              {' '}
-IMAGES
+              <img src={ImageUploadIcon} /> IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -260,9 +336,7 @@ IMAGES
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} />
-            {' '}
-IMAGES
+            <img src={ImageUploadIcon} /> IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
@@ -274,7 +348,11 @@ IMAGES
       );
     }
     return (
-      <form className="articleform__form" onSubmit={this.onSubmit}>
+      <form
+        className="articleform__form"
+        onSubmit={this.onSubmit}
+        onInput={this.toggleEdit}
+      >
         {editorView}
         <PublishToggle
           published={published}
@@ -284,6 +362,8 @@ IMAGES
           onPublish={this.onPublish}
           onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
+          onClearChanges={this.onClearChanges}
+          edited={this.state.edited}
           onChange={linkState(this, 'published')}
         />
         {notice}
