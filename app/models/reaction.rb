@@ -49,7 +49,29 @@ class Reaction < ApplicationRecord
 
   private
 
+  def cache_buster
+    @cache_buster ||= CacheBuster.new
+  end
+
+  def touch_user
+    Users::TouchJob.perform_later(user_id)
+  end
+
   def update_reactable
+    Reactions::UpdateReactableJob.perform_later(id)
+  end
+
+  def bust_reactable_cache
+    Reactions::BustReactableCacheJob.perform_later(id)
+  end
+
+  def async_bust
+    Reactions::BustHomepageCacheJob.perform_later(id)
+  end
+
+  # TODO: remove methods #touch_user_without_delay, #update_reactable_without_delay, #occasionally_sync_reaction_counts
+  # #bust_reactable_cache_without_delay, #async_bust_without_delay
+  def update_reactable_without_delay
     if reactable_type == "Article"
       reactable.async_score_calc
       reactable.index!
@@ -58,10 +80,8 @@ class Reaction < ApplicationRecord
     end
     occasionally_sync_reaction_counts
   end
-  handle_asynchronously :update_reactable
 
-  def bust_reactable_cache
-    cache_buster = CacheBuster.new
+  def bust_reactable_cache_without_delay
     cache_buster.bust user.path
 
     if reactable_type == "Article"
@@ -70,25 +90,21 @@ class Reaction < ApplicationRecord
       cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
     end
   end
-  handle_asynchronously :bust_reactable_cache
 
-  def touch_user
+  def touch_user_without_delay
     user.touch
   end
-  handle_asynchronously :touch_user
 
-  def async_bust
+  def async_bust_without_delay
     featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
     if featured_articles.include?(reactable.id)
       reactable.touch
-      cache_buster = CacheBuster.new
       cache_buster.bust "/"
       cache_buster.bust "/"
       cache_buster.bust "/?i=i"
       cache_buster.bust "?i=i"
     end
   end
-  handle_asynchronously :async_bust
 
   BASE_POINTS = {
     "vomit" => -50.0,
