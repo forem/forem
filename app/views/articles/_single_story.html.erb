@@ -7,7 +7,7 @@
   <% end %>
   <% if story.organization && !@organization_article_index %>
     <div class="article-organization-headline">
-      <a href="/<%= story.organization.slug %>" class="article-organization-headline-inner"><img src="<%= organization.profile_image_90 %>"><%= organization.name %>
+      <a href="/<%= story.organization.slug %>" class="article-organization-headline-inner"><img src="<%= story.organization.profile_image_90 %>"><%= story.organization.name %>
       </a><a class="org-headline-filler" href="<%= story.path %>">&nbsp;</a></div>
   <% end %>
   <a href="<%= story.user.path %>" class="small-pic-link-wrapper">
