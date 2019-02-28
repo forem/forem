@@ -6,10 +6,7 @@ class BlogcastTag < LiquidTagBase
 
   def render(_context)
     html = <<-HTML
-      <div class="ltag_blogcast"
-        style="position: relative;
-          width: 100%;
-          height: 0;">
+      <div class="ltag_blogcast">
         <iframe frameborder="0"
           scrolling="no"
           id="blogcast_#{@id}"
