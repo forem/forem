@@ -387,10 +387,10 @@ class Notification < ApplicationRecord
     def next_milestone(milestone_hash)
       case milestone_hash[:type]
       when "View"
-        milestones = [1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
+        milestones = [1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
         milestone_count = milestone_hash[:article].page_views_count
       when "Reaction"
-        milestones = [64, 128, 256, 512, 1024, 2048, 4096]
+        milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
         milestone_count = milestone_hash[:article].positive_reactions_count
       end
 
