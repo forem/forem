@@ -33,7 +33,7 @@ function insertNewArticles(user){
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
-      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level)
+      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -60,7 +60,7 @@ function insertNewArticles(user){
     });
     sortedArticles.forEach(function(article){
       var parent = insertPlace.parentNode;
-      if ( article.points > 15 && !document.getElementById("article-link-"+article.id) ) {
+      if ( article.points > 13 && !document.getElementById("article-link-"+article.id) ) {
         insertArticle(article,parent,insertPlace);
       }
     });
@@ -78,7 +78,7 @@ function insertTopArticles(user){
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
-      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level)
+      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
