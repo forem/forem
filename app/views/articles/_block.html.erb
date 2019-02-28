@@ -1,4 +1,4 @@
-<div class="block" id="block-index-<%=i%>">
+<div class="block" id="block-index-<%= i %>">
   <% if show_published %>
     <script async>
       <%= block.published_javascript.html_safe %>
@@ -6,7 +6,7 @@
     <style>
       <%= block.published_css.html_safe %>
     </style>
-    <div class="block-wrapper-<%=block.id%>">
+    <div class="block-wrapper-<%= block.id %>">
       <%= block.published_html.html_safe %>
     </div>
   <% else %>
@@ -16,7 +16,7 @@
     <style>
       <%= block.processed_css.html_safe %>
     </style>
-    <div class="block-wrapper-<%=block.id%>">
+    <div class="block-wrapper-<%= block.id %>">
       <%= block.processed_html.html_safe %>
     </div>
   <% end %>

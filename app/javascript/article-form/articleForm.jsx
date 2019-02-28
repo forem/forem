@@ -179,7 +179,7 @@ export default class ArticleForm extends Component {
   onPublish = e => {
     e.preventDefault();
     this.setState({ submitting: true, published: true });
-    const state = this.state;
+    const { state } = this;
     state.published = true;
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
@@ -187,14 +187,16 @@ export default class ArticleForm extends Component {
   onSaveDraft = e => {
     e.preventDefault();
     this.setState({ submitting: true, published: false });
-    const state = this.state;
+    const { state } = this;
     state.published = false;
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
   onClearChanges = e => {
     e.preventDefault();
-    let revert = confirm('Are you sure you want to revert to the previous save?');
+    const revert = confirm(
+      'Are you sure you want to revert to the previous save?',
+    );
     if (!revert) return;
     this.setState({
       title: this.article.title || '',
@@ -319,7 +321,9 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} /> IMAGES
+              <img src={ImageUploadIcon} />
+              {' '}
+IMAGES
             </button>
             <button
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
@@ -336,7 +340,9 @@ export default class ArticleForm extends Component {
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} /> IMAGES
+            <img src={ImageUploadIcon} />
+            {' '}
+IMAGES
           </button>
           <button
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
