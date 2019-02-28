@@ -515,5 +515,7 @@ RSpec.describe Article, type: :model do
       expect(build(:article, comment_template: "my comment template").comment_template).to eq("my comment template")
     end
   end
+
+  include_examples "#sync_reactions_count", :article
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

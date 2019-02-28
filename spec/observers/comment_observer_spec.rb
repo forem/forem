@@ -9,6 +9,7 @@ RSpec.describe CommentObserver, type: :observer do
   end
 
   it "pings slack if user with warned role creates a comment" do
+    ActiveJob::Base.queue_adapter = :inline
     user.add_role :warned
     Comment.observers.enable :comment_observer do
       run_background_jobs_immediately do

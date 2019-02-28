@@ -49,46 +49,33 @@ class Reaction < ApplicationRecord
 
   private
 
-  def update_reactable
-    if reactable_type == "Article"
-      reactable.async_score_calc
-      reactable.index!
-    elsif reactable_type == "Comment" && reactable
-      reactable.save
-    end
-    occasionally_sync_reaction_counts
+  def cache_buster
+    @cache_buster ||= CacheBuster.new
   end
-  handle_asynchronously :update_reactable
-
-  def bust_reactable_cache
-    cache_buster = CacheBuster.new
-    cache_buster.bust user.path
-
-    if reactable_type == "Article"
-      cache_buster.bust "/reactions?article_id=#{reactable_id}"
-    elsif reactable_type == "Comment" && reactable
-      cache_buster.bust "/reactions?commentable_id=#{reactable.commentable_id}&commentable_type=#{reactable.commentable_type}"
-    end
-  end
-  handle_asynchronously :bust_reactable_cache
 
   def touch_user
-    user.touch
+    Users::TouchJob.perform_later(user_id)
   end
-  handle_asynchronously :touch_user
+
+  def update_reactable
+    Reactions::UpdateReactableJob.perform_later(id)
+  end
+
+  def bust_reactable_cache
+    Reactions::BustReactableCacheJob.perform_later(id)
+  end
 
   def async_bust
-    featured_articles = Article.where(featured: true).order("hotness_score DESC").limit(3).pluck(:id)
-    if featured_articles.include?(reactable.id)
-      reactable.touch
-      cache_buster = CacheBuster.new
-      cache_buster.bust "/"
-      cache_buster.bust "/"
-      cache_buster.bust "/?i=i"
-      cache_buster.bust "?i=i"
-    end
+    Reactions::BustHomepageCacheJob.perform_later(id)
   end
-  handle_asynchronously :async_bust
+
+  def bust_reactable_cache_without_delay
+    Reactions::BustReactableCacheJob.perform_now(id)
+  end
+
+  def update_reactable_without_delay
+    Reactions::UpdateReactableJob.perform_now(id)
+  end
 
   BASE_POINTS = {
     "vomit" => -50.0,
@@ -109,14 +96,6 @@ class Reaction < ApplicationRecord
 
     if reactable_type == "Article" && !reactable&.published
       errors.add(:reactable_id, "is not valid.")
-    end
-  end
-
-  def occasionally_sync_reaction_counts
-    # Fixes any out-of-sync positive_reactions_count
-    if rand(6) == 1 || reactable.positive_reactions_count.negative?
-      reactable.update_column(:positive_reactions_count, reactable.reactions.where("points > ?", 0).size)
-      Notification.send_milestone_notification(type: "Reaction", article: article) if reactable_type == "Article"
     end
   end
 
