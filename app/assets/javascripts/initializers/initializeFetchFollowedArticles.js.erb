@@ -3,7 +3,7 @@ function initializeFetchFollowedArticles() {
     algoliaFollowedArticles();
   }
 }
-  
+
 function insertArticle(article,parent,insertPlace) {
   if (article){
     var newItem = document.createElement("DIV");
@@ -129,7 +129,7 @@ function algoliaFollowedArticles(){
           attributesToHighlight: [],
           tagFilters: [user.followed_tag_names.concat(followedUsersArray)],
       }
-      
+
       var homeEl = document.getElementById("index-container");
       if (homeEl.dataset.feed === "base-feed") {
         articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
