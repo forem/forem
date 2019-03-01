@@ -150,14 +150,23 @@ COPY Dockerfile [(docker-)]* /usr/src/app/
 #
 # Execution environment variables
 #
+
 # timeout extension requried to ensure 
 # system work properly on first time load
-#
 ENV RACK_TIMEOUT_WAIT_TIMEOUT=10000 \ 
 	RACK_TIMEOUT_SERVICE_TIMEOUT=10000 \ 
-	STATEMENT_TIMEOUT=10000 \
-	RUN_MODE="demo" \
-	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_development"
+	STATEMENT_TIMEOUT=10000
+
+# Run mode configuration between dev / demo
+# for entrypoint script behaviour
+ENV	RUN_MODE="demo"
+
+# Database URL configuration - with user/pass
+ENV	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_development"
+
+# DB setup / migrate script triggers on boot
+ENV DB_SETUP="true" \ 
+  DB_MIGRATE="true"
 
 #
 # Lets setup the public uploads folder volume

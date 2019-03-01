@@ -23,7 +23,7 @@ then
 	echo "> [dev.to/docker-entrypoint.sh] DEV mode"
 	echo "> "
 	echo "> Welcome to the dev.to, DEVELOPMENT container, for convinence your repository"
-	echo "> has been mounted onto '/usr/src/app/', and port 3000 should be forwarded to your host machine"
+	echo "> should be mounted onto '/usr/src/app/', and port 3000 should be forwarded to your host machine"
 	echo "> "
 	echo "> In addition the following alias commands has been preconfigured to get you up and running quickly"
 	echo "> "
@@ -52,15 +52,29 @@ echo ">---"
 # DB setup 
 # note this will fail (intentionally), if DB was previously setup
 #
-bin/setup
+if [[ "$DB_SETUP" == "true" ]]
+then
+	echo ">---"
+	echo "> [dev.to/docker-entrypoint.sh] Performing DB_SETUP : you can skip this step by setting DB_SETUP=false"
+	echo ">---"
+	bin/setup
+fi
 
 #
-# DB migration
-# (@TODO - someone please confirm if i should use bin/rake or bin/rails for this step, and also if I can safely call htis on every startup)
+# DB migration script
 #
-bin/rails db:migrate
+if [[ "$DB_MIGRATE" == "true" ]]
+then
+	echo ">---"
+	echo "> [dev.to/docker-entrypoint.sh] Performing DB_MIGRATE : you can skip this step by setting DB_MIGRATE=false"
+	echo ">---"
+	bin/rails db:migrate
+fi
 
 #
 # Execute rails server on port 3000
 #
+echo ">---"
+echo "> [dev.to/docker-entrypoint.sh] Starting the rails servers - whheee!"
+echo ">---"
 bundle exec rails server -b 0.0.0.0 -p 3000
