@@ -36,7 +36,7 @@ class EmailLogic
                    where(published: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 12).
-                   where("experience_level_rating > ? AND experience_level_rating > ?", @user.experience_level - 3.5, @user.experience_level + 3.5).
+                   where("experience_level_rating > ? AND experience_level_rating > ?", (@user.experience_level || 5) - 3.6, (@user.experience_level || 5) + 3.6).
                    order("score DESC").
                    limit(6)
                else
