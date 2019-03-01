@@ -17,6 +17,7 @@ FactoryBot.define do
     description   { Faker::Hipster.paragraph(1)[0..100] }
     main_image    { Faker::Avatar.image }
     language { "en" }
+    experience_level_rating { rand(4..6) }
     body_markdown do
       <<~HEREDOC
         ---
