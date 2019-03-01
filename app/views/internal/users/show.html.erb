@@ -71,15 +71,24 @@
   <% else %>
     <p>Currently not in a mentorship relationship.</p>
   <% end %>
+  <%= form_for(@user, url: internal_user_path(@user)) do |f| %>
+    <p>Ban from mentorship: <%= f.check_box :toggle_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
+    <p>Reason for action: <%= f.text_area :mentorship_note %></p>
+    <%= f.submit %>
+  <% end %>
 </div>
 
 <%= render "mentee_match" %>
 
-<h2><u>Recent Emails</u></h2>
-<ul>
-  <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
-    <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
-  <% end %>
-</ul>
+<div class="row">
+  <h3><u>Recent Emails</u></h3>
+  <ul>
+    <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+      <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
+    <% end %>
+  </ul>
+</div>
+
+<%= render "internal/users/notes" %>
 <br>
 <br>

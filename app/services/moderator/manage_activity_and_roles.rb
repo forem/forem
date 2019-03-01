@@ -16,6 +16,10 @@ module Moderator
       new(user: user, admin: admin, user_params: user_params).update_privileges
     end
 
+    def self.handle_mentorship_status(admin:, user:, user_params:)
+      new(user: user, adamin: admin, user_params: user_params).update_mentorship_status
+    end
+
     def delete_comments
       return unless user.comments.any?
 
@@ -61,20 +65,8 @@ module Moderator
       @user.remove_role :tag_moderator
     end
 
-    def add_note
-      return unless !user_params[:note].blank?
-
-      create_note("misc_note", user_params[:note])
-    end
-
     def create_note(reason, content)
-      Note.create(
-        author_id: admin.id,
-        noteable_id: @user.id,
-        noteable_type: "User",
-        reason: reason,
-        content: content,
-      )
+      NoteCreationService.new(@user, @admin).create(reason, content)
     end
 
     def handle_user_status(role, note)
@@ -102,6 +94,20 @@ module Moderator
       end
       create_note(role, note)
       update_trusted_cache
+    end
+
+    def update_mentorship_status
+      if user_params[:toggle_mentorship] == "1"
+        @user.add_role :banned_from_mentorship
+        mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
+        mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+        deactivate_mentorship(mentee_relationships)
+        deactivate_mentorship(mentor_relationships)
+        @user.update(offering_mentorship: false, seeking_mentorship: false)
+        create_note("banned_from_mentorship", user_params[:mentorship_note])
+      else
+        @user.remove_role :banned_from_mentorship
+      end
     end
 
     def update_trusted_cache

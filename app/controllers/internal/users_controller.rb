@@ -51,13 +51,24 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
     make_matches
-
-    @user.update!(user_params)
+    add_note if user_params[:new_note]
+    mentorship_status if user_params[:toggle_mentorship]
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
     else
       redirect_to "/internal/users/#{params[:id]}"
     end
+  end
+
+  def add_note
+    NoteCreationService.new(@user, current_user).create("misc_note", user_params[:new_note])
+  end
+
+  def mentorship_status
+    Moderator::ManageActivityAndRoles.handle_mentorship_status(admin: current_user, user: @user, user_params: user_params)
+    flash[:notice] = "User has been udated"
+  rescue StandardError => e
+    flash[:error] = e.message
   end
 
   def make_matches
@@ -100,17 +111,13 @@ class Internal::UsersController < Internal::ApplicationController
     params.require(:user).permit(:seeking_mentorship,
                                 :offering_mentorship,
                                 :quick_match,
-                                :note,
+                                :new_note,
                                 :add_mentor,
                                 :add_mentee,
                                 :ban_from_mentorship,
-                                :note_for_mentorship_ban,
                                 :note_for_current_role,
-                                :reason_for_mentorship_ban,
-                                :video_permission,
-                                :send_scholarship_email,
-                                :workshop_pass,
-                                :workshop_expiration,
-                                :user_status)
+                                :mentorship_note,
+                                :user_status,
+                                :toggle_mentorship)
   end
 end

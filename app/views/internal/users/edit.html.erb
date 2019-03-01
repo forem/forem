@@ -12,15 +12,6 @@
   <li><%= @user.following_users_count %> users following</li>
   <li><%= @user.badge_achievements_count %> badges</li>
 </ul>
-<p><strong>Current Roles</strong><em> (view full history in notes below)</em>:</p>
-<ul>
-  <% if @user.roles.empty? %>
-    <li>Regular Member</li>
-  <% end %>
-  <% @user.roles.each do |role| %>
-      <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
-  <% end %>
-</ul>
 <div class="row">
   <h2>User Status</h2>
   <% if @user.banned %>
@@ -34,6 +25,15 @@
   <% else %>
     <p style="color:green">Member is in good standing</p>
   <% end %>
+  <p><strong>Current Roles</strong><em> (view full history in notes below)</em>:</p>
+  <ul>
+    <% if @user.roles.empty? %>
+      <li>Regular Member</li>
+    <% end %>
+    <% @user.roles.each do |role| %>
+        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
+    <% end %>
+  </ul>
   <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
     <%= f.label "Select new user status" %>
     <%= f.select(:user_status, options_for_select(["Warn", "Comment Ban", "Ban", "Good Standing", "Trusted"]), include_blank: true) %>
@@ -78,23 +78,6 @@
     <p>Only super admins can fully delete users.</p>
   <% end %>
 </div>
-<div class="row">
-  <h3><u>Notes</u></h3>
-  <% if @user.notes.count > 0 %>
-    <% @user.notes.each do |note| %>
-      <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> -
-      <% if !note.reason.blank? %><strong><%= note.reason %>:</strong> <% end %><%= note.content %></p>
-    <% end %>
-  <% else %>
-    <p><em>No notes yet!</em></p>
-  <% end %>
-  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
-    <%= f.label "Add new note: " %>
-    <br>
-    <%= f.text_area :note %>
-    <br>
-    <%= f.submit "Submit Note" %>
-  <% end %>
-</div>
+<%= render "internal/users/notes" %>
 <br>
 <br>
