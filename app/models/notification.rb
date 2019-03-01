@@ -256,27 +256,11 @@ class Notification < ApplicationRecord
       milestone_hash[:next_milestone] = next_milestone(milestone_hash)
       return unless should_send_milestone?(milestone_hash)
 
-      random_giphy_id = %w(
-        nXxOjZrbnbRxS
-        y8Mz1yj13s3kI
-        9PyhoXey73EpW
-        OcZp0maz6ALok
-        111ebonMs90YLu
-        xjZtu4qi1biIo
-        Is1O1TWV0LEJi
-        lz24Z42jLcTa8
-        Sk5uipPXyBjfW
-        g9582DNuQppxC
-        l4HodBpDmoMA5p9bG
-        3oxOCfV7z28QtXXAtO
-        12P29BwtrvsbbW
-      ).sample
-
       Notification.create!(
         user_id: milestone_hash[:article].user_id,
         notifiable_id: milestone_hash[:article].id,
         notifiable_type: "Article",
-        json_data: { article: article_data(milestone_hash[:article]), gif_id: random_giphy_id },
+        json_data: { article: article_data(milestone_hash[:article]), gif_id: RandomGif.new.random_id },
         action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
       )
       if milestone_hash[:article].organization_id
