@@ -18,7 +18,7 @@ class ArticlesController < ApplicationController
       if @user = User.find_by_username(params[:username])
         @articles.where(user_id: @user.id)
       elsif @user = Organization.find_by_slug(params[:username])
-        @articles.where(user_id: @organization.id).includes(:user)
+        @articles.where(organization_id: @user.id).includes(:user)
       else
         render body: nil
         return
