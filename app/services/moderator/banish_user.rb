@@ -1,0 +1,37 @@
+module Moderator
+  class BanishUser < ManageActivityAndRoles
+    attr_reader :user, :admin
+
+    def self.call_banish(admin:, user:)
+      new(user: user, admin: admin).banish
+    end
+
+    def reassign_and_bust_username
+      new_name = "spam_#{rand(10000)}"
+      new_username = "spam_#{rand(10000)}"
+      if User.find_by(name: new_name) || User.find_by(username: new_username)
+        new_name = "spam_#{rand(10000)}"
+        new_username = "spam_#{rand(10000)}"
+      end
+      user.update_columns(name: new_name, username: new_username, old_username: user.username, profile_updated_at: Time.current)
+      CacheBuster.new.bust("/#{user.old_username}")
+    end
+
+    def remove_profile_info
+      user.update_columns(twitter_username: "", github_username: "", website_url: "", summary: "", location: "", education: "", employer_name: "", employer_url: "", employment_title: "", mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "")
+
+      user.update_columns(email_public: false, facebook_url: nil, dribbble_url: nil, medium_url: nil, stackoverflow_url: nil, behance_url: nil, linkedin_url: nil, gitlab_url: nil, mastodon_url: nil)
+
+      user.update_columns(remote_profile_image_url: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png") if Rails.env.production?
+    end
+
+    def banish
+      # user.unsubscribe_from_newsletters
+      # remove_profile_info
+      handle_user_status("Ban", "spam account")
+      # delete_user_activity
+      # user.remove_from_algolia_index
+      # reassign_and_bust_username
+    end
+  end
+end

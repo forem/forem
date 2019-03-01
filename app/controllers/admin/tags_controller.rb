@@ -2,7 +2,7 @@ module Admin
   class TagsController < Admin::ApplicationController
     def update
       @tag = Tag.find(params[:id])
-      if @tag.update(tag_params) && @tag.errors.messages.blank? && handle_moderators
+      if @tag.update(tag_params) && @tag.errors.messages.blank?
         flash[:notice] = "Tag successfully updated"
         redirect_to "/admin/tags/#{@tag.id}"
       else
@@ -36,11 +36,6 @@ module Admin
       ]
       convert_empty_string_to_nil
       params.require(:tag).permit(accessible)
-    end
-
-    def handle_moderators
-      user_ids = params[:tag][:tag_moderator_ids].split(",")
-      UserRoleService.new(nil, current_user.id).update_tag_moderators(user_ids.sort, @tag)
     end
   end
 end

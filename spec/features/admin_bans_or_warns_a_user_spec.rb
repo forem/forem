@@ -7,6 +7,7 @@ describe "changes user status" do
   before do
     sign_in admin
   end
+  # fd
 
   def ban_user
     visit "/internal/users/#{user.id}/edit"

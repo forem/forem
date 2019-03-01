@@ -22,50 +22,21 @@
   <% end %>
 </ul>
 <div class="row">
-  <h2>Privileges</h2>
-    <% if !@user.banned && !@user.warned %>
-      <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
-        <p>Add Trusted Role (Community Moderator)
-        <%= f.check_box :trusted_user, checked: @user.trusted %></p>
-        <p>Allow Video Uploads
-        <%= f.check_box :video_permission, checked: @user.has_role?(:video_permission) %> </p>
-        <%= f.submit "Update Privileges" %>
-      <% end %>
-    <% else %>
-      User must be in good standing to have heigtened privileges of any kind.
-    <% end %>
-</div>
-<div class="row">
-  <h2>Mentorship Status</h2>
-  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
-    <% if @user.banned_from_mentorship %>
-      <p style="background-color:red; color:white;">User is banned from mentorship program</p>
-    <% end %>
-    <p>Ban user from mentorship program <%= f.check_box :ban_from_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
-    <%= f.label "Reason: " %>
-    <%= f.text_area :note_for_mentorship_ban, required: true %>
-    <br>
-    <%= f.submit "Update Mentorship Status" %>
-  <% end %>
-</div>
-<div class="row">
   <h2>User Status</h2>
   <% if @user.banned %>
-    <p style="background-color:red;color:white">🚨 Suspended User 🚨</p>
+    <p style="background-color:red;color:white">🚨 Member is suspended 🚨</p>
   <% elsif @user.warned %>
-    <p style="background-color: orange;color:white">Warned User</p>
+    <p style="background-color: orange;color:white">Member is warned</p>
+  <% elsif @user.comment_banned %>
+    <p style="background-color: orange;color:white">Member is comment banned</p>
+  <% elsif @user.trusted %>
+    <p style="background-color: green;color:white">Member is trusted</p>
   <% else %>
-    <p style="color:green">Member in good standing</p>
+    <p style="color:green">Member is in good standing</p>
   <% end %>
   <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
-    <%= f.label "Warn User" %>
-    <%= f.check_box :warn_user, checked: @user.warned %>
-    <br>
-    <%= f.label "Comment Ban User" %>
-    <%= f.check_box :comment_ban, checked: @user.comment_banned %>
-    <br>
-    <%= f.label "Suspend User" %>
-    <%= f.check_box :ban_user, checked: @user.banned %>
+    <%= f.label "Select new user status" %>
+    <%= f.select(:user_status, options_for_select(["Warn", "Comment Ban", "Ban", "Good Standing", "Trusted"]), include_blank: true) %>
     <br>
     <%= f.label "Reason for action:" %>
     <%= f.text_area :note_for_current_role, required: true %>

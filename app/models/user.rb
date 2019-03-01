@@ -1,9 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :video_permission, :comment_ban
+  :note_for_current_role, :add_mentor, :add_mentee, :video_permission, :workshop_pass, :send_scholarship_email, :workshop_expiration, :user_status
 
   rolify
   include AlgoliaSearch
@@ -312,16 +312,8 @@ class User < ApplicationRecord
     end
   end
 
-  def reason_for_ban
-    return if notes.where(reason: "banned").blank?
-
-    Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
-  end
-
-  def reason_for_warning
-    return if notes.where(reason: "warned").blank?
-
-    Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
+  def tag_moderator?
+    has_role?(:tag_moderator)
   end
 
   def scholar

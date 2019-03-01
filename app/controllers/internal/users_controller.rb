@@ -37,9 +37,12 @@ class Internal::UsersController < Internal::ApplicationController
 
   def user_status
     @user = User.find(params[:id])
-    handle_user_status
-    handle_user_privileges
-    add_note
+    begin
+      Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
+      flash[:notice] = "User has been udated"
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
@@ -57,95 +60,6 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def handle_user_status
-    toggle_ban_user if user_params[:ban_user]
-    toggle_warn_user if user_params[:warn_user]
-    toggle_trust_user if user_params[:trusted_user]
-  end
-
-  def handle_user_privileges
-    toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
-    toggle_video_permission if user_params[:video_permission]
-    toggle_comment_ban if user_params[:comment_ban]
-  end
-
-  def toggle_video_permission
-    if user_params[:video_permission] == "1"
-      @user.add_role :video_permission
-    else
-      @user.remove_role :video_permission
-    end
-  end
-
-  def toggle_ban_user
-    if user_params[:ban_user] == "1"
-      @user.add_role :banned
-      @user.remove_role :trusted
-      @user.remove_role :video_permission
-      @user.remove_role :tag_moderator
-      create_note("banned", user_params[:note_for_current_role])
-    else
-      @user.remove_role :banned
-      create_note("good_standing", user_params[:note_for_current_role])
-    end
-  end
-
-  def toggle_comment_ban
-    if user_params[:comment_ban] == "1"
-      @user.add_role :comment_banned
-      @user.add_role :warned
-      @user.remove_role :trusted
-      @user.remove_role :tag_moderator
-      create_note("comment_banned", user_params[:note_for_current_role])
-    else
-      @user.remove_role :comment_banned
-      create_note("good_standing", user_params[:note_for_current_role])
-    end
-  end
-
-  def toggle_trust_user
-    if user_params[:trusted_user] == "1"
-      @user.add_role :trusted
-    else
-      @user.remove_role :trusted
-    end
-    Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-    @user.trusted
-  end
-
-  def toggle_warn_user
-    if user_params[:warn_user] == "1"
-      @user.add_role :warned
-      @user.remove_role :trusted
-      @user.remove_role :tag_moderator
-      create_note("warned", user_params[:note_for_current_role])
-    else
-      @user.remove_role :warned
-      create_note("good_standing", user_params[:note_for_current_role])
-    end
-  end
-
-  def add_note
-    return unless !user_params[:note].blank?
-
-    create_note("misc_note", user_params[:note])
-  end
-
-  def create_note(reason, content)
-    Note.create(
-      author_id: current_user.id,
-      noteable_id: @user.id,
-      noteable_type: "User",
-      reason: reason,
-      content: content,
-    )
-  end
-
-  def inactive_mentorship(mentor, mentee)
-    relationship = MentorRelationship.where(mentor_id: mentor.id, mentee_id: mentee.id)
-    relationship.update(active: false)
-  end
-
   def make_matches
     return if @new_mentee.blank? && @new_mentor.blank?
 
@@ -159,30 +73,10 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
-  def toggle_ban_from_mentorship
-    if user_params[:ban_from_mentorship] == "1"
-      @user.add_role :banned_from_mentorship
-      mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-      mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
-      deactivate_mentorship(mentee_relationships)
-      deactivate_mentorship(mentor_relationships)
-      @user.update(offering_mentorship: false, seeking_mentorship: false)
-      create_note("banned_from_mentorship", user_params[:note_for_mentorship_ban])
-    else
-      @user.remove_role :banned_from_mentorship
-    end
-  end
-
-  def deactivate_mentorship(relationships)
-    relationships.each do |relationship|
-      relationship.update(active: false)
-    end
-  end
-
   def banish
     @user = User.find(params[:id])
     begin
-      Moderator::Banisher.call_banish(admin: current_user, offender: @user)
+      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
     rescue StandardError => e
       flash[:error] = e.message
     end
@@ -192,7 +86,7 @@ class Internal::UsersController < Internal::ApplicationController
   def full_delete
     @user = User.find(params[:id])
     begin
-      Moderator::Banisher.call_delete_activity(admin: current_user, offender: @user)
+      Moderator::DeleteUser.call_delete_activity(admin: current_user, user: @user)
       flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
     rescue StandardError => e
       flash[:error] = e.message
@@ -210,13 +104,13 @@ class Internal::UsersController < Internal::ApplicationController
                                 :add_mentor,
                                 :add_mentee,
                                 :ban_from_mentorship,
-                                :ban_user,
-                                :warn_user,
                                 :note_for_mentorship_ban,
                                 :note_for_current_role,
                                 :reason_for_mentorship_ban,
-                                :trusted_user,
                                 :video_permission,
-                                :comment_ban)
+                                :send_scholarship_email,
+                                :workshop_pass,
+                                :workshop_expiration,
+                                :user_status)
   end
 end
