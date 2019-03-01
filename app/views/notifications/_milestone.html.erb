@@ -4,7 +4,7 @@
     Your post <a href="<%= json_data["article"]["path"] %>"><%= json_data["article"]["title"] %></a> just passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
   </div>
   <p class="badge-description milestone-emojis">🎉🎉🎉🎉🎉🎉🎉🎉</p>
-  <a href="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" rel="noopener noreferrer" target="_blank">
+  <a href="https:/giphy.com/gifs/<%= json_data["gif_id"] %>" rel="noopener noreferrer" target="_blank">
     <img class="milestone-gif" src="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" alt="A random celebratory gif!">
   </a>
   <br>
