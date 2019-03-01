@@ -1,32 +1,40 @@
 <% if @default_home_feed && user_signed_in? %>
   <% cache("fetched-home-articles-object", expires_in: 3.minutes) do %>
-      <% @new_stories = Article.where("published_at > ? AND score > ?", rand(2..6).hours.ago, -30).
-        where(published: true).
-        includes(:user).
-        limit(rand(15..60)).
-        order("published_at DESC").
-        limited_column_select.
-        decorate %>
-      <div id="new-articles-object" data-articles="
-      <%= @new_stories.to_json(only:
-                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count, :organization_id,
-                             :reading_time, :video_thumbnail_url, :video],
-                          methods:
-                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name, :cloudinary_video_url, :video_duration_in_minutes],
-                          include: {user: {only: [:username, :name], methods: [:profile_image_90]},
-                                    organization: {only: [:slug, :name], methods: [:profile_image_90]}}) %>">
+    <% @new_stories = Article.where("published_at > ? AND score > ?", rand(2..6).hours.ago, -30).
+         where(published: true).
+         includes(:user).
+         limit(rand(15..60)).
+         order("published_at DESC").
+         limited_column_select.
+         decorate %>
+    <div id="new-articles-object" data-articles="
+      <%= @new_stories.to_json(
+            only: %i[title path id user_id comments_count positive_reactions_count organization_id
+                     reading_time video_thumbnail_url video video_duration_in_minutes
+                     experience_level_rating experience_level_rating_distribution],
+            methods: %i[readable_publish_date cached_tag_list_array flare_tag class_name
+                        cloudinary_video_url video_duration_in_minutes],
+            include: {
+              user: { only: %i[username name], methods: [:profile_image_90] },
+              organization: { only: %i[slug name], methods: [:profile_image_90] }
+            },
+          ) %>">
     </div>
     <div id="home-articles-object" data-articles="
-      <%= @stories.to_json(only:
-                            [:title, :path, :id, :user_id, :comments_count, :positive_reactions_count, :organization_id,
-                             :reading_time, :video_thumbnail_url, :video, :video_duration_in_minutes],
-                          methods:
-                            [:readable_publish_date, :cached_tag_list_array, :flare_tag, :class_name, :cloudinary_video_url, :video_duration_in_minutes],
-                          include: { user: {only: [:username, :name], methods: [:profile_image_90]},
-                                    organization: {only: [:slug, :name], methods: [:profile_image_90]}}) %>">
+      <%= @stories.to_json(
+            only: %i[title path id user_id comments_count positive_reactions_count organization_id
+                     reading_time video_thumbnail_url video video_duration_in_minutes
+                     experience_level_rating experience_level_rating_distribution],
+            methods: %i[readable_publish_date cached_tag_list_array flare_tag class_name
+                        cloudinary_video_url video_duration_in_minutes],
+            include: {
+              user: { only: %i[username name], methods: [:profile_image_90] },
+              organization: { only: %i[slug name], methods: [:profile_image_90] }
+            },
+          ) %>">
       <% 3.times do %>
         <div class="single-article single-article-small-pic">
-          <div class="small-pic" >
+          <div class="small-pic">
             <div class="color single-article-loading"></div>
           </div>
           <div class="content">
@@ -45,7 +53,7 @@
   <% @stories.each_with_index do |story, i| %>
     <% next if story.id == @featured_story.id %>
     <% if !user_signed_in? && i == 4 %>
-      <%= render 'stories/sign_in_invitation' %>
+      <%= render "stories/sign_in_invitation" %>
     <% end %>
     <%= render "articles/single_story", story: story %>
   <% end %>

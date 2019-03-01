@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190216185753) do
+ActiveRecord::Schema.define(version: 20190227163803) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,8 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.string "description"
     t.datetime "edited_at"
     t.boolean "email_digest_eligible", default: true
+    t.float "experience_level_rating", default: 5.0
+    t.float "experience_level_rating_distribution", default: 5.0
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
     t.float "featured_clickthrough_rate", default: 0.0
@@ -81,6 +83,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.string "language"
     t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_experience_level_rating_at"
     t.datetime "last_invoiced_at"
     t.decimal "lat", precision: 10, scale: 6
     t.boolean "live_now", default: false
@@ -100,6 +103,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
+    t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
@@ -573,6 +577,17 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.index ["user_id"], name: "index_push_notification_subscriptions_on_user_id"
   end
 
+  create_table "rating_votes", force: :cascade do |t|
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.string "group"
+    t.float "rating"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_rating_votes_on_article_id"
+    t.index ["user_id"], name: "index_rating_votes_on_user_id"
+  end
+
   create_table "reactions", id: :serial, force: :cascade do |t|
     t.string "category"
     t.datetime "created_at", null: false
@@ -798,6 +813,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
+    t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.datetime "remember_created_at"
     t.string "remember_token"

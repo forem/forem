@@ -47,7 +47,9 @@
           @user.summary.to_s.size < 145
           %>
         <style>
-          .user-profile-header {min-height: 398px;}
+          .user-profile-header {
+            min-height: 398px;
+          }
         </style>
       <% end %>
       <% if @user.email_public && context != "sidebar" %>
@@ -68,7 +70,7 @@
           <div class="value">
             <span><%= @user.employment_title %></span>
             <% if @user.employer_name.present? %>
-              <span> at <span>
+              <span> at </span>
               <% if @user.employer_url.present? %>
                 <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
               <% else %>

@@ -73,6 +73,7 @@ class UserPolicy < ApplicationPolicy
        employer_name
        employer_url
        employment_title
+       experience_level
        facebook_url
        feed_admin_publish_permission
        feed_mark_canonical

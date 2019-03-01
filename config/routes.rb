@@ -130,6 +130,7 @@ Rails.application.routes.draw do
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: [:create]
+  resources :rating_votes, only: [:create]
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
@@ -237,6 +238,7 @@ Rails.application.routes.draw do
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
+  get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 

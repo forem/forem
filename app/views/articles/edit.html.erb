@@ -4,21 +4,22 @@
   <div style="text-align:center;padding-top:60px;margin:auto;max-width:880px;margin-bottom:-50px;">
 
     <% if @article.video_state == "PROGRESSING" %>
-        <h1 style="color:#062144;margin-top:1.1em">⏳ Video Transcoding In Progress ⏳</h1>
-        <img src="https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif" style="border-radius:12px;height:317px" />
-        <div style="max-width:500px;margin:18px auto 0px;font-size:0.8em;">
-          <p>
-            <strong>You'll get an email when this process finishes.</strong>
-          </p> 
-          <p>
-            <em>This is an ordinary unpublished post. Add title/tags/body/etc, and then mark as published after the video is done processing.</em>
-          </p>
-        </div>
+      <h1 style="color:#062144;margin-top:1.1em">⏳ Video Transcoding In Progress ⏳</h1>
+      <img src="https://media.giphy.com/media/tXL4FHPSnVJ0A/giphy.gif" style="border-radius:12px;height:317px" />
+      <div style="max-width:500px;margin:18px auto 0px;font-size:0.8em;">
+        <p>
+          <strong>You'll get an email when this process finishes.</strong>
+        </p>
+        <p>
+          <em>This is an ordinary unpublished post. Add title/tags/body/etc, and then mark as published after the video
+            is done processing.</em>
+        </p>
+      </div>
     <% elsif @article.video_state == "COMPLETED" %>
-      <br/></br/>
-      <%= render "articles/video_player", meta_tags: false, article: @article  %>
+      <br /><br />
+      <%= render "articles/video_player", meta_tags: false, article: @article %>
       <div style="padding-top:15px;">
-        
+
         <%= form_for(@article) do |f| %>
           Change preview image (via URL): <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
           <%= f.submit "Submit Change" %>
@@ -30,9 +31,9 @@
   </div>
 <% end %>
 
-  <% unless @article.has_frontmatter? %>
-    <%= javascript_pack_tag 'articleForm', defer: true %>
-    <%= render 'articles/v2_form' %>
-  <% else %>
-    <%= render 'articles/markdown_form' %>
-  <% end %>
+<% unless @article.has_frontmatter? %>
+  <%= javascript_pack_tag "articleForm", defer: true %>
+  <%= render "articles/v2_form" %>
+<% else %>
+  <%= render "articles/markdown_form" %>
+<% end %>

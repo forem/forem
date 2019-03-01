@@ -2,10 +2,10 @@
 
 <% if user_signed_in? %>
   <% if current_user.editor_version == "v2" %>
-    <%= javascript_pack_tag 'articleForm', defer: true %>
-    <%= render 'articles/v2_form' %>
+    <%= javascript_pack_tag "articleForm", defer: true %>
+    <%= render "articles/v2_form" %>
   <% else %>
-    <%= render 'articles/markdown_form' %>
+    <%= render "articles/markdown_form" %>
   <% end %>
 <% else %>
   <%= render "devise/registrations/registration_form" %>

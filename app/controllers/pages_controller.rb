@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[rlyweb now events membership survey]
+  before_action :set_cache_control_headers, only: %i[rlyweb now events membership survey badge]
 
   def now
     set_surrogate_key_header "now_page"

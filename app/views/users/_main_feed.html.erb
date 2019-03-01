@@ -1,6 +1,6 @@
 <% @stories.each_with_index do |story, i| %>
   <% if !user_signed_in? && i == 4 %>
-    <%= render 'stories/sign_in_invitation' %>
+    <%= render "stories/sign_in_invitation" %>
   <% end %>
   <%= render "articles/single_story", story: story %>
   <% if i == 0 && @comments.any? %>

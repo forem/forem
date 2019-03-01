@@ -1,4 +1,6 @@
 class HtmlVariant < ApplicationRecord
+  include CloudinaryHelper
+
   validates :html, presence: true
   validates :name, uniqueness: true
   validates :group, inclusion: { in: %w(article_show_sidebar_cta article_show_below_article_cta badge_landing_page) }
