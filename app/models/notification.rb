@@ -386,6 +386,8 @@ class Notification < ApplicationRecord
     end
 
     def should_send_milestone?(milestone_hash)
+      return if milestone_hash[:article].published_at < DateTime.new(2019, 2, 25)
+
       last_milestone_notification = Notification.find_by(
         user_id: milestone_hash[:article].user_id,
         notifiable_type: "Article",
