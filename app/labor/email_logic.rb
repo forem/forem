@@ -35,16 +35,17 @@ class EmailLogic
                    where("published_at > ?", fresh_date).
                    where(published: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
-                   where("positive_reactions_count > ?", 15).
-                   order("positive_reactions_count DESC").
+                   where("score > ?", 12).
+                   where("experience_level_rating > ? AND experience_level_rating > ?", @user.experience_level - 3.5, @user.experience_level + 3.5).
+                   order("score DESC").
                    limit(6)
                else
                  Article.
                    where("published_at > ?", fresh_date).
                    where(published: true, featured: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
-                   where("positive_reactions_count > ?", 30).
-                   order("positive_reactions_count DESC").
+                   where("score > ?", 25).
+                   order("score DESC").
                    limit(6)
                end
     if articles.length < 3
