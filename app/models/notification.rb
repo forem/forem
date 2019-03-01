@@ -263,6 +263,13 @@ class Notification < ApplicationRecord
         OcZp0maz6ALok
         111ebonMs90YLu
         xjZtu4qi1biIo
+        Is1O1TWV0LEJi
+        lz24Z42jLcTa8
+        Sk5uipPXyBjfW
+        g9582DNuQppxC
+        l4HodBpDmoMA5p9bG
+        3oxOCfV7z28QtXXAtO
+        12P29BwtrvsbbW
       ).sample
 
       Notification.create!(

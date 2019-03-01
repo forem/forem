@@ -76,11 +76,14 @@
             img.badge-image{
               margin:10px 0px 20px;
               height: 150px;
-              &.milestone-gif{
-                height: 200px;
-                margin-bottom: 10px;
-              }
             }
+            img.milestone-gif{
+                margin: 10px 0px 10px;
+                max-width: 300px;
+                max-height: 200px;
+                width: auto;
+                height: auto;
+              }
             p.badge-reward-message{
               margin: 8px auto;
               width: 90%;
