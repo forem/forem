@@ -1,28 +1,29 @@
 <script>
-  function timeNow(objectID){
+  function timeNow(objectID) {
     var seconds = new Date().getTime() / 1000;
-    document.getElementById("featured_number_"+objectID).value = Math.round(seconds);
-  }
-  function sink(objectID){
-    var seconds = new Date().getTime() / 1080;
-    document.getElementById("featured_number_"+objectID).value = Math.round(seconds);
+    document.getElementById("featured_number_" + objectID).value = Math.round(seconds);
   }
 
-  $('.row').on("submit", "form", function() {
+  function sink(objectID) {
+    var seconds = new Date().getTime() / 1080;
+    document.getElementById("featured_number_" + objectID).value = Math.round(seconds);
+  }
+
+  $('.row').on("submit", "form", function () {
     var form = $(this);
     var valuesToSubmit = $(this).serialize();
     $.ajax({
-        type: "POST",
-        url: $(this).attr('action'), //sumbits it to the given url of the form
-        data: valuesToSubmit,
-        // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
-    }).success(function(json){
+      type: "POST",
+      url: $(this).attr('action'), //sumbits it to the given url of the form
+      data: valuesToSubmit,
+      // dataType: "JSON" // you want a difference between normal and ajax-calls, and json is standard
+    }).success(function (json) {
       console.log("success")
       form.parents(".row").addClass("highlighted-bg")
       form.parents(".row").addClass("highlighted-border")
-      setTimeout(function(){
+      setTimeout(function () {
         form.parents(".row").removeClass("highlighted-bg")
-      },350)
+      }, 350)
     });
     return false; // prevents normal behaviour
   });
@@ -44,10 +45,10 @@
       document.getElementById('image-upload-file-label').innerHTML = "Uploading...";
       document.getElementById('uploaded-image').style = 'display:none';
       document.getElementById('image-upload-submit').value = "uploading";
-      setTimeout(function(){
-        document.getElementById('image-upload-submit').click(function(){
+      setTimeout(function () {
+        document.getElementById('image-upload-submit').click(function () {
         });
-      },50)
+      }, 50)
     }
   }
 
@@ -86,9 +87,9 @@
 
   function createAjaxReq() {
     if (window.XMLHttpRequest) {
-       return new XMLHttpRequest();
+      return new XMLHttpRequest();
     } else {
-       return new ActiveXObject("Microsoft.XMLHTTP");
+      return new ActiveXObject("Microsoft.XMLHTTP");
     }
-   }
+  }
 </script>

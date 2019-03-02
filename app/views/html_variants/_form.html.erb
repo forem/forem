@@ -7,9 +7,9 @@
     <h2><%= pluralize(@html_variant.errors.count, "error") %> prohibited this block from being saved:</h2>
 
     <ul>
-    <% @html_variant.errors.full_messages.each do |message| %>
-      <li><%= message %></li>
-    <% end %>
+      <% @html_variant.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
     </ul>
   </div>
 <% end %>
