@@ -16,7 +16,7 @@
   <%= label_tag(:search, "Find by:") %>
   <%= text_field_tag(:search, params[:search]) %>
   <% if params[:state].present? %>
-  <%= hidden_field_tag(:state, params[:state]) %>
+    <%= hidden_field_tag(:state, params[:state]) %>
   <% end %>
   <%= submit_tag("Search") %>
   <em style="font-size:0.78em;">(<b>fields:</b> name, username, twitter_username, github_username, email)</em>

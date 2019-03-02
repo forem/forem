@@ -13,7 +13,9 @@
       <% if article.user&.notes&.any? %>
         <h2>User Notes (<%= article.user&.notes&.size %> total)</h2>
         <% article.user&.notes&.last(3)&.each do |note| %>
-          <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= note.author_id ? User.find(note.author_id).username : "No Author" %></em> - <%= note.content %></p>
+          <p>
+            <em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= note.author_id ? User.find(note.author_id).username : "No Author" %></em> - <%= note.content %>
+          </p>
         <% end %>
         <p><a href="/internal/users/<%= article.user_id %>">View All</a></p>
       <% end %>
@@ -27,20 +29,21 @@
         Originally Published <%= article.published_at&.strftime("%b %d, %Y") %>
       </p>
     <% elsif article.crossposted_at? %>
-    <p>
-      Crossposted <%= article.crossposted_at.strftime("%b %d, %Y") %> & Published <%= article.published_at&.strftime("%b %d, %Y") %>
-    </p>
+      <p>
+        Crossposted <%= article.crossposted_at.strftime("%b %d, %Y") %> & Published <%= article.published_at&.strftime("%b %d, %Y") %>
+      </p>
     <% else %>
-    <p>
-      Published <%= article.published_at&.strftime("%b %d, %Y") %>
-    </p>
+      <p>
+        Published <%= article.published_at&.strftime("%b %d, %Y") %>
+      </p>
     <% end %>
     <% if article.main_image.present? %>
-        <div style="max-height:450px;overflow:hidden;">
-            <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;" alt="cover image" /><br />
-        </div>
+      <div style="max-height:450px;overflow:hidden;">
+        <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;" alt="cover image" /><br />
+      </div>
     <% end %>
-    <b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b> <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a>
+    <b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b>
+    <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a>
     <% article.decorate.cached_tag_list_array.each do |tag| %>
       <a href='/t/<%= tag %>'>#<%= tag %></a>
     <% end %>
@@ -51,24 +54,33 @@
         <input name="utf8" type="hidden" value="✓">
         <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
         <input type="hidden" name="_method" value="patch" />
-        Featured Number: <input name="article[featured_number]" value="<%= article.featured_number %>" id="featured_number_<%= article.id %>" style="max-width:140px"><button onclick="timeNow(<%= article.id %>);return false;">☝️</button><button onclick="sink(<%= article.id %>);return false;">👇 SPAM!</button>
+        Featured Number:
+        <input name="article[featured_number]" value="<%= article.featured_number %>" id="featured_number_<%= article.id %>" style="max-width:140px">
+        <button onclick="timeNow(<%= article.id %>);return false;">☝️</button>
+        <button onclick="sink(<%= article.id %>);return false;">👇 SPAM!</button>
         Change author: <input size="6" name="article[user_id]" value="<%= article.user_id %>" />
         &nbsp Featured: <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %>>
         &nbsp Approved: <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %>>
         &nbsp Live Now: <input name="article[live_now]" type="checkbox" <%= "checked" if article.live_now %>>
-        &nbsp Email Digest Eligible: <input name="article[email_digest_eligible]" type="checkbox" <%= "checked" if article.email_digest_eligible %>>
-        &nbsp Image BG color: <input name="article[main_image_background_hex_color]" value="<%= article.main_image_background_hex_color %>" id="featured_number_<%= article.id %>">
-        Social Image: <input name="article[social_image]" value="<%= article.social_image %>" id="featured_number_<%= article.id %>">
+        &nbsp Email Digest Eligible:
+        <input name="article[email_digest_eligible]" type="checkbox" <%= "checked" if article.email_digest_eligible %>>
+        &nbsp Image BG color:
+        <input name="article[main_image_background_hex_color]" value="<%= article.main_image_background_hex_color %>" id="featured_number_<%= article.id %>">
+        Social Image:
+        <input name="article[social_image]" value="<%= article.social_image %>" id="featured_number_<%= article.id %>">
         <br /><br />
-        Boosted (Additional articles): <input name="article[boosted_additional_articles]" type="checkbox" <%= "checked" if article.boosted_additional_articles %>>
-        &nbsp Boosted (DEV Digest): <input name="article[boosted_dev_digest_email]" type="checkbox" <%= "checked" if article.boosted_dev_digest_email %>>
+        Boosted (Additional articles):
+        <input name="article[boosted_additional_articles]" type="checkbox" <%= "checked" if article.boosted_additional_articles %>>
+        &nbsp Boosted (DEV Digest):
+        <input name="article[boosted_dev_digest_email]" type="checkbox" <%= "checked" if article.boosted_dev_digest_email %>>
 
         <% if params[:state]&.include?("classic") %>
           <br /><br />
           <textarea cols="70" rows="6" wrap="hard" name="article[body_markdown]"><%= article.body_markdown %></textarea>
         <% end %>
 
-        &nbsp &nbsp <button class="btn btn-primary">SUBMIT</button>
+        &nbsp &nbsp
+        <button class="btn btn-primary">SUBMIT</button>
       </form>
       <div>
         <% article.buffer_updates.order("created_at ASC").each do |buffer_update| %>
@@ -92,14 +104,14 @@
         <b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).size %> EMAILS</b>
         <br />
         <b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where("sent_at > ?", 1.week.ago).size %> EMAILS IN THE PAST WEEK</b>
-        <br /></br />
+        <br /><br />
         <b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where.not(opened_at: nil).size %> OPENED EMAILS</b>
         <br />
         <b>BOOSTED IN <%= EmailMessage.where("subject LIKE ?", "%#{phrase}%").where.not(opened_at: nil).where.not(opened_at: nil).where("sent_at > ?", 1.week.ago).size %> OPENED EMAILS IN THE PAST WEEK</b>
       <% end %>
     </div>
     <div>
-      <button class="btn toggle-buffering-butt" style="margin:10px;0px;padding:10px 30px;border: 2px solid black;font-size:1.1em">
+      <button class="btn toggle-buffering-butt" style="margin:10px 0px;padding:10px 30px;border: 2px solid black;font-size:1.1em">
         Share to Buffer
       </button>
       <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
@@ -117,7 +129,8 @@
               <input type="hidden" name="social_channel" value="main_twitter" />
               <input type="hidden" name="article_id" value="<%= article.id %>" />
               <p> Twitter MAIN</p>
-              <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %><% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
+              <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %>
+                <% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
               <button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @ThePracticalDev</button>
             <% end %>
             <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
@@ -125,7 +138,8 @@
                 <input type="hidden" name="social_channel" value="satellite_twitter" />
                 <input type="hidden" name="article_id" value="<%= article.id %>" />
                 <p> Twitter Satellite</p>
-                <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %><% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
+                <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %>
+                  <% if !article.user.twitter_username.blank? %>&#013{ author: @<%= article.user.twitter_username %> }<% end %></textarea>
                 <button class="btn btn-info" style="font-size:1em;">🐦 Tweet to satellites</button>
               <% end %>
             <% end %>

@@ -14,7 +14,8 @@
 
 <% if params[:state] == "previous-registration" %>
   <div class="notice error-notice" id="notice">
-    There is an existing account authorized with that social account. Contact <a href="mailto:yo@dev.to">yo@dev.to</a> if this is a mistake.
+    There is an existing account authorized with that social account. Contact
+    <a href="mailto:yo@dev.to">yo@dev.to</a> if this is a mistake.
   </div>
 <% end %>
 
@@ -42,7 +43,8 @@
     <div class="field-notice">
       Email Verification
       <div class="small">
-        you have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a><br />
+        you have requested a change to
+        <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a><br />
         check your inbox for the verification link to finalize the change.
       </div>
     </div>
@@ -74,7 +76,7 @@
 
   <div class="settings-hub">
     <% @tab_list.each do |possible_tab| %>
-      <% if @tab == possible_tab.downcase.gsub(" ","-") %>
+      <% if @tab == possible_tab.downcase.gsub(" ", "-") %>
         <div class="single-settings-tab selected">
           <%= possible_tab %>
         </div>

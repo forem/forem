@@ -1,7 +1,8 @@
 <style>
-  .top-nav{
+  .top-nav {
     line-height: 1.4em;
   }
+
   .top-nav a {
     display: inline-block;
   }
@@ -18,7 +19,12 @@
 </div>
 <br />
 <br />
-<style>.top-nav a {border: 1px solid #d8d8d8;font-weight: bold;margin-right: 3px;font-size:0.66em}</style>
+<style>.top-nav a {
+  border: 1px solid #d8d8d8;
+  font-weight: bold;
+  margin-right: 3px;
+  font-size: 0.66em
+}</style>
 <h3 class="top-nav">
   <a href="/internal/articles" class="btn <%= "btn-success" if params[:state].blank? %>">Hot</a>
   <a href="/internal/articles?state=chronological" class="btn <%= "btn-success" if params[:state] == "chronological" %>">Chronological</a>
@@ -32,10 +38,10 @@
   <a href="/internal/articles?state=boosted-additional-articles" class="btn <%= "btn-success" if params[:state] == "boosted-additional-articles" %>">Boosted</a>
 </h3>
 <br />
-  <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
-    <h1 style="color:red">
-      <%= params[:state] %>-months
-    </h1>
+<% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
+  <h1 style="color:red">
+    <%= params[:state] %>-months
+  </h1>
 <% end %>
 
 <% if @featured_articles && @featured_articles.any? %>
