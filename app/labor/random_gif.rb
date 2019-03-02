@@ -19,6 +19,8 @@ class RandomGif
       "3o7qDOzZAhOslfIgMM" => { aspect_ratio: 0.807 },
       "l0K4glBiv82lZ0Zuo" => { aspect_ratio: 0.563 },
       "3o7qDM7FZJG4wmf8ZO" => { aspect_ratio: 0.81 },
+      "7EcgJbeY0yCRy" => { aspect_ratio: 0.750 },
+      "Gf3fU0qPtI6uk" => { aspect_ratio: 0.750 }
     }
   end
 

@@ -8,6 +8,7 @@
       border: 2px solid black;
       font-weight: bold;
     }
+
     .level-rating-button.selected {
       background: #9bebff;
     }
@@ -35,8 +36,8 @@
             <% end %>
           </center>
           <div class="body">
-          <%= HTML_Truncator.truncate(article.processed_html,
-                200, ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe %>
+            <%= HTML_Truncator.truncate(article.processed_html,
+                                        200, ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe %>
           </div>
           <center>
             <h2><a href="<%= article.path %>/mod">Moderate</a></h2>

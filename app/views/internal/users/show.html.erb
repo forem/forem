@@ -3,27 +3,37 @@
     width: calc(20% - 1rem);
     float: left;
   }
+
   dd {
     width: calc(80% - 1rem)
   }
 </style>
 <div class="row">
   <h1>
-  <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
+    <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
   </h1>
-  <p><u><a style="color: red" href="/internal/users/<%= @user.id %>/edit">click here to banish or delete user</a></u></p>
+  <p><u><a style="color: red" href="/internal/users/<%= @user.id %>/edit">click here to banish or delete user</a></u>
+  </p>
   <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
   <p><strong><u>General Info</u></strong></p>
   <dl>
-    <dt>ID:</dt><dd><%= @user.id %></span></dd>
-    <dt>Username:</dt><dd><%= @user.username %></dd>
-    <dt>Name:</dt><dd><%= @user.name %></dd>
-    <dt>Email:</dt><dd><%= @user.email %></dd>
-    <dt>Twitter:</dt><dd><%= @user.twitter_username || "N/A" %></dd>
-    <dt>GitHub:</dt><dd><%= @user.github_username || "N/A" %></dd>
-    <dt>Sustaining Member:</dt><dd><%= @user.a_sustaining_member? %></dd>
+    <dt>ID:</dt>
+    <dd><%= @user.id %></span></dd>
+    <dt>Username:</dt>
+    <dd><%= @user.username %></dd>
+    <dt>Name:</dt>
+    <dd><%= @user.name %></dd>
+    <dt>Email:</dt>
+    <dd><%= @user.email %></dd>
+    <dt>Twitter:</dt>
+    <dd><%= @user.twitter_username || "N/A" %></dd>
+    <dt>GitHub:</dt>
+    <dd><%= @user.github_username || "N/A" %></dd>
+    <dt>Sustaining Member:</dt>
+    <dd><%= @user.a_sustaining_member? %></dd>
     <% if @user.a_sustaining_member? %>
-      <dt>Monthly Dues:</dt><dd><%= @user.monthly_dues %></dd>
+      <dt>Monthly Dues:</dt>
+      <dd><%= @user.monthly_dues %></dd>
     <% end %>
   </dl>
 
@@ -44,19 +54,19 @@
   <p>(view full history in notes below)</p>
   <ul>
     <% @user.roles.each do |role| %>
-        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
+      <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
     <% end %>
   </ul>
   <h3><u>Privileges</u></h3>
-    <% if !@user.banned && !@user.warned %>
-      <%= form_for [:internal, @user] do |f| %>
-        <p>Add Trusted Role (Community Moderator)
+  <% if !@user.banned && !@user.warned %>
+    <%= form_for [:internal, @user] do |f| %>
+      <p>Add Trusted Role (Community Moderator)
         <%= f.check_box :trusted_user, checked: @user.trusted %></p>
-        <%= f.submit "Update Privileges" %>
-      <% end %>
-    <% else %>
-      User must be in good standing to have heigtened privileges of any kind.
+      <%= f.submit "Update Privileges" %>
     <% end %>
+  <% else %>
+    User must be in good standing to have heigtened privileges of any kind.
+  <% end %>
   <br>
   <h3><u>Warn or Ban User</u></h3>
   <% if @user.banned %>
@@ -84,30 +94,30 @@
   <% if @user.mentors.count > 0 %>
     <h4> Mentor(s):</h4>
     <ul>
-    <% @user_mentor_relationships.each do |relationship| %>
-      <li>
-        <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
-        <% if relationship.active %>
-          <span style="color:green"><em> (active)</em></span>
-        <% else %>
-          <span style="color:red"><em> (inactive)</em></span>
-        <% end %>
-      </li>
-    <% end %>
+      <% @user_mentor_relationships.each do |relationship| %>
+        <li>
+          <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
+          <% if relationship.active %>
+            <span style="color:green"><em> (active)</em></span>
+          <% else %>
+            <span style="color:red"><em> (inactive)</em></span>
+          <% end %>
+        </li>
+      <% end %>
     </ul>
   <% elsif @user.mentees.count > 0 %>
     <h4>Mentee(s):</h4>
     <ul>
-    <% @user_mentee_relationships.each do |relationship| %>
-      <li>
-        <a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
-        <% if relationship.active %>
-          <span style="color:green"><em> (active)</em></span>
-        <% else %>
-          <span style="color:red"><em> (inactive)</em></span>
-        <% end %>
-      </li>
-    <% end %>
+      <% @user_mentee_relationships.each do |relationship| %>
+        <li>
+          <a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
+          <% if relationship.active %>
+            <span style="color:green"><em> (active)</em></span>
+          <% else %>
+            <span style="color:red"><em> (inactive)</em></span>
+          <% end %>
+        </li>
+      <% end %>
     </ul>
   <% end %>
   <%= form_for [:internal, @user] do |f| %>
@@ -126,7 +136,8 @@
   <% if @user.notes.count > 0 %>
     <% @user.notes.each do |note| %>
       <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> -
-      <% if !note.reason.blank? %><strong><%= note.reason %>:</strong> <% end %><%= note.content %></p>
+        <% if !note.reason.blank? %><strong><%= note.reason %>:</strong>
+          <% end %><%= note.content %></p>
     <% end %>
   <% else %>
     <p><em>No notes yet!</em></p>
@@ -145,7 +156,8 @@
 <h2><u>Recent Emails</u></h2>
 <ul>
   <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
-    <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a> <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
+    <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a>
+      <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
   <% end %>
 </ul>
 <br>

@@ -60,19 +60,19 @@
 <script src="https://checkout.stripe.com/checkout.js"></script>
 
 <script>
-  setTimeout(function() {
+  setTimeout(function () {
     var handler = StripeCheckout.configure({
       key: '<%= Rails.configuration.stripe[:publishable_key] %>',
       image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
       locale: 'auto',
-      token: function(token) {
+      token: function (token) {
         var form = document.getElementById("credit-card-form")
         addHidden(form, 'stripe_token', token.id);
         form.submit();
       }
     });
 
-    document.getElementById('add-credit-card-button').addEventListener('click', function(e) {
+    document.getElementById('add-credit-card-button').addEventListener('click', function (e) {
       // Open Checkout with further options:
       handler.open({
         description: 'Add Credit Card',
@@ -86,17 +86,17 @@
     });
 
     // Close Checkout on page navigation:
-    window.addEventListener('popstate', function() {
+    window.addEventListener('popstate', function () {
       handler.close();
     });
-  },220)
+  }, 220)
 
-function addHidden(theForm, key, value) {
-  // Create a hidden input element, and append it to the form:
-  var input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = key; // 'the key/name of the attribute/field that is sent to the server
-  input.value = value;
-  theForm.appendChild(input);
-}
+  function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key; // 'the key/name of the attribute/field that is sent to the server
+    input.value = value;
+    theForm.appendChild(input);
+  }
 </script>

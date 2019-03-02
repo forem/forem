@@ -1,4 +1,6 @@
-<h1><a href="/t/<%= @tag.name %>" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></a>, tagged <%= @tag.taggings_count %> times.</h1>
+<h1>
+  <a href="/t/<%= @tag.name %>" style="background:<%= @tag.bg_color_hex %>;color:<%= @tag.text_color_hex %>;">#<%= @tag.name %></a>, tagged <%= @tag.taggings_count %> times.
+</h1>
 <% if @tag.tag_moderator_ids.any? %>
   <p><strong>Moderators: </strong></p>
 <% else %>
@@ -6,7 +8,7 @@
 <% end %>
 <ul>
   <% @tag.tag_moderator_ids.each do |id| %>
-      <%= form_for [:internal, @tag] do |f| %>
+    <%= form_for [:internal, @tag] do |f| %>
       <li>
         <a href="/<%= User.find(id).username %>">@<%= User.find(id).username %></a>
         <%= f.hidden_field :remove_moderator_id, value: id %>

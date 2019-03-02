@@ -6,7 +6,7 @@
   <title><%= title || "DEV Community" %></title>
   <% if internal_navigation? %>
     <style>
-      .universal-page-content-wrapper{
+      .universal-page-content-wrapper {
         visibility: hidden;
       }
     </style>
@@ -20,16 +20,17 @@
     <%= render "layouts/styles" %>
     <style>
       .home {
-          overflow: hidden;
-          position: relative;
-          text-align: center;
-          min-height: 440px;
-          margin: auto;
-          max-width: 1250px;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        min-height: 440px;
+        margin: auto;
+        max-width: 1250px;
       }
-      @media screen and (min-width: 950px){
+
+      @media screen and (min-width: 950px) {
         .home {
-            margin-top: 26px;
+          margin-top: 26px;
         }
       }
     </style>
@@ -76,28 +77,28 @@
   <% end %>
 </head>
 <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
-  <% unless internal_navigation? %>
-    <div id="audiocontent">
-      <%= yield(:audio) %>
-    </div>
-  <% end %>
-  <% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", expires_in: 100.hours) do %>
-    <%= render "layouts/top_bar" unless internal_navigation? %>
-  <% end %>
-  <div id="message-notice"></div>
-  <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
-    <div id="page-content-inner">
-      <%= yield %>
-    </div>
+<% unless internal_navigation? %>
+  <div id="audiocontent">
+    <%= yield(:audio) %>
   </div>
-  <% unless internal_navigation? %>
-    <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 200.hours) do %>
-      <%= render "layouts/footer" %>
-      <%= render "layouts/signup_modal" unless user_signed_in? %>
-    <% end %>
-    <div id="live-article-indicator" class="live-article-indicator"></div>
-    <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none") %>
-    <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none") %>
+<% end %>
+<% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", expires_in: 100.hours) do %>
+  <%= render "layouts/top_bar" unless internal_navigation? %>
+<% end %>
+<div id="message-notice"></div>
+<div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+  <div id="page-content-inner">
+    <%= yield %>
+  </div>
+</div>
+<% unless internal_navigation? %>
+  <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 200.hours) do %>
+    <%= render "layouts/footer" %>
+    <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>
+  <div id="live-article-indicator" class="live-article-indicator"></div>
+  <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none") %>
+  <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none") %>
+<% end %>
 </body>
 </html>
