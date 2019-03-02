@@ -1,11 +1,13 @@
 <style>
-  .widget header{
+  .widget header {
     color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
   }
+
   <% if user_colors(@user)[:bg].downcase.start_with?("#fff") %>
-    .user-profile-follow-button {
-      border: 1px solid <%= user_colors(@user)[:text] %> !important;
-    }
+  .user-profile-follow-button {
+    border: 1px solid <%= user_colors(@user)[:text] %> !important;
+  }
+
   <% end %>
 </style>
 <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntityOfPage">
@@ -15,7 +17,8 @@
       <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
     </div>
     <div class="profile-details">
-      <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>"><span itemprop="name"><%= @user.name %></span>
+      <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>">
+        <span itemprop="name"><%= @user.name %></span>
         <span class="user-profile-follow-button-wrapper">
           <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
         </span>
@@ -24,7 +27,7 @@
         <%= @user.summary.present? ? @user.summary : ["404 bio not found"].sample %>
       </p>
       <style>
-        .profile-details .social .icon-img path{
+        .profile-details .social .icon-img path {
           fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
         }
       </style>
