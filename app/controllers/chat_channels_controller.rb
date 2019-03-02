@@ -104,7 +104,7 @@ class ChatChannelsController < ApplicationController
       message = Message.new(
         chat_channel: chat,
         message_markdown: message_markdown,
-        user: current_user
+        user: current_user,
       )
       chat.messages.append(message)
     end

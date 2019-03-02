@@ -1,13 +1,3 @@
-function attachModalListeners(modalElm) {
-  modalElm.querySelector('.close-modal').addEventListener('click', toggleModal);
-  modalElm.querySelector('.overlay').addEventListener('click', toggleModal);
-}
-
-function detachModalListeners(modalElm) {
-  modalElm.querySelector('.close-modal').removeEventListener('click', toggleModal);
-  modalElm.querySelector('.overlay').removeEventListener('click', toggleModal);
-}
-
 function toggleModal() {
   var modal = document.querySelector('.modal');
   var currentState = modal.style.display;
@@ -22,28 +12,51 @@ function toggleModal() {
   }
 }
 
-// finds all elements with chat action button class
-function initializeAllChatButtons() {
-  var buttons = document.getElementsByClassName('chat-action-button');
-  var modal = document.getElementById('new-message-form');
-  if (!modal) {
-    return;
-  }
-  var modalInfo = JSON.parse(modal.dataset.info);
-
-  var i;
-  for (i = 0; i < buttons.length; i += 1) {
-    initializeChatButton(buttons[i], modalInfo);
-  }
+function attachModalListeners(modalElm) {
+  modalElm.querySelector('.close-modal').addEventListener('click', toggleModal);
+  modalElm.querySelector('.overlay').addEventListener('click', toggleModal);
 }
 
-function initializeChatButton(button, modalInfo) {
-  // if user logged out, do nothing
-  var user = userData();
-  if (user === null || user.id === modalInfo.id) {
+function detachModalListeners(modalElm) {
+  modalElm.querySelector('.close-modal').removeEventListener('click', toggleModal);
+  modalElm.querySelector('.overlay').removeEventListener('click', toggleModal);
+}
+
+function handleChatButtonPress(form) {
+  var message = document.getElementById('new-message').value;
+  var formDataInfo = JSON.parse(form.dataset.info);
+  var formData = new FormData();
+
+  if (message.replace(/\s/g, '').length === 0) {
     return;
   }
-  fetchButton(button, modalInfo);
+
+  formData.append('user_id', formDataInfo.id);
+  formData.append('message', message);
+  formData.append('controller', 'chat_channels');
+
+  getCsrfToken()
+    .then(sendFetch('chat-creation', formData))
+    .then(() => {
+      window.location.href = `/connect/@${formDataInfo.username}`;
+    });
+}
+
+function addButtonClickHandle(response, button, modalInfo) {
+  var linkWrap = document.getElementById("user-connect-redirect");
+  var form = document.getElementById('new-message-form');
+  button.classList.add('showing');
+  if (modalInfo.showChat === "open" && response !== "mutual") {
+    linkWrap.removeAttribute("href") // remove link
+    button.addEventListener('click', toggleModal);
+    button.style.display = 'initial'; // show button
+    linkWrap.style.display = 'initial'; // show button
+    form.onsubmit = function() {handleChatButtonPress(form); return false;};
+  } else if (response === 'mutual') {
+    button.removeEventListener('click', toggleModal);
+    button.style.display = 'initial'; // show button
+    linkWrap.style.display = 'initial'; // show button
+  }
 }
 
 function fetchButton(button, modalInfo) {
@@ -63,43 +76,27 @@ function fetchButton(button, modalInfo) {
   dataRequester.send();
 }
 
-function addButtonClickHandle(response, button, modalInfo) {
-  // currently lacking error handling
-
-  button.classList.add('showing');
-  var linkWrap = document.getElementById("user-connect-redirect");
-  if (modalInfo.showChat === "open" && response !== "mutual") {
-    linkWrap.removeAttribute("href") // remove link
-    button.addEventListener('click', toggleModal);
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
-    var form = document.getElementById('new-message-form');
-    form.onsubmit = function() {handleChatButtonPress(form); return false;};
-  } else if (response === 'mutual') {
-    button.removeEventListener('click', toggleModal);
-    button.style.display = 'initial'; // show button
-    linkWrap.style.display = 'initial'; // show button
+function initializeChatButton(button, modalInfo) {
+  // if user logged out, do nothing
+  var user = userData();
+  if (user === null || user.id === modalInfo.id) {
+    return;
   }
+  fetchButton(button, modalInfo);
 }
 
-function handleChatButtonPress(form) {
-  var message = document.getElementById('new-message').value;
+// finds all elements with chat action button class
+function initializeAllChatButtons() {
+  var buttons = document.getElementsByClassName('chat-action-button');
+  var modal = document.getElementById('new-message-form');
+  var modalInfo = JSON.parse(modal.dataset.info);
+  var i;
 
-  if (message.length === 0) {
-    alert("can't send empty message!")
+  if (!modal) {
     return;
   }
 
-  var formDataInfo = JSON.parse(form.dataset.info);
-  var formData = new FormData();
-
-  formData.append('user_id', formDataInfo.id);
-  formData.append('message', message);
-  formData.append('controller', 'chat_channels');
-
-  getCsrfToken()
-    .then(sendFetch('chat-creation', formData))
-    .then(() => {
-      window.location.href = `/connect/@${formDataInfo.username}`;
-    });
+  for (i = 0; i < buttons.length; i += 1) {
+    initializeChatButton(buttons[i], modalInfo);
+  }
 }
