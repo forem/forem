@@ -1,27 +1,26 @@
 class FlareTag
-  attr_accessor :article
+  attr_reader :article
+
+  FLARES = ["explainlikeimfive",
+            "ama",
+            "techtalks",
+            "help",
+            "news",
+            "healthydebate",
+            "showdev",
+            "challenge",
+            "anonymous",
+            "hiring",
+            "discuss"].freeze
+
   def initialize(article)
     @article = article.decorate
   end
 
   def tag
-    Rails.cache.
-      fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
-      flares = ["explainlikeimfive",
-                "ama",
-                "techtalks",
-                "help",
-                "news",
-                "healthydebate",
-                "showdev",
-                "challenge",
-                "anonymous",
-                "hiring",
-                "discuss"]
-      flares.each do |f|
-        return Tag.find_by_name(f) if article.cached_tag_list_array.include?(f)
-      end
-      nil
+    Rails.cache.fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
+      flare = FLARES.detect { |f| article.cached_tag_list_array.include?(f) }
+      flare ? Tag.find_by_name(flare) : nil
     end
   end
 
