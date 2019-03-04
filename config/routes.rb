@@ -253,6 +253,7 @@ Rails.application.routes.draw do
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
+  get "/dashboard/pro" => "dashboards#pro"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
         which: /organization|organization_user_followers|user_followers|following_users|following|reading/
