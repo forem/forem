@@ -44,9 +44,5 @@ RSpec.describe "Visiting article comments", type: :feature, js: true do
     it "displays grandchild comments" do
       expect(page).to have_selector("#comment-node-#{grandchild_comment.id}.comment-deep-2", visible: true, count: 1)
     end
-
-    it "shows the comment date" do
-      expect(page).to have_selector(".single-comment-node .comment-date", visible: true, count: 4)
-    end
   end
 end

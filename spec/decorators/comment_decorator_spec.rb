@@ -19,4 +19,15 @@ RSpec.describe CommentDecorator, type: :decorator do
       expect(comment.low_quality).to be(false)
     end
   end
+
+  describe "published_timestamp" do
+    it "returns empty string if the comment is new" do
+      expect(Comment.new.decorate.published_timestamp).to eq("")
+    end
+
+    it "returns the timestamp of the creation date" do
+      comment = build_stubbed(:comment).decorate
+      expect(comment.published_timestamp).to eq(comment.created_at.iso8601)
+    end
+  end
 end
