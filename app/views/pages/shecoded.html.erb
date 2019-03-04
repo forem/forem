@@ -49,9 +49,7 @@
         }
 
         img {
-          /* max-width: 400px; */
           width: 40%;
-          /* max-height: 40%; */
           margin: 0 auto;
           display: block;
         }
@@ -116,18 +114,8 @@
             background: none;
           }
 
-          img {
-            display: none;
-          }
-
           .button {
             width: 80%;
-          }
-
-          .mobile-only {
-            display: initial;
-            text-align: center;
-            font-size: 50px;
           }
         }
 
@@ -137,10 +125,6 @@
             position: initial;
             height: initial;
             width: initial;
-          }
-
-          img {
-            height: 300px;
           }
 
           .content {
@@ -181,24 +165,27 @@
     <div class="content">
       <h1>Nevertheless, She Coded</h1>
       <img src="<%= asset_path "SheCodedLogo.png" %>" alt="shecoded logo" />
-      <h2 class="mobile-only">👩🏿‍💻👩‍💻👩🏾‍💻</h2>
       <div class="text">
-        <b>International Women's Day is this week and we want to celebrate the
-          heck out of it.</b>
+        <b>
+          International Women's Day is THIS FRIDAY!!
+        </b>
         <p>
-          Since Balance for Better is the official 2019 theme for IWD, we're
-          excited to celebrate women and non-binary people's bragging rights in
-          software development and gather advice for allies to take action. For
-          those of you who participated last year, we encourage you to submit
-          another post. And if you're new to the celebration, we welcome you to
-          contribute to the collective.
+          Each year, "Nevertheless, She Coded" amplifies the journeys of women
+          and non-binary people who code. We started this celebration two years
+          ago and we're excited to share that #SheCoded has developed into a truly
+          impressive collection of voices, with each voice full of insight and
+          excellent advice. We hope you'll participate and celebrate this
+          important day with us.
         </p>
         <p>
-          On Friday March 8th, we'll be boosting your stories all over dev.to
-          and across our social channels.
+          Since 'Balance For Better' is the official 2019 theme for IWD, we're
+          adding the opportunity for allies to participate as well. As they say,
+          everyone has a part to play, and we want to hear from allies on how
+          they'll support women and non-binary devs.
         </p>
       </div>
-      <a href="/new/shecoded" class="button lavender">WRITE A #SheCoded POST</a>
+      <a href="/new/shecoded" class="button purple">WRITE A #SheCoded POST</a>
+      <a href="/new/theycoded" class="button lavender">WRITE A #TheyCoded POST</a>
       <a href="/new/shecodedally" class="button purple">WRITE A #SheCodedAlly POST</a>
       <a href="/" class="logo-link" id="logo-link" aria-label="DEV Home">
         <svg
