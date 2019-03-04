@@ -90,7 +90,7 @@ Rails.application.configure do
 
   # Install the Timber.io logger
   send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "false" # <---- set to false to stop sending dev logs to Timber.io
-  log_device = (send_logs_to_timber == "true") ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
+  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
   logger = Timber::Logger.new(log_device)
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
