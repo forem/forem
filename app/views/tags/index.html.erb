@@ -31,9 +31,9 @@
   <div class="articles-list" id="articles-list">
     <% @tags.each do |tag| %>
       <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
-          <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
-            <h2>#<%= tag.name %></h2>
-          </a>
+        <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
+          <h2>#<%= tag.name %></h2>
+        </a>
       </div>
     <% end %>
   </div>

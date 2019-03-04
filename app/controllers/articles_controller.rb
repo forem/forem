@@ -16,15 +16,15 @@ class ArticlesController < ApplicationController
 
     if params[:username]
       if @user = User.find_by_username(params[:username])
-        @articles.where(user_id: @user.id)
+        @articles = @articles.where(user_id: @user.id)
       elsif @user = Organization.find_by_slug(params[:username])
-        @articles.where(organization_id: @user.id).includes(:user)
+        @articles = @articles.where(organization_id: @user.id).includes(:user)
       else
         render body: nil
         return
       end
     else
-      @articles.where(featured: true).includes(:user)
+      @articles = @articles.where(featured: true).includes(:user)
     end
 
     set_surrogate_key_header "feed", @articles.map(&:record_key)

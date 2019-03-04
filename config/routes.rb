@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   }
 
   if Rails.env.development?
-    match "/delayed_job" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+    match "/delayed_job" => DelayedJobWeb, :anchor => false, :via => %i[get post]
   end
 
   devise_scope :user do

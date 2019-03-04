@@ -25,6 +25,16 @@ class Internal::ArticlesController < Internal::ApplicationController
         page(params[:page]).
         limited_columns_internal_select.
         per(50)
+    when "satellite"
+      @articles = Article.
+        where(last_buffered: nil, published: true).
+        includes(:user).
+        includes(:buffer_updates).
+        order("hotness_score DESC").
+        tagged_with(Tag.bufferized_tags, any: true).
+        page(params[:page]).
+        limited_columns_internal_select.
+        per(60)
     when "boosted-additional-articles"
       @articles = Article.
         includes(:user).

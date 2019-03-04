@@ -1,4 +1,4 @@
-<% unless @user.identities.exists?(provider:'github') %>
+<% unless @user.identities.exists?(provider: 'github') %>
   <div class="field">
     <a href="/users/auth/github" class="big-button cta" data-no-instant>
       <img src="<%= asset_path("github-logo.svg") %>" /> CONNECT GITHUB ACCOUNT
@@ -7,7 +7,7 @@
   <hr />
 <% end %>
 
-<% unless @user.identities.exists?(provider:'twitter') %>
+<% unless @user.identities.exists?(provider: 'twitter') %>
   <div class="field">
     <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
       <img src="<%= asset_path("twitter-logo.svg") %>" /> CONNECT TWITTER ACCOUNT
@@ -89,10 +89,11 @@
   <h3>Delete Account</h3>
   <h4 style="font-weight:400;">
     <%= form_tag "/users/destroy", method: :delete, autocomplete: "off" do %>
-    Deleting your account will:
+      Deleting your account will:
       <ul class="delete__account">
         <li>delete your profile, along with your Twitter and/or GitHub associations.
-        This does not include app permissions, which you will have to remove yourself on Twitter/GitHub.</li>
+          This does not include app permissions, which you will have to remove yourself on Twitter/GitHub.
+        </li>
         <%# TODO: expand the delete messaging later %>
         <li>delete any and all content you have, such as your reading list or chat messages.</li>
         <li>allow your username to become available to anyone.</li>
@@ -116,11 +117,11 @@
     var deleteAccountUsernameInput = document.getElementById('delete__account__username__field')
     var deleteAcccountVerificationInput = document.getElementById('delete__account__verification__field')
 
-    function bothInputsVerified () {
+    function bothInputsVerified() {
       return deleteAccountUsernameInput.value === '<%= @user.username %>' && deleteAcccountVerificationInput.value === "delete my account"
     }
 
-    deleteAccountUsernameInput.addEventListener('input', function() {
+    deleteAccountUsernameInput.addEventListener('input', function () {
       if (bothInputsVerified()) {
         deleteAccountBtn.disabled = false;
         // enable the button via css or removing disabled class
@@ -129,11 +130,11 @@
       }
     })
 
-    deleteAcccountVerificationInput.addEventListener('input', function() {
+    deleteAcccountVerificationInput.addEventListener('input', function () {
       if (bothInputsVerified()) {
         deleteAccountBtn.disabled = false;
       } else {
-      deleteAccountBtn.disabled = true;
+        deleteAccountBtn.disabled = true;
       }
     })
   </script>
