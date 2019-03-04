@@ -29,4 +29,18 @@ class DashboardsController < ApplicationController
     # Updates analytics in background if appropriate:
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
   end
+
+  def pro
+    authorize current_user, :pro_user?
+    @this_week_reactions_count = Reaction.where(reactable_id: current_user.articles.pluck(:id), reactable_type: "Article").where("created_at > ?", 1.week.ago).size
+    @last_week_reactions_count = Reaction.where(reactable_id: current_user.articles.pluck(:id), reactable_type: "Article").where("created_at > ? AND created_at < ?", 2.weeks.ago, 1.week.ago).size
+    @this_month_reactions_count = Reaction.where(reactable_id: current_user.articles.pluck(:id), reactable_type: "Article").where("created_at > ?", 1.month.ago).size
+    @last_month_reactions_count = Reaction.where(reactable_id: current_user.articles.pluck(:id), reactable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
+    @this_week_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ?", 1.week.ago).size
+    @last_week_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.weeks.ago, 1.week.ago).size
+    @this_month_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ?", 1.month.ago).size
+    @last_month_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
+    @reactors = User.
+      where(id: Reaction.where(reactable_id: current_user.articles.pluck(:id), reactable_type: "Article").order("created_at DESC").limit(100).pluck(:user_id))
+  end
 end
