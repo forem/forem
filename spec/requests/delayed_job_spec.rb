@@ -7,7 +7,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
 
   describe "GET /delayed_job" do
     context "when not logged in" do
-      it "redirects to /enter" do
+      it "raises 404" do
         expect do
           get "/delayed_job"
         end.to raise_error(ActionController::RoutingError)
@@ -15,7 +15,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
     end
 
     context "when logged in" do
-      it "redirects to /ente" do
+      it "raises 404" do
         login_as user
         expect do
           get "/delayed_job"
