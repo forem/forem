@@ -49,6 +49,10 @@ Style/ClassAndModuleChildren:
     - 'app/controllers/notifications/counts_controller.rb'
     - 'app/controllers/notifications/reads_controller.rb'
 
+RSpec/AnyInstance:
+  Exclude:
+    - 'spec/requests/stripe_cancellations_spec.rb'
+
 # Offense count: 1283
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
