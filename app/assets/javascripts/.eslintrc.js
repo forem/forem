@@ -1,7 +1,7 @@
 module.exports = {
   extends: ['airbnb-base/legacy', 'prettier'],
   parserOptions: {
-    ecmaVersion: 6,
+    ecmaVersion: 5,
   },
   env: {
     browser: true,
