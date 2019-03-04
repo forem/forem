@@ -31,7 +31,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         includes(:user).
         includes(:buffer_updates).
         order("hotness_score DESC").
-        tagged_with(Tag.bufferized_tags).
+        tagged_with(Tag.bufferized_tags, any: true).
         page(params[:page]).
         limited_columns_internal_select.
         per(60)
