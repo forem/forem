@@ -29,6 +29,6 @@ class EmailDigest
   private
 
   def get_users
-    User.where(email_digest_periodic: true)
+    User.where(email_digest_periodic: true).where.not(email: "")
   end
 end
