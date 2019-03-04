@@ -5,14 +5,23 @@
 <ul>
   <% @articles.each do |article| %>
     <li style="margin:18px auto">
-      <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:1.06em;"><%= article.title.strip %></a> <%= truncate(article.description, length: 80) %>
+      <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:calc(0.93em + 0.2vw);"><%= article.title.strip %></a> <%= truncate(article.description, length: 120) %>
     </li>
   <% end %>
+     <hr />
 </ul>
 
 <center style="margin-top:50px;">
   <em>
-    <% if @user.follows.size == 0 %>
+    <% if @user.experience_level == nil %>
+      <b>
+        You can now add your coding experience level to your account in order to receive more relevant content.
+      </b>
+      <br /><br />
+      Visit <b><a href="https://dev.to/settings/misc" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
+      <br /><br />
+      You can change it any time in the future. Happy coding!
+    <% elsif @user.follows.size == 0 %>
       <b>
         DEV Digest is a new periodic email featuring the best posts from our community of developers.
       </b>
