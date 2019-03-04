@@ -50,7 +50,7 @@ function insertNewArticles(user){
       if (rand < 0.3) {
         articlePoints = articlePoints + 1
       } else if (rand < 0.6) {
-        articlePoints = articlePoints + 2
+        articlePoints = articlePoints + 3
       }
       articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
@@ -60,7 +60,7 @@ function insertNewArticles(user){
     });
     sortedArticles.forEach(function(article){
       var parent = insertPlace.parentNode;
-      if ( article.points > 13 && !document.getElementById("article-link-"+article.id) ) {
+      if ( article.points > 12 && !document.getElementById("article-link-"+article.id) ) {
         insertArticle(article,parent,insertPlace);
       }
     });
@@ -95,7 +95,7 @@ function insertTopArticles(user){
       if (rand < 0.3) {
         articlePoints = articlePoints + 1
       } else if (rand < 0.6) {
-        articlePoints = articlePoints + 2
+        articlePoints = articlePoints + 3
       }
       articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
