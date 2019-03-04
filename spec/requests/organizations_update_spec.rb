@@ -29,5 +29,4 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     put "/organizations/#{organization.id}", params: { organization: { text_color_hex: "#111111" } }
     expect(organization.reload.profile_updated_at).to be > 2.minutes.ago
   end
-
 end
