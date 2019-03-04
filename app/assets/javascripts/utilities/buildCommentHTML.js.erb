@@ -41,7 +41,7 @@ function buildCommentHTML(comment) {
               </a>\
                 '+twitterIcon+'\
                 '+githubIcon+'\
-              <div class="comment-date">\
+              <div class="comment-date" data-published-timestamp="' + comment.decorate.published_timestamp +'">\
                 <a href="'+comment.url+'">'+comment.readable_publish_date+'</a>\
               </div>\
               <button class="dropbtn">\
