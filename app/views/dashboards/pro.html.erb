@@ -1,0 +1,39 @@
+<div class="dashboard-container" id="user-dashboard">
+  <h1 style="text-align: center;font-size:3em">DevRel Pro 💪</h1>
+  <p>Welcome to the DevRel pro dashboard. Where DevRel professionals can make data-driven decisions about the developer ecosystem.</p>
+  <p>This dashboard will highlight deep insights especially relevant to dev rel.</p>
+  <hr />
+  <h2>Reactions Summary (❤🦄🔖)</h2>
+  <ul>
+    <li>
+      <%= @this_week_reactions_count %> reactions this week (<%= @last_week_reactions_count.positive? ? (@this_week_reactions_count.to_f / @last_week_reactions_count.to_f) * 100 : "infinity " %>% of previous week)
+    </li>
+    <li>
+      <%= @this_month_reactions_count %> reactions this month (<%= @last_month_reactions_count.positive? ? (@this_month_reactions_count.to_f / @last_month_reactions_count.to_f) * 100 : "infinity " %>% of previous month)
+    </li>
+  </ul>
+    <h2>New Followers Summary (👩‍💻👨‍💻)</h2>
+  <ul>
+    <li>
+      <%= @this_week_followers_count %> new followers this week (<%= @last_week_followers_count.positive? ? (@this_week_followers_count.to_f / @last_week_followers_count.to_f) * 100 : "infinity " %>% of previous week)
+    </li>
+    <li>
+      <%= @this_month_followers_count %> new followers this month (<%= @last_month_followers_count.positive? ? (@this_month_followers_count.to_f / @last_month_followers_count.to_f) * 100 : "infinity " %>% of previous month)
+    </li>
+  </ul>
+  <h2>Activity</h2>
+  <h3>People who recently reacted (❤🦄🔖) to your content:</h3>
+  <div style="height: 400px; overflow: scroll;">
+    <% @reactors.each do |user| %>
+      <div class="single-article">
+        <a href="<%= user.path %>" class="block-link">
+          <h2>
+            <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
+            <%= user.name %>
+            <span class="dashboard-username">@<%= user.username %></span>
+          </h2>
+        </a>
+      </div>
+    <% end %>
+  </div>
+</div>
