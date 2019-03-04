@@ -7,8 +7,8 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
-  if Rails.env.development?
-    match "/delayed_job" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+  authenticated :user, ->(user) { user.admin? } do
+    mount DelayedJobWeb, at: "/delayed_job"
   end
 
   devise_scope :user do
