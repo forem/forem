@@ -10,6 +10,6 @@ class CommentDecorator < ApplicationDecorator
   def published_timestamp
     return "" if created_at.nil?
 
-    created_at.iso8601
+    created_at.utc.iso8601
   end
 end

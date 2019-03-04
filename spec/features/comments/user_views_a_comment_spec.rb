@@ -18,11 +18,9 @@ RSpec.describe "Viewing a comment", type: :feature, js: true do
     end
 
     it "embeds the published timestamp" do
-      Time.use_zone("UTC") do
-        ts = comment.decorate.published_timestamp
-        timestamp_selector = ".comment-date[data-published-timestamp='#{ts}']"
-        expect(page).to have_selector(timestamp_selector)
-      end
+      ts = comment.decorate.published_timestamp
+      timestamp_selector = ".comment-date[data-published-timestamp='#{ts}']"
+      expect(page).to have_selector(timestamp_selector)
     end
   end
 end

@@ -27,7 +27,7 @@ RSpec.describe CommentDecorator, type: :decorator do
 
     it "returns the timestamp of the creation date" do
       comment = build_stubbed(:comment).decorate
-      expect(comment.published_timestamp).to eq(comment.created_at.iso8601)
+      expect(comment.published_timestamp).to eq(comment.created_at.utc.iso8601)
     end
   end
 end
