@@ -7,4 +7,8 @@ module.exports = {
     browser: true,
   },
   plugins: ['ignore-erb'],
+  rules: {
+    'no-unused-vars': 'off',
+    'vars-on-top': 'off',
+  },
 };
