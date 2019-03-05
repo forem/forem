@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user
+  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :pro_user
 
   rolify
   include AlgoliaSearch

@@ -60,8 +60,14 @@
   <h3><u>Privileges</u></h3>
   <% if !@user.banned && !@user.warned %>
     <%= form_for [:internal, @user] do |f| %>
-      <p>Add Trusted Role (Community Moderator)
-        <%= f.check_box :trusted_user, checked: @user.trusted %></p>
+      <p>
+        Add Trusted Role (Community Moderator)
+        <%= f.check_box :trusted_user, checked: @user.trusted %>
+      </p>
+      <p>
+        Add Pro Role (Upgraded DevRel Dashboard)
+        <%= f.check_box :pro_user, checked: @user.has_role?(:pro) %>
+      </p>
       <%= f.submit "Update Privileges" %>
     <% end %>
   <% else %>
