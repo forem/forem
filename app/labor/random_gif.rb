@@ -13,6 +13,12 @@ class RandomGif
       "y8Mz1yj13s3kI" => { aspect_ratio: 0.750 },
       "111ebonMs90YLu" => { aspect_ratio: 0.750 },
       "Sk5uipPXyBjfW" => { aspect_ratio: 0.422 },
+      "l0K48FkLfeSCzRA4M" => { aspect_ratio: 0.573 },
+      "3o7qDRd1DlF7P2TP3O" => { aspect_ratio: 0.517 },
+      "26h0qt6UOumsbJkyI" => { aspect_ratio: 0.442 },
+      "3o7qDOzZAhOslfIgMM" => { aspect_ratio: 0.829 },
+      "l0K4glBiv82lZ0Zuo" => { aspect_ratio: 0.563 },
+      "3o7qDM7FZJG4wmf8ZO" => { aspect_ratio: 0.81 },
       "7EcgJbeY0yCRy" => { aspect_ratio: 0.750 },
       "Gf3fU0qPtI6uk" => { aspect_ratio: 0.750 }
     }
