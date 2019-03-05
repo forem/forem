@@ -1,5 +1,5 @@
-<% flare_tag = FlareTag.new(story).tag %>
-<% if flare_tag && @tag != flare_tag.name %>
+<% flare_tag = FlareTag.new(story, @tag).tag %>
+<% if flare_tag %>
   <span class="tag-identifier black-identifier" style="background:<%= flare_tag.bg_color_hex %>;color:<%= flare_tag.text_color_hex %>">
     #<%= flare_tag.name %>
   </span>

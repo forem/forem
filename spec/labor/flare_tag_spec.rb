@@ -14,6 +14,11 @@ RSpec.describe FlareTag do
       expect(described_class.new(valid_article).tag.name).to eq("ama")
     end
 
+    it "returns nil if an except is provided" do
+      valid_article = create(:article, tags: "explainlikeimfive")
+      expect(described_class.new(valid_article, "explainlikeimfive").tag).to eq(nil)
+    end
+
     it "returns a flare tag if there are 2 flare tags in the list" do
       valid_article = create(:article, tags: ["ama", "explainlikeimfive"])
       expect(described_class.new(valid_article).tag.name).to eq("explainlikeimfive")
