@@ -44,7 +44,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   def pro_user?
-    p user.has_role? :pro
     current_user? && user.has_role?(:pro)
   end
 
