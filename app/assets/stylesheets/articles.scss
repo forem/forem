@@ -230,6 +230,9 @@
         &.active {
           opacity: 0.84;
         }
+        .time-ago-indicator {
+          vertical-align: 0.11em;
+        }
       }
       &.single-article-small-pic {
         vertical-align: top;
@@ -383,6 +386,14 @@
             font-size: 15px;
           }
         }
+      }
+      .time-ago-indicator {
+        color: $medium-gray;
+        display: inline-block;
+        margin-left: 4px;
+        font-weight: 400;
+        font-size: 0.8em;
+        vertical-align: 0.07em;
       }
       .emoji {
         display: inline-block;

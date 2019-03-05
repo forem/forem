@@ -2,6 +2,7 @@ function initializeFetchFollowedArticles() {
   if ( document.getElementById("featured-story-marker") && checkUserLoggedIn() ) {
     algoliaFollowedArticles();
   }
+  insertTimes();
 }
 
 function insertArticle(article,parent,insertPlace) {
@@ -187,3 +188,12 @@ function intersect_arrays(a, b) {
     }
     return common;
 }
+
+function insertTimes() {
+  var els = document.getElementsByClassName('time-ago-indicator-initial-placeholder');
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    el.outerHTML = timeAgo(el.dataset.seconds);
+  }
+};
