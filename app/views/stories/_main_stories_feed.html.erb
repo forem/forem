@@ -13,7 +13,7 @@
                      reading_time video_thumbnail_url video video_duration_in_minutes
                      experience_level_rating experience_level_rating_distribution],
             methods: %i[readable_publish_date cached_tag_list_array flare_tag class_name
-                        cloudinary_video_url video_duration_in_minutes],
+                        cloudinary_video_url video_duration_in_minutes published_at_int],
             include: {
               user: { only: %i[username name], methods: [:profile_image_90] },
               organization: { only: %i[slug name], methods: [:profile_image_90] }
@@ -26,7 +26,7 @@
                      reading_time video_thumbnail_url video video_duration_in_minutes
                      experience_level_rating experience_level_rating_distribution],
             methods: %i[readable_publish_date cached_tag_list_array flare_tag class_name
-                        cloudinary_video_url video_duration_in_minutes],
+                        cloudinary_video_url video_duration_in_minutes published_at_int],
             include: {
               user: { only: %i[username name], methods: [:profile_image_90] },
               organization: { only: %i[slug name], methods: [:profile_image_90] }
