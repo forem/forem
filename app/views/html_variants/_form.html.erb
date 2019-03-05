@@ -2,38 +2,41 @@
   <div class="flash flash-<%= key %>"><%= value %></div>
 <% end %>
 
-
 <% if @html_variant.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(@html_variant.errors.count, "error") %> prohibited this block from being saved:</h2>
 
     <ul>
-    <% @html_variant.errors.full_messages.each do |message| %>
-      <li><%= message %></li>
-    <% end %>
+      <% @html_variant.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
     </ul>
   </div>
 <% end %>
 
-
 <%= form_for(@html_variant) do |f| %>
   <% if @html_variant.new_record? %>
     <%= f.label :name %>
-    <%= f.text_field :name, placeholder: 'Unique, descriptive name' %>
+    <%= f.text_field :name, placeholder: "Unique, descriptive name" %>
   <% end %>
   <%= f.label :html %>
-  <%= f.text_area :html, placeholder: 'HTML to be shown. Make sure all CSS is properly scoped, and all HTML tags are closed, etc. Manditory field.' %>
+  <%= f.text_area :html, placeholder: "HTML to be shown. Make sure all CSS is properly scoped, and all HTML tags are closed, etc. Manditory field." %>
   <div class="form-sub-details">
     <%= f.label :published %>
     <%= f.check_box :published %>
-    <%= f.label :target_tag %>
-    <%= f.text_field :target_tag, placeholder: 'One tag, e.g. javascript. Optional targeting.' %>
+    <%= f.label :group %>
+    <%= f.select(:group, options_for_select(["article_show_sidebar_cta", "article_show_below_article_cta", "badge_landing_page"], @html_variant.group || "article_show_sidebar_cta")) %>
   </div>
   <%= f.submit %>
 <% end %>
 <% if @html_variant.html.present? %>
   <h1 style="text-align:center;">Preview:</h1>
-  <div class="html-variant-wrapper" style="width: 310px;margin:20px auto;">
+  <div class="html-variant-wrapper" style="width: 360px;margin:20px auto;">
     <%= @html_variant.html.html_safe %>
   </div>
+  <% if @html_variant.group == "article_show_below_article_cta" %>
+    <div class="html-variant-wrapper" style="width: 880px;margin:20px auto;">
+      <%= @html_variant.html.html_safe %>
+    </div>
+  <% end %>
 <% end %>

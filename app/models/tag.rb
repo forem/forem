@@ -13,6 +13,8 @@ class Tag < ActsAsTaggableOn::Tag
     clojure ubuntu elm gamedev flutter bash
   ).freeze
 
+  attr_accessor :tag_moderator_id, :remove_moderator_id
+
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
 
@@ -26,6 +28,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_validation :pound_it
   before_save :calculate_hotness_score
   after_save :bust_cache
+  before_save :mark_as_updated
 
   algoliasearch per_environment: true do
     attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
@@ -35,7 +38,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def submission_template_customized(param_0 = nil)
-    submission_template.gsub("PARAM_0", param_0)
+    submission_template&.gsub("PARAM_0", param_0)
   end
 
   def tag_moderator_ids
@@ -82,5 +85,9 @@ class Tag < ActsAsTaggableOn::Tag
   def pound_it
     text_color_hex&.prepend("#") unless text_color_hex&.starts_with?("#") || text_color_hex.blank?
     bg_color_hex&.prepend("#") unless bg_color_hex&.starts_with?("#") || bg_color_hex.blank?
+  end
+
+  def mark_as_updated
+    self.updated_at = Time.current # Acts-as-taggable didn't come with this by default
   end
 end

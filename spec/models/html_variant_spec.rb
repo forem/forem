@@ -5,7 +5,7 @@ RSpec.describe HtmlVariant, type: :model do
 
   it { is_expected.to validate_uniqueness_of(:name) }
   it { is_expected.to validate_presence_of(:html) }
-  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:user).optional }
 
   it "calculates success rate" do
     HtmlVariantTrial.create!(html_variant_id: html_variant.id)
@@ -34,5 +34,11 @@ RSpec.describe HtmlVariant, type: :model do
   it "finds if no tag targeted and tag given" do
     html_variant.save!
     expect(HtmlVariant.find_for_test(["hello"]).id).to eq(html_variant.id)
+  end
+  it "creates an html variant with img in it" do
+    html_variant = create(:html_variant, approved: false, published: true)
+    html_variant.html = "<div><img src='https://devimages.com/image.jpg' /></div>"
+    html_variant.save!
+    expect(html_variant.html).to include("cloudinary")
   end
 end

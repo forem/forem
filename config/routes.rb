@@ -7,6 +7,10 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  authenticated :user, ->(user) { user.admin? } do
+    mount DelayedJobWeb, at: "/delayed_job"
+  end
+
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
     get "/enter" => "registrations#new", as: :new_user_registration_path
@@ -31,6 +35,7 @@ Rails.application.routes.draw do
     resources :users do
       member do
         post "banish"
+        post "full_delete"
       end
     end
     resources :events
@@ -94,7 +99,9 @@ Rails.application.routes.draw do
   resources :chat_channels, only: %i[index show create update]
   resources :chat_channel_memberships, only: %i[create update destroy]
   resources :articles, only: %i[update create destroy]
+  resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy]
+  resources :comment_mutes, only: %i[update]
   resources :users, only: [:update]
   resources :reactions, only: %i[index create]
   resources :feedback_messages, only: %i[index create]
@@ -109,6 +116,7 @@ Rails.application.routes.draw do
   resources :tags, only: [:index]
   resources :stripe_subscriptions, only: %i[create update destroy]
   resources :stripe_active_cards, only: %i[create update destroy]
+  resources :stripe_cancellations, only: [:create]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[create update]
   resources :buffered_articles, only: [:index]
@@ -122,8 +130,10 @@ Rails.application.routes.draw do
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: [:create]
+  resources :rating_votes, only: [:create]
 
   get "/notifications/:filter" => "notifications#index"
+  get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
@@ -205,6 +215,8 @@ Rails.application.routes.draw do
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
+  get "/badge" => "pages#badge"
+  get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
@@ -218,6 +230,7 @@ Rails.application.routes.draw do
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
+  get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")
@@ -225,6 +238,7 @@ Rails.application.routes.draw do
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
+  get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
@@ -239,6 +253,7 @@ Rails.application.routes.draw do
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
+  get "/dashboard/pro" => "dashboards#pro"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
         which: /organization|organization_user_followers|user_followers|following_users|following|reading/
@@ -289,6 +304,7 @@ Rails.application.routes.draw do
   get "/:username/comment/:id_code/edit" => "comments#edit"
   get "/:username/comment/:id_code/delete_confirm" => "comments#delete_confirm"
   get "/:username/comment/:id_code/mod" => "moderations#comment"
+  get "/:username/comment/:id_code/settings", to: "comments#settings"
 
   get "/:username/:slug/:view" => "stories#show",
       constraints: { view: /moderate/ }

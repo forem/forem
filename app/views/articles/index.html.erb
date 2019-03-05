@@ -1,58 +1,57 @@
 <%= content_for :page_meta do %>
   <% title_with_timeframe(
-    page_title: "DEV Community  👩‍💻👨‍💻",
-    timeframe: params[:timeframe],
-    content_for: true)
-  %>
+       page_title: "DEV Community  👩‍💻👨‍💻",
+       timeframe: params[:timeframe],
+       content_for: true,
+     ) %>
 
-  <link rel="canonical" href="https://dev.to<%= request.path %>"/>
+  <link rel="canonical" href="https://dev.to<%= request.path %>" />
   <meta name="description" content="Where programmers share ideas and help each other grow.">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
   <meta property="og:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>" />
-  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
   <meta property="og:site_name" content="The DEV Community" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>" >
+  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>">
   <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png" >
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
   <meta name="twitter:card" content="summary_large_image">
-  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", {title: "The Practical Dev RSS Feed"}) %>
+  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "The Practical Dev RSS Feed") %>
 <% end %>
 
 <div class="home" id="index-container"
-  data-params="<%= params.to_json(only: [:tag,:username,:q]) %>" data-which="<%=@list_of%>"
-  data-algolia-tag="<%= @user ? "#{@user.class.name.downcase}_#{@user.id}" : nil || @tag %>"
-  data-feed="<%= params[:timeframe] || "base-feed"%>"
-  data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>"
-  >
+     data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
+     data-algolia-tag=""
+     data-feed="<%= params[:timeframe] || "base-feed" %>"
+     data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
   <%= render "articles/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="on-page-nav-controls" id="on-page-nav-controls">
-      <div class="on-page-nav-label <%= "sub-home-nav" if (@user || @tag || @query)%>">
+      <div class="on-page-nav-label">
         <div class="wide-nav-links">
-          <a class="nav-chronofiter-link <%= 'selected' if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
+          <a class="nav-chronofiter-link <%= "selected" if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
             FEED
           </a>
           <span class="separator"></span>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('week') %>" href="<%= list_path %>/top/week">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("week") %>" href="<%= list_path %>/top/week">
             WEEK
           </a>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('month') %>" href="<%= list_path %>/top/month">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("month") %>" href="<%= list_path %>/top/month">
             MONTH
           </a>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('year') %>" href="<%= list_path %>/top/year">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("year") %>" href="<%= list_path %>/top/year">
             YEAR
           </a>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('infinity') %>" href="<%= list_path %>/top/infinity">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("infinity") %>" href="<%= list_path %>/top/infinity">
             INFINITY
           </a>
           <span class="separator"></span>
-          <a class="nav-chronofiter-link <%= 'selected' if timeframe_check('latest') %>" href="<%= list_path %>/latest">
+          <a class="nav-chronofiter-link <%= "selected" if timeframe_check("latest") %>" href="<%= list_path %>/latest">
             LATEST
           </a>
         </div>
@@ -73,19 +72,19 @@
         </div>
       </div>
       <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-        <img src="<%= asset_path 'stack.svg' %>" alt="left-sidebar-nav">
+        <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
       </button>
       <button class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
-        <img src="<%= asset_path 'lightning.svg' %>" alt="right-sidebar-nav">
+        <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
       </button>
     </div>
 
     <% if @featured_story.id %>
       <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
-      <img src="<%=cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>"/>
-      <a href="<%=@featured_story.path%>" id="article-link-<%=@featured_story.id%>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
+      <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
+      <a href="<%= @featured_story.path %>" id="article-link-<%= @featured_story.id %>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
         <div class="single-article big-article">
-          <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%=cloud_cover_url(@featured_story.main_image)%>)"></div>
+          <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@featured_story.main_image) %>)"></div>
           <div class="content-wrapper">
             <h3>
               <%= @featured_story.title %>
@@ -94,7 +93,8 @@
           <a href="<%= @featured_story.user.path %>" class="featured-profile-button">
             <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.user).get(90) %>" alt="<%= @featured_story.title %>" />
           </a>
-          <div class="featured-user-name"><a href="<%= @featured_story.user.path %>"><%= @featured_story.user.name %>・<%= @featured_story.readable_publish_date %></a></div>
+          <div class="featured-user-name"><a href="<%= @featured_story.user.path %>"><%= @featured_story.user.name %>
+            ・<%= @featured_story.readable_publish_date %></a></div>
           <div class="featured-tags tags">
             <% @featured_story.cached_tag_list_array.each do |tag| %>
               <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
@@ -102,14 +102,14 @@
           </div>
           <% if @featured_story.comments_count > 0 %>
             <div class="article-engagement-count comments-count featured-engagement-count">
-              <a href="<%=@featured_story.path%>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
+              <a href="<%= @featured_story.path %>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
                 <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
               </a>
             </div>
           <% end %>
           <% if @featured_story.positive_reactions_count > 0 %>
             <div class="article-engagement-count reactions-count featured-engagement-count" data-reaction-count data-reactable-id="<%= @featured_story.id %>">
-              <a href="<%=@featured_story.path%>"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-<%= @featured_story.id %>" class="engagement-count-number">
+              <a href="<%= @featured_story.path %>"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-<%= @featured_story.id %>" class="engagement-count-number">
                   <%= @featured_story.positive_reactions_count %>
                 </span>
               </a>
@@ -117,15 +117,14 @@
           <% end %>
           <a
             href="<%= @featured_story.path %>"
-            class="article-reading-time"
-          >
-              <%= @featured_story.reading_time < 1 ? 1 : @featured_story.reading_time %> min read
+            class="article-reading-time">
+            <%= @featured_story.reading_time < 1 ? 1 : @featured_story.reading_time %> min read
           </a>
           <button
             class="article-engagement-count bookmark-engage featured-engagement-count"
             data-reactable-id="<%= @featured_story.id %>"
             aria-label="Add to reading list"
-            title="Add to reading list" >
+            title="Add to reading list">
             <span class="bm-success">SAVED</span>
             <span class="bm-initial">SAVE</span>
           </button>
@@ -133,7 +132,7 @@
       </a>
     <% end %>
     <div class="substories" id="substories">
-      <% if (@stories && @stories.any?) || (@comments && @comments.any?) %>
+      <% if @stories.any? %>
         <%= render "stories/main_stories_feed" %>
       <% end %>
     </div>

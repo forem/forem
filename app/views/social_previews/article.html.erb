@@ -2,67 +2,77 @@
 <% color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(1.4) %>
 <% dark_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.7) %>
 <style>
-  body{
+  body {
     background: white;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
   }
-  .preview-div-wrapper{
+
+  .preview-div-wrapper {
     overflow: hidden;
-    position:relative;
+    position: relative;
   }
-  .circle{
+
+  .circle {
     border-radius: 1000px;
     background: <%= accent_color %>;
     position: absolute;
   }
-  .circle1{
+
+  .circle1 {
     height: 40vw;
     width: 40vw;
     right: -<%= rand(2..15) %>vw;
     bottom: -<%= rand(2..15) %>vw;
   }
-  .circle2{
+
+  .circle2 {
     height: 30vw;
     width: 30vw;
     left: <%= rand(2..16) %>vw;
     bottom: 0vw;
   }
-  .circle3{
+
+  .circle3 {
     height: 24vw;
     width: 24vw;
     left: -8vw;
     top: -<%= rand(2..6) %>vw;
   }
-  .preview-div{
+
+  .preview-div {
     background: #fff;
-    border: 0.25vw solid <%= dark_color %>;
-    box-shadow: 0.8vw 1vw 0px <%= dark_color %>;
+    border: 0.25vw solid<%= dark_color %>;
+    box-shadow: 0.8vw 1vw 0px<%= dark_color %>;
     width: 88vw;
     height: 44vw;
     margin: 2.5vw auto 5vw;
     overflow: hidden;
-    position:relative;
+    position: relative;
   }
-  .preview-info-header{
+
+  .preview-info-header {
     color: black;
     margin: 2vw auto 0vw;
-    font-family:  "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 3.5vw;
     width: 92%;
   }
+
   .preview-info-header img {
     height: 2.5vw;
     vertical-align: -0.15vw;
     margin-left: 1vw;
     margin-right: 0.5vw;
   }
-  h1{
+
+  h1 {
     color: <%= dark_color %>;
     width: 92%;
     margin: 1vw auto;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   }
+
   .preview-user {
     font-size: 3.5vw;
     position: absolute;
@@ -74,21 +84,24 @@
     font-weight: 500;
     border-radius: 100vw;
   }
+
   .preview-user img {
     border-radius: 100vw;
     height: 5vw;
     width: 5vw;
     vertical-align: -1.3vw;
-    border: 0.25vw solid <%= dark_color %>;
+    border: 0.25vw solid<%= dark_color %>;
   }
-  .preview-dev-logo{
-    position:absolute;
+
+  .preview-dev-logo {
+    position: absolute;
     bottom: 2.1vw;
     right: 2.1vw;
-    text-align:right;
+    text-align: right;
   }
-  .logo{
-    height:6vw;
+
+  .logo {
+    height: 6vw;
     fill: <%= dark_color %>;
   }
 </style>
@@ -97,9 +110,9 @@
   <div class="circle circle2"></div>
   <div class="circle circle3"></div>
   <div class="preview-div">
-    <% font_size = 15 - (((@article.title.size**0.89)+85)/16) %>
+    <% font_size = 15 - (((@article.title.size**0.89) + 85) / 16) %>
     <% if @article.tag_list.include?("discuss") %>
-      <% font_size = 13.5 - (((@article.title.size**0.89)+85)/16) %>
+      <% font_size = 13.5 - (((@article.title.size**0.89) + 85) / 16) %>
       <div class="preview-info-header">
         <% if @article.comments_count > 0 %>
           #discuss <img src="<%= asset_path "comments-bubble.png" %>" /><%= @article.comments_count %>
@@ -108,13 +121,13 @@
         <% end %>
       </div>
     <% end %>
-    <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %><h1>
+    <h1 style="font-size:<%= font_size %>vw;"><%= @article.title %></h1>
     <div class="preview-user">
       <img src="<%= ProfileImage.new(@article.user).get(90) %>" />
       <%= truncate @article.user.name, length: 25 %>・<%= @article.readable_publish_date %>
     </div>
     <div class="preview-dev-logo">
-      <%= inline_svg("devplain.svg", class: "logo", size: '9vw * 9vw') %>
+      <%= inline_svg("devplain.svg", class: "logo", size: "9vw * 9vw") %>
     </div>
   </div>
 </div>

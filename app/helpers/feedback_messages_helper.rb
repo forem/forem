@@ -1,51 +1,49 @@
 module FeedbackMessagesHelper
   def offender_email_details
     body = <<~HEREDOC
-      Hi [*USERNAME*],
+      Hi,
 
-      All dev.to members are expected to help foster a welcoming environment for the community and abide by our terms and conditions of use. It's been brought to our attention that you may have violated our code of conduct.  If this behavior continues, we will need to ban your posting privileges on dev.to.
+      All DEV members are expected to help foster a welcoming environment for the community. It's been brought to our attention that you have violated our code of conduct and/or terms of use. If this behavior continues, we will need to ban your posting privileges on dev.to.
 
       If you think there's been a mistake, please reply to this email and we'll sort it out.
 
       Thanks,
-      dev.to team
+      DEV team
     HEREDOC
     {
-      subject: "DEV Report Status Update",
+      subject: "DEV Code of Conduct Violation",
       body: body
     }.freeze
   end
 
   def reporter_email_details
     body = <<~HEREDOC
-      Hi [*USERNAME*],
+      Hi!,
 
-      We wanted to say thank you for flagging a [*comment/post*] that was in violation of the dev.to code of conduct and terms of service. Your action has helped us continue our work of fostering an open and welcoming community.
+      We wanted to say thank you for flagging content that may be in violation of the DEV code of conduct and/or terms of use. We'll be looking into your report.
 
-      We've also removed the offending posts and reached out to the offender(s).
+      Thank you for the support.
 
-      Thanks again for being a great part of the community.
-
-      PBJ
+      DEV Team
     HEREDOC
     {
-      subject: "dev.to Status Update",
+      subject: "DEV Report",
       body: body
     }.freeze
   end
 
   def affected_email_details
     body = <<~HEREDOC
-      Hi [*USERNAME*],
+      Hi,
 
-      We noticed some comments (made by others) on your [*post/comment*] that violated the dev.to code of conduct. We want you to know that we have zero tolerance for such behavior, and have removed the offending posts and reached out to the offender(s).
+      We noticed some comments (made by others) on your post that violated the DEV code of conduct and/or terms of use. We want you to know that we have zero tolerance for such behavior and are taking appropriate action.
 
       Thanks for being awesome and please don't hesitate to email us with any questions.  We welcome all feedback and ideas as we continue our work of fostering an open and welcoming community.
 
-      PBJ
+      DEV Team
     HEREDOC
     {
-      subject: "Courtesy Notice from dev.to",
+      subject: "Courtesy Notice from DEV",
       body: body
     }.freeze
   end

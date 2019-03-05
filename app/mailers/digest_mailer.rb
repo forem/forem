@@ -5,12 +5,6 @@ class DigestMailer < ApplicationMailer
     @user = user
     @articles = articles.first(6)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
-    @boosted_article = Suggester::Articles::Boosted.new(
-      @user,
-      @articles.first,
-      not_ids: @articles.pluck(:id),
-      area: "dev_digest_email",
-    ).suggest
     subject = generate_title
     mail(to: @user.email, subject: subject)
   end

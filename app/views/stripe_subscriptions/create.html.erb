@@ -1,7 +1,7 @@
 <% title "Thank you so much! - DEV" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/membership"/>
+  <link rel="canonical" href="https://dev.to/membership" />
   <meta name="description" content="dev.to | Membership">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
@@ -23,12 +23,14 @@
 <div class="blank-space"></div>
 
 <style>
-  body{
+  body {
     background: #f2f3ff;
   }
-  .container .body h1{
-    margin:1.3em 0 1.50em;
+
+  .container .body h1 {
+    margin: 1.3em 0 1.50em;
   }
+
   .container .body {
     text-align: center;
   }
@@ -43,7 +45,7 @@
     <% end %>
   </div>
   <div class="body">
-    <img src="<%= asset_path 'sustaining-membership.svg' %>" style="height:180px;margin-top:30px;"/>
+    <img src="<%= asset_path "sustaining-membership.svg" %>" style="height:180px;margin-top:30px;" />
     <h1 style="font-size:1.9em;font-weight:600;text-align:center;">
       Thank you so much 🙏
     </h1>
@@ -53,6 +55,6 @@
     <p>
       Your support means so much to us.
     </p>
-    <br/><br/><br/>
+    <br /><br /><br />
   </div>
 </div>

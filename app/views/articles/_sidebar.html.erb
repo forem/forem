@@ -1,23 +1,23 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% cache("main-sidebar-nav--#{user_signed_in?}", :expires_in => 5.days) do %>
+    <% cache("main-sidebar-nav--#{user_signed_in?}", expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
           <a href="/sponsors"><h4>community sponsors</h4></a>
           <span class="emoji">
-            <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart"/>
+            <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
           </span>
         </header>
         <div class="widget-body">
           <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__image">
+            <a class="partner-link" href="https://do.co/devto" target="_blank" data-details="digitalocean__image">
               <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/85318v8gv77kzr8r2e58.png") %>" style="margin-bottom:8px;" alt="Digital Ocean logo" />
             </a>
             <div class="sponsor-tagline" style="display:inline;">
-              The all-in-one cloud platform developers & their teams love.
-              <a class="partner-link sponsor-learn-more" href="https://try.digitalocean.com/performance/?utm_source=devto&utm_medium=display&utm_campaign=Devto_2018_Brand" target="_blank" data-details="digitalocean__learn-more">
+              The simplest cloud platform for developers & teams.
+              <a class="partner-link sponsor-learn-more" href="https://do.co/devto" target="_blank" data-details="digitalocean__learn-more">
                 Learn More
               </a>
             </div>
@@ -34,12 +34,12 @@
             </div>
           </div>
           <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/6a7bsz3y872g66upddt3.png") %>" alt="Raygun logo"/>
+            <a class="partner-link" href="https://www.gocd.org/?utm_campaign=dev_to&utm_medium=dev_homepage&utm_source=logo_link&utm_content=gocd_homepage&utm_term=" target="_blank" data-details="gocd__image">
+              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ju8bfjsh7bcvw21p19nh.png") %>" alt="GoCD logo" />
             </a>
             <div class="sponsor-tagline">
-              Error, crash, and performance monitoring software for devs.
-              <a class="partner-link sponsor-learn-more" href="https://raygun.com/?utm_source=dev.to" target="_blank" data-details="raygun__learn-more">
+              A Free and Open Source CI/CD Server.
+              <a class="partner-link sponsor-learn-more" href="https://www.gocd.org/?utm_campaign=dev_to&utm_medium=dev_homepage&utm_source=logo_link&utm_content=gocd_homepage&utm_term=" target="_blank" data-details="gocd__learn-more">
                 Learn More
               </a>
             </div>

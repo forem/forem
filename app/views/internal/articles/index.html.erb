@@ -1,14 +1,15 @@
 <style>
-  .top-nav{
+  .top-nav {
     line-height: 1.4em;
   }
+
   .top-nav a {
     display: inline-block;
   }
 </style>
 
 <div class="editor-image-upload" style="position:fixed;top:50px;z-index:10000;padding:10px;background:white;left:0;right:0;text-align:center;border-bottom:2px solid gray">
-  <input type="file" id="image-upload"  name="file" accept="image/*" style="display:none">
+  <input type="file" id="image-upload" name="file" accept="image/*" style="display:none">
   <button id="image-upload-button">Upload Image</button>
   <span style="width:500px;display:inline-block">
     <label id="image-upload-file-label">(or paste URL directly into Social Image input)</label>
@@ -16,26 +17,31 @@
     <input id="uploaded-image" style="display:none;width:100%;" />
   </span>
 </div>
-<br/>
-<br/>
-<style>.top-nav a {border: 1px solid #d8d8d8;font-weight: bold;margin-right: 3px;font-size:0.66em}</style>
+<br />
+<br />
+<style>.top-nav a {
+  border: 1px solid #d8d8d8;
+  font-weight: bold;
+  margin-right: 3px;
+  font-size: 0.66em
+}</style>
 <h3 class="top-nav">
   <a href="/internal/articles" class="btn <%= "btn-success" if params[:state].blank? %>">Hot</a>
   <a href="/internal/articles?state=chronological" class="btn <%= "btn-success" if params[:state] == "chronological" %>">Chronological</a>
-  Not Buffered: 
-  <a href="/internal/articles?state=not-buffered-0.25" class="btn <%= "btn-success" if params[:state] == "not-buffered-0.25" %>">6hr</a> 
-  <a href="/internal/articles?state=not-buffered-1" class="btn <%= "btn-success" if params[:state] == "not-buffered-1" %>">1d</a> 
+  Not Buffered:
+  <a href="/internal/articles?state=not-buffered-0.25" class="btn <%= "btn-success" if params[:state] == "not-buffered-0.25" %>">6hr</a>
+  <a href="/internal/articles?state=not-buffered-1" class="btn <%= "btn-success" if params[:state] == "not-buffered-1" %>">1d</a>
   <a href="/internal/articles?state=not-buffered-7" class="btn <%= "btn-success" if params[:state] == "not-buffered-7" %>">7d</a>
-  Top: 
-  <a href="/internal/articles?state=top-3" class="btn <%= "btn-success" if params[:state] == "top-3" %>">3mo</a> 
-  <a href="/internal/articles?state=top-6" class="btn <%= "btn-success" if params[:state] == "top-6" %>">6mo</a> 
+  <a href="/internal/articles?state=satellite" class="btn <%= "btn-success" if params[:state] == "satellite" %>">🛰</a>
+  Top:
+  <a href="/internal/articles?state=top-3" class="btn <%= "btn-success" if params[:state] == "top-3" %>">3mo</a>
   <a href="/internal/articles?state=boosted-additional-articles" class="btn <%= "btn-success" if params[:state] == "boosted-additional-articles" %>">Boosted</a>
 </h3>
-<br/>
-  <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
-    <h1 style="color:red">
-      <%= params[:state] %>-months
-    </h1>
+<br />
+<% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
+  <h1 style="color:red">
+    <%= params[:state] %>-months
+  </h1>
 <% end %>
 
 <% if @featured_articles && @featured_articles.any? %>
@@ -44,7 +50,6 @@
     <%= render "individual_article", article: article %>
   <% end %>
 <% end %>
-
 
 <div class="row" style="font-size:1.5em;border:0px">
   <h1>All Articles</h1>

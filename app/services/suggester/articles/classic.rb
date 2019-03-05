@@ -9,20 +9,21 @@ module Suggester
         @not_ids = options[:not_ids]
       end
 
-      def get(tag_names = random_supported_tag_names)
-        if rand(8) == 1
-          random_high_quality_article
-        else
-          qualifying_articles(tag_names).where.not(id: not_ids).compact.sample ||
-            random_high_quality_article
-        end
+      def get(num = 1)
+        articles = if rand(8) == 1
+                     random_high_quality_articles(num)
+                   else
+                     qualifying_articles(random_supported_tag_names).where.not(id: not_ids).compact.sample(num)
+                   end
+        articles = random_high_quality_articles(num) if articles.empty?
+        articles
       end
 
       def qualifying_articles(tag_names)
         tag_name = tag_names.sample
         Rails.cache.
           fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
-          Article.tagged_with(tag_name).
+          Article.cached_tagged_with(tag_name).
             includes(:user).
             limited_column_select.
             where(published: true, featured: true).
@@ -32,8 +33,8 @@ module Suggester
         end
       end
 
-      def random_high_quality_article
-        HighQuality.new(not_ids: not_ids).suggest
+      def random_high_quality_articles(num)
+        HighQuality.new(not_ids: not_ids).suggest(num)
       end
 
       def random_supported_tag_names

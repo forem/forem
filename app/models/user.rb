@@ -1,9 +1,9 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user, :good_standing_user,
+  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee
+  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :pro_user
 
   rolify
   include AlgoliaSearch
@@ -35,6 +35,7 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many    :rating_votes
   has_many    :html_variants, dependent: :destroy
   has_many :mentor_relationships_as_mentee,
   class_name: "MentorRelationship", foreign_key: "mentee_id"
@@ -65,6 +66,7 @@ class User < ApplicationRecord
             exclusion: { in: ReservedWords.all, message: "username is reserved" }
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
+  validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,
@@ -286,12 +288,20 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
+  def banished?
+    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
+  end
+
   def banned_from_mentorship
     has_role? :banned_from_mentorship
   end
 
   def admin?
     has_role?(:super_admin)
+  end
+
+  def any_admin?
+    has_role?(:super_admin) || has_role?(:admin)
   end
 
   def trusted
@@ -363,14 +373,6 @@ class User < ApplicationRecord
     end
   end
 
-  def cache_bust_all_articles
-    cache_buster = CacheBuster.new
-    articles.find_each do |article|
-      cache_buster.bust(article.path)
-      cache_buster.bust(article.path + "?i=i")
-    end
-  end
-
   def settings_tab_list
     tab_list = %w(
       Profile
@@ -394,6 +396,10 @@ class User < ApplicationRecord
     remove_from_index!
     index = Algolia::Index.new("searchables_#{Rails.env}")
     index.delay.delete_object("users-#{id}")
+  end
+
+  def unsubscribe_from_newsletters
+    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   private
@@ -577,10 +583,6 @@ class User < ApplicationRecord
     follower_relationships = Follow.where(followable_id: id, followable_type: "User")
     follower_relationships.destroy_all
     follows.destroy_all
-  end
-
-  def unsubscribe_from_newsletters
-    MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
   def mentorship_status_update

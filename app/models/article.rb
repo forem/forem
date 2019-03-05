@@ -3,6 +3,7 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include AlgoliaSearch
   include Storext.model
+  include Reactable
 
   acts_as_taggable_on :tags
 
@@ -14,10 +15,10 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
-  has_many :reactions,      as: :reactable, dependent: :destroy
-  has_many :comments,       as: :commentable
+  has_many :comments, as: :commentable
   has_many :buffer_updates
-  has_many  :notifications, as: :notifiable
+  has_many :notifications, as: :notifiable
+  has_many :rating_votes
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
                    uniqueness: { scope: :user_id }
@@ -49,6 +50,7 @@ class Article < ApplicationRecord
   before_save       :set_all_dates
   before_save       :calculate_base_scores
   before_save       :set_caches
+  before_save       :fetch_video_duration
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
@@ -60,9 +62,11 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
+  scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
+
   scope :active_help, -> {
                         where(published: true).
-                          tagged_with("help").
+                          cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
                       }
@@ -73,7 +77,8 @@ class Article < ApplicationRecord
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url,
-    :published_at, :crossposted_at, :boost_states, :description, :reading_time)
+    :experience_level_rating, :experience_level_rating_distribution,
+    :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
   scope :limited_columns_internal_select, -> {
@@ -95,7 +100,7 @@ class Article < ApplicationRecord
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
-  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
+  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
                   id: :index_id,
@@ -134,8 +139,8 @@ class Article < ApplicationRecord
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time,
-        :tag_list, :positive_reactions_count, :id, :hotness_score, :score,
-        :readable_publish_date, :flare_tag, :user_id, :organization_id
+        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
+        :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
       attribute :published_at_int do
         published_at.to_i
       end
@@ -197,14 +202,12 @@ class Article < ApplicationRecord
                 stories.order("last_comment_at DESC").
                   where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
               end
-
-    stories = stories.tagged_with(tags)
-
+    stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
     stories.pluck(:path, :title, :comments_count, :created_at)
   end
 
   def self.active_eli5(time_ago)
-    stories = where(published: true).tagged_with("explainlikeimfive")
+    stories = where(published: true).cached_tagged_with("explainlikeimfive")
 
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").limit(3)
@@ -229,11 +232,10 @@ class Article < ApplicationRecord
   end
 
   def self.trigger_delayed_index(record, remove)
-    if remove
-      record.delay.remove_from_index! if record&.persisted?
-    else
-      record.index_or_remove_from_index_where_appropriate
-    end
+    # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
+    return if remove
+
+    record.index_or_remove_from_index_where_appropriate
   end
 
   def index_or_remove_from_index_where_appropriate
@@ -254,6 +256,11 @@ class Article < ApplicationRecord
     index.delete_object("articles-#{id}")
     index = Algolia::Index.new("ordered_articles_#{Rails.env}")
     index.delete_object("articles-#{id}")
+  end
+
+  def touch_by_reaction
+    async_score_calc
+    index!
   end
 
   def comments_blob
@@ -312,8 +319,13 @@ class Article < ApplicationRecord
 
   def has_frontmatter?
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed.front_matter["title"]
+    begin
+      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+      parsed.front_matter["title"]
+    rescue Psych::SyntaxError
+      # if frontmatter is invalid, still render editor with errors instead of 500ing
+      true
+    end
   end
 
   def class_name
@@ -321,7 +333,7 @@ class Article < ApplicationRecord
   end
 
   def flare_tag
-    FlareTag.new(self).tag_hash
+    @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
   def update_main_image_background_hex
@@ -367,12 +379,8 @@ class Article < ApplicationRecord
   end
 
   def async_score_calc
-    update_column(:score, reactions.sum(:points))
-    update_column(:hotness_score, BlackBox.article_hotness_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    index! if tag_list.exclude?("hiring")
+    Articles::ScoreCalcJob.perform_later(id)
   end
-  handle_asynchronously :async_score_calc
 
   def series
     # name of series article is part of
@@ -382,6 +390,33 @@ class Article < ApplicationRecord
   def all_series
     # all series names
     user&.collections&.pluck(:slug)
+  end
+
+  def cloudinary_video_url
+    return if video_thumbnail_url.blank?
+
+    ApplicationController.helpers.cloudinary(video_thumbnail_url, 880)
+  end
+
+  def video_duration_in_minutes
+    minutes = (video_duration_in_seconds.to_i / 60) % 60
+    seconds = video_duration_in_seconds.to_i % 60
+    seconds = "0#{seconds}" if seconds.to_s.size == 1
+    "#{minutes}:#{seconds}"
+  end
+
+  def fetch_video_duration
+    if video.present? && video_duration_in_seconds.zero?
+      url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
+      duration = 0
+      HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
+        duration = duration + chunk.split(",")[0].to_f
+      end
+      duration
+      self.video_duration_in_seconds = duration
+    end
+  rescue StandardError => e
+    puts e.message
   end
 
   private
@@ -398,8 +433,15 @@ class Article < ApplicationRecord
   def before_destroy_actions
     bust_cache
     remove_algolia_index
-    user.cache_bust_all_articles
-    organization&.delay&.resave_articles
+    article_ids = user.article_ids.dup
+    if organization
+      organization.touch(:last_article_at)
+      article_ids.concat organization.article_ids
+    end
+    # perform busting cache in chunks in case there're a lot of articles
+    (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
+      Articles::BustCacheJob.perform_later(ids)
+    end
   end
 
   def evaluate_front_matter(front_matter)
@@ -454,7 +496,7 @@ class Article < ApplicationRecord
     if published && video_state == "PROGRESSING"
       return errors.add(:published, "cannot be set to true if video is still processing")
     end
-    if video.present? && !user.has_role?(:video_permission)
+    if video.present? && user.created_at > 2.weeks.ago
       return errors.add(:video, "cannot be added member without permission")
     end
   end
@@ -494,8 +536,6 @@ class Article < ApplicationRecord
   def set_published_date
     if published && published_at.blank?
       self.published_at = Time.current
-      user.delay.resave_articles # tack-on functionality HACK
-      organization&.delay&.resave_articles # tack-on functionality HACK
     end
   end
 
@@ -510,6 +550,8 @@ class Article < ApplicationRecord
   def set_last_comment_at
     if published_at.present? && last_comment_at == "Sun, 01 Jan 2017 05:00:00 UTC +00:00"
       self.last_comment_at = published_at
+      user.touch(:last_article_at)
+      organization&.touch(:last_article_at)
     end
   end
 

@@ -4,12 +4,13 @@
     <div class="row comment-row">
       <div class="inner-row col-md-8 col-md-offset-2">
         <% if comment.commentable %>
-          <p class="lead"><strong><a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.positive_reactions_count %> ❤️)</strong></p>
+          <p class="lead">
+            <strong><a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.positive_reactions_count %> ❤️)</strong>
+          </p>
         <% end %>
-          <%= sanitize comment.processed_html.html_safe,
-            tags: %w(strong em p h1 h2 h3 h4 h5 h6 i u b code pre br ul ol li small sup img a span hr blockquote),
-            attributes: %w(href strong em ref rel src title alt class)
-           %>
+        <%= sanitize comment.processed_html.html_safe,
+                     tags: %w(strong em p h1 h2 h3 h4 h5 h6 i u b code pre br ul ol li small sup img a span hr blockquote),
+                     attributes: %w(href strong em ref rel src title alt class) %>
         <div class="row">
           <div class="inner-row col-xs-8">
             <% if comment.user %>
@@ -18,15 +19,15 @@
               </a>
             <% end %>
             <% if comment.user && comment.user.twitter_username.present? %>
-               |
+              |
               <a href="https://twitter.com/<%= comment.user.twitter_username %>">
                 <i class="fa fa-twitter" aria-hidden="true"></i> @<%= comment.user.twitter_username %>
               </a>
             <% end %>
           </div>
-            <div class="inner-row col-xs-2 col-xs-offset-0">
-              <a class="btn btn-primary" href="<%= comment.path %>" target="_blank">View</a>
-            </div>
+          <div class="inner-row col-xs-2 col-xs-offset-0">
+            <a class="btn btn-primary" href="<%= comment.path %>" target="_blank">View</a>
+          </div>
           <% if comment.reactions.where(user_id: current_user.id).empty? %>
             <div class="inner-row col-xs-2 col-xs-offset-0">
               <%= form_tag("/reactions", remote: true) do %>
@@ -44,7 +45,7 @@
 </div>
 
 <script>
-  $("form").submit(function(e){
+  $("form").submit(function (e) {
     $(this).fadeOut();
   })
 </script>

@@ -2,37 +2,10 @@
 
 exports[`<Tags /> only allows 4 tags 1`] = `
 Object {
-  "searchResults": Array [
-    Object {
-      "_highlightResult": Object {
-        "bg_color_hex": Object {
-          "matchLevel": "none",
-          "matchedWords": Array [],
-          "value": "#888751",
-        },
-        "name": Object {
-          "fullyHighlighted": false,
-          "matchLevel": "full",
-          "matchedWords": Array [
-            "gi",
-          ],
-          "value": "<em>gi</em>t",
-        },
-        "text_color_hex": Object {
-          "matchLevel": "none",
-          "matchedWords": Array [],
-          "value": "#56c938",
-        },
-      },
-      "bg_color_hex": "#888751",
-      "hotness_score": 0,
-      "name": "git",
-      "objectID": "4",
-      "supported": true,
-      "text_color_hex": "#56c938",
-    },
-  ],
-  "selectedIndex": 0,
+  "cursorIdx": 0,
+  "prevLen": 0,
+  "searchResults": Array [],
+  "selectedIndex": -1,
 }
 `;
 
@@ -48,6 +21,7 @@ exports[`<Tags /> renders properly 1`] = `
     onInput={[Function]}
     onKeyDown={[Function]}
     placeholder="tags"
+    ref={[Function]}
     type="text"
     value=""
   />
@@ -56,6 +30,8 @@ exports[`<Tags /> renders properly 1`] = `
 
 exports[`<Tags /> replaces tag when editing 1`] = `
 Object {
+  "cursorIdx": 0,
+  "prevLen": 0,
   "searchResults": Array [],
   "selectedIndex": -1,
 }
@@ -63,6 +39,8 @@ Object {
 
 exports[`<Tags /> selects tag when you click on it 1`] = `
 Object {
+  "cursorIdx": 0,
+  "prevLen": 0,
   "searchResults": Array [],
   "selectedIndex": -1,
 }
@@ -70,6 +48,8 @@ Object {
 
 exports[`<Tags /> shows tags as you search 1`] = `
 Object {
+  "cursorIdx": 2,
+  "prevLen": 0,
   "searchResults": Array [
     Object {
       "_highlightResult": Object {
@@ -106,6 +86,8 @@ Object {
 
 exports[`<Tags /> shows tags when editing 1`] = `
 Object {
+  "cursorIdx": 2,
+  "prevLen": 0,
   "searchResults": Array [
     Object {
       "_highlightResult": Object {

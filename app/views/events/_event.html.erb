@@ -7,7 +7,7 @@
     box-shadow: 5px 8px 0px #ccfff9;
     font-size: 17px;
     max-width: 700px;
-    font-family:  "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     line-height: 145%;
   }
 
@@ -22,6 +22,7 @@
     border-radius: 3px;
     left: 1px;
   }
+
   .event .event-details p {
     margin: 5px;
   }
@@ -29,6 +30,7 @@
   .event .event-description p {
     text-align: justify;
   }
+
   .event .event-details h3 {
     margin: 0 0 .5em 0;
     font-weight: 800;
@@ -42,43 +44,47 @@
       margin: 0 0 20px;
     }
   }
-  .copyx{
+
+  .copyx {
     display: none !important;
   }
-  .addeventatc {visibility:hidden;}
+
+  .addeventatc {
+    visibility: hidden;
+  }
 </style>
 
 <div class="event">
   <div class="event-image">
     <img src="<%= cloudinary event.cover_image, 500 %>">
   </div>
-  <div class="event-details" >
+  <div class="event-details">
     <h3><a href="/events/<%= event.slug %>"><%= event.category %>: <%= event.title %></a></h3>
     <p>
       Date: <span class="utc-date" data-datetime="<%= event.starts_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
       <br>
       Time: <span class="utc-time" data-datetime="<%= event.starts_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
-       - <span class="utc-time" data-datetime="<%= event.ends_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
+      - <span class="utc-time" data-datetime="<%= event.ends_at.strftime("%d %B %Y %H:%M UTC") %>">&nbsp;</span>
       <br>
       Location: <a href="<%= event.location_url %>"><%= event.location_name %></a>
     </p>
     <div title="Add to Calendar" class="addeventatc">
-        Add to Calendar
-        <span class="start utc"><%= event.starts_at %></span>
-        <span class="end utc"><%= event.ends_at %></span>
-        <span class="timezone">America/New_York</span>
-        <span class="title"><%= event.title %></span>
-        <span class="organizer">The DEV Community</span>
-        <span class="organizer_email">members@dev.to</span>
-        <span class="calname">dev-event</span>
-        <span class="location"><%= event.location_url %></span>
-        <span class="alarm_reminder">15</span>
-        <span class="description">
+      Add to Calendar
+      <span class="start utc"><%= event.starts_at %></span>
+      <span class="end utc"><%= event.ends_at %></span>
+      <span class="timezone">America/New_York</span>
+      <span class="title"><%= event.title %></span>
+      <span class="organizer">The DEV Community</span>
+      <span class="organizer_email">members@dev.to</span>
+      <span class="calname">dev-event</span>
+      <span class="location"><%= event.location_url %></span>
+      <span class="alarm_reminder">15</span>
+      <span class="description">
           <%= event.description_html.html_safe %>
-          ------
-          Link to attend - <%= event.location_url%>
+        ------
+          Link to attend - <%= event.location_url %>
         </span>
-      </div>
+    </div>
   </div>
   <div class="event-description">
     <%= event.description_html.html_safe %>
@@ -86,9 +92,9 @@
 </div>
 
 <script defer>
-  window.addeventasync = function(){
-    addeventatc.register('button-dropdown-click', function(obj){
-        ga('send', 'event', 'click', 'Add Event To Calendar', 'User: <%= user_signed_in? %>');
+  window.addeventasync = function () {
+    addeventatc.register('button-dropdown-click', function (obj) {
+      ga('send', 'event', 'click', 'Add Event To Calendar', 'User: <%= user_signed_in? %>');
     });
   }
 </script>

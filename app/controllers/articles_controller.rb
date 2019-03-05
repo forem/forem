@@ -8,33 +8,28 @@ class ArticlesController < ApplicationController
 
   def feed
     skip_authorization
-    @page = params[:page].to_i
+
+    @articles = Article.where(published: true).
+      select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
+      order(published_at: :desc).
+      page(params[:page].to_i).per(12)
+
     if params[:username]
       if @user = User.find_by_username(params[:username])
-        @articles = Article.where(published: true, user_id: @user.id).
-          includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
-          order("published_at DESC").
-          page(@page).per(15)
+        @articles = @articles.where(user_id: @user.id)
       elsif @user = Organization.find_by_slug(params[:username])
-        @articles = Article.where(published: true, organization_id: @user.id).
-          includes(:user).
-          select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
-          order("published_at DESC").
-          page(@page).per(15)
+        @articles = @articles.where(organization_id: @user.id).includes(:user)
       else
         render body: nil
         return
       end
     else
-      @articles = Article.where(published: true, featured: true).
-        includes(:user).
-        select(:published_at, :slug, :processed_html, :user_id, :organization_id, :title).
-        order("published_at DESC").
-        page(@page).per(15)
+      @articles = @articles.where(featured: true).includes(:user)
     end
+
     set_surrogate_key_header "feed", @articles.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+
     render layout: false
   end
 
@@ -44,12 +39,19 @@ class ArticlesController < ApplicationController
     @tag = Tag.find_by_name(params[:template])
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
-                 Article.new(body_markdown: "", cached_tag_list: @tag.name,
-                             processed_html: "", user_id: current_user&.id)
+                 submission_template = @tag.submission_template_customized(@user.name).to_s
+                 Article.new(body_markdown: submission_template.split("---").last.to_s.strip, cached_tag_list: @tag.name,
+                             processed_html: "", user_id: current_user&.id, title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip)
                elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
                              processed_html: "", user_id: current_user&.id)
+               elsif @tag.present?
+                 skip_authorization
+                 Article.new(
+                   body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: " + @tag.name + "\n---\n\n",
+                   processed_html: "", user_id: current_user&.id
+                 )
                else
                  skip_authorization
                  if @user&.editor_version == "v2"
@@ -115,7 +117,7 @@ class ArticlesController < ApplicationController
         Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
         path = @article.path
       else
-        Notification.remove_all_without_delay(id: @article.id, class_name: "Article", action: "Published")
+        Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
       redirect_to (params[:destination] || path)
@@ -132,8 +134,8 @@ class ArticlesController < ApplicationController
   def destroy
     authorize @article
     @article.destroy!
-    Notification.remove_all_without_delay(id: @article.id, class_name: "Article", action: "Published")
-    Notification.remove_all(id: @article.id, class_name: "Article", action: "Reaction")
+    Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+    Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
     respond_to do |format|
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }
@@ -182,7 +184,10 @@ class ArticlesController < ApplicationController
 
   def article_params
     params[:article][:published] = true if params[:submit_button] == "PUBLISH"
-    params.require(:article).permit(policy(Article).permitted_attributes)
+    modified_params = policy(Article).permitted_attributes
+    modified_params << :user_id if org_admin_user_change_privilege
+    modified_params << :comment_template if current_user.has_role?(:admin)
+    params.require(:article).permit(modified_params)
   end
 
   def job_opportunity_params
@@ -200,11 +205,18 @@ class ArticlesController < ApplicationController
       redirect_to @article.current_state_path, notice: "Article was successfully created."
     else
       if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = Article.find_by_body_markdown(@article.body_markdown)
+        @article = current_user.articles.find_by_body_markdown(@article.body_markdown)
         redirect_to @article.current_state_path
         return
       end
       render :new
     end
+  end
+
+  def org_admin_user_change_privilege
+    params[:article][:user_id] &&
+      current_user.org_admin &&
+      current_user.organization_id == @article.organization_id &&
+      User.find(params[:article][:user_id])&.organization_id == @article.organization_id
   end
 end

@@ -1,15 +1,15 @@
 <% if @user.badge_achievements_count > 0 %>
-  <% number = 60 %>
   <style>
-    .badge-achievement{
+    .badge-achievement {
       display: block;
       position: relative;
-      z-index:1;
+      z-index: 1;
       color: black;
       opacity: 1 !important;
       float: left;
     }
-    .badge-achievement-image{
+
+    .badge-achievement-image {
       width: auto !important;
       max-height: 110px;
       min-height: 10px;
@@ -21,13 +21,16 @@
       margin: 3px;
       background: transparent;
     }
-    .badge-achievement-info h2{
+
+    .badge-achievement-info h2 {
       font-size: 15px;
     }
-    .badge-achievement img:hover{
-      opacity:0.88 !important;
+
+    .badge-achievement img:hover {
+      opacity: 0.88 !important;
     }
-    .badge-widget{
+
+    .badge-widget {
       position: relative;
       overflow: auto;
       min-height: 105px;
@@ -41,11 +44,11 @@
           <img
             src="<%= cloudinary achievement.badge.badge_image_url, 180 %>"
             alt="<%= achievement.badge.title %>"
+            title="<%= achievement.badge.title %>"
             class="badge-achievement-image"
-            style="transform: rotate(<%= -25 + (achievement.id.digits.first*5) %>deg);
-              margin-left: <%=achievement.id.digits.first*3 %>px;
-              margin-right: <%=achievement.id.digits.first*1 %>px;"
-              />
+            style="transform: rotate(<%= -25 + (achievement.id.digits.first * 5) %>deg);
+              margin-left: <%= achievement.id.digits.first * 3 %>px;
+              margin-right: <%= achievement.id.digits.first * 1 %>px;" />
         </a>
       <% end %>
     </div>

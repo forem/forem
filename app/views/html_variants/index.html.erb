@@ -1,6 +1,6 @@
 <%= render "page_styles" %>
 
-<div class="html-variants-page" >
+<div class="html-variants-page">
   <h1>
     HTML Variants <a href="/html_variants/new">New</a>
   </h1>
@@ -10,7 +10,7 @@
   </nav>
   <% if params[:state] == "mine" %>
     <h2>My Entries</h2>
-  <% elsif  params[:state] == "admin" %>
+  <% elsif params[:state] == "admin" %>
     <h2>All Published Entries</h2>
   <% else %>
     <h2>Leaderboard</h2>
@@ -20,3 +20,4 @@
   <% end %>
 </div>
 
+<%= paginate @html_variants %>

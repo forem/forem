@@ -5,26 +5,29 @@
 <ul>
   <% @articles.each do |article| %>
     <li style="margin:18px auto">
-      <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:1.06em;"><%= article.title.strip %></a> <%= truncate(article.description, length: 80) %>
+      <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:calc(0.93em + 0.2vw);"><%= article.title.strip %></a> <%= truncate(article.description, length: 120) %>
     </li>
   <% end %>
-  <% if @boosted_article && @user.display_sponsors %>
-    <h4 style="background:#e3fffc;display:inline-block;margin:0;">And sponsor-boosted</h4>
-    <li style="margin:18px auto">
-      <a href="https://dev.to<%= @boosted_article.path %>?booster_org=<%= @boosted_article.organization&.slug || "generic" %>" style="font-weight: bold;color:#0045ff;font-size:1.06em;"><%= @boosted_article.title.strip %></a> <%= truncate(@boosted_article.description, length: 80) %>
-    </li>
-  <% end %>
+     <hr />
 </ul>
-
 
 <center style="margin-top:50px;">
   <em>
-    <% if @user.follows.size == 0 %>
+    <% if @user.experience_level == nil %>
+      <b>
+        You can now add your coding experience level to your account in order to receive more relevant content.
+      </b>
+      <br /><br />
+      Visit <b><a href="https://dev.to/settings/misc" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
+      <br /><br />
+      You can change it any time in the future. Happy coding!
+    <% elsif @user.follows.size == 0 %>
       <b>
         DEV Digest is a new periodic email featuring the best posts from our community of developers.
       </b>
-      <br/><br/>
-      Your digest is not yet customized. Follow the people and technologies on <a href="https://dev.to" style="text-decoration: none;">dev.to</a> that interest you in order to receive the most relevant posts in your inbox.
+      <br /><br />
+      Your digest is not yet customized. Follow the people and technologies on
+      <a href="https://dev.to" style="text-decoration: none;">dev.to</a> that interest you in order to receive the most relevant posts in your inbox.
     <% else %>
       <% tip_rand = rand(5) %>
       <% if tip_rand == 0 %>

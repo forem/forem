@@ -8,14 +8,8 @@ end
 
 task periodic_cache_bust: :environment do
   cache_buster = CacheBuster.new
-  cache_buster.bust("/enter")
-  cache_buster.bust("/new")
-  cache_buster.bust("/dashboard")
-  cache_buster.bust("/users/auth/twitter")
-  cache_buster.bust("/users/auth/github")
-  cache_buster.bust("/feed")
-  cache_buster.bust("/feed")
   cache_buster.bust("/feed.xml")
+  cache_buster.bust("/badge")
 end
 
 task hourly_bust: :environment do
@@ -53,7 +47,7 @@ task renew_hired_articles: :environment do
 end
 
 task clear_memory_if_too_high: :environment do
-  if Rails.cache.stats.flatten[1]["bytes"].to_i > 4600000000
+  if Rails.cache.stats.flatten[1]["bytes"].to_i > 9650000000
     Rails.cache.clear
   end
 end
@@ -75,6 +69,9 @@ end
 task award_badges: :environment do
   BadgeRewarder.award_yearly_club_badges
   BadgeRewarder.award_beloved_comment_badges
+  BadgeRewarder.award_streak_badge(4)
+  BadgeRewarder.award_streak_badge(8)
+  BadgeRewarder.award_streak_badge(16)
 end
 
 # rake award_top_seven_badges["ben jess peter mac liana andy"]

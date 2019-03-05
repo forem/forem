@@ -1,23 +1,23 @@
-    <div class="html-variants-page-single-variant">
-      @<%= html_variant.user.username %>:
-      <h3>
-        <%= html_variant.name %>
-      </h3>
-      <iframe src="/html_variants/<%= html_variant.id %>"></iframe>
-      <div class="html-variants-page-single-variant-details">
-        <% if html_variant.published %>
-         <span class='pill published'>published</span>
-         <a class='pill' href="/html_variants/new?fork_id=<%= html_variant.id %>">fork</a>
-        <% else %>
-         <a class='pill' href="/html_variants/<%= html_variant.id %>/edit">view/edit</a>
-        <% end %>
-        <% if html_variant.approved %>
-         <span class='pill approved'><%= html_variant.success_rate %></span>
-        <% elsif admin %>
-          <%= form_for(html_variant) do |f| %>
-            <%= f.hidden_field :approved, value: "true" %>
-            <%= f.submit "APPROVE" %>
-          <% end %>
-        <% end %>
-      </div>
-    </div>
+<div class="html-variants-page-single-variant <%= "html-variants-page-single-big" if html_variant.group == "article_show_below_article_cta" %>">
+  <%= html_variant.group %> | @<%= html_variant.user.username %>:
+  <h3>
+    <a href="/html_variants/<%= html_variant.id %>"><%= html_variant.name %></a>
+  </h3>
+  <iframe src="/html_variants/<%= html_variant.id %>"></iframe>
+  <div class="html-variants-page-single-variant-details">
+    <% if html_variant.published %>
+      <span class='pill published'>published</span>
+      <a class='pill' href="/html_variants/new?fork_id=<%= html_variant.id %>">fork</a>
+    <% else %>
+      <a class='pill' href="/html_variants/<%= html_variant.id %>/edit">view/edit</a>
+    <% end %>
+    <% if html_variant.approved %>
+      <span class='pill approved'><%= html_variant.success_rate %></span>
+    <% elsif admin %>
+      <%= form_for(html_variant) do |f| %>
+        <%= f.hidden_field :approved, value: "true" %>
+        <%= f.submit "APPROVE" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

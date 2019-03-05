@@ -3,7 +3,7 @@
     Congratulations, <%= @user.name %>! You received the <b><%= @badge.title %></b> badge!
   </p>
   <p style="text-align:center;padding:20px 0px">
-    <img src="<%= @badge.badge_image_url %>" style="height:200px"/>
+    <img src="<%= @badge.badge_image_url %>" style="height:200px" />
   </p>
   <p>
     <%= @badge.description %>
@@ -13,7 +13,7 @@
       <%= @badge_achievement.rewarding_context_message.html_safe %>
     </em>
   </p>
-  <br/>
+  <br />
   <p>
     <a href="https://dev.to/<%= @user.username %>" style="font-weight:bold;color:white;background:#4e57ef;padding: 5px 10px;border-radius:3px;text-decoration:none">
       Check out your profile

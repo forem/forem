@@ -14,21 +14,22 @@
 
 <% if params[:state] == "previous-registration" %>
   <div class="notice error-notice" id="notice">
-    There is an existing account authorized with that social account. Contact <a href="mailto:yo@dev.to">yo@dev.to</a> if this is a mistake.
+    There is an existing account authorized with that social account. Contact
+    <a href="mailto:yo@dev.to">yo@dev.to</a> if this is a mistake.
   </div>
 <% end %>
 
 <div class="user-settings-page">
   <% if @tab == "organization" && @user.organization.present? %>
-    <h2>Settings for <a href="/<%= @user.organization.slug %>">@<%= @user.organization.slug %></h2></a>
+    <h2>Settings for <a href="/<%= @user.organization.slug %>">@<%= @user.organization.slug %></a></h2>
   <% else %>
-    <h2>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></h2></a>
-  <% end %>  
+    <h2>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h2>
+  <% end %>
   <% if current_user.email.blank? %>
     <div class="finish-notice">
       Confirm your email to complete your profile
       <div class="small">
-        while you're at it, go ahead and fill everything out.<br/>
+        while you're at it, go ahead and fill everything out.<br />
         <% if @user.twitter_username.blank? %>
           connect your twitter account as well to complete your identity.
         <% elsif @user.github_username.blank? %>
@@ -42,7 +43,8 @@
     <div class="field-notice">
       Email Verification
       <div class="small">
-        you have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a><br/>
+        you have requested a change to
+        <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a><br />
         check your inbox for the verification link to finalize the change.
       </div>
     </div>
@@ -72,20 +74,18 @@
     </div>
   <% end %>
 
-
   <div class="settings-hub">
     <% @tab_list.each do |possible_tab| %>
-      <% if @tab == possible_tab.downcase.gsub(" ","-") %>
+      <% if @tab == possible_tab.downcase.gsub(" ", "-") %>
         <div class="single-settings-tab selected">
           <%= possible_tab %>
         </div>
       <% else %>
-        <a class="single-settings-tab" href="/settings/<%= possible_tab.downcase.gsub(" ","-") %>"><%= possible_tab %></a>
+        <a class="single-settings-tab" href="/settings/<%= possible_tab.downcase.gsub(" ", "-") %>"><%= possible_tab %></a>
       <% end %>
     <% end %>
   </div>
   <div class="settings-form">
-    <%= render "users/"+@tab.gsub("-","_"), tab: @tab %>
+    <%= render "users/" + @tab.gsub("-", "_"), tab: @tab %>
   </div>
-
 </div>

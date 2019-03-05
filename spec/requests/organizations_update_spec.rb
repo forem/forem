@@ -11,7 +11,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     sign_in user
   end
 
-  it "updates ordinary article with proper params" do
+  it "updates org color with proper params" do
     put "/organizations/#{organization.id}", params: {
       organization: { text_color_hex: "#111111" }
     }
@@ -22,5 +22,11 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     secret = Organization.last.secret
     post "/organizations/generate_new_secret"
     expect(Organization.last.secret).not_to eq(secret)
+  end
+
+  it "updates profile_updated_at" do
+    organization.update_column(:profile_updated_at, 2.weeks.ago)
+    put "/organizations/#{organization.id}", params: { organization: { text_color_hex: "#111111" } }
+    expect(organization.reload.profile_updated_at).to be > 2.minutes.ago
   end
 end

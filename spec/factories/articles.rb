@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :article do
     transient do
-      title { Faker::Book.title }
+      title { Faker::Book.title + rand(100).to_s }
       published { true }
       date { "01/01/2015" }
       tags { Faker::Hipster.words(4).join(", ") }
@@ -17,6 +17,7 @@ FactoryBot.define do
     description   { Faker::Hipster.paragraph(1)[0..100] }
     main_image    { Faker::Avatar.image }
     language { "en" }
+    experience_level_rating { rand(4..6) }
     body_markdown do
       <<~HEREDOC
         ---
@@ -37,8 +38,7 @@ FactoryBot.define do
 
   trait :video do
     after(:build) do |article|
-      article.video = "https://video.com"
-      article.user.add_role :video_permission
+      article.video = "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b"
       article.save
     end
   end

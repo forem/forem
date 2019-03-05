@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <% title = yield(:title) %>
-  <title><%= title || 'DEV Community' %></title>
+  <title><%= title || "DEV Community" %></title>
   <% if internal_navigation? %>
     <style>
-      .universal-page-content-wrapper{
+      .universal-page-content-wrapper {
         visibility: hidden;
       }
     </style>
@@ -20,16 +20,17 @@
     <%= render "layouts/styles" %>
     <style>
       .home {
-          overflow: hidden;
-          position: relative;
-          text-align: center;
-          min-height: 440px;
-          margin: auto;
-          max-width: 1250px;
+        overflow: hidden;
+        position: relative;
+        text-align: center;
+        min-height: 440px;
+        margin: auto;
+        max-width: 1250px;
       }
-      @media screen and (min-width: 950px){
+
+      @media screen and (min-width: 950px) {
         .home {
-            margin-top: 26px;
+          margin-top: 26px;
         }
       }
     </style>
@@ -37,23 +38,23 @@
     <%= javascript_pack_tag "manifest", defer: true %>
     <%= javascript_pack_tag "vendor", defer: true %>
 
-    <%= javascript_pack_tag 'Search', defer: true %>
+    <%= javascript_pack_tag "Search", defer: true %>
     <% if core_pages? %>
-      <%= javascript_include_tag 'base', defer: true %>
+      <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_pack_tag 'Onboarding', defer: true %>
+        <%= javascript_pack_tag "Onboarding", defer: true %>
       <% end %>
     <% end %>
     <% if !core_pages? %>
-      <%= stylesheet_link_tag 'application', media: 'all' %>
+      <%= stylesheet_link_tag "application", media: "all" %>
       <% if render_js? %>
         <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-        <%= javascript_include_tag 'application' %>
+        <%= javascript_include_tag "application" %>
       <% end %>
     <% end %>
 
     <% if view_class == "users users-signout_confirm" %>
-      <%= javascript_include_tag 'application' %>
+      <%= javascript_include_tag "application" %>
     <% end %>
     <%= yield(:page_meta) %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -67,37 +68,37 @@
     <meta name="apple-mobile-web-app-title" content="dev.to">
     <meta name="application-name" content="dev.to">
     <meta property="fb:pages" content="568966383279687" />
-    <meta name="theme-color" content="#000000"/>
+    <meta name="theme-color" content="#000000" />
     <% if view_class.include? "users-signout_confirm" %>
       <%= csrf_meta_tags %>
     <% end %>
     <link rel="manifest" href="/manifest.json" />
-    <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The DEV Community"/>
+    <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The DEV Community" />
   <% end %>
 </head>
 <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
-  <% unless internal_navigation? %>
-    <div id="audiocontent">
-      <%= yield(:audio) %>
-    </div>
-  <% end %>
-  <% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", :expires_in => 100.hours) do %>
-    <%= render "layouts/top_bar" unless internal_navigation? %>
-  <% end %>
-  <div id="message-notice"></div>
-  <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
-    <div id="page-content-inner">
-      <%= yield %>
-    </div>
+<% unless internal_navigation? %>
+  <div id="audiocontent">
+    <%= yield(:audio) %>
   </div>
-  <% unless internal_navigation? %>
-    <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig["DEPLOYMENT_SIGNATURE"].to_s}", :expires_in => 200.hours) do %>
-      <%= render "layouts/footer" %>
-      <%= render "layouts/signup_modal" unless user_signed_in? %>
-    <% end %>
-    <div id="live-article-indicator" class="live-article-indicator"></div>
-    <%= image_tag("twitter-logo.svg", class:"icon-img", style:"display:none") %>
-    <%= image_tag("github-logo.svg", class:"icon-img", style:"display:none") %>
+<% end %>
+<% cache("application-top-bar--#{user_signed_in?}--#{internal_navigation?}", expires_in: 100.hours) do %>
+  <%= render "layouts/top_bar" unless internal_navigation? %>
+<% end %>
+<div id="message-notice"></div>
+<div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+  <div id="page-content-inner">
+    <%= yield %>
+  </div>
+</div>
+<% unless internal_navigation? %>
+  <% cache("footer-and-signup-modal--#{user_signed_in?}--#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 200.hours) do %>
+    <%= render "layouts/footer" %>
+    <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>
+  <div id="live-article-indicator" class="live-article-indicator"></div>
+  <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none") %>
+  <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none") %>
+<% end %>
 </body>
 </html>

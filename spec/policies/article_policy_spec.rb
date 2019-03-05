@@ -5,9 +5,9 @@ RSpec.describe ArticlePolicy do
 
   let(:article) { build(:article) }
   let(:valid_attributes) do
-    %i[title body_html body_markdown user_id main_image published
+    %i[title body_html body_markdown main_image published
        description allow_small_edits allow_big_edits tag_list publish_under_org
-       video video_code video_source_url video_thumbnail_url]
+       video video_code video_source_url video_thumbnail_url receive_notifications]
   end
 
   context "when user is not signed-in" do
@@ -47,28 +47,6 @@ RSpec.describe ArticlePolicy do
     let(:user) { build(:user, :super_admin) }
 
     it { is_expected.to permit_actions(%i[update new create delete_confirm destroy preview]) }
-  end
-
-  context "when user does not have any analytics permission" do
-    let(:user) { build(:user) }
-
-    it { is_expected.to forbid_action(:analytics_index) }
-  end
-
-  context "when trying to view analytics with proper permissions" do
-    let(:org_admin)         { build(:user, :org_admin) }
-    let(:super_admin)       { build(:user, :super_admin) }
-    let(:analytics_user)    { build(:user, :analytics, organization_id: org_admin.organization_id) }
-    let(:article) do
-      build(:article, user_id: analytics_user.id, organization_id: org_admin.organization_id)
-    end
-
-    it "allows all users to view analytics" do
-      described_classes = [org_admin, super_admin, analytics_user].map do |user|
-        described_class.new(user, article)
-      end
-      expect(described_classes).to all(permit_action(:analytics_index))
-    end
   end
 
   context "when a user with analytics tries to view someone else's article" do

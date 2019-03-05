@@ -1,0 +1,77 @@
+<% if current_user&.trusted %>
+  <style>
+    .level-rating-button {
+      border-radius: 8px;
+      font-size: 1.1em;
+      padding: 3px;
+      width: 42px;
+      border: 2px solid black;
+      font-weight: bold;
+    }
+
+    .level-rating-button.selected {
+      background: #9bebff;
+    }
+  </style>
+
+  <br /><br /><br /><br />
+  <center>
+    <h1>Mod Convenience Dashboard</h1>
+    <h2>Add "Experience Level" ratings</h2>
+    <h5>More mod tools will be added as they are created.</h5>
+  </center>
+  <div class="container">
+    <% @articles.each do |article| %>
+      <% @rating_vote = article.rating_votes.where(user_id: current_user.id).first %>
+      <% unless @rating_vote %>
+        <div style="border-bottom: 2px solid black; margin-bottom: 15px;">
+          <center>
+            <h1><%= article.title %></h1>
+            <% cache("main-article-tags-#{article.cached_tag_list}", expires_in: 30.hours) do %>
+              <div class="tags">
+                <% article.cached_tag_list_array.each do |tag| %>
+                  <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_colors(tag)[:background] %>;color:<%= tag_colors(tag)[:color] %>">#<%= tag %></a>
+                <% end %>
+              </div>
+            <% end %>
+          </center>
+          <div class="body">
+            <%= HTML_Truncator.truncate(article.processed_html,
+                                        200, ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe %>
+          </div>
+          <center>
+            <h2><a href="<%= article.path %>/mod">Moderate</a></h2>
+            <h2>Experience Level Target:</h2>
+            <%= form_for(RatingVote.new) do |f| %>
+              <%= f.hidden_field :article_id, value: article.id %>
+              <%= f.hidden_field :group, value: "experience_level" %>
+              <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">1</button>
+              <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">2</button>
+              <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">3</button>
+              <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">4</button>
+              <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">5</button>
+              <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 6.0 %>">6</button>
+              <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 7.0 %>">7</button>
+              <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 8.0 %>">8</button>
+              <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
+              <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
+            <% end %>
+            <br /><br />
+          </center>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <br /><br /><br /><br />
+  <div class="container">
+    <h1 style="text-align: center">DEV Mods</h1>
+    <div class="body">
+      <p>We periodically award some DEV members with heightened privileges to help moderate the community.</p>
+      <p>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you'd like to be considered right away.</p>
+      <% if !user_signed_in? %>
+        <p><em>P.S. You are not currently signed in.</em></p>
+      <% end %>
+    </div>
+  </div>
+<% end %>

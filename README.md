@@ -11,7 +11,7 @@
 <br/>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.0-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.6.1-green.svg" alt="ruby version"/>
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
@@ -25,8 +25,8 @@
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
     <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" />
   </a>
-  <a href="https://www.skylight.io/app/applications/K9H5IV3RqKGu">
-    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" />
+  <a href="https://oss.skylight.io/app/applications/K9H5IV3RqKGu">
+    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge" />
   </a>
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge" />
@@ -83,6 +83,8 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 3.  Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
 4.  Push to the branch: `git push origin feature/that-new-feature`
 5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
+
+Note: be sure to [maintain your fork](https://docs.dev.to/maintaining-your-fork)!
 
 ## Contribution guideline
 

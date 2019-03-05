@@ -1,7 +1,16 @@
-<h2 style="font-size:25px;"><a href="https://dev.to/<%= @mentioner.username %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!</h2>
-<table><tr><td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
+<h2 style="font-size:25px;">
+  <a href="https://dev.to/<%= @mentioner.username %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!
+</h2>
+<table>
+  <tr>
+    <td style='color:#c3c3c3;font-size:14px;padding-bottom:8px'>
 
-    </td></tr><tr><td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
-        <%= @mentionable.processed_html.html_safe %>
-        <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%=@mention.mentionable.path%>'>view on dev.to</a>
-      </td></tr></table>
+    </td>
+  </tr>
+  <tr>
+    <td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
+      <%= @mentionable.processed_html.html_safe %>
+      <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='https://dev.to<%= @mention.mentionable.path %>'>view on dev.to</a>
+    </td>
+  </tr>
+</table>

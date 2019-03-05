@@ -7,7 +7,7 @@ class Internal::ArticlesController < Internal::ApplicationController
     when /not\-buffered/
       days_ago = params[:state].split("-")[2].to_f
       @articles = Article.
-        where(last_buffered: nil).
+        where(last_buffered: nil, published: true).
         includes(:user).
         includes(:buffer_updates).
         order("positive_reactions_count DESC").
@@ -17,6 +17,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         per(50)
     when /top\-/
       @articles = Article.
+        where(published: true).
         where("published_at > ?", params[:state].split("-")[1].to_i.months.ago).
         includes(:user).
         includes(:buffer_updates).
@@ -24,6 +25,16 @@ class Internal::ArticlesController < Internal::ApplicationController
         page(params[:page]).
         limited_columns_internal_select.
         per(50)
+    when "satellite"
+      @articles = Article.
+        where(last_buffered: nil, published: true).
+        includes(:user).
+        includes(:buffer_updates).
+        order("hotness_score DESC").
+        tagged_with(Tag.bufferized_tags, any: true).
+        page(params[:page]).
+        limited_columns_internal_select.
+        per(60)
     when "boosted-additional-articles"
       @articles = Article.
         includes(:user).
@@ -72,6 +83,8 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.email_digest_eligible = article_params[:email_digest_eligible].to_s == "true"
     article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
     article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
+    article.user_id = article_params[:user_id].to_i
+
     article.update!(article_params)
     if article.live_now
       Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false)
@@ -94,6 +107,7 @@ class Internal::ArticlesController < Internal::ApplicationController
                                     :boosted_additional_articles,
                                     :boosted_dev_digest_email,
                                     :main_image_background_hex_color,
-                                    :featured_number)
+                                    :featured_number,
+                                    :user_id)
   end
 end

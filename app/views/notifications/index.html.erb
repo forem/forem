@@ -1,7 +1,7 @@
 <% title "Notifications" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/notifications"/>
+  <link rel="canonical" href="https://dev.to/notifications" />
   <meta name="description" content="Notifications inbox for dev.to">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
@@ -17,42 +17,58 @@
   <meta name="twitter:description" content="Notifications inbox for dev.to">
 <% end %>
 
-
-
 <div class="user-profile-header tag-header" style="background: transparent;padding:0px;margin:22px auto 0px">
 </div>
 
-  <div class="home" id="notifications-container" style="margin-top:0px;">
-    <div class="side-bar">
-      <div class="widget fixed-widget">
+<div class="home" id="notifications-container" style="margin-top:0px;">
+  <div class="side-bar">
+    <div class="widget fixed-widget">
+      <header>
+        <h4>notifications</h4>
+      </header>
+      <div class="widget-body">
+        <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">COMMENTS</a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">POSTS</a>
+      </div>
+      <% if user_signed_in? && current_user.organization_id.present? %>
+        <hr>
         <header>
-          <h4>notifications</h4>
+          <h4><%= current_user.organization.name %> <%= "(#{@total_org_unread})" if @total_org_unread.positive? %></h4>
         </header>
         <div class="widget-body">
-          <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
-          <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "comments" %>" href="/notifications/comments">COMMENTS</a>
-          <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == current_user.organization_id %>" href="/notifications/org/<%= current_user.organization_id %>">ALL</a>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == current_user.organization_id %>" href="/notifications/comments/<%= current_user.organization_id %>">COMMENTS</a>
         </div>
-      </div>
+      <% end %>
     </div>
-      <div class="articles-list" id="articles-list">
-        <% if user_signed_in? %>
-          <div class="notifications-mobile-filters">
-            <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
-            <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "comments" %>" href="/notifications/comments">COMMENTS</a>
-            <a class="query-filter-button <%= "selected" if params[:filter].to_s.downcase == "posts" %>" href="/notifications/posts">POSTS</a>
-          </div>
-          <%= render "notifications_list" %>
-          <% if @notifications.any? %>
-            <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:filter].to_s %>?page=<%= @notifications.last.id %>"></div>
-          <% end %>
-        <% else %>
-          <div class="content notification-content comment-content">
-            <%= render "notifications/signup_cta_test" %>
-          </div>
-        <% end %>
-    </div>
-    <div class="side-bar sidebar-additional"></div>
   </div>
+  <div class="articles-list" id="articles-list">
+    <% if user_signed_in? %>
+      <div class="notifications-mobile-filters">
+        <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">COMMENTS</a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">POSTS</a>
+      </div>
+      <% if current_user.organization_id.present? %>
+        <div class="notifications-mobile-filters">
+          <hr>
+          <span class="organization-name"><%= current_user.organization.name %> <%= "(#{@total_org_unread})" if @total_org_unread.positive? %></span>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == current_user.organization_id %>" href="/notifications/org/<%= current_user.organization_id %>">ALL</a>
+          <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == current_user.organization_id %>" href="/notifications/comments/<%= current_user.organization_id %>">COMMENTS</a>
+        </div>
+      <% end %>
+      <%= render "notifications_list" %>
+      <% if @notifications.any? %>
+        <div id="notifications-pagination" data-pagination-path="/notifications/<%= params[:org_id].present? ? "#{params[:filter]}/#{params[:org_id]}" : params[:filter].to_s %>?page=<%= @notifications.last.id %>"></div>
+      <% end %>
+    <% else %>
+      <div class="content notification-content comment-content">
+        <%= render "notifications/signup_cta_test" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="side-bar sidebar-additional"></div>
+</div>
 
-  <%= render "articles/fitvids" %>
+<%= render "articles/fitvids" %>

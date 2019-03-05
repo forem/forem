@@ -22,7 +22,7 @@ class CodepenTag < LiquidTagBase
   private
 
   def valid_option(option)
-    option.match(/(default-tab\=\w(\,\w)?)/)
+    option.match(/(default-tab\=\w+(\,\w+)?)/)
   end
 
   def parse_options(input)
@@ -33,7 +33,7 @@ class CodepenTag < LiquidTagBase
     validated_options = options.map { |o| valid_option(o) }.reject { |e| e == nil }
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
-    option = options.join("&")
+    option = validated_options.join("&")
 
     if option.blank?
       "default-tab=result"

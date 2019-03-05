@@ -1,0 +1,27 @@
+linters:
+  SelfClosingTag:
+    enabled: false
+  ParserErrors:
+    exclude:
+      - '**/app/views/pages/_editor_guide_text.html.erb'
+  SpaceInHtmlTag:
+    exclude:
+      - '**/app/views/pages/_editor_guide_text.html.erb'
+  AllowedScriptType:
+    enabled: true
+    allowed_types:
+      - 'text/javascript'
+      - 'text/x-tmpl'
+    allow_blank: true
+    disallow_inline_scripts: false
+  Rubocop:
+    enabled: true
+    rubocop_config:
+      inherit_from:
+        - .rubocop.yml
+      Layout/TrailingBlankLines:
+        Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
+      Metrics/LineLength:
+        Max: 289

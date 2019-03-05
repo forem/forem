@@ -3,7 +3,7 @@ function initializeFetchFollowedArticles() {
     algoliaFollowedArticles();
   }
 }
-  
+
 function insertArticle(article,parent,insertPlace) {
   if (article){
     var newItem = document.createElement("DIV");
@@ -33,6 +33,7 @@ function insertNewArticles(user){
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
+      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -45,6 +46,13 @@ function insertNewArticles(user){
       if (containsOrganizationID) {
         articlePoints = articlePoints + 16
       }
+      var rand = Math.random();
+      if (rand < 0.3) {
+        articlePoints = articlePoints + 1
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 3
+      }
+      articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
     });
     var sortedArticles = articlesJSON.sort(function(a, b) {
@@ -52,7 +60,7 @@ function insertNewArticles(user){
     });
     sortedArticles.forEach(function(article){
       var parent = insertPlace.parentNode;
-      if ( article.points > 15 && !document.getElementById("article-link-"+article.id) ) {
+      if ( article.points > 12 && !document.getElementById("article-link-"+article.id) ) {
         insertArticle(article,parent,insertPlace);
       }
     });
@@ -64,12 +72,13 @@ function insertTopArticles(user){
   var articlesJSON = JSON.parse(el.dataset.articles)
   var insertPlace = document.getElementById("article-index-hidden-div");
   if (insertPlace) {
-      articlesJSON.forEach(function(article){
+    articlesJSON.forEach(function(article){
       var articlePoints = 0
       var containsUserID = findOne([article.user_id], user.followed_user_ids || [])
       var containsOrganizationID = findOne([article.organization_id], user.followed_organization_ids || [])
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
+      var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -82,6 +91,13 @@ function insertTopArticles(user){
       if (containsOrganizationID) {
         articlePoints = articlePoints + 1
       }
+      var rand = Math.random();
+      if (rand < 0.3) {
+        articlePoints = articlePoints + 1
+      } else if (rand < 0.6) {
+        articlePoints = articlePoints + 3
+      }
+      articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
     });
     var sortedArticles = articlesJSON.sort(function(a, b) {
@@ -107,14 +123,13 @@ function algoliaFollowedArticles(){
       var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
       var client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
       var index = client.initIndex('ordered_articles_<%= Rails.env %>');
-      
       var searchObj = {
           hitsPerPage: 20,
           page: "0",
           attributesToHighlight: [],
           tagFilters: [user.followed_tag_names.concat(followedUsersArray)],
       }
-      
+
       var homeEl = document.getElementById("index-container");
       if (homeEl.dataset.feed === "base-feed") {
         articlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');

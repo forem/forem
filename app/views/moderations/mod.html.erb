@@ -1,46 +1,54 @@
 <style>
-  .reaction-button{
+  .reaction-button {
     position: relative;
     width: 60px;
     height: 60px;
     background: white;
     border-color: white;
     margin: 100px 40px;
-    border-radius:200px;
+    border-radius: 200px;
   }
+
   .reaction-button img {
     position: absolute;
     top: 0;
     width: 60px;
     left: 0;
   }
+
   .reaction-button .reacted-emoji {
     display: none;
   }
+
   .reaction-button.reacted .reacted-emoji {
     display: block;
   }
+
   .tag-mod-form {
     border-top: 2px solid #dddddd;
     margin: 40px auto;
   }
+
   .tag-mod-form ul {
     text-align: left;
     font-size: 15px;
   }
-  .tag-mod-form form{
+
+  .tag-mod-form form {
     width: 500px;
     margin: auto;
     max-width: 90%;
   }
-  .tag-mod-form form input{
+
+  .tag-mod-form form input {
     width: 100%;
     padding: 5px;
     font-size: 20px;
     margin-bottom: 5px;
     border: 1px solid #888;
   }
-  .tag-mod-form form input[type="submit"]{
+
+  .tag-mod-form form input[type="submit"] {
     background: #0045ff;
     color: white;
     font-weight: bold;
@@ -48,12 +56,26 @@
     margin: auto;
     display: block;
   }
-  .tag-mod-form form textarea{
+
+  .tag-mod-form form textarea {
     width: 100%;
     padding: 5px;
     font-size: 17px;
     height: 50px;
     border: 1px solid #888;
+  }
+
+  .level-rating-button {
+    border-radius: 8px;
+    font-size: 1.1em;
+    padding: 3px;
+    width: 42px;
+    border: 2px solid black;
+    font-weight: bold;
+  }
+
+  .level-rating-button.selected {
+    background: #9bebff;
   }
 </style>
 
@@ -62,27 +84,31 @@
 
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="thumbsdown" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-thumbs-down-gray.png" %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>"/>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" />
   </button>
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= @moderatable.id %>" data-category="vomit" data-reactable-type="<%= @moderatable.class.name %>">
     <%= image_tag "emoji/emoji-one-nausea-face-gray.png" %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>"/>
+    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" />
   </button>
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
-    <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> | <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> | <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
+    <h1> Admin: <a href="<%= @moderatable.path %>/edit">Edit</a> |
+      <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Content Moderation</a> |
+      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Article Admin</a></h1>
   <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
-    <h1> ADMIN: <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Comment Admin</a> | <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>User Admin</a></h1>
+    <h1> ADMIN: <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Comment Admin</a> |
+      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>User Admin</a></h1>
   <% else %>
     <p style="width: 90%;margin:50px auto;text-align:left">
-      <b style="font-size:1.3em">All negative reactions are 100% private.</b>
-      <br><br>Use the <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
+      <b style="font-size:1.3em">All negative reactions are private.</b>
+      <br><br>Use the
+      <b>thumbsdown(👎)</b> to move something "down" for any reason (quality, usefulness, code of conduct grey area).
       <br><br>The <b>vomit(🤢)</b> is for code of conduct violations (harassment, being an asshole, spam, etc.).
       <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
     </p>
   <% end %>
   <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by_name(t)) }).any? if @moderatable.class.name == "Article" %>
   <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
-    <div class="tag-mod-form" >
+    <div class="tag-mod-form">
       <%= form_for(TagAdjustment.new) do |f| %>
         <h2> Remove Inappropriate Tags</h2>
         <% unless current_user.has_role?(:super_admin) %>
@@ -94,15 +120,15 @@
           </ul>
         <% end %>
         <b>Current live tags:</b> <%= @moderatable.tag_list %>
-        <br/><br/>
+        <br /><br />
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.text_field :tag_name, placeholder: "Tag Name" %>
-        <%= f.text_area  :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind)"  %>
+        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind)" %>
         <%= f.submit "Remove Tag" %>
         <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
         <% if adjustments.any? %>
-          <br/><br/>
-          <b>Removed tags: </b> 
+          <br /><br />
+          <b>Removed tags: </b>
           <% adjustments.each do |adjustment| %>
             <%= adjustment.tag_name %>
           <% end %>
@@ -110,10 +136,36 @@
       <% end %>
     </div>
   <% end %>
+  <% if @moderatable.class.name == "Article" %>
+    <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
+    <%= form_for(RatingVote.new) do |f| %>
+      <h2>Experience Level of Post</h2>
+      <%= f.hidden_field :article_id, value: @moderatable.id %>
+      <%= f.hidden_field :group, value: "experience_level" %>
+      <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">1</button>
+      <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">2</button>
+      <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">3</button>
+      <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">4</button>
+      <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">5</button>
+      <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 6.0 %>">6</button>
+      <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 7.0 %>">7</button>
+      <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 8.0 %>">8</button>
+      <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
+      <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
+    <% end %>
+    <p style="width: 90%;margin:50px auto;text-align:left">
+      <b style="font-size:1.1em">All rating votes are private.</b>
+      <br><br>Provide a rating between 1 and 10 based on which audience would find this post most valuable.
+      <br><br>1: for brand new developers, 3: for junior developers, 10: for very advanced developers, etc.
+      <br><br>This will provide
+      <em>approximate and gentle</em> algorithmic adjustments to help deliver relevant content.
+      <br><br>It will be used as one of many indicators. No one rating will have an overly dramatic affect.
+    </p>
+  <% end %>
 </div>
 
 <script defer>
-  setTimeout(function(){
+  setTimeout(function () {
     var butts = document.getElementsByClassName('reaction-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];

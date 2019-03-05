@@ -4,6 +4,6 @@
 <h1>All Welcome Threads</h1>
 <hr>
 <% @daily_threads.each do |thread| %>
-<a href="<%= thread.path %>"><%= thread.title %></a>
-<hr style="border-top: dotted 1px;">
+  <a href="<%= thread.path %>"><%= thread.title %></a>
+  <hr style="border-top: dotted 1px;">
 <% end %>

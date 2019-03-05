@@ -9,6 +9,7 @@ class Organization < ApplicationRecord
   has_many :articles
   has_many :collections
   has_many :display_ads
+  has_many :notifications
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
@@ -75,15 +76,6 @@ class Organization < ApplicationRecord
 
   def generated_random_secret
     SecureRandom.hex(50)
-  end
-
-  def resave_articles
-    cache_buster = CacheBuster.new
-    articles.find_each do |article|
-      cache_buster.bust(article.path)
-      cache_buster.bust(article.path + "?i=i")
-      article.save
-    end
   end
 
   def approved_and_filled_out_cta?

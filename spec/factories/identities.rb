@@ -1,7 +1,9 @@
 FactoryBot.define do
+  sequence(:uid, 100000) { |n| n }
+
   factory :identity do
+    uid { generate(:uid) }
     provider { "github" }
-    uid { rand(100000) }
     token { rand(100000) }
     secret { rand(100000) }
   end

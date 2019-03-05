@@ -1,12 +1,12 @@
 class Comment < ApplicationRecord
   has_ancestry
   include AlgoliaSearch
+  include Reactable
   belongs_to :commentable, polymorphic: true
   counter_culture :commentable
   belongs_to :user
   counter_culture :user
-  has_many   :reactions, as: :reactable, dependent: :destroy
-  has_many   :mentions, as: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25000 },
                             uniqueness: { scope: %i[user_id
@@ -25,12 +25,14 @@ class Comment < ApplicationRecord
   after_create   :send_email_notification, if: :should_send_email_notification?
   after_create   :create_first_reaction
   after_create   :send_to_moderator
-  before_save    :set_markdown_character_count
+  before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
-  before_validation :evaluate_markdown
-  validate :permissions
+  before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
+  validate :permissions, if: :commentable
+
+  alias touch_by_reaction save
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
@@ -128,6 +130,10 @@ class Comment < ApplicationRecord
             commentable_type: commentable_type)
   end
 
+  def self.tree_for(commentable, limit = 0)
+    commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  end
+
   def path
     "/#{user.username}/comment/#{id_code_generated}"
   rescue StandardError
@@ -174,24 +180,7 @@ class Comment < ApplicationRecord
     end
   end
 
-  def sharemeow_link
-    user_image = ProfileImage.new(user)
-    user_image_link = Rails.env.production? ? user_image.get_link : user_image.get_external_link
-    ShareMeowClient.image_url(
-      template: "DevComment",
-      options: {
-        content: body_markdown || processed_html,
-        name: user.name,
-        subject_name: commentable.title,
-        user_image_link: user_image_link,
-        background_color: user.bg_color_hex,
-        text_color: user.text_color_hex
-      },
-    )
-  end
-
   def self.comment_async_bust(commentable, username)
-    commentable.touch
     CacheBuster.new.bust_comment(commentable, username)
     commentable.index!
   end
@@ -203,9 +192,9 @@ class Comment < ApplicationRecord
   end
 
   def remove_notifications
-    Notification.remove_all_without_delay(id: id, class_name: "Comment")
-    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Moderation")
-    Notification.remove_all_without_delay(id: id, class_name: "Comment", action: "Reaction")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Moderation")
+    Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Reaction")
   end
 
   def send_to_moderator
@@ -263,6 +252,7 @@ class Comment < ApplicationRecord
 
   def touch_user
     user.touch
+    user.touch(:last_comment_at)
   end
   handle_asynchronously :touch_user
 
@@ -287,7 +277,6 @@ class Comment < ApplicationRecord
 
   def bust_cache
     Comment.comment_async_bust(commentable, user.username)
-    expire_root_fragment
     cache_buster = CacheBuster.new
     cache_buster.bust("#{commentable.path}/comments") if commentable
   end
@@ -297,6 +286,7 @@ class Comment < ApplicationRecord
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     cache_buster = CacheBuster.new
     cache_buster.bust(commentable.path.to_s) if commentable
+    expire_root_fragment
   end
 
   def send_email_notification
@@ -308,7 +298,8 @@ class Comment < ApplicationRecord
     parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
-      parent_user.email
+      parent_user.email &&
+      parent_or_root_article.receive_notifications
   end
 
   def strip_url(url)

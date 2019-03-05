@@ -67,11 +67,21 @@
               margin: 10px auto;
               width: 90%;
               color:#666666;
+              &.milestone-emojis{
+                font-size: xx-large;
+                padding-top: 10px;
+                padding-bottom: 0px;
+              }
             }
             img.badge-image{
               margin:10px 0px 20px;
               height: 150px;
             }
+            img.milestone-gif{
+                margin: 10px 0px 10px;
+                border-radius: 8px;
+                width: 300px;
+              }
             p.badge-reward-message{
               margin: 8px auto;
               width: 90%;

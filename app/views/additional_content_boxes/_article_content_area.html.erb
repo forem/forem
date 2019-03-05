@@ -1,20 +1,22 @@
-      <h2><a href="<%= article.path + article.decorate.internal_utm_params %>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a></h2>
-      <div class="content-author">
-        <a href="<%= article.user.path + article.decorate.internal_utm_params %>"> 
-          <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(50)%>" alt="<%= article.user.username %> profile image"/>
-          <span><%= article.user.name %></span>
-        </a>
-      </div>
-      <p>
-        <a href="<%= article.path + article.decorate.internal_utm_params%>" class="<%= 'partner-link' if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
-          <%= article.description %>
-        </a>
-        <div class="engagement-count">
-          <% if article.positive_reactions_count > 0 %>
-            <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /> <%= article.positive_reactions_count %>
-          <% end %>
-          <% if article.comments_count > 0 %>
-            <img src="<%= asset_path("comments-bubble.png") %>" alt="Reactions" class="comments-bubble"/> <%= article.comments_count %>
-          <% end %>
-        </div>
-      </p>
+<h2>
+  <a href="<%= article.path + article.decorate.internal_utm_params %>" class="<%= "partner-link" if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>"><%= article.title %></a>
+</h2>
+<div class="content-author">
+  <a href="<%= article.user.path + article.decorate.internal_utm_params %>">
+    <img class="profile-pic" src="<%= ProfileImage.new(article.user).get(50) %>" alt="<%= article.user.username %> profile image" />
+    <span><%= article.user.name %></span>
+  </a>
+</div>
+<p>
+  <a href="<%= article.path + article.decorate.internal_utm_params %>" class="<%= "partner-link" if classification == "boosted" %>" data-details="<%= organization&.slug %>__<%= article.slug %>">
+    <%= article.description %>
+  </a>
+<div class="engagement-count">
+  <% if article.positive_reactions_count > 0 %>
+    <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /> <%= article.positive_reactions_count %>
+  <% end %>
+  <% if article.comments_count > 0 %>
+    <img src="<%= asset_path("comments-bubble.png") %>" alt="Reactions" class="comments-bubble" /> <%= article.comments_count %>
+  <% end %>
+</div>
+</p>

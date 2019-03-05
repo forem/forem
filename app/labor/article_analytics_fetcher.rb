@@ -11,15 +11,19 @@ class ArticleAnalyticsFetcher
     fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
   end
 
+  private
+
   def fetch_and_update_page_views_and_reaction_counts(qualified_articles, user_id)
     qualified_articles.each_slice(15).to_a.each do |chunk|
       pageviews = GoogleAnalytics.new(chunk.pluck(:id), user_id).get_pageviews
       page_views_obj = pageviews.to_h
       chunk.each do |article|
         article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
+        Notification.send_milestone_notification(type: "Reaction", article: article)
         next if article.page_views_count > page_views_obj[article.id].to_i
 
         article.update_columns(page_views_count: page_views_obj[article.id].to_i)
+        Notification.send_milestone_notification(type: "View", article: article)
       end
     end
   end
@@ -37,6 +41,12 @@ class ArticleAnalyticsFetcher
   def should_fetch(article)
     return true if @context == "force"
 
-    article.positive_reactions_count > article.previous_positive_reactions_count
+    article.positive_reactions_count > article.previous_positive_reactions_count || occasionally_force_fetch?
+  end
+
+  def occasionally_force_fetch?
+    if Rails.env.production?
+      rand(25) == 1
+    end
   end
 end

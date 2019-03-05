@@ -43,6 +43,10 @@ class UserPolicy < ApplicationPolicy
     current_user? || user_admin? || minimal_admin?
   end
 
+  def pro_user?
+    current_user? && user.has_role?(:pro)
+  end
+
   def moderation_routes?
     user.has_role?(:trusted) && !user.banned
   end
@@ -73,6 +77,7 @@ class UserPolicy < ApplicationPolicy
        employer_name
        employer_url
        employment_title
+       experience_level
        facebook_url
        feed_admin_publish_permission
        feed_mark_canonical

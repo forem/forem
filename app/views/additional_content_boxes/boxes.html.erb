@@ -1,20 +1,16 @@
 <% if @boosted_article %>
   <%= render "additional_content_boxes/article_box",
-    article: @boosted_article,
-    classification: "boosted",
-    classification_text: "From one of our Community Sponsors",
-    follow_cue: @boosted_article.organization&.tag_line || @boosted_article.organization&.tag_line %>
-<% elsif @alt_classic %>
-  <%= render "additional_content_boxes/article_box",
-    article: @alt_classic,
-    classification: "alt_classic",
-    classification_text: "Classic DEV Post from #{@alt_classic.readable_publish_date}",
-    follow_cue: @alt_classic.organization&.tag_line || "Follow <a href='#{@alt_classic.user.path}'>@#{@alt_classic.user.username}</a> to see more of their posts in your feed." %>
+             article: @boosted_article,
+             classification: "boosted",
+             classification_text: "From one of our Community Sponsors",
+             follow_cue: @boosted_article.organization&.tag_line || @boosted_article.organization&.tag_line %>
 <% end %>
-<% if @for_user_article %>
-  <%= render "additional_content_boxes/article_box",
-    article: @for_user_article,
-    classification: "for_user_article",
-    classification_text: "Another Post You Might Like",
-    follow_cue: @for_user_article.organization&.tag_line || "Follow <a href='#{@for_user_article.user.path}'>@#{@for_user_article.user.username}</a> to see more of their posts in your feed." %>
+<% if @suggested_articles.any? %>
+  <% @suggested_articles.each do |article| %>
+    <%= render "additional_content_boxes/article_box",
+               article: article,
+               classification: "for_user_article",
+               classification_text: "Another Post You Might Like",
+               follow_cue: article.organization&.tag_line || "Follow <a href='#{article.user.path}'>@#{article.user.username}</a> to see more of their posts in your feed." %>
+  <% end %>
 <% end %>

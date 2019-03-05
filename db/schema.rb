@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190115155656) do
+ActiveRecord::Schema.define(version: 20190227163803) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -62,12 +62,15 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "canonical_url"
     t.bigint "collection_id"
     t.integer "collection_position"
+    t.string "comment_template"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "crossposted_at"
     t.string "description"
     t.datetime "edited_at"
     t.boolean "email_digest_eligible", default: true
+    t.float "experience_level_rating", default: 5.0
+    t.float "experience_level_rating_distribution", default: 5.0
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
     t.float "featured_clickthrough_rate", default: 0.0
@@ -80,6 +83,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "language"
     t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_experience_level_rating_at"
     t.datetime "last_invoiced_at"
     t.decimal "lat", precision: 10, scale: 6
     t.boolean "live_now", default: false
@@ -99,6 +103,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
+    t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
@@ -116,6 +121,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "video"
     t.string "video_closed_caption_track_url"
     t.string "video_code"
+    t.float "video_duration_in_seconds", default: 0.0
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
@@ -463,6 +469,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.bigint "notifiable_id"
     t.string "notifiable_type"
     t.datetime "notified_at"
+    t.bigint "organization_id"
     t.boolean "read", default: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -488,12 +495,14 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "github_username"
     t.string "jobs_email"
     t.string "jobs_url"
+    t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.string "location"
     t.string "name"
     t.string "nav_image"
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.text "proof"
     t.string "secret"
     t.string "slug"
@@ -566,6 +575,17 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_push_notification_subscriptions_on_user_id"
+  end
+
+  create_table "rating_votes", force: :cascade do |t|
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.string "group"
+    t.float "rating"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_rating_votes_on_article_id"
+    t.index ["user_id"], name: "index_rating_votes_on_user_id"
   end
 
   create_table "reactions", force: :cascade do |t|
@@ -650,6 +670,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.string "alias_for"
     t.string "bg_color_hex"
     t.string "buffer_profile_id_code"
+    t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
     t.string "name"
@@ -665,6 +686,7 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
+    t.datetime "updated_at"
     t.text "wiki_body_html"
     t.text "wiki_body_markdown"
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -751,9 +773,12 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.integer "following_tags_count", default: 0, null: false
     t.integer "following_users_count", default: 0, null: false
     t.datetime "github_created_at"
+    t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
     t.jsonb "language_settings", default: {}, null: false
+    t.datetime "last_article_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at"
     t.datetime "last_moderation_notification", default: "2017-01-01 05:00:00"
     t.datetime "last_notification_activity"
@@ -786,6 +811,8 @@ ActiveRecord::Schema.define(version: 20190115155656) do
     t.boolean "permit_adjacent_sponsors", default: true
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
+    t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
+    t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.datetime "remember_created_at"
     t.string "remember_token"

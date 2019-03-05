@@ -1,43 +1,61 @@
-<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
-  <div class="sidebar-bg" id="sidebar-bg-left"></div>
-  <div class="side-bar">
-    <% if @tag_model && @tag_model.short_summary.present? %>
-      <div class="widget">
-        <header>
-          <h4>#<%= @tag %> 👋</h4>
-        </header>
-        <div class="widget-body">
-          <%= @tag_model.short_summary.html_safe %>
+<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}", expires_in: 5.hour do %>
+  <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+    <div class="sidebar-bg" id="sidebar-bg-left"></div>
+    <div class="side-bar">
+      <% if @tag_model && @tag_model.short_summary.present? %>
+        <div class="widget">
+          <header>
+            <h4>#<%= @tag %> 👋</h4>
+          </header>
+          <div class="widget-body">
+            <%= @tag_model.short_summary.html_safe %>
+          </div>
         </div>
-      </div>
-    <% end %>
-    <% if @tag_model && @tag_model.rules_html.present? %>
-      <div class="widget">
-        <header>
-          <h4>submission guidelines</h4>
-        </header>
-        <div class="widget-body">
-          <%= @tag_model.rules_html.html_safe %>
-          <a class="cta cta-button" href="/new/<%= @tag %>" >
-            WRITE A POST
-          </a>
+      <% end %>
+      <% if @tag_model && @tag_model.rules_html.present? %>
+        <div class="widget">
+          <header>
+            <h4>submission guidelines</h4>
+          </header>
+          <div class="widget-body">
+            <%= @tag_model.rules_html.html_safe %>
+            <a class="cta cta-button" href="/new/<%= @tag %>">
+              WRITE A POST
+            </a>
+          </div>
         </div>
-      </div>
-    <% end %>
-    <% if @tag_model && @tag_model.wiki_body_html.present? %>
-      <div class="widget">
-        <header>
-          <h4>about #<%= @tag %></h4>
-        </header>
-        <div class="widget-body">
-          <%= @tag_model.wiki_body_html.html_safe %>
+      <% end %>
+      <% if @tag_model && @tag_model.wiki_body_html.present? %>
+        <div class="widget">
+          <header>
+            <h4>about #<%= @tag %></h4>
+          </header>
+          <div class="widget-body">
+            <%= @tag_model.wiki_body_html.html_safe %>
+          </div>
         </div>
-      </div>
-    <% end %>
-    <div class="sidebar-data">
-      <div>
-        <%= pluralize Article.tagged_with(@tag).where(published: true).size, "Post" %> Published
+      <% end %>
+      <% if @moderators.present? %>
+        <div class="widget">
+          <header>
+            <h4>tag moderators</h4>
+          </header>
+          <div class="widget-body">
+            <% @moderators.each do |user| %>
+              <div class="widget-user-pic">
+                <a href="/<%= user.username %>" title="<%= user.username %>">
+                  <img src="<%= ProfileImage.new(user).get(90) %>" />
+                </a>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+      <div class="sidebar-data">
+        <div>
+          <%= pluralize Article.cached_tagged_with(@tag).where(published: true).size, "Post" %> Published
+        </div>
       </div>
     </div>
   </div>
-</div>
+<% end %>
