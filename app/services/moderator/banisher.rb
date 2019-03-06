@@ -1,5 +1,5 @@
 module Moderator
-  class Banisher
+  class Banisher < ActivityAndRoles
     attr_reader :user, :admin
 
     def self.call_banish(admin:, offender:)
@@ -34,55 +34,6 @@ module Moderator
       user.update_columns(remote_profile_image_url: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png") if Rails.env.production?
     end
 
-    def add_banned_role
-      user.add_role :banned
-      return if user.notes.where(reason: "banned").any?
-
-      user.notes.
-        create!(reason: "banned", content: "spam account", author: admin)
-    end
-
-    def delete_comments
-      return unless user.comments.any?
-
-      user.comments.find_each do |comment|
-        comment.reactions.delete_all
-        CacheBuster.new.bust_comment(comment.commentable, user.username)
-        comment.delete
-        comment.remove_notifications
-      end
-    end
-
-    def delete_articles
-      return unless user.articles.any?
-
-      user.articles.find_each do |article|
-        article.reactions.delete_all
-        article.comments.find_each do |comment|
-          comment.reactions.delete_all
-          CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
-          comment.delete
-          comment.remove_notifications
-        end
-        CacheBuster.new.bust_article(article)
-        article.remove_algolia_index
-        article.delete
-      end
-    end
-
-    def delete_user_activity
-      user.notifications.delete_all
-      user.reactions.delete_all
-      user.follows.delete_all
-      Follow.where(followable_id: user.id, followable_type: "User").delete_all
-      user.chat_channel_memberships.delete_all
-      user.mentions.delete_all
-      user.badge_achievements.delete_all
-      user.github_repos.delete_all
-      delete_comments
-      delete_articles
-    end
-
     def full_delete
       user.unsubscribe_from_newsletters
       delete_user_activity
@@ -93,7 +44,7 @@ module Moderator
     def banish
       user.unsubscribe_from_newsletters
       remove_profile_info
-      add_banned_role
+      handle_user_status("Ban", "spam account")
       delete_user_activity
       user.remove_from_algolia_index
       reassign_and_bust_username
