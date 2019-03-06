@@ -1,5 +1,5 @@
 module Moderator
-  class Banisher < ActivityAndRoles
+  class BanishUser < ManageActivityAndRoles
     attr_reader :user, :admin
 
     def self.call_banish(admin:, offender:)

@@ -1,5 +1,5 @@
 module Moderator
-  class ActivityAndRoles
+  class ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
     def initialize(args)
