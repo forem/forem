@@ -13,41 +13,51 @@ RSpec.describe MarkdownFixer do
   end
 
   describe "::add_quotes_to_title" do
+    it "does not do anything outside the front matter" do
+      result = described_class.add_quotes_to_title(sample_text)
+      expect(result).to eq(sample_text)
+    end
+
     it "escapes a simple title" do
       result = described_class.add_quotes_to_title(front_matter(title: sample_text))
-      expect(result).to eq front_matter(title: %("#{sample_text}"))
+      expect(result).to eq(front_matter(title: %("#{sample_text}")))
     end
 
     it "does not escape a title that came pre-wrapped in single quotes" do
       legacy_title = "'#{sample_text}'"
       result = described_class.add_quotes_to_title(front_matter(title: legacy_title))
-      expect(result).to eq front_matter(title: legacy_title)
+      expect(result).to eq(front_matter(title: legacy_title))
     end
 
     it "does not escape a title that came pre-wrapped in double quotes" do
       legacy_title = "\"#{sample_text}\""
       result = described_class.add_quotes_to_title(front_matter(title: legacy_title))
-      expect(result).to eq front_matter(title: legacy_title)
+      expect(result).to eq(front_matter(title: legacy_title))
     end
 
     it "handles a complex title" do
       legacy_title = %(Book review: "#{sample_text}", part 1 I'm #testing)
       expected_title = "\"Book review: \\\"#{sample_text}\\\", part 1 I'm #testing\""
       result = described_class.add_quotes_to_title(front_matter(title: legacy_title))
-      expect(result).to eq front_matter(title: expected_title)
+      expect(result).to eq(front_matter(title: expected_title))
     end
 
     it "handles a title with colons" do
       title = "Title: with colons"
       result = described_class.add_quotes_to_title(front_matter(title: title))
-      expect(result).to eq front_matter(title: %("#{title}"))
+      expect(result).to eq(front_matter(title: %("#{title}")))
     end
   end
 
   describe "::add_quotes_to_description" do
+    it "does not do anything outside the front matter" do
+      result = described_class.add_quotes_to_description(sample_text)
+      expect(result).to eq(sample_text)
+    end
+
     it "escapes a simple description" do
       result = described_class.add_quotes_to_description(front_matter(description: sample_text))
-      expect(result).to eq front_matter(description: %("#{sample_text}"))
+      expect(result).to eq(front_matter(description: %("#{sample_text}")))
     end
 
     it "does not escape a description that came pre-wrapped in single quotes" do
@@ -55,7 +65,7 @@ RSpec.describe MarkdownFixer do
       result = described_class.add_quotes_to_description(
         front_matter(description: legacy_description),
       )
-      expect(result).to eq front_matter(description: legacy_description)
+      expect(result).to eq(front_matter(description: legacy_description))
     end
 
     it "does not escape a description that came pre-wrapped in double quotes" do
@@ -63,7 +73,7 @@ RSpec.describe MarkdownFixer do
       result = described_class.add_quotes_to_description(
         front_matter(description: legacy_description),
       )
-      expect(result).to eq front_matter(description: legacy_description)
+      expect(result).to eq(front_matter(description: legacy_description))
     end
 
     it "handles a complex description" do
@@ -72,13 +82,13 @@ RSpec.describe MarkdownFixer do
       result = described_class.add_quotes_to_description(
         front_matter(description: legacy_description),
       )
-      expect(result).to eq front_matter(description: expected_description)
+      expect(result).to eq(front_matter(description: expected_description))
     end
 
     it "handles a description with colons" do
       description = "Description: with colons"
       result = described_class.add_quotes_to_description(front_matter(description: description))
-      expect(result).to eq front_matter(description: %("#{description}"))
+      expect(result).to eq(front_matter(description: %("#{description}")))
     end
   end
 
@@ -87,7 +97,7 @@ RSpec.describe MarkdownFixer do
       title = "\"hmm\"\r\n"
       expected_title = "\"hmm\"\n"
       result = described_class.convert_new_lines(front_matter(title: title))
-      expect(result).to eq front_matter(title: expected_title)
+      expect(result).to eq(front_matter(title: expected_title))
     end
   end
 end

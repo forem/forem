@@ -1,4 +1,6 @@
 class MarkdownFixer
+  FRONT_MATTER_DETECTOR = /-{3}.*?-{3}/m.freeze
+
   class << self
     def fix_all(markdown)
       methods = %i[add_quotes_to_title modify_hr_tags convert_new_lines split_tags]
@@ -10,49 +12,11 @@ class MarkdownFixer
     end
 
     def add_quotes_to_title(markdown)
-      # Only add quotes to front matter, or text between triple dashes
-      markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
-        front_matter.gsub(/title:\s?(.*?)(\r\n|\n)/m) do |target|
-          # $1 is the captured group (.*?)
-          captured_title = Regexp.last_match(1)
-          # The query below checks if the whole title is wrapped in
-          # either single or double quotes.
-          match = captured_title.scan(/(^".*"$|^'.*'$)/)
-          if match.empty?
-            # Double quotes that aren't already escaped will get esacped.
-            # Then the whole title get warped in double quotes.
-            parsed_title = captured_title.gsub(/(?<![\\])["]/, "\\\"")
-            "title: \"#{parsed_title}\"\n"
-          else
-            # if the title comes pre-warped in either single or doublequotes,
-            # no more processing is done
-            target
-          end
-        end
-      end
+      add_quotes_to_section(markdown, section: "title")
     end
 
     def add_quotes_to_description(markdown)
-      # Only add quotes to front matter, or text between triple dashes
-      markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
-        front_matter.gsub(/description:\s?(.*?)(\r\n|\n)/m) do |target|
-          # $1 is the captured group (.*?)
-          captured_title = $1
-          # The query below checks if the whole title is wrapped in
-          # either single or double quotes.
-          match = captured_title.scan(/(^".*"$|^'.*'$)/)
-          if match.empty?
-            # Double quotes that aren't already escaped will get esacped.
-            # Then the whole title get warped in double quotes.
-            parsed_title = captured_title.gsub(/(?<![\\])["]/, "\\\"")
-            "description: \"#{parsed_title}\"\n"
-          else
-            # if the title comes pre-warped in either single or doublequotes,
-            # no more processing is done
-            target
-          end
-        end
-      end
+      add_quotes_to_section(markdown, section: "description")
     end
 
     # This turns --- into ------- after the first two,
@@ -70,6 +34,31 @@ class MarkdownFixer
     def split_tags(markdown)
       markdown.gsub(/\ntags:.*\n/) do |tags|
         tags.split(" #").join(",").gsub("#", "").gsub(":,", ": ")
+      end
+    end
+
+    private
+
+    def add_quotes_to_section(markdown, section:)
+      # Only add quotes to front matter, or text between triple dashes
+      markdown.gsub(FRONT_MATTER_DETECTOR) do |front_matter|
+        front_matter.gsub(/#{section}:\s?(.*?)(\r\n|\n)/m) do |target|
+          # $1 is the captured group (.*?)
+          captured_text = $1
+          # The query below checks if the whole text is wrapped in
+          # either single or double quotes.
+          match = captured_text.scan(/(^".*"$|^'.*'$)/)
+          if match.empty?
+            # Double quotes that aren't already escaped will get esacped.
+            # Then the whole text get warped in double quotes.
+            parsed_text = captured_text.gsub(/(?<![\\])["]/, "\\\"")
+            "#{section}: \"#{parsed_text}\"\n"
+          else
+            # if the text comes pre-warped in either single or double quotes,
+            # no more processing is done
+            target
+          end
+        end
       end
     end
   end
