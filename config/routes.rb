@@ -7,9 +7,9 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
-  # authenticated :user, ->(user) { user.admin? } do
-  #   mount DelayedJobWeb, at: "/delayed_job"
-  # end
+  authenticated :user, ->(user) { user.admin? } do
+    mount DelayedJobWeb, at: "/delayed_job"
+  end
 
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
