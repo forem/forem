@@ -35,6 +35,7 @@ gem "counter_culture", "~> 2.1"
 gem "csv_shaper", "~> 1.3"
 gem "dalli", "~> 2.7"
 gem "delayed_job_active_record", "~> 4.1"
+gem "delayed_job_web", "~> 1.4"
 gem "devise", "~> 4.6"
 gem "draper", "~> 3.0"
 gem "email_validator", "~> 1.6"
@@ -108,7 +109,6 @@ group :development do
   gem "brakeman", "~> 4.4", require: false
   gem "bullet", "~> 5.9"
   gem "bundler-audit", "~> 0.6"
-  gem "delayed_job_web", "~> 1.4"
   gem "derailed_benchmarks", "~> 1.3"
   gem "guard", "~> 2.15", require: false
   gem "guard-livereload", "~> 2.5", require: false

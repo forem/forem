@@ -39,14 +39,15 @@ class ArticlesController < ApplicationController
     @tag = Tag.find_by_name(params[:template])
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
-                 Article.new(body_markdown: "", cached_tag_list: @tag.name,
-                             processed_html: "", user_id: current_user&.id)
+                 submission_template = @tag.submission_template_customized(@user.name).to_s
+                 Article.new(body_markdown: submission_template.split("---").last.to_s.strip, cached_tag_list: @tag.name,
+                             processed_html: "", user_id: current_user&.id, title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip)
                elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
                              processed_html: "", user_id: current_user&.id)
                elsif @tag.present?
-                 authorize Article
+                 skip_authorization
                  Article.new(
                    body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: " + @tag.name + "\n---\n\n",
                    processed_html: "", user_id: current_user&.id

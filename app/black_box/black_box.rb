@@ -10,9 +10,10 @@ class BlackBox
       recency_bonus = usable_date > 12.hours.ago ? 80 : 0
       today_bonus = usable_date > 26.hours.ago ? 395 : 0
       two_day_bonus = usable_date > 48.hours.ago ? 330 : 0
+      four_day_bonus = usable_date > 96.hours.ago ? 330 : 0
       FunctionCaller.new("blackbox-production-articleHotness",
         { article: article, user: article.user }.to_json).call +
-        reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus
+        reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
     end
 
     def comment_quality_score(comment)

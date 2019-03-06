@@ -7,8 +7,8 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
-  if Rails.env.development?
-    match "/delayed_job" => DelayedJobWeb, :anchor => false, :via => %i[get post]
+  authenticated :user, ->(user) { user.admin? } do
+    mount DelayedJobWeb, at: "/delayed_job"
   end
 
   devise_scope :user do
@@ -217,6 +217,7 @@ Rails.application.routes.draw do
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/badge" => "pages#badge"
+  get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
@@ -253,6 +254,7 @@ Rails.application.routes.draw do
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
+  get "/dashboard/pro" => "dashboards#pro"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
         which: /organization|organization_user_followers|user_followers|following_users|following|reading/

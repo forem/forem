@@ -333,7 +333,7 @@ class Article < ApplicationRecord
   end
 
   def flare_tag
-    FlareTag.new(self).tag_hash
+    @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
   def update_main_image_background_hex

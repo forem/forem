@@ -43,6 +43,10 @@ class UserPolicy < ApplicationPolicy
     current_user? || user_admin? || minimal_admin?
   end
 
+  def pro_user?
+    current_user? && user.has_role?(:pro)
+  end
+
   def moderation_routes?
     user.has_role?(:trusted) && !user.banned
   end
