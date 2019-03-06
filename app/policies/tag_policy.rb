@@ -11,6 +11,10 @@ class TagPolicy < ApplicationPolicy
     has_mod_permission?
   end
 
+  def admin?
+    user_admin?
+  end
+
   private
 
   def has_mod_permission?
