@@ -318,18 +318,6 @@ class User < ApplicationRecord
     end
   end
 
-  def reason_for_ban
-    return if notes.where(reason: "banned").blank?
-
-    Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
-  end
-
-  def reason_for_warning
-    return if notes.where(reason: "warned").blank?
-
-    Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
-  end
-
   def scholar
     valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
