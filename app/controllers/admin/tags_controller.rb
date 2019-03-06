@@ -33,6 +33,7 @@ module Admin
         bg_color_hex
         text_color_hex
         keywords_for_search
+        buffer_profile_id_code
       ]
       convert_empty_string_to_nil
       params.require(:tag).permit(accessible)

@@ -66,6 +66,7 @@ class TagDashboard < Administrate::BaseDashboard
     bg_color_hex
     text_color_hex
     keywords_for_search
+    buffer_profile_id_code
   ].freeze
 
   # FORM_ATTRIBUTES
