@@ -62,26 +62,23 @@ RSpec.describe MarkdownFixer do
 
     it "does not escape a description that came pre-wrapped in single quotes" do
       legacy_description = "'#{sample_text}'"
-      result = described_class.add_quotes_to_description(
-        front_matter(description: legacy_description),
-      )
+      result = described_class.
+        add_quotes_to_description(front_matter(description: legacy_description))
       expect(result).to eq(front_matter(description: legacy_description))
     end
 
     it "does not escape a description that came pre-wrapped in double quotes" do
       legacy_description = "\"#{sample_text}\""
-      result = described_class.add_quotes_to_description(
-        front_matter(description: legacy_description),
-      )
+      result = described_class.
+        add_quotes_to_description(front_matter(description: legacy_description))
       expect(result).to eq(front_matter(description: legacy_description))
     end
 
     it "handles a complex description" do
       legacy_description = %(Book review: "#{sample_text}", part 1 I'm #testing)
       expected_description = "\"Book review: \\\"#{sample_text}\\\", part 1 I'm #testing\""
-      result = described_class.add_quotes_to_description(
-        front_matter(description: legacy_description),
-      )
+      result = described_class.
+        add_quotes_to_description(front_matter(description: legacy_description))
       expect(result).to eq(front_matter(description: expected_description))
     end
 
@@ -98,6 +95,24 @@ RSpec.describe MarkdownFixer do
       expected_title = "\"hmm\"\n"
       result = described_class.convert_new_lines(front_matter(title: title))
       expect(result).to eq(front_matter(title: expected_title))
+    end
+  end
+
+  describe "::fix_all" do
+    it "escapes title and description" do
+      result = described_class.
+        fix_all(front_matter(title: sample_text, description: sample_text))
+      expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
+      expect(result).to eq(expected_result)
+    end
+  end
+
+  describe "::fix_for_preview" do
+    it "escapes title and description" do
+      result = described_class.
+        fix_for_preview(front_matter(title: sample_text, description: sample_text))
+      expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
+      expect(result).to eq(expected_result)
     end
   end
 end

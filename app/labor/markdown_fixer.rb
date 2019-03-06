@@ -3,12 +3,16 @@ class MarkdownFixer
 
   class << self
     def fix_all(markdown)
-      methods = %i[add_quotes_to_title modify_hr_tags convert_new_lines split_tags]
+      methods = %i[
+        add_quotes_to_title add_quotes_to_description
+        modify_hr_tags convert_new_lines split_tags
+      ]
       methods.reduce(markdown) { |result, method| send(method, result) }
     end
 
     def fix_for_preview(markdown)
-      modify_hr_tags(add_quotes_to_title(markdown))
+      methods = %i(add_quotes_to_title add_quotes_to_description modify_hr_tags)
+      methods.reduce(markdown) { |result, method| send(method, result) }
     end
 
     def add_quotes_to_title(markdown)
