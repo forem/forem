@@ -89,12 +89,13 @@ function initializeChatButton(button, modalInfo) {
 function initializeAllChatButtons() {
   var buttons = document.getElementsByClassName('chat-action-button');
   var modal = document.getElementById('new-message-form');
-  var modalInfo = JSON.parse(modal.dataset.info);
   var i;
 
   if (!modal) {
     return;
   }
+
+  var modalInfo = JSON.parse(modal.dataset.info);
 
   for (i = 0; i < buttons.length; i += 1) {
     initializeChatButton(buttons[i], modalInfo);
