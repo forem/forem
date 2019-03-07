@@ -19,7 +19,7 @@ class FlareTag
   def tag
     @tag ||= Rails.cache.fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
       flare = FLARES.detect { |f| article.cached_tag_list_array.include?(f) }
-      flare && flare != except_tag ? Tag.select(%i[name bg_color_hex text_color_hex]).find_by_name(flare) : nil
+      flare && flare != except_tag ? Tag.find_by_name(flare) : nil
     end
   end
 
