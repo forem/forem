@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190227163803) do
+ActiveRecord::Schema.define(version: 20190305221008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -519,6 +519,19 @@ ActiveRecord::Schema.define(version: 20190227163803) do
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
+  create_table "page_views", force: :cascade do |t|
+    t.bigint "article_id"
+    t.integer "counts_for_number_of_views", default: 1
+    t.datetime "created_at", null: false
+    t.string "referrer"
+    t.integer "time_tracked_in_seconds", default: 15
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_page_views_on_article_id"
+    t.index ["user_id"], name: "index_page_views_on_user_id"
+  end
+
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
     t.text "body"
     t.integer "comments_count", default: 0, null: false
@@ -776,6 +789,7 @@ ActiveRecord::Schema.define(version: 20190227163803) do
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
