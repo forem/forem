@@ -19,6 +19,7 @@ class Article < ApplicationRecord
   has_many :buffer_updates
   has_many :notifications, as: :notifiable
   has_many :rating_votes
+  has_many :page_views
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
                    uniqueness: { scope: :user_id }
