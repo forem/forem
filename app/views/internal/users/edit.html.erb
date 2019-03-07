@@ -5,20 +5,8 @@
   <u><a style="color: green" href="/internal/users/<%= @user.id %>">click here view user details & take other actions</a></u>
 </p>
 <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
-<p><strong>Activity:</strong></p>
-<ul>
-  <li><%= @user.comments.size %> comments</li>
-  <li><%= @user.articles.size %> articles</li>
-  <li><%= @user.reactions.size %> reactions</li>
-</ul>
+<%= render "internal/users/activity" %>
 <div class="row">
-  <h3><u>Current Roles</u></h3>
-  <p>(view full history in notes below)</p>
-  <ul>
-    <% @user.roles.each do |role| %>
-      <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
-    <% end %>
-  </ul>
   <h3><u>Privileges</u></h3>
   <% if !@user.banned && !@user.warned %>
     <%= form_for [:internal, @user] do |f| %>
@@ -57,6 +45,7 @@
     <%= f.submit "Update User Status" %>
   <% end %>
 </div>
+<%= render "notes" %>
 <div class="row">
   <h2>Banish User</h2>
   <% if @user.banished? %>
@@ -98,3 +87,5 @@
     <p>Only super admins can fully delete users.</p>
   <% end %>
 </div>
+<br>
+<br>

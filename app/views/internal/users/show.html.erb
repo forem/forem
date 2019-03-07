@@ -36,19 +36,8 @@
       <dd><%= @user.monthly_dues %></dd>
     <% end %>
   </dl>
-
-  <p><strong><u>Activity</u></strong></p>
-  <ul>
-    <li><%= @user.comments.size %> comments</li>
-    <li><%= @user.articles.size %> articles</li>
-    <li><%= @user.reactions.size %> reactions</li>
-    <li><%= @user.followers.size %> followers</li>
-    <li><%= @user.following_users_count %> users following</li>
-    <li><%= @user.badge_achievements_count %> Badges</li>
-
-  </ul>
-
 </div>
+<%= render "internal/users/activity" %>
 <div class="row">
   <h3><u>Mentorship</u></h3>
   <% if @user.mentors.count > 0 %>
@@ -91,34 +80,16 @@
     <%= f.submit "Update Mentorship Status" %>
   <% end %>
 </div>
-<div class="row">
-  <h3><u>Notes</u></h3>
-  <% if @user.notes.count > 0 %>
-    <% @user.notes.each do |note| %>
-      <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> -
-        <% if !note.reason.blank? %><strong><%= note.reason %>:</strong>
-          <% end %><%= note.content %></p>
-    <% end %>
-  <% else %>
-    <p><em>No notes yet!</em></p>
-  <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <%= f.label "Add new note: " %>
-    <br>
-    <%= f.text_area :note %>
-    <br>
-    <%= f.submit "Submit Note" %>
-  <% end %>
-</div>
-
+<%= render "notes" %>
 <%= render "mentee_match" %>
-
-<h2><u>Recent Emails</u></h2>
-<ul>
-  <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
-    <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a>
-      <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
-  <% end %>
-</ul>
+<div class="row">
+  <h2><u>Recent Emails</u></h2>
+  <ul>
+    <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+      <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a>
+        <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
+    <% end %>
+  </ul>
+</div>
 <br>
 <br>
