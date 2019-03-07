@@ -281,6 +281,7 @@ Rails.application.routes.draw do
   get "/tag/:tag" => "stories#index"
   get "/t/:tag" => "stories#index"
   get "/t/:tag/edit", to: "tags#edit"
+  get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",
