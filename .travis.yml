@@ -19,7 +19,6 @@ branches:
     - master
 before_install:
   - nvm install
-  - nvm use
 install:
   - bundle install --path vendor/bundle
   - bundle exec chromedriver-update
