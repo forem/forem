@@ -27,6 +27,8 @@ class PageViewsController < ApplicationController
   private
 
   def update_article_page_views
+    return if Rails.env.production? && rand(5) != 1 # We don't need to update the article page views every time.
+
     article = Article.find(page_view_params[:article_id])
     new_page_views_count = article.page_views.sum(:counts_for_number_of_views)
     article.update_column(:page_views_count, new_page_views_count) if new_page_views_count > article.page_views_count

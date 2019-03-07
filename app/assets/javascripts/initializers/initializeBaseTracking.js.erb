@@ -130,11 +130,16 @@ function trackCustomImpressions() {
       };
       var csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
+      var timeOnSiteCounter = 0;
       var timeOnSiteInterval = setInterval(function(){
+        timeOnSiteCounter++
         var ArticleElement = document.getElementById('article-body');
         if (ArticleElement && checkUserLoggedIn()) {
           trackFifteenSecondsOnPage(ArticleElement.dataset.articleId, csrfToken);
         } else {
+          clearInterval(timeOnSiteInterval);
+        }
+        if ( timeOnSiteCounter > 118 ) {
           clearInterval(timeOnSiteInterval);
         }
       }, 15000)
