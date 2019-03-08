@@ -127,8 +127,8 @@ class StoriesController < ApplicationController
         @stories = @stories.offset(offset)
       end
       @featured_story = @stories.cached_tagged_with("shecoded").where.not(main_image: nil).first&.decorate ||
-        @featured_story = @stories.where.not(main_image: nil).first&.decorate ||
-          Article.new
+        @stories.where.not(main_image: nil).first&.decorate ||
+        Article.new
     end
     @stories = @stories.decorate
     assign_podcasts
