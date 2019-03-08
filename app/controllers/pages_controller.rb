@@ -61,6 +61,9 @@ class PagesController < ApplicationController
   end
 
   def shecoded
+    @articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+      where(published: true, approved: true).where("published_at > ?", 3.weeks.ago).order("RANDOM()").
+      decorate
     render layout: false
     set_surrogate_key_header "shecoded_page"
   end
