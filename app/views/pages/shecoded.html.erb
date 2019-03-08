@@ -100,24 +100,12 @@
           background: #cabde6;
         }
         .posts {
-          column-count: 3;
           width: 94%;
           margin: 50px auto 20px;
         }
-        @media only screen and (max-width: 1200px) {
-          .posts {
-            column-count: 2;
-          }
-        }
-        @media only screen and (max-width: 750px) {
-          .posts {
-            column-count: 1;
-            max-width: 480px;
-          }
-        }
         .single-post {
           width: 98%;
-          margin: 0px auto 10px;
+          margin: 0px 1% 10px;
           border: 1px solid #cabde6;
           box-sizing: border-box;
           padding: 40px 10px;
@@ -127,6 +115,18 @@
           text-decoration: none;
           box-shadow: 3px 3px 0px #cabde6;
           overflow: hidden;
+          height: 320px;
+          width: 31%;
+        }
+        @media only screen and (max-width: 1200px) {
+          .single-post {
+            width: 47.5%;
+          }
+        }
+        @media only screen and (max-width: 750px) {
+          .single-post {
+            width: 100%;
+          }
         }
 
         .single-post img {
@@ -255,6 +255,20 @@
         </svg>
       </a>
       <div class="posts">
+        <% @top_articles.each do |article| %>
+          <a href="<%= article.path %>" class="single-post">
+            <img src="<%= ProfileImage.new(article.user).get(150) %>">
+            <h3>
+              <%= article.title %>
+            </h3>
+            <h4>
+              <%= article.user.name %>
+            </h4>
+            <h5>
+              #<%= (article.cached_tag_list_array & ["shecoded", "theycoded", "shecodedally"]).first %>
+            </h5>
+          </a>
+        <% end %>
         <% @articles.each do |article| %>
           <a href="<%= article.path %>" class="single-post">
             <img src="<%= ProfileImage.new(article.user).get(150) %>">
