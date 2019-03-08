@@ -10,6 +10,7 @@ task periodic_cache_bust: :environment do
   cache_buster = CacheBuster.new
   cache_buster.bust("/feed.xml")
   cache_buster.bust("/badge")
+  cache_buster.bust("/shecoded")
 end
 
 task hourly_bust: :environment do
