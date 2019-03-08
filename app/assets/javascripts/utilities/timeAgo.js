@@ -10,7 +10,7 @@ function secondsToHumanUnitAgo(seconds) {
 	];
 
 	if(seconds < times[0][1])
-		return "Just now";
+		return "just now";
 
 	let scale = 0;
 	// If the amount of seconds is more than a minute, we change the scale to minutes
