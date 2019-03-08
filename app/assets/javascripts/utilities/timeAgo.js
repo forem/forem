@@ -23,6 +23,9 @@ function secondsToHumanUnitAgo(seconds) {
 		return "Just now";
 
 	let scale = 0;
+	//If the amount of seconds is more than a minute, we change the scale to minutes
+	//If the amount of seconds then is more than an hour, we change the scale to hours
+	//This continues until the unit above our current scale is longer than `seconds`, or doesn't exist
 	while(scale+1 < times.length && seconds >= times[scale+1][1])
 		scale++;
 
