@@ -33,7 +33,7 @@
   }
 </style>
 <div class="content">
-  <img src="<%= @article.user.profile_image_url %>" />
+  <img src="<%= ProfileImage.new(@article.user).get(320) %>" />
   <div class="title">
     <%= @article.title %>
   </div>
