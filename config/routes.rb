@@ -7,8 +7,8 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
-  if Rails.env.development?
-    match "/delayed_job" => DelayedJobWeb, :anchor => false, :via => [:get, :post]
+  authenticated :user, ->(user) { user.admin? } do
+    mount DelayedJobWeb, at: "/delayed_job"
   end
 
   devise_scope :user do
@@ -130,6 +130,8 @@ Rails.application.routes.draw do
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: [:create]
+  resources :rating_votes, only: [:create]
+  resources :page_views, only: [:create, :update]
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
@@ -215,6 +217,7 @@ Rails.application.routes.draw do
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/badge" => "pages#badge"
+  get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
@@ -236,6 +239,7 @@ Rails.application.routes.draw do
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
+  get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
@@ -250,6 +254,7 @@ Rails.application.routes.draw do
   get "/settings/(:tab)" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
+  get "/dashboard/pro" => "dashboards#pro"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
         which: /organization|organization_user_followers|user_followers|following_users|following|reading/
@@ -276,6 +281,7 @@ Rails.application.routes.draw do
   get "/tag/:tag" => "stories#index"
   get "/t/:tag" => "stories#index"
   get "/t/:tag/edit", to: "tags#edit"
+  get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",

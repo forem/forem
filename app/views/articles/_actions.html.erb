@@ -1,5 +1,5 @@
 <div class="article-actions" id="article-reaction-actions">
-  <% cache("article-main-reactions", :expires_in => 200.hours) do %>
+  <% cache("article-main-reactions", expires_in: 200.hours) do %>
     <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
       <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
     </button>
@@ -11,8 +11,8 @@
     </button>
   <% end %>
   <a class="article-actions-tweet-button"
-      target='_blank'
-      href='https://twitter.com/intent/tweet?text="<%=u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+     target='_blank'
+     href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
     <img src="<%= asset_path("twitter.svg") %>" />
   </a>
   <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
@@ -29,13 +29,21 @@
     <div class="dropdown-content">
       <div>
         <div class="dropdown-link-row">
-          <input value="https://dev.to<%= @article.path %>" onClick="this.setSelectionRange(0, this.value.length)" readonly/>
+          <input value="https://dev.to<%= @article.path %>" onClick="this.setSelectionRange(0, this.value.length)" readonly />
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
-          <div class="dropdown-link-row"><a target='_blank' href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>Share to Twitter</a></div>
-          <div class="dropdown-link-row"><a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%=@article.path%>&title=<%=@article.title%>&summary=<%=@article.description%>&source=dev.to'>Share to LinkedIn</a></div>
-          <div class="dropdown-link-row"><a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%=@article.path%>&title=<%= @article.title %>'>Share to Reddit</a></div>
-          <div class="dropdown-link-row"><a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%=@article.path%>'>Share to Facebook</a></div>
+          <div class="dropdown-link-row">
+            <a target='_blank' href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>Share
+              to Twitter</a></div>
+          <div class="dropdown-link-row">
+            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to'>Share
+              to LinkedIn</a></div>
+          <div class="dropdown-link-row">
+            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>'>Share
+              to Reddit</a></div>
+          <div class="dropdown-link-row">
+            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>'>Share to
+              Facebook</a></div>
         </web-share-wrapper>
         <template id="web-share-button">
           <div class="dropdown-link-row"><a href="#">Share Post</a></div>
@@ -46,10 +54,10 @@
   </div>
 </div>
 <% if @variant_number.to_i == 0 && !user_signed_in? && @article.body_markdown.size > 900 %>
-  <% cache("below-article-html-variant-#{rand(20)}", :expires_in => 8.hours) do %>
+  <% cache("below-article-html-variant-#{rand(20)}", expires_in: 8.hours) do %>
     <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
     <% if @html_variant %>
-      <div class="html-variant-wrapper" id="html-variant-article-show-below-article" data-variant-id="<%= @html_variant.id %>" >
+      <div class="html-variant-wrapper" id="html-variant-article-show-below-article" data-variant-id="<%= @html_variant.id %>">
         <%= @html_variant.html.html_safe %>
       </div>
     <% end %>

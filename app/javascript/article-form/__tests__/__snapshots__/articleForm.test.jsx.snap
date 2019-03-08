@@ -3,13 +3,14 @@
 exports[`<ArticleForm /> renders properly 1`] = `
 <form
   class="articleform__form"
+  onInput={[Function]}
 >
   <div>
     <input
-      autocomplete="off"
+      autoComplete="off"
       class="articleform__title"
       id="article-form-title"
-      onChange={[Function]}
+      onInput={[Function]}
       placeholder="Title"
       type="text"
       value=""
@@ -55,14 +56,8 @@ exports[`<ArticleForm /> renders properly 1`] = `
       class="articleform__body"
       id="article_body_markdown"
       name="body_markdown"
-      onChange={[Function]}
+      onInput={[Function]}
       placeholder="Body"
-      ref={[Function]}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
       value=""
     />
     <button
@@ -103,12 +98,30 @@ exports[`<ArticleForm /> renders properly 1`] = `
     >
       SAVE DRAFT
     </button>
-    <button
-      class="articleform__buttons--publish"
-      onClick={[Function]}
-    >
-      PUBLISH
-    </button>
+    <span>
+      <p
+        style={
+          Object {
+            "visibility": "hidden",
+          }
+        }
+      >
+        New Changes (
+        <button
+          class="clear-button"
+          onClick={[Function]}
+        >
+          clear
+        </button>
+        )
+      </p>
+      <button
+        class="articleform__buttons--publish"
+        onClick={[Function]}
+      >
+        PUBLISH
+      </button>
+    </span>
   </div>
 </form>
 `;

@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[rlyweb now events membership survey badge]
+  before_action :set_cache_control_headers, only: %i[rlyweb now events membership survey badge shecoded]
 
   def now
     set_surrogate_key_header "now_page"
@@ -58,6 +58,18 @@ class PagesController < ApplicationController
     @chat_channels = [@active_channel].to_json(
       only: %i[channel_name channel_type last_message_at slug status id],
     )
+  end
+
+  def shecoded
+    @top_articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).order("RANDOM()").
+      includes(:user).decorate
+    @articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).order("RANDOM()").
+      where.not(id: @top_articles.pluck(:id)).
+      includes(:user).decorate
+    render layout: false
+    set_surrogate_key_header "shecoded_page"
   end
 
   private # helpers

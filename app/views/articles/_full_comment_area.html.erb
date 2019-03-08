@@ -8,8 +8,8 @@
         data-commentable-id="<%= @article.id %>"
         data-commentable-type="Article">
         <%= render "/comments/form",
-            commentable: @article,
-            commentable_type: "Article" %>
+                   commentable: @article,
+                   commentable_type: "Article" %>
         <div class="comment-trees" id="comment-trees-container">
           <% if @article.comments_count > 0 %>
             <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>

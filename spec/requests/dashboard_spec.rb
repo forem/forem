@@ -98,4 +98,29 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
   end
+
+  describe "GET /dashboard/pro" do
+    context "when not logged in" do
+      it "raises unauthorized" do
+        get "/dashboard/pro"
+        expect(response).to redirect_to("/enter")
+      end
+    end
+
+    context "when user does not have permission" do
+      it "raises unauthorized" do
+        login_as user
+        expect { get "/dashboard/pro" }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when user has pro permission" do
+      it "shows page properly" do
+        user.add_role(:pro)
+        login_as user
+        get "/dashboard/pro"
+        expect(response.body).to include("pro")
+      end
+    end
+  end
 end

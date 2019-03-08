@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190216185753) do
+ActiveRecord::Schema.define(version: 20190305221008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -69,6 +69,8 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.string "description"
     t.datetime "edited_at"
     t.boolean "email_digest_eligible", default: true
+    t.float "experience_level_rating", default: 5.0
+    t.float "experience_level_rating_distribution", default: 5.0
     t.datetime "facebook_last_buffered"
     t.boolean "featured", default: false
     t.float "featured_clickthrough_rate", default: 0.0
@@ -81,6 +83,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.string "language"
     t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
+    t.datetime "last_experience_level_rating_at"
     t.datetime "last_invoiced_at"
     t.decimal "lat", precision: 10, scale: 6
     t.boolean "live_now", default: false
@@ -100,6 +103,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
+    t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
@@ -515,6 +519,19 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
+  create_table "page_views", force: :cascade do |t|
+    t.bigint "article_id"
+    t.integer "counts_for_number_of_views", default: 1
+    t.datetime "created_at", null: false
+    t.string "referrer"
+    t.integer "time_tracked_in_seconds", default: 15
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_page_views_on_article_id"
+    t.index ["user_id"], name: "index_page_views_on_user_id"
+  end
+
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
     t.text "body"
     t.integer "comments_count", default: 0, null: false
@@ -571,6 +588,17 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_push_notification_subscriptions_on_user_id"
+  end
+
+  create_table "rating_votes", force: :cascade do |t|
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.string "group"
+    t.float "rating"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_rating_votes_on_article_id"
+    t.index ["user_id"], name: "index_rating_votes_on_user_id"
   end
 
   create_table "reactions", id: :serial, force: :cascade do |t|
@@ -761,6 +789,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
@@ -797,6 +826,7 @@ ActiveRecord::Schema.define(version: 20190216185753) do
     t.datetime "personal_data_updated_at"
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
+    t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.datetime "remember_created_at"
     t.string "remember_token"

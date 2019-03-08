@@ -1,7 +1,7 @@
 <% title "Tags on dev.to" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/about"/>
+  <link rel="canonical" href="https://dev.to/about" />
   <meta name="description" content="Tags to follow on dev.to">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
@@ -28,14 +28,14 @@
 
 <div class="home tag-home">
   <div class="side-bar"></div>
-    <div class="articles-list" id="articles-list">
-      <% @tags.each do |tag| %>
-        <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
-            <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
-              <h2>#<%= tag.name %></h2>
-            </a>
-        </div>
-      <% end %>
+  <div class="articles-list" id="articles-list">
+    <% @tags.each do |tag| %>
+      <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
+        <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
+          <h2>#<%= tag.name %></h2>
+        </a>
+      </div>
+    <% end %>
   </div>
   <div class="side-bar sidebar-additional"></div>
 </div>

@@ -1,0 +1,40 @@
+<style>
+  body {
+    <% if @article.cached_tag_list.include?("theycoded") %>
+      background-color: #cabde6;
+    <% else %>
+      background: url(<%= asset_path "SheCodedBackground.png" %>);
+      background-color: #cabde6;
+      background-repeat: repeat;
+    <% end %>
+  }
+  .content {
+    background: white;
+    position: absolute;
+    top: 5vw;
+    bottom: 5vw;
+    left: 5vw;
+    right: 5vw;
+  }
+  img {
+    border-radius: 200vw;
+    border: 0.6vw solid #70589b;
+    margin: 3.5vw auto 2.5vw;
+    display: block;
+    height: 10vw;
+  }
+  .title {
+    font-size: <%= 7 - @article.title.size / 40 %>vw;
+    margin: auto;
+    width: 80%;
+    color: #70589b;
+    text-align: center;
+    font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+  }
+</style>
+<div class="content">
+  <img src="<%= ProfileImage.new(@article.user).get(320) %>" />
+  <div class="title">
+    <%= @article.title %>
+  </div>
+</div>

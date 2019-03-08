@@ -35,4 +35,10 @@ RSpec.describe HtmlVariant, type: :model do
     html_variant.save!
     expect(HtmlVariant.find_for_test(["hello"]).id).to eq(html_variant.id)
   end
+  it "creates an html variant with img in it" do
+    html_variant = create(:html_variant, approved: false, published: true)
+    html_variant.html = "<div><img src='https://devimages.com/image.jpg' /></div>"
+    html_variant.save!
+    expect(html_variant.html).to include("cloudinary")
+  end
 end

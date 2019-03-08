@@ -82,14 +82,16 @@ function getArticles(tag, num = PER_PAGE){
       }
 
       substoriesDiv.innerHTML = resultDivs.join("");
-      if ( resultDivs.length == 0) {
+      if (resultDivs.length == 0) {
         var message = "<div style='text-align:left;margin-top:20px;'>This is where to find your bookmarked posts, but it looks like you have not bookmarked anything.</div>"
         substoriesDiv.innerHTML = message;
       }
 
       var showMoreButton = document.getElementById("load-more-cta");
       showMore ? showMoreButton.classList.add("showing") : showMoreButton.classList.remove("showing")
-    });
+
+      setReadingListButtonsState();
+    })
 }
 
 function getComments(){

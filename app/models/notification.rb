@@ -64,6 +64,8 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_to_followers
 
     def send_new_comment_notifications(comment)
+      return if comment.commentable_type == "PodcastEpisode"
+
       user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
       user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
       json_data = {
@@ -252,6 +254,31 @@ class Notification < ApplicationRecord
     end
     handle_asynchronously :send_tag_adjustment_notification
 
+    def send_milestone_notification(milestone_hash)
+      milestone_hash[:next_milestone] = next_milestone(milestone_hash)
+      return unless should_send_milestone?(milestone_hash)
+
+      json_data = { article: article_data(milestone_hash[:article]), gif_id: RandomGif.new.random_id }
+
+      Notification.create!(
+        user_id: milestone_hash[:article].user_id,
+        notifiable_id: milestone_hash[:article].id,
+        notifiable_type: "Article",
+        json_data: json_data,
+        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
+      )
+      if milestone_hash[:article].organization_id
+        Notification.create!(
+          organization_id: milestone_hash[:article].organization_id,
+          notifiable_id: milestone_hash[:article].id,
+          notifiable_type: "Article",
+          json_data: json_data,
+          action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
+        )
+      end
+    end
+    handle_asynchronously :send_milestone_notification
+
     def remove_all(notifiable_hash)
       Notification.where(
         notifiable_id: notifiable_hash[:notifiable_id],
@@ -344,6 +371,41 @@ class Notification < ApplicationRecord
         path: article.path,
         updated_at: article.updated_at
       }
+    end
+
+    def should_send_milestone?(milestone_hash)
+      return if milestone_hash[:article].published_at < DateTime.new(2019, 2, 25)
+
+      last_milestone_notification = Notification.find_by(
+        user_id: milestone_hash[:article].user_id,
+        notifiable_type: "Article",
+        notifiable_id: milestone_hash[:article].id,
+        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
+      )
+
+      if milestone_hash[:type] == "View"
+        last_milestone_notification.blank? && milestone_hash[:article].page_views_count > milestone_hash[:next_milestone]
+      elsif milestone_hash[:type] == "Reaction"
+        last_milestone_notification.blank? && milestone_hash[:article].positive_reactions_count > milestone_hash[:next_milestone]
+      end
+    end
+
+    def next_milestone(milestone_hash)
+      case milestone_hash[:type]
+      when "View"
+        milestones = [1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
+        milestone_count = milestone_hash[:article].page_views_count
+      when "Reaction"
+        milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
+        milestone_count = milestone_hash[:article].positive_reactions_count
+      end
+
+      closest_number = milestones.min_by { |num| (milestone_count - num).abs }
+      if milestone_count > closest_number
+        closest_number
+      else
+        milestones[milestones.index(closest_number) - 1]
+      end
     end
 
     def send_push_notifications(user_id, title, body, path)

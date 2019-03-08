@@ -8,19 +8,22 @@
     <h4><a href="/<%= @user.username %>"><%= @user.name %></a><%= follow_button(@user) %></h4>
     <p><%= @user.summary %></p>
     <p class="social">
+      <a href="/<%= @user.username %>">
+        @<%= @user.username %>
+      </a>
       <% if @user.twitter_username.present? %>
         <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
-          <%= icon("twitter","22") %> <%= @user.twitter_username %>
+          <%= icon("twitter", "22") %> <%= @user.twitter_username %>
         </a>
       <% end %>
       <% if @user.github_username.present? %>
         <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
-          <%= icon("github","22") %> <%= @user.github_username %>
+          <%= icon("github", "22") %> <%= @user.github_username %>
         </a>
       <% end %>
       <% if @user.website_url.present? %>
         <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
-          <%= icon("link","22") %> <%= beautified_url(@user.website_url) %>
+          <%= icon("link", "22") %> <%= beautified_url(@user.website_url) %>
         </a>
       <% end %>
     </p>

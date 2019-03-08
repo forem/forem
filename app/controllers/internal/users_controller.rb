@@ -54,6 +54,7 @@ class Internal::UsersController < Internal::ApplicationController
     toggle_ban_user if user_params[:ban_user]
     toggle_warn_user if user_params[:warn_user]
     toggle_trust_user if user_params[:trusted_user]
+    toggle_pro_user if user_params[:pro_user]
     toggle_ban_from_mentorship if user_params[:ban_from_mentorship]
   end
 
@@ -76,6 +77,14 @@ class Internal::UsersController < Internal::ApplicationController
     end
     Rails.cache.delete("user-#{@user.id}/has_trusted_role")
     @user.trusted
+  end
+
+  def toggle_pro_user
+    if user_params[:pro_user] == "1"
+      @user.add_role :pro
+    else
+      @user.remove_role :pro
+    end
   end
 
   def toggle_warn_user
@@ -179,6 +188,7 @@ class Internal::UsersController < Internal::ApplicationController
                                 :note_for_mentorship_ban,
                                 :note_for_current_role,
                                 :reason_for_mentorship_ban,
-                                :trusted_user)
+                                :trusted_user,
+                                :pro_user)
   end
 end

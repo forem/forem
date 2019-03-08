@@ -11,6 +11,7 @@ RSpec.describe "StripeCancellations", type: :request do
 
   after { StripeMock.stop }
 
+  # rubocop:disable RSpec/ExampleLength
   it "mocks a stripe cancellation webhook" do
     customer = Stripe::Customer.create(
       email: user.email,
@@ -29,4 +30,5 @@ RSpec.describe "StripeCancellations", type: :request do
     expect(user.monthly_dues).to eq(0)
     expect(response).to have_http_status(200)
   end
+  # rubocop:enable RSpec/ExampleLength
 end

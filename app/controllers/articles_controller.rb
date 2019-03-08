@@ -8,32 +8,28 @@ class ArticlesController < ApplicationController
 
   def feed
     skip_authorization
-    @page = params[:page].to_i
+
+    @articles = Article.where(published: true).
+      select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
+      order(published_at: :desc).
+      page(params[:page].to_i).per(12)
+
     if params[:username]
       if @user = User.find_by_username(params[:username])
-        @articles = Article.where(published: true, user_id: @user.id).
-          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
-          order("published_at DESC").
-          page(@page).per(12)
+        @articles = @articles.where(user_id: @user.id)
       elsif @user = Organization.find_by_slug(params[:username])
-        @articles = Article.where(published: true, organization_id: @user.id).
-          includes(:user).
-          select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
-          order("published_at DESC").
-          page(@page).per(12)
+        @articles = @articles.where(organization_id: @user.id).includes(:user)
       else
         render body: nil
         return
       end
     else
-      @articles = Article.where(published: true, featured: true).
-        includes(:user).
-        select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
-        order("published_at DESC").
-        page(@page).per(12)
+      @articles = @articles.where(featured: true).includes(:user)
     end
+
     set_surrogate_key_header "feed", @articles.map(&:record_key)
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+
     render layout: false
   end
 
@@ -43,14 +39,15 @@ class ArticlesController < ApplicationController
     @tag = Tag.find_by_name(params[:template])
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
-                 Article.new(body_markdown: "", cached_tag_list: @tag.name,
-                             processed_html: "", user_id: current_user&.id)
+                 submission_template = @tag.submission_template_customized(@user.name).to_s
+                 Article.new(body_markdown: submission_template.split("---").last.to_s.strip, cached_tag_list: @tag.name,
+                             processed_html: "", user_id: current_user&.id, title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip)
                elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
                              processed_html: "", user_id: current_user&.id)
                elsif @tag.present?
-                 authorize Article
+                 skip_authorization
                  Article.new(
                    body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: " + @tag.name + "\n---\n\n",
                    processed_html: "", user_id: current_user&.id

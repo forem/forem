@@ -102,6 +102,10 @@ function buildArticleHTML(article) {
     if (article.cloudinary_video_url) {
       videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" />'+article.video_duration_in_minutes+'</div></a>'
     }
+    var timeAgoInWords = '';
+    if (article.published_at_int) {
+      timeAgoInWords = timeAgo(article.published_at_int);
+    }
     return '<div class="single-article single-article-small-pic">\
       '+videoHTML+'\
       '+orgHeadline+'\
@@ -116,7 +120,7 @@ function buildArticleHTML(article) {
          '+searchSnippetHTML+'\
         </div>\
        </a>\
-       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+'</a></h4>\
+       <h4><a href="/'+article.user.username+'">'+filterXSS(article.user.name)+publishDate+timeAgoInWords+'</a></h4>\
        <div class="tags">'+tagString+'</div>\
        '+commentsCountHTML+reactionsCountHTML+readingTimeHTML+'\
        '+saveButton+'</div>';

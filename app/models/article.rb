@@ -3,6 +3,7 @@ class Article < ApplicationRecord
   include ActionView::Helpers
   include AlgoliaSearch
   include Storext.model
+  include Reactable
 
   acts_as_taggable_on :tags
 
@@ -14,10 +15,11 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
-  has_many :reactions,      as: :reactable, dependent: :destroy
-  has_many :comments,       as: :commentable
+  has_many :comments, as: :commentable
   has_many :buffer_updates
-  has_many  :notifications, as: :notifiable
+  has_many :notifications, as: :notifiable
+  has_many :rating_votes
+  has_many :page_views
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
                    uniqueness: { scope: :user_id }
@@ -76,6 +78,7 @@ class Article < ApplicationRecord
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
     :video_thumbnail_url, :video_closed_caption_track_url,
+    :experience_level_rating, :experience_level_rating_distribution,
     :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
@@ -137,8 +140,8 @@ class Article < ApplicationRecord
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time,
-        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date,
-        :flare_tag, :user_id, :organization_id, :cloudinary_video_url, :video_duration_in_minutes
+        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
+        :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
       attribute :published_at_int do
         published_at.to_i
       end
@@ -256,6 +259,11 @@ class Article < ApplicationRecord
     index.delete_object("articles-#{id}")
   end
 
+  def touch_by_reaction
+    async_score_calc
+    index!
+  end
+
   def comments_blob
     ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
   end
@@ -326,7 +334,7 @@ class Article < ApplicationRecord
   end
 
   def flare_tag
-    FlareTag.new(self).tag_hash
+    @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
   def update_main_image_background_hex

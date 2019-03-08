@@ -3,7 +3,7 @@ class User < ApplicationRecord
 
   attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
   :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user
+  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :pro_user
 
   rolify
   include AlgoliaSearch
@@ -35,7 +35,9 @@ class User < ApplicationRecord
   has_many    :chat_channels, through: :chat_channel_memberships
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
+  has_many    :rating_votes
   has_many    :html_variants, dependent: :destroy
+  has_many    :page_views
   has_many :mentor_relationships_as_mentee,
   class_name: "MentorRelationship", foreign_key: "mentee_id"
   has_many :mentor_relationships_as_mentor,
@@ -65,6 +67,7 @@ class User < ApplicationRecord
             exclusion: { in: ReservedWords.all, message: "username is reserved" }
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
+  validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,

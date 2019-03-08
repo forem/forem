@@ -38,7 +38,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def submission_template_customized(param_0 = nil)
-    submission_template.gsub("PARAM_0", param_0)
+    submission_template&.gsub("PARAM_0", param_0)
   end
 
   def tag_moderator_ids

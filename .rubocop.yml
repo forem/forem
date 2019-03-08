@@ -32,6 +32,7 @@ AllCops:
     - db/schema.rb
     - db/migrate/*.rb
     - node_modules/**/*
+    - tmp/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.6

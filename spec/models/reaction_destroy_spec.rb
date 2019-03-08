@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Reaction, type: :model do
   let(:article) { create(:article, featured: true) }
-  let!(:reaction) { build(:reaction, reactable: article) }
+  let!(:reaction) { create(:reaction, reactable: article) }
 
   it "creates a ScoreCalcJob on article reaction destroy" do
     ActiveJob::Base.queue_adapter = :test

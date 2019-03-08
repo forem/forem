@@ -1,0 +1,18 @@
+<% json_data = notification.json_data %>
+<div class="content notification-content badge-content">
+  <div class="badge-title">
+    Your post
+    <a href="<%= json_data["article"]["path"] %>"><%= json_data["article"]["title"] %></a> just passed <%= notification.milestone_count %> <%= notification.milestone_type.pluralize.downcase %>!
+  </div>
+  <p class="badge-description milestone-emojis">🎉🎉🎉🎉🎉🎉🎉🎉</p>
+
+  <a href="https:/giphy.com/gifs/<%= json_data["gif_id"] %>" rel="noopener noreferrer" target="_blank">
+    <img style="height: <%= RandomGif.new.get_aspect_ratio(json_data["gif_id"]) * 300 %>px;" class="milestone-gif" src="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" alt="A random celebratory gif!">
+  </a>
+  <br>
+  <a href="/dashboard">
+    <button class="cta follow-action-button badge-button">
+      CHECK YOUR DASHBOARD
+    </button>
+  </a>
+</div>

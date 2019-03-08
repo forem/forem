@@ -1,22 +1,25 @@
 <h3>Publishing to dev.to from RSS</h3>
 <p>
-  Posts will land in your <a href="/dashboard">dashboard</a> <b><em>as drafts</em></b>, and then you can publish from there (or give dev.to admins permission to do so).
+  Posts will land in your <a href="/dashboard">dashboard</a>
+  <b><em>as drafts</em></b>, and then you can publish from there (or give dev.to admins permission to do so).
 </p>
 <p>
   Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
 </p>
 <p>
-  To find out more about how drafts are created from your feed, read this <a href="/p/publishing_from_rss_guide">guide</a>.
+  To find out more about how drafts are created from your feed, read this
+  <a href="/p/publishing_from_rss_guide">guide</a>.
 </p>
 <p>
-  Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter. Contact <a href="mailto:yo@dev.to">yo@dev.to</a> if you encounter issues.
+  Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter. Contact
+  <a href="mailto:yo@dev.to">yo@dev.to</a> if you encounter issues.
 </p>
 <p>
   FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>
 </p>
 <p>
   <em>By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.</em>
-</p>  
+</p>
 <%= form_for(@user) do |f| %>
   <div class="field">
     <b><%= f.label :feed_url, "RSS Feed URL" %></b>

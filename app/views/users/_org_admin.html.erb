@@ -1,17 +1,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
-  <style>
-    .primary-sticky-nav-author,.primary-sticky-nav-author-element{
-      border: 1px solid <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
-      box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
-    }
-    .primary-sticky-nav-author button{
-      background-color: <%= user_colors(@organization)[:bg] %> !important;
-      color: <%= user_colors(@organization)[:text] %> !important;
-      <% if user_colors(@organization)[:bg].downcase == "#ffffff" %>
-        border: 1px solid <%= user_colors(@organization)[:text] %> !important;
-      <% end %>
-    }
-  </style>
+<style>
+  .primary-sticky-nav-author, .primary-sticky-nav-author-element {
+    border: 1px solid <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
+    box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
+  }
+
+  .primary-sticky-nav-author button {
+    background-color: <%= user_colors(@organization)[:bg] %> !important;
+    color: <%= user_colors(@organization)[:text] %> !important;
+  <% if user_colors(@organization)[:bg].downcase == "#ffffff" %>
+    border: 1px solid <%= user_colors(@organization)[:text] %> !important;
+  <% end %>
+  }
+</style>
 <div class="settings-org-members">
   <h3>Organization Members</h3>
   <% @organization.users.each do |user| %>
@@ -23,17 +24,17 @@
         <% elsif user.org_admin && user != current_user %>
           <button class="settings-org-member settings-org-member-admin-other">admin</button>
           <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{user.name}?');" do %>
-            <%= hidden_field_tag 'user_id', user.id %>
+            <%= hidden_field_tag "user_id", user.id %>
             <button class="settings-org-member settings-org-member-remove" title="Remove from org">revoke admin status</button>
           <% end %>
         <% else %>
           <button class="settings-org-member settings-org-member-admin-self">org member</button>
           <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{user.name} admin status?');" do %>
-            <%= hidden_field_tag 'user_id', user.id %>
+            <%= hidden_field_tag "user_id", user.id %>
             <button class="settings-org-member settings-org-member-make-admin">make admin</button>
           <% end %>
           <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{user.name} from the organization?');" do %>
-            <%= hidden_field_tag 'user_id', user.id %>
+            <%= hidden_field_tag "user_id", user.id %>
             <button class="settings-org-member settings-org-member-remove" title="Remove from org">remove from org</button>
           <% end %>
         <% end %>
@@ -43,8 +44,11 @@
   <h3>Grow the team</h3>
   <h5>Invite teammates by sending them the secret and the following instructions:</h5>
   <ol style="margin-bottom: 30px">
-    <li>Sign up at <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a>
-    <li>Navigate to <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
+    <li>Sign up at
+      <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a></li>
+    <li>Navigate to
+      <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
+    </li>
     <li>Paste the secret code below and click <b>Join Organization</b></li>
   </ol>
   <h5>Your secret: (You should rotate this regularly)</h5>
@@ -60,7 +64,7 @@
     <%= f.text_field :name, maxlength: 50 %>
   </div>
   <div class="field">
-    <%=  f.label :username %>
+    <%= f.label :username %>
     <%= f.text_field :slug, maxlength: 18, minlength: 2 %>
     <i>Your organization's URL is: https://dev.to/<%= @organization.slug %></i>
   </div>
@@ -68,7 +72,7 @@
   <div class="field">
     <% if @organization.profile_image_url.present? %>
       <span class="image-present">
-        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url,50)%>" />
+        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url, 50) %>" />
         <%= f.file_field :profile_image %>
       </span>
     <% else %>
@@ -80,15 +84,15 @@
     <%= f.text_field :twitter_username %>
   </div>
   <div class="field">
-    <%= f.label :github_username, "Github Username"%>
+    <%= f.label :github_username, "Github Username" %>
     <%= f.text_field :github_username %>
   </div>
   <div class="field">
-    <%= f.label :text_color_hex, "Text color (hex)"%>
+    <%= f.label :text_color_hex, "Text color (hex)" %>
     <%= f.text_field :text_color_hex, placeholder: "#ffffff", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
-    <%= f.label :bg_color_hex, "Background color (hex)"%>
+    <%= f.label :bg_color_hex, "Background color (hex)" %>
     <%= f.text_field :bg_color_hex, placeholder: "#000000", class: "jscolor {hash:true, required:false}" %>
   </div>
   <div class="field">
@@ -106,15 +110,15 @@
   <div class="field">
     <%= f.label :location %>
     <%= f.text_field :location, maxlength: 64, placeholder: "Limit of 64 characters" %>
-  </div>  
+  </div>
   <div class="field">
     <%= f.label :email, "Support Email" %>
     <%= f.text_field :email, maxlength: 64, placeholder: "Limit of 64 characters" %>
-  </div> 
+  </div>
   <div class="field">
     <%= f.label :company_size, "Organization Size" %>
     <%= f.text_field :company_size, maxlength: 10, placeholder: "Enter a number" %>
-  </div>   
+  </div>
   <div class="field">
     <%= f.label :story, "Our Story" %>
     <%= f.text_area :story, maxlength: 640, placeholder: "Limit of 640 characters" %>
@@ -122,10 +126,12 @@
   <div class="field">
     <%= f.label :tech_stack, "Our Stack" %>
     <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
-  </div>      
+  </div>
   <h2>Call-to-action box</h2>
   <h4 style="margin-top:-25px">Customizable text that appears to the right of every post for your organization</h4>
-  <h4 style="margin-top:-15px">See an example from the <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank">DEV Team</a>.</h4>
+  <h4 style="margin-top:-15px">See an example from the
+    <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank">DEV Team</a>.
+  </h4>
   <div class="field">
     <%= f.label "Body text (Limited markdown — bold/italic/etc)" %>
     <%= f.text_area :cta_body_markdown, maxlength: 256, placeholder: "**This is an example**

@@ -106,7 +106,7 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
-    num_articles = 25
+    num_articles = 30
     @stories = article_finder(num_articles)
     add_param_context(:page, :timeframe)
     if ["week", "month", "year", "infinity"].include?(params[:timeframe])
@@ -123,10 +123,12 @@ class StoriesController < ApplicationController
         where("score > ? OR featured = ?", 9, true).
         order("hotness_score DESC")
       if user_signed_in?
-        offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7].sample # random offset, weighted more towards zero
+        offset = [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
-      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
+      @featured_story = @stories.cached_tagged_with("shecoded").where.not(main_image: nil).first&.decorate ||
+        @stories.where.not(main_image: nil).first&.decorate ||
+        Article.new
     end
     @stories = @stories.decorate
     assign_podcasts

@@ -1,78 +1,89 @@
-<% accent_color = HexComparer.new([@tag.bg_color_hex,@tag.text_color_hex]).biggest %>
-<% color = HexComparer.new([@tag.bg_color_hex,@tag.text_color_hex]).brightness(1.4) %>
-<% dark_color = HexComparer.new([@tag.bg_color_hex,@tag.text_color_hex]).brightness(0.7) %>
+<% accent_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).biggest %>
+<% color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(1.4) %>
+<% dark_color = HexComparer.new([@tag.bg_color_hex, @tag.text_color_hex]).brightness(0.7) %>
 <style>
-  body{
+  body {
     background: white;
-    margin:0;
-    padding:0;
+    margin: 0;
+    padding: 0;
   }
-  .preview-div-wrapper{
+
+  .preview-div-wrapper {
     overflow: hidden;
-    position:relative;
+    position: relative;
   }
-  .circle{
+
+  .circle {
     border-radius: 1000px;
     background: <%= accent_color %>;
     position: absolute;
   }
-  .circle1{
+
+  .circle1 {
     height: 40vw;
     width: 40vw;
     right: -<%= rand(2..15) %>vw;
     bottom: -<%= rand(2..15) %>vw;
   }
-  .circle2{
+
+  .circle2 {
     height: 30vw;
     width: 30vw;
     left: <%= rand(2..16) %>vw;
     bottom: 0vw;
   }
-  .circle3{
+
+  .circle3 {
     height: 24vw;
     width: 24vw;
     left: -8vw;
     top: -<%= rand(2..6) %>vw;
   }
-  .preview-div{
+
+  .preview-div {
     background: #fff;
-    border: 0.25vw solid <%= dark_color %>;
-    box-shadow: 0.8vw 1vw 0px <%= dark_color %>;
+    border: 0.25vw solid<%= dark_color %>;
+    box-shadow: 0.8vw 1vw 0px<%= dark_color %>;
     width: 88vw;
     height: 44vw;
     margin: 2.5vw auto 5vw;
     overflow: hidden;
-    position:relative;
+    position: relative;
   }
-  h1{
+
+  h1 {
     color: <%= dark_color %>;
     width: 92%;
     margin: 10vw auto 0vw;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-size: 12vw;
   }
-  h1 img{
+
+  h1 img {
     border-radius: 100vw;
     height: 15vw;
     width: 15vw;
     vertical-align: -4.3vw;
-    border: 0.55vw solid <%= dark_color %>;
+    border: 0.55vw solid<%= dark_color %>;
   }
-  h2{
+
+  h2 {
     color: black;
     width: 92%;
     margin: 0vw auto 1vw;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-size: 6vw;
   }
-  .preview-dev-logo{
-    position:absolute;
+
+  .preview-dev-logo {
+    position: absolute;
     bottom: 2.1vw;
     right: 2.1vw;
-    text-align:right;
+    text-align: right;
   }
-  .logo{
-    height:6vw;
+
+  .logo {
+    height: 6vw;
     fill: <%= dark_color %>;
   }
 </style>
@@ -90,7 +101,7 @@
       </h2>
     <% end %>
     <div class="preview-dev-logo">
-      <%= inline_svg("devplain.svg", class: "logo", size: '9vw * 9vw') %>
+      <%= inline_svg("devplain.svg", class: "logo", size: "9vw * 9vw") %>
     </div>
   </div>
 </div>

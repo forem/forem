@@ -370,38 +370,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#flare_tag" do
-    it "returns nil if there is no flare tag" do
-      expect(FlareTag.new(article).tag).to be nil
-    end
-
-    it "returns a flare tag if there is a flare tag in the list" do
-      valid_article = create(:article, tags: "ama")
-      expect(FlareTag.new(valid_article).tag.name).to eq("ama")
-    end
-  end
-
-  describe "#flare_tag_hash" do
-    let (:tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
-    let (:valid_article) { create(:article, tags: tag.name) }
-
-    it "returns nil if an article doesn't have a flare tag" do
-      expect(FlareTag.new(article).tag_hash).to be nil
-    end
-
-    it "returns a hash with the flare tag's name" do
-      expect(FlareTag.new(valid_article).tag_hash.value?("ama")).to be true
-    end
-
-    it "returns a hash with the flare tag's bg_color_hex" do
-      expect(FlareTag.new(valid_article).tag_hash.value?("#f3f3f3")).to be true
-    end
-
-    it "returns a hash with the flare tag's text_color_hex" do
-      expect(FlareTag.new(valid_article).tag_hash.value?("#cccccc")).to be true
-    end
-  end
-
   describe "before save" do
     # before do
     #   article = create(:article, user_id: user.id)
@@ -515,5 +483,7 @@ RSpec.describe Article, type: :model do
       expect(build(:article, comment_template: "my comment template").comment_template).to eq("my comment template")
     end
   end
+
+  include_examples "#sync_reactions_count", :article
 end
 # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
