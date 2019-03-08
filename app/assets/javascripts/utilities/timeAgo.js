@@ -1,33 +1,33 @@
-function timeAgo(oldTimeInSeconds) {
-  var seconds = new Date() / 1000;
-  var times = [
-    ['second', 1],
-    ['min', 60],
-    ['hour', 3600],
-    ['day', 86400],
-    ['week', 604800],
-    ['month', 2592000],
-    ['year', 31536000],
-  ];
-  var t;
-  var diff = Math.round(seconds - oldTimeInSeconds);
-  for (t = 0; t < times.length; t++) {
-    if (diff < times[t][1]) {
-      if (t === 0) {
-        return "<span class='time-ago-indicator'>(Just now)</span>";
-      }
-      if (t < 4) {
-        diff = Math.round(diff / times[t - 1][1]);
-        return (
-          "<span class='time-ago-indicator'>(" +
-          diff +
-          ' ' +
-          times[t - 1][0] +
-          (diff === 1 ? ' ago' : 's ago') +
-          ')</span>'
-        );
-      }
-      return '';
-    }
-  }
+function timeAgo(oldTimeInSeconds, maxDisplayedAge = 60*60*24-1) {
+  const timeNow = new Date() / 1000;
+  const diff = Math.round(timeNow - oldTimeInSeconds);
+
+  if(diff > maxDisplayedAge)
+    return '';
+
+  return "<span class='time-ago-indicator'>(" + secondsToHumanUnitAgo(diff) + ")</span>";
+}
+
+function secondsToHumanUnitAgo(seconds) {
+	const times = [
+		['second', 1],
+		['min', 60],
+		['hour', 60*60],
+		['day', 60*60*24],
+		['week', 60*60*24*7],
+		['month', 60*60*24*30],
+		['year', 60*60*24*365],
+	];
+
+	if(seconds < times[0][1])
+		return "Just now";
+
+	let scale = 0;
+	while(scale+1 < times.length && seconds >= times[scale+1][1])
+		scale++;
+
+	const wholeUnits = Math.floor(seconds / times[scale][1]);
+	const unitName = times[scale][0] + (wholeUnits === 1 ? '' : 's');
+
+	return wholeUnits + " " + unitName + " ago";
 }
