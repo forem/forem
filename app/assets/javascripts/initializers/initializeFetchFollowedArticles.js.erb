@@ -190,10 +190,9 @@ function intersect_arrays(a, b) {
 }
 
 function insertTimes() {
-  var els = document.getElementsByClassName('time-ago-indicator-initial-placeholder');
-
-  for (var i = 0; i < els.length; i++) {
-    var el = els[i];
-    el.outerHTML = timeAgo(el.dataset.seconds);
+  var elements = document.getElementsByClassName('time-ago-indicator-initial-placeholder');
+  for (var i = 0; i < elements.length; i++) {
+    var element = elements[0];
+    element.outerHTML = timeAgo(element.dataset.seconds);
   }
 };
