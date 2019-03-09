@@ -192,7 +192,10 @@ function intersect_arrays(a, b) {
 function insertTimes() {
   var elements = document.getElementsByClassName('time-ago-indicator-initial-placeholder');
   for (var i = 0; i < elements.length; i++) {
-    var element = elements[0];
+    
+    // getElementsByClassName will get updated everytime we change DOM
+    
+    var element = elements[0];  // so elements[0] will produce the next unchanged element every iteration
     element.outerHTML = timeAgo(element.dataset.seconds);
   }
 };
