@@ -23,11 +23,6 @@
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "The Practical Dev RSS Feed") %>
 <% end %>
-<% if @home_page %>
-  <style>
-    body { background: #f0eaff !important; }
-  </style>
-<% end %>
 <div class="home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
      data-algolia-tag=""
