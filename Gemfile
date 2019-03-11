@@ -100,7 +100,7 @@ gem "twilio-ruby", "~> 5.21"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 4.1"
 gem "validate_url", "~> 1.0"
-gem "webpacker", "~> 3.5"
+gem "webpacker", "~> 4.0"
 gem "webpush", "~> 0.3"
 
 group :development do
