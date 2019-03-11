@@ -13,7 +13,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def failure
     logger.error "Omniauth failure",
       omniauth_failure: {
-        error: request.env["omniauth.error"].to_s,
+        error: request.env["omniauth.error"]&.inspect,
         error_type: request.env["omniauth.error.type"].to_s,
         auth: request.env["omniauth.auth"],
         provider: request.env["omniauth.strategy"].to_s,
@@ -38,6 +38,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user_errors = @user.errors.full_messages
       logger.error "Log in error: sign in failed. username: #{@user.username} - email: #{@user.email}"
       logger.error "Log in error: auth data hash - #{request.env['omniauth.auth']}"
+      logger.error "Log in error: auth data hash - #{request.env['omniauth.error']&.inspect}"
       logger.error "Log in error: user_errors: #{user_errors}"
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
