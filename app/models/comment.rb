@@ -185,16 +185,16 @@ class Comment < ApplicationRecord
     commentable.index!
   end
 
-  private
-
-  def update_notifications
-    Notification.update_notifications(self)
-  end
-
   def remove_notifications
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Moderation")
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Reaction")
+  end
+
+  private
+
+  def update_notifications
+    Notification.update_notifications(self)
   end
 
   def send_to_moderator
