@@ -27,7 +27,13 @@ RSpec.describe Notifications::NewFollower, type: :service do
       notification = described_class.call(follow_data(follow))
       expect(notification.notifiable).to eq(follow)
       expect(notification.notified_at).not_to be_nil
+      expect(notification.read).to be_falsey
       expect(notification.json_data["user"]["id"]).to eq(user.id)
+    end
+
+    it "creates a read notification" do
+      notification = described_class.call(follow_data(follow), true)
+      expect(notification.read).to be_truthy
     end
 
     context "when destroyed follow" do
@@ -39,19 +45,17 @@ RSpec.describe Notifications::NewFollower, type: :service do
         end.not_to change(Notification, :count)
       end
 
-      context "when notification exists" do
-        let!(:notification) { create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: Time.now - 1.year) }
-
-        it "destroys notification if it exists" do
-          expect do
-            described_class.call(follow_data(unfollow))
-          end.to change(Notification, :count).by(-1)
-        end
-
-        it "destroys notification" do
+      it "destroys notification if it exists" do
+        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: Time.now - 1.year)
+        expect do
           described_class.call(follow_data(unfollow))
-          expect(Notification.where(id: notification.id)).not_to exist
-        end
+        end.to change(Notification, :count).by(-1)
+      end
+
+      it "destroys the correct notification" do
+        notification = create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: Time.now - 1.year)
+        described_class.call(follow_data(unfollow))
+        expect(Notification.where(id: notification.id)).not_to exist
       end
     end
   end
