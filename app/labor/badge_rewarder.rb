@@ -3,10 +3,11 @@ module BadgeRewarder
     years = 3
     (1..years).each do |i|
       message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
+      badge = Badge.find_by_slug("#{i}-year-club")
       User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.day).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
-          badge_id: Badge.find_by_slug("#{i}-year-club").id,
+          badge_id: badge.id,
           rewarding_context_message_markdown: message,
         )
         user.save if achievement.valid?
