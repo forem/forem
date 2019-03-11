@@ -6,10 +6,10 @@
   <h2>Reactions Summary (❤🦄🔖)</h2>
     <ul>
       <li>
-        <%= @this_week_reactions_count %> reactions this week (<%= @last_week_reactions_count.positive? ? (@this_week_reactions_count.to_f / @last_week_reactions_count.to_f) * 100 : "infinity " %>% of previous week)
+        <%= @this_week_reactions_count %> reactions this week (<%= @last_week_reactions_count.positive? ? ((@this_week_reactions_count.to_f / @last_week_reactions_count.to_f) * 100).round(2) : "infinity " %>% of previous week)
       </li>
       <li>
-        <%= @this_month_reactions_count %> reactions this month (<%= @last_month_reactions_count.positive? ? (@this_month_reactions_count.to_f / @last_month_reactions_count.to_f) * 100 : "infinity " %>% of previous month)
+        <%= @this_month_reactions_count %> reactions this month (<%= @last_month_reactions_count.positive? ? ((@this_month_reactions_count.to_f / @last_month_reactions_count.to_f) * 100).round(2) : "infinity " %>% of previous month)
       </li>
         <div style="width: 500px; height: 250px; margin: 0 auto;">
           <canvas
@@ -29,16 +29,16 @@
         <%= @this_week_followers_count %> new followers this week (<%= @last_week_followers_count.positive? ? ((@this_week_followers_count.to_f / @last_week_followers_count.to_f) * 100).round(2) : "infinity " %>% of previous week)
       </li>
       <li>
-        <%= @this_month_followers_count %> new followers this month (<%= @last_month_followers_count.positive? ? (@this_month_followers_count.to_f / @last_month_followers_count.to_f) * 100 : "infinity " %>% of previous month)
+        <%= @this_month_followers_count %> new followers this month (<%= @last_month_followers_count.positive? ? ((@this_month_followers_count.to_f / @last_month_followers_count.to_f) * 100).round(2) : "infinity " %>% of previous month)
       </li>
     </ul>
   <h2>Comments Summary (💬)</h2>
     <ul>
       <li>
-      <%= @this_week_comments_count %> new comments this week (<%= @last_week_comments_count.positive? ? (@this_week_comments_count.to_f / @last_week_comments_count.to_f) * 100 : "infinity " %>% of previous week)
+      <%= @this_week_comments_count %> new comments this week (<%= @last_week_comments_count.positive? ? ((@this_week_comments_count.to_f / @last_week_comments_count.to_f) * 100).round(2) : "infinity " %>% of previous week)
       </li>
       <li>
-        <%= @this_month_comments_count %> new comments this month (<%= @last_month_comments_count.positive? ? (@this_month_comments_count.to_f / @last_month_comments_count.to_f) * 100 : "infinity " %>% of previous month)
+        <%= @this_month_comments_count %> new comments this month (<%= @last_month_comments_count.positive? ? ((@this_month_comments_count.to_f / @last_month_comments_count.to_f) * 100).round(2) : "infinity " %>% of previous month)
       </li>
         <div style="width: 500px; height: 250px; margin: 0 auto;">
           <canvas
