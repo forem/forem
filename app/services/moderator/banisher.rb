@@ -49,6 +49,7 @@ module Moderator
         comment.reactions.delete_all
         CacheBuster.new.bust_comment(comment.commentable, user.username)
         comment.delete
+        comment.remove_notifications
       end
     end
 
@@ -61,6 +62,7 @@ module Moderator
           comment.reactions.delete_all
           CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
           comment.delete
+          comment.remove_notifications
         end
         CacheBuster.new.bust_article(article)
         article.remove_algolia_index
