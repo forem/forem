@@ -62,6 +62,17 @@ RSpec.describe Notifications::NewFollower, type: :service do
 
   context "when 2 user follows another user" do
     let!(:follow2) { user3.follow user2 }
+    let(:follower_data) do
+      {
+        "id" => user3.id,
+        "class" => { "name" => "User" },
+        "name" => user3.name,
+        "username" => user3.username,
+        "path" => user3.path,
+        "profile_image_90" => user3.profile_image_90,
+        "comments_count" => user3.comments_count
+      }
+    end
 
     it "creates a notification" do
       expect do
@@ -74,6 +85,14 @@ RSpec.describe Notifications::NewFollower, type: :service do
       expect(notification.notifiable).to eq(follow2)
       expect(notification.notified_at).not_to be_nil
       expect(notification.json_data["aggregated_siblings"].map { |j| j["id"] }).to eq([user.id, user3.id])
+    end
+
+    it "creates a notification with user data" do
+      notification = described_class.call(follow_data(follow2))
+      expect(notification.json_data["user"]["name"]).to eq(user3.name)
+      expect(notification.json_data["user"]["username"]).to eq(user3.username)
+      expect(notification.json_data["user"]["id"]).to eq(user3.id)
+      expect(notification.json_data["user"]["class"]).to eq("name" => "User")
     end
 
     context "when notification exists" do
@@ -91,7 +110,6 @@ RSpec.describe Notifications::NewFollower, type: :service do
         notification = described_class.call(follow_data(follow2))
         expect(notification.notifiable).to eq(follow2)
         expect(notification.notified_at).to be >= Time.now - 1.day
-        # p notification.json_data
       end
     end
 

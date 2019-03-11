@@ -28,7 +28,7 @@ module Notifications
       end
 
       followers = User.where(id: recent_follows.pluck(:follower_id))
-      aggregated_siblings = followers.map { |follower| user_data(follower) }
+      aggregated_siblings = followers.map { |f| user_data(f) }
       if aggregated_siblings.size.zero?
         notification = Notification.find_by(notification_params)&.destroy
       else
