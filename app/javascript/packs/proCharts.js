@@ -67,8 +67,7 @@ export const commentsChart = new Chart(commentsCanvas, {
     datasets: [
       {
         label: 'Total Comments',
-        // data: JSON.parse(commentsCanvas.dataset.totalCount),
-        data: [5, 10, 15, 17, 25, 23, 55],
+        data: JSON.parse(commentsCanvas.dataset.totalCount),
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         lineTension: 0.1,
