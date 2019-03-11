@@ -26,7 +26,7 @@
   <h2>New Followers Summary (👩‍💻👨‍💻)</h2>
     <ul>
       <li>
-        <%= @this_week_followers_count %> new followers this week (<%= @last_week_followers_count.positive? ? (@this_week_followers_count.to_f / @last_week_followers_count.to_f) * 100 : "infinity " %>% of previous week)
+        <%= @this_week_followers_count %> new followers this week (<%= @last_week_followers_count.positive? ? ((@this_week_followers_count.to_f / @last_week_followers_count.to_f) * 100).round(2) : "infinity " %>% of previous week)
       </li>
       <li>
         <%= @this_month_followers_count %> new followers this month (<%= @last_month_followers_count.positive? ? (@this_month_followers_count.to_f / @last_month_followers_count.to_f) * 100 : "infinity " %>% of previous month)
