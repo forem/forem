@@ -136,13 +136,14 @@ a.header-link {
   }
   #collapsible-markdown {
     border: 1px solid #dbdbdb;
+    overflow-y: scroll;
     background: white;
     -webkit-transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
     -moz-transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
     -o-transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
     transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
-    span {
-      font-size: 0.8em;
+    div {
+      font-size: 0.75em;
       padding-top: 2px;
       padding-left: 1.5%;
       padding-right: 1.5%;
@@ -153,6 +154,11 @@ a.header-link {
     position: absolute;
     left: 22px;
     bottom: 3px;
+  }
+  #markdown-button {
+    position: absolute;
+    bottom: 3px;
+    left: calc(0.2vw + 79px);
   }
   .editor-image-upload {
     font-size: 0.8em;
@@ -380,52 +386,6 @@ a.header-link {
           center center;
         background-size: 50px;
       }
-    }
-  }
-
-  .tooltip {
-      display:inline-block;
-      position:relative;
-      border-bottom:1px dotted #666;
-      text-align:left;
-
-
-  }
-
-  .tooltip .bottom {
-      min-width:300px;
-      max-width:600px;
-      top:0px;
-      left: 10%;
-      padding:20px;
-      color:#666666;
-      background-color:#EEEEEE;
-      font-weight:normal;
-      font-size:13px;
-      border-radius:8px;
-      position:absolute;
-      z-index:99999999;
-      box-sizing:border-box;
-      box-shadow:0 1px 8px rgba(0,0,0,0.5);
-      display:none;
-  }
-
-  .tooltip:hover .bottom {
-      display:block;
-  }
-
-  .modal-close {
-    color: #aaa;
-    line-height: 50px;
-    font-size: 80%;
-    position: absolute;
-    right: 0;
-    text-align: center;
-    top: 0;
-    width: 70px;
-    text-decoration: none;
-    &:hover {
-      color: #000;
     }
   }
 

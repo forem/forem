@@ -39,9 +39,6 @@
   </div>
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
   </div>
-  <span>
-    <a id="markdown-button" aria-expanded="true" aria-controls="collapsible-0">X</a>
-  </span>
   <a class="markdown-guide" title="Markdown Guide">
     <img class="icon-image" src="<%= asset_path('info.svg') %>" />
   </a>
@@ -54,6 +51,9 @@
     <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
+  <a id="markdown-button" aria-expanded="true" aria-controls="collapsible-0">
+    <img class="icon-image" src="<%= asset_path('markdown-mark.svg') %>" />
+  </a>
   <div class="actions" id="submit-wrapper">
     <%= link_to request.referer.present? ? :back : commentable.path do %>
       <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
@@ -64,18 +64,35 @@
 <% end %>
 
 <div id="collapsible-markdown" aria-hidden="false" style="height:0px; visibility: hidden; height:0; opacity:0;">
-  <span>
-    <p>
-      <i>Italics</i>: _italics_ (command + i and fill in between)<br/>
-      <b>Bold</b>: **bold** (command + b and fill text in between)
-      <s>Strikethrough</s>: ~~strikethrough~~<br/>
-      <a href="#put-link-here">Surprise Link</a>: [Surprise Link](put-link-here)<br/>
-      <img alt="some text about the image" src=""></img>![some text about the image](put-direct-image-link-here)<br/>
-      Headers: is #h1, ##h2 ... and so on until ######h6 <br/>
-      Lists: +, -, * start unordered lists, while numbers like 1., 2. start ordered lists <br/>
-      Code: `inline code` is surrounded by backticks, while ```code blocks``` have them tripled <br/>
-    </p>
-  </span>
+  <div>
+    <h4>Markdown Shortcuts</h4>
+    <ul>
+      <li>
+        <i>Italics</i>: _italics_ (command + i and fill in between)<br/>
+      </li>
+      <li>
+        <b>Bold</b>: **bold** (command + b and fill text in between)
+      </li>
+      <li>
+        <s>Strikethrough</s>: ~~strikethrough~~<br/>
+      </li>
+      <li>
+        <a href="#put-link-here">Surprise Link</a>: [Surprise Link](put-link-here)<br/>
+      </li>
+      <li>
+        <img alt="some text about the image" src=""></img>![some text about the image](put-direct-image-link-here)<br/>
+      </li>
+      <li>
+        Headers: is #h1, ##h2 ... and so on until ######h6 <br/>
+      </li>
+      <li>
+        Lists: +, -, * start unordered lists, while numbers like 1., 2. start ordered lists <br/>
+      </li>
+      <li>
+        Code: `inline code` is surrounded by backticks, while ```code blocks``` have them tripled <br/>
+      </li>
+    </ul>
+  </div>
 </div>
 
 <script type="text/javascript">
