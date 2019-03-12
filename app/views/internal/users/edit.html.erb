@@ -48,7 +48,7 @@
       <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
     </p>
     <p><strong>Do not do this lightly.</strong></p>
-    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsumbit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
+    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
       <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam</button>
     <% end %>
   <% elsif current_user.has_role?(:super_admin) %>
@@ -58,7 +58,7 @@
       <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
     </p>
     <p><strong>Do not do this lightly.</strong></p>
-    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsumbit: "return confirm('Are you sure? This is extremely destructive and irreversible.Banishing will delete all articles and turn their username into @spam_###')" }) do %>
+    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible.Banishing will delete all articles and turn their username into @spam_###')" }) do %>
       <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
     <% end %>
   <% else %>
