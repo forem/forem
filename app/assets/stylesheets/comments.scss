@@ -123,6 +123,32 @@ a.header-link {
       opacity: 1;
     }
   }
+  #markdown-hint {
+    margin: 0 15px;
+    font-size:0.6em;
+    padding: 0 5px;
+    width: calc(100% - 40px);
+    text-align: right;
+    -webkit-transition: visibility 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    -moz-transition: visibility 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    -o-transition: visibility 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transition: visibility 0.3s ease-in-out, height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  #collapsible-markdown {
+    border: 1px solid #dbdbdb;
+    background: white;
+    -webkit-transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
+    -moz-transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
+    -o-transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
+    transition: visibility 0.3s, height 0.3s, opacity 0.3s linear;
+    span {
+      font-size: 0.8em;
+      padding-top: 2px;
+      padding-left: 1.5%;
+      padding-right: 1.5%;
+      padding-bottom: 5px;
+    }
+  }
   .markdown-guide {
     position: absolute;
     left: 22px;
@@ -357,52 +383,36 @@ a.header-link {
     }
   }
 
-  .markdown-guide-container {
-    position: absolute;
-    width: 90.5%;
-    left: 4.675%;
-    z-index: 100;
-    background: white;
-    border: 1px solid #dbdbdb;
+  .tooltip {
+      display:inline-block;
+      position:relative;
+      border-bottom:1px dotted #666;
+      text-align:left;
+
+
   }
 
-  .markdown-guide-container:after {
-  	content: '';
-  	position: absolute;
-  	top: 0;
-  	left: 5%;
-  	width: 0;
-  	height: 0;
-  	border: 9px solid transparent;
-  	border-bottom-color: #dbdbdb;
-  	border-top: 0;
-  	margin-left: -9px;
-  	margin-top: -9px;
+  .tooltip .bottom {
+      min-width:300px;
+      max-width:600px;
+      top:0px;
+      left: 10%;
+      padding:20px;
+      color:#666666;
+      background-color:#EEEEEE;
+      font-weight:normal;
+      font-size:13px;
+      border-radius:8px;
+      position:absolute;
+      z-index:99999999;
+      box-sizing:border-box;
+      box-shadow:0 1px 8px rgba(0,0,0,0.5);
+      display:none;
   }
 
-  // .markdown-guide-modal {
-  //   position: relative;
-  //   height: 200px;
-  //   z-index: 100;
-  //   display: none;
-  //   &:target {
-  //     display: block;
-  //     pointer-events: auto;
-  //   }
-  //   &>div {
-  //     width: 500px;
-  //     position: absolute;
-  //     top: 0;
-  //     left: 0;
-  //     padding: 2em;
-  //     background: black;
-  //     color: #333333;
-  //   }
-  //   p {
-  //     color: white;
-  //     font-weight: bold;
-  //   }
-  // }
+  .tooltip:hover .bottom {
+      display:block;
+  }
 
   .modal-close {
     color: #aaa;

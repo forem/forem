@@ -34,11 +34,14 @@
                     required: true %>
     <div class="preview-toggle comment-preview-div" id="preview-div"></div>
   </div>
+  <div id="markdown-hint" style="height:0px; opacity:0; visibility:hidden">
+    <span><i>_italics_</i><b>**bold**</b> ~<s>strikethrough</s>~ <code>`code line`</code> <code>```code block```</code> &gt;quote</span>
+  </div>
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
   </div>
-  <!-- <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
-    <img class="icon-image" src="<%= asset_path('info.svg') %>" />
-  </a> -->
+  <span>
+    <a id="markdown-button" aria-expanded="true" aria-controls="collapsible-0">X</a>
+  </span>
   <a class="markdown-guide" title="Markdown Guide">
     <img class="icon-image" src="<%= asset_path('info.svg') %>" />
   </a>
@@ -58,44 +61,38 @@
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
     <%= f.submit "SUBMIT", onclick: "validateField(event)", class: "comment-action-button", id: "submit-button" %>
   </div>
-  <script>
-    positionPopover = () => {
-      var mdPopover = document.getElementsByClassName('markdown-guide-container')[0]
-      var newComment = document.getElementsByClassName('new_comment')[0]
-      var newCommentPos = newComment.getBoundingClientRect()
-
-      mdPopover.style.top = `calc(${newCommentPos.top + (newCommentPos.height/2) + window.scrollY}px)`;
-      // mdPopover.style.left = `${newCommentPos.left+ window.scrollX}px`;
-    };
-
-    var mdBtn = document.getElementsByClassName('markdown-guide')[0]
-    mdBtn.addEventListener('click', () => {
-      var mdPopover = document.getElementsByClassName('markdown-guide-container')[0]
-      positionPopover();
-      if (mdPopover.style.display === "none") {
-        mdPopover.style.display = "block"
-        window.addEventListener('resize', positionPopover, true);
-      } else {
-        window.removeEventListener('resize', positionPopover, true);
-        mdPopover.style.display = "none"
-      }
-    })
-  </script>
 <% end %>
 
-<div class="markdown-guide-container" style="display: none;">
-  <a title="Close" class="markdown-guide-close">X</a>
-  <div class="markdown-guide-content">
-    <i>Italics</i>: *italics* or _italics_ (that's one asterisk or underscore on each end)<br/>
-    <b>Bold</b>: **bold** or __bold__ (now it's two on each end)<br/>
-    <s>Strikethrough</s>: ~~strikethrough~~<br/>
-    <a href="#put-link-here">Surprise Link</a>: [Surprise Link](put-link-here)<br/>
-    <img alt="some text about the image" src=""></img>![some text about the image](put-direct-image-link-here)<br/>
-    Headers: is #h1, ##h2 ... and so on until ######h6 <br/>
-    Lists: +, -, * start unordered lists, while numbers like 1., 2. start ordered lists <br/>
-    Code: `inline code` is surrounded by backticks, while ```code blocks``` have them tripled <br/>
-  </div>
+<div id="collapsible-markdown" aria-hidden="false" style="height:0px; visibility: hidden; height:0; opacity:0;">
+  <span>
+    <p>
+      <i>Italics</i>: _italics_ (command + i and fill in between)<br/>
+      <b>Bold</b>: **bold** (command + b and fill text in between)
+      <s>Strikethrough</s>: ~~strikethrough~~<br/>
+      <a href="#put-link-here">Surprise Link</a>: [Surprise Link](put-link-here)<br/>
+      <img alt="some text about the image" src=""></img>![some text about the image](put-direct-image-link-here)<br/>
+      Headers: is #h1, ##h2 ... and so on until ######h6 <br/>
+      Lists: +, -, * start unordered lists, while numbers like 1., 2. start ordered lists <br/>
+      Code: `inline code` is surrounded by backticks, while ```code blocks``` have them tripled <br/>
+    </p>
+  </span>
 </div>
+
+<script type="text/javascript">
+  var markdownCheatsheet = document.getElementById("collapsible-markdown");
+  var markdownButton = document.getElementById("markdown-button");
+
+  var toggleCheatsheet = function() {
+    var markdownCheatsheet = document.getElementById("collapsible-markdown");
+    markdownCheatsheet.style.height = (markdownCheatsheet.style.height == "0px") ? "200px" : "0px";
+    markdownCheatsheet.style.visibility = (markdownCheatsheet.style.visibility === "hidden") ? "visible" : "hidden";
+    markdownCheatsheet.style.opacity = (markdownCheatsheet.style.opacity == 0) ? 1 : 0;
+  }
+
+  markdownButton.addEventListener("click", () => {
+    toggleCheatsheet();
+  })
+</script>
 
 <% if @comment.persisted? %>
 

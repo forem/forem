@@ -265,7 +265,29 @@ function handleFocus(event) {
     }, 100);
   } else {
     handleSizeChange(event);
+    showMarkdownHint();
   }
+}
+
+function showMarkdownHint() {
+  var markdownHint = document.getElementById("markdown-hint");
+  markdownHint.style.visibility = "visible";
+  markdownHint.style.opacity = 1;
+  if (window.innerWidth < 425) {
+    markdownHint.style.height = "27px";
+    markdownHint.children[0].style.height = "27px"
+  } else {
+    markdownHint.style.height = "14px";
+    markdownHint.children[0].style.height = "14px"
+  }
+}
+
+function hideMarkdownHint() {
+  var markdownHint = document.getElementById("markdown-hint");
+  markdownHint.style.opacity = 0;
+  markdownHint.style.height = "0px";
+  markdownHint.style.visibility = "hidden";
+  markdownHint.children[0].style.height = "0px"
 }
 
 function handleBlur(event) {
@@ -275,6 +297,7 @@ function handleBlur(event) {
       el.className = '';
     }
   }, 100);
+  hideMarkdownHint()
 }
 
 function handleKeyUp(event) {
