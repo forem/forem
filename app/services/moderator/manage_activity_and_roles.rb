@@ -16,10 +16,6 @@ module Moderator
       new(user: user, admin: admin, user_params: user_params).update_privileges
     end
 
-    def self.handle_mentorship_status(admin:, user:, user_params:)
-      new(user: user, adamin: admin, user_params: user_params).update_mentorship_status
-    end
-
     def delete_comments
       return unless user.comments.any?
 
@@ -73,7 +69,7 @@ module Moderator
 
     def handle_user_status(role, note)
       case role
-      when "Ban"
+      when "Ban" || "Spammer"
         user.add_role :banned
         remove_privileges
       when "Warn"
@@ -84,18 +80,34 @@ module Moderator
         user.add_role :comment_banned
         user.remove_role :banned
         remove_privileges
-      when "Good Standing"
-        user.remove_role :banned if user.banned
-        user.remove_role :warned if user.warned
-        user.remove_role :comment_banned if user.comment_banned
+      when "Regular Member"
+        remove_negative_roles
       when "Trusted"
+        remove_negative_roles
         user.add_role :trusted
-      when "Spammer"
-        user.add_role :banned
-        remove_privileges
+      when "Pro"
+        remove_negative_roles
+        user.add_role :pro
       end
       create_note(role, note)
       update_trusted_cache
+    end
+
+    def remove_negative_roles
+      user.remove_role :banned if user.banned
+      user.remove_role :warned if user.warned
+      user.remove_role :comment_banned if user.comment_banned
+    end
+
+    def deactivate_mentorship(relationships)
+      relationships.each do |relationship|
+        relationship.update(active: false)
+      end
+    end
+
+    def inactive_mentorship(mentor, mentee)
+      relationship = MentorRelationship.where(mentor_id: mentor.id, mentee_id: mentee.id)
+      relationship.update(active: false)
     end
 
     def update_mentorship_status
@@ -109,6 +121,7 @@ module Moderator
         create_note("banned_from_mentorship", user_params[:mentorship_note])
       else
         @user.remove_role :banned_from_mentorship
+        create_note("reinstate_mentorship_privileges", user_params[:mentorship_note])
       end
     end
 
@@ -118,7 +131,11 @@ module Moderator
     end
 
     def update_roles
-      handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
+      if user_params[:toggle_mentorship]
+        update_mentorship_status
+      else
+        handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
+      end
     end
   end
 end

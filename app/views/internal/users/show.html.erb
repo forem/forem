@@ -68,16 +68,15 @@
         </li>
       <% end %>
     </ul>
+  <% elsif @user.has_role? :banned_from_mentorship %>
+    <p style="background-color: red;">User is banned from the mentorship program.</p>
+  <% else %>
+    <p>Currently not in a mentorship relationship.</p>
   <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <% if @user.banned_from_mentorship %>
-      <p style="background-color:red; color:white;">User is banned from mentorship program</p>
-    <% end %>
-    <p>Ban user from mentorship program <%= f.check_box :ban_from_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
-    <%= f.label "Reason: " %>
-    <%= f.text_area :note_for_mentorship_ban, required: true %>
-    <br>
-    <%= f.submit "Update Mentorship Status" %>
+  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
+    <p>Ban from mentorship: <%= f.check_box :toggle_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
+    <p>Reason for action: <%= f.text_area :mentorship_note %></p>
+    <%= f.submit %>
   <% end %>
 </div>
 <%= render "notes" %>

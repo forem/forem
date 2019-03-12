@@ -1,9 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
-  :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :pro_user
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro
 
   rolify
   include AlgoliaSearch
@@ -325,6 +323,10 @@ class User < ApplicationRecord
 
   def analytics
     has_role? :analytics_beta_tester
+  end
+
+  def comment_banned
+    has_role? :comment_banned
   end
 
   def workshop_eligible?

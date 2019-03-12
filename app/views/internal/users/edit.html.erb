@@ -7,37 +7,30 @@
 <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
 <%= render "internal/users/activity" %>
 <div class="row">
-  <h3><u>Privileges</u></h3>
-  <% if !@user.banned && !@user.warned %>
-    <%= form_for [:internal, @user] do |f| %>
-      <p>
-        Add Trusted Role (Community Moderator)
-        <%= f.check_box :trusted_user, checked: @user.trusted %>
-      </p>
-      <p>
-        Add Pro Role (Upgraded DevRel Dashboard)
-        <%= f.check_box :pro_user, checked: @user.has_role?(:pro) %>
-      </p>
-      <%= f.submit "Update Privileges" %>
-    <% end %>
-  <% else %>
-    User must be in good standing to have heigtened privileges of any kind.
-  <% end %>
-  <br>
-  <h3><u>Warn or Ban User</u></h3>
+  <h2>User Status</h2>
   <% if @user.banned %>
-    <p style="background-color:red;color:white">🚨 Banned User 🚨</p>
+    <p style="background-color:red;color:white">🚨 Member is suspended 🚨</p>
   <% elsif @user.warned %>
-    <p style="background-color: orange;color:white">Warned User</p>
+    <p style="background-color: orange;color:white">Member is warned</p>
+  <% elsif @user.comment_banned %>
+    <p style="background-color: orange;color:white">Member is comment banned</p>
+  <% elsif @user.trusted %>
+    <p style="background-color: green;color:white">Member is trusted</p>
   <% else %>
-    <p style="color:green">Member in good standing</p>
+    <p style="color:green">Member is in good standing</p>
   <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <%= f.label "Ban User" %>
-    <%= f.check_box :ban_user, checked: @user.banned %>
-    <br>
-    <%= f.label "Warn User" %>
-    <%= f.check_box :warn_user, checked: @user.warned %>
+  <p><strong>Current Roles</strong><em> (view full history in notes below)</em>:</p>
+  <ul>
+    <% if @user.roles.empty? %>
+      <li>Regular Member</li>
+    <% end %>
+    <% @user.roles.each do |role| %>
+        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
+    <% end %>
+  </ul>
+  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
+    <%= f.label "Select new user status" %>
+    <%= f.select(:user_status, options_for_select(["Warn", "Comment Ban", "Ban", "Regular Member", "Trusted", "Pro"]), include_blank: true) %>
     <br>
     <%= f.label "Reason for action:" %>
     <%= f.text_area :note_for_current_role, required: true %>
