@@ -3,7 +3,6 @@ class StickyArticleCollection
   def initialize(article, author)
     @article = article
     @author = author
-    @article_tags = article_tags
     @reaction_count_num = Rails.env.production? ? 15 : -1
     @comment_count_num = Rails.env.production? ? 7 : -2
   end
@@ -18,16 +17,15 @@ class StickyArticleCollection
   end
 
   def suggested_stickies
-    (tag_articles + more_articles).sample(8)
+    (tag_articles.load + more_articles).sample(8)
   end
 
   def tag_articles
-    Article.tagged_with(article_tags, any: true).
+    @tag_articles ||= Article.tagged_with(article_tags, any: true).
       includes(:user).
       where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
       where(published: true).
       where.not(id: article.id, user_id: article.user_id).
-      limited_column_select.
       where("featured_number > ?", 5.days.ago.to_i).
       order("RANDOM()").
       limit(8)
@@ -39,7 +37,6 @@ class StickyArticleCollection
     Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
       includes(:user).
       where("comments_count > ?", comment_count_num).
-      limited_column_select.
       where(published: true).
       where.not(id: article.id, user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
@@ -48,8 +45,6 @@ class StickyArticleCollection
   end
 
   def article_tags
-    tags = article.cached_tag_list_array
-    tags.delete("discuss")
-    tags
+    @article_tags ||= article.cached_tag_list_array - ["discuss"]
   end
 end
