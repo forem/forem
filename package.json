@@ -76,7 +76,6 @@
     "faker": "^4.1.0",
     "husky": "^1.3.1",
     "jest": "^23.5.0",
-    "jest-localstorage-mock": "^2.4.0",
     "jest-fetch-mock": "^2.1.1",
     "jsdom": "^14.0.0",
     "lint-staged": "^8.1.5",
@@ -89,6 +88,7 @@
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
+    "chart.js": "^2.7.3",
     "codemirror": "^5.44.0",
     "intersection-observer": "^0.5.1",
     "linkstate": "^1.1.1",
@@ -98,10 +98,12 @@
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
     "pusher-js": "^4.4.0",
-    "web-share-wrapper": "^0.2.1",
-    "twilio-video": "^1.15.2"
+    "twilio-video": "^1.15.2",
+    "web-share-wrapper": "^0.2.1"
   },
   "jest": {
-    "setupFiles": ["jest-localstorage-mock"]
+    "setupFiles": [
+      "jest-localstorage-mock"
+    ]
   }
 }
