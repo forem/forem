@@ -18,7 +18,7 @@ class DevCommentTag < LiquidTagBase
         <a href="/#{@comment.user.username}">
           <span class="comment-username">#{@comment.user.name}</span>
         </a>
-        <div class="comment-date">
+        <div class="comment-date" data-published-timestamp="#{@comment.decorate.published_timestamp}">
           <a href="#{@comment.path}">#{@comment.readable_publish_date}</a>
         </div>
       </div>

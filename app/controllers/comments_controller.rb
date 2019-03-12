@@ -58,37 +58,45 @@ class CommentsController < ApplicationController
     raise if RateLimitChecker.new(current_user).limit_by_situation("comment_creation")
 
     @comment = Comment.new(permitted_attributes(Comment))
+    @comment.user_id = current_user.id
+
     add_context(commentable_id: @comment.commentable_id,
                 commentable_type: @comment.commentable_type)
-    @comment.user_id = current_user.id
+
     if @comment.save
       if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
         current_user.update(checked_code_of_conduct: true)
       end
+
       Mention.create_all(@comment)
       Notification.send_new_comment_notifications_without_delay(@comment)
+
       if @comment.invalid?
         @comment.destroy
         render json: { status: "comment already exists" }
         return
       end
-      render json: {  status: "created",
-                      css: @comment.custom_css,
-                      depth: @comment.depth,
-                      url: @comment.path,
-                      readable_publish_date: @comment.readable_publish_date,
-                      body_html: @comment.processed_html,
-                      id: @comment.id,
-                      id_code: @comment.id_code_generated,
-                      newly_created: true,
-                      user: {
-                        id: current_user.id,
-                        username: current_user.username,
-                        name: current_user.name,
-                        profile_pic: ProfileImage.new(current_user).get(50),
-                        twitter_username: current_user.twitter_username,
-                        github_username: current_user.github_username
-                      } }
+
+      render json: {
+        status: "created",
+        css: @comment.custom_css,
+        depth: @comment.depth,
+        url: @comment.path,
+        readable_publish_date: @comment.readable_publish_date,
+        published_timestamp: @comment.decorate.published_timestamp,
+        body_html: @comment.processed_html,
+        id: @comment.id,
+        id_code: @comment.id_code_generated,
+        newly_created: true,
+        user: {
+          id: current_user.id,
+          username: current_user.username,
+          name: current_user.name,
+          profile_pic: ProfileImage.new(current_user).get(50),
+          twitter_username: current_user.twitter_username,
+          github_username: current_user.github_username
+        }
+      }
     elsif @comment = Comment.where(body_markdown: @comment.body_markdown,
                                    commentable_id: @comment.commentable.id,
                                    ancestry: @comment.ancestry)[1]
