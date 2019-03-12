@@ -14,6 +14,10 @@
     @media screen and ( min-width: 600px ){
       text-align: left;
     }
+    &.pro-header{
+      text-align: center;
+      font-size: 3em;
+    }
     a{
       padding: 4px 20px;
       border-radius: 100px;
@@ -27,6 +31,10 @@
       &.active{
         background: $dark-gray;
         color:white;
+      }
+      &.back-nav{
+        position: absolute;
+        left: 2vw;
       }
     }
   }
@@ -323,4 +331,13 @@
       min-height: 350px;
     }
   }
+}
+.charts-container {
+  width: 500px;
+  height: 250px;
+  margin: 0 auto;
+}
+.recent-reactors-container {
+  height: 400px;
+  overflow: scroll;
 }
