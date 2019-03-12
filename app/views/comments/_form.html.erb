@@ -51,7 +51,7 @@
     <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
-  <a id="markdown-button" aria-expanded="true" aria-controls="collapsible-0">
+  <a id="markdown-button" href="#xyz" tabindex="0" aria-expanded="false" aria-controls="collapsible-markdown" title="Markdown Button">
     <img class="icon-image" src="<%= asset_path('markdown-mark.svg') %>" />
   </a>
   <div class="actions" id="submit-wrapper">
@@ -63,7 +63,7 @@
   </div>
 <% end %>
 
-<div id="collapsible-markdown" aria-hidden="false" style="height:0px; visibility: hidden; height:0; opacity:0;">
+<div id="collapsible-markdown" aria-hidden="true" style="height:0px; visibility: hidden; height:0; opacity:0;">
   <div>
     <h4>Markdown Shortcuts</h4>
     <ul>
@@ -104,10 +104,15 @@
     markdownCheatsheet.style.height = (markdownCheatsheet.style.height == "0px") ? "200px" : "0px";
     markdownCheatsheet.style.visibility = (markdownCheatsheet.style.visibility === "hidden") ? "visible" : "hidden";
     markdownCheatsheet.style.opacity = (markdownCheatsheet.style.opacity == 0) ? 1 : 0;
+    var swap = (markdownCheatsheet.getAttribute("aria-hidden") === "false") ? "true" : "false";
+    markdownCheatsheet.setAttribute("aria-hidden", swap)
   }
 
   markdownButton.addEventListener("click", () => {
+    var swap = (markdownButton.getAttribute("aria-expanded") === "false") ? "true" : "false";
+    markdownButton.setAttribute("aria-expanded", swap)
     toggleCheatsheet();
+    return false;
   })
 </script>
 
