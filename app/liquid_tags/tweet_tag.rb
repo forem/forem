@@ -91,7 +91,7 @@ class TweetTag < LiquidTagBase
 
   def valid_id?(id)
     # id must be all numbers under 20 characters
-    /^\d{10,20}$/ === id
+    /^\d{10,20}$/.match?(id)
   end
 end
 
