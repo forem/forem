@@ -82,13 +82,6 @@ Style/CollectionMethods:
     collect: map
     find_all: select
 
-Style/CommentAnnotation:
-  Description: >-
-    Checks formatting of special comments
-    (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#annotate-keywords'
-  Enabled: false
-
 Metrics/AbcSize:
   Description: >-
     A calculated magnitude based on number of assignments,
