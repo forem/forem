@@ -40,7 +40,7 @@ class StackblitzTag < LiquidTagBase
     input_split = input.split(" ")
 
     # Validation
-    validated_views = input_split.map { |o| valid_view?(o) }.reject { |e| e == nil }
+    validated_views = input_split.map { |o| valid_view?(o) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
     validated_views.length.zero? ? "" : validated_views.join("")

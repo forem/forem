@@ -43,7 +43,7 @@ class PodcastFeed
   end
 
   def update_existing_episode(episode, item, _podcast)
-    if episode.published_at == nil
+    if episode.published_at.nil?
       begin
         episode.published_at = item.pubDate.to_date
         episode.save

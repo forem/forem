@@ -194,7 +194,7 @@ class Notification < ApplicationRecord
 
     def send_welcome_notification(receiver_id)
       welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
-      return if welcome_broadcast == nil
+      return if welcome_broadcast.nil?
 
       dev_account = User.dev_account
       json_data = {

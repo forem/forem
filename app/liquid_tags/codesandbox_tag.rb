@@ -28,7 +28,7 @@ class CodesandboxTag < LiquidTagBase
   def parse_options(input)
     _, *options = input.split(" ")
 
-    options.map { |o| valid_option(o) }.reject { |e| e == nil }
+    options.map { |o| valid_option(o) }.reject(&:nil?)
 
     query = options.join("&")
 

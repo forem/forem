@@ -169,11 +169,6 @@ Style/Next:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
   Enabled: false
 
-Style/NilComparison:
-  Description: 'Prefer x.nil? to x == nil.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
-  Enabled: false
-
 Style/Not:
   Description: 'Use ! instead of not.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bang-not-not'
