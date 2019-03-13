@@ -37,7 +37,7 @@ module Api
 
       def valid_user
         user = User.find_by_secret(params[:key])
-        user = nil if !user.has_role?(:super_admin)
+        user = nil unless user.has_role?(:super_admin)
         user
       end
 

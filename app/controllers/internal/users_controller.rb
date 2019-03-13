@@ -99,7 +99,7 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def add_note
-    return unless !user_params[:note].blank?
+    return if user_params[:note].blank?
 
     create_note("misc_note", user_params[:note])
   end
@@ -122,11 +122,11 @@ class Internal::UsersController < Internal::ApplicationController
   def make_matches
     return if @new_mentee.blank? && @new_mentor.blank?
 
-    if !@new_mentee.blank?
+    unless @new_mentee.blank?
       mentee = User.find(@new_mentee)
       MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
     end
-    if !@new_mentor.blank?
+    unless @new_mentor.blank?
       mentor = User.find(@new_mentor)
       MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
     end

@@ -54,7 +54,7 @@ class Mention < ApplicationRecord
   handle_asynchronously :send_email_notification
 
   def permission
-    if !mentionable.valid?
+    unless mentionable.valid?
       errors.add(:mentionable_id, "is not valid.")
     end
   end
