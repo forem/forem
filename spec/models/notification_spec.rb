@@ -293,7 +293,7 @@ RSpec.describe Notification, type: :model do
 
       it "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
         mock_previous_view_milestone_notification
-        article.update_column(:page_views_count, rand(9002..16383))
+        article.update_column(:page_views_count, rand(9002..16_383))
         Notification.send_milestone_notification_without_delay(view_milestone_hash)
         expect(user.notifications.count).to eq 2
       end

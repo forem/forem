@@ -51,7 +51,7 @@ class Notification < ApplicationRecord
                     notifiable.user.followers
                   end
       # followers is an array and not an activerecord object
-      followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
+      followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
         Notification.create(
           user_id: follower.id,
           notifiable_id: notifiable.id,
@@ -393,7 +393,7 @@ class Notification < ApplicationRecord
     def next_milestone(milestone_hash)
       case milestone_hash[:type]
       when "View"
-        milestones = [1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
+        milestones = [1024, 2048, 4096, 8192, 16_384, 32_768, 65_536, 131_072, 262_144, 524_288, 1_048_576]
         milestone_count = milestone_hash[:article].page_views_count
       when "Reaction"
         milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192]

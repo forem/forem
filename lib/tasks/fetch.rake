@@ -48,7 +48,7 @@ task renew_hired_articles: :environment do
 end
 
 task clear_memory_if_too_high: :environment do
-  if Rails.cache.stats.flatten[1]["bytes"].to_i > 9650000000
+  if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
     Rails.cache.clear
   end
 end

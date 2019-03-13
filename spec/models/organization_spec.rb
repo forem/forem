@@ -100,14 +100,14 @@ RSpec.describe Organization, type: :model do
     end
 
     it "properly updates the slug/username" do
-      random_new_slug = "slug_#{rand(10000)}"
+      random_new_slug = "slug_#{rand(10_000)}"
       organization.update(slug: random_new_slug)
       expect(organization.slug).to eq random_new_slug
     end
 
     it "updates old_slug to original slug if slug was changed" do
       original_slug = organization.slug
-      organization.update(slug: "slug_#{rand(10000)}")
+      organization.update(slug: "slug_#{rand(10_000)}")
       expect(organization.old_slug).to eq original_slug
     end
 
@@ -120,7 +120,7 @@ RSpec.describe Organization, type: :model do
 
     it "updates the paths of the organization's articles" do
       create_article_for_organization
-      new_slug = "slug_#{rand(10000)}"
+      new_slug = "slug_#{rand(10_000)}"
       organization.update(slug: new_slug)
       article = Article.find_by(organization_id: organization.id)
       expect(article.path).to include new_slug

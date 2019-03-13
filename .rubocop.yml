@@ -169,13 +169,6 @@ Style/Next:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
   Enabled: false
 
-Style/NumericLiterals:
-  Description: >-
-    Add underscores to large numeric literals to improve their
-    readability.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics'
-  Enabled: false
-
 Style/OneLineConditional:
   Description: >-
     Favor the ternary operator(?:) over

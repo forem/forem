@@ -17,7 +17,7 @@ class HtmlVariantsController < ApplicationController
     @html_variant = HtmlVariant.new
     if params[:fork_id]
       @fork = HtmlVariant.find(params[:fork_id])
-      @html_variant.name = @fork.name + " FORK-#{rand(10000)}"
+      @html_variant.name = @fork.name + " FORK-#{rand(10_000)}"
       @html_variant.html = @fork.html
     end
   end

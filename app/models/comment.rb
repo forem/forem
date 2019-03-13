@@ -8,7 +8,7 @@ class Comment < ApplicationRecord
   counter_culture :user
   has_many :mentions, as: :mentionable, dependent: :destroy
 
-  validates :body_markdown, presence: true, length: { in: 1..25000 },
+  validates :body_markdown, presence: true, length: { in: 1..25_000 },
                             uniqueness: { scope: %i[user_id
                                                     ancestry
                                                     commentable_id

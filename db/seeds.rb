@@ -7,9 +7,9 @@ p "1/9 Creating Organizations"
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
     url: Faker::Internet.url,
-    slug: "org#{rand(10000)}",
-    github_username: "org#{rand(10000)}",
-    twitter_username: "org#{rand(10000)}",
+    slug: "org#{rand(10_000)}",
+    github_username: "org#{rand(10_000)}",
+    twitter_username: "org#{rand(10_000)}",
     bg_color_hex: Faker::Color.hex_color,
     text_color_hex: Faker::Color.hex_color,
   )

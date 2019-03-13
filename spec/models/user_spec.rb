@@ -186,12 +186,12 @@ RSpec.describe User, type: :model do
 
     it "changes old_username and old_old_username properly if username changes" do
       old_username = user.username
-      random_new_username = "username_#{rand(100000000)}"
+      random_new_username = "username_#{rand(100_000_000)}"
       user.update(username: random_new_username)
       expect(user.username).to eq(random_new_username)
       expect(user.old_username).to eq(old_username)
       new_username = user.username
-      user.update(username: "username_#{rand(100000000)}")
+      user.update(username: "username_#{rand(100_000_000)}")
       expect(user.old_username).to eq(new_username)
       expect(user.old_old_username).to eq(old_username)
     end
