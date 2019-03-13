@@ -37,7 +37,7 @@ RSpec.describe "/internal/reactions", type: :request do
     let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id) }
 
     it "updates reaction to be confirmed" do
-      invalid_request = -> do
+      invalid_request = lambda do
         put "/internal/reactions/#{reaction.id}", params: {
           reaction: { status: "confirmed" }
         }

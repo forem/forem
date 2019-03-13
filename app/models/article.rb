@@ -65,14 +65,14 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
-  scope :active_help, -> {
+  scope :active_help, lambda {
                         where(published: true).
                           cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
                       }
 
-  scope :limited_column_select, -> {
+  scope :limited_column_select, lambda {
     select(:path, :title, :id,
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
@@ -82,7 +82,7 @@ class Article < ApplicationRecord
     :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
-  scope :limited_columns_internal_select, -> {
+  scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
@@ -93,11 +93,11 @@ class Article < ApplicationRecord
     :email_digest_eligible, :processed_html)
   }
 
-  scope :boosted_via_additional_articles, -> {
+  scope :boosted_via_additional_articles, lambda {
     where("boost_states ->> 'boosted_additional_articles' = 'true'")
   }
 
-  scope :boosted_via_dev_digest_email, -> {
+  scope :boosted_via_dev_digest_email, lambda {
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
