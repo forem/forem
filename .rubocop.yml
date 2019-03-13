@@ -116,11 +116,6 @@ Style/Documentation:
 Style/Encoding:
   Enabled: false
 
-Style/EvenOdd:
-  Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
-  Enabled: false
-
 Naming/FileName:
   Description: 'Use snake_case for source file names.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-files'
