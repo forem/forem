@@ -24,13 +24,14 @@ class FollowsController < ApplicationController
                    User.find(params[:followable_id])
                  end
     add_param_context(:followable_type, :followable_id, :verb)
+    need_notification = Follow.need_new_follower_notification_for?(followable.class.name)
     @result = if params[:verb] == "unfollow"
                 follow = current_user.stop_following(followable)
-                Notification.send_new_follower_notification_without_delay(follow, true)
+                Notification.send_new_follower_notification_without_delay(follow, true) if need_notification
                 "unfollowed"
               else
                 follow = current_user.follow(followable)
-                Notification.send_new_follower_notification(follow)
+                Notification.send_new_follower_notification(follow) if need_notification
                 "followed"
               end
     current_user.touch

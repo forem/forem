@@ -12,6 +12,8 @@ class Notification < ApplicationRecord
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
+      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+
       recent_follows = Follow.where(followable_type: follow.followable_type, followable_id: follow.followable_id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
 
       notification_params = { action: "Follow" }
