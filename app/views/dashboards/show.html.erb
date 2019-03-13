@@ -58,7 +58,7 @@
               </a>
               <%= form_for(follow) do |f| %>
                 <%= f.label(:points, "Follow Weight:") %>
-                <%= f.text_field(:points) %>
+                <%= f.number_field(:points, step: :any) %>
                 <%= f.submit "Submit" %>
               <% end %>
             </h2>
