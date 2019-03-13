@@ -90,6 +90,11 @@ RSpec.describe "internal/users", type: :request do
       post "/internal/users/#{user.id}/full_delete"
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
+
+    it "expect flash message" do
+      post "/internal/users/#{user.id}/full_delete"
+      expect(request.flash.notice).to include("fully deleted")
+    end
   end
 
   context "when banning from mentorship" do
