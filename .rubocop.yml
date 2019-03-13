@@ -82,11 +82,6 @@ Style/CollectionMethods:
     collect: map
     find_all: select
 
-Style/ColonMethodCall:
-  Description: 'Do not use :: for method call.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#double-colons'
-  Enabled: false
-
 Style/CommentAnnotation:
   Description: >-
     Checks formatting of special comments
