@@ -27,6 +27,10 @@ RSpec/FilePath:
 RSpec/MultipleExpectations:
   Max: 6
 
+Style/NegatedIf:
+  Exclude:
+    - 'app/controllers/internal/users_controller.rb'
+
 # Offense count: 15
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.

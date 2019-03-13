@@ -122,11 +122,11 @@ class Internal::UsersController < Internal::ApplicationController
   def make_matches
     return if @new_mentee.blank? && @new_mentor.blank?
 
-    unless @new_mentee.blank?
+    if !@new_mentee.blank?
       mentee = User.find(@new_mentee)
       MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
     end
-    unless @new_mentor.blank?
+    if !@new_mentor.blank?
       mentor = User.find(@new_mentor)
       MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
     end
