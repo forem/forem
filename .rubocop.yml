@@ -64,7 +64,7 @@ Naming/AsciiIdentifiers:
 Style/Attr:
   Description: 'Checks for uses of Module#attr.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr'
-  Enabled: false
+  Enabled: true
 
 Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting'
