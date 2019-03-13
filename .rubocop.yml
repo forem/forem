@@ -150,11 +150,6 @@ Style/IfUnlessModifier:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier'
   Enabled: false
 
-Style/IfWithSemicolon:
-  Description: 'Do not use if x; .... Use the ternary operator instead.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs'
-  Enabled: false
-
 Style/InlineComment:
   Description: 'Avoid inline comments.'
   Enabled: false
