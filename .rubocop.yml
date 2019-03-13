@@ -169,11 +169,6 @@ Style/Next:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
   Enabled: false
 
-Style/Not:
-  Description: 'Use ! instead of not.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bang-not-not'
-  Enabled: false
-
 Style/NumericLiterals:
   Description: >-
     Add underscores to large numeric literals to improve their
