@@ -154,12 +154,6 @@ Style/InlineComment:
   Description: 'Avoid inline comments.'
   Enabled: false
 
-Style/LineEndConcatenation:
-  Description: >-
-    Use \ instead of + or << to concatenate two string literals at
-    line end.
-  Enabled: false
-
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
