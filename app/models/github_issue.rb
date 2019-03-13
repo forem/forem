@@ -1,6 +1,6 @@
 class GithubIssue < ApplicationRecord
   serialize :issue_serialized, Hash
-  validates :category, inclusion: { in: %w(issue issue_comment) }
+  validates :category, inclusion: { in: %w[issue issue_comment] }
 
   def self.find_or_fetch(url)
     find_by_url(url) || fetch(url)

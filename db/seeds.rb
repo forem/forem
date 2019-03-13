@@ -19,8 +19,8 @@ end
 
 p "2/9 Creating Users"
 
-roles = %i(level_1_member level_2_member level_3_member level_4_member
-           workshop_pass)
+roles = %i[level_1_member level_2_member level_3_member level_4_member
+           workshop_pass]
 User.clear_index!
 10.times do |i|
   user = User.create!(
@@ -52,8 +52,8 @@ end
 
 p "3/9 Creating Tags"
 
-tags = %w(beginners career computerscience git go
-          java javascript linux productivity python security webdev)
+tags = %w[beginners career computerscience git go
+          java javascript linux productivity python security webdev]
 
 tags.each do |tag_name|
   Tag.create!(

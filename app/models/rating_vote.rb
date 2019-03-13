@@ -3,7 +3,7 @@ class RatingVote < ApplicationRecord
   belongs_to :user
 
   validates_uniqueness_of :user_id, scope: :article_id
-  validates :group, inclusion: { in: %w(experience_level) }
+  validates :group, inclusion: { in: %w[experience_level] }
   validates :rating, numericality: { greater_than: 0.0, less_than_or_equal_to: 10.0 }
   validate :permissions
   counter_culture :article

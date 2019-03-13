@@ -98,19 +98,19 @@ class User < ApplicationRecord
               format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   # rubocop:enable Metrics/LineLength
   validates :shirt_gender,
-              inclusion: { in: %w(unisex womens),
+              inclusion: { in: %w[unisex womens],
                            message: "%{value} is not a valid shirt style" },
               allow_blank: true
   validates :shirt_size,
-              inclusion: { in: %w(xs s m l xl 2xl 3xl 4xl),
+              inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
                            message: "%{value} is not a valid size" },
               allow_blank: true
   validates :tabs_or_spaces,
-              inclusion: { in: %w(tabs spaces),
+              inclusion: { in: %w[tabs spaces],
                            message: "%{value} is not a valid answer" },
               allow_blank: true
   validates :editor_version,
-              inclusion: { in: %w(v1 v2),
+              inclusion: { in: %w[v1 v2],
                            message: "%{value} must be either v1 or v2" }
   validates :shipping_country,
               length: { in: 2..2 },
@@ -375,7 +375,7 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = %w(
+    tab_list = %w[
       Profile
       Mentorship
       Integrations
@@ -383,7 +383,7 @@ class User < ApplicationRecord
       Publishing\ from\ RSS
       Organization
       Billing
-    )
+    ]
     tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
     tab_list.push("Account", "Misc")

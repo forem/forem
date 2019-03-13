@@ -5,13 +5,13 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
-  NAMES = %w(
+  NAMES = %w[
     beginners career computerscience git go java javascript react vue
     linux productivity python security webdev css php opensource
     ruby cpp dotnet swift testing devops vim kotlin rust elixir
     scala vscode docker aws android ios angular csharp typescript django rails
     clojure ubuntu elm gamedev flutter bash
-  ).freeze
+  ].freeze
 
   attr_accessor :tag_moderator_id, :remove_moderator_id
 

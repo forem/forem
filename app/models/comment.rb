@@ -14,7 +14,7 @@ class Comment < ApplicationRecord
                                                     commentable_id
                                                     commentable_type] }
   validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: %w(Article PodcastEpisode) }
+  validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
   after_create   :after_create_checks

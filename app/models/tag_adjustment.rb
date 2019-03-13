@@ -4,8 +4,8 @@ class TagAdjustment < ApplicationRecord
   validates :tag_id, presence: true
   validates :tag_name, presence: true, uniqueness: { scope: :article_id }
   validates :reason_for_adjustment, presence: true
-  validates :adjustment_type, inclusion: { in: %w(removal addition) }, presence: true
-  validates :status, inclusion: { in: %w(committed pending committed_and_resolvable resolved) }, presence: true
+  validates :adjustment_type, inclusion: { in: %w[removal addition] }, presence: true
+  validates :status, inclusion: { in: %w[committed pending committed_and_resolvable resolved] }, presence: true
   validate  :user_permissions
 
   belongs_to :user

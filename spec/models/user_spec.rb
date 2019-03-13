@@ -86,7 +86,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https facebook url" do
-      %w(thepracticaldev thepracticaldev/ the.practical.dev).each do |username|
+      %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
         user.facebook_url = "https://facebook.com/#{username}"
         expect(user).to be_valid
       end
@@ -98,7 +98,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https behance url" do
-      %w(jess jess/ je-ss jes_ss).each do |username|
+      %w[jess jess/ je-ss jes_ss].each do |username|
         user.behance_url = "https://behance.net/#{username}"
         expect(user).to be_valid
       end
@@ -110,7 +110,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https stackoverflow url" do
-      %w(pandyzhao pandyzhao/ pandy-zhao).each do |username|
+      %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
         user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
         expect(user).to be_valid
       end
@@ -122,7 +122,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https linkedin url" do
-      %w(jessleenyc jessleenyc/ jess-lee-nyc).each do |username|
+      %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
         user.linkedin_url = "https://linkedin.com/in/#{username}"
         expect(user).to be_valid
       end
@@ -149,7 +149,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https dribbble url" do
-      %w(jess jess/ je-ss je_ss).each do |username|
+      %w[jess jess/ je-ss je_ss].each do |username|
         user.dribbble_url = "https://dribbble.com/#{username}"
         expect(user).to be_valid
       end
@@ -161,7 +161,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https medium url" do
-      %w(jess jess/ je-ss je_ss).each do |username|
+      %w[jess jess/ je-ss je_ss].each do |username|
         user.medium_url = "https://medium.com/#{username}"
         expect(user).to be_valid
       end
@@ -173,7 +173,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https gitlab url" do
-      %w(jess jess/ je-ss je_ss).each do |username|
+      %w[jess jess/ je-ss je_ss].each do |username|
         user.gitlab_url = "https://gitlab.com/#{username}"
         expect(user).to be_valid
       end

@@ -15,8 +15,8 @@ class ChatChannel < ApplicationRecord
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
-  validates :channel_type, presence: true, inclusion: { in: %w(open invite_only direct) }
-  validates :status, presence: true, inclusion: { in: %w(active inactive) }
+  validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
+  validates :status, presence: true, inclusion: { in: %w[active inactive] }
   validates :slug, uniqueness: true, presence: true
 
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do

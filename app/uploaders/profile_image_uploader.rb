@@ -11,7 +11,7 @@ class ProfileImageUploader < CarrierWave::Uploader::Base
   end
 
   def extension_whitelist
-    %w(jpg jpeg jpe gif png ico bmp dng)
+    %w[jpg jpeg jpe gif png ico bmp dng]
   end
 
   protected

@@ -5,7 +5,7 @@ RSpec.describe YoutubeTag, type: :liquid_template do
     let(:valid_id_no_time) { "dQw4w9WgXcQ" }
 
     let(:valid_ids_with_time) do
-      %w(
+      %w[
         QASbw8_0meM?t=8h12m26s
         QASbw8_0meM?t=6h34m
         QASbw8_0meM?t=7h
@@ -13,7 +13,7 @@ RSpec.describe YoutubeTag, type: :liquid_template do
         dQw4w9WgXcQ?t=4m45s
         dQw4w9WgXcQ?t=5m
         dQw4w9WgXcQ?t=8s
-      )
+      ]
     end
 
     let(:invalid_id) { Faker::Lorem.characters(rand(12..100)) }

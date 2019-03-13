@@ -30,7 +30,7 @@ RSpec.describe Comment, type: :model do
     it { is_expected.to validate_presence_of(:body_markdown) }
     it { is_expected.to validate_uniqueness_of(:body_markdown).scoped_to(:user_id, :ancestry, :commentable_id, :commentable_type) }
     it { is_expected.to validate_length_of(:body_markdown).is_at_least(1).is_at_most(25_000) }
-    it { is_expected.to validate_inclusion_of(:commentable_type).in_array(%w(Article PodcastEpisode)) }
+    it { is_expected.to validate_inclusion_of(:commentable_type).in_array(%w[Article PodcastEpisode]) }
   end
 
   it "gets proper generated ID code" do

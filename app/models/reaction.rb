@@ -1,5 +1,5 @@
 class Reaction < ApplicationRecord
-  CATEGORIES = %w(like readinglist unicorn thinking hands thumbsdown vomit).freeze
+  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
@@ -11,8 +11,8 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }
-  validates :reactable_type, inclusion: { in: %w(Comment Article) }
-  validates :status, inclusion: { in: %w(valid invalid confirmed) }
+  validates :reactable_type, inclusion: { in: %w[Comment Article] }
+  validates :status, inclusion: { in: %w[valid invalid confirmed] }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
@@ -25,7 +25,7 @@ class Reaction < ApplicationRecord
     def count_for_article(id)
       Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
-        %w(like readinglist unicorn).map do |type|
+        %w[like readinglist unicorn].map do |type|
           { category: type, count: reactions.where(category: type).size }
         end
       end

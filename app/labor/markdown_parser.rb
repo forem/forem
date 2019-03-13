@@ -38,9 +38,9 @@ class MarkdownParser
 
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    allowed_tags = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
-                      br ul ol li small sup sub img a span hr blockquote kbd)
-    allowed_attributes = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub img a span hr blockquote kbd]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
     tags: allowed_tags,
     attributes: allowed_attributes
@@ -51,8 +51,8 @@ class MarkdownParser
 
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    allowed_tags = %w(strong i u b em p br code)
-    allowed_attributes = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w[strong i u b em p br code]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
     tags: allowed_tags,
     attributes: allowed_attributes
