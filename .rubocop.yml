@@ -110,11 +110,6 @@ Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
 
-Style/EmptyLiteral:
-  Description: 'Prefer literals to Array.new/Hash.new/String.new.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#literal-array-hash'
-  Enabled: false
-
 # Checks whether the source file has a utf-8 encoding comment or not
 # AutoCorrectEncodingComment must match the regex
 # /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
