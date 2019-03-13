@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 20190315222044) do
     t.index ["user_id"], name: "index_api_secrets_on_user_id"
   end
 
-  create_table "articles", id: :serial, force: :cascade do |t|
+  create_table "articles", force: :cascade do |t|
     t.string "abuse_removal_reason"
     t.boolean "allow_big_edits", default: true
     t.boolean "allow_small_edits", default: true
