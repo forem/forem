@@ -56,11 +56,6 @@ Metrics/BlockNesting:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count'
   Enabled: false
 
-Style/CharacterLiteral:
-  Description: 'Checks for uses of character literals.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-character-literals'
-  Enabled: false
-
 Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
   Enabled: true
