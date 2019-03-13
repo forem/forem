@@ -110,11 +110,6 @@ Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
 
-Style/DoubleNegation:
-  Description: 'Checks for uses of double negation (!!).'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-bang-bang'
-  Enabled: false
-
 Style/EachWithObject:
   Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
   Enabled: false
