@@ -77,7 +77,7 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "adds banned from mentorship role" do
-      put "/internal/users/#{user.id}", params: { user: { ban_from_mentorship: "1", note_for_mentorship_ban: "banned" } }
+      patch "/internal/users/#{user.id}/user_status", params: { user: { toggle_mentorship: "1", mentorship_note: "banned" } }
       expect(user.roles.first.name).to eq("banned_from_mentorship")
     end
 
