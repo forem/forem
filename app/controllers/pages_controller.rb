@@ -61,6 +61,13 @@ class PagesController < ApplicationController
   end
 
   def shecoded
+    @top_articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).order("RANDOM()").
+      includes(:user).decorate
+    @articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).order("RANDOM()").
+      where.not(id: @top_articles.pluck(:id)).
+      includes(:user).decorate
     render layout: false
     set_surrogate_key_header "shecoded_page"
   end

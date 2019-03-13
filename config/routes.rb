@@ -131,6 +131,7 @@ Rails.application.routes.draw do
   resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
+  resources :page_views, only: [:create, :update]
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
@@ -280,6 +281,7 @@ Rails.application.routes.draw do
   get "/tag/:tag" => "stories#index"
   get "/t/:tag" => "stories#index"
   get "/t/:tag/edit", to: "tags#edit"
+  get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",

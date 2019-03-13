@@ -29,4 +29,16 @@ RSpec.describe DevCommentTag, type: :liquid_template do
       generate_comment_tag("this should fail")
     end.to raise_error(StandardError)
   end
+
+  context "when rendered" do
+    let(:rendered_tag) { generate_comment_tag(comment.id_code_generated).render }
+
+    it "shows the comment date" do
+      expect(rendered_tag).to include(comment.readable_publish_date)
+    end
+
+    it "embeds the comment published timestamp" do
+      expect(rendered_tag).to include(comment.decorate.published_timestamp)
+    end
+  end
 end

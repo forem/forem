@@ -17,7 +17,7 @@ module Api
           "articles_api",
           params[:tag],
           params[:page],
-          params[:userame],
+          params[:username],
           params[:signature],
           params[:state],
         ]

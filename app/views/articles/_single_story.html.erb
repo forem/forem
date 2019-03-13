@@ -27,7 +27,7 @@
     </div>
   </a>
   <h4>
-    <a href="<%= story.user.path %>"><%= story.user.name %>・<%= story.readable_publish_date %></a>
+    <a href="<%= story.user.path %>"><%= story.user.name %>・<%= story.readable_publish_date %><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
 
   </h4>
   <div class="tags">

@@ -66,7 +66,7 @@ class RunkitTag < Liquid::Block
   end
 
   def sanitized_preamble(markup)
-    raise StandardError, "Runkit tag is invalid" if markup.include? "\""
+    raise StandardError, "Runkit tag is invalid" if markup.include? "\">"
 
     ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
   end

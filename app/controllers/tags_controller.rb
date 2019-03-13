@@ -26,6 +26,12 @@ class TagsController < ApplicationController
     end
   end
 
+  def admin
+    tag = Tag.find_by!(name: params[:tag])
+    authorize tag
+    redirect_to "/admin/tags/#{tag.id}/edit"
+  end
+
   private
 
   def convert_empty_string_to_nil
