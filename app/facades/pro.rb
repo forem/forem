@@ -4,7 +4,7 @@ class Pro < Dashboard
   end
 
   def user_article_ids
-    @user.articles.pluck(:id)
+    user.articles.pluck(:id)
   end
 
   def this_week_reactions
@@ -48,19 +48,19 @@ class Pro < Dashboard
   end
 
   def this_week_followers_count
-    Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ?", 1.week.ago).size
+    Follow.where(followable_id: user.id, followable_type: "User").where("created_at > ?", 1.week.ago).size
   end
 
   def last_week_followers_count
-    Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.weeks.ago, 1.week.ago).size
+    Follow.where(followable_id: user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.weeks.ago, 1.week.ago).size
   end
 
   def this_month_followers_count
-    Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ?", 1.month.ago).size
+    Follow.where(followable_id: user.id, followable_type: "User").where("created_at > ?", 1.month.ago).size
   end
 
   def last_month_followers_count
-    Follow.where(followable_id: @user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
+    Follow.where(followable_id: user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
   end
 
   def reactors
