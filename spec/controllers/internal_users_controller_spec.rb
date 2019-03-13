@@ -41,6 +41,27 @@ RSpec.describe "internal/users", type: :request do
     Delayed::Worker.new(quiet: true).work_off
   end
 
+  context "when managing activty and roles" do
+    it "adds comment ban role" do
+      patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      expect(user.roles.first.name).to eq("comment_banned")
+      expect(Note.first.content).to eq("comment ban this user")
+    end
+
+    it "selects new role for user" do
+      user.add_role :trusted
+      user.reload
+      patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      expect(user.roles.count).to eq(1)
+      expect(user.roles.last.name).to eq("comment_banned")
+    end
+
+    it "creates a general note on the user" do
+      put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
+      expect(Note.last.content).to eq("general note about whatever")
+    end
+  end
+
   context "when deleting user" do
     def create_mention
       comment = create(

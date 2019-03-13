@@ -2,10 +2,10 @@ module Moderator
   class ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
-    def initialize(args)
-      @user = args[:user]
-      @admin = args[:admin]
-      @user_params = args[:user_params]
+    def initialize(user:, admin:, user_params:)
+      @user = user
+      @admin = admin
+      @user_params = user_params
     end
 
     def self.handle_user_roles(admin:, user:, user_params:)
