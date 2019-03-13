@@ -110,10 +110,6 @@ Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
 
-Style/EachWithObject:
-  Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
-  Enabled: false
-
 Style/EmptyLiteral:
   Description: 'Prefer literals to Array.new/Hash.new/String.new.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#literal-array-hash'
