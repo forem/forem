@@ -3,7 +3,7 @@ module Api
     class ArticlesController < ApiController
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
-        cache_path: Proc.new { |c| c.params.permit! },
+        cache_path: proc { |c| c.params.permit! },
         expires_in: 5.minutes
       respond_to :json
 

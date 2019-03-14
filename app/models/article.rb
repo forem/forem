@@ -56,7 +56,7 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
-  after_update      :update_notifications, if: Proc.new { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
+  after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions

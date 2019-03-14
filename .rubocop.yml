@@ -187,11 +187,6 @@ Naming/PredicateName:
   Exclude:
     - spec/**/*
 
-Style/Proc:
-  Description: 'Use proc instead of Proc.new.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#proc'
-  Enabled: false
-
 Style/RaiseArgs:
   Description: 'Checks the arguments passed to raise/fail.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#exception-class-messages'

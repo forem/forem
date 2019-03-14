@@ -27,7 +27,7 @@ class Comment < ApplicationRecord
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
-  after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
+  after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
   validate :permissions, if: :commentable
