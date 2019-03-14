@@ -187,11 +187,6 @@ Naming/PredicateName:
   Exclude:
     - spec/**/*
 
-Style/RaiseArgs:
-  Description: 'Checks the arguments passed to raise/fail.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#exception-class-messages'
-  Enabled: false
-
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-r'
