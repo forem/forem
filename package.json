@@ -26,7 +26,7 @@
       "git add"
     ],
     "{app,spec}/**/*.rb": [
-      "bin/rubocop --require rubocop-rspec --safe-auto-correct",
+      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct",
       "git add"
     ],
     "app/**/*.html.erb": [
