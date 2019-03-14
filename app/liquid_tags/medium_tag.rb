@@ -1,6 +1,7 @@
 class MediumTag < LiquidTagBase
   include ApplicationHelper
   include ActionView::Helpers::TagHelper
+  include InlineSvg::ActionView::Helpers
   attr_reader :response
 
   def initialize(_tag_name, url, _tokens)
@@ -13,13 +14,15 @@ class MediumTag < LiquidTagBase
         <a href='#{response[:url]}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
             <img src='#{response[:author_image]}' alt='#{response[:author]}'/>
-          </div></a>
-          <a href='#{response[:url]}' class='ltag__link__link'>
-            <div class='ltag__link__content'>
-              <h2>#{response[:title]}</h2>
-              <h3>#{response[:author]}</h3>
-              <div class='ltag__link__taglist'>#{response[:reading_time]}</div>
-            </div>
+          </div>
+        </a>
+        <a href='#{response[:url]}' class='ltag__link__link'>
+          <div class='ltag__link__content'>
+            <h2>#{response[:title]}</h2>
+            <h3>#{response[:author]}</h3>
+            #{inline_svg('medium_icon.svg', size: '27px*27px')} Medium
+            <div class='ltag__link__taglist'>#{response[:reading_time]}</div>
+          </div>
         </a>
       </div>
     HTML
@@ -39,5 +42,3 @@ class MediumTag < LiquidTagBase
     raise StandardError, "Invalid link URL or link URL does not exist"
   end
 end
-
-Liquid::Template.register_tag("medium", MediumTag)
