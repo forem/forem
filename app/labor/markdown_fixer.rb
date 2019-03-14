@@ -14,7 +14,7 @@ class MarkdownFixer
       markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
         front_matter.gsub(/title:\s?(.*?)(\r\n|\n)/m) do |target|
           # $1 is the captured group (.*?)
-          captured_title = Regexp.last_match(1)
+          captured_title = Regexp.last_match(0)
           # The query below checks if the whole title is wrapped in
           # either single or double quotes.
           match = captured_title.scan(/(^".*"$|^'.*'$)/)
