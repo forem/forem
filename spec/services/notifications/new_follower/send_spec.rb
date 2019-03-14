@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::NewFollower, type: :service do
+RSpec.describe Notifications::NewFollower::Send, type: :service do
   let(:user)            { create(:user) }
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
@@ -14,6 +14,16 @@ RSpec.describe Notifications::NewFollower, type: :service do
       followable_type: follow.followable_type,
       follower_id: follow.follower_id
     }
+  end
+
+  context "when trying to pass tag follow data" do
+    it "raises an exception" do
+      tag = create(:tag)
+      tag_follow = user.follow(tag)
+      expect do
+        described_class.call(follow_data(tag_follow))
+      end.to raise_error(Dry::Struct::Error)
+    end
   end
 
   context "when user follows another user" do
