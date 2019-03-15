@@ -8,13 +8,13 @@ class Comment < ApplicationRecord
   counter_culture :user
   has_many :mentions, as: :mentionable, dependent: :destroy
 
-  validates :body_markdown, presence: true, length: { in: 1..25000 },
+  validates :body_markdown, presence: true, length: { in: 1..25_000 },
                             uniqueness: { scope: %i[user_id
                                                     ancestry
                                                     commentable_id
                                                     commentable_type] }
   validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: %w(Article PodcastEpisode) }
+  validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
   after_create   :after_create_checks
@@ -27,7 +27,7 @@ class Comment < ApplicationRecord
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
-  after_update   :update_notifications, if: Proc.new { |comment| comment.saved_changes.include? "body_markdown" }
+  after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
   validate :permissions, if: :commentable
@@ -212,9 +212,7 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    if parent && (parent.depth > 1 && parent.has_children?)
-      self.parent_id = parent.descendant_ids.last
-    end
+    self.parent_id = parent.descendant_ids.last if parent && (parent.depth > 1 && parent.has_children?)
   end
 
   def wrap_timestamps_if_video_present!
@@ -316,8 +314,6 @@ class Comment < ApplicationRecord
   end
 
   def permissions
-    if commentable_type == "Article" && !commentable.published
-      errors.add(:commentable_id, "is not valid.")
-    end
+    errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 end

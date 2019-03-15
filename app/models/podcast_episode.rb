@@ -115,9 +115,9 @@ class PodcastEpisode < ApplicationRecord
   def zero_method
     0
   end
-  alias_method :hotness_score, :zero_method
-  alias_method :search_score, :zero_method
-  alias_method :positive_reactions_count, :zero_method
+  alias hotness_score zero_method
+  alias search_score zero_method
+  alias positive_reactions_count zero_method
 
   def bust_cache
     purge
@@ -146,9 +146,9 @@ class PodcastEpisode < ApplicationRecord
   def nil_method
     nil
   end
-  alias_method :user_id, :nil_method
-  alias_method :second_user_id, :nil_method
-  alias_method :third_user_id, :nil_method
+  alias user_id nil_method
+  alias second_user_id nil_method
+  alias third_user_id nil_method
 
   def liquid_tags_used
     []

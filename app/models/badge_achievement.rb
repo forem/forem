@@ -17,8 +17,8 @@ class BadgeAchievement < ApplicationRecord
     parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize html,
-      tags: %w(strong em i b u a code),
-      attributes: %w(href name)
+      tags: %w[strong em i b u a code],
+      attributes: %w[href name]
     self.rewarding_context_message = final_html
   end
 
@@ -29,9 +29,7 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def send_email_notification
-    if user.class.name == "User" && user.email.present? && user.email_badge_notifications
-      NotifyMailer.new_badge_email(self).deliver
-    end
+    NotifyMailer.new_badge_email(self).deliver if user.class.name == "User" && user.email.present? && user.email_badge_notifications
   end
   handle_asynchronously :send_email_notification
 end

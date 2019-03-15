@@ -3,15 +3,11 @@ class HtmlCleaner
     doc = Nokogiri::HTML(html)
     # Remove Medium tracking pixel
     doc.css("img").each do |img|
-      if img.attr("src") && (img.attr("src").include? "medium.com/_/stat")
-        img.remove
-      end
+      img.remove if img.attr("src") && (img.attr("src").include? "medium.com/_/stat")
     end
     # Remove Medium catch phrase
     doc.css("p").each do |p|
-      if p.text.include? "where people are continuing the conversation by highlighting"
-        p.remove
-      end
+      p.remove if p.text.include? "where people are continuing the conversation by highlighting"
     end
 
     doc.css("figure").each do |el|

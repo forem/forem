@@ -1,9 +1,13 @@
 require "rails_helper"
 
 class FakeGibbonRequest < Gibbon::Request
-  def lists(*args); super end
+  def lists(*args)
+    super
+  end
 
-  def members(*args); super end
+  def members(*args)
+    super
+  end
 end
 
 RSpec.describe MailchimpBot do

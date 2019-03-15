@@ -1,5 +1,5 @@
 class ReservedWords
-  BASE_WORDS = %w(
+  BASE_WORDS = %w[
     enter
     internal
     signout_confirm
@@ -227,7 +227,7 @@ class ReservedWords
     butt
     fuck
     welcome
-  ).freeze
+  ].freeze
 
   class << self
     def all

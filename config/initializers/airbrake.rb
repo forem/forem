@@ -41,7 +41,7 @@ Airbrake.configure do |c|
   # environments.
   # NOTE: This option *does not* work if you don't set the 'environment' option.
   # https://github.com/airbrake/airbrake-ruby#ignore_environments
-  c.ignore_environments = %w(test development)
+  c.ignore_environments = %w[test development]
 
   # A list of parameters that should be filtered out of what is sent to
   # Airbrake. By default, all "password" attributes will have their contents
@@ -56,7 +56,5 @@ end
 # Thread.abort_on_exception = ['test', 'development'].include?(Rails.env)
 
 Airbrake.add_filter do |notice|
-  if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }
-    notice.ignore!
-  end
+  notice.ignore! if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }
 end

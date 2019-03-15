@@ -20,7 +20,7 @@ RSpec.describe FlareTag do
     end
 
     it "returns a flare tag if there are 2 flare tags in the list" do
-      valid_article = create(:article, tags: ["ama", "explainlikeimfive"])
+      valid_article = create(:article, tags: %w[ama explainlikeimfive])
       expect(described_class.new(valid_article).tag.name).to eq("explainlikeimfive")
     end
   end

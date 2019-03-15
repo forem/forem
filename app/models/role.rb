@@ -10,7 +10,7 @@ class Role < ApplicationRecord
 
   validates :name,
             inclusion: {
-              in: %w(
+              in: %w[
                 super_admin
                 admin
                 tag_moderator
@@ -29,7 +29,7 @@ class Role < ApplicationRecord
                 banned_from_mentorship
                 comment_banned
                 pro
-              )
+              ]
             }
   scopify
 end

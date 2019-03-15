@@ -13,9 +13,7 @@ class CacheBuster
   end
 
   def bust_comment(commentable, username)
-    if Article.where(published: true).order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
-      bust("/")
-    end
+    bust("/") if Article.where(published: true).order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
     if commentable.decorate.cached_tag_list_array.include?("discuss") &&
         commentable.featured_number.to_i > 35.hours.ago.to_i
       bust("/")
@@ -43,17 +41,15 @@ class CacheBuster
     bust(article.path + "/comments")
     bust(article.path + "?preview=" + article.password)
     bust(article.path + "?preview=" + article.password + "&i=i")
-    if article.organization.present?
-      bust("/#{article.organization.slug}")
-    end
+    bust("/#{article.organization.slug}") if article.organization.present?
     bust_home_pages(article)
     bust_tag_pages(article)
     bust("/api/articles/#{article.id}")
     bust("/api/articles/by_path?url=#{article.path}")
-    if article.collection_id
-      article.collection&.articles&.find_each do |a|
-        bust(a.path)
-      end
+    return unless article.collection_id
+
+    article.collection&.articles&.find_each do |a|
+      bust(a.path)
     end
   end
 
@@ -74,9 +70,7 @@ class CacheBuster
       bust("/latest")
       bust("/latest?i=i")
     end
-    if Article.where(published: true).order("hotness_score DESC").limit(4).pluck(:id).include?(article.id)
-      bust("/")
-    end
+    bust("/") if Article.where(published: true).order("hotness_score DESC").limit(4).pluck(:id).include?(article.id)
   end
 
   def bust_tag_pages(article)

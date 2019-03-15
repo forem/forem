@@ -15,8 +15,8 @@ class ChatChannel < ApplicationRecord
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
-  validates :channel_type, presence: true, inclusion: { in: %w(open invite_only direct) }
-  validates :status, presence: true, inclusion: { in: %w(active inactive) }
+  validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
+  validates :status, presence: true, inclusion: { in: %w[active inactive] }
   validates :slug, uniqueness: true, presence: true
 
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
@@ -68,7 +68,7 @@ class ChatChannel < ApplicationRecord
       contrived_name = "Direct chat between " + usernames.join(" and ")
       slug = usernames.join("/")
     else
-      slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100000).to_s(26)
+      slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
     end
 
     if channel = ChatChannel.find_by_slug(slug)

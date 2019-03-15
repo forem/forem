@@ -7,9 +7,9 @@ p "1/9 Creating Organizations"
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
     url: Faker::Internet.url,
-    slug: "org#{rand(10000)}",
-    github_username: "org#{rand(10000)}",
-    twitter_username: "org#{rand(10000)}",
+    slug: "org#{rand(10_000)}",
+    github_username: "org#{rand(10_000)}",
+    twitter_username: "org#{rand(10_000)}",
     bg_color_hex: Faker::Color.hex_color,
     text_color_hex: Faker::Color.hex_color,
   )
@@ -19,8 +19,8 @@ end
 
 p "2/9 Creating Users"
 
-roles = %i(level_1_member level_2_member level_3_member level_4_member
-           workshop_pass)
+roles = %i[level_1_member level_2_member level_3_member level_4_member
+           workshop_pass]
 User.clear_index!
 10.times do |i|
   user = User.create!(
@@ -52,8 +52,8 @@ end
 
 p "3/9 Creating Tags"
 
-tags = %w(beginners career computerscience git go
-          java javascript linux productivity python security webdev)
+tags = %w[beginners career computerscience git go
+          java javascript linux productivity python security webdev]
 
 tags.each do |tag_name|
   Tag.create!(
@@ -192,7 +192,7 @@ p "8/9 Creating chat_channel"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
-  ["Workshop", "Meta", "General"].each do |chan|
+  %w[Workshop Meta General].each do |chan|
     ChatChannel.create!(
       channel_name: chan,
       channel_type: "open",

@@ -1,7 +1,7 @@
 class MarkdownFixer
   class << self
     def fix_all(markdown)
-      methods = %i(add_quotes_to_title modify_hr_tags convert_new_lines split_tags)
+      methods = %i[add_quotes_to_title modify_hr_tags convert_new_lines split_tags]
       methods.reduce(markdown) { |result, method| send(method, result) }
     end
 
@@ -14,7 +14,7 @@ class MarkdownFixer
       markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
         front_matter.gsub(/title:\s?(.*?)(\r\n|\n)/m) do |target|
           # $1 is the captured group (.*?)
-          captured_title = $1
+          captured_title = Regexp.last_match(1)
           # The query below checks if the whole title is wrapped in
           # either single or double quotes.
           match = captured_title.scan(/(^".*"$|^'.*'$)/)

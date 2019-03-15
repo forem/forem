@@ -4,7 +4,7 @@ class SocialPreviewsController < ApplicationController
   def article
     @article = Article.find(params[:id])
     not_found unless @article.published
-    if (@article.decorate.cached_tag_list_array & ["shecoded", "theycoded", "shecodedally"]).any?
+    if (@article.decorate.cached_tag_list_array & %w[shecoded theycoded shecodedally]).any?
       render "shecoded", layout: false
     else
       render layout: false

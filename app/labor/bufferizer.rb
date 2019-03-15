@@ -7,9 +7,7 @@ class Bufferizer
 
   def satellite_tweet!
     article.tags.find_each do |tag|
-      if tag.buffer_profile_id_code.present?
-        BufferUpdate.buff!(article.id, twitter_buffer_text, tag.buffer_profile_id_code, "twitter", tag.id)
-      end
+      BufferUpdate.buff!(article.id, twitter_buffer_text, tag.buffer_profile_id_code, "twitter", tag.id) if tag.buffer_profile_id_code.present?
     end
     article.update(last_buffered: Time.current)
   end
@@ -28,9 +26,7 @@ class Bufferizer
   private
 
   def twitter_buffer_text
-    if text.size <= 255
-      "#{text} https://dev.to#{article.path}"
-    end
+    "#{text} https://dev.to#{article.path}" if text.size <= 255
   end
 
   def fb_buffer_text

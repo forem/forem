@@ -102,10 +102,10 @@ class GiveawaysController < ApplicationController
       @errors << "You need a shipping country"
       @invalid_form = true
     end
-    unless user_params[:top_languages].present?
-      @errors << "You need to include your favorite languages. It's a spam filter."
-      @invalid_form = true
-    end
+    return if user_params[:top_languages].present?
+
+    @errors << "You need to include your favorite languages. It's a spam filter."
+    @invalid_form = true
   end
 
   def prevent_request_if_requested_twice

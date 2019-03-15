@@ -135,14 +135,14 @@ class PodcastTag < LiquidTagBase
   end
 
   def render_podcast_links(name, source)
-    if source
-      <<~HTML
-        <a href="#{source}" target="_blank" rel="noopener noreferrer">
-          <img src="#{cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, 'png')}" />
-          <span class="service-name">#{name}</span>
-        </a>
-      HTML
-    end
+    return unless source
+
+    <<~HTML
+      <a href="#{source}" target="_blank" rel="noopener noreferrer">
+        <img src="#{cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, 'png')}" />
+        <span class="service-name">#{name}</span>
+      </a>
+    HTML
   end
 
   private

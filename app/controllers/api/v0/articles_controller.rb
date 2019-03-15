@@ -3,7 +3,7 @@ module Api
     class ArticlesController < ApiController
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
-        cache_path: Proc.new { |c| c.params.permit! },
+        cache_path: proc { |c| c.params.permit! },
         expires_in: 5.minutes
       respond_to :json
 
@@ -37,7 +37,7 @@ module Api
         tag_list = if params[:tag_list].present?
                      params[:tag_list].split(",")
                    else
-                     ["career", "discuss", "productivity"]
+                     %w[career discuss productivity]
                    end
         @articles = []
         4.times do
@@ -79,9 +79,7 @@ module Api
 
       def article_params
         params["article"].transform_keys!(&:underscore)
-        params["article"]["organization_id"] = if params["article"]["post_under_org"]
-                                                 @user.organization_id
-                                               end
+        params["article"]["organization_id"] = (@user.organization_id if params["article"]["post_under_org"])
         if params["article"]["series"].present?
           params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
         elsif params["article"]["series"] == ""

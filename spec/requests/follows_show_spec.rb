@@ -9,7 +9,7 @@ RSpec.describe "Follows #show", type: :request do
   before { login_as current_user }
 
   def get_following_status
-    ["User", "Organization", "Tag"].map do |type|
+    %w[User Organization Tag].map do |type|
       get "/follows/#{send(type.downcase).id}", params: { followable_type: type }
       response.body
     end

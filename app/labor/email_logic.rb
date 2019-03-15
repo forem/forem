@@ -16,9 +16,7 @@ class EmailLogic
     @open_percentage = get_open_rate
     @days_until_next_email = get_days_until_next_email
     @ready_to_receive_email = get_user_readiness
-    if @ready_to_receive_email
-      @articles_to_send = get_articles_to_send
-    end
+    @articles_to_send = get_articles_to_send if @ready_to_receive_email
     self
   end
 
@@ -48,9 +46,7 @@ class EmailLogic
                    order("score DESC").
                    limit(8)
                end
-    if articles.length < 3
-      @ready_to_receive_email = false
-    end
+    @ready_to_receive_email = false if articles.length < 3
     articles
   end
 

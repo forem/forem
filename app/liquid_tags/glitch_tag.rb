@@ -41,15 +41,15 @@ class GlitchTag < LiquidTagBase
   def option_to_query_pair(option)
     case option
     when "app"
-      ["previewSize", "100"]
+      %w[previewSize 100]
     when "code"
-      ["previewSize", "0"]
+      %w[previewSize 0]
     when "no-files"
-      ["sidebarCollapsed", "true"]
+      %w[sidebarCollapsed true]
     when "preview-first"
-      ["previewFirst", "true"]
+      %w[previewFirst true]
     when "no-attribution"
-      ["attributionHidden", "true"]
+      %w[attributionHidden true]
     end
   end
 
@@ -70,12 +70,10 @@ class GlitchTag < LiquidTagBase
     _, *options = input.split(" ")
 
     # 'app' and 'code' should cancel each other out
-    if (options & ["app", "code"]) == ["app", "code"]
-      options = options - ["app", "code"]
-    end
+    options -= %w[app code] if (options & %w[app code]) == %w[app code]
 
     # Validation
-    validated_options = options.map { |o| valid_option(o) }.reject { |e| e == nil }
+    validated_options = options.map { |o| valid_option(o) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     build_options(options)

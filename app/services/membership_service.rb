@@ -73,7 +73,7 @@ class MembershipService
     # change role names here, in role.rb, users_controller#handle_settings_tab => @membership_names
     remove_all_membership_roles
     user.add_role :analytics_beta_tester
-    if monthly_dues >= 100000
+    if monthly_dues >= 100_000
       user.add_role :triple_unicorn_member
     elsif monthly_dues > 2500
       user.add_role :level_4_member

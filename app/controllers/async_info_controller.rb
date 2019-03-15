@@ -68,8 +68,6 @@ class AsyncInfoController < ApplicationController
   private
 
   def occasionally_update_analytics
-    if Rails.env.production? && rand(25) == 1
-      ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id)
-    end
+    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if Rails.env.production? && rand(25) == 1
   end
 end

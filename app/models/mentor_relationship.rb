@@ -10,9 +10,7 @@ class MentorRelationship < ApplicationRecord
   after_create :send_emails
 
   def check_for_same_user
-    if mentor_id == mentee_id
-      errors.add(:mentor_relationship, "Mentor and Mentee cannot be the same person")
-    end
+    errors.add(:mentor_relationship, "Mentor and Mentee cannot be the same person") if mentor_id == mentee_id
   end
 
   def self.unmatched_mentees

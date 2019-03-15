@@ -133,7 +133,7 @@ RSpec.describe "ArticlesApi", type: :request do
     it "does not allow user to update a different article" do
       article.update_column(:user_id, user2.id)
 
-      invalid_update_request = -> do
+      invalid_update_request = lambda do
         put "/api/articles/#{article.id}", params: {
           article: { title: "NEW TITLE #{rand(100)}",
                      body_markdown: "Yo ho ho#{rand(100)}",

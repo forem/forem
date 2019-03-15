@@ -49,9 +49,7 @@ class GithubTag
       readme.css("img, a").each do |element|
         attribute = element.name == "img" ? "src" : "href"
         path = element.attributes[attribute].value
-        if path[0, 4] != "http"
-          element.attributes[attribute].value = url.gsub(/\/README.md/, "") + "/" + path
-        end
+        element.attributes[attribute].value = url.gsub(/\/README.md/, "") + "/" + path if path[0, 4] != "http"
       end
       readme.to_html
     end

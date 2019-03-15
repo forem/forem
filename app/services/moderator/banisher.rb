@@ -16,11 +16,11 @@ module Moderator
     end
 
     def reassign_and_bust_username
-      new_name = "spam_#{rand(10000)}"
-      new_username = "spam_#{rand(10000)}"
+      new_name = "spam_#{rand(10_000)}"
+      new_username = "spam_#{rand(10_000)}"
       if User.find_by(name: new_name) || User.find_by(username: new_username)
-        new_name = "spam_#{rand(10000)}"
-        new_username = "spam_#{rand(10000)}"
+        new_name = "spam_#{rand(10_000)}"
+        new_username = "spam_#{rand(10_000)}"
       end
       user.update_columns(name: new_name, username: new_username, old_username: user.username, profile_updated_at: Time.current)
       CacheBuster.new.bust("/#{user.old_username}")
@@ -36,10 +36,10 @@ module Moderator
 
     def add_banned_role
       user.add_role :banned
-      unless user.notes.where(reason: "banned").any?
-        user.notes.
-          create!(reason: "banned", content: "spam account", author: admin)
-      end
+      return if user.notes.where(reason: "banned").any?
+
+      user.notes.
+        create!(reason: "banned", content: "spam account", author: admin)
     end
 
     def delete_comments

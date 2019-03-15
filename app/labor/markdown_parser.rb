@@ -38,9 +38,9 @@ class MarkdownParser
 
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    allowed_tags = %w(strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
-                      br ul ol li small sup sub img a span hr blockquote kbd)
-    allowed_attributes = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub img a span hr blockquote kbd]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
     tags: allowed_tags,
     attributes: allowed_attributes
@@ -51,8 +51,8 @@ class MarkdownParser
 
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
-    allowed_tags = %w(strong i u b em p br code)
-    allowed_attributes = %w(href strong em ref rel src title alt class)
+    allowed_tags = %w[strong i u b em p br code]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
     tags: allowed_tags,
     attributes: allowed_attributes
@@ -64,9 +64,7 @@ class MarkdownParser
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []
     Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
-      if node.class.superclass.to_s == LiquidTagBase.to_s
-        tags << node.class
-      end
+      tags << node.class if node.class.superclass.to_s == LiquidTagBase.to_s
     end
     tags.uniq
   end
@@ -179,9 +177,7 @@ class MarkdownParser
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("p img").each do |i|
-      unless i.parent.name == "a"
-        i.swap("<a href='#{i.attr('src')}' class='article-body-image-wrapper'>#{i}</a>")
-      end
+      i.swap("<a href='#{i.attr('src')}' class='article-body-image-wrapper'>#{i}</a>") unless i.parent.name == "a"
     end
     doc.to_html
   end

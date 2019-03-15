@@ -21,7 +21,7 @@ module ActsAsTaggableOn
       tags.map do |tag|
         possible_alias = tag
         found_alias = tag
-        until possible_alias == nil
+        until possible_alias.nil?
           possible_alias = find_tag_alias(possible_alias)
           found_alias = possible_alias if possible_alias
         end
