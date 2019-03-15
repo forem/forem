@@ -231,13 +231,6 @@ Style/TrivialAccessors:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
   Enabled: false
 
-Style/VariableInterpolation:
-  Description: >-
-    Don't interpolate global, instance and class variables
-    directly in strings.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#curlies-interpolate'
-  Enabled: false
-
 Style/WhenThen:
   Description: 'Use when x then ... for one-line cases.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#one-line-cases'
