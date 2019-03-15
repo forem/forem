@@ -23,6 +23,7 @@ module Moderator
         comment.reactions.delete_all
         CacheBuster.new.bust_comment(comment.commentable, user.username)
         comment.delete
+        comment.remove_notifications
       end
     end
 
