@@ -59,6 +59,9 @@ body.night-theme {
 }
 
 body.sans-serif-article-body {
+  .body {
+    font-family: $helvetica;
+  }
   .body p {
     font-family: $helvetica;
     font-size: 0.98em;
