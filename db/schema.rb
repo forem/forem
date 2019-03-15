@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190306082543) do
+ActiveRecord::Schema.define(version: 20190315151829) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20190306082543) do
 
   create_table "api_secrets", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "description", null: false
+    t.string "description"
     t.string "secret"
     t.datetime "updated_at", null: false
     t.integer "user_id"
@@ -445,12 +445,25 @@ ActiveRecord::Schema.define(version: 20190306082543) do
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
+    t.text "encrypted_message_html"
+    t.text "encrypted_message_html_iv"
+    t.text "encrypted_message_markdown"
+    t.text "encrypted_message_markdown_iv"
     t.string "message_html", null: false
     t.string "message_markdown", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["chat_channel_id"], name: "index_messages_on_chat_channel_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
+  create_table "mutes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "mutable_id"
+    t.integer "mutable_type"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["user_id", "mutable_id", "mutable_type"], name: "index_mutes_on_user_id_and_mutable_id_and_mutable_type"
   end
 
   create_table "notes", id: :serial, force: :cascade do |t|
@@ -747,6 +760,8 @@ ActiveRecord::Schema.define(version: 20190306082543) do
     t.string "bg_color_hex"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
+    t.string "config_font", default: "default"
+    t.string "config_theme", default: "default"
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
     t.datetime "confirmed_at"
@@ -790,7 +805,6 @@ ActiveRecord::Schema.define(version: 20190306082543) do
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
-    t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"

@@ -265,6 +265,26 @@ RSpec.describe User, type: :model do
       user.summary = "0" * 999
       expect(user).not_to be_valid
     end
+
+    it "accepts valid theme" do
+      user.config_theme = "night theme"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid theme" do
+      user.config_theme = "no night mode"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid font" do
+      user.config_font = "sans serif"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid font" do
+      user.config_theme = "goobledigook"
+      expect(user).not_to be_valid
+    end
   end
 
   ## Registration
@@ -399,6 +419,20 @@ RSpec.describe User, type: :model do
       Follow.last.update(points: 0.1)
       expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
+  end
+
+  it "creates proper body class with defaults" do
+    expect(user.decorate.config_body_class).to eq("default default-article-body")
+  end
+
+  it "creates proper body class with sans serif config" do
+    user.config_font = "sans_serif"
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body")
+  end
+
+  it "creates proper body class with night theme" do
+    user.config_theme = "night_theme"
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body")
   end
 
   it "inserts into mailchimp" do
