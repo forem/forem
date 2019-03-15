@@ -1,5 +1,4 @@
 <div class="dashboard-container pro-container" id="user-dashboard">
-<<<<<<< HEAD
   <a href="/dashboard" class="rounded-btn">Back to Dashboard</a>
   <% current_active_view = @dashboard.user_or_org.class.name %>
   <% if current_active_view == "Organization" %>
@@ -13,11 +12,6 @@
   <% end %>
   <section class="header-card card">
     <h1 class="pro-header">Pro Dashboard <%= "for #{@dashboard.user_or_org.name}" if current_active_view == "Organization" %></h1>
-=======
-  <a href="/dashboard" class="back-nav">Back to Dashboard</a>
-  <section class="header-card card">
-    <h1 class="pro-header">Pro Dashboard</h1>
->>>>>>> give the pro dashboard a dashboard-y makeover
     <p>Welcome to the pro dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
     <p>This dashboard will highlight deep insights especially relevant to developer relations authors and serious bloggers.</p>
   </section>
@@ -25,109 +19,61 @@
     <div class="card">
       <h4>Reactions this week</h4>
       <div class="featured-stat">
-<<<<<<< HEAD
         <%= @dashboard.this_week_reactions_count %>
       </div>
       <% week_reaction_rate = @dashboard.this_week_reactions_count.to_f / @dashboard.last_week_reactions_count.to_f %>
        <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
         <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
-=======
-        <%= @this_week_reactions_count %>
-      </div>
-      <% week_reaction_rate = @this_week_reactions_count.to_f / @last_week_reactions_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
-        <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
->>>>>>> give the pro dashboard a dashboard-y makeover
       </div>
     </div>
     <div class="card">
       <h4>Reactions this month</h4>
       <div class="featured-stat">
-<<<<<<< HEAD
         <%= @dashboard.this_month_reactions_count %>
       </div>
       <% month_reaction_rate = @dashboard.this_month_reactions_count.to_f / @dashboard.last_month_reactions_count.to_f %>
        <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
         <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
-=======
-        <%= @this_month_reactions_count %>
-      </div>
-      <% month_reaction_rate = @this_month_reactions_count.to_f / @last_month_reactions_count.to_f %>
-       <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
-        <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
->>>>>>> give the pro dashboard a dashboard-y makeover
       </div>
     </div>
     <div class="card">
       <h4>New followers this week</h4>
       <div class="featured-stat">
-<<<<<<< HEAD
         <%= @dashboard.this_week_followers_count %>
       </div>
       <% week_followers_rate = @dashboard.this_week_followers_count.to_f / @dashboard.last_week_followers_count.to_f %>
        <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
         <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
-=======
-        <%= @this_week_followers_count %>
-      </div>
-      <% week_followers_rate = @this_week_followers_count.to_f / @last_week_followers_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
-        <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
->>>>>>> give the pro dashboard a dashboard-y makeover
       </div>
     </div>
     <div class="card">
       <h4>New followers this month</h4>
       <div class="featured-stat">
-<<<<<<< HEAD
         <%= @dashboard.this_month_followers_count %>
       </div>
       <% month_followers_rate = @dashboard.this_month_followers_count.to_f / @dashboard.last_month_followers_count.to_f %>
        <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
         <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
-=======
-        <%= @this_month_followers_count %>
-      </div>
-      <% month_followers_rate = @this_month_followers_count.to_f / @last_month_followers_count.to_f %>
-       <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
-        <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
->>>>>>> give the pro dashboard a dashboard-y makeover
       </div>
     </div>
     <div class="card">
       <h4>New comments this week</h4>
       <div class="featured-stat">
-<<<<<<< HEAD
         <%= @dashboard.this_week_comments_count %>
       </div>
       <% week_comments_rate = @dashboard.this_week_comments_count.to_f / @dashboard.last_week_comments_count.to_f %>
        <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
         <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
-=======
-        <%= @this_week_comments_count %>
-      </div>
-      <% week_comments_rate = @this_week_comments_count.to_f / @last_week_comments_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
->>>>>>> give the pro dashboard a dashboard-y makeover
       </div>
     </div>
     <div class="card">
       <h4>New comments this month</h4>
       <div class="featured-stat">
-<<<<<<< HEAD
         <%= @dashboard.this_month_comments_count %>
       </div>
       <% month_comments_rate = @dashboard.this_month_comments_count.to_f / @dashboard.last_month_comments_count.to_f %>
        <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
         <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
-=======
-        <%= @this_month_comments_count %>
-      </div>
-      <% month_comments_rate = @this_month_comments_count.to_f / @last_month_comments_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
->>>>>>> give the pro dashboard a dashboard-y makeover
       </div>
     </div>
   </div>
@@ -137,19 +83,11 @@
       <div class="charts-container">
         <canvas
           id="reactionsChart"
-<<<<<<< HEAD
           data-labels="<%= @dashboard.this_week_reactions.formatted_dates %>"
           data-total-count="<%= @dashboard.this_week_reactions.total_per_day %>"
           data-total-likes="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "like") %>"
           data-total-unicorns="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "unicorn") %>"
           data-total-readinglist="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
-=======
-          data-labels="<%= @this_week_reactions.formatted_dates %>"
-          data-total-count="<%= @this_week_reactions.total_per_day %>"
-          data-total-likes="<%= @this_week_reactions.total_by_type_per_day(type: "Reaction", category: "like") %>"
-          data-total-unicorns="<%= @this_week_reactions.total_by_type_per_day(type: "Reaction", category: "unicorn") %>"
-          data-total-readinglist="<%= @this_week_reactions.total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
->>>>>>> give the pro dashboard a dashboard-y makeover
         </canvas>
       </div>
     <%= javascript_pack_tag "proCharts", defer: true %>
@@ -159,13 +97,8 @@
     <div class="charts-container">
       <canvas
         id="commentsChart"
-<<<<<<< HEAD
         data-labels="<%= @dashboard.this_week_comments.formatted_dates %>"
         data-total-count="<%= @dashboard.this_week_comments.total_per_day %>">
-=======
-        data-labels="<%= @this_week_comments.formatted_dates %>"
-        data-total-count="<%= @this_week_comments.total_per_day %>">
->>>>>>> give the pro dashboard a dashboard-y makeover
       </canvas>
     </div>
   </div>
