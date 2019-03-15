@@ -12,8 +12,8 @@
         <%= @this_week_reactions_count %>
       </div>
       <% week_reaction_rate = @this_week_reactions_count.to_f / @last_week_reactions_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
-        <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
+      <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
+        <%= week_reaction_rate >= 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
@@ -22,8 +22,8 @@
         <%= @this_month_reactions_count %>
       </div>
       <% month_reaction_rate = @this_month_reactions_count.to_f / @last_month_reactions_count.to_f %>
-       <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
-        <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
+      <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
+        <%= month_reaction_rate >= 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
@@ -32,8 +32,8 @@
         <%= @this_week_followers_count %>
       </div>
       <% week_followers_rate = @this_week_followers_count.to_f / @last_week_followers_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
-        <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
+      <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
+        <%= week_followers_rate >= 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
@@ -42,8 +42,8 @@
         <%= @this_month_followers_count %>
       </div>
       <% month_followers_rate = @this_month_followers_count.to_f / @last_month_followers_count.to_f %>
-       <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
-        <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
+      <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
+        <%= month_followers_rate >= 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
@@ -52,8 +52,8 @@
         <%= @this_week_comments_count %>
       </div>
       <% week_comments_rate = @this_week_comments_count.to_f / @last_week_comments_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
+      <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
+        <%= week_comments_rate >= 1 ? "\u25b2" : "\u25BC" %> <%= @last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
@@ -62,8 +62,8 @@
         <%= @this_month_comments_count %>
       </div>
       <% month_comments_rate = @this_month_comments_count.to_f / @last_month_comments_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
+      <div class="stat-percentage" style="color: <%= month_comments_rate > 1 ? "green" : "red" %>">
+        <%= month_comments_rate >= 1 ? "\u25b2" : "\u25BC" %> <%= @last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
   </div>
