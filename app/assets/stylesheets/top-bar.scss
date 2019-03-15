@@ -267,6 +267,28 @@
       }
     }
   }
+  
+  .skip-content-link {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -100px);
+    background: black;
+    color: white;
+    z-index: 9999;
+    padding: 13px;
+    cursor: default;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s $ease-in-cubic, transform 0.3s $ease-in-cubic;
+
+    &:focus {      
+      pointer-events: auto;
+      opacity: 1;
+      transform: translate(-50%, 22px);
+      transition: opacity 0.3s $ease-out-cubic, transform 0.3s $ease-out-cubic;
+    }
+  }
   // border-bottom:2px solid rgb(10, 10, 10);
   .logo-link {
     display: inline-block;
