@@ -231,11 +231,6 @@ Style/TrivialAccessors:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
   Enabled: false
 
-Style/WordArray:
-  Description: 'Use %w or %W for arrays of words.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-w'
-  Enabled: false
-
 # Layout
 
 Layout/AlignParameters:

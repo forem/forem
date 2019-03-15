@@ -192,7 +192,7 @@ p "8/9 Creating chat_channel"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
-  ["Workshop", "Meta", "General"].each do |chan|
+  %w[Workshop Meta General].each do |chan|
     ChatChannel.create!(
       channel_name: chan,
       channel_type: "open",

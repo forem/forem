@@ -34,7 +34,7 @@ class Tag < ActsAsTaggableOn::Tag
     attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
-    searchableAttributes ["name", "short_summary"]
+    searchableAttributes %w[name short_summary]
   end
 
   def submission_template_customized(param_0 = nil)

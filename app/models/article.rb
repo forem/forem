@@ -28,7 +28,7 @@ class Article < ApplicationRecord
   validates :user_id, presence: true
   validates :feed_source_url, uniqueness: { allow_blank: true }
   validates :canonical_url,
-            url: { allow_blank: true, no_local: true, schemes: ["https", "http"] },
+            url: { allow_blank: true, no_local: true, schemes: %w[https http] },
             uniqueness: { allow_blank: true }
   # validates :description, length: { in: 10..170, if: :published? }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
@@ -37,11 +37,11 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 86 }
-  validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
-  validates :video, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
-  validates :video_thumbnail_url, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
@@ -456,7 +456,7 @@ class Article < ApplicationRecord
         tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
       end
     end
-    self.published = front_matter["published"] if ["true", "false"].include?(front_matter["published"].to_s)
+    self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?

@@ -37,7 +37,7 @@ module Api
         tag_list = if params[:tag_list].present?
                      params[:tag_list].split(",")
                    else
-                     ["career", "discuss", "productivity"]
+                     %w[career discuss productivity]
                    end
         @articles = []
         4.times do

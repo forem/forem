@@ -34,7 +34,7 @@ class StickyArticleCollection
   def more_articles
     return [] if tag_articles.size > 6
 
-    Article.tagged_with(["career", "productivity", "discuss", "explainlikeimfive"], any: true).
+    Article.tagged_with(%w[career productivity discuss explainlikeimfive], any: true).
       includes(:user).
       where("comments_count > ?", comment_count_num).
       where(published: true).

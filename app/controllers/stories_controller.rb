@@ -109,7 +109,7 @@ class StoriesController < ApplicationController
     num_articles = 30
     @stories = article_finder(num_articles)
     add_param_context(:page, :timeframe)
-    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+    if %w[week month year infinity].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
@@ -250,7 +250,7 @@ class StoriesController < ApplicationController
   end
 
   def stories_by_timeframe
-    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+    if %w[week month year infinity].include?(params[:timeframe])
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"

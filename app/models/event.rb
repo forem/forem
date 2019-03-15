@@ -3,7 +3,7 @@ class Event < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
 
   validates :title, length: { maximum: 90 }
-  validates :location_url, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :location_url, url: { allow_blank: true, schemes: %w[https http] }
   validate :end_time_after_start
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/
   after_save :bust_cache
