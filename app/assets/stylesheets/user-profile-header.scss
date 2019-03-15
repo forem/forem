@@ -279,13 +279,13 @@
       text-align:left;
     }
   }
-  .user-profile-follow-button-wrapper{
+  .user-profile-follow-button-wrapper {
     position:relative;
     z-index:5;
     display:inline-block;
     margin-left: 5px;
   }
-  .user-profile-follow-button{
+  .user-profile-follow-button {
     background: $green;
     color:white;
     border:0;
@@ -314,4 +314,135 @@
       min-width: 140px;
     }
   }
+
+  // same as above, just add class to above style
+  .user-profile-chat-button-wrapper {
+    position:relative;
+    z-index:5;
+    display:inline-block;
+    margin-left: 5px;
+  }
+
+  .user-profile-chat-button {
+    background: $green;
+    color:white;
+    border:0;
+    font-size:17px;
+    border-radius:3px;
+    vertical-align:3px;
+    padding:2px 6px;
+    cursor:pointer;
+    min-width: 60px;
+    font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", "TeXGyreHerosCnBold", "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+    -webkit-appearance: none;
+    font-stretch: condensed;
+    &.showing{
+      opacity:1;
+    }
+    @media screen and ( min-width: 430px ){
+      font-size:18px;
+      padding:3px 8px;
+      vertical-align:7px;
+      border-radius:5px;
+      min-width: 80px;
+    }
+    @media screen and ( min-width: 950px ){
+      font-size:22px;
+      padding:4px 8px;
+      vertical-align:12px;
+      border-radius:5px;
+      min-width: 80px;
+    }
+  }
+
+  // new message modal for open inbox
+  .modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 990;
+  }
+
+  .modal .overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 995;
+    background: rgba(0,0,0,0.85);
+  }
+
+  .modal-content {
+    z-index: 999;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 80%;
+    overflow: auto;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 20px;
+    border: 1px solid #d6d6d6;
+    box-shadow: 3px 3px 0px #bababa;
+    border-radius: 3px;
+    max-width: 90%;
+    width: 80%;
+
+    .message-form {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-around;
+      align-items: center;
+      align-content: stretch;
+
+      textarea {
+        border-radius: 3px;
+        border: 1px solid #d6d6d6;
+        font-size: 14px;
+        margin: 10px;
+        padding: 5px;
+        width: calc(100% - 100px);
+        order: 1;
+        flex-grow: 1;
+        resize: vertical;
+        max-height:30%;
+      }
+
+      .submit-message {
+        margin: 10px 10px 10px 0;
+        border-radius: 3px;
+        background: $dark-purple;
+        font-weight: 600px;
+        font-family: $helvetica-condensed;
+        width: 80px;
+        color: white;
+        font-size: 18px;
+        height: 80px;
+        order: 10;
+        flex-grow: 1;
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      opacity: 0.5;
+      background: none;
+      border: none;
+      padding: 0 0 0 10px;
+      transition: opacity 0.2s ease;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+
 }

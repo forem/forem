@@ -10,8 +10,13 @@ class FollowsController < ApplicationController
     if current_user.id == params[:id].to_i && params[:followable_type] == "User"
       render plain: "self"
       return
+    elsif params[:followable_type] == "User" && FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check && FollowChecker.new(User.find(params[:id]), params[:followable_type], current_user.id).cached_follow_check
+      render plain: "mutual"
+    elsif params[:followable_type] == "User" && FollowChecker.new(User.find(params[:id]), params[:followable_type], current_user.id).cached_follow_check
+      render plain: "follow-back"
+    else
+      render plain: FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check
     end
-    render plain: FollowChecker.new(current_user, params[:followable_type], params[:id]).cached_follow_check
   end
 
   def create
