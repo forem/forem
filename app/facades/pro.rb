@@ -4,7 +4,7 @@ class Pro < Dashboard
   end
 
   def user_article_ids
-    user.articles.pluck(:id)
+    Article.where(user_id: user.id, published: true).pluck(:id)
   end
 
   def this_week_reactions
