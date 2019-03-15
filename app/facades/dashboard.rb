@@ -1,5 +1,5 @@
 class Dashboard
-  attr_accessor :user
+  attr_reader :user
 
   def initialize(user)
     @user = user
