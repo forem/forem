@@ -8,6 +8,25 @@ RSpec.describe Notification, type: :model do
   let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
   let(:follow_instance) { user.follow(user2) }
 
+  describe "when trying to #send_new_follower_notification after following a tag" do
+    let(:tag) { create(:tag) }
+    let(:tag_follow) { user.follow(tag) }
+
+    it "runs fine" do
+      run_background_jobs_immediately do
+        Notification.send_new_follower_notification(tag_follow)
+      end
+    end
+
+    it "doesn't create a notification" do
+      run_background_jobs_immediately do
+        expect do
+          Notification.send_new_follower_notification(tag_follow)
+        end.not_to change(Notification, :count)
+      end
+    end
+  end
+
   describe "#send_new_follower_notification" do
     before do
       run_background_jobs_immediately do

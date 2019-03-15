@@ -26,6 +26,10 @@ class Follow < ApplicationRecord
 
   validates :followable_id, uniqueness: { scope: %i[followable_type follower_id] }
 
+  def self.need_new_follower_notification_for?(followable_type)
+    %w[User Organization].include?(followable_type)
+  end
+
   private
 
   def touch_follower
