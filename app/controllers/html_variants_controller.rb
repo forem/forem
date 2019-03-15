@@ -15,11 +15,11 @@ class HtmlVariantsController < ApplicationController
   def new
     authorize HtmlVariant
     @html_variant = HtmlVariant.new
-    if params[:fork_id]
-      @fork = HtmlVariant.find(params[:fork_id])
-      @html_variant.name = @fork.name + " FORK-#{rand(10_000)}"
-      @html_variant.html = @fork.html
-    end
+    return unless params[:fork_id]
+
+    @fork = HtmlVariant.find(params[:fork_id])
+    @html_variant.name = @fork.name + " FORK-#{rand(10_000)}"
+    @html_variant.html = @fork.html
   end
 
   def show

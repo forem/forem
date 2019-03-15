@@ -57,11 +57,11 @@ class Organization < ApplicationRecord
   alias_attribute :website_url, :url
 
   def check_for_slug_change
-    if slug_changed?
-      self.old_old_slug = old_slug
-      self.old_slug = slug_was
-      articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
-    end
+    return unless slug_changed?
+
+    self.old_old_slug = old_slug
+    self.old_slug = slug_was
+    articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
   end
 
   def path

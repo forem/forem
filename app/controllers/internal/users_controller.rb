@@ -12,13 +12,13 @@ class Internal::UsersController < Internal::ApplicationController
              else
                User.order("created_at DESC").page(params[:page]).per(50)
              end
-    if params[:search].present?
-      @users = @users.where('users.name ILIKE :search OR
-        users.username ILIKE :search OR
-        users.github_username ILIKE :search OR
-        users.email ILIKE :search OR
-        users.twitter_username ILIKE :search', search: "%#{params[:search].strip}%")
-    end
+    return unless params[:search].present?
+
+    @users = @users.where('users.name ILIKE :search OR
+      users.username ILIKE :search OR
+      users.github_username ILIKE :search OR
+      users.email ILIKE :search OR
+      users.twitter_username ILIKE :search', search: "%#{params[:search].strip}%")
   end
 
   def edit
@@ -126,10 +126,10 @@ class Internal::UsersController < Internal::ApplicationController
       mentee = User.find(@new_mentee)
       MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
     end
-    if !@new_mentor.blank?
-      mentor = User.find(@new_mentor)
-      MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
-    end
+    return unless !@new_mentor.blank?
+
+    mentor = User.find(@new_mentor)
+    MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
   end
 
   def toggle_ban_from_mentorship

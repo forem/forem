@@ -29,11 +29,9 @@ class StackblitzTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.split(" ").first
-    if valid_id?(input_no_space)
-      input_no_space
-    else
-      raise StandardError, "Invalid Stackblitz Id"
-    end
+    raise StandardError, "Invalid Stackblitz Id" unless valid_id?(input_no_space)
+
+    input_no_space
   end
 
   def parse_view(input)

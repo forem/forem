@@ -223,10 +223,10 @@ class StoriesController < ApplicationController
   end
 
   def assign_second_and_third_user
-    if @article.second_user_id.present?
-      @second_user = User.find(@article.second_user_id)
-      @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
-    end
+    return unless @article.second_user_id.present?
+
+    @second_user = User.find(@article.second_user_id)
+    @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
   end
 
   def assign_user_comments
@@ -251,12 +251,12 @@ class StoriesController < ApplicationController
   end
 
   def assign_podcasts
-    if user_signed_in?
-      @podcast_episodes = PodcastEpisode.
-        includes(:podcast).
-        order("published_at desc").
-        select(:slug, :title, :podcast_id).limit(5)
-    end
+    return unless user_signed_in?
+
+    @podcast_episodes = PodcastEpisode.
+      includes(:podcast).
+      order("published_at desc").
+      select(:slug, :title, :podcast_id).limit(5)
   end
 
   def article_finder(num_articles)

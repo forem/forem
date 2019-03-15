@@ -43,11 +43,9 @@ class CodesandboxTag < LiquidTagBase
   # composed of letters, numbers, dashes, underscores, forward slashes, @ signs, periods/dots,
   # and % symbols.  Invalid options will raise an exception
   def valid_option(option)
-    if (option =~ /\A(initialpath=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(module=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z/)&.zero?
-      option
-    else
-      raise StandardError, "CodeSandbox Error: Invalid options"
-    end
+    raise StandardError, "CodeSandbox Error: Invalid options" unless (option =~ /\A(initialpath=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(module=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z/)&.zero?
+
+    option
   end
 end
 

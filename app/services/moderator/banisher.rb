@@ -36,10 +36,10 @@ module Moderator
 
     def add_banned_role
       user.add_role :banned
-      unless user.notes.where(reason: "banned").any?
-        user.notes.
-          create!(reason: "banned", content: "spam account", author: admin)
-      end
+      return if user.notes.where(reason: "banned").any?
+
+      user.notes.
+        create!(reason: "banned", content: "spam account", author: admin)
     end
 
     def delete_comments

@@ -537,11 +537,11 @@ class Article < ApplicationRecord
   end
 
   def set_last_comment_at
-    if published_at.present? && last_comment_at == "Sun, 01 Jan 2017 05:00:00 UTC +00:00"
-      self.last_comment_at = published_at
-      user.touch(:last_article_at)
-      organization&.touch(:last_article_at)
-    end
+    return unless published_at.present? && last_comment_at == "Sun, 01 Jan 2017 05:00:00 UTC +00:00"
+
+    self.last_comment_at = published_at
+    user.touch(:last_article_at)
+    organization&.touch(:last_article_at)
   end
 
   def title_to_slug
@@ -549,13 +549,13 @@ class Article < ApplicationRecord
   end
 
   def bust_cache
-    if Rails.env.production?
-      cache_buster = CacheBuster.new
-      cache_buster.bust(path)
-      cache_buster.bust(path + "?i=i")
-      cache_buster.bust(path + "?preview=" + password)
-      async_bust
-    end
+    return unless Rails.env.production?
+
+    cache_buster = CacheBuster.new
+    cache_buster.bust(path)
+    cache_buster.bust(path + "?i=i")
+    cache_buster.bust(path + "?preview=" + password)
+    async_bust
   end
 
   def calculate_base_scores

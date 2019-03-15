@@ -45,11 +45,11 @@ class Follow < ApplicationRecord
   end
 
   def modify_chat_channel_status
-    if followable_type == "User" && followable.following?(follower)
-      channel = follower.chat_channels.
-        where("slug LIKE ? OR slug like ?", "%/#{followable.username}%", "%#{followable.username}/%").
-        first
-      channel&.update(status: "inactive")
-    end
+    return unless followable_type == "User" && followable.following?(follower)
+
+    channel = follower.chat_channels.
+      where("slug LIKE ? OR slug like ?", "%/#{followable.username}%", "%#{followable.username}/%").
+      first
+    channel&.update(status: "inactive")
   end
 end

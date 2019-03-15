@@ -83,16 +83,16 @@ class Notification < ApplicationRecord
         # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
         send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
       end
-      if comment.commentable.organization_id
-        Notification.create(
-          organization_id: comment.commentable.organization_id,
-          notifiable_id: comment.id,
-          notifiable_type: comment.class.name,
-          action: nil,
-          json_data: json_data,
-        )
-        # no push notifications for organizations yet
-      end
+      return unless comment.commentable.organization_id
+
+      Notification.create(
+        organization_id: comment.commentable.organization_id,
+        notifiable_id: comment.id,
+        notifiable_type: comment.class.name,
+        action: nil,
+        json_data: json_data,
+      )
+      # no push notifications for organizations yet
     end
     handle_asynchronously :send_new_comment_notifications
 
@@ -263,15 +263,15 @@ class Notification < ApplicationRecord
         json_data: json_data,
         action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
       )
-      if milestone_hash[:article].organization_id
-        Notification.create!(
-          organization_id: milestone_hash[:article].organization_id,
-          notifiable_id: milestone_hash[:article].id,
-          notifiable_type: "Article",
-          json_data: json_data,
-          action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-        )
-      end
+      return unless milestone_hash[:article].organization_id
+
+      Notification.create!(
+        organization_id: milestone_hash[:article].organization_id,
+        notifiable_id: milestone_hash[:article].id,
+        notifiable_type: "Article",
+        json_data: json_data,
+        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
+      )
     end
     handle_asynchronously :send_milestone_notification
 

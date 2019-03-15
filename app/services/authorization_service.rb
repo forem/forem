@@ -89,10 +89,10 @@ class AuthorizationService
   end
 
   def set_identity(identity, user)
-    if identity.user_id.blank?
-      identity.user = user
-      identity.save!
-    end
+    return unless identity.user_id.blank?
+
+    identity.user = user
+    identity.save!
   end
 
   def user_identity_exists(identity)

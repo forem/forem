@@ -23,10 +23,10 @@ class ArticleCreationService
   end
 
   def create_job_opportunity(article)
-    if job_opportunity_params.present?
-      job_opportunity = JobOpportunity.create(job_opportunity_params)
-      article.job_opportunity = job_opportunity
-      raise unless article.tag_list.include? "hiring"
-    end
+    return unless job_opportunity_params.present?
+
+    job_opportunity = JobOpportunity.create(job_opportunity_params)
+    article.job_opportunity = job_opportunity
+    raise unless article.tag_list.include? "hiring"
   end
 end

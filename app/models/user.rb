@@ -345,13 +345,11 @@ class User < ApplicationRecord
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
 
-    if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
-      # This is when user is updating their email. There
-      # is no need to update mailchimp until email is confirmed.
-      return
-    else
-      MailchimpBot.new(self).upsert
-    end
+    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+
+    # This is when user is updating their email. There
+    # is no need to update mailchimp until email is confirmed.
+    MailchimpBot.new(self).upsert
   end
   handle_asynchronously :subscribe_to_mailchimp_newsletter
 
@@ -437,17 +435,17 @@ class User < ApplicationRecord
   end
 
   def check_for_username_change
-    if username_changed?
-      self.old_old_username = old_username
-      self.old_username = username_was
-      chat_channels.find_each do |c|
-        c.slug = c.slug.gsub(username_was, username)
-        c.save
-      end
-      articles.find_each do |a|
-        a.path = a.path.gsub(username_was, username)
-        a.save
-      end
+    return unless username_changed?
+
+    self.old_old_username = old_username
+    self.old_username = username_was
+    chat_channels.find_each do |c|
+      c.slug = c.slug.gsub(username_was, username)
+      c.save
+    end
+    articles.find_each do |a|
+      a.path = a.path.gsub(username_was, username)
+      a.save
     end
   end
 

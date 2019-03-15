@@ -9,11 +9,9 @@ class GithubIssue < ApplicationRecord
   def self.fetch(url)
     try_to_get_issue(url)
   rescue StandardError => e
-    if e.message.include?("404 - Not Found")
-      raise StandardError, "A GitHub issue 404'ed and could not be found!"
-    else
-      raise StandardError, e.message
-    end
+    raise StandardError, "A GitHub issue 404'ed and could not be found!" if e.message.include?("404 - Not Found")
+
+    raise StandardError, e.message
   end
 
   def self.try_to_get_issue(url)
