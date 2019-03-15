@@ -74,9 +74,7 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    if params[:user]
-      current_user.update(JSON.parse(params[:user]).to_h)
-    end
+    current_user.update(JSON.parse(params[:user]).to_h) if params[:user]
     current_user.saw_onboarding = true
     authorize User
     if current_user.save!

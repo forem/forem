@@ -56,7 +56,5 @@ end
 # Thread.abort_on_exception = ['test', 'development'].include?(Rails.env)
 
 Airbrake.add_filter do |notice|
-  if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }
-    notice.ignore!
-  end
+  notice.ignore! if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }
 end

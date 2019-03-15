@@ -48,9 +48,7 @@ task renew_hired_articles: :environment do
 end
 
 task clear_memory_if_too_high: :environment do
-  if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
-    Rails.cache.clear
-  end
+  Rails.cache.clear if Rails.cache.stats.flatten[1]["bytes"].to_i > 9_650_000_000
 end
 
 task save_nil_hotness_scores: :environment do
@@ -108,8 +106,6 @@ task remove_old_html_variant_data: :environment do
   HtmlVariantTrial.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariantSuccess.where("created_at < ?", 1.week.ago).destroy_all
   HtmlVariant.find_each do |html_variant|
-    if html_variant.html_variant_successes.size > 3
-      html_variant.calculate_success_rate!
-    end
+    html_variant.calculate_success_rate! if html_variant.html_variant_successes.size > 3
   end
 end

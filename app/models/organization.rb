@@ -69,9 +69,7 @@ class Organization < ApplicationRecord
   end
 
   def generate_secret
-    if secret.blank?
-      self.secret = generated_random_secret
-    end
+    self.secret = generated_random_secret if secret.blank?
   end
 
   def generated_random_secret

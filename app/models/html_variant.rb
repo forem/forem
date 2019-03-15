@@ -36,9 +36,7 @@ class HtmlVariant < ApplicationRecord
   private
 
   def no_edits
-    if (approved && (html_changed? || name_changed? || group_changed?)) && persisted?
-      errors.add(:base, "cannot change once published and approved")
-    end
+    errors.add(:base, "cannot change once published and approved") if (approved && (html_changed? || name_changed? || group_changed?)) && persisted?
   end
 
   def prefix_all_images

@@ -40,9 +40,7 @@ class FollowsController < ApplicationController
   def update
     @follow = Follow.find(params[:id])
     authorize @follow
-    if @follow.update(follow_params)
-      redirect_to "/dashboard/following"
-    end
+    redirect_to "/dashboard/following" if @follow.update(follow_params)
   end
 
   private

@@ -11,9 +11,7 @@ class ChatChannelMembership < ApplicationRecord
   private
 
   def permission
-    if chat_channel.direct? && chat_channel.slug.split("/").exclude?(user.username)
-      errors.add(:user_id, "is not allowed in chat")
-    end
+    errors.add(:user_id, "is not allowed in chat") if chat_channel.direct? && chat_channel.slug.split("/").exclude?(user.username)
     # To be possibly implemented in future
     # if chat_channel.users.size > 128
     #   errors.add(:base, "too many members in channel")

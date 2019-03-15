@@ -72,9 +72,7 @@ class PodcastFeed
   rescue StandardError
     # podcast episode must have a media_url
     episode.media_url = item.enclosure.url
-    if podcast.status_notice.empty?
-      podcast.update(status_notice: "This podcast may not be playable in the browser")
-    end
+    podcast.update(status_notice: "This podcast may not be playable in the browser") if podcast.status_notice.empty?
   end
 
   def update_media_url(episode, item)

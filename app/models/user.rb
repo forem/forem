@@ -259,9 +259,7 @@ class User < ApplicationRecord
   end
 
   def processed_website_url
-    if website_url.present?
-      website_url.to_s.strip
-    end
+    website_url.to_s.strip if website_url.present?
   end
 
   def remember_me
@@ -410,9 +408,7 @@ class User < ApplicationRecord
   end
 
   def set_username
-    if username.blank?
-      set_temp_username
-    end
+    set_temp_username if username.blank?
     self.username = username&.downcase
   end
 
@@ -456,9 +452,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    if core_profile_details_changed? && !user.banned
-      delay.resave_articles
-    end
+    delay.resave_articles if core_profile_details_changed? && !user.banned
   end
 
   def bust_cache
@@ -482,9 +476,7 @@ class User < ApplicationRecord
     # Grandfather people who had a too long summary before.
     return if summary_was && summary_was.size > 200
 
-    if summary.present? && summary.size > 200
-      errors.add(:summary, "is too long.")
-    end
+    errors.add(:summary, "is too long.") if summary.present? && summary.size > 200
   end
 
   def validate_feed_url
@@ -587,12 +579,8 @@ class User < ApplicationRecord
   end
 
   def mentorship_status_update
-    if mentor_description_changed? || offering_mentorship_changed?
-      self.mentor_form_updated_at = Time.current
-    end
+    self.mentor_form_updated_at = Time.current if mentor_description_changed? || offering_mentorship_changed?
 
-    if mentee_description_changed? || seeking_mentorship_changed?
-      self.mentee_form_updated_at = Time.current
-    end
+    self.mentee_form_updated_at = Time.current if mentee_description_changed? || seeking_mentorship_changed?
   end
 end

@@ -90,13 +90,9 @@ class Reaction < ApplicationRecord
   end
 
   def permissions
-    if negative_reaction_from_untrusted_user?
-      errors.add(:category, "is not valid.")
-    end
+    errors.add(:category, "is not valid.") if negative_reaction_from_untrusted_user?
 
-    if reactable_type == "Article" && !reactable&.published
-      errors.add(:reactable_id, "is not valid.")
-    end
+    errors.add(:reactable_id, "is not valid.") if reactable_type == "Article" && !reactable&.published
   end
 
   def negative_reaction_from_untrusted_user?

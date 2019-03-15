@@ -36,9 +36,7 @@ class Event < ApplicationRecord
   end
 
   def create_slug
-    if slug.blank? && title.present? && published
-      self.slug = title_to_slug
-    end
+    self.slug = title_to_slug if slug.blank? && title.present? && published
   end
 
   def title_to_slug

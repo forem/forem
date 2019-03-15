@@ -29,9 +29,7 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def send_email_notification
-    if user.class.name == "User" && user.email.present? && user.email_badge_notifications
-      NotifyMailer.new_badge_email(self).deliver
-    end
+    NotifyMailer.new_badge_email(self).deliver if user.class.name == "User" && user.email.present? && user.email_badge_notifications
   end
   handle_asynchronously :send_email_notification
 end

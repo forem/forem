@@ -79,9 +79,7 @@ module Api
 
       def article_params
         params["article"].transform_keys!(&:underscore)
-        params["article"]["organization_id"] = if params["article"]["post_under_org"]
-                                                 @user.organization_id
-                                               end
+        params["article"]["organization_id"] = (@user.organization_id if params["article"]["post_under_org"])
         if params["article"]["series"].present?
           params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
         elsif params["article"]["series"] == ""

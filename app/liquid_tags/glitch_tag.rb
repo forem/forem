@@ -70,9 +70,7 @@ class GlitchTag < LiquidTagBase
     _, *options = input.split(" ")
 
     # 'app' and 'code' should cancel each other out
-    if (options & %w[app code]) == %w[app code]
-      options -= %w[app code]
-    end
+    options -= %w[app code] if (options & %w[app code]) == %w[app code]
 
     # Validation
     validated_options = options.map { |o| valid_option(o) }.reject(&:nil?)

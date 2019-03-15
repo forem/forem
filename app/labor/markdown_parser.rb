@@ -64,9 +64,7 @@ class MarkdownParser
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []
     Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
-      if node.class.superclass.to_s == LiquidTagBase.to_s
-        tags << node.class
-      end
+      tags << node.class if node.class.superclass.to_s == LiquidTagBase.to_s
     end
     tags.uniq
   end
@@ -179,9 +177,7 @@ class MarkdownParser
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("p img").each do |i|
-      unless i.parent.name == "a"
-        i.swap("<a href='#{i.attr('src')}' class='article-body-image-wrapper'>#{i}</a>")
-      end
+      i.swap("<a href='#{i.attr('src')}' class='article-body-image-wrapper'>#{i}</a>") unless i.parent.name == "a"
     end
     doc.to_html
   end

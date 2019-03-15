@@ -212,9 +212,7 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    if parent && (parent.depth > 1 && parent.has_children?)
-      self.parent_id = parent.descendant_ids.last
-    end
+    self.parent_id = parent.descendant_ids.last if parent && (parent.depth > 1 && parent.has_children?)
   end
 
   def wrap_timestamps_if_video_present!
@@ -316,8 +314,6 @@ class Comment < ApplicationRecord
   end
 
   def permissions
-    if commentable_type == "Article" && !commentable.published
-      errors.add(:commentable_id, "is not valid.")
-    end
+    errors.add(:commentable_id, "is not valid.") if commentable_type == "Article" && !commentable.published
   end
 end

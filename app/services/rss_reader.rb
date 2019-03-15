@@ -167,9 +167,7 @@ class RssReader
     # Capture the calling scope's span ID, then restore it at the end of the
     # method.
     parent_id = Thread.current[:span_id]
-    if parent_id
-      data["trace.parent_id"] = parent_id
-    end
+    data["trace.parent_id"] = parent_id if parent_id
 
     # Set the current span ID before invoking the provided block, then capture
     # the return value to return after emitting the Honeycomb event.
@@ -177,9 +175,7 @@ class RssReader
     ret = yield data
 
     data[:duration_ms] = (Time.new - start) * 1000
-    if metadata
-      data.merge!(metadata)
-    end
+    data.merge!(metadata) if metadata
 
     ev = $libhoney.event
     ev.timestamp = start

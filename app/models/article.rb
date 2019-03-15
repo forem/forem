@@ -463,9 +463,7 @@ class Article < ApplicationRecord
     self.description = front_matter["description"] || token_msg
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
-    if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
-      self.automatically_renew = front_matter["automatically_renew"]
-    end
+    self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
   def parsed_date(date)
@@ -487,25 +485,17 @@ class Article < ApplicationRecord
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
 
     tag_list.each do |tag|
-      if tag.length > 20
-        errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)")
-      end
+      errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)") if tag.length > 20
     end
   end
 
   def validate_video
-    if published && video_state == "PROGRESSING"
-      return errors.add(:published, "cannot be set to true if video is still processing")
-    end
-    if video.present? && user.created_at > 2.weeks.ago
-      return errors.add(:video, "cannot be added member without permission")
-    end
+    return errors.add(:published, "cannot be set to true if video is still processing") if published && video_state == "PROGRESSING"
+    return errors.add(:video, "cannot be added member without permission") if video.present? && user.created_at > 2.weeks.ago
   end
 
   def validate_collection_permission
-    if collection && collection.user_id != user_id
-      errors.add(:collection_id, "must be one you have permission to post to")
-    end
+    errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
   end
 
   def create_slug
@@ -535,9 +525,7 @@ class Article < ApplicationRecord
   end
 
   def set_published_date
-    if published && published_at.blank?
-      self.published_at = Time.current
-    end
+    self.published_at = Time.current if published && published_at.blank?
   end
 
   def set_featured_number

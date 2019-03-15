@@ -20,9 +20,7 @@ class UnreadNotificationsEmailer
   end
 
   def send_email_if_appropriate
-    if should_send_email?
-      send_email
-    end
+    send_email if should_send_email?
   end
 
   def should_send_email?

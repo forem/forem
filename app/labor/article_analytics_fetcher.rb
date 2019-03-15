@@ -31,9 +31,7 @@ class ArticleAnalyticsFetcher
   def get_articles_that_qualify(articles_to_check)
     qualified_articles = []
     articles_to_check.each do |article|
-      if should_fetch(article)
-        qualified_articles << article
-      end
+      qualified_articles << article if should_fetch(article)
     end
     qualified_articles
   end
@@ -45,8 +43,6 @@ class ArticleAnalyticsFetcher
   end
 
   def occasionally_force_fetch?
-    if Rails.env.production?
-      rand(25) == 1
-    end
+    rand(25) == 1 if Rails.env.production?
   end
 end

@@ -90,9 +90,7 @@ class StoriesController < ApplicationController
 
     @stories = article_finder(8)
 
-    if @tag_model&.requires_approval
-      @stories = @stories.where(approved: true)
-    end
+    @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
     @stories = stories_by_timeframe
     @stories = @stories.decorate
@@ -188,18 +186,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    if params[:view] == "moderate"
-      redirect_to "/internal/users/#{@user.id}/edit"
-    end
-    if params[:view] == "admin"
-      redirect_to "/admin/users/#{@user.id}/edit"
-    end
+    redirect_to "/internal/users/#{@user.id}/edit" if params[:view] == "moderate"
+    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    if params[:view] == "moderate"
-      redirect_to "/internal/articles/#{@article.id}"
-    end
+    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
   end
 
   def handle_article_show
@@ -233,9 +225,7 @@ class StoriesController < ApplicationController
   def assign_second_and_third_user
     if @article.second_user_id.present?
       @second_user = User.find(@article.second_user_id)
-      if @article.third_user_id.present?
-        @third_user = User.find(@article.third_user_id)
-      end
+      @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
     end
   end
 

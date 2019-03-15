@@ -81,9 +81,7 @@ class Notification < ApplicationRecord
           json_data: json_data,
         )
         # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-        if User.find_by(id: user_id)&.mobile_comment_notifications
-          send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments")
-        end
+        send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
       end
       if comment.commentable.organization_id
         Notification.create(
@@ -167,9 +165,7 @@ class Notification < ApplicationRecord
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
         notification.json_data = json_data
         notification.notified_at = Time.current
-        if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
-          notification.read = false
-        end
+        notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
         notification.save!
       end
       notification
@@ -311,9 +307,7 @@ class Notification < ApplicationRecord
       new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
       new_json_data[:user] = user_data(notifiable.user)
-      if notifiable.is_a?(Article) && notifiable.organization_id
-        new_json_data[:organization] = organization_data(notifiable.organization)
-      end
+      new_json_data[:organization] = organization_data(notifiable.organization) if notifiable.is_a?(Article) && notifiable.organization_id
       notifications.update_all(json_data: new_json_data)
     end
     handle_asynchronously :update_notifications

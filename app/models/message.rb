@@ -87,16 +87,12 @@ class Message < ApplicationRecord
   end
 
   def channel_permission
-    if chat_channel_id.blank?
-      errors.add(:base, "Must be part of channel.")
-    end
+    errors.add(:base, "Must be part of channel.") if chat_channel_id.blank?
 
     channel = ChatChannel.find(chat_channel_id)
     return if channel.open?
 
-    unless channel.has_member?(user)
-      errors.add(:base, "You are not a participant of this chat channel.")
-    end
+    errors.add(:base, "You are not a participant of this chat channel.") unless channel.has_member?(user)
   end
 
   def no_push_necessary?(sub)
@@ -105,9 +101,7 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
-      Article.find_by_slug(link["href"].split("/")[4].split("?")[0])
-    end
+    Article.find_by_slug(link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
   end
 
   def send_email_if_appropriate
