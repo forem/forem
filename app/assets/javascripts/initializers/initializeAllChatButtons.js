@@ -1,25 +1,27 @@
+function initModal() {
+  var modal = document.querySelector('.modal');
+  modal.querySelector('.close-modal').addEventListener('click', toggleModal);
+  modal.querySelector('.overlay').addEventListener('click', toggleModal);
+}
+
 function toggleModal() {
   var modal = document.querySelector('.modal');
   var currentState = modal.style.display;
 
-  if (currentState === 'none') { // show
-    modal.style.display = 'block';
-    document.getElementById('new-message').focus();
-    attachModalListeners(modal);
-  } else { // hide
-    modal.style.display = 'none';
-    detachModalListeners(modal);
+  if (currentState === 'none') {
+    showChatModal(modal);
+  } else {
+    hideChatModal(modal);
   }
 }
 
-function attachModalListeners(modalElm) {
-  modalElm.querySelector('.close-modal').addEventListener('click', toggleModal);
-  modalElm.querySelector('.overlay').addEventListener('click', toggleModal);
+function showChatModal(modal) {
+  modal.style.display = 'block';
+  document.getElementById('new-message').focus();
 }
 
-function detachModalListeners(modalElm) {
-  modalElm.querySelector('.close-modal').removeEventListener('click', toggleModal);
-  modalElm.querySelector('.overlay').removeEventListener('click', toggleModal);
+function hideChatModal(modal) {
+  modal.style.display = 'none';
 }
 
 function handleChatButtonPress(form) {
@@ -96,6 +98,7 @@ function initializeAllChatButtons() {
   }
 
   var modalInfo = JSON.parse(modal.dataset.info);
+  initModal();
 
   for (i = 0; i < buttons.length; i += 1) {
     initializeChatButton(buttons[i], modalInfo);

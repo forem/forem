@@ -107,8 +107,10 @@ class ChatChannelsController < ApplicationController
         user: current_user,
       )
       chat.messages.append(message)
+      render json: { status: "success", message: "chat channel created!" }, status: 200
+    else
+      render json: { status: "error", message: "not allowed!" }, status: 400
     end
-    render json: { status: "success", message: "chat channel created!" }, status: 200
   end
 
   private

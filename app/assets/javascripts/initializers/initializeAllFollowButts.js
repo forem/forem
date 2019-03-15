@@ -132,10 +132,7 @@ function handleFollowButtPress(butt) {
 }
 
 function assignState(butt, newState) {
-  var style = '';
-  if (butt.dataset.info) {
-    style = JSON.parse(butt.dataset.info).style;
-  }
+  var style = JSON.parse(butt.dataset.info).style;
   butt.classList.add('showing');
   if (newState === 'follow' || newState === 'follow-back') {
     butt.dataset.verb = 'unfollow';
