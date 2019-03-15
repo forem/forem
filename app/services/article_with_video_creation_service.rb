@@ -13,7 +13,7 @@ class ArticleWithVideoCreationService
     Article.create! do |article|
       article.body_markdown = <<~BODY
         ---
-        title: Unpublished Video ~ #{rand(100000).to_s(26)}
+        title: Unpublished Video ~ #{rand(100_000).to_s(26)}
         published: false
         description:
         tags:

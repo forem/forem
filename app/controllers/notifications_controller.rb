@@ -1,31 +1,31 @@
 class NotificationsController < ApplicationController
   # No authorization required because we provide authentication on notifications page
   def index
-    if user_signed_in?
-      @notifications_index = true
-      @user = user_to_view
-      if params[:page]
-        num = 45
-        notified_at_offset = Notification.find(params[:page])&.notified_at
-      else
-        num = 10
-      end
-      @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
-                         organization_notifications
-                       elsif params[:org_id].blank? && params[:filter].present?
-                         filtered_notifications
-                       else
-                         Notification.where(user_id: @user.id).order("notified_at DESC")
-                       end
-      @last_user_reaction = @user.reactions.last&.id
-      @last_user_comment = @user.comments.last&.id
-      @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
-      @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
-      org_id = params[:org_id] || current_user.organization_id
-      # in the future this can be an array of numbers, when people can belong to multiple orgs.
-      @total_org_unread = Notification.where(organization_id: org_id, user_id: nil, read: false).count
-      render partial: "notifications_list" if notified_at_offset
+    return unless user_signed_in?
+
+    @notifications_index = true
+    @user = user_to_view
+    if params[:page]
+      num = 45
+      notified_at_offset = Notification.find(params[:page])&.notified_at
+    else
+      num = 10
     end
+    @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
+                       organization_notifications
+                     elsif params[:org_id].blank? && params[:filter].present?
+                       filtered_notifications
+                     else
+                       Notification.where(user_id: @user.id).order("notified_at DESC")
+                     end
+    @last_user_reaction = @user.reactions.last&.id
+    @last_user_comment = @user.comments.last&.id
+    @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
+    @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
+    org_id = params[:org_id] || current_user.organization_id
+    # in the future this can be an array of numbers, when people can belong to multiple orgs.
+    @total_org_unread = Notification.where(organization_id: org_id, user_id: nil, read: false).count
+    render partial: "notifications_list" if notified_at_offset
   end
 
   private

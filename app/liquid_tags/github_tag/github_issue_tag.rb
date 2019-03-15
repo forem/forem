@@ -62,9 +62,7 @@ class GithubTag
 
     def generate_api_link(input)
       input = input.gsub(/\?.*/, "")
-      if input.include?("#issuecomment-")
-        input = input.gsub(/\d{1,}#issuecomment-/, "comments/")
-      end
+      input = input.gsub(/\d{1,}#issuecomment-/, "comments/") if input.include?("#issuecomment-")
       "https://api.github.com/repos/#{input.gsub(/.*github\.com\//, '')}"
     end
 

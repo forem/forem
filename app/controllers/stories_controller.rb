@@ -90,9 +90,7 @@ class StoriesController < ApplicationController
 
     @stories = article_finder(8)
 
-    if @tag_model&.requires_approval
-      @stories = @stories.where(approved: true)
-    end
+    @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
     @stories = stories_by_timeframe
     @stories = @stories.decorate
@@ -109,13 +107,13 @@ class StoriesController < ApplicationController
     num_articles = 30
     @stories = article_finder(num_articles)
     add_param_context(:page, :timeframe)
-    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+    if %w[week month year infinity].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
       @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
-        where("featured_number > ? AND score > ?", 1449999999, -40)
+        where("featured_number > ? AND score > ?", 1_449_999_999, -40)
       @featured_story = Article.new
     else
       @default_home_feed = true
@@ -188,18 +186,12 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    if params[:view] == "moderate"
-      redirect_to "/internal/users/#{@user.id}/edit"
-    end
-    if params[:view] == "admin"
-      redirect_to "/admin/users/#{@user.id}/edit"
-    end
+    redirect_to "/internal/users/#{@user.id}/edit" if params[:view] == "moderate"
+    redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 
   def redirect_if_show_view_param
-    if params[:view] == "moderate"
-      redirect_to "/internal/articles/#{@article.id}"
-    end
+    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
   end
 
   def handle_article_show
@@ -231,12 +223,10 @@ class StoriesController < ApplicationController
   end
 
   def assign_second_and_third_user
-    if @article.second_user_id.present?
-      @second_user = User.find(@article.second_user_id)
-      if @article.third_user_id.present?
-        @third_user = User.find(@article.third_user_id)
-      end
-    end
+    return unless @article.second_user_id.present?
+
+    @second_user = User.find(@article.second_user_id)
+    @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
   end
 
   def assign_user_comments
@@ -250,7 +240,7 @@ class StoriesController < ApplicationController
   end
 
   def stories_by_timeframe
-    if ["week", "month", "year", "infinity"].include?(params[:timeframe])
+    if %w[week month year infinity].include?(params[:timeframe])
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"
@@ -261,12 +251,12 @@ class StoriesController < ApplicationController
   end
 
   def assign_podcasts
-    if user_signed_in?
-      @podcast_episodes = PodcastEpisode.
-        includes(:podcast).
-        order("published_at desc").
-        select(:slug, :title, :podcast_id).limit(5)
-    end
+    return unless user_signed_in?
+
+    @podcast_episodes = PodcastEpisode.
+      includes(:podcast).
+      order("published_at desc").
+      select(:slug, :title, :podcast_id).limit(5)
   end
 
   def article_finder(num_articles)

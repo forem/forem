@@ -53,13 +53,9 @@ module BadgeRewarder
       count = 0
       num_weeks.times do |i|
         num = i + 1
-        if user.articles.where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
-          count = count + 1
-        end
+        count += 1 if user.articles.where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
       end
-      if count >= num_weeks
-        usernames << user.username
-      end
+      usernames << user.username if count >= num_weeks
     end
     award_badges(usernames, "#{num_weeks}-week-streak", message)
   end

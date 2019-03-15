@@ -1,7 +1,7 @@
 class BlackBox
   class << self
     def article_hotness_score(article)
-      return (article.featured_number || 10000) / 10000 unless Rails.env.production?
+      return (article.featured_number || 10_000) / 10_000 unless Rails.env.production?
 
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score

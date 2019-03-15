@@ -4,7 +4,7 @@ class Identity < ApplicationRecord
   validates_uniqueness_of :uid, scope: :provider
   validates_uniqueness_of :provider, scope: :uid
   validates_uniqueness_of :user_id, scope: :provider
-  validates :provider, inclusion: { in: %w(github twitter) }
+  validates :provider, inclusion: { in: %w[github twitter] }
 
   serialize :auth_data_dump
 

@@ -44,41 +44,39 @@ class UserTag < LiquidTagBase
   def parse_username_to_user(input)
     input_no_space = input.delete(" ")
     user = User.find_by_username(input_no_space)
-    if user.nil?
-      raise StandardError, "invalid username"
-    else
-      user
-    end
+    raise StandardError, "invalid username" if user.nil?
+
+    user
   end
 
   def twitter_link
-    if @user.twitter_username.present?
-      <<-HTML
-      <a href="https://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
-        #{image_tag('/assets/twitter-logo.svg', class: 'icon-img', alt: 'twitter')} #{@user.twitter_username}
-      </a>
-      HTML
-    end
+    return unless @user.twitter_username.present?
+
+    <<-HTML
+    <a href="https://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
+      #{image_tag('/assets/twitter-logo.svg', class: 'icon-img', alt: 'twitter')} #{@user.twitter_username}
+    </a>
+    HTML
   end
 
   def github_link
-    if @user.github_username.present?
-      <<-HTML
-      <a href="https://github.com/#{@user.github_username}" target="_blank" rel="noopener">
-        #{image_tag('/assets/github-logo.svg', class: 'icon-img', alt: 'github')} #{@user.github_username}
-      </a>
-      HTML
-    end
+    return unless @user.github_username.present?
+
+    <<-HTML
+    <a href="https://github.com/#{@user.github_username}" target="_blank" rel="noopener">
+      #{image_tag('/assets/github-logo.svg', class: 'icon-img', alt: 'github')} #{@user.github_username}
+    </a>
+    HTML
   end
 
   def website_link
-    if @user.website_url.present?
-      <<-HTML
-      <a href="#{@user.website_url}" target="_blank" rel="noopener">
-        #{image_tag('/assets/link.svg', class: 'icon-img', alt: 'website link')} #{beautified_url(@user.website_url)}
-      </a>
-      HTML
-    end
+    return unless @user.website_url.present?
+
+    <<-HTML
+    <a href="#{@user.website_url}" target="_blank" rel="noopener">
+      #{image_tag('/assets/link.svg', class: 'icon-img', alt: 'website link')} #{beautified_url(@user.website_url)}
+    </a>
+    HTML
   end
 end
 

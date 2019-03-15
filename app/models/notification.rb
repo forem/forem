@@ -3,8 +3,8 @@ class Notification < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
 
-  validates :user_id, presence: true, if: Proc.new { |n| n.organization_id.nil? }
-  validates :organization_id, presence: true, if: Proc.new { |n| n.user_id.nil? }
+  validates :user_id, presence: true, if: proc { |n| n.organization_id.nil? }
+  validates :organization_id, presence: true, if: proc { |n| n.user_id.nil? }
 
   before_create :mark_notified_at_time
 
@@ -53,7 +53,7 @@ class Notification < ApplicationRecord
                     notifiable.user.followers
                   end
       # followers is an array and not an activerecord object
-      followers.sort_by(&:updated_at).reverse[0..10000].each do |follower|
+      followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
         Notification.create(
           user_id: follower.id,
           notifiable_id: notifiable.id,
@@ -83,20 +83,18 @@ class Notification < ApplicationRecord
           json_data: json_data,
         )
         # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-        if User.find_by(id: user_id)&.mobile_comment_notifications
-          send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments")
-        end
+        send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
       end
-      if comment.commentable.organization_id
-        Notification.create(
-          organization_id: comment.commentable.organization_id,
-          notifiable_id: comment.id,
-          notifiable_type: comment.class.name,
-          action: nil,
-          json_data: json_data,
-        )
-        # no push notifications for organizations yet
-      end
+      return unless comment.commentable.organization_id
+
+      Notification.create(
+        organization_id: comment.commentable.organization_id,
+        notifiable_id: comment.id,
+        notifiable_type: comment.class.name,
+        action: nil,
+        json_data: json_data,
+      )
+      # no push notifications for organizations yet
     end
     handle_asynchronously :send_new_comment_notifications
 
@@ -169,9 +167,7 @@ class Notification < ApplicationRecord
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
         notification.json_data = json_data
         notification.notified_at = Time.current
-        if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
-          notification.read = false
-        end
+        notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
         notification.save!
       end
       notification
@@ -196,7 +192,7 @@ class Notification < ApplicationRecord
 
     def send_welcome_notification(receiver_id)
       welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
-      return if welcome_broadcast == nil
+      return if welcome_broadcast.nil?
 
       dev_account = User.dev_account
       json_data = {
@@ -269,15 +265,15 @@ class Notification < ApplicationRecord
         json_data: json_data,
         action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
       )
-      if milestone_hash[:article].organization_id
-        Notification.create!(
-          organization_id: milestone_hash[:article].organization_id,
-          notifiable_id: milestone_hash[:article].id,
-          notifiable_type: "Article",
-          json_data: json_data,
-          action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-        )
-      end
+      return unless milestone_hash[:article].organization_id
+
+      Notification.create!(
+        organization_id: milestone_hash[:article].organization_id,
+        notifiable_id: milestone_hash[:article].id,
+        notifiable_type: "Article",
+        json_data: json_data,
+        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
+      )
     end
     handle_asynchronously :send_milestone_notification
 
@@ -313,9 +309,7 @@ class Notification < ApplicationRecord
       new_json_data = notifications.first.json_data
       new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
       new_json_data[:user] = user_data(notifiable.user)
-      if notifiable.is_a?(Article) && notifiable.organization_id
-        new_json_data[:organization] = organization_data(notifiable.organization)
-      end
+      new_json_data[:organization] = organization_data(notifiable.organization) if notifiable.is_a?(Article) && notifiable.organization_id
       notifications.update_all(json_data: new_json_data)
     end
     handle_asynchronously :update_notifications
@@ -395,7 +389,7 @@ class Notification < ApplicationRecord
     def next_milestone(milestone_hash)
       case milestone_hash[:type]
       when "View"
-        milestones = [1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576]
+        milestones = [1024, 2048, 4096, 8192, 16_384, 32_768, 65_536, 131_072, 262_144, 524_288, 1_048_576]
         milestone_count = milestone_hash[:article].page_views_count
       when "Reaction"
         milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192]

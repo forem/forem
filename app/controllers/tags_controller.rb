@@ -1,6 +1,6 @@
 class TagsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
-  before_action :authenticate_user!, only: %i(edit update)
+  before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
   def index

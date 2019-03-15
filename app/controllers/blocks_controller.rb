@@ -50,9 +50,7 @@ class BlocksController < ApplicationController
     authorize @block
     respond_to do |format|
       if @block.update(permitted_attributes(@block))
-        if permitted_attributes(@block)[:publish_now]
-          @block.publish!
-        end
+        @block.publish! if permitted_attributes(@block)[:publish_now]
         format.html { redirect_to @block, notice: "Block was successfully updated." }
         format.json { render :show, status: :ok, location: @block }
       else

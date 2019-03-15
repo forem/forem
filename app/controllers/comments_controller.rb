@@ -12,9 +12,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new
     @podcast = Podcast.find_by_slug(params[:username])
 
-    if params[:id_code].present?
-      @root_comment = Comment.find(params[:id_code].to_i(26))
-    end
+    @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
     if @podcast
       @user = @podcast
@@ -30,9 +28,7 @@ class CommentsController < ApplicationController
       not_found unless @commentable.published
     end
     @commentable_type = @commentable.class.name
-    if params[:id_code].present?
-      @root_comment = Comment.find(params[:id_code].to_i(26))
-    end
+    @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
   end
@@ -64,9 +60,7 @@ class CommentsController < ApplicationController
                 commentable_type: @comment.commentable_type)
 
     if @comment.save
-      if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
-        current_user.update(checked_code_of_conduct: true)
-      end
+      current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
 
       Mention.create_all(@comment)
       Notification.send_new_comment_notifications_without_delay(@comment)

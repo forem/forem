@@ -14,7 +14,7 @@ RSpec.describe SoundcloudTag, type: :liquid_template do
     def extract_iframe_src(rendered_iframe)
       parsed_iframe = Nokogiri.HTML(rendered_iframe)
       iframe_src = parsed_iframe.xpath("//iframe/@src")
-      CGI::parse(iframe_src[0].value)
+      CGI.parse(iframe_src[0].value)
     end
 
     it "accepts soundcloud link" do

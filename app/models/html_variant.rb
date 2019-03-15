@@ -3,7 +3,7 @@ class HtmlVariant < ApplicationRecord
 
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :group, inclusion: { in: %w(article_show_sidebar_cta article_show_below_article_cta badge_landing_page) }
+  validates :group, inclusion: { in: %w[article_show_sidebar_cta article_show_below_article_cta badge_landing_page] }
   validates :success_rate, presence: true
   validate  :no_edits
   belongs_to :user, optional: true
@@ -36,9 +36,7 @@ class HtmlVariant < ApplicationRecord
   private
 
   def no_edits
-    if (approved && (html_changed? || name_changed? || group_changed?)) && persisted?
-      errors.add(:base, "cannot change once published and approved")
-    end
+    errors.add(:base, "cannot change once published and approved") if (approved && (html_changed? || name_changed? || group_changed?)) && persisted?
   end
 
   def prefix_all_images

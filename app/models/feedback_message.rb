@@ -13,7 +13,7 @@ class FeedbackMessage < ApplicationRecord
             }
   validates :status,
             inclusion: {
-              in: ["Open", "Invalid", "Resolved"]
+              in: %w[Open Invalid Resolved]
             }
 
   def abuse_report?

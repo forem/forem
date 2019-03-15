@@ -5,13 +5,13 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
-  NAMES = %w(
+  NAMES = %w[
     beginners career computerscience git go java javascript react vue
     linux productivity python security webdev css php opensource
     ruby cpp dotnet swift testing devops vim kotlin rust elixir
     scala vscode docker aws android ios angular csharp typescript django rails
     clojure ubuntu elm gamedev flutter bash
-  ).freeze
+  ].freeze
 
   attr_accessor :tag_moderator_id, :remove_moderator_id
 
@@ -34,7 +34,7 @@ class Tag < ActsAsTaggableOn::Tag
     attribute :name, :bg_color_hex, :text_color_hex, :hotness_score, :supported, :short_summary
     attributesForFaceting [:supported]
     customRanking ["desc(hotness_score)"]
-    searchableAttributes ["name", "short_summary"]
+    searchableAttributes %w[name short_summary]
   end
 
   def submission_template_customized(param_0 = nil)
@@ -77,9 +77,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def validate_alias
-    if alias_for.present? && !Tag.find_by_name(alias_for)
-      errors.add(:tag, "alias_for must refer to existing tag")
-    end
+    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by_name(alias_for)
   end
 
   def pound_it

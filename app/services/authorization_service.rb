@@ -57,9 +57,7 @@ class AuthorizationService
         twitter_username: (auth.info.nickname if auth.provider == "twitter"),
         password: Devise.friendly_token[0, 20],
       )
-      if user.name.blank?
-        user.name = auth.info.nickname
-      end
+      user.name = auth.info.nickname if user.name.blank?
       user.skip_confirmation!
       user.remember_me!
       user.remember_me = true
@@ -73,12 +71,8 @@ class AuthorizationService
   def update_user(user)
     user.remember_me!
     user.remember_me = true
-    if auth.provider == "github" && auth.info.nickname != user.github_username
-      user.github_username = auth.info.nickname
-    end
-    if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
-      user.twitter_username = auth.info.nickname
-    end
+    user.github_username = auth.info.nickname if auth.provider == "github" && auth.info.nickname != user.github_username
+    user.twitter_username = auth.info.nickname if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
     add_social_identity_data(user)
     user.save
     user
@@ -95,10 +89,10 @@ class AuthorizationService
   end
 
   def set_identity(identity, user)
-    if identity.user_id.blank?
-      identity.user = user
-      identity.save!
-    end
+    return unless identity.user_id.blank?
+
+    identity.user = user
+    identity.save!
   end
 
   def user_identity_exists(identity)

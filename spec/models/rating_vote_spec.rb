@@ -8,7 +8,7 @@ RSpec.describe RatingVote, type: :model do
 
   describe "validations" do
     it { is_expected.to validate_numericality_of(:rating).is_greater_than(0.0).is_less_than_or_equal_to(10.0) }
-    it { is_expected.to validate_inclusion_of(:group).in_array(%w(experience_level)) }
+    it { is_expected.to validate_inclusion_of(:group).in_array(%w[experience_level]) }
   end
 
   describe "uniqueness" do

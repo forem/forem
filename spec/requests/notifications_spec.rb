@@ -92,26 +92,26 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "renders the correct user for a single reaction" do
-        mock_heart_reaction_notifications(1, %w(like unicorn))
+        mock_heart_reaction_notifications(1, %w[like unicorn])
         get "/notifications"
         expect(response.body).to include CGI.escapeHTML(User.last.name)
       end
 
       it "renders the correct usernames for two or more reactions" do
-        mock_heart_reaction_notifications(2, %w(like unicorn))
+        mock_heart_reaction_notifications(2, %w[like unicorn])
         get "/notifications"
         expect(has_both_names(response.body)).to be true
       end
 
       it "renders the proper message for multiple reactions" do
         random_amount = rand(3..10)
-        mock_heart_reaction_notifications(random_amount, %w(unicorn like))
+        mock_heart_reaction_notifications(random_amount, %w[unicorn like])
         get "/notifications"
         expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
       end
 
       xit "does not group notifications that are on different days but have the same reactable" do
-        mock_heart_reaction_notifications(2, %w(unicorn like readinglist))
+        mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
@@ -119,22 +119,22 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
-        mock_heart_reaction_notifications(1, %w(unicorn like readinglist), article1)
-        mock_heart_reaction_notifications(1, %w(unicorn like readinglist), article2)
+        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article1)
+        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article2)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.count).to eq 2
       end
 
       it "properly renders reactable titles" do
-        mock_heart_reaction_notifications(1, %w(unicorn like readinglist), special_characters_article)
+        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], special_characters_article)
         get "/notifications"
         expect(response.body).to include special_characters_article.title
       end
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w(unicorn like readinglist), special_characters_article)
+        mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
         get "/notifications"
         expect(response.body).to include special_characters_article.title
       end
