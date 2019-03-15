@@ -100,7 +100,6 @@ class ChatChannelsController < ApplicationController
       # get message param to generate message to send
       # message_markdown = "Hi #{chat_recipient.username}! I am #{current_user.username}. I can message you on DEV Connect because your inbox is open."
       message_markdown = params[:message]
-      puts message_markdown
       message = Message.new(
         chat_channel: chat,
         message_markdown: message_markdown,
