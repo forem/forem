@@ -47,7 +47,8 @@ class AsyncInfoController < ApplicationController
         number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,
-        experience_level: @user.experience_level
+        experience_level: @user.experience_level,
+        config_body_class: @user.config_body_class
       }
     end
   end

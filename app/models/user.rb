@@ -112,6 +112,13 @@ class User < ApplicationRecord
   validates :editor_version,
               inclusion: { in: %w(v1 v2),
                            message: "%{value} must be either v1 or v2" }
+
+  validates :config_theme,
+              inclusion: { in: %w(default night_theme),
+                           message: "%{value} must be either default or night theme" }
+  validates :config_font,
+              inclusion: { in: %w(default sans_serif),
+                           message: "%{value} must be either default or sans serif" }
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true
@@ -138,6 +145,7 @@ class User < ApplicationRecord
   after_create :estimate_default_language!
   before_update :mentorship_status_update
   before_validation :set_username
+  before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
   before_destroy :remove_from_algolia_index
@@ -438,6 +446,11 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email
+  end
+
+  def set_config_input
+    self.config_theme = config_theme.gsub(" ", "_")
+    self.config_font = config_font.gsub(" ", "_")
   end
 
   def check_for_username_change

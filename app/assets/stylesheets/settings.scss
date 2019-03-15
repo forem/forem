@@ -209,6 +209,10 @@
           }
         }
       }
+      select {
+        display: block;
+        font-size: 1.3em;
+      }
       button.big-action {
         width: 130px;
         padding: 3px 0px;
