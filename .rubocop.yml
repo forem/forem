@@ -231,11 +231,6 @@ Style/TrivialAccessors:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
   Enabled: false
 
-Style/WhenThen:
-  Description: 'Use when x then ... for one-line cases.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#one-line-cases'
-  Enabled: false
-
 Style/WhileUntilModifier:
   Description: >-
     Favor modifier while/until usage when you have a
