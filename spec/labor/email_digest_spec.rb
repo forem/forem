@@ -2,7 +2,9 @@ require "rails_helper"
 
 class FakeDelegator < ActionMailer::MessageDelivery
   # TODO: we should replace all usage of .deliver to .deliver_now
-  def deliver(*args); super end
+  def deliver(*args)
+    super
+  end
 end
 
 RSpec.describe EmailDigest do
