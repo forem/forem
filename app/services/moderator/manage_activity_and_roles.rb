@@ -12,10 +12,6 @@ module Moderator
       new(user: user, admin: admin, user_params: user_params).update_roles
     end
 
-    def self.handle_user_privileges(admin:, user:, user_params:)
-      new(user: user, admin: admin, user_params: user_params).update_privileges
-    end
-
     def delete_comments
       return unless user.comments.any?
 
