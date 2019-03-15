@@ -231,13 +231,6 @@ Style/TrivialAccessors:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
   Enabled: false
 
-Style/WhileUntilModifier:
-  Description: >-
-    Favor modifier while/until usage when you have a
-    single-line body.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#while-as-a-modifier'
-  Enabled: false
-
 Style/WordArray:
   Description: 'Use %w or %W for arrays of words.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-w'
