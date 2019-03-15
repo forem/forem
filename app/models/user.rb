@@ -131,6 +131,7 @@ class User < ApplicationRecord
                 length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
+  validates :inbox_type, inclusion: { in: ["open", "private"] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url
