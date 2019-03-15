@@ -71,7 +71,7 @@ class GlitchTag < LiquidTagBase
 
     # 'app' and 'code' should cancel each other out
     if (options & ["app", "code"]) == ["app", "code"]
-      options = options - ["app", "code"]
+      options -= ["app", "code"]
     end
 
     # Validation

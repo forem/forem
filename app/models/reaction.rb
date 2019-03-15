@@ -85,7 +85,7 @@ class Reaction < ApplicationRecord
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
     base_points = 0 if status == "invalid"
-    base_points = base_points * 2 if status == "confirmed"
+    base_points *= 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 

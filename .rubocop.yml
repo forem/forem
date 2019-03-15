@@ -192,13 +192,6 @@ Style/RegexpLiteral:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-r'
   Enabled: false
 
-Style/SelfAssignment:
-  Description: >-
-    Checks for places where self-assignment shorthand should have
-    been used.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#self-assignment'
-  Enabled: false
-
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#reduce-blocks'

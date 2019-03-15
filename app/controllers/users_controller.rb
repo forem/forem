@@ -26,7 +26,7 @@ class UsersController < ApplicationController
       RssReader.new(request.request_id).delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if @user.export_requested?
-        notice = notice + " The export will be emailed to you shortly."
+        notice += " The export will be emailed to you shortly."
         Exporter::Service.new(@user).delay.export(send_email: true)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?

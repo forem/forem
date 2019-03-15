@@ -411,7 +411,7 @@ class Article < ApplicationRecord
       url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
       duration = 0
       HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
-        duration = duration + chunk.split(",")[0].to_f
+        duration += chunk.split(",")[0].to_f
       end
       duration
       self.video_duration_in_seconds = duration

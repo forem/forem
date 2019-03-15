@@ -77,7 +77,7 @@ class Message < ApplicationRecord
     rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
     doc.css("a").each do |a|
       if article = rich_link_article(a)
-        html = html + "<a style='color: #0a0a0a' href='#{article.path}'
+        html += "<a style='color: #0a0a0a' href='#{article.path}'
           target='_blank' data-content='articles/#{article.id}'>
           <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>
           #{article.title}</h1></a>".html_safe
