@@ -8,7 +8,9 @@
     </div>
   <% else %>
     <div class="inner-comment">
-      <% if comment.decorate.low_quality %>
+      <% decorated_comment = comment.decorate %>
+
+      <% if decorated_comment.low_quality %>
         <div class="low-quality-comment-marker">
           <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
                                       type: "fetch",
@@ -23,7 +25,8 @@
           <a href="/code-of-conduct">View code of conduct</a>
         </div>
       <% end %>
-      <div class="details <%= "low-quality-comment" if comment.decorate.low_quality %>">
+
+      <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <a href="/<%= comment.user.username %>">
           <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" />
           <span class="comment-username">
@@ -44,7 +47,7 @@
         <% if commentable_author_is_op?(commentable, comment) %>
           <span class="op-marker"><%= get_ama_or_op_banner(commentable) %></span>
         <% end %>
-        <div class="comment-date">
+        <div class="comment-date" data-published-timestamp="<%= decorated_comment.published_timestamp %>">
           <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>
         </div>
         <button class="dropbtn">
@@ -65,7 +68,8 @@
           </div>
         </div>
       </div>
-      <div class="body <%= "low-quality-comment" if comment.decorate.low_quality %>">
+
+      <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
         <%= comment.processed_html.html_safe %>
         <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
           <%= image_tag "favorite-heart-outline-button.svg" %>

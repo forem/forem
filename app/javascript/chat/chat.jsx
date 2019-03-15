@@ -733,13 +733,13 @@ export default class Chat extends Component {
       } else if (notificationsPermission === 'granted') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--on">
-            Notificatins On
+            Notifications On
           </div>
         );
       } else if (notificationsPermission === 'denied') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--off">
-            Notificatins Off
+            Notifications Off
           </div>
         );
       }

@@ -13,7 +13,9 @@ RSpec.describe "Following/Unfollowing", type: :request do
       let(:tag) { create(:tag) }
 
       before do
-        post "/follows", params: { followable_type: "Tag", followable_id: tag.id }
+        run_background_jobs_immediately do
+          post "/follows", params: { followable_type: "Tag", followable_id: tag.id }
+        end
       end
 
       it "follows" do

@@ -5,6 +5,8 @@ function buildCommentHTML(comment) {
   var customClass = "";
   var detailsStartHTML = "";
   var detailsFinishHTML = "";
+  var body = "";
+
   if (!comment.newly_created) {
     depthClass="child flat-node"
   } else if (comment.depth == 0 ){
@@ -28,7 +30,7 @@ function buildCommentHTML(comment) {
     detailsFinishHTML = '</details>'
   }
 
-  return '<style>'+comment.css+'</style>\
+  body = '<style>'+comment.css+'</style>\
           '+detailsStartHTML+'\
           <div class="comment-hash-marker" id="'+comment.id_code+'"></div>\
           <div id="comment-node-'+comment.id+'" class="single-comment-node '+depthClass+' comment-deep-'+comment.depth+'" "\
@@ -41,7 +43,7 @@ function buildCommentHTML(comment) {
               </a>\
                 '+twitterIcon+'\
                 '+githubIcon+'\
-              <div class="comment-date">\
+              <div class="comment-date" data-published-timestamp="' + comment.published_timestamp + '">\
                 <a href="'+comment.url+'">'+comment.readable_publish_date+'</a>\
               </div>\
               <button class="dropbtn">\
@@ -66,7 +68,9 @@ function buildCommentHTML(comment) {
             '+actions(comment)+'\
           </div>\
       </div>\
-      '+detailsFinishHTML
+      '+detailsFinishHTML;
+
+  return body;
 }
 
 function actions(comment) {

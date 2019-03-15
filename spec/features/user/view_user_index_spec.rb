@@ -40,6 +40,22 @@ describe "User index", type: :feature do
           expect(page).to have_selector(".index-comments", count: 1)
         end
       end
+
+      it "shows comment date" do
+        within("#substories .index-comments .single-comment") do
+          # %e blank pads days from 1 to 9, the double space isn't in the HTML
+          comment_date = comment.readable_publish_date.gsub("  ", " ")
+          expect(page).to have_selector(".comment-date", text: comment_date)
+        end
+      end
+
+      it "embeds comment timestamp" do
+        within("#substories .index-comments .single-comment") do
+          ts = comment.decorate.published_timestamp
+          timestamp_selector = ".comment-date[data-published-timestamp='#{ts}']"
+          expect(page).to have_selector(timestamp_selector)
+        end
+      end
     end
 
     context "when more articles" do

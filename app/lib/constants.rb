@@ -55,5 +55,6 @@ module Constants
     "todon.nl",
     "toot.cafe",
     "wikitetas.club",
+    "xoxo.zone",
   ].freeze
 end

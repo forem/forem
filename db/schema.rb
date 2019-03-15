@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190227163803) do
+ActiveRecord::Schema.define(version: 20190306082543) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20190227163803) do
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["path"], name: "index_articles_on_path"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
@@ -517,6 +518,19 @@ ActiveRecord::Schema.define(version: 20190227163803) do
     t.string "url"
     t.string "zip_code"
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
+  end
+
+  create_table "page_views", force: :cascade do |t|
+    t.bigint "article_id"
+    t.integer "counts_for_number_of_views", default: 1
+    t.datetime "created_at", null: false
+    t.string "referrer"
+    t.integer "time_tracked_in_seconds", default: 15
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_page_views_on_article_id"
+    t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
