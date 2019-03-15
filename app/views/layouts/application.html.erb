@@ -77,6 +77,13 @@
   <% end %>
 </head>
 <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
+<script>
+  try {
+    document.body.className = localStorage.getItem('body_class_config');
+  } catch(e) {
+      console.log(e)
+  }
+</script>
 <% unless internal_navigation? %>
   <div id="audiocontent">
     <%= yield(:audio) %>
