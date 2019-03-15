@@ -2,17 +2,17 @@ module Moderator
   class BanishUser < ManageActivityAndRoles
     attr_reader :user, :admin
 
-    def self.call_banish(admin:, offender:)
-      new(offender: offender, admin: admin).banish
-    end
-
-    def self.call_delete_activity(admin:, offender:)
-      new(offender: offender, admin: admin).full_delete
-    end
-
-    def initialize(admin:, offender:)
-      @user = offender
+    def initialize(admin:, user:)
+      @user = user
       @admin = admin
+    end
+
+    def self.call_banish(admin:, user:)
+      new(user: user, admin: admin).banish
+    end
+
+    def self.call_full_delete(admin:, user:)
+      new(user: user, admin: admin).full_delete
     end
 
     def reassign_and_bust_username
