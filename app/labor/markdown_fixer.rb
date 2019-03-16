@@ -11,7 +11,7 @@ class MarkdownFixer
     end
 
     def fix_for_preview(markdown)
-      methods = %i(add_quotes_to_title add_quotes_to_description modify_hr_tags)
+      methods = %i[add_quotes_to_title add_quotes_to_description modify_hr_tags]
       methods.reduce(markdown) { |result, method| send(method, result) }
     end
 
@@ -47,8 +47,8 @@ class MarkdownFixer
       # Only add quotes to front matter, or text between triple dashes
       markdown.gsub(FRONT_MATTER_DETECTOR) do |front_matter|
         front_matter.gsub(/#{section}:\s?(.*?)(\r\n|\n)/m) do |target|
-          # $1 is the captured group (.*?)
-          captured_text = $1
+          # 1 is the captured group (.*?)
+          captured_text = Regexp.last_match(1)
           # The query below checks if the whole text is wrapped in
           # either single or double quotes.
           match = captured_text.scan(/(^".*"$|^'.*'$)/)
