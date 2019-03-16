@@ -111,11 +111,6 @@ Style/Documentation:
 Style/Encoding:
   Enabled: false
 
-Naming/FileName:
-  Description: 'Use snake_case for source file names.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-files'
-  Enabled: false
-
 Style/FrozenStringLiteralComment:
   Description: >-
     Add the frozen_string_literal comment to the top of files
