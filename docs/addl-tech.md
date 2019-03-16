@@ -22,5 +22,7 @@
 - We use Preact for some of the front end. See [Frontend](https://docs.dev.to/frontend/) for more info
 - We use [_Pusher_](https://pusher.com) for realtime communication between the application and users’ browsers.
 - We use [_GitDocs_](https://gitdocs.netlify.com) for beautiful and SEO-friendly documentation
+- We use [git](https://git-scm.com/) for version control.
+- We use [github](https://github.com/) for issue tracking.
 
 _This list is non-exhaustive. If you see something that belongs here, feel free to add it._
