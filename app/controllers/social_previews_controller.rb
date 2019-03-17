@@ -2,8 +2,7 @@ class SocialPreviewsController < ApplicationController
   # No authorization required for entirely public controller
 
   PNG_CSS = "body { transform: scale(0.3); } .preview-div-wrapper { overflow: unset; margin: 5vw; }".freeze
-  SHE_CODED_TAGS = ["shecoded", "theycoded", "shecodedally"].freeze
-  SHE_CODED_TAGS = %w[shecoded theycoded shecodedally]
+  SHE_CODED_TAGS = %w[shecoded theycoded shecodedally].freeze
 
   def article
     @article = Article.find(params[:id])
@@ -11,9 +10,7 @@ class SocialPreviewsController < ApplicationController
 
     template = "article"
 
-    if (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any?
-      template = "shecoded"
-    end
+    template = "shecoded" if (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any?
 
     respond_to do |format|
       format.html do
