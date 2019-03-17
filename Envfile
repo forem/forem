@@ -81,6 +81,10 @@ variable :CLOUDINARY_API_SECRET, :String, default: "Optional"
 variable :CLOUDINARY_CLOUD_NAME, :String, default: "Optional"
 variable :CLOUDINARY_SECURE, :String, default: "Optional"
 
+# HTML/CSS to Image for generating social preview images
+variable :HCTI_API_USER_ID, :String, default: "Optional"
+variable :HCTI_API_KEY, :String, default: "Optional"
+
 # Dacast for streaming
 variable :DACAST_STREAM_CODE, :String, default: "Optional"
 
