@@ -31,23 +31,14 @@ class DashboardsController < ApplicationController
   end
 
   def pro
-    authorize current_user, :pro_user?
-    @current_user_article_ids = current_user.articles.pluck(:id)
-    @this_week_reactions = ChartDecorator.decorate(Reaction.where(reactable_id: @current_user_article_ids, reactable_type: "Article").where("created_at > ?", 1.week.ago).order("created_at ASC"))
-    @this_week_reactions_count = @this_week_reactions.size
-    @last_week_reactions_count = Reaction.where(reactable_id: @current_user_article_ids, reactable_type: "Article").where("created_at > ? AND created_at < ?", 2.weeks.ago, 1.week.ago).size
-    @this_month_reactions_count = Reaction.where(reactable_id: @current_user_article_ids, reactable_type: "Article").where("created_at > ?", 1.month.ago).size
-    @last_month_reactions_count = Reaction.where(reactable_id: @current_user_article_ids, reactable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
-    @this_week_comments_count = Comment.where(commentable_id: @current_user_article_ids, commentable_type: "Article").where("created_at > ?", 1.week.ago).size
-    @this_week_comments = ChartDecorator.decorate(Comment.where(commentable_id: @current_user_article_ids, commentable_type: "Article").where("created_at > ?", 1.week.ago))
-    @last_week_comments_count = @this_week_comments.size
-    @this_month_comments_count = Comment.where(commentable_id: @current_user_article_ids, commentable_type: "Article").where("created_at > ?", 1.month.ago).size
-    @last_month_comments_count = Comment.where(commentable_id: @current_user_article_ids, commentable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
-    @this_week_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ?", 1.week.ago).size
-    @last_week_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.weeks.ago, 1.week.ago).size
-    @this_month_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ?", 1.month.ago).size
-    @last_month_followers_count = Follow.where(followable_id: current_user.id, followable_type: "User").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
-    @reactors = User.
-      where(id: Reaction.where(reactable_id: @current_user_article_ids, reactable_type: "Article").order("created_at DESC").limit(100).pluck(:user_id))
+    user_or_org = if params[:org_id]
+                    org = Organization.find_by_id(params[:org_id])
+                    authorize org, :pro_org_user?
+                    org
+                  else
+                    authorize current_user, :pro_user?
+                    current_user
+                  end
+    @dashboard = Dashboard::Pro.new(user_or_org)
   end
 end
