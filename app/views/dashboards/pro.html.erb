@@ -1,7 +1,17 @@
 <div class="dashboard-container pro-container" id="user-dashboard">
-  <a href="/dashboard" class="back-nav">Back to Dashboard</a>
+  <a href="/dashboard" class="rounded-btn">Back to Dashboard</a>
+  <% current_active_view = @dashboard.user_or_org.class.name %>
+  <% if current_active_view == "Organization" %>
+    <a class="rounded-btn" href="/dashboard/pro">
+      View Your Pro Dashboard
+    </a>
+  <% else %>
+    <a class="rounded-btn" href="/dashboard/pro/org/<%= @dashboard.user_or_org.organization_id %>">
+      View <%= @dashboard.user_or_org.organization.name %> Dashboard
+    </a>
+  <% end %>
   <section class="header-card card">
-    <h1 class="pro-header">Pro Dashboard</h1>
+    <h1 class="pro-header">Pro Dashboard <%= "for #{@dashboard.user_or_org.name}" if current_active_view == "Organization" %></h1>
     <p>Welcome to the pro dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
     <p>This dashboard will highlight deep insights especially relevant to developer relations authors and serious bloggers.</p>
   </section>
