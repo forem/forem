@@ -118,7 +118,7 @@ class ChatChannelsController < ApplicationController
     chat_channel.save
     render json: { status: "success", message: "chat channel blocked" }, status: 200
   end
-  
+
   private
 
   def chat_channel_params
