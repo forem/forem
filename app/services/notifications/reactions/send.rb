@@ -15,6 +15,7 @@ module Notifications
       end
 
       def call
+        return unless receiver.is_a?(User) || receiver.is_a?(Organization)
         return if reaction.user_id == reaction.reactable.user_id
         return if reaction.points.negative?
         return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
@@ -22,23 +23,8 @@ module Notifications
         aggregated_reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
           reject { |r| r.user_id == reaction.reactable.user_id }.
           map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
-        json_data = {
-          user: user_data(reaction.user),
-          reaction: {
-            category: reaction.category,
-            reactable_type: reaction.reactable_type,
-            reactable_id: reaction.reactable_id,
-            reactable: {
-              path: reaction.reactable.path,
-              title: reaction.reactable.title,
-              class: {
-                name: reaction.reactable.class.name
-              }
-            },
-            aggregated_siblings: aggregated_reaction_siblings,
-            updated_at: reaction.updated_at
-          }
-        }
+
+        json_data = reaction_data(aggregated_reaction_siblings)
 
         notification_params = {
           notifiable_type: reaction.reactable.class.name,
@@ -71,6 +57,26 @@ module Notifications
       private
 
       attr_reader :reaction, :receiver
+
+      def reaction_data(siblings)
+        {
+          user: user_data(reaction.user),
+          reaction: {
+            category: reaction.category,
+            reactable_type: reaction.reactable_type,
+            reactable_id: reaction.reactable_id,
+            reactable: {
+              path: reaction.reactable.path,
+              title: reaction.reactable.title,
+              class: {
+                name: reaction.reactable.class.name
+              }
+            },
+            aggregated_siblings: siblings,
+            updated_at: reaction.updated_at
+          }
+        }
+      end
     end
   end
 end
