@@ -61,7 +61,13 @@ module Moderator
     end
 
     def create_note(reason, content)
-      NoteCreationService.new(@user, @admin).create(reason, content)
+      Note.create(
+        author_id: @admin.id,
+        noteable_id: @user.id,
+        noteable_type: "User",
+        reason: reason,
+        content: content,
+      )
     end
 
     def handle_user_status(role, note)

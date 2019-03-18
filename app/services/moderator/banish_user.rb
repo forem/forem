@@ -15,6 +15,8 @@ module Moderator
       new(user: user, admin: admin).full_delete
     end
 
+    private
+
     def reassign_and_bust_username
       new_name = "spam_#{rand(10_000)}"
       new_username = "spam_#{rand(10_000)}"

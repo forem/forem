@@ -49,7 +49,13 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def add_note
-    NoteCreationService.new(@user, current_user).create("misc_note", user_params[:new_note])
+    Note.create(
+      author_id: current_user.id,
+      noteable_id: @user.id,
+      noteable_type: "User",
+      reason: "misc_note",
+      content: user_params[:new_note],
+    )
   end
 
   def user_status
