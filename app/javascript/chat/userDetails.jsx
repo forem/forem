@@ -123,6 +123,7 @@ export default class UserDetails extends Component {
             }}>Yes</a>
             <a class="no" onClick={() => {
               document.getElementById("userdetails__reportabuse").style.display = "none";
+              window.location.href = `#`;
             }}>No</a>
           </div>
         </div>
