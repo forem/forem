@@ -4,6 +4,7 @@
   text-align:left;
   padding-bottom:calc(0.6vw + 5px);
   background:white;
+  background: var(--theme-container-background, white);
   border-radius:3px;
   border:1px solid $outline-color;
   border: var(--theme-container-border, 1px solid $outline-color);
@@ -25,6 +26,7 @@
     a{
       padding:5px 10px;
       color:$dark-gray;
+      color: var(--theme-color, $dark-gray);
       font-weight:500;
       font-size:0.85em;
     }
@@ -44,6 +46,7 @@
   }
   a{
     color:$black;
+    color: var(--theme-color, $black);
     display:block;
     padding-left:13px;
     padding-right:13px;
@@ -59,6 +62,7 @@
     .comment-date{
       font-size:0.7em;
       color:$medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
       margin-left:5px;
       vertical-align:2px;
       display:inline-block;
@@ -66,6 +70,7 @@
     .comment-preview{
       font-size:0.9em;
       color:$medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
     }
     @media screen and ( min-width: 430px ){
       padding:5px 0px;

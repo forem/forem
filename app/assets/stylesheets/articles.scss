@@ -217,7 +217,7 @@
       box-shadow: $bold-shadow;
       box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       border-radius: 3px;
-      width: 94%;
+      width: 96%;
       margin: auto;
       position: relative;
       @media screen and (min-width: 950px) {
@@ -415,6 +415,7 @@
         text-overflow: ellipsis;
         a {
           color: #666666;
+          color: var(--theme-secondary-color, #666666);
         }
         @media screen and (min-width: 430px) {
           bottom: 90px;
@@ -582,6 +583,7 @@
       font-size: 14px;
       a {
         color: #666666;
+        color: var(--theme-secondary-color, #666666);
       }
       &:hover {
         opacity: 0.9;
@@ -608,6 +610,7 @@
       }
       .tag {
         color: $black;
+        color: var(--theme-color, $black);
         margin-right: 3px;
       }
       left: 62px;
@@ -627,6 +630,7 @@
       font-weight: 600;
       z-index: 8;
       color: darken($medium-gray, 5%);
+      color: var(--theme-secondary-color, darken($medium-gray, 5%));
     }
     .article-engagement-count {
       font-size: 13px;
@@ -912,6 +916,7 @@
           font-weight: 500;
           font-size: 0.9em;
           background: darken($light-gray, 4%);
+          background: var(--theme-background, darken($light-gray, 4%));
           a {
             color: $black;
           }
@@ -1165,6 +1170,7 @@
             margin: 10px auto;
             width: 92%;
             color: $dark-gray;
+            color: var(--theme-secondary-color, $dark-gray);
             .sponsor-learn-more {
               display: block;
               margin: 8px auto;
@@ -1196,6 +1202,7 @@
           padding-bottom: 8px;
           a {
             color: $black;
+            color: var(--theme-color, $black);
             font-weight: 500;
           }
         }
@@ -1342,7 +1349,9 @@
         padding: 8px 0px;
         font-size: 0.93em;
         color: darken($sky-blue, 17%);
+        color: var(--theme-color, darken($sky-blue, 17%));
         background: white;
+        background: var(--theme-container-background, #fff);
         display: block;
         width: 92%;
         text-align: left;

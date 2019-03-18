@@ -86,6 +86,7 @@ article {
   box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   @media screen and (min-width: 880px) {
     border: 1px solid darken($light-medium-gray, 2%);
+    border: var(--theme-container-border, 1px solid darken($light-medium-gray, 2%));
   }
   @media screen and (min-width: 950px) {
     border-radius: 3px;
@@ -173,6 +174,7 @@ article {
       padding: 0px 3px 16px;
       font-weight: 500;
       color: $medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
       font-size: 13.5px;
       line-height: 1.5em;
       @media screen and (min-width: 430px) {
@@ -190,6 +192,7 @@ article {
       }
       a {
         color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
         text-decoration: none;
       }
       .icon-img {
