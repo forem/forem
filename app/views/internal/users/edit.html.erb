@@ -5,12 +5,40 @@
   <u><a style="color: green" href="/internal/users/<%= @user.id %>">click here view user details & take other actions</a></u>
 </p>
 <p><em>Member since <%= @user.created_at.strftime("%b %e '%y") %></em></p>
-<p><strong>Activity:</strong></p>
-<ul>
-  <li><%= @user.comments.size %> comments</li>
-  <li><%= @user.articles.size %> articles</li>
-  <li><%= @user.reactions.size %> reactions</li>
-</ul>
+<%= render "internal/users/activity" %>
+<div class="row">
+  <h2>User Status</h2>
+  <% if @user.banned %>
+    <p style="background-color:red;color:white">🚨 Member is suspended 🚨</p>
+  <% elsif @user.warned %>
+    <p style="background-color: orange;color:white">Member is warned</p>
+  <% elsif @user.comment_banned %>
+    <p style="background-color: orange;color:white">Member is comment banned</p>
+  <% elsif @user.trusted %>
+    <p style="background-color: green;color:white">Member is trusted</p>
+  <% else %>
+    <p style="color:green">Member is in good standing</p>
+  <% end %>
+  <p><strong>Current Roles</strong><em> (view full history in notes below)</em>:</p>
+  <ul>
+    <% if @user.roles.empty? %>
+      <li>Regular Member</li>
+    <% end %>
+    <% @user.roles.each do |role| %>
+        <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
+    <% end %>
+  </ul>
+  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
+    <%= f.label "Select new user status" %>
+    <%= f.select(:user_status, options_for_select(["Warn", "Comment Ban", "Ban", "Regular Member", "Trusted", "Pro"]), include_blank: true) %>
+    <br>
+    <%= f.label "Reason for action:" %>
+    <%= f.text_area :note_for_current_role, required: true %>
+    <br>
+    <%= f.submit "Update User Status" %>
+  <% end %>
+</div>
+<%= render "notes" %>
 <div class="row">
   <h2>Banish User</h2>
   <% if @user.banished? %>
@@ -20,7 +48,7 @@
       <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
     </p>
     <p><strong>Do not do this lightly.</strong></p>
-    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsumbit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
+    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Banishing will delete all articles and turn their username into @spam_###')" }) do %>
       <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam</button>
     <% end %>
   <% elsif current_user.has_role?(:super_admin) %>
@@ -30,7 +58,7 @@
       <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
     </p>
     <p><strong>Do not do this lightly.</strong></p>
-    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsumbit: "return confirm('Are you sure? This is extremely destructive and irreversible.Banishing will delete all articles and turn their username into @spam_###')" }) do %>
+    <%= form_for(@user, url: banish_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible.Banishing will delete all articles and turn their username into @spam_###')" }) do %>
       <button class="btn btn-danger" style="font-size:2em;">Banish User for Spam!</button>
     <% end %>
   <% else %>
@@ -52,3 +80,5 @@
     <p>Only super admins can fully delete users.</p>
   <% end %>
 </div>
+<br>
+<br>
