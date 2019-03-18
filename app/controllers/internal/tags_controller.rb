@@ -9,9 +9,7 @@ class Internal::TagsController < Internal::ApplicationController
             else
               Tag.order("taggings_count DESC").page(params[:page]).per(50)
             end
-    if params[:search].present?
-      @tags = @tags.where("tags.name ILIKE :search", search: "%#{params[:search]}%")
-    end
+    @tags = @tags.where("tags.name ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
   end
 
   def show

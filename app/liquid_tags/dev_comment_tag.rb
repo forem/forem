@@ -36,11 +36,11 @@ class DevCommentTag < LiquidTagBase
         +image_tag("/assets/twitter-logo.svg", class: "icon-img", alt: "twitter") + \
         "</a>"
     end
-    if @comment.user.github_username.present?
-      result + "<a href=\"https://github.com/#{@comment.user.github_username}\">" \
-        +image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github") + \
-        "</a>"
-    end
+    return unless @comment.user.github_username.present?
+
+    result + "<a href=\"https://github.com/#{@comment.user.github_username}\">" \
+      +image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github") + \
+      "</a>"
   end
 
   private

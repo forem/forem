@@ -3,7 +3,7 @@ class Event < ApplicationRecord
   mount_uploader :profile_image, ProfileImageUploader
 
   validates :title, length: { maximum: 90 }
-  validates :location_url, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :location_url, url: { allow_blank: true, schemes: %w[https http] }
   validate :end_time_after_start
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/
   after_save :bust_cache
@@ -11,12 +11,12 @@ class Event < ApplicationRecord
   before_validation :create_slug
   before_validation :evaluate_markdown
 
-  scope :in_the_future_and_published, -> {
+  scope :in_the_future_and_published, lambda {
     where("starts_at > ?", Time.current).
       where(published: true)
   }
 
-  scope :in_the_past_and_published, -> {
+  scope :in_the_past_and_published, lambda {
     where("starts_at < ?", Time.current).
       where(published: true)
   }
@@ -36,9 +36,7 @@ class Event < ApplicationRecord
   end
 
   def create_slug
-    if slug.blank? && title.present? && published
-      self.slug = title_to_slug
-    end
+    self.slug = title_to_slug if slug.blank? && title.present? && published
   end
 
   def title_to_slug

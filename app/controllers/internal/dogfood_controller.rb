@@ -3,9 +3,9 @@ class Internal::DogfoodController < Internal::ApplicationController
 
   def index
     usernames = if Rails.env.production?
-                  ["ben", "jess", "peter", "maestromac", "andy", "lianafelt"]
+                  %w[ben jess peter maestromac andy lianafelt]
                 else
-                  ["thepracticaldev", "bendhalpern"]
+                  %w[thepracticaldev bendhalpern]
                 end
 
     @team_members = User.where(username: usernames).order(comments_count: :desc)

@@ -1,4 +1,4 @@
-if %w(development test).include? Rails.env
+if %w[development test].include? Rails.env
   namespace :lint do
     desc "eslint"
     task :eslint do

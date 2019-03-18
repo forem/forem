@@ -43,7 +43,7 @@ class PodcastFeed
   end
 
   def update_existing_episode(episode, item, _podcast)
-    if episode.published_at == nil
+    if episode.published_at.nil?
       begin
         episode.published_at = item.pubDate.to_date
         episode.save
@@ -72,9 +72,7 @@ class PodcastFeed
   rescue StandardError
     # podcast episode must have a media_url
     episode.media_url = item.enclosure.url
-    if podcast.status_notice.empty?
-      podcast.update(status_notice: "This podcast may not be playable in the browser")
-    end
+    podcast.update(status_notice: "This podcast may not be playable in the browser") if podcast.status_notice.empty?
   end
 
   def update_media_url(episode, item)

@@ -61,10 +61,10 @@ class PagesController < ApplicationController
   end
 
   def shecoded
-    @top_articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+    @top_articles = Article.tagged_with(%w[shecoded shecodedally theycoded], any: true).
       where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).order("RANDOM()").
       includes(:user).decorate
-    @articles = Article.tagged_with(["shecoded", "shecodedally", "theycoded"], any: true).
+    @articles = Article.tagged_with(%w[shecoded shecodedally theycoded], any: true).
       where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).order("RANDOM()").
       where.not(id: @top_articles.pluck(:id)).
       includes(:user).decorate
@@ -84,7 +84,7 @@ class PagesController < ApplicationController
       roles = %i[level_1_member level_2_member level_3_member level_4_member triple_unicorn_member
                  workshop_pass]
       members = User.select(:id, :username, :profile_image).with_any_role(*roles)
-      team_ids = [1, 264, 6, 3, 31047, 510, 560, 1075, 48943, 13962]
+      team_ids = [1, 264, 6, 3, 31_047, 510, 560, 1075, 48_943, 13_962]
       members.reject { |user| team_ids.include?(user.id) }.shuffle
     end
   end

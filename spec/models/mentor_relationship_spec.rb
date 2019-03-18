@@ -29,7 +29,7 @@ RSpec.describe MentorRelationship, type: :model do
 
   it "sends an email to both users" do
     relationship.save!
-    ["mentor_email", "mentee_email"].each do |campaign|
+    %w[mentor_email mentee_email].each do |campaign|
       expect(EmailMessage.where(utm_campaign: campaign).count).to eq(1)
     end
   end

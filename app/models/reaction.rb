@@ -1,5 +1,5 @@
 class Reaction < ApplicationRecord
-  CATEGORIES = %w(like readinglist unicorn thinking hands thumbsdown vomit).freeze
+  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
@@ -11,8 +11,8 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }
-  validates :reactable_type, inclusion: { in: %w(Comment Article) }
-  validates :status, inclusion: { in: %w(valid invalid confirmed) }
+  validates :reactable_type, inclusion: { in: %w[Comment Article] }
+  validates :status, inclusion: { in: %w[valid invalid confirmed] }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
@@ -25,7 +25,7 @@ class Reaction < ApplicationRecord
     def count_for_article(id)
       Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
-        %w(like readinglist unicorn).map do |type|
+        %w[like readinglist unicorn].map do |type|
           { category: type, count: reactions.where(category: type).size }
         end
       end
@@ -85,18 +85,14 @@ class Reaction < ApplicationRecord
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)
     base_points = 0 if status == "invalid"
-    base_points = base_points * 2 if status == "confirmed"
+    base_points *= 2 if status == "confirmed"
     self.points = user ? (base_points * user.reputation_modifier) : -5
   end
 
   def permissions
-    if negative_reaction_from_untrusted_user?
-      errors.add(:category, "is not valid.")
-    end
+    errors.add(:category, "is not valid.") if negative_reaction_from_untrusted_user?
 
-    if reactable_type == "Article" && !reactable&.published
-      errors.add(:reactable_id, "is not valid.")
-    end
+    errors.add(:reactable_id, "is not valid.") if reactable_type == "Article" && !reactable&.published
   end
 
   def negative_reaction_from_untrusted_user?

@@ -131,7 +131,7 @@ Rails.application.routes.draw do
   resources :push_notification_subscriptions, only: [:create]
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
-  resources :page_views, only: [:create, :update]
+  resources :page_views, only: %i[create update]
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
@@ -141,6 +141,7 @@ Rails.application.routes.draw do
   post "/chat_channels/:id/open" => "chat_channels#open"
   get "/connect" => "chat_channels#index"
   get "/connect/:slug" => "chat_channels#index"
+  post "/open_chat" => "chat_channels#open_chat"
 
   post "/pusher/auth" => "pusher#auth"
 

@@ -9,7 +9,7 @@ RSpec.describe "Follows #show", type: :request do
   before { login_as current_user }
 
   def get_following_status
-    ["User", "Organization", "Tag"].map do |type|
+    %w[User Organization Tag].map do |type|
       get "/follows/#{send(type.downcase).id}", params: { followable_type: type }
       response.body
     end
@@ -21,7 +21,7 @@ RSpec.describe "Follows #show", type: :request do
     expect(response.body).to eq("not-logged-in")
   end
 
-  it "returns false when not followeing" do
+  it "returns false when not following" do
     expect(get_following_status.uniq[0]).to eq("false")
   end
 

@@ -1,5 +1,5 @@
 class UserSimilarity
-  STOP_WORDS = %w(
+  STOP_WORDS = %w[
     a cannot into our thus about co is ours to above
     could it ourselves together across down its out too
     after during itself over toward afterwards each last own
@@ -28,7 +28,7 @@ class UserSimilarity
     only this yet beyond ie onto those you both if or
     though your but in other through yours by inc others
     throughout yourself can indeed otherwise thru yourselves'
-  ).freeze
+  ].freeze
 
   attr_accessor :first_user, :second_user
   def initialize(first_user, second_user)

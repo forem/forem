@@ -11,7 +11,7 @@ class EmojiConverter
 
   def convert
     html.gsub!(/:([\w+-]+):/) do |match|
-      emoji = Emoji.find_by_alias($1)
+      emoji = Emoji.find_by_alias(Regexp.last_match(1))
       emoji.present? ? emoji.raw : match
     end
     html

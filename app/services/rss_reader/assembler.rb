@@ -117,9 +117,7 @@ class RssReader
         next unless link
 
         found_article = Article.find_by(feed_source_url: link)&.decorate
-        if found_article
-          a_tag.attributes["href"].value = found_article.url
-        end
+        a_tag.attributes["href"].value = found_article.url if found_article
       end
     end
   end

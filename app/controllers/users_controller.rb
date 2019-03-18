@@ -26,7 +26,7 @@ class UsersController < ApplicationController
       RssReader.new(request.request_id).delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if @user.export_requested?
-        notice = notice + " The export will be emailed to you shortly."
+        notice += " The export will be emailed to you shortly."
         Exporter::Service.new(@user).delay.export(send_email: true)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
@@ -74,9 +74,7 @@ class UsersController < ApplicationController
   end
 
   def onboarding_update
-    if params[:user]
-      current_user.update(JSON.parse(params[:user]).to_h)
-    end
+    current_user.update(JSON.parse(params[:user]).to_h) if params[:user]
     current_user.saw_onboarding = true
     authorize User
     if current_user.save!
@@ -158,7 +156,7 @@ class UsersController < ApplicationController
       stripe_code = current_user.stripe_id_code
       return if stripe_code == "special"
 
-      @customer = Stripe::Customer.retrieve(stripe_code) if !stripe_code.blank?
+      @customer = Stripe::Customer.retrieve(stripe_code) unless stripe_code.blank?
     when "membership"
       if current_user.monthly_dues.zero?
         redirect_to "/membership"

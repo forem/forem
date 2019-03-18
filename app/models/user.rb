@@ -71,7 +71,7 @@ class User < ApplicationRecord
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,
-    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+    url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   # rubocop:disable Metrics/LineLength
   validates :facebook_url,
               format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
@@ -98,20 +98,27 @@ class User < ApplicationRecord
               format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   # rubocop:enable Metrics/LineLength
   validates :shirt_gender,
-              inclusion: { in: %w(unisex womens),
+              inclusion: { in: %w[unisex womens],
                            message: "%{value} is not a valid shirt style" },
               allow_blank: true
   validates :shirt_size,
-              inclusion: { in: %w(xs s m l xl 2xl 3xl 4xl),
+              inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
                            message: "%{value} is not a valid size" },
               allow_blank: true
   validates :tabs_or_spaces,
-              inclusion: { in: %w(tabs spaces),
+              inclusion: { in: %w[tabs spaces],
                            message: "%{value} is not a valid answer" },
               allow_blank: true
   validates :editor_version,
-              inclusion: { in: %w(v1 v2),
+              inclusion: { in: %w[v1 v2],
                            message: "%{value} must be either v1 or v2" }
+
+  validates :config_theme,
+              inclusion: { in: %w(default night_theme),
+                           message: "%{value} must be either default or night theme" }
+  validates :config_font,
+              inclusion: { in: %w(default sans_serif),
+                           message: "%{value} must be either default or sans serif" }
   validates :shipping_country,
               length: { in: 2..2 },
               allow_blank: true
@@ -124,6 +131,7 @@ class User < ApplicationRecord
                 length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
+  validates :inbox_type, inclusion: { in: ["open", "private"] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url
@@ -138,6 +146,7 @@ class User < ApplicationRecord
   after_create :estimate_default_language!
   before_update :mentorship_status_update
   before_validation :set_username
+  before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
   before_destroy :remove_from_algolia_index
@@ -259,9 +268,7 @@ class User < ApplicationRecord
   end
 
   def processed_website_url
-    if website_url.present?
-      website_url.to_s.strip
-    end
+    website_url.to_s.strip if website_url.present?
   end
 
   def remember_me
@@ -347,13 +354,11 @@ class User < ApplicationRecord
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
 
-    if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
-      # This is when user is updating their email. There
-      # is no need to update mailchimp until email is confirmed.
-      return
-    else
-      MailchimpBot.new(self).upsert
-    end
+    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+
+    # This is when user is updating their email. There
+    # is no need to update mailchimp until email is confirmed.
+    MailchimpBot.new(self).upsert
   end
   handle_asynchronously :subscribe_to_mailchimp_newsletter
 
@@ -375,7 +380,7 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = %w(
+    tab_list = %w[
       Profile
       Mentorship
       Integrations
@@ -383,7 +388,7 @@ class User < ApplicationRecord
       Publishing\ from\ RSS
       Organization
       Billing
-    )
+    ]
     tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
     tab_list.push("Account", "Misc")
@@ -410,9 +415,7 @@ class User < ApplicationRecord
   end
 
   def set_username
-    if username.blank?
-      set_temp_username
-    end
+    set_temp_username if username.blank?
     self.username = username&.downcase
   end
 
@@ -440,25 +443,28 @@ class User < ApplicationRecord
     self.email = email.downcase if email
   end
 
+  def set_config_input
+    self.config_theme = config_theme.gsub(" ", "_")
+    self.config_font = config_font.gsub(" ", "_")
+  end
+
   def check_for_username_change
-    if username_changed?
-      self.old_old_username = old_username
-      self.old_username = username_was
-      chat_channels.find_each do |c|
-        c.slug = c.slug.gsub(username_was, username)
-        c.save
-      end
-      articles.find_each do |a|
-        a.path = a.path.gsub(username_was, username)
-        a.save
-      end
+    return unless username_changed?
+
+    self.old_old_username = old_username
+    self.old_username = username_was
+    chat_channels.find_each do |c|
+      c.slug = c.slug.gsub(username_was, username)
+      c.save
+    end
+    articles.find_each do |a|
+      a.path = a.path.gsub(username_was, username)
+      a.save
     end
   end
 
   def conditionally_resave_articles
-    if core_profile_details_changed? && !user.banned
-      delay.resave_articles
-    end
+    delay.resave_articles if core_profile_details_changed? && !user.banned
   end
 
   def bust_cache
@@ -482,9 +488,7 @@ class User < ApplicationRecord
     # Grandfather people who had a too long summary before.
     return if summary_was && summary_was.size > 200
 
-    if summary.present? && summary.size > 200
-      errors.add(:summary, "is too long.")
-    end
+    errors.add(:summary, "is too long.") if summary.present? && summary.size > 200
   end
 
   def validate_feed_url
@@ -587,12 +591,8 @@ class User < ApplicationRecord
   end
 
   def mentorship_status_update
-    if mentor_description_changed? || offering_mentorship_changed?
-      self.mentor_form_updated_at = Time.current
-    end
+    self.mentor_form_updated_at = Time.current if mentor_description_changed? || offering_mentorship_changed?
 
-    if mentee_description_changed? || seeking_mentorship_changed?
-      self.mentee_form_updated_at = Time.current
-    end
+    self.mentee_form_updated_at = Time.current if mentee_description_changed? || seeking_mentorship_changed?
   end
 end

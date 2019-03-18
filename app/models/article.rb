@@ -28,20 +28,20 @@ class Article < ApplicationRecord
   validates :user_id, presence: true
   validates :feed_source_url, uniqueness: { allow_blank: true }
   validates :canonical_url,
-            url: { allow_blank: true, no_local: true, schemes: ["https", "http"] },
+            url: { allow_blank: true, no_local: true, schemes: %w[https http] },
             uniqueness: { allow_blank: true }
   # validates :description, length: { in: 10..170, if: :published? }
   validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
-  validates :video_state, inclusion: { in: %w(PROGRESSING COMPLETED) }, allow_nil: true
+  validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 86 }
-  validates :main_image, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
-  validates :video, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
-  validates :video_thumbnail_url, url: { allow_blank: true, schemes: ["https", "http"] }
+  validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
 
@@ -56,7 +56,7 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
-  after_update      :update_notifications, if: Proc.new { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
+  after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
@@ -65,14 +65,14 @@ class Article < ApplicationRecord
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
-  scope :active_help, -> {
+  scope :active_help, lambda {
                         where(published: true).
                           cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
                       }
 
-  scope :limited_column_select, -> {
+  scope :limited_column_select, lambda {
     select(:path, :title, :id,
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
@@ -82,7 +82,7 @@ class Article < ApplicationRecord
     :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
-  scope :limited_columns_internal_select, -> {
+  scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
@@ -93,11 +93,11 @@ class Article < ApplicationRecord
     :email_digest_eligible, :processed_html)
   }
 
-  scope :boosted_via_additional_articles, -> {
+  scope :boosted_via_additional_articles, lambda {
     where("boost_states ->> 'boosted_additional_articles' = 'true'")
   }
 
-  scope :boosted_via_dev_digest_email, -> {
+  scope :boosted_via_dev_digest_email, lambda {
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
@@ -411,7 +411,7 @@ class Article < ApplicationRecord
       url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
       duration = 0
       HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
-        duration = duration + chunk.split(",")[0].to_f
+        duration += chunk.split(",")[0].to_f
       end
       duration
       self.video_duration_in_seconds = duration
@@ -456,16 +456,14 @@ class Article < ApplicationRecord
         tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
       end
     end
-    self.published = front_matter["published"] if ["true", "false"].include?(front_matter["published"].to_s)
+    self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
     self.description = front_matter["description"] || token_msg
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
-    if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
-      self.automatically_renew = front_matter["automatically_renew"]
-    end
+    self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
   def parsed_date(date)
@@ -487,25 +485,17 @@ class Article < ApplicationRecord
     return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
 
     tag_list.each do |tag|
-      if tag.length > 20
-        errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)")
-      end
+      errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)") if tag.length > 20
     end
   end
 
   def validate_video
-    if published && video_state == "PROGRESSING"
-      return errors.add(:published, "cannot be set to true if video is still processing")
-    end
-    if video.present? && user.created_at > 2.weeks.ago
-      return errors.add(:video, "cannot be added member without permission")
-    end
+    return errors.add(:published, "cannot be set to true if video is still processing") if published && video_state == "PROGRESSING"
+    return errors.add(:video, "cannot be added member without permission") if video.present? && user.created_at > 2.weeks.ago
   end
 
   def validate_collection_permission
-    if collection && collection.user_id != user_id
-      errors.add(:collection_id, "must be one you have permission to post to")
-    end
+    errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
   end
 
   def create_slug
@@ -535,9 +525,7 @@ class Article < ApplicationRecord
   end
 
   def set_published_date
-    if published && published_at.blank?
-      self.published_at = Time.current
-    end
+    self.published_at = Time.current if published && published_at.blank?
   end
 
   def set_featured_number
@@ -549,25 +537,25 @@ class Article < ApplicationRecord
   end
 
   def set_last_comment_at
-    if published_at.present? && last_comment_at == "Sun, 01 Jan 2017 05:00:00 UTC +00:00"
-      self.last_comment_at = published_at
-      user.touch(:last_article_at)
-      organization&.touch(:last_article_at)
-    end
+    return unless published_at.present? && last_comment_at == "Sun, 01 Jan 2017 05:00:00 UTC +00:00"
+
+    self.last_comment_at = published_at
+    user.touch(:last_article_at)
+    organization&.touch(:last_article_at)
   end
 
   def title_to_slug
-    title.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100000).to_s(26)
+    title.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
   end
 
   def bust_cache
-    if Rails.env.production?
-      cache_buster = CacheBuster.new
-      cache_buster.bust(path)
-      cache_buster.bust(path + "?i=i")
-      cache_buster.bust(path + "?preview=" + password)
-      async_bust
-    end
+    return unless Rails.env.production?
+
+    cache_buster = CacheBuster.new
+    cache_buster.bust(path)
+    cache_buster.bust(path + "?i=i")
+    cache_buster.bust(path + "?preview=" + password)
+    async_bust
   end
 
   def calculate_base_scores

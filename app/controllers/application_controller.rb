@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   end
 
   def not_found
-    raise ActionController::RoutingError.new("Not Found")
+    raise ActionController::RoutingError, "Not Found"
   end
 
   def efficient_current_user_id
@@ -19,11 +19,11 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
-    unless current_user
-      respond_to do |format|
-        format.html { redirect_to "/enter" }
-        format.json { render json: { error: "Please sign in" }, status: 401 }
-      end
+    return if current_user
+
+    respond_to do |format|
+      format.html { redirect_to "/enter" }
+      format.json { render json: { error: "Please sign in" }, status: 401 }
     end
   end
 

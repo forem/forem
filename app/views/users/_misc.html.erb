@@ -35,6 +35,24 @@
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
+<h2>Style Customization</h2>
+<%= form_for(@user) do |f| %>
+  <div class="sub-field">
+    <%= f.label :config_theme, "Site Theme" %>
+    <%= f.select(:config_theme, options_for_select(["default", "night theme"], @user.config_theme.gsub("_", " "))) %>
+    <sub><em>Default is light style. Night theme is in public alpha.</em></sub>
+  </div>
+  <div class="sub-field">
+    <%= f.label :config_font, "Base Post Font" %>
+    <%= f.select(:config_font, options_for_select(["default", "sans serif"], @user.config_font.gsub("_", " "))) %>
+    <sub><em>Default is serif style.</em></sub>
+  </div>
+  <div class="field">
+    <label></label>
+    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
+<% end %>
 <h2>Languages</h2>
 <h3>Select which languages you'd prefer to see in your feed <span style="color:#e05252">(beta)</span></h3>
 <h4 style="font-weight:400">
@@ -122,6 +140,22 @@
     <div class="field">
       <label></label>
       <%= f.hidden_field :tab, value: @tab %>
+      <%= f.submit "SUBMIT", class: "cta" %>
+    </div>
+  <% end %>
+<% end %>
+
+<% if false %>
+  <h2> Connect </h2>
+
+  <h3> Inbox Type </h3>
+
+  <%= form_for(@user) do |f| %>
+    <div class="field checkbox-label-first">
+      <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows."%>
+      <div class="sub-field">
+        <%= f.select :inbox_type, [['Open','open'],['Private','private']]%>
+      </div>
       <%= f.submit "SUBMIT", class: "cta" %>
     </div>
   <% end %>

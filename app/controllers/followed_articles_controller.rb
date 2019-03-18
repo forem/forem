@@ -2,7 +2,7 @@ class FollowedArticlesController < ApplicationController
   # No authorization required for entirely public controller
 
   caches_action :index,
-    cache_path: Proc.new { "followed_articles_#{current_user.id}__#{current_user.updated_at}__#{user_signed_in?}" },
+    cache_path: proc { "followed_articles_#{current_user.id}__#{current_user.updated_at}__#{user_signed_in?}" },
     expires_in: 35.minutes
 
   def index
@@ -15,9 +15,7 @@ class FollowedArticlesController < ApplicationController
                       includes(:user).where("published_at > ?", 5.days.ago).
                       order("hotness_score DESC").
                       limit(25).map do |a|
-                        unless inappropriate_hiring_instance(a)
-                          article_json(a)
-                        end
+                        article_json(a) unless inappropriate_hiring_instance(a)
                       end.compact
                   end
                 else

@@ -55,6 +55,8 @@ class UserPolicy < ApplicationPolicy
     %i[available_for
        behance_url
        bg_color_hex
+       config_theme
+       config_font
        contact_consent
        currently_hacking_on
        currently_learning
@@ -96,6 +98,7 @@ class UserPolicy < ApplicationPolicy
        mostly_work_with
        name
        offering_mentorship
+       inbox_type
        permit_adjacent_sponsors
        password
        password_confirmation

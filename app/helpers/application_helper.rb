@@ -12,7 +12,7 @@ module ApplicationHelper
   end
 
   def core_pages?
-    %w(
+    %w[
       articles
       podcast_episodes
       events
@@ -30,7 +30,7 @@ module ApplicationHelper
       notifications
       reading_list_items
       html_variants
-    ).include?(controller_name)
+    ].include?(controller_name)
   end
 
   def render_js?
@@ -164,7 +164,7 @@ module ApplicationHelper
 
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
-      tags: %w(p b i em strike strong u br)
+      tags: %w[p b i em strike strong u br]
   end
 
   def track_split_version(url, version)

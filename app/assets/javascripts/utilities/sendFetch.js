@@ -49,6 +49,18 @@ function sendFetch(switchStatement, body) {
           credentials: 'same-origin',
         });
       };
+    case 'chat-creation':
+      return function(csrfToken) {
+        body.append('authenticity_token', csrfToken);
+        return window.fetch('/open_chat', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-Token': csrfToken,
+          },
+          body: body,
+          credentials: 'same-origin',
+        });
+      };
     case 'comment-creation':
       return function(csrfToken) {
         return window.fetch('/comments', {

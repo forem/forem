@@ -36,6 +36,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
+    it { is_expected.to validate_inclusion_of(:inbox_type).in_array(["open", "private"]) }
   end
 
   # the followings are failing
@@ -86,7 +87,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https facebook url" do
-      %w(thepracticaldev thepracticaldev/ the.practical.dev).each do |username|
+      %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
         user.facebook_url = "https://facebook.com/#{username}"
         expect(user).to be_valid
       end
@@ -98,7 +99,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https behance url" do
-      %w(jess jess/ je-ss jes_ss).each do |username|
+      %w[jess jess/ je-ss jes_ss].each do |username|
         user.behance_url = "https://behance.net/#{username}"
         expect(user).to be_valid
       end
@@ -110,7 +111,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https stackoverflow url" do
-      %w(pandyzhao pandyzhao/ pandy-zhao).each do |username|
+      %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
         user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
         expect(user).to be_valid
       end
@@ -122,7 +123,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https linkedin url" do
-      %w(jessleenyc jessleenyc/ jess-lee-nyc).each do |username|
+      %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
         user.linkedin_url = "https://linkedin.com/in/#{username}"
         expect(user).to be_valid
       end
@@ -149,7 +150,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https dribbble url" do
-      %w(jess jess/ je-ss je_ss).each do |username|
+      %w[jess jess/ je-ss je_ss].each do |username|
         user.dribbble_url = "https://dribbble.com/#{username}"
         expect(user).to be_valid
       end
@@ -161,7 +162,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https medium url" do
-      %w(jess jess/ je-ss je_ss).each do |username|
+      %w[jess jess/ je-ss je_ss].each do |username|
         user.medium_url = "https://medium.com/#{username}"
         expect(user).to be_valid
       end
@@ -173,7 +174,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid https gitlab url" do
-      %w(jess jess/ je-ss je_ss).each do |username|
+      %w[jess jess/ je-ss je_ss].each do |username|
         user.gitlab_url = "https://gitlab.com/#{username}"
         expect(user).to be_valid
       end
@@ -186,12 +187,12 @@ RSpec.describe User, type: :model do
 
     it "changes old_username and old_old_username properly if username changes" do
       old_username = user.username
-      random_new_username = "username_#{rand(100000000)}"
+      random_new_username = "username_#{rand(100_000_000)}"
       user.update(username: random_new_username)
       expect(user.username).to eq(random_new_username)
       expect(user.old_username).to eq(old_username)
       new_username = user.username
-      user.update(username: "username_#{rand(100000000)}")
+      user.update(username: "username_#{rand(100_000_000)}")
       expect(user.old_username).to eq(new_username)
       expect(user.old_old_username).to eq(old_username)
     end
@@ -263,6 +264,26 @@ RSpec.describe User, type: :model do
 
     it "does not inforce summary validation if old summary was invalid" do
       user.summary = "0" * 999
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid theme" do
+      user.config_theme = "night theme"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid theme" do
+      user.config_theme = "no night mode"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid font" do
+      user.config_font = "sans serif"
+      expect(user).to be_valid
+    end
+
+    it "does not accept invalid font" do
+      user.config_theme = "goobledigook"
       expect(user).not_to be_valid
     end
   end
@@ -399,6 +420,20 @@ RSpec.describe User, type: :model do
       Follow.last.update(points: 0.1)
       expect(user.decorate.cached_followed_tags.first.points).to eq(0.1)
     end
+  end
+
+  it "creates proper body class with defaults" do
+    expect(user.decorate.config_body_class).to eq("default default-article-body")
+  end
+
+  it "creates proper body class with sans serif config" do
+    user.config_font = "sans_serif"
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body")
+  end
+
+  it "creates proper body class with night theme" do
+    user.config_theme = "night_theme"
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body")
   end
 
   it "inserts into mailchimp" do

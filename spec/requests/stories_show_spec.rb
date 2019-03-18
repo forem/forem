@@ -96,23 +96,23 @@ RSpec.describe "StoriesShow", type: :request do
     context "when story is a user" do
       it "renders to appropriate page if user changes username" do
         old_username = user.username
-        user.update(username: "new_hotness_#{rand(10000)}")
+        user.update(username: "new_hotness_#{rand(10_000)}")
         get "/#{old_username}/#{article.slug}"
         expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
       end
 
       it "renders to appropriate page if user changes username twice" do
         old_username = user.username
-        user.update(username: "new_hotness_#{rand(10000)}")
-        user.update(username: "new_new_username_#{rand(10000)}")
+        user.update(username: "new_hotness_#{rand(10_000)}")
+        user.update(username: "new_new_username_#{rand(10_000)}")
         get "/#{old_username}/#{article.slug}"
         expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
       end
 
       it "renders to appropriate page if user changes username twice and go to middle username" do
-        user.update(username: "new_hotness_#{rand(10000)}")
+        user.update(username: "new_hotness_#{rand(10_000)}")
         middle_username = user.username
-        user.update(username: "new_new_username_#{rand(10000)}")
+        user.update(username: "new_new_username_#{rand(10_000)}")
         get "/#{middle_username}/#{article.slug}"
         expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
       end

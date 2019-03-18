@@ -10,8 +10,6 @@ class SearchKeyword < ApplicationRecord
   private
 
   def path_format
-    unless google_result_path&.starts_with?("/") && google_result_path&.count("/") == 2
-      errors.add(:google_result_path, "must start with / and be properly formatted")
-    end
+    errors.add(:google_result_path, "must start with / and be properly formatted") unless google_result_path&.starts_with?("/") && google_result_path&.count("/") == 2
   end
 end

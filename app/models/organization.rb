@@ -28,7 +28,7 @@ class Organization < ApplicationRecord
             length: { in: 2..18 },
             exclusion: { in: ReservedWords.all,
                          message: "%{value} is reserved." }
-  validates :url, url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+  validates :url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :secret, uniqueness: { allow_blank: true }
   validates :location, :email, :company_size, length: { maximum: 64 }
   validates :company_size, format: { with: /\A\d+\z/,
@@ -36,7 +36,7 @@ class Organization < ApplicationRecord
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :cta_button_url,
-    url: { allow_blank: true, no_local: true, schemes: ["https", "http"] }
+    url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_body_markdown, length: { maximum: 256 }
   before_save :remove_at_from_usernames
@@ -57,11 +57,11 @@ class Organization < ApplicationRecord
   alias_attribute :website_url, :url
 
   def check_for_slug_change
-    if slug_changed?
-      self.old_old_slug = old_slug
-      self.old_slug = slug_was
-      articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
-    end
+    return unless slug_changed?
+
+    self.old_old_slug = old_slug
+    self.old_slug = slug_was
+    articles.find_each { |a| a.update(path: a.path.gsub(slug_was, slug)) }
   end
 
   def path
@@ -69,9 +69,7 @@ class Organization < ApplicationRecord
   end
 
   def generate_secret
-    if secret.blank?
-      self.secret = generated_random_secret
-    end
+    self.secret = generated_random_secret if secret.blank?
   end
 
   def generated_random_secret
