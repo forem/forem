@@ -5,7 +5,7 @@
     <a class="rounded-btn" href="/dashboard/pro">
       View Your Pro Dashboard
     </a>
-  <% else %>
+  <% elsif current_active_view == "User" && @dashboard.user_or_org.organization_id %>
     <a class="rounded-btn" href="/dashboard/pro/org/<%= @dashboard.user_or_org.organization_id %>">
       View <%= @dashboard.user_or_org.organization.name %> Dashboard
     </a>
