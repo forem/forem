@@ -19,6 +19,8 @@ class PageViewsController < ApplicationController
   def update
     if user_signed_in?
       page_view = PageView.where(article_id: params[:id], user_id: current_user.id).last
+      page_view ||= PageView.create(user_id: current_user.id,
+                                    article_id: page_view_params[:article_id]) # pageview is sometimes missing if failure on prior creation.
       page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
     end
     head :ok
@@ -27,7 +29,7 @@ class PageViewsController < ApplicationController
   private
 
   def update_article_page_views
-    return if Rails.env.production? && rand(5) != 1 # We don't need to update the article page views every time.
+    return if Rails.env.production? && rand(8) != 1 # We don't need to update the article page views every time.
 
     article = Article.find(page_view_params[:article_id])
     new_page_views_count = article.page_views.sum(:counts_for_number_of_views)
