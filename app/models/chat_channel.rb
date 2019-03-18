@@ -16,7 +16,7 @@ class ChatChannel < ApplicationRecord
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
   validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
-  validates :status, presence: true, inclusion: { in: %w[active inactive] }
+  validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
   validates :slug, uniqueness: true, presence: true
 
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
@@ -72,6 +72,8 @@ class ChatChannel < ApplicationRecord
     end
 
     if channel = ChatChannel.find_by_slug(slug)
+      raise "Blocked channel" if channel.status == "blocked"
+
       channel.status = "active"
       channel.save
     else
