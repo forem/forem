@@ -1,5 +1,65 @@
 .dockerignore
- .git
- logs/
- tmp/
- node_modules/
+.git
+.gitignore
+logs/
+tmp/
+node_modules/
+
+##################################
+# 
+# rest is COPIED from .gitignore
+#
+##################################
+
+# Ignore bundler config.
+/.bundle
+vendor/bundle
+
+# Ignore all logfiles and tempfiles.
+/log/*
+!/log/.keep
+/tmp
+.DS_Store
+.swp
+.approvals
+.torus.json
+coverage
+/tags
+
+# Ignore public uploads
+/public/uploads/*
+/public/c/*
+/public/i/*
+/public/assets/*
+
+# Ignore node_modules
+node_modules/
+
+# Generated js bundles
+/app/assets/javascripts/generated/*
+latest.dump
+.byebug_history
+.gitdocs_build/
+
+# Ignore application configuration
+/config/application.yml
+/public/packs
+/public/packs-test
+/node_modules
+config/database.yml
+
+# Ignore storybook static site generation
+storybook-static/
+yarn-error.log
+
+# Ignore package-lock.json because we use yarn
+package-lock.json
+
+#Jetbrains Tools
+.idea/
+
+#sitemap
+/public/sitemap.xml.gz
+
+# Development Docker storage location
+_docker-storage/
