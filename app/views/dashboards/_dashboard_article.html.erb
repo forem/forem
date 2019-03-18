@@ -12,7 +12,7 @@
     <% if article.published %>
       <%= article.readable_publish_date %>
       <% article.cached_tag_list_array.each do |tag| %>
-        #<%= tag %>
+        <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
       <% end %>
     <% end %>
   </div>
