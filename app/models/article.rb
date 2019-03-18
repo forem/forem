@@ -365,16 +365,13 @@ class Article < ApplicationRecord
   end
 
   def self.seo_boostable(tag = nil)
-    keyword_paths = SearchKeyword.
-      where("google_position > ? AND google_position < ? AND google_volume > ? AND google_difficulty < ?",
-      3, 20, 1000, 40).pluck(:google_result_path)
     if tag
-      Article.where(path: keyword_paths, published: true, featured: true).
-        tagged_with(tag).
+      Article.where(published: true).
+        cached_tagged_with(tag).order("organic_page_views_count DESC").limit(20).
         pluck(:path, :title, :comments_count, :created_at)
-
     else
-      Article.where(path: keyword_paths, published: true, featured: true).
+      Article.where(published: true).
+        order("organic_page_views_count DESC").limit(20).
         pluck(:path, :title, :comments_count, :created_at)
     end
   end
