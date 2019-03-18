@@ -21,14 +21,14 @@
       margin: 0px;
     }
   }
-  .back-nav {
+  .rounded-btn {
     font-size: calc(16px + 0.3vw);
     font-family: $helvetica-condensed;
     font-stretch: condensed;
     padding: 4px 20px;
     border-radius: 100px;
     margin-right: 5px;
-    display: block;
+    display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
     color: $black;
