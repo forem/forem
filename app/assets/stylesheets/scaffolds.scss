@@ -51,6 +51,7 @@ pre {
 
 a {
   color: $sky-blue;
+  color: var(--theme-secondary-color, $sky-blue);
   text-decoration:none;
   &:hover{
     opacity:0.9;

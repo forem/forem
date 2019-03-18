@@ -74,6 +74,7 @@
         width: 210px;
         display:inline-block;
         color: $black;
+        color: var(--theme-color, $black);
         &.selected {
           background: $purple;
         }

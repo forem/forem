@@ -17,6 +17,7 @@ footer{
     }
     a{
       color: $black;
+      color: var(--theme-color, $black);
       display:inline-block;
       margin-right: 12px;
       &:hover{
@@ -26,7 +27,9 @@ footer{
     .inner-footer-container{
       max-width: 820px;
       background: $tan;
+      background: var(--theme-container-background, $tan);
       border: 1px solid darken($light-medium-gray, 2%);
+      border: var(--theme-container-border, 1px solid darken($light-medium-gray, 2%));
       box-shadow: $bold-shadow;
       box-shadow: var(--theme-container-box-shadow, $bold-shadow);
       padding:50px 30px;

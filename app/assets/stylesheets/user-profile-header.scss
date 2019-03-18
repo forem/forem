@@ -8,6 +8,7 @@
   max-width:92%;
   margin: 30px auto 20px;
   background: white;
+  background: var(--theme-container-background, #fff);
   border-radius: 3px;
   @media screen and ( min-width: 950px ){
     max-width:98%;
@@ -162,6 +163,7 @@
         margin:0;
         font-style: italic;
         color:$medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
         width: 94%;
         font-size:0.9em;
         margin-top:12px;
@@ -251,6 +253,7 @@
         font-weight: 800;
         margin-bottom: 2px;
         color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
       }
       .value{
         display: inline-block;
