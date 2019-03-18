@@ -37,6 +37,7 @@ class ArticlesController < ApplicationController
     @user = current_user
     @organization = @user&.organization
     @tag = Tag.find_by_name(params[:template])
+    @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  submission_template = @tag.submission_template_customized(@user.name).to_s
@@ -45,6 +46,14 @@ class ArticlesController < ApplicationController
                elsif @tag&.submission_template.present? && @user
                  authorize Article
                  Article.new(body_markdown: @tag.submission_template_customized(@user.name),
+                             processed_html: "", user_id: current_user&.id)
+               elsif @prefill.present? && @user&.editor_version == "v2"
+                 authorize Article
+                 Article.new(body_markdown: @prefill.split("---").last.to_s.strip, cached_tag_list: @prefill.split("tags:")[1].to_s.split("\n")[0].to_s.strip,
+                             processed_html: "", user_id: current_user&.id, title: @prefill.split("title:")[1].to_s.split("\n")[0].to_s.strip)
+               elsif @prefill.present? && @user
+                 authorize Article
+                 Article.new(body_markdown: @prefill,
                              processed_html: "", user_id: current_user&.id)
                elsif @tag.present?
                  skip_authorization
