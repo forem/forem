@@ -36,65 +36,8 @@
       <dd><%= @user.monthly_dues %></dd>
     <% end %>
   </dl>
-
-  <p><strong><u>Activity</u></strong></p>
-  <ul>
-    <li><%= @user.comments.size %> comments</li>
-    <li><%= @user.articles.size %> articles</li>
-    <li><%= @user.reactions.size %> reactions</li>
-    <li><%= @user.followers.size %> followers</li>
-    <li><%= @user.following_users_count %> users following</li>
-    <li><%= @user.badge_achievements_count %> Badges</li>
-
-  </ul>
-
 </div>
-<div class="row">
-  <h3><u>Current Roles</u></h3>
-  <p>(view full history in notes below)</p>
-  <ul>
-    <% @user.roles.each do |role| %>
-      <li><%= role.name %> <em><%= "- " + Tag.find(role.resource_id).name if role.resource_id.present? %></em></li>
-    <% end %>
-  </ul>
-  <h3><u>Privileges</u></h3>
-  <% if !@user.banned && !@user.warned %>
-    <%= form_for [:internal, @user] do |f| %>
-      <p>
-        Add Trusted Role (Community Moderator)
-        <%= f.check_box :trusted_user, checked: @user.trusted %>
-      </p>
-      <p>
-        Add Pro Role (Upgraded DevRel Dashboard)
-        <%= f.check_box :pro_user, checked: @user.has_role?(:pro) %>
-      </p>
-      <%= f.submit "Update Privileges" %>
-    <% end %>
-  <% else %>
-    User must be in good standing to have heigtened privileges of any kind.
-  <% end %>
-  <br>
-  <h3><u>Warn or Ban User</u></h3>
-  <% if @user.banned %>
-    <p style="background-color:red;color:white">🚨 Banned User 🚨</p>
-  <% elsif @user.warned %>
-    <p style="background-color: orange;color:white">Warned User</p>
-  <% else %>
-    <p style="color:green">Member in good standing</p>
-  <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <%= f.label "Ban User" %>
-    <%= f.check_box :ban_user, checked: @user.banned %>
-    <br>
-    <%= f.label "Warn User" %>
-    <%= f.check_box :warn_user, checked: @user.warned %>
-    <br>
-    <%= f.label "Reason for action:" %>
-    <%= f.text_area :note_for_current_role, required: true %>
-    <br>
-    <%= f.submit "Update User Status" %>
-  <% end %>
-</div>
+<%= render "activity" %>
 <div class="row">
   <h3><u>Mentorship</u></h3>
   <% if @user.mentors.count > 0 %>
@@ -125,46 +68,27 @@
         </li>
       <% end %>
     </ul>
-  <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <% if @user.banned_from_mentorship %>
-      <p style="background-color:red; color:white;">User is banned from mentorship program</p>
-    <% end %>
-    <p>Ban user from mentorship program <%= f.check_box :ban_from_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
-    <%= f.label "Reason: " %>
-    <%= f.text_area :note_for_mentorship_ban, required: true %>
-    <br>
-    <%= f.submit "Update Mentorship Status" %>
-  <% end %>
-</div>
-<div class="row">
-  <h3><u>Notes</u></h3>
-  <% if @user.notes.count > 0 %>
-    <% @user.notes.each do |note| %>
-      <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username %></em> -
-        <% if !note.reason.blank? %><strong><%= note.reason %>:</strong>
-          <% end %><%= note.content %></p>
-    <% end %>
+  <% elsif @user.has_role? :banned_from_mentorship %>
+    <p style="background-color: red;">User is banned from the mentorship program.</p>
   <% else %>
-    <p><em>No notes yet!</em></p>
+    <p>Currently not in a mentorship relationship.</p>
   <% end %>
-  <%= form_for [:internal, @user] do |f| %>
-    <%= f.label "Add new note: " %>
-    <br>
-    <%= f.text_area :note %>
-    <br>
-    <%= f.submit "Submit Note" %>
+  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
+    <p>Ban from mentorship: <%= f.check_box :toggle_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
+    <p>Reason for action: <%= f.text_area :mentorship_note %></p>
+    <%= f.submit %>
   <% end %>
 </div>
-
+<%= render "notes" %>
 <%= render "mentee_match" %>
-
-<h2><u>Recent Emails</u></h2>
-<ul>
-  <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
-    <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a>
-      <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
-  <% end %>
-</ul>
+<div class="row">
+  <h2><u>Recent Emails</u></h2>
+  <ul>
+    <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
+      <li><a href="/admin/email_messages/<%= email.id %>"><%= email.subject %></a>
+        <em><%= email.sent_at&.strftime("%b %e '%y") %></em></li>
+    <% end %>
+  </ul>
+</div>
 <br>
 <br>
