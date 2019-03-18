@@ -77,10 +77,29 @@
   <% end %>
 </head>
 <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
+<div id="body-styles"></div>
 <% if user_signed_in? && !internal_navigation? %>
   <script>
     try {
-      document.body.className = localStorage.getItem('config_body_class');
+      var bodyClass = localStorage.getItem('config_body_class');
+      document.body.className = bodyClass;
+      if (bodyClass.includes('night-theme')) {
+              document.getElementById('body-styles').innerHTML = '<style>\
+                :root {\
+          --theme-background: #161f2b;\
+          --theme-color: #fff;\
+          --theme-secondary-color: #cedae2;\
+          --theme-top-bar-background: #141d26;\
+          --theme-top-bar-color: #fff;\
+          --theme-top-bar-search-background: #424a54;\
+          --theme-top-bar-search-color: #fff;\
+          --theme-top-bar-write-background: #00af81;\
+          --theme-top-bar-write-color: #fff;\
+          --theme-container-background: #27374c;\
+          --theme-container-color: #fff;\
+          --theme-container-box-shadow: none;\
+          --theme-container-border: 1px solid #141d26;</style>'
+      }
     } catch(e) {
         console.log(e)
     }

@@ -222,6 +222,7 @@
       padding: 5px 10px;
       text-align: left;
       background: $tan;
+      background: var(--theme-top-bar-background, $tan);
       border: 1px solid rgb(219, 222, 225);
       border-top: 0px;
       display: none;
@@ -260,10 +261,12 @@
         }
         &:hover {
           background: darken($tan, 2%);
+          background: var(--theme-top-bar-background, darken($tan, 2%));
         }
       }
       a {
         color: $black;
+        color: var(--theme-color, $black);
       }
     }
   }
