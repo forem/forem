@@ -8,9 +8,7 @@ class SocialPreviewsController < ApplicationController
     @article = Article.find(params[:id])
     not_found unless @article.published
 
-    template = "article"
-
-    template = "shecoded" if (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any?
+    template = (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any? ? "shecoded" : "article"
 
     respond_to do |format|
       format.html do
