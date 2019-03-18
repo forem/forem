@@ -26,9 +26,10 @@ RSpec.describe "SocialPreviews", type: :request do
       get "/social_previews/article/#{she_coded_article.id}"
 
       expect(response).to render_template(:shecoded)
+      expect(response.body).to include CGI.escapeHTML(she_coded_article.title)
     end
 
-    it "requesting png generates an image and redirects to image url" do
+    it "renders an image when requested and redirects to image url" do
       get "/social_previews/article/#{article.id}.png"
 
       expect(response).to redirect_to(image_url)
@@ -41,7 +42,7 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(response.body).to include CGI.escapeHTML(user.name)
     end
 
-    it "requesting png generates an image and redirects to image url" do
+    it "renders an image when requested and redirects to image url" do
       get "/social_previews/user/#{user.id}.png"
 
       expect(response).to redirect_to(image_url)
@@ -54,7 +55,7 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(response.body).to include CGI.escapeHTML(organization.name)
     end
 
-    it "requesting png generates an image and redirects to image url" do
+    it "renders an image when requested and redirects to image url" do
       get "/social_previews/organization/#{organization.id}.png"
 
       expect(response).to redirect_to(image_url)
@@ -67,7 +68,7 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(response.body).to include CGI.escapeHTML(tag.name)
     end
 
-    it "requesting png generates an image and redirects to image url" do
+    it "renders an image when requested and redirects to image url" do
       get "/social_previews/tag/#{tag.id}.png"
 
       expect(response).to redirect_to(image_url)
