@@ -1,4 +1,4 @@
-require 'json'
+require "json"
 
 class CodepenPrefillTag < LiquidTagBase
   def initialize(tag_name, options, markup)
@@ -33,12 +33,10 @@ class CodepenPrefillTag < LiquidTagBase
     _, *options = input.split(" ")
 
     options.map { |o| valid_option(o) }.reject(&:nil?)
-    
 
     # query = options.join("&")
     # change to how Codepen formats options in HTML tags
     # return in JSON format!!
-    query =
 
     if query.blank?
       query
@@ -49,12 +47,12 @@ class CodepenPrefillTag < LiquidTagBase
 
   def valid_option(option)
     raise StandardError, "CodepenPrefill Error: Invalid options" unless false # (option =~ /\A(initialpath=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(module=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z/)&.zero?
+
     # change to Codepen options: height, default-tabs, html_classes, scripts, styles, title, description,
     # data-editable, data-default-tab, data-height, data-theme-id
     # enable data-lang for pre tags in markdown
     option
   end
-
 end
 
 Liquid::Template.register_tag("codepenprefill", CodepenPrefillTag)
