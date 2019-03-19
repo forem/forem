@@ -600,9 +600,11 @@ article {
     overflow: hidden;
     padding: 0px 0px 5px;
     background: white;
+    background: var(--theme-container-background, white);
     font-family: $helvetica;
     a {
       color: $black;
+      color: var(--theme-color, $black);
     }
     @media screen and (min-width: 520px) {
       width: 82%;
@@ -660,14 +662,18 @@ article {
         font-size: 0.85em;
         a {
           color: $medium-gray;
+          color: var(--theme-secondary-color, $medium-gray);
           margin-right: 6px;
           display: inline-block;
           .icon-img {
             width: 15px;
             height: 15px;
+            border-radius: 3px;
             vertical-align: -2px;
             margin: 0px;
             opacity: 0.7;
+            background: transparent;
+            background: var(--theme-secondary-color, transparent);
           }
         }
       }

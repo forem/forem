@@ -219,6 +219,7 @@ a.header-link {
   form {
     width: 104%;
     background: $light-gray;
+    background: var(--theme-container-background, $light-gray);
     overflow: auto;
     position: relative;
     margin-bottom: 4px;
