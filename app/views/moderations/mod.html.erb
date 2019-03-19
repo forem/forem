@@ -61,7 +61,7 @@
     width: 100%;
     padding: 5px;
     font-size: 17px;
-    height: 250px;
+    height: 100px;
     border: 1px solid #888;
   }
 
@@ -123,12 +123,7 @@
         <br /><br />
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.text_field :tag_name, placeholder: "Tag Name" %>
-        <%= f.text_area(
-              :reason_for_adjustment,
-              value: "Hi. In an effort to keep dev.to's tag system as accurate as possible, I'm removing the < TAG > tag from your post. < Reason for removal - be super kind >\n\n"\
-              "If you disagree regarding your tag removal, please contact yo@dev.to and explain why.\n\n"\
-              "🙏 Thank you for your contribution to dev.to and I look forward to reading more articles from you.",
-            ) %>
+        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest." %>
         <%= f.submit "Remove Tag" %>
         <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
         <% if adjustments.any? %>
