@@ -102,10 +102,6 @@ Metrics/CyclomaticComplexity:
     of test cases needed to validate a method.
   Enabled: false
 
-Rails/Delegate:
-  Description: 'Prefer delegate method for delegations.'
-  Enabled: false
-
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: false
