@@ -919,6 +919,7 @@
           background: var(--theme-background, darken($light-gray, 4%));
           a {
             color: $black;
+            color: var(--theme-secondary-color, $black);
           }
         }
         .sidebar-nav-default-tags {
