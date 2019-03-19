@@ -335,6 +335,7 @@
       }
       .unseen{
         background-color: $light-purple;
+        background:var(--theme-container-accent-background, $light-purple);
       }
     }
   }

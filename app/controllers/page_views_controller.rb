@@ -20,7 +20,7 @@ class PageViewsController < ApplicationController
     if user_signed_in?
       page_view = PageView.where(article_id: params[:id], user_id: current_user.id).last
       page_view ||= PageView.create(user_id: current_user.id,
-                                    article_id: page_view_params[:article_id]) # pageview is sometimes missing if failure on prior creation.
+                                    article_id: params[:id]) # pageview is sometimes missing if failure on prior creation.
       page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
     end
     head :ok
