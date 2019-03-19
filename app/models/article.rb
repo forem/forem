@@ -367,11 +367,11 @@ class Article < ApplicationRecord
   def self.seo_boostable(tag = nil)
     if tag
       Article.where(published: true).
-        cached_tagged_with(tag).order("organic_page_views_count DESC").limit(20).
+        cached_tagged_with(tag).order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
         pluck(:path, :title, :comments_count, :created_at)
     else
       Article.where(published: true).
-        order("organic_page_views_count DESC").limit(20).
+        order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
         pluck(:path, :title, :comments_count, :created_at)
     end
   end
