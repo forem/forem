@@ -1,9 +1,10 @@
 module BadgeRewarder
+  YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten" }.freeze
+
   def self.award_yearly_club_badges
-    years = 3
-    (1..years).each do |i|
+    (1..3).each do |i|
       message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
-      badge = Badge.find_by_slug("#{i}-year-club")
+      badge = Badge.find_by_slug("#{YEARS[i]}-year-club")
       User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.day).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,

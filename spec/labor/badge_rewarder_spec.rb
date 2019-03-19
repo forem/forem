@@ -6,7 +6,7 @@ RSpec.describe BadgeRewarder do
     user = create(:user, created_at: 366.days.ago)
     newer_user = create(:user, created_at: 6.days.ago)
     older_user = create(:user, created_at: 390.days.ago)
-    create(:badge, title: "1-year-club")
+    create(:badge, title: "one-year-club")
     create(:badge, title: "heysddssdhey")
     described_class.award_yearly_club_badges
     expect(user.badge_achievements.size).to eq(1)
@@ -18,7 +18,7 @@ RSpec.describe BadgeRewarder do
     user = create(:user, created_at: 731.days.ago)
     newer_user = create(:user, created_at: 6.days.ago)
     older_user = create(:user, created_at: 800.days.ago)
-    create(:badge, title: "2-year-club")
+    create(:badge, title: "two-year-club")
     create(:badge, title: "heysddssdhey")
     described_class.award_yearly_club_badges
     expect(user.badge_achievements.size).to eq(1)
@@ -30,7 +30,7 @@ RSpec.describe BadgeRewarder do
     user = create(:user, created_at: 1096.days.ago)
     newer_user = create(:user, created_at: 6.days.ago)
     older_user = create(:user, created_at: 1200.days.ago)
-    create(:badge, title: "3-year-club")
+    create(:badge, title: "three-year-club")
     create(:badge, title: "heysddssdhey")
     described_class.award_yearly_club_badges
     expect(user.badge_achievements.size).to eq(1)
