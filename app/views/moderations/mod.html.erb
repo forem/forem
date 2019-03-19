@@ -61,7 +61,7 @@
     width: 100%;
     padding: 5px;
     font-size: 17px;
-    height: 50px;
+    height: 100px;
     border: 1px solid #888;
   }
 
@@ -123,7 +123,7 @@
         <br /><br />
         <%= f.hidden_field :article_id, value: @moderatable.id %>
         <%= f.text_field :tag_name, placeholder: "Tag Name" %>
-        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind)" %>
+        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for Removal (Be super kind) - Only the reason is needed, the notification will take care of the rest." %>
         <%= f.submit "Remove Tag" %>
         <% adjustments = TagAdjustment.where(article_id: @moderatable.id, adjustment_type: "removal") %>
         <% if adjustments.any? %>
