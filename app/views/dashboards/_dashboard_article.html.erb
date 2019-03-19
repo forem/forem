@@ -28,7 +28,7 @@
     <% end %>
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
-        <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> reactions // <%= article.comments_count %> comments
+        <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> <%= "reaction".pluralize(count: article.positive_reactions_count) %> // <%= article.comments_count %> <%= "comment".pluralize(count: article.comments_count) %>
       </span>
     <% end %>
   </div>
