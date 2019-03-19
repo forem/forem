@@ -26,6 +26,7 @@
     text-align:left;
     &:hover{
       background: $light-gray;
+      background: var(--theme-container-background-hover, $light-gray);
     }
     .picture{
       height:60px;

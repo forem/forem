@@ -244,13 +244,12 @@ a.header-link {
       width: calc(100% - 52px);
       margin: 15px auto 2px;
       display: block;
-      resize: none;
+      resize: vertical;
       border-radius: 3px;
       border: 1px solid rgb(232, 229, 229);
-      height: 75px;
+      height: 125px;
       font-size: 16px;
       padding: 6px;
-      transition: height 0.3s ease;
       cursor: text;
       &.embiggened {
         height: calc(2vw + 115px);
