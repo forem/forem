@@ -1,9 +1,6 @@
-require "json"
-
-class CodepenPrefillTag < LiquidTagBase
-  def initialize(tag_name, options, markup)
+class CodepenPrefillTag < Liquid::Block
+  def initialize(tag_name, options)
     super
-    @draft = sanitize_draft(markup)
     @options = parse_options(options)
   end
 
@@ -17,16 +14,12 @@ class CodepenPrefillTag < LiquidTagBase
         data-prefill=#{@options}
         >
 
-        <code style="display: none">#{@preamble}</code>
-        <code>#{parsed_content}</code>
-      </div>
-    HTML
-    # change HTML format above to match Codepen Prefill
-    html
-  end
+        #{parsed_content}
 
-  def sanitize_draft(markup)
-    ActionView::Base.full_sanitizer.sanitize(markup)
+      </div>
+      <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+    HTML
+    html
   end
 
   def parse_options(input)
@@ -34,23 +27,19 @@ class CodepenPrefillTag < LiquidTagBase
 
     options.map { |o| valid_option(o) }.reject(&:nil?)
 
-    # query = options.join("&")
-    # change to how Codepen formats options in HTML tags
-    # return in JSON format!!
-
-    if query.blank?
-      query
-    else
-      "?#{query}"
+    query = {}
+    options.each do |i|
+      attr = i.split("=")[0]
+      val = i.split("=")[1]
+      query[attr] = val
     end
+
+    query.to_json
   end
 
   def valid_option(option)
-    raise StandardError, "CodepenPrefill Error: Invalid options" unless false # (option =~ /\A(initialpath=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(module=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z/)&.zero?
+    raise StandardError, "CodepenPrefill Error: Invalid options" unless option =~ /^[A-Za-z-]+={1}[\[\]]?["\w.,"]*[\[\]]?/
 
-    # change to Codepen options: height, default-tabs, html_classes, scripts, styles, title, description,
-    # data-editable, data-default-tab, data-height, data-theme-id
-    # enable data-lang for pre tags in markdown
     option
   end
 end
