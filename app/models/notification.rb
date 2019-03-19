@@ -126,26 +126,11 @@ class Notification < ApplicationRecord
       return if reaction.points.negative?
       return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
 
-      aggregated_reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
-        reject { |r| r.user_id == reaction.reactable.user_id }.
-        map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
-      json_data = {
-        user: user_data(reaction.user),
-        reaction: {
-          category: reaction.category,
-          reactable_type: reaction.reactable_type,
-          reactable_id: reaction.reactable_id,
-          reactable: {
-            path: reaction.reactable.path,
-            title: reaction.reactable.title,
-            class: {
-              name: reaction.reactable.class.name
-            }
-          },
-          aggregated_siblings: aggregated_reaction_siblings,
-          updated_at: reaction.updated_at
-        }
-      }
+      reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
+        where.not(reactions: { user_id: reaction.reactable.user_id }).
+        order("created_at DESC")
+
+      aggregated_reaction_siblings = reaction_siblings.map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
 
       notification_params = {
         notifiable_type: reaction.reactable.class.name,
@@ -162,6 +147,26 @@ class Notification < ApplicationRecord
       if aggregated_reaction_siblings.size.zero?
         notification = Notification.where(notification_params).delete_all
       else
+        recent_reaction = reaction_siblings.first
+
+        json_data = {
+          user: user_data(recent_reaction.user),
+          reaction: {
+            category: recent_reaction.category,
+            reactable_type: recent_reaction.reactable_type,
+            reactable_id: recent_reaction.reactable_id,
+            reactable: {
+              path: recent_reaction.reactable.path,
+              title: recent_reaction.reactable.title,
+              class: {
+                name: recent_reaction.reactable.class.name
+              }
+            },
+            aggregated_siblings: aggregated_reaction_siblings,
+            updated_at: recent_reaction.updated_at
+          }
+        }
+
         previous_siblings_size = 0
         notification = Notification.find_or_create_by(notification_params)
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data

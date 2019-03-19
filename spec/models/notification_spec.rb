@@ -143,6 +143,38 @@ RSpec.describe Notification, type: :model do
       end
     end
 
+    context "when a reaction is destroyed" do
+      let(:comment) { create(:comment, user: user2, commentable: article) }
+      let!(:notification) { create(:notification, user: user, notifiable: comment, action: "Reaction") }
+
+      it "destroys the notification if it exists" do
+        reaction = create(:reaction, reactable: comment, user: user)
+        reaction.destroy
+        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        expect(Notification.where(id: notification.id)).not_to be_any
+      end
+
+      it "keeps the notification if siblings exist" do
+        reaction = create(:reaction, reactable: comment, user: user)
+        create(:reaction, reactable: comment, user: user3)
+        reaction.destroy
+        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        notification.reload
+        expect(notification).to be_persisted
+      end
+
+      it "doesn't keep data of the destroyed reaction in the notification" do
+        reaction = create(:reaction, reactable: comment, user: user)
+        create(:reaction, reactable: comment, user: user3)
+        reaction.destroy
+        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        notification.reload
+        expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }).to eq([user3.id])
+        # not the user of the destroyed reaction!
+        expect(notification.json_data["user"]["id"]).to eq(user3.id)
+      end
+    end
+
     context "when reactable is not receiving notifications" do
       it "does not send a notification to the author of a comment" do
         comment = create(:comment, user: user2, commentable: article)
