@@ -946,9 +946,6 @@
                 background: $light-purple;
               }
             }
-            &:hover {
-              background: white;
-            }
             .readinglist-sidebar-subcat {
               font-weight: bold;
               font-size: 0.78em;
@@ -1014,6 +1011,7 @@
           }
           &:hover {
             background: $light-gray;
+            background: var(--theme-container-background-hover, $light-gray);
           }
         }
       }
