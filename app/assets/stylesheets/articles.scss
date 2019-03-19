@@ -122,6 +122,8 @@
         top: 14px;
         border: 0px;
         background: transparent;
+        background: var(--theme-secondary-color, transparent);
+        border-radius: 8px;
         img {
           height: 24px;
         }
@@ -644,11 +646,13 @@
       -webkit-appearance: none;
       font-family: $helvetica-condensed;
       color: $medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
       a {
         &:hover {
           opacity: 1;
         }
         color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
       }
       img {
         height: 18px;
@@ -944,7 +948,12 @@
               display: block;
               &:hover {
                 background: $light-purple;
+                background: var(--theme-container-background, $light-purple);
               }
+            }
+            &:hover {
+              background: white;
+              background: var(--theme-background, white);
             }
             .readinglist-sidebar-subcat {
               font-weight: bold;
@@ -1268,6 +1277,7 @@
         text-align: left;
         border-radius: 0px;
         color: $black;
+        color: var(--theme-color, $black);
         cursor: pointer;
         &:hover {
           background: lighten($bold-blue, 38%);
@@ -1382,6 +1392,7 @@
       .discuss-list-comment-count {
         font-size: 0.8em;
         color: $medium-gray;
+        color: var(--theme-container-color, $medium-gray);
         margin-top: 2px;
         img {
           width: 20px;

@@ -145,7 +145,7 @@
         </div>
       <% end %>
     <% else %>
-      <% cache("seo-boostable-posts-homepage-xoxo", expires_in: 18.hours) do %>
+      <% cache("seo-boostable-posts-homepage-xoxoxo", expires_in: 18.hours) do %>
         <% @boostable_posts = Article.seo_boostable %>
         <% if @boostable_posts.any? %>
           <div class="widget">
