@@ -87,7 +87,7 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when request is invalid" do
       it "returns proper error message" do
-        expect { get "/chat_channels/1200" }.to raise_error(ActionController::RoutingError)
+        expect { get "/chat_channels/1200" }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
