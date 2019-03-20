@@ -212,7 +212,13 @@
       }
       select {
         display: block;
-        font-size: 1.3em;
+        font-size:19px;
+        width:650px;
+        max-width:calc(100% - 4px);
+        padding:12px;
+        border:1px solid rgb(222, 230, 233);
+        border-radius:3px;
+        background-color:white;
       }
       button.big-action {
         width: 130px;
