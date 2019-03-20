@@ -311,7 +311,7 @@ class User < ApplicationRecord
   end
 
   def tech_support?
-    has_role?(:tech_support) || has_role?(:super_admin?)
+    has_role?(:tech_support) || has_role?(:super_admin)
   end
 
   def trusted
