@@ -350,13 +350,6 @@ Lint/Void:
 
 # Performance
 
-Performance/Size:
-  Description: >-
-    Use `size` instead of `count` for counting
-    the number of elements in `Array` and `Hash`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
-  Enabled: false
-
 Performance/StringReplacement:
   Description: >-
     Use `tr` instead of `gsub` when you are replacing the same
