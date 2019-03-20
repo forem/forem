@@ -154,8 +154,8 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       described_class.call(destroyed_reaction, user)
       notification.reload
       expect(notification.notified_at).not_to be_nil
-      expect(notification.json_data["user"]["id"]).to eq(user2.id)
-      expect(notification.json_data["user"]["username"]).to eq(user2.username)
+      expect(notification.json_data["user"]["id"]).to eq(user3.id)
+      expect(notification.json_data["user"]["username"]).to eq(user3.username)
       expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }).to eq([user3.id])
     end
   end
