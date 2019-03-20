@@ -26,7 +26,7 @@ class Tweet < ApplicationRecord
       begin
         return tweet = try_to_get_tweet(twitter_id_code)
       rescue StandardError => e
-        puts e
+        Rails.logger.error(e)
         tries += 1
       end
     end

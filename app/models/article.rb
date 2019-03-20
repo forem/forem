@@ -414,7 +414,7 @@ class Article < ApplicationRecord
       self.video_duration_in_seconds = duration
     end
   rescue StandardError => e
-    puts e.message
+    Rails.logger.error(e)
   end
 
   private
