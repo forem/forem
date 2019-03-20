@@ -350,11 +350,6 @@ Lint/Void:
 
 # Performance
 
-Performance/ReverseEach:
-  Description: 'Use `reverse_each` instead of `reverse.each`.'
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
-  Enabled: false
-
 Performance/Sample:
   Description: >-
     Use `sample` instead of `shuffle.first`,
