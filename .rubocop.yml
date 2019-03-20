@@ -417,10 +417,6 @@ Performance/StringReplacement:
 
 # Rails
 
-Rails/ActionFilter:
-  Description: 'Enforces consistent use of action filter methods.'
-  Enabled: false
-
 Rails/Date:
   Description: >-
     Checks the correct usage of date aware methods,
