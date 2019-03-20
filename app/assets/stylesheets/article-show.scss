@@ -113,6 +113,7 @@ article {
     margin: auto;
     .org-branded-title-link {
       color: lighten($black, 4%);
+      color: var(--theme-color, lighten($black, 4%));
       .org-branded-title {
         font-size: calc(0.9em + 0.3vw);
         padding: 8px 0px 6px;
@@ -1019,6 +1020,7 @@ article {
   padding-bottom: 20px;
   a {
     color: $black;
+    color: var(--theme-color, $black);
   }
   .inner {
     width: 800px;
