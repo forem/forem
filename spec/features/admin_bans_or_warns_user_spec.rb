@@ -11,14 +11,14 @@ describe "Admin bans user" do
 
   def ban_user
     visit "/internal/users/#{user.id}/edit"
-    check("user_ban_user")
+    select("Ban", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
   end
 
   def warn_user
     visit "/internal/users/#{user.id}/edit"
-    check("user_warn_user")
+    select("Warn", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
   end
@@ -30,24 +30,25 @@ describe "Admin bans user" do
 
   def unban_user
     visit "/internal/users/#{user.id}/edit"
-    uncheck("user_ban_user")
+    select("Regular Member", from: "user_user_status")
+    fill_in("user_note_for_current_role", with: "good user")
     click_button("Update User Status")
   end
 
-  it "checks that the user is warned, has a reason for warning, and privileges are removed" do
+  it "checks that the user is warned, has a note, and privileges are removed" do
     user.add_role :trusted
     add_tag_moderator_role
     warn_user
     expect(user.warned).to eq(true)
-    expect(user.reason_for_warning).to eq "something"
+    expect(Note.last.reason).to eq "Warn"
     expect(user.has_role?(:tag_moderator)).to eq(false)
   end
 
   # to-do: add spec for invalid bans
-  it "checks that the user is banned and has a reason for ban" do
+  it "checks that the user is banned and has note" do
     ban_user
     expect(user.banned).to eq(true)
-    expect(user.reason_for_ban).to eq "something"
+    expect(Note.last.reason).to eq "Ban"
   end
 
   it "removes other roles if user is banned" do
