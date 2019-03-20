@@ -688,15 +688,17 @@ article {
     z-index: 22;
     background: white;
     border: 1px solid darken($light-medium-gray, 2%);
+    border: var(--theme-container-border, 1px solid darken($light-medium-gray, 2%));
     box-shadow: $bold-shadow;
     box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     width: 100%;
     background: $tan;
+    background: var(--theme-background, $tan);
     @media screen and (min-width: 880px) {
       margin-left: -1px;
       margin-right: -1px;
       width: 880px;
-      padding: calc(0px + 0.8vh) 0px;
+      padding: calc(0px + 0.7vh) 0px;
     }
     @media screen and (min-width: 1530px) {
       margin-left: -1px;
@@ -731,6 +733,8 @@ article {
         }
         &:not(.user-activated) {
           background: darken($light-gray, 1%) !important;
+          background: var(--theme-container-background, darken($light-gray, 1%)) !important;
+
         }
         &:focus {
           outline: 0;
@@ -756,6 +760,7 @@ article {
     }
     button {
       background: transparent;
+      background: var(--theme-container-background, transparent);
       margin: 0px calc(0.22vw + 2px);
       padding: 3px calc(0.88vw + 8px);
       border-radius: 100px;
@@ -777,6 +782,7 @@ article {
         vertical-align: 5px;
         margin-left: 4px;
         color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
         font-size: 14px;
         width: 27px;
         @media screen and (min-width: 500px) {
@@ -887,6 +893,7 @@ article {
       display: none;
       position: relative;
       color: $medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
