@@ -350,13 +350,6 @@ Lint/Void:
 
 # Performance
 
-Performance/Detect:
-  Description: >-
-    Use `detect` instead of `select.first`, `find_all.first`,
-    `select.last`, and `find_all.last`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
-  Enabled: false
-
 Performance/FlatMap:
   Description: >-
     Use `Enumerable#flat_map`
