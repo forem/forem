@@ -423,10 +423,6 @@ Rails/Date:
     such as Date.today, Date.current etc.
   Enabled: true
 
-Rails/FindEach:
-  Description: 'Prefer all.find_each over all.find.'
-  Enabled: false
-
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: false
