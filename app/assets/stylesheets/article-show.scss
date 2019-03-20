@@ -954,6 +954,7 @@ article {
     .article-actions {
       padding: 8px 0px 0px;
       border-bottom: 1px solid $tan;
+      border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
       transition: padding 0.33s;
       .article-share-action-block {
