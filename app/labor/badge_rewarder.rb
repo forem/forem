@@ -1,8 +1,19 @@
 module BadgeRewarder
+  YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten" }.freeze
+
   def self.award_yearly_club_badges
-    award_one_year_badges
-    award_two_year_badges
-    award_three_year_badges
+    (1..3).each do |i|
+      message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
+      badge = Badge.find_by_slug("#{YEARS[i]}-year-club")
+      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.day).find_each do |user|
+        achievement = BadgeAchievement.create(
+          user_id: user.id,
+          badge_id: badge.id,
+          rewarding_context_message_markdown: message,
+        )
+        user.save if achievement.valid?
+      end
+    end
   end
 
   def self.award_beloved_comment_badges
@@ -68,42 +79,6 @@ module BadgeRewarder
         rewarding_context_message_markdown: message_markdown,
       )
       user.save
-    end
-  end
-
-  def self.award_one_year_badges
-    message = "Happy DEV birthday!"
-    User.where("created_at < ? AND created_at > ?", 1.year.ago, 367.days.ago).find_each do |user|
-      achievement = BadgeAchievement.create(
-        user_id: user.id,
-        badge_id: Badge.find_by_slug("one-year-club").id,
-        rewarding_context_message_markdown: message,
-      )
-      user.save if achievement.valid?
-    end
-  end
-
-  def self.award_two_year_badges
-    message = "Happy DEV birthday! Can you believe it's been two years?"
-    User.where("created_at < ? AND created_at > ?", 2.year.ago, 732.days.ago).find_each do |user|
-      achievement = BadgeAchievement.create(
-        user_id: user.id,
-        badge_id: Badge.find_by_slug("two-year-club").id,
-        rewarding_context_message_markdown: message,
-      )
-      user.save if achievement.valid?
-    end
-  end
-
-  def self.award_three_year_badges
-    message = "Happy DEV birthday! Can you believe it's been three years already?!"
-    User.where("created_at < ? AND created_at > ?", 3.year.ago, 1097.days.ago).find_each do |user|
-      achievement = BadgeAchievement.create(
-        user_id: user.id,
-        badge_id: Badge.find_by_slug("three-year-club").id,
-        rewarding_context_message_markdown: message,
-      )
-      user.save if achievement.valid?
     end
   end
 end
