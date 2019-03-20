@@ -350,12 +350,6 @@ Lint/Void:
 
 # Performance
 
-Performance/CaseWhenSplat:
-  Description: >-
-    Place `when` conditions that use splat at the end
-    of the list of `when` branches.
-  Enabled: false
-
 Performance/Count:
   Description: >-
     Use `count` instead of `select...size`, `reject...size`,
