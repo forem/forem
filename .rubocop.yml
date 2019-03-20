@@ -427,10 +427,6 @@ Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: false
 
-Rails/Output:
-  Description: 'Checks for calls to puts, print, etc.'
-  Enabled: false
-
 Rails/ReadWriteAttribute:
   Description: >-
     Checks for read_attribute(:attr) and
