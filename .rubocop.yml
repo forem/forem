@@ -350,13 +350,6 @@ Lint/Void:
 
 # Performance
 
-Performance/Sample:
-  Description: >-
-    Use `sample` instead of `shuffle.first`,
-    `shuffle.last`, and `shuffle[Fixnum]`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
-  Enabled: false
-
 Performance/Size:
   Description: >-
     Use `size` instead of `count` for counting
