@@ -96,10 +96,12 @@
         text-align: left;
         border-radius: 100px;
         color: $black;
+        color: var(--theme-color, $black);
         text-align: center;
         margin: 1%;
         &:hover {
           background: lighten($bold-blue, 38%);
+          background: var(--theme-container-background-hover, lighten($bold-blue, 38%));
         }
         &.selected {
           background: lighten($bold-blue, 8%);
@@ -181,6 +183,7 @@
         border: 1px solid transparent;
         &.selected {
           background: $purple;
+          color: $black;
           border: 1px solid $dark-purple;
           box-shadow: 3px 4px 0px $dark-purple;
         }
@@ -285,7 +288,9 @@
         display: flex;
         .article-organization-headline-inner {
           background: darken($light-gray, 6%);
+          background: var(--theme-container-accent-background, darken($light-gray, 6%));
           color: $black;
+          color: var(--theme-color, $black);
           padding: 6px 12px;
           border-radius: 100px;
           font-weight: 600;
@@ -391,6 +396,7 @@
       }
       .time-ago-indicator {
         color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
         display: inline-block;
         margin-left: 4px;
         font-weight: 400;
@@ -1173,6 +1179,7 @@
             margin: auto;
             width: 98%;
             min-height: 35px;
+            border-radius: 8px;
           }
           .sponsor-tagline {
             margin: 10px auto;
@@ -1281,6 +1288,7 @@
         cursor: pointer;
         &:hover {
           background: lighten($bold-blue, 38%);
+          background: var(--theme-container-background-hover, lighten($bold-blue, 38%));
         }
         &.selected {
           background: lighten($bold-blue, 10%);
