@@ -169,16 +169,19 @@
           border: 1px solid lighten($dark-gray,18%);
           border-radius:3px;
           color:$black;
+          color: var(--theme-color, $black);
           position:relative;
           &:hover{
             border: 1px solid $black;
             background:white;
+            background: var(--theme-container-background-hover, white);
           }
           h1,h2,h3,h4,h5,h6{
             font-size:1.2em;
           }
           p{
             color:$black;
+            color: var(--theme-color, $black);
             width:99%;
             padding:0;
             margin-left:0;
