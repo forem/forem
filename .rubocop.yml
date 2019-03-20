@@ -432,7 +432,3 @@ Rails/TimeZone:
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
   Reference: 'http://danilenko.org/2012/7/6/rails_timezones'
   Enabled: false
-
-Rails/Validation:
-  Description: 'Use validates :attribute, hash of validations.'
-  Enabled: false
