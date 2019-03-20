@@ -423,10 +423,6 @@ Rails/Date:
     such as Date.today, Date.current etc.
   Enabled: true
 
-Rails/FindBy:
-  Description: 'Prefer find_by over where.first.'
-  Enabled: false
-
 Rails/FindEach:
   Description: 'Prefer all.find_each over all.find.'
   Enabled: false
