@@ -67,7 +67,7 @@ class RssReader
         possible_link = a_tag[0].inner_html
         if /medium\.com\/media\/.+\/href/.match?(possible_link)
           real_link = HTTParty.head(possible_link).request.last_uri.to_s
-          return unless real_link.include?("gist.github.com")
+          break unless real_link.include?("gist.github.com")
 
           iframe.name = "p"
           iframe.keys.each { |attr| iframe.remove_attribute(attr) }

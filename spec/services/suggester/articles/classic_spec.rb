@@ -18,7 +18,6 @@ RSpec.describe Suggester::Articles::Classic do
     expect(described_class.new(article).get).to eq []
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "returns single article if multiple qualify" do
     user.follow(tag)
     create(:reaction, user_id: user.id, reactable_id: article.id)
@@ -31,5 +30,4 @@ RSpec.describe Suggester::Articles::Classic do
     create(:reaction, user_id: user2.id, reactable_id: article2.id, category: "unicorn")
     expect(described_class.new(article).get.first&.id).to eq article.id
   end
-  # rubocop:enable RSpec/ExampleLength
 end

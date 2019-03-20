@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe ChatChannel, type: :model do
@@ -33,4 +32,3 @@ RSpec.describe ChatChannel, type: :model do
     expect(chat_channel.channel_users.size).to eq(1)
   end
 end
-# rubocop:enable RSpec/MultipleExpectations

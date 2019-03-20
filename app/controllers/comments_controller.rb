@@ -91,9 +91,9 @@ class CommentsController < ApplicationController
           github_username: current_user.github_username
         }
       }
-    elsif @comment = Comment.where(body_markdown: @comment.body_markdown,
-                                   commentable_id: @comment.commentable.id,
-                                   ancestry: @comment.ancestry)[1]
+    elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
+                                    commentable_id: @comment.commentable.id,
+                                    ancestry: @comment.ancestry)[1])
       @comment.destroy
       render json: { status: "comment already exists" }
       return

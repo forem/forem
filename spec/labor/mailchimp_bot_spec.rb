@@ -87,7 +87,6 @@ RSpec.describe MailchimpBot do
       expect(described_class.new(user).upsert_to_membership_newsletter).to be(false)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     context "when user is a sustaining member" do
       it "send proper information" do
         user.update(monthly_dues: 2500, email_membership_newsletter: true)
@@ -110,7 +109,6 @@ RSpec.describe MailchimpBot do
           with(hash_including(body: hash_including(status: "unsubscribed")))
       end
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 
   describe "#unsubscribe_all_newsletters" do

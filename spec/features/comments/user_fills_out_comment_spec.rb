@@ -18,7 +18,6 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
     expect(page).to have_text(raw_comment)
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "User fill out commen box then click previews and submit" do
     visit user.path
     visit article.path.to_s
@@ -43,5 +42,4 @@ RSpec.describe "Creating Comment", type: :feature, js: true do
     find(:xpath, "//div[contains(@class, 'reply-actions')]/input[@name='commit']").click
     expect(page).to have_text(raw_comment)
   end
-  # rubocop:enable RSpec/ExampleLength
 end

@@ -50,7 +50,7 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "get /chat_channels?state=pending" do
     it "returns pending channels" do
-      ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "pending") # rubocop:disable Metrics/LineLength
+      ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "pending")
       sign_in user
       get "/chat_channels?state=pending"
       expect(response.body).to include(invite_channel.slug)
@@ -63,7 +63,7 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     it "returns no pending channels if not pending" do
-      ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "rejected") # rubocop:disable Metrics/LineLength
+      ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "rejected")
       sign_in user
       get "/chat_channels?state=pending"
       expect(response.body).not_to include(invite_channel.slug)
@@ -93,7 +93,6 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "POST /chat_channels" do
-    # rubocop:disable RSpec/MultipleExpectations
     it "creates chat_channel for current user" do
       post "/chat_channels",
         params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channel" } },
@@ -101,7 +100,6 @@ RSpec.describe "ChatChannels", type: :request do
       expect(ChatChannel.last.slug).to eq("hello-channel")
       expect(ChatChannel.last.active_users).to include(user)
     end
-    # rubocop:enable RSpec/MultipleExpectations
 
     it "returns errors if channel is invalid" do
       # slug should be taken
@@ -146,7 +144,6 @@ RSpec.describe "ChatChannels", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "raises NotAuthorizedError if user is logged in but not authorized" do
       sign_in user
       expect do
@@ -155,7 +152,6 @@ RSpec.describe "ChatChannels", type: :request do
           headers: { HTTP_ACCEPT: "application/json" }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
-    # rubocop:enable RSpec/ExampleLength
 
     context "when user is logged-in and authorized" do
       before do

@@ -22,7 +22,7 @@ RSpec.describe "AdditionalContentBoxes", type: :request do
     it "returns boosted article if available" do
       organization = create(:organization)
       create(:article, published: true, featured: true)
-      boosted_sugg = create(:article, tags: [tag.name], featured: true, boosted_additional_articles: true, organization_id: organization.id) # rubocop:disable Metrics/LineLength
+      boosted_sugg = create(:article, tags: [tag.name], featured: true, boosted_additional_articles: true, organization_id: organization.id)
       get "/additional_content_boxes?article_id=#{regular_article.id}&state=include_sponsors"
       expect(response.body).to include CGI.escapeHTML(boosted_sugg.title)
     end
