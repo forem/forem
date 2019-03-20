@@ -22,7 +22,7 @@ RSpec.describe "UserOrganization", type: :request do
 
   it "returns 404 if secret is wrong" do
     expect { post "/users/join_org", params: { org_secret: "NOT SECRET" } }.
-      to raise_error ActionController::RoutingError
+      to raise_error ActiveRecord::RecordNotFound
   end
 
   it "leaves org" do

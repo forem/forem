@@ -141,7 +141,7 @@ RSpec.describe "ArticlesApi", type: :request do
         }
       end
 
-      expect(invalid_update_request).to raise_error(ActionController::RoutingError)
+      expect(invalid_update_request).to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "does allow super user to update a different article" do
