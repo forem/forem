@@ -11,6 +11,9 @@ enable_defaults! { ENV['RACK_ENV'] != 'production' }
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 
+# Logo
+variable :LOGO_SVG, :String, default: ""
+
 # Default staff account's id
 variable :DEVTO_USER_ID, :Integer, default: 1
 

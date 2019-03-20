@@ -198,4 +198,13 @@ module ApplicationHelper
 
     "/t/#{params[:tag]}"
   end
+
+  def logo_svg
+    logo = if ApplicationConfig["LOGO_SVG"].present?
+             ApplicationConfig["LOGO_SVG"].html_safe
+           else
+             inline_svg("devplain.svg", class: "logo", size: "20% * 20%")
+           end
+    logo
+  end
 end
