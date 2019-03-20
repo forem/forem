@@ -10,7 +10,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
       it "raises 404" do
         expect do
           get "/delayed_job"
-        end.to raise_error(ActionController::RoutingError)
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -19,7 +19,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
         login_as user
         expect do
           get "/delayed_job"
-        end.to raise_error(ActionController::RoutingError)
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 

@@ -14,7 +14,7 @@ RSpec.describe "Badges", type: :request do
 
     context "when badge does not exist" do
       it "renders 404" do
-        expect { get "/badge/that-does-not-exists" }.to raise_error(ActionController::RoutingError)
+        expect { get "/badge/that-does-not-exists" }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
