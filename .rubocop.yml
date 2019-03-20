@@ -350,14 +350,6 @@ Lint/Void:
 
 # Performance
 
-Performance/FlatMap:
-  Description: >-
-    Use `Enumerable#flat_map`
-    instead of `Enumerable#map...Array#flatten(1)`
-    or `Enumberable#collect..Array#flatten(1)`
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code'
-  Enabled: false
-
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
