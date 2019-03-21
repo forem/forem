@@ -1,9 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :note, :ban_from_mentorship, :quick_match, :ban_user, :warn_user,
-  :note_for_mentorship_ban, :reason_for_mentorship_ban,
-  :note_for_current_role, :add_mentor, :add_mentee, :trusted_user, :pro_user
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro
 
   rolify
   include AlgoliaSearch
@@ -72,7 +70,6 @@ class User < ApplicationRecord
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,
     url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  # rubocop:disable Metrics/LineLength
   validates :facebook_url,
               format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
               allow_blank: true
@@ -96,7 +93,6 @@ class User < ApplicationRecord
   validates :gitlab_url,
               allow_blank: true,
               format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
-  # rubocop:enable Metrics/LineLength
   validates :shirt_gender,
               inclusion: { in: %w[unisex womens],
                            message: "%{value} is not a valid shirt style" },
@@ -114,10 +110,10 @@ class User < ApplicationRecord
                            message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-              inclusion: { in: %w(default night_theme),
+              inclusion: { in: %w[default night_theme],
                            message: "%{value} must be either default or night theme" }
   validates :config_font,
-              inclusion: { in: %w(default sans_serif),
+              inclusion: { in: %w[default sans_serif comic_sans],
                            message: "%{value} must be either default or sans serif" }
   validates :shipping_country,
               length: { in: 2..2 },
@@ -131,7 +127,7 @@ class User < ApplicationRecord
                 length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
               length: { maximum: 1000 }
-  validates :inbox_type, inclusion: { in: ["open", "private"] }
+  validates :inbox_type, inclusion: { in: %w[open private] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url
@@ -318,18 +314,6 @@ class User < ApplicationRecord
     end
   end
 
-  def reason_for_ban
-    return if notes.where(reason: "banned").blank?
-
-    Note.find_by(noteable_id: id, noteable_type: "User", reason: "banned").content
-  end
-
-  def reason_for_warning
-    return if notes.where(reason: "warned").blank?
-
-    Note.find_by(noteable_id: id, noteable_type: "User", reason: "warned").content
-  end
-
   def scholar
     valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
@@ -337,6 +321,10 @@ class User < ApplicationRecord
 
   def analytics
     has_role? :analytics_beta_tester
+  end
+
+  def comment_banned
+    has_role? :comment_banned
   end
 
   def workshop_eligible?

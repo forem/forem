@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Article, type: :model do
@@ -117,7 +116,7 @@ RSpec.describe Article, type: :model do
 
     context "when unpublished" do
       it "creates proper slug with this-is-the-slug format" do
-        expect(article0.slug).to match /(.*-){4,}/
+        expect(article0.slug).to match(/(.*-){4,}/)
       end
 
       it "modifies slug on create if proposed slug already exists on the user" do
@@ -239,49 +238,27 @@ RSpec.describe Article, type: :model do
   end
 
   describe "queries" do
-    let(:search_keyword) do
-      create(:search_keyword,
-        google_result_path: article.path,
-        google_position: 8,
-        google_volume: 2000,
-        google_difficulty: 10)
-    end
-
-    it "returns article plucked objects that match keyword query" do
-      search_keyword
-      article.update(featured: true)
+    it "returns articles ordered by organic_page_views_count" do
+      create(:article, score: 30)
+      create(:article, score: 30)
+      top_article = create(:article, organic_page_views_count: 20, score: 30)
       articles = Article.seo_boostable
-      expect(articles.flatten[0]).to eq(article.path)
+      expect(articles.first[0]).to eq(top_article.path)
     end
-
-    it "returns keyword articles by tag" do
-      search_keyword
-      article.update(featured: true)
-      articles = Article.seo_boostable(article.tags.first)
-      expect(articles.flatten[0]).to eq(article.path)
+    it "returns articles ordered by organic_page_views_count by tag" do
+      create(:article, score: 30)
+      create(:article, organic_page_views_count: 30, score: 30)
+      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article.update_column(:cached_tag_list, "good, greatalicious")
+      articles = Article.seo_boostable("greatalicious")
+      expect(articles.first[0]).to eq(top_article.path)
     end
-
-    it "does not return articles when none match based on tag" do
-      search_keyword
-      article.update(featured: true)
-      articles = Article.seo_boostable("woozle-wozzle-20000")
-      expect(articles.size).to eq(0)
-    end
-
-    it "doesn't return keywords that don't match criteria plucked objects matching keyword query" do
-      search_keyword.update_attributes(google_position: 33) # too high of a position
-      articles = Article.seo_boostable
-      expect(articles.size).to eq(0)
-    end
-
-    it "does not return unpublished articles" do
-      search_keyword
-      articles = Article.seo_boostable
-      article.update(published: false)
-      expect(articles.size).to eq(0)
-    end
-    it "returns empty relation if no articles match" do
-      articles = Article.seo_boostable
+    it "returns nothing if no tagged articles" do
+      create(:article, score: 30)
+      create(:article, organic_page_views_count: 30)
+      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article.update_column(:cached_tag_list, "good, greatalicious")
+      articles = Article.seo_boostable("godsdsdsdsgoo")
       expect(articles.size).to eq(0)
     end
   end
@@ -486,4 +463,3 @@ RSpec.describe Article, type: :model do
 
   include_examples "#sync_reactions_count", :article
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

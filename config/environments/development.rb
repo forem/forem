@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/BlockLength
-#
 def yarn_integrity_enabled?
   ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
 end
@@ -100,5 +98,3 @@ Rails.application.configure do
     Bullet.console = true
   end
 end
-
-# rubocop:enable Metrics/BlockLength

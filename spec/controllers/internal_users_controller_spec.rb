@@ -41,6 +41,27 @@ RSpec.describe "internal/users", type: :request do
     Delayed::Worker.new(quiet: true).work_off
   end
 
+  context "when managing activty and roles" do
+    it "adds comment ban role" do
+      patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      expect(user.roles.first.name).to eq("comment_banned")
+      expect(Note.first.content).to eq("comment ban this user")
+    end
+
+    it "selects new role for user" do
+      user.add_role :trusted
+      user.reload
+      patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
+      expect(user.roles.count).to eq(1)
+      expect(user.roles.last.name).to eq("comment_banned")
+    end
+
+    it "creates a general note on the user" do
+      put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
+      expect(Note.last.content).to eq("general note about whatever")
+    end
+  end
+
   context "when deleting user" do
     def create_mention
       comment = create(
@@ -69,6 +90,11 @@ RSpec.describe "internal/users", type: :request do
       post "/internal/users/#{user.id}/full_delete"
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
+
+    it "expect flash message" do
+      post "/internal/users/#{user.id}/full_delete"
+      expect(request.flash.notice).to include("fully deleted")
+    end
   end
 
   context "when banning from mentorship" do
@@ -77,7 +103,7 @@ RSpec.describe "internal/users", type: :request do
     end
 
     it "adds banned from mentorship role" do
-      put "/internal/users/#{user.id}", params: { user: { ban_from_mentorship: "1", note_for_mentorship_ban: "banned" } }
+      patch "/internal/users/#{user.id}/user_status", params: { user: { toggle_mentorship: "1", mentorship_note: "banned" } }
       expect(user.roles.first.name).to eq("banned_from_mentorship")
     end
 

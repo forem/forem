@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe User, type: :model do
@@ -8,7 +7,7 @@ RSpec.describe User, type: :model do
   let(:article)         { create(:article, user_id: user.id) }
   let(:tag)             { create(:tag) }
   let(:org)             { create(:organization) }
-  let (:second_org)     { create(:organization) }
+  let(:second_org)      { create(:organization) }
 
   before { mock_auth_hash }
 
@@ -36,7 +35,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
-    it { is_expected.to validate_inclusion_of(:inbox_type).in_array(["open", "private"]) }
+    it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
   end
 
   # the followings are failing
@@ -586,4 +585,3 @@ RSpec.describe User, type: :model do
     end
   end
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

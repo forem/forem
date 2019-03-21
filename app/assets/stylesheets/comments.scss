@@ -168,7 +168,7 @@ a.header-link {
       border: 0;
       cursor: pointer;
       display: inline-block;
-      background: $light-gray;
+      background: transparent;
       max-width: 29px;
       @media screen and (max-width: 900px) {
         padding: 5px 6px 1px;
@@ -219,6 +219,7 @@ a.header-link {
   form {
     width: 104%;
     background: $light-gray;
+    background: var(--theme-container-background, $light-gray);
     overflow: auto;
     position: relative;
     margin-bottom: 4px;
@@ -244,13 +245,12 @@ a.header-link {
       width: calc(100% - 52px);
       margin: 15px auto 2px;
       display: block;
-      resize: none;
+      resize: vertical;
       border-radius: 3px;
       border: 1px solid rgb(232, 229, 229);
-      height: 75px;
+      height: 125px;
       font-size: 16px;
       padding: 6px;
-      transition: height 0.3s ease;
       cursor: text;
       &.embiggened {
         height: calc(2vw + 115px);
@@ -525,7 +525,6 @@ a.header-link {
     padding-bottom: 5px;
     margin: 0;
     width: 96%;
-    color: $black;
     font-size: 0.95em;
     line-height: 1.35em;
     overflow: hidden;
@@ -653,6 +652,7 @@ a.header-link {
     border-top-left-radius: 3px;
     border-top-left-radius: 3px;
     color: $dark-gray;
+    color: var(--theme-secondary-color, $dark-gray);
     position: relative;
     // background:$light-gray;
     .comment-date {
@@ -664,6 +664,7 @@ a.header-link {
       text-align: right;
       a {
         color: $medium-gray;
+        color: var(--theme-secondary-color, $dark-gray);
       }
     }
     .dropbtn {
@@ -757,6 +758,7 @@ a.header-link {
     }
     a {
       color: lighten($dark-gray, 3%);
+      color: var(--theme-secondary-color, $dark-gray);
     }
   }
   .reaction-button,
@@ -929,6 +931,7 @@ a.header-link {
     padding: 0px;
     border: 1px solid $light-medium-gray;
     background: white;
+    background: var(--theme-container-background, #fff);
     &.comment-created-via-fetch {
       animation: comment-create 1.2s;
       .body {
@@ -971,5 +974,6 @@ a.header-link {
   }
   to {
     background-color: white;
+    background-color: var(--theme-container-background, #fff);
   }
 }

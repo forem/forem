@@ -1,4 +1,4 @@
-json.array! (@chat_channels_memberships.sort_by { |m| m.chat_channel.last_message_at }.reverse!) do |membership|
+json.array!(@chat_channels_memberships.sort_by { |m| m.chat_channel.last_message_at }.reverse!) do |membership|
   json.id membership.chat_channel.id
   membership.chat_channel.current_user = current_user
   json.slug membership.chat_channel.slug

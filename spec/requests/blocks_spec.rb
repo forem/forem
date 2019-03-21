@@ -13,7 +13,6 @@ RSpec.describe "Blocks", type: :request do
     end
   end
 
-  # rubocop:disable RSpec/ExampleLength
   describe "POST blocks" do
     it "creates block from input data" do
       post "/blocks", params: {
@@ -38,7 +37,6 @@ RSpec.describe "Blocks", type: :request do
       expect(Block.last.processed_css).to include("color: red")
     end
   end
-  # rubocop:enable RSpec/ExampleLength
 
   describe "DELETE blocks" do
     it "updates block from input data" do

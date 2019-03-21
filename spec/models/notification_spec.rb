@@ -29,9 +29,8 @@ RSpec.describe Notification, type: :model do
 
   describe "#send_new_follower_notification" do
     before do
-      run_background_jobs_immediately do
-        Notification.send_new_follower_notification(follow_instance)
-      end
+      ActiveJob::Base.queue_adapter = :inline
+      Notification.send_new_follower_notification(follow_instance)
     end
 
     it "sets the notifiable_at column upon creation" do
@@ -71,7 +70,8 @@ RSpec.describe Notification, type: :model do
     context "when a user unfollows another user" do
       it "destroys the follow notification" do
         follow_instance = user.stop_following(user2)
-        run_background_jobs_immediately { Notification.send_new_follower_notification(follow_instance) }
+        ActiveJob::Base.queue_adapter = :inline
+        Notification.send_new_follower_notification(follow_instance)
         expect(Notification.count).to eq 0
       end
     end
@@ -140,6 +140,38 @@ RSpec.describe Notification, type: :model do
         reaction = create(:reaction, reactable: article, user: user2)
         Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
         expect(user.notifications.count).to eq 1
+      end
+    end
+
+    context "when a reaction is destroyed" do
+      let(:comment) { create(:comment, user: user2, commentable: article) }
+      let!(:notification) { create(:notification, user: user, notifiable: comment, action: "Reaction") }
+
+      it "destroys the notification if it exists" do
+        reaction = create(:reaction, reactable: comment, user: user)
+        reaction.destroy
+        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        expect(Notification.where(id: notification.id)).not_to be_any
+      end
+
+      it "keeps the notification if siblings exist" do
+        reaction = create(:reaction, reactable: comment, user: user)
+        create(:reaction, reactable: comment, user: user3)
+        reaction.destroy
+        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        notification.reload
+        expect(notification).to be_persisted
+      end
+
+      it "doesn't keep data of the destroyed reaction in the notification" do
+        reaction = create(:reaction, reactable: comment, user: user)
+        create(:reaction, reactable: comment, user: user3)
+        reaction.destroy
+        Notification.send_reaction_notification_without_delay(reaction, article.user)
+        notification.reload
+        expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }).to eq([user3.id])
+        # not the user of the destroyed reaction!
+        expect(notification.json_data["user"]["id"]).to eq(user3.id)
       end
     end
 

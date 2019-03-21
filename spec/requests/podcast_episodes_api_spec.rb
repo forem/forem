@@ -30,7 +30,7 @@ RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do
 
     it "returns nothing is passed invalid podcast slug" do
       expect { get "/api/podcast_episodes?username=nothing_#{rand(1_000_000_000_000_000)}" }.
-        to raise_error(ActionController::RoutingError)
+        to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

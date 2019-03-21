@@ -9,7 +9,8 @@
     margin-left: 25px;
   }
   a{
-    color:rgb(19, 19, 19);
+    color:$black;
+    color: var(--theme-color, $black);
   }
   .single-other-article{
     width:94%;
@@ -25,6 +26,7 @@
     text-align:left;
     &:hover{
       background: $light-gray;
+      background: var(--theme-container-background-hover, $light-gray);
     }
     .picture{
       height:60px;
@@ -58,6 +60,7 @@
       margin:0;
       font-weight:500;
       color:lighten($medium-gray,4%);
+      color: var(--theme-secondary-color, lighten($medium-gray,4%));
       font-size:1em;
       @media screen and ( min-width: 480px ){
         font-size:0.88em;

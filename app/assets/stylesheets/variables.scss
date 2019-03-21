@@ -36,25 +36,9 @@ $ease-in-cubic : cubic-bezier(0.55, 0.055, 0.675, 0.19);
 $ease-out-cubic : cubic-bezier(0.215, 0.61, 0.355, 1);
 
 body.night-theme {
-  #top-bar,
-  #page-content,
-  footer {
-    & {
-      background-color: #ececcc !important;
-
-      &,
-      & *:not(.highlight) > .highlight,
-      & iframe,
-      & video,
-      & img {
-        -webkit-filter: invert(100%);
-        filter: invert(100%);
-      }
-
-      & * {
-        background-blend-mode: difference;
-      }
-    }
+  .on-page-nav-butt img, .icon-img, .dropdown-icon, .reaction-button:not(.reacted) img, .image-upload-button button, .icon-image {
+    -webkit-filter: invert(95%);
+    filter: invert(95%);
   }
 }
 
@@ -66,4 +50,14 @@ body.sans-serif-article-body {
     font-family: $helvetica;
     font-size: 0.98em;
   }
+}
+body.comic-sans-article-body {
+  .body {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+  }
+  .body p {
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 0.98em;
+  }
+
 }

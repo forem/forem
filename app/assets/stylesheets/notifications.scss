@@ -67,6 +67,7 @@
               margin: 10px auto;
               width: 90%;
               color:#666666;
+              color: var(--theme-secondary-color, #666666);
               &.milestone-emojis{
                 font-size: xx-large;
                 padding-top: 10px;
@@ -126,8 +127,10 @@
             display:inline-block;
             margin-bottom:3px;
             color:$black !important;
+            color: var(--theme-color, $black) !important;
             &:hover{
               background:lighten($blue,57%);
+              background: var(--theme-container-background-hover, lighten($blue,57%));
               border:1px solid lighten($sky-blue,17%);
             }
           }
@@ -137,6 +140,7 @@
             border: 1px solid lighten($dark-gray,18%);
             border-radius:3px;
             color:$black;
+            color: var(--theme-color, $black);
             position:relative;
             .notification-new-post-title{
               font-size:1.7em;
@@ -145,6 +149,7 @@
             .notification-new-post-tags{
               margin-top:6px;
               color:$medium-gray;
+              color: var(--theme-color, $medium-gray);
             }
           }
           .footnote{
@@ -169,16 +174,19 @@
           border: 1px solid lighten($dark-gray,18%);
           border-radius:3px;
           color:$black;
+          color: var(--theme-color, $black);
           position:relative;
           &:hover{
             border: 1px solid $black;
             background:white;
+            background: var(--theme-container-background-hover, white);
           }
           h1,h2,h3,h4,h5,h6{
             font-size:1.2em;
           }
           p{
             color:$black;
+            color: var(--theme-color, $black);
             width:99%;
             padding:0;
             margin-left:0;
@@ -335,6 +343,7 @@
       }
       .unseen{
         background-color: $light-purple;
+        background:var(--theme-container-accent-background, $light-purple);
       }
     }
   }

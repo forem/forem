@@ -14,31 +14,14 @@ class Notification < ApplicationRecord
     def send_new_follower_notification(follow, is_read = false)
       return unless Follow.need_new_follower_notification_for?(follow.followable_type)
 
-      recent_follows = Follow.where(followable_type: follow.followable_type, followable_id: follow.followable_id).where("created_at > ?", 24.hours.ago).order("created_at DESC")
-
-      notification_params = { action: "Follow" }
-      if follow.followable_type == "User"
-        notification_params[:user_id] = follow.followable_id
-      elsif follow.followable_type == "Organization"
-        notification_params[:organization_id] = follow.followable_id
-      end
-
-      followers = User.where(id: recent_follows.pluck(:follower_id))
-      aggregated_siblings = followers.map { |follower| user_data(follower) }
-      if aggregated_siblings.size.zero?
-        Notification.find_or_create_by(notification_params).destroy
-      else
-        json_data = { user: user_data(follow.follower), aggregated_siblings: aggregated_siblings }
-        notification = Notification.find_or_create_by(notification_params)
-        notification.notifiable_id = recent_follows.first.id
-        notification.notifiable_type = "Follow"
-        notification.json_data = json_data
-        notification.notified_at = Time.current
-        notification.read = is_read
-        notification.save!
-      end
+      follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
+      Notifications::NewFollowerJob.perform_later(follow_data, is_read)
     end
-    handle_asynchronously :send_new_follower_notification
+
+    def send_new_follower_notification_without_delay(follow, is_read = false)
+      follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
+      Notifications::NewFollowerJob.perform_now(follow_data, is_read)
+    end
 
     def send_to_followers(notifiable, action = nil)
       # for now, arguments are always: notifiable = article, action = "Published"
@@ -126,26 +109,11 @@ class Notification < ApplicationRecord
       return if reaction.points.negative?
       return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
 
-      aggregated_reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
-        reject { |r| r.user_id == reaction.reactable.user_id }.
-        map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
-      json_data = {
-        user: user_data(reaction.user),
-        reaction: {
-          category: reaction.category,
-          reactable_type: reaction.reactable_type,
-          reactable_id: reaction.reactable_id,
-          reactable: {
-            path: reaction.reactable.path,
-            title: reaction.reactable.title,
-            class: {
-              name: reaction.reactable.class.name
-            }
-          },
-          aggregated_siblings: aggregated_reaction_siblings,
-          updated_at: reaction.updated_at
-        }
-      }
+      reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
+        where.not(reactions: { user_id: reaction.reactable.user_id }).
+        order("created_at DESC")
+
+      aggregated_reaction_siblings = reaction_siblings.map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
 
       notification_params = {
         notifiable_type: reaction.reactable.class.name,
@@ -162,6 +130,26 @@ class Notification < ApplicationRecord
       if aggregated_reaction_siblings.size.zero?
         notification = Notification.where(notification_params).delete_all
       else
+        recent_reaction = reaction_siblings.first
+
+        json_data = {
+          user: user_data(recent_reaction.user),
+          reaction: {
+            category: recent_reaction.category,
+            reactable_type: recent_reaction.reactable_type,
+            reactable_id: recent_reaction.reactable_id,
+            reactable: {
+              path: recent_reaction.reactable.path,
+              title: recent_reaction.reactable.title,
+              class: {
+                name: recent_reaction.reactable.class.name
+              }
+            },
+            aggregated_siblings: aggregated_reaction_siblings,
+            updated_at: recent_reaction.updated_at
+          }
+        }
+
         previous_siblings_size = 0
         notification = Notification.find_or_create_by(notification_params)
         previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
@@ -317,16 +305,7 @@ class Notification < ApplicationRecord
     private
 
     def user_data(user)
-      {
-        id: user.id,
-        class: { name: "User" },
-        name: user.name,
-        username: user.username,
-        path: user.path,
-        profile_image_90: user.profile_image_90,
-        comments_count: user.comments_count,
-        created_at: user.created_at
-      }
+      Notifications.user_data(user)
     end
 
     def organization_data(organization)

@@ -20,9 +20,9 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     add_param_context(:username, :slug)
-    if @article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate
+    if (@article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
       handle_article_show
-    elsif @article = Article.find_by_slug(params[:slug])&.decorate
+    elsif (@article = Article.find_by_slug(params[:slug])&.decorate)
       handle_possible_redirect
     else
       @podcast = Podcast.find_by_slug(params[:username]) || not_found
@@ -58,7 +58,7 @@ class StoriesController < ApplicationController
     if @user&.articles&.find_by_slug(params[:slug])
       redirect_to "/#{@user.username}/#{params[:slug]}"
       return
-    elsif @organization = @article.organization
+    elsif (@organization = @article.organization)
       redirect_to "/#{@organization.slug}/#{params[:slug]}"
       return
     end
@@ -186,7 +186,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_view_param
-    redirect_to "/internal/users/#{@user.id}/edit" if params[:view] == "moderate"
+    redirect_to "/internal/users/#{@user.id}" if params[:view] == "moderate"
     redirect_to "/admin/users/#{@user.id}/edit" if params[:view] == "admin"
   end
 

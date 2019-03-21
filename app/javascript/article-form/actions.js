@@ -45,20 +45,6 @@ export function submitArticle(payload, clearStorage, errorCb, failureCb) {
     .catch(failureCb);
 }
 
-export function generateMainImage(payload, successCb, failureCb) {
-  fetch('/image_uploads', {
-    method: 'POST',
-    headers: {
-      'X-CSRF-Token': csrfToken,
-    },
-    body: generateUploadFormdata(payload),
-    credentials: 'same-origin',
-  })
-    .then(response => response.json())
-    .then(successCb)
-    .catch(failureCb);
-}
-
 function generateUploadFormdata(payload) {
   const token = window.csrfToken;
   const formData = new FormData();
@@ -68,4 +54,24 @@ function generateUploadFormdata(payload) {
     formData.append('wrap_cloudinary', 'true');
   }
   return formData;
+}
+
+export function generateMainImage(payload, successCb, failureCb) {
+  fetch('/image_uploads', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': window.csrfToken,
+    },
+    body: generateUploadFormdata(payload),
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(json => {
+      if (json.error) {
+        throw new Error(json.error);
+      }
+
+      return successCb(json);
+    })
+    .catch(failureCb);
 }

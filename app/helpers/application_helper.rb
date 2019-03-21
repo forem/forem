@@ -139,7 +139,7 @@ module ApplicationHelper
 
   def tag_colors(tag)
     Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
-      if found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by_name(tag)
+      if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by_name(tag))
         { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
       else
         { background: "#d6d9e0", color: "#606570" }
@@ -197,5 +197,14 @@ module ApplicationHelper
     return "" if params[:tag].blank?
 
     "/t/#{params[:tag]}"
+  end
+
+  def logo_svg
+    logo = if ApplicationConfig["LOGO_SVG"].present?
+             ApplicationConfig["LOGO_SVG"].html_safe
+           else
+             inline_svg("devplain.svg", class: "logo", size: "20% * 20%")
+           end
+    logo
   end
 end
