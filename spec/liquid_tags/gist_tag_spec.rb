@@ -23,7 +23,7 @@ RSpec.describe GistTag, type: :liquid_template do
             <script id="gist-ltag" src="#{link}.js"></script>
         </div>
       HTML
-      html.gsub("\n", " ").delete(" ")
+      html.tr("\n", " ").delete(" ")
     end
 
     it "accepts proper gist url" do
