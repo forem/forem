@@ -64,19 +64,24 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when logged in" do
-      it "renders the current user's followings" do
+      before { login_as user }
+
+      it "renders users that current user follows" do
         user.follow second_user
-        login_as user
         get "/dashboard/following_users"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
-      it "renders the current user's tag followings" do
-        user.follow second_user
+      it "renders tags that current user follows" do
         tag = create(:tag)
         user.follow tag
-        login_as user
-        get "/dashboard/following"
+        get "/dashboard/following_users"
         expect(response.body).to include CGI.escapeHTML(tag.name)
+      end
+      it "renders organizations that current user follows" do
+        organization = create(:organization)
+        user.follow organization
+        get "/dashboard/following_users"
+        expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
   end
