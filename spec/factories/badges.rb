@@ -4,7 +4,7 @@ FactoryBot.define do
   )
 
   factory :badge do
-    title { Faker::Overwatch.quote }
+    title { Faker::Games::Overwatch.quote }
     description { Faker::Lorem.sentence }
     badge_image { image }
   end
