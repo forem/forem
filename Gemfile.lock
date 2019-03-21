@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/andrewmcodes/foreman.git
+  revision: b64e4019a8ed3cfae7216c3219dc91833845d9c7
+  ref: b64e401
+  specs:
+    foreman (0.85.0)
+      thor (>= 0.19, < 0.21)
+
+GIT
   remote: https://github.com/thepracticaldev/acts_as_follower.git
   revision: 288690cd99bc470eaee493fce5bfa9fe23157692
   branch: master
@@ -1009,6 +1017,7 @@ DEPENDENCIES
   figaro (~> 1.1)
   fix-db-schema-conflicts (~> 3.0)
   fog (~> 1.41)
+  foreman!
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.0)
   gibbon (~> 2.2)
