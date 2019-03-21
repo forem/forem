@@ -148,7 +148,7 @@ class MarkdownParser
   end
 
   def user_link_if_exists(mention)
-    username = mention.gsub("@", "").downcase
+    username = mention.delete("@").downcase
     if User.find_by_username(username)
       <<~HTML
         <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}'>@#{username}</a>

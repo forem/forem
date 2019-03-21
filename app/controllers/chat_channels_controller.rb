@@ -149,7 +149,7 @@ class ChatChannelsController < ApplicationController
 
     if params[:slug]
       slug = if params[:slug]&.start_with?("@")
-               [current_user.username, params[:slug].gsub("@", "")].sort.join("/")
+               [current_user.username, params[:slug].delete("@")].sort.join("/")
              else
                params[:slug]
              end

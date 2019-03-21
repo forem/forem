@@ -421,9 +421,9 @@ class User < ApplicationRecord
 
   def temp_username
     if twitter_username
-      twitter_username.downcase.gsub(/[^0-9a-z_]/i, "").gsub(/ /, "")
+      twitter_username.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
     elsif github_username
-      github_username.downcase.gsub(/[^0-9a-z_]/i, "").gsub(/ /, "")
+      github_username.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
     end
   end
 
@@ -432,8 +432,8 @@ class User < ApplicationRecord
   end
 
   def set_config_input
-    self.config_theme = config_theme.gsub(" ", "_")
-    self.config_font = config_font.gsub(" ", "_")
+    self.config_theme = config_theme.tr(" ", "_")
+    self.config_font = config_font.tr(" ", "_")
   end
 
   def check_for_username_change

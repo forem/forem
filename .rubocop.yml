@@ -247,63 +247,6 @@ Layout/InitialIndentation:
     Checks the indentation of the first non-blank non-comment line in a file.
   Enabled: false
 
-# Performance
-
-Performance/CaseWhenSplat:
-  Description: >-
-    Place `when` conditions that use splat at the end
-    of the list of `when` branches.
-  Enabled: false
-
-Performance/Count:
-  Description: >-
-    Use `count` instead of `select...size`, `reject...size`,
-    `select...count`, `reject...count`, `select...length`,
-    and `reject...length`.
-  Enabled: false
-
-Performance/Detect:
-  Description: >-
-    Use `detect` instead of `select.first`, `find_all.first`,
-    `select.last`, and `find_all.last`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
-  Enabled: false
-
-Performance/FlatMap:
-  Description: >-
-    Use `Enumerable#flat_map`
-    instead of `Enumerable#map...Array#flatten(1)`
-    or `Enumberable#collect..Array#flatten(1)`
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablemaparrayflatten-vs-enumerableflat_map-code'
-  Enabled: false
-
-Performance/ReverseEach:
-  Description: 'Use `reverse_each` instead of `reverse.each`.'
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
-  Enabled: false
-
-Performance/Sample:
-  Description: >-
-    Use `sample` instead of `shuffle.first`,
-    `shuffle.last`, and `shuffle[Fixnum]`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arrayshufflefirst-vs-arraysample-code'
-  Enabled: false
-
-Performance/Size:
-  Description: >-
-    Use `size` instead of `count` for counting
-    the number of elements in `Array` and `Hash`.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
-  Enabled: false
-
-Performance/StringReplacement:
-  Description: >-
-    Use `tr` instead of `gsub` when you are replacing the same
-    number of characters. Use `delete` instead of `gsub` when
-    you are deleting characters.
-  Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringgsub-vs-stringtr-code'
-  Enabled: false
-
 # Rails
 
 Rails/Date:

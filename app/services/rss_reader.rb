@@ -121,7 +121,7 @@ class RssReader
   def content_is_not_the_title?(item)
     # [[:space:]] removes all whitespace, including unicode ones.
     content = item.content.gsub(/[[:space:]]/, " ")
-    title = item.title.gsub("…", "")
+    title = item.title.delete("…")
     content.include?(title)
   end
 
