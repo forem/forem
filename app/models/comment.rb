@@ -34,6 +34,11 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
+  scope :two_months_data, ->(commentable_ids) {
+    where(commentable_id: commentable_ids, commentable_type: "Article").
+      where("score > 0 AND created_at > ?", 2.months.ago)
+  }
+
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
     add_index "ordered_comments",

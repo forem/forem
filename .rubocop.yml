@@ -205,6 +205,11 @@ Style/TrivialAccessors:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
   Enabled: false
 
+Style/Lambda:
+  Description: 'Use the `lambda` method for multiline lambdas'
+  StyleGuide: 'https://github.com/rubocop-hq/ruby-style-guide#lambda-multi-line'
+  Enabled: false
+
 # Layout
 
 Layout/AlignParameters:

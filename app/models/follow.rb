@@ -20,6 +20,12 @@ class Follow < ApplicationRecord
     ["follows.followable_type = ?", "Organization"] => "following_orgs_count",
     ["follows.followable_type = ?", "ActsAsTaggableOn::Tag"] => "following_tags_count"
   }
+
+  scope :two_months_data, ->(hash) {
+    where(followable_id: hash[:followable_id], followable_type: hash[:followable_type]).
+      where("created_at > ?", 2.months.ago)
+  }
+
   after_save :touch_follower
   after_create :send_email_notification, :create_chat_channel
   before_destroy :modify_chat_channel_status

@@ -21,6 +21,11 @@ class Reaction < ApplicationRecord
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
 
+  scope :two_months_data, ->(reactable_ids) {
+    where(reactable_id: reactable_ids, reactable_type: "Article").
+      where("points > 0 AND created_at > ?", 2.months.ago)
+  }
+
   class << self
     def count_for_article(id)
       Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
