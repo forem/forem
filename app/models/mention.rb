@@ -20,7 +20,7 @@ class Mention < ApplicationRecord
       mentions = []
       doc.css(".comment-mentioned-user").each do |link|
         username = link.text.gsub("@", "").downcase
-        if user = User.find_by_username(username)
+        if (user = User.find_by_username(username))
           usernames << username
           mentions << create_mention(user)
         end

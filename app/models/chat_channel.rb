@@ -71,7 +71,7 @@ class ChatChannel < ApplicationRecord
       slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
     end
 
-    if channel = ChatChannel.find_by_slug(slug)
+    if (channel = ChatChannel.find_by_slug(slug))
       channel.status = "active"
       channel.save
     else

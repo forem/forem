@@ -15,7 +15,6 @@ RSpec.describe "ArticlesCreate", type: :request do
     expect(Article.last.user_id).to eq(user.id)
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "creates article with front matter params" do
     post "/articles", params: {
       article: {
@@ -61,5 +60,4 @@ RSpec.describe "ArticlesCreate", type: :request do
     }
     expect(Collection.last.slug).to eq("helloyo")
   end
-  # rubocop:enable RSpec/ExampleLength
 end

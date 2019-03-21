@@ -26,7 +26,7 @@ class Message < ApplicationRecord
       where.not(user_id: user.id).pluck(:user_id)
 
     PushNotificationSubscription.where(user_id: receiver_ids).find_each do |sub|
-      return if no_push_necessary?(sub)
+      break if no_push_necessary?(sub)
 
       Webpush.payload_send(
         endpoint: sub.endpoint,
@@ -76,7 +76,7 @@ class Message < ApplicationRecord
     doc = Nokogiri::HTML(html)
     rich_style = "border: 1px solid #0a0a0a; border-radius: 3px; padding: 8px;"
     doc.css("a").each do |a|
-      if article = rich_link_article(a)
+      if (article = rich_link_article(a))
         html += "<a style='color: #0a0a0a' href='#{article.path}'
           target='_blank' data-content='articles/#{article.id}'>
           <h1 style='#{rich_style}'  data-content='articles/#{article.id}'>

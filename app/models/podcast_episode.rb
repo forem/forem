@@ -128,7 +128,8 @@ class PodcastEpisode < ApplicationRecord
       cache_buster.bust("/" + podcast_slug)
       cache_buster.bust("/pod")
       cache_buster.bust(path)
-    rescue StandardError
+    rescue StandardError => e
+      Rails.logger.warn(e)
     end
     purge
     purge_all

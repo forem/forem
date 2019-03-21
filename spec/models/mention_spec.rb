@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Mention, type: :model do
@@ -72,4 +71,3 @@ RSpec.describe Mention, type: :model do
     expect(Mention.all.size).to eq(0)
   end
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

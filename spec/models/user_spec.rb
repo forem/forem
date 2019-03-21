@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe User, type: :model do
@@ -8,7 +7,7 @@ RSpec.describe User, type: :model do
   let(:article)         { create(:article, user_id: user.id) }
   let(:tag)             { create(:tag) }
   let(:org)             { create(:organization) }
-  let (:second_org)     { create(:organization) }
+  let(:second_org)      { create(:organization) }
 
   before { mock_auth_hash }
 
@@ -586,4 +585,3 @@ RSpec.describe User, type: :model do
     end
   end
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

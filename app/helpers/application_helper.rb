@@ -139,7 +139,7 @@ module ApplicationHelper
 
   def tag_colors(tag)
     Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
-      if found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by_name(tag)
+      if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by_name(tag))
         { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
       else
         { background: "#d6d9e0", color: "#606570" }

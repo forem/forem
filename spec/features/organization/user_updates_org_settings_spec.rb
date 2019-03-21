@@ -8,7 +8,6 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
     sign_in user
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "user creates an organization" do
     visit "settings/organization"
     fill_in "organization[name]", with: "Organization Name"
@@ -33,5 +32,4 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
     page.driver.browser.switch_to.alert.accept
     expect(page).not_to have_text(user2.name)
   end
-  # rubocop:enable RSpec/ExampleLength
 end

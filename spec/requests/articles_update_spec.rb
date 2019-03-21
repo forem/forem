@@ -16,7 +16,6 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(Article.last.title).to eq(new_title)
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "does not create a job opportunity if no hiring tag" do
     new_title = "NEW TITLE #{rand(100)}"
     put "/articles/#{article.id}", params: {
@@ -38,5 +37,4 @@ RSpec.describe "ArticlesUpdate", type: :request do
     }
     expect(Article.last.job_opportunity.remoteness).to eq("on_premise")
   end
-  # rubocop:enable RSpec/ExampleLength
 end

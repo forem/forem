@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe "ChatChannelMemberships", type: :request do
@@ -90,4 +89,3 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
   end
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
