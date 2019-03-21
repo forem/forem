@@ -15,8 +15,12 @@ RSpec.describe DisplayAd, type: :model do
     display_ad.placement_area = "tsdsdsdds"
     expect(display_ad).not_to be_valid
   end
-  it "only allows acceptable placement_area" do
-    display_ad.placement_area = "sidebar"
+  it "allows sidebar_right" do
+    display_ad.placement_area = "sidebar_right"
+    expect(display_ad).to be_valid
+  end
+  it "allows sidebar_left" do
+    display_ad.placement_area = "sidebar_left"
     expect(display_ad).to be_valid
   end
 end
