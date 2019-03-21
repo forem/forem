@@ -33,7 +33,7 @@ class RateLimitChecker
         channel: "abuse-reports",
         username: "rate_limit",
         icon_emoji: ":hand:",
-      )
+    )
   end
   handle_asynchronously :ping_admins
 end
