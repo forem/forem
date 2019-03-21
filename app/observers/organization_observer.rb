@@ -8,7 +8,7 @@ class OrganizationObserver < ActiveRecord::Observer
       username: "org_bot",
       icon_emoji: ":office:",
     )
-  rescue StandardError
-    puts "error"
+  rescue StandardError => e
+    Rails.logger.error(e)
   end
 end
