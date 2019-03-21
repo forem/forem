@@ -79,11 +79,11 @@
       </div>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
-      <% @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order("RANDOM()").first %>
-      <% if @sidebar_ad %>
+      <% @left_sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order("RANDOM()").first %>
+      <% if @left_sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">
-            <%= @sidebar_ad.processed_html.html_safe %>
+            <%= @left_sidebar_ad.processed_html.html_safe %>
           </div>
         </div>
       <% end %>

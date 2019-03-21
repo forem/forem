@@ -18,16 +18,19 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(ad.processed_html)
     end
     it "renders right display_ads when published and approved" do
+      org = create(:organization)
       ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right", organization: org)
       get "/"
       expect(response.body).to include(ad.processed_html)
     end
     it "does not render left display_ads when not approved" do
+      org = create(:organization)
       ad = create(:display_ad, published: true, approved: false, organization: org)
       get "/"
       expect(response.body).not_to include(ad.processed_html)
     end
     it "does not render right display_ads when not approved" do
+      org = create(:organization)
       ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right", organization: org)
       get "/"
       expect(response.body).not_to include(ad.processed_html)
