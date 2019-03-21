@@ -81,6 +81,21 @@
         </div>
       <% end %>
     <% end %>
+    <% if @followed_organizations %>
+      <h2>Followed organizations (<%= @followed_organizations.count %>)</h2>
+      <% @followed_organizations.each do |follow| %>
+        <% organization = follow.followable %>
+        <div class="single-article">
+          <a href="<%= organization.path %>" class="block-link">
+            <h2>
+              <img alt="<%= organization.name %> profile image" src="<%= ProfileImage.new(organization).get(60) %>" />
+              <%= organization.name %>
+              <span class="dashboard-username">@<%= organization.name %></span>
+            </h2>
+          </a>
+        </div>
+      <% end %>
+    <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
     <% if current_user.created_at < 2.weeks.ago %>
