@@ -19,61 +19,61 @@
     <div class="card">
       <h4>Reactions this week</h4>
       <div class="featured-stat">
-        <%= @dashboard.this_week_reactions_count %>
+        <%= @dashboard.data_by_time(:this_week, :reaction).count %>
       </div>
-      <% week_reaction_rate = @dashboard.this_week_reactions_count.to_f / @dashboard.last_week_reactions_count.to_f %>
+      <% week_reaction_rate = @dashboard.data_by_time(:this_week, :reaction).count.to_f / @dashboard.data_by_time(:last_week, :reaction).count.to_f %>
        <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
-        <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
+        <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.data_by_time(:last_week, :reaction).count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
       <h4>Reactions this month</h4>
       <div class="featured-stat">
-        <%= @dashboard.this_month_reactions_count %>
+        <%= @dashboard.data_by_time(:this_month, :reaction).count %>
       </div>
-      <% month_reaction_rate = @dashboard.this_month_reactions_count.to_f / @dashboard.last_month_reactions_count.to_f %>
+      <% month_reaction_rate = @dashboard.data_by_time(:this_month, :reaction).count.to_f / @dashboard.data_by_time(:this_month, :reaction).count.to_f %>
        <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
-        <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
+        <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.data_by_time(:this_month, :reaction).count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
       <h4>New followers this week</h4>
       <div class="featured-stat">
-        <%= @dashboard.this_week_followers_count %>
+        <%= @dashboard.data_by_time(:this_week, :follow).count %>
       </div>
-      <% week_followers_rate = @dashboard.this_week_followers_count.to_f / @dashboard.last_week_followers_count.to_f %>
+      <% week_followers_rate = @dashboard.data_by_time(:this_week, :follow).count.to_f / @dashboard.data_by_time(:last_week, :follow).count.to_f %>
        <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
-        <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
+        <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.data_by_time(:last_week, :follow).count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
       <h4>New followers this month</h4>
       <div class="featured-stat">
-        <%= @dashboard.this_month_followers_count %>
+        <%= @dashboard.data_by_time(:this_month, :follow).count %>
       </div>
-      <% month_followers_rate = @dashboard.this_month_followers_count.to_f / @dashboard.last_month_followers_count.to_f %>
+      <% month_followers_rate = @dashboard.data_by_time(:this_month, :follow).count.to_f / @dashboard.data_by_time(:last_month, :follow).count.to_f %>
        <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
-        <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
+        <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.data_by_time(:last_month, :follow).count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
       <h4>New comments this week</h4>
       <div class="featured-stat">
-        <%= @dashboard.this_week_comments_count %>
+        <%= @dashboard.data_by_time(:this_week, :comment).count %>
       </div>
-      <% week_comments_rate = @dashboard.this_week_comments_count.to_f / @dashboard.last_week_comments_count.to_f %>
+      <% week_comments_rate = @dashboard.data_by_time(:this_week, :comment).count.to_f / @dashboard.data_by_time(:last_week, :comment).count.to_f %>
        <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
+        <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.data_by_time(:last_week, :comment).count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
     <div class="card">
       <h4>New comments this month</h4>
       <div class="featured-stat">
-        <%= @dashboard.this_month_comments_count %>
+        <%= @dashboard.data_by_time(:this_month, :comment).count %>
       </div>
-      <% month_comments_rate = @dashboard.this_month_comments_count.to_f / @dashboard.last_month_comments_count.to_f %>
+      <% month_comments_rate = @dashboard.data_by_time(:this_month, :comment).count.to_f / @dashboard.data_by_time(:last_month, :comment).count.to_f %>
        <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
+        <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.data_by_time(:last_month, :comment).count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
   </div>
@@ -83,25 +83,54 @@
       <div class="charts-container">
         <canvas
           id="reactionsChart"
-          data-labels="<%= @dashboard.this_week_reactions.formatted_dates %>"
-          data-total-count="<%= @dashboard.this_week_reactions.total_per_day %>"
-          data-total-likes="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "like") %>"
-          data-total-unicorns="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "unicorn") %>"
-          data-total-readinglist="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
+          data-labels="<%= @dashboard.data_by_time(:this_week, :reaction).formatted_dates %>"
+          data-total-count="<%= @dashboard.data_by_time(:this_week, :reaction).total_per_day %>"
+          data-total-likes="<%= @dashboard.data_by_time(:this_week, :reaction).total_by_type_per_day(type: "Reaction", category: "like") %>"
+          data-total-unicorns="<%= @dashboard.data_by_time(:this_week, :reaction).total_by_type_per_day(type: "Reaction", category: "unicorn") %>"
+          data-total-readinglist="<%= @dashboard.data_by_time(:this_week, :reaction).total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
+        </canvas>
+      </div> 
+    </div>
+    <div class="card">
+      <h2>Comments Summary 💬</h2>
+      <div class="charts-container">
+        <canvas
+          id="commentsChart"
+          data-labels="<%= @dashboard.data_by_time(:this_week, :comment).formatted_dates %>"
+          data-total-count="<%= @dashboard.data_by_time(:this_week, :comment).total_per_day %>">
         </canvas>
       </div>
+    </div>
+    <div class="card" style="display: none;">
+      <div class="charts-container">
+          <canvas
+            id="followsChart"
+            data-labels="<%= @dashboard.data_by_time(:this_week, :follow).formatted_dates %>"
+            data-total-count="<%= @dashboard.data_by_time(:this_week, :follow).total_per_day %>">
+          </canvas>
+        </div>
+    </div>
     <%= javascript_pack_tag "proCharts", defer: true %>
   </div>
   <div class="card">
-    <h2>Comments Summary 💬</h2>
-    <div class="charts-container">
-      <canvas
-        id="commentsChart"
-        data-labels="<%= @dashboard.this_week_comments.formatted_dates %>"
-        data-total-count="<%= @dashboard.this_week_comments.total_per_day %>">
-      </canvas>
+    <h2>View Count 👀</h2>
+    <h3>Total views across all posts: <%= @dashboard.total_views %></h3>
+    <div class="recent-reactors-container" style="<%= "display: none;" %>">
+      <% @dashboard.article_data.each do |article| %>
+        <div class="single-article">
+          <h2><a href="<%= article.path %>"><%= article.title %></a></h2>
+          <p>Total views: <%= article.organic_page_views_count + article.page_views_count %></p>
+          <p>Organic views in the past week: <%= article.organic_page_views_past_week_count %></p>
+          <p>Organic views in the past month: <%= article.organic_page_views_past_month_count %></p>
+          <p>
+            Tags used:
+            <% article.decorate.cached_tag_list_array.each do |tag| %>
+              <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
+            <% end %>
+          </p>
+        </div>
+      <% end %>
     </div>
-  </div>
   </div>
   <h2>Activity</h2>
   <h3>People who recently reacted ❤🦄🔖 to your content:</h3>
