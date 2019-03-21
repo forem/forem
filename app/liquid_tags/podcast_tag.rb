@@ -13,7 +13,7 @@ class PodcastTag < LiquidTagBase
 
   def initialize(_tag_name, link, _tokens)
     @episode = fetch_podcast(link)
-    @podcast
+    @podcast ||= Podcast.new
   end
 
   def render(_context)

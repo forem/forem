@@ -20,7 +20,6 @@ RSpec.describe "all routes", type: :routing do
     )
   end
 
-  # rubocop:disable RSpec/ExampleLength
   it "renders a user's story successfully" do
     expect(get: "/ben/this-is-a-slug").to route_to(
       controller: "stories",
@@ -29,7 +28,6 @@ RSpec.describe "all routes", type: :routing do
       username: "ben",
     )
   end
-  # rubocop:enable RSpec/ExampleLength
 
   context "when redirected routes" do
     include RSpec::Rails::RequestExampleGroup

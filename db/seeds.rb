@@ -127,7 +127,7 @@ podcast_objects = [
     twitter_username: "CodingBlocks",
     website_url: "http://codingblocks.net",
     main_color_hex: "111111",
-    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", # rubocop:disable Metrics/LineLength
+    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net",
     android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
@@ -139,7 +139,7 @@ podcast_objects = [
     twitter_username: "TalkPython",
     website_url: "https://talkpython.fm",
     main_color_hex: "181a1c",
-    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers", # rubocop:disable Metrics/LineLength
+    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers",
     android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
@@ -147,7 +147,7 @@ podcast_objects = [
     title: "Developer on Fire",
     description: "",
     feed_url: "http://developeronfire.com/rss.xml",
-    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326", # rubocop:disable Metrics/LineLength
+    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326",
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
@@ -160,7 +160,7 @@ podcast_objects = [
     title: "Building Programmers",
     description: "",
     feed_url: "https://building.fireside.fm/rss",
-    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456", # rubocop:disable Metrics/LineLength
+    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456",
     slug: "buildingprogrammers",
     twitter_username: "run_kmc",
     website_url: "https://building.fireside.fm",
@@ -181,7 +181,7 @@ p "7/9 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
-  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.", # rubocop:disable Metrics/LineLength
+  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
   type_of: "Onboarding",
   sent: true,
 )
@@ -215,7 +215,7 @@ HtmlVariant.create(
 )
 ##############################################################################
 
-puts <<-ASCII
+Rails.logger.info <<-ASCII
 
 
 

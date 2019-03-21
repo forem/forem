@@ -8,7 +8,7 @@ class ReactionObserver < ActiveRecord::Observer
         icon_emoji: ":cry:",
       )
     end
-  rescue StandardError
-    puts "observer error"
+  rescue StandardError => e
+    Rails.logger.error("observer error: #{e}")
   end
 end

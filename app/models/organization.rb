@@ -106,8 +106,8 @@ class Organization < ApplicationRecord
       articles.find_each do |article|
         cache_buster.bust(article.path)
       end
-    rescue StandardError
-      puts "Tag issue"
+    rescue StandardError => e
+      Rails.logger.error("Tag issue: #{e}")
     end
   end
   handle_asynchronously :bust_cache

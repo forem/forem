@@ -79,7 +79,6 @@ RSpec.describe "StoriesShow", type: :request do
         expect(response.body).not_to include html_variant.html
       end
 
-      # rubocop:disable RSpec/ExampleLength
       it "renders articles of long length without breaking" do
         # This is a pretty weak test, just to exercise different lengths with no breakage
         article.update(title: (0...75).map { rand(65..90).chr }.join)
@@ -90,7 +89,6 @@ RSpec.describe "StoriesShow", type: :request do
         get article.path
         expect(response.body).to include "title"
       end
-      # rubocop:enable RSpec/ExampleLength
     end
 
     context "when story is a user" do

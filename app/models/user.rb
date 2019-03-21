@@ -70,7 +70,6 @@ class User < ApplicationRecord
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,
     url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  # rubocop:disable Metrics/LineLength
   validates :facebook_url,
               format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
               allow_blank: true
@@ -94,7 +93,6 @@ class User < ApplicationRecord
   validates :gitlab_url,
               allow_blank: true,
               format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
-  # rubocop:enable Metrics/LineLength
   validates :shirt_gender,
               inclusion: { in: %w[unisex womens],
                            message: "%{value} is not a valid shirt style" },

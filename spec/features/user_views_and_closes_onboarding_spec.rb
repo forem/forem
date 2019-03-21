@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/LineLength
 # require "rails_helper"
 
 # describe "User views and closes onboarding", type: :feature, js: true do

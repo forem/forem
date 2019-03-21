@@ -26,7 +26,6 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(JSON.parse(response.body).size).to eq(2)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "returns organization articles if username param is present" do
       org = create(:organization)
       create(:article, user_id: user1.id)
@@ -37,7 +36,6 @@ RSpec.describe "ArticlesApi", type: :request do
       get "/api/articles?username=#{org.slug}"
       expect(JSON.parse(response.body).size).to eq(2)
     end
-    # rubocop:enable RSpec/ExampleLength
 
     it "returns tag articles if tag param is present" do
       article = create(:article)

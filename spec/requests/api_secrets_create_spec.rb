@@ -31,7 +31,7 @@ RSpec.describe "ApiSecretsCreate", type: :request do
 
       it "does not create the ApiSecret" do
         expect { post "/users/api_secrets", params: { api_secret: invalid_params } }.
-          not_to (change { user.api_secrets.count })
+          not_to(change { user.api_secrets.count })
       end
 
       it "flashes an error message" do

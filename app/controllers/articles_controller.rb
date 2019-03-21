@@ -15,9 +15,9 @@ class ArticlesController < ApplicationController
       page(params[:page].to_i).per(12)
 
     if params[:username]
-      if @user = User.find_by_username(params[:username])
+      if (@user = User.find_by_username(params[:username]))
         @articles = @articles.where(user_id: @user.id)
-      elsif @user = Organization.find_by_slug(params[:username])
+      elsif (@user = Organization.find_by_slug(params[:username]))
         @articles = @articles.where(organization_id: @user.id).includes(:user)
       else
         render body: nil
@@ -129,7 +129,7 @@ class ArticlesController < ApplicationController
         Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
-      redirect_to (params[:destination] || path)
+      redirect_to(params[:destination] || path)
     else
       render :edit
     end

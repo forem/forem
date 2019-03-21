@@ -1,4 +1,3 @@
-# rubocop:disable LineLength
 source "https://rubygems.org"
 ruby "2.6.1"
 
@@ -122,8 +121,8 @@ group :development, :test do
   gem "capybara", "~> 3.13"
   gem "derailed", "~> 0.1"
   gem "erb_lint", "~> 0.0", require: false
-  gem "faker", git: "https://github.com/stympy/faker.git", branch: "master"
-  gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", branch: "master"
+  gem "faker", "~> 1.9"
+  gem "fix-db-schema-conflicts", "~> 3.0"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.27"
   gem "pry-byebug", "~> 3.7"
@@ -157,4 +156,3 @@ group :test do
   gem "webmock", "~> 3.5"
   gem "zonebie", "~> 0.6.1"
 end
-# rubocop:enable LineLength

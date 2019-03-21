@@ -1,26 +1,10 @@
 GIT
-  remote: https://github.com/stympy/faker.git
-  revision: 9910aa58d92c018abab25d491191576fcc1a7707
-  branch: master
-  specs:
-    faker (1.9.1)
-      i18n (>= 0.7)
-
-GIT
   remote: https://github.com/thepracticaldev/acts_as_follower.git
   revision: 288690cd99bc470eaee493fce5bfa9fe23157692
   branch: master
   specs:
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
-
-GIT
-  remote: https://github.com/thepracticaldev/fix-db-schema-conflicts.git
-  revision: 4172392392e1a8d907f7ab673cb5ddd9a4a31940
-  branch: master
-  specs:
-    fix-db-schema-conflicts (3.0.2)
-      rubocop (>= 0.38.0)
 
 GEM
   remote: https://rubygems.org/
@@ -329,6 +313,8 @@ GEM
       capybara
       sinatra
       webmock
+    faker (1.9.3)
+      i18n (>= 0.7)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.13.1)
@@ -348,6 +334,8 @@ GEM
       thor (~> 0.14)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
+    fix-db-schema-conflicts (3.0.3)
+      rubocop (>= 0.38.0)
     fog (1.41.0)
       fog-aliyun (>= 0.1.0)
       fog-atmos
@@ -1014,12 +1002,12 @@ DEPENDENCIES
   erb_lint (~> 0.0)
   factory_bot_rails (~> 4.11)
   fake_stripe (~> 0.2)
-  faker!
+  faker (~> 1.9)
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
   feedjira (~> 2.2)
   figaro (~> 1.1)
-  fix-db-schema-conflicts!
+  fix-db-schema-conflicts (~> 3.0)
   fog (~> 1.41)
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.0)
