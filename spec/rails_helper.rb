@@ -65,7 +65,7 @@ RSpec.configure do |config|
   if config.filter_manager.inclusions.rules.include?(:live)
     WebMock.allow_net_connect!
     StripeMock.toggle_live(true)
-    puts "Running **live** tests against Stripe..."
+    Rails.logger.info("Running **live** tests against Stripe...")
   end
 
   config.before do

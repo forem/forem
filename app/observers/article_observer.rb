@@ -10,7 +10,7 @@ class ArticleObserver < ApplicationObserver
 
     end
     warned_user_ping(article)
-  rescue StandardError
-    puts "error"
+  rescue StandardError => e
+    Rails.logger.error(e)
   end
 end
