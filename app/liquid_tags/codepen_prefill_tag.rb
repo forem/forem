@@ -1,21 +1,20 @@
 class CodepenPrefillTag < Liquid::Block
-  def initialize(tag_name, options)
+  def initialize(tag_name, options, tokens)
     super
     @options = parse_options(options)
   end
 
   def render(context)
-    # options used here to define Codepen html tag options below
     content = Nokogiri::HTML.parse(super)
-    parsed_content = content.xpath("//html/body").text
+    # parsed_content = content.xpath("//html/body").text # dont parse for text???
     html = <<~HTML
       <div
         class="codepen"
-        data-prefill=#{@options}
+        data-height="400"
+        data-editable=true
+        data-prefill=''
         >
-
-        #{parsed_content}
-
+        #{content}
       </div>
       <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
     HTML
