@@ -2,9 +2,8 @@
 module Notifications
   module Reactions
     class Send
-      # receiver - User, Organization
-      def initialize(reaction, receiver)
-        @reaction = reaction
+      def initialize(reaction_data, receiver)
+        @reaction = reaction_data.is_a?(ReactionData) ? reaction_data : ReactionData.new(reaction_data)
         @receiver = receiver
       end
 
@@ -16,19 +15,17 @@ module Notifications
 
       def call
         return unless receiver.is_a?(User) || receiver.is_a?(Organization)
-        return if reaction.user_id == reaction.reactable.user_id
-        return if reaction.points.negative?
-        return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
 
         reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
-          where.not(reactions: { user_id: reaction.reactable.user_id }).
+          where.not(reactions: { user_id: reaction.reactable_user_id }).
+          includes(:reactable).
           order("created_at DESC")
 
         aggregated_reaction_siblings = reaction_siblings.map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
 
         notification_params = {
-          notifiable_type: reaction.reactable.class.name,
-          notifiable_id: reaction.reactable.id,
+          notifiable_type: reaction.reactable_type,
+          notifiable_id: reaction.reactable_id,
           action: "Reaction"
           # user_id or organization_id: receiver.id
         }

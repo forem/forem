@@ -47,6 +47,16 @@ class Reaction < ApplicationRecord
     end
   end
 
+  # no need to send notification if:
+  # - reaction is negative
+  # - receiver is the same user as the one who reacted
+  # - receive_notification is disabled
+  def skip_notification_for?(receiver)
+    points.negative? ||
+      (user_id == reactable.user_id) ||
+      (receiver.is_a?(User) && reactable.receive_notifications == false)
+  end
+
   private
 
   def cache_buster
