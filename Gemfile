@@ -1,4 +1,3 @@
-# rubocop:disable LineLength
 source "https://rubygems.org"
 ruby "2.6.1"
 
@@ -157,4 +156,3 @@ group :test do
   gem "webmock", "~> 3.5"
   gem "zonebie", "~> 0.6.1"
 end
-# rubocop:enable LineLength

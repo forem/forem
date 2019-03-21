@@ -14,7 +14,7 @@ class PodcastFeed
     feed.items.first(num).each do |item|
       if !existing_episode(item, podcast)
         create_new_episode(item, podcast)
-      elsif ep = existing_episode(item, podcast).first
+      elsif (ep = existing_episode(item, podcast).first)
         update_existing_episode(ep, item, podcast)
       end
     end

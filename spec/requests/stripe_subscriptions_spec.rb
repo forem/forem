@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe "StripeSubscriptions", type: :request do
@@ -170,4 +169,3 @@ RSpec.describe "StripeSubscriptions", type: :request do
     end
   end
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

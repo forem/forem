@@ -410,8 +410,8 @@ class Article < ApplicationRecord
       HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
         duration += chunk.split(",")[0].to_f
       end
-      duration
       self.video_duration_in_seconds = duration
+      duration
     end
   rescue StandardError => e
     puts e.message
