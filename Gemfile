@@ -122,7 +122,7 @@ group :development, :test do
   gem "derailed", "~> 0.1"
   gem "erb_lint", "~> 0.0", require: false
   gem "faker", "~> 1.9"
-  gem "fix-db-schema-conflicts", github: "thepracticaldev/fix-db-schema-conflicts", ref: "4172392"
+  gem "fix-db-schema-conflicts", "~> 3.0"
   gem "memory_profiler", "~> 0.9"
   gem "parallel_tests", "~> 2.27"
   gem "pry-byebug", "~> 3.7"
