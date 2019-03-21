@@ -2,7 +2,7 @@ class DisplayAd < ApplicationRecord
   belongs_to :organization
   validates :organization_id, presence: true
   validates :placement_area, presence: true,
-                             inclusion: { in: %w[sidebar] }
+                             inclusion: { in: %w[sidebar_left sidebar_right] }
   validates :body_markdown, presence: true
   before_save :process_markdown
 
