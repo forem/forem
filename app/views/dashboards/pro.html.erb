@@ -103,19 +103,4 @@
     </div>
   </div>
   </div>
-  <h2>Activity</h2>
-  <h3>People who recently reacted ❤🦄🔖 to your content:</h3>
-  <div class="recent-reactors-container">
-    <% @dashboard.reactors.each do |user| %>
-      <div class="single-article">
-        <a href="<%= user.path %>" class="block-link">
-          <h2>
-            <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
-            <%= user.name %>
-            <span class="dashboard-username">@<%= user.username %></span>
-          </h2>
-        </a>
-      </div>
-    <% end %>
-  </div>
 </div>
