@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  let(:user) { create(:user, twitter_username: nil) }
+  let(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
@@ -60,9 +60,42 @@ RSpec.describe "internal/users", type: :request do
       url: Faker::Internet.url
     }
     GithubRepo.create(params)
-    user.update_columns(twitter_username: nil)
-    user2.update_columns(twitter_username: "new twitter un")
     Delayed::Worker.new(quiet: true).work_off
+  end
+
+  context "when merging users" do
+    before do
+      full_profile
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      Delayed::Worker.new(quiet: true).work_off
+    end
+
+    it "deletes duplicate user" do
+      expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "merges all content" do
+      expect(user.comments.count).to eq(2)
+      expect(user.articles.count).to eq(2)
+      expect(user.reactions.count).to eq(4)
+    end
+
+    it "merges all relationships" do
+      expect(user.follows.count).to eq(2)
+      expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
+      expect(user.chat_channel_memberships.count).to eq(1)
+      expect(user.mentions.count).to eq(1)
+    end
+
+    it "merges misc profile info" do
+      expect(user.github_repos.any?).to be true
+      expect(user.badge_achievements.any?).to be true
+    end
+
+    it "merges social identities and usernames" do
+      user.reload
+      expect(user.twitter_username).to eq("Twitter")
+    end
   end
 
   context "when managing activty and roles" do
@@ -169,52 +202,6 @@ RSpec.describe "internal/users", type: :request do
       user.follow(user2)
       banish_user
       expect(user.follows.count).to eq(0)
-    end
-  end
-
-  context "when merging users" do
-    before do
-      full_profile
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
-    end
-
-    it "deletes duplicate user" do
-      expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-
-    it "merges all content" do
-      expect(user2.comments.count).to eq(0)
-      expect(user.comments.count).to eq(2)
-      expect(user2.articles.count).to eq(0)
-      expect(user.articles.count).to eq(2)
-      expect(user.reactions.count).to eq(4)
-      expect(user2.reactions.count).to eq(0)
-    end
-
-    it "merges all follow relationships" do
-      expect(user.follows.count).to eq(2)
-      expect(user2.follows.count).to eq(0)
-      expect(Follow.where(followable_id: user2.id, followable_type: "User").any?).to be false
-      expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
-    end
-
-    it "merges chat channels and mentions" do
-      expect(user2.chat_channel_memberships.any?).to be false
-      expect(user.chat_channel_memberships.count).to eq(1)
-      expect(user2.mentions.any?).to be false
-      expect(user.mentions.count).to eq(1)
-    end
-
-    it "merges misc profile info" do
-      expect(user2.github_repos.any?).to be false
-      expect(user.github_repos.any?).to be true
-      expect(user.badge_achievements.any?).to be true
-    end
-
-    it "merges twitter and github properly" do
-      expect(user2.twitter_username).to be(nil)
-      expect(user.twitter_username).to be("new twitter un")
-      expect(user2.github_username).to be(nil)
     end
   end
 end

@@ -13,6 +13,9 @@ module Moderator
     end
 
     def merge
+      raise "You cannot merge the same two user id#s" if @delete_user.id == @keep_user.id
+
+      handle_identities
       merge_content
       merge_follows
       merge_chat_mentions
@@ -24,12 +27,20 @@ module Moderator
 
     private
 
+    def handle_identities
+      raise "The user being deleted already has two identities. Are you sure this is the right user to be deleted? If so, a super admin will need to do this from the console to be safe." if @delete_user.identities.count > 1
+
+      return true if @keep_user.identities.count > 1 || @delete_user.identities.none? || @keep_user.identities.last.provider == @delete_user.identities.last.provider
+
+      @delete_user.identities.first.update(user_id: @keep_user.id)
+    end
+
     def update_social
       @old_tu = @delete_user.twitter_username
       @old_gu = @delete_user.github_username
-      @delete_user.update(twitter_username: nil, github_username: nil)
-      @keep_user.update!(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
-      @keep_user.update!(github_username: @old_gu) if @keep_user.github_username.nil?
+      @delete_user.update_columns(twitter_username: nil, github_username: nil)
+      @keep_user.update_columns(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
+      @keep_user.update_columns(github_username: @old_gu) if @keep_user.github_username.nil?
     end
 
     def remove_additional_email
