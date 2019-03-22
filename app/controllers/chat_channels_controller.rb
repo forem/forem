@@ -114,7 +114,7 @@ class ChatChannelsController < ApplicationController
 
   def block_chat
     @chat_channel = ChatChannel.find(params[:chat_id])
-    authorize @chat_channel 
+    authorize @chat_channel
     @chat_channel.status = "blocked"
     @chat_channel.save
     render json: { status: "success", message: "chat channel blocked" }, status: 200
