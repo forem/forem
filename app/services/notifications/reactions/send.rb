@@ -45,23 +45,7 @@ module Notifications
         else
           recent_reaction = reaction_siblings.first
 
-          json_data = {
-            user: user_data(recent_reaction.user),
-            reaction: {
-              category: recent_reaction.category,
-              reactable_type: recent_reaction.reactable_type,
-              reactable_id: recent_reaction.reactable_id,
-              reactable: {
-                path: recent_reaction.reactable.path,
-                title: recent_reaction.reactable.title,
-                class: {
-                  name: recent_reaction.reactable.class.name
-                }
-              },
-              aggregated_siblings: aggregated_reaction_siblings,
-              updated_at: recent_reaction.updated_at
-            }
-          }
+          json_data = reaction_json_data(recent_reaction, aggregated_reaction_siblings)
 
           previous_siblings_size = 0
           notification = Notification.find_or_create_by(notification_params)
@@ -77,6 +61,26 @@ module Notifications
       private
 
       attr_reader :reaction, :receiver
+
+      def reaction_json_data(recent_reaction, siblings)
+        {
+          user: user_data(recent_reaction.user),
+          reaction: {
+            category: recent_reaction.category,
+            reactable_type: recent_reaction.reactable_type,
+            reactable_id: recent_reaction.reactable_id,
+            reactable: {
+              path: recent_reaction.reactable.path,
+              title: recent_reaction.reactable.title,
+              class: {
+                name: recent_reaction.reactable.class.name
+              }
+            },
+            aggregated_siblings: siblings,
+            updated_at: recent_reaction.updated_at
+          }
+        }
+      end
     end
   end
 end
