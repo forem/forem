@@ -49,6 +49,7 @@ module Constants
     "ro-mastodon.puyo.jp",
     "ruby.social",
     "ruhr.social",
+    "social.coop",
     "social.targaryen.house",
     "social.tchncs.de",
     "switter.at",
