@@ -10,6 +10,9 @@ class Article < ApplicationRecord
   attr_accessor :publish_under_org
   attr_writer :series
 
+  delegate :name, to: :user, prefix: true
+  delegate :username, to: :user, prefix: true
+
   belongs_to :user
   belongs_to :job_opportunity, optional: true
   counter_culture :user
@@ -271,14 +274,6 @@ class Article < ApplicationRecord
   def username
     return organization.slug if organization
 
-    user.username
-  end
-
-  def user_name
-    user.name
-  end
-
-  def user_username
     user.username
   end
 
