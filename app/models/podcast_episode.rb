@@ -158,7 +158,7 @@ class PodcastEpisode < ApplicationRecord
   private
 
   def prefix_all_images
-    return unless body.present?
+    return if body.blank?
 
     self.processed_html = body.
       gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").

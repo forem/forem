@@ -12,7 +12,7 @@ class Internal::UsersController < Internal::ApplicationController
              else
                User.order("created_at DESC").page(params[:page]).per(50)
              end
-    return unless params[:search].present?
+    return if params[:search].blank?
 
     @users = @users.where('users.name ILIKE :search OR
       users.username ILIKE :search OR

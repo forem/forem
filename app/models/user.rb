@@ -480,13 +480,13 @@ class User < ApplicationRecord
   end
 
   def validate_feed_url
-    return unless feed_url.present?
+    return if feed_url.blank?
 
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
   end
 
   def validate_mastodon_url
-    return unless mastodon_url.present?
+    return if mastodon_url.blank?
 
     uri = URI.parse(mastodon_url)
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)

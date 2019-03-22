@@ -223,7 +223,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_second_and_third_user
-    return unless @article.second_user_id.present?
+    return if @article.second_user_id.blank?
 
     @second_user = User.find(@article.second_user_id)
     @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?

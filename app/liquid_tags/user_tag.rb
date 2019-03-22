@@ -50,7 +50,7 @@ class UserTag < LiquidTagBase
   end
 
   def twitter_link
-    return unless @user.twitter_username.present?
+    return if @user.twitter_username.blank?
 
     <<-HTML
     <a href="https://twitter.com/#{@user.twitter_username}" target="_blank" rel="noopener">
@@ -60,7 +60,7 @@ class UserTag < LiquidTagBase
   end
 
   def github_link
-    return unless @user.github_username.present?
+    return if @user.github_username.blank?
 
     <<-HTML
     <a href="https://github.com/#{@user.github_username}" target="_blank" rel="noopener">
@@ -70,7 +70,7 @@ class UserTag < LiquidTagBase
   end
 
   def website_link
-    return unless @user.website_url.present?
+    return if @user.website_url.blank?
 
     <<-HTML
     <a href="#{@user.website_url}" target="_blank" rel="noopener">

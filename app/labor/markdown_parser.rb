@@ -59,7 +59,7 @@ class MarkdownParser
   end
 
   def tags_used
-    return [] unless @content.present?
+    return [] if @content.blank?
 
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []

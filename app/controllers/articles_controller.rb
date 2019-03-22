@@ -200,7 +200,7 @@ class ArticlesController < ApplicationController
   end
 
   def job_opportunity_params
-    return nil unless params[:article][:job_opportunity].present?
+    return nil if params[:article][:job_opportunity].blank?
 
     params[:article].require(:job_opportunity).permit(
       :remoteness, :location_given, :location_city, :location_postal_code,
