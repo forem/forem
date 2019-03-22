@@ -22,13 +22,19 @@
       <% if @user.has_role? :pro %>
         <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
       <% end %>
+      <% if @user.has_role?(:pro) && @user.organization_id %>
+        <a class="rounded-btn" href="/dashboard/pro/org/<%= @user.organization_id %>">Pro Analytics for <%= @user.organization.name %></a>
+      <% end %>
     </h1>
   <% elsif @user.org_admin && @user.organization && (params[:which] == "organization_user_followers" || params[:which] == "user_followers") %>
     <h1>
       <a href="/dashboard/user_followers" class="rounded-btn <%= "active" if params[:which] == "user_followers" %>">Personal</a>
       <a href="/dashboard/organization_user_followers" class="rounded-btn <%= "active" if params[:which] == "organization_user_followers" %>"><%= @user.organization.name %> (<%= @user.organization.followers_count %>)</a>
       <% if @user.has_role? :pro %>
-        <a class="rounded-btn" href="/pro">Pro Analytics</a>
+        <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
+      <% end %>
+      <% if @user.has_role?(:pro) && @user.organization_id %>
+        <a class="rounded-btn" href="/dashboard/pro/org/<%= @user.organization_id %>">Pro Analytics for <%= @user.organization.name %></a>
       <% end %>
     </h1>
   <% end %>

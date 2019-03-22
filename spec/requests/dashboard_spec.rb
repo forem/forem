@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "Dashboards", type: :request do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
+  let(:org_admin)     { create(:user, :org_admin) }
   let(:super_admin)   { create(:user, :super_admin) }
   let(:article)       { create(:article, user_id: user.id) }
 
@@ -124,6 +125,26 @@ RSpec.describe "Dashboards", type: :request do
         user.add_role(:pro)
         login_as user
         get "/dashboard/pro"
+        expect(response.body).to include("pro")
+      end
+    end
+
+    context "when user has pro permission and is an org admin" do
+      it "shows page properly" do
+        org_admin.add_role(:pro)
+        login_as org_admin
+        get "/dashboard/pro/org/#{org_admin.organization_id}"
+        expect(response.body).to include("pro")
+      end
+    end
+
+    context "when user has pro permission and is an org member" do
+      it "shows page properly" do
+        org = create :organization
+        user.update(organization_id: org.id)
+        user.add_role(:pro)
+        login_as user
+        get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end
     end
