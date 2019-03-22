@@ -26,7 +26,7 @@ User.clear_index!
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
-    profile_image: File.open("#{Rails.root}/app/assets/images/#{rand(1..40)}.png"),
+    profile_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     twitter_username: Faker::Internet.username(name),
     email_comment_notifications: false,
@@ -114,9 +114,7 @@ end
 
 Rails.logger.info "6/9 Creating Podcasts"
 
-image_file = File.join(
-  Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"
-)
+image_file = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
 podcast_objects = [
   {
