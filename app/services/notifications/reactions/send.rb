@@ -2,6 +2,11 @@
 module Notifications
   module Reactions
     class Send
+      # @param reaction_data [Hash]
+      #   * :reactable_id [Integer] - article or comment id
+      #   * :reactable_type [String] - "Article" or "Comment"
+      #   * :reactable_user_id [Integer] - user id
+      # @param receiver [User] or [Organization]
       def initialize(reaction_data, receiver)
         @reaction = reaction_data.is_a?(ReactionData) ? reaction_data : ReactionData.new(reaction_data)
         @receiver = receiver
