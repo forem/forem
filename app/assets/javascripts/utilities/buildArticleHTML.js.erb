@@ -49,7 +49,7 @@ function buildArticleHTML(article) {
     var profileUsername = article.user.username
     var orgHeadline = "";
     if (article.organization && !document.getElementById("organization-article-index")) {
-      orgHeadline = '<div class="article-organization-headline"><a href="/'+article.organization.slug+'" class="article-organization-headline-inner"><img src="'+article.organization.profile_image_90+'" alt="'+article.organization.name+' logo" />'+article.organization.name+'</a><a class="org-headline-filler" href="'+article.path+'">&nbsp;</a></div>'
+      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><span class="article-organization-headline-inner"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'">'+article.organization.name+'</span></a></div>'
     }
     var bodyTextSnippet = "";
     var commentsBlobSnippet = "";
