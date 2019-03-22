@@ -37,6 +37,7 @@ Rails.application.routes.draw do
         post "banish"
         post "full_delete"
         patch "user_status"
+        post "merge"
       end
     end
     resources :events
