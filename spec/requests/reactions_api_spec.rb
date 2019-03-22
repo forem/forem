@@ -23,7 +23,7 @@ RSpec.describe "ArticlesApi", type: :request do
       post "/api/reactions", params: {
         reactable_id: article.id, reactable_type: "Article", category: "like", key: user.secret
       }
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 end

@@ -28,7 +28,7 @@ RSpec.describe "StripeCancellations", type: :request do
     post "/stripe_cancellations", params: event.as_json
     user.reload
     expect(user.monthly_dues).to eq(0)
-    expect(response).to have_http_status(200)
+    expect(response).to have_http_status(:ok)
   end
   # rubocop:enable RSpec/ExampleLength
 end
