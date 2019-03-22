@@ -107,14 +107,14 @@ class Notification < ApplicationRecord
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
 
-      reactable_data = {
-        reactable_id: reaction.reactable_id,
-        reactable_type: reaction.reactable_type,
-        reactable_user_id: reaction.reactable.user_id
-      }
-      Notifications::Reactions::Send.call(reactable_data, receiver)
+      Notifications::NewReactionJob.perform_later(*reaction_notification_attributes(reaction, receiver))
     end
-    handle_asynchronously :send_reaction_notification
+
+    def send_reaction_notification_without_delay(reaction, receiver)
+      return if reaction.skip_notification_for?(receiver)
+
+      Notifications::NewReactionJob.perform_now(*reaction_notification_attributes(reaction, receiver))
+    end
 
     def send_mention_notification(mention)
       mentioner = mention.mentionable.user
@@ -260,6 +260,16 @@ class Notification < ApplicationRecord
 
     def user_data(user)
       Notifications.user_data(user)
+    end
+
+    def reaction_notification_attributes(reaction, receiver)
+      reactable_data = {
+        reactable_id: reaction.reactable_id,
+        reactable_type: reaction.reactable_type,
+        reactable_user_id: reaction.reactable.user_id
+      }
+      receiver_data = { klass: receiver.class.name, id: receiver.id }
+      [reactable_data, receiver_data]
     end
 
     def organization_data(organization)
