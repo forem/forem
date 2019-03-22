@@ -5,7 +5,7 @@ module BadgeRewarder
     (1..3).each do |i|
       message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by(slug: "#{YEARS[i]}-year-club")
-      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.day).find_each do |user|
+      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
           badge_id: badge.id,

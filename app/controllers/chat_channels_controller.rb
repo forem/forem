@@ -54,7 +54,7 @@ class ChatChannelsController < ApplicationController
     authorize @chat_channel
     add_context(chat_channel_id: @chat_channel.id)
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
-    membership.update(last_opened_at: 1.seconds.from_now, has_unopened_messages: false)
+    membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     @chat_channel.index!
     render json: { status: "success", channel: params[:id] }, status: 200
   end
