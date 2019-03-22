@@ -504,7 +504,7 @@ class Article < ApplicationRecord
   end
 
   def create_password
-    return unless password.blank?
+    return if password.present?
 
     self.password = SecureRandom.hex(60)
   end

@@ -21,6 +21,6 @@ class FeedbackMessage < ApplicationRecord
   end
 
   def capitalize_status
-    self.status = status.capitalize unless status.blank?
+    self.status = status.capitalize if status.present?
   end
 end
