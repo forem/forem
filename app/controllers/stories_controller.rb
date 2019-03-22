@@ -20,19 +20,19 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     add_param_context(:username, :slug)
-    if (@article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
+    if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
       handle_article_show
-    elsif (@article = Article.find_by_slug(params[:slug])&.decorate)
+    elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     else
-      @podcast = Podcast.find_by_slug(params[:username]) || not_found
-      @episode = PodcastEpisode.find_by_slug(params[:slug]) || not_found
+      @podcast = Podcast.find_by(slug: params[:username]) || not_found
+      @episode = PodcastEpisode.find_by(slug: params[:slug]) || not_found
       handle_podcast_show
     end
   end
 
   def warm_comments
-    @article = Article.find_by_path("/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
+    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate || not_found
     @warm_only = true
     assign_article_show_variables
     render partial: "articles/full_comment_area"
@@ -66,8 +66,8 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_or_organization_or_podcast_index
-    @podcast = Podcast.find_by_slug(params[:username].downcase)
-    @organization = Organization.find_by_slug(params[:username].downcase)
+    @podcast = Podcast.find_by(slug: params[:username].downcase)
+    @organization = Organization.find_by(slug: params[:username].downcase)
     if @podcast
       handle_podcast_index
     elsif @organization
@@ -80,7 +80,7 @@ class StoriesController < ApplicationController
   def handle_tag_index
     @tag = params[:tag].downcase
     @page = (params[:page] || 1).to_i
-    @tag_model = Tag.find_by_name(@tag) || not_found
+    @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model)
     add_param_context(:tag, :page)
     if @tag_model.alias_for.present?
@@ -157,7 +157,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.find_by_username(params[:username].tr("@", "").downcase)
+    @user = User.find_by(username: params[:username].tr("@", "").downcase)
     unless @user
       redirect_to_changed_username_profile
       return

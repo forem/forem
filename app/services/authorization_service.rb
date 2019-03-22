@@ -84,7 +84,7 @@ class AuthorizationService
     elsif identity.user
       identity.user
     elsif !auth.info.email.blank?
-      User.find_by_email(auth.info.email)
+      User.find_by(email: auth.info.email)
     end
   end
 

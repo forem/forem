@@ -43,7 +43,7 @@ class UserTag < LiquidTagBase
 
   def parse_username_to_user(input)
     input_no_space = input.delete(" ")
-    user = User.find_by_username(input_no_space)
+    user = User.find_by(username: input_no_space)
     raise StandardError, "invalid username" if user.nil?
 
     user

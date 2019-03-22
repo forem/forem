@@ -90,7 +90,7 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by_secret(params[:org_secret]))
+    if (@organization = Organization.find_by(secret: params[:org_secret]))
       current_user.update(organization_id: @organization.id)
       redirect_to "/settings/organization",
         notice: "You have joined the #{@organization.name} organization."

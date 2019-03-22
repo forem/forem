@@ -3,7 +3,7 @@ class GithubIssue < ApplicationRecord
   validates :category, inclusion: { in: %w[issue issue_comment] }
 
   def self.find_or_fetch(url)
-    find_by_url(url) || fetch(url)
+    find_by(url: url) || fetch(url)
   end
 
   def self.fetch(url)

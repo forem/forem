@@ -19,7 +19,7 @@ class GithubRepo < ApplicationRecord
 
   def self.update_to_latest
     where("updated_at < ?", 1.day.ago).find_each do |repo|
-      user_token = User.find_by_id(repo.user_id).identities.where(provider: "github").last.token
+      user_token = User.find_by(id: repo.user_id).identities.where(provider: "github").last.token
       client = Octokit::Client.new(access_token: user_token)
       begin
         fetched_repo = client.repo(repo.info_hash[:full_name])

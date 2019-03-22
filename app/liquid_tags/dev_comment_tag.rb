@@ -52,7 +52,7 @@ class DevCommentTag < LiquidTagBase
   end
 
   def find_comment
-    comment = Comment.find_by_id(@id_code.to_i(26))
+    comment = Comment.find_by(id: @id_code.to_i(26))
     raise_error unless comment
     comment
   end

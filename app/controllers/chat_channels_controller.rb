@@ -17,7 +17,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_channel = ChatChannel.find_by_id(params[:id]) || not_found
+    @chat_channel = ChatChannel.find_by(id: params[:id]) || not_found
     authorize @chat_channel
     add_context(chat_channel_id: @chat_channel.id)
   end
@@ -66,7 +66,7 @@ class ChatChannelsController < ApplicationController
     command = chat_channel_params[:command].split
     case command[0]
     when "/ban"
-      banned_user = User.find_by_username(command[1])
+      banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.add_role :banned
         banned_user.messages.each(&:destroy!)
@@ -78,7 +78,7 @@ class ChatChannelsController < ApplicationController
         render json: { status: "error", message: "username not found" }, status: 400
       end
     when "/unban"
-      banned_user = User.find_by_username(command[1])
+      banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.remove_role :banned
         render json: { status: "success", message: "unbanned!" }, status: 200
@@ -153,7 +153,7 @@ class ChatChannelsController < ApplicationController
              else
                params[:slug]
              end
-      @active_channel = ChatChannel.find_by_slug(slug)
+      @active_channel = ChatChannel.find_by(slug: slug)
       @active_channel.current_user = current_user if @active_channel
     end
     generate_github_token

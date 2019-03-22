@@ -19,7 +19,7 @@ class ModerationsController < ApplicationController
 
   def article
     authorize(User, :moderation_routes?)
-    @moderatable = Article.find_by_slug(params[:slug])
+    @moderatable = Article.find_by(slug: params[:slug])
     render template: "moderations/mod"
   end
 

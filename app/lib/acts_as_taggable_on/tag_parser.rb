@@ -31,7 +31,7 @@ module ActsAsTaggableOn
 
     def find_tag_alias(tag)
       # "&." is "Safe Navigation"; ensure not called on nil
-      alias_for = Tag.find_by_name(tag)&.alias_for
+      alias_for = Tag.find_by(name: tag)&.alias_for
       alias_for if alias_for.present?
     end
   end

@@ -113,6 +113,6 @@ class Organization < ApplicationRecord
   handle_asynchronously :bust_cache
 
   def unique_slug_including_users
-    errors.add(:slug, "is taken.") if User.find_by_username(slug)
+    errors.add(:slug, "is taken.") if User.find_by(username: slug)
   end
 end

@@ -133,7 +133,7 @@ class User < ApplicationRecord
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
-  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
+  scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -336,7 +336,7 @@ class User < ApplicationRecord
   end
 
   def unique_including_orgs
-    errors.add(:username, "is taken.") if Organization.find_by_slug(username)
+    errors.add(:username, "is taken.") if Organization.find_by(slug: username)
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -416,7 +416,7 @@ class User < ApplicationRecord
   end
 
   def temp_name_exists?
-    User.find_by_username(temp_username) || Organization.find_by_slug(temp_username)
+    User.find_by(username: temp_username) || Organization.find_by(slug: temp_username)
   end
 
   def temp_username
