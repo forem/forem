@@ -14,19 +14,22 @@ module Moderator
 
     def merge
       merge_content
-      merge_relationships
+      merge_follows
+      merge_chat_mentions
       merge_profile
       remove_additional_email
       update_social
-      @delete_user.delete!
+      @delete_user.delete
     end
+
+    private
 
     def update_social
       @old_tu = @delete_user.twitter_username
       @old_gu = @delete_user.github_username
-      @delete_user.update_columns(twitter_username: nil, github_username: nil)
-      @keep_user.update!(twitter_username: @old_tu) if @keep_user.twitter_username.blank?
-      @keep_user.update!(github_username: @old_gu) if @keep_user.github_username.blank?
+      @delete_user.update(twitter_username: nil, github_username: nil)
+      @keep_user.update!(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
+      @keep_user.update!(github_username: @old_gu) if @keep_user.github_username.nil?
     end
 
     def remove_additional_email
@@ -49,15 +52,18 @@ module Moderator
 
     def merge_profile
       @delete_user.github_repos&.update_all(user_id: @keep_user.id) if @delete_user.github_repos.any?
-      @delete_user.badge_achievements.update_al(user_id: @keep_user.id) if @delete_user.badge_achievements.any?
+      @delete_user.badge_achievements.update_all(user_id: @keep_user.id) if @delete_user.badge_achievements.any?
     end
 
-    def merge_relationships
-      @delete_user.follows&.update_all(follower_id: @keep_user.id) if @delete_user.follows.any?
+    def merge_chat_mentions
       @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if @delete_user.chat_channel_memberships.any?
       @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
+    end
+
+    def merge_follows
+      @delete_user.follows&.update_all(follower_id: @keep_user.id) if @delete_user.follows.any?
       @delete_user_followers = Follow.where(followable_id: @delete_user.id, followable_type: "User")
-      @delete_user_followers.update_all(@keep_user.id) if @delete_user_followers.any?
+      @delete_user_followers.update_all(followable_id: @keep_user.id) if @delete_user_followers.any?
     end
 
     def merge_content
