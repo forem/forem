@@ -60,6 +60,7 @@
       flex-shrink: 0;
       width: 100%;
       color: $black;
+      color: var(--theme-color, $black);
       padding: 10px 0px;
       border-radius: 3px;
       min-width: 115px;
@@ -70,9 +71,15 @@
       text-align: center;
       &.active {
         background: $purple;
+        background: var(--theme-container-accent-background, $purple);
+        color: $black;
+        color: var(--theme-container-color, $black);
       }
       &:not(.active):hover {
         background: $light-medium-purple;
+        background: var(--theme-container-background-hover, $light-medium-purple);
+        color: $black;
+        color: var(--theme-container-color, $black);
       }
       &:not(:last-child) {
         /* gap between actions */
