@@ -15,27 +15,6 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     }
   end
 
-  # xit "doesn't send if a user reacts to their own content" do
-  #   own_reaction = create(:reaction, user: user, reactable: article)
-  #   expect do
-  #     described_class.call(own_reaction, user)
-  #   end.not_to change(Notification, :count)
-  # end
-
-  # xit "doesn't send if a reaction is negative" do
-  #   article_reaction.update_column(:points, -10)
-  #   expect do
-  #     described_class.call(article_reaction, user)
-  #   end.not_to change(Notification, :count)
-  # end
-
-  # xit "doesn't send if notifications are disabled" do
-  #   article.update_column(:receive_notifications, false)
-  #   expect do
-  #     described_class.call(article_reaction, user)
-  #   end.not_to change(Notification, :count)
-  # end
-
   context "when a reaction is ok" do
     it "creates a notification" do
       expect do
