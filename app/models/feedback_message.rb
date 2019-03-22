@@ -5,8 +5,8 @@ class FeedbackMessage < ApplicationRecord
   belongs_to :affected, foreign_key: "affected_id", class_name: "User", optional: true
   has_many :notes, as: :noteable, dependent: :destroy
 
-  validates_presence_of :feedback_type, :message
-  validates_presence_of :reported_url, :category, if: :abuse_report?
+  validates :feedback_type, :message, presence: true
+  validates :reported_url, :category, presence: { if: :abuse_report? }
   validates :category,
             inclusion: {
               in: ["spam", "other", "rude or vulgar", "harassment", "bug"]

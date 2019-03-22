@@ -4,7 +4,7 @@ class MentorRelationship < ApplicationRecord
   validates :mentor, presence: true
   validates :mentee, presence: true
   validate :check_for_same_user
-  validates_uniqueness_of :mentor_id, scope: :mentee_id
+  validates :mentor_id, uniqueness: { scope: :mentee_id }
 
   after_create :mutual_follow
   after_create :send_emails
