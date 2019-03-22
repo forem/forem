@@ -170,7 +170,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "retains content from #processed_html" do
-      text = comment.title.gsub("...", "").gsub(/\n/, "")
+      text = comment.title.gsub("...", "").delete("\n")
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
   end

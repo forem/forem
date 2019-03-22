@@ -27,7 +27,7 @@ class PodcastFeed
     ep = PodcastEpisode.new
     ep.title = item.title
     ep.podcast_id = podcast.id
-    ep.slug = item.title.downcase.gsub(/[^0-9a-z ]/i, "").gsub(" ", "-")
+    ep.slug = item.title.downcase.gsub(/[^0-9a-z ]/i, "").tr(" ", "-")
     ep.subtitle = item.itunes_subtitle
     ep.summary = item.itunes_summary
     ep.website_url = item.link

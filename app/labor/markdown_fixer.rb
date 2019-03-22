@@ -37,7 +37,7 @@ class MarkdownFixer
 
     def split_tags(markdown)
       markdown.gsub(/\ntags:.*\n/) do |tags|
-        tags.split(" #").join(",").gsub("#", "").gsub(":,", ": ")
+        tags.split(" #").join(",").delete("#").gsub(":,", ": ")
       end
     end
 

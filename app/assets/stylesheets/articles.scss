@@ -105,6 +105,7 @@
         }
         &.selected {
           background: lighten($bold-blue, 8%);
+          background: var(--theme-container-accent-background, lighten($bold-blue, 8%));
           color: white;
         }
       }
@@ -782,6 +783,7 @@
           padding-top: 2px;
           display: block;
           background: white;
+          background: var(--theme-container-background, white);
           height: calc(100% - 2px);
           overflow-y: auto;
           .widget,
@@ -1291,14 +1293,18 @@
         }
         &.selected {
           background: lighten($bold-blue, 10%);
+          background: var(--theme-container-accent-background, lighten($bold-blue, 10%));
           color: white;
+          color: var(--theme-container-color, white);
         }
         &.query-type-filter-button {
           &:hover {
             background: $light-green;
+            background: var(--theme-container-background-hover, $light-green);
           }
           &.selected {
             background: darken($light-green, 10%);
+            background: var(--theme-container-accent-background, darken($light-green, 10%));
           }
         }
       }
