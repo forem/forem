@@ -1,12 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
-  let(:user) { create(:user) }
-  let(:user2) { create(:user) }
+  let(:user) { create(:user, twitter_username: nil) }
+  let(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
+  let(:badge) { create(:badge, title: "one-year-club") }
 
   before do
     sign_in super_admin
@@ -23,11 +24,12 @@ RSpec.describe "internal/users", type: :request do
     # create user3 reaction to user2 comment
     create(:reaction, reactable: comment, reactable_type: "Comment", user: user3)
     # create user3 comment response to user2 comment
-    comment2 = create(:comment, commentable_type: "Article", commentable: article, user: user3, ancestry: comment.id)
+    comment2 = create(:comment, commentable_type: "Article", commentable: article, user: user3, ancestry: comment.id, body_markdown: "Hello @#{user2.username}, you are cool.")
     # create user2 reaction to user3 comment response
     create(:reaction, reactable: comment2, reactable_type: "Comment", user: user2)
     # create user3 reaction to offending article
     create(:reaction, reactable: article, reactable_type: "Article", user: user3, category: "like")
+    Mention.create_all_without_delay(comment2)
     Delayed::Worker.new(quiet: true).work_off
   end
 
@@ -39,6 +41,61 @@ RSpec.describe "internal/users", type: :request do
     # user3 reacts to offender comment
     create(:reaction, reactable: comment, reactable_type: "Comment", user: user3)
     Delayed::Worker.new(quiet: true).work_off
+  end
+
+  def full_profile
+    BadgeAchievement.create(
+      user_id: user2.id,
+      badge_id: badge.id,
+      rewarding_context_message_markdown: "message",
+    )
+    ChatChannel.create_with_users([user2, user3], "direct")
+    user2.follow(user3)
+    user.follow(super_admin)
+    user3.follow(user2)
+    params = {
+      name: Faker::Book.title,
+      user_id: user2.id,
+      github_id_code: rand(1000),
+      url: Faker::Internet.url
+    }
+    GithubRepo.create(params)
+    Delayed::Worker.new(quiet: true).work_off
+  end
+
+  context "when merging users" do
+    before do
+      full_profile
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+      Delayed::Worker.new(quiet: true).work_off
+    end
+
+    it "deletes duplicate user" do
+      expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "merges all content" do
+      expect(user.comments.count).to eq(2)
+      expect(user.articles.count).to eq(2)
+      expect(user.reactions.count).to eq(4)
+    end
+
+    it "merges all relationships" do
+      expect(user.follows.count).to eq(2)
+      expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
+      expect(user.chat_channel_memberships.count).to eq(1)
+      expect(user.mentions.count).to eq(1)
+    end
+
+    it "merges misc profile info" do
+      expect(user.github_repos.any?).to be true
+      expect(user.badge_achievements.any?).to be true
+    end
+
+    it "merges social identities and usernames" do
+      user.reload
+      expect(user.twitter_username).to eq("Twitter")
+    end
   end
 
   context "when managing activty and roles" do
