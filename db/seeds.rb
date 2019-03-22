@@ -1,4 +1,4 @@
-p "1/9 Creating Organizations"
+Rails.logger.info "1/9 Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -17,7 +17,7 @@ end
 
 ##############################################################################
 
-p "2/9 Creating Users"
+Rails.logger.info "2/9 Creating Users"
 
 roles = %i[level_1_member level_2_member level_3_member level_4_member
            workshop_pass]
@@ -50,7 +50,7 @@ end
 
 ##############################################################################
 
-p "3/9 Creating Tags"
+Rails.logger.info "3/9 Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -66,7 +66,7 @@ end
 
 ##############################################################################
 
-p "4/9 Creating Articles"
+Rails.logger.info "4/9 Creating Articles"
 
 Article.clear_index!
 25.times do |i|
@@ -97,7 +97,7 @@ end
 
 ##############################################################################
 
-p "5/9 Creating Comments"
+Rails.logger.info "5/9 Creating Comments"
 
 Comment.clear_index!
 30.times do
@@ -112,7 +112,7 @@ end
 
 ##############################################################################
 
-p "6/9 Creating Podcasts"
+Rails.logger.info "6/9 Creating Podcasts"
 
 image_file = File.join(
   Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"
@@ -177,7 +177,7 @@ end
 
 ##############################################################################
 
-p "7/9 Creating Broadcasts"
+Rails.logger.info "7/9 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
@@ -188,7 +188,7 @@ Broadcast.create!(
 
 ##############################################################################
 
-p "8/9 Creating chat_channel"
+Rails.logger.info "8/9 Creating chat_channel"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
@@ -202,7 +202,7 @@ ChatChannel.without_auto_index do
 end
 ChatChannel.reindex!
 
-p "9/9 Creating html_variant"
+Rails.logger.info "9/9 Creating html_variant"
 
 HtmlVariant.create(
   name: rand(100).to_s,
