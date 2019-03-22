@@ -18,9 +18,9 @@ class Article < ApplicationRecord
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :buffer_updates
-  has_many :notifications, as: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable
   has_many :rating_votes
   has_many :page_views
 

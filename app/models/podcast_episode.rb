@@ -8,7 +8,7 @@ class PodcastEpisode < ApplicationRecord
   delegate :title, to: :podcast, prefix: true
 
   belongs_to :podcast
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader

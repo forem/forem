@@ -24,8 +24,8 @@ class User < ApplicationRecord
   has_many    :identities, dependent: :destroy
   has_many    :mentions, dependent: :destroy
   has_many    :messages, dependent: :destroy
-  has_many    :notes, as: :noteable
-  has_many    :authored_notes, as: :author, class_name: "Note"
+  has_many    :notes, as: :noteable, inverse_of: :noteable
+  has_many    :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
   has_many    :tweets, dependent: :destroy
@@ -37,9 +37,9 @@ class User < ApplicationRecord
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
   has_many :mentor_relationships_as_mentee,
-  class_name: "MentorRelationship", foreign_key: "mentee_id"
+  class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
-  class_name: "MentorRelationship", foreign_key: "mentor_id"
+  class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
   has_many :mentors,
   through: :mentor_relationships_as_mentee,
   source: :mentor
