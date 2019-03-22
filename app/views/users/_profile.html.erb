@@ -1,4 +1,6 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js" async="async"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
+  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
+
 <% unless @user.identities.exists?(provider: 'github') %>
   <div class="field">
     <a href="/users/auth/github" class="big-button cta" data-no-instant>

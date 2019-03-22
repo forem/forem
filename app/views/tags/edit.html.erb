@@ -1,4 +1,6 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
+  integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
+
 <style>
   .widget header {
     color: <%= HexComparer.new([@tag.bg_color_hex || "#0000000", @tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
