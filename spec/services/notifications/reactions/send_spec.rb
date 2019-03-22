@@ -146,6 +146,20 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     end
   end
 
-  # context "when a receiver is an organization" do
-  # end
+  context "when a receiver is an organization" do
+    let(:organization) { create(:organization) }
+
+    it "creates a notification" do
+      expect do
+        described_class.call(reaction_data(article_reaction), organization)
+      end.to change(Notification, :count).by(1)
+    end
+
+    it "creates a correct notification" do
+      notification = described_class.call(reaction_data(article_reaction), organization)
+      expect(notification.organization_id).to eq(organization.id)
+      expect(notification.user_id).to be_nil
+      expect(notification.notifiable).to eq(article)
+    end
+  end
 end
