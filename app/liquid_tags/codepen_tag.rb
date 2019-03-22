@@ -35,11 +35,7 @@ class CodepenTag < LiquidTagBase
 
     option = validated_options.join("&")
 
-    if option.blank?
-      "default-tab=result"
-    else
-      option
-    end
+    option.presence || "default-tab=result"
   end
 
   def parse_link(link)
