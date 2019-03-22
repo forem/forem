@@ -25,7 +25,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
   end
 
   it "remove user from organization" do
-    user.update_attributes(organization_id: organization.id, org_admin: true)
+    user.update(organization_id: organization.id, org_admin: true)
     user2 = create(:user, username: "newuser", organization_id: organization.id)
     visit "settings/organization"
     click_button("Remove from org")
