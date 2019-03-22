@@ -76,7 +76,7 @@ class Internal::UsersController < Internal::ApplicationController
       mentee = User.find(@new_mentee)
       MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
     end
-    return unless @new_mentor.present?
+    return if @new_mentor.blank?
 
     mentor = User.find(@new_mentor)
     MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
