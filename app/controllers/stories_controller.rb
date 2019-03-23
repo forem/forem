@@ -1,5 +1,5 @@
 class StoriesController < ApplicationController
-  before_action :authenticate_user!, except: %i[index search show feed new]
+  before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
 
   def index
