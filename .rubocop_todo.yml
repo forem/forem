@@ -68,6 +68,9 @@ RSpec/AnyInstance:
 Metrics/LineLength:
   Max: 279
 
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
 # Potential security risks
 # Offense count: 16
 Rails/OutputSafety:
