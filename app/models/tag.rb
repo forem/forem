@@ -77,7 +77,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def validate_alias
-    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by_name(alias_for)
+    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by(name: alias_for)
   end
 
   def pound_it

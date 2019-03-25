@@ -5,7 +5,7 @@ class BlackBox
 
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
-      super_super_recent_bonus = usable_date > 1.hours.ago ? 28 : 0
+      super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
       super_recent_bonus = usable_date > 8.hours.ago ? 31 : 0
       recency_bonus = usable_date > 12.hours.ago ? 80 : 0
       today_bonus = usable_date > 26.hours.ago ? 395 : 0

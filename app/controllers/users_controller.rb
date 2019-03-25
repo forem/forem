@@ -90,7 +90,7 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by_secret(params[:org_secret]))
+    if (@organization = Organization.find_by(secret: params[:org_secret]))
       current_user.update(organization_id: @organization.id)
       redirect_to "/settings/organization",
         notice: "You have joined the #{@organization.name} organization."
@@ -156,7 +156,7 @@ class UsersController < ApplicationController
       stripe_code = current_user.stripe_id_code
       return if stripe_code == "special"
 
-      @customer = Stripe::Customer.retrieve(stripe_code) unless stripe_code.blank?
+      @customer = Stripe::Customer.retrieve(stripe_code) if stripe_code.present?
     when "membership"
       if current_user.monthly_dues.zero?
         redirect_to "/membership"

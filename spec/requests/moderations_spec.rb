@@ -4,7 +4,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when not logged-in" do
     it "does not grant acesss", proper_status: true do
       get path
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(:not_found)
     end
 
     it "raises Pundit::NotAuthorizedError internally" do
@@ -17,7 +17,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
 
     it "does not grant acesss", proper_status: true do
       get path
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(:not_found)
     end
 
     it "internally raise Pundit::NotAuthorized internally" do
@@ -39,17 +39,17 @@ RSpec.describe "Moderations", type: :request do
 
     it "grant access to comment moderation" do
       get comment.path + "/mod"
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "grant access to article moderation" do
       get article.path + "/mod"
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "grants access to /mod index" do
       get "/mod"
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
     it "grants access to /mod index with articles" do
       create(:article, published: true)

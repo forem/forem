@@ -32,7 +32,7 @@ class NotificationsController < ApplicationController
 
   def user_to_view
     if params[:username] && current_user.admin?
-      User.find_by_username(params[:username])
+      User.find_by(username: params[:username])
     else
       current_user
     end

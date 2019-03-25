@@ -67,3 +67,27 @@ RSpec/AnyInstance:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 279
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+# Potential security risks
+# Offense count: 16
+Rails/OutputSafety:
+  Exclude:
+    - 'app/controllers/stripe_subscriptions_controller.rb'
+    - 'app/helpers/application_helper.rb'
+    - 'app/helpers/comments_helper.rb'
+    - 'app/labor/markdown_parser.rb'
+    - 'app/liquid_tags/dev_comment_tag.rb'
+    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
+    - 'app/liquid_tags/liquid_tag_base.rb'
+    - 'app/liquid_tags/tweet_tag.rb'
+    - 'app/models/comment.rb'
+    - 'app/models/display_ad.rb'
+    - 'app/models/message.rb'
+    - 'app/views/api/v0/articles/show.json.jbuilder'
+    - 'app/views/articles/feed.rss.builder'
+
+Rails/SkipsModelValidations:
+  Enabled: false

@@ -1,5 +1,5 @@
 class Broadcast < ApplicationRecord
-  has_many :notifications, as: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable
 
   validates :title, :type_of, :processed_html, presence: true
   validates :type_of, inclusion: { in: %w[Announcement Onboarding] }

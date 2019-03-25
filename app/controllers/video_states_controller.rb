@@ -17,14 +17,14 @@ class VideoStatesController < ApplicationController
     end
     request_json = JSON.parse(request.raw_post, symbolize_names: true)
     message_json = JSON.parse(request_json[:Message], symbolize_names: true)
-    @article = Article.find_by_video_code(message_json[:input][:key])
+    @article = Article.find_by(video_code: message_json[:input][:key])
     @article.update(video_state: "COMPLETED") # Only is called on completion
     NotifyMailer.video_upload_complete_email(@article).deliver
     render json: { message: "Video state updated" }
   end
 
   def valid_user
-    user = User.find_by_secret(params[:key])
+    user = User.find_by(secret: params[:key])
     user = nil unless user.has_role?(:super_admin)
     user
   end

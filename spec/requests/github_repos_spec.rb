@@ -17,7 +17,7 @@ RSpec.describe "GithubRepos", type: :request do
   describe "POST /github_repos" do
     it "returns a 302" do
       post "/github_repos", params: { github_repo: { github_id_code: repo.github_id_code } }
-      expect(response).to have_http_status(302)
+      expect(response).to have_http_status(:found)
     end
 
     it "creates a new GithubRepo object" do
@@ -33,7 +33,7 @@ RSpec.describe "GithubRepos", type: :request do
 
     it "returns a 302" do
       put "/github_repos/#{repo.id}"
-      expect(response).to have_http_status(302)
+      expect(response).to have_http_status(:found)
     end
 
     it "unfeatures the requested GithubRepo" do
