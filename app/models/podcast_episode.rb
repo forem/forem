@@ -3,8 +3,12 @@ class PodcastEpisode < ApplicationRecord
 
   acts_as_taggable
 
+  delegate :slug, to: :podcast, prefix: true
+  delegate :image_url, to: :podcast, prefix: true
+  delegate :title, to: :podcast, prefix: true
+
   belongs_to :podcast
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -66,18 +70,6 @@ class PodcastEpisode < ApplicationRecord
 
   def path
     "/#{podcast.slug}/#{slug}"
-  end
-
-  def podcast_slug
-    podcast.slug
-  end
-
-  def podcast_image_url
-    podcast.image_url
-  end
-
-  def podcast_title
-    podcast.title
   end
 
   def published_at_int
@@ -158,7 +150,7 @@ class PodcastEpisode < ApplicationRecord
   private
 
   def prefix_all_images
-    return unless body.present?
+    return if body.blank?
 
     self.processed_html = body.
       gsub("\r\n<p>&nbsp;</p>\r\n", "").gsub("\r\n<p>&nbsp;</p>\r\n", "").

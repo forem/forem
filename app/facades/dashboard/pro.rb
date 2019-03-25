@@ -28,7 +28,7 @@ module Dashboard
     end
 
     def last_month_reactions_count
-      Reaction.where(reactable_id: user_or_org_article_ids, reactable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
+      Reaction.where(reactable_id: user_or_org_article_ids, reactable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.month.ago).size
     end
 
     def this_week_comments
@@ -48,7 +48,7 @@ module Dashboard
     end
 
     def last_month_comments_count
-      Comment.where(commentable_id: user_or_org_article_ids, commentable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
+      Comment.where(commentable_id: user_or_org_article_ids, commentable_type: "Article").where("created_at > ? AND created_at < ?", 2.months.ago, 1.month.ago).size
     end
 
     def this_week_followers_count
@@ -64,7 +64,7 @@ module Dashboard
     end
 
     def last_month_followers_count
-      Follow.where(followable_id: user_or_org.id, followable_type: user_or_org.class.name).where("created_at > ? AND created_at < ?", 2.months.ago, 1.months.ago).size
+      Follow.where(followable_id: user_or_org.id, followable_type: user_or_org.class.name).where("created_at > ? AND created_at < ?", 2.months.ago, 1.month.ago).size
     end
 
     def reactors

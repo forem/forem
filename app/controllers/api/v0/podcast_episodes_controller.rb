@@ -18,7 +18,7 @@ module Api
       def index
         @page = params[:page]
         if params[:username]
-          @podcast = Podcast.find_by_slug(params[:username]) || not_found
+          @podcast = Podcast.find_by(slug: params[:username]) || not_found
           @podcast_episodes = @podcast.
             podcast_episodes.order("published_at desc").
             page(@page).

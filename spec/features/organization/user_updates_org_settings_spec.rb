@@ -13,7 +13,8 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
     fill_in "organization[name]", with: "Organization Name"
     fill_in "organization[slug]", with: "Organization"
     attach_file(
-      "organization_profile_image", "#{Rails.root}/app/assets/images/android-icon-36x36.png"
+      "organization_profile_image",
+      Rails.root.join("app", "assets", "images", "android-icon-36x36.png"),
     )
     fill_in "Text color (hex)", with: "#ffffff"
     fill_in "Background color (hex)", with: "#000000"
@@ -25,7 +26,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :featu
   end
 
   it "remove user from organization" do
-    user.update_attributes(organization_id: organization.id, org_admin: true)
+    user.update(organization_id: organization.id, org_admin: true)
     user2 = create(:user, username: "newuser", organization_id: organization.id)
     visit "settings/organization"
     click_button("Remove from org")

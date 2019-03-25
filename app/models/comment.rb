@@ -6,7 +6,7 @@ class Comment < ApplicationRecord
   counter_culture :commentable
   belongs_to :user
   counter_culture :user
-  has_many :mentions, as: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25_000 },
                             uniqueness: { scope: %i[user_id

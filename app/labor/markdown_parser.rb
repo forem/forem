@@ -59,7 +59,7 @@ class MarkdownParser
   end
 
   def tags_used
-    return [] unless @content.present?
+    return [] if @content.blank?
 
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []
@@ -149,7 +149,7 @@ class MarkdownParser
 
   def user_link_if_exists(mention)
     username = mention.delete("@").downcase
-    if User.find_by_username(username)
+    if User.find_by(username: username)
       <<~HTML
         <a class='comment-mentioned-user' href='#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/#{username}'>@#{username}</a>
       HTML

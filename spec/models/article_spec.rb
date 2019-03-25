@@ -440,7 +440,7 @@ RSpec.describe Article, type: :model do
   end
 
   it "shows year in readable time if not current year" do
-    article.published_at = 1.years.ago
+    article.published_at = 1.year.ago
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end

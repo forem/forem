@@ -5,7 +5,8 @@ FactoryBot.define do
   sequence(:github_username) { |n| "github#{n}" }
 
   image = Rack::Test::UploadedFile.new(
-    File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg"
+    Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
+    "image/jpeg",
   )
 
   factory :user do

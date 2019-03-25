@@ -16,7 +16,7 @@ class Tweet < ApplicationRecord
   validates :full_fetched_object_serialized, presence: true
 
   def self.find_or_fetch(twitter_id_code)
-    find_by_twitter_id_code(twitter_id_code) || fetch(twitter_id_code)
+    find_by(twitter_id_code: twitter_id_code) || fetch(twitter_id_code)
   end
 
   def self.fetch(twitter_id_code)
@@ -73,7 +73,7 @@ class Tweet < ApplicationRecord
       tweet = Tweet.where(twitter_id_code: tweeted.attrs[:id_str]).first_or_initialize
       tweet.twitter_uid = tweeted.user.id.to_s
       tweet.twitter_username = tweeted.user.screen_name.downcase
-      tweet.user_id = User.find_by_twitter_username(tweeted.user.screen_name).try(:id)
+      tweet.user_id = User.find_by(twitter_username: tweeted.user.screen_name).try(:id)
       tweet.favorite_count = tweeted.favorite_count
       tweet.retweet_count = tweeted.retweet_count
       tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_user_id_str]

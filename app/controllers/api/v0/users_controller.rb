@@ -17,7 +17,7 @@ module Api
 
       def show
         @user = if params[:id] == "by_username"
-                  User.find_by_username(params[:url])
+                  User.find_by(username: params[:url])
                 else
                   User.find(params[:id])
                 end

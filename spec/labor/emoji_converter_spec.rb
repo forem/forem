@@ -7,7 +7,7 @@ RSpec.describe EmojiConverter do
 
   describe "#convert" do
     it "converts emoji names wrapped in colons into unicode" do
-      joy_emoji_unicode = Emoji.find_by_alias("joy").raw
+      joy_emoji_unicode = Emoji.find_by_alias("joy").raw # rubocop:disable Rails/DynamicFindBy
       expect(convert_emoji(":joy:")).to include(joy_emoji_unicode)
     end
 

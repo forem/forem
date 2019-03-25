@@ -83,13 +83,13 @@ class AuthorizationService
       signed_in_resource
     elsif identity.user
       identity.user
-    elsif !auth.info.email.blank?
-      User.find_by_email(auth.info.email)
+    elsif auth.info.email.present?
+      User.find_by(email: auth.info.email)
     end
   end
 
   def set_identity(identity, user)
-    return unless identity.user_id.blank?
+    return if identity.user_id.present?
 
     identity.user = user
     identity.save!

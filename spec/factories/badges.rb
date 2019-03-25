@@ -1,6 +1,7 @@
 FactoryBot.define do
   image = Rack::Test::UploadedFile.new(
-    File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg"
+    Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
+    "image/jpeg",
   )
 
   factory :badge do
