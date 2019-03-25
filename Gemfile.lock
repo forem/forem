@@ -919,9 +919,9 @@ GEM
     unf_ext (0.0.7.5)
     unicode-display_width (1.4.1)
     uniform_notifier (1.12.1)
-    validate_url (1.0.2)
+    validate_url (1.0.6)
       activemodel (>= 3.0.0)
-      addressable
+      public_suffix
     vcr (4.0.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
