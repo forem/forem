@@ -249,6 +249,9 @@ Layout/InitialIndentation:
 
 # Rails
 
+Rails:
+  Enabled: true
+
 Rails/Date:
   Description: >-
     Checks the correct usage of date aware methods,

@@ -8,20 +8,24 @@
       background-repeat: repeat;
     <% end %>
   }
-  .content {
+  .preview-div-wrapper {
     background: white;
-    position: absolute;
-    top: 5vw;
-    bottom: 5vw;
-    left: 5vw;
-    right: 5vw;
+    width: 80vw;
+    height: 35vw;
+    margin: 2.5vw auto 2.5vw;
+    padding: 4vw;
+  }
+  .avatar {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.5vw;
+    width: 12vw;
   }
   img {
-    border-radius: 200vw;
-    border: 0.6vw solid #70589b;
-    margin: 3.5vw auto 2.5vw;
-    display: block;
-    height: 10vw;
+    border-radius: 12vw;
+    border: .75vw solid #70589b;
+    height: 12vw;
+    width: 12vw;
   }
   .title {
     font-size: <%= 7 - @article.title.size / 40 %>vw;
@@ -29,12 +33,15 @@
     width: 80%;
     color: #70589b;
     text-align: center;
-    font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+    font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", "Roboto Condensed", sans-serif;
   }
 </style>
-<div class="content">
-  <img src="<%= ProfileImage.new(@article.user).get(320) %>" />
+
+<div class="preview-div-wrapper">
+  <div class="avatar">
+    <img src="<%= ProfileImage.new(@article.user).get(320) %>" />
+  </div>
   <div class="title">
-    <%= @article.title %>
+    <strong><%= @article.title %></strong>
   </div>
 </div>

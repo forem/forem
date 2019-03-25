@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[rlyweb now events membership survey badge shecoded]
+  before_action :set_cache_control_headers, only: %i[rlyweb now membership survey badge shecoded]
 
   def now
     set_surrogate_key_header "now_page"
@@ -32,7 +32,7 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    reported_url = params[:reported_url] || params[:url] || request.referrer
+    reported_url = params[:reported_url] || params[:url] || request.referer
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
     )
@@ -54,7 +54,7 @@ class PagesController < ApplicationController
   end
 
   def live
-    @active_channel = ChatChannel.find_by_channel_name("Workshop")
+    @active_channel = ChatChannel.find_by(channel_name: "Workshop")
     @chat_channels = [@active_channel].to_json(
       only: %i[channel_name channel_type last_message_at slug status id],
     )

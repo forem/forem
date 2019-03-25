@@ -50,7 +50,7 @@ module Admin
         gitlab_url
         linkedin_url
       ]
-      accessible << %i[password password_confirmation] unless params[:user][:password].blank?
+      accessible << %i[password password_confirmation] if params[:user][:password].present?
       params.require(:user).permit(accessible)
     end
   end

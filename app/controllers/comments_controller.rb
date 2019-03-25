@@ -10,19 +10,19 @@ class CommentsController < ApplicationController
     skip_authorization
     @on_comments_page = true
     @comment = Comment.new
-    @podcast = Podcast.find_by_slug(params[:username])
+    @podcast = Podcast.find_by(slug: params[:username])
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
     if @podcast
       @user = @podcast
-      (@commentable = @user.podcast_episodes.find_by_slug(params[:slug])) || not_found
+      (@commentable = @user.podcast_episodes.find_by(slug: params[:slug])) || not_found
     else
-      @user = User.find_by_username(params[:username]) ||
-        Organization.find_by_slug(params[:username]) ||
+      @user = User.find_by(username: params[:username]) ||
+        Organization.find_by(slug: params[:username]) ||
         not_found
       @commentable = @root_comment&.commentable ||
-        @user.articles.find_by_slug(params[:slug]) ||
+        @user.articles.find_by(slug: params[:slug]) ||
         not_found
       @article = @commentable
       not_found unless @commentable.published

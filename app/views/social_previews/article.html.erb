@@ -1,6 +1,7 @@
 <% accent_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
 <% color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(1.4) %>
 <% dark_color = HexComparer.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.7) %>
+<% not_so_rand = Random.new(@article.id) # Using ID as seed ensures we get the same "random" numbers on each page load, Improves caching %>
 <style>
   body {
     background: white;
@@ -22,22 +23,22 @@
   .circle1 {
     height: 40vw;
     width: 40vw;
-    right: -<%= rand(2..15) %>vw;
-    bottom: -<%= rand(2..15) %>vw;
+    right: -<%= not_so_rand.rand(2..15) %>vw;
+    bottom: -<%= not_so_rand.rand(2..15) %>vw;
   }
 
   .circle2 {
     height: 30vw;
     width: 30vw;
-    left: <%= rand(2..16) %>vw;
-    bottom: 0vw;
+    left: <%= not_so_rand.rand(2..16) %>vw;
+    bottom: -<%= not_so_rand.rand(2..15) %>vw;
   }
 
   .circle3 {
     height: 24vw;
     width: 24vw;
     left: -8vw;
-    top: -<%= rand(2..6) %>vw;
+    top: -<%= not_so_rand.rand(2..6) %>vw;
   }
 
   .preview-div {
@@ -54,7 +55,7 @@
   .preview-info-header {
     color: black;
     margin: 2vw auto 0vw;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, "Roboto", monospace;
     font-size: 3.5vw;
     width: 92%;
   }
@@ -70,7 +71,7 @@
     color: <%= dark_color %>;
     width: 92%;
     margin: 1vw auto;
-    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
   }
 
   .preview-user {

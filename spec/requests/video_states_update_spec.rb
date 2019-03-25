@@ -17,7 +17,7 @@ RSpec.describe "VideoStatesUpdate", type: :request do
     it "rejects non-authorized users" do
       post "/video_states?key=#{regular_user.secret}",
         params: { input: { key: article.video_code } }
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 end

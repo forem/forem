@@ -35,7 +35,7 @@ class TagTag < LiquidTagBase
 
   def parse_tag_name_to_tag(input)
     input_no_space = input.delete(" ")
-    tag = Tag.find_by_name(input_no_space)
+    tag = Tag.find_by(name: input_no_space)
     raise StandardError, "invalid tag name" if tag.nil?
 
     tag

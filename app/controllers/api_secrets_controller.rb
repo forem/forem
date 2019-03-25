@@ -27,6 +27,6 @@ class ApiSecretsController < ApplicationController
   private
 
   def set_api_secret
-    @secret = ApiSecret.find_by_id(params[:id]) || not_found
+    @secret = ApiSecret.find_by(id: params[:id]) || not_found
   end
 end

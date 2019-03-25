@@ -90,7 +90,7 @@ class RssReader
         show_comments: true,
         # body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
         body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
-        organization_id: user.organization_id.present? ? user.organization_id : nil
+        organization_id: user.organization_id.presence
       }
       article = with_timer("save_article", metadata) do
         Article.create!(article_params)

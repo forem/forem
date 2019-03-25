@@ -20,7 +20,7 @@ class Mention < ApplicationRecord
       mentions = []
       doc.css(".comment-mentioned-user").each do |link|
         username = link.text.delete("@").downcase
-        if (user = User.find_by_username(username))
+        if (user = User.find_by(username: username))
           usernames << username
           mentions << create_mention(user)
         end
@@ -35,7 +35,7 @@ class Mention < ApplicationRecord
     def delete_removed_mentions(usernames)
       user_ids = User.where(username: usernames).pluck(:id)
       mentions = @notifiable.mentions.where.not(user_id: user_ids).destroy_all
-      Notification.remove_each(mentions) unless mentions.blank?
+      Notification.remove_each(mentions) if mentions.present?
     end
 
     def create_mention(user)

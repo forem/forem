@@ -1,9 +1,7 @@
 require "administrate/field/base"
 
 class CarrierwaveField < Administrate::Field::Base
-  def url
-    data.url
-  end
+  delegate :url, to: :data
 
   def to_s
     data

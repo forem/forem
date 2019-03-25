@@ -5,7 +5,7 @@ class DashboardsController < ApplicationController
 
   def show
     @user = if params[:username] && current_user.any_admin?
-              User.find_by_username(params[:username])
+              User.find_by(username: params[:username])
             else
               current_user
             end
@@ -34,7 +34,7 @@ class DashboardsController < ApplicationController
 
   def pro
     user_or_org = if params[:org_id]
-                    org = Organization.find_by_id(params[:org_id])
+                    org = Organization.find_by(id: params[:org_id])
                     authorize org, :pro_org_user?
                     org
                   else

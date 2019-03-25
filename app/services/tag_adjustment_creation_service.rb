@@ -21,7 +21,7 @@ class TagAdjustmentCreationService
   def creation_args
     args = @tag_adjustment_params
     args[:user_id] = @user.id
-    args[:tag_id] = Tag.find_by_name(args[:tag_name])&.id
+    args[:tag_id] = Tag.find_by(name: args[:tag_name])&.id
     args
   end
 end

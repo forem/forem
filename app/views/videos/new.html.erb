@@ -17,7 +17,7 @@
                        key: "video-upload__#{SecureRandom.hex}",
                        key_starts_with: "video-upload__",
                        acl: "public-read",
-                       max_file_size: (current_user.has_role?(:super_admin) ? 20000 : 6000).megabytes,
+                       max_file_size: (current_user.has_role?(:super_admin) ? 20_000 : 6000).megabytes,
                        id: "s3-uploader",
                        class: "upload-form",
                        data: { key: :val } do %>
@@ -36,7 +36,8 @@
     </p>
   </div>
 </center>
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <%= javascript_include_tag "s3_direct_upload" %>
 <script>
   setTimeout(function () {

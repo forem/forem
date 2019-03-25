@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id
 
   rolify
   include AlgoliaSearch
@@ -24,8 +24,8 @@ class User < ApplicationRecord
   has_many    :identities, dependent: :destroy
   has_many    :mentions, dependent: :destroy
   has_many    :messages, dependent: :destroy
-  has_many    :notes, as: :noteable
-  has_many    :authored_notes, as: :author, class_name: "Note"
+  has_many    :notes, as: :noteable, inverse_of: :noteable
+  has_many    :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy
   has_many    :tweets, dependent: :destroy
@@ -37,9 +37,9 @@ class User < ApplicationRecord
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
   has_many :mentor_relationships_as_mentee,
-  class_name: "MentorRelationship", foreign_key: "mentee_id"
+  class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
-  class_name: "MentorRelationship", foreign_key: "mentor_id"
+  class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
   has_many :mentors,
   through: :mentor_relationships_as_mentee,
   source: :mentor
@@ -133,7 +133,7 @@ class User < ApplicationRecord
   validate  :validate_feed_url
   validate  :unique_including_orgs
 
-  scope :dev_account, -> { find_by_id(ApplicationConfig["DEVTO_USER_ID"]) }
+  scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
   after_create :send_welcome_notification
   after_save  :bust_cache
@@ -205,7 +205,7 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language!
-    identity = identities.where(provider: "twitter").first
+    identity = identities.find_by(provider: "twitter")
     if email.end_with?(".jp")
       update(estimated_default_language: "ja", prefer_language_ja: true)
     elsif identity
@@ -336,7 +336,7 @@ class User < ApplicationRecord
   end
 
   def unique_including_orgs
-    errors.add(:username, "is taken.") if Organization.find_by_slug(username)
+    errors.add(:username, "is taken.") if Organization.find_by(slug: username)
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -416,7 +416,7 @@ class User < ApplicationRecord
   end
 
   def temp_name_exists?
-    User.find_by_username(temp_username) || Organization.find_by_slug(temp_username)
+    User.find_by(username: temp_username) || Organization.find_by(slug: temp_username)
   end
 
   def temp_username
@@ -480,13 +480,13 @@ class User < ApplicationRecord
   end
 
   def validate_feed_url
-    return unless feed_url.present?
+    return if feed_url.blank?
 
     errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
   end
 
   def validate_mastodon_url
-    return unless mastodon_url.present?
+    return if mastodon_url.blank?
 
     uri = URI.parse(mastodon_url)
     return if uri.host&.in?(Constants::ALLOWED_MASTODON_INSTANCES)

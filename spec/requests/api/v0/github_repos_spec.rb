@@ -17,7 +17,7 @@ RSpec.describe "Api::V0::GithubRepos", type: :request do
   describe "GET /api/v0/github_repos" do
     it "returns 200 on success" do
       get "/api/github_repos"
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -25,7 +25,7 @@ RSpec.describe "Api::V0::GithubRepos", type: :request do
     it "returns 200 and json response on success" do
       param = stubbed_github_repos.first.to_h.to_json
       post "/api/github_repos/update_or_create", params: { github_repo: param }
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
       expect(response.content_type).to eq("application/json")
     end
   end
