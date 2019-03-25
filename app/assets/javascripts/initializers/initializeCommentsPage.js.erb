@@ -471,9 +471,12 @@ function handleImageUpload(event, randomIdNumber) {
               }
             );
           } else {
-            document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Invalid file!";
-            document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
-            document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
+            response.json().then(function(responseBody) {
+              var errorMessage = responseBody.error || 'Invalid file!';
+              document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = errorMessage;
+              document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
+              document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
+            });
           }
         })
         .catch(function (err) {

@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "Dashboards", type: :request do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
+  let(:org_admin)     { create(:user, :org_admin) }
   let(:super_admin)   { create(:user, :super_admin) }
   let(:article)       { create(:article, user_id: user.id) }
 
@@ -64,19 +65,24 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when logged in" do
-      it "renders the current user's followings" do
+      before { login_as user }
+
+      it "renders users that current user follows" do
         user.follow second_user
-        login_as user
         get "/dashboard/following_users"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
-      it "renders the current user's tag followings" do
-        user.follow second_user
+      it "renders tags that current user follows" do
         tag = create(:tag)
         user.follow tag
-        login_as user
-        get "/dashboard/following"
+        get "/dashboard/following_users"
         expect(response.body).to include CGI.escapeHTML(tag.name)
+      end
+      it "renders organizations that current user follows" do
+        organization = create(:organization)
+        user.follow organization
+        get "/dashboard/following_users"
+        expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
   end
@@ -119,6 +125,26 @@ RSpec.describe "Dashboards", type: :request do
         user.add_role(:pro)
         login_as user
         get "/dashboard/pro"
+        expect(response.body).to include("pro")
+      end
+    end
+
+    context "when user has pro permission and is an org admin" do
+      it "shows page properly" do
+        org_admin.add_role(:pro)
+        login_as org_admin
+        get "/dashboard/pro/org/#{org_admin.organization_id}"
+        expect(response.body).to include("pro")
+      end
+    end
+
+    context "when user has pro permission and is an org member" do
+      it "shows page properly" do
+        org = create :organization
+        user.update(organization_id: org.id)
+        user.add_role(:pro)
+        login_as user
+        get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end
     end

@@ -26,8 +26,8 @@ RSpec.describe FlareTag do
   end
 
   describe "#flare_tag_hash" do
-    let (:tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
-    let (:valid_article) { create(:article, tags: tag.name) }
+    let(:tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
+    let(:valid_article) { create(:article, tags: tag.name) }
 
     it "returns nil if an article doesn't have a flare tag" do
       expect(described_class.new(article).tag_hash).to be nil

@@ -14,20 +14,20 @@ class PodcastFeed
     feed.items.first(num).each do |item|
       if !existing_episode(item, podcast)
         create_new_episode(item, podcast)
-      elsif ep = existing_episode(item, podcast).first
+      elsif (ep = existing_episode(item, podcast).first)
         update_existing_episode(ep, item, podcast)
       end
     end
     feed.items.size
   rescue StandardError => e
-    puts e.message
+    Rails.logger.error(e)
   end
 
   def create_new_episode(item, podcast)
     ep = PodcastEpisode.new
     ep.title = item.title
     ep.podcast_id = podcast.id
-    ep.slug = item.title.downcase.gsub(/[^0-9a-z ]/i, "").gsub(" ", "-")
+    ep.slug = item.title.downcase.gsub(/[^0-9a-z ]/i, "").tr(" ", "-")
     ep.subtitle = item.itunes_subtitle
     ep.summary = item.itunes_summary
     ep.website_url = item.link
@@ -35,8 +35,8 @@ class PodcastFeed
     get_media_url(ep, item, podcast)
     begin
       ep.published_at = item.pubDate.to_date
-    rescue StandardError
-      puts "not valid date"
+    rescue StandardError => e
+      Rails.logger.error("not a valid date: #{e}")
     end
     ep.body = item.content_encoded || item.itunes_summary || item.description
     ep.save!
@@ -47,8 +47,8 @@ class PodcastFeed
       begin
         episode.published_at = item.pubDate.to_date
         episode.save
-      rescue StandardError
-        puts "not valid date"
+      rescue StandardError => e
+        Rails.logger.error("not a valid date: #{e}")
       end
     end
     update_media_url(episode, item)
@@ -84,6 +84,6 @@ class PodcastFeed
     end
   rescue StandardError
     message = "something went wrong with #{podcast.title}, #{episode.title} -- #{episode.media_url}"
-    logger.info message
+    Rails.logger.error(message)
   end
 end

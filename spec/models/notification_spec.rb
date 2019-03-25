@@ -29,9 +29,8 @@ RSpec.describe Notification, type: :model do
 
   describe "#send_new_follower_notification" do
     before do
-      run_background_jobs_immediately do
-        Notification.send_new_follower_notification(follow_instance)
-      end
+      ActiveJob::Base.queue_adapter = :inline
+      Notification.send_new_follower_notification(follow_instance)
     end
 
     it "sets the notifiable_at column upon creation" do
@@ -71,7 +70,8 @@ RSpec.describe Notification, type: :model do
     context "when a user unfollows another user" do
       it "destroys the follow notification" do
         follow_instance = user.stop_following(user2)
-        run_background_jobs_immediately { Notification.send_new_follower_notification(follow_instance) }
+        ActiveJob::Base.queue_adapter = :inline
+        Notification.send_new_follower_notification(follow_instance)
         expect(Notification.count).to eq 0
       end
     end

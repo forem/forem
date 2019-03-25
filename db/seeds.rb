@@ -1,4 +1,4 @@
-p "1/9 Creating Organizations"
+Rails.logger.info "1/9 Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -17,7 +17,7 @@ end
 
 ##############################################################################
 
-p "2/9 Creating Users"
+Rails.logger.info "2/9 Creating Users"
 
 roles = %i[level_1_member level_2_member level_3_member level_4_member
            workshop_pass]
@@ -26,7 +26,7 @@ User.clear_index!
   user = User.create!(
     name: name = Faker::Name.unique.name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
-    profile_image: File.open("#{Rails.root}/app/assets/images/#{rand(1..40)}.png"),
+    profile_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
     twitter_username: Faker::Internet.username(name),
     email_comment_notifications: false,
@@ -50,7 +50,7 @@ end
 
 ##############################################################################
 
-p "3/9 Creating Tags"
+Rails.logger.info "3/9 Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -66,7 +66,7 @@ end
 
 ##############################################################################
 
-p "4/9 Creating Articles"
+Rails.logger.info "4/9 Creating Articles"
 
 Article.clear_index!
 25.times do |i|
@@ -97,7 +97,7 @@ end
 
 ##############################################################################
 
-p "5/9 Creating Comments"
+Rails.logger.info "5/9 Creating Comments"
 
 Comment.clear_index!
 30.times do
@@ -112,11 +112,9 @@ end
 
 ##############################################################################
 
-p "6/9 Creating Podcasts"
+Rails.logger.info "6/9 Creating Podcasts"
 
-image_file = File.join(
-  Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"
-)
+image_file = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
 podcast_objects = [
   {
@@ -127,7 +125,7 @@ podcast_objects = [
     twitter_username: "CodingBlocks",
     website_url: "http://codingblocks.net",
     main_color_hex: "111111",
-    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net", # rubocop:disable Metrics/LineLength
+    overcast_url: "https://overcast.fm/itunes769189585/coding-blocks-software-and-web-programming-security-best-practices-microsoft-net",
     android_url: "http://subscribeonandroid.com/feeds.podtrac.com/c8yBGHRafqhz",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
@@ -139,7 +137,7 @@ podcast_objects = [
     twitter_username: "TalkPython",
     website_url: "https://talkpython.fm",
     main_color_hex: "181a1c",
-    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers", # rubocop:disable Metrics/LineLength
+    overcast_url: "https://overcast.fm/itunes979020229/talk-python-to-me-python-conversations-for-passionate-developers",
     android_url: "https://subscribeonandroid.com/talkpython.fm/episodes/rss",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
   },
@@ -147,7 +145,7 @@ podcast_objects = [
     title: "Developer on Fire",
     description: "",
     feed_url: "http://developeronfire.com/rss.xml",
-    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326", # rubocop:disable Metrics/LineLength
+    itunes_url: "https://itunes.apple.com/us/podcast/developer-on-fire/id1006105326",
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
@@ -160,7 +158,7 @@ podcast_objects = [
     title: "Building Programmers",
     description: "",
     feed_url: "https://building.fireside.fm/rss",
-    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456", # rubocop:disable Metrics/LineLength
+    itunes_url: "https://itunes.apple.com/us/podcast/building-programmers/id1149043456",
     slug: "buildingprogrammers",
     twitter_username: "run_kmc",
     website_url: "https://building.fireside.fm",
@@ -177,18 +175,18 @@ end
 
 ##############################################################################
 
-p "7/9 Creating Broadcasts"
+Rails.logger.info "7/9 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
-  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.", # rubocop:disable Metrics/LineLength
+  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
   type_of: "Onboarding",
   sent: true,
 )
 
 ##############################################################################
 
-p "8/9 Creating chat_channel"
+Rails.logger.info "8/9 Creating chat_channel"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
@@ -202,7 +200,7 @@ ChatChannel.without_auto_index do
 end
 ChatChannel.reindex!
 
-p "9/9 Creating html_variant"
+Rails.logger.info "9/9 Creating html_variant"
 
 HtmlVariant.create(
   name: rand(100).to_s,
@@ -215,7 +213,7 @@ HtmlVariant.create(
 )
 ##############################################################################
 
-puts <<-ASCII
+Rails.logger.info <<-ASCII
 
 
 

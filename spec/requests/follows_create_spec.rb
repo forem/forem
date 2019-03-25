@@ -70,7 +70,7 @@ RSpec.describe "Following/Unfollowing", type: :request do
 
     it "returns articles of tag the user follows" do
       article = create(:article)
-      user.follow(Tag.find_by_name(article.tag_list.first))
+      user.follow(Tag.find_by(name: article.tag_list.first))
       get "/followed_articles"
       expect(JSON.parse(response.body)["articles"].first["title"]).to eq(article.title)
     end

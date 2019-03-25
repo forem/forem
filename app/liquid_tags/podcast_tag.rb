@@ -13,7 +13,7 @@ class PodcastTag < LiquidTagBase
 
   def initialize(_tag_name, link, _tokens)
     @episode = fetch_podcast(link)
-    @podcast
+    @podcast ||= Podcast.new
   end
 
   def render(_context)
@@ -150,8 +150,8 @@ class PodcastTag < LiquidTagBase
   def fetch_podcast(link)
     cleaned_link = parse_link(link)
     podcast_slug, episode_slug = cleaned_link.split("/").last(2)
-    target_podcast = Podcast.find_by_slug(podcast_slug)
-    target_episode = PodcastEpisode.find_by_slug(episode_slug)
+    target_podcast = Podcast.find_by(slug: podcast_slug)
+    target_episode = PodcastEpisode.find_by(slug: episode_slug)
     raise_error unless target_podcast && target_episode
     raise_error unless target_episode.podcast_id == target_podcast.id
     @podcast = target_podcast

@@ -43,7 +43,7 @@ RSpec.describe "Editor", type: :request do
     context "when not logged-in" do
       it "redirects to /enter" do
         post "/articles/preview", headers: headers
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 

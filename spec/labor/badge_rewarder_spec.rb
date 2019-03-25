@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe BadgeRewarder do
@@ -120,5 +119,3 @@ RSpec.describe BadgeRewarder do
     end
   end
 end
-
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

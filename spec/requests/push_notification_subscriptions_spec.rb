@@ -13,7 +13,7 @@ RSpec.describe "PushNotificationSubscriptions", type: :request do
           endpoint: "random"
         }
       }
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(:created)
       expect(JSON.parse(response.body)["endpoint"]).to eq("random")
     end
   end

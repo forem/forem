@@ -1,46 +1,118 @@
 require "rails_helper"
 
 RSpec.describe MarkdownFixer do
-  let(:sample_title) { Faker::Book.title }
+  let(:sample_text) { Faker::Book.title }
 
-  def create_sample_markdown(title)
+  def front_matter(title: "", description: "")
     <<~HEREDOC
       ---
       title: #{title}
+      description: #{description}
       ---
     HEREDOC
   end
 
   describe "::add_quotes_to_title" do
-    it "escapes simple title" do
-      test = described_class.fix_all(create_sample_markdown(sample_title))
-      expect(test).to eq create_sample_markdown(%("#{sample_title}"))
+    it "does not do anything outside the front matter" do
+      result = described_class.add_quotes_to_title(sample_text)
+      expect(result).to eq(sample_text)
     end
 
-    it "does not escape titles that came pre-wrapped in single quotes" do
-      legacy_title = "'#{sample_title}'"
-      test = described_class.fix_all(create_sample_markdown(legacy_title))
-      expect(test).to eq create_sample_markdown(legacy_title)
+    it "escapes a simple title" do
+      result = described_class.add_quotes_to_title(front_matter(title: sample_text))
+      expect(result).to eq(front_matter(title: %("#{sample_text}")))
     end
 
-    it "does not escape titles that came pre-wrapped in double quotes" do
-      legacy_title = "\"#{sample_title}\""
-      test = described_class.fix_all(create_sample_markdown(legacy_title))
-      expect(test).to eq create_sample_markdown(legacy_title)
+    it "does not escape a title that came pre-wrapped in single quotes" do
+      legacy_title = "'#{sample_text}'"
+      result = described_class.add_quotes_to_title(front_matter(title: legacy_title))
+      expect(result).to eq(front_matter(title: legacy_title))
     end
 
-    it "handles complex title" do
-      legacy_title = %(Book review: "#{sample_title}", part 1 I'm #testing)
-      expected_title = "\"Book review: \\\"#{sample_title}\\\", part 1 I'm #testing\""
-      test = described_class.fix_all(create_sample_markdown(legacy_title))
-      expect(test).to eq create_sample_markdown(expected_title)
+    it "does not escape a title that came pre-wrapped in double quotes" do
+      legacy_title = "\"#{sample_text}\""
+      result = described_class.add_quotes_to_title(front_matter(title: legacy_title))
+      expect(result).to eq(front_matter(title: legacy_title))
     end
 
-    it "handles title with \r\n" do
+    it "handles a complex title" do
+      legacy_title = %(Book review: "#{sample_text}", part 1 I'm #testing)
+      expected_title = "\"Book review: \\\"#{sample_text}\\\", part 1 I'm #testing\""
+      result = described_class.add_quotes_to_title(front_matter(title: legacy_title))
+      expect(result).to eq(front_matter(title: expected_title))
+    end
+
+    it "handles a title with colons" do
+      title = "Title: with colons"
+      result = described_class.add_quotes_to_title(front_matter(title: title))
+      expect(result).to eq(front_matter(title: %("#{title}")))
+    end
+  end
+
+  describe "::add_quotes_to_description" do
+    it "does not do anything outside the front matter" do
+      result = described_class.add_quotes_to_description(sample_text)
+      expect(result).to eq(sample_text)
+    end
+
+    it "escapes a simple description" do
+      result = described_class.add_quotes_to_description(front_matter(description: sample_text))
+      expect(result).to eq(front_matter(description: %("#{sample_text}")))
+    end
+
+    it "does not escape a description that came pre-wrapped in single quotes" do
+      legacy_description = "'#{sample_text}'"
+      result = described_class.
+        add_quotes_to_description(front_matter(description: legacy_description))
+      expect(result).to eq(front_matter(description: legacy_description))
+    end
+
+    it "does not escape a description that came pre-wrapped in double quotes" do
+      legacy_description = "\"#{sample_text}\""
+      result = described_class.
+        add_quotes_to_description(front_matter(description: legacy_description))
+      expect(result).to eq(front_matter(description: legacy_description))
+    end
+
+    it "handles a complex description" do
+      legacy_description = %(Book review: "#{sample_text}", part 1 I'm #testing)
+      expected_description = "\"Book review: \\\"#{sample_text}\\\", part 1 I'm #testing\""
+      result = described_class.
+        add_quotes_to_description(front_matter(description: legacy_description))
+      expect(result).to eq(front_matter(description: expected_description))
+    end
+
+    it "handles a description with colons" do
+      description = "Description: with colons"
+      result = described_class.add_quotes_to_description(front_matter(description: description))
+      expect(result).to eq(front_matter(description: %("#{description}")))
+    end
+  end
+
+  describe "::convert_new_lines" do
+    it "handles text with \r\n" do
       title = "\"hmm\"\r\n"
       expected_title = "\"hmm\"\n"
-      test = described_class.fix_all(create_sample_markdown(title))
-      expect(test).to eq create_sample_markdown(expected_title)
+      result = described_class.convert_new_lines(front_matter(title: title))
+      expect(result).to eq(front_matter(title: expected_title))
+    end
+  end
+
+  describe "::fix_all" do
+    it "escapes title and description" do
+      result = described_class.
+        fix_all(front_matter(title: sample_text, description: sample_text))
+      expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
+      expect(result).to eq(expected_result)
+    end
+  end
+
+  describe "::fix_for_preview" do
+    it "escapes title and description" do
+      result = described_class.
+        fix_for_preview(front_matter(title: sample_text, description: sample_text))
+      expected_result = front_matter(title: %("#{sample_text}"), description: %("#{sample_text}"))
+      expect(result).to eq(expected_result)
     end
   end
 end

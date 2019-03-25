@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   end
 
   def not_found
-    raise ActionController::RoutingError, "Not Found"
+    raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
   def efficient_current_user_id

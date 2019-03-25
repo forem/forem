@@ -129,7 +129,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "shows year in readable time if not current year" do
-    comment.created_at = 1.years.ago
+    comment.created_at = 1.year.ago
     last_year = 1.year.ago.year % 100
     expect(comment.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
@@ -170,7 +170,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "retains content from #processed_html" do
-      text = comment.title.gsub("...", "").gsub(/\n/, "")
+      text = comment.title.gsub("...", "").delete("\n")
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
   end

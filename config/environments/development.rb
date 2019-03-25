@@ -1,5 +1,3 @@
-# rubocop:disable Metrics/BlockLength
-#
 def yarn_integrity_enabled?
   ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
 end
@@ -22,7 +20,7 @@ Rails.application.configure do
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
-  if Rails.root.join("tmp/caching-dev.txt").exist?
+  if Rails.root.join("tmp", "caching-dev.txt").exist?
     config.action_controller.perform_caching = true
 
     config.cache_store = :memory_store
@@ -79,7 +77,7 @@ Rails.application.configure do
     domain: "localhost:3000"
   }
 
-  config.action_mailer.preview_path = "#{Rails.root}/spec/mailers/previews"
+  config.action_mailer.preview_path = Rails.root.join("spec", "mailers", "previews")
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
@@ -100,5 +98,3 @@ Rails.application.configure do
     Bullet.console = true
   end
 end
-
-# rubocop:enable Metrics/BlockLength

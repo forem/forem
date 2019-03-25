@@ -168,7 +168,7 @@ a.header-link {
       border: 0;
       cursor: pointer;
       display: inline-block;
-      background: $light-gray;
+      background: transparent;
       max-width: 29px;
       @media screen and (max-width: 900px) {
         padding: 5px 6px 1px;
@@ -219,16 +219,19 @@ a.header-link {
   form {
     width: 104%;
     background: $light-gray;
+    background: var(--theme-container-accent-background, $light-gray);
     overflow: auto;
     position: relative;
     margin-bottom: 4px;
     z-index: 4;
     margin-left: -2%;
     border-top: 1px solid $light-medium-gray;
+    border-top: var(--theme-container-border, 1px solid $light-medium-gray);
     @media screen and (min-width: 820px) {
       width: calc(100% - 2px);
       margin-left: 0%;
       border: 1px solid $light-medium-gray;
+      border: var(--theme-container-border, 1px solid $light-medium-gray);
     }
 
     .field {

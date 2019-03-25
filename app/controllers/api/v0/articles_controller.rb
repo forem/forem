@@ -26,7 +26,7 @@ module Api
 
       def show
         @article = if params[:id] == "by_path"
-                     Article.includes(:user).find_by_path(params[:url])&.decorate
+                     Article.includes(:user).find_by(path: params[:url])&.decorate
                    else
                      Article.includes(:user).find(params[:id])&.decorate
                    end

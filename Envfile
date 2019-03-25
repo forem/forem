@@ -11,6 +11,9 @@ enable_defaults! { ENV['RACK_ENV'] != 'production' }
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 
+# Logo
+variable :LOGO_SVG, :String, default: ""
+
 # Default staff account's id
 variable :DEVTO_USER_ID, :Integer, default: 1
 
@@ -80,6 +83,10 @@ variable :CLOUDINARY_API_KEY, :String, default: "Optional"
 variable :CLOUDINARY_API_SECRET, :String, default: "Optional"
 variable :CLOUDINARY_CLOUD_NAME, :String, default: "Optional"
 variable :CLOUDINARY_SECURE, :String, default: "Optional"
+
+# HTML/CSS to Image for generating social preview images
+variable :HCTI_API_USER_ID, :String, default: "Optional"
+variable :HCTI_API_KEY, :String, default: "Optional"
 
 # Dacast for streaming
 variable :DACAST_STREAM_CODE, :String, default: "Optional"

@@ -26,7 +26,6 @@ RSpec.describe "ArticlesApi", type: :request do
       expect(JSON.parse(response.body).size).to eq(2)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "returns organization articles if username param is present" do
       org = create(:organization)
       create(:article, user_id: user1.id)
@@ -37,7 +36,6 @@ RSpec.describe "ArticlesApi", type: :request do
       get "/api/articles?username=#{org.slug}"
       expect(JSON.parse(response.body).size).to eq(2)
     end
-    # rubocop:enable RSpec/ExampleLength
 
     it "returns tag articles if tag param is present" do
       article = create(:article)
@@ -53,7 +51,7 @@ RSpec.describe "ArticlesApi", type: :request do
 
     it "returns not tag articles if article and tag are not approved" do
       article = create(:article, approved: false)
-      tag = Tag.find_by_name(article.tag_list.first)
+      tag = Tag.find_by(name: article.tag_list.first)
       tag.update(requires_approval: true)
       get "/api/articles?tag=#{tag.name}"
       expect(JSON.parse(response.body).size).to eq(0)
@@ -99,7 +97,7 @@ RSpec.describe "ArticlesApi", type: :request do
                    tag_list: "yo",
                    series: "helloyo" }
       }
-      expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
+      expect(Article.last.collection).to eq(Collection.find_by(slug: "helloyo"))
       expect(Article.last.collection.user_id).to eq(Article.last.user_id)
     end
 
@@ -110,7 +108,7 @@ RSpec.describe "ArticlesApi", type: :request do
           tag_list: "yo"
         }
       }
-      expect(Article.last.collection).to eq(Collection.find_by_slug("helloyo"))
+      expect(Article.last.collection).to eq(Collection.find_by(slug: "helloyo"))
       expect(Article.last.collection.user_id).to eq(Article.last.user_id)
     end
   end
@@ -141,7 +139,7 @@ RSpec.describe "ArticlesApi", type: :request do
         }
       end
 
-      expect(invalid_update_request).to raise_error(ActionController::RoutingError)
+      expect(invalid_update_request).to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "does allow super user to update a different article" do

@@ -26,9 +26,9 @@ require "test_prof/recipes/rspec/before_all"
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/features/shared_examples/**/*.rb")].each { |f| require f }
-Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec", "support", "**", "*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec", "features", "shared_examples", "**", "*.rb")].each { |f| require f }
+Dir[Rails.root.join("spec", "models", "shared_examples", "**", "*.rb")].each { |f| require f }
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -65,7 +65,7 @@ RSpec.configure do |config|
   if config.filter_manager.inclusions.rules.include?(:live)
     WebMock.allow_net_connect!
     StripeMock.toggle_live(true)
-    puts "Running **live** tests against Stripe..."
+    Rails.logger.info("Running **live** tests against Stripe...")
   end
 
   config.before do

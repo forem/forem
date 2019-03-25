@@ -5,21 +5,33 @@ import { generateMainImage } from '../actions';
 export default class ImageManagement extends Component {
   constructor(props) {
     super(props);
-    this.state = { insertionImageUrl: null };
+    this.state = {
+      insertionImageUrl: null,
+      uploadError: false,
+      uploadErrorMessage: null,
+    };
   }
 
   handleMainImageUpload = e => {
     e.preventDefault();
 
+    this.clearUploadError();
+
     const payload = { image: e.target.files, wrap_cloudinary: true };
     const { onMainImageUrlChange } = this.props;
 
-    generateMainImage(payload, onMainImageUrlChange, null);
+    generateMainImage(payload, onMainImageUrlChange, this.onUploadError);
   };
 
   handleInsertionImageUpload = e => {
+    this.clearUploadError();
+
     const payload = { image: e.target.files };
-    generateMainImage(payload, this.handleInsertImageUploadSuccess, null);
+    generateMainImage(
+      payload,
+      this.handleInsertImageUploadSuccess,
+      this.onUploadError,
+    );
   };
 
   handleInsertImageUploadSuccess = response => {
@@ -38,9 +50,24 @@ export default class ImageManagement extends Component {
     });
   };
 
+  clearUploadError = () => {
+    this.setState({
+      uploadError: false,
+      uploadErrorMessage: null,
+    });
+  };
+
+  onUploadError = error => {
+    this.setState({
+      insertionImageUrl: null,
+      uploadError: true,
+      uploadErrorMessage: error.message,
+    });
+  };
+
   render() {
     const { onExit, mainImageUrl } = this.props;
-    const { insertionImageUrl } = this.state;
+    const { insertionImageUrl, uploadError, uploadErrorMessage } = this.state;
     let mainImageArea;
 
     if (mainImageUrl) {
@@ -89,6 +116,9 @@ export default class ImageManagement extends Component {
         >
           ×
         </button>
+        {uploadError && (
+          <span className="articleform__uploaderror">{uploadErrorMessage}</span>
+        )}
         <h2>Cover Image</h2>
         {mainImageArea}
         <h2>Body Images</h2>

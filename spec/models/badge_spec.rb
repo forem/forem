@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Badge, type: :model do
   describe "validations" do
-    subject { Badge.create(title: Faker::Overwatch.quote, description: Faker::Lorem.sentence) }
+    subject { create(:badge) }
 
     it { is_expected.to have_many(:users).through(:badge_achievements) }
     it { is_expected.to have_many(:badge_achievements) }

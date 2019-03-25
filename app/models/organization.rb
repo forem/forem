@@ -91,8 +91,8 @@ class Organization < ApplicationRecord
   end
 
   def remove_at_from_usernames
-    self.twitter_username = twitter_username.gsub("@", "") if twitter_username
-    self.github_username = github_username.gsub("@", "") if github_username
+    self.twitter_username = twitter_username.delete("@") if twitter_username
+    self.github_username = github_username.delete("@") if github_username
   end
 
   def downcase_slug
@@ -106,13 +106,13 @@ class Organization < ApplicationRecord
       articles.find_each do |article|
         cache_buster.bust(article.path)
       end
-    rescue StandardError
-      puts "Tag issue"
+    rescue StandardError => e
+      Rails.logger.error("Tag issue: #{e}")
     end
   end
   handle_asynchronously :bust_cache
 
   def unique_slug_including_users
-    errors.add(:slug, "is taken.") if User.find_by_username(slug)
+    errors.add(:slug, "is taken.") if User.find_by(username: slug)
   end
 end

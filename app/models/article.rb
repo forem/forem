@@ -10,14 +10,17 @@ class Article < ApplicationRecord
   attr_accessor :publish_under_org
   attr_writer :series
 
+  delegate :name, to: :user, prefix: true
+  delegate :username, to: :user, prefix: true
+
   belongs_to :user
   belongs_to :job_opportunity, optional: true
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :buffer_updates
-  has_many :notifications, as: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable
   has_many :rating_votes
   has_many :page_views
 
@@ -274,14 +277,6 @@ class Article < ApplicationRecord
     user.username
   end
 
-  def user_name
-    user.name
-  end
-
-  def user_username
-    user.username
-  end
-
   def current_state_path
     published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
@@ -356,7 +351,7 @@ class Article < ApplicationRecord
   end
 
   def readable_publish_date
-    relevant_date = crossposted_at.present? ? crossposted_at : published_at
+    relevant_date = crossposted_at.presence || published_at
     if relevant_date && relevant_date.year == Time.current.year
       relevant_date&.strftime("%b %e")
     else
@@ -410,11 +405,11 @@ class Article < ApplicationRecord
       HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
         duration += chunk.split(",")[0].to_f
       end
-      duration
       self.video_duration_in_seconds = duration
+      duration
     end
   rescue StandardError => e
-    puts e.message
+    Rails.logger.error(e)
   end
 
   private
@@ -509,7 +504,7 @@ class Article < ApplicationRecord
   end
 
   def create_password
-    return unless password.blank?
+    return if password.present?
 
     self.password = SecureRandom.hex(60)
   end

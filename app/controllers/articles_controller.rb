@@ -15,9 +15,9 @@ class ArticlesController < ApplicationController
       page(params[:page].to_i).per(12)
 
     if params[:username]
-      if @user = User.find_by_username(params[:username])
+      if (@user = User.find_by(username: params[:username]))
         @articles = @articles.where(user_id: @user.id)
-      elsif @user = Organization.find_by_slug(params[:username])
+      elsif (@user = Organization.find_by(slug: params[:username]))
         @articles = @articles.where(organization_id: @user.id).includes(:user)
       else
         render body: nil
@@ -36,7 +36,7 @@ class ArticlesController < ApplicationController
   def new
     @user = current_user
     @organization = @user&.organization
-    @tag = Tag.find_by_name(params[:template])
+    @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
@@ -129,14 +129,14 @@ class ArticlesController < ApplicationController
         Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
-      redirect_to (params[:destination] || path)
+      redirect_to(params[:destination] || path)
     else
       render :edit
     end
   end
 
   def delete_confirm
-    @article = current_user.articles.find_by_slug(params[:slug])
+    @article = current_user.articles.find_by(slug: params[:slug])
     authorize @article
   end
 
@@ -182,9 +182,9 @@ class ArticlesController < ApplicationController
   end
 
   def set_article
-    owner = User.find_by_username(params[:username]) || Organization.find_by_slug(params[:username])
+    owner = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username])
     found_article = if params[:slug]
-                      owner.articles.includes(:user).find_by_slug(params[:slug])
+                      owner.articles.includes(:user).find_by(slug: params[:slug])
                     else
                       Article.includes(:user).find(params[:id])
                     end
@@ -200,7 +200,7 @@ class ArticlesController < ApplicationController
   end
 
   def job_opportunity_params
-    return nil unless params[:article][:job_opportunity].present?
+    return nil if params[:article][:job_opportunity].blank?
 
     params[:article].require(:job_opportunity).permit(
       :remoteness, :location_given, :location_city, :location_postal_code,
@@ -214,7 +214,7 @@ class ArticlesController < ApplicationController
       redirect_to @article.current_state_path, notice: "Article was successfully created."
     else
       if @article.errors.to_h[:body_markdown] == "has already been taken"
-        @article = current_user.articles.find_by_body_markdown(@article.body_markdown)
+        @article = current_user.articles.find_by(body_markdown: @article.body_markdown)
         redirect_to @article.current_state_path
         return
       end

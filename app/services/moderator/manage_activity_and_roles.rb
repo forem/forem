@@ -85,15 +85,17 @@ module Moderator
         remove_privileges
       when "Regular Member"
         remove_negative_roles
+        user.remove_role :pro
       when "Trusted"
         remove_negative_roles
+        user.remove_role :pro
         user.add_role :trusted
       when "Pro"
         remove_negative_roles
+        user.add_role :trusted
         user.add_role :pro
       end
       create_note(role, note)
-      update_trusted_cache
     end
 
     def remove_negative_roles
@@ -138,6 +140,7 @@ module Moderator
         update_mentorship_status
       else
         handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
+        update_trusted_cache
       end
     end
   end

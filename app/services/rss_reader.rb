@@ -90,7 +90,7 @@ class RssReader
         show_comments: true,
         # body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
         body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
-        organization_id: user.organization_id.present? ? user.organization_id : nil
+        organization_id: user.organization_id.presence
       }
       article = with_timer("save_article", metadata) do
         Article.create!(article_params)
@@ -121,7 +121,7 @@ class RssReader
   def content_is_not_the_title?(item)
     # [[:space:]] removes all whitespace, including unicode ones.
     content = item.content.gsub(/[[:space:]]/, " ")
-    title = item.title.gsub("…", "")
+    title = item.title.delete("…")
     content.include?(title)
   end
 

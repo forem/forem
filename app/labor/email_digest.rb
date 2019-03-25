@@ -20,8 +20,8 @@ class EmailDigest
       articles = user_email_heuristic.articles_to_send
       begin
         DigestMailer.digest_email(user, articles).deliver
-      rescue StandardError
-        puts "Email issue"
+      rescue StandardError => e
+        Rails.logger.error("Email issue: #{e}")
       end
     end
   end

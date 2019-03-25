@@ -30,14 +30,14 @@ class ArticleApiIndexService
           else
             30
           end
-    if user = User.find_by_username(username)
+    if (user = User.find_by(username: username))
       user.articles.
         where(published: true).
         includes(:user).
         order("published_at DESC").
         page(page).
         per(num)
-    elsif organization = Organization.find_by_slug(username)
+    elsif (organization = Organization.find_by(slug: username))
       organization.articles.
         where(published: true).
         includes(:user).
@@ -50,7 +50,7 @@ class ArticleApiIndexService
   end
 
   def tag_articles
-    if Tag.find_by_name(tag)&.requires_approval
+    if Tag.find_by(name: tag)&.requires_approval
       Article.
         where(published: true, approved: true).
         order("featured_number DESC").

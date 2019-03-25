@@ -1,4 +1,3 @@
-# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 require "rails_helper"
 
 RSpec.describe Article, type: :model do
@@ -117,7 +116,7 @@ RSpec.describe Article, type: :model do
 
     context "when unpublished" do
       it "creates proper slug with this-is-the-slug format" do
-        expect(article0.slug).to match /(.*-){4,}/
+        expect(article0.slug).to match(/(.*-){4,}/)
       end
 
       it "modifies slug on create if proposed slug already exists on the user" do
@@ -441,7 +440,7 @@ RSpec.describe Article, type: :model do
   end
 
   it "shows year in readable time if not current year" do
-    article.published_at = 1.years.ago
+    article.published_at = 1.year.ago
     last_year = 1.year.ago.year % 100
     expect(article.readable_publish_date.include?("'#{last_year}")).to eq(true)
   end
@@ -464,4 +463,3 @@ RSpec.describe Article, type: :model do
 
   include_examples "#sync_reactions_count", :article
 end
-# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations

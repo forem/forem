@@ -12,7 +12,7 @@ class Internal::UsersController < Internal::ApplicationController
              else
                User.order("created_at DESC").page(params[:page]).per(50)
              end
-    return unless params[:search].present?
+    return if params[:search].blank?
 
     @users = @users.where('users.name ILIKE :search OR
       users.username ILIKE :search OR
@@ -72,11 +72,11 @@ class Internal::UsersController < Internal::ApplicationController
   def make_matches
     return if @new_mentee.blank? && @new_mentor.blank?
 
-    if !@new_mentee.blank?
+    if @new_mentee.present?
       mentee = User.find(@new_mentee)
       MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
     end
-    return unless !@new_mentor.blank?
+    return if @new_mentor.blank?
 
     mentor = User.find(@new_mentor)
     MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
@@ -103,6 +103,16 @@ class Internal::UsersController < Internal::ApplicationController
     redirect_to "/internal/users"
   end
 
+  def merge
+    @user = User.find(params[:id])
+    begin
+      Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
   private
 
   def user_params
@@ -116,6 +126,7 @@ class Internal::UsersController < Internal::ApplicationController
                             :mentorship_note,
                             :user_status,
                             :toggle_mentorship,
-                            :pro)
+                            :pro,
+                            :merge_user_id)
   end
 end

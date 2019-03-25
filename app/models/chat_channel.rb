@@ -6,10 +6,10 @@ class ChatChannel < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
-  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership"
-  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership"
-  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership"
-  has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership"
+  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :active_users, through: :active_memberships, class_name: "User", source: :user
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
@@ -71,7 +71,7 @@ class ChatChannel < ApplicationRecord
       slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
     end
 
-    if channel = ChatChannel.find_by_slug(slug)
+    if (channel = ChatChannel.find_by(slug: slug))
       channel.status = "active"
       channel.save
     else

@@ -3,7 +3,7 @@ class CommentObserver < ApplicationObserver
     return if Rails.env.development?
 
     warned_user_ping(comment)
-  rescue StandardError
-    puts "error"
+  rescue StandardError => e
+    Rails.logger.error(e)
   end
 end

@@ -5,7 +5,7 @@ class DashboardsController < ApplicationController
 
   def show
     @user = if params[:username] && current_user.any_admin?
-              User.find_by_username(params[:username])
+              User.find_by(username: params[:username])
             else
               current_user
             end
@@ -15,6 +15,8 @@ class DashboardsController < ApplicationController
         order("created_at DESC").includes(:followable).limit(80)
       @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
         order("points DESC").includes(:followable).limit(80)
+      @followed_organizations = @user.follows_by_type("Organization").
+        order("created_at DESC").includes(:followable).limit(80)
     elsif params[:which] == "user_followers"
       @follows = Follow.where(followable_id: @user.id, followable_type: "User").
         includes(:follower).order("created_at DESC").limit(80)
@@ -32,7 +34,7 @@ class DashboardsController < ApplicationController
 
   def pro
     user_or_org = if params[:org_id]
-                    org = Organization.find_by_id(params[:org_id])
+                    org = Organization.find_by(id: params[:org_id])
                     authorize org, :pro_org_user?
                     org
                   else

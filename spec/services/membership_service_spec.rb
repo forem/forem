@@ -40,7 +40,7 @@ RSpec.describe MembershipService do
         )
         user_one.update(stripe_id_code: customer.id)
         plan = Stripe::Plan.create(
-          id: "membership-#{1200}",
+          id: "membership-1200",
           currency: "usd",
           interval: "month",
           name: "Monthly DEV Membership",

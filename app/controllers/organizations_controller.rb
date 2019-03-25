@@ -1,5 +1,4 @@
 class OrganizationsController < ApplicationController
-  before_action :authenticate_user!, except: [:show]
   after_action :verify_authorized
 
   def create
