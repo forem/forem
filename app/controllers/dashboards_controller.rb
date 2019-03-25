@@ -10,7 +10,7 @@ class DashboardsController < ApplicationController
               current_user
             end
     authorize (@user || User), :dashboard_show?
-    if params[:which] == "following" || params[:which] == "following_users"
+    if params[:which] == "following"
       @follows = @user.follows_by_type("User").
         order("created_at DESC").includes(:followable).limit(80)
       @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").

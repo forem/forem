@@ -56,10 +56,10 @@ RSpec.describe "Dashboards", type: :request do
     end
   end
 
-  describe "GET /dashboard/following_users" do
+  describe "GET /dashboard/following" do
     context "when not logged in" do
       it "redirects to /enter" do
-        get "/dashboard/following_users"
+        get "/dashboard/following"
         expect(response).to redirect_to("/enter")
       end
     end
@@ -69,19 +69,19 @@ RSpec.describe "Dashboards", type: :request do
 
       it "renders users that current user follows" do
         user.follow second_user
-        get "/dashboard/following_users"
+        get "/dashboard/following"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
       it "renders tags that current user follows" do
         tag = create(:tag)
         user.follow tag
-        get "/dashboard/following_users"
+        get "/dashboard/following"
         expect(response.body).to include CGI.escapeHTML(tag.name)
       end
       it "renders organizations that current user follows" do
         organization = create(:organization)
         user.follow organization
-        get "/dashboard/following_users"
+        get "/dashboard/following"
         expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
