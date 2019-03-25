@@ -6,7 +6,7 @@ tmp/
 node_modules/
 
 ##################################
-# 
+#
 # rest is COPIED from .gitignore
 #
 ##################################
@@ -46,7 +46,6 @@ latest.dump
 /public/packs
 /public/packs-test
 /node_modules
-config/database.yml
 
 # Ignore storybook static site generation
 storybook-static/
