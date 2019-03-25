@@ -149,10 +149,10 @@ Rails.application.routes.draw do
 
   # resources :users
 
-  get "/social_previews/article/:id" => "social_previews#article"
-  get "/social_previews/user/:id" => "social_previews#user"
-  get "/social_previews/organization/:id" => "social_previews#organization"
-  get "/social_previews/tag/:id" => "social_previews#tag"
+  get "/social_previews/article/:id" => "social_previews#article", as: :article_social_preview
+  get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
+  get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
+  get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
 
   ### Subscription vanity url
   post "membership-action" => "stripe_subscriptions#create"
