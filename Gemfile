@@ -129,7 +129,7 @@ group :development, :test do
   gem "rspec-rails", "~> 3.8"
   gem "rspec-retry", "~> 0.6"
   gem "rubocop", "~> 0.63", require: false
-  gem "rubocop-rspec", "~> 1.31"
+  gem "rubocop-rspec", "~> 1.32"
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
   gem "vcr", "~> 4.0"
