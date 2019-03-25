@@ -4,7 +4,10 @@ module SocialImageHelper
   SOCIAL_PREVIEW_MIGRATION_DATETIME = DateTime.new(2019, 3, 24)
 
   def user_social_image_url(user)
-    return user_social_preview_url(user, format: :png) if use_new_social_url?(user)
+    if use_new_social_url?(user)
+      return user_social_preview_url(user, format: :png) if user.is_a?(User)
+      return organization_social_preview_url(user, format: :png) if user.is_a?(Organization)
+    end
 
     GeneratedImage.new(user).social_image
   end
