@@ -74,7 +74,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 
 **Fixing bugs** may also not require a lot of communication, but the more the better. Please surround bug fixes with ample tests. Bugs are magnets for other bugs. Write tests near bugs!
 
-**Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. The [product roadmap](https://github.com/thepracticaldev/dev.to/projects) should be a good guide to follow. As always, when in doubt, ask!
+**Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. If your feature involves user-facing design changes, please provide a mockup first so we can all get on the same page. As always, when in doubt, ask!
 
 ### How to contribute
 
@@ -216,18 +216,6 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 
 [Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
 
-## Product Roadmap
-
-Our new product roadmap can be found [here](https://github.com/thepracticaldev/dev.to/projects/1). Many notes need to be converted to issues but this should provide an overview of features we plan to work on, as well as features we are considering.
-
-Core team members will move issues along the project board as they progress.
-
-- Ideas & Requests: features up for discussion.
-- Needs Owners: features in need of an owner.
-- Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
-- In Progress (early stage): work has begun on feature.
-- In Progress (late stage): feature is near completion.
-
 ## Core team
 
 - [@benhalpern](https://dev.to/ben)
@@ -236,6 +224,8 @@ Core team members will move issues along the project board as they progress.
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@aspittel](https://dev.to/aspittel)
+- [@lightalloy](https://dev.to/lightalloy)
+- [@mariocsee](https://dev.to/mariocsee)
 
 ## License
 
