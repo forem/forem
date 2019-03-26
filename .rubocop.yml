@@ -49,7 +49,7 @@ Style/AsciiComments:
 Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#three-is-the-number-thou-shalt-count'
-  Enabled: false
+  Enabled: true
 
 Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
@@ -146,7 +146,7 @@ Style/Next:
 Naming/BinaryOperatorParameterName:
   Description: 'When defining binary operators, name the argument other.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#other-arg'
-  Enabled: false
+  Enabled: true
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
