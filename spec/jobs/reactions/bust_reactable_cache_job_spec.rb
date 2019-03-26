@@ -1,14 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Reactions::BustReactableCacheJob, type: :job do
-  describe "#perform_later" do
-    it "enqueues the job" do
-      ActiveJob::Base.queue_adapter = :test
-      expect do
-        described_class.perform_later(2)
-      end.to have_enqueued_job.with(2).on_queue("bust_reactable_cache")
-    end
-  end
+  include_examples "#enqueues_job", "bust_reactable_cache", 2
 
   describe "#perform_now" do
     let(:user) { create(:user) }

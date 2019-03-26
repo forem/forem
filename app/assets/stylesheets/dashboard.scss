@@ -28,7 +28,7 @@
     padding: 4px 20px;
     border-radius: 100px;
     margin-right: 5px;
-    display: inline-block;
+    display: block;
     width: fit-content;
     margin-bottom: 10px;
     color: $black;
@@ -354,7 +354,7 @@
   }
 }
 .charts-container {
-  width: 500px;
+  max-width: 500px;
   height: 250px;
   margin: 0 auto;
 }
@@ -399,6 +399,7 @@
   padding: 20px;
   margin: 5px;
   background-color: #fff;
+  background-color: var(--theme-container-background, #fff);
   h4 {
     font-size: 0.8em;
     margin: 0px;

@@ -9,7 +9,7 @@ export const reactionsChart = new Chart(reactionsCanvas, {
     labels: JSON.parse(reactionsCanvas.dataset.labels),
     datasets: [
       {
-        label: 'Reaction Total',
+        label: 'Total',
         data: JSON.parse(reactionsCanvas.dataset.totalCount),
         // data: [5, 10, 15, 17, 25, 23],
         fill: false,
@@ -17,7 +17,7 @@ export const reactionsChart = new Chart(reactionsCanvas, {
         lineTension: 0.1,
       },
       {
-        label: 'Total Likes',
+        label: 'Likes',
         data: JSON.parse(reactionsCanvas.dataset.totalLikes),
         // data: [2, 5, 10, 10, 15, 13],
         fill: false,
@@ -25,7 +25,7 @@ export const reactionsChart = new Chart(reactionsCanvas, {
         lineTension: 0.1,
       },
       {
-        label: 'Total Unicorns',
+        label: 'Unicorns',
         data: JSON.parse(reactionsCanvas.dataset.totalUnicorns),
         // data: [1, 2, 2, 4, 5, 3],
         fill: false,
@@ -33,7 +33,7 @@ export const reactionsChart = new Chart(reactionsCanvas, {
         lineTension: 0.1,
       },
       {
-        label: 'Total Bookmarks',
+        label: 'Bookmarks',
         data: JSON.parse(reactionsCanvas.dataset.totalReadinglist),
         // data: [2, 3, 3, 3, 5, 7],
         fill: false,
@@ -43,9 +43,13 @@ export const reactionsChart = new Chart(reactionsCanvas, {
     ],
   },
   options: {
+    legend: {
+      position: 'bottom',
+    },
+    responsive: true,
     title: {
       display: true,
-      text: 'Reactions over the Last Week',
+      text: 'Reactions this Week',
     },
     scales: {
       yAxes: [
@@ -66,7 +70,7 @@ export const commentsChart = new Chart(commentsCanvas, {
     labels: JSON.parse(commentsCanvas.dataset.labels),
     datasets: [
       {
-        label: 'Total Comments',
+        label: 'Comments',
         data: JSON.parse(commentsCanvas.dataset.totalCount),
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
@@ -75,9 +79,13 @@ export const commentsChart = new Chart(commentsCanvas, {
     ],
   },
   options: {
+    legend: {
+      position: 'bottom',
+    },
+    responsive: true,
     title: {
       display: true,
-      text: 'Comments over the Last Week',
+      text: 'Comments this week',
     },
     scales: {
       yAxes: [

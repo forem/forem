@@ -143,7 +143,8 @@ Rails.application.routes.draw do
   post "/chat_channels/:id/open" => "chat_channels#open"
   get "/connect" => "chat_channels#index"
   get "/connect/:slug" => "chat_channels#index"
-  post "/open_chat" => "chat_channels#open_chat"
+  post "/chat_channels/create_chat" => "chat_channels#create_chat"
+  post "/chat_channels/block_chat" => "chat_channels#block_chat"
 
   post "/pusher/auth" => "pusher#auth"
 
@@ -261,7 +262,7 @@ Rails.application.routes.draw do
   get "dashboard/pro/org/:org_id" => "dashboards#pro"
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|organization_user_followers|user_followers|following_users|following|reading/
+        which: /organization|organization_user_followers|user_followers|following|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 

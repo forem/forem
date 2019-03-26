@@ -1,4 +1,4 @@
-# PostgreSQL. Versions 8.2 and up are supported.
+# PostgreSQL. Versions 9.1 and up are supported.
 #
 # Install the pg driver:
 #   gem install pg
@@ -17,9 +17,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see rails configuration guide
+  # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: 5
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   connect_timeout: 2
   checkout_timeout: 2
   variables:
@@ -61,7 +61,6 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  host: localhost
   url: <%= ENV.fetch('DATABASE_URL', '') %>
   database: PracticalDeveloper_test<%= ENV['TEST_ENV_NUMBER'] %>
 
@@ -87,6 +86,6 @@ test:
 production:
   <<: *default
   database: PracticalDeveloper_production
-  username: PracticalDeveloper
   pool: <%= ENV['DATABASE_POOL_SIZE'] %>
+  username: PracticalDeveloper
   password: <%= ENV['PRACTICALDEVELOPER_DATABASE_PASSWORD'] %>

@@ -649,10 +649,10 @@
   resolved "https://registry.yarnpkg.com/@twilio/sip.js/-/sip.js-0.7.7.tgz#cff50f66f9b295d46f219737b72780c7d0e6df52"
   integrity sha1-z/UPZvmyldRvIZc3tyeAx9Dm31I=
 
-"@twilio/webrtc@2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.2.1.tgz#fa950e6f5dd3a0775ff0b6a24d59de8d310bd7a7"
-  integrity sha512-XC949WBoN0PikP808uuWvVve+EsGGtOOhUtzK5jg0/VFLF57uqjVtmeOeuI4fi3miUksrgc97a0mFtNDotrxPA==
+"@twilio/webrtc@2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-2.3.0.tgz#8e5e5824050fd098b80c1768116c15cba7ae6119"
+  integrity sha512-K6hVtd7gqPLn07EpL72w8ULQIJt0STAP0eQ99rNXJrR9RGrAQiMKhIZsORYPqfhrOwzDW0et8Y8alTlXmfjgeA==
 
 abab@^2.0.0:
   version "2.0.0"
@@ -2883,10 +2883,10 @@ code-point-at@^1.0.0:
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
-codemirror@^5.44.0:
-  version "5.44.0"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.44.0.tgz#80dc2a231eeb7aab25ec2405cdca37e693ccf9cc"
-  integrity sha512-3l42syTNakCdCQuYeZJXTyxina6Y9i4V0ighSJXNCQtRbaCN76smKKLu1ZHPHQon3rnzC7l4i/0r4gp809K1wg==
+codemirror@^5.45.0:
+  version "5.45.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.45.0.tgz#db5ebbb3bf44028c684053f3954d011efcec27ad"
+  integrity sha512-c19j644usCE8gQaXa0jqn2B/HN9MnB2u6qPIrrhrMkB+QAP42y8G4QnTwuwbVSoUS1jEl7JU9HZMGhCDL0nsAw==
 
 collection-visit@^1.0.0:
   version "1.0.0"
@@ -11206,13 +11206,13 @@ tweetnacl@^1.0.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
   integrity sha1-cT2LgY2kIGh0C/aDhtBHnmb8ins=
 
-twilio-video@^1.15.2:
-  version "1.15.2"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.15.2.tgz#da3379c0e256def317689d9a980c683277f61baf"
-  integrity sha512-C3KQcHmqqJObFWU2I+bMVqwIEUISXV+DSFJHdPrrw9Z+tDE7Y5SNNj+r4e9ArABx7mtWZlEUa4+Ela/dOQLEjA==
+twilio-video@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.16.0.tgz#4b3226fb18a25c886c5972586b9382c66a90e243"
+  integrity sha512-0CSdL4Ea9q+/zFAtvfj1rqWGIdKTE1wa4xlBvCLOlF0Zy6qnKsOwu/INTXGmnKZMcboQ2hkTd3z+3RO9Db+K8g==
   dependencies:
     "@twilio/sip.js" "^0.7.7"
-    "@twilio/webrtc" "2.2.1"
+    "@twilio/webrtc" "2.3.0"
     ws "^3.3.1"
     xmlhttprequest "^1.8.0"
 

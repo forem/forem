@@ -83,4 +83,28 @@ RSpec.describe Reaction, type: :model do
       expect(reaction).to be_valid
     end
   end
+
+  describe "#skip_notification_for?" do
+    let(:receiver) { build(:user) }
+    let(:reaction2) { build(:reaction, reactable: comment, user_id: user.id + 1) }
+
+    it "is false by default" do
+      expect(reaction2.skip_notification_for?(receiver)).to be(false)
+    end
+
+    it "is true when points are negative" do
+      reaction2.points = -2
+      expect(reaction2.skip_notification_for?(receiver)).to be(true)
+    end
+
+    it "is true when the receiver is the same user as the one who reacted" do
+      reaction.user = user
+      expect(reaction.skip_notification_for?(user)).to be(true)
+    end
+
+    it "is true when the receive_notifications is false" do
+      comment.receive_notifications = false
+      expect(reaction.skip_notification_for?(receiver)).to be(true)
+    end
+  end
 end

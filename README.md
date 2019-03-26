@@ -74,7 +74,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 
 **Fixing bugs** may also not require a lot of communication, but the more the better. Please surround bug fixes with ample tests. Bugs are magnets for other bugs. Write tests near bugs!
 
-**Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. The [product roadmap](https://github.com/thepracticaldev/dev.to/projects) should be a good guide to follow. As always, when in doubt, ask!
+**Building features** is the area which will require the most communication and/or negotiation. Every feature is subjective and open for debate. If your feature involves user-facing design changes, please provide a mockup first so we can all get on the same page. As always, when in doubt, ask!
 
 ### How to contribute
 
@@ -152,27 +152,25 @@ This section provides a high-level requirement & quick start guide. For detailed
 
 ### Standard Installation
 
-0.  Make sure all the prerequisites are installed.
-1.  Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
-1.  Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
-1.  `gem install foreman`
-1.  Setup your database
-    - Create `config/database.yml` by copying from the provided template (i.e. `cp config/database.yml.sample config/database.yml`)
-    - Update the `config/database.yml` file if needed.
-1.  Set up your environment variables/secrets
-    - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-    - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
-    - For any key that you wish to enter/replace:
-      1.  Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
-      2.  Obtain the development variable and apply the key you wish to enter/replace. ie:
-      ```
-      GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
-      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
-      ```
-    - If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
-    - You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
-1.  Run `bin/setup`
-1.  That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
+1. Make sure all the prerequisites are installed.
+1. Fork dev.to repository, ie. https://github.com/thepracticaldev/dev.to/fork
+1. Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
+1. Set up your environment variables/secrets
+
+   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
+   - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
+   - For any key that you wish to enter/replace:
+     1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
+     2. Obtain the development variable and apply the key you wish to enter/replace. ie:
+     ```
+     GITHUB_KEY: "SOME_REAL_SECURE_KEY_HERE"
+     GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
+     ```
+   - If you are missing `ENV` variables on bootup, `envied` gem will alert you with messages similar to `'error_on_missing_variables!': The following environment variables should be set: A_MISSING_KEY.`.
+   - You do not need "real" keys for basic development. Some features require certain keys, so you may be able to add them as you go.
+
+1. Run `bin/setup`
+1. That's it! Run `bin/startup` to start the application and head to `http://localhost:3000/`
 
 [View Full Installation Documentation](https://docs.dev.to/installation/)
 
@@ -208,27 +206,15 @@ Current gotchas: potential environment issues with external services need to be 
 
 We use [Spring](https://github.com/rails/spring) and it is already included in the project.
 
-1.  Use the provided bin stubs to automatically start Spring, i.e. `bin/rails server`, `bin/rspec spec/models/`, `bin/rake db:migrate`.
-2.  If Spring isn't picking up on new changes, use `spring stop`. For example, Spring should always be restarted if there's a change in environment key.
-3.  Check Spring's status whenever with `spring status`.
+1.  Use the provided bin stubs to automatically start Spring, i.e. `bin/rails server`, `bin/rspec spec/models/`, `bin/rails db:migrate`.
+1.  If Spring isn't picking up on new changes, use `spring stop`. For example, Spring should always be restarted if there's a change in environment key.
+1.  Check Spring's status whenever with `spring status`.
 
 Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's result. Instead use `bin/spring rspec`.
 
 ## Additional docs
 
 [Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
-
-## Product Roadmap
-
-Our new product roadmap can be found [here](https://github.com/thepracticaldev/dev.to/projects/1). Many notes need to be converted to issues but this should provide an overview of features we plan to work on, as well as features we are considering.
-
-Core team members will move issues along the project board as they progress.
-
-- Ideas & Requests: features up for discussion.
-- Needs Owners: features in need of an owner.
-- Committed: features we're committed to building -- free for contributors to work on, but please communicate with the owner beforehand.
-- In Progress (early stage): work has begun on feature.
-- In Progress (late stage): feature is near completion.
 
 ## Core team
 
@@ -238,6 +224,8 @@ Core team members will move issues along the project board as they progress.
 - [@maestromac](https://dev.to/maestromac)
 - [@zhao-andy](https://dev.to/andy)
 - [@aspittel](https://dev.to/aspittel)
+- [@lightalloy](https://dev.to/lightalloy)
+- [@mariocsee](https://dev.to/mariocsee)
 
 ## License
 
