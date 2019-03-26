@@ -40,8 +40,7 @@ class Event < ApplicationRecord
   end
 
   def title_to_slug
-    downcase = (id.to_s + "-" + category + "-" + title).to_s.downcase
-    downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + starts_at.strftime("%m-%d-%Y")
+    downcase = (id.to_s + "-" + category + "-" + title).to_s.parameterize + "-" + starts_at.strftime("%m-%d-%Y")
   end
 
   def bust_cache
