@@ -68,7 +68,7 @@ class ChatChannel < ApplicationRecord
       contrived_name = "Direct chat between " + usernames.join(" and ")
       slug = usernames.join("/")
     else
-      slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
+      slug = contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
     end
 
     if (channel = ChatChannel.find_by(slug: slug))
