@@ -112,6 +112,18 @@ class ChatChannelsController < ApplicationController
     end
   end
 
+  def block_chat
+    chat_channel = ChatChannel.find(params[:chat_id])
+    policy = ChatChannelPolicy.new(current_user, chat_channel)
+    if policy.open? && chat_channel.valid? && chat_channel.channel_type == "direct"
+      chat_channel.status = "blocked"
+      chat_channel.save
+      render json: { status: "success", message: "chat channel blocked" }, status: 200
+    else
+      render json: { status: "error", message: "not allowed!" }, status: 400
+    end
+  end
+
   private
 
   def chat_channel_params

@@ -17,23 +17,22 @@ export default class Content extends Component {
     console.log(this.props);
     if (!this.props.resource) {
       return '';
-    } 
-      return (
-        <div
-          className="activechatchannel__activecontent"
-          id="chat_activecontent"
-          onClick={this.props.onTriggerContent}
+    }
+    return (
+      <div
+        className="activechatchannel__activecontent"
+        id="chat_activecontent"
+        onClick={this.props.onTriggerContent}
+      >
+        <button
+          className="activechatchannel__activecontentexitbutton"
+          data-content="exit"
         >
-          <button
-            className="activechatchannel__activecontentexitbutton"
-            data-content="exit"
-          >
-            ×
-          </button>
-          {display(this.props)}
-        </div>
-      );
-    
+          ×
+        </button>
+        {display(this.props)}
+      </div>
+    );
   }
 }
 
@@ -51,7 +50,8 @@ function display(props) {
         }}
       />
     );
-  } if (props.resource.type_of === 'loading-user') {
+  }
+  if (props.resource.type_of === 'loading-user') {
     return (
       <div
         style={{
@@ -63,11 +63,19 @@ function display(props) {
         }}
       />
     );
-  } if (props.resource.type_of === 'user') {
-    return <UserDetails user={props.resource} />;
-  } if (props.resource.type_of === 'article') {
+  }
+  if (props.resource.type_of === 'user') {
+    return (
+      <UserDetails
+        user={props.resource}
+        activeChannelId={props.activeChannelId}
+      />
+    );
+  }
+  if (props.resource.type_of === 'article') {
     return <Article resource={props.resource} />;
-  } if (props.resource.type_of === 'github') {
+  }
+  if (props.resource.type_of === 'github') {
     return (
       <GithubRepo
         activeChannelId={props.activeChannelId}
@@ -76,14 +84,16 @@ function display(props) {
         resource={props.resource}
       />
     );
-  } if (props.resource.type_of === 'channel-details') {
+  }
+  if (props.resource.type_of === 'channel-details') {
     return (
       <ChannelDetails
         channel={props.resource.channel}
         activeChannelId={props.activeChannelId}
       />
     );
-  } if (props.resource.type_of === 'code_editor') {
+  }
+  if (props.resource.type_of === 'code_editor') {
     return (
       <CodeEditor
         activeChannelId={props.activeChannelId}

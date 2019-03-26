@@ -480,6 +480,42 @@
   }
 }
 
+.userdetails__blockreport {
+  margin: 10px 0;
+  button {
+    background-color: rgb(255, 0, 0);
+    color: rgb(255, 255, 254);
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px 5px;
+    border-radius: 3px;
+    border-width: 0px;
+    border-style: initial;
+    border-color: initial;
+    border-image: initial;
+  }
+}
+
+.userdetails__reportabuse {
+  a {
+    background-color: rgb(255, 0, 0);
+    color: rgb(255, 255, 254);
+    font-size: 1em;
+    cursor: pointer;
+    padding: 5px;
+    margin: 2px 5px;
+    border-radius: 3px;
+    border-width: 0px;
+    border-style: initial;
+    border-color: initial;
+    border-image: initial;
+  }
+  .no {
+    background-color: rgb(78, 87, 239);
+  }
+}
+
 .chat .activechatchannel__activeArticle .container {
   position: absolute;
   top: 0px; left: 0; right: 0; bottom: 30px;
