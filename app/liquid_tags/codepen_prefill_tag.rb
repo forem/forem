@@ -5,14 +5,14 @@ class CodepenPrefillTag < Liquid::Block
   end
 
   def render(context)
-    content = Nokogiri::HTML.parse(super)
+    content = Nokogiri::HTML(super)
     # parsed_content = content.xpath("//html/body").text # dont parse for text???
     html = <<~HTML
       <div
         class="codepen"
         data-height="400"
         data-editable=true
-        data-prefill=''
+        data-prefill='#{@options}'
         >
         #{content}
       </div>
@@ -22,18 +22,19 @@ class CodepenPrefillTag < Liquid::Block
   end
 
   def parse_options(input)
-    _, *options = input.split(" ")
-
+    stripped_input = ActionController::Base.helpers.strip_tags(input)
+    options = stripped_input.split(" ")
     options.map { |o| valid_option(o) }.reject(&:nil?)
 
-    query = {}
+    prefill = {}
     options.each do |i|
-      attr = i.split("=")[0]
+      key = i.split("=")[0]
       val = i.split("=")[1]
-      query[attr] = val
+      val = val.split(",") if i.include? ","
+      prefill[key] = val
     end
 
-    query.to_json
+    prefill.to_json
   end
 
   def valid_option(option)
