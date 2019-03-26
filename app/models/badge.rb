@@ -18,7 +18,7 @@ class Badge < ApplicationRecord
   private
 
   def generate_slug
-    self.slug = title.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "")
+    self.slug = title.to_s.parameterize
   end
 
   def bust_path
