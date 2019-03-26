@@ -1,14 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Follows::CreateChatChannelJob, type: :job do
-  describe "#perform_later" do
-    it "enqueues the job" do
-      ActiveJob::Base.queue_adapter = :test
-      expect do
-        described_class.perform_later(3)
-      end.to have_enqueued_job.with(3).on_queue("create_chat_channel_after_follow")
-    end
-  end
+  include_examples "#enqueues_job", "create_chat_channel_after_follow", 3
 
   describe "#perform_now" do
     let(:user) { create(:user) }
