@@ -5,14 +5,7 @@ RSpec.describe Notifications::NewReactionJob, type: :job do
   let(:org) { create(:organization) }
   let(:receiver_data) { { klass: "Organization", id: org.id } }
 
-  describe "#perform_later" do
-    it "enqueues the job" do
-      ActiveJob::Base.queue_adapter = :test
-      expect do
-        described_class.perform_later(reaction_data, receiver_data)
-      end.to have_enqueued_job.with(reaction_data, receiver_data).on_queue("send_new_reaction_notification")
-    end
-  end
+  include_examples "#enqueues_job", "send_new_reaction_notification", [{}, {}, true]
 
   describe "#perform_now" do
     let(:reaction_service) { double }
