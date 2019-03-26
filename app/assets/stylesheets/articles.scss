@@ -1348,6 +1348,8 @@
         border: none;
         padding-left: 12px;
         margin-right: 3px;
+        filter: invert(0);
+        filter: var(--theme-social-icon-invert, invert(0));
       }
       .row {
         position: relative;
