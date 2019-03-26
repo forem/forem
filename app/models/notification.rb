@@ -8,7 +8,7 @@ class Notification < ApplicationRecord
 
   before_create :mark_notified_at_time
 
-  validates :user_id, uniqueness: { scope: %i[notifiable_id notifiable_type action] }
+  validates :user_id, uniqueness: { scope: %i[organization_id notifiable_id notifiable_type action] }
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
