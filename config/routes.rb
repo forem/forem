@@ -143,8 +143,8 @@ Rails.application.routes.draw do
   post "/chat_channels/:id/open" => "chat_channels#open"
   get "/connect" => "chat_channels#index"
   get "/connect/:slug" => "chat_channels#index"
-  post "/open_chat" => "chat_channels#open_chat"
-  post "/block_chat" => "chat_channels#block_chat"
+  post "/chat_channels/create_chat" => "chat_channels#create_chat"
+  post "/chat_channels/block_chat" => "chat_channels#block_chat"
 
   post "/pusher/auth" => "pusher#auth"
 

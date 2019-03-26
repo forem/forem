@@ -52,7 +52,7 @@ function sendFetch(switchStatement, body) {
     case 'chat-creation':
       return function(csrfToken) {
         body.append('authenticity_token', csrfToken);
-        return window.fetch('/open_chat', {
+        return window.fetch('/chat_channels/create_chat', {
           method: 'POST',
           headers: {
             'X-CSRF-Token': csrfToken,
@@ -64,7 +64,7 @@ function sendFetch(switchStatement, body) {
     case 'block-chat':
       return function(csrfToken) {
         body.append('authenticity_token', csrfToken);
-        return window.fetch('/block_chat', {
+        return window.fetch('/chat_channels/block_chat', {
           method: 'POST',
           headers: {
             'X-CSRF-Token': csrfToken,
@@ -101,4 +101,5 @@ function sendFetch(switchStatement, body) {
       console.log('A wrong switchStatement was used.');
       break;
   }
+  return true;
 }
