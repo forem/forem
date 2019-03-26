@@ -537,7 +537,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    title.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
+    title.to_s.downcase.parameterize + "-" + rand(100_000).to_s(26)
   end
 
   def bust_cache
