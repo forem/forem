@@ -19,10 +19,20 @@ RSpec.describe Identity, type: :model do
     end
   end
 
-  it "validates uniqueness of provider + uid" do
-    create(:identity, provider: "twitter", uid: 100, user: create(:user))
-    identity = build(:identity, provider: "twitter", uid: 100, user: create(:user))
-    expect(identity).not_to be_valid
-    expect(identity.errors[:uid].size).to eq(1)
+  context "when a new record" do
+    it "validates uniqueness of provider + uid" do
+      create(:identity, provider: "twitter", uid: 100, user: create(:user))
+      identity = build(:identity, provider: "twitter", uid: 100, user: create(:user))
+      expect(identity).not_to be_valid
+      expect(identity.errors[:uid].size).to eq(1)
+    end
+
+    it "validates uniqueness of provider + user_id" do
+      user = create(:user)
+      create(:identity, provider: "twitter", uid: 100, user: user)
+      identity = build(:identity, provider: "twitter", uid: 11, user: user)
+      expect(identity).not_to be_valid
+      expect(identity.errors[:user_id].size).to eq(1)
+    end
   end
 end

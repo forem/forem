@@ -1,9 +1,8 @@
 class Identity < ApplicationRecord
   belongs_to :user
   validates :uid, :provider, presence: true
-  validates :uid, uniqueness: { scope: :provider }
-  # validates :provider, uniqueness: { scope: :uid }
-  validates :user_id, uniqueness: { scope: :provider }
+  validates :uid, uniqueness: { scope: :provider }, if: proc { |i| i.uid_changed? || i.provider_changed? }
+  validates :user_id, uniqueness: { scope: :provider }, if: proc { |i| i.user_id_changed? || i.provider_changed? }
   validates :provider, inclusion: { in: %w[github twitter] }
 
   serialize :auth_data_dump
