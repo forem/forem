@@ -719,10 +719,6 @@ GEM
       railties (= 5.1.6.2)
       sprockets-rails (>= 2.0.0)
     rails-assets-airbrake-js-client (1.5.0)
-    rails-controller-testing (1.0.4)
-      actionpack (>= 5.0.1.x)
-      actionview (>= 5.0.1.x)
-      activesupport (>= 5.0.1.x)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -1056,7 +1052,6 @@ DEPENDENCIES
   rack-timeout (~> 0.5)
   rails (~> 5.1.6)
   rails-assets-airbrake-js-client (~> 1.5)!
-  rails-controller-testing (~> 1.0)
   rails-observers (~> 0.1)
   rb-fsevent (~> 0.10)
   recaptcha (~> 4.13)
