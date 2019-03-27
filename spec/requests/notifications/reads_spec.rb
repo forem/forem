@@ -10,13 +10,13 @@ RSpec.describe "Notifications::Reads", type: :request do
       allow(stubbed_service_object).to receive(:mark_as_read)
     end
 
-    it "works! (now write some real specs)" do
+    it "works" do
       post "/notifications/reads/"
       expect(response).to have_http_status(:ok)
       expect(stubbed_service_object).to have_received(:mark_as_read).once
     end
 
-    it "works with org Id too" do
+    it "works with org id too" do
       post "/notifications/reads/", params: { org_id: 1 }
       expect(response).to have_http_status(:ok)
       expect(stubbed_service_object).to have_received(:mark_as_read).twice
