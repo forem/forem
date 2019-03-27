@@ -4,12 +4,13 @@ module SocialImageHelper
   SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-03-24T00:00:00Z")
 
   def user_social_image_url(user)
-    if use_new_social_url?(user)
-      return user_social_preview_url(user, format: :png) if user.is_a?(User)
-      return organization_social_preview_url(user, format: :png) if user.is_a?(Organization)
-    end
+    return GeneratedImage.new(user).social_image unless use_new_social_url?(user)
 
-    GeneratedImage.new(user).social_image
+    if user.is_a?(Organization)
+      organization_social_preview_url(user, format: :png)
+    else
+      user_social_preview_url(user, format: :png)
+    end
   end
 
   def article_social_image_url(article)
