@@ -71,7 +71,7 @@ class ChatChannel < ApplicationRecord
       slug = contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
     end
 
-    channel = ChatChannel.find_by_slug(slug)
+    channel = ChatChannel.find_by(slug: slug)
     if channel
       raise "Blocked channel" if channel.status == "blocked"
 
@@ -143,10 +143,6 @@ class ChatChannel < ApplicationRecord
     obj
   end
 
-  def pending_users_select_fields
-    pending_users.select(:id, :username, :name)
-  end
-
   def channel_mod_ids
     mod_users.pluck(:id)
   end
@@ -160,5 +156,11 @@ class ChatChannel < ApplicationRecord
       username: membership.user.username,
       id: membership.user_id
     }
+  end
+
+  private
+
+  def pending_users_select_fields
+    pending_users.select(:id, :username, :name, :updated_at)
   end
 end
