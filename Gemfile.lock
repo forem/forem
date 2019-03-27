@@ -100,7 +100,7 @@ GEM
     algoliasearch (1.26.0)
       httpclient (~> 2.8, >= 2.8.3)
       json (>= 1.5.1)
-    algoliasearch-rails (1.21.0)
+    algoliasearch-rails (1.22.0)
       algoliasearch (>= 1.17.0, < 2.0.0)
       json (>= 1.5.1)
     algorithmia (1.0.1)
