@@ -4,20 +4,8 @@ class DashboardsController < ApplicationController
   after_action :verify_authorized
 
   def show
-    @user = if params[:username] && current_user.any_admin?
-              User.find_by(username: params[:username])
-            else
-              current_user
-            end
-    authorize (@user || User), :dashboard_show?
-    if params[:which] == "following"
-      @follows = @user.follows_by_type("User").
-        order("created_at DESC").includes(:followable).limit(80)
-      @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
-        order("points DESC").includes(:followable).limit(80)
-      @followed_organizations = @user.follows_by_type("Organization").
-        order("created_at DESC").includes(:followable).limit(80)
-    elsif params[:which] == "user_followers"
+    fetch_and_authorize_user
+    if params[:which] == "user_followers"
       @follows = Follow.where(followable_id: @user.id, followable_type: "User").
         includes(:follower).order("created_at DESC").limit(80)
     elsif params[:which] == "organization_user_followers"
@@ -32,6 +20,16 @@ class DashboardsController < ApplicationController
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
   end
 
+  def following
+    fetch_and_authorize_user
+    @follows = @user.follows_by_type("User").
+      order("created_at DESC").includes(:followable).limit(80)
+    @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
+      order("points DESC").includes(:followable).limit(80)
+    @followed_organizations = @user.follows_by_type("Organization").
+      order("created_at DESC").includes(:followable).limit(80)
+  end
+
   def pro
     user_or_org = if params[:org_id]
                     org = Organization.find_by(id: params[:org_id])
@@ -42,5 +40,16 @@ class DashboardsController < ApplicationController
                     current_user
                   end
     @dashboard = Dashboard::Pro.new(user_or_org)
+  end
+
+  private
+
+  def fetch_and_authorize_user
+    @user = if params[:username] && current_user.any_admin?
+              User.find_by(username: params[:username])
+            else
+              current_user
+            end
+    authorize (@user || User), :dashboard_show?
   end
 end
