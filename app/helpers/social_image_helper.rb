@@ -1,7 +1,7 @@
 module SocialImageHelper
   # After this date we use SocialPreview controller directly rather than passing to URL2PNG.
   # Keeping old URLs around since they are already generated.
-  SOCIAL_PREVIEW_MIGRATION_DATETIME = DateTime.new(2019, 3, 24)
+  SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-03-24T00:00:00Z")
 
   def user_social_image_url(user)
     if use_new_social_url?(user)
