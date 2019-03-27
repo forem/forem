@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesApi", type: :request do
+RSpec.describe "Api::V0::Articles", type: :request do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 
