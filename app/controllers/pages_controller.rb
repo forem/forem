@@ -62,10 +62,12 @@ class PagesController < ApplicationController
 
   def shecoded
     @top_articles = Article.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).order("RANDOM()").
+      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).
+      order(Arel.sql("RANDOM()")).
       includes(:user).decorate
     @articles = Article.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).order("RANDOM()").
+      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
+      order(Arel.sql("RANDOM()")).
       where.not(id: @top_articles.pluck(:id)).
       includes(:user).decorate
     render layout: false
