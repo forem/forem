@@ -1,7 +1,8 @@
 class CodepenPrefillTag < Liquid::Block
   def initialize(tag_name, options, tokens)
     super
-    @options = parse_options(options)
+    @data = parse_data(options)
+    @prefill = parse_prefill(options)
   end
 
   def render(context)
@@ -10,9 +11,8 @@ class CodepenPrefillTag < Liquid::Block
     html = <<~HTML
       <div
         class="codepen"
-        data-height="400"
-        data-editable=true
-        data-prefill='#{@options}'
+        data-prefill='#{@prefill}'
+        '#{@data}'
         >
         #{content}
       </div>
@@ -21,14 +21,41 @@ class CodepenPrefillTag < Liquid::Block
     html
   end
 
-  def parse_options(input)
+  def parse_data(input)
     stripped_input = ActionController::Base.helpers.strip_tags(input)
     options = stripped_input.split(" ")
     options.map { |o| valid_option(o) }.reject(&:nil?)
 
+    data_attr = ["editable", "default-tab", "height", "theme-id"]
+
+    data = ""
+    options.each do |i|
+      key = i.split("=")[0]
+      next unless data_attr.include?(key)
+      val = i.split("=")[1]
+      if key == data_attr[0]
+        val = "true" unless (val == "false")
+      elsif key == data_attr[2]
+        val = "400" unless (val.to_i < 600)
+      end
+      attr = "data-"+key+"="+val
+      data = data + " " + attr
+    end
+
+    data
+  end
+
+  def parse_prefill(input)
+    stripped_input = ActionController::Base.helpers.strip_tags(input)
+    options = stripped_input.split(" ")
+    options.map { |o| valid_option(o) }.reject(&:nil?)
+
+    prefill_attr = ["title", "description", "head", "tags", "html_classes", "stylesheets", "scripts"]
+
     prefill = {}
     options.each do |i|
       key = i.split("=")[0]
+      next unless prefill_attr.include?(key)
       val = i.split("=")[1]
       val = val.split(",") if i.include? ","
       prefill[key] = val

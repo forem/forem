@@ -12,7 +12,7 @@ class MarkdownParser
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
     html = markdown.render(escaped_content)
-    sanitized_content = sanitize_rendered_markdown(html)
+    sanitized_content = sanitize_rendered_markdown(html) # step that removes divs n shit
     begin
       parsed_liquid = Liquid::Template.parse(sanitized_content)
     rescue StandardError => e
