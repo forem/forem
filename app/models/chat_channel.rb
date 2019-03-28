@@ -71,7 +71,7 @@ class ChatChannel < ApplicationRecord
       slug = contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
     end
 
-    channel = ChatChannel.find_by_slug(slug)
+    channel = ChatChannel.find_by(slug: slug)
     if channel
       raise "Blocked channel" if channel.status == "blocked"
 
