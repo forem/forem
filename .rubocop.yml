@@ -169,12 +169,6 @@ Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
   Enabled: true
 
-Style/TrailingCommaInHashLiteral:
-  Description: 'Checks for trailing comma in hash literals.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
-  EnforcedStyleForMultiline: no_comma
-  Enabled: true
-
 Style/TrivialAccessors:
   Description: 'Prefer attr_* methods to trivial readers/writers.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
@@ -198,10 +192,6 @@ Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains'
   EnforcedStyle: trailing
-
-Layout/ExtraSpacing:
-  Description: 'Do not use unnecessary spacing.'
-  Enabled: true
 
 Layout/MultilineOperationIndentation:
   Description: >-
