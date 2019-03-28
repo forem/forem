@@ -4,6 +4,7 @@ RSpec.describe ArticleAnalyticsFetcher do
   let(:stubbed_ga) { double }
 
   before do
+    srand(2) # disabling #occasionally_force_fetch
     allow(Notification).to receive(:send_milestone_notification)
     allow(GoogleAnalytics).to receive(:new).and_return(stubbed_ga)
   end
