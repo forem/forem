@@ -151,11 +151,6 @@ Style/SingleLineBlockParams:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#reduce-blocks'
   Enabled: false
 
-Style/SignalException:
-  Description: 'Checks for proper usage of fail and raise.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#fail-method'
-  Enabled: false
-
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-string-literals'
