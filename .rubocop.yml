@@ -103,11 +103,6 @@ Style/FrozenStringLiteralComment:
     to help transition from Ruby 2.3.0 to Ruby 3.0.
   Enabled: false
 
-Style/FormatString:
-  Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#sprintf'
-  Enabled: false
-
 Style/GlobalVars:
   Description: 'Do not introduce global variables.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#instance-vars'
@@ -169,24 +164,7 @@ Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
   Enabled: true
 
-Style/TrivialAccessors:
-  Description: 'Prefer attr_* methods to trivial readers/writers.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
-  Enabled: false
-
 # Layout
-
-Layout/AlignParameters:
-  Description: 'Here we check if the parameters on a multi-line method call or definition are aligned.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-double-indent'
-  Enabled: false
-
-Layout/ConditionPosition:
-  Description: >-
-    Checks for condition placed in a confusing position relative to
-    the keyword.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#same-line-condition'
-  Enabled: false
 
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
@@ -206,11 +184,6 @@ Layout/MultilineMethodCallIndentation:
     that span more than one line.
   Enabled: true
   EnforcedStyle: indented
-
-Layout/InitialIndentation:
-  Description: >-
-    Checks the indentation of the first non-blank non-comment line in a file.
-  Enabled: false
 
 # Rails
 
