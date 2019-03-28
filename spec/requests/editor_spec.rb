@@ -3,14 +3,12 @@ require "rails_helper"
 RSpec.describe "Editor", type: :request do
   describe "GET /new" do
     context "when not logged-in" do
-      it "does not render markdown form" do
-        get "/new"
-        expect(response).not_to render_template(:markdown_form)
-      end
-
       it "asks the stray-user to 'Sign In or Create Your Account'" do
         get "/new"
+        expect(response).to have_http_status(:ok)
         expect(response.body).to include("Great to have you")
+        # should actually be looking for textarea tag
+        expect(response.body).not_to include("textarea")
       end
     end
   end
@@ -30,7 +28,7 @@ RSpec.describe "Editor", type: :request do
       it "render markdown form" do
         sign_in user
         get "/#{user.username}/#{article.slug}/edit"
-        expect(response).to render_template("articles/_markdown_form")
+        expect(response).to have_http_status(:ok)
       end
     end
   end
