@@ -59,11 +59,6 @@ Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: false
 
-Style/ClassVars:
-  Description: 'Avoid the use of class variables.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-class-vars'
-  Enabled: false
-
 Style/CollectionMethods:
   Enabled: true
   PreferredMethods:
