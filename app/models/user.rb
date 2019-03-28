@@ -268,7 +268,7 @@ class User < ApplicationRecord
   end
 
   def remember_me
-    Rails.env.test? ? false : true
+    true
   end
 
   def cached_followed_tag_names
