@@ -93,8 +93,9 @@ class ChatChannelsController < ApplicationController
     end
   end
 
-  def open_chat
+  def create_chat
     chat_recipient = User.find(params[:user_id])
+    authorize ChatChannel
     if chat_recipient.inbox_type == "open"
       chat = ChatChannel.create_with_users([current_user, chat_recipient], "direct")
       # get message param to generate message to send
@@ -110,6 +111,14 @@ class ChatChannelsController < ApplicationController
     else
       render json: { status: "error", message: "not allowed!" }, status: 400
     end
+  end
+
+  def block_chat
+    chat_channel = ChatChannel.find(params[:chat_id])
+    authorize chat_channel
+    chat_channel.status = "blocked"
+    chat_channel.save
+    render json: { status: "success", message: "chat channel blocked" }, status: 200
   end
 
   private

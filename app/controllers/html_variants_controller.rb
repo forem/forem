@@ -24,7 +24,7 @@ class HtmlVariantsController < ApplicationController
 
   def show
     @story_show = true
-    @@article_show = true
+    @article_show = true
     @html_variant = HtmlVariant.find(params[:id])
     authorize @html_variant
     render layout: false
