@@ -8,15 +8,7 @@ RSpec.describe Notification, type: :model do
   let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
   let(:follow_instance) { user.follow(user2) }
 
-  describe "validations" do
-    it "allows 2 create 2 organization notifications" do
-      create(:notification, organization_id: organization.id, user: nil, notifiable: article, action: "Reaction")
-      # same notification for another organization
-      org2 = create(:organization)
-      notification = create(:notification, organization_id: org2.id, user: nil, notifiable: article, action: "Reaction")
-      expect(notification).to be_valid
-    end
-  end
+  it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[organization_id notifiable_id notifiable_type action]) }
 
   describe "when trying to #send_new_follower_notification after following a tag" do
     let(:tag) { create(:tag) }
