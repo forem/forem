@@ -10,10 +10,8 @@ module FeedbackMessagesHelper
       Thanks,
       DEV team
     HEREDOC
-    {
-      subject: "DEV Code of Conduct Violation",
-      body: body
-    }.freeze
+
+    { subject: "DEV Code of Conduct Violation", body: body }.freeze
   end
 
   def reporter_email_details
@@ -26,10 +24,8 @@ module FeedbackMessagesHelper
 
       DEV Team
     HEREDOC
-    {
-      subject: "DEV Report",
-      body: body
-    }.freeze
+
+    { subject: "DEV Report", body: body }.freeze
   end
 
   def affected_email_details
@@ -42,9 +38,7 @@ module FeedbackMessagesHelper
 
       DEV Team
     HEREDOC
-    {
-      subject: "Courtesy Notice from DEV",
-      body: body
-    }.freeze
+
+    { subject: "Courtesy Notice from DEV", body: body }.freeze
   end
 end

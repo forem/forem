@@ -1,13 +1,9 @@
 require "rails_helper"
 
 RSpec.describe "AsyncInfo", type: :request do
-  let(:user) { build(:user) }
-
   describe "GET /async_info/base_data" do
-    describe "anonymous user" do
-      before do
-        get "/async_info/base_data"
-      end
+    context "when not logged-in" do
+      before { get "/async_info/base_data" }
 
       it "returns token" do
         expect(response.body).to include("token")
@@ -18,18 +14,12 @@ RSpec.describe "AsyncInfo", type: :request do
       end
     end
 
-    describe "logged in user" do
-      before do
-        sign_in user
+    context "when logged int" do
+      it "returns token and user" do
+        allow(cookies).to receive(:[]).with(:remember_user_token).and_return(nil)
+        sign_in create(:user)
         get "/async_info/base_data"
-      end
-
-      it "returns token" do
-        expect(response.body).to include("token")
-      end
-
-      it "does return user" do
-        expect(response.body).to include("user")
+        expect(response.body).to include("token", "user")
       end
     end
   end
