@@ -19,6 +19,7 @@ common: &defaults
   # - Default: none
   # - Valid Options: true, false
   monitor: true
+  collect_remote_ip: false
 
 production:
   <<: *defaults
