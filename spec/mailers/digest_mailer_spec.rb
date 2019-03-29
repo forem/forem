@@ -9,8 +9,8 @@ RSpec.describe DigestMailer, type: :mailer do
       email = described_class.digest_email(user, [article])
 
       expect(email.subject).not_to be_nil
-      expect(email.to).to eq(user.email)
-      expect(email.from).to eq("yo@dev.to")
+      expect(email.to).to eq([user.email])
+      expect(email.from).to eq(["yo@dev.to"])
     end
   end
 end
