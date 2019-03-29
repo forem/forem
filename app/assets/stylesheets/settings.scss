@@ -76,7 +76,7 @@
         color: $black;
         color: var(--theme-color, $black);
         &.selected {
-          background: $purple;
+          background: #28374c;
         }
       }
     }
