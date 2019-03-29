@@ -55,16 +55,15 @@ class User < ApplicationRecord
             uniqueness: { allow_blank: true, case_sensitive: false },
             length: { maximum: 50 },
             email: true,
-            allow_blank: true,
-            if: :email_changed?
+            allow_blank: true
+  validates :email, uniqueness: { case_sensitive: false }, if: :email_changed?
   validates :name, length: { minimum: 1, maximum: 100 }
   validates :username,
             presence: true,
-            uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
-            exclusion: { in: ReservedWords.all, message: "username is reserved" },
-            if: :username_changed?
+            exclusion: { in: ReservedWords.all, message: "username is reserved" }
+  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
