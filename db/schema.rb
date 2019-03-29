@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190327090030) do
+ActiveRecord::Schema.define(version: 20190329103059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -881,6 +881,7 @@ ActiveRecord::Schema.define(version: 20190327090030) do
     t.string "website_url"
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
