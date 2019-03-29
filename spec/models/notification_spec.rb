@@ -97,6 +97,13 @@ RSpec.describe Notification, type: :model do
         expect(user2.notifications.count).to eq 0
       end
 
+      it "sends a notification to the author of the article about the child comment" do
+        parent_comment = create(:comment, user: user2, commentable: article)
+        child_comment = create(:comment, user: user3, commentable: article, ancestry: parent_comment.id.to_s)
+        Notification.send_new_comment_notifications_without_delay(child_comment)
+        expect(user.notifications.count).to eq(1)
+      end
+
       it "sends a notification to the organization" do
         org = create(:organization)
         user.update(organization: org)
@@ -108,21 +115,40 @@ RSpec.describe Notification, type: :model do
     end
 
     context "when the author of the article is not subscribed" do
-      it "does not send a notification to the author of the article" do
+      let!(:comment) { create(:comment, user: user2, commentable: article) }
+
+      before do
         article.update(receive_notifications: false)
-        comment = create(:comment, user: user2, commentable: article)
+      end
+
+      it "does not send a notification to the author of the article" do
         Notification.send_new_comment_notifications_without_delay(comment)
+        expect(user.notifications.count).to eq 0
+      end
+
+      it "doesn't send a notification to the author of the article about the child comment" do
+        child_comment = create(:comment, user: user3, commentable: article, ancestry: comment.id.to_s)
+        Notification.send_new_comment_notifications_without_delay(child_comment)
         expect(user.notifications.count).to eq 0
       end
     end
 
     context "when the author of a comment is not subscribed" do
-      it "does not send a notification to the author of the comment" do
-        parent_comment = create(:comment, user: user2, commentable: article)
+      let(:parent_comment) { create(:comment, user: user2, commentable: article) }
+      let!(:child_comment) { create(:comment, user: user3, commentable: article, ancestry: parent_comment.id.to_s) }
+
+      before do
         parent_comment.update(receive_notifications: false)
-        child_comment = create(:comment, user: user, commentable: article, ancestry: parent_comment.id.to_s)
+      end
+
+      it "does not send a notification to the author of the comment" do
         Notification.send_new_comment_notifications_without_delay(child_comment)
         expect(user2.notifications.count).to eq 0
+      end
+
+      it "sends a notification to the author of the article" do
+        Notification.send_new_comment_notifications_without_delay(child_comment)
+        expect(user.notifications.count).to eq(1)
       end
     end
   end
