@@ -79,11 +79,12 @@ RSpec.describe "ChatChannels", type: :request do
       end
 
       it "returns 200" do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns the channel" do
-        expect(response).to render_template(:show)
+        result = { messages: [], chatChannelId: chat_channel.id }.to_json
+        expect(response.body).to eq(result)
       end
     end
 
