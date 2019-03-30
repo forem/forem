@@ -290,6 +290,10 @@
     padding:12px 15px 18px;
     font-family: "Lucida Console", Monaco, monospace, sans-serif;
     font-size:17px;
+    background: white;
+    background: var(--theme-container-background, white);
+    color: $black;
+    color: var(--theme-color, $black);
     &::placeholder{
       color:#8f949c;
     }

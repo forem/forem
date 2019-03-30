@@ -250,10 +250,18 @@ a.header-link {
       resize: vertical;
       border-radius: 3px;
       border: 1px solid rgb(232, 229, 229);
+      border: var(--theme-container-background, 1px solid rgb(232, 229, 229));
       height: 125px;
       font-size: 16px;
       padding: 6px;
       cursor: text;
+      background: white;
+      background: var(--theme-container-background, white);
+      color: $black;
+      color: var(--theme-color, $black);
+      &::placeholder{
+        color:#8f949c;
+      }  
       &.embiggened {
         height: calc(2vw + 115px);
       }
