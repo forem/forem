@@ -694,7 +694,41 @@ article {
     width: 100%;
     background: $tan;
     background: var(--theme-background, $tan);
-    @media screen and (min-width: 880px) {
+    .dropdown-content {
+      clipboard-copy{
+        width: calc(100% - 24px);
+        margin: 10px auto 5px;
+        margin-left: 15px;
+        display: flex;
+        flex-flow: row wrap;
+        position: relative;
+        input{
+          flex: 1 1 auto;
+          margin-right: 8px;
+          border: 1px dashed black;
+          padding: 4px 6px;
+          font-size: 1em;
+          border-radius: 3px;
+        }
+        img {
+          flex: 1 0 24px;
+          max-width: 24px;
+        }
+        #article-copy-link-announcer {
+          flex: 1 0 100%;
+          color: $bold-blue;
+          position: absolute;
+          bottom: -18px;
+          padding-left: 4px;
+          font-size: 12px;
+          text-align: left;
+          &[hidden] {
+            display: none;
+          }
+        }
+      }
+    }
+    @media screen and ( min-width: 880px ){
       margin-left: -1px;
       margin-right: -1px;
       width: 880px;
@@ -758,8 +792,13 @@ article {
         }
       }
     }
-    button {
-      background: transparent;
+
+    @media screen and ( min-width: 2650px ){
+      left: calc(50% - 781px);
+    }
+
+    button{
+      background:transparent;
       background: var(--theme-container-background, transparent);
       margin: 0px calc(0.22vw + 2px);
       padding: 3px calc(0.88vw + 8px);
