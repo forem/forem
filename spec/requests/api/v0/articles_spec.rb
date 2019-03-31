@@ -26,6 +26,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(JSON.parse(response.body).size).to eq(2)
     end
 
+    it "returns no articles if username param is unknown" do
+      create(:article, user_id: user1.id)
+      get "/api/articles?username=foobar"
+      expect(JSON.parse(response.body).size).to eq(0)
+    end
+
     it "returns organization articles if username param is present" do
       org = create(:organization)
       create(:article, user_id: user1.id)
