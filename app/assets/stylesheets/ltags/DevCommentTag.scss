@@ -2,11 +2,12 @@
 
 .liquid-comment {
   padding: 0px;
-  background: white;
+  background: inherit;
   font-family: $helvetica;
   margin:0.95em 0 1.20em;
   position: relative;
   border:1px solid $light-medium-gray;
+  border:1px solid var(--theme-color, $light-medium-gray);
   box-shadow: $shadow;
   border-radius:3px;
   @media screen and (min-width: 760px) {
@@ -61,11 +62,13 @@
       width:100px;
       a{
         color:$medium-gray;
+        color: var(--theme-secondary-color, $medium-grey);
       }
     }
 
     a {
       color: lighten($dark-gray,3%);
+      color: var(--theme-secondary-color, $dark-grey);
       line-height: initial;
       align-self: center;
       margin-right: 6px;
@@ -81,6 +84,7 @@
   .body {
     font-family: $helvetica;
     color: $black;
+    color: var(--theme-color, $black);
     font-size: 0.95em;
     line-height: 1.35em;
     overflow: hidden;
