@@ -1,8 +1,9 @@
 class ArticleApiIndexService
   attr_accessor :tag, :username, :page, :state, :top
+
   def initialize(params)
-    @page =     params[:page]
-    @tag =      params[:tag]
+    @page = params[:page]
+    @tag = params[:tag]
     @username = params[:username]
     @state = params[:state]
     @top = params[:top]
@@ -18,8 +19,8 @@ class ArticleApiIndexService
                else
                  base_articles
                end
-    articles.
-      decorate
+
+    articles.decorate
   end
 
   private
@@ -30,6 +31,7 @@ class ArticleApiIndexService
           else
             30
           end
+
     if (user = User.find_by(username: username))
       user.articles.
         where(published: true).
@@ -45,7 +47,7 @@ class ArticleApiIndexService
         page(page).
         per(num)
     else
-      not_found
+      Article.none
     end
   end
 
