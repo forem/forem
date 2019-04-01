@@ -72,7 +72,7 @@
       </div>
     <% end %>
   </div>
-  <% if !Rails.env.production && @variant_number.to_i == 1 %>
+  <% if !Rails.env.production? && @variant_number.to_i == 1 %>
     <% cache("html-variant-sidebar#{rand(60)}", expires_in: 6.hours) do %>
       <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
       <% if @html_variant %>
