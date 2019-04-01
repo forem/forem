@@ -119,11 +119,11 @@
   <%= render "layouts/top_bar" unless internal_navigation? %>
 <% end %>
 <div id="message-notice"></div>
-    <% unless user_signed_in? || request.original_url.include?(User.find(1).articles.where(published: true).last.path) %>
+    <% unless user_signed_in? || request.original_url.include?(User.find(1)&.articles.where(published: true).last.path) %>
       <div class="comic-sans-alert" style="background: #ffbff4; color: #1b0338; padding: 20px 8px;margin-top:66px;margin-bottom: -90px; z-index:2;position: relative;font-family: 'Comic Sans MS', 'Comic Sans', 'Marker Felt', cursive, sans-serif;">
         <div style="max-width: 1180px; margin: auto">
           We have changed the default font settings —
-          <a href="<%= User.find(1).articles.where(published: true).last.path %>" style="text-decoration: underline;">Read Full Details</a>
+          <a href="<%= User.find(1)&.articles.where(published: true).last.path %>" style="text-decoration: underline;">Read Full Details</a>
         </div>
       </div>
     <% end %>
