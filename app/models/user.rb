@@ -141,7 +141,9 @@ class User < ApplicationRecord
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
   before_update :mentorship_status_update
-  before_validation :set_username, :verify_twitter_username, :verify_github_username
+  before_validation :set_username
+  # make sure usernames are not empty, to be able to use the database unique index
+  before_validation :verify_twitter_username, :verify_github_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change

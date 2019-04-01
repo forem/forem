@@ -51,7 +51,14 @@ module Admin
         linkedin_url
       ]
       accessible << %i[password password_confirmation] if params[:user][:password].present?
-      params.require(:user).permit(accessible)
+      verify_usernames params.require(:user).permit(accessible)
+    end
+
+    # make sure usernames are not empty, to be able to use the database unique index
+    def verify_usernames(user_params)
+      user_params[:twitter_username] = nil if user_params[:twitter_username] == ""
+      user_params[:github_username] = nil if user_params[:github_username] == ""
+      user_params
     end
   end
 end
