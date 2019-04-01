@@ -375,6 +375,7 @@
   max-height:400px;
   overflow-y: auto;
   background: white;
+  background: var(--theme-container-background, #fff);
   box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
@@ -386,6 +387,7 @@
   }
   .github-repo-row {
     background:white;
+    background: var(--theme-container-background, #fff);
     padding: 12px;
     margin:5px 0px;
     &.github-repo-row-selected {

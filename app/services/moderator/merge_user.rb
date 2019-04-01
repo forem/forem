@@ -23,6 +23,8 @@ module Moderator
       remove_additional_email
       update_social
       @delete_user.delete
+      @keep_user.touch(:profile_updated_at)
+      CacheBuster.new.bust "/#{@keep_user.username}"
     end
 
     private
@@ -63,7 +65,12 @@ module Moderator
 
     def merge_profile
       @delete_user.github_repos&.update_all(user_id: @keep_user.id) if @delete_user.github_repos.any?
-      @delete_user.badge_achievements.update_all(user_id: @keep_user.id) if @delete_user.badge_achievements.any?
+      if @delete_user.badge_achievements.any?
+        @delete_user.badge_achievements.update_all(user_id: @keep_user.id)
+        @keep_user.badge_achievements_count = @keep_user.badge_achievements.size
+      end
+
+      @keep_user.update(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
     end
 
     def merge_chat_mentions
@@ -78,9 +85,24 @@ module Moderator
     end
 
     def merge_content
-      @delete_user.reactions.update_all(user_id: @keep_user.id) if @delete_user.reactions.any?
-      @delete_user.comments.update_all(user_id: @keep_user.id) if @delete_user.comments.any?
-      @delete_user.articles.update_all(user_id: @keep_user.id) if @delete_user.articles.any?
+      merge_reactions if @delete_user.reactions.any?
+      merge_comments if @delete_user.comments.any?
+      merge_articles if @delete_user.articles.any?
+    end
+
+    def merge_reactions
+      @delete_user.reactions.update_all(user_id: @keep_user.id)
+      @keep_user.reactions_count = @keep_user.reactions.size
+    end
+
+    def merge_comments
+      @delete_user.comments.update_all(user_id: @keep_user.id)
+      @keep_user.comments_count = @keep_user.comments.size
+    end
+
+    def merge_articles
+      @delete_user.articles.update_all(user_id: @keep_user.id)
+      @keep_user.articles_count = @keep_user.articles.size
     end
   end
 end

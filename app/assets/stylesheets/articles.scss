@@ -896,6 +896,7 @@
           }
           .sidebar-profile-username {
             color: $medium-gray;
+            color: var(--theme-secondary-color, $medium-gray);
           }
         }
       }
@@ -971,6 +972,7 @@
 
               a {
                 color: $medium-gray;
+                color: var(--theme-secondary-color, $medium-gray);
                 padding: 7px 12px;
                 display: inline-block;
                 &:hover {
@@ -1198,6 +1200,7 @@
           border-top: 2px solid $light-gray;
           font-size: 0.84em;
           color: $medium-gray;
+          color: var(--theme-secondary-color, $medium-gray);
           padding-top: 18px;
         }
         .sponsor-footer {
@@ -1543,13 +1546,18 @@
   padding: 5px 0px 15px;
   display: none;
   font-size: 1.1em;
+  background: white;
+  background: var(--theme-container-background, white);
   a {
     display: block;
     text-align: center;
     color: $black;
+    color: var(--theme-container-color, $black);
     padding: 20px 0px;
     &.selected {
       background: $purple;
+      background: var(--theme-container-background-hover, $purple);
+
     }
   }
   &.showing {

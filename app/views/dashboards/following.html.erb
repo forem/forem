@@ -1,8 +1,7 @@
 <% title "Dashboard - DEV" %>
 
 <div class="dashboard-container" id="user-dashboard">
-  <%= render 'actions' %>
-  
+  <%= render "actions" %>
   <h2>Followed tags (<%= @user.following_tags_count %>)</h2>
   <p><em>Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0)</em>
   </p>
@@ -22,7 +21,7 @@
           </a>
           <%= form_for(follow) do |f| %>
             <%= f.label(:points, "Follow Weight:") %>
-            <%= f.number_field(:points, step: :any) %>
+            <%= f.number_field(:points, step: :any, required: true) %>
             <%= f.submit "Submit" %>
           <% end %>
         </h2>

@@ -156,6 +156,7 @@
   .primary-sticky-nav-org-summary{
     font-weight: 400;
     color: $black;
+    color: var(--theme-container-color, $black);
     padding: 4px 0px;
     font-size:0.95em;
     margin-top: 20px;

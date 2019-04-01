@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "internal/users", type: :request do
+RSpec.describe "Internal::Users", type: :request do
   let(:user) { create(:user, twitter_username: nil) }
   let(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }

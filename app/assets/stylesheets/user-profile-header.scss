@@ -142,15 +142,15 @@
         margin:5px auto 1vw;
         font-weight:bold;
         color:rgb(27, 27, 28);
-        font-size:26px;
+        font-size:25px;
         padding:0;
         padding-right: 15px;
         line-height:1.1em;
         @media screen and ( min-width: 430px ){
-          font-size:calc( 5vw + 10px);
+          font-size:calc( 4.5vw + 10px);
         }
         @media screen and ( min-width: 950px ){
-          font-size:70px;
+          font-size:60px;
           margin-top:0px;
         }
         > span:nth-child(1) {
