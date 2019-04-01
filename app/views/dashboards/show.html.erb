@@ -1,22 +1,11 @@
 <% title "Dashboard - DEV" %>
 
 <div class="dashboard-container" id="user-dashboard">
-  <%= render 'actions' %>
+  <%= render "actions" %>
   <% if @user.org_admin && @user.organization && (params[:which].blank? || params[:which] == "organization") %>
     <h1>
       <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
       <a href="/dashboard/organization" class="rounded-btn <%= "active" if params[:which] == "organization" %>"><%= @user.organization.name %> (<%= @user.organization.articles.size %>)</a>
-      <% if @user.has_role? :pro %>
-        <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
-      <% end %>
-      <% if @user.has_role?(:pro) && @user.organization_id %>
-        <a class="rounded-btn" href="/dashboard/pro/org/<%= @user.organization_id %>">Pro Analytics for <%= @user.organization.name %></a>
-      <% end %>
-    </h1>
-  <% elsif @user.org_admin && @user.organization && (params[:which] == "organization_user_followers" || params[:which] == "user_followers") %>
-    <h1>
-      <a href="/dashboard/user_followers" class="rounded-btn <%= "active" if params[:which] == "user_followers" %>">Personal</a>
-      <a href="/dashboard/organization_user_followers" class="rounded-btn <%= "active" if params[:which] == "organization_user_followers" %>"><%= @user.organization.name %> (<%= @user.organization.followers_count %>)</a>
       <% if @user.has_role? :pro %>
         <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
       <% end %>
@@ -29,21 +18,6 @@
     <%= render "analytics" %>
     <% @articles.each do |article| %>
       <%= render "dashboard_article", article: article, org_admin: true %>
-    <% end %>
-  <% elsif params[:which] == "user_followers" || params[:which] == "organization_user_followers" %>
-    <% @follows.each do |follow| %>
-      <% user = params[:which].include?("followers") ? follow.follower : follow.followable %>
-      <% if user %>
-        <div class="single-article">
-          <a href="<%= user.path %>" class="block-link">
-            <h2>
-              <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(60) %>" />
-              <%= user.name %>
-              <span class="dashboard-username">@<%= user.username %></span>
-            </h2>
-          </a>
-        </div>
-      <% end %>
     <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
