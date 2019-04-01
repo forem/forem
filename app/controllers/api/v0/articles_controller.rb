@@ -13,6 +13,7 @@ module Api
 
       def index
         @articles = ArticleApiIndexService.new(params).get
+
         key_headers = [
           "articles_api",
           params[:tag],
@@ -25,12 +26,12 @@ module Api
       end
 
       def show
+        relation = Article.includes(:user).where(published: true)
         @article = if params[:id] == "by_path"
-                     Article.includes(:user).find_by(path: params[:url])&.decorate
+                     relation.find_by!(path: params[:url]).decorate
                    else
-                     Article.includes(:user).find(params[:id])&.decorate
+                     relation.find(params[:id]).decorate
                    end
-        not_found unless @article&.published
       end
 
       def onboarding

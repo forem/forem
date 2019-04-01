@@ -65,10 +65,25 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
-    it "data for article based on ID" do
+    it "gets article based on ID" do
       article = create(:article)
       get "/api/articles/#{article.id}"
       expect(JSON.parse(response.body)["title"]).to eq(article.title)
+    end
+
+    it "fails with an unpublished article" do
+      article = create(:article, published: false)
+      invalid_request = lambda do
+        get "/api/articles/#{article.id}"
+      end
+      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "fails with an unknown article ID" do
+      invalid_request = lambda do
+        get "/api/articles/99999"
+      end
+      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
