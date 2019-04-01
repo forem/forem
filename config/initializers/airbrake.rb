@@ -57,4 +57,5 @@ end
 
 Airbrake.add_filter do |notice|
   notice.ignore! if notice[:errors].any? { |error| error[:type] == "Pundit::NotAuthorizedError" }
+  notice.ignore! if notice[:errors].any? { |error| error[:type] == "ActiveRecord::RecordNotFound" }
 end
