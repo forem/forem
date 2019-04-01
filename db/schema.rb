@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190401193017) do
+ActiveRecord::Schema.define(version: 20190401213605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -516,6 +516,7 @@ ActiveRecord::Schema.define(version: 20190401193017) do
     t.string "secret"
     t.string "slug"
     t.text "sponsorship_blurb_html"
+    t.integer "sponsorship_featured_number", default: 0
     t.string "sponsorship_tagline"
     t.string "sponsorship_url"
     t.string "state"
