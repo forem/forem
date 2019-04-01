@@ -45,11 +45,6 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).not_to include(org.sponsorship_tagline)
     end
-    it "does not display sponsors widget if no sponsor orgs" do
-      org = create(:organization, is_gold_sponsor: false, sponsorship_tagline: "Oh Yeah!!!")
-      get "/"
-      expect(response.body).not_to include("community sponsors")
-    end
   end
 
   describe "GET query page" do
