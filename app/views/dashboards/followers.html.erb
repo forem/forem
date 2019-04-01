@@ -15,7 +15,7 @@
     </h1>
   <% end %>
   <% @follows.each do |follow| %>
-    <% user = params[:which].include?("followers") ? follow.follower : follow.followable %>
+    <% user = follow.follower %>
     <% if user %>
       <div class="single-article">
         <a href="<%= user.path %>" class="block-link">
