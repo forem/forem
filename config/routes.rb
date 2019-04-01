@@ -267,7 +267,7 @@ Rails.application.routes.draw do
       }
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization||reading/
+        which: /organization|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 
