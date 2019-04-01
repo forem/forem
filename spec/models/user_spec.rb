@@ -50,6 +50,27 @@ RSpec.describe User, type: :model do
     service.get_user
   end
 
+  describe "makes sure usernames are not blank" do
+    it "sets twitter username to nil" do
+      user = create(:user, twitter_username: "")
+      user.reload
+      expect(user.twitter_username).to eq(nil)
+    end
+
+    it "sets github username to nil" do
+      user = create(:user, github_username: "")
+      user.reload
+      expect(user.github_username).to eq(nil)
+    end
+
+    it "sets correct usernames if they are not blank" do
+      user = create(:user, github_username: "hello", twitter_username: "world")
+      user.reload
+      expect(user.github_username).to eq("hello")
+      expect(user.twitter_username).to eq("world")
+    end
+  end
+
   describe "validations" do
     it "gets a username after create" do
       expect(user.username).not_to eq(nil)

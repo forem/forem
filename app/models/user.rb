@@ -141,7 +141,7 @@ class User < ApplicationRecord
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
   before_update :mentorship_status_update
-  before_validation :set_username
+  before_validation :set_username, :verify_twitter_username, :verify_github_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -400,6 +400,14 @@ class User < ApplicationRecord
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)
+  end
+
+  def verify_twitter_username
+    self.twitter_username = nil if twitter_username == ""
+  end
+
+  def verify_github_username
+    self.github_username = nil if github_username == ""
   end
 
   def set_username
