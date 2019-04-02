@@ -56,13 +56,14 @@ class User < ApplicationRecord
             length: { maximum: 50 },
             email: true,
             allow_blank: true
+  validates :email, uniqueness: { case_sensitive: false }, if: :email_changed?
   validates :name, length: { minimum: 1, maximum: 100 }
   validates :username,
             presence: true,
-            uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
             exclusion: { in: ReservedWords.all, message: "username is reserved" }
+  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
   validates :twitter_username, uniqueness: { allow_blank: true }
   validates :github_username, uniqueness: { allow_blank: true }
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
@@ -130,7 +131,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: %w[open private] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
-  validate  :validate_feed_url
+  validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }

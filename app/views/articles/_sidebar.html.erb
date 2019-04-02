@@ -27,7 +27,7 @@
               </div>
             <% end %>
             <div class="sponsors-love-message">
-              We are grateful for wonderful sponsors who help sustain the DEV community.
+              We are grateful for wonderful sponsors who help sustain the <%= ApplicationConfig["COMMUNITY_NAME"] %> community.
             </div>
             <div class="sponsor-footer">
               <p>
@@ -50,9 +50,8 @@
         </div>
         <div class="side-footer">
           <a href="/about">About</a>
-          <a href="/events">Events</a>
           <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/">DEV Shop</a>
+          <a href="https://shop.dev.to/"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms of Use</a>
           <a href="/contact">Contact</a>

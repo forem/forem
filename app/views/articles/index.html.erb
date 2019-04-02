@@ -1,6 +1,6 @@
 <%= content_for :page_meta do %>
   <% title_with_timeframe(
-       page_title: "DEV Community  👩‍💻👨‍💻",
+       page_title: "#{ApplicationConfig['COMMUNITY_NAME']} Community  👩‍💻👨‍💻",
        timeframe: params[:timeframe],
        content_for: true,
      ) %>
@@ -11,17 +11,17 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
-  <meta property="og:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>" />
+  <meta property="og:title" content="<%= title_with_timeframe(page_title: "The #{ApplicationConfig['COMMUNITY_NAME']} Community", timeframe: params[:timeframe]) %>" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:site_name" content="The #{ApplicationConfig['COMMUNITY_NAME']} Community" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: "The DEV Community", timeframe: params[:timeframe]) %>">
+  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: "The #{ApplicationConfig['COMMUNITY_NAME']} Community", timeframe: params[:timeframe]) %>">
   <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
   <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
   <meta name="twitter:card" content="summary_large_image">
-  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "The Practical Dev RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 <div class="home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
@@ -33,7 +33,7 @@
     <div class="on-page-nav-controls" id="on-page-nav-controls">
       <div class="on-page-nav-label">
         <div class="wide-nav-links">
-          <a class="nav-chronofiter-link <%= "selected" if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
+          <a class="nav-chronofiter-link <%= "selected" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
             FEED
           </a>
           <span class="separator"></span>
@@ -56,7 +56,7 @@
         </div>
         <div class="narrow-nav-select" aria-label="feed-filter-select">
           <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-            <button id="narrow-feed-butt">&lt;MY DEV FEED&gt;</button>
+            <button id="narrow-feed-butt">&lt;MY <%= ApplicationConfig["COMMUNITY_NAME"] %> FEED&gt;</button>
           <% elsif timeframe_check('week') %>
             <button id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
           <% elsif timeframe_check('month') %>
