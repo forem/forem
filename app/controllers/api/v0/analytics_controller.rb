@@ -3,19 +3,14 @@ module Api
     include Pundit
 
     class AnalyticsController < ApplicationController
-      after_action :verify_authorized
-
       def totals
-        api_token = ApiSecret.find_by(secret: params[:api_token])
-        user = api_token.user
-        not_found if api_token.blank?
+        user = get_authenticated_user!
 
-        authorize user, :pro_user?
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 head :unauthorized unless org && belongs_to_org?(user, org)
+                 not_found unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org: org).totals
+                 AnalyticsService.new(organization: org).totals
                else
                  AnalyticsService.new(user: user).totals
                end
@@ -25,16 +20,13 @@ module Api
       def historical
         raise ArgumentError if params[:start].blank?
 
-        api_token = ApiSecret.find_by(secret: params[:api_token])
-        user = api_token.user
-        not_found if api_token.blank?
+        user = get_authenticated_user!
 
-        authorize user, :pro_user?
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  not_found unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org: org, start: params[:start], end: params[:end]).stats_grouped_by_day
+                 AnalyticsService.new(organization: org, start: params[:start], end: params[:end]).stats_grouped_by_day
                else
                  AnalyticsService.new(user: user, start: params[:start], end: params[:end]).stats_grouped_by_day
                end
@@ -42,17 +34,13 @@ module Api
       end
 
       def past_day
-        api_token = ApiSecret.find_by(secret: params[:api_token])
-        user = api_token.user
-        not_found if api_token.blank?
-
-        authorize user, :pro_user?
+        user = get_authenticated_user!
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  not_found unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org: org, start: DateTime.current - 1.day).stats_grouped_by_day
+                 AnalyticsService.new(organization: org, start: DateTime.current - 1.day).stats_grouped_by_day
                else
                  AnalyticsService.new(user: user, start: DateTime.current - 1.day).stats_grouped_by_day
                end
@@ -61,8 +49,17 @@ module Api
 
       private
 
+      def get_authenticated_user!
+        api_token = ApiSecret.find_by(secret: params[:api_token])
+        not_found if api_token.blank?
+        user = api_token.user
+
+        not_found unless user.has_role? :pro
+        user
+      end
+
       def belongs_to_org?(user, org)
-        user.organization == org
+        user.organization_id == org.id
       end
     end
   end
