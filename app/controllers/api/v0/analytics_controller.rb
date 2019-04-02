@@ -8,12 +8,9 @@ module Api
       def totals
         api_token = ApiSecret.find_by(secret: params[:api_token])
         user = api_token.user
-
         not_found if api_token.blank?
 
         authorize user, :pro_user?
-
-        # head :too_many_requests if RateLimitChecker.new(user).limit_by_situation("analytics")
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  head :unauthorized unless org && belongs_to_org?(user, org)
@@ -30,12 +27,9 @@ module Api
 
         api_token = ApiSecret.find_by(secret: params[:api_token])
         user = api_token.user
-
         not_found if api_token.blank?
 
         authorize user, :pro_user?
-
-        # head :too_many_requests if RateLimitChecker.new(user).limit_by_situation("analytics")
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  not_found unless org && belongs_to_org?(user, org)
@@ -50,12 +44,10 @@ module Api
       def past_day
         api_token = ApiSecret.find_by(secret: params[:api_token])
         user = api_token.user
-
         not_found if api_token.blank?
 
         authorize user, :pro_user?
 
-        # head :too_many_requests if RateLimitChecker.new(user).limit_by_situation("analytics")
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  not_found unless org && belongs_to_org?(user, org)
