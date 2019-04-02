@@ -346,6 +346,10 @@ a.header-link {
         font-size: 1.2em;
         margin: 5px 0px;
       }
+      a {
+        color: $sky-blue;
+        color: var(--theme-anchor-color, $sky-blue);
+      }
     }
     input[type='submit'] {
       margin-right: 19px;
