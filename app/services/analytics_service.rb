@@ -7,10 +7,10 @@ class AnalyticsService
     @article_data ||= Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
     @article_ids ||= @article_data.pluck(:id)
     if options[:start]
-      @reaction_data ||= Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("created_at >= ? AND created_at <= ? AND points > 0", start_date, end_date)
-      @comment_data ||= Comment.where(commentable_id: article_ids, commentable_type: "Article").where("created_at >= ? AND created_at <= ? AND score > 0", start_date, end_date)
+      @reaction_data ||= Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("created_at >= ? AND created_at <= ? AND points > 0", start_date.in_time_zone, end_date.in_time_zone)
+      @comment_data ||= Comment.where(commentable_id: article_ids, commentable_type: "Article").where("created_at >= ? AND created_at <= ? AND score > 0", start_date.in_time_zone, end_date.in_time_zone)
       @follow_data ||= Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-      @page_view_data ||= PageView.where(article_id: article_ids).where("created_at > ? AND created_at < ?", start_date, end_date)
+      @page_view_data ||= PageView.where(article_id: article_ids).where("created_at > ? AND created_at < ?", start_date.in_time_zone, end_date.in_time_zone)
     else
       @reaction_data ||= Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("points > 0")
       @comment_data ||= Comment.where(commentable_id: article_ids, commentable_type: "Article").where("score > 0")
@@ -79,22 +79,20 @@ class AnalyticsService
     final_hash
   end
 
-  private
-
   def start_date
-    options[:start].to_datetime.beginning_of_day.in_time_zone
+    options[:start].to_datetime.beginning_of_day
   end
 
   def end_date
     if options[:end].present?
-      options[:end].to_datetime.end_of_day.in_time_zone
+      options[:end].to_datetime.end_of_day
     else
-      DateTime.current.end_of_day.in_time_zone
+      DateTime.current.end_of_day
     end
   end
 
   def dates
-    date_range = (start_date - end_date.beginning_of_day).to_i
+    date_range = (end_date - start_date.beginning_of_day).to_i
     dates_array = []
     date_range.times do |index|
       dates_array.push(start_date + index.days)
