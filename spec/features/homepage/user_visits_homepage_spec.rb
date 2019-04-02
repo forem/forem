@@ -10,8 +10,8 @@ describe "User visits a homepage", type: :feature do
 
     it "shows the sign-in block" do
       within ".signin-cta-widget" do
-        expect(page).to have_text("SIGN IN VIA TWITTER")
-        expect(page).to have_text("SIGN IN VIA GITHUB")
+        expect(page).to have_text("Sign In With Twitter")
+        expect(page).to have_text("Sign In With GitHub")
       end
     end
 
