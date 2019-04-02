@@ -1065,9 +1065,9 @@
         margin: 0;
       }
       &.signin-cta-widget {
-        background: lighten($purple, 3%);
         border: 1px solid darken($bold-blue, 5%);
         box-shadow: 5px 6px 0px darken($bold-blue, 15%);
+        background: lighten($yellow, 18%);
       }
       &.sponsorship-widget {
         display: none;
@@ -1372,22 +1372,26 @@
         }
       }
       .cta-button {
-        margin-top: 8px;
-        padding: 8px 0px;
+        margin: 8px auto 0px;
+        padding: 10px 0px;
         font-size: 0.93em;
         color: darken($sky-blue, 17%);
         color: var(--theme-color, darken($sky-blue, 17%));
         background: white;
         background: var(--theme-container-background, #fff);
+        border: 2px solid darken($sky-blue, 17%);
+        border: 2px solid var(--theme-color, darken($sky-blue, 17%));
         display: block;
-        width: 92%;
-        text-align: left;
+        width: 85%;
+        text-align: center;
+        border-radius: 100px;
         &.login-cta-button {
-          border-top: 0px;
           color: $black;
-          font-size: 1.2em;
-          width: 100%;
+          font-size: 1.1em;
+          width: 85%;
           background: lighten($purple, 3%);
+          margin: 13px 0px;
+          padding: 15px 0px;
         }
         &:hover {
           text-decoration: underline;
