@@ -5,7 +5,9 @@ class VideosController < ApplicationController
     authorize :video
   end
 
-  def index; end
+  def index
+    @video_articles = Article.where.not(video: nil).where(published: true).order("published_at DESC")
+  end
 
   def create
     authorize :video

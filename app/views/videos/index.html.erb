@@ -1,0 +1,3 @@
+<% @video_articles.each do |video_article| %>
+  <%= render "articles/video_player", meta_tags: false, article: video_article %>
+<% end %>
