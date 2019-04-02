@@ -1,9 +1,9 @@
 <div class="actions">
-  <a class="action <%= "active" if  params[:action] == "show"  && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
+  <a class="action <%= "active" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
     <span>POSTS</span>
     <span>(<%= @user.articles_count %>)</span>
   </a>
-  <a class="action <%= "active" if  params[:action] == "show" && (params[:which] == "user_followers" || params[:which] == "organization_user_followers") %>" href="/dashboard/user_followers">
+  <a class="action <%= "active" if params[:action] == "followers" %>" href="/dashboard/user_followers">
     <span>FOLLOWERS</span>
     <span>(<%= @user.followers_count %>)</span>
   </a>

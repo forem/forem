@@ -687,7 +687,11 @@ var instantClick
       airbrake.addFilter(function(notice) {
         notice.context.environment = "<%= Rails.env %>";
         var file = notice.errors[0].backtrace[0].file;
+        var randomNumber = Math.floor(Math.random() * 10);
         if ((file || "").startsWith("https://stats.pusher.com")) {
+          return null;
+        }
+        if (randomNumber > 4) { // We don't need to collect every JS error.
           return null;
         }
         return notice;
