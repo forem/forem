@@ -62,13 +62,13 @@
       width:100px;
       a{
         color:$medium-gray;
-        color: var(--theme-secondary-color, $medium-grey);
+        color: var(--theme-secondary-color, $medium-gray);
       }
     }
 
     a {
       color: lighten($dark-gray,3%);
-      color: var(--theme-secondary-color, $dark-grey);
+      color: var(--theme-secondary-color, $dark-gray);
       line-height: initial;
       align-self: center;
       margin-right: 6px;
