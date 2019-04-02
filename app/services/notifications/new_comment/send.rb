@@ -20,7 +20,7 @@ module Notifications
           comment: comment_data(comment)
         }
         user_ids.delete(comment.user_id).each do |user_id|
-          Notification.create!(
+          Notification.create(
             user_id: user_id,
             notifiable_id: comment.id,
             notifiable_type: comment.class.name,
@@ -32,7 +32,7 @@ module Notifications
         end
         return unless comment.commentable.organization_id
 
-        Notification.create!(
+        Notification.create(
           organization_id: comment.commentable.organization_id,
           notifiable_id: comment.id,
           notifiable_type: comment.class.name,
