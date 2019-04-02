@@ -31,7 +31,7 @@ describe "Organization index", type: :feature do
       end
 
       it "shows the proper title tag" do
-        expect(page).to have_title("#{organization.name} - DEV Community 👩‍💻👨‍💻")
+        expect(page).to have_title("#{organization.name} - #{ApplicationConfig['COMMUNITY_NAME']} Community 👩‍💻👨‍💻")
       end
     end
 

@@ -48,7 +48,7 @@ gem "figaro", "~> 1.1"
 gem "fog", "~> 1.41"
 gem "front_matter_parser", "~> 0.2"
 gem "gemoji", "~> 3.0.0"
-gem "gibbon", "~> 2.2"
+gem "gibbon", "~> 3.2"
 gem "google-api-client", "~> 0.27"
 gem "honeycomb-rails"
 gem "html_truncator", "~> 0.4"
@@ -97,7 +97,7 @@ gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stripe", "~> 4.8"
 gem "timber", "~> 2.6"
-gem "twilio-ruby", "~> 5.21"
+gem "twilio-ruby", "~> 5.22"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 4.1"
 gem "validate_url", "~> 1.0"
@@ -145,10 +145,9 @@ group :test do
   gem "fake_stripe", "~> 0.2"
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
-  gem "rails-controller-testing", "~> 1.0"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
-  gem "shoulda-matchers", "4.0.0.rc1", require: false
+  gem "shoulda-matchers", "4.0.1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby

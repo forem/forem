@@ -14,9 +14,11 @@ $indent-distance: calc(1.1vw + 13px);
 
 a.header-link {
   color: $black;
+  color: var(--theme-color, $black);
   display: block;
   &:hover {
     color: $black;
+    color: var(--theme-color, $black);
   }
 }
 
@@ -53,12 +55,14 @@ a.header-link {
     margin: 50px auto 10px;
     padding: 0px 0px 90px;
     background: white;
+    background: var(--theme-container-background, white);
     z-index: 3;
     position: relative;
     @media screen and (min-width: 820px) {
       margin: 72px auto 10px;
       border-radius: 5px;
       border: 1px solid darken($lightest-gray, 4%);
+      border: var(--theme-container-border, 1px solid darken($lightest-gray, 4%));
     }
     h3 {
       width: 94%;
@@ -86,6 +90,7 @@ a.header-link {
       margin-bottom: -35px;
       .read-more {
         color: $sky-blue;
+        color: var(--theme-anchor-color, $sky-blue);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -250,10 +255,18 @@ a.header-link {
       resize: vertical;
       border-radius: 3px;
       border: 1px solid rgb(232, 229, 229);
+      border: var(--theme-container-background, 1px solid rgb(232, 229, 229));
       height: 125px;
       font-size: 16px;
       padding: 6px;
       cursor: text;
+      background: white;
+      background: var(--theme-container-background, white);
+      color: $black;
+      color: var(--theme-color, $black);
+      &::placeholder{
+        color:#8f949c;
+      }  
       &.embiggened {
         height: calc(2vw + 115px);
       }
@@ -332,6 +345,7 @@ a.header-link {
       font-size: 0.9em;
       font-weight: 500;
       color: $dark-gray;
+      color: var(--theme-secondary-color, $dark-gray);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -339,6 +353,10 @@ a.header-link {
         vertical-align: 1px;
         font-size: 1.2em;
         margin: 5px 0px;
+      }
+      a {
+        color: $sky-blue;
+        color: var(--theme-anchor-color, $sky-blue);
       }
     }
     input[type='submit'] {

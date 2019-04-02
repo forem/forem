@@ -9,12 +9,19 @@
     .widget header {
       color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
     }
-
+    .night-theme .widget header {
+      color: #cedae2;
+    }
+    .user-profile-header .user-profile-header-container .profile-details h1{
+      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
+    }
+    .night-theme .user-profile-header .user-profile-header-container .profile-details h1{
+      color: white !important;
+    }
     <% if user_colors(@user)[:bg].downcase.start_with?("#fff") %>
     .user-profile-follow-button {
       border: 1px solid <%= user_colors(@user)[:text] %> !important;
     }
-
     <% end %>
   </style>
   <div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntityOfPage">
@@ -24,14 +31,14 @@
         <img class="profile-pic" src="<%= ProfileImage.new(@user).get(320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
       </div>
       <div class="profile-details">
-        <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>">
+        <h1>
           <span itemprop="name"><%= @user.name %></span>
           <span class="user-profile-follow-button-wrapper">
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>
           <span class="user-profile-chat-button-wrapper">
             <a href="/connect/@<%= @user.username %>" id="user-connect-redirect" style="display:none">
-              <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
+              <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
             </a>
           </span>
 
@@ -42,6 +49,9 @@
         <style>
           .profile-details .social .icon-img path {
             fill: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
+          }
+          .night-theme .profile-details .social .icon-img path {
+            fill: white;
           }
         </style>
         <p class="social">
@@ -107,7 +117,7 @@
       <div class="overlay"></div>
       <div class="modal-content " id="new-message-modal">
         <button title="Close" class="close-modal">X</button>
-        <form id="new-message-form" class="message-form" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
+        <form id="new-message-form" class="message-form" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
           <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
           <button type="submit" value="Submit" class="submit-message">SEND</button>
         </form>

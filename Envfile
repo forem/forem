@@ -10,6 +10,7 @@ enable_defaults! { ENV['RACK_ENV'] != 'production' }
 # App domain + Protocol setting for development
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
+variable :COMMUNITY_NAME, :String, default: "DEV(local)"
 
 # Logo
 variable :LOGO_SVG, :String, default: ""

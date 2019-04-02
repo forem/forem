@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190329103059) do
+ActiveRecord::Schema.define(version: 20190401213605) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -500,6 +501,7 @@ ActiveRecord::Schema.define(version: 20190329103059) do
     t.text "cta_processed_html"
     t.string "email"
     t.string "github_username"
+    t.boolean "is_gold_sponsor", default: false
     t.string "jobs_email"
     t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
@@ -513,6 +515,10 @@ ActiveRecord::Schema.define(version: 20190329103059) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.text "sponsorship_blurb_html"
+    t.integer "sponsorship_featured_number", default: 0
+    t.string "sponsorship_tagline"
+    t.string "sponsorship_url"
     t.string "state"
     t.string "story"
     t.text "summary"

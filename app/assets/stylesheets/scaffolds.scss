@@ -51,7 +51,7 @@ pre {
 
 a {
   color: $sky-blue;
-  color: var(--theme-secondary-color, $sky-blue);
+  color: var(--theme-anchor-color, $sky-blue);
   text-decoration:none;
   &:hover{
     opacity:0.9;
@@ -93,7 +93,8 @@ pre{
   background: $green;
   font-family: $helvetica-condensed;
   -webkit-appearance: none;
-  font-stretch:condensed;
+  font-stretch: condensed;
+  font-weight: bold;
 }
 
 button{

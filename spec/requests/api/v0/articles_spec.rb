@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesApi", type: :request do
+RSpec.describe "Api::V0::Articles", type: :request do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 
@@ -24,6 +24,12 @@ RSpec.describe "ArticlesApi", type: :request do
       create(:article, user_id: user2.id)
       get "/api/articles?username=#{user1.username}"
       expect(JSON.parse(response.body).size).to eq(2)
+    end
+
+    it "returns no articles if username param is unknown" do
+      create(:article, user_id: user1.id)
+      get "/api/articles?username=foobar"
+      expect(JSON.parse(response.body).size).to eq(0)
     end
 
     it "returns organization articles if username param is present" do
@@ -59,10 +65,25 @@ RSpec.describe "ArticlesApi", type: :request do
   end
 
   describe "GET /api/articles/:id" do
-    it "data for article based on ID" do
+    it "gets article based on ID" do
       article = create(:article)
       get "/api/articles/#{article.id}"
       expect(JSON.parse(response.body)["title"]).to eq(article.title)
+    end
+
+    it "fails with an unpublished article" do
+      article = create(:article, published: false)
+      invalid_request = lambda do
+        get "/api/articles/#{article.id}"
+      end
+      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "fails with an unknown article ID" do
+      invalid_request = lambda do
+        get "/api/articles/99999"
+      end
+      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 

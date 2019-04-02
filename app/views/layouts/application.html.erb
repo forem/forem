@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <% title = yield(:title) %>
-  <title><%= title || "DEV Community" %></title>
+  <title><%= title || "#{ApplicationConfig['COMMUNITY_NAME']} Community" %></title>
   <% if internal_navigation? %>
     <style>
       .universal-page-content-wrapper {
@@ -73,7 +73,7 @@
       <%= csrf_meta_tags %>
     <% end %>
     <link rel="manifest" href="/manifest.json" />
-    <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The DEV Community" />
+    <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
   <% end %>
 </head>
 <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
@@ -86,17 +86,18 @@
       if (bodyClass.includes('night-theme')) {
               document.getElementById('body-styles').innerHTML = '<style>\
                 :root {\
-          --theme-background: #161f2b;\
+          --theme-background: #0d1219;\
           --theme-color: #fff;\
+          --theme-anchor-color: #17a1f6;\
           --theme-secondary-color: #cedae2;\
-          --theme-top-bar-background: #141d26;\
+          --theme-top-bar-background: #1c2938;\
           --theme-top-bar-color: #fff;\
           --theme-top-bar-search-background: #424a54;\
           --theme-top-bar-search-color: #fff;\
           --theme-top-bar-write-background: #00af81;\
           --theme-top-bar-write-color: #fff;\
-          --theme-container-background: #27374c;\
-          --theme-container-accent-background: #384b66;\
+          --theme-container-background: #141f2d;\
+          --theme-container-accent-background: #202c3d;\
           --theme-container-background-hover: #37475c;\
           --theme-gradient-background: linear-gradient(to right, #293d56 8%, #282833 18%, #293d56 33%);\
           --theme-container-color: #fff;\
