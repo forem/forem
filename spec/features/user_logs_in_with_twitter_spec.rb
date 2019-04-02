@@ -37,7 +37,7 @@ RSpec.describe "Authenticating with twitter" do
       user_grants_authorization_on_twitter_popup(twitter_callback_hash)
 
       visit root_path
-      click_link "SIGN IN VIA TWITTER"
+      click_link "Sign In With Twitter"
 
       expect(page).to have_link("Write your first post now")
       expect(page).to have_link("Welcome Thread")
@@ -47,7 +47,7 @@ RSpec.describe "Authenticating with twitter" do
       user_do_not_grants_authorization_on_twitter_popup
 
       visit root_path
-      click_link "SIGN IN VIA TWITTER"
+      click_link "Sign In With Twitter"
 
       expect(page).to have_link "Sign In/Up"
       expect(page).to have_link "Via Twitter"

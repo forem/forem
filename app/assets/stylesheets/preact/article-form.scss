@@ -30,6 +30,7 @@
     padding-top: 20px;
     h1 {
       background: $yellow;
+      background: var(--theme-container-accent-background, $yellow);
     }
   }
 }
