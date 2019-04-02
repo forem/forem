@@ -131,7 +131,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: %w[open private] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
-  validate  :validate_feed_url
+  validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
