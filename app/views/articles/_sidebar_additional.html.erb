@@ -3,6 +3,9 @@
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
     <% unless user_signed_in? %>
       <div class="widget signin-cta-widget">
+        <header class="signin-cta-widget-header">
+          Join <%= ApplicationConfig["COMMUNITY_NAME"] %>
+        </header>
         <div class="widget-body">
           <center style="margin-bottom: 2px;">
             <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>

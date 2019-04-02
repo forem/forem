@@ -1067,7 +1067,15 @@
       &.signin-cta-widget {
         border: 1px solid darken($bold-blue, 5%);
         box-shadow: 5px 6px 0px darken($bold-blue, 15%);
-        background: lighten($yellow, 18%);
+        padding: 0px 0px;
+        width: calc(100% - 6px);
+        header {
+          background: darken($bold-blue, 5%);
+          color: white;
+          padding: 15px 0px;
+          text-align: center;
+          font-weight: bold;
+        }
       }
       &.sponsorship-widget {
         display: none;
@@ -1390,8 +1398,8 @@
           font-size: 1.1em;
           width: 85%;
           background: lighten($purple, 3%);
-          margin: 13px 0px;
-          padding: 15px 0px;
+          margin: 20px 0px;
+          padding: 18px 0px;
         }
         &:hover {
           text-decoration: underline;
