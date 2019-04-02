@@ -1,9 +1,11 @@
 class VideosController < ApplicationController
-  after_action :verify_authorized
+  after_action :verify_authorized, except: %i[index]
 
   def new
     authorize :video
   end
+
+  def index; end
 
   def create
     authorize :video
