@@ -67,7 +67,7 @@ Rails.application.routes.draw do
         end
       end
       resources :comments
-      resources :podcast_episodes
+      resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create] do
         collection do
           post "/onboarding", to: "reactions#onboarding"
