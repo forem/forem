@@ -6,7 +6,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 not_found unless org && belongs_to_org?(user, org)
+                 not_authorized unless org && belongs_to_org?(user, org)
 
                  AnalyticsService.new(organization: org).totals
                else
@@ -22,7 +22,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 not_found unless org && belongs_to_org?(user, org)
+                 not_authorized unless org && belongs_to_org?(user, org)
 
                  AnalyticsService.new(organization: org, start: params[:start], end: params[:end]).stats_grouped_by_day
                else
@@ -36,7 +36,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 not_found unless org && belongs_to_org?(user, org)
+                 not_authorized unless org && belongs_to_org?(user, org)
 
                  AnalyticsService.new(organization: org, start: DateTime.current - 1.day).stats_grouped_by_day
                else
@@ -49,10 +49,10 @@ module Api
 
       def get_authenticated_user!
         api_token = ApiSecret.find_by(secret: params[:api_token])
-        not_found if api_token.blank?
+        not_authorized if api_token.blank?
         user = api_token.user
 
-        not_found unless user.has_role? :pro
+        not_authorized unless user.has_role? :pro
         user
       end
 
