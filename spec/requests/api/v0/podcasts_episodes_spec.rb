@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
   let(:podcast) { create(:podcast) }
-  let(:podcast_episode) { create(:podcast_episode) }
 
   describe "GET /api/podcast_episodes" do
     it "returns json response" do
