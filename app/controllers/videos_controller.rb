@@ -1,12 +1,13 @@
 class VideosController < ApplicationController
   after_action :verify_authorized, except: %i[index]
+  before_action :set_cache_control_headers
 
   def new
     authorize :video
   end
 
   def index
-    @video_articles = Article.where.not(video: nil).where(published: true).order("published_at DESC")
+    @video_articles = Article.where.not(video: nil, video_thumbnail_url: nil).where(published: true).order("published_at DESC")
   end
 
   def create
