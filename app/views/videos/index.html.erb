@@ -4,13 +4,13 @@
   </header>
   <div class="video-collection">
     <% @video_articles.each do |video_article| %>
-      <a href="<%= video_article.path %>">
-        <div class="single-video-article">
+      <a class="single-video-article" href="<%= video_article.path %>">
+
           <img src="<%= video_article.cloudinary_video_url %>">
           <p><strong><%= video_article.title %></strong></p>
           <p><%= User.find(video_article.user_id).name %></p>
           <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
-        </div>
+
       </a>
     <% end %>
   </div>
