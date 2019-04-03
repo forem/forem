@@ -30,7 +30,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def self.find_random_for_test(tags_array, group)
-    where(group: group, approved: true, published: true, target_tag: tags_array).order("RANDOM()").first
+    where(group: group, approved: true, published: true, target_tag: tags_array).order(Arel.sql("RANDOM()")).first
   end
 
   private

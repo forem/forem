@@ -61,7 +61,7 @@
       </div>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
-      <% @left_sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order("RANDOM()").first %>
+      <% @left_sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order(Arel.sql("RANDOM()")).first %>
       <% if @left_sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">

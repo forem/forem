@@ -27,7 +27,7 @@ class StickyArticleCollection
       where(published: true).
       where.not(id: article.id, user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
-      order("RANDOM()").
+      order(Arel.sql("RANDOM()")).
       limit(8)
   end
 
@@ -40,7 +40,7 @@ class StickyArticleCollection
       where(published: true).
       where.not(id: article.id, user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
-      order("RANDOM()").
+      order(Arel.sql("RANDOM()")).
       limit(10 - tag_articles.size)
   end
 
