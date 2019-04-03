@@ -51,9 +51,14 @@ class Notification < ApplicationRecord
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
 
-      Notifications::NewComment::Send.call(comment)
+      Notifications::NewCommentJob.perform_later(comment.id)
     end
-    handle_asynchronously :send_new_comment_notifications
+
+    def send_new_comment_notifications_without_delay(comment)
+      return if comment.commentable_type == "PodcastEpisode"
+
+      Notifications::NewCommentJob.perform_now(comment.id)
+    end
 
     def send_new_badge_notification(badge_achievement)
       json_data = {
@@ -234,6 +239,10 @@ class Notification < ApplicationRecord
 
     def user_data(user)
       Notifications.user_data(user)
+    end
+
+    def comment_data(comment)
+      Notifications.comment_data(comment)
     end
 
     def reaction_notification_attributes(reaction, receiver)

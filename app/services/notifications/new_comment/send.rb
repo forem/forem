@@ -6,7 +6,7 @@ module Notifications
         @comment = comment
       end
 
-      delegate :user_data, to: Notifications
+      delegate :user_data, :comment_data, to: Notifications
 
       def self.call(*args)
         new(*args).call
@@ -63,24 +63,6 @@ module Notifications
           }
         }
         Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
-      end
-
-      def comment_data(comment)
-        {
-          id: comment.id,
-          class: { name: "Comment" },
-          path: comment.path,
-          processed_html: comment.processed_html,
-          updated_at: comment.updated_at,
-          commentable: {
-            id: comment.commentable.id,
-            title: comment.commentable.title,
-            path: comment.commentable.path,
-            class: {
-              name: comment.commentable.class.name
-            }
-          }
-        }
       end
     end
   end
