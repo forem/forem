@@ -1,12 +1,15 @@
 module Api
   module V0
-    class AnalyticsController < ApplicationController
+    class AnalyticsController < ApiController
+      rescue_from ArgumentError, with: :unprocessable_entity
+      rescue_from UnauthorizedError, with: :not_authorized
+
       def totals
         user = get_authenticated_user!
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 not_authorized unless org && belongs_to_org?(user, org)
+                 raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
                  AnalyticsService.new(organization: org).totals
                else
@@ -16,13 +19,13 @@ module Api
       end
 
       def historical
-        raise ArgumentError if params[:start].blank?
+        raise ArgumentError, "Required 'start' parameter is missing" if params[:start].blank?
 
         user = get_authenticated_user!
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 not_authorized unless org && belongs_to_org?(user, org)
+                 raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
                  AnalyticsService.new(organization: org, start: params[:start], end: params[:end]).stats_grouped_by_day
                else
@@ -36,7 +39,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 not_authorized unless org && belongs_to_org?(user, org)
+                 raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
                  AnalyticsService.new(organization: org, start: DateTime.current - 1.day).stats_grouped_by_day
                else
@@ -49,10 +52,13 @@ module Api
 
       def get_authenticated_user!
         api_token = ApiSecret.find_by(secret: params[:api_token])
-        not_authorized if api_token.blank?
+
+        raise UnauthorizedError if api_token.blank?
+
         user = api_token.user
 
-        not_authorized unless user.has_role? :pro
+        raise UnauthorizedError unless user.has_role? :pro
+
         user
       end
 
