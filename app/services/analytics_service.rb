@@ -1,6 +1,4 @@
 class AnalyticsService
-  attr_reader :options, :user_or_org, :article_data, :article_ids, :reaction_data, :comment_data, :follow_data, :page_view_data
-
   def initialize(options)
     @options = options
     @user_or_org = options[:user] || options[:organization]
@@ -78,6 +76,10 @@ class AnalyticsService
 
     final_hash
   end
+
+  private
+
+  attr_reader :options, :user_or_org, :article_data, :article_ids, :reaction_data, :comment_data, :follow_data, :page_view_data
 
   def start_date
     options[:start].to_datetime.beginning_of_day
