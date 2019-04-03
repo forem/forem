@@ -1,7 +1,5 @@
 module Api
   module V0
-    include Pundit
-
     class AnalyticsController < ApplicationController
       def totals
         user = get_authenticated_user!
