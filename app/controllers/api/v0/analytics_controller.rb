@@ -53,10 +53,7 @@ module Api
 
       def get_authenticated_user!
         api_token = ApiSecret.find_by(secret: params[:api_token])
-
-        raise UnauthorizedError if api_token.blank?
-
-        user = api_token.user
+        user = api_token&.user || current_user
 
         raise UnauthorizedError unless user.has_role? :pro
 
