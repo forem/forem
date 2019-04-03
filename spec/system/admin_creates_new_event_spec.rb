@@ -1,7 +1,7 @@
 require "rails_helper"
 require "date"
 
-describe "Admin creates new event" do
+RSpec.describe "Admin creates new event", type: :system do
   let(:admin) { create(:user, :super_admin) }
 
   before do

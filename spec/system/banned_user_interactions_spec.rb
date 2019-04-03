@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Banned user" do
+RSpec.describe "Banned user", type: :system do
   let(:banned_user)   { create(:user, :banned) }
 
   it "tries to create an article" do

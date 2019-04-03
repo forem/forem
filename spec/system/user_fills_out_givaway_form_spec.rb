@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Freestickers giveaway (wind-down)" do
+RSpec.describe "Freestickers giveaway (wind-down)", type: :system do
   let(:user) { create(:user, onboarding_package_requested: true) }
   let(:success_message) { "Your stickers should arrive soon" }
   let(:error_messages) do

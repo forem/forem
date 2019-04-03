@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Views an article", type: :system do
+RSpec.describe "Views an article", type: :system do
   let(:user) { create(:user) }
   let(:dir) { "../../support/fixtures/sample_article.txt" }
   let(:template) { File.read(File.join(File.dirname(__FILE__), dir)) }

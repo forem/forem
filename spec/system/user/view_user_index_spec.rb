@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "User index", type: :system do
+RSpec.describe "User index", type: :system do
   let!(:user) { create(:user, username: "user3000") }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }

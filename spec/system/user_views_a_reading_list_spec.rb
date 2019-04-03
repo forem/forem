@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Reading list" do
+RSpec.describe "Reading list", type: :system do
   let!(:user) { create(:user) }
 
   before do
