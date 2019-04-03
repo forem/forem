@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "User visits articles by tag", type: :feature do
+describe "User visits articles by tag", type: :system do
   let(:js_tag) { create(:tag, name: "javascript") }
   let(:iot_tag) { create(:tag, name: "IoT") }
   let!(:func_tag) { create(:tag, name: "functional") }

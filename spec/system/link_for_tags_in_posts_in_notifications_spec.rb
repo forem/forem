@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Link on tags for post in notifications", type: :feature do
+describe "Link on tags for post in notifications", type: :system do
   let(:js_tag) { create(:tag, name: "javascript") }
   let(:ruby_tag) { create(:tag, name: "ruby") }
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe "Organization index", type: :feature do
+describe "Organization index", type: :system do
   let!(:organization) { create(:organization) }
   let!(:org_user) { create(:user, organization: organization) }
 
