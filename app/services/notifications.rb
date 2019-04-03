@@ -11,4 +11,22 @@ module Notifications
       created_at: user.created_at
     }
   end
+
+  def self.comment_data(comment)
+    {
+      id: comment.id,
+      class: { name: "Comment" },
+      path: comment.path,
+      processed_html: comment.processed_html,
+      updated_at: comment.updated_at,
+      commentable: {
+        id: comment.commentable.id,
+        title: comment.commentable.title,
+        path: comment.commentable.path,
+        class: {
+          name: comment.commentable.class.name
+        }
+      }
+    }
+  end
 end
