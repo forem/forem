@@ -15,17 +15,20 @@ module Moderator
     def merge
       raise "You cannot merge the same two user id#s" if @delete_user.id == @keep_user.id
 
-      handle_identities
-      merge_content
-      merge_follows
-      merge_chat_mentions
-      merge_profile
-      remove_additional_email
-      update_social
+      ActiveRecord::Base.transaction do
+        handle_identities
+        merge_content
+        merge_follows
+        merge_chat_mentions
+        merge_profile
+        remove_additional_email
+        update_social
+      end
       ActiveRecord::Base.transaction do
         @delete_user.delete
         @keep_user.touch(:profile_updated_at)
       end
+
       CacheBuster.new.bust "/#{@keep_user.username}"
     end
 
@@ -42,12 +45,9 @@ module Moderator
     def update_social
       @old_tu = @delete_user.twitter_username
       @old_gu = @delete_user.github_username
-
-      ActiveRecord::Base.transaction do
-        @delete_user.update!(twitter_username: nil, github_username: nil)
-        @keep_user.update!(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
-        @keep_user.update!(github_username: @old_gu) if @keep_user.github_username.nil?
-      end
+      @delete_user.update_columns(twitter_username: nil, github_username: nil)
+      @keep_user.update_columns(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
+      @keep_user.update_columns(github_username: @old_gu) if @keep_user.github_username.nil?
     end
 
     def remove_additional_email
@@ -69,30 +69,24 @@ module Moderator
     end
 
     def merge_profile
-      ActiveRecord::Base.transaction do
-        @delete_user.github_repos&.update_all(user_id: @keep_user.id) if @delete_user.github_repos.any?
-        if @delete_user.badge_achievements.any?
-          @delete_user.badge_achievements.update_all(user_id: @keep_user.id)
-          @keep_user.badge_achievements_count = @keep_user.badge_achievements.size
-        end
-
-        @keep_user.update!(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
+      @delete_user.github_repos&.update_all(user_id: @keep_user.id) if @delete_user.github_repos.any?
+      if @delete_user.badge_achievements.any?
+        @delete_user.badge_achievements.update_all(user_id: @keep_user.id)
+        @keep_user.badge_achievements_count = @keep_user.badge_achievements.size
       end
+
+      @keep_user.update!(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
     end
 
     def merge_chat_mentions
-      ActiveRecord::Base.transaction do
-        @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if @delete_user.chat_channel_memberships.any?
-        @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
-      end
+      @delete_user.chat_channel_memberships.update_all(user_id: @keep_user.id) if @delete_user.chat_channel_memberships.any?
+      @delete_user.mentions.update_all(user_id: @keep_user.id) if @delete_user.mentions.any?
     end
 
     def merge_follows
-      ActiveRecord::Base.transaction do
-        @delete_user.follows&.update_all(follower_id: @keep_user.id) if @delete_user.follows.any?
-        @delete_user_followers = Follow.where(followable_id: @delete_user.id, followable_type: "User")
-        @delete_user_followers.update_all(followable_id: @keep_user.id) if @delete_user_followers.any?
-      end
+      @delete_user.follows&.update_all(follower_id: @keep_user.id) if @delete_user.follows.any?
+      @delete_user_followers = Follow.where(followable_id: @delete_user.id, followable_type: "User")
+      @delete_user_followers.update_all(followable_id: @keep_user.id) if @delete_user_followers.any?
     end
 
     def merge_content
