@@ -55,7 +55,7 @@ class User < ApplicationRecord
             uniqueness: { allow_blank: true, case_sensitive: false },
             length: { maximum: 50 },
             email: true,
-            allow_blank: true
+            allow_nil: true
   validates :email, uniqueness: { case_sensitive: false }, if: :email_changed?
   validates :name, length: { minimum: 1, maximum: 100 }
   validates :username,
@@ -144,7 +144,7 @@ class User < ApplicationRecord
   before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -411,6 +411,10 @@ class User < ApplicationRecord
 
   def verify_github_username
     self.github_username = nil if github_username == ""
+  end
+
+  def verify_email
+    self.email = nil if email == ""
   end
 
   def set_username
