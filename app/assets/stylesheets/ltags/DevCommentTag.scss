@@ -68,7 +68,7 @@
 
     a {
       color: lighten($dark-gray,3%);
-      color: var(--theme-secondary-color, $dark-gray);
+      color: var(--theme-secondary-color, lighten($dark-gray,3%));
       line-height: initial;
       align-self: center;
       margin-right: 6px;
