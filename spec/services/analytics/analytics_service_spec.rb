@@ -37,6 +37,14 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "#stats_grouped_by_day" do
+    before do
+      article = create(:article, user: user, published: true)
+      create(:reaction, reactable: article)
+      create(:reading_reaction, reactable: article)
+      create(:page_view, user: user, article: article)
+      create(:follow)
+    end
+
     it "returns stats grouped by day" do
       stats = described_class.new(user, start: "2019-04-01", end: "2019-04-04").stats_grouped_by_day
       expect(stats.keys).to eq(["Mon, 04/01", "Tue, 04/02", "Wed, 04/03", "Thu, 04/04"])
