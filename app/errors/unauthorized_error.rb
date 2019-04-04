@@ -1,0 +1,1 @@
+class UnauthorizedError < StandardError; end
