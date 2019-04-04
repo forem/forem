@@ -56,7 +56,7 @@ RSpec.describe "InternalBufferUpdates", type: :request do
 
     it "sends to buffer" do
       put "/internal/buffer_updates/#{buffer_update.id}", params: {
-        buffer_update: { status: "confirmed", body_text: "test" }
+        status: "confirmed", body_text: "test"
       }
       expect(buffer_update.reload.buffer_response).not_to eq(nil)
       expect(buffer_update.reload.status).to eq("confirmed")
