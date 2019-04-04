@@ -13,6 +13,7 @@ class VideosController < ApplicationController
   def create
     authorize :video
     @article = ArticleWithVideoCreationService.new(article_params, current_user).create!
+    CacheBuster.new.bust "/videos"
 
     render action: "js_response"
   end
