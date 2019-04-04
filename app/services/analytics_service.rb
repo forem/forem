@@ -10,7 +10,7 @@ class AnalyticsService
   def totals
     total_views = article_data.sum(:page_views_count)
     logged_in_page_view_data = page_view_data.select { |pv| pv.user_id.present? }
-    average_read_time_in_seconds = logged_in_page_view_data.size.positive? ? logged_in_page_view_data.sum(:time_tracked_in_seconds) / logged_in_page_view_data.size : 0
+    average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
 
     {
       comments: {
@@ -40,7 +40,7 @@ class AnalyticsService
       string_date = date.strftime("%a, %m/%d") # this is locale dependent!
       reaction_data_of_date = reaction_data.where("date(created_at) = ?", date)
       logged_in_page_view_data = page_view_data.where("date(created_at) = ?", date).where.not(user_id: nil)
-      average_read_time_in_seconds = logged_in_page_view_data.size.positive? ? logged_in_page_view_data.sum(:time_tracked_in_seconds) / logged_in_page_view_data.size : 0
+      average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
       total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
 
       final_hash[string_date] = {
@@ -90,5 +90,9 @@ class AnalyticsService
     end
 
     @follow_data = Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
+  end
+
+  def average_read_time(page_view_data)
+    page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 end
