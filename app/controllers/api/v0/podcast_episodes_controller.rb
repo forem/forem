@@ -1,13 +1,7 @@
 module Api
   module V0
     class PodcastEpisodesController < ApiController
-      # before_action :set_cache_control_headers, only: [:index, :show]
       caches_action :index,
-        cache_path: proc { |c| c.params.permit! },
-        expires_in: 10.minutes
-      respond_to :json
-
-      caches_action :show,
         cache_path: proc { |c| c.params.permit! },
         expires_in: 10.minutes
       respond_to :json
@@ -17,6 +11,7 @@ module Api
 
       def index
         @page = params[:page]
+
         if params[:username]
           @podcast = Podcast.find_by(slug: params[:username]) || not_found
           @podcast_episodes = @podcast.
