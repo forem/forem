@@ -130,7 +130,6 @@ group :development, :test do
   gem "parallel_tests", "~> 2.27"
   gem "pry-byebug", "~> 3.7"
   gem "rspec-rails", "~> 3.8"
-  gem "rspec-retry", "~> 0.6"
   gem "rubocop", "~> 0.63", require: false
   gem "rubocop-rspec", "~> 1.32"
   gem "spring", "~> 2.0"
@@ -141,11 +140,11 @@ end
 group :test do
   gem "approvals", "~> 0.0"
   gem "chromedriver-helper", "~> 2.1"
-  gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
   gem "fake_stripe", "~> 0.2"
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
+  gem "rspec-retry", "~> 0.6"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
   gem "shoulda-matchers", "4.0.1", require: false
