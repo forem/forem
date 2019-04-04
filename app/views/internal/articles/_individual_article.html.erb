@@ -129,8 +129,9 @@
               <input type="hidden" name="article_id" value="<%= article.id %>" />
               <p> Twitter MAIN</p>
               <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255"><%= article.title %>
-                <% if !article.user.twitter_username.blank? %>&#013
-                  { author: @<%= article.user.twitter_username %> } #DEVCommunity
+                <% if !article.user.twitter_username.blank? %>
+
+{ author: @<%= article.user.twitter_username %> } #DEVCommunity
                 <% end %>
                 </textarea>
               <button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @ThePracticalDev</button>
