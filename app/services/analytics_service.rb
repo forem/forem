@@ -1,8 +1,8 @@
 class AnalyticsService
   def initialize(user_or_org, start_date: "", end_date: "")
     @user_or_org = user_or_org
-    @start_date = Time.zone.parse(start_date)&.beginning_of_day
-    @end_date = Time.zone.parse(end_date)&.end_of_day || Time.current.end_of_day
+    @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
+    @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
 
     load_data
   end
@@ -76,7 +76,7 @@ class AnalyticsService
     article_ids = @article_data.pluck(:id)
 
     if @start_date && @end_date
-      @reaction_data ||= Reaction.where(reactable_id: article_ids, reactable_type: "Article").
+      @reaction_data = Reaction.where(reactable_id: article_ids, reactable_type: "Article").
         where(created_at: @start_date..@end_date).
         where("points > 0")
       @comment_data = Comment.where(commentable_id: article_ids, commentable_type: "Article").

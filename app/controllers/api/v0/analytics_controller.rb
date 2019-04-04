@@ -38,14 +38,13 @@ module Api
       def past_day
         user = get_authenticated_user!
 
-        start_date = 1.day.ago.to_date.to_s(:iso)
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org, start_date: start_date).stats_grouped_by_day
+                 AnalyticsService.new(org, start_date: 1.day.ago).stats_grouped_by_day
                else
-                 AnalyticsService.new(user, start_date: start_date).stats_grouped_by_day
+                 AnalyticsService.new(user, start_date: 1.day.ago).stats_grouped_by_day
                end
         render json: data.to_json
       end
