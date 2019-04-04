@@ -12,7 +12,7 @@ RSpec.describe BufferUpdatePolicy do
   end
 
   context "when user is not trusted" do
-    let(:user) { build(:user, :trusted) }
+    let(:user) { build(:user) }
 
     it { is_expected.to forbid_actions(%i[create]) }
   end

@@ -10,7 +10,7 @@ RSpec.describe "InternalBufferUpdates", type: :request do
     user.add_role(:super_admin)
   end
 
-  context "CREATE" do
+  describe "POST /internal/buffer_updates" do
     it "creates buffer update for tweet if tweet params are passed" do
       post "/internal/buffer_updates",
         params:
@@ -44,7 +44,7 @@ RSpec.describe "InternalBufferUpdates", type: :request do
     end
   end
 
-  context "UPDATE" do
+  describe "PUT /internal/buffer_updates" do
     let(:buffer_update) do
       BufferUpdate.create(article_id: article.id,
                           composer_user_id: user.id,
@@ -56,7 +56,7 @@ RSpec.describe "InternalBufferUpdates", type: :request do
 
     it "sends to buffer" do
       put "/internal/buffer_updates/#{buffer_update.id}", params: {
-        buffer_update: {}
+        buffer_update: { status: "confirmed", body_text: "test" }
       }
       expect(buffer_update.reload.buffer_response).not_to eq(nil)
       expect(buffer_update.reload.status).to eq("confirmed")
