@@ -1,26 +1,16 @@
 class AnalyticsService
-  def initialize(options)
-    @options = options
-    @user_or_org = options[:user] || options[:organization]
-    @article_data ||= Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
-    @article_ids ||= @article_data.pluck(:id)
-    if options[:start]
-      @reaction_data ||= Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("created_at >= ? AND created_at <= ? AND points > 0", start_date.in_time_zone, end_date.in_time_zone)
-      @comment_data ||= Comment.where(commentable_id: article_ids, commentable_type: "Article").where("created_at >= ? AND created_at <= ? AND score > 0", start_date.in_time_zone, end_date.in_time_zone)
-      @follow_data ||= Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-      @page_view_data ||= PageView.where(article_id: article_ids).where("created_at > ? AND created_at < ?", start_date.in_time_zone, end_date.in_time_zone)
-    else
-      @reaction_data ||= Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("points > 0")
-      @comment_data ||= Comment.where(commentable_id: article_ids, commentable_type: "Article").where("score > 0")
-      @follow_data ||= Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-      @page_view_data ||= PageView.where(article_id: article_ids)
-    end
+  def initialize(user_or_org, start_date: "", end_date: "")
+    @user_or_org = user_or_org
+    @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
+    @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
+
+    load_data
   end
 
   def totals
     total_views = article_data.sum(:page_views_count)
-    logged_in_page_view_data = page_view_data.select { |pv| pv.user_id.present? }
-    average_read_time_in_seconds = logged_in_page_view_data.size.positive? ? logged_in_page_view_data.sum(&:time_tracked_in_seconds) / logged_in_page_view_data.size : 0
+    logged_in_page_view_data = page_view_data.where.not(user_id: nil)
+    average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
 
     {
       comments: {
@@ -44,24 +34,23 @@ class AnalyticsService
   end
 
   def stats_grouped_by_day
-    final_hash = {}
+    result = {}
 
-    dates.each do |date|
-      string_date = date.strftime("%a, %m/%d")
-      reaction_data_of_date = reaction_data.select { |rxn| rxn.created_at.beginning_of_day.to_i == date.to_i }
-      logged_in_page_view_data = page_view_data.select { |pv| pv.created_at.beginning_of_day.to_i == date.to_i && pv.user_id.present? }
-      average_read_time_in_seconds = logged_in_page_view_data.size.positive? ? logged_in_page_view_data.sum(&:time_tracked_in_seconds) / logged_in_page_view_data.size : 0
-      total_views = page_view_data.select { |pv| pv.created_at.beginning_of_day.to_i == date.to_i }.sum(&:counts_for_number_of_views)
+    (start_date.to_date..end_date.to_date).each do |date|
+      reaction_data_of_date = reaction_data.where("date(created_at) = ?", date)
+      logged_in_page_view_data = page_view_data.where("date(created_at) = ?", date).where.not(user_id: nil)
+      average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
+      total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
 
-      final_hash[string_date] = {
+      result[date.to_s(:iso)] = {
         comments: {
-          total: comment_data.count { |c| c.created_at.beginning_of_day.to_i == date.to_i }
+          total: comment_data.where("date(created_at) = ?", date).size
         },
         reactions: {
-          total: reaction_data_of_date.count,
-          like: reaction_data_of_date.count { |rxn| rxn.category == "like" },
-          readinglist: reaction_data_of_date.count { |rxn| rxn.category == "readinglist" },
-          unicorn: reaction_data_of_date.count { |rxn| rxn.category == "unicorn" }
+          total: reaction_data_of_date.size,
+          like: reaction_data_of_date.where("category = ?", "like").size,
+          readinglist: reaction_data_of_date.where("category = ?", "readinglist").size,
+          unicorn: reaction_data_of_date.where("category = ?", "unicorn").size
         },
         page_views: {
           total: total_views,
@@ -69,36 +58,40 @@ class AnalyticsService
           average_read_time_in_seconds: average_read_time_in_seconds
         },
         follows: {
-          total: follow_data.count { |f| f.created_at.beginning_of_day.to_i == date.to_i }
+          total: follow_data.where("date(created_at) = ?", date).size
         }
       }
     end
 
-    final_hash
+    result
   end
 
   private
 
-  attr_reader :options, :user_or_org, :article_data, :article_ids, :reaction_data, :comment_data, :follow_data, :page_view_data
+  attr_reader :user_or_org, :start_date, :end_date, :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
 
-  def start_date
-    options[:start].to_datetime.beginning_of_day
-  end
+  def load_data
+    @article_data = Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
+    article_ids = @article_data.pluck(:id)
 
-  def end_date
-    if options[:end].present?
-      options[:end].to_datetime.end_of_day
+    if @start_date && @end_date
+      @reaction_data = Reaction.where(reactable_id: article_ids, reactable_type: "Article").
+        where(created_at: @start_date..@end_date).
+        where("points > 0")
+      @comment_data = Comment.where(commentable_id: article_ids, commentable_type: "Article").
+        where(created_at: @start_date..@end_date).
+        where("score > 0")
+      @page_view_data = PageView.where(article_id: article_ids).where(created_at: @start_date..@end_date)
     else
-      DateTime.current.end_of_day
+      @reaction_data = Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("points > 0")
+      @comment_data = Comment.where(commentable_id: article_ids, commentable_type: "Article").where("score > 0")
+      @page_view_data = PageView.where(article_id: article_ids)
     end
+
+    @follow_data = Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
   end
 
-  def dates
-    date_range = (end_date - start_date.beginning_of_day).to_i
-    dates_array = []
-    date_range.times do |index|
-      dates_array.push(start_date + index.days)
-    end
-    dates_array.push(end_date)
+  def average_read_time(page_view_data)
+    page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 end
