@@ -8,7 +8,7 @@
           "browsers": "> 1%",
           "uglify": true
         },
-        "useBuiltIns": true
+        "useBuiltIns": "entry"
       }
     ],
     "preact"

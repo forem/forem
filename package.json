@@ -62,6 +62,7 @@
     "@storybook/addon-links": "^5.0.3",
     "@storybook/addons": "^5.0.3",
     "@storybook/react": "^3.4.11",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.4.2",
     "eslint": "^5.16.0",
@@ -85,6 +86,7 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
+    "@babel/core": "^7.4.3",
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@rails/webpacker": "^4.0.2",
     "babel-preset-preact": "thepracticaldev/babel-preset-preact",
