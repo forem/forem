@@ -41,7 +41,7 @@ class AnalyticsService
       reaction_data_of_date = reaction_data.where("date(created_at) = ?", date)
       logged_in_page_view_data = page_view_data.where("date(created_at) = ?", date).where.not(user_id: nil)
       average_read_time_in_seconds = logged_in_page_view_data.size.positive? ? logged_in_page_view_data.sum(&:time_tracked_in_seconds) / logged_in_page_view_data.size : 0
-      total_views = page_view_data.where("date(created_at) = ?", date).sum(&:counts_for_number_of_views)
+      total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
 
       final_hash[string_date] = {
         comments: {
