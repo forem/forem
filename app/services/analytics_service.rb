@@ -34,16 +34,15 @@ class AnalyticsService
   end
 
   def stats_grouped_by_day
-    final_hash = {}
+    result = {}
 
     (start_date.to_date..end_date.to_date).each do |date|
-      string_date = date.strftime("%a, %m/%d") # this is locale dependent!
       reaction_data_of_date = reaction_data.where("date(created_at) = ?", date)
       logged_in_page_view_data = page_view_data.where("date(created_at) = ?", date).where.not(user_id: nil)
       average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
       total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
 
-      final_hash[string_date] = {
+      result[date.to_s(:iso)] = {
         comments: {
           total: comment_data.where("date(created_at) = ?", date).size
         },
@@ -64,7 +63,7 @@ class AnalyticsService
       }
     end
 
-    final_hash
+    result
   end
 
   private
