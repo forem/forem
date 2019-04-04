@@ -2961,10 +2961,9 @@ babel-preset-minify@^0.3.0:
     babel-plugin-transform-undefined-to-void "^6.9.0"
     lodash.isplainobject "^4.0.6"
 
-babel-preset-preact@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/babel-preset-preact/-/babel-preset-preact-1.1.0.tgz#35ac655a73a49b8438163ce053816577e1980861"
-  integrity sha1-NaxlWnOkm4Q4FjzgU4Fld+GYCGE=
+babel-preset-preact@thepracticaldev/babel-preset-preact:
+  version "1.0.1"
+  resolved "https://codeload.github.com/thepracticaldev/babel-preset-preact/tar.gz/3e3948b21a3738b9fcbd9c6ad229733121601452"
   dependencies:
     babel-plugin-syntax-jsx "^6.0.2"
     babel-plugin-transform-react-jsx "^6.0.2"

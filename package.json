@@ -87,7 +87,7 @@
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@rails/webpacker": "^4.0.2",
-    "babel-preset-preact": "^1.1.0",
+    "babel-preset-preact": "thepracticaldev/babel-preset-preact",
     "chart.js": "^2.8.0",
     "codemirror": "^5.45.0",
     "intersection-observer": "^0.5.1",
