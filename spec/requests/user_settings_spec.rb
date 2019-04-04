@@ -70,6 +70,10 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     context "when requesting an export of the articles" do
+      before do
+        ActiveJob::Base.queue_adapter = :test
+      end
+
       def send_request(flag = true)
         put "/users/#{user.id}", params: {
           user: { tab: "misc", export_requested: flag }
