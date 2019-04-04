@@ -57,7 +57,6 @@
 <% end %>
 
 <% if @comment.persisted? %>
-
   <script defer>
     if (document.getElementById("edit_comment_<%= @comment&.id %>")) {
       document.getElementById("edit_comment_<%= @comment&.id %>").onsubmit = function (e) {
@@ -69,8 +68,6 @@
           var metaTag = document.querySelector("meta[name='csrf-token']")
           if (metaTag) {
             clearInterval(waitingOnCSRF);
-            authToken = metaTag.getAttribute("content");
-            document.getElementById("new_comment_authenticity_token").value = authToken;
             form.submit();
           }
         }, 1);
