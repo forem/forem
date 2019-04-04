@@ -1,7 +1,8 @@
 class AnalyticsService
-  def initialize(options)
+  def initialize(user_or_org, options = {})
     @options = options
-    @user_or_org = options[:user] || options[:organization]
+    @user_or_org = user_or_org
+
     @article_data ||= Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
     @article_ids ||= @article_data.pluck(:id)
     if options[:start]
