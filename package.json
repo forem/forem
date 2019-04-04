@@ -85,8 +85,8 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.0.0",
     "@rails/webpacker": "^4.0.2",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.8.0",
     "codemirror": "^5.45.0",
