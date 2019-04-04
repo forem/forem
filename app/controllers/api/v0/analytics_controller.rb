@@ -53,10 +53,10 @@ module Api
       private
 
       def get_authenticated_user!
-        user = if request.headers["HTTP_API_KEY"].blank?
+        user = if request.headers["api-key"].blank?
                  current_user
                else
-                 api_secret = ApiSecret.find_by(secret: request.headers["HTTP_API_KEY"])
+                 api_secret = ApiSecret.find_by(secret: request.headers["api-key"])
                  raise UnauthorizedError if api_secret.blank?
 
                  api_secret.user
