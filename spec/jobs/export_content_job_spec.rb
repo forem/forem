@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe ExportContentJob, type: :job do
+  include_examples "#enqueues_job", "export_content", 1
+
   describe "#perform_now" do
     let(:exporter_service) { double }
     let(:exporter) { double }

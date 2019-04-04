@@ -99,15 +99,13 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        run_background_jobs_immediately do
-          expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
-        end
+        ActiveJob::Base.queue_adapter = :inline
+        expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
       it "does not send an email if there was no request" do
-        run_background_jobs_immediately do
-          expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
-        end
+        ActiveJob::Base.queue_adapter = :inline
+        expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
       end
     end
   end
