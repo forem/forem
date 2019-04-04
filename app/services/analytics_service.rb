@@ -9,7 +9,7 @@ class AnalyticsService
 
   def totals
     total_views = article_data.sum(:page_views_count)
-    logged_in_page_view_data = page_view_data.select { |pv| pv.user_id.present? }
+    logged_in_page_view_data = page_view_data.where.not(user_id: nil)
     average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
 
     {
