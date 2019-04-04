@@ -32,7 +32,7 @@
         <% end %>
         </div>
         <% @comment = Comment.new %>
-        <%= form_for(@comment, authenticity_token: false, html: { id: "comment-form-for-#{json_data['comment']['id']}", onsubmit: "handleCommentSubmit.bind(this)(event)" }) do |f| %>
+        <%= form_for(@comment, html: { id: "comment-form-for-#{json_data['comment']['id']}", onsubmit: "handleCommentSubmit.bind(this)(event)" }) do |f| %>
           <%= f.hidden_field :commentable_id, value: json_data["comment"]["commentable"]["id"] %>
           <%= f.hidden_field :commentable_type, value: json_data["comment"]["commentable"]["class"]["name"] %>
 
