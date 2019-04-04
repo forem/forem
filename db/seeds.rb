@@ -72,7 +72,7 @@ Article.clear_index!
 25.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
-  tags.concat Tag.order("RANDOM()").select("name").first(3).map(&:name)
+  tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
 
   markdown = <<~MARKDOWN
     ---
@@ -91,7 +91,7 @@ Article.clear_index!
     body_markdown: markdown,
     featured: true,
     show_comments: true,
-    user_id: User.order("RANDOM()").first.id,
+    user_id: User.order(Arel.sql("RANDOM()")).first.id,
   )
 end
 
@@ -103,8 +103,8 @@ Comment.clear_index!
 30.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
-    user_id: User.order("RANDOM()").first.id,
-    commentable_id: Article.order("RANDOM()").first.id,
+    user_id: User.order(Arel.sql("RANDOM()")).first.id,
+    commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
     commentable_type: "Article"
   }
   Comment.create!(attributes)

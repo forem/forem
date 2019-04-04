@@ -14,6 +14,11 @@ class ApplicationController < ActionController::Base
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
 
+  def not_authorized
+    render json: "Error: not authorized", status: :unauthorized
+    raise NotAuthorizedError, "Unauthorized"
+  end
+
   def efficient_current_user_id
     session["warden.user.user.key"].flatten[0] if session["warden.user.user.key"].present?
   end

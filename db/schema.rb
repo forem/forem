@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190402224426) do
+ActiveRecord::Schema.define(version: 2019_04_02_224426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -333,14 +333,6 @@ ActiveRecord::Schema.define(version: 20190402224426) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
-  end
-
-  create_table "flipflop_features", id: false, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.boolean "enabled", default: false, null: false
-    t.bigserial "id", null: false
-    t.string "key", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "follows", id: :serial, force: :cascade do |t|
