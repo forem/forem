@@ -57,12 +57,12 @@ RSpec.describe AnalyticsService, type: :service do
 
     it "returns stats grouped by day" do
       stats = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04").stats_grouped_by_day
-      expect(stats.keys).to eq(["Mon, 04/01", "Tue, 04/02", "Wed, 04/03", "Thu, 04/04"])
+      expect(stats.keys).to eq(["2019-04-01", "2019-04-02", "2019-04-03", "2019-04-04"])
     end
 
     it "returns stats for a specific day" do
       stats = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04").stats_grouped_by_day
-      expect(stats["Mon, 04/01"].keys).to eq(%i[comments reactions page_views follows])
+      expect(stats["2019-04-01"].keys).to eq(%i[comments reactions page_views follows])
     end
   end
 end
