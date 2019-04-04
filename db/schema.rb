@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190401213605) do
+ActiveRecord::Schema.define(version: 20190402224426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -192,13 +192,16 @@ ActiveRecord::Schema.define(version: 20190401213605) do
   end
 
   create_table "buffer_updates", force: :cascade do |t|
+    t.integer "approver_user_id"
     t.integer "article_id", null: false
     t.text "body_text"
     t.string "buffer_id_code"
     t.string "buffer_profile_id_code"
     t.text "buffer_response", default: "--- {}\n"
+    t.integer "composer_user_id"
     t.datetime "created_at", null: false
     t.string "social_service_name"
+    t.string "status", default: "pending"
     t.integer "tag_id"
     t.datetime "updated_at", null: false
   end
@@ -330,6 +333,14 @@ ActiveRecord::Schema.define(version: 20190401213605) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
+  end
+
+  create_table "flipflop_features", id: false, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: false, null: false
+    t.bigserial "id", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "follows", id: :serial, force: :cascade do |t|
@@ -484,7 +495,6 @@ ActiveRecord::Schema.define(version: 20190401213605) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
-    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 

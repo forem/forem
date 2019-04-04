@@ -9,7 +9,7 @@ class ModerationsController < ApplicationController
       includes(:rating_votes).
       where("rating_votes_count < 3").
       where("score > -5").
-      order("hotness_score DESC").limit(50)
+      order("hotness_score DESC").limit(100)
     if params[:tag].present?
       @articles = @articles.
         cached_tagged_with(params[:tag])

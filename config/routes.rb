@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     end
     resources :events
     resources :dogfood, only: [:index]
-    resources :buffer_updates, only: [:create]
+    resources :buffer_updates, only: %i[create update]
     resources :articles, only: %i[index update] do
       get "rss_articles", on: :collection
     end
@@ -134,6 +134,8 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
+  resources :buffer_updates, only: [:create]
+
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"

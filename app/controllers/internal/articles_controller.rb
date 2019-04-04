@@ -2,6 +2,7 @@ class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
 
   def index
+    @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
     case params[:state]
 
     when /not\-buffered/
