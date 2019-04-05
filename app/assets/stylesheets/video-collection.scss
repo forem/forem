@@ -6,7 +6,7 @@
   background: $white;
   background: var(--theme-container-background, #fff);
   header {
-    font-size:calc(1vw + 10px);
+    font-size:calc(0.9vw + 10px);
   }
 }
 .video-collection {
@@ -26,17 +26,23 @@
     border: solid 1px $medium-gray;
     margin: 5px;
     max-width: 350px;
+    padding-bottom: 8px;
     @media screen and (max-width: 739px) {
       min-width: 100%;
     }
-    .video-timestamp {
+    .video-image {
       position: relative;
-      font-size: .8em;
-      top: -88px;
-      left: 82%;
-      background-color: $black;
+    }
+    .video-timestamp {
+      position: absolute;
+      font-size: .7em;
+      bottom: 11px;
+      right: 4px;
+      background-color: rgba(0,0,0,0.8);
       color: $white;
-      padding: 3px;
+      padding: 2px 5px 3px;
+      font-weight: 500;
+      border-radius: 3px;
     }
     img {
       margin-bottom: 5px;
@@ -50,6 +56,13 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       color: $black;
+      color: var(--theme-color, $black);
+      font-size: 0.95em;
+      &.video-username {
+        color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
+        font-size: 0.88em;
+      }
     }
     img {
       max-width: 350px;
