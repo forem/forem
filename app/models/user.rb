@@ -52,11 +52,10 @@ class User < ApplicationRecord
   devise :omniauthable, :rememberable,
         :registerable, :database_authenticatable, :confirmable
   validates :email,
-            uniqueness: { allow_blank: true, case_sensitive: false },
             length: { maximum: 50 },
             email: true,
             allow_nil: true
-  validates :email, uniqueness: { case_sensitive: false }, if: :email_changed?
+  validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :name, length: { minimum: 1, maximum: 100 }
   validates :username,
             presence: true,
