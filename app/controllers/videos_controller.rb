@@ -7,7 +7,7 @@ class VideosController < ApplicationController
   end
 
   def index
-    @video_articles = Article.where.not(video: nil, video_thumbnail_url: nil).where(published: true).order("published_at DESC")
+    @video_articles = Article.where.not(video: nil, video_thumbnail_url: nil).where(published: true).order("published_at DESC").page(params[:page].to_i).per(12)
   end
 
   def create

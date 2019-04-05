@@ -67,6 +67,7 @@ Rails.application.routes.draw do
         end
       end
       resources :comments
+      resources :videos, only: [:index]
       resources :podcast_episodes
       resources :reactions, only: [:create] do
         collection do
