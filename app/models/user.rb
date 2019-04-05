@@ -207,6 +207,12 @@ class User < ApplicationRecord
     "users-#{id}"
   end
 
+  def set_remember_fields
+    self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
+    self.remember_created_at ||= Time.now.utc
+    self.remember_me = true
+  end
+
   def estimate_default_language!
     identity = identities.find_by(provider: "twitter")
     if email.end_with?(".jp")
