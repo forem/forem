@@ -15,24 +15,24 @@ const Message = ({
   onContentTrigger,
 }) => {
   const spanStyle = { color };
-  const messageStyle = { color: messageColor };
+  const messageStyle = { }; // removed style
 
   if (type === 'error') {
     return <ErrorMessage message={message} />;
   }
 
   const messageArea = (
-      <span
-        className="chatmessagebody__message"
-        style={messageStyle}
-        dangerouslySetInnerHTML={{__html: message}}
-      ></span>
-    );
+    <span
+      className="chatmessagebody__message"
+      style={messageStyle}
+      dangerouslySetInnerHTML={{ __html: message }}
+    />
+  );
 
   return (
     <div className="chatmessage">
       <div className="chatmessage__profilepic">
-        <a 
+        <a
           href={`/${user}`}
           target="_blank"
           data-content={`users/${userID}`}
@@ -66,9 +66,7 @@ const Message = ({
         ) : (
           <span />
         )}
-        <div className="chatmessage__bodytext">
-          {messageArea}
-        </div>
+        <div className="chatmessage__bodytext">{messageArea}</div>
       </div>
     </div>
   );

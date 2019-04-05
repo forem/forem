@@ -54,6 +54,7 @@
   margin-bottom: 5px;
   &:hover{
     background: lighten($green, 20%);
+    background: var(--theme-container-background-hover, lighten($green, 20%))
   }
 }
 
@@ -613,6 +614,8 @@
   background: transparent;
   padding:3px 0px;
   margin-bottom: -5px 0;
+  color: $black;
+  color: var(--theme-color, $black);
   &:hover {
     .chatchanneltab--inactive {
       border: 1px solid $outline-color;
@@ -771,6 +774,12 @@
   max-width: 100%;
   &:hover {
     background: $light-gray;
+    background: var(--theme-container-background-hover, $light-gray);
+    .chatmessagebody__username--link {
+      background: transparent;
+      background: var(--theme-container-background-hover, transparent);
+    }
+    
   }
 }
 
@@ -831,6 +840,14 @@
 
 .chatmessagebody__username--link {
   color: inherit;
+  background: white;
+  border-radius: 3px;
+  padding: 0px 2px;
+  display: inline-block;
+  &:hover {
+    background: transparent;
+    background: var(--theme-container-background-hover, transparent);
+  }
 }
 
 .chatmessagebody__divider {
