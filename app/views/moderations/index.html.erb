@@ -86,7 +86,7 @@
                   <h2>Suggest a Tweet</h2>
                   <%= f.hidden_field :article_id, value: article.id %>
                   <%= f.text_area :body_text, maxlength: 220 %>
-                  <%= f.submit %>
+                  <%= f.submit "Share Tweet Suggestion" %>
                 <% end %>
               </div>
                 <p style="width: 90%;margin:50px auto;text-align:left">
@@ -125,7 +125,6 @@
     </div>
   </div>
 <% end %>
-
 
 <script>
   var forms = document.getElementsByTagName("form");
