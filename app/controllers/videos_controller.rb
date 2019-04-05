@@ -7,13 +7,17 @@ class VideosController < ApplicationController
   end
 
   def index
-    @video_articles = Article.where.not(video: nil, video_thumbnail_url: nil).where(published: true).order("published_at DESC").page(params[:page].to_i).per(12)
+    @video_articles = Article.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).
+      where("score > ?", -4).
+      where(published: true).
+      order("hotness_score DESC").
+      page(params[:page].to_i).per(24)
+    set_surrogate_key_header "videos_landing_page"
   end
 
   def create
     authorize :video
     @article = ArticleWithVideoCreationService.new(article_params, current_user).create!
-    CacheBuster.new.bust "/videos"
 
     render action: "js_response"
   end

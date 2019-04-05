@@ -58,6 +58,10 @@ class CacheBuster
       bust("/")
       bust("?i=i")
     end
+    if article.video.present? && article.featured_number.to_i > 10.days.ago.to_i
+      CacheBuster.new.bust "/videos"
+      CacheBuster.new.bust "/videos?i=i"
+    end
     TIMEFRAMES.each do |timeframe|
       if Article.where(published: true).where("published_at > ?", timeframe[0]).
           order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
