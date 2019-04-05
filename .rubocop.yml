@@ -14,7 +14,8 @@ RSpec/MultipleExpectations:
 RSpec/DescribeClass:
   Exclude:
     - spec/features/**/*
-    - spec/requests/*
+    - spec/requests/**/*
+    - spec/system/**/*
 
 RSpec/ExampleLength:
   Max: 10
