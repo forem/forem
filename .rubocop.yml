@@ -44,11 +44,6 @@ Naming/AccessorMethodName:
   Description: Check the naming of accessor methods for get_/set_.
   Enabled: false
 
-Style/AsciiComments:
-  Description: 'Use only ascii symbols in comments.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-comments'
-  Enabled: false
-
 Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: false
@@ -56,14 +51,6 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Description: 'Avoid modules longer than 100 lines of code.'
   Enabled: false
-
-Style/CollectionMethods:
-  Enabled: true
-  PreferredMethods:
-    find: detect
-    inject: reduce
-    collect: map
-    find_all: select
 
 Metrics/AbcSize:
   Description: >-
@@ -85,34 +72,9 @@ Metrics/CyclomaticComplexity:
     of test cases needed to validate a method.
   Enabled: false
 
-Style/Documentation:
-  Description: 'Document classes and non-namespace modules.'
-  Enabled: false
-
-# Checks whether the source file has a utf-8 encoding comment or not
-# AutoCorrectEncodingComment must match the regex
-# /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
-Style/Encoding:
-  Enabled: false
-
-Style/FrozenStringLiteralComment:
-  Description: >-
-    Add the frozen_string_literal comment to the top of files
-    to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: false
-
-Style/InlineComment:
-  Description: 'Avoid inline comments.'
-  Enabled: false
-
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
-  Enabled: false
-
-Style/Next:
-  Description: 'Use `next` to skip iteration instead of a condition at the end.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
   Enabled: false
 
 Metrics/ParameterLists:
@@ -127,6 +89,40 @@ Naming/PredicateName:
     - is_
   Exclude:
     - spec/**/*
+
+# Style
+
+Style/AsciiComments:
+  Description: 'Use only ascii symbols in comments.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-comments'
+  Enabled: false
+
+Style/CollectionMethods:
+  Enabled: true
+  PreferredMethods:
+    find: detect
+    inject: reduce
+    collect: map
+    find_all: select
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+Style/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Description: >-
+    Add the frozen_string_literal comment to the top of files
+    to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: false
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
+  Enabled: false
 
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
