@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% cache("main-sidebar-nav--#{user_signed_in?}", expires_in: 5.days) do %>
+    <% cache("main-sidebar-nav--#{user_signed_in?}-#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="widget sponsorship-widget <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
         <header>
@@ -10,49 +10,32 @@
             <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
           </span>
         </header>
-        <div class="widget-body">
-          <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://do.co/devto" target="_blank" data-details="digitalocean__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/85318v8gv77kzr8r2e58.png") %>" style="margin-bottom:8px;" alt="Digital Ocean logo" />
-            </a>
-            <div class="sponsor-tagline" style="display:inline;">
-              The simplest cloud platform for developers & teams.
-              <a class="partner-link sponsor-learn-more" href="https://do.co/devto" target="_blank" data-details="digitalocean__learn-more">
-                Learn More
-              </a>
+        <% @sponsors = Organization.where(is_gold_sponsor: true).order("sponsorship_featured_number ASC") %>
+        <% if @sponsors.any? %>
+          <div class="widget-body">
+            <% @sponsors.each do |organization| %>
+              <div class="sidebar-sponsor">
+                <a class="partner-link" href="<%= organization.sponsorship_url %>" target="_blank" data-details="<%= organization.slug %>__image">
+                  <img src="<%= cloudinary(organization.nav_image_url) %>" style="margin-bottom:8px;" alt="Digital Ocean logo" />
+                </a>
+                <div class="sponsor-tagline" style="display:inline;">
+                  <%= organization.sponsorship_tagline %>
+                  <a class="partner-link sponsor-learn-more" href="<%= organization.sponsorship_url %>" target="_blank" data-details="<%= organization.slug %>__learn-more">
+                    Learn More
+                  </a>
+                </div>
+              </div>
+            <% end %>
+            <div class="sponsors-love-message">
+              We are grateful for wonderful sponsors who help sustain the <%= ApplicationConfig["COMMUNITY_NAME"] %> community.
+            </div>
+            <div class="sponsor-footer">
+              <p>
+                <a href="/sponsorship-info">Sponsorship Info/Policy</a>
+              </p>
             </div>
           </div>
-          <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://triplebyte.com/a/YU8fSn0/homepage-tag" target="_blank" data-details="triplebyte__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/r50i600z08ty2sjwey4o.png") %>" alt="Triplebyte logo" />
-            </a>
-            <div class="sponsor-tagline">
-              Do one coding quiz, get multiple job offers.
-              <a class="partner-link sponsor-learn-more" href="https://triplebyte.com/a/YU8fSn0/homepage-tag" target="_blank" data-details="triplebyte__learn-more">
-                Learn More
-              </a>
-            </div>
-          </div>
-          <div class="sidebar-sponsor">
-            <a class="partner-link" href="https://www.gocd.org/?utm_campaign=dev_to&utm_medium=dev_homepage&utm_source=logo_link&utm_content=gocd_homepage&utm_term=" target="_blank" data-details="gocd__image">
-              <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/ju8bfjsh7bcvw21p19nh.png") %>" alt="GoCD logo" />
-            </a>
-            <div class="sponsor-tagline">
-              A Free and Open Source CI/CD Server.
-              <a class="partner-link sponsor-learn-more" href="https://www.gocd.org/?utm_campaign=dev_to&utm_medium=dev_homepage&utm_source=logo_link&utm_content=gocd_homepage&utm_term=" target="_blank" data-details="gocd__learn-more">
-                Learn More
-              </a>
-            </div>
-          </div>
-          <div class="sponsors-love-message">
-            We are grateful for wonderful sponsors who help sustain the dev community.
-          </div>
-          <div class="sponsor-footer">
-            <p>
-              <a href="/sponsorship-info">Sponsorship Info/Policy</a>
-            </p>
-          </div>
-        </div>
+        <% end %>
       </div>
       <div class="widget">
         <header>
@@ -67,9 +50,8 @@
         </div>
         <div class="side-footer">
           <a href="/about">About</a>
-          <a href="/events">Events</a>
           <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/">DEV Shop</a>
+          <a href="https://shop.dev.to/"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms of Use</a>
           <a href="/contact">Contact</a>
@@ -79,7 +61,7 @@
       </div>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
-      <% @left_sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order("RANDOM()").first %>
+      <% @left_sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_left").order(Arel.sql("RANDOM()")).first %>
       <% if @left_sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">

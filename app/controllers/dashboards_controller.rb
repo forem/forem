@@ -30,6 +30,17 @@ class DashboardsController < ApplicationController
       order("created_at DESC").includes(:followable).limit(80)
   end
 
+  def followers
+    fetch_and_authorize_user
+    if params[:which] == "user_followers"
+      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
+        includes(:follower).order("created_at DESC").limit(80)
+    elsif params[:which] == "organization_user_followers"
+      @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
+        includes(:follower).order("created_at DESC").limit(80)
+    end
+  end
+
   def pro
     user_or_org = if params[:org_id]
                     org = Organization.find_by(id: params[:org_id])

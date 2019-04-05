@@ -12,7 +12,7 @@ class BlogcastTag < LiquidTagBase
           id="blogcast_#{@id}"
           mozallowfullscreen="true"
           src="https://blogcast.host/embed/#{@id}"
-          style="width:100%;height:132px;overflow:hidden;"
+          style="width:100%;min-height:132px;overflow:hidden;margin:0;"
           webkitallowfullscreen="true"></iframe>
       </div>
     HTML

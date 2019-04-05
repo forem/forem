@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190327090030) do
+ActiveRecord::Schema.define(version: 2019_04_02_224426) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -191,13 +192,16 @@ ActiveRecord::Schema.define(version: 20190327090030) do
   end
 
   create_table "buffer_updates", force: :cascade do |t|
+    t.integer "approver_user_id"
     t.integer "article_id", null: false
     t.text "body_text"
     t.string "buffer_id_code"
     t.string "buffer_profile_id_code"
     t.text "buffer_response", default: "--- {}\n"
+    t.integer "composer_user_id"
     t.datetime "created_at", null: false
     t.string "social_service_name"
+    t.string "status", default: "pending"
     t.integer "tag_id"
     t.datetime "updated_at", null: false
   end
@@ -500,6 +504,7 @@ ActiveRecord::Schema.define(version: 20190327090030) do
     t.text "cta_processed_html"
     t.string "email"
     t.string "github_username"
+    t.boolean "is_gold_sponsor", default: false
     t.string "jobs_email"
     t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
@@ -513,6 +518,10 @@ ActiveRecord::Schema.define(version: 20190327090030) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.text "sponsorship_blurb_html"
+    t.integer "sponsorship_featured_number", default: 0
+    t.string "sponsorship_tagline"
+    t.string "sponsorship_url"
     t.string "state"
     t.string "story"
     t.text "summary"
@@ -881,9 +890,12 @@ ActiveRecord::Schema.define(version: 20190327090030) do
     t.string "website_url"
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 

@@ -56,15 +56,16 @@ class User < ApplicationRecord
             length: { maximum: 50 },
             email: true,
             allow_blank: true
+  validates :email, uniqueness: { case_sensitive: false }, if: :email_changed?
   validates :name, length: { minimum: 1, maximum: 100 }
   validates :username,
             presence: true,
-            uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
             exclusion: { in: ReservedWords.all, message: "username is reserved" }
-  validates :twitter_username, uniqueness: { allow_blank: true }
-  validates :github_username, uniqueness: { allow_blank: true }
+  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
+  validates :github_username, uniqueness: { allow_nil: true }, if: :github_username_changed?
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
@@ -130,7 +131,7 @@ class User < ApplicationRecord
   validates :inbox_type, inclusion: { in: %w[open private] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
-  validate  :validate_feed_url
+  validate  :validate_feed_url, if: :feed_url_changed?
   validate  :unique_including_orgs
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
@@ -142,6 +143,8 @@ class User < ApplicationRecord
   after_create :estimate_default_language!
   before_update :mentorship_status_update
   before_validation :set_username
+  # make sure usernames are not empty, to be able to use the database unique index
+  before_validation :verify_twitter_username, :verify_github_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -400,6 +403,14 @@ class User < ApplicationRecord
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)
+  end
+
+  def verify_twitter_username
+    self.twitter_username = nil if twitter_username == ""
+  end
+
+  def verify_github_username
+    self.github_username = nil if github_username == ""
   end
 
   def set_username

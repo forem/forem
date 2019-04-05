@@ -43,11 +43,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
-  rescue StandardError => error
-    logger.error "Log in error: #{error}"
+  rescue StandardError => e
+    logger.error "Log in error: #{e}"
     logger.error "Log in error: auth data hash - #{request.env['omniauth.auth']}"
     logger.error "Log in error: auth data hash - #{request.env['omniauth.error']&.inspect}"
-    flash[:alert] = "Log in error: #{error}"
+    flash[:alert] = "Log in error: #{e}"
     redirect_to new_user_registration_url
   end
 

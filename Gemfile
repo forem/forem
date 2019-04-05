@@ -14,7 +14,7 @@ end
 
 gem "actionpack-action_caching", "~> 1.2"
 gem "active_record_union", "~> 1.3"
-gem "acts-as-taggable-on", "~> 5.0"
+gem "acts-as-taggable-on", "~> 6.0"
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master"
 gem "addressable", "~> 2.5", ">= 2.5.2"
 gem "administrate", "~> 0.11"
@@ -25,6 +25,7 @@ gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
 gem "autoprefixer-rails", "~> 9.4"
 gem "aws-sdk-lambda", "~> 1.16" # Just Lambda. For more, install aws-sdk gem
+gem "bootsnap", ">= 1.1.0", require: false
 gem "bourbon", "~> 5.1"
 gem "buffer", "~> 0.1"
 gem "carrierwave", "~> 1.3"
@@ -48,7 +49,7 @@ gem "figaro", "~> 1.1"
 gem "fog", "~> 1.41"
 gem "front_matter_parser", "~> 0.2"
 gem "gemoji", "~> 3.0.0"
-gem "gibbon", "~> 2.2"
+gem "gibbon", "~> 3.2"
 gem "google-api-client", "~> 0.27"
 gem "honeycomb-rails"
 gem "html_truncator", "~> 0.4"
@@ -73,7 +74,7 @@ gem "pusher", "~> 1.3"
 gem "pusher-push-notifications", "~> 1.0"
 gem "rack-host-redirect", "~> 1.3"
 gem "rack-timeout", "~> 0.5"
-gem "rails", "~> 5.1.6"
+gem "rails", "~> 5.2", ">= 5.2.3"
 gem "rails-assets-airbrake-js-client", "~> 1.5", source: "https://rails-assets.org"
 gem "rails-observers", "~> 0.1"
 gem "recaptcha", "~> 4.13", require: "recaptcha/rails"
@@ -97,7 +98,7 @@ gem "staccato", "~> 0.5"
 gem "storext", "~> 2.2"
 gem "stripe", "~> 4.8"
 gem "timber", "~> 2.6"
-gem "twilio-ruby", "~> 5.21"
+gem "twilio-ruby", "~> 5.22"
 gem "twitter", "~> 6.2"
 gem "uglifier", "~> 4.1"
 gem "validate_url", "~> 1.0"
@@ -129,9 +130,9 @@ group :development, :test do
   gem "parallel_tests", "~> 2.27"
   gem "pry-byebug", "~> 3.7"
   gem "rspec-rails", "~> 3.8"
-  gem "rspec-retry", "~> 0.6"
-  gem "rubocop", "~> 0.63", require: false
-  gem "rubocop-rspec", "~> 1.32"
+  gem "rubocop", "~> 0.67", require: false
+  gem "rubocop-performance", "~> 1.0", require: false
+  gem "rubocop-rspec", "~> 1.32", require: false
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
   gem "vcr", "~> 4.0"
@@ -140,14 +141,14 @@ end
 group :test do
   gem "approvals", "~> 0.0"
   gem "chromedriver-helper", "~> 2.1"
-  gem "database_cleaner", "~> 1.7"
   gem "factory_bot_rails", "~> 4.11"
   gem "fake_stripe", "~> 0.2"
   gem "launchy", "~> 2.4"
   gem "pundit-matchers", "~> 1.6"
+  gem "rspec-retry", "~> 0.6"
   gem "ruby-prof", "~> 0.17", require: false
   gem "selenium-webdriver", "~> 3.141"
-  gem "shoulda-matchers", "4.0.0.rc1", require: false
+  gem "shoulda-matchers", "4.0.1", require: false
   gem "simplecov", "~> 0.16", require: false
   gem "sinatra", "~> 2.0"
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby

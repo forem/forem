@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     end
     resources :events
     resources :dogfood, only: [:index]
-    resources :buffer_updates, only: [:create]
+    resources :buffer_updates, only: %i[create update]
     resources :articles, only: %i[index update] do
       get "rss_articles", on: :collection
     end
@@ -67,7 +67,8 @@ Rails.application.routes.draw do
         end
       end
       resources :comments
-      resources :podcast_episodes
+      resources :videos, only: [:index]
+      resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create] do
         collection do
           post "/onboarding", to: "reactions#onboarding"
@@ -89,6 +90,9 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+      get "/analytics/totals", to: "analytics#totals"
+      get "/analytics/historical", to: "analytics#historical"
+      get "/analytics/past_day", to: "analytics#past_day"
     end
   end
 
@@ -124,7 +128,7 @@ Rails.application.routes.draw do
   resources :buffered_articles, only: [:index]
   resources :events, only: %i[index show]
   resources :additional_content_boxes, only: [:index]
-  resources :videos, only: %i[create new]
+  resources :videos, only: %i[index create new]
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]
   resources :html_variants
@@ -134,6 +138,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
+  resources :buffer_updates, only: [:create]
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
@@ -147,8 +152,6 @@ Rails.application.routes.draw do
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
 
   post "/pusher/auth" => "pusher#auth"
-
-  # resources :users
 
   get "/social_previews/article/:id" => "social_previews#article"
   get "/social_previews/user/:id" => "social_previews#user"
@@ -261,9 +264,13 @@ Rails.application.routes.draw do
   get "/dashboard/pro" => "dashboards#pro"
   get "dashboard/pro/org/:org_id" => "dashboards#pro"
   get "dashboard/following" => "dashboards#following"
+  get "/dashboard/:which" => "dashboards#followers",
+      constraints: {
+        which: /organization_user_followers|user_followers/
+      }
   get "/dashboard/:which" => "dashboards#show",
       constraints: {
-        which: /organization|organization_user_followers|user_followers|reading/
+        which: /organization|reading/
       }
   get "/dashboard/:username" => "dashboards#show"
 
