@@ -3,23 +3,23 @@
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
     <% unless user_signed_in? %>
       <div class="widget signin-cta-widget">
-        <header>
-          <h4>DEV.TO(GETHER)</h4>
+        <header class="signin-cta-widget-header">
+          Join <%= ApplicationConfig["COMMUNITY_NAME"] %>
         </header>
         <div class="widget-body">
           <center style="margin-bottom: 2px;">
             <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="cta cta-button login-cta-button" data-no-instant>
-              SIGN IN VIA TWITTER
+              Sign In With Twitter
             </a>
             <a href="/users/auth/github?state=navbar_basic" class="cta cta-button login-cta-button" data-no-instant>
-              SIGN IN VIA GITHUB
+              Sign In With GitHub
             </a>
           </center>
         </div>
       </div>
     <% end %>
     <% cache("main-article-right-sidebar-discussions-#{params[:timeframe]}", expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
-      <% @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_right").order("RANDOM()").first %>
+      <% @sidebar_ad = DisplayAd.where(approved: true, published: true, placement_area: "sidebar_right").order(Arel.sql("RANDOM()")).first %>
       <% if @sidebar_ad %>
         <div class="widget">
           <div class="widget-body" style="margin-top:-6px">

@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     end
     resources :events
     resources :dogfood, only: [:index]
-    resources :buffer_updates, only: [:create]
+    resources :buffer_updates, only: %i[create update]
     resources :articles, only: %i[index update] do
       get "rss_articles", on: :collection
     end
@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       end
       resources :comments
       resources :videos, only: [:index]
-      resources :podcast_episodes
+      resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create] do
         collection do
           post "/onboarding", to: "reactions#onboarding"
@@ -90,6 +90,9 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+      get "/analytics/totals", to: "analytics#totals"
+      get "/analytics/historical", to: "analytics#historical"
+      get "/analytics/past_day", to: "analytics#past_day"
     end
   end
 
@@ -135,6 +138,8 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
+  resources :buffer_updates, only: [:create]
+
 
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"

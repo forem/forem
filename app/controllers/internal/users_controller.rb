@@ -27,7 +27,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = if params[:id] == "unmatched_mentee"
-              MentorRelationship.unmatched_mentees.order("RANDOM()").first
+              MentorRelationship.unmatched_mentees.order(Arel.sql("RANDOM()")).first
             else
               User.find(params[:id])
             end

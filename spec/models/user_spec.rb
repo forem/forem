@@ -30,8 +30,8 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
     it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
-    it { is_expected.to validate_uniqueness_of(:github_username).allow_blank }
-    it { is_expected.to validate_uniqueness_of(:twitter_username).allow_blank }
+    it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
+    it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
     it { is_expected.to validate_presence_of(:username) }
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
@@ -48,6 +48,27 @@ RSpec.describe User, type: :model do
     auth = OmniAuth.config.mock_auth[service_name]
     service = AuthorizationService.new(auth, signed_in_resource, cta_variant)
     service.get_user
+  end
+
+  describe "makes sure usernames are not blank" do
+    it "sets twitter username to nil" do
+      user = create(:user, twitter_username: "")
+      user.reload
+      expect(user.twitter_username).to eq(nil)
+    end
+
+    it "sets github username to nil" do
+      user = create(:user, github_username: "")
+      user.reload
+      expect(user.github_username).to eq(nil)
+    end
+
+    it "sets correct usernames if they are not blank" do
+      user = create(:user, github_username: "hello", twitter_username: "world")
+      user.reload
+      expect(user.github_username).to eq("hello")
+      expect(user.twitter_username).to eq("world")
+    end
   end
 
   describe "validations" do
