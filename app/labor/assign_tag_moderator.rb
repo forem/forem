@@ -3,9 +3,9 @@ module AssignTagModerator
     user_ids.each_with_index do |user_id, index|
       user = User.find(user_id)
       user.update(email_tag_mod_newsletter: true) if user.email_tag_mod_newsletter == false
-      MailchimpBot.new(user).manage_tag_moderator_list
       tag = Tag.find(tag_ids[index])
       user.add_role(:tag_moderator, tag)
+      MailchimpBot.new(user).manage_tag_moderator_list
       ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.find_by(slug: "tag-moderators").blank?
       NotifyMailer.tag_moderator_confirmation_email(user, tag.name).deliver unless tag.name == "go"
     end
