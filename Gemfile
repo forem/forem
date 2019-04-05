@@ -130,7 +130,7 @@ group :development, :test do
   gem "parallel_tests", "~> 2.27"
   gem "pry-byebug", "~> 3.7"
   gem "rspec-rails", "~> 3.8"
-  gem "rubocop", "~> 0.63", require: false
+  gem "rubocop", "~> 0.67", require: false
   gem "rubocop-rspec", "~> 1.32"
   gem "spring", "~> 2.0"
   gem "spring-commands-rspec", "~> 1.0"
