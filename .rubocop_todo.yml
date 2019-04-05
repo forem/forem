@@ -92,16 +92,6 @@ Rails/OutputSafety:
 Rails/SkipsModelValidations:
   Enabled: false
 
-Style/FormatString:
-  Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#sprintf'
-  Enabled: false
-
-Style/TrivialAccessors:
-  Description: 'Prefer attr_* methods to trivial readers/writers.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
-  Enabled: false
-
 Layout/AlignParameters:
   Description: 'Here we check if the parameters on a multi-line method call or definition are aligned.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-double-indent'
