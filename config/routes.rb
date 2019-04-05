@@ -67,6 +67,7 @@ Rails.application.routes.draw do
         end
       end
       resources :comments
+      resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create] do
         collection do
@@ -127,7 +128,7 @@ Rails.application.routes.draw do
   resources :buffered_articles, only: [:index]
   resources :events, only: %i[index show]
   resources :additional_content_boxes, only: [:index]
-  resources :videos, only: %i[create new]
+  resources :videos, only: %i[index create new]
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]
   resources :html_variants
