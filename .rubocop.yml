@@ -49,11 +49,6 @@ Style/AsciiComments:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-comments'
   Enabled: false
 
-Style/ClassAndModuleChildren:
-  Description: 'Checks style of children classes and modules.'
-  Enabled: true
-  EnforcedStyle: nested
-
 Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: false
