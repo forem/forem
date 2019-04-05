@@ -45,6 +45,32 @@ class MailchimpBot
     success
   end
 
+  def manage_tag_moderator_list
+    success = false
+    tags = user.roles.where(name: "tag_moderator").map { |t| Tag.find(t.resource_id).name }
+    status = user.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
+    begin
+      gibbon.lists(ApplicationConfig["MAILCHIMP_TAG_MODERATORS_ID"]).members(target_md5_email).upsert(
+        body: {
+          email_address: user.email,
+          status: status,
+          merge_fields: {
+            NAME: user.name.to_s,
+            USERNAME: user.username.to_s,
+            TWITTER: user.twitter_username.to_s,
+            GITHUB: user.github_username.to_s,
+            IMAGE_URL: user.profile_image_url.to_s,
+            TAGS: tags.join(", ")
+          }
+        },
+      )
+      success = true
+    rescue Gibbon::MailChimpError => e
+      report_error(e)
+    end
+    success
+  end
+
   def upsert_to_membership_newsletter
     return false unless a_sustaining_member?
 
@@ -95,6 +121,14 @@ class MailchimpBot
           },
         )
       end
+
+      if a_tag_moderator?
+        gibbon.lists(ApplicationConfig["MAILCHIMP_TAG_MODERATORS_ID"]).members(target_md5_email).update(
+          body: {
+            status: "unsubscribed"
+          },
+        )
+      end
       success = true
     rescue Gibbon::MailChimpError => e
       report_error(e)
@@ -109,6 +143,10 @@ class MailchimpBot
     # Is that mailchimp should be updated if a user decides to
     # unsubscribes
     user.monthly_dues.positive? || saved_changes["monthly_dues"]
+  end
+
+  def a_tag_moderator?
+    !user.roles.where(name: "tag_moderator").empty?
   end
 
   def md5_email(email)
