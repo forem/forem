@@ -101,12 +101,6 @@ Style/FrozenStringLiteralComment:
     to help transition from Ruby 2.3.0 to Ruby 3.0.
   Enabled: false
 
-Style/GlobalVars:
-  Description: 'Do not introduce global variables.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#instance-vars'
-  Reference: 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
-  Enabled: false
-
 Style/InlineComment:
   Description: 'Avoid inline comments.'
   Enabled: false
