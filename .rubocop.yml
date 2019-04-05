@@ -1,6 +1,8 @@
 inherit_from: .rubocop_todo.yml
 
-require: rubocop-rspec
+require:
+  - rubocop-performance
+  - rubocop-rspec
 
 # our custom config
 # TODO: Uncomment it after fix rubocop-todo RSpec/MultipleExpectations
@@ -12,7 +14,8 @@ RSpec/MultipleExpectations:
 RSpec/DescribeClass:
   Exclude:
     - spec/features/**/*
-    - spec/requests/*
+    - spec/requests/**/*
+    - spec/system/**/*
 
 RSpec/ExampleLength:
   Max: 10

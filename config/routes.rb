@@ -139,7 +139,6 @@ Rails.application.routes.draw do
   resources :page_views, only: %i[create update]
   resources :buffer_updates, only: [:create]
 
-
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
@@ -152,8 +151,6 @@ Rails.application.routes.draw do
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
 
   post "/pusher/auth" => "pusher#auth"
-
-  # resources :users
 
   get "/social_previews/article/:id" => "social_previews#article"
   get "/social_previews/user/:id" => "social_previews#user"
