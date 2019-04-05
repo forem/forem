@@ -30,10 +30,10 @@ class RateLimitChecker
 
     SlackBot.ping(
       "Rate limit exceeded. https://dev.to#{user.path}",
-        channel: "abuse-reports",
-        username: "rate_limit",
-        icon_emoji: ":hand:",
-      )
+      channel: "abuse-reports",
+      username: "rate_limit",
+      icon_emoji: ":hand:",
+    )
   end
   handle_asynchronously :ping_admins
 end
