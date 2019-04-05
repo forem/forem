@@ -4,11 +4,11 @@ function initScrolling() {
 
 function checkIfNearBottomOfPage() {
   var elCheck = document.getElementById("index-container");
-  
+
   if (elCheck) {
     var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
     client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
-    
+
     initScrolling.called = true;
     if (document.getElementsByClassName("single-article").length < 2 || location.search.indexOf("q=") > -1 ) {
       document.getElementById("loading-articles").style.display = "none"
@@ -34,11 +34,73 @@ function fetchNextPageIfNearBottom() {
     var indexWhich = el.dataset.which;
     if (indexWhich == "podcast-episodes") {
       fetchNextPodcastPage(el);
+    } else if (indexWhich == "videos") {
+      fetchNextVideoPage(el)
     } else {
       algoliaPaginate(el.dataset.algoliaTag);
     }
   }
 }
+
+function fetchNextVideoPage(el){
+  var indexParams = JSON.parse(el.dataset.params);
+  var urlParams = Object.keys(indexParams).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k])
+  }).join('&');
+  if (urlParams.indexOf("q=") > -1 ) {
+    return;
+  }
+  var endpoint = '/api/videos'
+  var fetchUrl = (endpoint+'?page='+nextPage+"&"+urlParams+"&signature="+parseInt(Date.now()/400000)).replace("&&","&")
+  window.fetch(fetchUrl)
+  .then(function(response) {
+    response.json().then(function(video_articles) {
+      nextPage += 1;
+      insertVideos(video_articles);
+      if (video_articles.length == 0) {
+        document.getElementById("loading-articles").style.display = "none"
+        done = true;
+      }
+    });
+  }).catch(function(err) {
+    console.log(err);
+  });
+}
+
+function insertVideos(video_articles) {
+  var list = document.getElementById("subvideos");
+  var newVideosHTML = "";
+  video_articles.forEach(function(video_article){
+    var existingEl = document.getElementById("video-article-"+video_article.id);
+    if(!existingEl) {
+      console.log('existing')
+      var newHTML = buildVideoArticleHTML(video_article)
+      newVideosHTML += newHTML
+      console.log(newHTML)
+    }
+  });
+
+  var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
+  var newNode = document.createElement("div");
+  newNode.innerHTML = newVideosHTML;
+  newNode.className += "video-collection"
+  var singleArticles = document.getElementsByClassName("single-article");
+  var lastElement = singleArticles[singleArticles.length - 1];
+  insertAfter(newNode, lastElement);
+  console.log(nextPage)
+  if (nextPage > 0) {
+    fetching = false;
+  }
+}
+
+function buildVideoArticleHTML(video_article) {
+  return '<a class="single-video-article single-article" href="'+video_article.path+'" id="video-article-'+video_article.id+'">\
+    <img src="'+video_article.cloudinary_video_url+'">\
+    <p><strong>'+video_article.title+'</strong></p>\
+    <p>'+video_article.user.name+'</p>\
+    <span class="video-timestamp">'+video_article.video_duration_in_minutes+'</span></a>';
+}
+
 
 function fetchNextPodcastPage(el){
   var indexParams = JSON.parse(el.dataset.params);
