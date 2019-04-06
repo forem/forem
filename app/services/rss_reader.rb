@@ -135,7 +135,8 @@ class RssReader
     parts = parts.unshift(error_msg)
     logger.info(parts.join(" "))
 
-    ev = $libhoney.event
+    # log error to Honeycomb
+    ev = Honeycomb.client.event
     ev.add(metadata)
     ev.add_field("error_msg", error_msg)
     ev.add_field("trace.trace_id", @request_id)
@@ -177,7 +178,8 @@ class RssReader
     data[:duration_ms] = (Time.new - start) * 1000
     data.merge!(metadata) if metadata
 
-    ev = $libhoney.event
+    # log event to Honeycomb
+    ev = Honeycomb.client.event
     ev.timestamp = start
     ev.add(data)
     ev.send
