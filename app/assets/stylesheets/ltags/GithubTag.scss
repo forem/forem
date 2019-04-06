@@ -13,6 +13,7 @@
     }
     a {
       color:$black;
+      color: var(--theme-color, $black);
     }
     .issue-title {
       font-weight: normal;
@@ -32,6 +33,8 @@
       display: inline-block !important;
       margin-left: 0 !important;
       left: 0 !important;
+      filter: invert(0);
+      filter: var(--theme-social-icon-invert, invert(0));
     }
 
   }
@@ -40,6 +43,7 @@
 .github-thread {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   background-color: #fff;
+  background-color: var(--theme-container-background, #fff);
   border: 1px solid #d1d5da;
   box-shadow: $shadow;
   border-radius: 3px;
@@ -86,6 +90,7 @@
   .timeline-comment-header {
     display: flex;
     background: #f6f8fa;
+    background: var(--theme-container-background, #f6f8fa);
     border-bottom: 1px solid #d1d5da;
     padding: 0px 15px;
 
@@ -187,6 +192,7 @@
     color: #444d56;
     vertical-align: middle;
     background-color: #fafbfc;
+    background-color: var(--theme-container-background, #fafbfc);
     border: solid 1px #c6cbd1;
     border-bottom-color: #959da5;
     border-radius: 3px;
@@ -199,6 +205,7 @@
     margin-bottom: 15px;
     a.github-user-link {
       color: #24292e;
+      color: var(--theme-secondary-color, #24292e);
       font-weight: 600;
       white-space: nowrap;
     }
@@ -345,6 +352,7 @@
   text-align: center;
   padding: 0.35em 0 1.35em;
   box-shadow: -0px -0px 60px 42px #fff;
+  box-shadow: -0px -0px 60px 42px var(--theme-container-background, #fff);
   position:relative;
   z-index:100
 }

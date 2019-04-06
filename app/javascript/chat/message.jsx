@@ -9,13 +9,11 @@ const Message = ({
   message,
   color,
   type,
-  messageColor,
   timestamp,
   profileImageUrl,
   onContentTrigger,
 }) => {
   const spanStyle = { color };
-  const messageStyle = { }; // removed style
 
   if (type === 'error') {
     return <ErrorMessage message={message} />;
@@ -24,7 +22,6 @@ const Message = ({
   const messageArea = (
     <span
       className="chatmessagebody__message"
-      style={messageStyle}
       dangerouslySetInnerHTML={{ __html: message }}
     />
   );
@@ -77,7 +74,6 @@ Message.propTypes = {
   userID: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
-  messageColor: PropTypes.string,
   type: PropTypes.string,
   timestamp: PropTypes.string,
   profileImageUrl: PropTypes.string,
@@ -88,7 +84,6 @@ Message.defaultProps = {
   type: 'normalMessage',
   timestamp: null,
   profileImageUrl: '',
-  messageColor: 'black',
 };
 
 export default Message;

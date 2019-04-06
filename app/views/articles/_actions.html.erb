@@ -16,9 +16,9 @@
     <img src="<%= asset_path("twitter.svg") %>" />
   </a>
   <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
-    DISCUSSION
+    DISCUSS
     <% if @article.comments_count.nonzero? %>
-      (<%= @article.comments_count %>)
+      <span class="article-actions-comments-count-number">(<%= @article.comments_count %>)</span>
     <% else %>
     <% end %>
   </a>
