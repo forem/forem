@@ -215,6 +215,7 @@
       }
       form {
         background: $light-gray;
+        background: var(--theme-container-accent-background, $light-gray);
         padding: 8px 15px;
         margin-bottom: 10px;
         border-radius: 3px;
