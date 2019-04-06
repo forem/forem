@@ -234,8 +234,6 @@ class ReservedWords
       @all || BASE_WORDS
     end
 
-    def all=(words)
-      @all = words
-    end
+    attr_writer :all
   end
 end

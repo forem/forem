@@ -88,12 +88,12 @@ class GithubTag
 
     def valid_link?(link)
       link_without_domain = link.gsub(/.*github\.com\//, "").split("/")
-      raise_error unless [
-        !!(link =~ /.*github\.com\//),
+      validations = [
+        /.*github\.com\//.match?(link),
         link_without_domain.length == 4,
         link_without_domain[3].to_i.positive?,
-      ].all? { |bool| bool == true }
-      true
+      ]
+      validations.all? || raise_error
     end
 
     def raise_error
