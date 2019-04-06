@@ -9,30 +9,27 @@ const Message = ({
   message,
   color,
   type,
-  messageColor,
   timestamp,
   profileImageUrl,
   onContentTrigger,
 }) => {
   const spanStyle = { color };
-  const messageStyle = { color: messageColor };
 
   if (type === 'error') {
     return <ErrorMessage message={message} />;
   }
 
   const messageArea = (
-      <span
-        className="chatmessagebody__message"
-        style={messageStyle}
-        dangerouslySetInnerHTML={{__html: message}}
-      ></span>
-    );
+    <span
+      className="chatmessagebody__message"
+      dangerouslySetInnerHTML={{ __html: message }}
+    />
+  );
 
   return (
     <div className="chatmessage">
       <div className="chatmessage__profilepic">
-        <a 
+        <a
           href={`/${user}`}
           target="_blank"
           data-content={`users/${userID}`}
@@ -66,9 +63,7 @@ const Message = ({
         ) : (
           <span />
         )}
-        <div className="chatmessage__bodytext">
-          {messageArea}
-        </div>
+        <div className="chatmessage__bodytext">{messageArea}</div>
       </div>
     </div>
   );
@@ -79,7 +74,6 @@ Message.propTypes = {
   userID: PropTypes.number.isRequired,
   color: PropTypes.string.isRequired,
   message: PropTypes.string.isRequired,
-  messageColor: PropTypes.string,
   type: PropTypes.string,
   timestamp: PropTypes.string,
   profileImageUrl: PropTypes.string,
@@ -90,7 +84,6 @@ Message.defaultProps = {
   type: 'normalMessage',
   timestamp: null,
   profileImageUrl: '',
-  messageColor: 'black',
 };
 
 export default Message;

@@ -9,6 +9,7 @@
   max-width: 620px;
   a {
     color: #0366d6 !important;
+    color: var(--theme-anchor-color, #0366d6) !important;
   }
   .readme-overview {
     padding: 0.8em 0.5em;
@@ -25,6 +26,8 @@
         left: 0px;
         margin-right: 0.3em;
         vertical-align: -0.18em;
+        filter: invert(0);
+        filter: var(--theme-social-icon-invert, invert(0));  
       }
     }
     h3 {

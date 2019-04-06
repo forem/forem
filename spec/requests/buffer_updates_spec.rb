@@ -16,7 +16,7 @@ RSpec.describe "BufferUpdates", type: :request do
       post "/buffer_updates",
         params:
         { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(BufferUpdate.all.size).to eq(1)
+      expect(BufferUpdate.all.size).to eq(2)
       expect(BufferUpdate.last.body_text).to start_with("This is the text!!!!")
       expect(BufferUpdate.last.status).to eq("pending")
     end
@@ -25,25 +25,26 @@ RSpec.describe "BufferUpdates", type: :request do
       post "/buffer_updates",
         params:
         { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(BufferUpdate.last.body_text).to include(article.path)
+      expect(BufferUpdate.first.body_text).to include(article.path)
     end
 
     it "creates buffer hashtag" do
       post "/buffer_updates",
         params:
         { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(BufferUpdate.last.body_text).to include("#DEVCommunity")
+      expect(BufferUpdate.first.body_text).to include("#DEVCommunity")
     end
 
-    it "creates satellite buffer" do
+    it "creates satellite and Facebook buffer" do
       article.update_column(:cached_tag_list, "ruby, rails, meta")
       create(:tag, name: "rails")
       tag = create(:tag, buffer_profile_id_code: "placeholder", name: "ruby")
       post "/buffer_updates",
         params:
         { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(BufferUpdate.all.size).to eq(2)
-      expect(BufferUpdate.last.tag_id).to eq(tag.id)
+      expect(BufferUpdate.all.size).to eq(3)
+      expect(BufferUpdate.second.tag_id).to eq(tag.id)
+      expect(BufferUpdate.last.social_service_name).to eq("facebook")
     end
   end
 

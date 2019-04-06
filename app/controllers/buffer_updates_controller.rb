@@ -6,6 +6,7 @@ class BufferUpdatesController < ApplicationController
     @article = Article.find(params[:buffer_update][:article_id])
     create_main_tweet
     create_satellite_tweets
+    create_facebook_post
     @article.update(last_buffered: Time.current)
     redirect_back(fallback_location: "/mod")
   end
@@ -37,6 +38,17 @@ class BufferUpdatesController < ApplicationController
         )
       end
     end
+  end
+
+  def create_facebook_post
+    BufferUpdate.create(
+      article_id: @article.id,
+      composer_user_id: current_user.id,
+      body_text: params[:buffer_update][:body_text],
+      social_service_name: "facebook",
+      buffer_profile_id_code: ApplicationConfig["BUFFER_FACEBOOK_ID"],
+      status: "pending",
+    )
   end
 
   def modified_body_text
