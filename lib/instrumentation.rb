@@ -21,6 +21,6 @@ module Instrumentation
     return unless current_user
 
     Rack::Honeycomb.add_field(request.env, "user.id", current_user.id)
-    Rack::Honeycomb.add_field(request.env, "user.email", current_user.email)
+    Rack::Honeycomb.add_field(request.env, "user.username", current_user.username)
   end
 end
