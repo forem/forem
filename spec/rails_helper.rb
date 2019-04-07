@@ -49,16 +49,6 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
 
-  config.before(:all) do
-    # we initialize the Honeycomb test client to make sure that any potential
-    # misuse of interface is caught during tests, not at runtime
-    Honeycomb.init
-    # this hacky line is because Honeycomb doesn't have an attribute writer
-    # for its client, so we bend the rules a bit...
-    # replacing the NullClient with the TestClient
-    Honeycomb.instance_variable_set(:@client, Libhoney::TestClient.new)
-  end
-
   config.before do
     ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
   end

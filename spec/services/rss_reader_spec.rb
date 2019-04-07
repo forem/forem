@@ -6,11 +6,35 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
+class HoneycombEventStub
+  attr_reader :data
+
+  def initialize
+    @data = {}
+  end
+
+  def add(metadata)
+    @data.merge!(metadata)
+  end
+
+  def add_field(key, value)
+    @data[key] = value
+  end
+end
+
 RSpec.describe RssReader, vcr: vcr_option do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
   let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
+
+  before do
+    # Honeycomb.init has too many side effects during testing, so we mock the client
+    event = HoneycombEventStub.new
+    allow(event).to receive(:send)
+    client_double = instance_double("Libhoney::TestClient", event: event, events: [event])
+    allow(Honeycomb).to receive(:client) { client_double }
+  end
 
   describe "#get_all_articles" do
     before do
@@ -91,7 +115,6 @@ RSpec.describe RssReader, vcr: vcr_option do
       [link, nonmedium_link, nonpermanent_link].each do |feed_url|
         create(:user, feed_url: feed_url)
       end
-      Honeycomb.client.reset
     end
 
     it "gets articles for user" do

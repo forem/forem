@@ -164,6 +164,10 @@ class RssReader
     ev.send
   end
 
+  # NOTE: honeycomb-beeline makes "with_span" theoretically obsolete,
+  # unfortunately there's a bug that prevents the gem to add fields after a
+  # a span has been initiated, so for now we'll keep this code in.
+  # see <https://github.com/honeycombio/beeline-ruby/issues/8>
   # This wrapper takes a span name, some optional metadata, and a block; then
   # emits a "span" to Honeycomb as part of the trace begun in the RequestTracer
   # middleware.
