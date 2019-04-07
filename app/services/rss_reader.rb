@@ -189,7 +189,7 @@ class RssReader
     data["trace.parent_id"] = parent_id if parent_id
 
     # Set the current span ID before invoking the provided block, then capture
-    # the return value to r eturn after emitting the Honeycomb event.
+    # the return value to return after emitting the Honeycomb event.
     Thread.current[:span_id] = span_id
     ret = yield data
 
