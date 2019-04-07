@@ -390,12 +390,22 @@
     background: var(--theme-container-background, #fff);
     padding: 12px;
     margin:5px 0px;
+    transition:all .6s ease;
+    &:hover{
+      color: #0f0f0f;
+      background: $light-green;
+      button{
+        background:#a8f1e9;
+      }
+    }
     &.github-repo-row-selected {
       background: $light-green;
+      color: #0f0f0f;
     }
     .github-repo-row-name {
       font-weight:bold;
       button {
+        transition:all .6s ease;
         cursor:pointer;
         font-size:1.2em;
         font-weight: bold;
