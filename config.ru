@@ -2,6 +2,7 @@
 
 # Honeycomb must be initialized before the Rails app starts
 # see <https://docs.honeycomb.io/getting-data-in/ruby/beeline/> for details
+require "honeycomb-beeline"
 Honeycomb.init(
   writekey: ENV["HONEYCOMB_API_KEY"],
   # NOTE: dataset should probably be set using "HONEYCOMB_DATASET" env,
