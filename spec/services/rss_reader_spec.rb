@@ -69,28 +69,32 @@ RSpec.describe RssReader, vcr: vcr_option do
 
     it "does refetch same user over and over by default" do
       user = User.find_by(feed_url: nonpermanent_link)
-      user.update_column(:feed_fetched_at, Time.current)
-      fetched_at_time = user.feed_fetched_at
-      # travel a few seconds in the future to simulate a new time
-      5.times do |i|
-        Timecop.travel((i + 5).seconds.from_now) do
-          described_class.new.get_all_articles
+      Timecop.freeze(Time.current) do
+        user.update_column(:feed_fetched_at, Time.current)
+        fetched_at_time = user.feed_fetched_at
+        # travel a few seconds in the future to simulate a new time
+        5.times do |i|
+          Timecop.travel((i + 5).seconds.from_now) do
+            described_class.new.get_all_articles
+          end
         end
+        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
       end
-      expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
     end
 
     it "does not refetch same user over and over if force is false" do
       user = User.find_by(feed_url: nonpermanent_link)
-      user.update_column(:feed_fetched_at, Time.current)
-      fetched_at_time = user.feed_fetched_at
-      # travel a few seconds in the future to simulate a new time
-      5.times do |i|
-        Timecop.travel((i + 5).seconds.from_now) do
-          described_class.new.get_all_articles(false)
+      Timecop.freeze(Time.current) do
+        user.update_column(:feed_fetched_at, Time.current)
+        fetched_at_time = user.feed_fetched_at
+        # travel a few seconds in the future to simulate a new time
+        5.times do |i|
+          Timecop.travel((i + 5).seconds.from_now) do
+            described_class.new.get_all_articles(false)
+          end
         end
+        expect(user.reload.feed_fetched_at).to eq(fetched_at_time)
       end
-      expect(user.reload.feed_fetched_at).to eq(fetched_at_time)
     end
 
     it "logs an article creation error" do
