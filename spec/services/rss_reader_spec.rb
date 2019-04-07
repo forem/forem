@@ -7,6 +7,7 @@ vcr_option = {
 }
 
 RSpec.describe RssReader, vcr: vcr_option do
+  let(:user) { create(:user) }
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
@@ -56,6 +57,30 @@ RSpec.describe RssReader, vcr: vcr_option do
       expect(user.feed_fetched_at).to eq(fetched_at_time)
     end
 
+    it "logs an article creation error" do
+      reader = described_class.new
+      allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.get_all_articles
+      expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+
+    it "logs a fetching error" do
+      reader = described_class.new
+      allow(reader).to receive(:fetch_rss).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.get_all_articles
+      expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+  end
+
+  describe "#fetch_user" do
+    before do
+      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
+        create(:user, feed_url: feed_url)
+      end
+    end
+
     it "gets articles for user" do
       # the result within the approval file depends on the feed
       described_class.new.fetch_user(User.first)
@@ -65,6 +90,22 @@ RSpec.describe RssReader, vcr: vcr_option do
     it "does not set featured_number" do
       described_class.new.fetch_user(User.first)
       expect(Article.all.map(&:featured_number).uniq).to eq([nil])
+    end
+
+    it "logs an article creation error" do
+      reader = described_class.new
+      allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.fetch_user(User.first)
+      expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+
+    it "logs a fetching error" do
+      reader = described_class.new
+      allow(reader).to receive(:fetch_rss).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.fetch_user(User.first)
+      expect(Rails.logger).to have_received(:error).at_least(:once)
     end
   end
 
