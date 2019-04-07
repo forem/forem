@@ -1,22 +1,26 @@
+require "rack/honeycomb/middleware"
+
 module Instrumentation
+  def self.included(base)
+    base.before_action :add_user_info_to_honeycomb_event
+  end
+
   def add_param_context(*keys)
     keys.each do |key|
-      honeycomb_metadata[key] = params[key]
+      Rack::Honeycomb.add_field(request.env, key, params[key])
     end
   end
 
   def add_context(metadata)
     metadata.each do |key, value|
-      honeycomb_metadata[key] = value
+      Rack::Honeycomb.add_field(request.env, key, value)
     end
   end
 
-  def append_to_honeycomb(request, controller_name)
-    return if honeycomb_metadata.nil?
+  def add_user_info_to_honeycomb_event
+    return unless current_user
 
-    honeycomb_metadata["trace.trace_id"] = request.request_id
-    honeycomb_metadata["trace.span_id"] = request.request_id
-    honeycomb_metadata[:service_name] = "rails"
-    honeycomb_metadata[:name] = controller_name
+    Rack::Honeycomb.add_field(request.env, "user.id", current_user.id)
+    Rack::Honeycomb.add_field(request.env, "user.username", current_user.username)
   end
 end
