@@ -7,7 +7,6 @@ vcr_option = {
 }
 
 RSpec.describe RssReader, vcr: vcr_option do
-  let(:user) { create(:user) }
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
