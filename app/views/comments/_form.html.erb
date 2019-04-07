@@ -10,12 +10,16 @@
   <br><br><br><br>
 <% end %>
 
-<%= form_for(@comment) do |f| %>
+<%= form_for(@comment, authenticity_token: false) do |f| %>
   <% if @article&.comment_template.present? && @comment.new_record? %>
     <div class="article-comment-form-preamble">
       This post comes with a comment template
     </div>
   <% end %>
+
+  <%# this is used by JS and it will be replaced with the CSRF token received from the server %>
+  <input type="hidden" name="authenticity_token" value="NOTHING" id="new_comment_authenticity_token">
+
   <% unless @comment.persisted? %>
     <%= f.hidden_field :commentable_id, value: commentable.id %>
     <%= f.hidden_field :commentable_type, value: commentable_type %>
@@ -68,6 +72,8 @@
           var metaTag = document.querySelector("meta[name='csrf-token']")
           if (metaTag) {
             clearInterval(waitingOnCSRF);
+            authToken = metaTag.getAttribute("content");
+            document.getElementById("new_comment_authenticity_token").value = authToken;
             form.submit();
           }
         }, 1);
