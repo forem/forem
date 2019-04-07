@@ -1,0 +1,24 @@
+image:
+  file: .gitpod.dockerfile
+ports:
+  - port: 3000
+    onOpen: open-preview
+  - port: 3035
+    onOpen: ignore
+  - port: 5432
+    onOpen: ignore
+tasks:
+  - init: >
+      cp config/sample_application.yml config/application.yml &&
+      bin/setup 2>/dev/null
+    command: >
+      while [ -z "${ALGOLIASEARCH_APPLICATION_ID:=$(cat config/application.yml | grep ALGOLIASEARCH_APPLICATION_ID | sed 's/.*:\s*//')}" ] ||
+            [ -z "${ALGOLIASEARCH_SEARCH_ONLY_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_SEARCH_ONLY_KEY | sed 's/.*:\s*//')}" ] ||
+            [ -z "${ALGOLIASEARCH_API_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_API_KEY | sed 's/.*:\s*//')}" ] ; do
+        gp open config/application.yml 2>/dev/null &&
+        printf "\n❗ Dev.to requires free Algolia credentials.\n" &&
+        printf "❗ To get them, please follow https://docs.dev.to/get-api-keys-dev-env/#algolia\n\n" &&
+        read -p "Add them to config/application.yml, save the file, and press any key to continue... " -n 1 -r
+      done ;
+      bin/setup &&
+      bin/startup
