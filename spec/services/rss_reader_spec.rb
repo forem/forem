@@ -92,6 +92,7 @@ RSpec.describe RssReader, vcr: vcr_option do
       [link, nonmedium_link, nonpermanent_link].each do |feed_url|
         create(:user, feed_url: feed_url)
       end
+      Honeycomb.client.reset
     end
 
     it "gets articles for user" do
@@ -105,7 +106,7 @@ RSpec.describe RssReader, vcr: vcr_option do
       expect(Article.all.map(&:featured_number).uniq).to eq([nil])
     end
 
-    it "logs an article creation error" do
+    it "logs an article creation error on the standard logger" do
       reader = described_class.new
       allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
       allow(Rails.logger).to receive(:error)
@@ -113,12 +114,36 @@ RSpec.describe RssReader, vcr: vcr_option do
       expect(Rails.logger).to have_received(:error).at_least(:once)
     end
 
-    it "logs a fetching error" do
+    it "logs an article creation error on the observability tool" do
+      reader = described_class.new
+      allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
+      reader.fetch_user(User.first)
+
+      expected_observable_fields = [
+        :user, :feed_url, :item_count, :error,
+        "error_msg", "trace.trace_id", "trace.parent_id", "trace.span_id"
+      ]
+      expect(Honeycomb.client.events.first.data.keys).to eq(expected_observable_fields)
+    end
+
+    it "logs a fetching error on the standard logger" do
       reader = described_class.new
       allow(reader).to receive(:fetch_rss).and_raise(StandardError)
       allow(Rails.logger).to receive(:error)
       reader.fetch_user(User.first)
       expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+
+    it "logs a fetching error on the observability tool" do
+      reader = described_class.new
+      allow(reader).to receive(:fetch_rss).and_raise(StandardError)
+      reader.fetch_user(User.first)
+
+      expected_observable_fields = [
+        :user, :feed_url, :item_count, :error,
+        "error_msg", "trace.trace_id", "trace.parent_id", "trace.span_id"
+      ]
+      expect(Honeycomb.client.events.first.data.keys).to eq(expected_observable_fields)
     end
   end
 
