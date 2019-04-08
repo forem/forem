@@ -20,9 +20,9 @@ class DashboardsController < ApplicationController
       @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
         includes(:follower).order("created_at DESC").limit(80)
     elsif @user&.organization && @user&.org_admin && params[:which] == "organization"
-      @articles = @user.organization.articles.order("#{sort_by} DESC").decorate
+      @articles = @user.organization.articles.order("? DESC", sort_by).decorate
     elsif @user
-      @articles = @user.articles.order("#{sort_by} DESC").decorate
+      @articles = @user.articles.order("? DESC", sort_by).decorate
     end
     # Updates analytics in background if appropriate:
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
