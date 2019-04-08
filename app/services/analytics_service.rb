@@ -1,7 +1,7 @@
 class AnalyticsService
-  def initialize(user_or_org, start_date: "", end_date: "", single_article_id: nil)
+  def initialize(user_or_org, start_date: "", end_date: "", article_id: nil)
     @user_or_org = user_or_org
-    @single_article_id = single_article_id
+    @article_id = article_id
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
 
@@ -72,11 +72,11 @@ class AnalyticsService
   attr_reader :user_or_org, :start_date, :end_date, :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
 
   def load_data
-    if @single_article_id
-      @article_data = Article.where(id: @single_article_id, "#{user_or_org.class.name.downcase}_id" => user_or_org.id)
-      raise UnauthorizedError if @article_data.blank?
+    raise UnauthorizedError if @article_id && !Article.exists(id: @article_id, published: true, "#{user_or_org.class.name.downcase}_id" => user_or_org.id)
 
-      article_ids = @single_article_id
+    if @article_id
+      @article_data = Article.where(id: @article_id, published: true, "#{user_or_org.class.name.downcase}_id" => user_or_org.id)
+      article_ids = @article_id
     else
       @article_data = Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
       article_ids = @article_data.pluck(:id)
