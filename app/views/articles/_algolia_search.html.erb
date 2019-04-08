@@ -88,7 +88,7 @@
     if (filters === "MY_POSTS" && userData()) {
       searchObj["tagFilters"] = [['user_' + userData()['id']]]
     } else if (hashtags != null && hashtags.length > 0) {
-      for(i = 0; i < hashtags.length; i++){
+      for(var i = 0; i < hashtags.length; i++){
         hashtags[i] = hashtags[i].replace(/#/,'')
       }
       searchObj["tagFilters"] = hashtags
