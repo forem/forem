@@ -59,12 +59,7 @@ class AuthorizationService
       )
       user.name = auth.info.nickname if user.name.blank?
       user.skip_confirmation!
-      # user.remember_me!
       user.set_remember_fields
-      # user.remember_token ||= user.class.remember_token if user.respond_to?(:remember_token)
-      # user.remember_created_at ||= Time.now.utc
-
-      # user.remember_me = true
       add_social_identity_data(user)
       user.saw_onboarding = false
       user.save!
@@ -74,8 +69,6 @@ class AuthorizationService
 
   def update_user(user)
     user.set_remember_fields
-    # user.remember_me!
-    # user.remember_me = true
     user.github_username = auth.info.nickname if auth.provider == "github" && auth.info.nickname != user.github_username
     user.twitter_username = auth.info.nickname if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
     add_social_identity_data(user)
