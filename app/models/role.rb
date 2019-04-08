@@ -13,7 +13,7 @@ class Role < ApplicationRecord
               in: %w[
                 super_admin
                 admin
-                tech_support
+                tech_admin
                 tag_moderator
                 trusted
                 banned

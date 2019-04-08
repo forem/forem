@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
-  authenticated :user, ->(user) { user.tech_support? } do
+  authenticated :user, ->(user) { user.tech_admin? } do
     mount DelayedJobWeb, at: "/delayed_job"
   end
 

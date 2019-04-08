@@ -4,9 +4,9 @@ RSpec.describe "Delayed Job web interface", type: :request do
   let(:user)          { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
   let(:article)       { create(:article, user_id: user.id) }
-  let(:tech_support) do
+  let(:tech_admin) do
     user = create(:user)
-    user.add_role :tech_support
+    user.add_role :tech_admin
     user
   end
 
@@ -43,7 +43,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
     end
 
     context "when logged in as a tech support member" do
-      before { login_as tech_support }
+      before { login_as tech_admin }
 
       it "redirects to overview" do
         get "/delayed_job"
