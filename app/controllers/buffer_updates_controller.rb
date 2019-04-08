@@ -44,7 +44,7 @@ class BufferUpdatesController < ApplicationController
     BufferUpdate.create(
       article_id: @article.id,
       composer_user_id: current_user.id,
-      body_text: params[:buffer_update][:body_text],
+      body_text: params[:buffer_update][:body_text] + " #{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{@article.path}",
       social_service_name: "facebook",
       buffer_profile_id_code: ApplicationConfig["BUFFER_FACEBOOK_ID"],
       status: "pending",
