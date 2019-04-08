@@ -23,7 +23,7 @@ gem "airbrake", "~> 8.1"
 gem "algoliasearch-rails", "~> 1.21"
 gem "algorithmia", "~> 1.0"
 gem "ancestry", "~> 3.0"
-gem "autoprefixer-rails", "~> 9.4"
+gem "autoprefixer-rails", "~> 9.5"
 gem "aws-sdk-lambda", "~> 1.16" # Just Lambda. For more, install aws-sdk gem
 gem "bootsnap", ">= 1.1.0", require: false
 gem "bourbon", "~> 5.1"
