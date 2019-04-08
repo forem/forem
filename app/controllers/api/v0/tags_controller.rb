@@ -3,8 +3,8 @@ module Api
     class TagsController < ApplicationController
       # before_action :set_cache_control_headers, only: [:index]
       caches_action :index,
-        cache_path: proc { |c| c.params.permit! },
-        expires_in: 10.minutes
+                    cache_path: proc { |c| c.params.permit! },
+                    expires_in: 10.minutes
       respond_to :json
 
       def index

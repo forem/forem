@@ -77,12 +77,12 @@ class HtmlVariant < ApplicationRecord
                 "auto"
               end
     cl_image_path(source,
-      type: "fetch",
-      width: width,
-      crop: "limit",
-      quality: quality,
-      flags: "progressive",
-      fetch_format: "auto",
-      sign_url: true).gsub(",", "%2C")
+                  type: "fetch",
+                  width: width,
+                  crop: "limit",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: "auto",
+                  sign_url: true).gsub(",", "%2C")
   end
 end

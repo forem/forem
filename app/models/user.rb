@@ -37,20 +37,20 @@ class User < ApplicationRecord
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
   has_many :mentor_relationships_as_mentee,
-  class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
+           class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
-  class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
+           class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
   has_many :mentors,
-  through: :mentor_relationships_as_mentee,
-  source: :mentor
+           through: :mentor_relationships_as_mentee,
+           source: :mentor
   has_many :mentees,
-  through: :mentor_relationships_as_mentor,
-  source: :mentee
+           through: :mentor_relationships_as_mentor,
+           source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :omniauthable, :rememberable,
-        :registerable, :database_authenticatable, :confirmable
+         :registerable, :database_authenticatable, :confirmable
   validates :email,
             uniqueness: { allow_blank: true, case_sensitive: false },
             length: { maximum: 50 },
@@ -70,64 +70,64 @@ class User < ApplicationRecord
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,
-    url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+            url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :facebook_url,
-              format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
-              allow_blank: true
+            format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
+            allow_blank: true
   validates :stackoverflow_url,
-              allow_blank: true,
-              format:
-              /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
+            allow_blank: true,
+            format:
+            /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
   validates :behance_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
   validates :linkedin_url,
-              allow_blank: true,
-              format:
-                /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
+            allow_blank: true,
+            format:
+              /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
   validates :dribbble_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
   validates :medium_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
   validates :gitlab_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   validates :shirt_gender,
-              inclusion: { in: %w[unisex womens],
-                           message: "%{value} is not a valid shirt style" },
-              allow_blank: true
+            inclusion: { in: %w[unisex womens],
+                         message: "%{value} is not a valid shirt style" },
+            allow_blank: true
   validates :shirt_size,
-              inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                           message: "%{value} is not a valid size" },
-              allow_blank: true
+            inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
+                         message: "%{value} is not a valid size" },
+            allow_blank: true
   validates :tabs_or_spaces,
-              inclusion: { in: %w[tabs spaces],
-                           message: "%{value} is not a valid answer" },
-              allow_blank: true
+            inclusion: { in: %w[tabs spaces],
+                         message: "%{value} is not a valid answer" },
+            allow_blank: true
   validates :editor_version,
-              inclusion: { in: %w[v1 v2],
-                           message: "%{value} must be either v1 or v2" }
+            inclusion: { in: %w[v1 v2],
+                         message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-              inclusion: { in: %w[default night_theme],
-                           message: "%{value} must be either default or night theme" }
+            inclusion: { in: %w[default night_theme],
+                         message: "%{value} must be either default or night theme" }
   validates :config_font,
-              inclusion: { in: %w[default sans_serif comic_sans],
-                           message: "%{value} must be either default or sans serif" }
+            inclusion: { in: %w[default sans_serif comic_sans],
+                         message: "%{value} must be either default or sans serif" }
   validates :shipping_country,
-              length: { in: 2..2 },
-              allow_blank: true
+            length: { in: 2..2 },
+            allow_blank: true
   validates :website_url, :employer_name, :employer_url,
-              length: { maximum: 100 }
+            length: { maximum: 100 }
   validates :employment_title, :education, :location,
-              length: { maximum: 100 }
+            length: { maximum: 100 }
   validates :mostly_work_with, :currently_learning,
             :currently_hacking_on, :available_for,
-                length: { maximum: 500 }
+            length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
-              length: { maximum: 1000 }
+            length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
@@ -156,19 +156,19 @@ class User < ApplicationRecord
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
     add_index "searchables",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attribute :user do
         { username: user.username,
           name: user.username,
           profile_image_90: profile_image_90 }
       end
       attribute :title, :path, :tag_list, :main_image, :id,
-        :featured, :published, :published_at, :featured_number, :comments_count,
-        :reactions_count, :positive_reactions_count, :class_name, :user_name,
-        :user_username, :comments_blob, :body_text, :tag_keywords_for_search,
-        :search_score, :hotness_score
+                :featured, :published, :published_at, :featured_number, :comments_count,
+                :reactions_count, :positive_reactions_count, :class_name, :user_name,
+                :user_username, :comments_blob, :body_text, :tag_keywords_for_search,
+                :search_score, :hotness_score
       searchableAttributes ["unordered(title)",
                             "body_text",
                             "tag_list",

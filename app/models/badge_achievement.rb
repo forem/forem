@@ -17,8 +17,8 @@ class BadgeAchievement < ApplicationRecord
     parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
     html = parsed_markdown.finalize
     final_html = ActionController::Base.helpers.sanitize html,
-      tags: %w[strong em i b u a code],
-      attributes: %w[href name]
+                                                         tags: %w[strong em i b u a code],
+                                                         attributes: %w[href name]
     self.rewarding_context_message = final_html
   end
 

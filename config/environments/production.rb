@@ -123,5 +123,5 @@ Rails.application.configure do
   }
 
   config.middleware.use Rack::HostRedirect,
-    "practicaldev.herokuapp.com" => "dev.to"
+                        "practicaldev.herokuapp.com" => "dev.to"
 end
