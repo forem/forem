@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe AnalyticsService, type: :service do
   let(:user) { create(:user) }
+  let(:second_user) { create(:user) }
+  let(:article) { create(:article, user: second_user) }
   let(:organization) { create(:organization) }
 
   describe "initialization" do
@@ -11,6 +13,10 @@ RSpec.describe AnalyticsService, type: :service do
 
     it "raises an error if end date is invalid" do
       expect(-> { described_class.new(user, end_date: "2000-") }).to raise_error(ArgumentError)
+    end
+
+    it "raises an error if an article id is invalid" do
+      expect(-> { described_class.new(user, single_article_id: article.id) }).to raise_error(UnauthorizedError)
     end
   end
 
