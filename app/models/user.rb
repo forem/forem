@@ -189,6 +189,7 @@ class User < ApplicationRecord
     prefer_language_es Boolean, default: false
     prefer_language_fr Boolean, default: false
     prefer_language_it Boolean, default: false
+    prefer_language_pt Boolean, default: false
   end
 
   def self.trigger_delayed_index(record, remove)
@@ -314,6 +315,10 @@ class User < ApplicationRecord
 
   def any_admin?
     has_role?(:super_admin) || has_role?(:admin)
+  end
+
+  def tech_admin?
+    has_role?(:tech_admin) || has_role?(:super_admin)
   end
 
   def trusted
