@@ -80,22 +80,8 @@ Rails/OutputSafety:
     - 'app/views/api/v0/articles/show.json.jbuilder'
     - 'app/views/articles/feed.rss.builder'
 
-Rails/SkipsModelValidations:
-  Enabled: false
-
 Layout/AlignParameters:
   Description: 'Here we check if the parameters on a multi-line method call or definition are aligned.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-double-indent'
   Enabled: false
 
-Layout/ConditionPosition:
-  Description: >-
-    Checks for condition placed in a confusing position relative to
-    the keyword.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#same-line-condition'
-  Enabled: false
-
-Layout/InitialIndentation:
-  Description: >-
-    Checks the indentation of the first non-blank non-comment line in a file.
-  Enabled: false
