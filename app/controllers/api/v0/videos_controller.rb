@@ -2,8 +2,8 @@ module Api
   module V0
     class VideosController < ApiController
       caches_action :index,
-        cache_path: proc { |c| c.params.permit! },
-        expires_in: 10.minutes
+                    cache_path: proc { |c| c.params.permit! },
+                    expires_in: 10.minutes
       respond_to :json
 
       before_action :cors_preflight_check

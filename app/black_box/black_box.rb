@@ -12,7 +12,7 @@ class BlackBox
       two_day_bonus = usable_date > 48.hours.ago ? 330 : 0
       four_day_bonus = usable_date > 96.hours.ago ? 330 : 0
       FunctionCaller.new("blackbox-production-articleHotness",
-        { article: article, user: article.user }.to_json).call +
+                         { article: article, user: article.user }.to_json).call +
         reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
     end
 
@@ -30,7 +30,7 @@ class BlackBox
       return 100 unless story.user
 
       FunctionCaller.new("blackbox-production-spamScore",
-        { story: story, user: story.user }.to_json).call
+                         { story: story, user: story.user }.to_json).call
     end
 
     private

@@ -77,23 +77,23 @@ class Article < ApplicationRecord
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id,
-    :comments_count, :positive_reactions_count, :cached_tag_list,
-    :main_image, :main_image_background_hex_color, :updated_at, :slug,
-    :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url,
-    :experience_level_rating, :experience_level_rating_distribution,
-    :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :main_image, :main_image_background_hex_color, :updated_at, :slug,
+           :video, :user_id, :organization_id, :video_source_url, :video_code,
+           :video_thumbnail_url, :video_closed_caption_track_url,
+           :experience_level_rating, :experience_level_rating_distribution,
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
-    :comments_count, :positive_reactions_count, :cached_tag_list,
-    :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
-    :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-    :published_from_feed, :crossposted_at, :published_at, :featured_number,
-    :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-    :email_digest_eligible, :processed_html)
+           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
+           :video, :user_id, :organization_id, :video_source_url, :video_code,
+           :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
+           :published_from_feed, :crossposted_at, :published_at, :featured_number,
+           :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
+           :email_digest_eligible, :processed_html)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -107,14 +107,14 @@ class Article < ApplicationRecord
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
-                :featured, :published, :published_at, :featured_number,
-                :comments_count, :reactions_count, :positive_reactions_count,
-                :path, :class_name, :user_name, :user_username, :comments_blob,
-                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
+                 :featured, :published, :published_at, :featured_number,
+                 :comments_count, :reactions_count, :positive_reactions_count,
+                 :path, :class_name, :user_name, :user_username, :comments_blob,
+                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username,
           name: user.name,
@@ -139,12 +139,12 @@ class Article < ApplicationRecord
     end
 
     add_index "ordered_articles",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time,
-        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
-        :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
+                 :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
+                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
       attribute :published_at_int do
         published_at.to_i
       end
