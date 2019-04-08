@@ -11,9 +11,9 @@ module Api
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org).totals
+                 AnalyticsService.new(org, single_article_id: params[:article_id]).totals
                else
-                 AnalyticsService.new(user).totals
+                 AnalyticsService.new(user, single_article_id: params[:article_id]).totals
                end
         render json: data.to_json
       end
@@ -28,9 +28,9 @@ module Api
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org, start_date: params[:start], end_date: params[:end]).stats_grouped_by_day
+                 AnalyticsService.new(org, start_date: params[:start], end_date: params[:end], single_article_id: params[:article_id]).stats_grouped_by_day
                else
-                 AnalyticsService.new(user, start_date: params[:start], end_date: params[:end]).stats_grouped_by_day
+                 AnalyticsService.new(user, start_date: params[:start], end_date: params[:end], single_article_id: params[:article_id]).stats_grouped_by_day
                end
         render json: data.to_json
       end
@@ -42,9 +42,9 @@ module Api
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && belongs_to_org?(user, org)
 
-                 AnalyticsService.new(org, start_date: 1.day.ago).stats_grouped_by_day
+                 AnalyticsService.new(org, start_date: 1.day.ago, single_article_id: params[:article_id]).stats_grouped_by_day
                else
-                 AnalyticsService.new(user, start_date: 1.day.ago).stats_grouped_by_day
+                 AnalyticsService.new(user, start_date: 1.day.ago, single_article_id: params[:article_id]).stats_grouped_by_day
                end
         render json: data.to_json
       end
