@@ -1,4 +1,4 @@
-import { configure } from '@storybook/react';
+import { configure } from '@storybook/preact';
 import '../../assets/stylesheets/minimal.scss';
 
 // automatically import all files ending in *.stories.js

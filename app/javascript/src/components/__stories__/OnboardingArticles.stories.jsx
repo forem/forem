@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
+import { storiesOf } from '@storybook/preact';
 import { action } from '@storybook/addon-actions';
 import faker from 'faker';
 import { globalModalDecorator } from './story-decorators';
