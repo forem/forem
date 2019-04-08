@@ -35,6 +35,7 @@ function insertNewArticles(user){
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
       var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
+      var containsPreferredLanguage = findOne([article.language || 'en'], user.preferred_languages_array || ['en']);
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -46,6 +47,11 @@ function insertNewArticles(user){
       }
       if (containsOrganizationID) {
         articlePoints = articlePoints + 16
+      }
+      if (containsPreferredLanguage) {
+        articlePoints = articlePoints + 1
+      } else {
+        articlePoints = articlePoints - 10
       }
       var rand = Math.random();
       if (rand < 0.3) {
@@ -80,6 +86,7 @@ function insertTopArticles(user){
       var intersectedTags = intersect_arrays(user.followed_tag_names, article.cached_tag_list_array)
       var followedPoints = 1
       var experienceDifference = Math.abs(article['experience_level_rating'] - user.experience_level || 5)
+      var containsPreferredLanguage = findOne([article.language || 'en'], user.preferred_languages_array || ['en'])
       JSON.parse(user.followed_tags).map(function(tag) {
         if (intersectedTags.includes(tag.name)) {
           followedPoints = followedPoints + tag.points
@@ -98,6 +105,11 @@ function insertTopArticles(user){
       } else if (rand < 0.6) {
         articlePoints = articlePoints + 3
       }
+      if (containsPreferredLanguage) {
+        articlePoints = articlePoints + 1
+      } else {
+        articlePoints = articlePoints - 10
+      }
       articlePoints = articlePoints - (experienceDifference/2);
       article['points'] = articlePoints
     });
@@ -115,6 +127,7 @@ function insertTopArticles(user){
 
 function algoliaFollowedArticles(){
     var user = userData();
+
     if (user && user.followed_tag_names && user.followed_tag_names.length > 0) {
       insertInitialArticles(user)
       var followedUsersArray = [];
