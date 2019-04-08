@@ -80,7 +80,7 @@ class Article < ApplicationRecord
     :comments_count, :positive_reactions_count, :cached_tag_list,
     :main_image, :main_image_background_hex_color, :updated_at, :slug,
     :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url,
+    :video_thumbnail_url, :video_closed_caption_track_url, :language,
     :experience_level_rating, :experience_level_rating_distribution,
     :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
@@ -142,7 +142,7 @@ class Article < ApplicationRecord
                   id: :index_id,
                   per_environment: true,
                   enqueue: :trigger_delayed_index do
-      attributes :title, :path, :class_name, :comments_count, :reading_time,
+      attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
         :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
         :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
       attribute :published_at_int do

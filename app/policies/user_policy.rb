@@ -106,6 +106,7 @@ class UserPolicy < ApplicationPolicy
        prefer_language_es
        prefer_language_fr
        prefer_language_it
+       prefer_language_pt
        prefer_language_ja
        profile_image
        seeking_mentorship
