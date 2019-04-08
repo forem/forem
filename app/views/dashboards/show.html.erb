@@ -28,7 +28,7 @@
         </a>
       <% end %>
 
-      <%= select_tag "dashhboard_sort", options_for_select([["Recently Created", "created_at"], ["Most Views", "page_views_count"], ["Most Reactions", "positive_reactions_count"], ["Most Comments", "comments_count"]], params[:sort]) %>
+      <%= select_tag "dashhboard_sort", options_for_select([["Recently Created", "creation-desc"], ["Most Views", "views-desc"], ["Most Reactions", "reactions-desc"], ["Most Comments", "comments-desc"]], params[:sort]) %>
       <div class="clear"></div>
     </div>
     <% @articles.each do |article| %>
