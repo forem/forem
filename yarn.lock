@@ -6322,10 +6322,10 @@ jest-environment-node@^23.4.0:
     jest-mock "^23.2.0"
     jest-util "^23.4.0"
 
-jest-fetch-mock@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/jest-fetch-mock/-/jest-fetch-mock-2.1.1.tgz#fa9c5fdd228fb0d073456658831ae89cec9543e6"
-  integrity sha512-/E0I80zMRTTExfM7QQZsqizT31EMHCBnqACERd2QR+7riSgta3OcHF3RzakukzQ4o3oEyIi6OleB3PAU6ArgDg==
+jest-fetch-mock@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/jest-fetch-mock/-/jest-fetch-mock-2.1.2.tgz#1260b347918e3931c4ec743ceaf60433da661bd0"
+  integrity sha512-tcSR4Lh2bWLe1+0w/IwvNxeDocMI/6yIA2bijZ0fyWxC4kQ18lckQ1n7Yd40NKuisGmcGBRFPandRXrW/ti/Bw==
   dependencies:
     cross-fetch "^2.2.2"
     promise-polyfill "^7.1.1"
@@ -7220,10 +7220,10 @@ marked@^0.3.9:
   resolved "https://registry.yarnpkg.com/marked/-/marked-0.3.19.tgz#5d47f709c4c9fc3c216b6d46127280f40b39d790"
   integrity sha512-ea2eGWOqNxPcXv8dyERdSr/6FmzvWwzjMxpfGB/sbMccXoct+xY+YukPD+QTUZwyvK7BZwcr4m21WBOW41pAkg==
 
-marked@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-0.6.1.tgz#a63addde477bca9613028de4b2bc3629e53a0562"
-  integrity sha512-+H0L3ibcWhAZE02SKMqmvYsErLo4EAVJxu5h3bHBBDvvjeWXtl92rGUSBYHL2++5Y+RSNgl8dYOAXcYe7lp1fA==
+marked@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-0.6.2.tgz#c574be8b545a8b48641456ca1dbe0e37b6dccc1a"
+  integrity sha512-LqxwVH3P/rqKX4EKGz7+c2G9r98WeM/SW34ybhgNGhUQNKtf1GmmSkJ6cDGJ/t6tiyae49qRkpyTw2B9HOrgUA==
 
 matcher@^1.0.0:
   version "1.1.1"
@@ -11206,10 +11206,10 @@ tweetnacl@^1.0.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.0.tgz#713d8b818da42068740bf68386d0479e66fc8a7b"
   integrity sha1-cT2LgY2kIGh0C/aDhtBHnmb8ins=
 
-twilio-video@^1.16.0:
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.16.0.tgz#4b3226fb18a25c886c5972586b9382c66a90e243"
-  integrity sha512-0CSdL4Ea9q+/zFAtvfj1rqWGIdKTE1wa4xlBvCLOlF0Zy6qnKsOwu/INTXGmnKZMcboQ2hkTd3z+3RO9Db+K8g==
+twilio-video@^1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-1.17.0.tgz#77a803139a572b519b8f8257deea9990f9612d58"
+  integrity sha512-7lj32muthL8W/MmOun4NNAtBLsh7P1wvPeMlG1tgIEnUMY9sbN1d7+FJDQfUg9XC5M2onjVH6C9QSl0hmu8gmA==
   dependencies:
     "@twilio/sip.js" "^0.7.7"
     "@twilio/webrtc" "2.3.0"

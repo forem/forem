@@ -700,14 +700,14 @@ article {
       width: 880px;
       padding: calc(0px + 0.7vh) 0px;
     }
-    @media screen and (min-width: 1530px) {
+    @media screen and (min-width: 1365px) {
       margin-left: -1px;
       margin-right: -1px;
-      width: 156px;
+      width: calc(55px + 1.1vw);
       top: 0%;
-      padding: 5.5% 0px;
+      padding: calc(10px + 5.5%) 0px;
       bottom: 5%;
-      left: calc(50% - 756px);
+      left: calc(50% - 672px);
       border-radius: 20px;
       background: transparent;
       border: 0px;
@@ -721,7 +721,7 @@ article {
       a {
         margin-bottom: 10px !important;
         display: block !important;
-        width: 140px !important;
+        width: 100% !important;
         padding: 6px 0px !important;
         margin-left: 0px !important;
         margin-right: 0px !important;
@@ -743,7 +743,7 @@ article {
       }
       a {
         margin-top: 5px !important;
-        font-size: 0.79em !important;
+        font-size: 0.67em !important;
         padding: 10px 0px 9px !important;
         &.article-actions-comments-count {
           padding: 12px 0px !important;
@@ -756,6 +756,24 @@ article {
           background: transparent !important;
           padding-left: 10px !important;
         }
+      }
+    }
+    @media screen and (min-width: 1439px) {
+      width: calc(90px + 1.1vw);
+      left: calc(50% - 711px);
+      a {
+        font-size: 0.70em !important;
+      }
+    }
+    @media screen and (min-width: 1530px) {
+      width: 156px;
+      left: calc(50% - 756px);
+      button,
+      a {
+        width: 140px !important;
+      }
+      a {
+        font-size: 0.79em !important;
       }
     }
     button {
@@ -776,6 +794,18 @@ article {
           height: 28px;
           width: 28px;
         }
+        @media screen and (min-width: 1365px) {
+          height: 19px;
+          width: 19px;
+        }
+        @media screen and (min-width: 1439px) {
+          height: 23px;
+          width: 23px;
+        }
+        @media screen and (min-width: 1530px) {
+          height: 28px;
+          width: 28px;
+        }
       }
       .reaction-number {
         display: inline-block;
@@ -790,6 +820,20 @@ article {
           font-size: 18px;
           vertical-align: 7px;
           margin-left: 7px;
+        }
+        @media screen and (min-width: 1365px) {
+          font-size: 13px;
+          vertical-align: 4px;
+          width: 28px;
+        }
+        @media screen and (min-width: 1439px) {
+          font-size: 15px;
+          vertical-align: 5px;
+          width: 37px;
+        }
+        @media screen and (min-width: 1530px) {
+          font-size: 18px;
+          vertical-align: 7px;
         }
       }
       &:hover {
@@ -902,6 +946,9 @@ article {
       font-stretch: condensed;
       padding: 4px 0.88vw;
       border-radius: 3px;
+      .article-actions-comments-count-number {
+        display: none;
+      }
       @media screen and (min-width: 620px) {
         display: inline-block;
       }
@@ -909,13 +956,14 @@ article {
         font-size: 0.92em;
         vertical-align: 6px;
       }
-      img {
-        height: 18px;
-        width: 18px;
+      @media screen and (min-width: 1439px) {
+        .article-actions-comments-count-number {
+          display: inline-block;
+        }
       }
     }
     .article-actions-tweet-button {
-      padding: 7px 0 6px;
+      padding: 2px 0 2px !important;
       border-radius: 3px;
       border: 2px solid darken($light-gray, 20%);
       margin-right: 0.15vw;
@@ -931,12 +979,28 @@ article {
       }
       @media screen and (min-width: 500px) {
         display: inline-block;
-        padding: 2px 0 2px;
         vertical-align: calc(6px - 0.07vw);
       }
-      @media screen and (min-width: 1250px) {
-        padding: 3px 0 3px;
-        vertical-align: 5px;
+      @media screen and (min-width: 1365px) {
+        padding: 6px 0 6px !important;
+        img {
+          height: 17px;
+          width: 17px;
+        }
+      }
+      @media screen and (min-width: 1439px) {
+        padding: 7px 0 7px !important;
+        img {
+          height: 20px;
+          width: 20px;
+        }
+      }
+      @media screen and (min-width: 1530px) {
+        padding: 9px 0 9px !important;
+        img {
+          height: 23px;
+          width: 23px;
+        }
       }
     }
   }

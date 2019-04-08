@@ -189,6 +189,7 @@ class User < ApplicationRecord
     prefer_language_es Boolean, default: false
     prefer_language_fr Boolean, default: false
     prefer_language_it Boolean, default: false
+    prefer_language_pt Boolean, default: false
   end
 
   def self.trigger_delayed_index(record, remove)
@@ -205,6 +206,11 @@ class User < ApplicationRecord
 
   def index_id
     "users-#{id}"
+  end
+
+  def set_remember_fields
+    self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
+    self.remember_created_at ||= Time.now.utc
   end
 
   def estimate_default_language!

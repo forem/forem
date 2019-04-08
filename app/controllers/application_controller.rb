@@ -78,9 +78,4 @@ class ApplicationController < ActionController::Base
   def touch_current_user
     current_user.touch
   end
-
-  def append_info_to_payload(payload)
-    super(payload)
-    append_to_honeycomb(request, self.class.name)
-  end
 end

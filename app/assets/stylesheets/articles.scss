@@ -12,9 +12,6 @@
   @media screen and (min-width: 950px) {
     margin-top: 26px;
   }
-  @media screen and (min-width: 2650px) {
-    max-width: 1300px;
-  }
   &.sub-home {
     margin-top: 10px;
     .side-bar {
@@ -839,6 +836,9 @@
     }
     @media screen and (min-width: 950px) {
       display: block;
+    }
+    @media screen and (min-width: 1500px) {
+      margin-left: 13px;
     }
     .fixed-sidebar {
       position: fixed;

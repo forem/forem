@@ -380,6 +380,12 @@ RSpec.describe User, type: :model do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       new_user.estimate_default_language_without_delay!
     end
+
+    it "returns proper preferred_languages_array" do
+      user.email = "ben@hello.jp"
+      user.estimate_default_language_without_delay!
+      expect(user.decorate.preferred_languages_array).to include("ja")
+    end
   end
 
   it "follows users" do

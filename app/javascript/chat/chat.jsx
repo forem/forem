@@ -685,7 +685,6 @@ export default class Chat extends Component {
         userID={message.user_id}
         profileImageUrl={message.profile_image_url}
         message={message.message}
-        messageColor={message.messageColor}
         timestamp={showTimestamp ? message.timestamp : null}
         color={message.color}
         type={message.type}

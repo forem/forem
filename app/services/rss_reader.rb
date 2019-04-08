@@ -1,7 +1,3 @@
-require "nokogiri"
-require "httparty"
-require "securerandom"
-
 class RssReader
   def self.get_all_articles(force = true)
     new.get_all_articles(force)
@@ -13,15 +9,18 @@ class RssReader
 
   def get_all_articles(force = true)
     User.where.not(feed_url: [nil, ""]).find_each do |user|
-      next if force == false && (rand(2) == 1 || user.feed_fetched_at > 15.minutes.ago) # Don't fetch every time.
+      # unless forced, fetch sparingly
+      next if force == false && (rand(2) == 1 || user.feed_fetched_at > 15.minutes.ago)
 
       create_articles_for_user(user)
     end
   end
 
   def fetch_user(user)
-    Thread.current[:request_id] = @request_id
-    Thread.current[:span_id] = @request_id
+    # add request_id to thread current variables to aid Honeycomb instrumentation
+    Thread.current[:request_id] = request_id
+    Thread.current[:span_id] = request_id
+
     create_articles_for_user(user)
   end
 
@@ -33,26 +32,34 @@ class RssReader
 
   private
 
+  attr_reader :request_id
+
   def create_articles_for_user(user)
     with_span("create_articles_for_user", user_id: user.id, username: user.username) do |metadata|
       user.update_column(:feed_fetched_at, Time.current)
       feed = fetch_rss(user.feed_url.strip)
+
       metadata[:feed_length] = feed.entries.length if feed&.entries
+
       feed.entries.reverse_each do |item|
         make_from_rss_item(item, user, feed)
       rescue StandardError => e
-        log_error("RssReaderError: occurred while creating article for",
-                    user: user.username,
-                    feed_url: user.feed_url,
-                    item_count: get_item_count_error(feed),
-                    error: e)
+        log_error(
+          "RssReaderError: occurred while creating article",
+          user: user.username,
+          feed_url: user.feed_url,
+          item_count: get_item_count_error(feed),
+          error: e,
+        )
       end
     rescue StandardError => e
-      log_error("RssReaderError: occurred while fetch feed for",
-                  user: user.username,
-                  feed_url: user.feed_url,
-                  item_count: get_item_count_error(feed),
-                  error: e)
+      log_error(
+        "RssReaderError: occurred while fetching feed",
+        user: user.username,
+        feed_url: user.feed_url,
+        item_count: get_item_count_error(feed),
+        error: e,
+      )
     end
   end
 
@@ -76,33 +83,29 @@ class RssReader
   end
 
   def make_from_rss_item(item, user, feed)
-    with_span("make_from_rss_item",
-                item_id: item.entry_id,
-                item_title: item.title,
-                item_summary_size: item.summary&.size) do |metadata|
-      return if medium_reply?(item) || article_exist?(user, item)
+    with_span(
+      "make_from_rss_item",
+      item_id: item.entry_id,
+      item_title: item.title,
+      item_summary_size: item.summary&.size,
+    ) do |metadata|
 
-      article_params = {
-        feed_source_url: feed_source_url = item.url.strip.split("?source=")[0],
-        user_id: user.id,
-        published_at: item.published,
-        published_from_feed: true,
-        show_comments: true,
-        # body_markdown: assemble_body_markdown(item, user, feed, feed_source_url),
-        body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
-        organization_id: user.organization_id.presence
-      }
+      return if medium_reply?(item) || article_exists?(user, item)
+
       article = with_timer("save_article", metadata) do
-        Article.create!(article_params)
+        feed_source_url = item.url.strip.split("?source=")[0]
+        Article.create!(
+          feed_source_url: feed_source_url,
+          user_id: user.id,
+          published_at: item.published,
+          published_from_feed: true,
+          show_comments: true,
+          body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
+          organization_id: user.organization_id.presence,
+        )
       end
-      return unless Rails.env.production?
 
-      SlackBot.delay.ping(
-        "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
-        channel: "activity",
-        username: "article_bot",
-        icon_emoji: ":robot_face:",
-      )
+      send_slack_notification(article)
     end
   end
 
@@ -125,26 +128,46 @@ class RssReader
     content.include?(title)
   end
 
-  def article_exist?(user, item)
-    user.articles.find_by("title = ? OR feed_source_url = ?", item.title.strip.gsub('"', '\"'), item.url.strip.split("?source=")[0])
+  def article_exists?(user, item)
+    title = item.title.strip.gsub('"', '\"')
+    feed_source_url = item.url.strip.split("?source=")[0]
+    relation = user.articles
+    relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
+  end
+
+  def send_slack_notification(article)
+    return unless Rails.env.production?
+
+    SlackBot.delay.ping(
+      "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
+      channel: "activity",
+      username: "article_bot",
+      icon_emoji: ":robot_face:",
+    )
   end
 
   def log_error(error_msg, metadata)
-    logger = Logger.new(STDOUT)
-    parts = metadata.map { |k, v| [k.upcase.to_s.sub(/_/, "-"), v].join(": ") }
-    parts = parts.unshift(error_msg)
-    logger.info(parts.join(" "))
+    # giving the error message a resemblance of structured logging
+    parts = metadata.map { |k, v| [k, v].join("=") }
+    parts = parts.unshift("#{error_msg}:")
+    Rails.logger.error(parts.join(" "))
 
-    ev = $libhoney.event
+    # log error to Honeycomb if initialized
+    return unless Honeycomb.client
+
+    ev = Honeycomb.client.event
     ev.add(metadata)
     ev.add_field("error_msg", error_msg)
-    ev.add_field("trace.trace_id", @request_id)
-    parent_id = Thread.current[:span_id] || @request_id
-    ev.add_field("trace.parent_id", parent_id)
+    ev.add_field("trace.trace_id", request_id)
+    ev.add_field("trace.parent_id", Thread.current[:span_id] || request_id)
     ev.add_field("trace.span_id", SecureRandom.uuid)
     ev.send
   end
 
+  # NOTE: honeycomb-beeline makes "with_span" theoretically obsolete,
+  # unfortunately there's a bug that prevents the gem to add fields after a
+  # a span has been initiated, so for now we'll keep this code in.
+  # see <https://github.com/honeycombio/beeline-ruby/issues/8>
   # This wrapper takes a span name, some optional metadata, and a block; then
   # emits a "span" to Honeycomb as part of the trace begun in the RequestTracer
   # middleware.
@@ -154,13 +177,13 @@ class RssReader
   # into the block.
   def with_span(name, metadata = nil)
     trace_id = Thread.current[:request_id]
-    return yield({}) unless trace_id
+    return yield({}) unless trace_id && Honeycomb.client
 
-    id = SecureRandom.uuid
-    start = Time.new
+    current_span_id = SecureRandom.uuid
+    start = Time.current
     data = {
       name: name,
-      "trace.span_id": id,
+      "trace.span_id": current_span_id,
       "trace.trace_id": trace_id,
       service_name: "rss_reader"
     }
@@ -171,13 +194,14 @@ class RssReader
 
     # Set the current span ID before invoking the provided block, then capture
     # the return value to return after emitting the Honeycomb event.
-    Thread.current[:span_id] = id
+    Thread.current[:span_id] = span_id
     ret = yield data
 
-    data[:duration_ms] = (Time.new - start) * 1000
+    data[:duration_ms] = (Time.current - start) * 1000
     data.merge!(metadata) if metadata
 
-    ev = $libhoney.event
+    # log event to Honeycomb
+    ev = Honeycomb.client.event
     ev.timestamp = start
     ev.add(data)
     ev.send
@@ -188,10 +212,9 @@ class RssReader
   end
 
   def with_timer(name, data)
-    start = Time.new
+    start = Time.current
     ret = yield
-    data[name + "_dur_ms"] = (Time.new - start) * 1000 if data
-
+    data[name + "_dur_ms"] = (Time.current - start) * 1000 if data
     ret
   end
 end
