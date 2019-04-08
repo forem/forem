@@ -16,7 +16,7 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     it "raises an error if an article id is invalid" do
-      expect(-> { described_class.new(user, single_article_id: article.id) }).to raise_error(UnauthorizedError)
+      expect(-> { described_class.new(user, article_id: article.id) }).to raise_error(UnauthorizedError)
     end
   end
 
