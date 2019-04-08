@@ -7,7 +7,7 @@ class DashboardsController < ApplicationController
     fetch_and_authorize_user
 
     unless %w[user_followers organization_user_followers].include?(params[:which])
-      sorts = %w[reated_at comments_count positive_reactions_count page_views_count]
+      sorts = %w[created_at comments_count positive_reactions_count page_views_count]
       params[:sort] ||= "created_at"
       sort_by = "created_at"
       sort_by = params[:sort] if params[:sort] && sorts.include?(params[:sort])
