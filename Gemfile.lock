@@ -735,7 +735,7 @@ GEM
       bundler (>= 1.3.0)
       railties (= 5.2.3)
       sprockets-rails (>= 2.0.0)
-    rails-assets-airbrake-js-client (1.5.0)
+    rails-assets-airbrake-js-client (1.6.6)
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
@@ -1070,7 +1070,7 @@ DEPENDENCIES
   rack-host-redirect (~> 1.3)
   rack-timeout (~> 0.5)
   rails (~> 5.2, >= 5.2.3)
-  rails-assets-airbrake-js-client (~> 1.5)!
+  rails-assets-airbrake-js-client (~> 1.6)!
   rails-observers (~> 0.1)
   rb-fsevent (~> 0.10)
   recaptcha (~> 4.13)
