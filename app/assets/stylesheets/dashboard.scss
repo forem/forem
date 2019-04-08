@@ -97,6 +97,29 @@
       }
     }
   }
+
+  .actions-secondary {
+    padding-bottom: 20px;
+    a.video-upload-cta {
+      display: inline-block;
+      float: left;
+    }
+    select {
+      float: right;
+      display: block;
+      font-size:19px;
+      padding:12px;
+      border:1px solid rgb(222, 230, 233);
+      border-radius:3px;
+      background-color:white;
+      outline: none;
+    }
+    .clear {
+      clear: both;
+      display: block;
+    }
+  }
+
   .dashboard-analytics-header-wrapper {
     text-align: center;
     margin-bottom: 28px;
@@ -147,10 +170,6 @@
     }
   }
 
-  .video-upload-cta {
-    display: inline-block;
-    margin: 10px 0px 20px;
-  }
 
   .single-article {
     border: 1px solid $light-medium-gray;

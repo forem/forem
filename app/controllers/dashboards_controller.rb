@@ -5,6 +5,14 @@ class DashboardsController < ApplicationController
 
   def show
     fetch_and_authorize_user
+
+    unless %w[user_followers organization_user_followers].include?(params[:which])
+      sorts = %w[reated_at comments_count positive_reactions_count page_views_count]
+      params[:sort] ||= "created_at"
+      sort_by = "created_at"
+      sort_by = params[:sort] if params[:sort] && sorts.include?(params[:sort])
+    end
+
     if params[:which] == "user_followers"
       @follows = Follow.where(followable_id: @user.id, followable_type: "User").
         includes(:follower).order("created_at DESC").limit(80)
@@ -12,9 +20,9 @@ class DashboardsController < ApplicationController
       @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
         includes(:follower).order("created_at DESC").limit(80)
     elsif @user&.organization && @user&.org_admin && params[:which] == "organization"
-      @articles = @user.organization.articles.order("created_at DESC").decorate
+      @articles = @user.organization.articles.order("#{sort_by} DESC").decorate
     elsif @user
-      @articles = @user.articles.order("created_at DESC").decorate
+      @articles = @user.articles.order("#{sort_by} DESC").decorate
     end
     # Updates analytics in background if appropriate:
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
