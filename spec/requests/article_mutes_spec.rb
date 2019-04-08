@@ -9,7 +9,7 @@ RSpec.describe "ArticleMutes", type: :request do
     it "returns 302 upon success" do
       article = create(:article, user: user)
       patch "/article_mutes/#{article.id}",
-        params: { article: { receive_notifications: false } }
+            params: { article: { receive_notifications: false } }
       expect(response).to have_http_status(:found)
     end
   end

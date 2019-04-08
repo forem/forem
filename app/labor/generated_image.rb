@@ -28,11 +28,11 @@ class GeneratedImage
 
   def cloudinary_generated_url(path)
     cl_image_path("https://dev.to/social_previews#{path}",
-      gravity: "north",
-      height: 400,
-      width: 800,
-      crop: "fill",
-      sign_url: true,
-      type: "url2png")
+                  gravity: "north",
+                  height: 400,
+                  width: 800,
+                  crop: "fill",
+                  sign_url: true,
+                  type: "url2png")
   end
 end

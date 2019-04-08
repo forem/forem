@@ -42,8 +42,8 @@ class MarkdownParser
                       br ul ol li small sup sub img a span hr blockquote kbd]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: allowed_tags,
-    attributes: allowed_attributes
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
   end
 
   def evaluate_limited_markdown
@@ -54,8 +54,8 @@ class MarkdownParser
     allowed_tags = %w[strong i u b em p br code]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: allowed_tags,
-    attributes: allowed_attributes
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
   end
 
   def tags_used
@@ -165,13 +165,13 @@ class MarkdownParser
                 "auto"
               end
     cl_image_path(source,
-      type: "fetch",
-      width: width,
-      crop: "limit",
-      quality: quality,
-      flags: "progressive",
-      fetch_format: "auto",
-      sign_url: true).gsub(",", "%2C")
+                  type: "fetch",
+                  width: width,
+                  crop: "limit",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: "auto",
+                  sign_url: true).gsub(",", "%2C")
   end
 
   def wrap_all_images_in_links(html)

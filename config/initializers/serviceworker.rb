@@ -2,9 +2,9 @@ Rails.application.configure do
   config.serviceworker.routes.draw do
     # map to assets implicitly
     match "/serviceworker.js",
-        headers: { "Cache-Control" => "public, max-age=8000, s-max-age=20000, no-cache" }
+          headers: { "Cache-Control" => "public, max-age=8000, s-max-age=20000, no-cache" }
     match "/manifest.json",
-        headers: { "Cache-Control" => "public, max-age=8000, s-max-age=20000, no-cache" }
+          headers: { "Cache-Control" => "public, max-age=8000, s-max-age=20000, no-cache" }
     # Examples
     #
     # map to a named asset explicitly

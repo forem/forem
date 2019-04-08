@@ -37,14 +37,14 @@ class Comment < ApplicationRecord
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
     add_index "ordered_comments",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attributes :id, :user_id, :commentable_id, :commentable_type, :id_code_generated, :path,
-        :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
+                 :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
       attribute :body_html do
         HTML_Truncator.truncate(processed_html,
-          500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
+                                500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
       end
       attribute :url do
         path

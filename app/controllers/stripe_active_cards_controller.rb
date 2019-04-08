@@ -42,7 +42,7 @@ class StripeActiveCardsController < ApplicationController
       customer.sources.retrieve(params[:id]).delete
       customer.save
       redirect_to "/settings/billing",
-        notice: "Your card has been successfully removed."
+                  notice: "Your card has been successfully removed."
     else
       redirect_to "/settings/billing", flash: { error:
         "Can't remove card if you have an active membership. Please cancel your membership first." }
