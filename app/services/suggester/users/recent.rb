@@ -8,8 +8,8 @@ module Suggester
 
       def suggest
         users = if user.decorate.cached_followed_tag_names.any?
-                  ((recent_producers(3) - [user]).
-                           sample(55) + tagged_producers).uniq
+                  (recent_producers(3) - [user]).
+                    sample(50).uniq
                 else
                   (recent_commenters(4, 30) + recent_top_producers - [user]).
                     uniq.sample(50)
@@ -43,10 +43,6 @@ module Suggester
 
       def recent_commenters(num_coumments = 2, limit = 8)
         User.where("comments_count > ?", num_coumments).order("updated_at DESC").limit(limit).to_a
-      end
-
-      def tagged_producers
-        User.tagged_with(user.decorate.cached_followed_tag_names, any: true).limit(15).to_a
       end
 
       def established_user_article_count

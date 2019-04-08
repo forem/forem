@@ -7,8 +7,6 @@ class User < ApplicationRecord
   include AlgoliaSearch
   include Storext.model
 
-  acts_as_taggable_on :tags
-
   acts_as_followable
   acts_as_follower
 
@@ -132,7 +130,7 @@ class User < ApplicationRecord
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
-  validate  :unique_including_orgs
+  validate  :unique_including_orgs, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
@@ -516,7 +514,7 @@ class User < ApplicationRecord
   end
 
   def tag_list
-    cached_followed_tag_names
+    "" # Unused but necessary for search index
   end
 
   def main_image; end
@@ -554,16 +552,11 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.sanitize(
-      comments.last(2).pluck(:body_markdown).join(" "),
-    )[0..2500]
+    "" # Unused but necessary for search index
   end
 
   def body_text
-    summary.to_s + ActionView::Base.full_sanitizer.
-      sanitize(articles.last(50).
-        pluck(:processed_html).
-        join(" "))[0..2500]
+    "" # Unused but necessary for search index
   end
 
   def tag_keywords_for_search
@@ -575,8 +568,8 @@ class User < ApplicationRecord
   end
 
   def search_score
-    article_score = (articles_count + comments_count + reactions_count) * 10
-    score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
+    counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
+    score = (counts_score + tag_keywords_for_search.size) * reputation_modifier
     score.to_i
   end
 

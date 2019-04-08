@@ -268,6 +268,8 @@ class Article < ApplicationRecord
   end
 
   def comments_blob
+    return "" if comments_count.zero?
+
     ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
   end
 
