@@ -181,3 +181,6 @@ Rails:
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
