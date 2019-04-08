@@ -27,15 +27,6 @@ RSpec/FilePath:
 RSpec/MultipleExpectations:
   Max: 6
 
-Style/NegatedIf:
-  Exclude:
-    - 'app/controllers/internal/users_controller.rb'
-
-Style/DoubleNegation:
-  Exclude:
-    - 'app/models/github_issue.rb'
-    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
-
 # Offense count: 15
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.
@@ -89,32 +80,8 @@ Rails/OutputSafety:
     - 'app/views/api/v0/articles/show.json.jbuilder'
     - 'app/views/articles/feed.rss.builder'
 
-Rails/SkipsModelValidations:
-  Enabled: false
-
-Style/FormatString:
-  Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#sprintf'
-  Enabled: false
-
-Style/TrivialAccessors:
-  Description: 'Prefer attr_* methods to trivial readers/writers.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#attr_family'
-  Enabled: false
-
 Layout/AlignParameters:
   Description: 'Here we check if the parameters on a multi-line method call or definition are aligned.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-double-indent'
   Enabled: false
 
-Layout/ConditionPosition:
-  Description: >-
-    Checks for condition placed in a confusing position relative to
-    the keyword.
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#same-line-condition'
-  Enabled: false
-
-Layout/InitialIndentation:
-  Description: >-
-    Checks the indentation of the first non-blank non-comment line in a file.
-  Enabled: false

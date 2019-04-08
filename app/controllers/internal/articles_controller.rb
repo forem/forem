@@ -2,6 +2,7 @@ class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
 
   def index
+    @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
     case params[:state]
 
     when /not\-buffered/
@@ -57,7 +58,7 @@ class Internal::ArticlesController < Internal::ApplicationController
         order("hotness_score DESC").
         page(params[:page]).
         limited_columns_internal_select.
-        per(50)
+        per(30)
 
       @featured_articles = Article.
         where(published: true).

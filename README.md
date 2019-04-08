@@ -187,6 +187,12 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 1. run `docker-compose up`
 1. That's it! Navigate to `localhost:3000`
 
+### Gitpod Installation
+
+Simply open dev.to in Gitpod, a free online dev environment for GitHub:
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thepracticaldev/dev.to)
+
 #### Starting the application
 
 We're mostly a Rails app, with a bit of Webpack sprinkled in. **For most cases, simply running `bin/rails server` will do.** If you're working with Webpack though, you'll need to run the following:

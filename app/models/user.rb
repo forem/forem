@@ -64,8 +64,8 @@ class User < ApplicationRecord
             length: { in: 2..30 },
             exclusion: { in: ReservedWords.all, message: "username is reserved" }
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
-  validates :twitter_username, uniqueness: { allow_blank: true }
-  validates :github_username, uniqueness: { allow_blank: true }
+  validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
+  validates :github_username, uniqueness: { allow_nil: true }, if: :github_username_changed?
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
@@ -205,6 +205,11 @@ class User < ApplicationRecord
 
   def index_id
     "users-#{id}"
+  end
+
+  def set_remember_fields
+    self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
+    self.remember_created_at ||= Time.now.utc
   end
 
   def estimate_default_language!
