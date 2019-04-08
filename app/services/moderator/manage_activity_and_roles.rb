@@ -97,6 +97,7 @@ module Moderator
       when "Regular Member"
         remove_negative_roles
         user.remove_role :pro
+        remove_trusted_role
       when "Trusted"
         remove_negative_roles
         user.remove_role :pro
