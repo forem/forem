@@ -45,6 +45,30 @@ class MailchimpBot
     success
   end
 
+  def manage_community_moderator_list
+    success = false
+    status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
+    begin
+      gibbon.lists(ApplicationConfig["MAILCHIMP_COMMUNITY_MODERATORS_ID"]).members(target_md5_email).upsert(
+        body: {
+          email_address: user.email,
+          status: status,
+          merge_fields: {
+            NAME: user.name.to_s,
+            USERNAME: user.username.to_s,
+            TWITTER: user.twitter_username.to_s,
+            GITHUB: user.github_username.to_s,
+            IMAGE_URL: user.profile_image_url.to_s
+          }
+        },
+      )
+      success = true
+    rescue Gibbon::MailChimpError => e
+      report_error(e)
+    end
+    success
+  end
+
   def manage_tag_moderator_list
     success = false
     tags = user.roles.where(name: "tag_moderator").map { |t| Tag.find(t.resource_id).name }
