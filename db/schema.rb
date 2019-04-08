@@ -10,9 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_02_224426) do
+ActiveRecord::Schema.define(version: 2019_04_04_102732) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -777,7 +776,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_224426) do
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
     t.string "education"
-    t.string "email", default: "", null: false
+    t.string "email"
     t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
     t.boolean "email_connect_messages", default: true
