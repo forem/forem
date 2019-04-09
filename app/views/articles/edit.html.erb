@@ -32,7 +32,7 @@
 <% end %>
 
 <% unless @article.has_frontmatter? %>
-  <%= javascript_pack_tag "articleForm", defer: true %>
+  <%= javascript_packs_with_chunks_tag "articleForm", defer: true %>
   <%= render "articles/v2_form" %>
 <% else %>
   <%= render "articles/markdown_form" %>
