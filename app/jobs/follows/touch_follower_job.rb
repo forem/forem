@@ -6,8 +6,7 @@ module Follows
       follow = Follow.find_by(id: follow_id)
       return unless follow
 
-      follow.follower.touch
-      follow.follower.touch(:last_followed_at)
+      follow.follower.touch(:updated_at, :last_followed_at)
     end
   end
 end

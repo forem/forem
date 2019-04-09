@@ -56,14 +56,14 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       end
 
       it "destroys notification if it exists" do
-        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: Time.now - 1.year)
+        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
         expect do
           described_class.call(follow_data(unfollow))
         end.to change(Notification, :count).by(-1)
       end
 
       it "destroys the correct notification" do
-        notification = create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: Time.now - 1.year)
+        notification = create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
         described_class.call(follow_data(unfollow))
         expect(Notification.where(id: notification.id)).not_to exist
       end
@@ -107,7 +107,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
 
     context "when notification exists" do
       before do
-        create(:notification, user: user2, action: "Follow", notifiable: follow, notified_at: Time.now - 1.year)
+        create(:notification, user: user2, action: "Follow", notifiable: follow, notified_at: 1.year.ago)
       end
 
       it "does not create a notification" do
@@ -119,7 +119,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       it "updates a notification" do
         notification = described_class.call(follow_data(follow2))
         expect(notification.notifiable).to eq(follow2)
-        expect(notification.notified_at).to be >= Time.now - 1.day
+        expect(notification.notified_at).to be >= 1.day.ago
       end
     end
 
@@ -127,7 +127,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       let(:unfollow) { user.stop_following(user2) }
 
       before do
-        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: Time.now - 1.year)
+        create(:notification, action: "Follow", user: user2, notifiable: follow, notified_at: 1.year.ago)
       end
 
       it "does not destroy a notification" do

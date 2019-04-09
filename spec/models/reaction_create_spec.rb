@@ -37,20 +37,17 @@ RSpec.describe Reaction, type: :model do
     before { ActiveJob::Base.queue_adapter = :inline }
 
     it "updates the reactable Comment" do
-      comment = create(:comment, commentable: article)
-      comment.update_columns(updated_at: Time.now - 1.day)
-      now = Time.now
+      updated_at = 1.day.ago
+      comment = create(:comment, commentable: article, updated_at: updated_at)
       create(:reaction, reactable: comment, user: user)
-      comment.reload
-      expect(comment.updated_at).to be >= now
+      expect(comment.reload.updated_at).to be > updated_at
     end
 
     it "touches the user" do
-      user.update_columns(updated_at: Time.now - 1.day)
-      now = Time.now
+      updated_at = 1.day.ago
+      user.update_columns(updated_at: updated_at)
       create(:reaction, reactable: article, user: user)
-      user.reload
-      expect(user.updated_at).to be >= now
+      expect(user.reload.updated_at).to be > updated_at
     end
   end
 end

@@ -178,21 +178,9 @@ Layout/MultilineMethodCallIndentation:
 Rails:
   Enabled: true
 
-Rails/Date:
-  Description: >-
-    Checks the correct usage of date aware methods,
-    such as Date.today, Date.current etc.
-  Enabled: true
-
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: false
 
 Rails/SkipsModelValidations:
-  Enabled: false
-
-Rails/TimeZone:
-  Description: 'Checks the correct usage of time zone aware methods.'
-  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
-  Reference: 'http://danilenko.org/2012/7/6/rails_timezones'
   Enabled: false

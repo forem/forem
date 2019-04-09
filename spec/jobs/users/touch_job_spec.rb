@@ -10,12 +10,10 @@ RSpec.describe Users::TouchJob, type: :job do
     end
 
     it "touches a user" do
-      user = create(:user)
-      user.update_columns(updated_at: Time.now - 1.day, last_followed_at: Time.now - 1.day)
-      now = Time.now
+      timestamp = 1.day.ago
+      user = create(:user, updated_at: timestamp, last_followed_at: timestamp)
       described_class.perform_now(user.id)
-      user.reload
-      expect(user.updated_at).to be >= now
+      expect(user.reload.updated_at).to be > timestamp
     end
   end
 end
