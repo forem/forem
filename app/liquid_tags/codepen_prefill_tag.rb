@@ -21,6 +21,8 @@ class CodepenPrefillTag < Liquid::Block
     html
   end
 
+  private
+
   def parse_data(input)
     options = create_options(input)
     data_attr = ["editable", "default-tab", "height", "theme-id"].to_set
