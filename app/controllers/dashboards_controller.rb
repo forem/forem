@@ -23,6 +23,8 @@ class DashboardsController < ApplicationController
         when "reactions-desc" then @user.organization.articles.order("positive_reactions_count DESC").decorate
         when "comments-asc" then @user.organization.articles.order("comments_count ASC").decorate
         when "comments-desc" then @user.organization.articles.order("comments_count DESC").decorate
+        when "published-asc" then @user.organization.articles.order("published_at ASC").decorate
+        when "published-desc" then @user.organization.articles.order("published DESC").decorate
         else
           @user.organization.articles.order("created_at DESC").decorate
         end
@@ -37,6 +39,8 @@ class DashboardsController < ApplicationController
         when "reactions-desc" then @user.articles.order("positive_reactions_count DESC").decorate
         when "comments-asc" then @user.articles.order("comments_count ASC").decorate
         when "comments-desc" then @user.articles.order("comments_count DESC").decorate
+        when "published-asc" then @user.organization.articles.order("published_at ASC").decorate
+        when "published-desc" then @user.organization.articles.order("published DESC").decorate
         else
           @user.articles.order("created_at DESC").decorate
         end
