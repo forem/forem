@@ -32,13 +32,14 @@ class CodepenPrefillTag < Liquid::Block
     options.each do |i|
       key = i.split("=")[0]
       next unless data_attr.include?(key)
+
       val = i.split("=")[1]
       if key == data_attr[0]
-        val = "true" unless (val == "false")
+        val = "true" unless val == "false"
       elsif key == data_attr[2]
-        val = "400" unless (val.to_i < 600)
+        val = "600" unless val.to_i < 600
       end
-      attr = "data-"+key+"="+val
+      attr = "data-" + key + "=" + val
       data = data + " " + attr
     end
 
@@ -50,12 +51,13 @@ class CodepenPrefillTag < Liquid::Block
     options = stripped_input.split(" ")
     options.map { |o| valid_option(o) }.reject(&:nil?)
 
-    prefill_attr = ["title", "description", "head", "tags", "html_classes", "stylesheets", "scripts"]
+    prefill_attr = %w[title description head tags html_classes stylesheets scripts]
 
     prefill = {}
     options.each do |i|
       key = i.split("=")[0]
       next unless prefill_attr.include?(key)
+
       val = i.split("=")[1]
       val = val.split(",") if i.include? ","
       prefill[key] = val

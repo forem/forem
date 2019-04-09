@@ -150,17 +150,82 @@
     </dl>
 
     <h3><strong>CodePen Prefill Embed</strong></h3>
-    <p>All you need is the full CodePen <code>link</code>, ending in the pen ID code, as follows:</p>
-    <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX %}</code>
-
+    <p>Codepen Prefill Embed allows you to write code inside the editor without having to make and save a CodePen</p>
+    <p>Rather than determining your settings within CodePen, you can add arguments within the opening liquid tag. The following options in the opening tag are:</p>
     <dl>
+      <dt><code>height</code></dt>
+      <dd>
+        Determines how tall the CodePen embed will be. Limited to <i>600</i> max and defaults to <i>300</i> if not pre-determined. <br>
+        <code>{% codepenprefill height=400 %}</code>
+      </dd>
+
+      <dt><code>theme-id</code></dt>
+      <dd>
+        Sets the theme for the Codepen Embed. Some options include <i>light</i> and <i>dark</i>. <br>
+        <code>{% codepenprefill theme-id=dark %}</code>
+      </dd>
+
       <dt><code>default-tab</code></dt>
       <dd>
-        Add default-tab parameter to your CodePen embed tag. Default to <i>result</i><br>
-        <code>{% codepen https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result %}</code>
+        Determines which tab(s) will be first shown to users. Options depend on how many tabs you have, but are named after their <code>data-lang</code>. Defaults to <i>result</i>. <br>
+        <code>{% codepenprefill default-tab="js,result" %}</code>
+      </dd>
+
+      <dt><code>editable</code></dt>
+      <dd>
+        Takes either true or false and allows or disallows users to interact with your CodePen Embed. <br>
+        <code>{% codepenprefill editable=true %}</code>
+      </dd>
+
+      <dt><code>tags</code></dt>
+      <dd>
+        Attaches relevant tags to your CodePen Embed. <br>
+        <code>{% codepenprefill tags=react,redux,demo %}</code>
+      </dd>
+
+      <dt><code>html_classes</code></dt>
+      <dd>
+        Adds HTML classes to the CodePen Embed. <br>
+        <code>{% codepenprefill html_classes=no-js,loading %}</code>
+      </dd>
+
+      <dt><code>stylesheets</code></dt>
+      <dd>
+        Allows the CodePen Embed to access external styles. <br>
+        <code>{% codepenprefill stylesheets=website.com/bootstrap.css,webpage.com/normalize.css %}</code>
+      </dd>
+
+      <dt><code>scripts</code></dt>
+      <dd>
+        Allows the Codepen Embed to access external scripts and libraries. <br>
+        <code>{% codepenprefill scripts=website.com/react.js,webpage.com/redux.js %}</code>
       </dd>
     </dl>
 
+    <p>When combining multiple arguments in the opening tag, separate each group with a space and when arguments contain
+      multiple values/links such as the stylesheet and script examples aboe,<b>only</b> use a comma to separate resources. Ex: <br>
+      <code>{% codepenprefill height=500 theme-id=dark <br> scripts=website.com/react.js,webpage.com/redux.js }</code>
+    </p>
+
+    <p>
+      Between the opening tag and the closing tag is where your code will live. You will have to wrap each group of code in the <code>pre</code> tag and label the appropriate <code>data-lang</code>.
+      The format will look like this:
+    </p>
+    <pre>
+    {% codepenprefill height=500 theme-id=dark ... }
+      &lt;pre data-lang="html"&gt;
+        // your html code here
+      &lt;/pre&gt;
+      &lt;pre data-lang="scss"&gt;
+        // your styles here
+      &lt;/pre&gt;
+      &lt;pre data-lang="babel"&gt;
+        // your script here
+      &lt;/pre&gt;
+    {% endcodepenprefill %}
+    </pre>
+
+    <p>To learn more about CodePen Prefill Embeds, please head to their <a href="https://blog.codepen.io/documentation/prefill-embeds/">documentation</a>. </p>
 
 
     <h3><strong>RunKit Embed</strong></h3>
