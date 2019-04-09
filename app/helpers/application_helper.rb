@@ -108,14 +108,14 @@ module ApplicationHelper
     quality = "auto"
 
     cl_image_path(url,
-      type: "fetch",
-      width: width,
-      height: height,
-      crop: "imagga_scale",
-      quality: quality,
-      flags: "progressive",
-      fetch_format: "auto",
-      sign_url: true)
+                  type: "fetch",
+                  width: width,
+                  height: height,
+                  crop: "imagga_scale",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: "auto",
+                  sign_url: true)
   end
 
   def cloud_social_image(article)
@@ -126,14 +126,14 @@ module ApplicationHelper
       return src if src.start_with? "https://res.cloudinary.com/"
 
       cl_image_path(src,
-        type: "fetch",
-        width: "1000",
-        height: "500",
-        crop: "imagga_scale",
-        quality: "auto",
-        flags: "progressive",
-        fetch_format: "auto",
-        sign_url: true)
+                    type: "fetch",
+                    width: "1000",
+                    height: "500",
+                    crop: "imagga_scale",
+                    quality: "auto",
+                    flags: "progressive",
+                    fetch_format: "auto",
+                    sign_url: true)
     end
   end
 
@@ -159,12 +159,12 @@ module ApplicationHelper
 
   def sanitize_rendered_markdown(processed_html)
     ActionController::Base.helpers.sanitize processed_html.html_safe,
-      scrubber: RenderedMarkdownScrubber.new
+                                            scrubber: RenderedMarkdownScrubber.new
   end
 
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
-      tags: %w[p b i em strike strong u br]
+                                            tags: %w[p b i em strike strong u br]
   end
 
   def track_split_version(url, version)
@@ -173,11 +173,11 @@ module ApplicationHelper
 
   def follow_button(followable, style = "full")
     tag :button, # Yikes
-      class: "cta follow-action-button",
-      data: {
-        info: { id: followable.id, className: followable.class.name, style: style }.to_json,
-        "follow-action-button" => true
-      }
+        class: "cta follow-action-button",
+        data: {
+          info: { id: followable.id, className: followable.class.name, style: style }.to_json,
+          "follow-action-button" => true
+        }
   end
 
   def user_colors_style(user)

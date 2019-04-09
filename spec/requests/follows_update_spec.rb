@@ -13,7 +13,7 @@ RSpec.describe "Following/Unfollowing", type: :request do
     it "updates user to offer mentorship" do
       user.follow(tag)
       put "/follows/#{Follow.last.id}",
-      params: { follow: { points: 3.0 } }
+          params: { follow: { points: 3.0 } }
       expect(Follow.last.points).to eq(3.0)
     end
 
@@ -21,7 +21,7 @@ RSpec.describe "Following/Unfollowing", type: :request do
       user_2.follow(tag)
       expect do
         put "/follows/#{Follow.last.id}",
-          params: { follow: { points: 3.0 } }
+            params: { follow: { points: 3.0 } }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end

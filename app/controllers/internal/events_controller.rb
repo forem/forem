@@ -39,18 +39,18 @@ module Internal
 
     def event_params
       params.require(:event).permit(:title,
-                                  :category,
-                                  :event_date,
-                                  :starts_at,
-                                  :ends_at,
-                                  :location_name,
-                                  :cover_image,
-                                  :location_url,
-                                  :description_markdown,
-                                  :published,
-                                  :host_name,
-                                  :profile_image,
-                                  :live_now)
+                                    :category,
+                                    :event_date,
+                                    :starts_at,
+                                    :ends_at,
+                                    :location_name,
+                                    :cover_image,
+                                    :location_url,
+                                    :description_markdown,
+                                    :published,
+                                    :host_name,
+                                    :profile_image,
+                                    :live_now)
     end
   end
 end

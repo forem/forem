@@ -1,6 +1,6 @@
 class EmailLogic
   attr_reader :open_percentage, :last_email_sent_at,
-    :days_until_next_email, :articles_to_send
+              :days_until_next_email, :articles_to_send
 
   def initialize(user)
     @user = user

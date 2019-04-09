@@ -6,6 +6,9 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   let(:pro_api_token)     { create(:api_secret, user: pro_user) }
   let(:pro_org_member)    { create(:user, :pro, :org_member) }
   let(:org_member_token)  { create(:api_secret, user: pro_org_member) }
+  let(:article)           { create(:article, user: user) }
+  let(:pro_user_article)  { create(:article, user: pro_user) }
+  let(:pro_org_article)   { create(:article, user: pro_user, organization: org) }
 
   context "when an invalid token is given" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
@@ -68,6 +71,36 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
       org = create(:organization)
       get "/api/analytics/#{endpoint}?organization_id=#{org.id}#{params}", headers: { "api-key" => org_member_token.secret }
       expect(response.status).to eq 401
+    end
+  end
+
+  context "when attempting to view someone else's article analytics" do
+    it "responds with status 401 unauthorized" do
+      get "/api/analytics/#{endpoint}?article_id=#{article.id}#{params}"
+      expect(response.status).to eq 401
+    end
+  end
+
+  context "when viewing as current user" do
+    it "responds with status 200 OK" do
+      sign_in pro_user
+      get "/api/analytics/#{endpoint}?#{params}"
+      expect(response.status).to eq 200
+    end
+  end
+
+  context "when viewing your own single article's analytics" do
+    it "responds with status 200 OK" do
+      sign_in pro_user
+      get "/api/analytics/#{endpoint}?article_id=#{pro_user_article.id}#{params}"
+      expect(response.status).to eq 200
+    end
+  end
+
+  context "when viewing your own organizaiton's single article's analytics" do
+    it "responds with status 200 OK" do
+      sign_in pro_org_member
+      get "/api/analytics/#{endpoint}?article_id=#{pro_org_article.id}#{params}"
     end
   end
 end

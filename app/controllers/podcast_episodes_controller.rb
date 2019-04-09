@@ -20,10 +20,10 @@ class PodcastEpisodesController < ApplicationController
 
   def podcast_episode_params
     params.require(:podcast_episode).permit(:title,
-                                    :body,
-                                    :image,
-                                    :social_image,
-                                    :remote_social_image_url,
-                                    :quote)
+                                            :body,
+                                            :image,
+                                            :social_image,
+                                            :remote_social_image_url,
+                                            :quote)
   end
 end

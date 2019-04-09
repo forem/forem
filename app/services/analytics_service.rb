@@ -1,6 +1,7 @@
 class AnalyticsService
-  def initialize(user_or_org, start_date: "", end_date: "")
+  def initialize(user_or_org, start_date: "", end_date: "", article_id: nil)
     @user_or_org = user_or_org
+    @article_id = article_id
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
 
@@ -71,8 +72,15 @@ class AnalyticsService
   attr_reader :user_or_org, :start_date, :end_date, :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
 
   def load_data
-    @article_data = Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
-    article_ids = @article_data.pluck(:id)
+    if @article_id
+      @article_data = Article.where(id: @article_id, published: true, "#{user_or_org.class.name.downcase}_id" => user_or_org.id)
+      raise UnauthorizedError if @article_data.blank?
+
+      article_ids = @article_id
+    else
+      @article_data = Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
+      article_ids = @article_data.pluck(:id)
+    end
 
     if @start_date && @end_date
       @reaction_data = Reaction.where(reactable_id: article_ids, reactable_type: "Article").
