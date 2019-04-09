@@ -15,6 +15,18 @@
         <%= f.label :email_membership_newsletter, "Send me sustaining membership newsletter emails" %>
       </div>
     <% end %>
+    <% if current_user.has_role?(:trusted) %>
+      <div class="sub-field">
+        <%= f.check_box :email_community_mod_newsletter %>
+        <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails" %>
+      </div>
+    <% end %>
+    <% if current_user.has_role?(:tag_moderator) %>
+      <div class="sub-field">
+        <%= f.check_box :email_community_mod_newsletter %>
+        <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails" %>
+      </div>
+    <% end %>
     <div class="sub-field">
       <%= f.check_box :email_comment_notifications %>
       <%= f.label :email_comment_notifications, "Send me an email when someone replies to me in a comment thread" %>
