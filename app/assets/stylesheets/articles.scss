@@ -666,11 +666,31 @@
       &.comments-count {
         left: 93px;
         img {
+          opacity: 0.8;
           width: 28px;
+        }
+        &:hover {
+          a {
+            color: rgb(0,0,0);
+          }
+          img {
+            opacity: 1;
+          }
         }
       }
       &.reactions-count {
         left: 20px;
+        img {
+          opacity: 0.8;
+        }
+        &:hover {
+          a {
+            color: rgb(0,0,0);
+          }
+          img {
+            opacity: 1;
+          }
+        }
       }
       &.bookmark-engage {
         right: 12px;
