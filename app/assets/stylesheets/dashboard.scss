@@ -328,7 +328,7 @@
   }
   .no-articles {
     text-align: center;
-    background: white;
+    background: var(--theme-container-accent-background, $light-gray);
     padding: 2vw 3vw 6vw;
     box-shadow: $shadow;
     border-radius: 3px;
@@ -348,9 +348,9 @@
       margin: auto;
     }
     img {
+      margin-top: 30px;
       width: 90%;
       max-width: 270px;
-      min-height: 350px;
     }
   }
 }
