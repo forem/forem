@@ -23,7 +23,7 @@ class CodepenPrefillTag < Liquid::Block
 
   def parse_data(input)
     options = create_options(input)
-    data_attr = ["editable", "default-tab", "height", "theme-id"]
+    data_attr = ["editable", "default-tab", "height", "theme-id"].to_set
 
     data = ""
     options.each do |i|
@@ -40,19 +40,17 @@ class CodepenPrefillTag < Liquid::Block
   end
 
   def validate_data_options(key, val)
-    if key == "editable"
-      val = "true" unless val == "false"
-    elsif key == "height"
-      val = "600" unless val.to_i < 600
-    elsif key == "default-tab"
-      val = val.to_s
+    if (key == "editable") && (val != false)
+      val = "true"
+    elsif (key == "height") && (val.to_i > 600)
+      val = "600"
     end
     val
   end
 
   def parse_prefill(input)
     options = create_options(input)
-    prefill_attr = %w[title description head tags html_classes stylesheets scripts]
+    prefill_attr = %w[title description head tags html_classes stylesheets scripts].to_set
 
     prefill = {}
     options.each do |i|
