@@ -58,11 +58,16 @@ class CodepenPrefillTag < Liquid::Block
       next unless prefill_attr.include?(key)
 
       val = i.split("=")[1]
-      val = val.split(",") if i.include? ","
+      val = split_multiple_options(key, val)
       prefill[key] = val
     end
 
     prefill.to_json
+  end
+
+  def split_multiple_options(_key, val)
+    val = val.split(",") if val.include? ","
+    val
   end
 
   def create_options(input)
