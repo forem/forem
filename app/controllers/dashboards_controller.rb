@@ -24,7 +24,7 @@ class DashboardsController < ApplicationController
         when "comments-asc" then @user.organization.articles.order("comments_count ASC").decorate
         when "comments-desc" then @user.organization.articles.order("comments_count DESC").decorate
         else
-          @user.organization.articles.order("created_at ASC").decorate
+          @user.organization.articles.order("created_at DESC").decorate
         end
     elsif @user
       @articles =
@@ -38,7 +38,7 @@ class DashboardsController < ApplicationController
         when "comments-asc" then @user.articles.order("comments_count ASC").decorate
         when "comments-desc" then @user.articles.order("comments_count DESC").decorate
         else
-          @user.articles.order("created_at ASC").decorate
+          @user.articles.order("created_at DESC").decorate
         end
     end
     # Updates analytics in background if appropriate:
