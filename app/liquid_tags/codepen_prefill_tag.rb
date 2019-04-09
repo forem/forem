@@ -31,16 +31,23 @@ class CodepenPrefillTag < Liquid::Block
       next unless data_attr.include?(key)
 
       val = i.split("=")[1]
-      if key == data_attr[0]
-        val = "true" unless val == "false"
-      elsif key == data_attr[2]
-        val = "600" unless val.to_i < 600
-      end
+      val = validate_data_options(key, val, data_attr)
       attr = "data-" + key + "=" + val
       data = attr + " " + data
     end
 
     data
+  end
+
+  def validate_data_options(key, val)
+    if key == "editable"
+      val = "true" unless val == "false"
+    elsif key == "height"
+      val = "600" unless val.to_i < 600
+    elsif key == "default-tab"
+      val = val.to_s
+    end
+    val
   end
 
   def parse_prefill(input)
