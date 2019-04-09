@@ -36,7 +36,7 @@ class CodepenPrefillTag < Liquid::Block
       data = attr + " " + data
     end
 
-    data
+    data.rstrip
   end
 
   def validate_data_options(key, val)
