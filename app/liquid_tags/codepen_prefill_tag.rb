@@ -31,7 +31,7 @@ class CodepenPrefillTag < Liquid::Block
       next unless data_attr.include?(key)
 
       val = i.split("=")[1]
-      val = validate_data_options(key, val, data_attr)
+      val = validate_data_options(key, val)
       attr = "data-" + key + "=" + val
       data = attr + " " + data
     end
