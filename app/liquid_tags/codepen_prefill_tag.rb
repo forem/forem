@@ -12,7 +12,7 @@ class CodepenPrefillTag < Liquid::Block
       <div
         class="codepen"
         data-prefill='#{@prefill}'
-        '#{@data}'
+        #{@data}
         >
         #{content}
       </div>
