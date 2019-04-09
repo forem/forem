@@ -1,5 +1,5 @@
 import { configure } from '@storybook/preact';
-import '../../assets/stylesheets/minimal.scss';
+// import '../../assets/stylesheets/minimal.scss';
 
 // automatically import all files ending in *.stories.js
 const req = require.context('../', true, /.stories.jsx$/);
