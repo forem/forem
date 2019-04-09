@@ -22,10 +22,7 @@ class CodepenPrefillTag < Liquid::Block
   end
 
   def parse_data(input)
-    stripped_input = ActionController::Base.helpers.strip_tags(input)
-    options = stripped_input.split(" ")
-    options.map { |o| valid_option(o) }.reject(&:nil?)
-
+    options = create_options(input)
     data_attr = ["editable", "default-tab", "height", "theme-id"]
 
     data = ""
@@ -40,17 +37,14 @@ class CodepenPrefillTag < Liquid::Block
         val = "600" unless val.to_i < 600
       end
       attr = "data-" + key + "=" + val
-      data = data + " " + attr
+      data = attr + " " + data
     end
 
     data
   end
 
   def parse_prefill(input)
-    stripped_input = ActionController::Base.helpers.strip_tags(input)
-    options = stripped_input.split(" ")
-    options.map { |o| valid_option(o) }.reject(&:nil?)
-
+    options = create_options(input)
     prefill_attr = %w[title description head tags html_classes stylesheets scripts]
 
     prefill = {}
@@ -64,6 +58,13 @@ class CodepenPrefillTag < Liquid::Block
     end
 
     prefill.to_json
+  end
+
+  def create_options(input)
+    stripped_input = ActionController::Base.helpers.strip_tags(input)
+    options = stripped_input.split(" ")
+    options.map { |o| valid_option(o) }.reject(&:nil?)
+    options
   end
 
   def valid_option(option)

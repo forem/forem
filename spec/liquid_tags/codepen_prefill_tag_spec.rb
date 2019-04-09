@@ -34,7 +34,7 @@ RSpec.describe CodepenPrefillTag, type: :liquid_template do
         <div
           class="codepen"
           data-prefill='{"stylesheets":["website.com/bootstrap.css","webpage.com/normalize.css"],"scripts":["website.com/react.js","webpage.com/react-dom.js"]}'
-           data-height=500 data-theme-id=dark data-default-tab='js,result' data-editable=true
+          data-editable=true data-default-tab='js,result' data-theme-id=dark data-height=500
           >
           <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
         <html><body>
