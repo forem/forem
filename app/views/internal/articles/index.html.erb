@@ -52,7 +52,7 @@
               <%= HTML_Truncator.truncate(buffer_update.article.processed_html,
                                         50, ellipsis: '<a class="comment-read-more" href="' + buffer_update.article.path + '">... Read Entire Post</a>').html_safe %>
     <hr />
-    <code><b><%= Tag.find_by(id: buffer_update.tag_id)&.name || "@ThePracticalDev (main)" %>:</b></code>
+    <code><b><%= Tag.find_by(id: buffer_update.tag_id)&.name || buffer_update.social_service_name %>:</b></code>
     <form action="/internal/buffer_updates/<%= buffer_update.id %>" accept-charset="UTF-8" method="post">
       <input name="utf8" type="hidden" value="✓">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />

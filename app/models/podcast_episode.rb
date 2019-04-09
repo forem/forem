@@ -28,13 +28,13 @@ class PodcastEpisode < ApplicationRecord
   algoliasearch per_environment: true do
     attribute :id
     add_index "searchables",
-                  id: :index_id,
-                  per_environment: true do
+              id: :index_id,
+              per_environment: true do
       attribute :title, :body, :quote, :summary, :subtitle, :website_url,
-      :published_at, :comments_count, :path, :class_name,
-      :user_name, :user_username, :published, :comments_blob,
-      :body_text, :tag_list, :tag_keywords_for_search,
-      :positive_reactions_count, :search_score
+                :published_at, :comments_count, :path, :class_name,
+                :user_name, :user_username, :published, :comments_blob,
+                :body_text, :tag_list, :tag_keywords_for_search,
+                :positive_reactions_count, :search_score
       attribute :user do
         { name: podcast.name,
           username: user_username,
@@ -168,13 +168,13 @@ class PodcastEpisode < ApplicationRecord
 
         cloudinary_img_src = ActionController::Base.helpers.
           cl_image_path(img_src,
-            type: "fetch",
-            width: 725,
-            crop: "limit",
-            quality: quality,
-            flags: "progressive",
-            fetch_format: "auto",
-            sign_url: true)
+                        type: "fetch",
+                        width: 725,
+                        crop: "limit",
+                        quality: quality,
+                        flags: "progressive",
+                        fetch_format: "auto",
+                        sign_url: true)
         self.processed_html = processed_html.gsub(img_src, cloudinary_img_src)
       end
     end

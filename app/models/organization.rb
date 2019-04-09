@@ -36,7 +36,7 @@ class Organization < ApplicationRecord
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :cta_button_url,
-    url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+            url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :cta_button_text, length: { maximum: 20 }
   validates :cta_body_markdown, length: { maximum: 256 }
   before_save :remove_at_from_usernames

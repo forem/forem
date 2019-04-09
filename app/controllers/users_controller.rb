@@ -66,7 +66,7 @@ class UsersController < ApplicationController
       identity_username = "#{provider}_username".to_sym
       @user.update(identity_username => nil)
       redirect_to "/settings/#{@tab}",
-        notice: "Your #{provider.capitalize} account was successfully removed."
+                  notice: "Your #{provider.capitalize} account was successfully removed."
     else
       flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
       redirect_to "/settings/#{@tab}"
@@ -93,7 +93,7 @@ class UsersController < ApplicationController
     if (@organization = Organization.find_by(secret: params[:org_secret]))
       current_user.update(organization_id: @organization.id)
       redirect_to "/settings/organization",
-        notice: "You have joined the #{@organization.name} organization."
+                  notice: "You have joined the #{@organization.name} organization."
     else
       not_found
     end
@@ -103,7 +103,7 @@ class UsersController < ApplicationController
     authorize User
     current_user.update(organization_id: nil, org_admin: nil)
     redirect_to "/settings/organization",
-      notice: "You have left your organization."
+                notice: "You have left your organization."
   end
 
   def add_org_admin
@@ -112,7 +112,7 @@ class UsersController < ApplicationController
     user.update(org_admin: true)
     user.add_role :analytics_beta_tester if user.organization.approved
     redirect_to "/settings/organization",
-      notice: "#{user.name} is now an admin."
+                notice: "#{user.name} is now an admin."
   end
 
   def remove_org_admin
@@ -120,7 +120,7 @@ class UsersController < ApplicationController
     authorize user
     user.update(org_admin: false)
     redirect_to "/settings/organization",
-      notice: "#{user.name} is no longer an admin."
+                notice: "#{user.name} is no longer an admin."
   end
 
   def remove_from_org
@@ -128,7 +128,7 @@ class UsersController < ApplicationController
     authorize user
     user.update(organization_id: nil)
     redirect_to "/settings/organization",
-      notice: "#{user.name} is no longer part of your organization."
+                notice: "#{user.name} is no longer part of your organization."
   end
 
   def signout_confirm; end

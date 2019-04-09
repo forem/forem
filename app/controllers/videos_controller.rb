@@ -1,6 +1,6 @@
 class VideosController < ApplicationController
   after_action :verify_authorized, except: %i[index]
-  before_action :set_cache_control_headers
+  before_action :set_cache_control_headers, only: %i[index]
 
   def new
     authorize :video

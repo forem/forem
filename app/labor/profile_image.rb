@@ -10,14 +10,14 @@ class ProfileImage
 
   def get(width = 120)
     cl_image_path(get_link,
-                                   type: "fetch",
-                                   crop: "fill",
-                                   width: width,
-                                   height: width,
-                                   quality: "auto",
-                                   flags: "progressive",
-                                   fetch_format: "auto",
-                                   sign_url: true)
+                  type: "fetch",
+                  crop: "fill",
+                  width: width,
+                  height: width,
+                  quality: "auto",
+                  flags: "progressive",
+                  fetch_format: "auto",
+                  sign_url: true)
   end
 
   def get_link

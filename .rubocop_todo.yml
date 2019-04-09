@@ -79,9 +79,3 @@ Rails/OutputSafety:
     - 'app/models/message.rb'
     - 'app/views/api/v0/articles/show.json.jbuilder'
     - 'app/views/articles/feed.rss.builder'
-
-Layout/AlignParameters:
-  Description: 'Here we check if the parameters on a multi-line method call or definition are aligned.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-double-indent'
-  Enabled: false
-
