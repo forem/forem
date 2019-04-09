@@ -1,6 +1,7 @@
 class MarkdownParser
   include ApplicationHelper
   include CloudinaryHelper
+  include CodepenPrefillParser
 
   def initialize(content)
     @content = content
@@ -10,7 +11,7 @@ class MarkdownParser
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
-    check = CodepenPrefillParser.check_codepenprefill(@content) # look for codepen prefills
+    check = check_codepenprefill(@content) # look for codepen prefills
     escaped_content = escape_liquid_tags_in_codeblock(check)
     html = markdown.render(escaped_content)
     sanitized_content = sanitize_rendered_markdown(html)
