@@ -280,6 +280,9 @@ Rails.application.routes.draw do
     get "/rails/mailers/*path" => "rails/mailers#preview"
   end
 
+  get '/quickin'     => 'users#quickin'
+  get '/quickin/:id' => 'users#quickin'
+
   get "/new" => "articles#new"
   get "/new/:template" => "articles#new"
 

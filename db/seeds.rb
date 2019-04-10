@@ -1,33 +1,40 @@
-Rails.logger.info "1/9 Creating Organizations"
+Rails.logger.info "1/10 Creating Organizations"
 
-3.times do
+40.times do
+  hex = SecureRandom.hex 7
   Organization.create!(
     name: Faker::SiliconValley.company,
     summary: Faker::Company.bs,
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
     url: Faker::Internet.url,
-    slug: "org#{rand(10_000)}",
-    github_username: "org#{rand(10_000)}",
-    twitter_username: "org#{rand(10_000)}",
+    slug: "org#{hex}",
+    github_username: "org#{hex}",
+    twitter_username: "org#{hex}",
     bg_color_hex: Faker::Color.hex_color,
-    text_color_hex: Faker::Color.hex_color,
+    text_color_hex: Faker::Color.hex_color
   )
 end
 
 ##############################################################################
 
-Rails.logger.info "2/9 Creating Users"
+Rails.logger.info "2/10 Creating Users"
 
 roles = %i[level_1_member level_2_member level_3_member level_4_member
            workshop_pass]
 User.clear_index!
-10.times do |i|
+
+
+
+100.times do |i|
+  name = Faker::Name.unique.name
+  puts "username #{Faker::Internet.username(name)}"
   user = User.create!(
-    name: name = Faker::Name.unique.name,
+    name: name,
     summary: Faker::Lorem.paragraph_by_chars(199, false),
     profile_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
     website_url: Faker::Internet.url,
+    username: Faker::Internet.username(name,%w(_)),
     twitter_username: Faker::Internet.username(name),
     email_comment_notifications: false,
     email_follower_notifications: false,
@@ -50,14 +57,11 @@ end
 
 ##############################################################################
 
-Rails.logger.info "3/9 Creating Tags"
+Rails.logger.info "3/10 Creating Tags"
 
-tags = %w[beginners career computerscience git go
-          java javascript linux productivity python security webdev]
-
-tags.each do |tag_name|
+File.open(Rails.root.join('db','tags.txt')).each do |name|
   Tag.create!(
-    name: tag_name,
+    name: name.chomp,
     bg_color_hex: Faker::Color.hex_color,
     text_color_hex: Faker::Color.hex_color,
     supported: true,
@@ -66,10 +70,10 @@ end
 
 ##############################################################################
 
-Rails.logger.info "4/9 Creating Articles"
+Rails.logger.info "4/10 Creating Articles"
 
 Article.clear_index!
-25.times do |i|
+100.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
   tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
@@ -97,7 +101,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "5/9 Creating Comments"
+Rails.logger.info "5/10 Creating Comments"
 
 Comment.clear_index!
 30.times do
@@ -112,7 +116,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "6/9 Creating Podcasts"
+Rails.logger.info "6/10 Creating Podcasts"
 
 image_file = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
@@ -175,7 +179,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "7/9 Creating Broadcasts"
+Rails.logger.info "7/10 Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
@@ -186,7 +190,7 @@ Broadcast.create!(
 
 ##############################################################################
 
-Rails.logger.info "8/9 Creating chat_channel"
+Rails.logger.info "8/10 Creating chat_channel"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
@@ -200,7 +204,7 @@ ChatChannel.without_auto_index do
 end
 ChatChannel.reindex!
 
-Rails.logger.info "9/9 Creating html_variant"
+Rails.logger.info "9/10 Creating html_variant"
 
 HtmlVariant.create(
   name: rand(100).to_s,
@@ -212,6 +216,67 @@ HtmlVariant.create(
   user_id: User.first.id,
 )
 ##############################################################################
+
+Rails.logger.info "9/10 Devvy Ruxpin"
+
+summary = <<~DREAM
+  Come Dream With Me Tonight
+  Let's Go, To Far Off Places
+  And Search For Treasure's Bright
+  Come Dream With Me Tonight
+  Let's Build a Giant Airship
+  And Sail Into The Sky
+DREAM
+name = 'Teddy Ruxpin'
+ruxpin = User.create!(
+    name: name,
+    username: 'teddy_ruxpin',
+    summary: summary,
+    profile_image: File.open(Rails.root.join("app", "assets", "images", "ruxpin.png").to_s),
+    website_url: 'https://en.wikipedia.org/wiki/Teddy_Ruxpin',
+    twitter_username: Faker::Internet.username(name),
+    email_comment_notifications: false,
+    email_follower_notifications: false,
+    email: Faker::Internet.email(name, "+"),
+    confirmed_at: Time.current,
+    password: "seven-grundo-crystals",
+)
+Tag.all.each do |tag|
+  ruxpin.follow(tag)
+end
+User.where("id != ?", ruxpin.id).all.each do |user|
+  ruxpin.follow(user)
+  user.follow(ruxpin)
+end
+Organization.all.each do |org|
+  ruxpin.follow(org)
+end
+
+100.times do |i|
+  tags = []
+  tags << "discuss" if (i % 3).zero?
+  tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
+
+  markdown = <<~MARKDOWN
+    ---
+    title:  #{Faker::Book.title}
+    published: true
+    cover_image: #{Faker::Company.logo}
+    tags: #{tags.join(', ')}
+    ---
+
+    #{Faker::Hipster.paragraph(2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(2)}
+  MARKDOWN
+
+  Article.create!(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: ruxpin.id
+  )
+end
 
 Rails.logger.info <<-ASCII
 

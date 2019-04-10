@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  after_action :verify_authorized, except: [:signout_confirm]
+  after_action :verify_authorized, except: %i[quickin signout_confirm]
 
   # GET /settings/@tab
   def edit
@@ -183,5 +183,19 @@ class UsersController < ApplicationController
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
+  end
+
+  # This endpoint is only for development as
+  # a way to quicklying login
+  def quickin
+    return raise ActionController::RoutingError, "Not Found" unless Rails.env.development?
+
+    @user =
+      if params[:id]
+        User.find(params[:id])
+      else
+        User.find_by(username: "teddy_ruxpin")
+      end
+    sign_in_and_redirect @user, event: :authentication
   end
 end
