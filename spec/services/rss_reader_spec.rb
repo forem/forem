@@ -6,35 +6,11 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-class HoneycombEventStub
-  attr_reader :data
-
-  def initialize
-    @data = {}
-  end
-
-  def add(metadata)
-    @data.merge!(metadata)
-  end
-
-  def add_field(key, value)
-    @data[key] = value
-  end
-end
-
 RSpec.describe RssReader, vcr: vcr_option do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
   let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
-
-  before do
-    # Honeycomb.init has too many side effects during testing, so we mock the client
-    event = HoneycombEventStub.new
-    allow(event).to receive(:send)
-    client_double = instance_double("Libhoney::TestClient", event: event, events: [event])
-    allow(Honeycomb).to receive(:client) { client_double }
-  end
 
   describe "#get_all_articles" do
     before do
@@ -123,36 +99,12 @@ RSpec.describe RssReader, vcr: vcr_option do
       expect(Rails.logger).to have_received(:error).at_least(:once)
     end
 
-    it "logs an article creation error on the observability tool" do
-      reader = described_class.new
-      allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
-      reader.fetch_user(User.first)
-
-      expected_observable_fields = [
-        :user, :feed_url, :item_count, :error,
-        "error_msg", "trace.trace_id", "trace.parent_id", "trace.span_id"
-      ]
-      expect(Honeycomb.client.events.first.data.keys).to eq(expected_observable_fields)
-    end
-
     it "logs a fetching error on the standard logger" do
       reader = described_class.new
       allow(reader).to receive(:fetch_rss).and_raise(StandardError)
       allow(Rails.logger).to receive(:error)
       reader.fetch_user(User.first)
       expect(Rails.logger).to have_received(:error).at_least(:once)
-    end
-
-    it "logs a fetching error on the observability tool" do
-      reader = described_class.new
-      allow(reader).to receive(:fetch_rss).and_raise(StandardError)
-      reader.fetch_user(User.first)
-
-      expected_observable_fields = [
-        :user, :feed_url, :item_count, :error,
-        "error_msg", "trace.trace_id", "trace.parent_id", "trace.span_id"
-      ]
-      expect(Honeycomb.client.events.first.data.keys).to eq(expected_observable_fields)
     end
   end
 
