@@ -109,6 +109,8 @@ variable :HONEYCOMB_API_KEY, :String, default: "Optional"
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
 variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
 variable :MAILCHIMP_SUSTAINING_MEMBERS_ID, :String, default: "Optional"
+variable :MAILCHIMP_TAG_MODERATORS_ID, :String, default: "Optional"
+variable :MAILCHIMP_COMMUNITY_MODERATORS_ID, :String, default: "Optional"
 
 # Email digest frequency
 variable :PERIODIC_EMAIL_DIGEST_MAX, :Integer, default: 0
