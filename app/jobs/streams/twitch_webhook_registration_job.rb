@@ -9,7 +9,7 @@ module Streams
 
       client.post(
         "webhooks/hub",
-        "hub.callback" => "https://9ffce079.ngrok.io/twitch-test",
+        "hub.callback" => "URL/twitch-test",
         "hub.mode" => "subscribe",
         "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
       )
