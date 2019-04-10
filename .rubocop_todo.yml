@@ -21,12 +21,6 @@ RSpec/AnyInstance:
   Exclude:
     - 'spec/requests/stripe_cancellations_spec.rb'
 
-# Offense count: 1
-# Configuration parameters: CustomTransform, IgnoreMethods.
-RSpec/FilePath:
-  Exclude:
-    - 'spec/liquid_tags/raw_tag_spec.rb'
-
 # Offense count: 145
 # Configuration parameters: AggregateFailuresByDefault.
 RSpec/MultipleExpectations:
