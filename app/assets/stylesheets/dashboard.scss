@@ -328,7 +328,8 @@
   }
   .no-articles {
     text-align: center;
-    background: var(--theme-container-accent-background, $light-gray);
+    background: white;
+    background: var(--theme-container-accent-background, white);
     padding: 2vw 3vw 6vw;
     box-shadow: $shadow;
     border-radius: 3px;
