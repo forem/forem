@@ -56,11 +56,11 @@ module Moderator
       @user.remove_role :video_permission
       @user.remove_role :workshop_pass
       @user.remove_role :pro
-      remove_trusted_role
+      remove_mod_roles
       remove_tag_moderator_role
     end
 
-    def remove_trusted_role
+    def remove_mod_roles
       @user.remove_role :trusted
       @user.remove_role :tag_moderator
       @user.update(email_tag_mod_newsletter: false)
@@ -90,27 +90,47 @@ module Moderator
         user.add_role :banned
         remove_privileges
       when "Warn"
-        user.add_role :warned
-        user.remove_role :banned
-        remove_privileges
+        warned
       when "Comment Ban"
-        user.add_role :comment_banned
-        user.remove_role :banned
-        remove_privileges
+        comment_banned
       when "Regular Member"
-        remove_negative_roles
-        user.remove_role :pro
-        remove_trusted_role
+        regular_member
       when "Trusted"
-        remove_negative_roles
-        user.remove_role :pro
-        add_trusted_role
+        trusted
       when "Pro"
-        remove_negative_roles
-        add_trusted_role
-        user.add_role :pro
+        pro
       end
       create_note(role, note)
+    end
+
+    def comment_banned
+      user.add_role :comment_banned
+      user.remove_role :banned
+      remove_privileges
+    end
+
+    def regular_member
+      remove_negative_roles
+      user.remove_role :pro
+      remove_mod_roles
+    end
+
+    def warned
+      user.add_role :warned
+      user.remove_role :banned
+      remove_privileges
+    end
+
+    def pro
+      remove_negative_roles
+      add_trusted_role
+      user.add_role :pro
+    end
+
+    def trusted
+      remove_negative_roles
+      user.remove_role :pro
+      add_trusted_role
     end
 
     def add_trusted_role
