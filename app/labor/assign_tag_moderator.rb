@@ -5,15 +5,23 @@ module AssignTagModerator
     MailchimpBot.new(user).manage_community_moderator_list
   end
 
+  def self.add_to_chat_channel(user)
+    ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.find_by(slug: "tag-moderators").blank?
+  end
+
+  def self.add_tag_mod_role(user, tag)
+    user.update(email_tag_mod_newsletter: true) if user.email_tag_mod_newsletter == false
+    user.add_role(:tag_moderator, tag)
+    MailchimpBot.new(user).manage_tag_moderator_list
+  end
+
   def self.add_tag_moderators(user_ids, tag_ids)
     user_ids.each_with_index do |user_id, index|
       user = User.find(user_id)
-      user.update(email_tag_mod_newsletter: true) if user.email_tag_mod_newsletter == false
       tag = Tag.find(tag_ids[index])
-      user.add_role(:tag_moderator, tag)
-      MailchimpBot.new(user).manage_tag_moderator_list
+      add_tag_mod_role(user, tag)
       add_trusted_role(user)
-      ChatChannel.find_by(slug: "tag-moderators").add_users(user) if user.chat_channels.find_by(slug: "tag-moderators").blank?
+      add_to_chat_channel(user)
       NotifyMailer.tag_moderator_confirmation_email(user, tag.name).deliver unless tag.name == "go"
     end
   end

@@ -96,9 +96,13 @@ module Moderator
       when "Regular Member"
         regular_member
       when "Trusted"
-        trusted
+        remove_negative_roles
+        user.remove_role :pro
+        add_trusted_role
       when "Pro"
-        pro
+        remove_negative_roles
+        add_trusted_role
+        user.add_role :pro
       end
       create_note(role, note)
     end
@@ -119,18 +123,6 @@ module Moderator
       user.add_role :warned
       user.remove_role :banned
       remove_privileges
-    end
-
-    def pro
-      remove_negative_roles
-      add_trusted_role
-      user.add_role :pro
-    end
-
-    def trusted
-      remove_negative_roles
-      user.remove_role :pro
-      add_trusted_role
     end
 
     def add_trusted_role
