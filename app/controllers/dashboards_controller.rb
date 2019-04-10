@@ -6,45 +6,9 @@ class DashboardsController < ApplicationController
   def show
     fetch_and_authorize_user
 
-    if params[:which] == "user_followers"
-      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
-        includes(:follower).order("created_at DESC").limit(80)
-    elsif params[:which] == "organization_user_followers"
-      @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
-        includes(:follower).order("created_at DESC").limit(80)
-    elsif @user&.organization && @user&.org_admin && params[:which] == "organization"
-      @articles =
-        case params[:sort]
-        when "creation-asc" then @user.organization.articles.order("created_at ASC").decorate
-        when "creation-desc" then @user.organization.articles.order("created_at DESC").decorate
-        when "views-asc" then @user.organization.articles.order("page_views_count ASC").decorate
-        when "views-desc" then @user.organization.articles.order("page_views_count DESC").decorate
-        when "reactions-asc" then  @user.organization.articles.order("positive_reactions_count ASC").decorate
-        when "reactions-desc" then @user.organization.articles.order("positive_reactions_count DESC").decorate
-        when "comments-asc" then @user.organization.articles.order("comments_count ASC").decorate
-        when "comments-desc" then @user.organization.articles.order("comments_count DESC").decorate
-        when "published-asc" then @user.organization.articles.order("published_at ASC").decorate
-        when "published-desc" then @user.organization.articles.order("published DESC").decorate
-        else
-          @user.organization.articles.order("created_at DESC").decorate
-        end
-    elsif @user
-      @articles =
-        case params[:sort]
-        when "creation-asc" then @user.articles.order("created_at ASC").decorate
-        when "creation-desc" then @user.articles.order("created_at DESC").decorate
-        when "views-asc" then @user.articles.order("page_views_count ASC").decorate
-        when "views-desc" then @user.articles.order("page_views_count DESC").decorate
-        when "reactions-asc" then  @user.articles.order("positive_reactions_count ASC").decorate
-        when "reactions-desc" then @user.articles.order("positive_reactions_count DESC").decorate
-        when "comments-asc" then @user.articles.order("comments_count ASC").decorate
-        when "comments-desc" then @user.articles.order("comments_count DESC").decorate
-        when "published-asc" then @user.organization.articles.order("published_at ASC").decorate
-        when "published-desc" then @user.organization.articles.order("published DESC").decorate
-        else
-          @user.articles.order("created_at DESC").decorate
-        end
-    end
+    target = @user
+    target = @user.organization if @user&.organization && @user&.org_admin && params[:which] == "organization"
+    @articles = target.articles.sorting(params[:sort]).decorate
     # Updates analytics in background if appropriate:
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
   end
