@@ -144,6 +144,10 @@ variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
 
+# For Twitch live stream integration
+variable :TWITCH_CLIENT_ID, :String, default: "Optional"
+variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
+
 # Trending tags on home page
 variable :TRENDING_TAGS, :String, default: "git,beginners"
 
