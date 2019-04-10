@@ -48,6 +48,8 @@ class MailchimpBot
   end
 
   def manage_community_moderator_list
+    return false unless user.has_role?(:trusted)
+
     success = false
     status = user.email_community_mod_newsletter ? "subscribed" : "unsubscribed"
     begin
@@ -72,6 +74,8 @@ class MailchimpBot
   end
 
   def manage_tag_moderator_list
+    return false unless user.tag_moderator?
+
     success = false
     tags = user.roles.where(name: "tag_moderator").map { |t| Tag.find(t.resource_id).name }
     status = user.email_tag_mod_newsletter ? "subscribed" : "unsubscribed"
