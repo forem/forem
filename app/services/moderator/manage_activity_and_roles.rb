@@ -62,6 +62,9 @@ module Moderator
 
     def remove_trusted_role
       @user.remove_role :trusted
+      @user.remove_role :tag_moderator
+      @user.update(email_tag_mod_newsletter: false)
+      MailchimpBot.new(user).manage_tag_moderator_list
       @user.update(email_community_mod_newsletter: false)
       MailchimpBot.new(user).manage_community_moderator_list
     end

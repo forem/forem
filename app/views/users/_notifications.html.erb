@@ -15,13 +15,13 @@
         <%= f.label :email_membership_newsletter, "Send me sustaining membership newsletter emails" %>
       </div>
     <% end %>
-    <% if current_user.has_role?(:trusted) %>
+    <% if current_user.tag_moderator? %>
       <div class="sub-field">
-        <%= f.check_box :email_community_mod_newsletter %>
-        <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails" %>
+        <%= f.check_box :email_tag_mod_newsletter %>
+        <%= f.label :email_tag_mod_newsletter, "Send me tag moderator newsletter emails" %>
       </div>
     <% end %>
-    <% if current_user.has_role?(:tag_moderator) %>
+    <% if current_user.has_role?(:trusted) %>
       <div class="sub-field">
         <%= f.check_box :email_community_mod_newsletter %>
         <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails" %>

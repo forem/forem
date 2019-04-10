@@ -82,6 +82,19 @@ RSpec.describe MailchimpBot do
     end
   end
 
+  describe "manage community moderator list" do
+    it "sends proper information" do
+      user.update(email_community_mod_newsletter: true)
+      described_class.new(user).manage_community_moderator_list
+      expect(my_gibbon_client).to have_received(:upsert).
+        with(hash_including(
+               body: hash_including(
+                 status: "subscribed",
+               ),
+             ))
+    end
+  end
+
   describe "#upsert_to_membership_newsletter" do
     it "returns false if user isn't a sustaining member" do
       expect(described_class.new(user).upsert_to_membership_newsletter).to be(false)

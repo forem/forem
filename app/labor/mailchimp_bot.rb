@@ -12,6 +12,8 @@ class MailchimpBot
 
     upsert_to_membership_newsletter
     upsert_to_newsletter
+    manage_community_moderator_list
+    manage_tag_moderator_list
   end
 
   def upsert_to_newsletter
@@ -145,9 +147,15 @@ class MailchimpBot
           },
         )
       end
-
-      if a_tag_moderator?
+      if user.tag_moderator?
         gibbon.lists(ApplicationConfig["MAILCHIMP_TAG_MODERATORS_ID"]).members(target_md5_email).update(
+          body: {
+            status: "unsubscribed"
+          },
+        )
+      end
+      if user.has_role?(:trusted)
+        gibbon.lists(ApplicationConfig["MAILCHIMP_COMMUNITY_MODERATORS_ID"]).members(target_md5_email).update(
           body: {
             status: "unsubscribed"
           },
@@ -167,10 +175,6 @@ class MailchimpBot
     # Is that mailchimp should be updated if a user decides to
     # unsubscribes
     user.monthly_dues.positive? || saved_changes["monthly_dues"]
-  end
-
-  def a_tag_moderator?
-    !user.roles.where(name: "tag_moderator").empty?
   end
 
   def md5_email(email)

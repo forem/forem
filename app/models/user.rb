@@ -406,6 +406,10 @@ class User < ApplicationRecord
     MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
+  def tag_moderator?
+    roles.where(name: "tag_moderator").any?
+  end
+
   private
 
   def send_welcome_notification
