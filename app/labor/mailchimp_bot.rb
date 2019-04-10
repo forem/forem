@@ -11,9 +11,9 @@ class MailchimpBot
     return true unless Rails.env.production? || Rails.env.test?
 
     upsert_to_membership_newsletter
-    upsert_to_newsletter
     manage_community_moderator_list
     manage_tag_moderator_list
+    upsert_to_newsletter
   end
 
   def upsert_to_newsletter
