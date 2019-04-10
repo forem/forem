@@ -44,6 +44,7 @@ module Constants
     "octodon.social",
     "otajodon.com",
     "pawoo.net",
+    "phpc.social",
     "qiitadon.com",
     "radical.town",
     "ro-mastodon.puyo.jp",
