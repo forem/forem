@@ -19,7 +19,7 @@ class UserStates
   end
 
   def made_first_article
-    user.articles.where(published: true).any?
+    user.articles.published.any?
   end
 
   def follows_a_tag
