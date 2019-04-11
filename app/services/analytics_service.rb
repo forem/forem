@@ -74,7 +74,7 @@ class AnalyticsService
   def load_data
     @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
     if @article_id
-      @article_data = articles.where(id: @article_id)
+      @article_data = @article_data.where(id: @article_id)
       raise UnauthorizedError if @article_data.blank?
 
       article_ids = @article_id
