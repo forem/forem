@@ -379,7 +379,7 @@ RSpec.describe User, type: :model do
       expect(new_user.identities.size).to eq(2)
     end
 
-    it "estimages default language when the email is nil" do
+    it "estimates default language when the email is nil" do
       no_email_user = create(:user, email: nil)
       no_email_user.estimate_default_language_without_delay!
       no_email_user.reload
