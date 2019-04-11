@@ -133,6 +133,12 @@ RSpec.describe "UserSettings", type: :request do
         expect(user.twitter_username).to eq nil
       end
 
+      it "touches the profile_updated_at timestamp" do
+        original_profile_updated_at = user.profile_updated_at
+        delete "/users/remove_association", params: { provider: "twitter" }
+        expect(user.profile_updated_at).to be > original_profile_updated_at
+      end
+
       it "redirects successfully to /settings/account" do
         delete "/users/remove_association", params: { provider: "twitter" }
         expect(response).to redirect_to "/settings/account"
