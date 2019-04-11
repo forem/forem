@@ -23,5 +23,5 @@ var bigDev =
                                                                            \n';
 console.log(
   bigDev,
-  "Hey there! Interested in the code behind dev.to? Well you're in luck - we're open source! Come say hi, tell us about your problems, or even lend a hand in our repo - https://github.com/thepracticaldev/dev.to/"
+  "Hey there! Interested in the code behind dev.to? Well you're in luck - we're open source! Come say hi, tell us what you're debugging, or even lend a hand in our repo - https://github.com/thepracticaldev/dev.to/"
 );
