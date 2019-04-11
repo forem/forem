@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   include Pundit
-  include Instrumentation
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
