@@ -10,7 +10,7 @@ module Users
 
     def call
       identity = user.identities.find_by(provider: "twitter")
-      if user.email.end_with?(".jp")
+      if user.email.to_s.end_with?(".jp")
         user.update(estimated_default_language: "ja", prefer_language_ja: true)
       elsif identity
         lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]

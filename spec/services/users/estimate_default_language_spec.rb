@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Users::EstimateDefaultLanguage, type: :service do
-  xit "estimates default language when the email is nil" do
+  it "estimates default language when the email is nil" do
     no_email_user = create(:user, email: nil)
     described_class.call(no_email_user)
     no_email_user.reload
