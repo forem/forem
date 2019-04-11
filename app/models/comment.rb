@@ -249,8 +249,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_id_code
 
   def touch_user
-    user.touch
-    user.touch(:last_comment_at)
+    user.touch(:updated_at, :last_comment_at)
   end
   handle_asynchronously :touch_user
 
