@@ -118,7 +118,7 @@ RSpec.describe "UserSettings", type: :request do
 
       before { login_as user }
 
-      it "allows the user to remove an identity" do
+      it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }
         expect(user.identities.count).to eq 1
       end
