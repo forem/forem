@@ -414,7 +414,6 @@ RSpec.describe User, type: :model do
 
     before do
       create_list(:article, 3, user_id: user2.id)
-      create(:article, user_id: user2.id, published: false)
       user.follow(user2)
     end
 
@@ -424,10 +423,6 @@ RSpec.describe User, type: :model do
 
     it "returns segment of articles if limit is passed" do
       expect(user.followed_articles.limit(2).size).to eq(2)
-    end
-
-    it "includes only published articles" do
-      expect(user.followed_articles.all?(&:published?)).to be(true)
     end
   end
 
