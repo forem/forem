@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2019_06_07_110030) do
     t.string "utm_medium"
     t.string "utm_source"
     t.string "utm_term"
+    t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
   end
