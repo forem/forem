@@ -4,7 +4,6 @@ class ReactionsController < ApplicationController
 
   def index
     skip_authorization
-    add_param_context(:article_id)
     if params[:article_id]
       id = params[:article_id]
       reactions = if efficient_current_user_id.present?
@@ -22,7 +21,6 @@ class ReactionsController < ApplicationController
         reactions: reactions
       }.to_json
     else
-      add_param_context(:commentable_id, :commentable_type)
       comments = Comment.where(
         commentable_id: params[:commentable_id],
         commentable_type: params[:commentable_type],
@@ -42,7 +40,6 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
-    add_param_context(:reactable_id, :reactable_type, :category)
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
     category = params[:category] || "like"
     reaction = Reaction.where(

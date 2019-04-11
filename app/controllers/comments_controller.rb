@@ -56,9 +56,6 @@ class CommentsController < ApplicationController
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
 
-    add_context(commentable_id: @comment.commentable_id,
-                commentable_type: @comment.commentable_type)
-
     if @comment.save
       current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
 
