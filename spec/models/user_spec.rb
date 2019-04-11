@@ -383,19 +383,23 @@ RSpec.describe User, type: :model do
       user.estimate_default_language_without_delay!
       expect(user.estimated_default_language).to eq(nil)
     end
+
     it "estimates default language to be japan with jp email" do
-      user.email = "ben@hello.jp"
+      user.update_column(:email, "ben@hello.jp")
       user.estimate_default_language_without_delay!
+      user.reload
       expect(user.estimated_default_language).to eq("ja")
     end
+
     it "estimates default language based on ID dump" do
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
       new_user.estimate_default_language_without_delay!
     end
 
     it "returns proper preferred_languages_array" do
-      user.email = "ben@hello.jp"
+      user.update_column(:email, "ben@hello.jp")
       user.estimate_default_language_without_delay!
+      user.reload
       expect(user.decorate.preferred_languages_array).to include("ja")
     end
   end

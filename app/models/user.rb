@@ -211,9 +211,12 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language!
-    Users::EstimateDefaultLanguage.call(self)
+    Users::EstimateDefaultLanguageJob.perform_later(id)
   end
-  handle_asynchronously :estimate_default_language!
+
+  def estimate_default_language_without_delay!
+    Users::EstimateDefaultLanguageJob.perform_now(id)
+  end
 
   def calculate_score
     score = (articles.where(featured: true).size * 100) + comments.sum(:score)
