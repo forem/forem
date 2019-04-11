@@ -212,7 +212,7 @@ class User < ApplicationRecord
 
   def estimate_default_language!
     identity = identities.find_by(provider: "twitter")
-    if email.end_with?(".jp")
+    if email.to_s.end_with?(".jp")
       update(estimated_default_language: "ja", prefer_language_ja: true)
     elsif identity
       lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
