@@ -421,6 +421,7 @@ article {
       font-size: 0.8em;
       line-height: 1.4em;
       color: darken($medium-gray, 8%);
+      color: var(--theme-color, darken($medium-gray, 8%));
       display: block;
     }
     p ~ figcaption {

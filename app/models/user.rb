@@ -232,11 +232,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true).union(
-      Article.where(
-        user_id: cached_following_users_ids,
-      ),
-    ).where(language: cached_preferred_langs, published: true)
+    Article.tagged_with(cached_followed_tag_names, any: true).
+      union(Article.where(user_id: cached_following_users_ids)).
+      where(language: cached_preferred_langs, published: true)
   end
 
   def cached_following_users_ids

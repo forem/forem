@@ -72,13 +72,13 @@ class AnalyticsService
   attr_reader :user_or_org, :start_date, :end_date, :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
 
   def load_data
+    @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
     if @article_id
-      @article_data = Article.where(id: @article_id, published: true, "#{user_or_org.class.name.downcase}_id" => user_or_org.id)
+      @article_data = @article_data.where(id: @article_id)
       raise UnauthorizedError if @article_data.blank?
 
       article_ids = @article_id
     else
-      @article_data = Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true)
       article_ids = @article_data.pluck(:id)
     end
 

@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     authorize @user
     # raise permitted_attributes(@user).to_s
     if @user.update(permitted_attributes(@user))
-      RssReader.new(request.request_id).delay.fetch_user(@user) if @user.feed_url.present?
+      RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
@@ -65,6 +65,7 @@ class UsersController < ApplicationController
       identity.destroy
       identity_username = "#{provider}_username".to_sym
       @user.update(identity_username => nil)
+      @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}",
                   notice: "Your #{provider.capitalize} account was successfully removed."
     else
