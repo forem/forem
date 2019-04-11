@@ -419,7 +419,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns all articles following" do
-      expect(user.followed_articles.size).to eq(3)
+      expect(user.followed_articles.size).to eq(4)
     end
 
     it "returns segment of articles if limit is passed" do
