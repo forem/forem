@@ -31,7 +31,7 @@ class EmailLogic
     articles = if user_has_followings?
                  @user.followed_articles.
                    where("published_at > ?", fresh_date).
-                   where(email_digest_eligible: true).
+                   where(published: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 12).
                    where("experience_level_rating > ? AND experience_level_rating < ?", (@user.experience_level || 5) - 3.6, (@user.experience_level || 5) + 3.6).
