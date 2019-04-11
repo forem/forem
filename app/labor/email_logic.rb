@@ -31,16 +31,16 @@ class EmailLogic
     articles = if user_has_followings?
                  @user.followed_articles.
                    where("published_at > ?", fresh_date).
-                   where(published: true, email_digest_eligible: true).
+                   where(email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 12).
                    where("experience_level_rating > ? AND experience_level_rating < ?", (@user.experience_level || 5) - 3.6, (@user.experience_level || 5) + 3.6).
                    order("score DESC").
                    limit(8)
                else
-                 Article.
+                 Article.published.
                    where("published_at > ?", fresh_date).
-                   where(published: true, featured: true, email_digest_eligible: true).
+                   where(featured: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 25).
                    order("score DESC").

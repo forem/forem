@@ -8,8 +8,7 @@ class StickyArticleCollection
   end
 
   def user_stickies
-    author.articles.
-      where(published: true).
+    author.articles.published.
       limited_column_select.
       tagged_with(article_tags, any: true).
       where.not(id: article.id).order("published_at DESC").
@@ -21,10 +20,9 @@ class StickyArticleCollection
   end
 
   def tag_articles
-    @tag_articles ||= Article.tagged_with(article_tags, any: true).
+    @tag_articles ||= Article.published.tagged_with(article_tags, any: true).
       includes(:user).
       where("positive_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
-      where(published: true).
       where.not(id: article.id, user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
       order(Arel.sql("RANDOM()")).
@@ -34,10 +32,9 @@ class StickyArticleCollection
   def more_articles
     return [] if tag_articles.size > 6
 
-    Article.tagged_with(%w[career productivity discuss explainlikeimfive], any: true).
+    Article.published.tagged_with(%w[career productivity discuss explainlikeimfive], any: true).
       includes(:user).
       where("comments_count > ?", comment_count_num).
-      where(published: true).
       where.not(id: article.id, user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
       order(Arel.sql("RANDOM()")).

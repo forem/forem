@@ -66,10 +66,12 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
+  scope :published, -> { where(published: true) }
+
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :active_help, lambda {
-                        where(published: true).
+                        published.
                           cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
@@ -195,8 +197,7 @@ class Article < ApplicationRecord
   end
 
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
-    stories = where(published: true).
-      limit(number)
+    stories = published.limit(number)
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").where("score > ?", -5)
               elsif time_ago
@@ -211,7 +212,7 @@ class Article < ApplicationRecord
   end
 
   def self.active_eli5(time_ago)
-    stories = where(published: true).cached_tagged_with("explainlikeimfive")
+    stories = published.cached_tagged_with("explainlikeimfive")
 
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").limit(3)
@@ -363,11 +364,12 @@ class Article < ApplicationRecord
 
   def self.seo_boostable(tag = nil)
     if tag
-      Article.where(published: true).
-        cached_tagged_with(tag).order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
+      Article.published.
+        cached_tagged_with(tag).order("organic_page_views_count DESC").where("score > ?", 10).
+        limit(20).
         pluck(:path, :title, :comments_count, :created_at)
     else
-      Article.where(published: true).
+      Article.published.
         order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
         pluck(:path, :title, :comments_count, :created_at)
     end

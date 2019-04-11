@@ -145,8 +145,7 @@ class StoriesController < ApplicationController
 
   def handle_organization_index
     @user = @organization
-    @stories = ArticleDecorator.decorate_collection(@organization.articles.
-      where(published: true).
+    @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
       limited_column_select.
       includes(:user).
       order("published_at DESC").page(@page).per(8))
@@ -163,8 +162,7 @@ class StoriesController < ApplicationController
       return
     end
     assign_user_comments
-    @stories = ArticleDecorator.decorate_collection(@user.
-      articles.where(published: true).
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
     @article_index = true
@@ -261,11 +259,7 @@ class StoriesController < ApplicationController
 
   def article_finder(num_articles)
     tag = params[:tag]
-    articles = Article.where(published: true).
-      includes(:user).
-      limited_column_select.
-      page(@page).
-      per(num_articles)
+    articles = Article.published.includes(:user).limited_column_select.page(@page).per(num_articles)
     articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
     articles
   end
