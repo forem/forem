@@ -4,7 +4,7 @@ class ArticleAnalyticsFetcher
   end
 
   def update_analytics(user_id)
-    articles_to_check = Article.where(published: true, user_id: user_id)
+    articles_to_check = Article.where(user_id: user_id, published: true)
     qualified_articles = get_articles_that_qualify(articles_to_check)
     return if qualified_articles.none?
 
