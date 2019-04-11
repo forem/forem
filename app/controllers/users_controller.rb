@@ -65,6 +65,7 @@ class UsersController < ApplicationController
       identity.destroy
       identity_username = "#{provider}_username".to_sym
       @user.update(identity_username => nil)
+      @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}",
                   notice: "Your #{provider.capitalize} account was successfully removed."
     else
