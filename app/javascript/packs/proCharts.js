@@ -4,9 +4,9 @@ import { Object } from 'es6-shim';
 const reactionsCanvas = document.getElementById('reactionsChart');
 const commentsCanvas = document.getElementById('commentsChart');
 
-const padMonth = month => String('00' + month).slice(-2);
+const padMonth = month => String(`00${  month}`).slice(-2);
 
-var oneWeekAgo = new Date();
+const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
 $.ajax(
@@ -25,7 +25,7 @@ $.ajax(
   const reactionsChart = new Chart(reactionsCanvas, {
     type: 'line',
     data: {
-      labels: labels,
+      labels,
       datasets: [
         {
           label: 'Total',
@@ -86,7 +86,7 @@ $.ajax(
   const commentsChart = new Chart(commentsCanvas, {
     type: 'line',
     data: {
-      labels: labels,
+      labels,
       datasets: [
         {
           label: 'Comments',
