@@ -24,7 +24,7 @@
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 <% params.delete(:i) %>
-<% cache("main-stories-index-#{params.to_s}", expires_in: 4.minutes) do %>
+<% cache("main-stories-index-#{params.to_s}-#{user_signed_in?}", expires_in: 4.minutes) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
       data-algolia-tag=""
