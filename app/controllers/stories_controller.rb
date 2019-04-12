@@ -106,7 +106,6 @@ class StoriesController < ApplicationController
     if %w[week month year infinity].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
-      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
         where("featured_number > ? AND score > ?", 1_449_999_999, -40)
@@ -120,9 +119,7 @@ class StoriesController < ApplicationController
         offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
-      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     end
-    @stories = @stories.decorate
     assign_podcasts
     @article_index = true
     set_surrogate_key_header "main_app_home_page"
