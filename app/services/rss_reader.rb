@@ -24,8 +24,6 @@ class RssReader
 
   private
 
-  attr_reader :request_id
-
   def create_articles_for_user(user)
     user.update_column(:feed_fetched_at, Time.current)
     feed = fetch_rss(user.feed_url.strip)

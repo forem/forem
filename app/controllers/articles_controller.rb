@@ -9,7 +9,7 @@ class ArticlesController < ApplicationController
   def feed
     skip_authorization
 
-    @articles = Article.where(published: true).
+    @articles = Article.published.
       select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
       order(published_at: :desc).
       page(params[:page].to_i).per(12)

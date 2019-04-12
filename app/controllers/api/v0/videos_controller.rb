@@ -11,9 +11,9 @@ module Api
 
       def index
         @page = params[:page]
-        @video_articles = Article.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).
+        @video_articles = Article.published.
+          where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).
           where("score > ?", -4).
-          where(published: true).
           order("hotness_score DESC").
           page(params[:page].to_i).per(24)
       end

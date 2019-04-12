@@ -3,7 +3,7 @@
   font-family: $helvetica;
   #notice{
     background:$green;
-    color:white;
+    color:black;
     padding:40px 0px 40px;
     text-align:center;
     position:relative;
@@ -12,6 +12,7 @@
     right:0px;
     &.error-notice{
       background: rgba(255, 80, 80, 0.7);
+      color:white;
     }
   }
   .user-settings-page {
