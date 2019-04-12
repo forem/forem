@@ -27,7 +27,7 @@ class ArticlesController < ApplicationController
       @articles = @articles.where(featured: true).includes(:user)
     end
 
-    set_surrogate_key_header "feed", @articles.map(&:record_key)
+    set_surrogate_key_header "feed"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
 
     render layout: false
