@@ -43,5 +43,24 @@ RSpec.describe "User visits a homepage", type: :system do
 
       include_examples "no sign_in invitation"
     end
+
+    describe "meta tags" do
+      before { visit "/" }
+
+      it "contains the qualified community name in og:title" do
+        selector = "meta[property='og:title'][content='#{community_qualified_name}']"
+        expect(page).to have_selector(selector, visible: false)
+      end
+
+      it "contains the qualified community name in og:site_name" do
+        selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
+        expect(page).to have_selector(selector, visible: false)
+      end
+
+      it "contains the qualified community name in twitter:title" do
+        selector = "meta[name='twitter:title'][content='#{community_qualified_name}']"
+        expect(page).to have_selector(selector, visible: false)
+      end
+    end
   end
 end

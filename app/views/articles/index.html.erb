@@ -11,20 +11,21 @@
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
-  <meta property="og:title" content="<%= title_with_timeframe(page_title: "The #{ApplicationConfig['COMMUNITY_NAME']} Community", timeframe: params[:timeframe]) %>" />
+  <meta property="og:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
-  <meta property="og:site_name" content="The #{ApplicationConfig['COMMUNITY_NAME']} Community" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: "The #{ApplicationConfig['COMMUNITY_NAME']} Community", timeframe: params[:timeframe]) %>">
+  <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>">
   <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
   <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
+
 <% params.delete(:i) %>
-<% cache("main-stories-index-#{params.to_s}-#{user_signed_in?}", expires_in: 4.minutes) do %>
+<% cache("main-stories-index-#{params}-#{user_signed_in?}", expires_in: 4.minutes) do %>
   <div class="home" id="index-container"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
       data-algolia-tag=""
