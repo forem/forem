@@ -169,7 +169,7 @@
     background: var(--theme-container-background, white);
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
-      background: var(--theme-secondary-color, lighten($yellow, 20%));
+      background: var(--theme-container-accent-background, lighten($yellow, 20%));
     }
     .dashboard-collection-org-details {
       .dashboard-top-pill {
