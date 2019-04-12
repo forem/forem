@@ -21,6 +21,7 @@ $yellow: #fefa87;
 $tan: #fdf9f3;
 $off-white: #fffffe;
 $bold-blue: #0045ff;
+$night-theme-markdown-inline-code: #ffffff;
 
 $helvetica: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 $monospace: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -39,6 +40,9 @@ body.night-theme {
   .on-page-nav-butt img, .icon-img, .dropdown-icon, .reaction-button:not(.reacted) img, .image-upload-button button, .icon-image {
     -webkit-filter: invert(95%);
     filter: invert(95%);
+  }
+  .inner-comment code {
+    color: $night-theme-markdown-inline-code;
   }
 }
 
