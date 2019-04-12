@@ -36,6 +36,7 @@ class User < ApplicationRecord
   has_many    :rating_votes
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
+  has_many    :credits
   has_many :mentor_relationships_as_mentee,
   class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190327090030) do
+ActiveRecord::Schema.define(version: 20190409123750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -228,6 +228,18 @@ ActiveRecord::Schema.define(version: 20190327090030) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "classified_listings", force: :cascade do |t|
+    t.text "body_markdown"
+    t.string "cached_tag_list"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.bigint "organization_id"
+    t.text "processed_html"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+  end
+
   create_table "collections", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description"
@@ -264,6 +276,15 @@ ActiveRecord::Schema.define(version: 20190327090030) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
+  end
+
+  create_table "credits", force: :cascade do |t|
+    t.float "cost", default: 0.0
+    t.datetime "created_at", null: false
+    t.boolean "spent", default: false
+    t.string "spent_on"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|

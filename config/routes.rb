@@ -134,7 +134,10 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
+  resources :classified_listings, path: :listings, only: %i[index new create update delete]
+  resources :credits, only: %i[index new create]
 
+  get "/listings/:category" => "classified_listings#index"
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"

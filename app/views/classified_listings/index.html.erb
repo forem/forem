@@ -1,0 +1,29 @@
+<div class="home">
+  <div class="classifieds-container">
+    <div class="classified-filters">
+      <code>/listings/</code>
+      <a href="/listings" class="<%= 'selected' if params[:category].blank? %>">All</a>
+      <a href="/listings/courses" class="<%= 'selected' if params[:category] == 'courses' %>">Courses</a>
+      <a href="/listings/jobs" class="<%= 'selected' if params[:category] == 'jobs' %>">Jobs</a>
+      <a href="/listings/for-hire" class="<%= 'selected' if params[:category] == 'for-hire' %>">For Hire</a>
+      <a href="/listings/consulting" class="<%= 'selected' if params[:category] == 'consulting' %>">Consulting</a>
+      <a href="/listings/saas" class="<%= 'selected' if params[:category] == 'saas' %>">SaaS</a>
+      <a href="/listings/new" class="cta">POST A LISTING</a>
+    </div>
+    <div class="classifieds-columns">
+      <% @classified_listings.each do |listing| %>
+        <div class="single-classified-listing">
+        <h3><%= listing.title %></h3>
+        <div class="single-classified-listing-body">
+          <%= listing.processed_html.html_safe %>
+        </div>
+        <div class="single-classified-listing-tags">
+          <% listing.cached_tag_list.to_s.split(", ").each do |tag| %>
+            <a href="/listings/<%= listing.category %>?tag=<%= tag %>"><%= tag %></a>
+          <% end %>
+        </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
