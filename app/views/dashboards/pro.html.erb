@@ -90,6 +90,8 @@
           data-total-readinglist="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
         </canvas>
       </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <%= javascript_pack_tag "proCharts", defer: true %>
   </div>
   <div class="card">
