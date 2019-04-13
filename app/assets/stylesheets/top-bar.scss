@@ -261,7 +261,7 @@
         }
         &:hover {
           background: darken($tan, 2%);
-          background: var(--theme-top-bar-background, darken($tan, 2%));
+          background: var(--theme-top-bar-background-hover, darken($tan, 2%));
         }
       }
       a {
@@ -303,10 +303,10 @@
     padding: 7px 8px 6px 10px;
     margin-top: 7px;
     fill: white;
+    fill: var(--theme-logo-color, white);
     border-radius: 3px;
-    // border-right:1px solid #a5a6a8;
-    // border-left:1px solid #a5a6a8;
     background: $black;
+    background: var(--theme-logo-background, $black);
   }
 }
 
