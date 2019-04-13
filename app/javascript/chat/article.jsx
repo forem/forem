@@ -82,9 +82,9 @@ export default class Article extends Component {
 
   actionButton = (props) => {
     const types = {
-      "heart": ["heart-reaction-button", heartImage],
-      "unicorn": ["unicorn-reaction-button", unicornImage],
-      "readinglist": ["readinglist-reaction-button", bookmarkImage]
+      "heart": ["heart-reaction-button", "like", heartImage],
+      "unicorn": ["unicorn-reaction-button", "unicorn", unicornImage],
+      "readinglist": ["readinglist-reaction-button", "readinglist", bookmarkImage]
     };
 
     const curType = types[props.reaction];
@@ -93,9 +93,9 @@ export default class Article extends Component {
       <button
         className={`${curType[0]} ${props.reactedClass}`}
         onClick={this.handleReactionClick}
-        data-category={props.reaction}
+        data-category={curType[1]}
       >
-        <img src={curType[1]} />
+        <img src={curType[2]} data-category={curType[1]} />
       </button>
     )
   };
