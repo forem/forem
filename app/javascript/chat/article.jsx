@@ -15,7 +15,7 @@ export default class Article extends Component {
   }
 
   componentDidMount() {
-    fetch(`/reactions?article_id=${  this.props.resource.id}`, {
+    fetch(`/reactions?article_id=${this.props.resource.id}`, {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       credentials: 'same-origin',
@@ -57,7 +57,7 @@ export default class Article extends Component {
 
   handleReactionClick = e => {
     e.preventDefault();
-    const {target} = e;
+    const { target } = e;
     console.log(target.dataset.category);
     this.setState({ optimisticUserReaction: target.dataset.category });
     const article = this.props.resource;
@@ -80,12 +80,33 @@ export default class Article extends Component {
       .catch(this.handleNewReactionFailure);
   };
 
+  actionButton = (props) => {
+    const types = {
+      "heart": ["heart-reaction-button", heartImage],
+      "unicorn": ["unicorn-reaction-button", unicornImage],
+      "readinglist": ["readinglist-reaction-button", bookmarkImage]
+    };
+
+    const curType = types[props.reaction];
+
+    return (
+      <button
+        className={`${curType[0]} ${props.reactedClass}`}
+        onClick={this.handleReactionClick}
+        data-category={props.reaction}
+      >
+        <img src={curType[1]} />
+      </button>
+    )
+  };
+
+
   render() {
     const article = this.props.resource;
     let heartReactedClass = '';
     let unicornReactedClass = '';
     let bookmarkReactedClass = '';
-    const {state} = this;
+    const { state } = this;
     state.userReactions.forEach(reaction => {
       if (
         reaction.category === 'like' ||
@@ -120,7 +141,7 @@ export default class Article extends Component {
     return (
       <div className="activechatchannel__activeArticle">
         <div className="activechatchannel__activeArticleDetails">
-          <a href={article.path} target="_blank">
+          <a href={article.path} target="_blank" rel="noopener noreferrer">
             <span className="activechatchannel__activeArticleDetailsPath">
               {article.path}
             </span>
@@ -137,9 +158,9 @@ export default class Article extends Component {
             <h1>{article.title}</h1>
             <h3>
               <a
-                href={`/${  article.user.username}`}
+                href={`/${article.user.username}`}
                 className="author"
-                data-content={`/users/${  article.user.id}`}
+                data-content={`/users/${article.user.id}`}
               >
                 <img
                   className="profile-pic"
@@ -164,27 +185,9 @@ export default class Article extends Component {
           </div>
         </div>
         <div className="activechatchannel__activeArticleActions">
-          <button
-            className={`heart-reaction-button ${  heartReactedClass}`}
-            onClick={this.handleReactionClick}
-            data-category="like"
-          >
-            <img src={heartImage} />
-          </button>
-          <button
-            className={`unicorn-reaction-button ${  unicornReactedClass}`}
-            onClick={this.handleReactionClick}
-            data-category="unicorn"
-          >
-            <img src={unicornImage} data-category="unicorn" />
-          </button>
-          <button
-            className={`readinglist-reaction-button ${  bookmarkReactedClass}`}
-            onClick={this.handleReactionClick}
-            data-category="readinglist"
-          >
-            <img src={bookmarkImage} data-category="readinglist" />
-          </button>
+          <this.actionButton reaction="heart" reactedClass={heartReactedClass} />
+          <this.actionButton reaction="unicorn" reactedClass={unicornReactedClass} />
+          <this.actionButton reaction="readinglist" reactedClass={bookmarkReactedClass} />
         </div>
       </div>
     );

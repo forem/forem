@@ -344,7 +344,7 @@ export default class Chat extends Component {
     ) {
       return;
     }
-    const {target} = e;
+    const { target } = e;
     if (target.scrollTop + target.offsetHeight + 1800 > target.scrollHeight) {
       this.setState({ fetchingPaginatedChannels: true });
 
@@ -424,7 +424,7 @@ export default class Chat extends Component {
 
   handleSwitchChannel = e => {
     e.preventDefault();
-    let {target} = e;
+    let { target } = e;
     if (!target.dataset.channelId) {
       target = target.parentElement;
     }
@@ -504,7 +504,7 @@ export default class Chat extends Component {
       return;
     }
 
-    const {target} = e;
+    const { target } = e;
     if (target.dataset.content) {
       e.preventDefault();
       e.stopPropagation();
@@ -711,7 +711,7 @@ are
 
   renderChatChannels = () => {
     if (this.state.showChannelsList) {
-      const {notificationsPermission} = this.state;
+      const { notificationsPermission } = this.state;
       let notificationsButton = '';
       let notificationsState = '';
       let invitesButton = '';
