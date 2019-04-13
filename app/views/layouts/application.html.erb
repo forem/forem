@@ -68,7 +68,7 @@
         <%= csrf_meta_tags %>
       <% end %>
       <link rel="manifest" href="/manifest.json" />
-      <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="The <%= ApplicationConfig["COMMUNITY_NAME"] %> Community" />
+      <link rel="search" href="https://dev.to/search.xml" type="application/opensearchdescription+xml" title="<%= community_qualified_name %>" />
     <% end %>
   </head>
   <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
