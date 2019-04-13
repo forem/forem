@@ -211,16 +211,12 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language!
-    identity = identities.find_by(provider: "twitter")
-    if email.end_with?(".jp")
-      update(estimated_default_language: "ja", prefer_language_ja: true)
-    elsif identity
-      lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
-      update(:estimated_default_language => lang,
-             "prefer_language_#{lang}" => true)
-    end
+    Users::EstimateDefaultLanguageJob.perform_later(id)
   end
-  handle_asynchronously :estimate_default_language!
+
+  def estimate_default_language_without_delay!
+    Users::EstimateDefaultLanguageJob.perform_now(id)
+  end
 
   def calculate_score
     score = (articles.where(featured: true).size * 100) + comments.sum(:score)
