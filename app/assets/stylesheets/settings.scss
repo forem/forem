@@ -61,23 +61,31 @@
       font-size: 20px;
       font-family: $helvetica-condensed;
       font-stretch:condensed;
-      margin: 0px auto;
+      margin: 0px 0px;
       line-height: 33px;
       padding-left: 4px;
-      width: 90%;
+      width: 97%;
       margin-bottom: 15px;
+      @media screen and ( min-width: 514px ) {
+        width: 90%;
+        margin: 0px auto;
+      }
       @media screen and ( min-width: 835px ) {
         float: left;
         width: 250px;
       }
       .single-settings-tab {
         padding-left: 5px;
-        width: 210px;
+        width: 100%;
         display:inline-block;
         color: $black;
         color: var(--theme-color, $black);
         &.selected {
           background: $purple;
+          background: var(--theme-container-accent-background, $purple);
+        }
+        @media screen and ( min-width: 514px ) {
+          width: 210px;
         }
       }
     }

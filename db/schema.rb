@@ -11,29 +11,24 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2019_04_12_093614) do
+
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
-  create_table "ahoy_messages", id: :serial, force: :cascade do |t|
-    t.datetime "clicked_at"
-    t.text "content"
-    t.integer "feedback_message_id"
-    t.string "mailer"
-    t.datetime "opened_at"
-    t.datetime "sent_at"
-    t.text "subject"
-    t.text "to"
-    t.string "token"
-    t.integer "user_id"
-    t.string "user_type"
-    t.string "utm_campaign"
-    t.string "utm_content"
-    t.string "utm_medium"
-    t.string "utm_source"
-    t.string "utm_term"
-    t.index ["token"], name: "index_ahoy_messages_on_token"
-    t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
-  end
+# Could not dump table "ahoy_messages" because of following ActiveRecord::QueryCanceled
+#   PG::QueryCanceled: ERROR:  canceling statement due to statement timeout
+: SELECT a.attname
+  FROM (
+         SELECT indrelid, indkey, generate_subscripts(indkey, 1) idx
+           FROM pg_index
+          WHERE indrelid = '"ahoy_messages"'::regclass
+            AND indisprimary
+       ) i
+  JOIN pg_attribute a
+    ON a.attrelid = i.indrelid
+   AND a.attnum = i.indkey[i.idx]
+ ORDER BY i.idx
 
   create_table "api_secrets", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -334,6 +329,14 @@ ActiveRecord::Schema.define(version: 2019_04_12_093614) do
     t.index ["affected_id"], name: "index_feedback_messages_on_affected_id"
     t.index ["offender_id"], name: "index_feedback_messages_on_offender_id"
     t.index ["reporter_id"], name: "index_feedback_messages_on_reporter_id"
+  end
+
+  create_table "flipflop_features", id: false, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: false, null: false
+    t.bigserial "id", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "follows", id: :serial, force: :cascade do |t|
