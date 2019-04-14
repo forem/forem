@@ -1,32 +1,37 @@
 /* Show comment date/time according to user's locale */
+/* global timestampToLocalTime */
 
 function initializeCommentDate() {
-  function timestampToLocalTime(timestamp) {
-    if (timestamp === '') {
-      return '';
-    }
+  // example: "Wednesday, April 3, 2019, 2:55:14 PM"
+  var hoverTimeOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+  };
 
-    var options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-    };
-
-    try {
-      var time = new Date(timestamp);
-      return new Intl.DateTimeFormat('default', options).format(time);
-    } catch (e) {
-      return '';
-    }
-  }
+  // example: "Apr 3"
+  var visibileTimeOptions = {
+    month: 'short',
+    day: 'numeric',
+  };
 
   var commentDates = document.getElementsByClassName('comment-date');
   for (var i = 0; i < commentDates.length; i += 1) {
+    // get UTC timestamp set by the server
     var ts = commentDates[i].getAttribute('data-published-timestamp');
-    commentDates[i].setAttribute('title', timestampToLocalTime(ts));
+
+    // add a full datetime to the comment date string, visible on hover
+    var hoverTime = timestampToLocalTime(ts, hoverTimeOptions);
+    commentDates[i].setAttribute('title', hoverTime);
+
+    // replace the comment short visible date with the equivalent localized one
+    var visibleDate = commentDates[i].querySelector('a');
+    if (visibleDate) {
+      visibleDate.innerHTML = timestampToLocalTime(ts, visibileTimeOptions);
+    }
   }
 }
