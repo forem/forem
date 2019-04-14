@@ -262,6 +262,6 @@ Devise.setup do |config|
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 
   config.omniauth :github,
-  ApplicationConfig["GITHUB_KEY"], ApplicationConfig["GITHUB_SECRET"], scope: "user:email"
+                  ApplicationConfig["GITHUB_KEY"], ApplicationConfig["GITHUB_SECRET"], scope: "user:email"
   config.omniauth :twitter, ApplicationConfig["TWITTER_KEY"], ApplicationConfig["TWITTER_SECRET"]
 end

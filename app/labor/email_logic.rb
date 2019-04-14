@@ -1,6 +1,6 @@
 class EmailLogic
   attr_reader :open_percentage, :last_email_sent_at,
-    :days_until_next_email, :articles_to_send
+              :days_until_next_email, :articles_to_send
 
   def initialize(user)
     @user = user
@@ -38,9 +38,9 @@ class EmailLogic
                    order("score DESC").
                    limit(8)
                else
-                 Article.
+                 Article.published.
                    where("published_at > ?", fresh_date).
-                   where(published: true, featured: true, email_digest_eligible: true).
+                   where(featured: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 25).
                    order("score DESC").

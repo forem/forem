@@ -54,7 +54,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
 - [Additional docs](#additional-docs)
-- [Product Roadmap](#product-roadmap)
 - [Core Team Members](#core-team)
 - [License](#license)
 
@@ -186,6 +185,12 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 1. run `docker-compose run web yarn install`
 1. run `docker-compose up`
 1. That's it! Navigate to `localhost:3000`
+
+### Gitpod Installation
+
+Simply open dev.to in Gitpod, a free online dev environment for GitHub:
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thepracticaldev/dev.to)
 
 #### Starting the application
 

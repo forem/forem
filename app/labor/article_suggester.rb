@@ -13,7 +13,7 @@ class ArticleSuggester
   end
 
   def other_suggestions(num = 4)
-    Article.where(featured: true, published: true).
+    Article.published.where(featured: true).
       where.not(id: article.id).
       order("hotness_score DESC").
       includes(:user).
@@ -22,8 +22,7 @@ class ArticleSuggester
   end
 
   def suggestions_by_tag
-    Article.tagged_with(article.tag_list, any: true).
-      where(published: true).
+    Article.published.tagged_with(article.tag_list, any: true).
       where.not(id: article.id).
       order("hotness_score DESC").
       includes(:user).

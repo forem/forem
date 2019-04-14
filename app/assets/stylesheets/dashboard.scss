@@ -169,8 +169,14 @@
       font-size: 0.66em;
     }
   }
-
-
+  .video-upload-cta {
+    display: inline-block;
+    margin: 10px 0px 20px;
+    background: #0045ff;
+    padding: 5px 12px;
+    border-radius: 3px;
+    color: white;
+  }
   .single-article {
     border: 1px solid $light-medium-gray;
     border: var(--theme-container-border, 1px solid $light-medium-gray);
@@ -184,6 +190,7 @@
     background: var(--theme-container-background, white);
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
+      background: var(--theme-container-accent-background, lighten($yellow, 20%));
     }
     .dashboard-collection-org-details {
       .dashboard-top-pill {
@@ -348,6 +355,7 @@
   .no-articles {
     text-align: center;
     background: white;
+    background: var(--theme-container-accent-background, white);
     padding: 2vw 3vw 6vw;
     box-shadow: $shadow;
     border-radius: 3px;
@@ -367,9 +375,9 @@
       margin: auto;
     }
     img {
+      margin-top: 30px;
       width: 90%;
       max-width: 270px;
-      min-height: 350px;
     }
   }
 }

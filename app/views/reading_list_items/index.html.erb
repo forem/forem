@@ -47,11 +47,9 @@
   </div>
   <div class="articles-list" id="articles-list">
     <% if user_signed_in? %>
-      <div class="comments-container" id="comments-container">
-        <div class="substories" id="substories" data-tabs="{}">
-        </div>
-        <button class="load-more-cta cta" id="load-more-cta">LOAD MORE POSTS</button>
+      <div class="substories" id="substories" data-tabs="{}">
       </div>
+      <button class="load-more-cta cta" id="load-more-cta">LOAD MORE POSTS</button>
     <% else %>
       <script>
         window.location.href = "/enter"

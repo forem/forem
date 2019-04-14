@@ -39,7 +39,7 @@
       <% elsif tip_rand == 3 %>
         You're a better dev today than you were yesterday.
       <% elsif tip_rand == 4 %>
-        <% if @user.articles.where(published: true).any? %>
+        <% if @user.articles.published.any? %>
           Can't wait to see <b>your</b> next DEV post!
         <% else %>
           Can't wait to see <b>your</b> first DEV post!

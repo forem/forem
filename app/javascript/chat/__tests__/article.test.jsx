@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { deep } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
 import Article from '../article';
 
@@ -59,7 +59,7 @@ describe('<Article />', () => {
 
   it('should have the proper elements, attributes and values', async () => {
     await fetch.mockResponseOnce(sampleResponse);
-    const context = shallow(getArticle());
+    const context = deep(getArticle(), { depth: 2 });
     await flushPromises();
 
     // checks that article details are placed at their appropriate elements

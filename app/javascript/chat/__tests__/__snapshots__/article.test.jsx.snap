@@ -9,6 +9,7 @@ exports[`<Article /> should load article 1`] = `
   >
     <a
       href="/princesscarolyn/your-approval-means-nothing-to-me-42640"
+      rel="noopener noreferrer"
       target="_blank"
     >
       <span
@@ -17,6 +18,8 @@ exports[`<Article /> should load article 1`] = `
         /princesscarolyn/your-approval-means-nothing-to-me-42640
       </span>
       <img
+        alt="External Link Icon"
+        class="external-link-img"
         src=""
       />
     </a>
@@ -83,6 +86,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        data-category="like"
         src=""
       />
     </button>

@@ -50,7 +50,7 @@ RSpec.describe User, type: :model do
     service.get_user
   end
 
-  describe "makes sure usernames are not blank" do
+  describe "makes sure usernames and email are not blank" do
     it "sets twitter username to nil" do
       user = create(:user, twitter_username: "")
       user.reload
@@ -68,6 +68,18 @@ RSpec.describe User, type: :model do
       user.reload
       expect(user.github_username).to eq("hello")
       expect(user.twitter_username).to eq("world")
+    end
+
+    it "sets email to nil" do
+      user = create(:user, email: "")
+      user.reload
+      expect(user.email).to eq(nil)
+    end
+
+    it "sets correct email if it's not blank" do
+      user = create(:user, email: "anna@example.com")
+      user.reload
+      expect(user.email).to eq("anna@example.com")
     end
   end
 
@@ -367,18 +379,32 @@ RSpec.describe User, type: :model do
       expect(new_user.identities.size).to eq(2)
     end
 
-    it "estimates default language to be nil" do
-      user.estimate_default_language_without_delay!
-      expect(user.estimated_default_language).to eq(nil)
-    end
-    it "estimates default language to be japan with jp email" do
-      user.email = "ben@hello.jp"
-      user.estimate_default_language_without_delay!
-      expect(user.estimated_default_language).to eq("ja")
-    end
-    it "estimates default language based on ID dump" do
-      new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      new_user.estimate_default_language_without_delay!
+    context "with active jobs" do
+      before { ActiveJob::Base.queue_adapter = :inline }
+
+      it "estimates default language to be nil" do
+        user.estimate_default_language!
+        expect(user.estimated_default_language).to eq(nil)
+      end
+
+      it "estimates default language to be japan with jp email" do
+        user.update_column(:email, "ben@hello.jp")
+        user.estimate_default_language!
+        user.reload
+        expect(user.estimated_default_language).to eq("ja")
+      end
+
+      it "estimates default language based on ID dump" do
+        new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
+        new_user.estimate_default_language!
+      end
+
+      it "returns proper preferred_languages_array" do
+        user.update_column(:email, "ben@hello.jp")
+        user.estimate_default_language!
+        user.reload
+        expect(user.decorate.preferred_languages_array).to include("ja")
+      end
     end
   end
 
@@ -454,6 +480,11 @@ RSpec.describe User, type: :model do
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
     expect(user.decorate.config_body_class).to eq("night-theme default-article-body")
+  end
+
+  it "creates proper body class with pink theme" do
+    user.config_theme = "pink_theme"
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
   end
 
   it "inserts into mailchimp" do
