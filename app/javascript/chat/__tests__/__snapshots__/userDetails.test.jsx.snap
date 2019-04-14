@@ -70,6 +70,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        class="external-link-img"
         src=""
         style={
           Object {
@@ -237,6 +238,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        class="external-link-img"
         src=""
         style={
           Object {
