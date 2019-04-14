@@ -30,8 +30,9 @@ function initializeCommentDate() {
 
     // replace the comment short visible date with the equivalent localized one
     var visibleDate = commentDates[i].querySelector('a');
-    if (visibleDate) {
-      visibleDate.innerHTML = timestampToLocalTime(ts, visibileTimeOptions);
+    var localTime = timestampToLocalTime(ts, visibileTimeOptions);
+    if (visibleDate && localTime) {
+      visibleDate.innerHTML = localTime;
     }
   }
 }
