@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { deep } from 'preact-render-spy';
 import View from '../view';
 
 let exited = false;
@@ -43,12 +43,12 @@ describe('<View />', () => {
   });
 
   it('should render and test snapshot (with channel)', () => {
-    const tree = shallow(getView(sampleChannel));
+    const tree = deep(getView(sampleChannel), { depth: 2 });
     expect(tree).toMatchSnapshot();
   });
 
   it('should have the proper attributes and text values (no channel provided)', () => {
-    const context = shallow(getView([]));
+    const context = deep(getView([]), { depth: 2 });
     expect(context.find('.chatNonChatView').exists()).toEqual(true);
     expect(context.find('.container').exists()).toEqual(true);
 
@@ -64,7 +64,7 @@ describe('<View />', () => {
   });
 
   it('should have the proper attributes and text values (with channel provided)', () => {
-    const context = shallow(getView(sampleChannel));
+    const context = deep(getView(sampleChannel), { depth: 2 });
     expect(context.find('.chatNonChatView_contentblock').exists()).toEqual(
       true,
     );
@@ -103,14 +103,14 @@ describe('<View />', () => {
   });
 
   it('should trigger exit', () => {
-    const context = shallow(getView([]));
+    const context = deep(getView([]), { depth: 2 });
     context.find('.chatNonChatView_exitbutton').simulate('click');
     expect(exited).toEqual(true);
     exited = false;
   });
 
   it('should trigger accept', () => {
-    const context = shallow(getView(sampleChannel));
+    const context = deep(getView(sampleChannel), { depth: 2 });
     context
       .find('.cta')
       .at(0)
@@ -124,7 +124,7 @@ describe('<View />', () => {
   });
 
   it('should trigger decline', () => {
-    const context = shallow(getView(sampleChannel));
+    const context = deep(getView(sampleChannel), { depth: 2 });
     context
       .find('.cta')
       .at(1)
