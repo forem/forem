@@ -14,7 +14,7 @@ function initializeCommentDate() {
   };
 
   // example: "Apr 3"
-  var visibileTimeOptions = {
+  var visibleDateOptions = {
     month: 'short',
     day: 'numeric',
   };
@@ -31,9 +31,9 @@ function initializeCommentDate() {
     // replace the comment short visible date with the equivalent localized one
     var visibleDate = commentDates[i].querySelector('a');
     if (visibleDate) {
-      var localTime = timestampToLocalTime(ts, visibileTimeOptions);
-      if (localTime) {
-        visibleDate.innerHTML = localTime;
+      var localVisibleDate = timestampToLocalTime(ts, visibleDateOptions);
+      if (localVisibleDate) {
+        visibleDate.innerHTML = localVisibleDate;
       }
     }
   }
