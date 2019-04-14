@@ -37,7 +37,7 @@ $ease-out-cubic : cubic-bezier(0.215, 0.61, 0.355, 1);
 
 body.night-theme {
   .on-page-nav-butt img, .icon-img, .dropdown-icon, .reaction-button:not(.reacted) img, .image-upload-button button, .icon-image,
-  .chatchannels__config img, .external-link-img, .group-img {
+  .dev-badge, .chatchannels__config img, .external-link-img, .group-img {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
