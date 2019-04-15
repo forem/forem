@@ -8,8 +8,7 @@ function blockChat(activeChannelId) {
   formData.append('chat_id', activeChannelId);
   formData.append('controller', 'chat_channels');
 
-  getCsrfToken()
-    .then(sendFetch('block-chat', formData));
+  getCsrfToken().then(sendFetch('block-chat', formData));
 }
 
 export default class UserDetails extends Component {
@@ -44,6 +43,7 @@ export default class UserDetails extends Component {
       socialIcons.push(
         <a href={user.website_url} target="_blank">
           <img
+            className="external-link-img"
             src={websiteImage}
             style={{ width: '30px', margin: '5px 15px 15px 0px' }}
           />
@@ -95,36 +95,54 @@ export default class UserDetails extends Component {
             Block User
           </button>
 
-          <button onClick={() => {
-            var modal = document.getElementById("userdetails__reportabuse");
-            if (modal.style.display === "none") {
-              modal.style.display = "block";
-              window.location.href = `#userdetails__reportabuse`;
-
-            } else {
-              modal.style.display = "none";
-              window.location.href = `#`;
-            }
-          }}>
+          <button
+            onClick={() => {
+              const modal = document.getElementById('userdetails__reportabuse');
+              if (modal.style.display === 'none') {
+                modal.style.display = 'block';
+                window.location.href = `#userdetails__reportabuse`;
+              } else {
+                modal.style.display = 'none';
+                window.location.href = `#`;
+              }
+            }}
+          >
             Report Abuse
           </button>
-
         </div>
         <div id="userdetails__reportabuse" style="display:none">
           <div className="userdetails__reportabuse">
             <p>Reporting abuse will: </p>
             <ul>
-              <li>close this chat and prevent this user from re-opening chat with you</li>
-              <li>give the DEV team your consent to read messages in this chat to understand your report</li>
+              <li>
+                close this chat and prevent this user from re-opening chat with
+                you
+              </li>
+              <li>
+                give the DEV team your consent to read messages in this chat to
+                understand your report
+              </li>
             </ul>
             <h5>Are you sure?</h5>
-            <a href="/report-abuse" onClick={() => {
-              blockChat(channelId);
-            }}>Yes</a>
-            <a class="no" onClick={() => {
-              document.getElementById("userdetails__reportabuse").style.display = "none";
-              window.location.href = `#`;
-            }}>No</a>
+            <a
+              href="/report-abuse"
+              onClick={() => {
+                blockChat(channelId);
+              }}
+            >
+              Yes
+            </a>
+            <a
+              className="no"
+              onClick={() => {
+                document.getElementById(
+                  'userdetails__reportabuse',
+                ).style.display = 'none';
+                window.location.href = `#`;
+              }}
+            >
+              No
+            </a>
           </div>
         </div>
       </div>

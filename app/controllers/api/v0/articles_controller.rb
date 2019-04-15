@@ -3,8 +3,8 @@ module Api
     class ArticlesController < ApiController
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
-        cache_path: proc { |c| c.params.permit! },
-        expires_in: 5.minutes
+                    cache_path: proc { |c| c.params.permit! },
+                    expires_in: 5.minutes
       respond_to :json
 
       before_action :cors_preflight_check
@@ -26,7 +26,7 @@ module Api
       end
 
       def show
-        relation = Article.includes(:user).where(published: true)
+        relation = Article.published.includes(:user)
         @article = if params[:id] == "by_path"
                      relation.find_by!(path: params[:url]).decorate
                    else

@@ -13,7 +13,13 @@
 
   // channel users
   .channeldetails__user {
+    a {
+      padding: 0 4px !important;
+      border-radius: 3px;
+      background: white;
+    }
     padding: 2px 0;
+    margin-bottom: 10px;
     .channeldetails__userprofileimage {
       height: 25px;
       width: 25px;

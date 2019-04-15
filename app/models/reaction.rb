@@ -5,9 +5,9 @@ class Reaction < ApplicationRecord
   belongs_to :user
 
   counter_culture :reactable,
-    column_name: proc { |model|
-      model.points.positive? ? "positive_reactions_count" : "reactions_count"
-    }
+                  column_name: proc { |model|
+                    model.points.positive? ? "positive_reactions_count" : "reactions_count"
+                  }
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }

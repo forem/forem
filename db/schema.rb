@@ -10,9 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_02_224426) do
+ActiveRecord::Schema.define(version: 2019_04_12_093614) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -268,6 +267,8 @@ ActiveRecord::Schema.define(version: 2019_04_02_224426) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
+    t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
@@ -777,9 +778,10 @@ ActiveRecord::Schema.define(version: 2019_04_02_224426) do
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
     t.string "education"
-    t.string "email", default: "", null: false
+    t.string "email"
     t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
+    t.boolean "email_community_mod_newsletter", default: false
     t.boolean "email_connect_messages", default: true
     t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true
@@ -787,6 +789,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_224426) do
     t.boolean "email_mention_notifications", default: true
     t.boolean "email_newsletter", default: true
     t.boolean "email_public", default: false
+    t.boolean "email_tag_mod_newsletter", default: false
     t.boolean "email_unread_notifications", default: true
     t.string "employer_name"
     t.string "employer_url"

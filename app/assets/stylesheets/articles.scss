@@ -24,6 +24,7 @@
     padding: 40px 0px;
     font-size: 1.2em;
     background: white;
+    background: var(--theme-container-background, white);
     box-shadow: $bold-shadow;
     box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius: 3px;

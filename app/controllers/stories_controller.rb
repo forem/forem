@@ -3,7 +3,6 @@ class StoriesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[index search show]
 
   def index
-    add_param_context(:username, :tag)
     return handle_user_or_organization_or_podcast_index if params[:username]
     return handle_tag_index if params[:tag]
 
@@ -19,7 +18,6 @@ class StoriesController < ApplicationController
 
   def show
     @story_show = true
-    add_param_context(:username, :slug)
     if (@article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate)
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
@@ -82,7 +80,6 @@ class StoriesController < ApplicationController
     @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model)
-    add_param_context(:tag, :page)
     if @tag_model.alias_for.present?
       redirect_to "/t/#{@tag_model.alias_for}"
       return
@@ -96,7 +93,7 @@ class StoriesController < ApplicationController
     @stories = @stories.decorate
 
     @article_index = true
-    set_surrogate_key_header "articles-#{@tag}", @stories.map(&:record_key)
+    set_surrogate_key_header "articles-#{@tag}"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
     render template: "articles/tag_index"
   end
@@ -104,13 +101,11 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
-    num_articles = 30
+    num_articles = 35
     @stories = article_finder(num_articles)
-    add_param_context(:page, :timeframe)
     if %w[week month year infinity].include?(params[:timeframe])
       @stories = @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("score DESC")
-      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     elsif params[:timeframe] == "latest"
       @stories = @stories.order("published_at DESC").
         where("featured_number > ? AND score > ?", 1_449_999_999, -40)
@@ -124,9 +119,7 @@ class StoriesController < ApplicationController
         offset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9].sample # random offset, weighted more towards zero
         @stories = @stories.offset(offset)
       end
-      @featured_story = @stories.where.not(main_image: nil).first&.decorate || Article.new
     end
-    @stories = @stories.decorate
     assign_podcasts
     @article_index = true
     set_surrogate_key_header "main_app_home_page"
@@ -139,20 +132,19 @@ class StoriesController < ApplicationController
     @article_index = true
     @list_of = "podcast-episodes"
     @podcast_episodes = @podcast.podcast_episodes.order("published_at DESC").limit(30)
-    set_surrogate_key_header "podcast_episodes", (@podcast_episodes.map { |e| e["record_key"] })
+    set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end
 
   def handle_organization_index
     @user = @organization
-    @stories = ArticleDecorator.decorate_collection(@organization.articles.
-      where(published: true).
+    @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
       limited_column_select.
       includes(:user).
       order("published_at DESC").page(@page).per(8))
     @article_index = true
     @organization_article_index = true
-    set_surrogate_key_header "articles-org-#{@organization.id}", @stories.map(&:record_key)
+    set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
   end
 
@@ -163,8 +155,7 @@ class StoriesController < ApplicationController
       return
     end
     assign_user_comments
-    @stories = ArticleDecorator.decorate_collection(@user.
-      articles.where(published: true).
+    @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
     @article_index = true
@@ -172,7 +163,7 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
 
-    set_surrogate_key_header "articles-user-#{@user.id}", @stories.map(&:record_key)
+    set_surrogate_key_header "articles-user-#{@user.id}"
     render template: "users/show"
   end
 
@@ -261,11 +252,7 @@ class StoriesController < ApplicationController
 
   def article_finder(num_articles)
     tag = params[:tag]
-    articles = Article.where(published: true).
-      includes(:user).
-      limited_column_select.
-      page(@page).
-      per(num_articles)
+    articles = Article.published.includes(:user).limited_column_select.page(@page).per(num_articles)
     articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
     articles
   end

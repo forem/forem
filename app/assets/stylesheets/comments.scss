@@ -292,10 +292,11 @@ a.header-link {
       font-size: 19px;
       font-family: $helvetica;
       background: lighten($yellow, 19%);
+      background: var(--theme-container-accent-background, lighten($yellow, 19%));
       box-shadow: $shadow;
       width: calc(100% - 80px);
       margin: 19px auto 8px;
-      border: 2px solid $yellow;
+      border: 1px solid #dbdbdb;
       p.loading-message {
         opacity: 0.6;
       }

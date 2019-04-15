@@ -115,7 +115,7 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "lists followed organizations" do
-        expect(response.body).to include organization.name
+        expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
   end

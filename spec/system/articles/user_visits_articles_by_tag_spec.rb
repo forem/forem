@@ -6,9 +6,9 @@ RSpec.describe "User visits articles by tag", type: :system do
   let!(:func_tag) { create(:tag, name: "functional") }
 
   let(:author) { create(:user) }
-  let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: Time.now - 2.days) }
-  let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.now) }
-  let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: Time.now - 2.weeks) }
+  let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago) }
+  let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current) }
+  let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago) }
 
   context "when user hasn't logged in" do
     context "when 2 articles" do
@@ -54,7 +54,7 @@ RSpec.describe "User visits articles by tag", type: :system do
 
     context "when more articles" do
       before do
-        create_list(:article, 3, tags: "javascript", user: author, published_at: Time.now)
+        create_list(:article, 3, tags: "javascript", user: author, published_at: Time.current)
         visit "/t/javascript"
       end
 
