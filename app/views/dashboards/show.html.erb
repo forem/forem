@@ -21,11 +21,16 @@
     <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
-    <% if current_user.created_at < 2.weeks.ago %>
-      <a class="video-upload-cta" href="/videos/new" data-no-instant>
-        Upload a Video 📹
-      </a>
-    <% end %>
+    <div class="actions-secondary">
+      <% if current_user.created_at < 2.weeks.ago %>
+        <a class="video-upload-cta" href="/videos/new" data-no-instant>
+          Upload a Video 🎥
+        </a>
+      <% end %>
+
+      <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
+      <div class="clear"></div>
+    </div>
     <% @articles.each do |article| %>
       <%= render "dashboard_article", article: article, org_admin: false %>
     <% end %>
