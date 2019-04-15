@@ -110,7 +110,6 @@ group :development do
   gem "guard", "~> 2.15", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
-  gem "rb-fsevent", "~> 0.10", require: false #  FSEvents API with signals handled
   gem "web-console", "~> 3.7" # Rails Console on the Browser
 end
 

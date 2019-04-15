@@ -1052,7 +1052,6 @@ DEPENDENCIES
   rails (~> 5.2, >= 5.2.3)
   rails-assets-airbrake-js-client (~> 1.6)!
   rails-observers (~> 0.1)
-  rb-fsevent (~> 0.10)
   recaptcha (~> 4.13)
   redcarpet (~> 3.4)
   reverse_markdown (~> 1.1)
