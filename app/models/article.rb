@@ -106,6 +106,26 @@ class Article < ApplicationRecord
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
+  scope :sorting, lambda { |value|
+    value ||= "creation-desc"
+    kind, dir = value.split("-")
+
+    dir = "desc" unless %w[asc desc].include?(dir)
+
+    column =
+      case kind
+      when "creation"  then :created_at
+      when "views"     then :page_views_count
+      when "reactions" then :positive_reactions_count
+      when "comments"  then :comments_count
+      when "published" then :published_at
+      else
+        :created_at
+      end
+
+    order(column => dir.to_sym)
+  }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
