@@ -26,14 +26,12 @@ gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model t
 gem "autoprefixer-rails", "~> 9.5" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
 gem "aws-sdk-lambda", "~> 1.16" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
-gem "bourbon", "~> 5.1" # Bourbon is a library of pure Sass mixins and functions
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 1.3" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.11" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.1" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "csv_shaper", "~> 1.3" # Beautiful DSL for creating CSV output in Ruby & Rails
 gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
@@ -88,7 +86,6 @@ gem "sass-rails", "~> 5.0" # Sass adapter for the Rails asset pipeline
 gem "scout_apm", "~> 2.4" # Monitors Ruby apps and reports detailed metrics on performance to Scout
 gem "sdoc", "~> 1.0", group: :doc # rdoc generator html with javascript search index
 gem "serviceworker-rails", "~> 0.5" # Integrates ServiceWorker into the Rails asset pipeline
-gem "share_meow_client", "~> 0.1" # Ruby client for generating ShareMeow URLs
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 3.1" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
