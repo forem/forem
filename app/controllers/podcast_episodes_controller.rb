@@ -6,7 +6,7 @@ class PodcastEpisodesController < ApplicationController
     @podcast_index = true
     @podcasts = Podcast.order("title asc")
     @podcast_episodes = PodcastEpisode.order("published_at desc").first(20)
-    unless params[:q].present?
+    if params[:q].blank?
       set_surrogate_key_header("podcast_episodes_all " + params[:q].to_s,
                                @podcast_episodes.map { |e| e["record_key"] })
     end
@@ -20,10 +20,10 @@ class PodcastEpisodesController < ApplicationController
 
   def podcast_episode_params
     params.require(:podcast_episode).permit(:title,
-                                    :body,
-                                    :image,
-                                    :social_image,
-                                    :remote_social_image_url,
-                                    :quote)
+                                            :body,
+                                            :image,
+                                            :social_image,
+                                            :remote_social_image_url,
+                                            :quote)
   end
 end

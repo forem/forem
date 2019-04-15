@@ -101,7 +101,7 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    Article.find_by_slug(link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    Article.find_by(slug: link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
   end
 
   def send_email_if_appropriate

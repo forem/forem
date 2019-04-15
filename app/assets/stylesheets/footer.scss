@@ -13,7 +13,18 @@ footer{
     font-weight: 500;
     background: transparent;
     &.centered-footer{
-      max-width: 820px;
+      width: 97%;
+      max-width: 722px;
+      @media screen and (min-width: 950px) and (max-width: 1119px) {
+        margin-left: 310px;
+        max-width: calc(100% - 377px);
+      }
+      @media screen and (min-width: 1120px) {
+        max-width: calc(100% - 642px);
+      }
+      @media screen and (min-width: 1240px) {
+        max-width: 606px;
+      }
     }
     a{
       color: $black;

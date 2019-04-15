@@ -27,6 +27,14 @@ class ChatChannelPolicy < ApplicationPolicy
     %i[channel_name slug command]
   end
 
+  def create_chat?
+    true
+  end
+
+  def block_chat?
+    user_part_of_channel && channel_is_direct
+  end
+
   private
 
   def user_can_edit_channel
@@ -40,5 +48,9 @@ class ChatChannelPolicy < ApplicationPolicy
 
   def user_part_of_channel
     record.present? && record.has_member?(user)
+  end
+
+  def channel_is_direct
+    record.channel_type == "direct"
   end
 end

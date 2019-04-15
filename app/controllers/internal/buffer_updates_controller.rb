@@ -14,4 +14,9 @@ class Internal::BufferUpdatesController < Internal::ApplicationController
       render body: nil
     end
   end
+
+  def update
+    BufferUpdate.upbuff!(params[:id], current_user.id, params[:body_text], params[:status])
+    render body: nil
+  end
 end

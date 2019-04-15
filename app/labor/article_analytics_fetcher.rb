@@ -43,6 +43,6 @@ class ArticleAnalyticsFetcher
   end
 
   def occasionally_force_fetch?
-    rand(25) == 1 if Rails.env.production?
+    rand(25) == 1
   end
 end

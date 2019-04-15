@@ -1,14 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Reactions::UpdateReactableJob, type: :job do
-  describe "#perform_later" do
-    it "enqueues the job" do
-      ActiveJob::Base.queue_adapter = :test
-      expect do
-        described_class.perform_later(2)
-      end.to have_enqueued_job.with(2).on_queue("update_reactable")
-    end
-  end
+  include_examples "#enqueues_job", "update_reactable", 2
 
   describe "#perform_now" do
     let(:article) { create(:article) }
@@ -23,11 +16,10 @@ RSpec.describe Reactions::UpdateReactableJob, type: :job do
     end
 
     it "updates the reactable Comment" do
-      comment.update_columns(updated_at: Time.now - 1.day)
-      now = Time.now
+      updated_at = 1.day.ago
+      comment.update_columns(updated_at: updated_at)
       described_class.perform_now(comment_reaction.id)
-      comment.reload
-      expect(comment.updated_at).to be >= now
+      expect(comment.reload.updated_at).to be > updated_at
     end
 
     it "doesn't fail if a reaction doesn't exist" do

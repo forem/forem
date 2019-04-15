@@ -6,7 +6,7 @@ class Comment < ApplicationRecord
   counter_culture :commentable
   belongs_to :user
   counter_culture :user
-  has_many :mentions, as: :mentionable, dependent: :destroy
+  has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25_000 },
                             uniqueness: { scope: %i[user_id
@@ -37,14 +37,14 @@ class Comment < ApplicationRecord
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :id
     add_index "ordered_comments",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attributes :id, :user_id, :commentable_id, :commentable_type, :id_code_generated, :path,
-        :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
+                 :id_code, :readable_publish_date, :parent_id, :positive_reactions_count, :created_at
       attribute :body_html do
         HTML_Truncator.truncate(processed_html,
-          500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
+                                500, ellipsis: '<a class="comment-read-more" href="' + path + '">... Read Entire Comment</a>')
       end
       attribute :url do
         path
@@ -249,8 +249,7 @@ class Comment < ApplicationRecord
   handle_asynchronously :create_id_code
 
   def touch_user
-    user.touch
-    user.touch(:last_comment_at)
+    user.touch(:updated_at, :last_comment_at)
   end
   handle_asynchronously :touch_user
 

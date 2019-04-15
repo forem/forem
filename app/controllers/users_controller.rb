@@ -23,7 +23,7 @@ class UsersController < ApplicationController
     authorize @user
     # raise permitted_attributes(@user).to_s
     if @user.update(permitted_attributes(@user))
-      RssReader.new(request.request_id).delay.fetch_user(@user) if @user.feed_url.present?
+      RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
@@ -57,16 +57,20 @@ class UsersController < ApplicationController
   def remove_association
     @user = current_user
     authorize @user
+
     provider = params[:provider]
     identity = @user.identities.find_by(provider: provider)
     @tab_list = @user.settings_tab_list
     @tab = "account"
-    if @user.identities.count == 2 && identity
+
+    if @user.identities.size == 2 && identity
       identity.destroy
+
       identity_username = "#{provider}_username".to_sym
-      @user.update(identity_username => nil)
+      @user.update(identity_username => nil, profile_updated_at: Time.current)
+
       redirect_to "/settings/#{@tab}",
-        notice: "Your #{provider.capitalize} account was successfully removed."
+                  notice: "Your #{provider.capitalize} account was successfully removed."
     else
       flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
       redirect_to "/settings/#{@tab}"
@@ -90,10 +94,10 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by_secret(params[:org_secret]))
+    if (@organization = Organization.find_by(secret: params[:org_secret]))
       current_user.update(organization_id: @organization.id)
       redirect_to "/settings/organization",
-        notice: "You have joined the #{@organization.name} organization."
+                  notice: "You have joined the #{@organization.name} organization."
     else
       not_found
     end
@@ -103,7 +107,7 @@ class UsersController < ApplicationController
     authorize User
     current_user.update(organization_id: nil, org_admin: nil)
     redirect_to "/settings/organization",
-      notice: "You have left your organization."
+                notice: "You have left your organization."
   end
 
   def add_org_admin
@@ -112,7 +116,7 @@ class UsersController < ApplicationController
     user.update(org_admin: true)
     user.add_role :analytics_beta_tester if user.organization.approved
     redirect_to "/settings/organization",
-      notice: "#{user.name} is now an admin."
+                notice: "#{user.name} is now an admin."
   end
 
   def remove_org_admin
@@ -120,7 +124,7 @@ class UsersController < ApplicationController
     authorize user
     user.update(org_admin: false)
     redirect_to "/settings/organization",
-      notice: "#{user.name} is no longer an admin."
+                notice: "#{user.name} is no longer an admin."
   end
 
   def remove_from_org
@@ -128,7 +132,7 @@ class UsersController < ApplicationController
     authorize user
     user.update(organization_id: nil)
     redirect_to "/settings/organization",
-      notice: "#{user.name} is no longer part of your organization."
+                notice: "#{user.name} is no longer part of your organization."
   end
 
   def signout_confirm; end
@@ -156,7 +160,7 @@ class UsersController < ApplicationController
       stripe_code = current_user.stripe_id_code
       return if stripe_code == "special"
 
-      @customer = Stripe::Customer.retrieve(stripe_code) unless stripe_code.blank?
+      @customer = Stripe::Customer.retrieve(stripe_code) if stripe_code.present?
     when "membership"
       if current_user.monthly_dues.zero?
         redirect_to "/membership"

@@ -14,6 +14,7 @@ env:
   global:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
+    - DATABASE_URL=postgres://postgres@localhost/
 branches:
   only:
     - master
@@ -27,11 +28,10 @@ install:
     > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
 before_script:
-  - cp config/database.yml.travis config/database.yml
-  - psql -c 'create database travis_ci_test;' -U postgres
+  - bundle exec rails db:create
 script:
   - bundle exec rails webpacker:compile
-  - bundle exec rake db:schema:load
+  - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
   - 'bundle exec rspec spec --color --tty'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
@@ -48,7 +48,7 @@ deploy:
   app:
     master: practicaldev
   run:
-    - rake db:migrate
+    - rails db:migrate
 after_deploy:
   - bash after_deploy.sh
 notifications:

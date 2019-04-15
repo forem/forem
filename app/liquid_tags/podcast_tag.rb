@@ -25,13 +25,13 @@ class PodcastTag < LiquidTagBase
           </a>
           <a href="/#{@podcast.slug}">
               #{cl_image_tag(@podcast.image_url,
-               type: 'fetch',
-               crop: 'fill',
-               quality: 'auto',
-               sign_url: true,
-               flags: 'progressive',
-               fetch_format: 'auto',
-               class: 'tinyimage')}
+                             type: 'fetch',
+                             crop: 'fill',
+                             quality: 'auto',
+                             sign_url: true,
+                             flags: 'progressive',
+                             fetch_format: 'auto',
+                             class: 'tinyimage')}
             <h1 class="podcastliquidtag__info__podcasttitle">#{@podcast.title}</h1>
           </a>
 
@@ -42,14 +42,14 @@ class PodcastTag < LiquidTagBase
           <img class="button play-butt" id="play-butt-#{episode.slug}" src="/assets/playbutt.png"/>
           <img class="button pause-butt" id="pause-butt-#{episode.slug}" src="/assets/pausebutt.png"/>
           #{cl_image_tag(@podcast.image_url,
-           type: 'fetch',
-           crop: 'fill',
-           quality: 'auto',
-           sign_url: true,
-           flags: 'progressive',
-           fetch_format: 'auto',
-           class: 'podcastliquidtag__podcastimage',
-           id: "podcastimage-#{episode.slug}")}
+                         type: 'fetch',
+                         crop: 'fill',
+                         quality: 'auto',
+                         sign_url: true,
+                         flags: 'progressive',
+                         fetch_format: 'auto',
+                         class: 'podcastliquidtag__podcastimage',
+                         id: "podcastimage-#{episode.slug}")}
         </div>
         #{render_hidden_audio}
       </div>
@@ -72,15 +72,15 @@ class PodcastTag < LiquidTagBase
         <div id="progressBar" class="audio-player-display">
           <a href="/#{@podcast.slug}/#{@episode.slug}">
             #{cl_image_tag(@episode.image_url || @podcast.image_url,
-             type: 'fetch',
-             crop: 'fill',
-             width: 420,
-             height: 420,
-             quality: 'auto',
-             sign_url: true,
-             flags: 'progressive',
-             fetch_format: 'auto',
-             id: 'episode-profile-image')}
+                           type: 'fetch',
+                           crop: 'fill',
+                           width: 420,
+                           height: 420,
+                           quality: 'auto',
+                           sign_url: true,
+                           flags: 'progressive',
+                           fetch_format: 'auto',
+                           id: 'episode-profile-image')}
             <img id="animated-bars" src="/assets/animated-bars.gif" />
           </a>
           <span id="barPlayPause">
@@ -150,8 +150,8 @@ class PodcastTag < LiquidTagBase
   def fetch_podcast(link)
     cleaned_link = parse_link(link)
     podcast_slug, episode_slug = cleaned_link.split("/").last(2)
-    target_podcast = Podcast.find_by_slug(podcast_slug)
-    target_episode = PodcastEpisode.find_by_slug(episode_slug)
+    target_podcast = Podcast.find_by(slug: podcast_slug)
+    target_episode = PodcastEpisode.find_by(slug: episode_slug)
     raise_error unless target_podcast && target_episode
     raise_error unless target_episode.podcast_id == target_podcast.id
     @podcast = target_podcast

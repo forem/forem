@@ -21,7 +21,7 @@ RSpec.describe "Comments", type: :request do
   describe "GET comment index" do
     it "returns 200" do
       get comment.path
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "displays a comment" do
@@ -32,7 +32,7 @@ RSpec.describe "Comments", type: :request do
     context "when the comment is for a podcast's episode" do
       it "works" do
         get podcast_comment.path
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:ok)
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe "Comments", type: :request do
 
       it "returns 200" do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns the comment" do
@@ -78,21 +78,21 @@ RSpec.describe "Comments", type: :request do
   describe "POST /comments/preview" do
     it "returns 401 if user is not logged in" do
       post "/comments/preview",
-        params: { comment: { body_markdown: "hi" } },
-        headers: { HTTP_ACCEPT: "application/json" }
-      expect(response).to have_http_status(401)
+           params: { comment: { body_markdown: "hi" } },
+           headers: { HTTP_ACCEPT: "application/json" }
+      expect(response).to have_http_status(:unauthorized)
     end
 
     context "when logged-in" do
       before do
         login_as user
         post "/comments/preview",
-          params: { comment: { body_markdown: "hi" } },
-          headers: { HTTP_ACCEPT: "application/json" }
+             params: { comment: { body_markdown: "hi" } },
+             headers: { HTTP_ACCEPT: "application/json" }
       end
 
       it "returns 200 on good request" do
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns json" do

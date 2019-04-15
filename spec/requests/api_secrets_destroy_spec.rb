@@ -22,7 +22,7 @@ RSpec.describe "ApiSecretsDestroy", type: :request do
 
     context "when delete fails" do
       before do
-        allow(ApiSecret).to receive(:find_by_id).and_return api_secret
+        allow(ApiSecret).to receive(:find_by).with(id: api_secret.id.to_s).and_return api_secret
         allow(api_secret).to receive(:destroy).and_return false
       end
 

@@ -1,14 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Follows::SendEmailNotificationJob, type: :job do
-  describe "#perform_later" do
-    it "enqueues the job" do
-      ActiveJob::Base.queue_adapter = :test
-      expect do
-        described_class.perform_later(3)
-      end.to have_enqueued_job.with(3).on_queue("send_follow_email_notification")
-    end
-  end
+  include_examples "#enqueues_job", "send_follow_email_notification", 3
 
   describe "#perform_now" do
     let(:user) { create(:user) }
@@ -29,7 +22,7 @@ RSpec.describe Follows::SendEmailNotificationJob, type: :job do
     end
 
     it "doesn't create an EmailMessage if it already exists" do
-      EmailMessage.create!(user_id: user2.id, sent_at: Time.now, subject: "#{user.username} followed you on dev.to")
+      EmailMessage.create!(user_id: user2.id, sent_at: Time.current, subject: "#{user.username} followed you on dev.to")
       described_class.new(follow.id, mailer).perform_now
       expect(mailer).not_to have_received(:new_follower_email)
     end

@@ -2,6 +2,8 @@ require "rails_helper"
 
 RSpec.describe "ChatChannels", type: :request do
   let(:user) { create(:user) }
+  let(:user_open_inbox) { create(:user, inbox_type: "open") }
+  let(:user_closed_inbox) { create(:user) }
   let(:test_subject) { create(:user) }
   let(:chat_channel) { create(:chat_channel) }
   let(:invite_channel) { create(:chat_channel, channel_type: "invite_only") }
@@ -77,11 +79,12 @@ RSpec.describe "ChatChannels", type: :request do
       end
 
       it "returns 200" do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns the channel" do
-        expect(response).to render_template(:show)
+        result = { messages: [], chatChannelId: chat_channel.id }.to_json
+        expect(response.body).to eq(result)
       end
     end
 
@@ -95,8 +98,8 @@ RSpec.describe "ChatChannels", type: :request do
   describe "POST /chat_channels" do
     it "creates chat_channel for current user" do
       post "/chat_channels",
-        params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channel" } },
-        headers: { HTTP_ACCEPT: "application/json" }
+           params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channel" } },
+           headers: { HTTP_ACCEPT: "application/json" }
       expect(ChatChannel.last.slug).to eq("hello-channel")
       expect(ChatChannel.last.active_users).to include(user)
     end
@@ -104,8 +107,8 @@ RSpec.describe "ChatChannels", type: :request do
     it "returns errors if channel is invalid" do
       # slug should be taken
       post "/chat_channels",
-        params: { chat_channel: { channel_name: "HEy hey hoho", slug: chat_channel.slug } },
-        headers: { HTTP_ACCEPT: "application/json" }
+           params: { chat_channel: { channel_name: "HEy hey hoho", slug: chat_channel.slug } },
+           headers: { HTTP_ACCEPT: "application/json" }
       expect(response.body).to include("Slug has already been taken")
     end
   end
@@ -114,23 +117,23 @@ RSpec.describe "ChatChannels", type: :request do
     it "updates channel for valid user" do
       user.add_role(:super_admin)
       put "/chat_channels/#{chat_channel.id}",
-        params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
-        headers: { HTTP_ACCEPT: "application/json" }
+          params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
+          headers: { HTTP_ACCEPT: "application/json" }
       expect(ChatChannel.last.slug).to eq("hello-channelly")
     end
     it "dissallows invalid users" do
       expect do
         put "/chat_channels/#{chat_channel.id}",
-          params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
-          headers: { HTTP_ACCEPT: "application/json" }
+            params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
+            headers: { HTTP_ACCEPT: "application/json" }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
     it "returns errors if channel is invalid" do
       # slug should be taken
       user.add_role(:super_admin)
       put "/chat_channels/#{chat_channel.id}",
-        params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
-        headers: { HTTP_ACCEPT: "application/json" }
+          params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
+          headers: { HTTP_ACCEPT: "application/json" }
       expect(response.body).to include("Slug has already been taken")
     end
   end
@@ -139,8 +142,8 @@ RSpec.describe "ChatChannels", type: :request do
     it "raises NotAuthorizedError if user is not logged in" do
       expect do
         post "/chat_channels/#{chat_channel.id}/moderate",
-        params: { chat_channel: { command: "/ban huh" } },
-        headers: { HTTP_ACCEPT: "application/json" }
+             params: { chat_channel: { command: "/ban huh" } },
+             headers: { HTTP_ACCEPT: "application/json" }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
@@ -148,8 +151,8 @@ RSpec.describe "ChatChannels", type: :request do
       sign_in user
       expect do
         post "/chat_channels/#{chat_channel.id}/moderate",
-          params: { chat_channel: { command: "/ban huh" } },
-          headers: { HTTP_ACCEPT: "application/json" }
+             params: { chat_channel: { command: "/ban huh" } },
+             headers: { HTTP_ACCEPT: "application/json" }
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
@@ -162,13 +165,13 @@ RSpec.describe "ChatChannels", type: :request do
 
       it "enforces chat_channel_params on ban" do
         post "/chat_channels/#{chat_channel.id}/moderate",
-          params: { chat_channel: { command: "/ban #{test_subject.username}" } }
+             params: { chat_channel: { command: "/ban #{test_subject.username}" } }
         expect(response.status).to eq(200)
       end
 
       it "enforces chat_channel_params on unban" do
         post "/chat_channels/#{chat_channel.id}/moderate",
-          params: { chat_channel: { command: "/unban #{test_subject.username}" } }
+             params: { chat_channel: { command: "/unban #{test_subject.username}" } }
         expect(response.status).to eq(200)
       end
     end
@@ -183,6 +186,49 @@ RSpec.describe "ChatChannels", type: :request do
     it "marks chat_channel_membership as opened" do
       post "/chat_channels/#{chat_channel.id}/open"
       expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
+    end
+  end
+
+  describe "POST /chat_channels/create_chat" do
+    it "creates open chat with user who has open inbox" do
+      post "/chat_channels/create_chat",
+           params: { user_id: user_open_inbox.id }
+      expect(response.status).to eq(200)
+    end
+
+    it "does not create for non-open inbox user" do
+      post "/chat_channels/create_chat",
+           params: { user_id: user_closed_inbox.id }
+      expect(response.status).to eq(400)
+    end
+
+    it "creates ensures new chat channel is created for targeted user" do
+      post "/chat_channels/create_chat",
+           params: { user_id: user_open_inbox.id }
+      expect(user_open_inbox.chat_channel_memberships.size).to eq(1)
+    end
+  end
+
+  describe "POST /chat_channels/block_chat" do
+    it "blocks successfully when user has permissions" do
+      direct_channel.add_users [user]
+      post "/chat_channels/block_chat",
+           params: { chat_id: direct_channel.id }
+      expect(response.status).to eq(200)
+    end
+    it "makes chat channel have status of blocked" do
+      direct_channel.add_users [user]
+      post "/chat_channels/block_chat",
+           params: { chat_id: direct_channel.id }
+      expect(direct_channel.reload.status).to eq("blocked")
+    end
+    it "does not block when channel is open" do
+      expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }.
+        to raise_error(Pundit::NotAuthorizedError)
+    end
+    it "does not block when user does not have permissions" do
+      expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }.
+        to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

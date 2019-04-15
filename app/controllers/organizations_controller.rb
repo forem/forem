@@ -1,5 +1,4 @@
 class OrganizationsController < ApplicationController
-  before_action :authenticate_user!, except: [:show]
   after_action :verify_authorized
 
   def create
@@ -25,8 +24,7 @@ class OrganizationsController < ApplicationController
     @organization = @user.organization
     authorize @organization
 
-    if @organization.update(organization_params)
-      @organization.touch(:profile_updated_at)
+    if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       redirect_to "/settings/organization", notice: "Your organization was successfully updated."
     else
       render template: "users/edit"

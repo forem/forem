@@ -51,35 +51,14 @@ class Notification < ApplicationRecord
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
 
-      user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
-      user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
-      json_data = {
-        user: user_data(comment.user),
-        comment: comment_data(comment)
-      }
-      user_ids.delete(comment.user_id).each do |user_id|
-        Notification.create(
-          user_id: user_id,
-          notifiable_id: comment.id,
-          notifiable_type: comment.class.name,
-          action: nil,
-          json_data: json_data,
-        )
-        # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-        send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
-      end
-      return unless comment.commentable.organization_id
-
-      Notification.create(
-        organization_id: comment.commentable.organization_id,
-        notifiable_id: comment.id,
-        notifiable_type: comment.class.name,
-        action: nil,
-        json_data: json_data,
-      )
-      # no push notifications for organizations yet
+      Notifications::NewCommentJob.perform_later(comment.id)
     end
-    handle_asynchronously :send_new_comment_notifications
+
+    def send_new_comment_notifications_without_delay(comment)
+      return if comment.commentable_type == "PodcastEpisode"
+
+      Notifications::NewCommentJob.perform_now(comment.id)
+    end
 
     def send_new_badge_notification(badge_achievement)
       json_data = {
@@ -105,62 +84,16 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_new_badge_notification
 
     def send_reaction_notification(reaction, receiver)
-      return if reaction.user_id == reaction.reactable.user_id
-      return if reaction.points.negative?
-      return if receiver.is_a?(User) && reaction.reactable.receive_notifications == false
+      return if reaction.skip_notification_for?(receiver)
 
-      reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
-        where.not(reactions: { user_id: reaction.reactable.user_id }).
-        order("created_at DESC")
-
-      aggregated_reaction_siblings = reaction_siblings.map { |r| { category: r.category, created_at: r.created_at, user: user_data(r.user) } }
-
-      notification_params = {
-        notifiable_type: reaction.reactable.class.name,
-        notifiable_id: reaction.reactable.id,
-        action: "Reaction"
-        # user_id or organization_id: receiver.id
-      }
-      if receiver.is_a?(User)
-        notification_params[:user_id] = receiver.id
-      elsif receiver.is_a?(Organization)
-        notification_params[:organization_id] = receiver.id
-      end
-
-      if aggregated_reaction_siblings.size.zero?
-        notification = Notification.where(notification_params).delete_all
-      else
-        recent_reaction = reaction_siblings.first
-
-        json_data = {
-          user: user_data(recent_reaction.user),
-          reaction: {
-            category: recent_reaction.category,
-            reactable_type: recent_reaction.reactable_type,
-            reactable_id: recent_reaction.reactable_id,
-            reactable: {
-              path: recent_reaction.reactable.path,
-              title: recent_reaction.reactable.title,
-              class: {
-                name: recent_reaction.reactable.class.name
-              }
-            },
-            aggregated_siblings: aggregated_reaction_siblings,
-            updated_at: recent_reaction.updated_at
-          }
-        }
-
-        previous_siblings_size = 0
-        notification = Notification.find_or_create_by(notification_params)
-        previous_siblings_size = notification.json_data["reaction"]["aggregated_siblings"].size if notification.json_data
-        notification.json_data = json_data
-        notification.notified_at = Time.current
-        notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
-        notification.save!
-      end
-      notification
+      Notifications::NewReactionJob.perform_later(*reaction_notification_attributes(reaction, receiver))
     end
-    handle_asynchronously :send_reaction_notification
+
+    def send_reaction_notification_without_delay(reaction, receiver)
+      return if reaction.skip_notification_for?(receiver)
+
+      Notifications::NewReactionJob.perform_now(*reaction_notification_attributes(reaction, receiver))
+    end
 
     def send_mention_notification(mention)
       mentioner = mention.mentionable.user
@@ -308,6 +241,20 @@ class Notification < ApplicationRecord
       Notifications.user_data(user)
     end
 
+    def comment_data(comment)
+      Notifications.comment_data(comment)
+    end
+
+    def reaction_notification_attributes(reaction, receiver)
+      reactable_data = {
+        reactable_id: reaction.reactable_id,
+        reactable_type: reaction.reactable_type,
+        reactable_user_id: reaction.reactable.user_id
+      }
+      receiver_data = { klass: receiver.class.name, id: receiver.id }
+      [reactable_data, receiver_data]
+    end
+
     def organization_data(organization)
       {
         id: organization.id,
@@ -316,24 +263,6 @@ class Notification < ApplicationRecord
         slug: organization.slug,
         path: organization.path,
         profile_image_90: organization.profile_image_90
-      }
-    end
-
-    def comment_data(comment)
-      {
-        id: comment.id,
-        class: { name: "Comment" },
-        path: comment.path,
-        processed_html: comment.processed_html,
-        updated_at: comment.updated_at,
-        commentable: {
-          id: comment.commentable.id,
-          title: comment.commentable.title,
-          path: comment.commentable.path,
-          class: {
-            name: comment.commentable.class.name
-          }
-        }
       }
     end
 
@@ -349,7 +278,7 @@ class Notification < ApplicationRecord
     end
 
     def should_send_milestone?(milestone_hash)
-      return if milestone_hash[:article].published_at < DateTime.new(2019, 2, 25)
+      return if milestone_hash[:article].published_at < Time.zone.local(2019, 2, 25)
 
       last_milestone_notification = Notification.find_by(
         user_id: milestone_hash[:article].user_id,
@@ -381,25 +310,6 @@ class Notification < ApplicationRecord
       else
         milestones[milestones.index(closest_number) - 1]
       end
-    end
-
-    def send_push_notifications(user_id, title, body, path)
-      return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
-
-      payload = {
-        apns: {
-          aps: {
-            alert: {
-              title: title,
-              body: CGI.unescapeHTML(body.strip!)
-            }
-          },
-          data: {
-            url: "https://dev.to" + path
-          }
-        }
-      }
-      Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
     end
   end
 

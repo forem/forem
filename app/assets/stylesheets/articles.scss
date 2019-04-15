@@ -12,9 +12,6 @@
   @media screen and (min-width: 950px) {
     margin-top: 26px;
   }
-  @media screen and (min-width: 2650px) {
-    max-width: 1300px;
-  }
   &.sub-home {
     margin-top: 10px;
     .side-bar {
@@ -27,6 +24,7 @@
     padding: 40px 0px;
     font-size: 1.2em;
     background: white;
+    background: var(--theme-container-background, white);
     box-shadow: $bold-shadow;
     box-shadow: var(--theme-container-box-shadow, $bold-shadow);
     border-radius: 3px;
@@ -840,6 +838,9 @@
     @media screen and (min-width: 950px) {
       display: block;
     }
+    @media screen and (min-width: 1500px) {
+      margin-left: 13px;
+    }
     .fixed-sidebar {
       position: fixed;
       width: 276px;
@@ -896,6 +897,7 @@
           }
           .sidebar-profile-username {
             color: $medium-gray;
+            color: var(--theme-secondary-color, $medium-gray);
           }
         }
       }
@@ -971,6 +973,7 @@
 
               a {
                 color: $medium-gray;
+                color: var(--theme-secondary-color, $medium-gray);
                 padding: 7px 12px;
                 display: inline-block;
                 &:hover {
@@ -1063,9 +1066,17 @@
         margin: 0;
       }
       &.signin-cta-widget {
-        background: lighten($purple, 3%);
         border: 1px solid darken($bold-blue, 5%);
         box-shadow: 5px 6px 0px darken($bold-blue, 15%);
+        padding: 0px 0px;
+        width: calc(100% - 6px);
+        header {
+          background: darken($bold-blue, 5%);
+          color: white;
+          padding: 15px 0px;
+          text-align: center;
+          font-weight: bold;
+        }
       }
       &.sponsorship-widget {
         display: none;
@@ -1198,6 +1209,7 @@
           border-top: 2px solid $light-gray;
           font-size: 0.84em;
           color: $medium-gray;
+          color: var(--theme-secondary-color, $medium-gray);
           padding-top: 18px;
         }
         .sponsor-footer {
@@ -1348,6 +1360,8 @@
         border: none;
         padding-left: 12px;
         margin-right: 3px;
+        filter: invert(0);
+        filter: var(--theme-social-icon-invert, invert(0));
       }
       .row {
         position: relative;
@@ -1367,22 +1381,26 @@
         }
       }
       .cta-button {
-        margin-top: 8px;
-        padding: 8px 0px;
+        margin: 8px auto 0px;
+        padding: 10px 0px;
         font-size: 0.93em;
         color: darken($sky-blue, 17%);
         color: var(--theme-color, darken($sky-blue, 17%));
         background: white;
         background: var(--theme-container-background, #fff);
+        border: 2px solid darken($sky-blue, 17%);
+        border: 2px solid var(--theme-color, darken($sky-blue, 17%));
         display: block;
-        width: 92%;
-        text-align: left;
+        width: 85%;
+        text-align: center;
+        border-radius: 100px;
         &.login-cta-button {
-          border-top: 0px;
           color: $black;
-          font-size: 1.2em;
-          width: 100%;
+          font-size: 1.1em;
+          width: 85%;
           background: lighten($purple, 3%);
+          margin: 20px 0px;
+          padding: 18px 0px;
         }
         &:hover {
           text-decoration: underline;
@@ -1541,13 +1559,18 @@
   padding: 5px 0px 15px;
   display: none;
   font-size: 1.1em;
+  background: white;
+  background: var(--theme-container-background, white);
   a {
     display: block;
     text-align: center;
     color: $black;
+    color: var(--theme-container-color, $black);
     padding: 20px 0px;
     &.selected {
       background: $purple;
+      background: var(--theme-container-background-hover, $purple);
+
     }
   }
   &.showing {

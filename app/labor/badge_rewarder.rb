@@ -4,8 +4,8 @@ module BadgeRewarder
   def self.award_yearly_club_badges
     (1..3).each do |i|
       message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
-      badge = Badge.find_by_slug("#{YEARS[i]}-year-club")
-      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.day).find_each do |user|
+      badge = Badge.find_by(slug: "#{YEARS[i]}-year-club")
+      User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
           user_id: user.id,
           badge_id: badge.id,
@@ -21,7 +21,7 @@ module BadgeRewarder
       message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
-        badge_id: Badge.find_by_slug("beloved-comment")&.id || 3,
+        badge_id: Badge.find_by(slug: "beloved-comment")&.id || 3,
         rewarding_context_message_markdown: message,
       )
       comment.user.save if achievement.valid?
@@ -43,7 +43,7 @@ module BadgeRewarder
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
     client = Octokit::Client.new
-    badge = Badge.find_by_slug("dev-contributor")
+    badge = Badge.find_by(slug: "dev-contributor")
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios"].each do |repo|
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |c| c.author.id }
@@ -56,7 +56,7 @@ module BadgeRewarder
   end
 
   def self.award_streak_badge(num_weeks)
-    article_user_ids = Article.where(published: true).where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
+    article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
     message = "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
     users = User.where(id: article_user_ids).where("articles_count >= ?", num_weeks)
     usernames = []
@@ -75,7 +75,7 @@ module BadgeRewarder
     User.where(username: usernames).find_each do |user|
       BadgeAchievement.create(
         user_id: user.id,
-        badge_id: Badge.find_by_slug(slug).id,
+        badge_id: Badge.find_by(slug: slug).id,
         rewarding_context_message_markdown: message_markdown,
       )
       user.save

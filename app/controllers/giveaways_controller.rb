@@ -86,19 +86,19 @@ class GiveawaysController < ApplicationController
   end
 
   def confirm_presence
-    unless user_params[:shipping_name].present?
+    if user_params[:shipping_name].blank?
       @errors << "You need a shipping name"
       @invalid_form = true
     end
-    unless user_params[:shipping_address].present?
+    if user_params[:shipping_address].blank?
       @errors << "You need a shipping address"
       @invalid_form = true
     end
-    unless user_params[:shipping_city].present?
+    if user_params[:shipping_city].blank?
       @errors << "You need a shipping city"
       @invalid_form = true
     end
-    unless user_params[:shipping_country].present?
+    if user_params[:shipping_country].blank?
       @errors << "You need a shipping country"
       @invalid_form = true
     end

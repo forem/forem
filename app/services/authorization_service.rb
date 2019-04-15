@@ -59,8 +59,7 @@ class AuthorizationService
       )
       user.name = auth.info.nickname if user.name.blank?
       user.skip_confirmation!
-      user.remember_me!
-      user.remember_me = true
+      user.set_remember_fields
       add_social_identity_data(user)
       user.saw_onboarding = false
       user.save!
@@ -69,11 +68,11 @@ class AuthorizationService
   end
 
   def update_user(user)
-    user.remember_me!
-    user.remember_me = true
+    user.set_remember_fields
     user.github_username = auth.info.nickname if auth.provider == "github" && auth.info.nickname != user.github_username
     user.twitter_username = auth.info.nickname if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
     add_social_identity_data(user)
+    user.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
     user.save
     user
   end
@@ -83,13 +82,13 @@ class AuthorizationService
       signed_in_resource
     elsif identity.user
       identity.user
-    elsif !auth.info.email.blank?
-      User.find_by_email(auth.info.email)
+    elsif auth.info.email.present?
+      User.find_by(email: auth.info.email)
     end
   end
 
   def set_identity(identity, user)
-    return unless identity.user_id.blank?
+    return if identity.user_id.present?
 
     identity.user = user
     identity.save!

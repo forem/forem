@@ -50,7 +50,11 @@ const Channels = ({
           className="chatchanneltabindicatordirectimage"
         />
       ) : (
-        <img alt={channel.channel_name} src={GroupImage} />
+        <img
+          alt={channel.channel_name}
+          src={GroupImage}
+          className="group-img"
+        />
       );
     let channelColor = 'transparent';
     if (channel.channel_type === 'direct' && isActive) {

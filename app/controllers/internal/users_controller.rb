@@ -12,7 +12,7 @@ class Internal::UsersController < Internal::ApplicationController
              else
                User.order("created_at DESC").page(params[:page]).per(50)
              end
-    return unless params[:search].present?
+    return if params[:search].blank?
 
     @users = @users.where('users.name ILIKE :search OR
       users.username ILIKE :search OR
@@ -27,7 +27,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = if params[:id] == "unmatched_mentee"
-              MentorRelationship.unmatched_mentees.order("RANDOM()").first
+              MentorRelationship.unmatched_mentees.order(Arel.sql("RANDOM()")).first
             else
               User.find(params[:id])
             end
@@ -72,11 +72,11 @@ class Internal::UsersController < Internal::ApplicationController
   def make_matches
     return if @new_mentee.blank? && @new_mentor.blank?
 
-    if !@new_mentee.blank?
+    if @new_mentee.present?
       mentee = User.find(@new_mentee)
       MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
     end
-    return unless !@new_mentor.blank?
+    return if @new_mentor.blank?
 
     mentor = User.find(@new_mentor)
     MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
@@ -117,16 +117,16 @@ class Internal::UsersController < Internal::ApplicationController
 
   def user_params
     params.require(:user).permit(:seeking_mentorship,
-                            :offering_mentorship,
-                            :quick_match,
-                            :new_note,
-                            :add_mentor,
-                            :add_mentee,
-                            :note_for_current_role,
-                            :mentorship_note,
-                            :user_status,
-                            :toggle_mentorship,
-                            :pro,
-                            :merge_user_id)
+                                 :offering_mentorship,
+                                 :quick_match,
+                                 :new_note,
+                                 :add_mentor,
+                                 :add_mentee,
+                                 :note_for_current_role,
+                                 :mentorship_note,
+                                 :user_status,
+                                 :toggle_mentorship,
+                                 :pro,
+                                 :merge_user_id)
   end
 end

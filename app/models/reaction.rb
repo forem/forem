@@ -5,9 +5,9 @@ class Reaction < ApplicationRecord
   belongs_to :user
 
   counter_culture :reactable,
-    column_name: proc { |model|
-      model.points.positive? ? "positive_reactions_count" : "reactions_count"
-    }
+                  column_name: proc { |model|
+                    model.points.positive? ? "positive_reactions_count" : "reactions_count"
+                  }
   counter_culture :user
 
   validates :category, inclusion: { in: CATEGORIES }
@@ -45,6 +45,16 @@ class Reaction < ApplicationRecord
         Reaction.where(reactable_id: reactable.id, reactable_type: reactable.class.name, user: user, category: category).any?
       end
     end
+  end
+
+  # no need to send notification if:
+  # - reaction is negative
+  # - receiver is the same user as the one who reacted
+  # - receive_notification is disabled
+  def skip_notification_for?(receiver)
+    points.negative? ||
+      (user_id == reactable.user_id) ||
+      (receiver.is_a?(User) && reactable.receive_notifications == false)
   end
 
   private

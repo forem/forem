@@ -23,7 +23,7 @@ class ArticleCreationService
   end
 
   def create_job_opportunity(article)
-    return unless job_opportunity_params.present?
+    return if job_opportunity_params.blank?
 
     job_opportunity = JobOpportunity.create(job_opportunity_params)
     article.job_opportunity = job_opportunity

@@ -5,21 +5,20 @@ class ModerationsController < ApplicationController
     skip_authorization
     return unless current_user&.trusted
 
-    @articles = Article.where(published: true).
+    @articles = Article.published.
       includes(:rating_votes).
       where("rating_votes_count < 3").
       where("score > -5").
-      order("hotness_score DESC").limit(50)
-    if params[:tag].present?
-      @articles = @articles.
-        cached_tagged_with(params[:tag])
-    end
+      order("hotness_score DESC").limit(100)
+
+    @articles = @articles.cached_tagged_with(params[:tag]) if params[:tag].present?
+
     @articles = @articles.decorate
   end
 
   def article
     authorize(User, :moderation_routes?)
-    @moderatable = Article.find_by_slug(params[:slug])
+    @moderatable = Article.find_by(slug: params[:slug])
     render template: "moderations/mod"
   end
 

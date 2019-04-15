@@ -6,24 +6,24 @@ class ChatChannel < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
-  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership"
-  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership"
-  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership"
-  has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership"
+  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :active_users, through: :active_memberships, class_name: "User", source: :user
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
   validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
-  validates :status, presence: true, inclusion: { in: %w[active inactive] }
+  validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
   validates :slug, uniqueness: true, presence: true
 
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
     attribute :id, :viewable_by, :slug, :channel_type,
-      :channel_name, :channel_users, :last_message_at, :status,
-      :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
-      :description
+              :channel_name, :channel_users, :last_message_at, :status,
+              :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
+              :description
     searchableAttributes %i[channel_name channel_slug channel_human_names]
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
     ranking ["desc(last_message_at)"]
@@ -68,10 +68,13 @@ class ChatChannel < ApplicationRecord
       contrived_name = "Direct chat between " + usernames.join(" and ")
       slug = usernames.join("/")
     else
-      slug = contrived_name.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
+      slug = contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
     end
 
-    if (channel = ChatChannel.find_by_slug(slug))
+    channel = ChatChannel.find_by(slug: slug)
+    if channel
+      raise "Blocked channel" if channel.status == "blocked"
+
       channel.status = "active"
       channel.save
     else
@@ -140,10 +143,6 @@ class ChatChannel < ApplicationRecord
     obj
   end
 
-  def pending_users_select_fields
-    pending_users.select(:id, :username, :name)
-  end
-
   def channel_mod_ids
     mod_users.pluck(:id)
   end
@@ -157,5 +156,11 @@ class ChatChannel < ApplicationRecord
       username: membership.user.username,
       id: membership.user_id
     }
+  end
+
+  private
+
+  def pending_users_select_fields
+    pending_users.select(:id, :username, :name, :updated_at)
   end
 end

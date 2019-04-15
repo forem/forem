@@ -16,9 +16,12 @@
   max-width: 880px;
   padding: 0px 20px;
   box-shadow: 5px 5px 0px darken($light-medium-gray, 3%);
+  box-shadow: var(--theme-container-box-shadow, 5px 5px 0px darken($light-medium-gray, 3%));
   border: 1px solid darken($light-medium-gray, 5%);
+  border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
   border-radius: 3px;
   background: white;
+  background: var(--theme-container-background, white);
   position: relative;
   .container {
     border: 1px solid $light-medium-gray;
@@ -27,6 +30,7 @@
     padding-top: 20px;
     h1 {
       background: $yellow;
+      background: var(--theme-container-accent-background, $yellow);
     }
   }
 }
@@ -34,6 +38,7 @@
 .articleform__form {
   display: flex;
   flex-direction: column;
+  margin-top: 1px;
 }
 
 .articleform__errors {
@@ -121,9 +126,17 @@
   border: 0;
   padding: 20px 0px 15px;
   font-weight: 600;
+  color: $black;
+  color: var(--theme-secondary-color, $black);
+  background: white;
+  background: var(--theme-container-background, white);
   @media screen and (min-width: 600px) {
     font-size: 29px;
     height: 50px;
+  }
+  &::placeholder{
+    color:#8f949c;
+    color: var(--theme-secondary-color, #8f949c);
   }
 }
 .articleform__detailfields {
@@ -172,6 +185,7 @@
     top: 30px;
   }
   background: white;
+  background: var(--theme-container-background, white);
   border: 1px solid $medium-gray;
   box-shadow: $bold-shadow;
   box-shadow: var(--theme-container-box-shadow, $bold-shadow);
@@ -183,12 +197,15 @@
   cursor: pointer;
   &:hover {
     background: lighten($green, 27%);
+    color: $black;
   }
 }
 .articleform__tagoptionrow--active {
   background: $green;
+  color: $black;
   &:hover {
     background: darken($green, 10%);
+    
   }
 }
 
@@ -251,9 +268,17 @@
   padding: 20px 6px;
   font-family: $monospace;
   // overflow: initial;
+  background: white;
+  background: var(--theme-container-background, white);
+  color: $black;
+  color: var(--theme-secondary-color, $black);
   @media screen and (min-width: 600px) {
     font-size: 18px;
     min-height: calc(90vh - 280px);
+  }
+  &::placeholder{
+    color:#8f949c;
+    color: var(--theme-secondary-color, #8f949c);
   }
 }
 
@@ -269,6 +294,7 @@
   left: 0;
   right: 0;
   background: white;
+  background: var(--theme-container-background, white);
   z-index: 20;
   border-top: 1px solid $light-medium-gray;
   * {
@@ -345,6 +371,7 @@
     border: 0px;
     border-radius: 113px;
     box-shadow: 2px 2px 8px darken($light-medium-gray, 13%);
+    box-shadow: var(--theme-container-box-shadow, 2px 2px 8px darken($light-medium-gray, 13%));
     padding: 6px 13px;
     display: inline-block;
     text-align: center;

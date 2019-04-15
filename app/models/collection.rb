@@ -7,7 +7,6 @@ class Collection < ApplicationRecord
   validates :slug, uniqueness: { scope: :user_id }
 
   def self.find_series(slug, user)
-    series = Collection.where(slug: slug, user: user).first
-    series || Collection.create(slug: slug, user: user)
+    Collection.find_or_create_by(slug: slug, user: user)
   end
 end

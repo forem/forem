@@ -70,6 +70,7 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        class="external-link-img"
         src=""
         style={
           Object {
@@ -113,6 +114,55 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
       class="value"
     >
       January 2, 1964
+    </div>
+  </div>
+  <div
+    class="userdetails__blockreport"
+  >
+    <button
+      onClick={[Function]}
+    >
+      Block User
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      Report Abuse
+    </button>
+  </div>
+  <div
+    id="userdetails__reportabuse"
+    style="display:none"
+  >
+    <div
+      class="userdetails__reportabuse"
+    >
+      <p>
+        Reporting abuse will: 
+      </p>
+      <ul>
+        <li>
+          close this chat and prevent this user from re-opening chat with you
+        </li>
+        <li>
+          give the DEV team your consent to read messages in this chat to understand your report
+        </li>
+      </ul>
+      <h5>
+        Are you sure?
+      </h5>
+      <a
+        href="/report-abuse"
+        onClick={[Function]}
+      >
+        Yes
+      </a>
+      <a
+        class="no"
+        onClick={[Function]}
+      >
+        No
+      </a>
     </div>
   </div>
 </div>
@@ -188,6 +238,7 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       target="_blank"
     >
       <img
+        class="external-link-img"
         src=""
         style={
           Object {
@@ -231,6 +282,55 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
       class="value"
     >
       1960s
+    </div>
+  </div>
+  <div
+    class="userdetails__blockreport"
+  >
+    <button
+      onClick={[Function]}
+    >
+      Block User
+    </button>
+    <button
+      onClick={[Function]}
+    >
+      Report Abuse
+    </button>
+  </div>
+  <div
+    id="userdetails__reportabuse"
+    style="display:none"
+  >
+    <div
+      class="userdetails__reportabuse"
+    >
+      <p>
+        Reporting abuse will: 
+      </p>
+      <ul>
+        <li>
+          close this chat and prevent this user from re-opening chat with you
+        </li>
+        <li>
+          give the DEV team your consent to read messages in this chat to understand your report
+        </li>
+      </ul>
+      <h5>
+        Are you sure?
+      </h5>
+      <a
+        href="/report-abuse"
+        onClick={[Function]}
+      >
+        Yes
+      </a>
+      <a
+        class="no"
+        onClick={[Function]}
+      >
+        No
+      </a>
     </div>
   </div>
 </div>

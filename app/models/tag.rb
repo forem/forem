@@ -6,11 +6,11 @@ class Tag < ActsAsTaggableOn::Tag
   resourcify
 
   NAMES = %w[
-    beginners career computerscience git go java javascript react vue
-    linux productivity python security webdev css php opensource
-    ruby cpp dotnet swift testing devops vim kotlin rust elixir
-    scala vscode docker aws android ios angular csharp typescript django rails
-    clojure ubuntu elm gamedev flutter bash
+    beginners career computerscience git go java javascript react vue webassembly
+    linux productivity python security webdev css php laravel opensource npm a11y
+    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain
+    scala vscode docker kubernetes aws android ios angular csharp typescript django rails
+    clojure ubuntu elm gamedev flutter dart bash machinelearning sql
   ].freeze
 
   attr_accessor :tag_moderator_id, :remove_moderator_id
@@ -19,9 +19,9 @@ class Tag < ActsAsTaggableOn::Tag
   mount_uploader :social_image, ProfileImageUploader
 
   validates :text_color_hex,
-    format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
+            format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
-    format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
+            format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
 
   validate :validate_alias
   before_validation :evaluate_markdown
@@ -77,7 +77,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def validate_alias
-    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by_name(alias_for)
+    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by(name: alias_for)
   end
 
   def pound_it

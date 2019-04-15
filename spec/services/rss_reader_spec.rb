@@ -43,17 +43,41 @@ RSpec.describe RssReader, vcr: vcr_option do
       expect(User.find_by(feed_url: nonpermanent_link).feed_fetched_at).to be > 2.minutes.ago
     end
 
-    it "does not refetch same user over and over" do
+    it "does refetch same user over and over by default" do
       user = User.find_by(feed_url: nonpermanent_link)
-      user.update_column(:feed_fetched_at, Time.current)
-      fetched_at_time = user.feed_fetched_at
-      sleep(1)
-      described_class.new.get_all_articles
-      described_class.new.get_all_articles
-      described_class.new.get_all_articles
-      described_class.new.get_all_articles
-      described_class.new.get_all_articles
-      expect(user.feed_fetched_at).to eq(fetched_at_time)
+      Timecop.freeze(Time.current) do
+        user.update_column(:feed_fetched_at, Time.current)
+        fetched_at_time = user.reload.feed_fetched_at
+        # travel a few seconds in the future to simulate a new time
+        3.times do |i|
+          Timecop.travel((i + 5).seconds.from_now) { described_class.new.get_all_articles }
+        end
+        expect(user.reload.feed_fetched_at > fetched_at_time).to be(true)
+      end
+    end
+
+    it "logs an article creation error" do
+      reader = described_class.new
+      allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.get_all_articles
+      expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+
+    it "logs a fetching error" do
+      reader = described_class.new
+      allow(reader).to receive(:fetch_rss).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.get_all_articles
+      expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+  end
+
+  describe "#fetch_user" do
+    before do
+      [link, nonmedium_link, nonpermanent_link].each do |feed_url|
+        create(:user, feed_url: feed_url)
+      end
     end
 
     it "gets articles for user" do
@@ -65,6 +89,22 @@ RSpec.describe RssReader, vcr: vcr_option do
     it "does not set featured_number" do
       described_class.new.fetch_user(User.first)
       expect(Article.all.map(&:featured_number).uniq).to eq([nil])
+    end
+
+    it "logs an article creation error on the standard logger" do
+      reader = described_class.new
+      allow(reader).to receive(:make_from_rss_item).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.fetch_user(User.first)
+      expect(Rails.logger).to have_received(:error).at_least(:once)
+    end
+
+    it "logs a fetching error on the standard logger" do
+      reader = described_class.new
+      allow(reader).to receive(:fetch_rss).and_raise(StandardError)
+      allow(Rails.logger).to receive(:error)
+      reader.fetch_user(User.first)
+      expect(Rails.logger).to have_received(:error).at_least(:once)
     end
   end
 

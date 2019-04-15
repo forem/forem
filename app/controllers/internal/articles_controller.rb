@@ -2,70 +2,58 @@ class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
 
   def index
-    case params[:state]
+    @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
 
+    case params[:state]
     when /not\-buffered/
       days_ago = params[:state].split("-")[2].to_f
-      @articles = Article.
-        where(last_buffered: nil, published: true).
-        includes(:user).
-        includes(:buffer_updates).
+      @articles = Article.published.where(last_buffered: nil).
+        where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
+        includes(:user, :buffer_updates).
+        limited_columns_internal_select.
         order("positive_reactions_count DESC").
         page(params[:page]).
-        where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
-        limited_columns_internal_select.
         per(50)
     when /top\-/
-      @articles = Article.
-        where(published: true).
+      @articles = Article.published.
         where("published_at > ?", params[:state].split("-")[1].to_i.months.ago).
-        includes(:user).
-        includes(:buffer_updates).
+        includes(:user, :buffer_updates).
+        limited_columns_internal_select.
         order("positive_reactions_count DESC").
         page(params[:page]).
-        limited_columns_internal_select.
         per(50)
     when "satellite"
-      @articles = Article.
-        where(last_buffered: nil, published: true).
-        includes(:user).
-        includes(:buffer_updates).
-        order("hotness_score DESC").
+      @articles = Article.published.where(last_buffered: nil).
+        includes(:user, :buffer_updates).
         tagged_with(Tag.bufferized_tags, any: true).
-        page(params[:page]).
         limited_columns_internal_select.
+        order("hotness_score DESC").
+        page(params[:page]).
         per(60)
     when "boosted-additional-articles"
-      @articles = Article.
-        includes(:user).
-        order("published_at DESC").
-        includes(:buffer_updates).
-        boosted_via_additional_articles.
-        page(params[:page]).
-        per(100).
-        limited_columns_internal_select
-    when "chronological"
-      @articles = Article.
-        where(published: true).
-        order("published_at DESC").
-        page(params[:page]).
+      @articles = Article.boosted_via_additional_articles.
+        includes(:user, :buffer_updates).
         limited_columns_internal_select.
+        order("published_at DESC").
+        page(params[:page]).
+        per(100)
+    when "chronological"
+      @articles = Article.published.
+        limited_columns_internal_select.
+        order("published_at DESC").
+        page(params[:page]).
         per(50)
     else # MIX
-      @articles = Article.
-        where(published: true).
+      @articles = Article.published.
+        limited_columns_internal_select.
         order("hotness_score DESC").
         page(params[:page]).
-        limited_columns_internal_select.
-        per(50)
+        per(30)
 
-      @featured_articles = Article.
-        where(published: true).
-        or(Article.where(published_from_feed: true)).
+      @featured_articles = Article.published.or(Article.where(published_from_feed: true)).
         where(featured: true).
         where("featured_number > ?", Time.current.to_i).
-        includes(:user).
-        includes(:buffer_updates).
+        includes(:user, :buffer_updates).
         limited_columns_internal_select.
         order("featured_number DESC")
     end

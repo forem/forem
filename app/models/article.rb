@@ -10,14 +10,17 @@ class Article < ApplicationRecord
   attr_accessor :publish_under_org
   attr_writer :series
 
+  delegate :name, to: :user, prefix: true
+  delegate :username, to: :user, prefix: true
+
   belongs_to :user
   belongs_to :job_opportunity, optional: true
   counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
-  has_many :comments, as: :commentable
+  has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :buffer_updates
-  has_many :notifications, as: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable
   has_many :rating_votes
   has_many :page_views
 
@@ -63,10 +66,12 @@ class Article < ApplicationRecord
 
   serialize :ids_for_suggested_articles
 
+  scope :published, -> { where(published: true) }
+
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :active_help, lambda {
-                        where(published: true).
+                        published.
                           cached_tagged_with("help").
                           order("created_at DESC").
                           where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
@@ -74,23 +79,23 @@ class Article < ApplicationRecord
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id,
-    :comments_count, :positive_reactions_count, :cached_tag_list,
-    :main_image, :main_image_background_hex_color, :updated_at, :slug,
-    :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url,
-    :experience_level_rating, :experience_level_rating_distribution,
-    :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :main_image, :main_image_background_hex_color, :updated_at, :slug,
+           :video, :user_id, :organization_id, :video_source_url, :video_code,
+           :video_thumbnail_url, :video_closed_caption_track_url, :language,
+           :experience_level_rating, :experience_level_rating_distribution,
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
-    :comments_count, :positive_reactions_count, :cached_tag_list,
-    :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
-    :video, :user_id, :organization_id, :video_source_url, :video_code,
-    :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-    :published_from_feed, :crossposted_at, :published_at, :featured_number,
-    :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
-    :email_digest_eligible, :processed_html)
+           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
+           :video, :user_id, :organization_id, :video_source_url, :video_code,
+           :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
+           :published_from_feed, :crossposted_at, :published_at, :featured_number,
+           :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
+           :email_digest_eligible, :processed_html)
   }
 
   scope :boosted_via_additional_articles, lambda {
@@ -101,17 +106,37 @@ class Article < ApplicationRecord
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
+  scope :sorting, lambda { |value|
+    value ||= "creation-desc"
+    kind, dir = value.split("-")
+
+    dir = "desc" unless %w[asc desc].include?(dir)
+
+    column =
+      case kind
+      when "creation"  then :created_at
+      when "views"     then :page_views_count
+      when "reactions" then :positive_reactions_count
+      when "comments"  then :comments_count
+      when "published" then :published_at
+      else
+        :created_at
+      end
+
+    order(column => dir.to_sym)
+  }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
-                :featured, :published, :published_at, :featured_number,
-                :comments_count, :reactions_count, :positive_reactions_count,
-                :path, :class_name, :user_name, :user_username, :comments_blob,
-                :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
+                 :featured, :published, :published_at, :featured_number,
+                 :comments_count, :reactions_count, :positive_reactions_count,
+                 :path, :class_name, :user_name, :user_username, :comments_blob,
+                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
       attribute :user do
         { username: user.username,
           name: user.name,
@@ -136,12 +161,12 @@ class Article < ApplicationRecord
     end
 
     add_index "ordered_articles",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
-      attributes :title, :path, :class_name, :comments_count, :reading_time,
-        :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
-        :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
+      attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
+                 :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
+                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
       attribute :published_at_int do
         published_at.to_i
       end
@@ -192,8 +217,7 @@ class Article < ApplicationRecord
   end
 
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
-    stories = where(published: true).
-      limit(number)
+    stories = published.limit(number)
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").where("score > ?", -5)
               elsif time_ago
@@ -208,7 +232,7 @@ class Article < ApplicationRecord
   end
 
   def self.active_eli5(time_ago)
-    stories = where(published: true).cached_tagged_with("explainlikeimfive")
+    stories = published.cached_tagged_with("explainlikeimfive")
 
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").limit(3)
@@ -265,20 +289,14 @@ class Article < ApplicationRecord
   end
 
   def comments_blob
+    return "" if comments_count.zero?
+
     ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
   end
 
   def username
     return organization.slug if organization
 
-    user.username
-  end
-
-  def user_name
-    user.name
-  end
-
-  def user_username
     user.username
   end
 
@@ -356,7 +374,7 @@ class Article < ApplicationRecord
   end
 
   def readable_publish_date
-    relevant_date = crossposted_at.present? ? crossposted_at : published_at
+    relevant_date = crossposted_at.presence || published_at
     if relevant_date && relevant_date.year == Time.current.year
       relevant_date&.strftime("%b %e")
     else
@@ -364,14 +382,17 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.seo_boostable(tag = nil)
+  def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
+    time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
+    time_ago = 18.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
     if tag
-      Article.where(published: true).
-        cached_tagged_with(tag).order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
+      Article.published.
+        cached_tagged_with(tag).order("organic_page_views_past_month_count DESC").where("score > ?", 8).where("published_at > ?", time_ago).
+        limit(25).
         pluck(:path, :title, :comments_count, :created_at)
     else
-      Article.where(published: true).
-        order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
+      Article.published.
+        order("organic_page_views_past_month_count DESC").limit(25).where("score > ?", 8).where("published_at > ?", time_ago).
         pluck(:path, :title, :comments_count, :created_at)
     end
   end
@@ -509,7 +530,7 @@ class Article < ApplicationRecord
   end
 
   def create_password
-    return unless password.blank?
+    return if password.present?
 
     self.password = SecureRandom.hex(60)
   end
@@ -542,7 +563,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    title.to_s.downcase.tr(" ", "-").gsub(/[^\w-]/, "").tr("_", "") + "-" + rand(100_000).to_s(26)
+    title.to_s.downcase.parameterize + "-" + rand(100_000).to_s(26)
   end
 
   def bust_cache

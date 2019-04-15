@@ -5,7 +5,8 @@ FactoryBot.define do
   sequence(:github_username) { |n| "github#{n}" }
 
   image = Rack::Test::UploadedFile.new(
-    File.join(Rails.root, "spec", "support", "fixtures", "images", "image1.jpeg"), "image/jpeg"
+    Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
+    "image/jpeg",
   )
 
   factory :user do
@@ -51,6 +52,17 @@ FactoryBot.define do
 
     trait :analytics do
       after(:build) { |user| user.add_role(:analytics_beta_tester) }
+    end
+
+    trait :pro do
+      after(:build) { |user| user.add_role :pro }
+    end
+
+    trait :org_member do
+      after(:build) do |user|
+        org = create(:organization)
+        user.organization_id = org.id
+      end
     end
 
     trait :org_admin do
