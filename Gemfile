@@ -143,7 +143,6 @@ group :test do
   gem "selenium-webdriver", "~> 3.141" # WebDriver is a tool for writing automated tests of websites
   gem "shoulda-matchers", "4.0.1", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.16", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
-  gem "sinatra", "~> 2.0" # Sinatra is a DSL for quickly creating web applications in Ruby with minimal effort
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.7" # Ruby Tests Profiling Toolbox

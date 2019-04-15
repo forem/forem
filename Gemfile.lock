@@ -1070,7 +1070,6 @@ DEPENDENCIES
   serviceworker-rails (~> 0.5)
   shoulda-matchers (= 4.0.1)
   simplecov (~> 0.16)
-  sinatra (~> 2.0)
   sitemap_generator (~> 6.0)
   skylight (~> 3.1)
   slack-notifier (~> 2.3)
