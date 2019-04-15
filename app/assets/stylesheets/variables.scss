@@ -41,6 +41,10 @@ body.night-theme {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
+  .ltag__tag {
+    border-color: white !important;
+    box-shadow: 3px 3px 0px #fff !important;
+  }
 }
 
 body.sans-serif-article-body {
