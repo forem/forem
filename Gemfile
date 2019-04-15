@@ -63,8 +63,6 @@ gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider au
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "pg", "~> 1.1" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
-gem "pry-rails", "~> 0.3" # Use Pry as your rails console
 gem "puma", "~> 3.12" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.0" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
@@ -125,7 +123,9 @@ group :development, :test do
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "memory_profiler", "~> 0.9" # Memory profiling routines for Ruby 2.3+
   gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
+  gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.67", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.0", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
