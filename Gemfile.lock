@@ -1039,7 +1039,7 @@ DEPENDENCIES
   launchy (~> 2.4)
   liquid (~> 4.0)
   memory_profiler (~> 0.9)
-  nakayoshi_fork
+  nakayoshi_fork (~> 0.0.4)
   nokogiri (~> 1.10)
   octokit (~> 4.13)
   omniauth (~> 1.9)
