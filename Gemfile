@@ -129,7 +129,6 @@ group :development, :test do
   gem "rubocop-rspec", "~> 1.32", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
-  gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
 end
 
 group :test do
@@ -149,6 +148,7 @@ group :test do
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.7" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
+  gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webmock", "~> 3.5" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
