@@ -104,13 +104,14 @@ group :development do
   gem "brakeman", "~> 4.4", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bullet", "~> 5.9" # help to kill N+1 queries and unused eager loading
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
-  gem "derailed_benchmarks", "~> 1.3" # A series of things you can use to benchmark a Rails or Ruby app
+  gem "derailed_benchmarks", "~> 1.3", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   # switch foreman to stable release when thor dependency is updated to 0.20+
   gem "foreman", github: "thepracticaldev/foreman", ref: "b64e401", require: false # Process manager for applications with multiple components
   gem "guard", "~> 2.15", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
+  gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
   gem "web-console", "~> 3.7" # Rails Console on the Browser
 end
 
@@ -118,7 +119,6 @@ group :development, :test do
   gem "capybara", "~> 3.13" # Capybara is an integration testing tool for rack based web applications
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "memory_profiler", "~> 0.9" # Memory profiling routines for Ruby 2.3+
   gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
