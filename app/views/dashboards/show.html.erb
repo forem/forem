@@ -23,7 +23,7 @@
     <%= render "analytics" %>
     <div class="actions-secondary">
       <% if current_user.created_at < 2.weeks.ago %>
-        <a class="video-upload-cta" href="/videos/new" data-no-instant>
+        <a class="video-upload-cta cta" href="/videos/new" data-no-instant>
           Upload a Video 🎥
         </a>
       <% end %>

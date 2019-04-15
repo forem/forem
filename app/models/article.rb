@@ -382,15 +382,15 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.seo_boostable(tag = nil)
+  def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     if tag
       Article.published.
-        cached_tagged_with(tag).order("organic_page_views_count DESC").where("score > ?", 10).
-        limit(20).
+        cached_tagged_with(tag).order("organic_page_views_past_month_count DESC").where("score > ?", 10).where("published_at > ?", time_ago).
+        limit(25).
         pluck(:path, :title, :comments_count, :created_at)
     else
       Article.published.
-        order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
+        order("organic_page_views_past_month_count DESC").limit(25).where("score > ?", 10).where("published_at > ?", time_ago).
         pluck(:path, :title, :comments_count, :created_at)
     end
   end
