@@ -145,8 +145,8 @@
         </div>
       <% end %>
     <% else %>
-      <% cache("seo-boostable-posts-homepage-xoxoxo", expires_in: 18.hours) do %>
-        <% @boostable_posts = Article.seo_boostable %>
+      <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-xoxo", expires_in: 18.hours) do %>
+        <% @boostable_posts = Article.seo_boostable(nil, Timeframer.new(params[:timeframe]).datetime) %>
         <% if @boostable_posts.any? %>
           <div class="widget">
             <header>

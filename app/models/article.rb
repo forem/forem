@@ -106,6 +106,26 @@ class Article < ApplicationRecord
     where("boost_states ->> 'boosted_dev_digest_email' = 'true'")
   }
 
+  scope :sorting, lambda { |value|
+    value ||= "creation-desc"
+    kind, dir = value.split("-")
+
+    dir = "desc" unless %w[asc desc].include?(dir)
+
+    column =
+      case kind
+      when "creation"  then :created_at
+      when "views"     then :page_views_count
+      when "reactions" then :positive_reactions_count
+      when "comments"  then :comments_count
+      when "published" then :published_at
+      else
+        :created_at
+      end
+
+    order(column => dir.to_sym)
+  }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
     add_index "searchables",
@@ -362,15 +382,17 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.seo_boostable(tag = nil)
+  def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
+    time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
+    time_ago = 18.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
     if tag
       Article.published.
-        cached_tagged_with(tag).order("organic_page_views_count DESC").where("score > ?", 10).
-        limit(20).
+        cached_tagged_with(tag).order("organic_page_views_past_month_count DESC").where("score > ?", 8).where("published_at > ?", time_ago).
+        limit(25).
         pluck(:path, :title, :comments_count, :created_at)
     else
       Article.published.
-        order("organic_page_views_count DESC").limit(20).where("score > ?", 10).
+        order("organic_page_views_past_month_count DESC").limit(25).where("score > ?", 8).where("published_at > ?", time_ago).
         pluck(:path, :title, :comments_count, :created_at)
     end
   end

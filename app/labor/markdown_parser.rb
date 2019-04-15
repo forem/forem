@@ -24,7 +24,7 @@ class MarkdownParser
     html = wrap_all_images_in_links(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
-    html = EmojiConverter.call(html)
+    html = escape_colon_emojis_in_codeblock(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -88,6 +88,21 @@ class MarkdownParser
   end
 
   private
+
+  def escape_colon_emojis_in_codeblock(html)
+    html_doc = Nokogiri::HTML.fragment(html)
+
+    html_doc.children.each do |el|
+      next if el.name == "code"
+
+      if el.search("code").empty?
+        el.swap(EmojiConverter.call(el.to_html))
+      else
+        el.children = escape_colon_emojis_in_codeblock(el.children.to_html)
+      end
+    end
+    html_doc.to_html
+  end
 
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]

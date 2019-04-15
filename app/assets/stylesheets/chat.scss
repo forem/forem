@@ -119,6 +119,7 @@
 
 .chat__channeltypefilter{
   padding: 4px 0px 4px;
+  width: calc(100% - 13px);
 }
 
 .chat__channeltypefilterbutton{
@@ -135,6 +136,11 @@
 
 .chat__channeltypefilterbutton--active {
   background: lighten($green, 18%);
+}
+
+.chat__channeltypefilterbutton--inactive {
+  color: black;
+  color: var(--theme-container-color, black);
 }
 
 .chat_chatconfig{
@@ -303,6 +309,8 @@
 }
 
 .activechatchannel__conversation{
+  border-top: 1px solid $outline-color;
+  border-top: var(--theme-container-border, 1px solid $outline-color);
   order: 1;
   display: flex;
   flex-direction: column;
@@ -321,7 +329,7 @@
   font-weight: bold;
   font-size:14px;
   background: $light-gray;
-  background: var(--theme-background, $light-gray);
+  background: var(--theme-container-accent-background, $light-gray);
   a {
     color: $black;
     color: var(--theme-color, $black);
@@ -365,7 +373,7 @@
   border-top: 1px solid $outline-color;
   border-top: var(--theme-container-border, 1px solid $outline-color);
   background: #ededed;
-  background: var(--theme-background, #ededed);
+  background: var(--theme-container-accent-background, #ededed);
   width: 100%;
   height: 70px;
 }
@@ -391,11 +399,12 @@
   min-width: 45%;
   // margin-left: -50%;
   background: white;
+  background: var(--theme-container-accent-background, white);
   // flex-basis: 80%;
   z-index: 200;
   position: relative;
   box-sizing: border-box;
-  overflow-y: scroll;
+  overflow-y: auto;
   max-width:96%;
   @media screen and ( max-width: 426px ) {
     padding: 10px;
@@ -427,6 +436,7 @@
   border:  0px;
   font-size: 36px;
   color: $medium-gray;
+  color: var(--theme-container-color, $medium-gray);
   padding:0px;
   background: transparent;
   position: absolute;
@@ -449,6 +459,7 @@
   font-size:0.85em;
   a{
     color: $dark-gray;
+    color: var(--theme-container-color, $dark-gray);
   }
   .activechatchannel__activeArticleDetailsPath{
     display: inline-block;
@@ -495,6 +506,9 @@
     border-style: initial;
     border-color: initial;
     border-image: initial;
+    &:first-child {
+      margin-left: 0;
+    }
   }
 }
 
@@ -538,17 +552,20 @@
   right:0px;
   padding: 19px;
   background: white;
+  background: var(--theme-container-accent-background, white);
   z-index: 20;
   border-top: 1px solid $light-medium-gray;
+  border-bottom: 1px solid $light-medium-gray;
+  border-right: 1px solid $light-medium-gray;
   button {
-    border: 1px solid $light-medium-gray;
-    padding: 3px 15px;
-    border-radius: 3px;
     margin-right: 15px;
     width: 54px;
+    background: #f2f3f5;
+    background: var(--theme-container-background, #f2f3f5);
+    border-radius: 100px !important;
+    border-width: 0;
+    padding: 5px 10px;
     &.active {
-      border: 2px solid $black;
-      padding: 2px 14px;
       background-color:$green;
       &.unicorn-reaction-button{
         background-color:$purple;
@@ -866,6 +883,12 @@
     border-left: 4px solid $black;
     margin-left: 0px;
     padding-left: 8px;
+  }
+  a h1 {
+    color: $black;
+    color: var(--theme-container-color, $black);
+    border-color: #0a0a0a !important;
+    border-color: var(--theme-container-color, #0a0a0a) !important;
   }
 }
 
