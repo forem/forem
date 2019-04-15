@@ -127,7 +127,7 @@ group :development, :test do
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "memory_profiler", "~> 0.9" # Memory profiling routines for Ruby 2.3+
-  gem "parallel_tests", "~> 2.27" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.67", require: false # Automatic Ruby code style checking tool
