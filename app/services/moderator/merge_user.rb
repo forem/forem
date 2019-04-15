@@ -15,19 +15,15 @@ module Moderator
     def merge
       raise "You cannot merge the same two user id#s" if @delete_user.id == @keep_user.id
 
-      ActiveRecord::Base.transaction do
-        handle_identities
-        merge_content
-        merge_follows
-        merge_chat_mentions
-        merge_profile
-        remove_additional_email
-        update_social
-      end
-      ActiveRecord::Base.transaction do
-        @delete_user.delete
-        @keep_user.touch(:profile_updated_at)
-      end
+      handle_identities
+      merge_content
+      merge_follows
+      merge_chat_mentions
+      merge_profile
+      remove_additional_email
+      update_social
+      @delete_user.delete
+      @keep_user.touch(:profile_updated_at)
 
       CacheBuster.new.bust "/#{@keep_user.username}"
     end
@@ -39,15 +35,17 @@ module Moderator
 
       return true if @keep_user.identities.count > 1 || @delete_user.identities.none? || @keep_user.identities.last.provider == @delete_user.identities.last.provider
 
-      @delete_user.identities.first.update(user_id: @keep_user.id)
+      @delete_user.identities.first.update_columns(user_id: @keep_user.id)
     end
 
     def update_social
       @old_tu = @delete_user.twitter_username
       @old_gu = @delete_user.github_username
-      @delete_user.update_columns(twitter_username: nil, github_username: nil)
-      @keep_user.update_columns(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
-      @keep_user.update_columns(github_username: @old_gu) if @keep_user.github_username.nil?
+      ActiveRecord::Base.transaction do
+        @delete_user.update_columns(twitter_username: nil, github_username: nil)
+        @keep_user.update_columns(twitter_username: @old_tu) if @keep_user.twitter_username.nil?
+        @keep_user.update_columns(github_username: @old_gu) if @keep_user.github_username.nil?
+      end
     end
 
     def remove_additional_email
@@ -75,7 +73,7 @@ module Moderator
         @keep_user.badge_achievements_count = @keep_user.badge_achievements.size
       end
 
-      @keep_user.update!(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
+      @keep_user.update_columns(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at
     end
 
     def merge_chat_mentions
