@@ -383,6 +383,7 @@ class Article < ApplicationRecord
   end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
+    time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
     if tag
       Article.published.
         cached_tagged_with(tag).order("organic_page_views_past_month_count DESC").where("score > ?", 10).where("published_at > ?", time_ago).
