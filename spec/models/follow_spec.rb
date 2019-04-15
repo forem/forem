@@ -35,12 +35,12 @@ RSpec.describe Follow, type: :model do
     before { ActiveJob::Base.queue_adapter = :inline }
 
     it "touches the follower user while creating" do
-      user.update_columns(updated_at: Time.now - 1.day, last_followed_at: Time.now - 1.day)
-      now = Time.now
+      timestamp = 1.day.ago
+      user.update_columns(updated_at: timestamp, last_followed_at: timestamp)
       Follow.create!(follower: user, followable: user_2)
       user.reload
-      expect(user.updated_at).to be >= now
-      expect(user.last_followed_at).to be >= now
+      expect(user.updated_at).to be > timestamp
+      expect(user.last_followed_at).to be > timestamp
     end
 
     it "doesn't create a channel when a followable is an org" do

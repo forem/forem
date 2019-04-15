@@ -22,7 +22,7 @@ RSpec.describe Follows::SendEmailNotificationJob, type: :job do
     end
 
     it "doesn't create an EmailMessage if it already exists" do
-      EmailMessage.create!(user_id: user2.id, sent_at: Time.now, subject: "#{user.username} followed you on dev.to")
+      EmailMessage.create!(user_id: user2.id, sent_at: Time.current, subject: "#{user.username} followed you on dev.to")
       described_class.new(follow.id, mailer).perform_now
       expect(mailer).not_to have_received(:new_follower_email)
     end

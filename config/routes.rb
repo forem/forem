@@ -139,7 +139,6 @@ Rails.application.routes.draw do
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
   resources :buffer_updates, only: [:create]
-
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
@@ -246,6 +245,7 @@ Rails.application.routes.draw do
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
+  get "/community-moderation" => "pages#community_moderation"
   get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"

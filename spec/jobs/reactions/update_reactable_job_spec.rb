@@ -16,11 +16,10 @@ RSpec.describe Reactions::UpdateReactableJob, type: :job do
     end
 
     it "updates the reactable Comment" do
-      comment.update_columns(updated_at: Time.now - 1.day)
-      now = Time.now
+      updated_at = 1.day.ago
+      comment.update_columns(updated_at: updated_at)
       described_class.perform_now(comment_reaction.id)
-      comment.reload
-      expect(comment.updated_at).to be >= now
+      expect(comment.reload.updated_at).to be > updated_at
     end
 
     it "doesn't fail if a reaction doesn't exist" do

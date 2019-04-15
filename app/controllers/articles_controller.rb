@@ -9,7 +9,7 @@ class ArticlesController < ApplicationController
   def feed
     skip_authorization
 
-    @articles = Article.where(published: true).
+    @articles = Article.published.
       select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
       order(published_at: :desc).
       page(params[:page].to_i).per(12)
@@ -27,7 +27,7 @@ class ArticlesController < ApplicationController
       @articles = @articles.where(featured: true).includes(:user)
     end
 
-    set_surrogate_key_header "feed", @articles.map(&:record_key)
+    set_surrogate_key_header "feed"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
 
     render layout: false

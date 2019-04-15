@@ -69,6 +69,8 @@ class UserPolicy < ApplicationPolicy
        email_digest_periodic
        email_follower_notifications
        email_membership_newsletter
+       email_tag_mod_newsletter
+       email_community_mod_newsletter
        email_mention_notifications
        email_connect_messages
        email_newsletter
