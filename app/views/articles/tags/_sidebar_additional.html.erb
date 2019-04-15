@@ -21,7 +21,7 @@
       </div>
     <% else %>
       <% cache("seo-boostable-posts-for-tag-#{@tag}", expires_in: 18.hours) do %>
-        <% @boostable_posts = Article.seo_boostable(@tag) %>
+        <% @boostable_posts = Article.seo_boostable(@tag, Timeframer.new(params[:timeframe]).datetime) %>
         <% if @boostable_posts.any? %>
           <div class="widget">
             <header>

@@ -241,14 +241,25 @@ RSpec.describe Article, type: :model do
     it "returns articles ordered by organic_page_views_count" do
       create(:article, score: 30)
       create(:article, score: 30)
-      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       articles = Article.seo_boostable
       expect(articles.first[0]).to eq(top_article.path)
+    end
+    it "returns articles if within time frame" do
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
+      articles = Article.seo_boostable(nil, 1.month.ago)
+      expect(articles.first[0]).to eq(top_article.path)
+    end
+    it "does not return articles outside of timeframe" do
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
+      top_article.update_column(:published_at, 3.months.ago)
+      articles = Article.seo_boostable(nil, 1.month.ago)
+      expect(articles.first).to eq(nil)
     end
     it "returns articles ordered by organic_page_views_count by tag" do
       create(:article, score: 30)
       create(:article, organic_page_views_count: 30, score: 30)
-      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:cached_tag_list, "good, greatalicious")
       articles = Article.seo_boostable("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
@@ -256,7 +267,7 @@ RSpec.describe Article, type: :model do
     it "returns nothing if no tagged articles" do
       create(:article, score: 30)
       create(:article, organic_page_views_count: 30)
-      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:cached_tag_list, "good, greatalicious")
       articles = Article.seo_boostable("godsdsdsdsgoo")
       expect(articles.size).to eq(0)

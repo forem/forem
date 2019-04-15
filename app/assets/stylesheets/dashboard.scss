@@ -99,7 +99,7 @@
   }
 
   .actions-secondary {
-    padding-bottom: 20px;
+    padding-bottom: 15px;
     a.video-upload-cta {
       display: inline-block;
       float: left;
@@ -171,11 +171,11 @@
   }
   .video-upload-cta {
     display: inline-block;
-    margin: 10px 0px 20px;
     background: #0045ff;
     padding: 5px 12px;
     border-radius: 3px;
     color: white;
+    margin-top: -8px;
   }
   .single-article {
     border: 1px solid $light-medium-gray;
