@@ -82,7 +82,6 @@ gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
 gem "sass-rails", "~> 5.0" # Sass adapter for the Rails asset pipeline
 gem "scout_apm", "~> 2.4" # Monitors Ruby apps and reports detailed metrics on performance to Scout
-gem "sdoc", "~> 1.0", group: :doc # rdoc generator html with javascript search index
 gem "serviceworker-rails", "~> 0.5" # Integrates ServiceWorker into the Rails asset pipeline
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 3.1" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
@@ -154,4 +153,8 @@ group :test do
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "webmock", "~> 3.5" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
+end
+
+group :doc do
+  gem "sdoc", "~> 1.0" # rdoc generator html with javascript search index
 end
