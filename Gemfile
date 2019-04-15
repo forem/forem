@@ -115,7 +115,6 @@ end
 
 group :development, :test do
   gem "capybara", "~> 3.13" # Capybara is an integration testing tool for rack based web applications
-  gem "derailed", "~> 0.1" # A shortcut for "derailed_benchmarks"
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
