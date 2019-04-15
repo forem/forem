@@ -73,6 +73,10 @@ var instantClick
     return false
   }
 
+  function isMobileDevice() {
+    return (typeof window.screen.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+  }
+
   function isPreloadable(a) {
     var domain = location.protocol + '//' + location.host
 
@@ -82,6 +86,7 @@ var instantClick
         || (a.href.indexOf('#') > -1
             && removeHash(a.href) == $currentLocationWithoutHash) // Anchor
         || isBlacklisted(a)
+        || isMobileDevice()
        ) {
       return false
     }
