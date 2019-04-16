@@ -199,16 +199,19 @@ describe('<ChannelDetails />', () => {
       let inviteAttrAns;
       const included = (list, el) => {
         const keys = Object.keys(list);
-        for (var key of keys) {
+        for (const key of keys) {
           if (list[key].id === el.id) {
             return true;
           }
         }
       };
       for (let i = 0; i < searchedusersdivs.length; i += 1) {
-        if (!included(
+        if (
+          !included(
             moddetails.pending_users_select_fields,
-            searchedusers.searchedUsers[i])) {
+            searchedusers.searchedUsers[i],
+          )
+        ) {
           expect(
             searchedusersdivs
               .at(i)
@@ -226,7 +229,9 @@ describe('<ChannelDetails />', () => {
             }`,
           );
 
-          if (included(moddetails.channel_users, searchedusers.searchedUsers[i])) {
+          if (
+            included(moddetails.channel_users, searchedusers.searchedUsers[i])
+          ) {
             inviteMessage = `is already in ${moddetails.channel_name}`;
             inviteAttr = 'className';
             inviteAttrAns = 'channel__member';
@@ -247,8 +252,8 @@ describe('<ChannelDetails />', () => {
               .childAt(2)
               .attr(inviteAttr),
           ).toEqual(inviteAttrAns);
-          }
         }
+      }
       const tree = render(context);
       expect(tree).toMatchSnapshot();
     });
