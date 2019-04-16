@@ -878,7 +878,7 @@ GEM
     storext (2.2.2)
       rails (>= 4.0, < 6.0)
       virtus
-    stripe (4.8.0)
+    stripe (4.12.0)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
     stripe-ruby-mock (2.5.4)
@@ -1077,7 +1077,7 @@ DEPENDENCIES
   staccato (~> 0.5)
   stackprof (~> 0.2)
   storext (~> 2.2)
-  stripe (~> 4.8)
+  stripe (~> 4.12)
   stripe-ruby-mock (~> 2.5)
   test-prof (~> 0.7)
   timber (~> 2.6)
