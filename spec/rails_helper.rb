@@ -36,7 +36,26 @@ Dir[Rails.root.join("spec", "jobs", "shared_examples", "**", "*.rb")].each { |f|
 ActiveRecord::Migration.maintain_test_schema!
 
 # Disable internet connection with Webmock
-WebMock.disable_net_connect!(allow_localhost: true)
+# allow browser websites, so that "webdrivers" can access their binaries
+# see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
+allowed_sites = [
+  "https://chromedriver.storage.googleapis.com",
+  "https://github.com/mozilla/geckodriver/releases",
+  "https://selenium-release.storage.googleapis.com",
+  "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+]
+WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
+
+# tell VCR to ignore browsers download sites
+# see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
+VCR.configure do |config|
+  config.ignore_hosts(
+    "chromedriver.storage.googleapis.com",
+    "github.com/mozilla/geckodriver/releases",
+    "selenium-release.storage.googleapis.com",
+    "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  )
+end
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
