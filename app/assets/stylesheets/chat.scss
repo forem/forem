@@ -512,7 +512,7 @@
   }
 }
 
-.userdetails__reportabuse {
+.userdetails__reportabuse, .userdetails__blockmsg {
   a {
     background-color: rgb(255, 0, 0);
     color: rgb(255, 255, 254);
@@ -796,7 +796,7 @@
       background: transparent;
       background: var(--theme-container-background-hover, transparent);
     }
-    
+
   }
 }
 
