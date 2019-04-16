@@ -57,7 +57,11 @@ module BadgeRewarder
 
   def self.award_streak_badge(num_weeks)
     article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
-    message = "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+    message = if num_weeks == 16
+                "16 weeks! You've achieved the longest DEV writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!"
+              else
+                "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+              end
     users = User.where(id: article_user_ids).where("articles_count >= ?", num_weeks)
     usernames = []
     users.find_each do |user|
