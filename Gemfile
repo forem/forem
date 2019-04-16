@@ -84,7 +84,6 @@ gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
 gem "sass-rails", "~> 5.0" # Sass adapter for the Rails asset pipeline
 gem "scout_apm", "~> 2.4" # Monitors Ruby apps and reports detailed metrics on performance to Scout
-gem "sdoc", "~> 1.0", group: :doc # rdoc generator html with javascript search index
 gem "serviceworker-rails", "~> 0.5" # Integrates ServiceWorker into the Rails asset pipeline
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 3.1" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
@@ -107,23 +106,21 @@ group :development do
   gem "brakeman", "~> 4.4", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bullet", "~> 5.9" # help to kill N+1 queries and unused eager loading
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
-  gem "derailed_benchmarks", "~> 1.3" # A series of things you can use to benchmark a Rails or Ruby app
+  gem "derailed_benchmarks", "~> 1.3", require: false # A series of things you can use to benchmark a Rails or Ruby app
+  gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
+  gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   # switch foreman to stable release when thor dependency is updated to 0.20+
   gem "foreman", github: "thepracticaldev/foreman", ref: "b64e401", require: false # Process manager for applications with multiple components
   gem "guard", "~> 2.15", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
-  gem "rb-fsevent", "~> 0.10", require: false #  FSEvents API with signals handled
+  gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
   gem "web-console", "~> 3.7" # Rails Console on the Browser
 end
 
 group :development, :test do
   gem "capybara", "~> 3.13" # Capybara is an integration testing tool for rack based web applications
-  gem "derailed", "~> 0.1" # A shortcut for "derailed_benchmarks"
-  gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
-  gem "memory_profiler", "~> 0.9" # Memory profiling routines for Ruby 2.3+
   gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
@@ -132,7 +129,6 @@ group :development, :test do
   gem "rubocop-rspec", "~> 1.32", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
-  gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
 end
 
 group :test do
@@ -145,12 +141,16 @@ group :test do
   gem "ruby-prof", "~> 0.17", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "4.0.1", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.16", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
-  gem "sinatra", "~> 2.0" # Sinatra is a DSL for quickly creating web applications in Ruby with minimal effort
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.7" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "webdrivers", "~> 3.7" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webmock", "~> 3.5" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
+end
+
+group :doc do
+  gem "sdoc", "~> 1.0" # rdoc generator html with javascript search index
 end
