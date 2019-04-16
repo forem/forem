@@ -70,6 +70,10 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     context "when requesting an export of the articles" do
+      before do
+        ActiveJob::Base.queue_adapter = :test
+      end
+
       def send_request(flag = true)
         put "/users/#{user.id}", params: {
           user: { tab: "misc", export_requested: flag }
@@ -99,15 +103,13 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        run_background_jobs_immediately do
-          expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
-        end
+        ActiveJob::Base.queue_adapter = :inline
+        expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
       it "does not send an email if there was no request" do
-        run_background_jobs_immediately do
-          expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
-        end
+        ActiveJob::Base.queue_adapter = :inline
+        expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
       end
     end
   end
