@@ -307,7 +307,7 @@ GEM
       smart_properties
     errbase (0.1.0)
     erubi (1.8.0)
-    et-orbi (1.1.6)
+    et-orbi (1.1.8)
       tzinfo
     eventmachine (1.2.5)
     excon (0.60.0)
@@ -337,7 +337,7 @@ GEM
       faraday_middleware (>= 0.9)
       loofah (>= 2.0)
       sax-machine (>= 1.0)
-    ffi (1.9.25)
+    ffi (1.10.0)
     figaro (1.1.1)
       thor (~> 0.14)
     fission (0.5.0)
@@ -491,8 +491,8 @@ GEM
       nokogiri (>= 1.5.11, < 2.0.0)
     formatador (0.2.5)
     front_matter_parser (0.2.0)
-    fugit (1.1.6)
-      et-orbi (~> 1.1, >= 1.1.6)
+    fugit (1.1.10)
+      et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.1)
     gemoji (3.0.0)
     get_process_mem (0.2.3)
@@ -733,8 +733,8 @@ GEM
     rainbow (3.0.0)
     rake (12.3.2)
     rb-fsevent (0.10.3)
-    rb-inotify (0.9.10)
-      ffi (>= 0.5.0, < 2)
+    rb-inotify (0.10.0)
+      ffi (~> 1.0)
     rbtree3 (0.5.0)
     rbvmomi (1.11.6)
       builder (~> 3.0)
@@ -811,12 +811,12 @@ GEM
     safe_yaml (1.0.4)
     safely_block (0.2.1)
       errbase
-    sail (1.5.1)
+    sail (3.1.0)
       fugit
       jquery-rails
       rails
       sass-rails
-    sass (3.7.2)
+    sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -1062,7 +1062,7 @@ DEPENDENCIES
   ruby-prof (~> 0.17)
   rubyzip (~> 1.2, >= 1.2.2)
   s3_direct_upload (~> 0.1)
-  sail (~> 1.5)
+  sail (~> 3.1)
   sass-rails (~> 5.0)
   scout_apm (~> 2.4)
   sdoc (~> 1.0)
