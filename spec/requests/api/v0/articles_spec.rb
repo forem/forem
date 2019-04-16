@@ -55,6 +55,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(JSON.parse(response.body).size).to eq(1)
     end
 
+    it "returns top articles if tag param is present" do
+      create(:article)
+      article = create(:article)
+      article.update_column(:published_at, 10.days.ago)
+      get "/api/articles?top=7"
+      expect(JSON.parse(response.body).size).to eq(1)
+    end
+
     it "returns not tag articles if article and tag are not approved" do
       article = create(:article, approved: false)
       tag = Tag.find_by(name: article.tag_list.first)
