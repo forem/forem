@@ -133,14 +133,12 @@ end
 
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
-  gem "chromedriver-helper", "~> 2.1" # Easy installation and use of chromedriver, the Chromium project's Selenium webdriver adapter
   gem "factory_bot_rails", "~> 4.11" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fake_stripe", "~> 0.2" # An implementation of the Stripe credit card processing service to run during your integration tests
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 0.17", require: false # ruby-prof is a fast code profiler for Ruby
-  gem "selenium-webdriver", "~> 3.141" # WebDriver is a tool for writing automated tests of websites
   gem "shoulda-matchers", "4.0.1", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.16", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
@@ -148,6 +146,7 @@ group :test do
   gem "test-prof", "~> 0.7" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
+  gem "webdrivers", "~> 3.7" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.5" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

@@ -4,7 +4,7 @@ We use the following testing tools:
 
 - [**RSpec**](http://rspec.info/) for testing the backend
 - [**Capybara**](https://github.com/teamcapybara/capybara) with [**selenium-webdriver**](https://github.com/SeleniumHQ/selenium/tree/master/javascript/node/selenium-webdriver) for view testing
-- [**chromedriver-helper**](https://github.com/flavorjones/chromedriver-helper) for standard JS testing
+- [**webdrivers**](https://github.com/titusfortner/webdrivers) for standard JS testing
 - [**guard-rspec**](https://github.com/guard/guard-rspec) for automated testing
 - [**Jest**](https://facebook.github.io/jest) for testing in the front-end
 - [**preact-render-spy**](https://github.com/mzgoddard/preact-render-spy) for testing Preact components.
