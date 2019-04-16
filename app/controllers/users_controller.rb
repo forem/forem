@@ -27,7 +27,7 @@ class UsersController < ApplicationController
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        Exporter::Service.new(@user).delay.export(send_email: true)
+        ExportContentJob.perform_later(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
