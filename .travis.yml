@@ -22,7 +22,7 @@ before_install:
   - nvm install
 install:
   - bundle install --path vendor/bundle
-  - bin/rails runner "require 'webdrivers'; Webdrivers::Chromedriver.update"
+  - bin/chromedriver-update
   - yarn install
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
