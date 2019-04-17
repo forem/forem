@@ -330,9 +330,18 @@
   font-size:14px;
   background: $light-gray;
   background: var(--theme-container-accent-background, $light-gray);
+  position: relative;
   a {
     color: $black;
     color: var(--theme-color, $black);
+  }
+
+  img {
+    height: 17px;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
   }
 }
 
