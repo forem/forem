@@ -10,8 +10,6 @@ RSpec.describe Follow, type: :model do
   end
 
   context "when enqueuing jobs" do
-    before { ActiveJob::Base.queue_adapter = :test }
-
     it "enqueues touch follower job on creation" do
       expect do
         Follow.create(follower: user, followable: user_2)
@@ -32,12 +30,12 @@ RSpec.describe Follow, type: :model do
   end
 
   context "when creating and inline" do
-    before { ActiveJob::Base.queue_adapter = :inline }
-
     it "touches the follower user while creating" do
       timestamp = 1.day.ago
       user.update_columns(updated_at: timestamp, last_followed_at: timestamp)
-      Follow.create!(follower: user, followable: user_2)
+      perform_enqueued_jobs do
+        Follow.create!(follower: user, followable: user_2)
+      end
       user.reload
       expect(user.updated_at).to be > timestamp
       expect(user.last_followed_at).to be > timestamp
@@ -45,27 +43,33 @@ RSpec.describe Follow, type: :model do
 
     it "doesn't create a channel when a followable is an org" do
       expect do
-        Follow.create!(follower: user, followable: create(:organization))
+        perform_enqueued_jobs do
+          Follow.create!(follower: user, followable: create(:organization))
+        end
       end.not_to change(ChatChannel, :count)
     end
 
     it "doesn't create a chat channel when users don't follow mutually" do
       expect do
-        Follow.create!(follower: user, followable: user_2)
+        perform_enqueued_jobs do
+          Follow.create!(follower: user, followable: user_2)
+        end
       end.not_to change(ChatChannel, :count)
     end
 
     it "creates a chat channel when users follow mutually" do
       Follow.create!(follower: user_2, followable: user)
       expect do
-        Follow.create!(follower: user, followable: user_2)
+        perform_enqueued_jobs do
+          Follow.create!(follower: user, followable: user_2)
+        end
       end.to change(ChatChannel, :count).by(1)
     end
 
     it "sends an email notification" do
       user_2.update_column(:email_follower_notifications, true)
       expect do
-        run_background_jobs_immediately do
+        perform_enqueued_jobs do
           Follow.create!(follower: user, followable: user_2)
         end
       end.to change(EmailMessage, :count).by(1)
