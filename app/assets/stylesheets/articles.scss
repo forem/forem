@@ -629,7 +629,7 @@
     }
     .article-reading-time {
       position: absolute;
-      right: 75px;
+      right: 105px;
       bottom: 12px;
       font-size: 13px;
       padding: 6px 0px;
@@ -703,6 +703,13 @@
         &.following-butt {
           background: transparent;
           color: darken($purple, 33%);
+        }
+        img {
+          min-width: auto;
+          height: 19px !important;
+          width: auto;
+          vertical-align: -4.5px;
+          margin-right: 0;
         }
       }
       &.featured-engagement-count {

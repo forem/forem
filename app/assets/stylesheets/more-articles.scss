@@ -207,6 +207,13 @@
           display: none;
         }
       }
+      img {
+        min-width: auto;
+        height: 19px !important;
+        width: auto;
+        vertical-align: -4.5px;
+        margin-right: 0;
+      }
     }
   }
   .secondary-content-display{
