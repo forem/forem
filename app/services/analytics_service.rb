@@ -38,7 +38,7 @@ class AnalyticsService
     result = {}
 
     (start_date.to_date..end_date.to_date).each do |date|
-      result[date.to_s(:iso)] = data_for_date(date)
+      result[date.to_s(:iso)] = cached_data_for_date(date)
     end
 
     result
@@ -80,7 +80,7 @@ class AnalyticsService
     page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 
-  def data_for_date(date)
+  def cached_data_for_date(date)
     expiration_date = if date == Time.current.to_date
                         30.minutes
                       else
