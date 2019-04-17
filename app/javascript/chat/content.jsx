@@ -14,7 +14,6 @@ export default class Content extends Component {
   };
 
   render() {
-    console.log(this.props);
     if (!this.props.resource) {
       return '';
     }
