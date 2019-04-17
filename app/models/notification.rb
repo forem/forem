@@ -19,6 +19,8 @@ class Notification < ApplicationRecord
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
+      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
       Notifications::NewFollowerJob.perform_now(follow_data, is_read)
     end
