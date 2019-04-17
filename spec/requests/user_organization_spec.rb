@@ -35,11 +35,6 @@ RSpec.describe "UserOrganization", type: :request do
     expect(User.last.org_admin).to eq(true)
   end
 
-  it "adds analytics role when adding org admin if org is approved" do
-    add_org_admin
-    expect(User.last.has_role?(:analytics_beta_tester)).to eq(true)
-  end
-
   it "raises if user not org_admin" do
     user.update(organization_id: organization.id)
     user2 = create(:user, organization_id: organization.id, org_admin: true)

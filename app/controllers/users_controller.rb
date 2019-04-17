@@ -114,7 +114,6 @@ class UsersController < ApplicationController
     user = User.find(params[:user_id])
     authorize user
     user.update(org_admin: true)
-    user.add_role :analytics_beta_tester if user.organization.approved
     redirect_to "/settings/organization",
                 notice: "#{user.name} is now an admin."
   end
