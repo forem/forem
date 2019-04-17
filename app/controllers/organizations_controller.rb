@@ -9,6 +9,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
     if @organization.save
       current_user.update(organization_id: @organization.id, org_admin: true)
+      OrganizationMembership.create(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
       redirect_to "/settings/organization", notice:
         "Your organization was successfully created and you are an admin."
     else

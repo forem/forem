@@ -96,6 +96,7 @@ class UsersController < ApplicationController
     authorize User
     if (@organization = Organization.find_by(secret: params[:org_secret]))
       current_user.update(organization_id: @organization.id)
+      OrganizationMembership.create(user_id: current_user.id, organization_id: current_user.organization_id, type_of_user: "member")
       redirect_to "/settings/organization",
                   notice: "You have joined the #{@organization.name} organization."
     else
@@ -105,6 +106,8 @@ class UsersController < ApplicationController
 
   def leave_org
     authorize User
+    type_of_user = current_user.org_admin ? "admin" : "member"
+    OrganizationMembership.find_by(organization_id: current_user.organization_id, user_id: current_user.id, type_of_user: type_of_user)&.delete
     current_user.update(organization_id: nil, org_admin: nil)
     redirect_to "/settings/organization",
                 notice: "You have left your organization."
@@ -114,6 +117,9 @@ class UsersController < ApplicationController
     user = User.find(params[:user_id])
     authorize user
     user.update(org_admin: true)
+    org_membership = OrganizationMembership.find_or_initialize_by(user_id: user.id, organization_id: user.organization_id)
+    org_membership.type_of_user = "admin"
+    org_membership.save
     redirect_to "/settings/organization",
                 notice: "#{user.name} is now an admin."
   end
@@ -122,6 +128,9 @@ class UsersController < ApplicationController
     user = User.find(params[:user_id])
     authorize user
     user.update(org_admin: false)
+    org_membership = OrganizationMembership.find_or_initialize_by(user_id: user.id, organization_id: user.organization_id)
+    org_membership.type_of_user = "member"
+    org_membership.save
     redirect_to "/settings/organization",
                 notice: "#{user.name} is no longer an admin."
   end
@@ -129,6 +138,8 @@ class UsersController < ApplicationController
   def remove_from_org
     user = User.find(params[:user_id])
     authorize user
+    type_of_user = user.org_admin ? "admin" : "member"
+    OrganizationMembership.find_by(organization_id: current_user.organization_id, user_id: current_user.id, type_of_user: type_of_user)&.delete
     user.update(organization_id: nil)
     redirect_to "/settings/organization",
                 notice: "#{user.name} is no longer part of your organization."
