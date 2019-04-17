@@ -38,30 +38,7 @@ class AnalyticsService
     result = {}
 
     (start_date.to_date..end_date.to_date).each do |date|
-      reaction_data_of_date = reaction_data.where("date(created_at) = ?", date)
-      logged_in_page_view_data = page_view_data.where("date(created_at) = ?", date).where.not(user_id: nil)
-      average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
-      total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
-
-      result[date.to_s(:iso)] = {
-        comments: {
-          total: comment_data.where("date(created_at) = ?", date).size
-        },
-        reactions: {
-          total: reaction_data_of_date.size,
-          like: reaction_data_of_date.where("category = ?", "like").size,
-          readinglist: reaction_data_of_date.where("category = ?", "readinglist").size,
-          unicorn: reaction_data_of_date.where("category = ?", "unicorn").size
-        },
-        page_views: {
-          total: total_views,
-          total_read_time_in_seconds: average_read_time_in_seconds * total_views,
-          average_read_time_in_seconds: average_read_time_in_seconds
-        },
-        follows: {
-          total: follow_data.where("date(created_at) = ?", date).size
-        }
-      }
+      result[date.to_s(:iso)] = data_for_date(date)
     end
 
     result
@@ -101,5 +78,40 @@ class AnalyticsService
 
   def average_read_time(page_view_data)
     page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
+  end
+
+  def data_for_date(date)
+    expiration_date = if date == Time.current.to_date
+                        30.minutes
+                      else
+                        7.days
+                      end
+
+    Rails.cache.fetch("analytics-for-date-#{date}-#{user_or_org.class.name}-#{user_or_org.id}", expires_in: expiration_date) do
+      reaction_data_of_date = reaction_data.where("date(created_at) = ?", date)
+      logged_in_page_view_data = page_view_data.where("date(created_at) = ?", date).where.not(user_id: nil)
+      average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
+      total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
+
+      {
+        comments: {
+          total: comment_data.where("date(created_at) = ?", date).size
+        },
+        reactions: {
+          total: reaction_data_of_date.size,
+          like: reaction_data_of_date.where("category = ?", "like").size,
+          readinglist: reaction_data_of_date.where("category = ?", "readinglist").size,
+          unicorn: reaction_data_of_date.where("category = ?", "unicorn").size
+        },
+        page_views: {
+          total: total_views,
+          total_read_time_in_seconds: average_read_time_in_seconds * total_views,
+          average_read_time_in_seconds: average_read_time_in_seconds
+        },
+        follows: {
+          total: follow_data.where("date(created_at) = ?", date).size
+        }
+      }
+    end
   end
 end
