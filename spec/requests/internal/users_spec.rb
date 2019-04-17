@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Internal::Users", type: :request do
-  let(:user) { create(:user, twitter_username: nil) }
-  let(:user2) { create(:user, twitter_username: "Twitter") }
+  let!(:user) { create(:user, twitter_username: nil) }
+  let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
@@ -11,8 +11,6 @@ RSpec.describe "Internal::Users", type: :request do
 
   before do
     sign_in super_admin
-    user
-    user2
     Delayed::Worker.new(quiet: true).work_off
     dependents_for_offending_user_article
     offender_activity_on_other_content
@@ -66,35 +64,50 @@ RSpec.describe "Internal::Users", type: :request do
   context "when merging users" do
     before do
       full_profile
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
-      Delayed::Worker.new(quiet: true).work_off
     end
 
     it "deletes duplicate user" do
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
       expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "merges all content" do
-      expect(user.comments.count).to eq(2)
-      expect(user.articles.count).to eq(2)
-      expect(user.reactions.count).to eq(4)
+      expected_articles_count = user.articles.count + user2.articles.count
+      expected_comments_count = user.comments.count + user2.comments.count
+      expected_reactions_count = user.reactions.count + user2.reactions.count
+
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
+      expect(user.comments.count).to eq(expected_articles_count)
+      expect(user.articles.count).to eq(expected_comments_count)
+      expect(user.reactions.count).to eq(expected_reactions_count)
     end
 
     it "merges all relationships" do
-      expect(user.follows.count).to eq(2)
+      expected_follows_count = user.follows.count + user2.follows.count
+      expected_channel_memberships_count = user.chat_channel_memberships.count + user2.chat_channel_memberships.count
+      expected_mentions_count = user.mentions.count + user2.mentions.count
+
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
+      expect(user.follows.count).to eq(expected_follows_count)
       expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
-      expect(user.chat_channel_memberships.count).to eq(1)
-      expect(user.mentions.count).to eq(1)
+      expect(user.chat_channel_memberships.count).to eq(expected_channel_memberships_count)
+      expect(user.mentions.count).to eq(expected_mentions_count)
     end
 
     it "merges misc profile info" do
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
       expect(user.github_repos.any?).to be true
       expect(user.badge_achievements.any?).to be true
     end
 
     it "merges social identities and usernames" do
-      user.reload
-      expect(user.twitter_username).to eq("Twitter")
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
+      expect(user.reload.twitter_username).to eq("Twitter")
     end
   end
 
