@@ -244,7 +244,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -252,7 +252,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-discuss"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -267,7 +267,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
               >
@@ -275,7 +275,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-javascript"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
@@ -290,7 +290,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -298,7 +298,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-career"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -875,7 +875,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -883,7 +883,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-discuss"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -898,7 +898,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
               >
@@ -906,7 +906,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-javascript"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
@@ -921,7 +921,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -929,7 +929,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-career"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -1134,7 +1134,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -1142,7 +1142,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-discuss"
                 style="color:"
                 onClick={[Function bound onClick]}
@@ -1157,7 +1157,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
               >
@@ -1165,7 +1165,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-javascript"
                 style="color:#000000"
                 onClick={[Function bound onClick]}
@@ -1180,7 +1180,7 @@ preact-render-spy (1 nodes)
             >
               <a
                 class="onboarding-tag-link"
-                href="#"
+                href="#0"
                 style="color:"
                 onClick={[Function bound onClick]}
               >
@@ -1188,7 +1188,7 @@ preact-render-spy (1 nodes)
               </a>
               <a
                 class="onboarding-tag-link-follow"
-                href="#"
+                href="#0"
                 id="onboarding-tag-link-follow-career"
                 style="color:"
                 onClick={[Function bound onClick]}
