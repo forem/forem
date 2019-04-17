@@ -16,6 +16,8 @@ class ArticleApiIndexService
                  username_articles
                elsif state.present?
                  state_articles(state)
+               elsif top.present?
+                 top_articles
                else
                  base_articles
                end
@@ -62,6 +64,11 @@ class ArticleApiIndexService
                end
 
     articles.page(page).per(30)
+  end
+
+  def top_articles
+    Article.published.order("positive_reactions_count DESC").where("published_at > ?", top.to_i.days.ago).
+      page(page).per(30)
   end
 
   def state_articles(state)
