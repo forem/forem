@@ -159,6 +159,16 @@
     <div class="sub-field">
       <%= f.select :inbox_type, [["Open", "open"], ["Private", "private"]] %>
     </div>
+    <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions (optional)" %>
+    <div class="sub-field">
+      <%= f.text_area :inbox_guidelines, maxlength: 200, placeholder: "For example:
+      
+- Only contact me about consulting opportunities.
+- I'm happy to help beginners with CSS.
+- Allow for a few days to respond.
+- etc.
+      " %>
+    </div>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>

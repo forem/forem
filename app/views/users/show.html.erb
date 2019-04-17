@@ -117,10 +117,17 @@
       <div class="overlay"></div>
       <div class="modal-content " id="new-message-modal">
         <button title="Close" class="close-modal">X</button>
+        <% if @user.inbox_guidelines.present? %>
+          <p><b>@<%= @user.username %>'s guidelines:</b></p>
+          <p><%= @user.inbox_guidelines %></p>
+        <% end %>
         <form id="new-message-form" class="message-form" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
           <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
-          <button type="submit" value="Submit" class="submit-message">SEND</button>
+          <button type="submit" value="Submit" class="submit-message cta">SEND</button>
         </form>
+        <p>
+          <em>All private interactions <b>must</b> abide by the <a href="/code-of-conduct">code of conduct</a></em>
+        </p>
       </div>
     </div>
     <%= render "articles/user_metadata", context: "profile" %>
