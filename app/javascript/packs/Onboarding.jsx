@@ -21,12 +21,12 @@ function isUserSignedIn() {
 function renderPage() {
   import('../src/Onboarding')
     .then(({ default: Onboarding }) => {
-      let waitingForOnboarding = setInterval(function(){
-        if (document.getElementById("main-head-stylesheet")) {
-          render(<Onboarding />, document.getElementById('top-bar'))
+      const waitingForOnboarding = setInterval(function() {
+        if (document.getElementById('main-head-stylesheet')) {
+          render(<Onboarding />, document.getElementById('top-bar'));
           clearInterval(waitingForOnboarding);
         }
-      }, 3)
+      }, 3);
     })
     .catch(error => {
       // eslint-disable-next-line no-console
