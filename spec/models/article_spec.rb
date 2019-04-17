@@ -123,6 +123,11 @@ RSpec.describe Article, type: :model do
         article1.validate
         expect(article1.slug).not_to start_with(article0.slug)
       end
+
+      it "properly converts underscores and still has a valid slug" do
+        underscored_article = build(:article, title: "hey_hey_hey node_modules", published: false)
+        expect(underscored_article.valid?).to eq true
+      end
     end
 
     context "when published" do
@@ -135,6 +140,11 @@ RSpec.describe Article, type: :model do
       it "does not change slug if the article was edited" do
         article0.update(title: "New title.")
         expect(article0.slug).to start_with("hey-this-is-a-slug")
+      end
+
+      it "properly converts underscores and still has a valid slug" do
+        underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
+        expect(underscored_article.valid?).to eq true
       end
     end
   end
