@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_12_093614) do
+ActiveRecord::Schema.define(version: 2019_04_17_171019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -810,6 +810,7 @@ ActiveRecord::Schema.define(version: 2019_04_12_093614) do
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"

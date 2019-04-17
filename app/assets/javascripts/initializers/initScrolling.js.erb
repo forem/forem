@@ -73,10 +73,8 @@ function insertVideos(video_articles) {
   video_articles.forEach(function(video_article){
     var existingEl = document.getElementById("video-article-"+video_article.id);
     if(!existingEl) {
-      console.log('existing')
       var newHTML = buildVideoArticleHTML(video_article)
       newVideosHTML += newHTML
-      console.log(newHTML)
     }
   });
 
@@ -87,7 +85,6 @@ function insertVideos(video_articles) {
   var singleArticles = document.getElementsByClassName("single-article");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
-  console.log(nextPage)
   if (nextPage > 0) {
     fetching = false;
   }
