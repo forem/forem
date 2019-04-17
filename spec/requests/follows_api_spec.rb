@@ -7,7 +7,7 @@ RSpec.describe "FollowsApi", type: :request do
     let(:user3) { create(:user) }
     let(:user4) { create(:user) }
     let(:user5) { create(:user) }
-    let!(:users_hash) do
+    let(:users_hash) do
       [{ id: user2.id }, { id: user3.id }, { id: user4.id }, { id: user5.id }].to_json
     end
 
