@@ -410,16 +410,16 @@ RSpec.describe Article, type: :model do
       it "updates the hotness score" do
         perform_enqueued_jobs do
           article.save
+          expect(article.reload.hotness_score.positive?).to eq(true)
         end
-        expect(article.reload.hotness_score.positive?).to eq(true)
       end
 
       it "updates the spaminess rating" do
         perform_enqueued_jobs do
           article.spaminess_rating = -1
           article.save
+          expect(article.reload.spaminess_rating).to eq(0)
         end
-        expect(article.reload.spaminess_rating).to eq(0)
       end
     end
 
@@ -429,16 +429,16 @@ RSpec.describe Article, type: :model do
       it "does not update the hotness score" do
         perform_enqueued_jobs do
           article.save
+          expect(article.reload.hotness_score).to eq(0)
         end
-        expect(article.reload.hotness_score).to eq(0)
       end
 
       it "does not update the spaminess rating" do
         perform_enqueued_jobs do
           article.spaminess_rating = -1
           article.save
+          expect(article.reload.spaminess_rating).to eq(-1)
         end
-        expect(article.reload.spaminess_rating).to eq(-1)
       end
     end
   end

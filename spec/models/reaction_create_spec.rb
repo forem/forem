@@ -32,22 +32,21 @@ RSpec.describe Reaction, type: :model do
 
   context "when creating and performing jobs" do
     it "updates the reactable Comment" do
-      comment = nil
-      updated_at = 1.day.ago
       perform_enqueued_jobs do
+        updated_at = 1.day.ago
         comment = create(:comment, commentable: article, updated_at: updated_at)
         create(:reaction, reactable: comment, user: user)
+        expect(comment.reload.updated_at).to be > updated_at
       end
-      expect(comment.reload.updated_at).to be > updated_at
     end
 
     it "touches the user" do
-      updated_at = 1.day.ago
-      user.update_columns(updated_at: updated_at)
       perform_enqueued_jobs do
+        updated_at = 1.day.ago
+        user.update_columns(updated_at: updated_at)
         create(:reaction, reactable: article, user: user)
+        expect(user.reload.updated_at).to be > updated_at
       end
-      expect(user.reload.updated_at).to be > updated_at
     end
   end
 end
