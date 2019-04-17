@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import ConfigImage from 'images/three-dots.svg';
 import {
   conductModeration,
   getAllMessages,
@@ -24,7 +25,6 @@ import Message from './message';
 import Content from './content';
 import Video from './video';
 import View from './view';
-import ConfigImage from 'images/three-dots.svg';
 
 import setupPusher from '../src/utils/pusher';
 
@@ -860,6 +860,7 @@ are
         onTriggerContent={this.triggerActiveContent}
         resource={this.state.activeContent[this.state.activeChannelId]}
         activeChannelId={this.state.activeChannelId}
+        activeChannel={this.state.activeChannel}
         pusherKey={this.props.pusherKey}
         githubToken={this.props.githubToken}
       />
@@ -908,7 +909,11 @@ are
         channelConfigImage = '';
       }
       channelHeader = (
-        <div className="activechatchannel__header">{channelHeaderInner} {channelConfigImage}</div>
+        <div className="activechatchannel__header">
+          {channelHeaderInner} 
+          {' '}
+          {channelConfigImage}
+        </div>
       );
     }
     let vid = '';
