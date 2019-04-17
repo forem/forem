@@ -67,7 +67,8 @@ class ArticleApiIndexService
   end
 
   def top_articles
-    Article.published.order("positive_reactions_count DESC").where("published_at > ?", top.to_i.days.ago)
+    Article.published.order("positive_reactions_count DESC").where("published_at > ?", top.to_i.days.ago).
+      page(page).per(30)
   end
 
   def state_articles(state)
