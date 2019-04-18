@@ -77,29 +77,23 @@
       </div>
     </div>
   </div>
+  <div class="toggles">
+    <button class="selected" id="week-button">Week</button>
+    <button id="month-button">Month</button>
+    <button id="infinity-button">Infinity</button>
+  </div>
   <div class="graphs">
     <div class="card">
       <h2>Reactions Summary ❤🦄🔖</h2>
       <div class="charts-container">
-        <canvas
-          id="reactionsChart"
-          data-labels="<%= @dashboard.this_week_reactions.formatted_dates %>"
-          data-total-count="<%= @dashboard.this_week_reactions.total_per_day %>"
-          data-total-likes="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "like") %>"
-          data-total-unicorns="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "unicorn") %>"
-          data-total-readinglist="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
-        </canvas>
+        <canvas id="reactionsChart"></canvas>
       </div>
       <%= javascript_pack_tag "proCharts", defer: true %>
     </div>
     <div class="card">
       <h2>Comments Summary 💬</h2>
       <div class="charts-container">
-        <canvas
-        id="commentsChart"
-        data-labels="<%= @dashboard.this_week_comments.formatted_dates %>"
-        data-total-count="<%= @dashboard.this_week_comments.total_per_day %>">
-        </canvas>
+        <canvas id="commentsChart"></canvas>
       </div>
     </div>
   </div>
