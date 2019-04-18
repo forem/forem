@@ -279,6 +279,8 @@ a.header-link {
       &.preview-loading {
         background: white url(image_path('loading-ellipsis.svg')) no-repeat
           center center;
+        background-color: var(--theme-container-background, white);
+        color: var(--theme-container-background, white);
         background-size: 50px;
       }
     }

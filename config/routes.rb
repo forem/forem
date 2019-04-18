@@ -245,6 +245,7 @@ Rails.application.routes.draw do
   get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
+  get "/community-moderation" => "pages#community_moderation"
   get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"

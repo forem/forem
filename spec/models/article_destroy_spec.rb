@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Article, type: :model do
-  before { ActiveJob::Base.queue_adapter = :test }
-
   context "when no organization" do
     let(:article) { create(:article) }
 

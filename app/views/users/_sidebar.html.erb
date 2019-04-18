@@ -47,7 +47,7 @@
       <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at}-#{@user.last_comment_at}-#{@user.last_followed_at}", expires_in: 10.days do %>
         <div class="sidebar-data">
           <div>
-            <%= pluralize @user.articles.where(published: true).size, "Post" %> Published
+            <%= pluralize @user.articles.published.size, "Post" %> Published
           </div>
           <div>
             <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written

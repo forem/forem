@@ -13,7 +13,7 @@ class CacheBuster
   end
 
   def bust_comment(commentable, username)
-    bust("/") if Article.where(published: true).order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
+    bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
     if commentable.decorate.cached_tag_list_array.include?("discuss") &&
         commentable.featured_number.to_i > 35.hours.ago.to_i
       bust("/")
@@ -63,7 +63,7 @@ class CacheBuster
       CacheBuster.new.bust "/videos?i=i"
     end
     TIMEFRAMES.each do |timeframe|
-      if Article.where(published: true).where("published_at > ?", timeframe[0]).
+      if Article.published.where("published_at > ?", timeframe[0]).
           order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
         bust("/top/#{timeframe[1]}")
         bust("/top/#{timeframe[1]}?i=i")
@@ -74,7 +74,7 @@ class CacheBuster
       bust("/latest")
       bust("/latest?i=i")
     end
-    bust("/") if Article.where(published: true).order("hotness_score DESC").limit(4).pluck(:id).include?(article.id)
+    bust("/") if Article.published.order("hotness_score DESC").limit(4).pluck(:id).include?(article.id)
   end
 
   def bust_tag_pages(article)
@@ -86,7 +86,7 @@ class CacheBuster
         bust("/t/#{tag}/latest?i=i")
       end
       TIMEFRAMES.each do |timeframe|
-        if Article.where(published: true).where("published_at > ?", timeframe[0]).tagged_with(tag).
+        if Article.published.where("published_at > ?", timeframe[0]).tagged_with(tag).
             order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
           bust("/top/#{timeframe[1]}")
           bust("/top/#{timeframe[1]}?i=i")
@@ -97,7 +97,7 @@ class CacheBuster
         end
       end
       if rand(2) == 1 &&
-          Article.where(published: true).tagged_with(tag).
+          Article.published.tagged_with(tag).
               order("hotness_score DESC").limit(2).pluck(:id).include?(article.id)
         bust("/t/#{tag}")
         bust("/t/#{tag}?i=i")

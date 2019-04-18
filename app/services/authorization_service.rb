@@ -72,6 +72,7 @@ class AuthorizationService
     user.github_username = auth.info.nickname if auth.provider == "github" && auth.info.nickname != user.github_username
     user.twitter_username = auth.info.nickname if auth.provider == "twitter" && auth.info.nickname != user.twitter_username
     add_social_identity_data(user)
+    user.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
     user.save
     user
   end

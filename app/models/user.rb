@@ -108,8 +108,8 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme],
-                         message: "%{value} must be either default or night theme" }
+            inclusion: { in: %w[default night_theme pink_theme],
+                         message: "%{value} must be either default, pink theme, or night theme" }
   validates :config_font,
             inclusion: { in: %w[default sans_serif comic_sans],
                          message: "%{value} must be either default or sans serif" }
@@ -211,16 +211,12 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language!
-    identity = identities.find_by(provider: "twitter")
-    if email.end_with?(".jp")
-      update(estimated_default_language: "ja", prefer_language_ja: true)
-    elsif identity
-      lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
-      update(:estimated_default_language => lang,
-             "prefer_language_#{lang}" => true)
-    end
+    Users::EstimateDefaultLanguageJob.perform_later(id)
   end
-  handle_asynchronously :estimate_default_language!
+
+  def estimate_default_language_without_delay!
+    Users::EstimateDefaultLanguageJob.perform_now(id)
+  end
 
   def calculate_score
     score = (articles.where(featured: true).size * 100) + comments.sum(:score)
@@ -232,11 +228,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true).union(
-      Article.where(
-        user_id: cached_following_users_ids,
-      ),
-    ).where(language: cached_preferred_langs, published: true)
+    Article.tagged_with(cached_followed_tag_names, any: true).
+      union(Article.where(user_id: cached_following_users_ids)).
+      where(language: cached_preferred_langs, published: true)
   end
 
   def cached_following_users_ids

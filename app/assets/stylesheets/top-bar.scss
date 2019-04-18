@@ -30,6 +30,37 @@
     width: 1250px;
     margin: auto;
     position: relative;
+    .pwa-nav-buttons {
+      position: absolute;
+      top: 17px;
+      left: -200px;
+      display: none;
+      button {
+        background: transparent;
+        border: 0px;
+        width: 28px;
+        text-align: center;
+        opacity: 0.75;
+        filter: invert(0);
+        filter: var(--theme-social-icon-invert, invert(0));
+        img {
+          width: 15px;
+          height: 15px;
+        }
+        &:hover {
+          opacity: 1;
+        }
+      }
+      @media screen and (min-width: 950px) {
+        left: 88px;
+        &.pwa-nav-buttons--showing {
+          display: block;
+        }
+      }
+      @media screen and (min-width: 1439px) {
+        left: -88px;
+      }
+    }
     a {
       &:active {
         opacity: 0.8;
@@ -261,7 +292,7 @@
         }
         &:hover {
           background: darken($tan, 2%);
-          background: var(--theme-top-bar-background, darken($tan, 2%));
+          background: var(--theme-top-bar-background-hover, darken($tan, 2%));
         }
       }
       a {
@@ -303,10 +334,10 @@
     padding: 7px 8px 6px 10px;
     margin-top: 7px;
     fill: white;
+    fill: var(--theme-logo-color, white);
     border-radius: 3px;
-    // border-right:1px solid #a5a6a8;
-    // border-left:1px solid #a5a6a8;
     background: $black;
+    background: var(--theme-logo-background, $black);
   }
 }
 

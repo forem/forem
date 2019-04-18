@@ -123,6 +123,11 @@ RSpec.describe Article, type: :model do
         article1.validate
         expect(article1.slug).not_to start_with(article0.slug)
       end
+
+      it "properly converts underscores and still has a valid slug" do
+        underscored_article = build(:article, title: "hey_hey_hey node_modules", published: false)
+        expect(underscored_article.valid?).to eq true
+      end
     end
 
     context "when published" do
@@ -135,6 +140,11 @@ RSpec.describe Article, type: :model do
       it "does not change slug if the article was edited" do
         article0.update(title: "New title.")
         expect(article0.slug).to start_with("hey-this-is-a-slug")
+      end
+
+      it "properly converts underscores and still has a valid slug" do
+        underscored_article = build(:article, title: "hey_hey_hey node_modules", published: true)
+        expect(underscored_article.valid?).to eq true
       end
     end
   end
@@ -237,26 +247,41 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "queries" do
+  describe ".seo_boostable" do
     it "returns articles ordered by organic_page_views_count" do
       create(:article, score: 30)
       create(:article, score: 30)
-      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       articles = Article.seo_boostable
       expect(articles.first[0]).to eq(top_article.path)
     end
+
+    it "returns articles if within time frame" do
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
+      articles = Article.seo_boostable(nil, 1.month.ago)
+      expect(articles.first[0]).to eq(top_article.path)
+    end
+
+    it "does not return articles outside of timeframe" do
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
+      top_article.update_column(:published_at, 3.months.ago)
+      articles = Article.seo_boostable(nil, 1.month.ago)
+      expect(articles.first).to eq(nil)
+    end
+
     it "returns articles ordered by organic_page_views_count by tag" do
       create(:article, score: 30)
       create(:article, organic_page_views_count: 30, score: 30)
-      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:cached_tag_list, "good, greatalicious")
       articles = Article.seo_boostable("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
     end
+
     it "returns nothing if no tagged articles" do
       create(:article, score: 30)
       create(:article, organic_page_views_count: 30)
-      top_article = create(:article, organic_page_views_count: 20, score: 30)
+      top_article = create(:article, organic_page_views_past_month_count: 20, score: 30)
       top_article.update_column(:cached_tag_list, "good, greatalicious")
       articles = Article.seo_boostable("godsdsdsdsgoo")
       expect(articles.size).to eq(0)
@@ -390,20 +415,21 @@ RSpec.describe Article, type: :model do
 
   describe "#async_score_calc" do
     context "when published" do
-      before { ActiveJob::Base.queue_adapter = :inline }
-
       let(:article) { build(:article) }
 
       it "updates the hotness score" do
-        article.save
-        article.reload
-        expect(article.hotness_score > 0).to eq(true)
+        perform_enqueued_jobs do
+          article.save
+          expect(article.reload.hotness_score.positive?).to eq(true)
+        end
       end
 
-      it "updates the spaminess score" do
-        article.spaminess_rating = -1
-        article.save
-        expect(article.spaminess_rating).to eq(0)
+      it "updates the spaminess rating" do
+        perform_enqueued_jobs do
+          article.spaminess_rating = -1
+          article.save
+          expect(article.reload.spaminess_rating).to eq(0)
+        end
       end
     end
 
@@ -411,14 +437,18 @@ RSpec.describe Article, type: :model do
       let(:article) { create(:article, published: false) }
 
       it "does not update the hotness score" do
-        article.save
-        expect(article.hotness_score).to eq(0)
+        perform_enqueued_jobs do
+          article.save
+          expect(article.reload.hotness_score).to eq(0)
+        end
       end
 
-      it "does not update the spaminess score" do
-        article.update_column(:spaminess_rating, -1)
-        article.save
-        expect(article.spaminess_rating).to eq(-1)
+      it "does not update the spaminess rating" do
+        perform_enqueued_jobs do
+          article.spaminess_rating = -1
+          article.save
+          expect(article.reload.spaminess_rating).to eq(-1)
+        end
       end
     end
   end

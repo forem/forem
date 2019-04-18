@@ -27,7 +27,7 @@ class UsersController < ApplicationController
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
-        Exporter::Service.new(@user).delay.export(send_email: true)
+        ExportContentJob.perform_later(@user.id)
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
@@ -57,14 +57,18 @@ class UsersController < ApplicationController
   def remove_association
     @user = current_user
     authorize @user
+
     provider = params[:provider]
     identity = @user.identities.find_by(provider: provider)
     @tab_list = @user.settings_tab_list
     @tab = "account"
-    if @user.identities.count == 2 && identity
+
+    if @user.identities.size == 2 && identity
       identity.destroy
+
       identity_username = "#{provider}_username".to_sym
-      @user.update(identity_username => nil)
+      @user.update(identity_username => nil, profile_updated_at: Time.current)
+
       redirect_to "/settings/#{@tab}",
                   notice: "Your #{provider.capitalize} account was successfully removed."
     else
