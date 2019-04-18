@@ -112,6 +112,23 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
+  describe "POST /users/update_language_settings" do
+    before { login_as user }
+
+    it "updates language settings" do
+      post "/users/update_language_settings", params: { user: { preferred_languages: %w[ja es] } }
+      user.reload
+      expect(user.language_settings["preferred_languages"]).to eq(%w[ja es])
+    end
+
+    it "keeps the estimated_default_language" do
+      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en ru])
+      post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en] } }
+      user.reload
+      expect(user.language_settings["estimated_default_language"]).to eq("ru")
+    end
+  end
+
   describe "DELETE /users/remove_association" do
     context "when user has two identities" do
       let(:user) { create(:user, :two_identities) }

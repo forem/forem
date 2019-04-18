@@ -11,6 +11,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def update_language_settings?
+    current_user?
+  end
+
   def destroy?
     current_user?
   end
@@ -105,12 +109,6 @@ class UserPolicy < ApplicationPolicy
        permit_adjacent_sponsors
        password
        password_confirmation
-       prefer_language_en
-       prefer_language_es
-       prefer_language_fr
-       prefer_language_it
-       prefer_language_pt
-       prefer_language_ja
        profile_image
        seeking_mentorship
        stackoverflow_url
