@@ -12,15 +12,6 @@ addons:
   chrome: stable
 env:
   matrix:
-    - TESTFOLDER=system/articles
-    - TESTFOLDER=system/comments
-    - TESTFOLDER=system/dashboards
-    - TESTFOLDER=system/homepage
-    - TESTFOLDER=system/organization
-    - TESTFOLDER=system/podcasts
-    - TESTFOLDER=system/shared_examples
-    - TESTFOLDER=system/user
-    - TESTFOLDER=system/videos
     - TESTFOLDER=system
     - TESTFOLDER=requests
     - TESTFOLDER=models
@@ -57,7 +48,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec $TESTFOLDER'
+  - 'bundle exec rspec spec/$TESTFOLDER --color --tty'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
