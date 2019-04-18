@@ -141,6 +141,7 @@ Rails.application.routes.draw do
   resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
+  resource :twitch_stream_updates, only: %i[show create]
 
   get "/listings/:category" => "classified_listings#index"
   get "/notifications/:filter" => "notifications#index"

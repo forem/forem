@@ -8,14 +8,21 @@ module Streams
 
       client.post(
         "webhooks/hub",
-        "hub.callback" => "https://#{ApplicationConfig['APP_DOMAIN']}/twitch-test",
+        "hub.callback" => twitch_stream_updates_url,
         "hub.mode" => "subscribe",
+        "hub.lease_seconds" => 300,
         "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
       )
 
       # revoke_token(temp_access_token)
       # Docs say this should work for an app token but I keep getting a 400
       # prob means we need to manage the tokens more statefully
+    end
+
+    private
+
+    def twitch_stream_updates_url
+      Rails.application.routes.url_helpers.twitch_stream_updates_url(host: ApplicationConfig["APP_DOMAIN"])
     end
   end
 end
