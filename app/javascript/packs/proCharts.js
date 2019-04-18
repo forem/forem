@@ -1,6 +1,4 @@
 import Chart from 'chart.js';
-import { Object } from 'es6-shim';
-import { active } from 'glamor';
 
 const reactionsCanvas = document.getElementById('reactionsChart');
 const commentsCanvas = document.getElementById('commentsChart');
