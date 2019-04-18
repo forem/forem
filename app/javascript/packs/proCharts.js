@@ -9,8 +9,6 @@ const padDate = month => String(`00${month}`).slice(-2);
 const oneWeekAgo = new Date();
 oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-console.log(oneWeekAgo)
-
 fetch(
   `/api/analytics/historical?start=${oneWeekAgo.getFullYear()}-${padDate(
     oneWeekAgo.getMonth() + 1,
