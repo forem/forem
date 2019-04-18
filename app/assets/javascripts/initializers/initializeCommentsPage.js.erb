@@ -57,6 +57,7 @@ function initializeCommentsPage() {
     var butts = document.getElementsByClassName('reaction-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
+      console.log("IM ATTACHING AN ONCLICK!!!") // this doesnt happen
       butt.onclick = function (event) {
         var thisButt = this;
         thisButt.blur();
