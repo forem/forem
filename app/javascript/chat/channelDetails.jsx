@@ -93,7 +93,7 @@ class ChannelDetails extends Component {
   };
 
   userInList = (list, user) => {
-    const keys = Object.keys(list)
+    const keys = Object.keys(list);
     for (const key of keys) {
       if (user.id === list[key].id) {
         return true;
@@ -144,7 +144,7 @@ class ChannelDetails extends Component {
           if (this.userInList(channel.channel_users, user)) {
             invite = (
               <span className="channel__member">
-                is already in
+                is already in 
                 {' '}
                 <em>{channel.channel_name}</em>
               </span>
@@ -153,11 +153,11 @@ class ChannelDetails extends Component {
           return (
             <div className="channeldetails__searchedusers">
               <a href={user.path} target="_blank" rel="noopener noreferrer">
-                <img src={user.user.profile_image_90} alt="profile_image"/>
+                <img src={user.user.profile_image_90} alt="profile_image" />
                 @
                 {user.user.username}
                 {' '}
--
+                -
                 {' '}
                 {user.title}
               </a>
@@ -178,7 +178,7 @@ class ChannelDetails extends Component {
             @
             {user.username}
             {' '}
--
+            -
             {' '}
             {user.name}
           </a>
@@ -188,9 +188,7 @@ class ChannelDetails extends Component {
         <div className="channeldetails__inviteusers">
           <h2>Invite Members</h2>
           <input onKeyUp={this.triggerUserSearch} placeholder="Find users" />
-          <div className="channeldetails__searchresults">
-            {searchedUsers}
-          </div>
+          <div className="channeldetails__searchresults">{searchedUsers}</div>
           <h2>Pending Invites:</h2>
           {pendingInvites}
           <div style={{ marginTop: '10px' }}>
@@ -212,12 +210,11 @@ class ChannelDetails extends Component {
           </h3>
           <h4>It may not be immediately in the sidebar</h4>
           <p>
-            Contact the admins at
+            Contact the admins at 
             {' '}
             <a href="mailto:yo@dev.to">yo@dev.to</a>
             {' '}
-if
-            this was a mistake
+            if this was a mistake
           </p>
         </div>
       );

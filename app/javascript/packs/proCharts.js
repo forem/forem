@@ -56,20 +56,20 @@ function drawWeekCharts() {
   resetActive(weekButton);
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo, 'this Week');
+  callAnalyticsApi(oneWeekAgo, "this Week");
 }
 
 function drawMonthCharts() {
   resetActive(monthButton);
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo, 'this Month');
+  callAnalyticsApi(oneMonthAgo, "this Month");
 }
 
 function drawInfinityCharts() {
   resetActive(infinityButton);
   const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime, '');
+  callAnalyticsApi(beginningOfTime, "");
 }
 
 drawWeekCharts();

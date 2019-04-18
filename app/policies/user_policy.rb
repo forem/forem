@@ -87,6 +87,7 @@ class UserPolicy < ApplicationPolicy
        feed_mark_canonical
        feed_url
        gitlab_url
+       inbox_guidelines
        linkedin_url
        location
        looking_for_work

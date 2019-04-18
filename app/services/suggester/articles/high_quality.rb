@@ -8,12 +8,12 @@ module Suggester
       end
 
       def suggest(num)
-        Article.where(published: true, featured: true).
+        Article.published.where(featured: true).
           includes(:user).
-          where("positive_reactions_count > ?", MIN_HQ_REACTION_COUNT).
-          order(Arel.sql("RANDOM()")).
           limited_column_select.
+          where("positive_reactions_count > ?", MIN_HQ_REACTION_COUNT).
           where.not(id: @not_ids).
+          order(Arel.sql("RANDOM()")).
           limit(num)
       end
     end

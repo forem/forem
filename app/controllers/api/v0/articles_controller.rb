@@ -26,7 +26,7 @@ module Api
       end
 
       def show
-        relation = Article.includes(:user).where(published: true)
+        relation = Article.published.includes(:user)
         @article = if params[:id] == "by_path"
                      relation.find_by!(path: params[:url]).decorate
                    else

@@ -38,9 +38,9 @@ class EmailLogic
                    order("score DESC").
                    limit(8)
                else
-                 Article.
+                 Article.published.
                    where("published_at > ?", fresh_date).
-                   where(published: true, featured: true, email_digest_eligible: true).
+                   where(featured: true, email_digest_eligible: true).
                    where.not(user_id: @user.id).
                    where("score > ?", 25).
                    order("score DESC").

@@ -1,0 +1,11 @@
+#!/usr/bin/env ./bin/rails runner
+
+# webdrivers 3.7.2 doesn't provide a standalone update script, so we made one
+
+if Rails.env.test?
+  # allow browser websites, so that "webdrivers" can access their binaries
+  # see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
+  WebMock.disable_net_connect!(allow: ["https://chromedriver.storage.googleapis.com"])
+
+  Webdrivers::Chromedriver.update
+end
