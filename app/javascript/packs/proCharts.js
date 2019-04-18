@@ -37,10 +37,10 @@ function writeCards(data, timeFrame) {
   const comments = sumAnalytics(data, 'comments');
   const follows = sumAnalytics(data, 'follows');
 
-  writeCard(readers, readerCard, 'Readers ' + timeFrame);
-  writeCard(comments, commentCard, 'Comments ' + timeFrame);
-  writeCard(reactions, reactionCard, 'Reactions ' + timeFrame, 'red', '10%');
-  writeCard(follows, followerCard, 'Followers ' + timeFrame, 'red', '10%');
+  writeCard(readers, readerCard, `Readers ${timeFrame}`);
+  writeCard(comments, commentCard, `Comments ${timeFrame}`);
+  writeCard(reactions, reactionCard, `Reactions ${timeFrame}`);
+  writeCard(follows, followerCard, `Followers ${timeFrame}`);
 }
 
 function callAnalyticsApi(date, timeRange) {
@@ -68,6 +68,7 @@ function drawMonthCharts() {
 
 function drawInfinityCharts() {
   resetActive(infinityButton);
+  // April 1st is when the DEV analytics feature went into place
   const beginningOfTime = new Date('2019-4-1');
   callAnalyticsApi(beginningOfTime, '');
 }
@@ -132,7 +133,7 @@ function drawCharts(data, timeRange) {
       responsive: true,
       title: {
         display: true,
-        text: 'Reactions ' + timeRange,
+        text: `Reactions ${timeRange}`,
       },
       scales: {
         yAxes: [
@@ -168,7 +169,7 @@ function drawCharts(data, timeRange) {
       responsive: true,
       title: {
         display: true,
-        text: 'Comments ' + timeRange,
+        text: `Comments ${timeRange}`,
       },
       scales: {
         yAxes: [
