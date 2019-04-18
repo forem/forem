@@ -101,6 +101,7 @@ variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
+variable :GA_FETCH_RATE, :Integer, default: 25
 
 # Honeycomb
 variable :HONEYCOMB_API_KEY, :String, default: "Optional"

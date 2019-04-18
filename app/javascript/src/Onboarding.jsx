@@ -222,8 +222,8 @@ class Onboarding extends Component {
     const newCheckedUsers = checkedUsers.slice();
     const index = checkedUsers.indexOf(user);
 
-    if(index > -1){
-      newCheckedUsers.splice(index,1);
+    if (index > -1) {
+      newCheckedUsers.splice(index, 1);
     } else {
       newCheckedUsers.push(user);
     }
@@ -259,12 +259,7 @@ class Onboarding extends Component {
   }
 
   handleNextButton() {
-    const {
-      users,
-      articles,
-      checkedUsers,
-      profileInfo,
-    } = this.state;
+    const { users, articles, checkedUsers, profileInfo } = this.state;
     let { pageNumber } = this.state;
     if (pageNumber === 2 && users.length === 0 && articles.length === 0) {
       this.getUsersToFollow();

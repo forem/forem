@@ -3,7 +3,7 @@ import { GithubRepos } from '../githubRepos/githubRepos';
 
 function loadElement() {
   const root = document.getElementById('github-repos-container');
-  if (root){
+  if (root) {
     render(<GithubRepos />, root, root.firstElementChild);
   }
 }

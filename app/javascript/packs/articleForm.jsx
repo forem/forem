@@ -10,16 +10,16 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
   return null;
 });
 
-document.ready.then(function(){
+document.ready.then(function() {
   loadForm();
   window.InstantClick.on('change', () => {
-    if (document.getElementById('article-form')){
+    if (document.getElementById('article-form')) {
       loadForm();
     }
   });
 });
 
-function loadForm(){
+function loadForm() {
   getUserDataAndCsrfToken().then(({ currentUser, csrfToken }) => {
     window.currentUser = currentUser;
     window.csrfToken = csrfToken;
@@ -32,5 +32,5 @@ function loadForm(){
       root,
       root.firstElementChild,
     );
-  })
+  });
 }

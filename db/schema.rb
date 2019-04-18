@@ -820,6 +820,7 @@ ActiveRecord::Schema.define(version: 2019_04_17_171019) do
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"

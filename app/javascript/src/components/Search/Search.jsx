@@ -48,7 +48,9 @@ export class Search extends Component {
   }
 
   enableSearchPageChecker = true;
+
   globalSearchKeyListener;
+
   enableSearchPageListener = () => {
     this.enableSearchPageChecker = true;
   };
@@ -76,7 +78,10 @@ export class Search extends Component {
   }
 
   search = event => {
-    const { keyCode, target: { value } } = event;
+    const {
+      keyCode,
+      target: { value },
+    } = event;
 
     this.enableSearchPageChecker = false;
 
