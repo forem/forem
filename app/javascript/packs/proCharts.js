@@ -2,10 +2,17 @@ import Chart from 'chart.js';
 
 const reactionsCanvas = document.getElementById('reactionsChart');
 const commentsCanvas = document.getElementById('commentsChart');
+const readersCanvas = document.getElementById('readersChart');
+const followersCanvas = document.getElementById('followersChart');
 
 const weekButton = document.getElementById('week-button');
 const monthButton = document.getElementById('month-button');
 const infinityButton = document.getElementById('infinity-button');
+
+const reactionCard = document.getElementById('reactions-card');
+const commentCard = document.getElementById('comments-card');
+const followerCard = document.getElementById('followers-card');
+const readerCard = document.getElementById('readers-card');
 
 function resetActive(activeButton) {
   [weekButton, monthButton, infinityButton].forEach(button => {
@@ -15,11 +22,35 @@ function resetActive(activeButton) {
   activeButton.classList.add('selected');
 }
 
+function sumAnalytics(data, key) {
+  return Object.entries(data).reduce((sum, day) => sum + day[1][key].total, 0);
+}
+
+function writeCard(stat, element, header) {
+  element.innerHTML = `
+    <h4>${header}</h4>
+    <div class="featured-stat">${stat}</div>
+  `;
+}
+
+function writeCards(data, timeFrame) {
+  const readers = sumAnalytics(data, 'page_views');
+  const reactions = sumAnalytics(data, 'reactions');
+  const comments = sumAnalytics(data, 'comments');
+  const follows = sumAnalytics(data, 'follows');
+
+  writeCard(readers, readerCard, `Readers ${timeFrame}`);
+  writeCard(comments, commentCard, `Comments ${timeFrame}`);
+  writeCard(reactions, reactionCard, `Reactions ${timeFrame}`);
+  writeCard(follows, followerCard, `Followers ${timeFrame}`);
+}
+
 function callAnalyticsApi(date, timeRange) {
   fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
     .then(data => data.json())
     .then(data => {
       drawCharts(data, timeRange);
+      writeCards(data, timeRange);
     });
 }
 
@@ -27,20 +58,21 @@ function drawWeekCharts() {
   resetActive(weekButton);
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo, "this Week");
+  callAnalyticsApi(oneWeekAgo, 'this Week');
 }
 
 function drawMonthCharts() {
   resetActive(monthButton);
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo, "this Month");
+  callAnalyticsApi(oneMonthAgo, 'this Month');
 }
 
 function drawInfinityCharts() {
   resetActive(infinityButton);
+  // April 1st is when the DEV analytics feature went into place
   const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime, "");
+  callAnalyticsApi(beginningOfTime, '');
 }
 
 drawWeekCharts();
@@ -56,6 +88,8 @@ function drawCharts(data, timeRange) {
   const likes = parsedData.map(date => date.reactions.like);
   const readingList = parsedData.map(date => date.reactions.readinglist);
   const unicorns = parsedData.map(date => date.reactions.unicorn);
+  const followers = parsedData.map(date => date.follows.total);
+  const readers = parsedData.map(date => date.page_views.total);
 
   const reactionsChart = new Chart(reactionsCanvas, {
     type: 'line',
@@ -103,7 +137,7 @@ function drawCharts(data, timeRange) {
       responsive: true,
       title: {
         display: true,
-        text: 'Reactions ' + timeRange,
+        text: `Reactions ${timeRange}`,
       },
       scales: {
         yAxes: [
@@ -139,7 +173,7 @@ function drawCharts(data, timeRange) {
       responsive: true,
       title: {
         display: true,
-        text: 'Comments ' + timeRange,
+        text: `Comments ${timeRange}`,
       },
       scales: {
         yAxes: [
@@ -153,4 +187,77 @@ function drawCharts(data, timeRange) {
       },
     },
   });
+
+  const followChart = new Chart(followersCanvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Followers',
+          data: followers,
+          fill: false,
+          borderColor: 'rgb(10, 133, 255)',
+          lineTension: 0.1,
+        },
+      ],
+    },
+    options: {
+      legend: {
+        position: 'bottom',
+      },
+      responsive: true,
+      title: {
+        display: true,
+        text: `New Followers ${timeRange}`,
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              suggestedMin: 0,
+              precision: 0,
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  const readsChart = new Chart(readersCanvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Reads',
+          data: readers,
+          fill: false,
+          borderColor: 'rgb(157, 57, 233)',
+          lineTension: 0.1,
+        },
+      ],
+    },
+    options: {
+      legend: {
+        position: 'bottom',
+      },
+      responsive: true,
+      title: {
+        display: true,
+        text: `Reads ${timeRange}`,
+      },
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              suggestedMin: 0,
+              precision: 0,
+            },
+          },
+        ],
+      },
+    },
+  });
+
 }

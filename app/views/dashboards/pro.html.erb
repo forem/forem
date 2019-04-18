@@ -15,86 +15,46 @@
     <p>Welcome to the pro dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
     <p>This dashboard will highlight deep insights especially relevant to developer relations authors and serious bloggers.</p>
   </section>
-  <div class="summary-stats">
-    <div class="card">
-      <h4>Reactions this week</h4>
-      <div class="featured-stat">
-        <%= @dashboard.this_week_reactions_count %>
-      </div>
-      <% week_reaction_rate = @dashboard.this_week_reactions_count.to_f / @dashboard.last_week_reactions_count.to_f %>
-      <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
-        <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
-      </div>
-    </div>
-    <div class="card">
-      <h4>Reactions this month</h4>
-      <div class="featured-stat">
-        <%= @dashboard.this_month_reactions_count %>
-      </div>
-      <% month_reaction_rate = @dashboard.this_month_reactions_count.to_f / @dashboard.last_month_reactions_count.to_f %>
-      <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
-        <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
-      </div>
-    </div>
-    <div class="card">
-      <h4>New followers this week</h4>
-      <div class="featured-stat">
-        <%= @dashboard.this_week_followers_count %>
-      </div>
-      <% week_followers_rate = @dashboard.this_week_followers_count.to_f / @dashboard.last_week_followers_count.to_f %>
-      <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
-        <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
-      </div>
-    </div>
-    <div class="card">
-      <h4>New followers this month</h4>
-      <div class="featured-stat">
-        <%= @dashboard.this_month_followers_count %>
-      </div>
-      <% month_followers_rate = @dashboard.this_month_followers_count.to_f / @dashboard.last_month_followers_count.to_f %>
-      <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
-        <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
-      </div>
-    </div>
-    <div class="card">
-      <h4>New comments this week</h4>
-      <div class="featured-stat">
-        <%= @dashboard.this_week_comments_count %>
-      </div>
-      <% week_comments_rate = @dashboard.this_week_comments_count.to_f / @dashboard.last_week_comments_count.to_f %>
-      <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
-      </div>
-    </div>
-    <div class="card">
-      <h4>New comments this month</h4>
-      <div class="featured-stat">
-        <%= @dashboard.this_month_comments_count %>
-      </div>
-      <% month_comments_rate = @dashboard.this_month_comments_count.to_f / @dashboard.last_month_comments_count.to_f %>
-      <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
-        <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
-      </div>
-    </div>
-  </div>
   <div class="toggles">
     <button class="selected" id="week-button">Week</button>
     <button id="month-button">Month</button>
     <button id="infinity-button">Infinity</button>
   </div>
+  <div class="summary-stats">
+    <div class="card" id="readers-card"></div>
+    <div class="card" id="reactions-card"></div>
+    <div class="card" id="comments-card"></div>
+    <div class="card" id="followers-card"></div>
+  </div>
   <div class="graphs">
-    <div class="card">
-      <h2>Reactions Summary ❤🦄🔖</h2>
-      <div class="charts-container">
-        <canvas id="reactionsChart"></canvas>
+    <div class="row">
+      <div class="card">
+        <h2>Readers Summary</h2>
+        <div class="charts-container">
+          <canvas id="readersChart"></canvas>
+        </div>
       </div>
-      <%= javascript_pack_tag "proCharts", defer: true %>
+      <div class="card">
+        <h2>New Followers Summary</h2>
+        <div class="charts-container">
+          <canvas id="followersChart"></canvas>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <h2>Comments Summary 💬</h2>
-      <div class="charts-container">
-        <canvas id="commentsChart"></canvas>
+    <div class="row">
+      <div class="card">
+        <h2>Reactions Summary ❤🦄🔖</h2>
+        <div class="charts-container">
+          <canvas id="reactionsChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Comments Summary 💬</h2>
+        <div class="charts-container">
+          <canvas id="commentsChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
+  <%= javascript_pack_tag "proCharts", defer: true %>
 </div>
