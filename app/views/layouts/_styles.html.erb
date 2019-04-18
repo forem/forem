@@ -58,7 +58,7 @@
       <%= Rails.application.assets["article-show.css"].to_s.html_safe %>
       <% end %>
     </style>
-  <% elsif view_class.include? "registrations" %>
+  <% elsif view_class.include?("registrations") || @new_article_not_logged_in  %>
     <style>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["scaffolds.css"].to_s.html_safe %>
