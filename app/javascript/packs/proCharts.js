@@ -15,11 +15,11 @@ function resetActive(activeButton) {
   activeButton.classList.add('selected');
 }
 
-function callAnalyticsApi(date) {
+function callAnalyticsApi(date, timeRange) {
   fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
     .then(data => data.json())
     .then(data => {
-      drawCharts(data);
+      drawCharts(data, timeRange);
     });
 }
 
@@ -27,20 +27,20 @@ function drawWeekCharts() {
   resetActive(weekButton);
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo);
+  callAnalyticsApi(oneWeekAgo, "this Week");
 }
 
 function drawMonthCharts() {
   resetActive(monthButton);
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo);
+  callAnalyticsApi(oneMonthAgo, "this Month");
 }
 
 function drawInfinityCharts() {
   resetActive(infinityButton);
   const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime);
+  callAnalyticsApi(beginningOfTime, "");
 }
 
 drawWeekCharts();
@@ -48,7 +48,7 @@ weekButton.addEventListener('click', drawWeekCharts);
 monthButton.addEventListener('click', drawMonthCharts);
 infinityButton.addEventListener('click', drawInfinityCharts);
 
-function drawCharts(data) {
+function drawCharts(data, timeRange) {
   const labels = Object.keys(data);
   const parsedData = Object.entries(data).map(date => date[1]);
   const comments = parsedData.map(date => date.comments.total);
@@ -103,7 +103,7 @@ function drawCharts(data) {
       responsive: true,
       title: {
         display: true,
-        text: 'Reactions this Week',
+        text: 'Reactions ' + timeRange,
       },
       scales: {
         yAxes: [
@@ -139,7 +139,7 @@ function drawCharts(data) {
       responsive: true,
       title: {
         display: true,
-        text: 'Comments this week',
+        text: 'Comments ' + timeRange,
       },
       scales: {
         yAxes: [
