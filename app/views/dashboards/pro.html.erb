@@ -22,7 +22,7 @@
         <%= @dashboard.this_week_reactions_count %>
       </div>
       <% week_reaction_rate = @dashboard.this_week_reactions_count.to_f / @dashboard.last_week_reactions_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
+      <div class="stat-percentage" style="color: <%= week_reaction_rate > 1 ? "green" : "red" %>">
         <%= week_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_reactions_count.positive? ? (week_reaction_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
@@ -32,7 +32,7 @@
         <%= @dashboard.this_month_reactions_count %>
       </div>
       <% month_reaction_rate = @dashboard.this_month_reactions_count.to_f / @dashboard.last_month_reactions_count.to_f %>
-       <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
+      <div class="stat-percentage" style="color: <%= month_reaction_rate > 1 ? "green" : "red" %>">
         <%= month_reaction_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_reactions_count.positive? ? (month_reaction_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
@@ -42,7 +42,7 @@
         <%= @dashboard.this_week_followers_count %>
       </div>
       <% week_followers_rate = @dashboard.this_week_followers_count.to_f / @dashboard.last_week_followers_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
+      <div class="stat-percentage" style="color: <%= week_followers_rate > 1 ? "green" : "red" %>">
         <%= week_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_followers_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
@@ -52,7 +52,7 @@
         <%= @dashboard.this_month_followers_count %>
       </div>
       <% month_followers_rate = @dashboard.this_month_followers_count.to_f / @dashboard.last_month_followers_count.to_f %>
-       <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
+      <div class="stat-percentage" style="color: <%= month_followers_rate > 1 ? "green" : "red" %>">
         <%= month_followers_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_followers_count.positive? ? (month_followers_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
@@ -62,7 +62,7 @@
         <%= @dashboard.this_week_comments_count %>
       </div>
       <% week_comments_rate = @dashboard.this_week_comments_count.to_f / @dashboard.last_week_comments_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
+      <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
         <%= week_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_week_followers_count.positive? ? (week_comments_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
@@ -72,35 +72,29 @@
         <%= @dashboard.this_month_comments_count %>
       </div>
       <% month_comments_rate = @dashboard.this_month_comments_count.to_f / @dashboard.last_month_comments_count.to_f %>
-       <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
+      <div class="stat-percentage" style="color: <%= week_comments_rate > 1 ? "green" : "red" %>">
         <%= month_comments_rate > 1 ? "\u25b2" : "\u25BC" %> <%= @dashboard.last_month_comments_count.positive? ? (month_comments_rate * 100).round(2) : "infinity " %>%
       </div>
     </div>
+  </div>
+  <div class="toggles">
+    <button class="selected" id="week-button">Week</button>
+    <button id="month-button">Month</button>
+    <button id="infinity-button">Infinity</button>
   </div>
   <div class="graphs">
     <div class="card">
       <h2>Reactions Summary ❤🦄🔖</h2>
       <div class="charts-container">
-        <canvas
-          id="reactionsChart"
-          data-labels="<%= @dashboard.this_week_reactions.formatted_dates %>"
-          data-total-count="<%= @dashboard.this_week_reactions.total_per_day %>"
-          data-total-likes="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "like") %>"
-          data-total-unicorns="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "unicorn") %>"
-          data-total-readinglist="<%= @dashboard.this_week_reactions.total_by_type_per_day(type: "Reaction", category: "readinglist") %>">
-        </canvas>
+        <canvas id="reactionsChart"></canvas>
       </div>
-    <%= javascript_pack_tag "proCharts", defer: true %>
-  </div>
-  <div class="card">
-    <h2>Comments Summary 💬</h2>
-    <div class="charts-container">
-      <canvas
-        id="commentsChart"
-        data-labels="<%= @dashboard.this_week_comments.formatted_dates %>"
-        data-total-count="<%= @dashboard.this_week_comments.total_per_day %>">
-      </canvas>
+      <%= javascript_pack_tag "proCharts", defer: true %>
     </div>
-  </div>
+    <div class="card">
+      <h2>Comments Summary 💬</h2>
+      <div class="charts-container">
+        <canvas id="commentsChart"></canvas>
+      </div>
+    </div>
   </div>
 </div>
