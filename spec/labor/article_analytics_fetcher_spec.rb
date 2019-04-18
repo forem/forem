@@ -37,7 +37,6 @@ RSpec.describe ArticleAnalyticsFetcher do
           expect(Notification).to have_received(:send_milestone_notification).with(type: type, article: article)
         end
       end
-
       it "updates appropriate column" do
         expect(article).to have_received(:update_columns).with(previous_positive_reactions_count: article.positive_reactions_count)
         expect(article).to have_received(:update_columns).with(page_views_count: counts)
