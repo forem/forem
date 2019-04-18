@@ -27,18 +27,34 @@
     <div class="card" id="followers-card"></div>
   </div>
   <div class="graphs">
-    <div class="card">
-      <h2>Reactions Summary ❤🦄🔖</h2>
-      <div class="charts-container">
-        <canvas id="reactionsChart"></canvas>
+    <div class="row">
+      <div class="card">
+        <h2>Readers Summary</h2>
+        <div class="charts-container">
+          <canvas id="readersChart"></canvas>
+        </div>
       </div>
-      <%= javascript_pack_tag "proCharts", defer: true %>
+      <div class="card">
+        <h2>New Followers Summary</h2>
+        <div class="charts-container">
+          <canvas id="followersChart"></canvas>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <h2>Comments Summary 💬</h2>
-      <div class="charts-container">
-        <canvas id="commentsChart"></canvas>
+    <div class="row">
+      <div class="card">
+        <h2>Reactions Summary ❤🦄🔖</h2>
+        <div class="charts-container">
+          <canvas id="reactionsChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Comments Summary 💬</h2>
+        <div class="charts-container">
+          <canvas id="commentsChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
+  <%= javascript_pack_tag "proCharts", defer: true %>
 </div>

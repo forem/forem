@@ -110,11 +110,11 @@
     select {
       float: right;
       display: block;
-      font-size:19px;
-      padding:12px;
-      border:1px solid rgb(222, 230, 233);
-      border-radius:3px;
-      background-color:white;
+      font-size: 19px;
+      padding: 12px;
+      border: 1px solid rgb(222, 230, 233);
+      border-radius: 3px;
+      background-color: white;
       outline: none;
     }
     .clear {
@@ -193,7 +193,10 @@
     background: var(--theme-container-background, white);
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
-      background: var(--theme-container-accent-background, lighten($yellow, 20%));
+      background: var(
+        --theme-container-accent-background,
+        lighten($yellow, 20%)
+      );
     }
     .dashboard-collection-org-details {
       .dashboard-top-pill {
@@ -438,14 +441,16 @@
 }
 
 .graphs {
-  display: flex;
-  flex-wrap: wrap;
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    .card {
+      flex: 1 0;
+    }
+  }
   h2 {
     margin: 5px;
     text-align: center;
-  }
-  .card {
-    flex: 1 0;
   }
 }
 

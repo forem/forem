@@ -755,6 +755,7 @@ ActiveRecord::Schema.define(version: 2019_04_17_171019) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
+    t.boolean "allows_article_edits", default: true
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
