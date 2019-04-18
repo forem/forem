@@ -187,6 +187,10 @@
         }
         &:hover {
           opacity: 1;
+          background: $dark-purple;
+          color: white;
+          border: 1px solid $purple;
+          box-shadow: 3px 4px 0px $purple;
         }
       }
       .narrow-nav-select {
