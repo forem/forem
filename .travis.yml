@@ -11,6 +11,29 @@ addons:
   postgresql: '9.6'
   chrome: stable
 env:
+  - TESTFOLDER=system/articles
+  - TESTFOLDER=system/comments
+  - TESTFOLDER=system/dashboards
+  - TESTFOLDER=system/homepage
+  - TESTFOLDER=system/organization
+  - TESTFOLDER=system/podcasts
+  - TESTFOLDER=system/shared_examples
+  - TESTFOLDER=system/user
+  - TESTFOLDER=system/videos
+  - TESTFOLDER=system
+  - TESTFOLDER=requests
+  - TESTFOLDER=models
+  - TESTFOLDER=labor
+  - TESTFOLDER=observers
+  - TESTFOLDER=policies
+  - TESTFOLDER=services
+  - TESTFOLDER=views
+  - TESTFOLDER=routing
+  - TESTFOLDER=decorators
+  - TESTFOLDER=helpers
+  - TESTFOLDER=jobs
+  - TESTFOLDER=liquid_tags
+  - TESTFOLDER=lib
   global:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
@@ -33,7 +56,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty'
+  - 'bundle exec rspec $TESTFOLDER'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
