@@ -53,9 +53,9 @@ For additional configuration, [click here](/additional-postgres-setup)
     rebuild Ruby with Readline support. If using Ubuntu, try `sudo apt-get
     install libreadline-dev` and then reinstall your Ruby.
 rails aborted!
-LoadError: dlopen(/Users/nickytonline/.rbenv/versions/2.6.1/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.7.dylib
+LoadError: dlopen(/Users/nickytonline/.rbenv/versions/2.6.1/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
 ```
 
-**_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.7.dylib` from the command line then run `bin/setup` again.
+**_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.<some version number>.dylib` from the command line then run `bin/setup` again. You may have a different version or libreadline, so replace `<some version number>` with the version that errored.
 
 > If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.
