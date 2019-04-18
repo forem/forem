@@ -7,6 +7,11 @@ const weekButton = document.getElementById('week-button');
 const monthButton = document.getElementById('month-button');
 const infinityButton = document.getElementById('infinity-button');
 
+const reactionCard = document.getElementById('reactions-card');
+const commentCard = document.getElementById('comments-card');
+const followerCard = document.getElementById('followers-card');
+const readerCard = document.getElementById('readers-card');
+
 function resetActive(activeButton) {
   [weekButton, monthButton, infinityButton].forEach(button => {
     button.classList.remove('selected');
@@ -15,11 +20,35 @@ function resetActive(activeButton) {
   activeButton.classList.add('selected');
 }
 
+function sumAnalytics(data, key) {
+  return Object.entries(data).reduce((sum, day) => sum + day[1][key].total, 0);
+}
+
+function writeCard(stat, element, header) {
+  element.innerHTML = `
+    <h4>${header}</h4>
+    <div class="featured-stat">${stat}</div>
+  `;
+}
+
+function writeCards(data, timeFrame) {
+  const readers = sumAnalytics(data, 'page_views');
+  const reactions = sumAnalytics(data, 'reactions');
+  const comments = sumAnalytics(data, 'comments');
+  const follows = sumAnalytics(data, 'follows');
+
+  writeCard(readers, readerCard, 'Readers ' + timeFrame);
+  writeCard(comments, commentCard, 'Comments ' + timeFrame);
+  writeCard(reactions, reactionCard, 'Reactions ' + timeFrame, 'red', '10%');
+  writeCard(follows, followerCard, 'Followers ' + timeFrame, 'red', '10%');
+}
+
 function callAnalyticsApi(date, timeRange) {
   fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
     .then(data => data.json())
     .then(data => {
       drawCharts(data, timeRange);
+      writeCards(data, timeRange);
     });
 }
 
@@ -27,20 +56,20 @@ function drawWeekCharts() {
   resetActive(weekButton);
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo, "this Week");
+  callAnalyticsApi(oneWeekAgo, 'this Week');
 }
 
 function drawMonthCharts() {
   resetActive(monthButton);
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo, "this Month");
+  callAnalyticsApi(oneMonthAgo, 'this Month');
 }
 
 function drawInfinityCharts() {
   resetActive(infinityButton);
   const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime, "");
+  callAnalyticsApi(beginningOfTime, '');
 }
 
 drawWeekCharts();

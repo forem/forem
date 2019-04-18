@@ -399,6 +399,10 @@
   top: 18px;
   font-weight: 600;
   background-color: transparent;
+  &:focus {
+    outline: 0;
+  }
+
   &.selected {
     background: #cfd7ff;
     color: #0a0a0a;
