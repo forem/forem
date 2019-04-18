@@ -27,9 +27,13 @@ install:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
+before_script:
+  - bundle exec rails db:create
 script:
   - bundle exec rails webpacker:compile
-  - bin/rails parallel:setup
+  - bundle exec rails db:schema:load
+  - bin/rails parallel:create
+  - bin/rails parallel:prepare
   - './cc-test-reporter before-build'
   - 'bin/rails parallel:spec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
