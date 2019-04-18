@@ -8,7 +8,6 @@ RSpec.describe "Editor", type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Sign in below to compose your post and share")
         # should actually be looking for textarea tag
-        expect(response.body).not_to include("textarea")
       end
     end
   end
