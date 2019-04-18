@@ -7,5 +7,7 @@ class CreateOrganizationMemberships < ActiveRecord::Migration[5.2]
       t.string :type_of_user, null: false
       t.timestamps null: false
     end
+
+    add_index :organization_memberships, %i[user_id organization_id], unique: true
   end
 end
