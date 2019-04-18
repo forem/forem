@@ -115,7 +115,7 @@ function getComments(){
       }
       resultDivs.push(aboveDiv+buildCommentHTML(comment));
     });
-    substoriesDiv.innerHTML = '<div class="comment-trees"><h2>Recent Comment Activity</h2>'+resultDivs.join("<br/>")+'</div>';
+    substoriesDiv.innerHTML = '<div class="comment-trees" id="comments-container"><h2>Recent Comment Activity</h2>'+resultDivs.join("<br/>")+'</div>';
     initializeCommentDate();
     initializeCommentDropdown();
     initializeCommentsPage();
