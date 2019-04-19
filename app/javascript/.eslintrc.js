@@ -22,9 +22,12 @@ module.exports = {
       },
     ],
     'import/prefer-default-export': 'off',
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
   },
   globals: {
     InstantClick: false,
     filterXSS: false,
+    Pusher: false,
+    algoliasearch: false,
   },
 };
