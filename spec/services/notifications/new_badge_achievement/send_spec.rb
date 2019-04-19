@@ -30,11 +30,9 @@ RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
   end
 
   it "creates a notification for the badge achievement" do
-    described_class.call(badge_achievement)
-    notification = Notification.find_by(
-      notifiable_id: badge_achievement.id, notifiable_type: "BadgeAchievement",
-    )
-    expect(notification).not_to be(nil)
+    notification = described_class.call(badge_achievement)
+    expect(notification.notifiable_id).to eq(badge_achievement.id)
+    expect(notification.notifiable_type).to eq("BadgeAchievement")
   end
 
   it "creates a notification with no action" do
