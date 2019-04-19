@@ -8,7 +8,8 @@ module Dashboard
 
     def user_or_org_article_ids
       @user_or_org_article_ids ||=
-        Article.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id, published: true).pluck(:id)
+        Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id).
+          pluck(:id)
     end
 
     def this_week_reactions

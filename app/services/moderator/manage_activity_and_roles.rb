@@ -53,11 +53,25 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role :trusted
       @user.remove_role :video_permission
-      @user.remove_role :tag_moderator
       @user.remove_role :workshop_pass
       @user.remove_role :pro
+      remove_mod_roles
+      remove_tag_moderator_role
+    end
+
+    def remove_mod_roles
+      @user.remove_role :trusted
+      @user.remove_role :tag_moderator
+      @user.update(email_tag_mod_newsletter: false)
+      MailchimpBot.new(user).manage_tag_moderator_list
+      @user.update(email_community_mod_newsletter: false)
+      MailchimpBot.new(user).manage_community_moderator_list
+    end
+
+    def remove_tag_moderator_role
+      @user.remove_role :tag_moderator
+      MailchimpBot.new(user).manage_tag_moderator_list
     end
 
     def create_note(reason, content)
@@ -76,26 +90,45 @@ module Moderator
         user.add_role :banned
         remove_privileges
       when "Warn"
-        user.add_role :warned
-        user.remove_role :banned
-        remove_privileges
+        warned
       when "Comment Ban"
-        user.add_role :comment_banned
-        user.remove_role :banned
-        remove_privileges
+        comment_banned
       when "Regular Member"
-        remove_negative_roles
-        user.remove_role :pro
+        regular_member
       when "Trusted"
         remove_negative_roles
         user.remove_role :pro
-        user.add_role :trusted
+        add_trusted_role
       when "Pro"
         remove_negative_roles
-        user.add_role :trusted
+        add_trusted_role
         user.add_role :pro
       end
       create_note(role, note)
+    end
+
+    def comment_banned
+      user.add_role :comment_banned
+      user.remove_role :banned
+      remove_privileges
+    end
+
+    def regular_member
+      remove_negative_roles
+      user.remove_role :pro
+      remove_mod_roles
+    end
+
+    def warned
+      user.add_role :warned
+      user.remove_role :banned
+      remove_privileges
+    end
+
+    def add_trusted_role
+      user.add_role :trusted
+      user.update(email_community_mod_newsletter: true)
+      MailchimpBot.new(user).manage_community_moderator_list
     end
 
     def remove_negative_roles

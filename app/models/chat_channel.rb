@@ -21,9 +21,9 @@ class ChatChannel < ApplicationRecord
 
   algoliasearch index_name: "SecuredChatChannel_#{Rails.env}" do
     attribute :id, :viewable_by, :slug, :channel_type,
-      :channel_name, :channel_users, :last_message_at, :status,
-      :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
-      :description
+              :channel_name, :channel_users, :last_message_at, :status,
+              :messages_count, :channel_human_names, :channel_mod_ids, :pending_users_select_fields,
+              :description
     searchableAttributes %i[channel_name channel_slug channel_human_names]
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_type)"]
     ranking ["desc(last_message_at)"]
@@ -143,10 +143,6 @@ class ChatChannel < ApplicationRecord
     obj
   end
 
-  def pending_users_select_fields
-    pending_users.select(:id, :username, :name)
-  end
-
   def channel_mod_ids
     mod_users.pluck(:id)
   end
@@ -160,5 +156,11 @@ class ChatChannel < ApplicationRecord
       username: membership.user.username,
       id: membership.user_id
     }
+  end
+
+  private
+
+  def pending_users_select_fields
+    pending_users.select(:id, :username, :name, :updated_at)
   end
 end

@@ -8,5 +8,6 @@
     <%= render "articles/markdown_form" %>
   <% end %>
 <% else %>
+  <% @new_article_not_logged_in = true %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>

@@ -30,7 +30,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   def self.find_random_for_test(tags_array, group)
-    where(group: group, approved: true, published: true, target_tag: tags_array).order("RANDOM()").first
+    where(group: group, approved: true, published: true, target_tag: tags_array).order(Arel.sql("RANDOM()")).first
   end
 
   private
@@ -77,12 +77,12 @@ class HtmlVariant < ApplicationRecord
                 "auto"
               end
     cl_image_path(source,
-      type: "fetch",
-      width: width,
-      crop: "limit",
-      quality: quality,
-      flags: "progressive",
-      fetch_format: "auto",
-      sign_url: true).gsub(",", "%2C")
+                  type: "fetch",
+                  width: width,
+                  crop: "limit",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: "auto",
+                  sign_url: true).gsub(",", "%2C")
   end
 end

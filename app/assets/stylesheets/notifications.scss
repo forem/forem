@@ -1,7 +1,7 @@
 @import 'variables';
 .notifications-index {
-  background: $light-gray;
-  background:var(--theme-background, $light-gray);
+  background: $lightest-gray;
+  background:var(--theme-background, $lightest-gray);
   .home{
     .articles-list{
       .signup-cue{

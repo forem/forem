@@ -12,13 +12,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def failure
     logger.error "Omniauth failure",
-      omniauth_failure: {
-        error: request.env["omniauth.error"]&.inspect,
-        error_type: request.env["omniauth.error.type"].to_s,
-        auth: request.env["omniauth.auth"],
-        provider: request.env["omniauth.strategy"].to_s,
-        cookie: request.env["rack.request.cookie_hash"]
-      }
+                 omniauth_failure: {
+                   error: request.env["omniauth.error"]&.inspect,
+                   error_type: request.env["omniauth.error.type"].to_s,
+                   auth: request.env["omniauth.auth"],
+                   provider: request.env["omniauth.strategy"].to_s,
+                   cookie: request.env["rack.request.cookie_hash"]
+                 }
     super
   end
 
@@ -43,11 +43,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
     end
-  rescue StandardError => error
-    logger.error "Log in error: #{error}"
+  rescue StandardError => e
+    logger.error "Log in error: #{e}"
     logger.error "Log in error: auth data hash - #{request.env['omniauth.auth']}"
     logger.error "Log in error: auth data hash - #{request.env['omniauth.error']&.inspect}"
-    flash[:alert] = "Log in error: #{error}"
+    flash[:alert] = "Log in error: #{e}"
     redirect_to new_user_registration_url
   end
 

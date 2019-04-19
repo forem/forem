@@ -16,7 +16,10 @@
       This post comes with a comment template
     </div>
   <% end %>
+
+  <%# this is used by JS and it will be replaced with the CSRF token received from the server %>
   <input type="hidden" name="authenticity_token" value="NOTHING" id="new_comment_authenticity_token">
+
   <% unless @comment.persisted? %>
     <%= f.hidden_field :commentable_id, value: commentable.id %>
     <%= f.hidden_field :commentable_type, value: commentable_type %>
@@ -58,7 +61,6 @@
 <% end %>
 
 <% if @comment.persisted? %>
-
   <script defer>
     if (document.getElementById("edit_comment_<%= @comment&.id %>")) {
       document.getElementById("edit_comment_<%= @comment&.id %>").onsubmit = function (e) {

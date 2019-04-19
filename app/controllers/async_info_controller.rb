@@ -48,6 +48,7 @@ class AsyncInfoController < ApplicationController
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,
         experience_level: @user.experience_level,
+        preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class
       }
     end
@@ -68,6 +69,6 @@ class AsyncInfoController < ApplicationController
   private
 
   def occasionally_update_analytics
-    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if Rails.env.production? && rand(25) == 1
+    ArticleAnalyticsFetcher.new.delay.update_analytics(@user.id) if Rails.env.production? && rand(ApplicationConfig["GA_FETCH_RATE"]) == 1
   end
 end

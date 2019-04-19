@@ -106,7 +106,7 @@
       <br><br>The DEV team will be notified about vomits and take appropriate action, but leaving a level-headed comment addressing the behavior is welcome if you feel up for it.
     </p>
   <% end %>
-  <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by_name(t)) }).any? if @moderatable.class.name == "Article" %>
+  <% is_mod = (@moderatable.tag_list.select { |t| current_user.has_role?(:tag_moderator, Tag.find_by(name: t)) }).any? if @moderatable.class.name == "Article" %>
   <% if @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || is_mod) %>
     <div class="tag-mod-form">
       <%= form_for(TagAdjustment.new) do |f| %>
@@ -137,30 +137,46 @@
     </div>
   <% end %>
   <% if @moderatable.class.name == "Article" %>
-    <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-    <%= form_for(RatingVote.new) do |f| %>
-      <h2>Experience Level of Post</h2>
-      <%= f.hidden_field :article_id, value: @moderatable.id %>
-      <%= f.hidden_field :group, value: "experience_level" %>
-      <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">1</button>
-      <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">2</button>
-      <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">3</button>
-      <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">4</button>
-      <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">5</button>
-      <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 6.0 %>">6</button>
-      <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 7.0 %>">7</button>
-      <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 8.0 %>">8</button>
-      <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
-      <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
+    <% if @moderatable.last_buffered.blank? %>
+      <div class="tag-mod-form">
+        <%= form_for(BufferUpdate.new) do |f| %>
+          <h2>Suggest a Tweet</h2>
+          <%= f.hidden_field :article_id, value: @moderatable.id %>
+          <%= f.text_area :body_text, maxlength: 220 %>
+          <%= f.submit "Share Tweet Suggestion" %>
+        <% end %>
+        <p style="width: 90%;margin:50px auto;text-align:left">
+          <br /><br />Text will be used in the body of a tweet linking to this post.
+          <br /><br />Tweet suggestion can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post.
+        </p>
+      </div>
     <% end %>
-    <p style="width: 90%;margin:50px auto;text-align:left">
-      <b style="font-size:1.1em">All rating votes are private.</b>
-      <br><br>Provide a rating between 1 and 10 based on which audience would find this post most valuable.
-      <br><br>1: for brand new developers, 3: for junior developers, 10: for very advanced developers, etc.
-      <br><br>This will provide
-      <em>approximate and gentle</em> algorithmic adjustments to help deliver relevant content.
-      <br><br>It will be used as one of many indicators. No one rating will have an overly dramatic affect.
-    </p>
+    <div class="tag-mod-form">
+      <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
+      <%= form_for(RatingVote.new) do |f| %>
+        <h2>Experience Level of Post</h2>
+        <%= f.hidden_field :article_id, value: @moderatable.id %>
+        <%= f.hidden_field :group, value: "experience_level" %>
+        <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">1</button>
+        <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">2</button>
+        <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">3</button>
+        <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">4</button>
+        <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">5</button>
+        <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 6.0 %>">6</button>
+        <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 7.0 %>">7</button>
+        <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 8.0 %>">8</button>
+        <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
+        <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
+      <% end %>
+      <p style="width: 90%;margin:50px auto;text-align:left">
+        <b style="font-size:1.1em">All rating votes are private.</b>
+        <br><br>Provide a rating between 1 and 10 based on which audience would find this post most valuable.
+        <br><br>1: for brand new developers, 3: for junior developers, 10: for very advanced developers, etc.
+        <br><br>This will provide
+        <em>approximate and gentle</em> algorithmic adjustments to help deliver relevant content.
+        <br><br>It will be used as one of many indicators. No one rating will have an overly dramatic affect.
+      </p>
+    </div>
   <% end %>
 </div>
 

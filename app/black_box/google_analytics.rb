@@ -26,7 +26,7 @@ class GoogleAnalytics
   def get_feed_impression_info
     requests = @article_ids.map do |id|
       make_report_request("ga:eventAction==featured-feed-impression;ga:eventLabel==articles-#{id}",
-        "ga:totalEvents")
+                          "ga:totalEvents")
     end
     results = fetch_all_results(requests)
     @article_ids.zip(results).to_h
@@ -35,7 +35,7 @@ class GoogleAnalytics
   def get_feed_click_info
     requests = @article_ids.map do |id|
       make_report_request("ga:eventAction==featured-feed-click;ga:eventLabel==articles-#{id}",
-        "ga:totalEvents")
+                          "ga:totalEvents")
     end
     results = fetch_all_results(requests)
     @article_ids.zip(results).to_h

@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/Ruby-v2.6.1-green.svg" alt="ruby version"/>
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.1.6-brightgreen.svg" alt="rails version"/>
+    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version"/>
   </a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
     <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to"/>
@@ -54,7 +54,6 @@ Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
   - [Starting the application](#starting-the-application)
   - [Suggested Workflow](#suggested-workflow)
 - [Additional docs](#additional-docs)
-- [Product Roadmap](#product-roadmap)
 - [Core Team Members](#core-team)
 - [License](#license)
 
@@ -186,6 +185,12 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 1. run `docker-compose run web yarn install`
 1. run `docker-compose up`
 1. That's it! Navigate to `localhost:3000`
+
+### Gitpod Installation
+
+Simply open dev.to in Gitpod, a free online dev environment for GitHub:
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thepracticaldev/dev.to)
 
 #### Starting the application
 

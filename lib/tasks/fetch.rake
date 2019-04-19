@@ -28,10 +28,9 @@ task resave_supported_tags: :environment do
 end
 
 task renew_hired_articles: :environment do
-  Article.
-    tagged_with("hiring").
+  Article.published.tagged_with("hiring").
     where("featured_number < ?", 7.days.ago.to_i + 11.minutes.to_i).
-    where(approved: true, published: true, automatically_renew: true).
+    where(approved: true, automatically_renew: true).
     each do |article|
 
     if article.automatically_renew
@@ -52,7 +51,7 @@ task clear_memory_if_too_high: :environment do
 end
 
 task save_nil_hotness_scores: :environment do
-  Article.where(hotness_score: nil, published: true).find_each(&:save)
+  Article.published.where(hotness_score: nil).find_each(&:save)
 end
 
 task github_repo_fetch_all: :environment do

@@ -18,6 +18,7 @@
   .ltag__tag__content {
     a {
       color: $black !important;
+      color: var(--theme-container-color, $black) !important;
     }
     width: 90%;
     width: calc(100% - 36px);

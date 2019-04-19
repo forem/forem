@@ -10,6 +10,12 @@ RSpec.describe Follows::CreateChatChannelJob, type: :job do
 
     it "creates a chat channel when mutual followers" do
       follow2 = create(:follow, follower: user2, followable: user)
+
+      # Follow has an after_create callback that creates a channel between the two users,
+      # so to make sure this test is correct, we delete all channels right after
+      ChatChannelMembership.delete_all
+      ChatChannel.delete_all
+
       expect do
         described_class.perform_now(follow2.id)
       end.to change(ChatChannel, :count).by(1)

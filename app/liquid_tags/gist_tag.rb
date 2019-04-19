@@ -33,7 +33,7 @@ class GistTag < LiquidTagBase
       input_no_space
     else
       raise StandardError,
-        "Invalid Gist link: #{link} Links must follow this format: https://gist.github.com/username/gist_id"
+            "Invalid Gist link: #{link} Links must follow this format: https://gist.github.com/username/gist_id"
     end
   end
 

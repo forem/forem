@@ -1,12 +1,12 @@
 {
-  "name": "DEV Community",
+  "name": "<%= ApplicationConfig["COMMUNITY_NAME"] %> Community",
   "short_name": "dev.to",
   "description": "Where programmers share ideas, experiences, and help each other grow.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "homepage_url": "https://dev.to",
+  "homepage_url": "<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>",
   "icons": [{
     "src": "<%= image_path "devlogo-pwa-192.png" %>",
     "sizes": "192x192",

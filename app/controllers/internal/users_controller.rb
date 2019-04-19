@@ -27,7 +27,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = if params[:id] == "unmatched_mentee"
-              MentorRelationship.unmatched_mentees.order("RANDOM()").first
+              MentorRelationship.unmatched_mentees.order(Arel.sql("RANDOM()")).first
             else
               User.find(params[:id])
             end
@@ -117,16 +117,16 @@ class Internal::UsersController < Internal::ApplicationController
 
   def user_params
     params.require(:user).permit(:seeking_mentorship,
-                            :offering_mentorship,
-                            :quick_match,
-                            :new_note,
-                            :add_mentor,
-                            :add_mentee,
-                            :note_for_current_role,
-                            :mentorship_note,
-                            :user_status,
-                            :toggle_mentorship,
-                            :pro,
-                            :merge_user_id)
+                                 :offering_mentorship,
+                                 :quick_match,
+                                 :new_note,
+                                 :add_mentor,
+                                 :add_mentee,
+                                 :note_for_current_role,
+                                 :mentorship_note,
+                                 :user_status,
+                                 :toggle_mentorship,
+                                 :pro,
+                                 :merge_user_id)
   end
 end
