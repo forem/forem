@@ -11,3 +11,7 @@ You can view the previews at (for example) `http://localhost:3000/rails/mailers/
 1. Install gitdocs `npm install -g gitdocs@next`
 1. Serve it `gitdocs serve`
 1. Visit `http://localhost:8000`
+
+## Caching
+
+- [DEV Notes: Don't Forget To Clear Cache!](https://dev.to/jess/dev-notes-don-t-forget-to-clear-cache-962)
