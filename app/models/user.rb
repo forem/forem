@@ -10,6 +10,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  LANGUAGES = { "en" => "English", "ja" => "Japanese", "es" => "Spanish", "fr" => "French", "it" => "Italian", "pt" => "Portugese" }.freeze
+
   belongs_to  :organization, optional: true
   has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
