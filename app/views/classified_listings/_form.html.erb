@@ -1,0 +1,32 @@
+<%= form_with(model: classified_listing, local: true) do |form| %>
+  <% if classified_listing.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this classified_listing from being saved:</h2>
+
+      <ul>
+      <% classified_listing.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="field">
+    <%= form.label "title" %>
+    <%= form.text_field "title" %>
+  </div>
+  <div class="field">
+    <%= form.label "body_markdown" %>
+    <%= form.text_area "body_markdown" %>
+  </div>
+  <div class="field">
+    <%= form.label "category" %>
+    <%= form.select :category, options_for_select(["Courses", "SaaS", "Job Offering", "Looking for work"], "SaaS") %>
+  </div>
+  <div class="field">
+    <%= form.label "tag_list" %>
+    <%= form.text_field "tag_list" %>
+  </div>
+  <div class="actions">
+    <%= form.submit class: "cta" %>
+  </div>
+<% end %>

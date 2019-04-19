@@ -30,6 +30,8 @@ module ApplicationHelper
       notifications
       reading_list_items
       html_variants
+      classified_listings
+      credits
     ].include?(controller_name)
   end
 

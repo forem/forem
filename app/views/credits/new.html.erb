@@ -1,0 +1,69 @@
+<br/><br/><br/><br/>
+<center>
+<h1>Credits!</h1>
+<h4>1+ credit for $10/per credit</h4>
+<h4>50+ credits for $7.50/per credit</h4>
+<h4>500+ credits for $5/per credit</h4>
+
+<%= form_for(@credit) do |f| %>
+    <%= f.text_field :number_to_purchase, id: "amount-input", placeholder: "Number to purchase", autocomplete: "off" %>
+    <button id="add-credit-card-button" class="credit-card-button">Purchase</button>
+<% end %>
+</center>
+
+
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+<script defer>
+    var handler = StripeCheckout.configure({
+      key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+      image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
+      locale: 'auto',
+      token: function (token) {
+        var form = document.getElementById("new_credit")
+        addHidden(form, 'stripe_token', token.id);
+        form.submit();
+      }
+    });
+
+    document.getElementById('add-credit-card-button').addEventListener('click', function (e) {
+      // Open Checkout with further options:
+      handler.open({
+        description: 'Add Credit Card',
+        amount: getAmount(),
+        email: "<%= current_user.email %>",
+        panelLabel: "Add Card",
+        allowRememberMe: false,
+        zipCode: true,
+      });
+      e.preventDefault();
+    });
+
+    // Close Checkout on page navigation:
+    window.addEventListener('popstate', function () {
+      handler.close();
+    });
+
+  function addHidden(theForm, key, value) {
+    // Create a hidden input element, and append it to the form:
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key; // 'the key/name of the attribute/field that is sent to the server
+    input.value = value;
+    theForm.appendChild(input);
+  }
+
+  function getAmount() {
+    var value = document.getElementById('amount-input').value
+    var saleValue = 0;
+    if (value < 50) {
+      saleValue = value * 10 * 100
+    } else if (value < 500) {
+      saleValue = value * 7.50 * 100
+    } else {
+      saleValue = value * 5 * 100
+    }
+    return saleValue;
+  }
+
+</script>
