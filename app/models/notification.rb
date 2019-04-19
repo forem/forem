@@ -65,6 +65,17 @@ class Notification < ApplicationRecord
     def send_new_badge_achievement_notification(badge_achievement)
       Notifications::NewBadgeAchievementJob.perform_later(badge_achievement.id)
     end
+    # NOTE: this alias is temporary until the transition to ActiveJob is completed
+    # and all old DelayedJob jobs are processed by the queue workers.
+    # It can be removed after pre-existing jobs are done
+    alias send_new_badge_notification send_new_badge_achievement_notification
+
+    # NOTE: this method is temporary until the transition to ActiveJob is completed
+    # and all old DelayedJob jobs are processed by the queue workers.
+    # It can be removed after pre-existing jobs are done
+    def send_new_badge_notification_without_delay(badge_achievement)
+      Notifications::NewBadgeAchievementJob.perform_now(badge_achievement.id)
+    end
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
