@@ -392,6 +392,18 @@ RSpec.describe User, type: :model do
     end
 
     context "when estimating the default language" do
+      it "sets correct language_settings by default" do
+        user2 = create(:user, email: nil)
+        expect(user2.language_settings).to eq("preferred_languages" => %w[en])
+      end
+
+      it "sets correct language_settings by default after the callbacks" do
+        perform_enqueued_jobs do
+          user2 = create(:user, email: nil)
+          expect(user2.language_settings).to eq("preferred_languages" => %w[en])
+        end
+      end
+
       it "estimates default language to be nil" do
         perform_enqueued_jobs do
           user.estimate_default_language!
