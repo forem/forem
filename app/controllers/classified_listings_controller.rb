@@ -6,11 +6,14 @@ class ClassifiedListingsController < ApplicationController
   # GET /classified_listings.json
   def index
     @classified_listings = ClassifiedListing.order("created_at DESC")
+    @tags = []
+    @possible_tags = ["yoyo", "bobo", "fofo"]
     if params[:category]
       @classified_listings = @classified_listings.where(category: params[:category])
     end
-    if params[:tag]
-      @classified_listings = @classified_listings.tagged_with(params[:tag])
+    if params[:tags]
+      @tags = params[:tags].split(",")
+      @classified_listings = @classified_listings.tagged_with(@tags)
     end
     set_surrogate_key_header "classified-listings-#{params[:category]}-#{params[:tag]}"
   end
