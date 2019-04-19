@@ -185,27 +185,9 @@ class User < ApplicationRecord
     end
   end
 
-  # Via https://github.com/G5/storext
-  # store_attributes :language_settings do
-  #   estimated_default_language String
-  #   preferred_languages Array
-  #   # prefer_language_en Boolean, default: true
-  #   # prefer_language_ja Boolean, default: false
-  #   # prefer_language_es Boolean, default: false
-  #   # prefer_language_fr Boolean, default: false
-  #   # prefer_language_it Boolean, default: false
-  #   # prefer_language_pt Boolean, default: false
-  # end
-
   def estimated_default_language
     language_settings["estimated_default_language"]
   end
-
-  # %w[en ja es fr it pt].each do |lang|
-  #   define_method "prefer_language_#{lang}" do
-  #     language_settings["prefer_language_#{lang}"]
-  #   end
-  # end
 
   def self.trigger_delayed_index(record, remove)
     if remove
