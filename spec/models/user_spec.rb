@@ -423,6 +423,7 @@ RSpec.describe User, type: :model do
         perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
           new_user.estimate_default_language!
+          expect(user.reload.estimated_default_language).to eq(nil)
         end
       end
 
