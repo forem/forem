@@ -24,6 +24,7 @@ class UsersController < ApplicationController
     # raise permitted_attributes(@user).to_s
     if @user.update(permitted_attributes(@user))
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
+      Streams::TwitchWebhookRegistrationJob.perform_later(@user) if @user.twitch_user_name.present?
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
