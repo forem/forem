@@ -12,7 +12,13 @@ class TwitchStreamUpdatesController < ApplicationController
   end
 
   def create
-    Rails.logger.debug params
+    user = User.find(params[:user_id])
+
+    if params[:data].first.present?
+      user.update!(currently_streaming_on: :twitch)
+    else
+      user.update!(currently_streaming_on: nil)
+    end
 
     head :no_content
   end

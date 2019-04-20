@@ -50,6 +50,7 @@ class User < ApplicationRecord
 
   devise :omniauthable, :rememberable,
          :registerable, :database_authenticatable, :confirmable
+
   validates :email,
             length: { maximum: 50 },
             email: true,
@@ -130,6 +131,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
             length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
+  validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
@@ -398,6 +400,14 @@ class User < ApplicationRecord
 
   def tag_moderator?
     roles.where(name: "tag_moderator").any?
+  end
+
+  def currently_streaming?
+    currently_streaming_on.present?
+  end
+
+  def currently_streaming_on_twitch?
+    currently_streaming_on == "twitch"
   end
 
   private

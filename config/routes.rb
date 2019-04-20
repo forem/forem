@@ -108,7 +108,9 @@ Rails.application.routes.draw do
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy]
   resources :comment_mutes, only: %i[update]
-  resources :users, only: [:update]
+  resources :users, only: [:update] do
+    resource :twitch_stream_updates, only: %i[show create]
+  end
   resources :reactions, only: %i[index create]
   resources :feedback_messages, only: %i[index create]
   get "/reports/:slug", to: "feedback_messages#show"
@@ -141,7 +143,6 @@ Rails.application.routes.draw do
   resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
-  resource :twitch_stream_updates, only: %i[show create]
 
   get "/listings/:category" => "classified_listings#index"
   get "/notifications/:filter" => "notifications#index"
