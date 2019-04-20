@@ -1,28 +1,26 @@
 module Streams
   class TwitchWebhookRegistrationJob < ApplicationJob
-    def perform(twitch_user_login)
+    def perform(user)
+      return if user.twitch_user_name.blank?
+
       client = Streams::TwitchCredentials.generate_client
 
-      user_resp = client.get("users", login: twitch_user_login)
+      user_resp = client.get("users", login: user.twitch_user_name)
       twitch_user_id = user_resp.body["data"].first["id"]
 
       client.post(
         "webhooks/hub",
-        "hub.callback" => twitch_stream_updates_url,
+        "hub.callback" => twitch_stream_updates_url_for_user(user),
         "hub.mode" => "subscribe",
         "hub.lease_seconds" => 300,
         "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
       )
-
-      # revoke_token(temp_access_token)
-      # Docs say this should work for an app token but I keep getting a 400
-      # prob means we need to manage the tokens more statefully
     end
 
     private
 
-    def twitch_stream_updates_url
-      Rails.application.routes.url_helpers.twitch_stream_updates_url(host: ApplicationConfig["APP_DOMAIN"])
+    def twitch_stream_updates_url_for_user(user)
+      Rails.application.routes.url_helpers.user_twitch_stream_updates_url(user_id: user.id, host: ApplicationConfig["APP_DOMAIN"])
     end
   end
 end
