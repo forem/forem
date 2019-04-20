@@ -117,6 +117,7 @@ class UserPolicy < ApplicationPolicy
        summary
        text_color_hex
        twitch_url
+       twitch_user_name
        username
        website_url
        export_requested]

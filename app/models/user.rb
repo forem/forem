@@ -147,7 +147,7 @@ class User < ApplicationRecord
   before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -426,6 +426,10 @@ class User < ApplicationRecord
 
   def verify_email
     self.email = nil if email == ""
+  end
+
+  def verify_twitch_username
+    self.twitch_user_name = nil if twitch_user_name == ""
   end
 
   def set_username
