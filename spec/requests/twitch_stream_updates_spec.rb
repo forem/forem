@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "TwitchStramUpdates", type: :request do
-  let(:user) { create(:user, twitch_user_name: "my-twtich-username", currently_streaming_on: currently_streaming_on) }
+  let(:user) { create(:user, twitch_username: "my-twtich-username", currently_streaming_on: currently_streaming_on) }
   let(:currently_streaming_on) { nil }
 
   context "when the user was not streaming and starts streaming" do

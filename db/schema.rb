@@ -922,11 +922,8 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.string "text_color_hex"
     t.string "text_only_name"
     t.string "top_languages"
-<<<<<<< HEAD
     t.string "twitch_url"
-=======
-    t.text "twitch_user_name"
->>>>>>> Get User columns added and got webhook controller bones working
+    t.text "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"

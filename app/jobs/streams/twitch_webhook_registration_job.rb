@@ -1,11 +1,11 @@
 module Streams
   class TwitchWebhookRegistrationJob < ApplicationJob
     def perform(user)
-      return if user.twitch_user_name.blank?
+      return if user.twitch_username.blank?
 
       client = Streams::TwitchCredentials.generate_client
 
-      user_resp = client.get("users", login: user.twitch_user_name)
+      user_resp = client.get("users", login: user.twitch_username)
       twitch_user_id = user_resp.body["data"].first["id"]
 
       client.post(

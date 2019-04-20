@@ -429,7 +429,7 @@ class User < ApplicationRecord
   end
 
   def verify_twitch_username
-    self.twitch_user_name = nil if twitch_user_name == ""
+    self.twitch_username = nil if twitch_username == ""
   end
 
   def set_username
