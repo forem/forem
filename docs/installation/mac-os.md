@@ -45,6 +45,17 @@ For additional configuration, [click here](/additional-postgres-setup)
 
 **_Solution:_** Run the command `rbenv install <version number>`
 
+**Error:** `ruby-build: definition not found: <version number>` when `rbenv` was installed via `brew`.
+
+```bash
+ruby-build: definition not found: <version number>
+
+See all available versions with `rbenv install --list'.                       If the version you need is missing, try upgrading ruby-build:
+```
+
+**_Solution:_**
+Run the following to update `ruby-build`, `brew update && brew upgrade ruby-build`. After that, rerun `rbenv install <version number>` and that version will get installed.
+
 **Error:**
 
 ```bash
