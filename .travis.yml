@@ -18,6 +18,7 @@ before_install:
   - echo $HEROKU_AUTH_TOKEN
   - nvm install
 install:
+  - echo $HEROKU_AUTH_TOKEN
   - bundle install --path vendor/bundle
   - bundle exec rails runner bin/chromedriver-update
   - yarn install
@@ -27,6 +28,7 @@ install:
 before_script:
   - bundle exec rails db:create
 script:
+  - echo $HEROKU_AUTH_TOKEN
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
