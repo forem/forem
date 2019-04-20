@@ -811,7 +811,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
-    t.text "currently_streaming_on"
+    t.string "currently_streaming_on"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -923,7 +923,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.string "text_only_name"
     t.string "top_languages"
     t.string "twitch_url"
-    t.text "twitch_username"
+    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"
