@@ -3,37 +3,75 @@
     <div class="classified-filters">
       <div class="classified-filters-categories">
         <code>/listings/</code>
-        <a href="/listings" class="<%= 'selected' if params[:category].blank? %>">All</a>
-        <a href="/listings/courses" class="<%= 'selected' if params[:category] == 'courses' %>">Courses</a>
-        <a href="/listings/jobs" class="<%= 'selected' if params[:category] == 'jobs' %>">Jobs</a>
-        <a href="/listings/for-hire" class="<%= 'selected' if params[:category] == 'for-hire' %>">For Hire</a>
-        <a href="/listings/consulting" class="<%= 'selected' if params[:category] == 'consulting' %>">Consulting</a>
-        <a href="/listings/saas" class="<%= 'selected' if params[:category] == 'saas' %>">SaaS</a>
-        <a href="/listings/new" class="cta">POST A LISTING</a>
+        <a href="/listings<%= "?tags=#{params[:tags]}" if params[:tags] %>" class="<%= 'selected' if params[:category].blank? %>">All</a>
+        <% @possible_categories.each do |category| %>
+          <a href="/listings/<%= category %><%= "?tags=#{params[:tags]}" if params[:tags] %>" class="<%= 'selected' if params[:category] == category %>"><%= category %></a>
+        <% end %>
       </div>
       <div class="classified-filters-tags">
         <% @tags.each do |tag| %>
-          <a href="/listings?tags=<%= (@tags << tag).uniq.join(",") %>"><%= tag %></a><a href="/listings?tags=<%= (@tags - [tag]).uniq.join(",") %>">x</a>
+          <span class="classified-tag">
+            <a href="/listings?tags=<%= (@tags + [tag]).uniq.join(",") %>" class="tag-name"><%= tag %></a><a href="/listings?tags=<%= (@tags - [tag]).uniq.join(",") %>" class="tag-close">×</a>
+          </span>
         <% end %>
         <% if @tags.size > 1 %>
-        <a href="/listings">Clear All</a>
+        <span class="classified-tag clear-all">
+          <a href="/listings">clear all</a>
+        </span>
         <% end %>
         </div>
     </div>
     <div class="classifieds-columns">
       <% @classified_listings.each do |listing| %>
         <div class="single-classified-listing">
-        <h3><%= listing.title %></h3>
-        <div class="single-classified-listing-body">
-          <%= listing.processed_html.html_safe %>
-        </div>
-        <div class="single-classified-listing-tags">
-          <% listing.cached_tag_list.to_s.split(", ").each do |tag| %>
-            <a href="/listings/<%= listing.category %>?tags=<%= (@tags << tag).uniq.join(",") %>"><%= tag %></a>
-          <% end %>
-        </div>
+          <div class="listing-content">
+            <h3><%= listing.title %></h3>
+            <div class="single-classified-listing-body">
+              <%= listing.processed_html.html_safe %>
+            </div>
+            <div class="single-classified-listing-tags">
+              <% listing.cached_tag_list.to_s.split(", ").each do |tag| %>
+                <a href="/listings<%= "/#{listing.category}" if params[:category] %>?tags=<%= (@tags + [tag]).uniq.join(",") %>"><%= tag %></a>
+              <% end %>
+            </div>
+          </div>
         </div>
       <% end %>
     </div>
   </div>
 </div>
+<script>
+function resizeMasonryItem(item){
+  /* Get the grid object, its row-gap, and the size of its implicit rows */
+  var grid = document.getElementsByClassName('classifieds-columns')[0],
+      rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap')),
+      rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
+
+  /*
+   * Spanning for any brick = S
+   * Grid's row-gap = G
+   * Size of grid's implicitly create row-track = R
+   * Height of item content = H
+   * Net height of the item = H1 = H + G
+   * Net height of the implicit row-track = T = G + R
+   * S = H1 / T
+   */
+  var rowSpan = Math.ceil((item.querySelector('.listing-content').getBoundingClientRect().height+rowGap)/(rowHeight+rowGap));
+
+  /* Set the spanning as calculated above (S) */
+  item.style.gridRowEnd = 'span '+rowSpan;
+}
+function resizeAllMasonryItems(){
+  // Get all item class objects in one list
+  var allItems = document.getElementsByClassName('single-classified-listing');
+
+  /*
+   * Loop through the above list and execute the spanning function to
+   * each list-item (i.e. each masonry item)
+   */
+  for(var i=0;i<allItems.length;i++){
+    resizeMasonryItem(allItems[i]);
+  }
+}
+resizeAllMasonryItems();
+</script>

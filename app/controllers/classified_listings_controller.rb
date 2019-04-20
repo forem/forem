@@ -5,13 +5,14 @@ class ClassifiedListingsController < ApplicationController
   # GET /classified_listings
   # GET /classified_listings.json
   def index
-    @classified_listings = ClassifiedListing.order("created_at DESC")
+    @classified_listings = ClassifiedListing.order("bumped_at DESC")
     @tags = []
     @possible_tags = ["yoyo", "bobo", "fofo"]
+    @possible_categories = ["courses", "saas", "cfp", "whatever"]
     if params[:category]
       @classified_listings = @classified_listings.where(category: params[:category])
     end
-    if params[:tags]
+    if params[:tags].present?
       @tags = params[:tags].split(",")
       @classified_listings = @classified_listings.tagged_with(@tags)
     end
@@ -41,6 +42,7 @@ class ClassifiedListingsController < ApplicationController
     number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
     available_credits = current_user.credits.where(spent: false)
     if available_credits.size >= number_of_credits_needed
+      @classified_listing.bumped_at = Time.current
       @classified_listing.save!
       available_credits.limit(number_of_credits_needed).update_all(spent: true)
       CacheBuster.new.bust("/listings")

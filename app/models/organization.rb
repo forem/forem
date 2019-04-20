@@ -10,6 +10,7 @@ class Organization < ApplicationRecord
   has_many :collections
   has_many :display_ads
   has_many :notifications
+  has_many :credits
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,

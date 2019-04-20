@@ -1,6 +1,10 @@
-<br/><br/><br/><br/><br/><br/><br/><br/>
-<center>
-<h1>You have <%= @credits.size %> unspent</h1>
-
-<h2><a href="/credits/new" data-no-instant>Purchase additional credits</h2>
-</center>
+<div class="credits-container">
+  <div class="existing-credits">
+    <div class="existing-credits-status">You have <%= @credits.size %> credits to spend</div>
+    <a href="/credits/new" data-no-instant>Purchase additional credits</a>
+  </div>
+  <div class="existing-credits">
+    <div class="existing-credits-status"><%= current_user.organization.name %> has <%= @org_credits.size %> credits to spend</div>
+    <a href="/credits/new?purchaser=organization" data-no-instant>Purchase additional credits</a>
+  </div>
+</div>

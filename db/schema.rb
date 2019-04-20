@@ -239,6 +239,8 @@ ActiveRecord::Schema.define(version: 2019_04_17_171019) do
     t.bigint "organization_id"
     t.text "processed_html"
     t.string "title"
+    t.string "bumped_at"
+    t.boolean "contact_via_connect", default: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
   end

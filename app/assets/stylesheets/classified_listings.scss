@@ -1,13 +1,14 @@
 @import 'variables';
 
 .classifieds-container {
-  margin-top: 80px;
+  margin: 80px auto;
+  text-align: left;
+  max-width: 96%;
   @media screen and (min-width: 950px) {
-    margin-top: 50px;
+    margin: 50px auto;
   }
-  text-align: center;
   .classified-filters {
-    padding: 20px 0px;
+    padding: 20px 0px 10px;
     a {
       padding: 2px 16px;
       border-radius: 3px;
@@ -20,18 +21,44 @@
         font-size: 0.85em;
       }
     }
+    .classified-filters-tags {
+      padding: 20px 0px;
+      .classified-tag {
+        font-size: 0.8em;
+        color: $black;
+        border-radius: 100px;
+        display: inline-block;
+        background: $dark-gray;
+        &.clear-all {
+          background: $light-medium-gray;
+          a { color: $black }
+        }
+        a {
+          color: white;
+          padding: 3px 13px;
+          display: inline-block;
+          &.tag-name {
+            padding-right: 0px;
+          }
+        }
+      }
+    }
   }
   .classifieds-columns {
-    column-width: 310px;
-    column-gap: 10px;  
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+    grid-auto-rows: 0;
     .single-classified-listing {
       width: 100%;
       display: inline-block;
       border: 1px solid $light-medium-gray;
-      margin: 10px auto;
-      text-align: left;
+      margin: 0px auto;
       box-sizing: border-box;
       border-radius: 3px;
+      overflow: hidden;
+      text-overflow: ellipsis;   
+      font-size: 0.9em; 
       column-break-inside: avoid;
       h3 {
         margin: 0px;

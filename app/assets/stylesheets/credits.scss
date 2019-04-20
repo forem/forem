@@ -1,0 +1,162 @@
+@import 'variables';
+.credits-container {
+  margin: 100px auto;
+  .credits-banner {
+    background: $dark-purple;
+    padding: 60px;
+    margin-top: 60px;
+  }
+
+  form#new_credit {
+    width: 500px;
+    max-width: 96%;
+    margin: 40px auto;
+    overflow: hidden;
+  }
+
+  .StripeElement, input[type="number"], button, .existing-card {
+    box-sizing: border-box;
+
+    height: 40px;
+
+    padding: 10px 12px;
+
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: white;
+
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+    margin-bottom: 20px;
+  }
+
+  .StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+  }
+
+  .StripeElement--invalid {
+    border-color: #fa755a;
+  }
+
+  .StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 20px auto;
+    font-size: 2.5em;
+    border-radius: 3px;
+    padding: 30px 0px;
+    color: white;
+  }
+
+  .credit-price {
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    border-radius: 3px;
+    width: 80%;
+    margin: 10px auto;
+    padding: 30px 0px;
+    border: 1px solid $light-gray;
+    font-weight: bold;
+    display: inline-block;
+    font-size: 15px;
+    cursor: pointer;
+    .credit-amount {
+      font-size: 33px;
+      color: $dark-purple;
+      margin-bottom: 15px;
+    }
+    @media screen and ( min-width:950px ){
+      width: 290px;
+    }
+  }
+
+  input[type="number"] {
+    width: calc(100% - 160px);
+    font-size: 18px;
+    display: inline-block;
+  }
+
+  #calculated-price {
+    width: 140px;
+    padding-left: 10px;
+    color: $green;
+    font-size: 13px;
+    display: inline-block;
+  }
+
+  input[type="radio"] {
+    vertical-align: 2px;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  button {
+    width: 100%;
+    background: blue;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  button#add-new-card {
+    background: white;
+    color: black;
+  }
+
+  .existing-card {
+    margin-bottom: 5px;
+    font-size: 0.7em;
+    padding: 0px;
+    padding-left: 10px;
+    label {
+      cursor: pointer;
+      display: inline-block;
+      width: calc(100% - 50px);
+      padding: 10px 0px;
+    }
+    .credit-card-component {
+      background: $lightest-gray;
+      border-radius: 3px;
+      margin: 0px 5px;
+      display: inline-block;
+      font-weight: bold;
+      &.credit-card-component--bold {
+        background: $light-gray
+      }
+    }
+  }
+
+  label.main-form-label {
+    margin-bottom: 4px;
+    background: #e0ecff;
+    border-radius: 3px;
+    padding: 2px 8px;
+    display: inline-block;
+    font-size: 0.7em;
+    font-weight: bold;
+  }
+
+  .existing-credits {
+    background: $dark-purple;
+    color: white;
+    width: 600px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 3px;
+    text-align: center;
+    .existing-credits-status {
+      font-size: 1.8em;
+      font-weight: bold;
+      padding: 30px 0px 50px;
+    }
+    a {
+      color: white;
+      border: 3px solid white;
+      padding: 10px 30px;
+      border-radius: 100px;
+      font-weight: bold;
+    }
+  }
+}
