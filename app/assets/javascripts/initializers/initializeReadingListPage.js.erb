@@ -115,7 +115,7 @@ function getComments(){
       }
       resultDivs.push(aboveDiv+buildCommentHTML(comment));
     });
-    substoriesDiv.innerHTML = `<div class="comment-trees" id="comments-container" data-commentable-id=${user.reading_list_ids} data-commentable-type="Article"><h2>Recent Comment Activity</h2>`+resultDivs.join("<br/>")+'</div>';
+    substoriesDiv.innerHTML = `<div class="comments-container" id="comments-container" data-commentable-id=${user.reading_list_ids} data-commentable-type="Article"><div class="comment-trees"><h2>Recent Comment Activity</h2>`+resultDivs.join("<br/>")+'</div></div>';
     initializeCommentDate();
     initializeCommentDropdown();
     initializeCommentsPage();
