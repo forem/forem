@@ -68,6 +68,16 @@
       }
       .single-classified-listing-body {
         padding: 10px 15px;
+        .classified-listing-contact-cta {
+          border: 2px solid $black;
+          color: $black;
+          padding: 8px 10px;
+          text-align: center;
+          display: block;
+          border-radius: 200px;
+          margin: 4px auto;
+          width: 80%;
+        }
       }
       .single-classified-listing-tags {
         padding: 10px 15px;

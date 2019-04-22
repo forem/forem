@@ -1,184 +1,188 @@
-<div class="credits-banner">
-  <h1>Purchase credits for @<%= @purchaser.username %></h1>
-</div>
-<script src="https://js.stripe.com/v3/"></script>
-<div style="margin-top: 30px; text-align: center">
-<div class="credit-price" data-num="1">
-  <div class="credit-amount" data-num="1">1+ credit</div>
-  $10/per credit
-</div>
-<div class="credit-price" data-num="50">
-  <div class="credit-amount" data-num="50">50+ credits</div>
-  $7.50/per credit</div>
-<div class="credit-price" data-num="500">
-  <div class="credit-amount" data-num="500">
-    500+ credits
+<div class="credits-container">
+  <div class="credits-banner">
+    <h1>Purchase credits for @<%= @purchaser.username %></h1>
   </div>
-  $5/per credit</div>
-</div>
-<%= form_for(@credit) do |f| %>
-    <label for="amount-input" class="main-form-label">
-      Amount to Purchase
-    </label>
-    <div class="amount-wrapper">
-      <%= f.number_field :number_to_purchase, id: "amount-input", placeholder: "How many credits would you like?", autocomplete: "off", min: "0", max: "10000000" %>
-      <div id="calculated-price"></div>
+  <script src="https://js.stripe.com/v3/"></script>
+  <div style="margin-top: 30px; text-align: center">
+  <div class="credit-price" data-num="1">
+    <div class="credit-amount" data-num="1">1+ credit</div>
+    $10/per credit
+  </div>
+  <div class="credit-price" data-num="50">
+    <div class="credit-amount" data-num="50">50+ credits</div>
+    $7.50/per credit</div>
+  <div class="credit-price" data-num="500">
+    <div class="credit-amount" data-num="500">
+      500+ credits
     </div>
-    <% if params[:purchaser] == "organization" %>
-      <div>
-      <input type="hidden" name="user_type" value="organization">
-      </div>
-    <% end %>
-    <div class="form-row">
-    <label for="card-element" class="main-form-label">
-      Payment Method
-    </label>
-    <% if @customer %>
-      <div id="cards-wrapper">
-        <% @customer.sources.each do |source| %>
-          <div class="existing-card">
-          <input type="radio" <%= "checked" if source.id == @customer.default_source %>
-            name="selected_card" value="<%= source.id %>" id="existing-card-<%= source.id %>" />
-          <label for="existing-card-<%= source.id %>">
-            <span class="credit-card-component credit-card-component--bold"><%= source.brand %></span>
-            <span class="credit-card-component">**** **** **** <%= source.last4 %></span>
-            <span class="credit-card-component"><%= source.exp_month %>/<%= source.exp_year.to_s.last(2) %></span>
-          </label>
-          </div>
-        <% end %>
-        <button id="add-new-card">Add New Card</button>
-      </div>
-    <% else %>
-      <div id="card-element">
-        <!-- A Stripe Element will be inserted here. -->
-      </div>
-    <% end %>
-    <!-- Used to display form errors. -->
-    <div id="card-errors" role="alert"></div>
+    $5/per credit</div>
   </div>
+  <%= form_for(@credit) do |f| %>
+      <label for="amount-input" class="main-form-label">
+        Amount to Purchase
+      </label>
+      <div class="amount-wrapper">
+        <%= f.number_field :number_to_purchase, id: "amount-input", placeholder: "How many credits would you like?", autocomplete: "off", min: "0", max: "10000000" %>
+        <div id="calculated-price"></div>
+      </div>
+      <% if params[:purchaser] == "organization" %>
+        <div>
+        <input type="hidden" name="user_type" value="organization">
+        </div>
+      <% end %>
+      <div class="form-row">
+      <label for="card-element" class="main-form-label">
+        Payment Method
+      </label>
+      <% if @customer %>
+        <div id="cards-wrapper">
+          <% @customer.sources.each do |source| %>
+            <div class="existing-card">
+            <input type="radio" <%= "checked" if source.id == @customer.default_source %>
+              name="selected_card" value="<%= source.id %>" id="existing-card-<%= source.id %>" />
+            <label for="existing-card-<%= source.id %>">
+              <span class="credit-card-component credit-card-component--bold"><%= source.brand %></span>
+              <span class="credit-card-component">**** **** **** <%= source.last4 %></span>
+              <span class="credit-card-component"><%= source.exp_month %>/<%= source.exp_year.to_s.last(2) %></span>
+            </label>
+            </div>
+          <% end %>
+          <button id="add-new-card">Add New Card</button>
+        </div>
+      <% else %>
+        <div id="card-element">
+          <!-- A Stripe Element will be inserted here. -->
+        </div>
+      <% end %>
+      <!-- Used to display form errors. -->
+      <div id="card-errors" role="alert"></div>
+    </div>
 
-  <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
-<% end %>
+    <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
+  <% end %>
+</div>
+  <script>
 
-<script>
+    var stripe = Stripe('<%= ApplicationConfig["STRIPE_PUBLISHABLE_KEY"] %>');
+    var elements = stripe.elements();
 
-  var stripe = Stripe(<%= ApplicationConfig["STRIPE_PUBLISHABLE_KEY"] %>);
-  var elements = stripe.elements();
-
-  var style = {
-  base: {
-    color: '#32325d',
-    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-    fontSmoothing: 'antialiased',
-    fontSize: '16px',
-    '::placeholder': {
-      color: '#aab7c4'
+    var style = {
+    base: {
+      color: '#32325d',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: '#aab7c4'
+      }
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a'
     }
-  },
-  invalid: {
-    color: '#fa755a',
-    iconColor: '#fa755a'
-  }
-};
+  };
 
-  var card = elements.create('card', {style: style});
+    var card = elements.create('card', {style: style});
 
 
-  createCardElement();
-  handleNewCardClick();
-  handleCreditPriceClick();
-  listenForNumberChange();
-  function createCardElement() {
-    if (document.getElementById("card-element")) {
-      card.mount('#card-element');
+    createCardElement();
+    handleNewCardClick();
+    handleCreditPriceClick();
+    listenForNumberChange();
+    function createCardElement() {
+      if (document.getElementById("card-element")) {
+        card.mount('#card-element');
 
-      card.addEventListener('change', function(event) {
-        var displayError = document.getElementById('card-errors');
-        if (event.error) {
-          displayError.textContent = event.error.message;
-        } else {
-          displayError.textContent = '';
-        }
-      });
-      var form = document.getElementById('new_credit');
-      form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        stripe.createToken(card).then(function(result) {
-          if (result.error) {
-            // Inform the user if there was an error.
-            var errorElement = document.getElementById('card-errors');
-            errorElement.textContent = result.error.message;
+        card.addEventListener('change', function(event) {
+          var displayError = document.getElementById('card-errors');
+          if (event.error) {
+            displayError.textContent = event.error.message;
           } else {
-            // Send the token to your server.
-            stripeTokenHandler(result.token);
+            displayError.textContent = '';
           }
         });
+        var form = document.getElementById('new_credit');
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          stripe.createToken(card).then(function(result) {
+            if (result.error) {
+              // Inform the user if there was an error.
+              var errorElement = document.getElementById('card-errors');
+              errorElement.textContent = result.error.message;
+            } else {
+              // Send the token to your server.
+              stripeTokenHandler(result.token);
+            }
+          });
+        });
+      }
+    }
+
+    function handleNewCardClick() {
+      if (!document.getElementById('add-new-card')) {
+        return
+      }
+      document.getElementById("add-new-card").onclick = function(e) {
+        e.preventDefault();
+        document.getElementById("cards-wrapper").innerHTML = '<div id="card-element"></div>';
+        createCardElement();
+      }
+    }
+
+    // Handle form submission.
+
+    // Submit the form with the token ID.
+    function stripeTokenHandler(token) {
+      // Insert the token ID into the form so it gets submitted to the server
+      var form = document.getElementById('new_credit');
+      var hiddenInput = document.createElement('input');
+      hiddenInput.setAttribute('type', 'hidden');
+      hiddenInput.setAttribute('name', 'stripe_token');
+      hiddenInput.setAttribute('value', token.id);
+      form.appendChild(hiddenInput);
+
+      // Submit the form
+      form.submit();
+    }
+
+    function getAmount(multiple) {
+      var value = document.getElementById('amount-input').value
+      var pricePer = 0;
+      var saleValue = 0;
+      if (value < 50) {
+        pricePer = 10;
+      } else if (value < 500) {
+        pricePer = 7.50
+      } else {
+        pricePer = 5;
+      }
+      saleValue = value * pricePer * multiple
+      return {value: saleValue, pricePer: pricePer };
+    }
+    
+    function handleCreditPriceClick() {
+      var els = document.getElementsByClassName('credit-price')
+      for(i = 0; i < els.length; i++) {
+        els[i].onclick = function(e) {
+          document.getElementById("amount-input").value = e.target.dataset.num;
+          calculatePriceAndShow();
+        }
+      }
+    }
+    function listenForNumberChange() {
+      document.getElementById("amount-input").addEventListener("keydown",function (e) {
+        if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode != 8) {
+          e.preventDefault();
+        }
+        calculatePriceAndShow();
       });
     }
-  }
 
-  function handleNewCardClick() {
-    document.getElementById("add-new-card").onclick = function(e) {
-      e.preventDefault();
-      document.getElementById("cards-wrapper").innerHTML = '<div id="card-element"></div>';
-      createCardElement();
+    function calculatePriceAndShow() {
+      setTimeout(function(){
+        document.getElementById("calculated-price").innerHTML = '$'+getAmount(1.0)['value'] + ' ($'+getAmount(1.0)['pricePer']+'/each)';
+      }, 100)
     }
-  }
 
-  // Handle form submission.
-
-  // Submit the form with the token ID.
-  function stripeTokenHandler(token) {
-    // Insert the token ID into the form so it gets submitted to the server
-    var form = document.getElementById('new_credit');
-    var hiddenInput = document.createElement('input');
-    hiddenInput.setAttribute('type', 'hidden');
-    hiddenInput.setAttribute('name', 'stripe_token');
-    hiddenInput.setAttribute('value', token.id);
-    form.appendChild(hiddenInput);
-
-    // Submit the form
-    form.submit();
-  }
-
-  function getAmount(multiple) {
-    var value = document.getElementById('amount-input').value
-    var pricePer = 0;
-    var saleValue = 0;
-    if (value < 50) {
-      pricePer = 10;
-    } else if (value < 500) {
-      pricePer = 7.50
-    } else {
-      pricePer = 5;
-    }
-    saleValue = value * pricePer * multiple
-    return {value: saleValue, pricePer: pricePer };
-  }
-  
-  function handleCreditPriceClick() {
-    var els = document.getElementsByClassName('credit-price')
-    for(i = 0; i < els.length; i++) {
-      els[i].onclick = function(e) {
-        document.getElementById("amount-input").value = e.target.dataset.num;
-        calculatePriceAndShow();
-      }
-    }
-  }
-  function listenForNumberChange() {
-    document.getElementById("amount-input").addEventListener("keydown",function (e) {
-      if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode != 8) {
-        e.preventDefault();
-      }
-      calculatePriceAndShow();
-    });
-  }
-
-  function calculatePriceAndShow() {
-    setTimeout(function(){
-      document.getElementById("calculated-price").innerHTML = '$'+getAmount(1.0)['value'] + ' ($'+getAmount(1.0)['pricePer']+'/each)';
-    }, 100)
-  }
-
-</script>
+  </script>

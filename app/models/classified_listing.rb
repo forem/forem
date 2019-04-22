@@ -2,6 +2,9 @@ class ClassifiedListing < ApplicationRecord
 
   CATEGORIES = %w[courses saas cfp upcomingevents contributorswanted joblistings lookingforwork].freeze
 
+  belongs_to :user, optional: true
+  belongs_to :organization, optional: true
+
   before_save :evaluate_markdown
   before_validation :modify_inputs
   acts_as_taggable_on :tags

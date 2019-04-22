@@ -54,7 +54,7 @@ gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.27" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "inline_svg", "~> 1.3" # Embed SVG documents in your Rails views and style them with CSS
+gem "inline_svg", "~> 1.4" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.8" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
@@ -93,7 +93,7 @@ gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 2.2" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.8" # Ruby library for the Stripe API
+gem "stripe", "~> 4.14" # Ruby library for the Stripe API
 gem "timber", "~> 2.6" # Great Ruby logging made easy
 gem "twilio-ruby", "~> 5.22" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API

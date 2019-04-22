@@ -26,7 +26,12 @@
     <%= form.label "tag_list" %>
     <%= form.text_field "tag_list" %>
   </div>
+  <div class="field">
+    <%= form.label "contact_via_connect" %>
+    <%= form.check_box "contact_via_connect" %>
+  </div>
   <div class="actions">
     <%= form.submit class: "cta" %>
   </div>
+  <h2>You have <%= @credits.size %> credits to spend — <a href="/credits/new" data-no-instant>Buy More</a></h2>
 <% end %>

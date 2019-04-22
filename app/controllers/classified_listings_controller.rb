@@ -51,8 +51,7 @@ class ClassifiedListingsController < ApplicationController
       CacheBuster.new.bust("/listings/#{@classified_listing.category}?i=i")
       redirect_to "/listings"
     else
-      raise "Not enough credits"
-      render :new
+      render :new, notice: "You do not have enough credits"
     end
   end
 
@@ -88,7 +87,7 @@ class ClassifiedListingsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def classified_listing_params
-      accessible = %i[title body_markdown category tag_list]
+      accessible = %i[title body_markdown category tag_list contact_via_connect]
       params.require(:classified_listing).permit(accessible)
     end
 end
