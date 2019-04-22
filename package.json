@@ -70,7 +70,7 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-ignore-erb": "^0.1.1",
-    "eslint-plugin-import": "^2.17.1",
+    "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "faker": "^4.1.0",
