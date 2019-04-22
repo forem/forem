@@ -622,18 +622,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "#can_view_analytics?" do
-    it "returns true for users with :super_admin role" do
-      user.add_role(:super_admin)
-      expect(user.can_view_analytics?).to be true
-    end
-
-    it "returns true for users with :analytics_beta_tester role" do
-      user.add_role(:analytics_beta_tester)
-      expect(user.can_view_analytics?).to be true
-    end
-  end
-
   describe "#destroy" do
     it "successfully destroys a user" do
       user.destroy

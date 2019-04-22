@@ -491,6 +491,16 @@ ActiveRecord::Schema.define(version: 2019_04_17_171019) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "organization_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "organization_id", null: false
+    t.string "type_of_user", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "user_title"
+    t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
+  end
+
   create_table "organizations", id: :serial, force: :cascade do |t|
     t.string "address"
     t.boolean "approved", default: false
