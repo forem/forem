@@ -8977,10 +8977,10 @@ postcss@^7.0.2:
     source-map "^0.6.1"
     supports-color "^5.5.0"
 
-preact-compat@^3.18.4:
-  version "3.18.4"
-  resolved "https://registry.yarnpkg.com/preact-compat/-/preact-compat-3.18.4.tgz#fbe76ddd30356c68e3ccde608107104946f2cf8d"
-  integrity sha512-aR5CvCIDerE2Y201ERVkWQdTAQKhKGNYujEk4tbyfQDInFTrnCCa3KCeGtULZrwy0PNRBjdQa2/Za7qv7ALNFg==
+preact-compat@^3.18.5:
+  version "3.18.5"
+  resolved "https://registry.yarnpkg.com/preact-compat/-/preact-compat-3.18.5.tgz#45b801de75e3016bebe8cd446f51f60d2b948bb9"
+  integrity sha512-F174NW6PI5GU+T28B0ZHblhxMsFaPVaSBiaE++xrxdDVunsO0mARYfOSZizTdb/PFLqXDzcQ1IWdnEt/vIiUvw==
   dependencies:
     immutability-helper "^2.7.1"
     preact-render-to-string "^3.8.2"
