@@ -112,25 +112,12 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_mention_notification
 
     def send_welcome_notification(receiver_id)
-      welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
-      return if welcome_broadcast.nil?
-
-      dev_account = User.dev_account
-      json_data = {
-        user: user_data(dev_account),
-        broadcast: {
-          processed_html: welcome_broadcast.processed_html
-        }
-      }
-      Notification.create(
-        user_id: receiver_id,
-        notifiable_id: welcome_broadcast.id,
-        notifiable_type: "Broadcast",
-        action: welcome_broadcast.type_of,
-        json_data: json_data,
-      )
+      Notifications::WelcomeNotificationJob.perform_later(receiver_id)
     end
-    handle_asynchronously :send_welcome_notification
+
+    def send_welcome_notification_without_delay(receiver_id)
+      Notifications::WelcomeNotificationJob.perform_now(receiver_id)
+    end
 
     def send_moderation_notification(notifiable)
       # notifiable is currently only comment
