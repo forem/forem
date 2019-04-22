@@ -323,10 +323,6 @@ class User < ApplicationRecord
     has_role?(:workshop_pass) && valid_pass
   end
 
-  def analytics
-    has_role? :analytics_beta_tester
-  end
-
   def comment_banned
     has_role? :comment_banned
   end
@@ -353,10 +349,6 @@ class User < ApplicationRecord
     MailchimpBot.new(self).upsert
   end
   handle_asynchronously :subscribe_to_mailchimp_newsletter
-
-  def can_view_analytics?
-    has_any_role?(:super_admin, :analytics_beta_tester)
-  end
 
   def a_sustaining_member?
     monthly_dues.positive?
