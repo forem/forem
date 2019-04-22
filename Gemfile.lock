@@ -312,10 +312,6 @@ GEM
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
-    fake_stripe (0.2.0)
-      capybara
-      sinatra
-      webmock
     faker (1.9.3)
       i18n (>= 0.7)
     faraday (0.15.4)
@@ -1002,7 +998,6 @@ DEPENDENCIES
   envied (~> 0.9)
   erb_lint (~> 0.0)
   factory_bot_rails (~> 4.11)
-  fake_stripe (~> 0.2)
   faker (~> 1.9)
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
