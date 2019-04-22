@@ -1,7 +1,7 @@
 module SocialImageHelper
   # After this date we use SocialPreview controller directly rather than passing to URL2PNG.
   # Keeping old URLs around since they are already generated.
-  SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-03-24T00:00:00Z")
+  SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
 
   def user_social_image_url(user)
     return GeneratedImage.new(user).social_image unless use_new_social_url?(user)
@@ -39,14 +39,14 @@ module SocialImageHelper
       return src if src.start_with? "https://res.cloudinary.com/"
 
       cl_image_path(src,
-        type: "fetch",
-        width: "1000",
-        height: "500",
-        crop: "imagga_scale",
-        quality: "auto",
-        flags: "progressive",
-        fetch_format: "auto",
-        sign_url: true)
+                    type: "fetch",
+                    width: "1000",
+                    height: "500",
+                    crop: "imagga_scale",
+                    quality: "auto",
+                    flags: "progressive",
+                    fetch_format: "auto",
+                    sign_url: true)
     end
   end
 
