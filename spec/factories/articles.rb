@@ -13,7 +13,7 @@ FactoryBot.define do
       with_tweet_tag { false }
       with_title { true }
     end
-    user
+    association :user, factory: :user, strategy: :create
     description   { Faker::Hipster.paragraph(1)[0..100] }
     main_image    { Faker::Avatar.image }
     language { "en" }
