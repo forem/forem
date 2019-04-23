@@ -16,8 +16,8 @@
         <img src="/assets/github-logo.svg" class="icon-img" alt="github"/>
       </a>
     <% end %>
-    <div class="comment-date">
-      <a href="<%= comment.path %>" data-published-timestamp="<%= comment.decorate.published_timestamp %>" ><%= comment.readable_publish_date %></a>
+    <div class="comment-date" data-published-timestamp="<%= comment.decorate.published_timestamp %>">
+      <a href="<%= comment.path %>"><%= comment.readable_publish_date %></a>
     </div>
   </div>
   <div class="body">
