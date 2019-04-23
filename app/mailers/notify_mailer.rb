@@ -61,22 +61,11 @@ class NotifyMailer < ApplicationMailer
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
-  def new_report_email(report)
-    @feedback_message = report
-    @user = report.reporter
-    mail(to: @user.email, subject: "Thank you for your report")
-  end
-
-  def new_message_email(message)
-    @message = message
-    @user = message.direct_receiver
-    subject = "#{message.user.name} just messaged you"
+  def new_message_email(direct_message)
+    @message = direct_message
+    @user = @message.direct_receiver
+    subject = "#{@message.user.name} just messaged you"
     mail(to: @user.email, subject: subject)
-  end
-
-  def reporter_resolution_email(report)
-    @feedback_message = report
-    @user = report.reporter
   end
 
   def account_deleted_email(user)
