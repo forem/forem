@@ -30,6 +30,7 @@ module PracticalDeveloper
     config.autoload_paths += Dir["#{config.root}/app/black_box/"]
     config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
     config.autoload_paths += Dir["#{config.root}/app/facades"]
+    config.autoload_paths += Dir["#{config.root}/app/errors"]
     config.autoload_paths += Dir["#{config.root}/lib/"]
 
     config.active_record.observers = :article_observer, :reaction_observer, :comment_observer
@@ -39,6 +40,11 @@ module PracticalDeveloper
 
     # Globally handle Pundit::NotAuthorizedError by serving 404
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found
+
+    # Rails 5.1 introduced CSRF tokens that change per-form.
+    # Unfortunately there isn't an easy way to use them and use view caching at the same time.
+    # Therefore we disable "per_form_csrf_tokens" for the time being.
+    config.action_controller.per_form_csrf_tokens = false
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do

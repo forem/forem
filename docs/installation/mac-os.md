@@ -42,6 +42,31 @@ For additional configuration, [click here](/additional-postgres-setup)
 #### Possible Error Messages
 
 **Error:** `rbenv: version '<version number>' is not installed (set by /Path/To/Local/Repository/.ruby-version)`
+
 **_Solution:_** Run the command `rbenv install <version number>`
+
+**Error:** `ruby-build: definition not found: <version number>` when `rbenv` was installed via `brew`.
+
+```bash
+ruby-build: definition not found: <version number>
+
+See all available versions with `rbenv install --list'.                       If the version you need is missing, try upgrading ruby-build:
+```
+
+**_Solution:_**
+Run the following to update `ruby-build`, `brew update && brew upgrade ruby-build`. After that, rerun `rbenv install <version number>` and that version will get installed.
+
+**Error:**
+
+```bash
+== Preparing database ==
+    Sorry, you can't use byebug without Readline. To solve this, you need to
+    rebuild Ruby with Readline support. If using Ubuntu, try `sudo apt-get
+    install libreadline-dev` and then reinstall your Ruby.
+rails aborted!
+LoadError: dlopen(/Users/nickytonline/.rbenv/versions/2.6.1/lib/ruby/2.6.0/x86_64-darwin18/readline.bundle, 9): Library not loaded: /usr/local/opt/readline/lib/libreadline.<some version number>.dylib
+```
+
+**_Solution:_** Run `ln -s /usr/local/opt/readline/lib/libreadline.dylib /usr/local/opt/readline/lib/libreadline.<some version number>.dylib` from the command line then run `bin/setup` again. You may have a different version or libreadline, so replace `<some version number>` with the version that errored.
 
 > If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.

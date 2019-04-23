@@ -10,7 +10,7 @@ class GithubReposController < ApplicationController
       redirect_to "/settings/integrations", notice: "GitHub repo added"
     else
       redirect_to "/settings/integrations",
-        error: "There was an error adding your Github repo"
+                  error: "There was an error adding your Github repo"
     end
   end
 
@@ -22,7 +22,7 @@ class GithubReposController < ApplicationController
       redirect_to "/settings/integrations", notice: "GitHub repo added"
     else
       redirect_to "/settings/integrations",
-        error: "There was an error removing your Github repo"
+                  error: "There was an error removing your Github repo"
     end
   end
 

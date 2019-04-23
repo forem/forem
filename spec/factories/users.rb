@@ -50,8 +50,15 @@ FactoryBot.define do
       end
     end
 
-    trait :analytics do
-      after(:build) { |user| user.add_role(:analytics_beta_tester) }
+    trait :pro do
+      after(:build) { |user| user.add_role :pro }
+    end
+
+    trait :org_member do
+      after(:build) do |user|
+        org = create(:organization)
+        user.organization_id = org.id
+      end
     end
 
     trait :org_admin do

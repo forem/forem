@@ -7,8 +7,6 @@ class User < ApplicationRecord
   include AlgoliaSearch
   include Storext.model
 
-  acts_as_taggable_on :tags
-
   acts_as_followable
   acts_as_follower
 
@@ -37,101 +35,101 @@ class User < ApplicationRecord
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
   has_many :mentor_relationships_as_mentee,
-  class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
+           class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
-  class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
+           class_name: "MentorRelationship", foreign_key: "mentor_id", inverse_of: :mentor
   has_many :mentors,
-  through: :mentor_relationships_as_mentee,
-  source: :mentor
+           through: :mentor_relationships_as_mentee,
+           source: :mentor
   has_many :mentees,
-  through: :mentor_relationships_as_mentor,
-  source: :mentee
+           through: :mentor_relationships_as_mentor,
+           source: :mentee
 
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :omniauthable, :rememberable,
-        :registerable, :database_authenticatable, :confirmable
+         :registerable, :database_authenticatable, :confirmable
   validates :email,
-            uniqueness: { allow_blank: true, case_sensitive: false },
             length: { maximum: 50 },
             email: true,
-            allow_blank: true
+            allow_nil: true
+  validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :name, length: { minimum: 1, maximum: 100 }
   validates :username,
             presence: true,
-            uniqueness: { case_sensitive: false },
             format: { with: /\A[a-zA-Z0-9_]+\Z/ },
             length: { in: 2..30 },
             exclusion: { in: ReservedWords.all, message: "username is reserved" }
-  validates :twitter_username, uniqueness: { allow_blank: true }
-  validates :github_username, uniqueness: { allow_blank: true }
+  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
+  validates :github_username, uniqueness: { allow_nil: true }, if: :github_username_changed?
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :website_url, :employer_url, :mastodon_url,
-    url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+            url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :facebook_url,
-              format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
-              allow_blank: true
+            format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
+            allow_blank: true
   validates :stackoverflow_url,
-              allow_blank: true,
-              format:
-              /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
+            allow_blank: true,
+            format:
+            /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
   validates :behance_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
   validates :linkedin_url,
-              allow_blank: true,
-              format:
-                /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
+            allow_blank: true,
+            format:
+              /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
   validates :dribbble_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
   validates :medium_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
   validates :gitlab_url,
-              allow_blank: true,
-              format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   validates :shirt_gender,
-              inclusion: { in: %w[unisex womens],
-                           message: "%{value} is not a valid shirt style" },
-              allow_blank: true
+            inclusion: { in: %w[unisex womens],
+                         message: "%{value} is not a valid shirt style" },
+            allow_blank: true
   validates :shirt_size,
-              inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                           message: "%{value} is not a valid size" },
-              allow_blank: true
+            inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
+                         message: "%{value} is not a valid size" },
+            allow_blank: true
   validates :tabs_or_spaces,
-              inclusion: { in: %w[tabs spaces],
-                           message: "%{value} is not a valid answer" },
-              allow_blank: true
+            inclusion: { in: %w[tabs spaces],
+                         message: "%{value} is not a valid answer" },
+            allow_blank: true
   validates :editor_version,
-              inclusion: { in: %w[v1 v2],
-                           message: "%{value} must be either v1 or v2" }
+            inclusion: { in: %w[v1 v2],
+                         message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-              inclusion: { in: %w[default night_theme],
-                           message: "%{value} must be either default or night theme" }
+            inclusion: { in: %w[default night_theme pink_theme],
+                         message: "%{value} must be either default, pink theme, or night theme" }
   validates :config_font,
-              inclusion: { in: %w[default sans_serif comic_sans],
-                           message: "%{value} must be either default or sans serif" }
+            inclusion: { in: %w[default sans_serif comic_sans],
+                         message: "%{value} must be either default or sans serif" }
   validates :shipping_country,
-              length: { in: 2..2 },
-              allow_blank: true
+            length: { in: 2..2 },
+            allow_blank: true
   validates :website_url, :employer_name, :employer_url,
-              length: { maximum: 100 }
+            length: { maximum: 100 }
   validates :employment_title, :education, :location,
-              length: { maximum: 100 }
+            length: { maximum: 100 }
   validates :mostly_work_with, :currently_learning,
             :currently_hacking_on, :available_for,
-                length: { maximum: 500 }
+            length: { maximum: 500 }
   validates :mentee_description, :mentor_description,
-              length: { maximum: 1000 }
+            length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
-  validate  :validate_feed_url
-  validate  :unique_including_orgs
+  validate  :validate_feed_url, if: :feed_url_changed?
+  validate  :unique_including_orgs, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
@@ -142,6 +140,8 @@ class User < ApplicationRecord
   after_create :estimate_default_language!
   before_update :mentorship_status_update
   before_validation :set_username
+  # make sure usernames are not empty, to be able to use the database unique index
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -153,19 +153,19 @@ class User < ApplicationRecord
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
     attribute :name
     add_index "searchables",
-                  id: :index_id,
-                  per_environment: true,
-                  enqueue: :trigger_delayed_index do
+              id: :index_id,
+              per_environment: true,
+              enqueue: :trigger_delayed_index do
       attribute :user do
         { username: user.username,
           name: user.username,
           profile_image_90: profile_image_90 }
       end
       attribute :title, :path, :tag_list, :main_image, :id,
-        :featured, :published, :published_at, :featured_number, :comments_count,
-        :reactions_count, :positive_reactions_count, :class_name, :user_name,
-        :user_username, :comments_blob, :body_text, :tag_keywords_for_search,
-        :search_score, :hotness_score
+                :featured, :published, :published_at, :featured_number, :comments_count,
+                :reactions_count, :positive_reactions_count, :class_name, :user_name,
+                :user_username, :comments_blob, :body_text, :tag_keywords_for_search,
+                :search_score, :hotness_score
       searchableAttributes ["unordered(title)",
                             "body_text",
                             "tag_list",
@@ -186,6 +186,7 @@ class User < ApplicationRecord
     prefer_language_es Boolean, default: false
     prefer_language_fr Boolean, default: false
     prefer_language_it Boolean, default: false
+    prefer_language_pt Boolean, default: false
   end
 
   def self.trigger_delayed_index(record, remove)
@@ -204,17 +205,18 @@ class User < ApplicationRecord
     "users-#{id}"
   end
 
-  def estimate_default_language!
-    identity = identities.find_by(provider: "twitter")
-    if email.end_with?(".jp")
-      update(estimated_default_language: "ja", prefer_language_ja: true)
-    elsif identity
-      lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
-      update(:estimated_default_language => lang,
-             "prefer_language_#{lang}" => true)
-    end
+  def set_remember_fields
+    self.remember_token ||= self.class.remember_token if respond_to?(:remember_token)
+    self.remember_created_at ||= Time.now.utc
   end
-  handle_asynchronously :estimate_default_language!
+
+  def estimate_default_language!
+    Users::EstimateDefaultLanguageJob.perform_later(id)
+  end
+
+  def estimate_default_language_without_delay!
+    Users::EstimateDefaultLanguageJob.perform_now(id)
+  end
 
   def calculate_score
     score = (articles.where(featured: true).size * 100) + comments.sum(:score)
@@ -226,11 +228,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true).union(
-      Article.where(
-        user_id: cached_following_users_ids,
-      ),
-    ).where(language: cached_preferred_langs, published: true)
+    Article.tagged_with(cached_followed_tag_names, any: true).
+      union(Article.where(user_id: cached_following_users_ids)).
+      where(language: cached_preferred_langs, published: true)
   end
 
   def cached_following_users_ids
@@ -308,6 +308,10 @@ class User < ApplicationRecord
     has_role?(:super_admin) || has_role?(:admin)
   end
 
+  def tech_admin?
+    has_role?(:tech_admin) || has_role?(:super_admin)
+  end
+
   def trusted
     Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
@@ -317,10 +321,6 @@ class User < ApplicationRecord
   def scholar
     valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
     has_role?(:workshop_pass) && valid_pass
-  end
-
-  def analytics
-    has_role? :analytics_beta_tester
   end
 
   def comment_banned
@@ -349,10 +349,6 @@ class User < ApplicationRecord
     MailchimpBot.new(self).upsert
   end
   handle_asynchronously :subscribe_to_mailchimp_newsletter
-
-  def can_view_analytics?
-    has_any_role?(:super_admin, :analytics_beta_tester)
-  end
 
   def a_sustaining_member?
     monthly_dues.positive?
@@ -396,10 +392,26 @@ class User < ApplicationRecord
     MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
+  def tag_moderator?
+    roles.where(name: "tag_moderator").any?
+  end
+
   private
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)
+  end
+
+  def verify_twitter_username
+    self.twitter_username = nil if twitter_username == ""
+  end
+
+  def verify_github_username
+    self.github_username = nil if github_username == ""
+  end
+
+  def verify_email
+    self.email = nil if email == ""
   end
 
   def set_username
@@ -499,7 +511,7 @@ class User < ApplicationRecord
   end
 
   def tag_list
-    cached_followed_tag_names
+    "" # Unused but necessary for search index
   end
 
   def main_image; end
@@ -537,16 +549,11 @@ class User < ApplicationRecord
   end
 
   def comments_blob
-    ActionView::Base.full_sanitizer.sanitize(
-      comments.last(2).pluck(:body_markdown).join(" "),
-    )[0..2500]
+    "" # Unused but necessary for search index
   end
 
   def body_text
-    summary.to_s + ActionView::Base.full_sanitizer.
-      sanitize(articles.last(50).
-        pluck(:processed_html).
-        join(" "))[0..2500]
+    "" # Unused but necessary for search index
   end
 
   def tag_keywords_for_search
@@ -558,8 +565,8 @@ class User < ApplicationRecord
   end
 
   def search_score
-    article_score = (articles_count + comments_count + reactions_count) * 10
-    score = (article_score + tag_keywords_for_search.size) * reputation_modifier * followers_count
+    counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
+    score = (counts_score + tag_keywords_for_search.size) * reputation_modifier
     score.to_i
   end
 

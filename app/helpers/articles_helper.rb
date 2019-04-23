@@ -1,4 +1,14 @@
 module ArticlesHelper
+  def sort_options
+    [
+      ["Recently Created", "creation-desc"],
+      ["Recently Published", "published-desc"],
+      ["Most Views", "views-desc"],
+      ["Most Reactions", "reactions-desc"],
+      ["Most Comments", "comments-desc"],
+    ]
+  end
+
   def has_vid?(article)
     article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
   end

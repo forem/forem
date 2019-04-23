@@ -51,11 +51,6 @@ exports[`<Message /> should render and test snapshot 1`] = `
             "__html": "WE BUILT THIS CITY",
           }
         }
-        style={
-          Object {
-            "color": "black",
-          }
-        }
       />
     </div>
   </div>

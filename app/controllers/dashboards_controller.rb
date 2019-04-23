@@ -5,19 +5,12 @@ class DashboardsController < ApplicationController
 
   def show
     fetch_and_authorize_user
-    if params[:which] == "user_followers"
-      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
-        includes(:follower).order("created_at DESC").limit(80)
-    elsif params[:which] == "organization_user_followers"
-      @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
-        includes(:follower).order("created_at DESC").limit(80)
-    elsif @user&.organization && @user&.org_admin && params[:which] == "organization"
-      @articles = @user.organization.articles.order("created_at DESC").decorate
-    elsif @user
-      @articles = @user.articles.order("created_at DESC").decorate
-    end
+
+    target = @user
+    target = @user.organization if @user&.organization && @user&.org_admin && params[:which] == "organization"
+    @articles = target.articles.sorting(params[:sort]).decorate
     # Updates analytics in background if appropriate:
-    ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
+    ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
   end
 
   def following
@@ -28,6 +21,17 @@ class DashboardsController < ApplicationController
       order("points DESC").includes(:followable).limit(80)
     @followed_organizations = @user.follows_by_type("Organization").
       order("created_at DESC").includes(:followable).limit(80)
+  end
+
+  def followers
+    fetch_and_authorize_user
+    if params[:which] == "user_followers"
+      @follows = Follow.where(followable_id: @user.id, followable_type: "User").
+        includes(:follower).order("created_at DESC").limit(80)
+    elsif params[:which] == "organization_user_followers"
+      @follows = Follow.where(followable_id: @user.organization_id, followable_type: "Organization").
+        includes(:follower).order("created_at DESC").limit(80)
+    end
   end
 
   def pro

@@ -35,6 +35,16 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).not_to include(ad.processed_html)
     end
+    it "has sponsors displayed" do
+      org = create(:organization, is_gold_sponsor: true, sponsorship_tagline: "Oh Yeah!!!")
+      get "/"
+      expect(response.body).to include(org.sponsorship_tagline)
+    end
+    it "does not display non-sponsor org" do
+      org = create(:organization, is_gold_sponsor: false, sponsorship_tagline: "Oh Yeah!!!")
+      get "/"
+      expect(response.body).not_to include(org.sponsorship_tagline)
+    end
   end
 
   describe "GET query page" do

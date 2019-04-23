@@ -67,7 +67,7 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       let!(:old_notification) { create(:notification, user: user, notifiable: article, action: "Reaction") }
 
       before do
-        old_notification.update_column(:notified_at, Time.now - 1.day)
+        old_notification.update_column(:notified_at, 1.day.ago)
       end
 
       it "doesn't change notifications count" do
@@ -82,10 +82,10 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       end
 
       it "updates the notification" do
-        now = Time.now
+        now = Time.current
         described_class.call(reaction_data(article_reaction), user)
         old_notification.reload
-        expect(old_notification.notified_at).to be >= now
+        expect(old_notification.notified_at).to be > now
       end
 
       it "updates the notification json" do

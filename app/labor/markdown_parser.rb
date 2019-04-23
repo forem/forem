@@ -24,7 +24,7 @@ class MarkdownParser
     html = wrap_all_images_in_links(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
-    html = EmojiConverter.call(html)
+    html = escape_colon_emojis_in_codeblock(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -42,8 +42,8 @@ class MarkdownParser
                       br ul ol li small sup sub img a span hr blockquote kbd]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: allowed_tags,
-    attributes: allowed_attributes
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
   end
 
   def evaluate_limited_markdown
@@ -54,8 +54,8 @@ class MarkdownParser
     allowed_tags = %w[strong i u b em p br code]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
-    tags: allowed_tags,
-    attributes: allowed_attributes
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
   end
 
   def tags_used
@@ -89,6 +89,21 @@ class MarkdownParser
 
   private
 
+  def escape_colon_emojis_in_codeblock(html)
+    html_doc = Nokogiri::HTML.fragment(html)
+
+    html_doc.children.each do |el|
+      next if el.name == "code"
+
+      if el.search("code").empty?
+        el.swap(EmojiConverter.call(el.to_html))
+      else
+        el.children = escape_colon_emojis_in_codeblock(el.children.to_html)
+      end
+    end
+    html_doc.to_html
+  end
+
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
@@ -98,7 +113,7 @@ class MarkdownParser
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/")
+    src.start_with?("https://camo.githubusercontent.com/", "https://cdn-images-1.medium.com")
   end
 
   def giphy_img?(source)
@@ -165,13 +180,13 @@ class MarkdownParser
                 "auto"
               end
     cl_image_path(source,
-      type: "fetch",
-      width: width,
-      crop: "limit",
-      quality: quality,
-      flags: "progressive",
-      fetch_format: "auto",
-      sign_url: true).gsub(",", "%2C")
+                  type: "fetch",
+                  width: width,
+                  crop: "limit",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: "auto",
+                  sign_url: true).gsub(",", "%2C")
   end
 
   def wrap_all_images_in_links(html)

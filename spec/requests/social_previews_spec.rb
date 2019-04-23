@@ -25,7 +25,6 @@ RSpec.describe "SocialPreviews", type: :request do
 
       get "/social_previews/article/#{she_coded_article.id}"
 
-      expect(response).to render_template(:shecoded)
       expect(response.body).to include CGI.escapeHTML(she_coded_article.title)
     end
 

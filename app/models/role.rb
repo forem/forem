@@ -13,11 +13,11 @@ class Role < ApplicationRecord
               in: %w[
                 super_admin
                 admin
+                tech_admin
                 tag_moderator
                 trusted
                 banned
                 warned
-                analytics_beta_tester
                 switch_between_orgs
                 triple_unicorn_member
                 level_4_member

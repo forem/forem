@@ -8,8 +8,7 @@ function blockChat(activeChannelId) {
   formData.append('chat_id', activeChannelId);
   formData.append('controller', 'chat_channels');
 
-  getCsrfToken()
-    .then(sendFetch('block-chat', formData));
+  getCsrfToken().then(sendFetch('block-chat', formData));
 }
 
 export default class UserDetails extends Component {
@@ -44,6 +43,7 @@ export default class UserDetails extends Component {
       socialIcons.push(
         <a href={user.website_url} target="_blank">
           <img
+            className="external-link-img"
             src={websiteImage}
             style={{ width: '30px', margin: '5px 15px 15px 0px' }}
           />
@@ -88,43 +88,145 @@ export default class UserDetails extends Component {
         <div className="userdetails__blockreport">
           <button
             onClick={() => {
-              blockChat(channelId);
-              window.location.href = `/connect`;
+              const modal = document.getElementById('userdetails__blockmsg');
+              const otherModal = document.getElementById(
+                'userdetails__reportabuse',
+              );
+              otherModal.style.display = 'none';
+              if (modal.style.display === 'none') {
+                modal.style.display = 'block';
+                window.location.href = `#userdetails__blockmsg`;
+              } else {
+                modal.style.display = 'none';
+                window.location.href = `#`;
+              }
             }}
           >
             Block User
           </button>
 
-          <button onClick={() => {
-            var modal = document.getElementById("userdetails__reportabuse");
-            if (modal.style.display === "none") {
-              modal.style.display = "block";
-              window.location.href = `#userdetails__reportabuse`;
-
-            } else {
-              modal.style.display = "none";
-              window.location.href = `#`;
-            }
-          }}>
+          <button
+            onClick={() => {
+              const modal = document.getElementById('userdetails__reportabuse');
+              const otherModal = document.getElementById(
+                'userdetails__blockmsg',
+              );
+              otherModal.style.display = 'none';
+              if (modal.style.display === 'none') {
+                modal.style.display = 'block';
+                window.location.href = `#userdetails__reportabuse`;
+              } else {
+                modal.style.display = 'none';
+                window.location.href = `#`;
+              }
+            }}
+          >
             Report Abuse
           </button>
-
         </div>
         <div id="userdetails__reportabuse" style="display:none">
           <div className="userdetails__reportabuse">
             <p>Reporting abuse will: </p>
             <ul>
-              <li>close this chat and prevent this user from re-opening chat with you</li>
-              <li>give the DEV team your consent to read messages in this chat to understand your report</li>
+              <li>
+                close this chat and prevent this user from re-opening chat with
+                you
+              </li>
+              <li>
+                give the DEV team your consent to read messages in this chat to
+                understand your report and take appropriate action
+              </li>
             </ul>
+            <p>
+              Blocking is only on Connect right now and has not been implemented
+              across DEV yet.
+            </p>
             <h5>Are you sure?</h5>
-            <a href="/report-abuse" onClick={() => {
-              blockChat(channelId);
-            }}>Yes</a>
-            <a class="no" onClick={() => {
-              document.getElementById("userdetails__reportabuse").style.display = "none";
-              window.location.href = `#`;
-            }}>No</a>
+            <a
+              tabIndex="0"
+              href="/report-abuse"
+              onClick={() => {
+                blockChat(channelId);
+              }}
+            >
+              Yes, Report
+            </a>
+            <a
+              tabIndex="0"
+              className="no"
+              onClick={() => {
+                document.getElementById(
+                  'userdetails__reportabuse',
+                ).style.display = 'none';
+                window.location.href = `#`;
+              }}
+              onKeyUp={e => {
+                if (e.keyCode === 13) {
+                  document.getElementById(
+                    'userdetails__reportabuse',
+                  ).style.display = 'none';
+                  window.location.href = `#`;
+                }
+              }}
+            >
+              No
+            </a>
+          </div>
+        </div>
+        <div id="userdetails__blockmsg" style="display:none">
+          <div className="userdetails__blockmsg">
+            <p>Blocking on connect will: </p>
+            <ul>
+              <li>
+                close this chat and prevent this user from re-opening chat with
+                you
+              </li>
+              <li>
+                NOT notify the user you will block--this channel will become
+                inaccessible for both users
+              </li>
+            </ul>
+            <p>
+              Blocking is only on Connect right now and has not been implemented
+              across DEV yet. Consider reporting abuse to the DEV team if this
+              user is spamming or harassing elsewhere on dev.to, so we can take
+              further action.
+            </p>
+            <h5>Are you sure?</h5>
+            <a
+              tabIndex="0"
+              onClick={() => {
+                blockChat(channelId);
+                window.location.href = `/connect`;
+              }}
+              onKeyUp={e => {
+                if (e.keyCode === 13) {
+                  blockChat(channelId);
+                  window.location.href = `/connect`;
+                }
+              }}
+            >
+              Yes, Block
+            </a>
+            <a
+              tabIndex="0"
+              className="no"
+              onClick={() => {
+                document.getElementById('userdetails__blockmsg').style.display =
+                  'none';
+                window.location.href = `#`;
+              }}
+              onKeyUp={e => {
+                if (e.keyCode === 13) {
+                  document.getElementById(
+                    'userdetails__blockmsg',
+                  ).style.display = 'none';
+                  window.location.href = `#`;
+                }
+              }}
+            >
+              No
+            </a>
           </div>
         </div>
       </div>

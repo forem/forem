@@ -69,6 +69,8 @@ class UserPolicy < ApplicationPolicy
        email_digest_periodic
        email_follower_notifications
        email_membership_newsletter
+       email_tag_mod_newsletter
+       email_community_mod_newsletter
        email_mention_notifications
        email_connect_messages
        email_newsletter
@@ -85,6 +87,7 @@ class UserPolicy < ApplicationPolicy
        feed_mark_canonical
        feed_url
        gitlab_url
+       inbox_guidelines
        linkedin_url
        location
        looking_for_work
@@ -106,6 +109,7 @@ class UserPolicy < ApplicationPolicy
        prefer_language_es
        prefer_language_fr
        prefer_language_it
+       prefer_language_pt
        prefer_language_ja
        profile_image
        seeking_mentorship

@@ -142,15 +142,15 @@
         margin:5px auto 1vw;
         font-weight:bold;
         color:rgb(27, 27, 28);
-        font-size:26px;
+        font-size:25px;
         padding:0;
         padding-right: 15px;
         line-height:1.1em;
         @media screen and ( min-width: 430px ){
-          font-size:calc( 5vw + 10px);
+          font-size:calc( 4.5vw + 10px);
         }
         @media screen and ( min-width: 950px ){
-          font-size:70px;
+          font-size:60px;
           margin-top:0px;
         }
         > span:nth-child(1) {
@@ -392,45 +392,62 @@
     border: 1px solid #d6d6d6;
     box-shadow: 3px 3px 0px #bababa;
     border-radius: 3px;
-    max-width: 90%;
-    width: 80%;
+    max-width: 95%;
+    width: 600px;
 
     .message-form {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       flex-wrap: nowrap;
       justify-content: space-around;
       align-items: center;
       align-content: stretch;
-
+      @media screen and ( min-width: 500px ){
+        flex-direction: row;
+      }
       textarea {
         border-radius: 3px;
         border: 1px solid #d6d6d6;
         font-size: 14px;
         margin: 10px;
         padding: 5px;
-        width: calc(100% - 100px);
+        width: calc(100% - 50px);
         order: 1;
         flex-grow: 1;
+        height: 80px;
         resize: vertical;
-        max-height:30%;
+        max-height:50vh;
+        @media screen and ( min-width: 500px ){
+          width: calc(100% - 100px);
+        }
       }
 
       .submit-message {
-        margin: 10px 10px 10px 0;
+        margin: 0px auto;
         border-radius: 3px;
         background: $dark-purple;
         font-weight: 600px;
         font-family: $helvetica-condensed;
-        width: 80px;
+        width: 220px;
         color: white;
-        font-size: 18px;
-        height: 80px;
+        font-size: 17px;
+        height: 40px;
         order: 10;
         flex-grow: 1;
+        border: 0px;
+        @media screen and ( min-width: 500px ){
+          margin: 10px 10px 10px 0;
+          width: 82px;
+          height: 80px;
+        }  
       }
     }
-
+    p {
+      color: $dark-gray;
+      font-size: 0.8em;
+      margin: 5px auto;
+      width: 96%;
+    }
     .close-modal {
       position: absolute;
       right: 10px;

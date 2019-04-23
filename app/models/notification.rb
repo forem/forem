@@ -51,35 +51,14 @@ class Notification < ApplicationRecord
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
 
-      user_ids = comment.ancestors.select(:receive_notifications, :user_id).select(&:receive_notifications).pluck(:user_id).to_set
-      user_ids.add(comment.commentable.user_id) if user_ids.empty? && comment.commentable.receive_notifications
-      json_data = {
-        user: user_data(comment.user),
-        comment: comment_data(comment)
-      }
-      user_ids.delete(comment.user_id).each do |user_id|
-        Notification.create(
-          user_id: user_id,
-          notifiable_id: comment.id,
-          notifiable_type: comment.class.name,
-          action: nil,
-          json_data: json_data,
-        )
-        # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-        send_push_notifications(user_id, "@#{comment.user.username} replied to you:", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
-      end
-      return unless comment.commentable.organization_id
-
-      Notification.create(
-        organization_id: comment.commentable.organization_id,
-        notifiable_id: comment.id,
-        notifiable_type: comment.class.name,
-        action: nil,
-        json_data: json_data,
-      )
-      # no push notifications for organizations yet
+      Notifications::NewCommentJob.perform_later(comment.id)
     end
-    handle_asynchronously :send_new_comment_notifications
+
+    def send_new_comment_notifications_without_delay(comment)
+      return if comment.commentable_type == "PodcastEpisode"
+
+      Notifications::NewCommentJob.perform_now(comment.id)
+    end
 
     def send_new_badge_notification(badge_achievement)
       json_data = {
@@ -133,25 +112,12 @@ class Notification < ApplicationRecord
     handle_asynchronously :send_mention_notification
 
     def send_welcome_notification(receiver_id)
-      welcome_broadcast = Broadcast.find_by(title: "Welcome Notification")
-      return if welcome_broadcast.nil?
-
-      dev_account = User.dev_account
-      json_data = {
-        user: user_data(dev_account),
-        broadcast: {
-          processed_html: welcome_broadcast.processed_html
-        }
-      }
-      Notification.create(
-        user_id: receiver_id,
-        notifiable_id: welcome_broadcast.id,
-        notifiable_type: "Broadcast",
-        action: welcome_broadcast.type_of,
-        json_data: json_data,
-      )
+      Notifications::WelcomeNotificationJob.perform_later(receiver_id)
     end
-    handle_asynchronously :send_welcome_notification
+
+    def send_welcome_notification_without_delay(receiver_id)
+      Notifications::WelcomeNotificationJob.perform_now(receiver_id)
+    end
 
     def send_moderation_notification(notifiable)
       # notifiable is currently only comment
@@ -262,6 +228,10 @@ class Notification < ApplicationRecord
       Notifications.user_data(user)
     end
 
+    def comment_data(comment)
+      Notifications.comment_data(comment)
+    end
+
     def reaction_notification_attributes(reaction, receiver)
       reactable_data = {
         reactable_id: reaction.reactable_id,
@@ -283,24 +253,6 @@ class Notification < ApplicationRecord
       }
     end
 
-    def comment_data(comment)
-      {
-        id: comment.id,
-        class: { name: "Comment" },
-        path: comment.path,
-        processed_html: comment.processed_html,
-        updated_at: comment.updated_at,
-        commentable: {
-          id: comment.commentable.id,
-          title: comment.commentable.title,
-          path: comment.commentable.path,
-          class: {
-            name: comment.commentable.class.name
-          }
-        }
-      }
-    end
-
     def article_data(article)
       {
         id: article.id,
@@ -313,7 +265,7 @@ class Notification < ApplicationRecord
     end
 
     def should_send_milestone?(milestone_hash)
-      return if milestone_hash[:article].published_at < DateTime.new(2019, 2, 25)
+      return if milestone_hash[:article].published_at < Time.zone.local(2019, 2, 25)
 
       last_milestone_notification = Notification.find_by(
         user_id: milestone_hash[:article].user_id,
@@ -345,25 +297,6 @@ class Notification < ApplicationRecord
       else
         milestones[milestones.index(closest_number) - 1]
       end
-    end
-
-    def send_push_notifications(user_id, title, body, path)
-      return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
-
-      payload = {
-        apns: {
-          aps: {
-            alert: {
-              title: title,
-              body: CGI.unescapeHTML(body.strip!)
-            }
-          },
-          data: {
-            url: "https://dev.to" + path
-          }
-        }
-      }
-      Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
     end
   end
 

@@ -66,4 +66,8 @@ class ApplicationPolicy
   def user_is_banned?
     user.banned
   end
+
+  def user_is_trusted?
+    user.has_role?(:trusted)
+  end
 end

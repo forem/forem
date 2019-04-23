@@ -16,4 +16,14 @@ class Api::V0::ApiController < ApplicationController
 
     render text: "", content_type: "text/plain"
   end
+
+  def unprocessable_entity(exception)
+    render json: { error: exception, status: 422 },
+           status: :unprocessable_entity
+  end
+
+  def not_authorized
+    render json: { error: "Not authorized", status: 401 },
+           status: :unauthorized
+  end
 end

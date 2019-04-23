@@ -99,13 +99,13 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        run_background_jobs_immediately do
+        perform_enqueued_jobs do
           expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
         end
       end
 
       it "does not send an email if there was no request" do
-        run_background_jobs_immediately do
+        perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
@@ -118,7 +118,7 @@ RSpec.describe "UserSettings", type: :request do
 
       before { login_as user }
 
-      it "allows the user to remove an identity" do
+      it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }
         expect(user.identities.count).to eq 1
       end
@@ -131,6 +131,12 @@ RSpec.describe "UserSettings", type: :request do
       it "removes their associated username" do
         delete "/users/remove_association", params: { provider: "twitter" }
         expect(user.twitter_username).to eq nil
+      end
+
+      it "touches the profile_updated_at timestamp" do
+        original_profile_updated_at = user.profile_updated_at
+        delete "/users/remove_association", params: { provider: "twitter" }
+        expect(user.profile_updated_at).to be > original_profile_updated_at
       end
 
       it "redirects successfully to /settings/account" do

@@ -1,4 +1,4 @@
-Rails.logger.info "1/9 Creating Organizations"
+Rails.logger.info "1. Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -17,7 +17,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "2/9 Creating Users"
+Rails.logger.info "2. Creating Users"
 
 roles = %i[level_1_member level_2_member level_3_member level_4_member
            workshop_pass]
@@ -50,7 +50,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "3/9 Creating Tags"
+Rails.logger.info "3. Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -66,13 +66,13 @@ end
 
 ##############################################################################
 
-Rails.logger.info "4/9 Creating Articles"
+Rails.logger.info "4. Creating Articles"
 
 Article.clear_index!
 25.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
-  tags.concat Tag.order("RANDOM()").select("name").first(3).map(&:name)
+  tags.concat Tag.order(Arel.sql("RANDOM()")).select("name").first(3).map(&:name)
 
   markdown = <<~MARKDOWN
     ---
@@ -91,20 +91,20 @@ Article.clear_index!
     body_markdown: markdown,
     featured: true,
     show_comments: true,
-    user_id: User.order("RANDOM()").first.id,
+    user_id: User.order(Arel.sql("RANDOM()")).first.id,
   )
 end
 
 ##############################################################################
 
-Rails.logger.info "5/9 Creating Comments"
+Rails.logger.info "5. Creating Comments"
 
 Comment.clear_index!
 30.times do
   attributes = {
     body_markdown: Faker::Hipster.paragraph(1),
-    user_id: User.order("RANDOM()").first.id,
-    commentable_id: Article.order("RANDOM()").first.id,
+    user_id: User.order(Arel.sql("RANDOM()")).first.id,
+    commentable_id: Article.order(Arel.sql("RANDOM()")).first.id,
     commentable_type: "Article"
   }
   Comment.create!(attributes)
@@ -112,7 +112,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "6/9 Creating Podcasts"
+Rails.logger.info "6. Creating Podcasts"
 
 image_file = Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg")
 
@@ -175,7 +175,7 @@ end
 
 ##############################################################################
 
-Rails.logger.info "7/9 Creating Broadcasts"
+Rails.logger.info "7. Creating Broadcasts"
 
 Broadcast.create!(
   title: "Welcome Notification",
@@ -186,7 +186,7 @@ Broadcast.create!(
 
 ##############################################################################
 
-Rails.logger.info "8/9 Creating chat_channel"
+Rails.logger.info "8. Creating Chat Channels and Messages"
 
 ChatChannel.clear_index!
 ChatChannel.without_auto_index do
@@ -197,12 +197,19 @@ ChatChannel.without_auto_index do
       slug: chan,
     )
   end
+
+  direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+  Message.create!(
+    chat_channel: direct_channel,
+    user: User.last,
+    message_markdown: "This is **awesome**",
+  )
 end
 ChatChannel.reindex!
 
-Rails.logger.info "9/9 Creating html_variant"
+Rails.logger.info "9. Creating HTML Variants"
 
-HtmlVariant.create(
+HtmlVariant.create!(
   name: rand(100).to_s,
   group: "badge_landing_page",
   html: rand(1000).to_s,
@@ -210,6 +217,24 @@ HtmlVariant.create(
   published: true,
   approved: true,
   user_id: User.first.id,
+)
+
+Rails.logger.info "10. Creating Badges"
+
+Badge.create!(
+  title: Faker::Lorem.word,
+  description: Faker::Lorem.sentence,
+  badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
+)
+
+Rails.logger.info "10. Creating FeedbackMessages"
+
+FeedbackMessage.create!(
+  reporter: User.last,
+  feedback_type: "spam",
+  message: Faker::Lorem.sentence,
+  category: "spam",
+  status: "Open",
 )
 ##############################################################################
 

@@ -72,20 +72,33 @@ export function conductModeration(
     .catch(failureCb);
 }
 
-export function getChannels(query,retrievalID, props, paginationNumber, additionalFilters, successCb, failureCb) {
+export function getChannels(
+  query,
+  retrievalID,
+  props,
+  paginationNumber,
+  additionalFilters,
+  successCb,
+  _failureCb,
+) {
   const client = algoliasearch(props.algoliaId, props.algoliaKey);
   const index = client.initIndex(props.algoliaIndex);
-  let filters = {...{
-    hitsPerPage: 30 + paginationNumber,
-    page: paginationNumber
-  }, ...additionalFilters};
-  index.search(query, filters)
-  .then(function(content) {
-    let channels = content.hits
-    if (retrievalID === null || content.hits.filter(e => e.id === retrievalID).length === 1) {
-      successCb(channels, query)
+  const filters = {
+    ...{
+      hitsPerPage: 30 + paginationNumber,
+      page: paginationNumber,
+    },
+    ...additionalFilters,
+  };
+  index.search(query, filters).then(content => {
+    const channels = content.hits;
+    if (
+      retrievalID === null ||
+      content.hits.filter(e => e.id === retrievalID).length === 1
+    ) {
+      successCb(channels, query);
     } else {
-      index.getObjects([`${retrievalID}`], function(err, content) {
+      index.getObjects([`${retrievalID}`], (_err, _content) => {
         channels.unshift(content.results[0]);
         successCb(channels, query);
       });
@@ -102,7 +115,7 @@ export function sendKeys(subscription, successCb, failureCb) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      subscription: subscription
+      subscription,
     }),
     credentials: 'same-origin',
   })
@@ -153,10 +166,10 @@ export function getChannelInvites(successCb, failureCb) {
     .then(response => response.json())
     .then(successCb)
     .catch(failureCb);
-};
+}
 
 export function sendChannelInviteAction(id, action, successCb, failureCb) {
-  fetch('/chat_channel_memberships/'+id, {
+  fetch(`/chat_channel_memberships/${id}`, {
     method: 'PUT',
     headers: {
       Accept: 'application/json',
@@ -166,7 +179,7 @@ export function sendChannelInviteAction(id, action, successCb, failureCb) {
     body: JSON.stringify({
       chat_channel_membership: {
         user_action: action,
-      }
+      },
     }),
     credentials: 'same-origin',
   })

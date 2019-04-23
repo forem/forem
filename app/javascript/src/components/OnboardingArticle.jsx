@@ -30,12 +30,14 @@ const OnboardingArticle = ({ article, isSaved, onSaveArticle }) => (
         <img
           src="https://practicaldev-herokuapp-com.freetls.fastly.net/assets/reactions-stack-4bb9c1e4b3e71b7aa135d6f9a5ef29a6494141da882edd4fa971a77abe13dbe7.png"
           alt="Reactions"
-        />{' '}
+        />
+        {' '}
         {article.positive_reactions_count}
         <img
           src="https://practicaldev-herokuapp-com.freetls.fastly.net/assets/comments-bubble-7448082accd39cfe9db9b977f38fa6e8f8d26dc43e142c5d160400d6f952ee47.png"
           alt="Comments"
-        />{' '}
+        />
+        {' '}
         {article.comments_count}
       </div>
     </div>

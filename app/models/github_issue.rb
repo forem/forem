@@ -17,14 +17,14 @@ class GithubIssue < ApplicationRecord
   def self.try_to_get_issue(url)
     client = Octokit::Client.new(access_token: random_token)
     issue = GithubIssue.new(url: url)
-    if !!(url !~ /\/issues\/comments/)
-      repo, issue_id = url.gsub(/.*github\.com\/repos\//, "").split(issue_or_pull(url))
-      issue.issue_serialized = get_issue_serialized(client, repo, issue_id)
-      issue.category = "issue"
-    else
+    if /\/issues\/comments/.match?(url)
       repo, issue_id = url.gsub(/.*github\.com\/repos\//, "").split("/issues/comments/")
       issue.issue_serialized = client.issue_comment(repo, issue_id).to_hash
       issue.category = "issue_comment"
+    else
+      repo, issue_id = url.gsub(/.*github\.com\/repos\//, "").split(issue_or_pull(url))
+      issue.issue_serialized = get_issue_serialized(client, repo, issue_id)
+      issue.category = "issue"
     end
     issue.processed_html = get_html(client, issue)
     issue.save!
