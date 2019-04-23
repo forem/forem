@@ -1,6 +1,6 @@
 class BlackBox
   class << self
-    def article_hotness_score(article)
+    def article_hotness_score(article, function_caller = FunctionCaller)
       return (article.featured_number || 10_000) / 10_000 unless Rails.env.production?
 
       usable_date = article.crossposted_at || article.published_at
@@ -11,8 +11,8 @@ class BlackBox
       today_bonus = usable_date > 26.hours.ago ? 395 : 0
       two_day_bonus = usable_date > 48.hours.ago ? 330 : 0
       four_day_bonus = usable_date > 96.hours.ago ? 330 : 0
-      FunctionCaller.new("blackbox-production-articleHotness",
-                         { article: article, user: article.user }.to_json).call +
+      function_caller.call("blackbox-production-articleHotness",
+                           { article: article, user: article.user }.to_json).to_i +
         reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
     end
 
