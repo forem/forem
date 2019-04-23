@@ -37,7 +37,7 @@ gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Jo
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.6" # Flexible authentication solution for Rails
 gem "draper", "~> 3.0" # Draper adds an object-oriented layer of presentation logic to your Rails apps
-gem "dry-struct", "~> 0.6" # Typed structs and value objects
+gem "dry-struct", "~> 0.7" # Typed structs and value objects
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 1.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
