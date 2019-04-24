@@ -12,8 +12,10 @@ group :production do
   gem 'nakayoshi_fork', '~> 0.0.4' # solves CoW friendly problem on MRI 2.2 and later
 end
 
+
 gem "actionpack-action_caching", "~> 1.2" # Action caching for Action Pack (removed from core in Rails 4.0)
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
+gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord objects
 gem "acts-as-taggable-on", "~> 6.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.5", ">= 2.5.2" # A replacement for the URI implementation that is part of Ruby's standard library

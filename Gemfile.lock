@@ -59,6 +59,8 @@ GEM
       activemodel (= 5.2.3)
       activesupport (= 5.2.3)
       arel (>= 9.0)
+    activerecord-import (1.0.1)
+      activerecord (>= 3.2)
     activestorage (5.2.3)
       actionpack (= 5.2.3)
       activerecord (= 5.2.3)
@@ -960,6 +962,7 @@ PLATFORMS
 DEPENDENCIES
   actionpack-action_caching (~> 1.2)
   active_record_union (~> 1.3)
+  activerecord-import (~> 1.0)
   acts-as-taggable-on (~> 6.0)
   acts_as_follower!
   addressable (~> 2.5, >= 2.5.2)
