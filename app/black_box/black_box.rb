@@ -1,8 +1,6 @@
 class BlackBox
   class << self
     def article_hotness_score(article, function_caller = FunctionCaller)
-      return (article.featured_number || 10_000) / 10_000 unless Rails.env.production?
-
       usable_date = article.crossposted_at || article.published_at
       reaction_points = article.score
       super_super_recent_bonus = usable_date > 1.hour.ago ? 28 : 0
@@ -24,13 +22,12 @@ class BlackBox
       (rep_points + descendants_points + bonus_points - spaminess_rating).to_i
     end
 
-    def calculate_spaminess(story)
+    def calculate_spaminess(story, function_caller = FunctionCaller)
       # accepts comment or article as story
-      return 0 unless Rails.env.production?
       return 100 unless story.user
 
-      FunctionCaller.new("blackbox-production-spamScore",
-                         { story: story, user: story.user }.to_json).call
+      function_caller.call("blackbox-production-spamScore",
+                           { story: story, user: story.user }.to_json).to_i
     end
 
     private
