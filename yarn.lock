@@ -2813,10 +2813,10 @@ cli-width@^2.0.0:
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
   integrity sha1-/xnt6Kml5XkyQUewwR8PvLq+1jk=
 
-clipboard-copy-element@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/clipboard-copy-element/-/clipboard-copy-element-0.6.0.tgz#772598e5621878fcabd03761750ebd9d4cd9dea4"
-  integrity sha512-GoYKdSFErswfJ72eChkrNX32lXwjjVo+HCMVvCgfhCcvnx4fqAhIl1Sgh4/gMG3W//0O/ZX2HDd1vzy/YrIpNw==
+clipboard-copy-element@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/clipboard-copy-element/-/clipboard-copy-element-1.0.0.tgz#655fa5e234690f8cbcf2e1b35e4f20ef5a259908"
+  integrity sha512-nQYDzyBAC3+3OQGrPvaGijLOrBuB6Slw4DFGr5gBAQeFTfCCeHdRy8rt7Moa0HOGc1RNnTZ4YsAkeJNRSAAbMA==
 
 clipboard@^2.0.0:
   version "2.0.4"

@@ -44,7 +44,7 @@ function initializeCommentDropdown() {
   }
 
   function removeCopyListener() {
-    document.removeEventListener('copy', showAnnouncer);
+    document.removeEventListener('clipboard-copy', showAnnouncer);
   }
 
   function removeAllShowing() {
@@ -72,7 +72,7 @@ function initializeCommentDropdown() {
       removeAllShowing();
       dropdownContent.classList.add('showing');
       document.addEventListener('click', outsideClickListener);
-      document.addEventListener('copy', showAnnouncer);
+      document.addEventListener('clipboard-copy', showAnnouncer);
     }
   }
 
