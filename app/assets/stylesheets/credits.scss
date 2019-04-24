@@ -1,10 +1,28 @@
 @import 'variables';
 .credits-container {
   margin: 50px auto;
+  .notice {
+    background: $green;
+    padding: 30px 0px;
+    margin-top: 68px;
+    text-align: center;
+  }
   .credits-banner {
     background: $dark-purple;
     padding: 60px;
     margin-top: 60px;
+    a {
+      color: white;
+      border: 3px solid white;
+      padding: 15px 4px;
+      border-radius: 100px;
+      font-weight: bold;
+      display: block;
+      margin: 10px auto;
+      text-align: center;
+      font-size: 14px;
+      width: 320px;
+    }
   }
 
   form#new_credit {
@@ -12,6 +30,13 @@
     max-width: 96%;
     margin: 40px auto;
     overflow: hidden;
+  }
+
+  .InputElement {
+    background-color: white;
+    background-color: var(--theme-container-background, white);
+    color: $black;
+    color: var(--theme-color, $black);
   }
 
   .StripeElement, input[type="number"], button, .existing-card {
@@ -24,6 +49,9 @@
     border: 1px solid transparent;
     border-radius: 4px;
     background-color: white;
+    background-color: var(--theme-container-background, white);
+    color: $black;
+    color: var(--theme-color, $black);
 
     box-shadow: 0 1px 3px 0 #e6ebf1;
     -webkit-transition: box-shadow 150ms ease;
@@ -101,8 +129,11 @@
     font-weight: bold;
   }
   button#add-new-card {
-    background: white;
-    color: black;
+    background-color: $light-gray;
+    background-color: var(--theme-container-background, $light-gray);
+    color: $black;
+    color: var(--theme-color, $black);
+    font-size: 15px;
   }
 
   .existing-card {
@@ -118,19 +149,18 @@
     }
     .credit-card-component {
       background: $lightest-gray;
+      background: var(--theme-container-accent-background, $lightest-gray);
       border-radius: 3px;
       margin: 0px 5px;
       display: inline-block;
       font-weight: bold;
-      &.credit-card-component--bold {
-        background: $light-gray
-      }
     }
   }
 
   label.main-form-label {
     margin-bottom: 4px;
-    background: #e0ecff;
+    background: $light-gray;
+    background: var(--theme-container-accent-background, $light-gray);
     border-radius: 3px;
     padding: 2px 8px;
     display: inline-block;

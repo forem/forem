@@ -1,4 +1,6 @@
 class CreditsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     @credits = current_user.credits.where(spent: false)
     @org_credits = current_user.organization.credits.where(spent: false) if current_user.org_admin
@@ -11,51 +13,80 @@ class CreditsController < ApplicationController
   end
 
   def create
+    @number_to_purchase = params[:credit][:number_to_purchase].to_i
     make_payment
     credit_objects = []
-    params[:credit][:number_to_purchase].to_i.times do
+    @number_to_purchase.times do
       if params[:user_type] == "organization"
         raise unless current_user.org_admin
-        credit_objects << Credit.new(organization_id: current_user.organization_id)
+        credit_objects << Credit.new(organization_id: current_user.organization_id, cost: cost_per_credit / 100.0)
       else
-        credit_objects << Credit.new(user_id: current_user.id)
+        credit_objects << Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
       end
     end
     Credit.import credit_objects
-    redirect_to "/credits"
+    redirect_to "/credits", notice: "#{@number_to_purchase} new credits purchased!"
   end
 
   def make_payment
-    # Amount in cents
-    @amount = 500
-    customer = if current_user.stripe_id_code
-                 Stripe::Customer.retrieve(current_user.stripe_id_code)
-               else
-                 Stripe::Customer.create({
-                   email: current_user.email
-                 })
-               end
+    find_or_create_customer
+    find_or_create_card
+    update_user_stripe_info
+    create_charge
+  rescue Stripe::CardError => e
+    flash[:error] = e.message
+    redirect_to "/credits/new"
+  end
+
+  def find_or_create_customer
+    @customer = if current_user.stripe_id_code
+                  Stripe::Customer.retrieve(current_user.stripe_id_code)
+                else
+                  Stripe::Customer.create({
+                    email: current_user.email
+                  })
+                end
+  end
+
+  def find_or_create_card
     if params[:stripe_token]
-      card = Stripe::Customer.create_source(
-        customer.id,
+      @card = Stripe::Customer.create_source(
+        @customer.id,
         {
           source: params[:stripe_token],
         }
       )
     else
-      card = customer.sources.retrieve(params[:selected_card])
+      @card = @customer.sources.retrieve(params[:selected_card])
     end
-    current_user.update_column(:stripe_id_code, customer.id) if current_user.stripe_id_code.nil?
-    charge = Stripe::Charge.create({
-      customer: customer.id,
-      source: card || customer.default_source,
+  end
+
+  def update_user_stripe_info
+    current_user.update_column(:stripe_id_code, @customer.id) if current_user.stripe_id_code.nil?
+  end
+
+  def create_charge
+    @amount = generate_cost
+    Stripe::Charge.create({
+      customer: @customer.id,
+      source: @card || @customer.default_source,
       amount: @amount,
-      description: "Purchase of credits #{params[:credit][:number_to_purchase]}",
-      currency: 'usd',
+      description: "Purchase of #{@number_to_purchase} credits.",
+      currency: "usd"
     })
-  
-  rescue Stripe::CardError => e
-    flash[:error] = e.message
-    redirect_to new_charge_path
+  end
+
+  def generate_cost
+    @number_to_purchase * cost_per_credit
+  end
+
+  def cost_per_credit
+    if @number_to_purchase < 50
+      1000
+    elsif @number_to_purchase < 500
+      750
+    else
+      500
+    end
   end
 end

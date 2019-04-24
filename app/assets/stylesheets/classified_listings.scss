@@ -1,41 +1,99 @@
 @import 'variables';
 
 .classifieds-container {
-  margin: 80px auto;
+  margin: 60px auto 150px;
   text-align: left;
   max-width: 96%;
+  min-height: 100vh;
   @media screen and (min-width: 950px) {
-    margin: 50px auto;
+    margin: 40px auto;
   }
   .classified-filters {
     padding: 20px 0px 10px;
     a {
-      padding: 2px 16px;
-      border-radius: 3px;
+      padding: 3px 16px;
+      border-radius: 100px;
+      display: inline-block;
+      font-size: 15px;
       &.selected {
         background: $bold-blue;
         color: white;
       }
-      &.cta {
-        border: 2px solid $black;
-        font-size: 0.85em;
+      &.new-listing-button {
+        color: $black;
+        background: $green;
+        margin: 0px 4px;
+      }
+    }
+    .classified-filters-categories {
+      border: 1px solid $light-medium-gray;
+      padding: 10px;
+      border-radius: 8px;
+      a {
+        display: block;
+        &.classified-create-link {
+          border: 2px solid darken($green, 14%);
+          color: darken($green, 19%);
+          padding: 2px 16px;
+        }
+      }
+      @media screen and (min-width: 550px) {
+        a {
+          display: inline-block;
+          margin: 6px 3px;
+          border: 1px solid $bold-blue;
+          min-width: 50px;
+          text-align: center;
+        }
       }
     }
     .classified-filters-tags {
       padding: 20px 0px;
-      .classified-tag {
+      position: relative;
+      input {
         font-size: 0.8em;
+        color: $black;
+        color: var(--theme-color, $black);
+        background: $light-gray;
+        background: var(--theme-container-accent-background, $light-gray);
+        border-radius: 100px;
+        padding: 3px 14px;
+        border: 1px solid $light-medium-gray;
+        width: calc(100% - 26px);
+        margin-bottom: 4px;
+        @media screen and (min-width: 550px) {
+          width: 280px;
+          margin-right: 8px;
+        }
+      }
+      .classified-search-clear {
+        background: $light-gray;
+        border: 1px solid $light-medium-gray;
+        position: absolute;
+        left: calc(100% - 25px);
+        top: 24px;
+        border-radius: 8px;
+        @media screen and (min-width: 550px) {
+          left: 282px;
+        }
+      }
+      .classified-tag {
+        font-size: 0.7em;
         color: $black;
         border-radius: 100px;
         display: inline-block;
         background: $dark-gray;
+        margin-right: 5px;
+        a {
+          padding: 0px 8px;
+        }
         &.clear-all {
           background: $light-medium-gray;
           a { color: $black }
         }
-        a {
+        span {
           color: white;
-          padding: 3px 13px;
+          padding: 3px 2px;
           display: inline-block;
           &.tag-name {
             padding-right: 0px;
@@ -60,14 +118,19 @@
       text-overflow: ellipsis;   
       font-size: 0.9em; 
       column-break-inside: avoid;
+      background: white;
+      background: var(--theme-container-background, white);
       h3 {
         margin: 0px;
-        padding: 10px 15px;
+        padding: 9px 15px;
         background: lighten($light-medium-gray, 8%);
+        background: var(--theme-container-accent-background, lighten($light-medium-gray, 8%));
         border-bottom: 1px solid $light-medium-gray;
+        font-size: 16px;
       }
       .single-classified-listing-body {
         padding: 10px 15px;
+        font-size: 15px;
         .classified-listing-contact-cta {
           border: 2px solid $black;
           color: $black;
@@ -83,13 +146,26 @@
         padding: 10px 15px;
         a {
           color: $dark-medium-gray;
+          color: var(--theme-secondary-color, $dark-medium-gray);
           background: $light-medium-gray;
+          background: var(--theme-container-accent-background, $light-medium-gray);
           display: inline-block;
           margin: 2px;
           padding: 2px 7px;
           font-size: 0.77em;
           border-radius: 3px;
           font-weight: bold;
+        }
+      }
+      .single-classified-listing-author-info {
+        font-size: 0.69em;
+        color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
+        padding: 0px 15px 4px;
+        a {
+          color: $medium-gray;
+          color: var(--theme-secondary-color, $medium-gray);
+          font-style: italic;
         }
       }
     }  
@@ -101,22 +177,79 @@
     * {
       box-sizing: border-box;
     }
+    .listings-back-buton {
+      font-size: 0.8em;
+      margin: 5px 0px 10px;
+      display: block;
+    }
+    .classified-errors {
+      background: $red;
+      color: white;
+      padding: 20px;
+      border-radius: 3px;
+    }
+    label {
+      display: inline-block;
+      font-size: 0.7em;
+      margin: 12px 0px 3px;
+      border-radius: 3px;
+      padding: 6px 0px;
+      font-weight: bold;
+    }
     input {
       width: 100%;
-      font-size: 20px;
+      font-size: 18px;
+      padding: 5px;
+      border-radius: 3px;
+      border: 1px solid $light-medium-gray;
+      background: white;
+      background: var(--theme-container-background, white);
+      color: $black;
+      color: var(--theme-color, $black);
+      &[type="checkbox"] {
+        width: 100px;
+      }
     }
     textarea {
       width: 100%;
       height: 300px;
+      padding: 5px;
+      font-size: 17px;
+      border-radius: 3px;
+      background: white;
+      background: var(--theme-container-background, white);
+      color: $black;
+      color: var(--theme-color, $black);
+      border: 1px solid $light-medium-gray;
     }
     select {
       width: 100%;
       font-size:20px;
     }
+    details {
+      cursor: pointer;
+      font-size: 0.8em;
+      padding: 8px 0px;
+      color: $medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
+    }
     input[type="submit"] {
       border: 0px;
-      padding: 12px 0px;
+      padding: 25px 0px;
       border-radius: 3px;
+      background: $blue;
+      font-size: 1.5em;
+      color: white;
+      margin-top: 20px;
+    }
+    .listings-current-credits {
+      margin-top: 75px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    p {
+      font-size: 0.8em;
     }
   }
 }

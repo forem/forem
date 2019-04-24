@@ -1,6 +1,13 @@
 <div class="credits-container">
   <div class="credits-banner">
     <h1>Purchase credits for @<%= @purchaser.username %></h1>
+    <% if current_user.org_admin %>
+      <% if @purchaser.username == current_user.username %>
+        <a href="/credits/new?purchaser=organization">Switch to <%= current_user.organization.name %></a>
+      <% else %>
+        <a href="/credits/new">Switch to personal purchase</a>
+      <% end %>
+    <% end %>
   </div>
   <script src="https://js.stripe.com/v3/"></script>
   <div style="margin-top: 30px; text-align: center">
@@ -22,7 +29,8 @@
         Amount to Purchase
       </label>
       <div class="amount-wrapper">
-        <%= f.number_field :number_to_purchase, id: "amount-input", placeholder: "How many credits would you like?", autocomplete: "off", min: "0", max: "10000000" %>
+        <%= f.number_field :number_to_purchase, id: "amount-input",
+          placeholder: "How many credits would you like?", autocomplete: "off", min: "0", max: "10000000", required: true %>
         <div id="calculated-price"></div>
       </div>
       <% if params[:purchaser] == "organization" %>
@@ -59,6 +67,10 @@
     </div>
 
     <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
+    <% if params[:purchaser] == "organization" %>
+      <p><em>*All org admins have access to credits owned by organization</em></p>
+    <% end %>
+    <p><em>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you need support</em></p>
   <% end %>
 </div>
   <script>
@@ -66,21 +78,39 @@
     var stripe = Stripe('<%= ApplicationConfig["STRIPE_PUBLISHABLE_KEY"] %>');
     var elements = stripe.elements();
 
-    var style = {
-    base: {
-      color: '#32325d',
-      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-      fontSmoothing: 'antialiased',
-      fontSize: '16px',
-      '::placeholder': {
-        color: '#aab7c4'
+    <% if current_user.config_theme == "night_theme" %>
+      var style = {
+      base: {
+        color: 'white',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#d9dee2'
+        }
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
       }
-    },
-    invalid: {
-      color: '#fa755a',
-      iconColor: '#fa755a'
-    }
-  };
+    };
+  <% else %>
+      var style = {
+      base: {
+        color: '#32325d',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#aab7c4'
+        }
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
+      }
+    };
+  <% end %>
 
     var card = elements.create('card', {style: style});
 

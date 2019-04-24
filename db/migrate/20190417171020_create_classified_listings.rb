@@ -8,7 +8,8 @@ class CreateClassifiedListings < ActiveRecord::Migration[5.1]
       t.text      :processed_html
       t.string    :category
       t.string    :cached_tag_list
-      t.string    :bumped_at
+      t.datetime  :bumped_at
+      t.boolean   :published
       t.boolean   :contact_via_connect, default: false
       t.timestamps
     end

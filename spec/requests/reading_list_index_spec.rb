@@ -9,7 +9,7 @@ RSpec.describe "ReadingListIndex", type: :request do
   describe "GET reading list" do
     it "returns reading list page" do
       get "/readinglist"
-      expect(response.body).to include("My Reading List")
+      expect(response.body).to include("Saved Posts")
     end
   end
 end

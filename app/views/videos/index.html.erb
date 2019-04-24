@@ -26,8 +26,7 @@
   <div class="video-collection" id="video-collection">
     <% @video_articles.each do |video_article| %>
       <a class="single-video-article single-article" href="<%= video_article.path %>" id="video-article-<%= video_article.id %>">
-          <div class="video-image">
-            <img src="<%= video_article.cloudinary_video_url %>">
+          <div class="video-image" style="background-image: url(<%= video_article.cloudinary_video_url %>)">
             <span class="video-timestamp"><%= video_article.video_duration_in_minutes %></span>
           </div>
           <p><strong><%= video_article.title %></strong></p>
