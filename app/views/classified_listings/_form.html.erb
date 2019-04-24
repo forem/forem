@@ -56,7 +56,7 @@
   <div class="listings-current-credits">
     You have <%= @credits.size %> credits available — <a href="/credits/new" data-no-instant>Buy More</a>
     <% if current_user.organization && current_user.org_admin %>
-      <br/><br/><%= current_user.organization.name %> has <%= @credits.size %> credits available — <a href="/credits/new?purchaser=organization" data-no-instant>Buy More</a>
+      <br/><br/><%= current_user.organization.name %> has <%= current_user.organization.credits.size %> credits available — <a href="/credits/new?purchaser=organization" data-no-instant>Buy More</a>
     <% end %>
   </div>
   <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may take down and refund listings which are miscategorized or otherwise inappropriate.</em></p>
