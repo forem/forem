@@ -20,7 +20,7 @@ RSpec.describe CommentPolicy do
   end
 
   context "when user is not the author" do
-    let(:user) { build(:user) }
+    let(:user) { create(:user) }
 
     it { is_expected.to permit_actions(%i[create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm]) }
