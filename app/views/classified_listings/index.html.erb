@@ -25,7 +25,7 @@
     data-category="<%= params[:category] %>" data-listings="<%= @classified_listings.to_json(
             only: %i[title processed_html tag_list category id user_id],
             include: {
-              author: { only: %i[username name], methods: [:profile_image_90] },
+              author: { only: %i[username name], methods: %i[username profile_image_90] },
             },
           ) %>"
     data-allcategories="<%= ClassifiedListing.categories_for_display.to_json %>"
