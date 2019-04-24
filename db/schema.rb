@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_17_171019) do
+ActiveRecord::Schema.define(version: 2019_04_17_171020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -231,6 +231,21 @@ ActiveRecord::Schema.define(version: 2019_04_17_171019) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "classified_listings", force: :cascade do |t|
+    t.text "body_markdown"
+    t.datetime "bumped_at"
+    t.string "cached_tag_list"
+    t.string "category"
+    t.boolean "contact_via_connect", default: false
+    t.datetime "created_at", null: false
+    t.bigint "organization_id"
+    t.text "processed_html"
+    t.boolean "published"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+  end
+
   create_table "collections", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description"
@@ -269,6 +284,16 @@ ActiveRecord::Schema.define(version: 2019_04_17_171019) do
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "credits", force: :cascade do |t|
+    t.float "cost", default: 0.0
+    t.datetime "created_at", null: false
+    t.bigint "organization_id"
+    t.boolean "spent", default: false
+    t.string "spent_on"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
