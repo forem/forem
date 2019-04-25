@@ -62,9 +62,9 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.save
       @classified_listing.remove_from_index!
     elsif params[:classified_listing][:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
-      @classified_listing.title = params[:classified_listing][:title]
-      @classified_listing.body_markdown = params[:classified_listing][:body_markdown]
-      @classified_listing.tag_list = params[:classified_listing][:tag_list]
+      @classified_listing.title = params[:classified_listing][:title] if params[:classified_listing][:title]
+      @classified_listing.body_markdown = params[:classified_listing][:body_markdown] if params[:classified_listing][:body_markdown]
+      @classified_listing.tag_list = params[:classified_listing][:tag_list] if params[:classified_listing][:tag_list]
       @classified_listing.save
     end
     clear_listings_cache
