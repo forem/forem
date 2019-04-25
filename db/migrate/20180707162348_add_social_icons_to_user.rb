@@ -5,5 +5,6 @@ class AddSocialIconsToUser < ActiveRecord::Migration[5.1]
     add_column :users, :linkedin_url, :string
     add_column :users, :behance_url, :string
     add_column :users, :dribbble_url, :string
+    add_column :users, :twitch_url, :string
   end
 end

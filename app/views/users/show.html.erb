@@ -105,6 +105,11 @@
               <%= inline_svg("gitlab.svg", class: "icon-img") %>
             </a>
           <% end %>
+          <% if @user.twitch_url? %>
+            <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me">
+              <%= inline_svg("twitch-logo.svg", class: "icon-img") %>
+            </a>
+          <% end %>
           <% if @user.website_url? %>
             <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me">
               <%= inline_svg("external-link-logo.svg", class: "icon-img") %>

@@ -24,7 +24,7 @@
         </span>
       </h1>
       <p class="profile-description" itemprop="description">
-        <%= @user.summary.present? ? @user.summary : ["404 bio not found"].sample %>
+        <%= @user.summary.presence || ["404 bio not found"].sample %>
       </p>
       <style>
         .profile-details .social .icon-img path {
@@ -81,6 +81,11 @@
           <% if @user.gitlab_url.present? %>
             <a href="<%= @user.gitlab_url %>" target="_blank" rel="noopener nofollow me">
               <%= inline_svg("gitlab.svg", class: "icon-img") %>
+            </a>
+          <% end %>
+          <% if @user.twitch_url.present? %>
+            <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me">
+              <%= inline_svg("twitch-logo.svg", class: "icon-img") %>
             </a>
           <% end %>
           <% if @user.website_url.present? %>
