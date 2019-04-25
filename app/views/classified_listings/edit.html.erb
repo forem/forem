@@ -20,7 +20,18 @@
     <h2>
       Markdown: You can only modify within the first 24 hours of listing/bumping
     </h2>
-    <%= f.text_area :body_markdown%>
+    <div class="field">
+      <%= f.label "title", "Title" %>
+      <%= f.text_field "title", maxlength: 128, placeholder: "128 characters max, plain text" %>
+    </div>
+    <div class="field">
+      <%= f.label "body_markdown", "Body Markdown" %>
+      <%= f.text_area "body_markdown", maxlength: 400, placeholder: "400 characters max, 12 line break max, no images allowed" %>
+    </div>
+    <div class="field">
+      <%= f.label "tag_list", "Tags" %>
+      <%= f.text_field "tag_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
+    </div>
     <%= f.submit "Update Body Markdown" %>
   <% end %>
 </div>
