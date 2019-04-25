@@ -33,8 +33,10 @@ github:
     # enable for pull requests coming from forks (defaults to false)
     pullRequestsFromForks: true
     # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
-    addComment: true
+    addComment: false
     # add a "Review in Gitpod" button to pull requests (defaults to false)
     addBadge: false
     # add a label once the prebuild is ready to pull requests (defaults to false)
-    addLabel: prebuilt-in-gitpod
+    addLabel: false
+    # add a check to pull requests (defaults to true)
+    addCheck: true
