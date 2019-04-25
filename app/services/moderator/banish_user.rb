@@ -23,7 +23,7 @@ module Moderator
     end
 
     def banish
-      user.unsubscribe_from_newsletters
+      user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
       handle_user_status("Ban", "spam account")
       delete_user_activity
