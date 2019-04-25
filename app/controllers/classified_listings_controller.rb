@@ -1,17 +1,19 @@
 class ClassifiedListingsController < ApplicationController
-  before_action :set_classified_listing, only: [:show, :edit, :update]
+  before_action :set_classified_listing, only: %i[show edit update]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
   before_action :authenticate_user!, only: %i[edit update new]
 
   def index
-    if params[:category].blank?
-      @classified_listings = ClassifiedListing.where(published: true).order("bumped_at DESC").limit(12)
-    else
-      @classified_listings = []
-    end
+    @classified_listings = if params[:category].blank?
+                             ClassifiedListing.where(published: true).order("bumped_at DESC").limit(12)
+                           else
+                             []
+                           end
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
+
+  def show; end
 
   def new
     @classified_listing = ClassifiedListing.new
@@ -68,14 +70,15 @@ class ClassifiedListingsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_classified_listing
-      @classified_listing = ClassifiedListing.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def classified_listing_params
-      accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
-      params.require(:classified_listing).permit(accessible)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_classified_listing
+    @classified_listing = ClassifiedListing.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def classified_listing_params
+    accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
+    params.require(:classified_listing).permit(accessible)
+  end
 end

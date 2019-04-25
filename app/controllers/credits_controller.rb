@@ -19,6 +19,7 @@ class CreditsController < ApplicationController
     @number_to_purchase.times do
       if params[:user_type] == "organization"
         raise unless current_user.org_admin
+
         credit_objects << Credit.new(organization_id: current_user.organization_id, cost: cost_per_credit / 100.0)
       else
         credit_objects << Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
@@ -42,23 +43,21 @@ class CreditsController < ApplicationController
     @customer = if current_user.stripe_id_code
                   Stripe::Customer.retrieve(current_user.stripe_id_code)
                 else
-                  Stripe::Customer.create({
-                    email: current_user.email
-                  })
+                  Stripe::Customer.create(
+                    email: current_user.email,
+                  )
                 end
   end
 
   def find_or_create_card
-    if params[:stripe_token]
-      @card = Stripe::Customer.create_source(
-        @customer.id,
-        {
-          source: params[:stripe_token],
-        }
-      )
-    else
-      @card = @customer.sources.retrieve(params[:selected_card])
-    end
+    @card = if params[:stripe_token]
+              Stripe::Customer.create_source(
+                @customer.id,
+                source: params[:stripe_token],
+              )
+            else
+              @customer.sources.retrieve(params[:selected_card])
+            end
   end
 
   def update_user_stripe_info
@@ -67,13 +66,13 @@ class CreditsController < ApplicationController
 
   def create_charge
     @amount = generate_cost
-    Stripe::Charge.create({
+    Stripe::Charge.create(
       customer: @customer.id,
       source: @card || @customer.default_source,
       amount: @amount,
       description: "Purchase of #{@number_to_purchase} credits.",
-      currency: "usd"
-    })
+      currency: "usd",
+    )
   end
 
   def generate_cost

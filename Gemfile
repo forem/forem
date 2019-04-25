@@ -9,9 +9,8 @@ git_source(:github) do |repo_name|
 end
 
 group :production do
-  gem 'nakayoshi_fork', '~> 0.0.4' # solves CoW friendly problem on MRI 2.2 and later
+  gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
 end
-
 
 gem "actionpack-action_caching", "~> 1.2" # Action caching for Action Pack (removed from core in Rails 4.0)
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
