@@ -35,8 +35,7 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.published = true
       @classified_listing.organization_id = current_user.organization_id if @classified_listing.post_as_organization.to_i == 1
       if @classified_listing.save
-        CacheBuster.new.bust("/listings")
-        CacheBuster.new.bust("/listings?i=i")
+        clear_listings_cache
         available_credits.limit(number_of_credits_needed).update_all(spent: true)
         redirect_to "/listings"
       else
@@ -63,9 +62,12 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.save
       @classified_listing.remove_from_index!
     elsif params[:classified_listing][:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
-      @classified_listing.body_markdown = params[:classified_listing][:body_markdown]
+      @classified_listing.title = params[:classified_listing][:title] if params[:classified_listing][:title]
+      @classified_listing.body_markdown = params[:classified_listing][:body_markdown] if params[:classified_listing][:body_markdown]
+      @classified_listing.tag_list = params[:classified_listing][:tag_list] if params[:classified_listing][:tag_list]
       @classified_listing.save
     end
+    clear_listings_cache
     redirect_to "/listings"
   end
 
@@ -80,5 +82,10 @@ class ClassifiedListingsController < ApplicationController
   def classified_listing_params
     accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
     params.require(:classified_listing).permit(accessible)
+  end
+
+  def clear_listings_cache
+    CacheBuster.new.bust("/listings")
+    CacheBuster.new.bust("/listings?i=i")
   end
 end
