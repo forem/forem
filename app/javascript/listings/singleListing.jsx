@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-export const SingleListing = ({listing, onAddTag, currentUserId}) => {
+export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategory}) => {
   const tagLinks = listing.tag_list.map(tag => (
     <a href={`/listings?t=${tag}`} onClick={e => onAddTag(e, tag)} data-no-instant>{tag}</a>
   ));
@@ -13,7 +13,10 @@ export const SingleListing = ({listing, onAddTag, currentUserId}) => {
         <div className="single-classified-listing-body" dangerouslySetInnerHTML={{ __html: listing.processed_html }} />
         <div className="single-classified-listing-tags">{ tagLinks }</div>
         <div className="single-classified-listing-author-info">
-          <a href={`/${listing.author.username}`}>{listing.author.name}</a> {editButton}
+          <a href={`/listings/${listing.category}`} onClick={e => onChangeCategory(e, listing.category)}>{listing.category}</a>
+          ・
+          <a href={`/${listing.author.username}`}>{listing.author.name}</a>
+          {editButton}
         </div>
       </div>
     </div>
@@ -23,5 +26,6 @@ export const SingleListing = ({listing, onAddTag, currentUserId}) => {
 SingleListing.propTypes = {
   listing: PropTypes.object.isRequired,
   onAddTag: PropTypes.func.isRequired,
+  onChangeCategory: PropTypes.func.isRequired,
   currentUserId: PropTypes.number,
 };

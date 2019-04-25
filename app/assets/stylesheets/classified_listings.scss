@@ -165,7 +165,6 @@
         a {
           color: $medium-gray;
           color: var(--theme-secondary-color, $medium-gray);
-          font-style: italic;
         }
       }
     }  
