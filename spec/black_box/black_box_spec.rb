@@ -28,6 +28,27 @@ RSpec.describe BlackBox do
     end
   end
 
+  describe "#comment_quality_score" do
+    let(:comment) { create(:comment, commentable: create(:article), body_markdown: "```#{'hello, world! ' * 20}```") }
+
+    before do
+      reaction = create(:reaction, reactable: comment)
+      reaction.update_column(:points, 20)
+      reaction2 = create(:reaction, reactable: comment)
+      reaction2.update_column(:points, 2)
+    end
+
+    it "returns the correct score" do
+      # rep_points + descendants_points + bonus_points - spaminess_rating
+      # rep_points - 22
+      # descendants_points - 0
+      # bonus_points - 2 + 1 = 3
+      # spaminess_rating - 0
+      # 22 + 0 + 3 - 0 = 25
+      expect(described_class.comment_quality_score(comment)).to eq(25)
+    end
+  end
+
   describe "#calculate_spaminess" do
     let(:user) { build(:user) }
     let(:comment) { build(:comment, user: user) }

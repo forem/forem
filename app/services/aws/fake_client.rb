@@ -3,7 +3,7 @@ module Aws
   class FakeClient
     def initialize; end
 
-    def invoke(_function_name:, _payload:)
+    def invoke(*)
       OpenStruct.new(payload: [{ body: { message: 0 }.to_json }.to_json])
     end
   end
