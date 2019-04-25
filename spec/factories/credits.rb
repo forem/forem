@@ -1,5 +1,4 @@
 FactoryBot.define do
-    factory :credit do
-    end
+  factory :credit do
   end
-    
+end

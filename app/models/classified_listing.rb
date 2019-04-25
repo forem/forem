@@ -1,5 +1,4 @@
 class ClassifiedListing < ApplicationRecord
-
   include AlgoliaSearch
 
   attr_accessor :post_as_organization, :action
@@ -12,9 +11,9 @@ class ClassifiedListing < ApplicationRecord
   acts_as_taggable_on :tags
 
   validates :title, presence: true,
-    length: { maximum: 128 }
+                    length: { maximum: 128 }
   validates :body_markdown, presence: true,
-                    length: { maximum: 400 }
+                            length: { maximum: 400 }
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
@@ -58,14 +57,14 @@ class ClassifiedListing < ApplicationRecord
 
   def self.categories_available
     {
-      "cfp"               => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form" },
-      "contractors"       => { cost: 1, name: "Contractor for Hire", rules: "You are available for hire." },
-      "collabs"           => { cost: 1, name: "Contributors/Collaborators Wanted" },
-      "education"         => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
-      "jobs"              => { cost: 10, name: "Job Listings", rules: "Companies offering employment right now." },
-      "products"          => { cost: 1, name: "Products/Tools", rules: "Must be availabel right now" },
-      "events"            => { cost: 1, name: "Upcoming Events", rules: "Live or online events with date included" },
-      "misc"              => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
+      "cfp" => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form" },
+      "contractors" => { cost: 1, name: "Contractor for Hire", rules: "You are available for hire." },
+      "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted" },
+      "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
+      "jobs" => { cost: 10, name: "Job Listings", rules: "Companies offering employment right now." },
+      "products" => { cost: 1, name: "Products/Tools", rules: "Must be availabel right now" },
+      "events" => { cost: 1, name: "Upcoming Events", rules: "Live or online events with date included" },
+      "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
   end
 
@@ -83,15 +82,9 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def restrict_markdown_input
-    if body_markdown.to_s.scan(/(?=\n)/).count > 12
-      errors.add(:body_markdown, "has too many linebreaks. No no more than 12 allowed.")
-    end
-    if body_markdown.to_s.include?("![")
-      errors.add(:body_markdown, "is not allowed to include images.")
-    end
-    if body_markdown.to_s.include?("{% ")
-      errors.add(:body_markdown, "is not allowed to include liquid tags.")
-    end
+    errors.add(:body_markdown, "has too many linebreaks. No no more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
+    errors.add(:body_markdown, "is not allowed to include images.") if body_markdown.to_s.include?("![")
+    errors.add(:body_markdown, "is not allowed to include liquid tags.") if body_markdown.to_s.include?("{% ")
   end
 
   def validate_tags
