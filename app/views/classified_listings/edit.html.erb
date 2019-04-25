@@ -30,7 +30,7 @@
     </div>
     <div class="field">
       <%= f.label "tag_list", "Tags" %>
-      <%= f.text_field "tag_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
+      <%= f.text_field "tag_list", value: @classified_listing.cached_tag_list, placeholder: "8 tags max, comma separated, no spaces or special characters" %>
     </div>
     <%= f.submit "Update Body Markdown" %>
   <% end %>
