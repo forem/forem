@@ -92,6 +92,9 @@ class User < ApplicationRecord
   validates :gitlab_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+  validates :twitch_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
                          message: "%{value} is not a valid shirt style" },

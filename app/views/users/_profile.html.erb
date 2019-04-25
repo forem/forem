@@ -103,7 +103,7 @@
   </div>
   <div class="field">
     <%= f.label :currently_learning, "I'm getting into" %>
-    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.new.year}?", maxlength: 500 %>
+    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.zone.now.year}?", maxlength: 500 %>
   </div>
   <div class="field">
     <%= f.label :currently_hacking_on, "My projects and hacks" %>
@@ -145,6 +145,10 @@
   <div class="field">
     <%= f.label :mastodon_url, "Mastodon URL" %>
     <%= f.url_field :mastodon_url %>
+  </div>
+   <div class="field">
+    <%= f.label :twitch_url, "Twitch URL" %>
+    <%= f.url_field :twitch_url %>
   </div>
   <div class="field">
     <label></label>

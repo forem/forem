@@ -919,6 +919,7 @@ ActiveRecord::Schema.define(version: 2019_04_17_171020) do
     t.string "text_color_hex"
     t.string "text_only_name"
     t.string "top_languages"
+    t.string "twitch_url"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"

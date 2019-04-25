@@ -142,6 +142,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "does not accept invalid twitch url" do
+      user.twitch_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https twitch url" do
+      %w[pandyzhao pandyzhao/ PandyZhao_ pandy_Zhao].each do |username|
+        user.twitch_url = "https://twitch.tv/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
     it "accepts valid https stackoverflow url" do
       %w[pandyzhao pandyzhao/ pandy-zhao].each do |username|
         user.stackoverflow_url = "https://stackoverflow.com/users/7381391/#{username}"
