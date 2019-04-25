@@ -33,7 +33,7 @@ function addReadingListCountToHomePage() {
   var readingListCount;
   if (user && document.getElementById('reading-list-count')) {
     readingListCount =
-      user.reading_list_ids.length > 0 ? user.reading_list_ids.length : 'EMPTY';
+      user.reading_list_ids.length > 0 ? user.reading_list_ids.length : 'empty';
     document.getElementById('reading-list-count').innerHTML =
       '(' + readingListCount + ')';
     document.getElementById('reading-list-count').dataset.count =

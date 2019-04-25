@@ -13,21 +13,28 @@
       </a>
     </div>
   <% end %>
-  <% if user_signed_in? %>
-    <div class="widget sidebar-nav-block">
-      <div class="sidebar-nav-element sidebar-nav-readinglist">
+  <div class="widget sidebar-nav-block sidebar-tag-block">
+    <% if user_signed_in? %>
+      <div class="sidebar-nav-header sidebar-nav-header-middle">
+        navigation
+      </div>
+      <div class="sidebar-nav-element">
         <a class="sidebar-nav-link" href="/readinglist">
-          <img alt="bookmarks" src="<%= asset_path("readinglist-button.png") %>" /> MY READING LIST
+          saved posts
           <span id="reading-list-count"></span>
         </a>
-        <div class="readinglist-sidebar-subcat">
-          <a href="/readinglist">Saved Posts</a><span class="separator"></span><a href="/readinglist?v=comments">Comment
-          Activity</a>
-        </div>
+        <a class="sidebar-nav-link" href="/videos">
+          videos
+          <span id="reading-list-count"></span>
+        </a>
+        <% if 1==2 #not for display yet %>
+          <a class="sidebar-nav-link" href="/listings">
+            listings
+            <span id="reading-list-count"></span>
+          </a>
+        <% end %>
       </div>
-    </div>
-  <% end %>
-  <div class="widget sidebar-nav-block sidebar-tag-block">
+    <% end %>
     <div class="sidebar-nav-header sidebar-nav-header-middle">
       <% if user_signed_in? %>
         my tags

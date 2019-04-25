@@ -9,17 +9,18 @@ git_source(:github) do |repo_name|
 end
 
 group :production do
-  gem 'nakayoshi_fork', '~> 0.0.4' # solves CoW friendly problem on MRI 2.2 and later
+  gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
 end
 
 gem "actionpack-action_caching", "~> 1.2" # Action caching for Action Pack (removed from core in Rails 4.0)
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
+gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord objects
 gem "acts-as-taggable-on", "~> 6.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.5", ">= 2.5.2" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
-gem "ahoy_email", "~> 0.5" # Email analytics for Rails
-gem "airbrake", "~> 8.1" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
+gem "ahoy_email", "~> 1.0" # Email analytics for Rails
+gem "airbrake", "~> 9.1" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.0" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
@@ -37,9 +38,9 @@ gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Jo
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.6" # Flexible authentication solution for Rails
 gem "draper", "~> 3.0" # Draper adds an object-oriented layer of presentation logic to your Rails apps
-gem "dry-struct", "~> 0.6" # Typed structs and value objects
+gem "dry-struct", "~> 0.7" # Typed structs and value objects
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
-gem "emoji_regex", "~> 1.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
+gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
 gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
@@ -103,7 +104,7 @@ gem "webpush", "~> 0.3" # Encryption Utilities for Web Push payload
 group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
-  gem "brakeman", "~> 4.4", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
+  gem "brakeman", "~> 4.5", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bullet", "~> 5.9" # help to kill N+1 queries and unused eager loading
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.3", require: false # A series of things you can use to benchmark a Rails or Ruby app
@@ -119,7 +120,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.13" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.18" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
@@ -133,7 +134,7 @@ end
 
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
-  gem "factory_bot_rails", "~> 4.11" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  gem "factory_bot_rails", "~> 5.0" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.4" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples

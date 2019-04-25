@@ -1,0 +1,26 @@
+<div class="classifieds-container">
+  <%= form_for(@classified_listing) do |f| %>
+    <p>
+      You can bump your listing for the same price as the original listing
+    </p>
+    <h2>
+      Bumped at: <%= @classified_listing.bumped_at %>
+    </h2>
+    <input type="hidden" name="classified_listing[action]" value="bump" />
+    <%= f.submit "Bump Listing" %>
+  <% end %>
+  <%= form_for(@classified_listing) do |f| %>
+      <h2>
+        Published: <%= @classified_listing.published %>
+      </h2>
+      <input type="hidden" name="classified_listing[action]" value="unpublish" />
+    <%= f.submit "Unpublish Listing" %>
+  <% end %>
+  <%= form_for(@classified_listing) do |f| %>
+    <h2>
+      Markdown: You can only modify within the first 24 hours of listing/bumping
+    </h2>
+    <%= f.text_area :body_markdown%>
+    <%= f.submit "Update Body Markdown" %>
+  <% end %>
+</div>

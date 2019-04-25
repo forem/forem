@@ -103,9 +103,6 @@ variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
 variable :GA_FETCH_RATE, :Integer, default: 25
 
-# Honeycomb
-variable :HONEYCOMB_API_KEY, :String, default: "Optional"
-
 # Mailchimp for mails
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
 variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
