@@ -43,7 +43,7 @@ class UsersController < ApplicationController
     @tab_list = @user.settings_tab_list
     @tab = "misc"
     authorize @user
-    @user.language_settings["preferred_languages"] = params[:user][:preferred_languages].to_a
+    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
       notice = "Your profile was successfully updated."
       @user.touch(:profile_updated_at)

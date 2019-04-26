@@ -122,10 +122,17 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     it "keeps the estimated_default_language" do
-      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en ru])
+      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
       post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en] } }
       user.reload
       expect(user.language_settings["estimated_default_language"]).to eq("ru")
+    end
+
+    it "doesn't set non-existent languages" do
+      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
+      post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en blah] } }
+      user.reload
+      expect(user.language_settings["preferred_languages"].sort).to eq(%w[en it])
     end
   end
 
