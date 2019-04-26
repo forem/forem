@@ -165,6 +165,10 @@
         a {
           color: $medium-gray;
           color: var(--theme-secondary-color, $medium-gray);
+          display: inline-block;
+          &.classified-listing-edit-button {
+            margin-left: 4px;
+          }
         }
       }
     }  
@@ -246,7 +250,9 @@
       border-radius: 8px;
       font-weight: bold;
     }
-
+    .classified-listings-unpublish {
+      background: $red;
+    }
     p {
       font-size: 0.8em;
     }
