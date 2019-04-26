@@ -54,7 +54,7 @@ function initializeCommentsPage() {
               }
             }
           };
-          var timeString = (Date.now()).toString();
+
           ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
           ajaxReq.send();
         })(i);
