@@ -1,0 +1,11 @@
+<div class="row">
+  <h3><u>Credits</u></h3>
+  <p>Avaiable Credits: <%= @user.credits.where(spent: false).size %></p>
+  <%= form_for [:internal, @user] do |f| %>
+    <%= f.label "Add Credit(s): " %>
+    <br>
+    <%= f.text_field :add_credits %>
+    <br>
+    <%= f.submit "Add Credits" %>
+  <% end %>
+</div>
