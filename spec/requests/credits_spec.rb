@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "Credits", type: :request do
   describe "GET /credits" do
     let(:user) { create(:user) }
+    let(:organization) { create(:organization) }
 
     before do
       sign_in user
@@ -11,6 +12,16 @@ RSpec.describe "Credits", type: :request do
     it "shows credits page" do
       get "/credits"
       expect(response.body).to include("You have")
+    end
+    it "shows credits page if user belongs to an org" do
+      user.update_column(:organization_id, organization.id)
+      get "/credits"
+      expect(response.body).to include("You have")
+    end
+    it "shows credits page if user belongs to an org" do
+      user.update_column(:organization_id, organization.id, org_admin: true)
+      get "/credits"
+      expect(response.body).to include(organization.name)
     end
   end
 

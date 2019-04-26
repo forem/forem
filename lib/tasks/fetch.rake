@@ -27,22 +27,10 @@ task resave_supported_tags: :environment do
   Tag.where(supported: true).find_each(&:save)
 end
 
-task renew_hired_articles: :environment do
-  Article.published.tagged_with("hiring").
-    where("featured_number < ?", 7.days.ago.to_i + 11.minutes.to_i).
-    where(approved: true, automatically_renew: true).
-    each do |article|
-
-    if article.automatically_renew
-      article.featured_number = Time.current.to_i
-    else
-      article.approved = false
-      article.body_markdown = article.body_markdown.gsub(
-        "published: true", "published: false"
-      )
-    end
-
-    article.save
+task expire_old_listings: :environment do
+  ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
+    listing.update(published: false)
+    listing.remove_from_index!
   end
 end
 
