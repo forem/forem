@@ -41,6 +41,7 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentor = user_params[:add_mentor]
     make_matches
     add_note if user_params[:new_note]
+    add_credits if user_params[:add_credits]
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
     else
@@ -56,6 +57,15 @@ class Internal::UsersController < Internal::ApplicationController
       reason: "misc_note",
       content: user_params[:new_note],
     )
+  end
+
+  def add_credits
+    amount = user_params[:add_credits].to_i
+    credit_objects = []
+    amount.times do
+      credit_objects << Credit.new(user_id: @user.id)
+    end
+    Credit.import credit_objects
   end
 
   def user_status
@@ -127,6 +137,7 @@ class Internal::UsersController < Internal::ApplicationController
                                  :user_status,
                                  :toggle_mentorship,
                                  :pro,
-                                 :merge_user_id)
+                                 :merge_user_id,
+                                 :add_credits)
   end
 end
