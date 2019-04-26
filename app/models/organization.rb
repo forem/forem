@@ -4,7 +4,8 @@ class Organization < ApplicationRecord
   acts_as_followable
 
   has_many :job_listings
-  has_many :users
+  has_many :organization_memberships
+  has_many :users, through: :organization_memberships
   has_many :api_secrets, through: :users
   has_many :articles
   has_many :collections
