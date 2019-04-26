@@ -6,7 +6,7 @@
 
 <%= form_tag users_update_language_settings_path do |f| %>
   <div class="checkbox-field">
-    <% User::LANGUAGES.each do |code, name| %>
+    <% Languages::LIST.each do |code, name| %>
       <div class="sub-field">
         <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array.include?(code) %>
         <%= label_tag "user[preferred_languages][]", name %>
