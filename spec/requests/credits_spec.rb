@@ -20,7 +20,7 @@ RSpec.describe "Credits", type: :request do
     end
     it "shows credits page if user belongs to an org and is org admin" do
       user.update_column(:organization_id, organization.id)
-      user.update_column(org_admin: true)
+      user.update_column(org_admin, true)
       get "/credits"
       expect(response.body).to include(organization.name)
     end
