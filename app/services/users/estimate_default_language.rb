@@ -23,11 +23,18 @@ module Users
       return @estimated_default_language if defined? @estimated_default_language
 
       identity = user.identities.find_by(provider: "twitter")
-      @estimated_default_language = if user.email.to_s.end_with?(".jp")
-                                      "ja"
-                                    elsif identity
-                                      identity.auth_data_dump["extra"]["raw_info"]["lang"]
-                                    end
+      @estimated_default_language = user.email.to_s.end_with?(".jp") ? "ja" : language_from_twitter(identity)
+    end
+
+    # available twitter languages
+    # https://developer.twitter.com/en/docs/developer-utilities/supported-languages/api-reference/get-help-languages
+    def language_from_twitter(identity)
+      return nil unless identity
+
+      twitter_lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
+      return "en" if twitter_lang == "en-gb"
+
+      Languages.available?(twitter_lang) ? twitter_lang : nil
     end
   end
 end
