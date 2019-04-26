@@ -5,5 +5,5 @@ AWS_LAMBDA = if Rails.env.production?
                  secret_access_key: ApplicationConfig["AWS_SDK_SECRET"],
                )
              else
-               AWS_LAMBDA = Aws::FakeClient.new
+               Aws::FakeClient.new
              end
