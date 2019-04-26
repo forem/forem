@@ -160,7 +160,7 @@ class UsersController < ApplicationController
 
     case @tab
     when "organization"
-      @organization = @user.organization || Organization.new
+      handle_organization_tab
     when "switch-organizations"
       @organization = Organization.new
     when "integrations"
@@ -198,6 +198,22 @@ class UsersController < ApplicationController
       HEREDOC
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
+    end
+  end
+
+  def handle_organization_tab
+    @organizations = @current_user.organizations.includes(:users).order("name ASC")
+    if params[:org_id].blank?
+      @organization = @organizations.first
+      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
+    elsif params[:org_id] == "new"
+      @organization = Organization.new
+    elsif params[:org_id].match?(/\d/)
+      @organization = Organization.find_by(id: params[:org_id])
+      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
+      authorize @organization, :part_of_org?
+    else
+      @organization = current_user.organizations.order("name ASC").first || Organization.new
     end
   end
 end

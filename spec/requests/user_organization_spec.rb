@@ -7,23 +7,40 @@ RSpec.describe "UserOrganization", type: :request do
   context "when joining an org" do
     before { sign_in user }
 
-    it "joins org with proper secret" do
-      post "/users/join_org", params: { org_secret: organization.secret }
-      expect(user.organization_id).to eq(organization.id)
-    end
-
     it "creates an organization_membership association" do
       post "/users/join_org", params: { org_secret: organization.secret }
       org_membership = OrganizationMembership.first
       expect(org_membership.persisted?).to eq true
-      expect(org_membership.user_id).to eq user.id
-      expect(org_membership.organization_id).to eq organization.id
+      expect(org_membership.user).to eq user
+      expect(org_membership.organization).to eq organization
       expect(org_membership.type_of_user).to eq "member"
     end
 
     it "returns 404 if secret is wrong" do
       expect { post "/users/join_org", params: { org_secret: "NOT SECRET" } }.
         to raise_error ActiveRecord::RecordNotFound
+    end
+  end
+
+  context "when creating a new org" do
+    before do
+      sign_in user
+      org_params = build(:organization).attributes
+      org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app", "assets", "images", "android-icon-36x36.png"), "image/jpeg")
+      post "/organizations", params: { organization: org_params }
+    end
+
+    it "creates the correct organization_membership association" do
+      org_membership = OrganizationMembership.first
+      expect(org_membership.persisted?).to eq true
+      expect(org_membership.user).to eq user
+      expect(org_membership.organization).to eq Organization.last
+      expect(org_membership.type_of_user).to eq "admin"
+    end
+
+    it "redirects to the proper org settings page" do
+      expect(response.status).to eq 302
+      expect(response.redirect_url).to include "/settings/organization/#{Organization.last.id}"
     end
   end
 

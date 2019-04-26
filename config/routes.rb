@@ -263,6 +263,7 @@ Rails.application.routes.draw do
   end
 
   get "/settings/(:tab)" => "users#edit"
+  get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"

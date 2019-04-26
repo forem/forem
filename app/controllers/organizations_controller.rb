@@ -8,11 +8,8 @@ class OrganizationsController < ApplicationController
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
-      ActiveRecord::Base.transaction do
-        current_user.update(organization_id: @organization.id, org_admin: true)
-        OrganizationMembership.create(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
-      end
-      redirect_to "/settings/organization", notice:
+      @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
+      redirect_to "/settings/organization/#{@organization.id}", notice:
         "Your organization was successfully created and you are an admin."
     else
       @tab = "switch-organizations" if @user.has_role?(:switch_between_orgs)
