@@ -115,6 +115,11 @@
               <%= inline_svg("external-link-logo.svg", class: "icon-img") %>
             </a>
           <% end %>
+          <% if @user.twitch_username? %>
+            <%= link_to twitch_live_stream_path(username: @user.username) do %>
+              <%= inline_svg("twitch-logo.svg", class: "icon-img", id: "icon-twitch") %>
+            <% end %>
+          <% end %>
         </p>
       </div>
     </div>
@@ -137,6 +142,17 @@
     </div>
     <%= render "articles/user_metadata", context: "profile" %>
   </div>
+<% end %>
+
+<% if @user.twitch_username.present? %>
+  <% if @user.currently_streaming_on_twitch? %>
+    <style>
+      #icon-twitch path {
+        fill: green !important;
+        stroke: green !important;
+      }
+    </style>
+  <% end %>
 <% end %>
 
 <div class="home sub-home" id="index-container"
