@@ -3,13 +3,14 @@ class StackblitzTag < LiquidTagBase
     super
     @id = parse_id(id)
     @view = parse_view(id)
+    @file = parse_file(id)
     @height = 500
   end
 
   def render(_context)
     html = <<-HTML
       <iframe
-        src="https://stackblitz.com/edit/#{@id}?embed=1&#{@view}"
+        src="https://stackblitz.com/edit/#{@id}?embed=1#{@view}#{@file}"
         width="100%"
         height="#{@height}"
         scrolling="no"
@@ -41,11 +42,25 @@ class StackblitzTag < LiquidTagBase
     validated_views = input_split.map { |o| valid_view?(o) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
-    validated_views.length.zero? ? "" : validated_views.join("")
+    validated_views.length.zero? ? "" : "&#{validated_views.join("")}"
   end
 
   def valid_view?(option)
     option.match(/^view=(preview|editor|both)\z/)
+  end
+
+  def parse_file(input)
+    input_split = input.split(" ")
+
+    # Validation
+    validated_files = input_split.map { |o| valid_view?(o) }.reject(&:nil?)
+    raise StandardError, "Invalid Options" unless validated_files.length.between?(0, 1)
+
+    validated_files.length.zero? ? "" : "&#{validated_files.join("")}"
+  end
+
+  def valid_file?(option)
+    option.match(^file=(.*)\z)
   end
 end
 
