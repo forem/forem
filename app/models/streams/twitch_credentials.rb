@@ -42,7 +42,7 @@ module Streams
     private
 
     def connection
-      Faraday.new("https://api.twitch.tv/helix") do |faraday|
+      Faraday.new do |faraday|
         faraday.request :json
         faraday.response :json
         faraday.adapter Faraday.default_adapter

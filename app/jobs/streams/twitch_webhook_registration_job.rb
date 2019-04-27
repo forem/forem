@@ -1,5 +1,7 @@
 module Streams
   class TwitchWebhookRegistrationJob < ApplicationJob
+    WEBHOOK_LEASE_SECONDS = 300
+
     def perform(user)
       return if user.twitch_username.blank?
 
@@ -12,7 +14,7 @@ module Streams
         "webhooks/hub",
         "hub.callback" => twitch_stream_updates_url_for_user(user),
         "hub.mode" => "subscribe",
-        "hub.lease_seconds" => 300,
+        "hub.lease_seconds" => WEBHOOK_LEASE_SECONDS,
         "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
       )
     end
