@@ -55,3 +55,6 @@ package-lock.json
 
 # Development Docker storage location
 _docker-storage/
+
+# YARD generated doc
+docs/api/
