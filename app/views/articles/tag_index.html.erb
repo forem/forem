@@ -2,7 +2,7 @@
   <%= render "articles/tags/meta" %>
 <% end %>
 <% params.delete(:i) %>
-<% cache("tag-stories-index-#{params.to_s}-#{user_signed_in?}", expires_in: 4.minutes) do %>
+<% cache("tag-stories-index-#{params.to_s}-#{user_signed_in?}-#{@tag_model.updated_at}", expires_in: 4.minutes) do %>
   <style>
     .tag-header {
       border: 2px solid<%= HexComparer.new([@tag_model.bg_color_hex || "#0000000", @tag_model.text_color_hex || "#ffffff"]).brightness(0.88) %>;

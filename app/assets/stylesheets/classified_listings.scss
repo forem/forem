@@ -31,10 +31,12 @@
       border-radius: 8px;
       a {
         display: block;
+        padding: 7px 16px;
         &.classified-create-link {
           border: 2px solid darken($green, 14%);
           color: darken($green, 19%);
-          padding: 2px 16px;
+          padding: 6px 16px;
+          margin-top: 6px;
         }
       }
       @media screen and (min-width: 550px) {
@@ -44,6 +46,10 @@
           border: 1px solid $bold-blue;
           min-width: 50px;
           text-align: center;
+          padding: 3px 16px;
+          &.classified-create-link {
+            padding: 2px 16px;
+          }
         }
       }
     }
