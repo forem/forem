@@ -20,21 +20,15 @@ module Streams
       private
 
       def get_new_token
-        resp = connection.post(
+        resp = HTTParty.post(
           "https://id.twitch.tv/oauth2/token",
-          client_id: ApplicationConfig["TWITCH_CLIENT_ID"],
-          client_secret: ApplicationConfig["TWITCH_CLIENT_SECRET"],
-          grant_type: :client_credentials,
+          body: {
+            client_id: ApplicationConfig["TWITCH_CLIENT_ID"],
+            client_secret: ApplicationConfig["TWITCH_CLIENT_SECRET"],
+            grant_type: :client_credentials
+          },
         )
-        [resp.body["access_token"], resp.body["expires_in"].seconds.from_now]
-      end
-
-      def connection
-        Faraday.new do |faraday|
-          faraday.request :json
-          faraday.response :json
-          faraday.adapter Faraday.default_adapter
-        end
+        [resp["access_token"], resp["expires_in"].seconds.from_now]
       end
     end
   end
