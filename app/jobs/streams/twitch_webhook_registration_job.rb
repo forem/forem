@@ -1,6 +1,6 @@
 module Streams
   class TwitchWebhookRegistrationJob < ApplicationJob
-    WEBHOOK_LEASE_SECONDS = 300
+    WEBHOOK_LEASE_SECONDS = 5.days.to_i
 
     def perform(user)
       return if user.twitch_username.blank?

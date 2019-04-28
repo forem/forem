@@ -10,7 +10,7 @@ RSpec.describe Streams::TwitchWebhookRegistrationJob, type: :job do
     {
       "hub.callback" => "http://#{ApplicationConfig['APP_DOMAIN']}/users/#{user.id}/twitch_stream_updates",
       "hub.mode" => "subscribe",
-      "hub.lease_seconds" => 300,
+      "hub.lease_seconds" => 432_000,
       "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=654321",
       "hub.secret" => ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
     }
