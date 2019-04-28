@@ -18,12 +18,12 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
 
   after_create   :after_create_checks
-  after_save     :calculate_score
-  after_save     :bust_cache
+  after_save     :calculate_score_async
+  after_save     :bust_cache_async
   after_save     :synchronous_bust
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification, if: :should_send_email_notification?
-  after_create   :create_first_reaction
+  after_create   :send_email_notification_async, if: :should_send_email_notification?
+  after_create   :create_first_reaction_async
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
@@ -191,6 +191,37 @@ class Comment < ApplicationRecord
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Reaction")
   end
 
+  def calculate_score
+    update_column(:score, BlackBox.comment_quality_score(self))
+    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
+    root.save unless is_root?
+  end
+
+  def create_id_code
+    update_column(:id_code, id.to_s(26))
+  end
+
+  def touch_user
+    user.touch(:updated_at, :last_comment_at)
+  end
+
+  def create_first_reaction
+    Reaction.create(user_id: user_id,
+                    reactable_id: id,
+                    reactable_type: "Comment",
+                    category: "like")
+  end
+
+  def send_email_notification
+    NotifyMailer.new_reply_email(self).deliver
+  end
+
+  def bust_cache
+    Comment.comment_async_bust(commentable, user.username)
+    cache_buster = CacheBuster.new
+    cache_buster.bust("#{commentable.path}/comments") if commentable
+  end
+
   private
 
   def update_notifications
@@ -231,39 +262,22 @@ class Comment < ApplicationRecord
     self.processed_html = doc.to_html.html_safe
   end
 
-  def calculate_score
-    update_column(:score, BlackBox.comment_quality_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    root.save unless is_root?
+  def calculate_score_async
+    Comments::CommentJob.perform_later(id, "calculate_score")
   end
-  handle_asynchronously :calculate_score
 
   def after_create_checks
-    create_id_code
-    touch_user
+    Comments::CommentJob.perform_later(id, "create_id_code")
+    Comments::CommentJob.perform_later(id, "touch_user")
   end
-
-  def create_id_code
-    update_column(:id_code, id.to_s(26))
-  end
-  handle_asynchronously :create_id_code
-
-  def touch_user
-    user.touch(:updated_at, :last_comment_at)
-  end
-  handle_asynchronously :touch_user
 
   def expire_root_fragment
     root.touch
   end
 
-  def create_first_reaction
-    Reaction.create(user_id: user_id,
-                    reactable_id: id,
-                    reactable_type: "Comment",
-                    category: "like")
+  def create_first_reaction_async
+    Comments::CommentJob.perform_later(id, "create_first_reaction")
   end
-  handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
@@ -272,12 +286,9 @@ class Comment < ApplicationRecord
     remove_algolia_index
   end
 
-  def bust_cache
-    Comment.comment_async_bust(commentable, user.username)
-    cache_buster = CacheBuster.new
-    cache_buster.bust("#{commentable.path}/comments") if commentable
+  def bust_cache_async
+    Comments::CommentJob.perform_later(id, "bust_cache")
   end
-  handle_asynchronously :bust_cache
 
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
@@ -286,10 +297,9 @@ class Comment < ApplicationRecord
     expire_root_fragment
   end
 
-  def send_email_notification
-    NotifyMailer.new_reply_email(self).deliver
+  def send_email_notification_async
+    Comments::CommentJob.perform_later(id, "send_email_notification")
   end
-  handle_asynchronously :send_email_notification
 
   def should_send_email_notification?
     parent_user.class.name != "Podcast" &&
