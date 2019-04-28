@@ -32,7 +32,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
         }
       end
 
-      it "returns a 204" do
+      it "returns a 204 and logs" do
         get "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_subscription_params
 
         expect(response.status).to eq 204

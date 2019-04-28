@@ -3,7 +3,7 @@ class TwitchStreamUpdatesController < ApplicationController
 
   def show
     if params["hub.mode"] == "denied"
-      Rails.logger.error("Twitch Webhook was denied: #{params.to_json}")
+      airbrake_logger.error("Twitch Webhook was denied: #{params.permit('hub.mode', 'hub.reason', 'hub.topic').to_json}")
       head :no_content
     else
       render plain: params["hub.challenge"]
@@ -14,7 +14,7 @@ class TwitchStreamUpdatesController < ApplicationController
     head :no_content
 
     unless secret_verified?
-      Rails.logger.warn("Twitch Webhook Recieved for which the webhook could not be verified")
+      airbrake_logger.warn("Twitch Webhook Recieved for which the webhook could not be verified")
       return
     end
 
@@ -28,6 +28,10 @@ class TwitchStreamUpdatesController < ApplicationController
   end
 
   private
+
+  def airbrake_logger
+    Airbrake::AirbrakeLogger.new(Rails.logger)
+  end
 
   def secret_verified?
     twitch_sha = request.headers["x-hub-signature"]
