@@ -60,7 +60,7 @@ class StackblitzTag < LiquidTagBase
   end
 
   def valid_file?(option)
-    option.match(^file=(.*)\z)
+    option.match(/^file=(.*)\z/)
   end
 end
 
