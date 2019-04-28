@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Streams::TwitchWebhook::Register, type: :service do
   describe "::call" do
+    let(:twitch_access_token_get) { instance_double(Streams::TwitchAccessToken::Get, call: "FAKE_TWITCH_TOKEN") }
     let(:user) { create(:user, twitch_username: "test-username") }
 
     let(:expected_headers) do
@@ -30,9 +31,7 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
     end
 
     it "registers for webhooks" do
-      allow(Streams::TwitchCredentials).to receive(:access_token).and_return("FAKE_TWITCH_TOKEN")
-
-      described_class.call(user)
+      described_class.call(user, twitch_access_token_get)
 
       expect(twitch_webhook_registration_stubbed_route).to have_been_requested
       expect(twitch_user_stubbed_route).to have_been_requested

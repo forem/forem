@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Streams::TwitchCredentials, type: :model do
+RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
   describe ".access_token" do
     let(:expected_twitch_token_body) do
       {
@@ -26,7 +26,7 @@ RSpec.describe Streams::TwitchCredentials, type: :model do
       it "returns the cached token" do
         Rails.cache.write(described_class::ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, ["FAKE_UNEXPIRED_TWITCH_TOKEN", 15.days.from_now])
 
-        expect(described_class.access_token).to eq "FAKE_UNEXPIRED_TWITCH_TOKEN"
+        expect(described_class.call).to eq "FAKE_UNEXPIRED_TWITCH_TOKEN"
         expect(twitch_token_stubbed_route).not_to have_been_requested
       end
     end
@@ -35,14 +35,14 @@ RSpec.describe Streams::TwitchCredentials, type: :model do
       it "requests a new token and caches it" do
         Rails.cache.write(described_class::ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, ["FAKE_EXPIRED_TWITCH_TOKEN", 15.days.ago])
 
-        expect(described_class.access_token).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
+        expect(described_class.call).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
         expect(twitch_token_stubbed_route).to have_been_requested
       end
     end
 
     context "when the token is not in the cache" do
       it "requests a new token and caches it" do
-        expect(described_class.access_token).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
+        expect(described_class.call).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
         expect(twitch_token_stubbed_route).to have_been_requested
       end
     end

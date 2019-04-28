@@ -1,9 +1,12 @@
 module Streams
-  class TwitchCredentials
-    ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY = :twitch_access_token_with_expiration
+  module TwitchAccessToken
+    class Get
+      ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY = :twitch_access_token_with_expiration
+      def self.call
+        new.call
+      end
 
-    class << self
-      def access_token
+      def call
         token, exp = Rails.cache.fetch(ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY)
 
         if token.nil? || Time.zone.now >= exp
@@ -12,14 +15,6 @@ module Streams
         end
 
         token
-      end
-
-      def generate_client
-        Faraday.new("https://api.twitch.tv/helix", headers: { "Authorization" => "Bearer #{access_token}" }) do |faraday|
-          faraday.request :json
-          faraday.response :json
-          faraday.adapter Faraday.default_adapter
-        end
       end
 
       private

@@ -3,8 +3,9 @@ module Streams
     class Register
       WEBHOOK_LEASE_SECONDS = 7.days.to_i
 
-      def initialize(user)
+      def initialize(user, access_token_service = TwitchAccessToken::Get)
         @user = user
+        @access_token_service = access_token_service
       end
 
       def self.call(*args)
@@ -27,10 +28,14 @@ module Streams
 
       private
 
-      attr_reader :user
+      attr_reader :user, :access_token_service
 
       def client
-        @client ||= Streams::TwitchCredentials.generate_client
+        @client ||= Faraday.new("https://api.twitch.tv/helix", headers: { "Authorization" => "Bearer #{access_token_service.call}" }) do |faraday|
+          faraday.request :json
+          faraday.response :json
+          faraday.adapter Faraday.default_adapter
+        end
       end
 
       def twitch_stream_updates_url_for_user(user)
