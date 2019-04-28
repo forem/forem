@@ -105,7 +105,11 @@
               <%= inline_svg("gitlab.svg", class: "icon-img") %>
             </a>
           <% end %>
-          <% if @user.twitch_url? %>
+          <% if @user.twitch_username? %>
+            <%= link_to twitch_live_stream_path(username: @user.username) do %>
+              <%= inline_svg("twitch-logo.svg", class: "icon-img", id: "icon-twitch") %>
+            <% end %>
+          <% elsif @user.twitch_url? %>
             <a href="<%= @user.twitch_url %>" target="_blank" rel="noopener nofollow me">
               <%= inline_svg("twitch-logo.svg", class: "icon-img") %>
             </a>
@@ -114,11 +118,6 @@
             <a href="<%= @user.website_url %>" target="_blank" rel="noopener nofollow me">
               <%= inline_svg("external-link-logo.svg", class: "icon-img") %>
             </a>
-          <% end %>
-          <% if @user.twitch_username? %>
-            <%= link_to twitch_live_stream_path(username: @user.username) do %>
-              <%= inline_svg("twitch-logo.svg", class: "icon-img", id: "icon-twitch") %>
-            <% end %>
           <% end %>
         </p>
       </div>
@@ -144,15 +143,13 @@
   </div>
 <% end %>
 
-<% if @user.twitch_username.present? %>
-  <% if @user.currently_streaming_on_twitch? %>
-    <style>
-      #icon-twitch path {
-        fill: green !important;
-        stroke: green !important;
-      }
-    </style>
-  <% end %>
+<% if @user.currently_streaming_on_twitch? %>
+  <style>
+    #icon-twitch path {
+      fill: green !important;
+      stroke: green !important;
+    }
+  </style>
 <% end %>
 
 <div class="home sub-home" id="index-container"
