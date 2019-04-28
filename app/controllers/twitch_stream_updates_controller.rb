@@ -12,6 +12,13 @@ class TwitchStreamUpdatesController < ApplicationController
   end
 
   def create
+    head :no_content
+
+    unless secret_verified?
+      Rails.logger.warn("Twitch Webhook Recieved for which the webhook could not be verified")
+      return
+    end
+
     user = User.find(params[:user_id])
 
     if params[:data].first.present?
@@ -19,7 +26,16 @@ class TwitchStreamUpdatesController < ApplicationController
     else
       user.update!(currently_streaming_on: nil)
     end
+  end
 
-    head :no_content
+  private
+
+  def secret_verified?
+    twitch_sha = request.headers["x-hub-signature"]
+    digest = Digest::SHA256.new
+    digest << ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
+    digest << request.raw_post
+
+    twitch_sha == "sha256=#{digest.hexdigest}"
   end
 end
