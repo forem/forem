@@ -1,9 +1,12 @@
 module Streams
   class TwitchWebhookRegistrationJob < ApplicationJob
+    queue_as :twitch_webhook_registration
+
     WEBHOOK_LEASE_SECONDS = 7.days.to_i
 
-    def perform(user)
-      return if user.twitch_username.blank?
+    def perform(user_id)
+      user = User.find_by(id: user_id)
+      return if user.blank? || user.twitch_username.blank?
 
       client = Streams::TwitchCredentials.generate_client
 

@@ -32,17 +32,24 @@ RSpec.describe Streams::TwitchWebhookRegistrationJob, type: :job do
     let(:user) { create(:user) }
 
     it "noops" do
-      described_class.perform_now(user)
+      described_class.perform_now(user.id)
 
       expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
       expect(twitch_user_stubbed_route).not_to have_been_requested
     end
   end
 
+  it "noops when the id passed does not belong to a user" do
+    described_class.perform_now(987_654_321)
+
+    expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
+    expect(twitch_user_stubbed_route).not_to have_been_requested
+  end
+
   it "registers for webhooks" do
     allow(Streams::TwitchCredentials).to receive(:access_token).and_return("FAKE_TWITCH_TOKEN")
 
-    described_class.perform_now(user)
+    described_class.perform_now(user.id)
 
     expect(twitch_webhook_registration_stubbed_route).to have_been_requested
     expect(twitch_user_stubbed_route).to have_been_requested
