@@ -26,8 +26,6 @@ RSpec.describe Streams::TwitchWebhookRegistrationJob, type: :job do
   end
 
   it "registers for webhooks" do
-    allow(Streams::TwitchCredentials).to receive(:access_token).and_return("FAKE_TWITCH_TOKEN")
-
     described_class.perform_now(user.id, service)
 
     expect(service).to have_received(:call).with(user)
