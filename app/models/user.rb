@@ -50,7 +50,6 @@ class User < ApplicationRecord
 
   devise :omniauthable, :rememberable,
          :registerable, :database_authenticatable, :confirmable
-
   validates :email,
             length: { maximum: 50 },
             email: true,
