@@ -1,3 +1,9 @@
+---
+title: Mac
+---
+
+# Installing DEV.to on Mac
+
 ## Installing prerequisites
 
 ### Ruby

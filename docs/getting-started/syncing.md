@@ -1,8 +1,12 @@
-### Maintaining Your Fork
+---
+title: Syncing Your Fork
+---
+
+# Syncing Your Fork
 
 Now that you have a copy of your fork, there is work you will need to do to keep it current.
 
-#### Setup Your Upstream
+## Setup Your Upstream
 
 Inside your dev.to directory, add a remote to the official dev.to repo:
 
@@ -10,7 +14,7 @@ Inside your dev.to directory, add a remote to the official dev.to repo:
 $ git remote add upstream https://github.com/thepracticaldev/dev.to.git
 ```
 
-#### Rebasing from Upstream
+## Rebasing from Upstream
 
 Do this prior to every time you create a branch for a PR:
 
@@ -44,6 +48,6 @@ $ git push origin master --force
 
 This will overwrite the `master` branch of your fork.
 
-#### Also see
+## Also see
 
 - [Syncing a fork](https://help.github.com/articles/syncing-a-fork/)
