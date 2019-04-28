@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe GistTag, type: :liquid_template do
   describe "#link" do
-    let(:gist_link) do
+    let(:gist_links) do
       [
         "https://gist.github.com/amochohan/8cb599ee5dc0af5f4246",
         "https://gist.github.com/vaidehijoshi/6536e03b81e93a78c56537117791c3f1",
@@ -34,7 +34,7 @@ RSpec.describe GistTag, type: :liquid_template do
     end
 
     it "accepts proper gist url" do
-      gist_link.each do |link|
+      gist_links.each do |link|
         liquid = generate_new_liquid(link)
         expect(liquid.render.delete(" ")).to eq(generate_script(link))
       end
