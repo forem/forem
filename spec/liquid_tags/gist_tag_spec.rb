@@ -2,7 +2,14 @@ require "rails_helper"
 
 RSpec.describe GistTag, type: :liquid_template do
   describe "#link" do
-    let(:gist_link) { "https://gist.github.com/vaidehijoshi/6536e03b81e93a78c56537117791c3f1" }
+    let(:gist_link) do
+      [
+        "https://gist.github.com/amochohan/8cb599ee5dc0af5f4246",
+        "https://gist.github.com/vaidehijoshi/6536e03b81e93a78c56537117791c3f1",
+        "https://gist.github.com/CristinaSolana/1885435",
+      ]
+    end
+
     let(:bad_links) do
       [
         "//pastebin.com/raw/b77FrXUA#gist.github.com",
@@ -27,8 +34,10 @@ RSpec.describe GistTag, type: :liquid_template do
     end
 
     it "accepts proper gist url" do
-      liquid = generate_new_liquid(gist_link)
-      expect(liquid.render.delete(" ")).to eq(generate_script(gist_link))
+      gist_link.each do |link|
+        liquid = generate_new_liquid(link)
+        expect(liquid.render.delete(" ")).to eq(generate_script(link))
+      end
     end
 
     it "rejects invalid gist url" do
