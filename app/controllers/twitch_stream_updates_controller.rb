@@ -3,10 +3,9 @@ class TwitchStreamUpdatesController < ApplicationController
 
   def show
     if params["hub.mode"] == "denied"
-      # Throw error to error tracker?
+      Rails.logger.error("Twitch Webhook was denied: #{params.to_json}")
       head :no_content
     else
-      # Subscription worked!
       render plain: params["hub.challenge"]
     end
   end
