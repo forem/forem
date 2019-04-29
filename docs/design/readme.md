@@ -1,8 +1,8 @@
 ---
-title: Designer Guide
+title: Design Guide
 items:
-  - brand.md
-  - theming-model.md
+  - branding.md
+  - theming.md
 ---
 
-# Designer Guide
+# Design Guide

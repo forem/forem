@@ -2,25 +2,27 @@
 title: Pusher
 ---
 
-# Pusher - Real-Time Notification
+# Pusher for Realtime Notifications
 
-Pusher is third party service being used to power the chat system. When both DEV.to members follow each other they have the ability to use chat and converse with each other.
+Pusher is a third party service being used to power the [chat system](https://dev.to/connect).
 
 In order to use the chat functionality within you development enviroment
-you will need to sign up for a free-tier Pusher account and retrieves
-keys. Then you'll need to provide those keys to the Rails application.
+you will need to sign up for a free-tier Pusher account and retrieve
+its keys. Then you'll need to provide those keys to the Rails application.
 
 1. [Sign up](https://dashboard.pusher.com/accounts/sign_up) or [sign in](https://dashboard.pusher.com/) to your Pusher account.
 
 2. Once signed in, fill in the prompt to create a new Pusher Channels app.
+
    ![pusher-1](https://user-images.githubusercontent.com/22895284/51086056-058e4100-1742-11e9-8dca-de3e47e2bc73.png)
 
 3. In your new Pusher Channels app, click the "App Keys" tab.
+
    ![pusher-2](https://user-images.githubusercontent.com/22895284/51086057-058e4100-1742-11e9-9fb7-397187aa8689.png)
 
 4. Change your keys accordingly (name of Pusher key -> name of our application key):
 
-   ```
+   ```text
    app_id -> PUSHER_APP_ID
    key -> PUSHER_KEY
    secret -> PUSHER_SECRET

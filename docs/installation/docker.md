@@ -1,4 +1,4 @@
-# Docker [Beta]
+# Docker Installation [Beta]
 
 1. Install `docker` and `docker-compose`
 1. `git clone git@github.com:thepracticaldev/dev.to.git`
@@ -7,4 +7,4 @@
 1. run `docker-compose run web rails db:setup`
 1. run `docker-compose run web yarn install`
 1. run `docker-compose up`
-1. That's it! Navigate to `localhost:3000`
+1. That's it! Navigate to <http://localhost:3000>

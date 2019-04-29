@@ -4,14 +4,28 @@ title: Integration Tests
 
 # Integration Tests
 
-To understand integration tests lets understand the purpose of a unit
-test. A unit test is about testing in isolate a single function and all
-of its possible output.
+An integration test is when you need to test the interaction of multiple systems or parts of your application.
 
-An integration test is when you need to test the result of multiple of
-functions or systems.
+An integration test may seem similar to an [acceptance test](/tests/acceptance-tests.md). The main difference is that an acceptance test is from the perspective of the end user while an integration test is from the perspective of the developer.
 
-An integration test may seem similar to a user acceptance test. A user acceptance test is from the perceptive of the end-user where
-an integration test is from the perceptive of the developer.
+Integration tests can be found in the directory `spec/requests`.
 
-Integration tests can be found in: `spec/requests/`
+You can run all integration tests with:
+
+```shell
+bundle exec rspec spec/requests
+```
+
+To run an individual file you can use for example:
+
+```shell
+bundle exec rspec spec/requests/stories_show_spec.rb
+```
+
+To run a specific test case you can use for example:
+
+```shell
+bundle exec rspec spec/requests/stories_show_spec.rb:10
+```
+
+where `10` is the line number of the test case you want to execute.
