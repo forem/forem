@@ -10,8 +10,7 @@ class LinkTag < LiquidTagBase
         path = Addressable::URI.parse(@slug_or_path_or_url).path
         path.slice!(0) if path.starts_with?("/") # remove leading slash if present
         path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
-        template = Addressable::Template.new("{username}/{slug}")
-        template.extract(path)&.symbolize_keys
+        ddressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
       end
     end
 
@@ -24,11 +23,7 @@ class LinkTag < LiquidTagBase
         profile_img = ProfileImage.new(article.user).get(150)
         ActionController::Base.new.render_to_string(
           partial: PARTIAL,
-          locals: {
-            article: article,
-            title: title,
-            profile_img: profile_img
-          },
+          locals: { article: article, title: title, profile_img: profile_img },
         )
       end
 
@@ -37,7 +32,6 @@ class LinkTag < LiquidTagBase
       rescue ActiveRecord::RecordNotFound
         raise StandardError, "Invalid link URL or link URL does not exist"
       end
-      
     end
   end
 end
