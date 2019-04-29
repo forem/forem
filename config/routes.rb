@@ -108,7 +108,10 @@ Rails.application.routes.draw do
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy]
   resources :comment_mutes, only: %i[update]
-  resources :users, only: [:update]
+  resources :users, only: [:update] do
+    resource :twitch_stream_updates, only: %i[show create]
+  end
+  resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
   resources :feedback_messages, only: %i[index create]
   get "/reports/:slug", to: "feedback_messages#show"
