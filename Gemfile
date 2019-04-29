@@ -22,7 +22,7 @@ gem "administrate", "~> 0.11" # A Rails engine that helps you put together a sup
 gem "ahoy_email", "~> 1.0" # Email analytics for Rails
 gem "airbrake", "~> 9.1" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
-gem "algorithmia", "~> 1.0" # Ruby Client for Algorithmia Algorithms and Data API
+gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.5" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
 gem "aws-sdk-lambda", "~> 1.16" # Official AWS Ruby gem for AWS Lambda
@@ -46,7 +46,7 @@ gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
 gem "feedjira", "~> 2.2" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
-gem "fog", "~> 1.41" # The Ruby cloud services library
+gem "fog", "~> 2.0" # The Ruby cloud services library
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 3.0.0" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API

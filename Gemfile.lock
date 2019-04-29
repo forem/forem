@@ -103,9 +103,9 @@ GEM
     algoliasearch-rails (1.22.0)
       algoliasearch (>= 1.17.0, < 2.0.0)
       json (>= 1.5.1)
-    algorithmia (1.0.1)
+    algorithmia (1.1.0)
       httparty (~> 0.13)
-      json (~> 1.8)
+      json (~> 2.0)
     ancestry (3.0.6)
       activerecord (>= 3.2.0)
     approvals (0.0.24)
@@ -306,7 +306,7 @@ GEM
     et-orbi (1.1.6)
       tzinfo
     eventmachine (1.2.5)
-    excon (0.60.0)
+    excon (0.64.0)
     execjs (2.7.0)
     factory_bot (5.0.2)
       activesupport (>= 4.2.0)
@@ -336,7 +336,7 @@ GEM
       CFPropertyList (~> 2.2)
     fix-db-schema-conflicts (3.0.3)
       rubocop (>= 0.38.0)
-    fog (1.41.0)
+    fog (2.0.0)
       fog-aliyun (>= 0.1.0)
       fog-atmos
       fog-aws (>= 0.6.0)
@@ -353,6 +353,7 @@ GEM
       fog-json
       fog-local
       fog-openstack
+      fog-ovirt
       fog-powerdns (>= 0.1.1)
       fog-profitbricks
       fog-rackspace
@@ -369,24 +370,25 @@ GEM
       fog-xenserver
       fog-xml (~> 0.1.1)
       ipaddress (~> 0.5)
-      json (>= 1.8, < 2.0)
-    fog-aliyun (0.2.0)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
+      json (~> 2.0)
+    fog-aliyun (0.3.3)
+      fog-core
+      fog-json
       ipaddress (~> 0.8)
       xml-simple (~> 1.1)
     fog-atmos (0.1.0)
       fog-core
       fog-xml
-    fog-aws (2.0.0)
+    fog-aws (2.0.1)
       fog-core (~> 1.38)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
-    fog-brightbox (0.14.0)
-      fog-core (~> 1.22)
+    fog-brightbox (0.16.1)
+      dry-inflector
+      fog-core
       fog-json
-      inflecto (~> 0.0.2)
+      mime-types
     fog-cloudatcost (0.1.2)
       fog-core (~> 1.36)
       fog-json (~> 1.0)
@@ -396,10 +398,10 @@ GEM
       builder
       excon (~> 0.58)
       formatador (~> 0.2)
-    fog-digitalocean (0.3.0)
-      fog-core (~> 1.42)
-      fog-json (>= 1.0)
-      fog-xml (>= 0.1)
+    fog-digitalocean (0.4.0)
+      fog-core
+      fog-json
+      fog-xml
       ipaddress (>= 0.5)
     fog-dnsimple (1.0.0)
       fog-core (~> 1.38)
@@ -422,23 +424,29 @@ GEM
     fog-joyent (0.0.1)
       fog-core (~> 1.42)
       fog-json (>= 1.0)
-    fog-json (1.0.2)
-      fog-core (~> 1.0)
+    fog-json (1.2.0)
+      fog-core
       multi_json (~> 1.10)
-    fog-local (0.4.0)
-      fog-core (~> 1.27)
-    fog-openstack (0.1.24)
-      fog-core (~> 1.40)
+    fog-local (0.6.0)
+      fog-core (>= 1.27, < 3.0)
+    fog-openstack (0.3.10)
+      fog-core (>= 1.45, <= 2.1.0)
       fog-json (>= 1.0)
       ipaddress (>= 0.8)
-    fog-powerdns (0.1.1)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
-      fog-xml (~> 0.1)
+    fog-ovirt (1.1.6)
+      fog-core
+      fog-json
+      fog-xml
+      ovirt-engine-sdk (>= 4.1.3)
+      rbovirt (~> 0.1.5)
+    fog-powerdns (0.2.0)
+      fog-core
+      fog-json
+      fog-xml
     fog-profitbricks (4.1.1)
       fog-core (~> 1.42)
       fog-json (~> 1.0)
-    fog-rackspace (0.1.5)
+    fog-rackspace (0.1.6)
       fog-core (>= 1.35)
       fog-json (>= 1.0)
       fog-xml (>= 0.1)
@@ -472,12 +480,13 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-vsphere (1.13.1)
+    fog-vsphere (3.0.0)
       fog-core
-      rbvmomi (~> 1.9)
-    fog-xenserver (0.3.0)
+      rbvmomi (>= 1.9, < 3)
+    fog-xenserver (1.0.0)
       fog-core
       fog-xml
+      xmlrpc
     fog-xml (0.1.3)
       fog-core
       nokogiri (>= 1.5.11, < 2.0.0)
@@ -550,7 +559,6 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    inflecto (0.0.2)
     inline_svg (1.4.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
@@ -568,7 +576,7 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.6)
+    json (2.2.0)
     jwt (2.1.0)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
@@ -652,8 +660,11 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
+    optimist (3.0.0)
     orm_adapter (0.5.0)
     os (1.0.0)
+    ovirt-engine-sdk (4.3.0)
+      json (>= 1, < 3)
     parallel (1.17.0)
     parallel_tests (2.28.0)
       parallel
@@ -726,12 +737,15 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    rbovirt (0.1.7)
+      nokogiri
+      rest-client (> 1.7.0)
     rbtree3 (0.5.0)
-    rbvmomi (1.11.6)
+    rbvmomi (2.1.2)
       builder (~> 3.0)
       json (>= 1.8)
       nokogiri (~> 1.5)
-      trollop (~> 2.1)
+      optimist (~> 3.0)
     rdoc (6.1.1)
     recaptcha (4.13.2)
       json
@@ -888,7 +902,6 @@ GEM
     timber (2.6.2)
       msgpack (~> 1.0)
     timecop (0.9.1)
-    trollop (2.1.2)
     twilio-ruby (5.22.2)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
@@ -949,6 +962,7 @@ GEM
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
     xml-simple (1.1.5)
+    xmlrpc (0.3.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yajl-ruby (1.4.1)
@@ -968,7 +982,7 @@ DEPENDENCIES
   ahoy_email (~> 1.0)
   airbrake (~> 9.1)
   algoliasearch-rails (~> 1.21)
-  algorithmia (~> 1.0)
+  algorithmia (~> 1.1)
   ancestry (~> 3.0)
   approvals (~> 0.0)
   autoprefixer-rails (~> 9.5)
@@ -1004,7 +1018,7 @@ DEPENDENCIES
   feedjira (~> 2.2)
   figaro (~> 1.1)
   fix-db-schema-conflicts (~> 3.0)
-  fog (~> 1.41)
+  fog (~> 2.0)
   foreman!
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.0)
