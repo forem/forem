@@ -18,12 +18,12 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
 
   after_create   :after_create_checks
-  after_save     :calculate_score_async
-  after_save     :bust_cache_async
+  after_save     :calculate_score
+  after_save     :bust_cache
   after_save     :synchronous_bust
   before_destroy :before_destroy_actions
-  after_create   :send_email_notification_async, if: :should_send_email_notification?
-  after_create   :create_first_reaction_async
+  after_create   :send_email_notification, if: :should_send_email_notification?
+  after_create   :create_first_reaction
   after_create   :send_to_moderator
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
@@ -191,37 +191,6 @@ class Comment < ApplicationRecord
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Reaction")
   end
 
-  def calculate_score
-    update_column(:score, BlackBox.comment_quality_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    root.save unless is_root?
-  end
-
-  def create_id_code
-    update_column(:id_code, id.to_s(26))
-  end
-
-  def touch_user
-    user.touch(:updated_at, :last_comment_at)
-  end
-
-  def create_first_reaction
-    Reaction.create(user_id: user_id,
-                    reactable_id: id,
-                    reactable_type: "Comment",
-                    category: "like")
-  end
-
-  def send_email_notification
-    NotifyMailer.new_reply_email(self).deliver
-  end
-
-  def bust_cache
-    Comment.comment_async_bust(commentable, user.username)
-    cache_buster = CacheBuster.new
-    cache_buster.bust("#{commentable.path}/comments") if commentable
-  end
-
   private
 
   def update_notifications
@@ -262,21 +231,29 @@ class Comment < ApplicationRecord
     self.processed_html = doc.to_html.html_safe
   end
 
-  def calculate_score_async
-    Comments::CommentJob.perform_later(id, "calculate_score")
+  def calculate_score
+    Comments::CalculateScoreJob.perform_later(id)
   end
 
   def after_create_checks
-    Comments::CommentJob.perform_later(id, "create_id_code")
-    Comments::CommentJob.perform_later(id, "touch_user")
+    create_id_code
+    touch_user
+  end
+
+  def create_id_code
+    Comments::CreateIdCodeJob.perform_later(id)
+  end
+
+  def touch_user
+    Comments::TouchUserJob.perform_later(id)
   end
 
   def expire_root_fragment
     root.touch
   end
 
-  def create_first_reaction_async
-    Comments::CommentJob.perform_later(id, "create_first_reaction")
+  def create_first_reaction
+    Comments::CreateFirstReactionJob.perform_later(id)
   end
 
   def before_destroy_actions
@@ -286,8 +263,8 @@ class Comment < ApplicationRecord
     remove_algolia_index
   end
 
-  def bust_cache_async
-    Comments::CommentJob.perform_later(id, "bust_cache")
+  def bust_cache
+    Comments::BustCacheJob.perform_later(id)
   end
 
   def synchronous_bust
@@ -297,8 +274,8 @@ class Comment < ApplicationRecord
     expire_root_fragment
   end
 
-  def send_email_notification_async
-    Comments::CommentJob.perform_later(id, "send_email_notification")
+  def send_email_notification
+    Comments::SendEmailNotificationJob.perform_later(id)
   end
 
   def should_send_email_notification?
