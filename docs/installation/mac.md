@@ -1,4 +1,8 @@
-# Installing DEV on Mac
+---
+title: macOS
+---
+
+# Installing DEV on macOS
 
 ## Installing prerequisites
 

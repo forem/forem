@@ -1,3 +1,7 @@
+---
+title: GitPod
+---
+
 # GitPod
 
 If you prefer working on a cloud IDE, you can spin up your own instance of DEV in the cloud, using [GitPod](https://gitpod.io/#https://github.com/thepracticaldev/dev.to).
