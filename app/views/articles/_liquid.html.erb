@@ -8,9 +8,7 @@
     <div class='ltag__link__content'>
       <h2><%= title %></h2>
       <h3><%= article.user.name %></h3>
-      <div class='ltag__link__taglist'>
-        <%= tags %>
-      </div>
+      <div class='ltag__link__taglist'><%= article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join.html_safe %></div>
     </div>
   </a>
 </div>
