@@ -47,6 +47,11 @@ RSpec.describe StackblitzTag, type: :liquid_template do
       end.not_to raise_error
     end
 
+    it "parses stackblitz if with a view and file parameter" do
+      liquid = generate_new_liquid(stackblitz_id_with_view_and_file)
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?embed=1&view=preview&file=style.css")
+    end
+
     it "rejects XSS attempts" do
       xss_links.each do |link|
         expect { generate_new_liquid(link) }.to raise_error(StandardError)
