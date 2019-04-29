@@ -1,3 +1,9 @@
+---
+title: Windows
+---
+
+# Installing DEV.to on Windows
+
 ## Installing prerequisites
 
 These prerequisites assume you're working on a 64bit Windows 10 operating system machine.

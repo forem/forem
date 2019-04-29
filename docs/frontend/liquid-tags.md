@@ -1,3 +1,9 @@
+---
+title: Liquid Tags
+---
+
+# Liquid Tags
+
 Liquid tags are a special element of the [dev.to](/) markdown editor.
 
 They are custom embeds that are added via `{% %}` syntax. [Liquid](https://shopify.github.io/liquid/) is a templating language developed by Shopify.
@@ -9,3 +15,29 @@ They make for good community contributions because they can be extended and impr
 Liquid tags are sort of like functions, which have a name and take arguments. Develop them with that mindset in terms of naming things. They should be documented but also intuitive. They should also be fairly flexible in the arguments they take. Currently this could use improvements.
 
 Liquid tags are "compiled" when an article is saved. So you will need to re-save articles to see HTML changes.
+
+Here is a bunch of liquid tags supported on DEV.to
+
+```
+{% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}
+{% user jess %}
+{% tag git %}
+{% devcomment 2d1a %}
+{% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}
+{% twitter 834439977220112384 %}
+{% glitch earthy-course %}
+{% github thepracticaldev/dev.to %}
+{% youtube dQw4w9WgXcQ %}
+{% vimeo 193110695 %}
+{% slideshare rdOzN9kr1yK5eE %}
+{% codepen https://codepen.io/twhite96/pen/XKqrJX %}
+{% stackblitz ball-demo %}
+{% codesandbox ppxnl191zx %}
+{% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}
+{% replit @WigWog/PositiveFineOpensource %}
+{% instagram BXgGcAUjM39 %}
+{% speakerdeck 7e9f8c0fa0c949bd8025457181913fd0 %}
+{% soundcloud https://soundcloud.com/user-261265215/dev-to-review-episode-1 %}
+% spotify spotify:episode:5V4XZWqZQJvbddd31n56mf %}
+{% blogcast 1234 %}
+```

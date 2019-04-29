@@ -1,3 +1,9 @@
+---
+title: Linux
+---
+
+# Installing DEV.to on Linux
+
 ## Installing prerequisites
 
 These prerequisites assume you're working on a Linux-based operating system but have been tested on Ubuntu 18.04.
