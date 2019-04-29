@@ -37,7 +37,7 @@ directory of the DEV.to codebase and run
 gitdocs serve
 ```
 
-This will start a server on port `8000`
+This will start a server where you can browse the documentation: <http://localhost:8000/>
 
-When you add new markdown pages you'll have to stop and start the
-websever before you see them.
+When you add new markdown pages or rename existing ones, you'll have to restart
+the server before you notice any changes.
