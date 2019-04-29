@@ -17,13 +17,19 @@ RSpec.describe ClassifiedListing, type: :model do
       expect(classified_listing.valid?).to eq(true)
     end
 
+    it "cleans images" do
+      classified_listing.body_markdown = "hello <img src='/dssdsdsd.jpg' /> hey hey hey"
+      classified_listing.save
+      expect(classified_listing.processed_html).not_to include("<img>")
+    end
+
     it "doesn't accept more than 8 tags" do
       classified_listing.tag_list = "a, b, c, d, e, f, g, h, z, t, s, p"
       expect(classified_listing.valid?).to eq(false)
       expect(classified_listing.errors[:tag_list]).to be_truthy
     end
 
-    it "parses away spaces" do
+    it "parses away tag spaces" do
       classified_listing.tag_list = "the best, tag list"
       classified_listing.save
       expect(classified_listing.tag_list).to eq(%w[thebest taglist])

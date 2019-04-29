@@ -58,6 +58,19 @@ class MarkdownParser
                                             attributes: allowed_attributes
   end
 
+  def evaluate_listings_markdown
+    return if @content.blank?
+
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub a span hr blockquote kbd]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
+  end
+
   def tags_used
     return [] if @content.blank?
 
