@@ -25,7 +25,7 @@ class BadgeAchievement < ApplicationRecord
   private
 
   def notify_recipient
-    Notification.send_new_badge_notification(self)
+    Notification.send_new_badge_achievement_notification(self)
   end
 
   def send_email_notification

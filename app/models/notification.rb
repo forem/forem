@@ -19,6 +19,8 @@ class Notification < ApplicationRecord
     end
 
     def send_new_follower_notification_without_delay(follow, is_read = false)
+      return unless Follow.need_new_follower_notification_for?(follow.followable_type)
+
       follow_data = follow.attributes.slice("follower_id", "followable_id", "followable_type").symbolize_keys
       Notifications::NewFollowerJob.perform_now(follow_data, is_read)
     end
@@ -60,28 +62,20 @@ class Notification < ApplicationRecord
       Notifications::NewCommentJob.perform_now(comment.id)
     end
 
-    def send_new_badge_notification(badge_achievement)
-      json_data = {
-        user: user_data(badge_achievement.user),
-        badge_achievement: {
-          badge_id: badge_achievement.badge_id,
-          rewarding_context_message: badge_achievement.rewarding_context_message,
-          badge: {
-            title: badge_achievement.badge.title,
-            description: badge_achievement.badge.description,
-            badge_image_url: badge_achievement.badge.badge_image_url
-          }
-        }
-      }
-      Notification.create(
-        user_id: badge_achievement.user.id,
-        notifiable_id: badge_achievement.id,
-        notifiable_type: "BadgeAchievement",
-        action: nil,
-        json_data: json_data,
-      )
+    def send_new_badge_achievement_notification(badge_achievement)
+      Notifications::NewBadgeAchievementJob.perform_later(badge_achievement.id)
     end
-    handle_asynchronously :send_new_badge_notification
+    # NOTE: this alias is temporary until the transition to ActiveJob is completed
+    # and all old DelayedJob jobs are processed by the queue workers.
+    # It can be removed after pre-existing jobs are done
+    alias send_new_badge_notification send_new_badge_achievement_notification
+
+    # NOTE: this method is temporary until the transition to ActiveJob is completed
+    # and all old DelayedJob jobs are processed by the queue workers.
+    # It can be removed after pre-existing jobs are done
+    def send_new_badge_notification_without_delay(badge_achievement)
+      Notifications::NewBadgeAchievementJob.perform_now(badge_achievement.id)
+    end
 
     def send_reaction_notification(reaction, receiver)
       return if reaction.skip_notification_for?(receiver)
