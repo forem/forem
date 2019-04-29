@@ -14,41 +14,41 @@ class LinkTag < LiquidTagBase
     end
 
     @hash = article_hash
+    class << self
+      def render(_context)
+        article = get_article
+        title = strip_tags article.title
+        profile_img = ProfileImage.new(article.user).get(150)
+        ActionController::Base.new.render_to_string(
+          partial: PARTIAL,
+          locals: {
+            article: article,
+            title: title,
+            profile_img: profile_img
+          },
+        )
+      end
 
-    def render(_context)
-      article = get_article
-      title =  strip_tags article.title
-      profile_img = ProfileImage.new(article.user).get(150)
-      ActionController::Base.new.render_to_string(
-        partial: PARTIAL,
-        locals: {
-          article: article,
-          title: title,
-          profile_img: profile_img,
-        },
-      )
+      def get_article
+        find_article_by_user(@hash) || find_article_by_org(@hash)
+      rescue ActiveRecord::RecordNotFound
+        raise StandardError, "Invalid link URL or link URL does not exist"
+      end
+
+      def find_article_by_user(hash)
+        user = User.find_by(username: hash[:username])
+        return unless user
+
+        user.articles.where(slug: hash[:slug])&.first
+      end
+
+      def find_article_by_org(hash)
+        org = Organization.find_by(slug: hash[:username])
+        return unless org
+
+        org.articles.where(slug: hash[:slug])&.first
+      end
     end
-
-    def get_article
-      find_article_by_user(@hash) || find_article_by_org(@hash)
-    rescue ActiveRecord::RecordNotFound
-      raise StandardError, "Invalid link URL or link URL does not exist"
-    end
-
-    def find_article_by_user(hash)
-      user = User.find_by(username: hash[:username])
-      return unless user
-
-      user.articles.where(slug: hash[:slug])&.first
-    end
-
-    def find_article_by_org(hash)
-      org = Organization.find_by(slug: hash[:username])
-      return unless org
-
-      org.articles.where(slug: hash[:slug])&.first
-    end
-
   end
 end
 
