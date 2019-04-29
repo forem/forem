@@ -2,8 +2,8 @@ class StackblitzTag < LiquidTagBase
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
-    @view = parse_input(input, self.method(:valid_view?))
-    @file = parse_input(input, self.method(:valid_file?))
+    @view = parse_input(input, valid_view?)
+    @file = parse_input(input, valid_file?)
     @height = 500
   end
 
@@ -42,7 +42,7 @@ class StackblitzTag < LiquidTagBase
     validated_views = input_split.map { |o| validator.call(o) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
-    validated_views.length.zero? ? "" : "&#{validated_views.join("")}"
+    validated_views.length.zero? ? "" : "&#{validated_views.join('')}"
   end
 
   def valid_view?(option)
