@@ -1,7 +1,0 @@
----
-title: Skipping CI for minor changes
----
-
-# Skipping CI build (Not recommended)
-
-If your changes are **minor** (i.e. updating README, fixing a typo), you can skip CI by adding `[ci skip]` to your commit message.
