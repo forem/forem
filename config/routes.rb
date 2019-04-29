@@ -273,9 +273,9 @@ Rails.application.routes.draw do
       constraints: {
         which: /organization_user_followers|user_followers/
       }
-  get "/dashboard/:which" => "dashboards#show",
+  get "/dashboard/:which/:org_id" => "dashboards#show",
       constraints: {
-        which: /organization|reading/
+        which: /organization/
       }
   get "/dashboard/:username" => "dashboards#show"
 

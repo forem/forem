@@ -18,6 +18,6 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def pro_org_user?
-    user.has_role?(:pro) && user.organization_id == record.id
+    user.has_role?(:pro) && OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 end

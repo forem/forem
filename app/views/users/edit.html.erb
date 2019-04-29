@@ -27,8 +27,8 @@
           <% options = @organizations.pluck(:slug, :id).each do |arr| %>
             <% arr[0] = "@#{arr[0]}" %>
             <% arr[1] = "/settings/organization/#{arr[1]}" %>
-          <% end %>
-          <%= options_for_select(options.to_h.merge("New Organization" => "/settings/organization/new"), "/settings/organization/#{params[:org_id]}") %>
+          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
           <%# For example: %>
           <%# <option value="/settings/organization/1>@devteam</option> %>
           <%# <option value="/settings/organization/new" selected>New Organization</option> %>
