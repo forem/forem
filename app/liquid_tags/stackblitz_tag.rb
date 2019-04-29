@@ -2,8 +2,8 @@ class StackblitzTag < LiquidTagBase
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
-    @view = parse_input(input, valid_view?)
-    @file = parse_input(input, valid_file?)
+    @view = parse_input(input, method(:valid_view?))
+    @file = parse_input(input, method(:valid_file?))
     @height = 500
   end
 
