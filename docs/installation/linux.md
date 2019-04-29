@@ -33,7 +33,7 @@ There are more than one ways to setup PostgreSQL. For additional configuration, 
 1. Set up your environment variables/secrets
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](/backend/algolia) to get your development environment running.
-   - This [guide](/getting-started/config-env) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
+   - The [backend guide](/backend) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
 
      1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
