@@ -2,12 +2,12 @@
 title: Forking The Repo
 ---
 
-# Forking The Repo
+# Forking the repository
 
-Fork dev.to repository, ie. `https://github.com/thepracticaldev/dev.to/fork`
+Fork DEV's repository: <https://github.com/thepracticaldev/dev.to/fork>
 
-Clone your forked repository,
+Clone your forked repository:
 
-```
+```shell
 git clone https://github.com/<your-username>/dev.to.git
 ```

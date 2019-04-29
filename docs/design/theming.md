@@ -1,12 +1,18 @@
 ---
-title: Theming Model
+title: Theming Guidelines
 ---
 
-# Theming Model
+# Theming Guidelines
 
-DEV.to supports different themes such as Normal, Dark, Pink. These themes are powered by [css custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) which are loaded at runtime by javascript via `layouts/_user_config.html.erb`.
+DEV supports different themes such as Default, Night, Pink.
 
-```
+You can switch the theme at <http://localhost:3000/settings/misc> in the "Style Customization" section.
+
+These themes are powered by [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties), loaded at runtime by Javascript via `layouts/_user_config.html.erb`.
+
+An example of how it works:
+
+```javascript
 <script>
   try {
     var bodyClass = localStorage.getItem('config_body_class');
@@ -37,8 +43,12 @@ DEV.to supports different themes such as Normal, Dark, Pink. These themes are po
         --theme-social-icon-invert: invert(100)</style>'
 ```
 
-Within scss files located at `/app/assets/stylesheets` you will see `var` which will call these css custom properties. If a css custom property is not defined `var` will fall back on the second parameter provided which are css variables defined in `app/assets/stylesheets/variables.scss`
+Within SCSS files located at `app/assets/stylesheets` you will see `var()` statements, which will call these CSS custom properties. If a CSS custom property is not defined `var()` will fall back on the second parameter provided, which are be a SCSS variable defined in `app/assets/stylesheets/variables.scss`
 
-```
-    color: var(--theme-color, $black);
+An example of how to use `var()`:
+
+```scss
+div {
+  color: var(--theme-color, $black);
+}
 ```
