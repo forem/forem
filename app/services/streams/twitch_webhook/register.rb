@@ -13,16 +13,13 @@ module Streams
       end
 
       def call
-        user_resp = client.get("users", login: user.twitch_username)
-        twitch_user_id = user_resp.body["data"].first["id"]
+        user_resp = HTTParty.get("https://api.twitch.tv/helix/users", query: { login: user.twitch_username }, headers: authentication_request_headers)
+        twitch_user_id = user_resp["data"].first["id"]
 
-        client.post(
-          "webhooks/hub",
-          "hub.callback" => twitch_stream_updates_url_for_user(user),
-          "hub.mode" => "subscribe",
-          "hub.lease_seconds" => WEBHOOK_LEASE_SECONDS,
-          "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
-          "hub.secret" => ApplicationConfig["TWITCH_WEBHOOK_SECRET"],
+        HTTParty.post(
+          "https://api.twitch.tv/helix/webhooks/hub",
+          body: webhook_request_body(twitch_user_id),
+          headers: authentication_request_headers,
         )
       end
 
@@ -30,12 +27,18 @@ module Streams
 
       attr_reader :user, :access_token_service
 
-      def client
-        @client ||= Faraday.new("https://api.twitch.tv/helix", headers: { "Authorization" => "Bearer #{access_token_service.call}" }) do |faraday|
-          faraday.request :json
-          faraday.response :json
-          faraday.adapter Faraday.default_adapter
-        end
+      def webhook_request_body(twitch_user_id)
+        {
+          "hub.callback" => twitch_stream_updates_url_for_user(user),
+          "hub.mode" => "subscribe",
+          "hub.lease_seconds" => WEBHOOK_LEASE_SECONDS,
+          "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
+          "hub.secret" => ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
+        }.to_json
+      end
+
+      def authentication_request_headers
+        { "Authorization" => "Bearer #{access_token_service.call}" }
       end
 
       def twitch_stream_updates_url_for_user(user)
