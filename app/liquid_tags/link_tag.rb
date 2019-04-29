@@ -5,15 +5,18 @@ class LinkTag < LiquidTagBase
   def initialize(_tag_name, slug_or_path_or_url, _tokens)
     @slug_or_path_or_url = ActionController::Base.helpers.strip_tags(slug_or_path_or_url).strip
 
-    def article_hash
-      path = Addressable::URI.parse(@slug_or_path_or_url).path
-      path.slice!(0) if path.starts_with?("/") # remove leading slash if present
-      path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
-      template = Addressable::Template.new("{username}/{slug}")
-      template.extract(path)&.symbolize_keys
+    class << self
+      def article_hash
+        path = Addressable::URI.parse(@slug_or_path_or_url).path
+        path.slice!(0) if path.starts_with?("/") # remove leading slash if present
+        path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
+        template = Addressable::Template.new("{username}/{slug}")
+        template.extract(path)&.symbolize_keys
+      end
     end
 
     @hash = article_hash
+
     class << self
       def render(_context)
         article = get_article
@@ -30,24 +33,11 @@ class LinkTag < LiquidTagBase
       end
 
       def get_article
-        find_article_by_user(@hash) || find_article_by_org(@hash)
+        User.find_by(username: @hash[:username]).articles.where(slug: @hash[:slug])&.first || Organization.find_by(slug: @hash[:username]).articles.where(slug: @hash[:slug])&.first
       rescue ActiveRecord::RecordNotFound
         raise StandardError, "Invalid link URL or link URL does not exist"
       end
-
-      def find_article_by_user(hash)
-        user = User.find_by(username: hash[:username])
-        return unless user
-
-        user.articles.where(slug: hash[:slug])&.first
-      end
-
-      def find_article_by_org(hash)
-        org = Organization.find_by(slug: hash[:username])
-        return unless org
-
-        org.articles.where(slug: hash[:slug])&.first
-      end
+      
     end
   end
 end
