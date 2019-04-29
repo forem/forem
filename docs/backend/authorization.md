@@ -4,12 +4,10 @@ title: Authorization
 
 # Authorization
 
-Authorization is handled by the third party gem [pundit](https://github.com/varvet/pundit).
+Authorization is handled by the third party gem [Pundit](https://github.com/varvet/pundit) through the `authorize` method which you can find in various controllers, look for statements like:
 
-The policies can be found in `/app/policies`
-
-Authorization is handled by the `authorize` method which you will find in various controllers
-
-```rb
-  authorize @user
+```ruby
+authorize @user
 ```
+
+All authorization policies can be found in `/app/policies`.
