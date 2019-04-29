@@ -13,16 +13,17 @@ RSpec.describe "Credits", type: :request do
       get "/credits"
       expect(response.body).to include("You have")
     end
+
     it "shows credits page if user belongs to an org" do
       user.update_column(:organization_id, organization.id)
       get "/credits"
       expect(response.body).to include("You have")
     end
+
     it "shows credits page if user belongs to an org and is org admin" do
-      user.update_column(:organization_id, organization.id)
-      user.update_column(:org_admin, true)
+      user.update_columns(organization_id: organization.id, org_admin: true)
       get "/credits"
-      expect(response.body).to include(organization.name)
+      expect(response.body).to include(CGI.escapeHTML(organization.name))
     end
   end
 
