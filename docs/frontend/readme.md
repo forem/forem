@@ -1,7 +1,7 @@
 ---
 title: Frontend Guide
 items:
-  - js-intializers.md
+  - js-initializers.md
   - webpacker.md
   - preact.md
   - liquid-tags.md

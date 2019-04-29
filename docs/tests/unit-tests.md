@@ -4,7 +4,7 @@ title: Unit Tests
 
 # Unit Tests
 
-A unit test is about testing in isolate a single funtion and all of its possible output.
+A unit test is about testing in isolate a single function and all of its possible output.
 
 Unit tests can be found in
 

@@ -1,12 +1,12 @@
 ---
-title: GitHub Authenication
+title: GitHub Authentication
 ---
 
-# GitHub App and Authenication
+# GitHub App and Authentication
 
-Dev.to allows you to authenicate using Github. In order to use this authenication method in local development you will need to setup a GitHub App and retrieves keys. Then you'll need to provide theses keys to the Rails application.
+Dev.to allows you to authenticate using Github. To use this authentication method in local development, you will need to set up a GitHub App and retrieves keys. Then you'll need to provide theses keys to the Rails application.
 
-1. [Sign in](https://github.com/settings/applications/new) in your Github account.
+1. [Sign in](https://github.com/settings/applications/new) in your GitHub account.
 
 2. Fill in the form with an application name, descriptions and URLs `http://localhost:3000/`. Replace the `3000` port if you run DEV on other port.
    ![github-1](https://user-images.githubusercontent.com/22895284/51085500-877a6c00-173a-11e9-913a-0dccad234cf3.png)

@@ -1,14 +1,10 @@
 ---
-title: Alogia
+title: Algolia
 ---
 
-# Alogia for Search and Caching
+# Algolia for Search and Caching
 
-Alogia is a third party service which powers the search and is a caching
-layer for various endpoints. When working with the API is very likely
-would will need to utilize Alogia. You will need to sign up for a
-free-tier account, reterieve the keys and provide those keys to the
-Rails application.
+Algolia is a third party service which powers the search and is a caching layer for various endpoints. When working with the API is very likely would need to utilize Algolia. You will need to sign up for a free-tier account, retrieve the keys and provide those keys to the Rails application.
 
 ## Algolia: Sign up
 

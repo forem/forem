@@ -1,11 +1,11 @@
 ---
 title: Backend Guide
 items:
-  - authenication.md
+  - authentication.md
   - auth-twitter.md
   - auth-github.md
   - authorization.md
-  - alogia.md
+  - aloglia.md
   - pusher.md
   - admin.md
   - previewing-emails.md

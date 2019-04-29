@@ -2,7 +2,7 @@
 title: Pusher
 ---
 
-# Pusher - Real Time Notification
+# Pusher - Real-Time Notification
 
 Pusher is third party service being used to power the chat system. When both DEV.to members follow each other they have the ability to use chat and converse with each other.
 

@@ -37,7 +37,7 @@ DEV.to supports different themes such as Normal, Dark, Pink. These themes are po
         --theme-social-icon-invert: invert(100)</style>'
 ```
 
-Within scss files located at `/app/assets/stylesheets` you will see `var` which will call these css custom properties. If a css custom property is not define `var` will fallback on the second paramater provided which are css variables defined in `app/assets/stylesheets/variables.scss`
+Within scss files located at `/app/assets/stylesheets` you will see `var` which will call these css custom properties. If a css custom property is not defined `var` will fall back on the second parameter provided which are css variables defined in `app/assets/stylesheets/variables.scss`
 
 ```
     color: var(--theme-color, $black);
