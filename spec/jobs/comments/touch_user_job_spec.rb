@@ -5,7 +5,7 @@ RSpec.describe Comments::TouchUserJob, type: :job do
     let(:article) { FactoryBot.create(:article) }
     let(:comment) { FactoryBot.create(:comment, commentable: article) }
 
-    it "creates an id code" do
+    it "touches user updated_at and last_comment_at columns" do
       allow(comment.user).to receive(:touch)
 
       described_class.perform_now(comment.id) do
