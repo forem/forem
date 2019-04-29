@@ -733,7 +733,7 @@ GEM
       nokogiri (~> 1.5)
       trollop (~> 2.1)
     rdoc (6.1.1)
-    recaptcha (4.13.2)
+    recaptcha (4.14.0)
       json
     redcarpet (3.4.0)
     regexp_parser (1.4.0)
@@ -1043,7 +1043,7 @@ DEPENDENCIES
   rails (~> 5.2, >= 5.2.3)
   rails-assets-airbrake-js-client (~> 1.6)!
   rails-observers (~> 0.1)
-  recaptcha (~> 4.13)
+  recaptcha (~> 4.14)
   redcarpet (~> 3.4)
   reverse_markdown (~> 1.1)
   rolify (~> 5.2)
