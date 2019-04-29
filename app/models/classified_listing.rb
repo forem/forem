@@ -71,8 +71,7 @@ class ClassifiedListing < ApplicationRecord
   private
 
   def evaluate_markdown
-    parsed_markdown = MarkdownParser.new(body_markdown)
-    self.processed_html = parsed_markdown.finalize
+    self.processed_html = MarkdownParser.new(body_markdown).evaluate_listings_markdown
   end
 
   def modify_inputs
