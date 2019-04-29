@@ -12,3 +12,7 @@ items:
   - licensing.md
   - self-hosting.md
 ---
+
+# Welcome to DEV's developer documentation
+
+Here you can find instruction on how to setup your own local copy of DEV, how to navigate the code, how to contribute and how to troubleshoot issues among other things.

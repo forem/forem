@@ -18,16 +18,22 @@ For more information on how to use GitDocs read the [GitDocs guide](https://gitd
 
 Install the [GitDocs NodeJs library](https://www.npmjs.com/package/gitdocs)
 
+```shell
+npm install gitdocs -g
+```
+
 Specifying `-g` will install the library globally which is what you want to do.
 
-```
-npm install gitdocs -g
+If you use yarn you can instead issue:
+
+```shell
+yarn global add gitdocs
 ```
 
 Once installed, to run gitdocs you need to navigate to the root
 directory of the DEV.to codebase and run
 
-```
+```shell
 gitdocs serve
 ```
 
