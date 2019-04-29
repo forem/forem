@@ -4,6 +4,8 @@ RSpec.describe StackblitzTag, type: :liquid_template do
   describe "#id" do
     let(:stackblitz_id) { "ball-demo" }
     let(:stackblitz_id_with_view) { "ball-demo view=preview" }
+    let(:stackblitz_id_with_file) { "ball-demo file=style.css" }
+    let(:stackblitz_id_with_view_and_file) { "ball-demo view=preview file=style.css" }
 
     xss_links = %w(
       //evil.com/?ball-demo
@@ -30,6 +32,18 @@ RSpec.describe StackblitzTag, type: :liquid_template do
     it "accepts stackblitz id with a view parameter" do
       expect do
         generate_new_liquid(stackblitz_id_with_view)
+      end.not_to raise_error
+    end
+
+    it "accepts stackblitz id with a file parameter" do
+      expect do
+        generate_new_liquid(stackblitz_id_with_file)
+      end.not_to raise_error
+    end
+
+    it "accepts stackblitz id with a view and file parameter" do
+      expect do
+        generate_new_liquid(stackblitz_id_with_view_and_file)
       end.not_to raise_error
     end
 
