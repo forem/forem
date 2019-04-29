@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit update destroy]
+  before_action :set_article, only: %i[edit manage update destroy]
   before_action :raise_banned, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -75,6 +75,12 @@ class ArticlesController < ApplicationController
   end
 
   def edit
+    authorize @article
+    @user = @article.user
+    @organization = @user&.organization
+  end
+
+  def manage
     authorize @article
     @user = @article.user
     @organization = @user&.organization
