@@ -90,7 +90,7 @@
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.8.0",
     "codemirror": "^5.46.0",
-    "intersection-observer": "^0.5.1",
+    "intersection-observer": "^0.6.0",
     "linkstate": "^1.1.1",
     "marked": "^0.6.2",
     "preact": "^8.4.2",
