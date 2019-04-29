@@ -53,7 +53,7 @@ class StackblitzTag < LiquidTagBase
     input_split = input.split(" ")
 
     # Validation
-    validated_files = input_split.map { |o| valid_view?(o) }.reject(&:nil?)
+    validated_files = input_split.map { |o| valid_file?(o) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless validated_files.length.between?(0, 1)
 
     validated_files.length.zero? ? "" : "&#{validated_files.join("")}"
