@@ -1,3 +1,7 @@
+---
+title: Technical Overview
+---
+
 ## 🔑 Key App tech/services
 
 - We use [_Puma_](https://github.com/puma/puma) for the server

@@ -1,3 +1,7 @@
+---
+title: Postgres
+---
+
 # Setup your application with PostgreSQL
 
 Follow the instructions in the installation guide below that corresponds to your operating system:
