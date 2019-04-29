@@ -63,6 +63,7 @@ RSpec.describe Exporter::Service do
       service = valid_instance(article.user)
       config = double
       allow(config).to receive(:fetch).with(:articles, {}).and_return(slug: article.slug)
+      allow(config).to receive(:fetch).with(:comments, {}).and_return({})
       service.export(config: config)
       expect(config).to have_received(:fetch).with(:articles, {})
     end
