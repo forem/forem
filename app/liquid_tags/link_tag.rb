@@ -10,7 +10,7 @@ class LinkTag < LiquidTagBase
         path = Addressable::URI.parse(@slug_or_path_or_url).path
         path.slice!(0) if path.starts_with?("/") # remove leading slash if present
         path.slice!(-1) if path.ends_with?("/") # remove trailing slash if present
-        ddressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
+        Addressable::Template.new("{username}/{slug}").extract(path)&.symbolize_keys
       end
     end
 
