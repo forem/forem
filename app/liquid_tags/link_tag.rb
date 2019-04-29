@@ -15,6 +15,7 @@ class LinkTag < LiquidTagBase
     end
 
     @hash = article_hash
+    raise StandardError, "Invalid link URL or link URL does not exist" if @hash.nil?
 
     class << self
       def render(_context)
@@ -22,14 +23,32 @@ class LinkTag < LiquidTagBase
         title = strip_tags article.title
         profile_img = ProfileImage.new(article.user).get(150)
         ActionController::Base.new.render_to_string(
-          partial: PARTIAL, locals: { article: article, title: title, profile_img: profile_img },
+          partial: PARTIAL,
+          locals: { article: article, title: title, profile_img: profile_img },
         )
       end
 
       def get_article
-        User.find_by(username: @hash[:username]).articles.where(slug: @hash[:slug])&.first || Organization.find_by(slug: @hash[:username]).articles.where(slug: @hash[:slug])&.first
-      rescue ActiveRecord::RecordNotFound
+        article = find_article_by_user(@hash) || find_article_by_org(@hash)
+        raise StandardError, "Invalid link URL or link URL does not exist" if article.nil?
+
+        article
+      rescue StandardError
         raise StandardError, "Invalid link URL or link URL does not exist"
+      end
+
+      def find_article_by_user(hash)
+        user = User.find_by(username: hash[:username])
+        return unless user
+
+        user.articles.where(slug: hash[:slug])&.first
+      end
+
+      def find_article_by_org(hash)
+        org = Organization.find_by(slug: hash[:username])
+        return unless org
+
+        org.articles.where(slug: hash[:slug])&.first
       end
     end
   end
