@@ -122,9 +122,16 @@
 
     <h3><strong>GitHub Gist Embed</strong></h3>
     <p>All you need is the gist link:</p>
-    <pre>
-    {% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}
-    </pre>
+    <code>
+    {% gist https://gist.github.com/CristinaSolana/1885435 %}
+    </code>
+    <dl>
+      <dt><code>Single File Embed</code></dt>
+      <dd>
+        You can choose to embed a single gist file. <br>
+        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code>
+      </dd>
+    </dl>
 
     <h3><strong>Video Embed</strong></h3>
     <p>All you need is the <code>id</code> from the URL.

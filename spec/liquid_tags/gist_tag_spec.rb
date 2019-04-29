@@ -19,15 +19,19 @@ RSpec.describe GistTag, type: :liquid_template do
       ]
     end
 
+    let(:gist_link) { "https://gist.github.com/amochohan/8cb599ee5dc0af5f4246" }
+    let(:link_with_file_option) { "#{gist_link} file=01_Laravel 5 Simple ACL manager_Readme.md" }
+
     def generate_new_liquid(link)
       Liquid::Template.register_tag("gist", GistTag)
       Liquid::Template.parse("{% gist #{link} %}")
     end
 
-    def generate_script(link)
+    def generate_script(link, option = "")
+      uri = option.presence ? "#{link}.js?#{option}" : "#{link}.js"
       html = <<~HTML
         <div class="ltag_gist-liquid-tag">
-            <script id="gist-ltag" src="#{link}.js"></script>
+            <script id="gist-ltag" src="#{uri}"></script>
         </div>
       HTML
       html.tr("\n", " ").delete(" ")
@@ -38,6 +42,12 @@ RSpec.describe GistTag, type: :liquid_template do
         liquid = generate_new_liquid(link)
         expect(liquid.render.delete(" ")).to eq(generate_script(link))
       end
+    end
+
+    it "handles 'file' option" do
+      liquid = generate_new_liquid(link_with_file_option)
+      link, option = link_with_file_option.split(" ", 2)
+      expect(liquid.render.delete(" ")).to eq(generate_script(link, option))
     end
 
     it "rejects invalid gist url" do
