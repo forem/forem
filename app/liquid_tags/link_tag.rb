@@ -22,8 +22,7 @@ class LinkTag < LiquidTagBase
         title = strip_tags article.title
         profile_img = ProfileImage.new(article.user).get(150)
         ActionController::Base.new.render_to_string(
-          partial: PARTIAL,
-          locals: { article: article, title: title, profile_img: profile_img },
+          partial: PARTIAL, locals: { article: article, title: title, profile_img: profile_img },
         )
       end
 
