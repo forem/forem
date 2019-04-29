@@ -120,26 +120,12 @@ class Notification < ApplicationRecord
     end
 
     def send_moderation_notification(notifiable)
-      # notifiable is currently only comment
-      available_moderators = User.with_role(:trusted).where("last_moderation_notification < ?", 28.hours.ago)
-      return if available_moderators.empty?
-
-      moderator = available_moderators.sample
-      dev_account = User.dev_account
-      json_data = {
-        user: user_data(dev_account)
-      }
-      json_data[notifiable.class.name.downcase] = send "#{notifiable.class.name.downcase}_data", notifiable
-      Notification.create(
-        user_id: moderator.id,
-        notifiable_id: notifiable.id,
-        notifiable_type: notifiable.class.name,
-        action: "Moderation",
-        json_data: json_data,
-      )
-      moderator.update_column(:last_moderation_notification, Time.current)
+      Notifications::ModerationNotificationJob.perform_later(notifiable.id)
     end
-    handle_asynchronously :send_moderation_notification
+
+    def send_moderation_notification_without_delay(notifiable)
+      Notifications::ModerationNotificationJob.perform_now(notifiable.id)
+    end
 
     def send_tag_adjustment_notification(tag_adjustment)
       article = tag_adjustment.article
