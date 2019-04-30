@@ -18,7 +18,7 @@ class UserTag < LiquidTagBase
             user: user,
             follow_button: follow_button,
             profile_img: profile_img,
-            user_colors: user_colors,
+            user_colors: user_colors
           },
         )
       end
