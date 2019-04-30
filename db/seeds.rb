@@ -227,7 +227,7 @@ Badge.create!(
   badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
 )
 
-Rails.logger.info "10. Creating FeedbackMessages"
+Rails.logger.info "11. Creating FeedbackMessages"
 
 FeedbackMessage.create!(
   reporter: User.last,
