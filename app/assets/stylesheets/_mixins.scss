@@ -3,8 +3,8 @@
 * Makes working with themeable CSS variables easier.
 *
 * $property: the CSS property to theme.
-* $cssVariable: The CSS variable that will store the themed valued.
-* $fallback: The value to use as a fallback but as well as the default CSS variable value.
+* $cssVariable: The CSS variable that will store the themed value.
+* $fallback: The value to use as a fallback but as well for the CSS variable default value.
 */
 @mixin themeable($property, $cssVariable, $fallback) {
   #{$property}: #{$fallback};
