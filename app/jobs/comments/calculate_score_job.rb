@@ -4,8 +4,8 @@ module Comments
 
     def perform(comment_id)
       comment = Comment.find_by(id: comment_id)
-      comment.update_column(:score, BlackBox.comment_quality_score(comment))
-      comment.update_column(:spaminess_rating, BlackBox.calculate_spaminess(comment))
+
+      comment&.update_columns(score: BlackBox.comment_quality_score(comment), spaminess_rating: BlackBox.calculate_spaminess(comment))
       comment.root.save unless comment.is_root?
     end
   end

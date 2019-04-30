@@ -259,8 +259,12 @@ class Comment < ApplicationRecord
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
     remove_notifications
-    bust_cache
+    bust_cache_without_delay
     remove_algolia_index
+  end
+
+  def bust_cache_without_delay
+    Comments::BustCacheJob.perform_now(id)
   end
 
   def bust_cache
