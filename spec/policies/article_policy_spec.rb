@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe ArticlePolicy do
   subject { described_class.new(user, article) }
 
-  let(:article) { build(:article) }
+  let(:article) { create(:article) }
   let(:valid_attributes) do
     %i[title body_html body_markdown main_image published
        description allow_small_edits allow_big_edits tag_list publish_under_org
