@@ -6,7 +6,7 @@ module Comments
       comment = Comment.find_by(id: comment_id)
 
       comment&.update_columns(score: BlackBox.comment_quality_score(comment), spaminess_rating: BlackBox.calculate_spaminess(comment))
-      comment.root.save unless comment&.is_root?
+      comment.root.save if comment && !comment.is_root?
     end
   end
 end
