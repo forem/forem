@@ -143,6 +143,7 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
+  before_create :set_default_language
   before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
@@ -183,15 +184,8 @@ class User < ApplicationRecord
     end
   end
 
-  # Via https://github.com/G5/storext
-  store_attributes :language_settings do
-    estimated_default_language String
-    prefer_language_en Boolean, default: true
-    prefer_language_ja Boolean, default: false
-    prefer_language_es Boolean, default: false
-    prefer_language_fr Boolean, default: false
-    prefer_language_it Boolean, default: false
-    prefer_language_pt Boolean, default: false
+  def estimated_default_language
+    language_settings["estimated_default_language"]
   end
 
   def self.trigger_delayed_index(record, remove)
@@ -258,14 +252,25 @@ class User < ApplicationRecord
 
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      langs = []
-      langs << "en" if prefer_language_en
-      langs << "ja" if prefer_language_ja
-      langs << "es" if prefer_language_es
-      langs << "fr" if prefer_language_fr
-      langs << "it" if prefer_language_it
-      langs
+      preferred_languages_array
     end
+  end
+
+  # handles both old (prefer_language_*) and new (Array of language codes) formats
+  def preferred_languages_array
+    # return @prefer_languages_array if defined? @preferred_languages_array
+    return @preferred_languages_array if defined?(@preferred_languages_array)
+
+    if language_settings["preferred_languages"].present?
+      @preferred_languages_array = language_settings["preferred_languages"].to_a
+    else
+      languages = []
+      language_settings.keys.each do |setting|
+        languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
+      end
+      @preferred_languages_array = languages
+    end
+    @preferred_languages_array
   end
 
   def processed_website_url
@@ -410,6 +415,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def set_default_language
+    language_settings["preferred_languages"] ||= ["en"]
+  end
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)

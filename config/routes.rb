@@ -198,6 +198,7 @@ Rails.application.routes.draw do
       to: redirect("anotherdevblog/every-developer-should-write-a-personal-automation-api")
 
   # Settings
+  post "users/update_language_settings" => "users#update_language_settings"
   post "users/join_org" => "users#join_org"
   post "users/leave_org" => "users#leave_org"
   post "users/add_org_admin" => "users#add_org_admin"
