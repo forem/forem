@@ -33,7 +33,7 @@ class ApplicationPolicy
   end
 
   def manage?
-    update?
+    update? && record.published
   end
 
   def destroy?
