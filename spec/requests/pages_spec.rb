@@ -77,7 +77,7 @@ RSpec.describe "Pages", type: :request do
     context "when nothing is live" do
       it "shows the correct message" do
         get "/live"
-        expect(response.body).to include("Nothing is live right now")
+        expect(response.body).to include("We are working on more ways to bring live coding to the community")
       end
     end
   end

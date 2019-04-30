@@ -4,26 +4,23 @@ title: Webpacker
 
 # Webpacker
 
-DEV.to has two javascript codebases. One is located at
-`/app/javascripts` and this is plain javascript being served using `spockets`
+DEV has two Javascript codebases.
 
-The other codebase is located at `/app/javascript` which is for preact
-components and is served via `webpack` which is integrated into the
-Rails app using `Webpacker`
+One contains plain Javascript and you can read about [in its own guide](/frontend/plain-js).
+
+The other one is managed by [Webpacker](https://github.com/rails/webpacker) and it's located inside `/app/javascripts`, written using ES6+.
+
+Currently it's mainly used for Preact components, served via `webpack` which is integrated into the Rails app using `Webpacker`.
 
 There is a packs directory `/app/javascript/packs` where you can create
-new pack files.
+new "pack" files. Pack files are initializers for Webpacker.
 
-Since DEV.to is not an SPA (Single Page Application)
-preact apps are mounted as needed by including the pack file in the erb
-files. eg
+Since DEV is not a Single Page Application (SPA), Preact components are mounted as needed by including the pack file in the view files.
 
-```
+For example:
+
+```erb
 <%= javascript_pack_tag "webShare", defer: true %>
 ```
 
-This pack would correspond with
-
-```
-app/javascripts/packs/webShare.js
-```
+The include statement corresponds to the pack `app/javascripts/packs/webShare.js`
