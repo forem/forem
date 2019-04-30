@@ -5,7 +5,7 @@ items:
   - auth-twitter.md
   - auth-github.md
   - authorization.md
-  - aloglia.md
+  - algolia.md
   - pusher.md
   - admin.md
   - previewing-emails.md

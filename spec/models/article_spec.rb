@@ -111,7 +111,7 @@ RSpec.describe Article, type: :model do
     let(:article1) { build(:article, title: title, published: false) }
 
     before do
-      article0.validate
+      article0.validate!
     end
 
     context "when unpublished" do

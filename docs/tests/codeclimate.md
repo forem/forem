@@ -1,9 +1,11 @@
 ---
-title: CodeClimate
+title: Code Climate
 ---
 
-# CodeClimate
+# Code Climate
 
-We are using CodeClimate to track code quality and code coverage. CodeClimate will grade the quality of the code of every PR but not the entirety of the project. If you feel that the current linting rule is unreasonable, feel free to submit a _separate_ PR to change it. Fix any errors that CodeClimate provides and strive to leave code better than you found it.
+We are using [Code Climate](https://codeclimate.com/github/thepracticaldev/dev.to) to track code quality and coverage.
 
-Travis will upload Simplecov data to CodeClimate.
+Code Climate will grade the quality of the code of every PR but not the entirety of the project. If you want to make improvements to the current linting rule, feel free to submit a PR to change it.
+
+Fix any errors that Code Climate raises in your PR's build and strive to leave the code better than you found it.

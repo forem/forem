@@ -4,9 +4,9 @@ title: Authentication
 
 # Authentication
 
-Authenication is handled by [Devise](https://github.com/plataformatec/devise) and [OmniAuth](https://github.com/omniauth/omniauth)
+Authentication is handled by [Devise](https://github.com/plataformatec/devise) and [OmniAuth](https://github.com/omniauth/omniauth).
 
-On DEV.to you can only authenicate through Github or Twitter. Please check out the respective guides on how to authenicate:
+On DEV you can only authenticate through GitHub or Twitter. Please check out the respective guides on how to authenticate:
 
-- [Twitter App and Authenication](/installation/auth-github)
-- [Github App and Authenication](/installation/auth-twitter)
+- [Github authentication](/backend/auth-github)
+- [Twitter authentication](/backend/auth-twitter)
