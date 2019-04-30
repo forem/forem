@@ -114,6 +114,7 @@ GEM
     ast (2.4.0)
     autoprefixer-rails (9.5.1)
       execjs
+    awesome_print (1.8.0)
     aws-eventstream (1.0.3)
     aws-partitions (1.154.0)
     aws-sdk-core (3.48.6)
@@ -318,6 +319,10 @@ GEM
       multipart-post (>= 1.2, < 3)
     faraday_middleware (0.13.1)
       faraday (>= 0.7.4, < 1.0)
+    fastentry (0.1.15)
+      awesome_print
+      net-telnet
+      rails
     fastimage (2.1.1)
     fastly (1.15.0)
     fastly-rails (0.8.0)
@@ -487,6 +492,7 @@ GEM
     nenv (0.3.0)
     net-http-persistent (3.0.0)
       connection_pool (~> 2.2)
+    net-telnet (0.2.0)
     netrc (0.11.0)
     nio4r (2.3.1)
     nokogiri (1.10.3)
@@ -749,7 +755,6 @@ GEM
     timber (2.6.2)
       msgpack (~> 1.0)
     timecop (0.9.1)
-    trollop (2.1.2)
     twilio-ruby (5.22.2)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
@@ -859,6 +864,7 @@ DEPENDENCIES
   erb_lint (~> 0.0)
   factory_bot_rails (~> 5.0)
   faker (~> 1.9)
+  fastentry
   fastly (~> 1.15)
   fastly-rails (~> 0.8)
   feedjira (~> 2.2)

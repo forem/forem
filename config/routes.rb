@@ -1,4 +1,5 @@
 # rubocop:disable Metrics/BlockLength
+require "fastentry/engine"
 
 Rails.application.routes.draw do
   devise_for :users, controllers: {
@@ -9,6 +10,7 @@ Rails.application.routes.draw do
 
   authenticated :user, ->(user) { user.tech_admin? } do
     mount DelayedJobWeb, at: "/delayed_job"
+    mount Fastentry::Engine, at: "/fastentry"
   end
 
   devise_scope :user do
