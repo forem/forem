@@ -113,5 +113,20 @@ RSpec.describe "/listings", type: :request do
       }
       expect(ClassifiedListing.last.body_markdown).not_to eq("hello new markdown")
     end
+    it "updates other fields" do
+      put "/listings/#{classified_listing.id}", params: {
+        classified_listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
+      }
+      expect(ClassifiedListing.last.title).to eq("New title!")
+      expect(ClassifiedListing.last.cached_tag_list).to include("hey")
+    end
+    it "does not update other fields" do
+      classified_listing.update_column(:bumped_at, 50.hours.ago)
+      put "/listings/#{classified_listing.id}", params: {
+        classified_listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
+      }
+      expect(ClassifiedListing.last.title).not_to eq("New title!")
+      expect(ClassifiedListing.last.cached_tag_list).not_to include("hey")
+    end
   end
 end

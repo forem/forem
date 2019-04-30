@@ -116,6 +116,8 @@ class UserPolicy < ApplicationPolicy
        stackoverflow_url
        summary
        text_color_hex
+       twitch_url
+       twitch_username
        username
        website_url
        export_requested]

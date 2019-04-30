@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_17_171020) do
+ActiveRecord::Schema.define(version: 2019_04_25_210432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -809,6 +811,7 @@ ActiveRecord::Schema.define(version: 2019_04_17_171020) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
+    t.string "currently_streaming_on"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -919,6 +922,8 @@ ActiveRecord::Schema.define(version: 2019_04_17_171020) do
     t.string "text_color_hex"
     t.string "text_only_name"
     t.string "top_languages"
+    t.string "twitch_url"
+    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"

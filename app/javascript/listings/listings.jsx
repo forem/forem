@@ -165,6 +165,7 @@ export class Listings extends Component {
     const allListings = listings.map(listing => (
       <SingleListing
         onAddTag={this.addTag}
+        onChangeCategory={this.selectCategory}
         listing={listing}
         currentUserId={currentUserId}
       />
