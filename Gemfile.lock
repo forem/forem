@@ -305,7 +305,7 @@ GEM
     et-orbi (1.1.6)
       tzinfo
     eventmachine (1.2.5)
-    excon (0.60.0)
+    excon (0.64.0)
     execjs (2.7.0)
     factory_bot (5.0.2)
       activesupport (>= 4.2.0)
@@ -333,7 +333,7 @@ GEM
       thor (~> 0.14)
     fix-db-schema-conflicts (3.0.3)
       rubocop (>= 0.38.0)
-    fog-aws (2.0.0)
+    fog-aws (2.0.1)
       fog-core (~> 1.38)
       fog-json (~> 1.0)
       fog-xml (~> 0.1)
@@ -342,8 +342,8 @@ GEM
       builder
       excon (~> 0.58)
       formatador (~> 0.2)
-    fog-json (1.0.2)
-      fog-core (~> 1.0)
+    fog-json (1.2.0)
+      fog-core
       multi_json (~> 1.10)
     fog-xml (0.1.3)
       fog-core
@@ -869,7 +869,7 @@ DEPENDENCIES
   feedjira (~> 2.2)
   figaro (~> 1.1)
   fix-db-schema-conflicts (~> 3.0)
-  fog-aws (= 2.0.0)
+  fog-aws (= 2.0.1)
   foreman!
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.1)
