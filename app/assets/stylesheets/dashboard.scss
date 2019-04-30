@@ -239,6 +239,65 @@
       background: var(--theme-container-accent-background,
         lighten($yellow, 20%));
     }
+    &.single-article-manage-form-wrapper {
+      form {
+        text-align: center;
+        width: 490px;
+        max-width: 90%;
+        margin: 10px auto;
+        textarea {
+          width: 100%;
+          border: 1px solid $light-medium-gray;
+          height: 100px;
+          border-radius: 3px;
+        }
+        input[type="submit"] {
+          background: #1da1f2; // twitter blue
+          color: white;
+          font-size: 19px;
+          padding: 8px 35px;
+          border-radius: 100px;
+          font-family: $helvetica-condensed;
+          margin: 18px auto;
+        }
+        .button-section {
+          display: inline-block;
+          border-radius: 12px;
+          padding: 3px;
+          &.button-section-newbie {
+            background: lighten($green, 12%);
+          }
+          &.button-section-intermediate {
+            background: lighten($purple, 5%);
+          }
+          &.button-section-senior {
+            background: lighten($bold-blue, 12%);
+          }
+        }
+        button {
+          color: white;
+          font-size: 15px;
+          font-weight: bold;
+          border: 2px solid white;
+          background: $black;
+          padding: 5px 0px;
+          width: 38px;
+          border-radius: 8px;
+          &.selected {
+            background: $green;
+            padding: 15px 0px;
+            width: 70px;
+            font-size: 20px;
+          }
+        }
+        p {
+          .scale-pod {
+            display: inline-block;
+            width: 160px;
+          }
+        }
+      }
+    }
 
     .dashboard-collection-org-details {
       .dashboard-top-pill {

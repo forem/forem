@@ -81,8 +81,10 @@ class ArticlesController < ApplicationController
   end
 
   def manage
+    @article = @article.decorate
     authorize @article
     @user = @article.user
+    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @organization = @user&.organization
   end
 
