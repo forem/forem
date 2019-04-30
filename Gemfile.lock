@@ -333,15 +333,16 @@ GEM
       thor (~> 0.14)
     fix-db-schema-conflicts (3.0.3)
       rubocop (>= 0.38.0)
-    fog-aws (2.0.1)
-      fog-core (~> 1.38)
-      fog-json (~> 1.0)
+    fog-aws (3.0.0)
+      fog-core (~> 2.1)
+      fog-json (~> 1.1)
       fog-xml (~> 0.1)
       ipaddress (~> 0.8)
-    fog-core (1.45.0)
+    fog-core (2.1.2)
       builder
       excon (~> 0.58)
       formatador (~> 0.2)
+      mime-types
     fog-json (1.2.0)
       fog-core
       multi_json (~> 1.10)
@@ -869,7 +870,7 @@ DEPENDENCIES
   feedjira (~> 2.2)
   figaro (~> 1.1)
   fix-db-schema-conflicts (~> 3.0)
-  fog-aws (= 2.0.1)
+  fog-aws (= 3.0.0)
   foreman!
   front_matter_parser (~> 0.2)
   gemoji (~> 3.0.1)
