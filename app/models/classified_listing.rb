@@ -10,6 +10,9 @@ class ClassifiedListing < ApplicationRecord
   before_validation :modify_inputs
   acts_as_taggable_on :tags
 
+  validates :user_id, presence: true, unless: :organization_id?
+  validates :organization_id, presence: true, unless: :user_id?
+
   validates :title, presence: true,
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
