@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_25_210432) do
+ActiveRecord::Schema.define(version: 2019_04_30_123156) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -244,6 +244,8 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
+    t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
   create_table "collections", id: :serial, force: :cascade do |t|
@@ -809,6 +811,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
+    t.string "currently_streaming_on"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -920,6 +923,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.string "text_only_name"
     t.string "top_languages"
     t.string "twitch_url"
+    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"

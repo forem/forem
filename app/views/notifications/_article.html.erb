@@ -30,6 +30,9 @@
       <% if json_data["organization"] %>
         under <a href="<%= json_data["organization"]["path"] %>"><%= json_data["organization"]["name"] %></a>:
       <% end %>
+      <div>
+        <small><%= time_ago_in_words notification.created_at %> ago</small>
+      </div>
       <a href="<%= json_data["article"]["path"] %>">
         <div class="notification-new-post">
           <div class="notification-new-post-title">

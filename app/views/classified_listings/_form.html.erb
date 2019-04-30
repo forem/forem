@@ -59,6 +59,7 @@
       <br/><br/><%= current_user.organization.name %> has <%= current_user.organization.credits.size %> credits available — <a href="/credits/new?purchaser=organization" data-no-instant>Buy More</a>
     <% end %>
   </div>
-  <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may take down and refund listings which are miscategorized or otherwise inappropriate.</em></p>
+  <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund listings which are miscategorized or otherwise inappropriate.</em></p>
+  <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
   <p><em>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you need support.</em></p>
 <% end %>

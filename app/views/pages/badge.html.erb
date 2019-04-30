@@ -88,7 +88,7 @@
         document.getElementsByTagName('body')[0].dataset.loaded = "true";
       }
     };
-    var timeString = (Date.now()).toString();
+
     xmlhttp.open("GET", "/async_info/base_data", true);
     xmlhttp.send();
   }

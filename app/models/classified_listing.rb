@@ -10,6 +10,9 @@ class ClassifiedListing < ApplicationRecord
   before_validation :modify_inputs
   acts_as_taggable_on :tags
 
+  validates :user_id, presence: true, unless: :organization_id?
+  validates :organization_id, presence: true, unless: :user_id?
+
   validates :title, presence: true,
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
@@ -71,8 +74,7 @@ class ClassifiedListing < ApplicationRecord
   private
 
   def evaluate_markdown
-    parsed_markdown = MarkdownParser.new(body_markdown)
-    self.processed_html = parsed_markdown.finalize
+    self.processed_html = MarkdownParser.new(body_markdown).evaluate_listings_markdown
   end
 
   def modify_inputs

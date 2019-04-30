@@ -7,6 +7,7 @@ RSpec.describe Notification, type: :model do
   let(:organization)    { create(:organization) }
   let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
   let(:follow_instance) { user.follow(user2) }
+  let(:badge_achievement) { create(:badge_achievement) }
 
   describe "when trying to #send_new_follower_notification after following a tag" do
     let(:tag) { create(:tag) }
@@ -423,6 +424,30 @@ RSpec.describe Notification, type: :model do
     it "returns false if a notification's action is not 'Reaction' or 'Follow'" do
       notification = build(:notification, action: "Published")
       expect(notification.aggregated?).to eq false
+    end
+  end
+
+  describe "#send_new_badge_achievement_notification" do
+    it "enqueues a new badge achievement job" do
+      assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
+        Notification.send_new_badge_achievement_notification(badge_achievement)
+      end
+    end
+  end
+
+  describe "#send_new_badge_notification (deprecated)" do
+    it "enqueues a new badge achievement job" do
+      assert_enqueued_with(job: Notifications::NewBadgeAchievementJob, args: [badge_achievement.id]) do
+        Notification.send_new_badge_notification(badge_achievement)
+      end
+    end
+  end
+
+  describe "#send_new_badge_notification_without_delay (deprecated)" do
+    it "creates a notification" do
+      expect do
+        Notification.send_new_badge_notification_without_delay(badge_achievement)
+      end.to change(Notification, :count).by(1)
     end
   end
 end

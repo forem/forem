@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id, :add_credits
 
   rolify
   include AlgoliaSearch
@@ -130,6 +130,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
             length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
+  validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
@@ -145,7 +146,7 @@ class User < ApplicationRecord
   before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -400,6 +401,14 @@ class User < ApplicationRecord
     roles.where(name: "tag_moderator").any?
   end
 
+  def currently_streaming?
+    currently_streaming_on.present?
+  end
+
+  def currently_streaming_on_twitch?
+    currently_streaming_on == "twitch"
+  end
+
   private
 
   def send_welcome_notification
@@ -416,6 +425,10 @@ class User < ApplicationRecord
 
   def verify_email
     self.email = nil if email == ""
+  end
+
+  def verify_twitch_username
+    self.twitch_username = nil if twitch_username == ""
   end
 
   def set_username

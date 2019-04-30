@@ -32,13 +32,13 @@ gem "carrierwave", "~> 1.3" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.11" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 2.1" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "counter_culture", "~> 2.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "dalli", "~> 2.7" # High performance memcached client for Ruby
 gem "delayed_job_active_record", "~> 4.1" # ActiveRecord backend for Delayed::Job
 gem "delayed_job_web", "~> 1.4" # Web interface for delayed_job
 gem "devise", "~> 4.6" # Flexible authentication solution for Rails
-gem "draper", "~> 3.0" # Draper adds an object-oriented layer of presentation logic to your Rails apps
-gem "dry-struct", "~> 0.7" # Typed structs and value objects
+gem "draper", "~> 3.1" # Draper adds an object-oriented layer of presentation logic to your Rails apps
+gem "dry-struct", "~> 1.0" # Typed structs and value objects
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
@@ -75,7 +75,7 @@ gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have b
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
 gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
-gem "recaptcha", "~> 4.13", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 4.14", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
