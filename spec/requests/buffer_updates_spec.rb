@@ -4,6 +4,7 @@ RSpec.describe "BufferUpdates", type: :request do
   let(:user) { create(:user) }
   let(:mod_user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
+  let(:mod_article) { create(:article, user_id: mod_user.id) }
   let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
 
   context "when trusted user is logged in" do
@@ -58,8 +59,14 @@ RSpec.describe "BufferUpdates", type: :request do
       expect do
         post "/buffer_updates",
              params:
-             { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
+             { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: mod_article.id } }
       end.to raise_error(Pundit::NotAuthorizedError)
+    end
+    it "accepts buffer update from author of article" do
+      post "/buffer_updates",
+           params:
+           { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
+      expect(BufferUpdate.first.body_text).to include(article.path)
     end
   end
 

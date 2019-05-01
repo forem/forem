@@ -73,4 +73,19 @@ RSpec.describe "Articles", type: :request do
       end
     end
   end
+
+  describe "GET /:path/edit" do
+    before { sign_in user }
+
+    it "returns a new article" do
+      article = create(:article, user_id: user.id)
+      get "#{article.path}/manage"
+      expect(response.body).to include("Manage Your Post")
+    end
+    it "returns unauthorized if user not author" do
+      second_user = create(:user)
+      article = create(:article, user_id: second_user.id)
+      expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
 end
