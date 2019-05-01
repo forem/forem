@@ -695,6 +695,11 @@
         .bm-success {
           display: none;
         }
+        .bm-initial {
+          &:after{
+            content: "SAVE";
+          }
+        }
         &.selected {
           color: darken($purple, 33%);
           background: transparent;
@@ -703,7 +708,14 @@
             display: none;
           }
           .bm-success {
-            display: block;
+            display: inline-block;
+
+            &:before{
+              content: "SAVED";
+            }
+            &:hover:before{
+              content: "UNSAVE";
+            }
           }
         }
         &.following-butt {
