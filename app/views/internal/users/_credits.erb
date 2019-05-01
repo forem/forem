@@ -1,11 +1,18 @@
 <div class="row">
   <h3><u>Credits</u></h3>
-  <p>Avaiable Credits: <%= @user.credits.where(spent: false).size %></p>
+  <p>Available Credits: <%= @user.credits.where(spent: false).size %></p>
   <%= form_for [:internal, @user] do |f| %>
     <%= f.label "Add Credit(s): " %>
     <br>
-    <%= f.text_field :add_credits %>
+    <%= f.text_field :add_credits, placeholder: "#" %>
     <br>
     <%= f.submit "Add Credits" %>
+  <% end %>
+  <%= form_for [:internal, @user] do |f| %>
+    <%= f.label "Remove Credits(s)" %>
+    <br>
+    <%= f.text_field :remove_credits, placeholder: "#" %>
+    <br>
+    <%= f.submit "Remove Credits"%>
   <% end %>
 </div>

@@ -9,6 +9,8 @@ RSpec.describe Notification, type: :model do
   let(:follow_instance) { user.follow(user2) }
   let(:badge_achievement) { create(:badge_achievement) }
 
+  it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[organization_id notifiable_id notifiable_type action]) }
+
   describe "when trying to #send_new_follower_notification after following a tag" do
     let(:tag) { create(:tag) }
     let(:tag_follow) { user.follow(tag) }

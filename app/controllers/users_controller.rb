@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     @user = current_user
     @tab_list = @user.settings_tab_list
     @tab = params["tab"]
+
     authorize @user
     handle_settings_tab
   end
@@ -21,7 +22,6 @@ class UsersController < ApplicationController
     @tab_list = @user.settings_tab_list
     @tab = params["user"]["tab"] || "profile"
     authorize @user
-    # raise permitted_attributes(@user).to_s
     if @user.update(permitted_attributes(@user))
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
       Streams::TwitchWebhookRegistrationJob.perform_later(@user.id) if @user.twitch_username.present?
@@ -32,6 +32,21 @@ class UsersController < ApplicationController
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
+      @user.touch(:profile_updated_at)
+      redirect_to "/settings/#{@tab}", notice: notice
+    else
+      render :edit
+    end
+  end
+
+  def update_language_settings
+    @user = current_user
+    @tab_list = @user.settings_tab_list
+    @tab = "misc"
+    authorize @user
+    @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
+    if @user.save
+      notice = "Your profile was successfully updated."
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}", notice: notice
     else

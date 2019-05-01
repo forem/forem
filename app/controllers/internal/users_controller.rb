@@ -42,6 +42,7 @@ class Internal::UsersController < Internal::ApplicationController
     make_matches
     add_note if user_params[:new_note]
     add_credits if user_params[:add_credits]
+    remove_credits if user_params[:remove_credits]
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
     else
@@ -66,6 +67,11 @@ class Internal::UsersController < Internal::ApplicationController
       credit_objects << Credit.new(user_id: @user.id)
     end
     Credit.import credit_objects
+  end
+
+  def remove_credits
+    amount = user_params[:remove_credits].to_i
+    @user.credits.where(spent: false).limit(amount).delete_all
   end
 
   def user_status
@@ -138,6 +144,7 @@ class Internal::UsersController < Internal::ApplicationController
                                  :toggle_mentorship,
                                  :pro,
                                  :merge_user_id,
-                                 :add_credits)
+                                 :add_credits,
+                                 :remove_credits)
   end
 end

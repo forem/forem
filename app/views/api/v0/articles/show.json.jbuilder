@@ -5,7 +5,7 @@ json.description        @article.description
 json.cover_image        cloud_cover_url @article.main_image
 json.published_at       @article.published_at
 json.readable_publish_date @article.readable_publish_date
-json.social_image       cloud_social_image(@article)
+json.social_image       article_social_image_url(@article)
 json.tag_list           @article.cached_tag_list
 json.slug               @article.slug
 json.path               @article.path

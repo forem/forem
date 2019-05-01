@@ -76,7 +76,9 @@ function addRelevantButtonsToArticle(user) {
       document.getElementById('action-space').innerHTML =
         '<a href="' +
         articleContainer.dataset.path +
-        '/edit" rel="nofollow">EDIT <span class="post-word">POST</span></a>';
+        '/edit" rel="nofollow">EDIT</a><a href="' +
+        articleContainer.dataset.path +
+        '/manage" rel="nofollow">MANAGE</a>';
     } else if (user.trusted) {
       document.getElementById('action-space').innerHTML =
         '<a href="' +

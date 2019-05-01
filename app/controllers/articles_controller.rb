@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit update destroy]
+  before_action :set_article, only: %i[edit manage update destroy]
   before_action :raise_banned, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -77,6 +77,15 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
+    @organization = @user&.organization
+  end
+
+  def manage
+    @article = @article.decorate
+    authorize @article
+    @user = @article.user
+    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
+    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
     @organization = @user&.organization
   end
 

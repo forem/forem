@@ -160,10 +160,10 @@ Rails.application.routes.draw do
 
   post "/pusher/auth" => "pusher#auth"
 
-  get "/social_previews/article/:id" => "social_previews#article"
-  get "/social_previews/user/:id" => "social_previews#user"
-  get "/social_previews/organization/:id" => "social_previews#organization"
-  get "/social_previews/tag/:id" => "social_previews#tag"
+  get "/social_previews/article/:id" => "social_previews#article", as: :article_social_preview
+  get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
+  get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
+  get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
 
   ### Subscription vanity url
   post "membership-action" => "stripe_subscriptions#create"
@@ -198,6 +198,7 @@ Rails.application.routes.draw do
       to: redirect("anotherdevblog/every-developer-should-write-a-personal-automation-api")
 
   # Settings
+  post "users/update_language_settings" => "users#update_language_settings"
   post "users/join_org" => "users#join_org"
   post "users/leave_org" => "users#leave_org"
   post "users/add_org_admin" => "users#add_org_admin"
@@ -332,6 +333,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/:view" => "stories#show",
       constraints: { view: /moderate/ }
   get "/:username/:slug/mod" => "moderations#article"
+  get "/:username/:slug/manage" => "articles#manage"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
   get "/:username/:view" => "stories#index",

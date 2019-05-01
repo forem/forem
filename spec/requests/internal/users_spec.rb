@@ -130,6 +130,12 @@ RSpec.describe "Internal::Users", type: :request do
       put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
     end
+
+    it "remove credits from account" do
+      create_list(:credit, 5, user: user)
+      put "/internal/users/#{user.id}", params: { user: { remove_credits: "3" } }
+      expect(user.credits.size).to eq(2)
+    end
   end
 
   context "when deleting user" do
