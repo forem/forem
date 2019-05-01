@@ -61,6 +61,12 @@ RSpec.describe "Internal::Users", type: :request do
     Delayed::Worker.new(quiet: true).work_off
   end
 
+  def add_credits
+    5.times do
+      Credit.create(user_id: user.id)
+    end
+  end
+
   context "when merging users" do
     before do
       full_profile
@@ -129,6 +135,12 @@ RSpec.describe "Internal::Users", type: :request do
     it "creates a general note on the user" do
       put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
+    end
+
+    it "remove credits from account" do
+      add_credits
+      put "/internal/users/#{user.id}", params: { user: { remove_credits: "3" } }
+      expect(user.credits.size).to eq(2)
     end
   end
 
