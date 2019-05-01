@@ -232,11 +232,8 @@ class Comment < ApplicationRecord
   end
 
   def calculate_score
-    update_column(:score, BlackBox.comment_quality_score(self))
-    update_column(:spaminess_rating, BlackBox.calculate_spaminess(self))
-    root.save unless is_root?
+    Comments::CalculateScoreJob.perform_later(id)
   end
-  handle_asynchronously :calculate_score
 
   def after_create_checks
     create_id_code
@@ -244,26 +241,20 @@ class Comment < ApplicationRecord
   end
 
   def create_id_code
-    update_column(:id_code, id.to_s(26))
+    Comments::CreateIdCodeJob.perform_later(id)
   end
-  handle_asynchronously :create_id_code
 
   def touch_user
-    user.touch(:updated_at, :last_comment_at)
+    Comments::TouchUserJob.perform_later(id)
   end
-  handle_asynchronously :touch_user
 
   def expire_root_fragment
     root.touch
   end
 
   def create_first_reaction
-    Reaction.create(user_id: user_id,
-                    reactable_id: id,
-                    reactable_type: "Comment",
-                    category: "like")
+    Comments::CreateFirstReactionJob.perform_later(id)
   end
-  handle_asynchronously :create_first_reaction
 
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
@@ -272,12 +263,13 @@ class Comment < ApplicationRecord
     remove_algolia_index
   end
 
-  def bust_cache
-    Comment.comment_async_bust(commentable, user.username)
-    cache_buster = CacheBuster.new
-    cache_buster.bust("#{commentable.path}/comments") if commentable
+  def bust_cache_without_delay
+    Comments::BustCacheJob.perform_now(id)
   end
-  handle_asynchronously :bust_cache
+
+  def bust_cache
+    Comments::BustCacheJob.perform_later(id)
+  end
 
   def synchronous_bust
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
@@ -287,9 +279,8 @@ class Comment < ApplicationRecord
   end
 
   def send_email_notification
-    NotifyMailer.new_reply_email(self).deliver
+    Comments::SendEmailNotificationJob.perform_later(id)
   end
-  handle_asynchronously :send_email_notification
 
   def should_send_email_notification?
     parent_user.class.name != "Podcast" &&
