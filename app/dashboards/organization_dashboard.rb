@@ -15,6 +15,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     tag_line: Field::String,
     profile_image: CarrierwaveField,
     nav_image: CarrierwaveField,
+    dark_nav_image: CarrierwaveField,
     url: Field::String,
     twitter_username: Field::String,
     github_username: Field::String,
@@ -36,7 +37,9 @@ class OrganizationDashboard < Administrate::BaseDashboard
     cta_body_markdown: Field::Text,
     sponsorship_url: Field::Text,
     sponsorship_tagline: Field::Text,
-    is_gold_sponsor: Field::Boolean
+    is_gold_sponsor: Field::Boolean,
+    sponsorship_blurb_html: Field::Text,
+    sponsorship_featured_number: Field::Number
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -66,6 +69,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     tag_line
     profile_image
     nav_image
+    dark_nav_image
     url
     bg_color_hex
     text_color_hex
@@ -84,7 +88,9 @@ class OrganizationDashboard < Administrate::BaseDashboard
     cta_body_markdown
     sponsorship_url
     sponsorship_tagline
+    sponsorship_blurb_html
     is_gold_sponsor
+    sponsorship_featured_number
   ].freeze
 
   def display_resource(organization)
