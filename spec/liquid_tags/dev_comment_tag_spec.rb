@@ -12,7 +12,7 @@ RSpec.describe DevCommentTag, type: :liquid_template do
   end
 
   context "when given valid id_code" do
-    it "renders properly fails because of timestamp", :skip => "approvals gem does not have configuration to handle dynamically generated values" do 
+    it "renders properly fails because of timestamp", skip: "approvals gem does not have configuration to handle dynamically generated values" do
       liquid = generate_comment_tag(comment.id_code_generated)
       verify format: :html do
         liquid.render
@@ -21,9 +21,10 @@ RSpec.describe DevCommentTag, type: :liquid_template do
     end
 
     it "raise error if comment does not exist" do
-      liquid = generate_comment_tag("this will fail")
-      liquid.render
-      expect(liquid.errors).not_to be_empty
+      expect do
+        liquid = generate_comment_tag("this will fail")
+        liquid.render
+      end.to raise_error(StandardError)
     end
   end
 
