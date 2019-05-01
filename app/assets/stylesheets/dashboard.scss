@@ -245,8 +245,9 @@
     @include themeable(background, theme-container-background, #fff);
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
-      background: var(
-        --theme-container-accent-background,
+      @include themeable(
+        background,
+        theme-container-accent-background,
         lighten($yellow, 20%)
       );
     }
