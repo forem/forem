@@ -120,25 +120,6 @@ module ApplicationHelper
                   sign_url: true)
   end
 
-  def cloud_social_image(article)
-    cache_key = "article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}"
-
-    Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-      src = GeneratedImage.new(article).social_image
-      return src if src.start_with? "https://res.cloudinary.com/"
-
-      cl_image_path(src,
-                    type: "fetch",
-                    width: "1000",
-                    height: "500",
-                    crop: "imagga_scale",
-                    quality: "auto",
-                    flags: "progressive",
-                    fetch_format: "auto",
-                    sign_url: true)
-    end
-  end
-
   def tag_colors(tag)
     Rails.cache.fetch("view-helper-#{tag}/tag_colors", expires_in: 5.hours) do
       if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag))
