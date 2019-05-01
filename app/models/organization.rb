@@ -51,6 +51,7 @@ class Organization < ApplicationRecord
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
+  mount_uploader :dark_nav_image, ProfileImageUploader
 
   alias_attribute :username, :slug
   alias_attribute :old_username, :old_slug
