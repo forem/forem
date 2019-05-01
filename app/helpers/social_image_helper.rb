@@ -14,8 +14,6 @@ module SocialImageHelper
   end
 
   def article_social_image_url(article)
-    return legacy_article_social_image(article) unless use_new_social_url?(article)
-
     if (image = article.social_image || article.main_image || article.video_thumbnail_url)
       return cl_image_path(image,
                            type: "fetch",
@@ -27,7 +25,7 @@ module SocialImageHelper
                            fetch_format: "auto",
                            sign_url: true)
     end
-
+    return legacy_article_social_image(article) unless use_new_social_url?(article)
     article_social_preview_url(article, format: :png)
   end
 
