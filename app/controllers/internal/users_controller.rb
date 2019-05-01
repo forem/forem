@@ -71,10 +71,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def remove_credits
     amount = user_params[:remove_credits].to_i
-    avail_credits = @user.credits.where(spent: false)
-    amount.times do
-      avail_credits.last.delete
-    end
+    @user.credits.where(spent: false).limit(amount).delete_all
   end
 
   def user_status
