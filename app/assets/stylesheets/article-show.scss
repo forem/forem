@@ -218,11 +218,12 @@ article {
           display: inline-block;
           background: $green;
           color: $black;
-          padding: 2px 8px 3px;
+          padding: 2px 12px 3px;
           border-radius: 3px;
           line-height: 1.1em;
           font-family: $helvetica-condensed;
           font-stretch: condensed;
+          margin-right: 4px;
           @media screen and (max-width: 376px) {
             padding: 2px 3px 3px;
             margin-left: 3px;
