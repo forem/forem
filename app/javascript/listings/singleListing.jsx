@@ -9,7 +9,12 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
   return (
     <div className="single-classified-listing">
       <div className="listing-content">
-        <h3>{listing.title}</h3>
+        <h3>
+          <a href={`/listings/${listing.category}/${listing.slug}`}> 
+            {' '}
+            { listing.title }
+          </a>
+        </h3>
         <div className="single-classified-listing-body" dangerouslySetInnerHTML={{ __html: listing.processed_html }} />
         <div className="single-classified-listing-tags">{ tagLinks }</div>
         <div className="single-classified-listing-author-info">
