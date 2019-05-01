@@ -515,6 +515,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_123156) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
