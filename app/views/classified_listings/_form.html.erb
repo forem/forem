@@ -1,5 +1,5 @@
 <%= form_with(model: classified_listing, local: true) do |form| %>
-  <a href="/listings" class="listings-back-buton">< go back to listings</a>
+  <a href="/listings" class="listings-back-button">< go back to listings</a>
   <% if classified_listing.errors.any? %>
     <div class="classified-errors">
       <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this classified_listing from being saved:</h2>
