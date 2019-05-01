@@ -39,6 +39,7 @@ class ClassifiedListingsController < ApplicationController
       if @classified_listing.save
         clear_listings_cache
         available_credits.limit(number_of_credits_needed).update_all(spent: true)
+        @classified_listing.index!
         redirect_to "/listings"
       else
         @credits = current_user.credits.where(spent: false)
