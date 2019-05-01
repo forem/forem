@@ -85,7 +85,7 @@ class ArticlesController < ApplicationController
     authorize @article
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
-    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id)
+    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
     @organization = @user&.organization
   end
 
