@@ -16,7 +16,7 @@ class TagTag < LiquidTagBase
         tag: @tag,
         follow_btn: @follow_btn,
         dark_color: @dark_color
-      }
+      },
     )
   end
 
