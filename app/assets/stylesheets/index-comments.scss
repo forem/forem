@@ -1,80 +1,74 @@
 @import 'variables';
-
-.index-comments{
-  text-align:left;
-  padding-bottom:calc(0.6vw + 5px);
-  background:white;
-  background: var(--theme-container-background, white);
-  border-radius:3px;
-  border:1px solid $outline-color;
-  border: var(--theme-container-border, 1px solid $outline-color);
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  margin:auto;
-  margin-top:8px;
-  width:94%;
-  @media screen and ( min-width: 950px ){
-    margin-top:12px;
+@import 'mixins';
+.index-comments {
+  text-align: left;
+  padding-bottom: calc(0.6vw + 5px);
+  @include themeable(background, theme-container-background, #fff);
+  border-radius: 3px;
+  @include themeable(border, theme-container-border, 1px solid $outline-color);
+  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+  margin: auto;
+  margin-top: 8px;
+  width: 94%;
+  @media screen and (min-width: 950px) {
+    margin-top: 12px;
   }
-  @media screen and ( min-width: 950px ){
-    width:100%;
+  @media screen and (min-width: 950px) {
+    width: 100%;
   }
-  .breadcrumb{
-    margin-top:10px;
-    margin-left:5px;
+  .breadcrumb {
+    margin-top: 10px;
+    margin-left: 5px;
     text-decoration: underline;
-    a{
-      padding:5px 10px;
-      color:$dark-gray;
-      color: var(--theme-color, $dark-gray);
-      font-weight:500;
-      font-size:0.85em;
+    a {
+      padding: 5px 10px;
+      @include themeable(color, theme-color, $dark-gray);
+      font-weight: 500;
+      font-size: 0.85em;
     }
   }
-  header{
-    padding:calc(1vw + 3px) 13px 0.5vw;
-    margin:0;
-    font-size:17px;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-    @media screen and ( min-width: 430px ){
-      font-size:19px;
+  header {
+    padding: calc(1vw + 3px) 13px 0.5vw;
+    margin: 0;
+    font-size: 17px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+      monospace;
+    @media screen and (min-width: 430px) {
+      font-size: 19px;
     }
-    h4{
+    h4 {
       margin: 0;
       font-weight: 500;
     }
   }
-  a{
-    color:$black;
-    color: var(--theme-color, $black);
-    display:block;
-    padding-left:13px;
-    padding-right:13px;
+  a {
+    @include themeable(color, theme-color, $black);
+    display: block;
+    padding-left: 13px;
+    padding-right: 13px;
   }
-  .single-comment{
-    padding:3px 0px;
-    font-size:16px;
-    &.strong-comment{
-      .comment-title{
-        font-weight:600;
+  .single-comment {
+    padding: 3px 0px;
+    font-size: 16px;
+    &.strong-comment {
+      .comment-title {
+        font-weight: 600;
       }
     }
-    .comment-date{
-      font-size:0.7em;
-      color:$medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
-      margin-left:5px;
-      vertical-align:2px;
-      display:inline-block;
+    .comment-date {
+      font-size: 0.7em;
+      @include themeable(color, theme-secondary-color, $medium-gray);
+      margin-left: 5px;
+      vertical-align: 2px;
+      display: inline-block;
     }
-    .comment-preview{
-      font-size:0.9em;
-      color:$medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+    .comment-preview {
+      font-size: 0.9em;
+      @include themeable(color, theme-secondary-color, $medium-gray);
     }
-    @media screen and ( min-width: 430px ){
-      padding:5px 0px;
-      font-size:18.5px;
+    @media screen and (min-width: 430px) {
+      padding: 5px 0px;
+      font-size: 18.5px;
     }
   }
 }
