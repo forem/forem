@@ -23,7 +23,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -36,7 +36,7 @@ class ClassifiedListing < ApplicationRecord
     end
     attributesForFaceting [:category]
     customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list]
+    searchableAttributes %w[title processed_html tag_list slug]
   end
 
   def self.cost_by_category(category = "education")
