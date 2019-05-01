@@ -23,6 +23,16 @@ class ArticlesController < ApplicationController
         render body: nil
         return
       end
+    elsif params[:tag]
+      tag = Tag.find_by(name: params[:tag].downcase)
+
+      if tag
+        @tag = tag.alias_for.presence || tag
+        @articles = @articles.cached_tagged_with(@tag)
+      else
+        render body: nil
+        return
+      end
     else
       @articles = @articles.where(featured: true).includes(:user)
     end
