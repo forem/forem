@@ -7,6 +7,7 @@ class ClassifiedListing < ApplicationRecord
   belongs_to :organization, optional: true
 
   before_save :evaluate_markdown
+  before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
 
@@ -95,5 +96,9 @@ class ClassifiedListing < ApplicationRecord
 
   def validate_category
     errors.add(:category, "not a valid category") unless ClassifiedListing.categories_available[category]
+  end
+
+  def create_slug
+    self.slug = title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
   end
 end

@@ -241,6 +241,7 @@ ActiveRecord::Schema.define(version: 2019_04_30_123156) do
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
+    t.string "slug"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
