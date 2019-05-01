@@ -1,13 +1,13 @@
 class GistTag < LiquidTagBase
   def initialize(tag_name, link, tokens)
     super
-    @link = parse_link(link)
+    @uri = build_uri(link)
   end
 
   def render(_context)
     html = <<~HTML
       <div class="ltag_gist-liquid-tag">
-          <script id="gist-ltag" src="#{@link}.js"></script>
+          <script id="gist-ltag" src="#{@uri}"></script>
       </div>
     HTML
     finalize_html(html)
@@ -26,8 +26,18 @@ class GistTag < LiquidTagBase
 
   private
 
-  def parse_link(link)
+  def build_uri(link)
     link = ActionController::Base.helpers.strip_tags(link)
+    link, option = link.split(" ", 2)
+    link = parse_link(link)
+
+    uri = "#{link}.js"
+    uri += build_options(option) unless option&.empty?
+
+    uri
+  end
+
+  def parse_link(link)
     input_no_space = link.delete(" ").gsub(".js", "")
     if valid_link?(input_no_space)
       input_no_space
@@ -37,9 +47,20 @@ class GistTag < LiquidTagBase
     end
   end
 
+  def build_options(option)
+    option_no_space = option.strip
+    return "?#{option_no_space}" if valid_option?(option_no_space)
+
+    raise StandardError, "Invalid Options"
+  end
+
   def valid_link?(link)
     (link =~ /\Ahttps\:\/\/gist\.github\.com\/([a-zA-Z0-9](-?[a-zA-Z0-9]){0,38})\/([a-zA-Z0-9]){1,32}\Z/)&.
       zero?
+  end
+
+  def valid_option?(option)
+    (option =~ /\Afile\=[^\\]*\.(\w+)\Z/)&.zero?
   end
 end
 
