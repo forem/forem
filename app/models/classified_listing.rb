@@ -7,6 +7,7 @@ class ClassifiedListing < ApplicationRecord
   belongs_to :organization, optional: true
 
   before_save :evaluate_markdown
+  before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
 
@@ -22,7 +23,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -35,7 +36,7 @@ class ClassifiedListing < ApplicationRecord
     end
     attributesForFaceting [:category]
     customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list]
+    searchableAttributes %w[title processed_html tag_list slug]
   end
 
   def self.cost_by_category(category = "education")
@@ -95,5 +96,9 @@ class ClassifiedListing < ApplicationRecord
 
   def validate_category
     errors.add(:category, "not a valid category") unless ClassifiedListing.categories_available[category]
+  end
+
+  def create_slug
+    self.slug = title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
   end
 end

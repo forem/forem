@@ -545,9 +545,10 @@ GEM
       httpclient (~> 2.7)
       multi_json (~> 1.0)
       pusher-signature (~> 0.1.8)
-    pusher-push-notifications (1.0.0)
-      caze
-      rest-client
+    pusher-push-notifications (1.1.0)
+      caze (~> 0)
+      jwt (~> 2.1, >= 2.1.0)
+      rest-client (~> 2.0, >= 2.0.2)
     pusher-signature (0.1.8)
     raabro (1.1.6)
     rack (2.0.7)
@@ -749,7 +750,6 @@ GEM
     timber (2.6.2)
       msgpack (~> 1.0)
     timecop (0.9.1)
-    trollop (2.1.2)
     twilio-ruby (5.22.2)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
@@ -772,7 +772,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.5)
+    unf_ext (0.0.7.6)
     unicode-display_width (1.5.0)
     uniform_notifier (1.12.1)
     validate_url (1.0.8)
@@ -812,6 +812,11 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yajl-ruby (1.4.1)
+    yard (0.9.19)
+    yard-activerecord (0.0.16)
+      yard (>= 0.8.3)
+    yard-activesupport-concern (0.0.1)
+      yard (>= 0.8)
     zonebie (0.6.1)
 
 PLATFORMS
@@ -897,7 +902,7 @@ DEPENDENCIES
   pundit (~> 2.0)
   pundit-matchers (~> 1.6)
   pusher (~> 1.3)
-  pusher-push-notifications (~> 1.0)
+  pusher-push-notifications (~> 1.1)
   rack-host-redirect (~> 1.3)
   rack-timeout (~> 0.5)
   rails (~> 5.2, >= 5.2.3)
@@ -947,10 +952,13 @@ DEPENDENCIES
   webmock (~> 3.5)
   webpacker (~> 3.5)
   webpush (~> 0.3)
+  yard (~> 0.9.19)
+  yard-activerecord (~> 0.0.16)
+  yard-activesupport-concern (~> 0.0.1)
   zonebie (~> 0.6.1)
 
 RUBY VERSION
-   ruby 2.6.1p33
+   ruby 2.6.3p62
 
 BUNDLED WITH
    1.17.3

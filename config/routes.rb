@@ -147,6 +147,7 @@ Rails.application.routes.draw do
   resources :buffer_updates, only: [:create]
 
   get "/listings/:category" => "classified_listings#index"
+  get "/listings/:category/:slug" => "classified_listings#show"
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"

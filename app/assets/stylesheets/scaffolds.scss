@@ -1,17 +1,15 @@
 @import 'variables';
+@import 'mixins';
 
 body {
-  background: $lightest-gray;
-  background: var(--theme-background, $lightest-gray);
-  color: $black;
-  color: var(--theme-color, $black);
+  @include themeable(background, theme-background, $lightest-gray);
+  @include themeable(color, theme-color, $black);
   font-family: $helvetica;
   font-size: 18px;
-  padding:0 !important;
-  margin:0 !important;
-  margin-top:-20px !important;
-  overflow-y:scroll;
-
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-top: -20px !important;
+  overflow-y: scroll;
 }
 
 *:focus {
@@ -20,26 +18,30 @@ body {
   }
 }
 
-
-.ptr--ptr{
-  margin-top:70px;
+.ptr--ptr {
+  margin-top: 70px;
   margin-bottom: -70px;
 }
 
-.modal-open{
+.modal-open {
   margin: 0;
   overflow: hidden;
   overflow-y: hidden;
   height: 90vh;
 }
 
-
-.universal-page-content-wrapper{
-  overflow:hidden;
-  min-height:88vh;
+.universal-page-content-wrapper {
+  overflow: hidden;
+  min-height: 88vh;
   visibility: visible;
-  &.stories-index,&.notifications-index,&.stories-search,&.podcast_episodes-index,&.reading_list_items-index,.tags-index,&.twitch_live_streams-show{
-    margin-top:68px;
+  &.stories-index,
+  &.notifications-index,
+  &.stories-search,
+  &.podcast_episodes-index,
+  &.reading_list_items-index,
+  .tags-index,
+  &.twitch_live_streams-show {
+    margin-top: 68px;
   }
 }
 
@@ -50,16 +52,16 @@ pre {
 }
 
 a {
-  color: $sky-blue;
-  color: var(--theme-anchor-color, $sky-blue);
-  text-decoration:none;
-  &:hover{
-    opacity:0.9;
+  @include themeable(color, theme-anchor-color, $sky-blue);
+  text-decoration: none;
+  &:hover {
+    opacity: 0.9;
   }
 }
 
 div {
-  &.field, &.actions {
+  &.field,
+  &.actions {
     margin-bottom: 5px;
   }
 }
@@ -68,24 +70,23 @@ div {
   display: none;
 }
 
-pre{
-  background:#29292e;
-  border-radius:2px;
-  overflow-x:scroll;
-  font-size:11px;
-  color:#eff0f9;
-  line-height:1.42em;
-  font-size:13px;
-  width:calc(100% - 25px);
-  @media screen and ( min-width: 380px ){
-    font-size:15px;
+pre {
+  background: #29292e;
+  border-radius: 2px;
+  overflow-x: scroll;
+  font-size: 11px;
+  color: #eff0f9;
+  line-height: 1.42em;
+  font-size: 13px;
+  width: calc(100% - 25px);
+  @media screen and (min-width: 380px) {
+    font-size: 15px;
   }
-  code{
-    background:#29292e;
-    color:#eff0f9;
+  code {
+    background: #29292e;
+    color: #eff0f9;
     white-space: pre;
   }
-
 }
 
 .cta {
@@ -97,14 +98,17 @@ pre{
   font-weight: bold;
 }
 
-button{
-  cursor:pointer;
+button {
+  cursor: pointer;
 }
 
-input[type="submit"]{
-  cursor:pointer;
-};
+input[type='submit'] {
+  cursor: pointer;
+}
 
-input[type="text"],textarea, input[type="url"], input[type="email"]{
+input[type='text'],
+textarea,
+input[type='url'],
+input[type='email'] {
   outline: 0;
 }

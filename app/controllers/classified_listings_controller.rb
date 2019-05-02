@@ -1,5 +1,5 @@
 class ClassifiedListingsController < ApplicationController
-  before_action :set_classified_listing, only: %i[show edit update]
+  before_action :set_classified_listing, only: %i[edit update]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
   before_action :authenticate_user!, only: %i[edit update new]
@@ -13,7 +13,9 @@ class ClassifiedListingsController < ApplicationController
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 
-  def show; end
+  def show
+    @classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug])
+  end
 
   def new
     @classified_listing = ClassifiedListing.new
@@ -37,6 +39,7 @@ class ClassifiedListingsController < ApplicationController
       if @classified_listing.save
         clear_listings_cache
         available_credits.limit(number_of_credits_needed).update_all(spent: true)
+        @classified_listing.index!
         redirect_to "/listings"
       else
         @credits = current_user.credits.where(spent: false)

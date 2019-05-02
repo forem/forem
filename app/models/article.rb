@@ -59,12 +59,15 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
+  before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
+  serialize :cached_user
+  serialize :cached_organization
 
   scope :published, -> { where(published: true) }
 
@@ -83,7 +86,7 @@ class Article < ApplicationRecord
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
-           :experience_level_rating, :experience_level_rating_distribution,
+           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
@@ -533,6 +536,31 @@ class Article < ApplicationRecord
     return if password.present?
 
     self.password = SecureRandom.hex(60)
+  end
+
+  def update_cached_user
+    cached_org_object = nil
+    if organization
+      cached_org_object = {
+        name: organization.name,
+        username: organization.username,
+        slug: organization.slug,
+        profile_image_90: organization.profile_image_90,
+        profile_image_url: organization.profile_image_url
+      }
+      self.cached_organization = OpenStruct.new(cached_org_object)
+    end
+    cached_user_object = nil
+    if user
+      cached_user_object = {
+        name: user.name,
+        username: user.username,
+        slug: user.username,
+        profile_image_90: user.profile_image_90,
+        profile_image_url: user.profile_image_url
+      }
+      self.cached_user = OpenStruct.new(cached_user_object)
+    end
   end
 
   def set_all_dates

@@ -43,6 +43,7 @@ class Organization < ApplicationRecord
   before_save :remove_at_from_usernames
   after_save  :bust_cache
   before_save :generate_secret
+  before_save :update_articles
   before_validation :downcase_slug
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
@@ -99,6 +100,19 @@ class Organization < ApplicationRecord
 
   def downcase_slug
     self.slug = slug.downcase
+  end
+
+  def update_articles
+    return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
+
+    cached_org_object = {
+      name: name,
+      username: username,
+      slug: slug,
+      profile_image_90: profile_image_90,
+      profile_image_url: profile_image_url
+    }
+    articles.update(cached_organization: OpenStruct.new(cached_org_object))
   end
 
   def bust_cache

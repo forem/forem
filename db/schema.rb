@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_01_191830) do
+ActiveRecord::Schema.define(version: 2019_05_02_165056) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -56,7 +57,9 @@ ActiveRecord::Schema.define(version: 2019_05_01_191830) do
     t.text "body_html"
     t.text "body_markdown"
     t.jsonb "boost_states", default: {}, null: false
+    t.text "cached_organization"
     t.string "cached_tag_list"
+    t.text "cached_user"
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
@@ -245,6 +248,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_191830) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "slug"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
