@@ -42,7 +42,6 @@ script:
   - './cc-test-reporter upload-coverage'
   - 'bundle exec bundle-audit check --update'
   - yarn build-storybook
-  - yard doc
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'

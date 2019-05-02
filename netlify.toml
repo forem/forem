@@ -7,6 +7,8 @@
 
 [build]
   base = "docs/"
+  command = "cd .. && yard doc"
+
 [[redirects]]
   from = "http://docs.dev.to"
   to = "https://docs.dev.to"
