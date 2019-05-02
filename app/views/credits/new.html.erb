@@ -12,17 +12,23 @@
   <script src="https://js.stripe.com/v3/"></script>
   <div style="margin-top: 30px; text-align: center">
   <div class="credit-price" data-num="1">
-    <div class="credit-amount" data-num="1">1+ credit</div>
-    $10/per credit
+    <div class="credit-amount" data-num="1">1+</div>
+    $5/per credit
   </div>
-  <div class="credit-price" data-num="50">
-    <div class="credit-amount" data-num="50">50+ credits</div>
-    $7.50/per credit</div>
-  <div class="credit-price" data-num="500">
-    <div class="credit-amount" data-num="500">
-      500+ credits
+  <div class="credit-price" data-num="10">
+    <div class="credit-amount" data-num="10">10+</div>
+    $4/per credit</div>
+  <div class="credit-price" data-num="100">
+    <div class="credit-amount" data-num="100">
+      100+
     </div>
-    $5/per credit</div>
+    $3/per credit</div>
+  </div>
+  <div class="credit-price" data-num="1000">
+    <div class="credit-amount" data-num="1000">
+      1000+
+    </div>
+    $2.5/per credit</div>
   </div>
   <%= form_for(@credit) do |f| %>
       <label for="amount-input" class="main-form-label">
