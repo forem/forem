@@ -545,6 +545,7 @@ class Article < ApplicationRecord
         name: organization.name,
         username: organization.username,
         slug: organization.slug,
+        profile_image_90: organization.profile_image_90,
         profile_image_url: organization.profile_image_url
       }
     end
@@ -554,6 +555,7 @@ class Article < ApplicationRecord
         name: user.name,
         username: user.username,
         slug: user.username,
+        profile_image_90: user.profile_image_90,
         profile_image_url: user.profile_image_url
       }
     end

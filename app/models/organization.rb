@@ -109,6 +109,7 @@ class Organization < ApplicationRecord
       name: name,
       username: username,
       slug: slug,
+      profile_image_90: profile_image_90,
       profile_image_url: profile_image_url
     }
     articles.update(cached_organization: OpenStruct.new(cached_org_object))
