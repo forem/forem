@@ -70,22 +70,6 @@ function initializeUserProfileContent(user) {
 }
 
 function addRelevantButtonsToArticle(user) {
-  var articleContainer = document.getElementById('article-show-container');
-  if (articleContainer) {
-    if (parseInt(articleContainer.dataset.authorId) == user.id) {
-      document.getElementById('action-space').innerHTML =
-        '<a href="' +
-        articleContainer.dataset.path +
-        '/edit" rel="nofollow">EDIT</a><a href="' +
-        articleContainer.dataset.path +
-        '/manage" rel="nofollow">MANAGE</a>';
-    } else if (user.trusted) {
-      document.getElementById('action-space').innerHTML =
-        '<a href="' +
-        articleContainer.dataset.path +
-        '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
-    }
-  }
   var commentsContainer = document.getElementById('comments-container');
   if (commentsContainer) {
     var settingsButts = document.getElementsByClassName('comment-actions');
