@@ -122,23 +122,12 @@ class Notification < ApplicationRecord
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
-      article = tag_adjustment.article
-      json_data = {
-        article: { title: article.title, path: article.path },
-        adjustment_type: tag_adjustment.adjustment_type,
-        status: tag_adjustment.status,
-        reason_for_adjustment: tag_adjustment.reason_for_adjustment,
-        tag_name: tag_adjustment.tag_name
-      }
-      Notification.create(
-        user_id: article.user_id,
-        notifiable_id: tag_adjustment.id,
-        notifiable_type: tag_adjustment.class.name,
-        json_data: json_data,
-      )
-      article.user.update_column(:last_moderation_notification, Time.current)
+      Notifications::TagAdjustmentNotificationJob.perform_later(tag_adjustment.id)
     end
-    handle_asynchronously :send_tag_adjustment_notification
+
+    def send_tag_adjustment_notification_without_delay(tag_adjustment)
+      Notifications::TagAdjustmentNotificationJob.perform_now(tag_adjustment.id)
+    end
 
     def send_milestone_notification(milestone_hash)
       milestone_hash[:next_milestone] = next_milestone(milestone_hash)
