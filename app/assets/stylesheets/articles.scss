@@ -638,7 +638,7 @@
     }
     .article-reading-time {
       position: absolute;
-      right: 75px;
+      right: 82px;
       bottom: 12px;
       font-size: 13px;
       padding: 6px 0px;
@@ -698,10 +698,12 @@
         }
         .bm-success {
           display: none;
+          position: relative;
+          top: 1px;
         }
         .bm-initial {
-          &:after{
-            content: "SAVE";
+          &:after {
+            content: 'SAVE';
           }
         }
         &.selected {
@@ -714,11 +716,12 @@
           .bm-success {
             display: inline-block;
 
-            &:before{
-              content: "SAVED";
+            &:before {
+              content: 'SAVED';
             }
-            &:hover:before{
-              content: "UNSAVE";
+
+            &:hover:before {
+              content: 'UNSAVE';
             }
           }
         }
