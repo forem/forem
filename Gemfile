@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "2.6.1"
+ruby "2.6.3"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.

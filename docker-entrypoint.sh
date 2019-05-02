@@ -22,7 +22,7 @@ then
 	echo ">---"
 	echo "> [dev.to/docker-entrypoint.sh] DEV mode"
 	echo "> "
-	echo "> Welcome to the dev.to, DEVELOPMENT container, for convinence your repository"
+	echo "> Welcome to the dev.to, DEVELOPMENT container, for convenience your repository"
 	echo "> should be mounted onto '/usr/src/app/', and port 3000 should be forwarded to your host machine"
 	echo "> "
 	echo "> In addition the following alias commands has been preconfigured to get you up and running quickly"
@@ -49,7 +49,7 @@ echo "> Time to rock & roll"
 echo ">---"
 
 #
-# DB setup 
+# DB setup
 # note this will fail (intentionally), if DB was previously setup
 #
 if [[ "$DB_SETUP" == "true" ]]
