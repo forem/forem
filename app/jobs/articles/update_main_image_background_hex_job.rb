@@ -1,6 +1,6 @@
 module Articles
   class UpdateMainImageBackgroundHexJob < ApplicationJob
-    queue_as :articles_update_main_image_bakground_hex
+    queue_as :articles_update_main_image_background_hex
 
     def perform(article_id)
       article = Article.find_by(id: article_id)
