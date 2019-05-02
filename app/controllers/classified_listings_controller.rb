@@ -14,7 +14,7 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def show
-    @classified_listing = ClassifiedListing.find_by(category: params[:category], slug: params[:slug])
+    @classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug])
   end
 
   def new
