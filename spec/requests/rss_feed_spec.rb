@@ -24,7 +24,7 @@ RSpec.describe "RssFeed", type: :request do
       expect(response.body).to include("<link>https://dev.to/#{organization.slug}</link>")
     end
     it "renders tag feed" do
-      get "/feed?tag=#{tag.name}"
+      get "/feed/tag/#{tag.name}"
       expect(response.body).to include("<link>https://dev.to</link>")
     end
   end
