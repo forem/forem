@@ -32,6 +32,7 @@ Rails.application.routes.draw do
     resources :welcome, only: %i[index create]
     resources :reactions, only: [:update]
     resources :broadcasts
+    resources :pages
     resources :users do
       member do
         post "banish"
@@ -258,6 +259,8 @@ Rails.application.routes.draw do
   get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
+
+  get "/page/:slug" => "pages#show"
 
   scope "p" do
     pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
