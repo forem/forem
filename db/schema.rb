@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2019_05_01_180125) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -245,6 +246,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_180125) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "slug"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
