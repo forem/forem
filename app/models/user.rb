@@ -495,6 +495,9 @@ class User < ApplicationRecord
 
   def bust_cache
     CacheBuster.new.bust("/#{username}")
+    CacheBuster.new.bust("/#{username}?i=i")
+    CacheBuster.new.bust("/live/#{username}")
+    CacheBuster.new.bust("/live/#{username}?i=i")
     CacheBuster.new.bust("/feed/#{username}")
   end
   handle_asynchronously :bust_cache
