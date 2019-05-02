@@ -82,9 +82,9 @@ class CreditsController < ApplicationController
   def cost_per_credit
     if @number_to_purchase < 10
       500
-    elsif @number_to_purchase < 10
-      400
     elsif @number_to_purchase < 100
+      400
+    elsif @number_to_purchase < 1000
       300
     else
       250
