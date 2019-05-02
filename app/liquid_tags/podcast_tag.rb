@@ -35,9 +35,9 @@ class PodcastTag < LiquidTagBase
                              class: 'tinyimage')}
             <h1 class="podcastliquidtag__info__podcasttitle">#{@podcast.title}</h1>
           </a>
-           #{render_subscribe_links}
+          #{render_subscribe_links}
         </div>
-         <div id="record-#{episode.slug}" data-podcast="#{podcast.slug}" data-episode="#{episode.slug}" class="podcastliquidtag__record">
+        <div id="record-#{episode.slug}" data-podcast="#{podcast.slug}" data-episode="#{episode.slug}" class="podcastliquidtag__record">
           <img class="button play-butt" id="play-butt-#{episode.slug}" src="/assets/playbutt.png"/>
           <img class="button pause-butt" id="pause-butt-#{episode.slug}" src="/assets/pausebutt.png"/>
           #{cl_image_tag(@podcast.image_url,
