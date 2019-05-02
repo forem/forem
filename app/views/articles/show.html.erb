@@ -150,7 +150,7 @@
             <% if @article.user == current_user %>
               <%= link_to "EDIT", edit_user_article_path(username: @article.username, slug: @article.slug) %>
               <%= link_to "MANAGE", manage_user_article_path(username: @article.username, slug: @article.slug) if @article.published? %>
-            <% elsif current_user.trusted %>
+            <% elsif current_user&.trusted %>
               <%= link_to mod_user_article_path(username: @article.username, slug: @article.slug) do %>
                 MODERATE <span class="post-word">POST</span>
               <% end %>
