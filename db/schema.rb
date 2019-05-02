@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_01_180125) do
+ActiveRecord::Schema.define(version: 2019_05_02_165056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -57,7 +57,9 @@ ActiveRecord::Schema.define(version: 2019_05_01_180125) do
     t.text "body_html"
     t.text "body_markdown"
     t.jsonb "boost_states", default: {}, null: false
+    t.text "cached_organization"
     t.string "cached_tag_list"
+    t.text "cached_user"
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"

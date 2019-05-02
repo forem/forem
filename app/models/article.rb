@@ -59,12 +59,15 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
+  before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
+  serialize :cached_user
+  serialize :cached_organization
 
   scope :published, -> { where(published: true) }
 
@@ -533,6 +536,29 @@ class Article < ApplicationRecord
     return if password.present?
 
     self.password = SecureRandom.hex(60)
+  end
+
+  def update_cached_user
+    cached_org_object = nil
+    if organization
+      cached_org_object = {
+        name: organization.name,
+        username: organization.username,
+        slug: organization.slug,
+        profile_image_url: organization.profile_image_url
+      }
+    end
+    cached_user_object = nil
+    if user
+      cached_user_object = {
+        name: user.name,
+        username: user.username,
+        slug: user.username,
+        profile_image_url: user.profile_image_url
+      }
+    end
+    self.cached_user = OpenStruct.new(cached_user_object)
+    self.cached_organization = OpenStruct.new(cached_org_object)
   end
 
   def set_all_dates

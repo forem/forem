@@ -125,5 +125,13 @@ RSpec.describe Organization, type: :model do
       article = Article.find_by(organization_id: organization.id)
       expect(article.path).to include new_slug
     end
+
+    it "updates article cached_organizations" do
+      create_article_for_organization
+      new_slug = "slug_#{rand(10_000)}"
+      organization.update(slug: new_slug)
+      article = Article.find_by(organization_id: organization.id)
+      expect(article.cached_organization.slug).to eq new_slug
+    end
   end
 end
