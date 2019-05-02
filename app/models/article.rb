@@ -358,16 +358,14 @@ class Article < ApplicationRecord
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
+    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
   end
-  handle_asynchronously :update_main_image_background_hex
 
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    Articles::DetectHumanLanguageJob.perform_later(id)
   end
-  handle_asynchronously :detect_human_language
 
   def tag_keywords_for_search
     tags.pluck(:keywords_for_search).join
@@ -582,7 +580,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    CacheBuster.new.bust_article(self)
+    Articles::AsyncBustJob.perform(id)
   end
-  handle_asynchronously :async_bust
 end
