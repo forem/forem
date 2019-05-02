@@ -593,6 +593,21 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
+  create_table "pages", force: :cascade do |t|
+    t.text "body_html"
+    t.text "body_markdown"
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "group"
+    t.integer "group_order_number"
+    t.text "processed_html"
+    t.string "slug"
+    t.string "social_image"
+    t.string "template"
+    t.string "title"
+    t.datetime "updated_at", null: false
+  end
+
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
     t.text "body"
     t.integer "comments_count", default: 0, null: false

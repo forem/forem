@@ -1,6 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
+  describe "GET /:slug" do
+    it "has proper headline" do
+      page = create(:page)
+      get "/page/#{page.slug}"
+      expect(response.body).to include(page.title)
+    end
+  end
+
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
