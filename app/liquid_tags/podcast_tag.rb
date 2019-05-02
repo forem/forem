@@ -17,7 +17,6 @@ class PodcastTag < LiquidTagBase
     @podcast ||= Podcast.new
     @style = render_style
     @subscribe_links = render_subscribe_links
-    @hidden_audio = render_hidden_audio
   end
 
   def render(_context)
@@ -27,8 +26,7 @@ class PodcastTag < LiquidTagBase
         podcast: @podcast,
         episode: @episode,
         render_style: @style,
-        subscribe_links: @subscribe_links,
-        hidden_audio: @hidden_audio
+        subscribe_links: @subscribe_links
       },
     )
   end

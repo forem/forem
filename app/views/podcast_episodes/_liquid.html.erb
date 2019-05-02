@@ -30,14 +30,14 @@
                    class: 'podcastliquidtag__podcastimage',
                    id: "podcastimage-#{episode.slug}") %>
   </div>
-  <div class="hidden-audio" id="hidden-audio-#{@episode.slug}" style="display:none" data-episode="#{@episode.slug}" data-podcast="#{@podcast.slug}">
-    <audio id="audio" data-episode="#{@episode.slug}" data-podcast="#{@podcast.slug}">
-      <source src="#{@episode.media_url}" type="audio/mpeg">
+  <div class="hidden-audio" id="hidden-audio-<%= episode.slug %>" style="display:none" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
+    <audio id="audio" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
+      <source src="<%= episode.media_url %>" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     <div id="progressBar" class="audio-player-display">
-      <a href="/#{@podcast.slug}/#{@episode.slug}">
-        #{cl_image_tag(@episode.image_url || @podcast.image_url,
+      <a href="/<%= podcast.slug %>/<%= episode.slug %>">
+        <%= cl_image_tag(episode.image_url || podcast.image_url,
                        type: 'fetch',
                        crop: 'fill',
                        width: 420,
@@ -46,7 +46,7 @@
                        sign_url: true,
                        flags: 'progressive',
                        fetch_format: 'auto',
-                       id: 'episode-profile-image')}
+                       id: 'episode-profile-image') %>
         <img id="animated-bars" src="/assets/animated-bars.gif" />
       </a>
       <span id="barPlayPause">
@@ -56,14 +56,14 @@
       <span id="volume">
         <span id="volumeindicator" class="volume-icon-wrapper showing">
           <span id="volbutt">
-            #{image_tag('/assets/volume.png', alt: name, class: 'icon-img', height: 16, width: 16)}
+            <%= image_tag('/assets/volume.png', alt: name, class: 'icon-img', height: 16, width: 16) %>
           </span>
           <span class="range-wrapper">
             <input type="range" name="points" id="volumeslider" value="50" min="0" max="100" data-show-value="true">
           </span>
         </span>
         <span id="mutebutt" class="volume-icon-wrapper hidden">
-          #{image_tag('/assets/volume-mute.png', alt: name, class: 'icon-img', height: 16, width: 16)}
+          <%= image_tag('/assets/volume-mute.png', alt: name, class: 'icon-img', height: 16, width: 16) %>
         </span>
         <span class="speed" id="speed" data-speed=1 >1x</span>
       </span>
