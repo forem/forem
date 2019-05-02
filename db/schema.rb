@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_01_141654) do
-
+ActiveRecord::Schema.define(version: 2019_05_01_180125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -243,6 +242,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_141654) do
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
+    t.string "slug"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -518,6 +518,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_141654) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -543,6 +544,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_141654) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
+    t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
     t.boolean "is_gold_sponsor", default: false

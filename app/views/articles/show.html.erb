@@ -53,8 +53,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
     <% if @article.published %>
-      <meta property="og:image" content="<%= cloud_social_image(@article) %>" />
-      <meta name="twitter:image:src" content="<%= cloud_social_image(@article) %>">
+      <meta property="og:image" content="<%= article_social_image_url(@article) %>" />
+      <meta name="twitter:image:src" content="<%= article_social_image_url(@article) %>">
     <% end %>
     <% if !@article.published || (@article.positive_reactions_count < 7 && @article.user.comments_count < 1 && !@article.featured) ||
       @article.featured_number.to_i < 1500000000 || @article.score < -10 %>
@@ -76,7 +76,7 @@
     <% end %>
     <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntityOfPage">
       <meta itemprop="url" content="https://dev.to<%= @article.path %>">
-      <meta itemprop="image" content="<%= cloud_social_image(@article) %>">
+      <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
       <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
         <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
           <meta itemprop="url" content="<%= asset_path "android-icon-192x192.png" %>">
