@@ -70,7 +70,8 @@
     id="article-show-container"
     data-author-id="<%= @article.user_id %>"
     data-live="<%= @article.live_now %>"
-    data-path="<%= @article.path %>">
+    data-path="<%= @article.path %>"
+    data-published="<%= @article.published? %>">
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
@@ -146,16 +147,7 @@
             </span>
           <% end %>
           <span class="published-at">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
-          <span class="action-space" id="action-space">
-            <% if @article.user == current_user %>
-              <%= link_to "EDIT", edit_user_article_path(username: @article.username, slug: @article.slug) %>
-              <%= link_to "MANAGE", manage_user_article_path(username: @article.username, slug: @article.slug) if @article.published? %>
-            <% elsif current_user&.trusted %>
-              <%= link_to mod_user_article_path(username: @article.username, slug: @article.slug) do %>
-                MODERATE <span class="post-word">POST</span>
-              <% end %>
-            <% end %>
-          </span>
+          <span class="action-space" id="action-space"></span>
         </h3>
         <% if @article.job_opportunity_id && @article.job_opportunity.present? %>
           <div class="tags" style="margin-bottom: 10px;">
