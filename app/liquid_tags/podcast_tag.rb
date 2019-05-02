@@ -19,7 +19,7 @@ class PodcastTag < LiquidTagBase
     @podcast_links = [["iTunes", @podcast.itunes_url, cloudinary(IMAGE_LINK["iTunes".downcase.to_sym], 40, 90, "png")],
                       ["Overcast", @podcast.overcast_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
                       ["Android", @podcast.android_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
-                      ["RSS", @podcast.feed_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")]];
+                      ["RSS", @podcast.feed_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")]]
   end
 
   def render(_context)
