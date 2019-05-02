@@ -8,6 +8,12 @@ function initializeFetchFollowedArticles() {
 function insertArticle(article,parent,insertPlace) {
   if (article){
     var newItem = document.createElement("DIV");
+    if (article.cached_user) {
+      article.user = article.cached_user.table
+    }
+    if (article.cached_organization) {
+      article.organization = article.cached_organization.table
+    }
     newItem.innerHTML = buildArticleHTML(article)
     parent.insertBefore(newItem, insertPlace);
     initializeReadingListIcons();
