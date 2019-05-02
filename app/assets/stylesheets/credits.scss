@@ -41,11 +41,8 @@
 
   .StripeElement, input[type="number"], button, .existing-card {
     box-sizing: border-box;
-
     height: 40px;
-
     padding: 10px 12px;
-
     border: 1px solid transparent;
     border-radius: 4px;
     background-color: white;
@@ -85,19 +82,19 @@
     border-radius: 3px;
     width: 80%;
     margin: 10px auto;
-    padding: 30px 0px;
+    padding: 20px 0px;
     border: 1px solid $light-gray;
     font-weight: bold;
     display: inline-block;
     font-size: 15px;
     cursor: pointer;
     .credit-amount {
-      font-size: 33px;
+      font-size: 45px;
       color: $dark-purple;
       margin-bottom: 15px;
     }
     @media screen and ( min-width:950px ){
-      width: 290px;
+      width: 230px;
     }
   }
 

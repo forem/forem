@@ -11,73 +11,78 @@
   </div>
   <script src="https://js.stripe.com/v3/"></script>
   <div style="margin-top: 30px; text-align: center">
-  <div class="credit-price" data-num="1">
-    <div class="credit-amount" data-num="1">1+</div>
-    $5/per credit
-  </div>
-  <div class="credit-price" data-num="10">
-    <div class="credit-amount" data-num="10">10+</div>
-    $4/per credit</div>
-  <div class="credit-price" data-num="100">
-    <div class="credit-amount" data-num="100">
-      100+
+    <div class="credit-price" data-num="1">
+      <div class="credit-amount" data-num="1">1+</div>
+      $5/per credit
     </div>
-    $3/per credit</div>
-  </div>
-  <div class="credit-price" data-num="1000">
-    <div class="credit-amount" data-num="1000">
-      1000+
-    </div>
-    $2.5/per credit</div>
-  </div>
-  <%= form_for(@credit) do |f| %>
-      <label for="amount-input" class="main-form-label">
-        Amount to Purchase
-      </label>
-      <div class="amount-wrapper">
-        <%= f.number_field :number_to_purchase, id: "amount-input",
-          placeholder: "How many credits would you like?", autocomplete: "off", min: "0", max: "10000000", required: true %>
-        <div id="calculated-price"></div>
+    <div class="credit-price" data-num="10">
+      <div class="credit-amount" data-num="10">10+</div>
+      $4/per credit</div>
+    <div class="credit-price" data-num="100">
+      <div class="credit-amount" data-num="100">
+        100+
       </div>
-      <% if params[:purchaser] == "organization" %>
-        <div>
-        <input type="hidden" name="user_type" value="organization">
-        </div>
-      <% end %>
-      <div class="form-row">
-      <label for="card-element" class="main-form-label">
-        Payment Method
-      </label>
-      <% if @customer %>
-        <div id="cards-wrapper">
-          <% @customer.sources.each do |source| %>
-            <div class="existing-card">
-            <input type="radio" <%= "checked" if source.id == @customer.default_source %>
-              name="selected_card" value="<%= source.id %>" id="existing-card-<%= source.id %>" />
-            <label for="existing-card-<%= source.id %>">
-              <span class="credit-card-component credit-card-component--bold"><%= source.brand %></span>
-              <span class="credit-card-component">**** **** **** <%= source.last4 %></span>
-              <span class="credit-card-component"><%= source.exp_month %>/<%= source.exp_year.to_s.last(2) %></span>
-            </label>
-            </div>
-          <% end %>
-          <button id="add-new-card">Add New Card</button>
-        </div>
-      <% else %>
-        <div id="card-element">
-          <!-- A Stripe Element will be inserted here. -->
-        </div>
-      <% end %>
-      <!-- Used to display form errors. -->
-      <div id="card-errors" role="alert"></div>
+      $3/per credit</div>
+    <div class="credit-price" data-num="1000">
+      <div class="credit-amount" data-num="1000">
+        1000+
+      </div>
+      $2.5/per credit</div>
     </div>
 
-    <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
-    <% if params[:purchaser] == "organization" %>
-      <p><em>*All org admins have access to credits owned by organization</em></p>
+    <%= form_for(@credit) do |f| %>
+        <label for="amount-input" class="main-form-label">
+          Amount to Purchase
+        </label>
+        <div class="amount-wrapper">
+          <%= f.number_field :number_to_purchase,
+            id: "amount-input",
+            placeholder: "How many credits would you like?", autocomplete: "off",
+            min: "0",
+            max: "10000000",
+            required: true %>
+          <div id="calculated-price"></div>
+        </div>
+        <% if params[:purchaser] == "organization" %>
+          <div>
+          <input type="hidden" name="user_type" value="organization">
+          </div>
+        <% end %>
+        <div class="form-row">
+        <label for="card-element" class="main-form-label">
+          Payment Method
+        </label>
+        <% if @customer %>
+          <div id="cards-wrapper">
+            <% @customer.sources.each do |source| %>
+              <div class="existing-card">
+              <input type="radio" <%= "checked" if source.id == @customer.default_source %>
+                name="selected_card" value="<%= source.id %>" id="existing-card-<%= source.id %>" />
+              <label for="existing-card-<%= source.id %>">
+                <span class="credit-card-component credit-card-component--bold"><%= source.brand %></span>
+                <span class="credit-card-component">**** **** **** <%= source.last4 %></span>
+                <span class="credit-card-component"><%= source.exp_month %>/<%= source.exp_year.to_s.last(2) %></span>
+              </label>
+              </div>
+            <% end %>
+            <button id="add-new-card">Add New Card</button>
+          </div>
+        <% else %>
+          <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+          </div>
+        <% end %>
+        <!-- Used to display form errors. -->
+        <div id="card-errors" role="alert"></div>
+      </div>
+
+      <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
+      <% if params[:purchaser] == "organization" %>
+        <p><em>*All org admins have access to credits owned by organization</em></p>
+      <% end %>
+      <p><em>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you need support</em></p>
     <% end %>
-    <p><em>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you need support</em></p>
-  <% end %>
+  </div>
 </div>
   <script>
 
@@ -119,7 +124,6 @@
   <% end %>
 
     var card = elements.create('card', {style: style});
-
 
     createCardElement();
     handleNewCardClick();
@@ -196,7 +200,6 @@
       saleValue = value * pricePer * multiple
       return {value: saleValue, pricePer: pricePer };
     }
-    
     function handleCreditPriceClick() {
       var els = document.getElementsByClassName('credit-price')
       for(i = 0; i < els.length; i++) {
