@@ -172,7 +172,11 @@ class MarkdownParser
         end
       end
     end
-    html_doc.at_css("body").inner_html
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
+    end
   end
 
   def user_link_if_exists(mention)
