@@ -86,7 +86,7 @@ class Article < ApplicationRecord
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
-           :experience_level_rating, :experience_level_rating_distribution,
+           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
@@ -548,6 +548,7 @@ class Article < ApplicationRecord
         profile_image_90: organization.profile_image_90,
         profile_image_url: organization.profile_image_url
       }
+      self.cached_organization = OpenStruct.new(cached_org_object)
     end
     cached_user_object = nil
     if user
@@ -558,9 +559,8 @@ class Article < ApplicationRecord
         profile_image_90: user.profile_image_90,
         profile_image_url: user.profile_image_url
       }
+      self.cached_user = OpenStruct.new(cached_user_object)
     end
-    self.cached_user = OpenStruct.new(cached_user_object)
-    self.cached_organization = OpenStruct.new(cached_org_object)
   end
 
   def set_all_dates
