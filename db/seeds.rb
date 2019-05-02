@@ -2,7 +2,7 @@ Rails.logger.info "1. Creating Organizations"
 
 3.times do
   Organization.create!(
-    name: Faker::SiliconValley.company,
+    name: Faker::TvShows::SiliconValley.company,
     summary: Faker::Company.bs,
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
