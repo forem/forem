@@ -190,12 +190,14 @@
       var value = document.getElementById('amount-input').value
       var pricePer = 0;
       var saleValue = 0;
-      if (value < 50) {
-        pricePer = 10;
-      } else if (value < 500) {
-        pricePer = 7.50
-      } else {
+      if (value < 10) {
         pricePer = 5;
+      } else if (value < 100) {
+        pricePer = 4
+      } else if (value < 1000) {
+        pricePer = 3
+      } else {
+        pricePer = 2.5;
       }
       saleValue = value * pricePer * multiple
       return {value: saleValue, pricePer: pricePer };
