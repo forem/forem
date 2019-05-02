@@ -457,7 +457,7 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustCacheJob.perform_later(ids)
+      Articles::BustMultipleCachesJob.perform_later(ids)
     end
   end
 
@@ -580,6 +580,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    Articles::AsyncBustJob.perform(id)
+    Articles::BustCacheJob.perform_later(id)
   end
 end
