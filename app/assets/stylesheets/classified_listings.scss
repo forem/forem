@@ -312,3 +312,20 @@
   padding: 6px 0px;
   font-weight: bold;
 }
+
+.listing__overlay {
+  display: block;
+  background-color: $black;
+  opacity: .7;
+  z-index: 10000;
+  animation: fadein 0.20s ease;
+  @keyframes fadein{
+      0% { opacity: 0; }
+      100% { opacity: .7; }
+  }
+  position:fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
