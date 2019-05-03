@@ -219,6 +219,18 @@
         width: 100px;
       }
     }
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 5px;
+      font-size: 17px;
+      border-radius: 3px;
+      background: white;
+      background: var(--theme-container-background, white);
+      color: $black;
+      color: var(--theme-color, $black);
+      border: 1px solid $light-medium-gray;
+    }
     select {
       width: 100%;
       font-size:20px;
