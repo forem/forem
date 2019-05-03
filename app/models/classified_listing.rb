@@ -91,7 +91,7 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def validate_tags
-    errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 8
+    errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
   def validate_category
