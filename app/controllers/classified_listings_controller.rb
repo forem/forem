@@ -31,24 +31,39 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.new(classified_listing_params)
     @classified_listing.user_id = current_user.id
     number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
-    available_credits = current_user.credits.where(spent: false)
-    if available_credits.size >= number_of_credits_needed
-      @classified_listing.bumped_at = Time.current
-      @classified_listing.published = true
-      @classified_listing.organization_id = current_user.organization_id if @classified_listing.post_as_organization.to_i == 1
-      if @classified_listing.save
-        clear_listings_cache
-        available_credits.limit(number_of_credits_needed).update_all(spent: true)
-        @classified_listing.index!
-        redirect_to "/listings"
-      else
-        @credits = current_user.credits.where(spent: false)
-        render :new
-      end
+    if @classified_listing.post_as_organization.to_i == 1
+      create_org_listing
     else
-      redirect_to "/credits"
+      create_personal_listing
     end
   end
+
+  def create_org_listing
+    redirect_to "/credits"
+  end
+  # def create
+  #   @classified_listing = ClassifiedListing.new(classified_listing_params)
+  #   @classified_listing.user_id = current_user.id
+  #   number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
+  #   available_credits = current_user.credits.where(spent: false)
+  #   if available_credits.size >= number_of_credits_needed
+  #     @classified_listing.bumped_at = Time.current
+  #     @classified_listing.published = true
+  #     @classified_listing.organization_id = current_user.organization_id if @classified_listing.post_as_organization.to_i == 1
+  #     if @classified_listing.save
+  #       clear_listings_cache
+  #       available_credits.limit(number_of_credits_needed).update_all(spent: true)
+  #       binding.pry
+  #       @classified_listing.index!
+  #       redirect_to "/listings"
+  #     else
+  #       @credits = current_user.credits.where(spent: false)
+  #       render :new
+  #     end
+  #   else
+  #     redirect_to "/credits"
+  #   end
+  # end
 
   def update
     authorize @classified_listing
