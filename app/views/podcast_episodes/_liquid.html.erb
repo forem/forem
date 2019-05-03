@@ -1,4 +1,4 @@
-<div class="podcastliquidtag" style="<%= style %>">
+<div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %> url(<%= cl_image_path(podcast.pattern_image_url || 'https://i.imgur.com/fKYKgo4.png', type: 'fetch', quality: 'auto', sign_url: true, flags: 'progressive', fetch_format: 'jpg') %>)">
   <div class="podcastliquidtag__info">
     <a href="/<%= podcast.slug %>/<%= episode.slug %>">
       <h1 class="podcastliquidtag__info__episodetitle"><%= episode.title %></h1>

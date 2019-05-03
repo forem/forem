@@ -15,7 +15,6 @@ class PodcastTag < LiquidTagBase
   def initialize(_tag_name, link, _tokens)
     @episode = fetch_podcast(link)
     @podcast ||= Podcast.new
-    @style = render_style
     @podcast_links = [["iTunes", @podcast.itunes_url, cloudinary(IMAGE_LINK["iTunes".downcase.to_sym], 40, 90, "png")],
                       ["Overcast", @podcast.overcast_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
                       ["Android", @podcast.android_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
@@ -28,15 +27,9 @@ class PodcastTag < LiquidTagBase
       locals: {
         episode: @episode,
         podcast: @podcast,
-        style: @style,
         podcast_links: @podcast_links
       },
     )
-  end
-
-  def render_style
-    "background:##{@podcast.main_color_hex} " \
-    "url(#{cl_image_path(@podcast.pattern_image_url || 'https://i.imgur.com/fKYKgo4.png', type: 'fetch', quality: 'auto', sign_url: true, flags: 'progressive', fetch_format: 'jpg')})"
   end
 
   def self.script
