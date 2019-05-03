@@ -29,7 +29,7 @@
         1000+
       </div>
       $2.50/per credit</div>
-      <br/>
+      <br/> 
     </div>
     <%= form_for(@credit) do |f| %>
       <label for="amount-input" class="main-form-label">
@@ -213,10 +213,13 @@
     }
     function listenForNumberChange() {
       document.getElementById("amount-input").addEventListener("keydown",function (e) {
-        if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode != 8) {
+        (
+          (e.keyCode >= 48 && e.keyCode <= 57) || // Keyboard 0-9 Keycode is 48 to 57
+          (e.keyCode >= 96 && e.keyCode <= 105) || //Keypad 0-9 Keycode is 96 to 105
+          (e.keyCode == 8) //Allow backspace
+        )?
+          calculatePriceAndShow():
           e.preventDefault();
-        }
-        calculatePriceAndShow();
       });
     }
 
