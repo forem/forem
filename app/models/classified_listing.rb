@@ -66,7 +66,7 @@ class ClassifiedListing < ApplicationRecord
       "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted" },
       "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
       "jobs" => { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
-      "mentors" => { coast: 1, name: "Offering Mentorship"},
+      "mentors" => { cost: 1, name: "Offering Mentorship"},
       "products" => { cost: 10, name: "Products/Tools", rules: "Must be available right now" },
       "mentees" => { cost: 1, name: "Seeking a Mentor"},
       "sale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale" },
