@@ -84,6 +84,7 @@ class Tags extends Component {
           ref={t => (this.textArea = t)}
           className="listingform__input listingform__tagsinput"
           placeholder="8 tags max, comma separated, no spaces or special characters"
+          autoComplete="off"
           value={this.props.defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
