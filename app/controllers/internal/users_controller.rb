@@ -40,16 +40,20 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
     make_matches
+    manage_credits
     add_note if user_params[:new_note]
-    add_credits if user_params[:add_credits]
-    add_org_credits if user_params[:add_org_credits]
-    remove_org_credits if user_params[:remove_org_credits]
-    remove_credits if user_params[:remove_credits]
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
     else
       redirect_to "/internal/users/#{params[:id]}"
     end
+  end
+
+  def manage_credits
+    add_credits if user_params[:add_credits]
+    add_org_credits if user_params[:add_org_credits]
+    remove_org_credits if user_params[:remove_org_credits]
+    remove_credits if user_params[:remove_credits]
   end
 
   def add_note
