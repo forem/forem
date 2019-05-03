@@ -2,7 +2,7 @@ Rails.logger.info "1. Creating Organizations"
 
 3.times do
   Organization.create!(
-    name: Faker::SiliconValley.company,
+    name: Faker::TvShows::SiliconValley.company,
     summary: Faker::Company.bs,
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
@@ -227,7 +227,7 @@ Badge.create!(
   badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
 )
 
-Rails.logger.info "10. Creating FeedbackMessages"
+Rails.logger.info "11. Creating FeedbackMessages"
 
 FeedbackMessage.create!(
   reporter: User.last,

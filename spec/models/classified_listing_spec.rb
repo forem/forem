@@ -7,6 +7,25 @@ RSpec.describe ClassifiedListing, type: :model do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
 
+  describe "valid associations" do
+    it "is not valid w/o user and org" do
+      cl = build(:classified_listing, user_id: nil, organization_id: nil)
+      expect(cl).not_to be_valid
+      expect(cl.errors[:user_id]).to be_truthy
+      expect(cl.errors[:organization_id]).to be_truthy
+    end
+
+    it "is valid with user_id" do
+      cl = build(:classified_listing, user_id: user.id, organization_id: nil)
+      expect(cl).to be_valid
+    end
+
+    it "is valid with organization_id" do
+      cl = build(:classified_listing, user_id: nil, organization_id: create(:organization).id)
+      expect(cl).to be_valid
+    end
+  end
+
   describe "body html" do
     it "converts markdown to html" do
       expect(classified_listing.processed_html).to include("<p>")

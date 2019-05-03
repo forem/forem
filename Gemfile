@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "2.6.1"
+ruby "2.6.3"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
@@ -25,7 +25,7 @@ gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine 
 gem "algorithmia", "~> 1.0" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.5" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.16" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.22" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 1.3" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -46,7 +46,7 @@ gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
 gem "feedjira", "~> 2.2" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
-gem "fog", "~> 1.41" # The Ruby cloud services library
+gem "fog-aws", "2.0.0" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 3.0.0" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
@@ -64,12 +64,10 @@ gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider au
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "pg", "~> 1.1" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
-gem "pry-rails", "~> 0.3" # Use Pry as your rails console
 gem "puma", "~> 3.12" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.0" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
-gem "pusher-push-notifications", "~> 1.0" # Pusher Push Notifications Ruby server SDK
+gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
 gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
@@ -105,7 +103,7 @@ group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.5", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
-  gem "bullet", "~> 5.9" # help to kill N+1 queries and unused eager loading
+  gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.3", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
@@ -116,7 +114,12 @@ group :development do
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
+  gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
+  gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 3.7" # Rails Console on the Browser
+  gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
+  gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
+  gem "yard", "~> 0.9.19" # YARD is a documentation generation tool for the Ruby programming language
 end
 
 group :development, :test do

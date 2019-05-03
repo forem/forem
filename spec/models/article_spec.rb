@@ -388,6 +388,22 @@ RSpec.describe Article, type: :model do
       article = create(:article, user_id: user.id)
       expect(article.cached_user_username).to eq(article.user_username)
     end
+    it "assigns cached_user on save" do
+      article = create(:article, user_id: user.id)
+      expect(article.cached_user.username).to eq(article.user.username)
+      expect(article.cached_user.name).to eq(article.user.name)
+      expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
+      expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
+    end
+    it "assigns cached_organization on save" do
+      organization = create(:organization)
+      article = create(:article, user_id: user.id, organization_id: organization.id)
+      expect(article.cached_organization.username).to eq(article.organization.username)
+      expect(article.cached_organization.name).to eq(article.organization.name)
+      expect(article.cached_organization.slug).to eq(article.organization.slug)
+      expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
+      expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
+    end
   end
 
   describe "validations" do

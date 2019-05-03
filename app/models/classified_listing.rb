@@ -7,8 +7,12 @@ class ClassifiedListing < ApplicationRecord
   belongs_to :organization, optional: true
 
   before_save :evaluate_markdown
+  before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
+
+  validates :user_id, presence: true, unless: :organization_id?
+  validates :organization_id, presence: true, unless: :user_id?
 
   validates :title, presence: true,
                     length: { maximum: 128 }
@@ -19,7 +23,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -32,7 +36,7 @@ class ClassifiedListing < ApplicationRecord
     end
     attributesForFaceting [:category]
     customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list]
+    searchableAttributes %w[title processed_html tag_list slug]
   end
 
   def self.cost_by_category(category = "education")
@@ -58,12 +62,15 @@ class ClassifiedListing < ApplicationRecord
   def self.categories_available
     {
       "cfp" => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form" },
-      "contractors" => { cost: 1, name: "Contractor for Hire", rules: "You are available for hire." },
+      "contractors" => { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
       "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted" },
       "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
-      "jobs" => { cost: 10, name: "Job Listings", rules: "Companies offering employment right now." },
-      "products" => { cost: 1, name: "Products/Tools", rules: "Must be availabel right now" },
-      "events" => { cost: 1, name: "Upcoming Events", rules: "Live or online events with date included" },
+      "jobs" => { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
+      "mentors" => { cost: 1, name: "Offering Mentorship"},
+      "products" => { cost: 10, name: "Products/Tools", rules: "Must be available right now" },
+      "mentees" => { cost: 1, name: "Seeking a Mentor"},
+      "sale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale" },
+      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included" },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
   end
@@ -87,10 +94,14 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def validate_tags
-    errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 8
+    errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
   def validate_category
     errors.add(:category, "not a valid category") unless ClassifiedListing.categories_available[category]
+  end
+
+  def create_slug
+    self.slug = title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_25_210432) do
+ActiveRecord::Schema.define(version: 2019_05_02_165056) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -58,7 +57,9 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.text "body_html"
     t.text "body_markdown"
     t.jsonb "boost_states", default: {}, null: false
+    t.text "cached_organization"
     t.string "cached_tag_list"
+    t.text "cached_user"
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
@@ -243,9 +244,13 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
+    t.string "slug"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "slug"
+    t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
+    t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
   create_table "collections", id: :serial, force: :cascade do |t|
@@ -515,6 +520,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -540,6 +546,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
+    t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
     t.boolean "is_gold_sponsor", default: false
@@ -584,6 +591,21 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["user_id"], name: "index_page_views_on_user_id"
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.text "body_html"
+    t.text "body_markdown"
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "group"
+    t.integer "group_order_number"
+    t.text "processed_html"
+    t.string "slug"
+    t.string "social_image"
+    t.string "template"
+    t.string "title"
+    t.datetime "updated_at", null: false
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|

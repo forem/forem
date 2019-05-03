@@ -73,10 +73,12 @@ function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId) == user.id) {
+      var manageButtonHTML = '<a href="' +articleContainer.dataset.path+ '/manage" rel="nofollow">MANAGE</a>'
       document.getElementById('action-space').innerHTML =
         '<a href="' +
         articleContainer.dataset.path +
-        '/edit" rel="nofollow">EDIT <span class="post-word">POST</span></a>';
+        '/edit" rel="nofollow">EDIT</a>' +
+        (JSON.parse(articleContainer.dataset.published) == true ? manageButtonHTML : "")
     } else if (user.trusted) {
       document.getElementById('action-space').innerHTML =
         '<a href="' +

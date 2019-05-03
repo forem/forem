@@ -1,5 +1,5 @@
 @import 'variables';
-
+@import 'mixins';
 .dashboard-container {
   padding-top: 80px;
   padding-bottom: 80px;
@@ -70,8 +70,7 @@
       flex-grow: 1;
       flex-shrink: 0;
       width: 100%;
-      color: $black;
-      color: var(--theme-color, $black);
+      @include themeable(color, theme-color, $black);
       padding: 10px 0px;
       border-radius: 3px;
       min-width: 115px;
@@ -82,18 +81,22 @@
       text-align: center;
 
       &.active {
-        background: $purple;
-        background: var(--theme-container-accent-background, $purple);
-        color: $black;
-        color: var(--theme-container-color, $black);
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          $purple
+        );
+        @include themeable(color, theme-container-color, $black);
       }
 
       &:not(.active):hover {
         background: $light-medium-purple;
-        background: var(--theme-container-background-hover,
-          $light-medium-purple);
-        color: $black;
-        color: var(--theme-container-color, $black);
+        @include themeable(
+          background,
+          theme-container-background-hover,
+          $light-medium-purple
+        );
+        @include themeable(color, theme-container-color, $black);
       }
 
       &:not(:last-child) {
@@ -147,7 +150,11 @@
       outline: none;
       font-weight: bold;
       color: #333333;
-      font-family: "HelveticaNeue-CondensedBold", "HelveticaNeueBoldCondensed", "HelveticaNeue-Bold-Condensed", "Helvetica Neue Bold Condensed", "HelveticaNeueBold", "HelveticaNeue-Bold", "Helvetica Neue Bold", "HelveticaNeue", "Helvetica Neue", "TeXGyreHerosCnBold", "Helvetica", "Tahoma", "Geneva", "Arial Narrow", "Arial", sans-serif;
+      font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+        'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+        'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+        'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+        'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
 
       @media screen and (max-width: 426px) {
         text-align-last: center;
@@ -163,8 +170,7 @@
     text-align: center;
     margin-bottom: 15px;
     background: $dark-gray;
-    box-shadow: $bold-shadow;
-    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 15px 0px;
   }
 
@@ -221,31 +227,105 @@
     border-radius: 3px;
     color: white;
   }
+  .manage-header {
+    background: $bold-blue;
+  }
 
   .single-article {
-    border: 1px solid $light-medium-gray;
-    border: var(--theme-container-border, 1px solid $light-medium-gray);
-    box-shadow: $bold-shadow;
-    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+    @include themeable(
+      border,
+      theme-container-border,
+      1px solid $light-medium-gray
+    );
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 5px 15px;
     margin-bottom: 13px;
     border-radius: 3px;
     position: relative;
-    background: white;
-    background: var(--theme-container-background, white);
-
+    @include themeable(background, theme-container-background, #fff);
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
-      background: var(--theme-container-accent-background,
-        lighten($yellow, 20%));
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($yellow, 20%)
+      );
+    }
+    &.thanks-for-suggesting-a-tweet {
+      background: lighten($green, 20%);
+      padding: 30px 0px;
+      text-align: center;
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+    &.single-article-manage-form-wrapper {
+      form {
+        text-align: center;
+        width: 490px;
+        max-width: 90%;
+        margin: 10px auto;
+        textarea {
+          width: 100%;
+          border: 1px solid $light-medium-gray;
+          height: 100px;
+          border-radius: 3px;
+        }
+        input[type='submit'] {
+          background: #1da1f2; // twitter blue
+          color: white;
+          font-size: 19px;
+          padding: 8px 35px;
+          border-radius: 100px;
+          font-family: $helvetica-condensed;
+          margin: 18px auto;
+        }
+        .button-section {
+          display: inline-block;
+          border-radius: 12px;
+          padding: 3px;
+          &.button-section-newbie {
+            background: lighten($green, 12%);
+          }
+          &.button-section-intermediate {
+            background: lighten($purple, 5%);
+          }
+          &.button-section-senior {
+            background: lighten($bold-blue, 19%);
+          }
+        }
+        button {
+          color: white;
+          font-size: 15px;
+          font-weight: bold;
+          border: 2px solid white;
+          background: $black;
+          padding: 5px 0px;
+          width: 38px;
+          border-radius: 8px;
+          &.selected {
+            background: $green;
+            padding: 15px 0px;
+            width: 70px;
+            font-size: 20px;
+          }
+        }
+        p {
+          .scale-pod {
+            display: inline-block;
+            width: 160px;
+          }
+        }
+      }
     }
 
     .dashboard-collection-org-details {
       .dashboard-top-pill {
-        background: darken($light-gray, 6%);
-        background: var(--theme-secondary-color, darken($light-gray, 6%));
-        color: white;
-        color: var(--theme-container-background, white);
+        @include themeable(
+          background,
+          theme-secondary-color,
+          darken($light-gray, 6%)
+        );
+        @include themeable(color, theme-container-background, #fff);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;
@@ -258,14 +338,11 @@
     .dashboard-meta-details {
       font-size: 0.85em;
       padding: 3px 0px 6px;
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      @include themeable(color, theme-secondary-color, $medium-gray);
     }
 
     a {
-      color: $black;
-      color: var(--theme-container-color, $black);
-
+      @include themeable(color, theme-container-color, $black);
       &.block-link {
         display: block;
       }
@@ -297,8 +374,11 @@
       }
 
       form {
-        background: $light-gray;
-        background: var(--theme-container-accent-background, $light-gray);
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          $light-gray
+        );
         padding: 8px 15px;
         margin-bottom: 10px;
         border-radius: 3px;
@@ -381,7 +461,7 @@
       }
 
       &.mute {
-        background-color: #ee7453;
+        background-color: $medium-gray;
         color: $white;
       }
 
@@ -433,8 +513,7 @@
 
   .no-articles {
     text-align: center;
-    background: white;
-    background: var(--theme-container-accent-background, white);
+    @include themeable(background, theme-container-accent-background, #fff);
     padding: 2vw 3vw 6vw;
     box-shadow: $shadow;
     border-radius: 3px;
@@ -536,16 +615,16 @@
 }
 
 .card {
-  border: 1px solid #d6d6d6;
-  border: var(--theme-container-border, 1px solid #d6d6d6);
-  box-shadow: 3px 3px 0px #bababa;
-  box-shadow: var(--theme-container-box-shadow, 3px 3px 0px #bababa);
+  @include themeable(border, theme-container-border, 1px solid #d6d6d6);
+  @include themeable(
+    box-shadow,
+    theme-container-box-shadow,
+    3px 3px 0px #bababa
+  );
   border-radius: 3px;
   padding: 20px;
   margin: 5px;
-  background-color: #fff;
-  background-color: var(--theme-container-background, #fff);
-
+  @include themeable(background-color, theme-container-background, #fff);
   h4 {
     font-size: 0.8em;
     margin: 0px;
@@ -563,4 +642,30 @@
 
 .header-card {
   max-width: 100%;
+}
+
+.dashboard-manage-header {
+  background: darken($bold-blue, 25%);
+  color: white;
+  margin-top: 60px;
+  padding: 50px 0px 120px;
+  margin-bottom: -160px;
+  line-height: 1.3em;
+  li {
+    margin: 20px auto;
+  }
+  a {
+    color: white;
+    text-decoration: underline;
+  }
+  .dashboard-manage-header-inner-container {
+    width: 800px;
+    max-width: 96%;
+    margin: 10px auto;
+  }
+  .dashboard-manage-nav {
+    padding: 10px 0px;
+    font-size: 0.9em;
+    font-weight: bold;
+  }
 }
