@@ -300,6 +300,8 @@ Rails.application.routes.draw do
   get "/readinglist" => "reading_list_items#index"
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
+  get "/feed/tag/:tag" => "articles#feed",
+      as: "tag_feed", defaults: { format: "rss" }
   get "/feed/:username" => "articles#feed",
       as: "user_feed", defaults: { format: "rss" }
   get "/rss" => "articles#feed", defaults: { format: "rss" }
