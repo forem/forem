@@ -66,7 +66,7 @@ class ClassifiedListing < ApplicationRecord
       "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted" },
       "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
       "jobs" => { cost: 10, name: "Job Listings", rules: "Companies offering employment right now." },
-      "products" => { cost: 1, name: "Products/Tools", rules: "Must be availabel right now" },
+      "products" => { cost: 1, name: "Products/Tools", rules: "Must be available right now" },
       "events" => { cost: 1, name: "Upcoming Events", rules: "Live or online events with date included" },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
@@ -91,7 +91,7 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def validate_tags
-    errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 8
+    errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
   def validate_category
