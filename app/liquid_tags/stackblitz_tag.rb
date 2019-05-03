@@ -1,4 +1,6 @@
 class StackblitzTag < LiquidTagBase
+  PARTIAL = "liquids/stackblitz".freeze
+
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
@@ -8,18 +10,15 @@ class StackblitzTag < LiquidTagBase
   end
 
   def render(_context)
-    html = <<-HTML
-      <iframe
-        src="https://stackblitz.com/edit/#{@id}?embed=1#{@view}#{@file}"
-        width="100%"
-        height="#{@height}"
-        scrolling="no"
-        frameborder="no"
-        allowfullscreen
-        allowtransparency="true">
-      </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        view: @view,
+        file: @file,
+        height: @height
+      },
+    )
   end
 
   private
@@ -42,7 +41,7 @@ class StackblitzTag < LiquidTagBase
     validated_views = input_split.map { |o| validator.call(o) }.reject(&:nil?)
     raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
-    validated_views.length.zero? ? "" : "&#{validated_views.join('')}"
+    validated_views.length.zero? ? "" : validated_views.join("").to_s
   end
 
   def valid_view?(option)
