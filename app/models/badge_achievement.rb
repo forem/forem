@@ -9,6 +9,7 @@ class BadgeAchievement < ApplicationRecord
 
   after_create :notify_recipient
   after_create :send_email_notification
+  after_create :award_credits
   before_validation :render_rewarding_context_message_html
 
   def render_rewarding_context_message_html
@@ -32,4 +33,8 @@ class BadgeAchievement < ApplicationRecord
     NotifyMailer.new_badge_email(self).deliver if user.class.name == "User" && user.email.present? && user.email_badge_notifications
   end
   handle_asynchronously :send_email_notification
+
+  def award_credits
+    Credit.add_to(user, 5)
+  end
 end
