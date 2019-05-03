@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Articles", type: :request do
   let(:user) { create(:user) }
+  let(:tag)  { create(:tag) }
 
   describe "GET /feed" do
     it "returns rss+xml content" do
@@ -51,6 +52,40 @@ RSpec.describe "Articles", type: :request do
     context "when :username param is given but it belongs to nither user nor organization" do
       include_context "when user/organization articles exist"
       before { get "/feed", params: { username: "unknown" } }
+
+      it("renders empty body") { expect(response.body).to be_empty }
+    end
+  end
+
+  describe "GET /feed/tag" do
+    shared_context "when tagged articles exist" do
+      let!(:tag_article) { create(:article, tags: tag.name) }
+    end
+
+    context "when :tag param is given and tag exists" do
+      include_context "when tagged articles exist"
+      before { get "/feed/tag/#{tag.name}" }
+
+      it "returns only articles for that tag" do
+        expect(response.body).to include(tag_article.title)
+      end
+    end
+
+    context "when :tag param is given and tag exists and is an alias" do
+      include_context "when tagged articles exist"
+      before do
+        alias_tag = create(:tag, alias_for: tag.name)
+        get "/feed/tag/#{alias_tag.name}"
+      end
+
+      it "returns only articles for the aliased for tag" do
+        expect(response.body).to include(tag_article.title)
+      end
+    end
+
+    context "when :tag param is given and tag does not exist" do
+      include_context "when tagged articles exist"
+      before { get "/feed/tag/unknown" }
 
       it("renders empty body") { expect(response.body).to be_empty }
     end

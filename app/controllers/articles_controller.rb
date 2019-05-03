@@ -14,17 +14,17 @@ class ArticlesController < ApplicationController
       order(published_at: :desc).
       page(params[:page].to_i).per(12)
 
-    if params[:username]
-      if (@user = User.find_by(username: params[:username]))
-        @articles = @articles.where(user_id: @user.id)
-      elsif (@user = Organization.find_by(slug: params[:username]))
-        @articles = @articles.where(organization_id: @user.id).includes(:user)
-      else
-        render body: nil
-        return
-      end
-    else
-      @articles = @articles.where(featured: true).includes(:user)
+    @articles = if params[:username]
+                  handle_user_or_organization_feed
+                elsif params[:tag]
+                  handle_tag_feed
+                else
+                  @articles.where(featured: true).includes(:user)
+                end
+
+    unless @articles
+      render body: nil
+      return
     end
 
     set_surrogate_key_header "feed"
@@ -178,6 +178,23 @@ class ArticlesController < ApplicationController
     elsif @article.job_opportunity && !@article.tag_list.include?("hiring")
       @article.job_opportunity.destroy!
     end
+  end
+
+  def handle_user_or_organization_feed
+    if (@user = User.find_by(username: params[:username]))
+      @articles = @articles.where(user_id: @user.id)
+    elsif (@user = Organization.find_by(slug: params[:username]))
+      @articles = @articles.where(organization_id: @user.id).includes(:user)
+    end
+  end
+
+  def handle_tag_feed
+    tag = Tag.find_by(name: params[:tag].downcase)
+
+    return unless tag
+
+    @tag = tag.alias_for.presence || tag
+    @articles = @articles.cached_tagged_with(@tag)
   end
 
   def create_or_update_job_opportunity
