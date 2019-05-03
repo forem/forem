@@ -3,7 +3,8 @@ module BadgeRewarder
 
   def self.award_yearly_club_badges
     (1..3).each do |i|
-      message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
+      message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?! To celebrate, we're giving you 5 credits!"
+      Credit.add_to(user, 5)
       badge = Badge.find_by(slug: "#{YEARS[i]}-year-club")
       User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
@@ -18,7 +19,8 @@ module BadgeRewarder
 
   def self.award_beloved_comment_badges
     Comment.where("positive_reactions_count > ?", 24).find_each do |comment|
-      message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. 😄"
+      message = "You're DEV famous! [This is the comment](https://dev.to#{comment.path}) for which you are being recognized. To celebrate, we're giving you 5 credits 😄"
+      Credit.add_to(comment.user, 5)
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
         badge_id: Badge.find_by(slug: "beloved-comment")&.id || 3,
@@ -29,19 +31,19 @@ module BadgeRewarder
     end
   end
 
-  def self.award_top_seven_badges(usernames, message_markdown = "Congrats!!!")
+  def self.award_top_seven_badges(usernames, message_markdown = "Congrats!!! To celebrate, we're giving you 5 credits 😎")
     award_badges(usernames, "top-7", message_markdown)
   end
 
-  def self.award_fab_five_badges(usernames, message_markdown = "Congrats!!!")
+  def self.award_fab_five_badges(usernames, message_markdown = "Congrats!!! To celebrate, we're giving you 5 credits 🤗")
     award_badges(usernames, "fab-5", message_markdown)
   end
 
-  def self.award_contributor_badges(usernames, message_markdown = "Thank you so much for your contributions!")
+  def self.award_contributor_badges(usernames, message_markdown = "Thank you so much for your contributions! To celebrate, we're giving you 5 credits 🤗")
     award_badges(usernames, "dev-contributor", message_markdown)
   end
 
-  def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
+  def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions! To celebrate, we're giving you 5 credits 🤗")
     client = Octokit::Client.new
     badge = Badge.find_by(slug: "dev-contributor")
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios"].each do |repo|
@@ -51,6 +53,7 @@ module BadgeRewarder
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
           rewarding_context_message_markdown: message_markdown,
         )
+        Credit.add_to(i.user_id, 5)
       end
     end
   end
@@ -58,9 +61,9 @@ module BadgeRewarder
   def self.award_streak_badge(num_weeks)
     article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
     message = if num_weeks == 16
-                "16 weeks! You've achieved the longest DEV writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!"
+                "16 weeks! You've achieved the longest DEV writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community! To celebrate, we're giving you 5 credits 🤗"
               else
-                "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+                "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. To celebrate how far you've come so far, we're giving you 5 credits 🤗"
               end
     users = User.where(id: article_user_ids).where("articles_count >= ?", num_weeks)
     usernames = []
@@ -83,6 +86,7 @@ module BadgeRewarder
         rewarding_context_message_markdown: message_markdown,
       )
       user.save
+      Credit.add_to(user, 5)
     end
   end
 end
