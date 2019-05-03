@@ -21,14 +21,41 @@
       <a href="<%= article.current_state_path %>" class="pill cta yellow">DRAFT</a>
     <% end %>
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
-    <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
-    <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
-      <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
-      <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
+    <% if manage_view %>
+      <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
+        <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
+        <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
+      <% end %>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+    <% elsif article.published %>
+      <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
     <% end %>
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
-        <%= article.page_views_count > 100 ? article.page_views_count : "under 100" %> views // <%= article.positive_reactions_count %> <%= "reaction".pluralize(count: article.positive_reactions_count) %> // <%= article.comments_count %> <%= "comment".pluralize(count: article.comments_count) %>
+        <span class='page-views-count'>
+          <span class="value">
+            <% if article.page_views_count > 100 %>
+               <span class="value"><%= article.page_views_count %></span>
+            <% else %>
+              under 100
+            <% end %>
+          </span>
+          views
+        </span>
+        //
+        <span class='reactions-count'>
+          <span class="value">
+            <%= article.positive_reactions_count %>
+          </span>
+          <%= "reaction".pluralize(count: article.positive_reactions_count) %>
+        </span>
+        //
+        <span class='comments-count'>
+          <span class="value">
+            <%= article.comments_count %>
+          </span>
+          <%= "comment".pluralize(count: article.comments_count) %>
+        </span>
       </span>
     <% end %>
   </div>

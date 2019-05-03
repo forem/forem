@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_04_102732) do
+ActiveRecord::Schema.define(version: 2019_05_02_165056) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -56,7 +57,9 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.text "body_html"
     t.text "body_markdown"
     t.jsonb "boost_states", default: {}, null: false
+    t.text "cached_organization"
     t.string "cached_tag_list"
+    t.text "cached_user"
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
@@ -231,6 +234,25 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "classified_listings", force: :cascade do |t|
+    t.text "body_markdown"
+    t.datetime "bumped_at"
+    t.string "cached_tag_list"
+    t.string "category"
+    t.boolean "contact_via_connect", default: false
+    t.datetime "created_at", null: false
+    t.bigint "organization_id"
+    t.text "processed_html"
+    t.boolean "published"
+    t.string "slug"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "slug"
+    t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
+    t.index ["user_id"], name: "index_classified_listings_on_user_id"
+  end
+
   create_table "collections", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description"
@@ -267,6 +289,18 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
+    t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
+    t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "credits", force: :cascade do |t|
+    t.float "cost", default: 0.0
+    t.datetime "created_at", null: false
+    t.bigint "organization_id"
+    t.boolean "spent", default: false
+    t.string "spent_on"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
@@ -486,7 +520,18 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "organization_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "organization_id", null: false
+    t.string "type_of_user", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "user_title"
+    t.index ["user_id", "organization_id"], name: "index_organization_memberships_on_user_id_and_organization_id", unique: true
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|
@@ -501,6 +546,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
+    t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
     t.boolean "is_gold_sponsor", default: false
@@ -545,6 +591,21 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["user_id"], name: "index_page_views_on_user_id"
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.text "body_html"
+    t.text "body_markdown"
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.string "group"
+    t.integer "group_order_number"
+    t.text "processed_html"
+    t.string "slug"
+    t.string "social_image"
+    t.string "template"
+    t.string "title"
+    t.datetime "updated_at", null: false
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
@@ -772,6 +833,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
     t.string "currently_learning"
+    t.string "currently_streaming_on"
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -779,6 +841,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.string "email"
     t.boolean "email_badge_notifications", default: true
     t.boolean "email_comment_notifications", default: true
+    t.boolean "email_community_mod_newsletter", default: false
     t.boolean "email_connect_messages", default: true
     t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true
@@ -786,6 +849,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.boolean "email_mention_notifications", default: true
     t.boolean "email_newsletter", default: true
     t.boolean "email_public", default: false
+    t.boolean "email_tag_mod_newsletter", default: false
     t.boolean "email_unread_notifications", default: true
     t.string "employer_name"
     t.string "employer_url"
@@ -806,6 +870,7 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.datetime "github_repos_updated_at", default: "2017-01-01 05:00:00"
     t.string "github_username"
     t.string "gitlab_url"
+    t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
@@ -879,6 +944,8 @@ ActiveRecord::Schema.define(version: 2019_04_04_102732) do
     t.string "text_color_hex"
     t.string "text_only_name"
     t.string "top_languages"
+    t.string "twitch_url"
+    t.string "twitch_username"
     t.datetime "twitter_created_at"
     t.integer "twitter_followers_count"
     t.integer "twitter_following_count"

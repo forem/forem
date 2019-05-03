@@ -13,7 +13,7 @@
 <%= form_for(@user) do |f| %>
   <div class="sub-field">
     <%= f.label :editor_version, "Editor version: v1 or v2" %>
-    <%= f.select :editor_version, options_for_select(["v1", "v2"], @user.editor_version) %>
+    <%= f.select :editor_version, options_for_select(%w[v1 v2], @user.editor_version) %>
     <sub><em>v2 is currently in beta</em></sub>
   </div>
   <div class="field">
@@ -39,7 +39,7 @@
 <%= form_for(@user) do |f| %>
   <div class="sub-field">
     <%= f.label :config_theme, "Site Theme" %>
-    <%= f.select(:config_theme, options_for_select(["default", "night theme"], @user.config_theme.tr("_", " "))) %>
+    <%= f.select(:config_theme, options_for_select(["default", "night theme", "pink theme"], @user.config_theme.tr("_", " "))) %>
     <sub><em>Default is light style. Night theme is in public alpha.</em></sub>
   </div>
   <div class="sub-field">
@@ -53,49 +53,8 @@
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
-<h2>Languages</h2>
-<h3>Select which languages you'd prefer to see in your feed <span style="color:#e05252">(beta)</span></h3>
-<h4 style="font-weight:400">
-  This setting controls which languages you are more likely to see throughout the site, but you may still see other languages, especially English.
-</h4>
 
-<%= form_for(@user) do |f| %>
-  <div class="checkbox-field">
-    <div class="sub-field">
-      <%= f.check_box :prefer_language_en %>
-      <%= f.label :prefer_language_en, "English" %>
-    </div>
-    <div class="sub-field">
-      <%= f.check_box :prefer_language_ja %>
-      <%= f.label :prefer_language_ja, "Japanese" %>
-    </div>
-    <div class="sub-field">
-      <%= f.check_box :prefer_language_es %>
-      <%= f.label :prefer_language_es, "Spanish" %>
-    </div>
-    <div class="sub-field">
-      <%= f.check_box :prefer_language_fr %>
-      <%= f.label :prefer_language_fr, "French" %>
-    </div>
-    <div class="sub-field">
-      <%= f.check_box :prefer_language_it %>
-      <%= f.label :prefer_language_it, "Italian" %>
-    </div>
-    <div class="sub-field">
-      <%= f.check_box :prefer_language_pt %>
-      <%= f.label :prefer_language_pt, "Portugese" %>
-    </div>
-  </div>
-  <div class="field">
-    <label></label>
-    <%= f.hidden_field :tab, value: @tab %>
-    <%= f.submit "SUBMIT", class: "cta" %>
-  </div>
-<% end %>
-
-<h3>
-  This feature is in beta and will improve over time. Another way to tailor your feed is to discover and follow members who write in your preferred language.
-</h3>
+<%= render "language_settings" %>
 
 <h2>Sponsors</h2>
 <h4 style="font-weight:400">
@@ -149,18 +108,25 @@
   <% end %>
 <% end %>
 
-<% if false %>
-  <h2> Connect </h2>
+<h2> Connect </h2>
 
-  <h3> Inbox Type </h3>
+<h3> Inbox Type </h3>
 
-  <%= form_for(@user) do |f| %>
-    <div class="field checkbox-label-first">
-      <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows." %>
-      <div class="sub-field">
-        <%= f.select :inbox_type, [["Open", "open"], ["Private", "private"]] %>
-      </div>
-      <%= f.submit "SUBMIT", class: "cta" %>
+<%= form_for(@user) do |f| %>
+  <div class="field checkbox-label-first">
+    <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows." %>
+    <div class="sub-field">
+      <%= f.select :inbox_type, [%w[Open open], %w[Private private]] %>
     </div>
-  <% end %>
+    <%= f.label :inbox_guidelines, "Open inbox guidelines/instructions (optional)" %>
+    <div class="sub-field">
+      <%= f.text_area :inbox_guidelines, maxlength: 200, placeholder: "For example:
+- Only contact me about consulting opportunities.
+- I'm happy to help beginners with CSS.
+- Allow for a few days to respond.
+- etc.
+      " %>
+    </div>
+    <%= f.submit "SUBMIT", class: "cta" %>
+  </div>
 <% end %>

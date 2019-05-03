@@ -17,7 +17,7 @@
   </div>
 <% end %>
 <h4>
-  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28" style="vertical-align:-7px;margin-right:4px;" /></a>
+  <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>"><img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="28" width="28" style="vertical-align:-7px;margin-right:4px;" class="dev-badge" /></a>
   Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
@@ -103,7 +103,7 @@
   </div>
   <div class="field">
     <%= f.label :currently_learning, "I'm getting into" %>
-    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.new.year}?", maxlength: 500 %>
+    <%= f.text_area :currently_learning, placeholder: "What are you learning right now? what are the new tools and languages you're picking up in #{Time.zone.now.year}?", maxlength: 500 %>
   </div>
   <div class="field">
     <%= f.label :currently_hacking_on, "My projects and hacks" %>
@@ -145,6 +145,10 @@
   <div class="field">
     <%= f.label :mastodon_url, "Mastodon URL" %>
     <%= f.url_field :mastodon_url %>
+  </div>
+   <div class="field">
+    <%= f.label :twitch_url, "Twitch URL" %>
+    <%= f.url_field :twitch_url %>
   </div>
   <div class="field">
     <label></label>

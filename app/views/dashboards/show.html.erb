@@ -17,17 +17,21 @@
   <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
     <%= render "analytics" %>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: true %>
+      <%= render "dashboard_article", article: article, org_admin: true, manage_view: false %>
     <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
-    <% if current_user.created_at < 2.weeks.ago %>
-      <a class="video-upload-cta" href="/videos/new" data-no-instant>
-        Upload a Video 🎥
-      </a>
-    <% end %>
+    <div class="actions-secondary">
+      <% if current_user.created_at < 2.weeks.ago %>
+        <a class="video-upload-cta cta" href="/videos/new" data-no-instant>
+          Upload a Video 🎥
+        </a>
+      <% end %>
+
+      <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
+    </div>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: false %>
+      <%= render "dashboard_article", article: article, org_admin: false, manage_view: false %>
     <% end %>
   <% else %>
     <div class="no-articles">

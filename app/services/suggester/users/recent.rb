@@ -20,11 +20,9 @@ module Suggester
       private
 
       def tagged_article_user_ids(num_weeks = 1)
-        Article.
+        Article.published.
           tagged_with(user.decorate.cached_followed_tag_names, any: true).
-          where(published: true).
-          where("score > ? AND published_at > ?",
-                article_reaction_count, num_weeks.weeks.ago).
+          where("score > ? AND published_at > ?", article_reaction_count, num_weeks.weeks.ago).
           pluck(:user_id).
           each_with_object(Hash.new(0)) { |value, counts| counts[value] += 1 }.
           sort_by { |_key, value| value }.

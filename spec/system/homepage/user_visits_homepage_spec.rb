@@ -22,6 +22,13 @@ RSpec.describe "User visits a homepage", type: :system do
       end
       expect(page).to have_text("design your experience")
     end
+
+    describe "link tags" do
+      it "contains the qualified community name in the search link" do
+        selector = "link[rel='search'][title='#{community_qualified_name}']"
+        expect(page).to have_selector(selector, visible: false)
+      end
+    end
   end
 
   context "when logged in user" do

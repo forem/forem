@@ -44,5 +44,26 @@ RSpec.describe AuthorizationService do
       expect(user.remember_token).to be_truthy
       expect(user.remember_created_at).to be_truthy
     end
+
+    context "when the user has a new Twitter username" do
+      it "updates their username properly" do
+        new_username = "new_username#{rand(1000)}"
+        auth.info.nickname = new_username
+        service = described_class.new(auth)
+        service.get_user
+        user.reload
+        expect(user.twitter_username).to eq new_username
+      end
+
+      it "touches the profile_updated_at timestamp" do
+        original_profile_updated_at = user.profile_updated_at
+        new_username = "new_username#{rand(1000)}"
+        auth.info.nickname = new_username
+        service = described_class.new(auth)
+        service.get_user
+        user.reload
+        expect(user.profile_updated_at).to be > original_profile_updated_at
+      end
+    end
   end
 end

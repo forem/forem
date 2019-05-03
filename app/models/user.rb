@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id, :add_credits, :remove_credits
 
   rolify
   include AlgoliaSearch
@@ -34,6 +34,7 @@ class User < ApplicationRecord
   has_many    :rating_votes
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
+  has_many    :credits
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
@@ -91,6 +92,9 @@ class User < ApplicationRecord
   validates :gitlab_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+  validates :twitch_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
                          message: "%{value} is not a valid shirt style" },
@@ -108,8 +112,8 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme],
-                         message: "%{value} must be either default or night theme" }
+            inclusion: { in: %w[default night_theme pink_theme],
+                         message: "%{value} must be either default, pink theme, or night theme" }
   validates :config_font,
             inclusion: { in: %w[default sans_serif comic_sans],
                          message: "%{value} must be either default or sans serif" }
@@ -126,6 +130,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
             length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
+  validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
@@ -138,10 +143,11 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
+  before_create :set_default_language
   before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -178,15 +184,8 @@ class User < ApplicationRecord
     end
   end
 
-  # Via https://github.com/G5/storext
-  store_attributes :language_settings do
-    estimated_default_language String
-    prefer_language_en Boolean, default: true
-    prefer_language_ja Boolean, default: false
-    prefer_language_es Boolean, default: false
-    prefer_language_fr Boolean, default: false
-    prefer_language_it Boolean, default: false
-    prefer_language_pt Boolean, default: false
+  def estimated_default_language
+    language_settings["estimated_default_language"]
   end
 
   def self.trigger_delayed_index(record, remove)
@@ -211,16 +210,12 @@ class User < ApplicationRecord
   end
 
   def estimate_default_language!
-    identity = identities.find_by(provider: "twitter")
-    if email.end_with?(".jp")
-      update(estimated_default_language: "ja", prefer_language_ja: true)
-    elsif identity
-      lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
-      update(:estimated_default_language => lang,
-             "prefer_language_#{lang}" => true)
-    end
+    Users::EstimateDefaultLanguageJob.perform_later(id)
   end
-  handle_asynchronously :estimate_default_language!
+
+  def estimate_default_language_without_delay!
+    Users::EstimateDefaultLanguageJob.perform_now(id)
+  end
 
   def calculate_score
     score = (articles.where(featured: true).size * 100) + comments.sum(:score)
@@ -232,11 +227,9 @@ class User < ApplicationRecord
   end
 
   def followed_articles
-    Article.tagged_with(cached_followed_tag_names, any: true).union(
-      Article.where(
-        user_id: cached_following_users_ids,
-      ),
-    ).where(language: cached_preferred_langs, published: true)
+    Article.tagged_with(cached_followed_tag_names, any: true).
+      union(Article.where(user_id: cached_following_users_ids)).
+      where(language: cached_preferred_langs, published: true)
   end
 
   def cached_following_users_ids
@@ -259,14 +252,25 @@ class User < ApplicationRecord
 
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      langs = []
-      langs << "en" if prefer_language_en
-      langs << "ja" if prefer_language_ja
-      langs << "es" if prefer_language_es
-      langs << "fr" if prefer_language_fr
-      langs << "it" if prefer_language_it
-      langs
+      preferred_languages_array
     end
+  end
+
+  # handles both old (prefer_language_*) and new (Array of language codes) formats
+  def preferred_languages_array
+    # return @prefer_languages_array if defined? @preferred_languages_array
+    return @preferred_languages_array if defined?(@preferred_languages_array)
+
+    if language_settings["preferred_languages"].present?
+      @preferred_languages_array = language_settings["preferred_languages"].to_a
+    else
+      languages = []
+      language_settings.keys.each do |setting|
+        languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
+      end
+      @preferred_languages_array = languages
+    end
+    @preferred_languages_array
   end
 
   def processed_website_url
@@ -329,10 +333,6 @@ class User < ApplicationRecord
     has_role?(:workshop_pass) && valid_pass
   end
 
-  def analytics
-    has_role? :analytics_beta_tester
-  end
-
   def comment_banned
     has_role? :comment_banned
   end
@@ -359,10 +359,6 @@ class User < ApplicationRecord
     MailchimpBot.new(self).upsert
   end
   handle_asynchronously :subscribe_to_mailchimp_newsletter
-
-  def can_view_analytics?
-    has_any_role?(:super_admin, :analytics_beta_tester)
-  end
 
   def a_sustaining_member?
     monthly_dues.positive?
@@ -406,7 +402,23 @@ class User < ApplicationRecord
     MailchimpBot.new(self).unsubscribe_all_newsletters
   end
 
+  def tag_moderator?
+    roles.where(name: "tag_moderator").any?
+  end
+
+  def currently_streaming?
+    currently_streaming_on.present?
+  end
+
+  def currently_streaming_on_twitch?
+    currently_streaming_on == "twitch"
+  end
+
   private
+
+  def set_default_language
+    language_settings["preferred_languages"] ||= ["en"]
+  end
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)
@@ -422,6 +434,10 @@ class User < ApplicationRecord
 
   def verify_email
     self.email = nil if email == ""
+  end
+
+  def verify_twitch_username
+    self.twitch_username = nil if twitch_username == ""
   end
 
   def set_username

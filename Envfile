@@ -1,7 +1,7 @@
 # Most of the things are optional. If you need to use a
 # custom key, please create an application.yml for it
 
-enable_defaults! { ENV['RACK_ENV'] != 'production' }
+enable_defaults! { ENV["RACK_ENV"] != "production" }
 
 ################################################
 ############## Basic configuration #############
@@ -19,8 +19,8 @@ variable :LOGO_SVG, :String, default: ""
 variable :DEVTO_USER_ID, :Integer, default: 1
 
 # Service timeout length
-variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100000
-variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100000
+variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100_000
+variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100_000
 
 # Production related config that can be ignored
 variable :DEPLOYMENT_SIGNATURE, :String, default: "Optional"
@@ -49,10 +49,10 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 
 # Airbrake for error tracking
 variable :AIRBRAKE_API_KEY, :String, default: "Optional"
-variable :AIRBRAKE_PROJECT_ID, :integer, default: 00000
+variable :AIRBRAKE_PROJECT_ID, :integer, default: 0o0000
 
 # Algolia for search (not optional)
-only_in_test = proc { ENV['RACK_ENV'] == "test" ? "test-test" : nil}
+only_in_test = proc { ENV["RACK_ENV"] == "test" ? "test-test" : nil }
 variable :ALGOLIASEARCH_API_KEY, :String, default: only_in_test
 variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: only_in_test
 variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
@@ -101,14 +101,14 @@ variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
-
-# Honeycomb
-variable :HONEYCOMB_API_KEY, :String, default: "Optional"
+variable :GA_FETCH_RATE, :Integer, default: 25
 
 # Mailchimp for mails
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
 variable :MAILCHIMP_NEWSLETTER_ID, :String, default: "Optional"
 variable :MAILCHIMP_SUSTAINING_MEMBERS_ID, :String, default: "Optional"
+variable :MAILCHIMP_TAG_MODERATORS_ID, :String, default: "Optional"
+variable :MAILCHIMP_COMMUNITY_MODERATORS_ID, :String, default: "Optional"
 
 # Email digest frequency
 variable :PERIODIC_EMAIL_DIGEST_MAX, :Integer, default: 0
@@ -126,11 +126,6 @@ variable :PUSHER_BEAMS_KEY, :String, default: "Optional"
 variable :RECAPTCHA_SECRET, :String, default: "Optional"
 variable :RECAPTCHA_SITE, :String, default: "Optional"
 
-# Sharemeow is a text-shot service
-# more information here https://github.com/producthunt/ShareMeow
-variable :SHARE_MEOW_BASE_URL, :String, default: "Optional"
-variable :SHARE_MEOW_SECRET_KEY, :String, default: "Optional"
-
 # Slack for customer alerts
 variable :SLACK_CHANNEL, :String, default: "Optional"
 variable :SLACK_WEBHOOK_URL, :String, default: "Optional"
@@ -144,18 +139,22 @@ variable :STRIPE_CANCELLATION_SECRET, :String, default: "Optional"
 variable :VAPID_PUBLIC_KEY, :String, default: "dGhpcyBpcyBkZXYudG8gdGVzdCBkYXRh"
 variable :VAPID_PRIVATE_KEY, :String, default: "VGhpcyBpcyBtb3JlIHRlc3QgZGF0YQ=="
 
-#For video calling in DEV Connect
+# For video calling in DEV Connect
 variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
 
-#Trending tags on home page
+# For Twitch live stream integration
+variable :TWITCH_CLIENT_ID, :String, default: "Optional"
+variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
+variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
+
+# Trending tags on home page
 variable :TRENDING_TAGS, :String, default: "git,beginners"
 
 ##### Legacy test related env vars ######
 variable :FACEBOOK_PIXEL_ID, :String, default: "Optional"
 variable :SMARTY_STREETS_WEB_KEY, :String, default: "Optional"
-
 
 group :production do
   variable :SECRET_KEY_BASE, :String

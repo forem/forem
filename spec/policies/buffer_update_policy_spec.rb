@@ -1,19 +1,13 @@
 require "rails_helper"
 
 RSpec.describe BufferUpdatePolicy do
-  subject { described_class.new(user, block) }
+  subject { described_class.new(user, article) }
 
-  let(:block) { build(:block) }
+  let(:article) { build(:article) }
 
   context "when user is trusted" do
     let(:user) { build(:user, :trusted) }
 
     it { is_expected.to permit_actions(%i[create]) }
-  end
-
-  context "when user is not trusted" do
-    let(:user) { build(:user) }
-
-    it { is_expected.to forbid_actions(%i[create]) }
   end
 end

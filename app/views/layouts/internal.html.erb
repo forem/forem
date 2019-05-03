@@ -112,7 +112,7 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <% controller_names = %w(comments articles users members dogfood tags welcome broadcasts reports) %>
+        <% controller_names = %w(comments articles users members dogfood tags welcome broadcasts reports pages) %>
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>

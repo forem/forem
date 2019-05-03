@@ -1,6 +1,11 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[rlyweb now membership survey badge shecoded]
+  before_action :set_cache_control_headers, only: %i[show rlyweb now membership survey badge shecoded]
+
+  def show
+    @page = Page.find_by!(slug: params[:slug])
+    set_surrogate_key_header "show-page-#{params[:slug]}"
+  end
 
   def now
     set_surrogate_key_header "now_page"
@@ -11,6 +16,8 @@ class PagesController < ApplicationController
   end
 
   def about
+    @page = Page.find_by(slug: "about")
+    render :show if @page
     set_surrogate_key_header "about_page"
   end
 
@@ -61,12 +68,12 @@ class PagesController < ApplicationController
   end
 
   def shecoded
-    @top_articles = Article.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).
+    @top_articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
+      where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, 28).
       order(Arel.sql("RANDOM()")).
       includes(:user).decorate
-    @articles = Article.tagged_with(%w[shecoded shecodedally theycoded], any: true).
-      where(published: true, approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
+    @articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
+      where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
       order(Arel.sql("RANDOM()")).
       where.not(id: @top_articles.pluck(:id)).
       includes(:user).decorate
@@ -77,8 +84,7 @@ class PagesController < ApplicationController
   private # helpers
 
   def latest_published_welcome_thread
-    Article.where(user_id: ApplicationConfig["DEVTO_USER_ID"], published: true).
-      tagged_with("welcome").last
+    Article.published.where(user_id: ApplicationConfig["DEVTO_USER_ID"]).tagged_with("welcome").last
   end
 
   def members_for_display

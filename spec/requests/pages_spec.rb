@@ -1,6 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
+  describe "GET /:slug" do
+    it "has proper headline" do
+      page = create(:page)
+      get "/page/#{page.slug}"
+      expect(response.body).to include(page.title)
+    end
+  end
+
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
@@ -74,59 +82,10 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /live" do
-    let(:user) { create(:user) }
-
     context "when nothing is live" do
       it "shows the correct message" do
         get "/live"
-        expect(response.body).to include("Nothing is live right now")
-      end
-    end
-
-    context "when live is starting soon" do
-      before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_starting_soon, true)
-        get "/live"
-      end
-
-      after do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_starting_soon, false)
-      end
-
-      xit "shows the correct message" do
-        expect(response.body).to include("Our event is starting soon")
-      end
-    end
-
-    context "when live is live" do
-      before do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_is_live, true)
-        create(:chat_channel, :workshop)
-      end
-
-      after do
-        test_strategy = Flipflop::FeatureSet.current.test!
-        test_strategy.switch!(:live_is_live, false)
-      end
-
-      xit "shows a sign in page for logged out users" do
-        get "/live"
-        expect(response.body).to include("Great to have you")
-      end
-
-      xit "shows the video for logged in users" do
-        login_as user
-        get "/live"
-        expect(response.body).to include("<iframe class=\"live-video\"")
-      end
-
-      xit "shows the chat for logged in users" do
-        login_as user
-        get "/live"
-        expect(response.body).to include("<div id=\"chat\"")
+        expect(response.body).to include("We are working on more ways to bring live coding to the community")
       end
     end
   end

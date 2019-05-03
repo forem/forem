@@ -23,10 +23,6 @@ class ArticlePolicy < ApplicationPolicy
     true
   end
 
-  def analytics_index?
-    (user_is_author? && user_can_view_analytics?) || user_org_admin?
-  end
-
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url
        description allow_small_edits allow_big_edits tag_list publish_under_org
@@ -45,9 +41,5 @@ class ArticlePolicy < ApplicationPolicy
 
   def user_org_admin?
     user.org_admin && user.organization_id == record.organization_id
-  end
-
-  def user_can_view_analytics?
-    user.can_view_analytics?
   end
 end

@@ -20,6 +20,8 @@ export default function sendFollowUser(user, successCb) {
       // json is followed or unfollowed
     })
     .catch(error => {
-      console.log(error);
+      // TODO: Add client-side error tracking. See https://github.com/thepracticaldev/dev.to/issues/2501
+      // for the discussion.
+      console.log(error); // eslint-disable-line no-console
     });
 }

@@ -10,7 +10,7 @@ ports:
 tasks:
   - init: >
       cp config/sample_application.yml config/application.yml &&
-      bin/setup 2>/dev/null
+      bin/setup 2>/dev/null || true
     command: >
       while [ -z "${ALGOLIASEARCH_APPLICATION_ID:=$(cat config/application.yml | grep ALGOLIASEARCH_APPLICATION_ID | sed 's/.*:\s*//')}" ] ||
             [ -z "${ALGOLIASEARCH_SEARCH_ONLY_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_SEARCH_ONLY_KEY | sed 's/.*:\s*//')}" ] ||
@@ -22,3 +22,21 @@ tasks:
       done ;
       bin/setup &&
       bin/startup
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    master: true
+    # enable for all branches in this repo (defaults to false)
+    branches: true
+    # enable for pull requests coming from this repo (defaults to true)
+    pullRequests: true
+    # enable for pull requests coming from forks (defaults to false)
+    pullRequestsFromForks: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
+    addComment: false
+    # add a "Review in Gitpod" button to pull requests (defaults to false)
+    addBadge: false
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: false
+    # add a check to pull requests (defaults to true)
+    addCheck: true

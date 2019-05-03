@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   include Pundit
-  include Instrumentation
 
   def require_http_auth
     authenticate_or_request_with_http_basic do |username, password|
@@ -37,9 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    location = request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
-    context_param = resource.created_at > 40.seconds.ago ? "?newly-registered-user=true" : "?returning-user=true"
-    location + context_param
+    request.env["omniauth.origin"] || stored_location_for(resource) || "/dashboard"
   end
 
   def raise_banned

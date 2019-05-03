@@ -53,7 +53,7 @@
                 <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
             </div>
-            <a class="cta cta-button" href="/new/ama">START AN "ASK ME ANYTHING"</a>
+            <a class="cta cta-button" href="/new/ama">START AN "AMA"</a>
           </div>
         </div>
       <% end %>
@@ -145,8 +145,8 @@
         </div>
       <% end %>
     <% else %>
-      <% cache("seo-boostable-posts-homepage-xoxoxo", expires_in: 18.hours) do %>
-        <% @boostable_posts = Article.seo_boostable %>
+      <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-xoxo", expires_in: 18.hours) do %>
+        <% @boostable_posts = Article.seo_boostable(nil, Timeframer.new(params[:timeframe]).datetime) %>
         <% if @boostable_posts.any? %>
           <div class="widget">
             <header>

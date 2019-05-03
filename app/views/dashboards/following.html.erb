@@ -45,7 +45,7 @@
     <% end %>
   <% end %>
 
-  <h2>Followed organizations (<%= @followed_organizations.count %>)</h2>
+  <h2>Followed organizations (<%= @user.following_organizations_count %>)</h2>
   <% @followed_organizations.each do |follow| %>
     <% organization = follow.followable %>
     <div class="single-article">

@@ -122,9 +122,16 @@
 
     <h3><strong>GitHub Gist Embed</strong></h3>
     <p>All you need is the gist link:</p>
-    <pre>
-    {% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}
-    </pre>
+    <code>
+    {% gist https://gist.github.com/CristinaSolana/1885435 %}
+    </code>
+    <dl>
+      <dt><code>Single File Embed</code></dt>
+      <dd>
+        You can choose to embed a single gist file. <br>
+        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code>
+      </dd>
+    </dl>
 
     <h3><strong>Video Embed</strong></h3>
     <p>All you need is the <code>id</code> from the URL.
@@ -156,12 +163,18 @@
     <h3><strong>Stackblitz Embed</strong></h3>
     <p>All you need is the ID of the Stackblitz:</p>
     <code>{% stackblitz ball-demo %}</code>
-    <dt><code>Default view</code></dt>
-    <dd>
-      You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
-      <i>both</i><br>
-      <code>{% stackblitz ball-demo view=preview %}</code>
-    </dd>
+    <dl>
+      <dt><code>Default view</code></dt>
+      <dd>
+        You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
+        <i>both</i><br>
+        <code>{% stackblitz ball-demo view=preview %}</code>
+      </dd>
+      <dt><code>Default file</code></dt>
+      <dd>
+        You can change the default file you want your embed to point to<br>
+        <code>{% stackblitz ball-demo file=style.css %}</code>
+      </dd>
 
     <h3><strong>CodeSandbox Embed</strong></h3>
     <p>All you need is the ID of the Sandbox:</p>
@@ -179,6 +192,11 @@
       <dd>
         Which module to open by default.<br>
         <code>{% codesandbox ppxnl191zx module=/path/to/module %}</code>
+      </dd>
+      <dt><code>runonclick</code></dt>
+      <dd>
+        Delays when code is ran if <code>1</code> <br>
+        <code>{% codesandbox ppxnl191zx runonclick=1 %}</code>
       </dd>
     </dl>
 

@@ -24,7 +24,7 @@ class MarkdownParser
     html = wrap_all_images_in_links(html)
     html = wrap_all_tables(html)
     html = remove_empty_paragraphs(html)
-    html = EmojiConverter.call(html)
+    html = escape_colon_emojis_in_codeblock(html)
     wrap_mentions_with_links!(html)
   end
 
@@ -52,6 +52,19 @@ class MarkdownParser
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     allowed_tags = %w[strong i u b em p br code]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
+  end
+
+  def evaluate_listings_markdown
+    return if @content.blank?
+
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w[strong abbr aside em p h1 h2 h3 h4 h5 h6 i u b code pre
+                      br ul ol li small sup sub a span hr blockquote kbd]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
                                             tags: allowed_tags,
@@ -89,6 +102,21 @@ class MarkdownParser
 
   private
 
+  def escape_colon_emojis_in_codeblock(html)
+    html_doc = Nokogiri::HTML.fragment(html)
+
+    html_doc.children.each do |el|
+      next if el.name == "code"
+
+      if el.search("code").empty?
+        el.swap(EmojiConverter.call(el.to_html))
+      else
+        el.children = escape_colon_emojis_in_codeblock(el.children.to_html)
+      end
+    end
+    html_doc.to_html
+  end
+
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
@@ -98,7 +126,7 @@ class MarkdownParser
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/")
+    src.start_with?("https://camo.githubusercontent.com/", "https://cdn-images-1.medium.com")
   end
 
   def giphy_img?(source)
@@ -144,7 +172,11 @@ class MarkdownParser
         end
       end
     end
-    html_doc.to_html
+    if html_doc.at_css("body")
+      html_doc.at_css("body").inner_html
+    else
+      html_doc.to_html
+    end
   end
 
   def user_link_if_exists(mention)

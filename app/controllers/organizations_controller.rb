@@ -8,7 +8,10 @@ class OrganizationsController < ApplicationController
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
-      current_user.update(organization_id: @organization.id, org_admin: true)
+      ActiveRecord::Base.transaction do
+        current_user.update(organization_id: @organization.id, org_admin: true)
+        OrganizationMembership.create(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
+      end
       redirect_to "/settings/organization", notice:
         "Your organization was successfully created and you are an admin."
     else
@@ -24,8 +27,7 @@ class OrganizationsController < ApplicationController
     @organization = @user.organization
     authorize @organization
 
-    if @organization.update(organization_params)
-      @organization.touch(:profile_updated_at)
+    if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       redirect_to "/settings/organization", notice: "Your organization was successfully updated."
     else
       render template: "users/edit"

@@ -3,15 +3,15 @@
 .home.video-page-title {
   margin: 68px auto 10px;
   text-align: center;
-  background: $white;
-  background: var(--theme-container-background, #fff);
+  background: $lightest-gray;
+  background: var(--theme-container-background, $lightest-gray);
   header {
     font-size:calc(0.9vw + 10px);
   }
 }
 .video-collection {
-  background: $white;
-  background: var(--theme-container-background, #fff);
+  background: $lightest-gray;
+  background: var(--theme-container-background, $lightest-gray);
   display: flex;
   max-width: 100%;
   flex-direction: row;
@@ -23,15 +23,28 @@
   }
 
   .single-video-article {
-    border: solid 1px $medium-gray;
+    border: solid 1px $light-medium-gray;
     margin: 5px;
-    max-width: 350px;
+    width: 100%;
     padding-bottom: 8px;
-    @media screen and (max-width: 739px) {
-      min-width: 100%;
+    border-radius: 3px;
+    @media screen and (min-width: 550px) {
+      width: 47%;
+    }
+    @media screen and (min-width: 739px) {
+      width: 31%;
     }
     .video-image {
       position: relative;
+      padding-top: 56%;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      background: $black no-repeat center center; 
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    
     }
     .video-timestamp {
       position: absolute;

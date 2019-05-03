@@ -59,3 +59,6 @@ _docker-storage/
 # Ignore yarn related error
 yarn-debug.log*
 .yarn-integrity
+
+# YARD generated doc (in the Gitdocs folder)
+docs/.static/ruby-doc/

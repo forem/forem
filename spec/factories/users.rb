@@ -50,10 +50,6 @@ FactoryBot.define do
       end
     end
 
-    trait :analytics do
-      after(:build) { |user| user.add_role(:analytics_beta_tester) }
-    end
-
     trait :pro do
       after(:build) { |user| user.add_role :pro }
     end

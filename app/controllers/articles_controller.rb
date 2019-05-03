@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit update destroy]
+  before_action :set_article, only: %i[edit manage update destroy]
   before_action :raise_banned, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -9,25 +9,25 @@ class ArticlesController < ApplicationController
   def feed
     skip_authorization
 
-    @articles = Article.where(published: true).
+    @articles = Article.published.
       select(:published_at, :processed_html, :user_id, :organization_id, :title, :path).
       order(published_at: :desc).
       page(params[:page].to_i).per(12)
 
-    if params[:username]
-      if (@user = User.find_by(username: params[:username]))
-        @articles = @articles.where(user_id: @user.id)
-      elsif (@user = Organization.find_by(slug: params[:username]))
-        @articles = @articles.where(organization_id: @user.id).includes(:user)
-      else
-        render body: nil
-        return
-      end
-    else
-      @articles = @articles.where(featured: true).includes(:user)
+    @articles = if params[:username]
+                  handle_user_or_organization_feed
+                elsif params[:tag]
+                  handle_tag_feed
+                else
+                  @articles.where(featured: true).includes(:user)
+                end
+
+    unless @articles
+      render body: nil
+      return
     end
 
-    set_surrogate_key_header "feed", @articles.map(&:record_key)
+    set_surrogate_key_header "feed"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
 
     render layout: false
@@ -77,6 +77,15 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
+    @organization = @user&.organization
+  end
+
+  def manage
+    @article = @article.decorate
+    authorize @article
+    @user = @article.user
+    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
+    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
     @organization = @user&.organization
   end
 
@@ -169,6 +178,23 @@ class ArticlesController < ApplicationController
     elsif @article.job_opportunity && !@article.tag_list.include?("hiring")
       @article.job_opportunity.destroy!
     end
+  end
+
+  def handle_user_or_organization_feed
+    if (@user = User.find_by(username: params[:username]))
+      @articles = @articles.where(user_id: @user.id)
+    elsif (@user = Organization.find_by(slug: params[:username]))
+      @articles = @articles.where(organization_id: @user.id).includes(:user)
+    end
+  end
+
+  def handle_tag_feed
+    tag = Tag.find_by(name: params[:tag].downcase)
+
+    return unless tag
+
+    @tag = tag.alias_for.presence || tag
+    @articles = @articles.cached_tagged_with(@tag)
   end
 
   def create_or_update_job_opportunity
