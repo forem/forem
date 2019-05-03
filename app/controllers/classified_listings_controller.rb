@@ -39,8 +39,14 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def create_org_listing
+    org = Organization.find(current_user.organization_id)
+    available_org_credits = org.credits.where(spent: false)
+    if available_org_credits.size >= number_of_credits_needed
+
+    end
     redirect_to "/credits"
   end
+
   # def create
   #   @classified_listing = ClassifiedListing.new(classified_listing_params)
   #   @classified_listing.user_id = current_user.id
