@@ -186,7 +186,7 @@
     * {
       box-sizing: border-box;
     }
-    .listings-back-buton {
+    .listings-back-button {
       font-size: 0.8em;
       margin: 5px 0px 10px;
       display: block;
@@ -263,4 +263,52 @@
       font-size: 0.8em;
     }
   }
+}
+
+.field {
+  font-size: 18px;
+}
+
+.listingform__input {
+  margin-top: 10px;
+}
+
+.listingform__bodymarkdown {
+  width: 100%;
+  height: 300px;
+  padding: 5px;
+  font-size: 17px;
+  border-radius: 3px;
+  background: white;
+  background: var(--theme-container-background, white);
+  color: $black;
+  color: var(--theme-color, $black);
+  border: 1px solid $light-medium-gray;
+}
+
+.listingform__tagoptionrow {
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background: lighten($green, 27%);
+    color: $black;
+  }
+}
+
+.listingform__tagoptionrow--active {
+  background: $green;
+  color: $black;
+  &:hover {
+    background: darken($green, 10%);
+  }
+}
+
+.listingform__label {
+  width: 100%;
+  display: inline-block;
+  font-size: 0.7em;
+  margin: 8px 0px 3px 0px;
+  border-radius: 3px;
+  padding: 6px 0px;
+  font-weight: bold;
 }
