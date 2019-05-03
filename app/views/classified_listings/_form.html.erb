@@ -11,32 +11,14 @@
       </ul>
     </div>
   <% end %>
-  <div class="field">
-    <%= form.label "title", "Title" %>
-    <%= form.text_field "title", maxlength: 128, placeholder: "128 characters max, plain text" %>
+  <div id="listingform-data"
+       data-listing="<%= classified_listing.to_json(only: %i[id title slug cached_tag_list]) %>"
+       data-organizations="<%= @organizations.to_json %>"
+       data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
+       data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values{ |value_hash| value_hash.except(:cost) }.values.to_json %>"
+       >
   </div>
-  <div class="field">
-    <%= form.label "body_markdown", "Body Markdown" %>
-    <%= form.text_area "body_markdown", maxlength: 400, placeholder: "400 characters max, 12 line break max, no images allowed" %>
-  </div>
-  <div class="field">
-    <%= form.label "category" %>
-    <%= form.select :category, options_for_select(ClassifiedListing.select_options_for_categories, ClassifiedListing.select_options_for_categories.first) %>
-    <details>
-      <summary>
-        Category details/rules
-      </summary>
-      <% ClassifiedListing.categories_available.keys.each do |key| %>
-        <p>
-          <%= ClassifiedListing.categories_available[key][:name] %>: <%= ClassifiedListing.categories_available[key][:rules] %>
-        </p>
-      <% end %>
-    </details>
-  </div>
-  <div class="field">
-    <%= form.label "tag_list", "Tags" %>
-    <%= form.text_field "tag_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
-  </div>
+  <%= javascript_pack_tag "listingForm", defer: true %>
   <% if false # Put connect button (future feature) %>
   <div class="field">
     <%= form.label "contact_via_connect" %>
