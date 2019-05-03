@@ -62,12 +62,15 @@ class ClassifiedListing < ApplicationRecord
   def self.categories_available
     {
       "cfp" => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form" },
-      "contractors" => { cost: 1, name: "Contractor for Hire", rules: "You are available for hire." },
+      "contractors" => { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
       "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted" },
       "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
-      "jobs" => { cost: 10, name: "Job Listings", rules: "Companies offering employment right now." },
-      "products" => { cost: 1, name: "Products/Tools", rules: "Must be available right now" },
-      "events" => { cost: 1, name: "Upcoming Events", rules: "Live or online events with date included" },
+      "jobs" => { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
+      "mentors" => { coast: 1, name: "Offering Mentorship"},
+      "products" => { cost: 10, name: "Products/Tools", rules: "Must be available right now" },
+      "mentees" => { cost: 1, name: "Seeking a Mentor"},
+      "sale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale" },
+      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included" },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
   end
