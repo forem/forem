@@ -30,46 +30,31 @@ class ClassifiedListingsController < ApplicationController
   def create
     @classified_listing = ClassifiedListing.new(classified_listing_params)
     @classified_listing.user_id = current_user.id
-    number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
-    if @classified_listing.post_as_organization.to_i == 1
-      create_org_listing
+    @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
+    @org = Organization.find(current_user.organization_id) if @classified_listing.post_as_organization.to_i == 1
+    available_org_credits = @org.credits.where(spent: false) if @org
+    available_individual_credits = current_user.credits.where(spent: false)
+
+    if @org && available_org_credits.size >= @number_of_credits_needed
+      create_listing(available_org_credits)
+    elsif available_individual_credits.size >= @number_of_credits_needed
+      create_listing(available_individual_credits)
     else
-      create_personal_listing
+      redirect_to "/credits"
     end
   end
 
-  def create_org_listing
-    org = Organization.find(current_user.organization_id)
-    available_org_credits = org.credits.where(spent: false)
-    if available_org_credits.size >= number_of_credits_needed
+  def create_listing(credits)
+    @classified_listing.bumped_at = Time.current
+    @classified_listing.published = true
+    @classified_listing.organization_id = current_user.organization_id if @org
+    return unless @classified_listing.save
 
-    end
-    redirect_to "/credits"
+    clear_listings_cache
+    credits.limit(@number_of_credits_needed).update_all(spent: true)
+    @classified_listing.index!
+    redirect_to "/listings"
   end
-
-  # def create
-  #   @classified_listing = ClassifiedListing.new(classified_listing_params)
-  #   @classified_listing.user_id = current_user.id
-  #   number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
-  #   available_credits = current_user.credits.where(spent: false)
-  #   if available_credits.size >= number_of_credits_needed
-  #     @classified_listing.bumped_at = Time.current
-  #     @classified_listing.published = true
-  #     @classified_listing.organization_id = current_user.organization_id if @classified_listing.post_as_organization.to_i == 1
-  #     if @classified_listing.save
-  #       clear_listings_cache
-  #       available_credits.limit(number_of_credits_needed).update_all(spent: true)
-  #       binding.pry
-  #       @classified_listing.index!
-  #       redirect_to "/listings"
-  #     else
-  #       @credits = current_user.credits.where(spent: false)
-  #       render :new
-  #     end
-  #   else
-  #     redirect_to "/credits"
-  #   end
-  # end
 
   def update
     authorize @classified_listing
