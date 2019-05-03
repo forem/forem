@@ -62,16 +62,12 @@ class Internal::UsersController < Internal::ApplicationController
 
   def add_credits
     amount = user_params[:add_credits].to_i
-    credit_objects = []
-    amount.times do
-      credit_objects << Credit.new(user_id: @user.id)
-    end
-    Credit.import credit_objects
+    Credit.add_to(@user, amount)
   end
 
   def remove_credits
     amount = user_params[:remove_credits].to_i
-    @user.credits.where(spent: false).limit(amount).delete_all
+    Credit.remove_from(@user, amount)
   end
 
   def user_status
