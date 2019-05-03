@@ -183,16 +183,16 @@ export class Listings extends Component {
     return (
       <div>
         <div className="classified-filters">
-            <div className="classified-filters-categories">
-              <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')}  data-no-instant>all</a>
-              {categoryLinks}
-              <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
-            </div>
+          <div className="classified-filters-categories">
+            <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')}  data-no-instant>all</a>
+            {categoryLinks}
+            <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
+          </div>
           <div className="classified-filters-tags" id="classified-filters-tags">
             <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)}/>{clearQueryButton}{selectedTags}
           </div>
         </div>
-        <div class="classifieds-columns" id="classified-listings-results">
+        <div className="classifieds-columns" id="classified-listings-results">
           {allListings}
         </div>
       </div>
