@@ -125,26 +125,7 @@
         </div>
       </div>
     <% end %>
-    <% if user_signed_in? %>
-      <% cache("featured-homepage-podcasts", expires_in: 15.minutes) do %>
-        <div class="widget" id="podcast-widget">
-          <header>
-            <a href="/pod"><h4>latest podcasts</h4></a>
-          </header>
-          <div class="widget-body">
-            <% @podcast_episodes.each do |ep| %>
-              <div class="widget-podcast-ep">
-                <a href="<%= ep.path %>"><%= ep.title %></a>
-                <div class="widget-podcast-title">
-                  <a href="<%= ep.podcast.path %>"><%= ep.podcast.title %></a>
-                </div>
-              </div>
-            <% end %>
-            <a class="cta cta-button" href="/pod">VIEW ALL</a>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
+    <% unless user_signed_in? %>
       <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-xoxo", expires_in: 18.hours) do %>
         <% @boostable_posts = Article.seo_boostable(nil, Timeframer.new(params[:timeframe]).datetime) %>
         <% if @boostable_posts.any? %>

@@ -25,6 +25,8 @@ class FollowsController < ApplicationController
                    Organization.find(params[:followable_id])
                  elsif params[:followable_type] == "Tag"
                    Tag.find(params[:followable_id])
+                 elsif params[:followable_type] == "Podcast"
+                   Podcast.find(params[:followable_id])
                  else
                    User.find(params[:followable_id])
                  end
