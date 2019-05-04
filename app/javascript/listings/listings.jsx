@@ -36,7 +36,7 @@ export class Listings extends Component {
       listings = JSON.parse(container.dataset.listings)
     }
     t.setState({query, tags, index, category, allCategories, listings });
-    t.listingSearch(params.q || '', tags, category);
+    t.listingSearch(query, tags, category);
     t.setUser()
   }
 
@@ -147,7 +147,7 @@ export class Listings extends Component {
     .then(function searchDone(content) {
       if (t.state.initialFetch && t.state.category === '') {
         const fullListings = t.state.listings;
-        content.hits.forEach(function(listing) {
+        content.hits.forEach(listing => {
           if (!t.state.listings.map(l => (l.id)).includes(listing.id)) {
             fullListings.push(listing)
           }
