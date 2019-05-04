@@ -314,7 +314,7 @@
 }
 
 .listing__overlay {
-  display: block;
+  display: none;
   background-color: $black;
   opacity: .7;
   z-index: 10000;

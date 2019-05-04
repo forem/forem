@@ -11,7 +11,10 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
   const handleOpenModal = (e) => {
     e.preventDefault()
     window.history.pushState('', '', e.target.href)
-    document.getElementById('listing-overlay').style.display = 'block';
+    const overlayDiv = document.getElementById('listing-overlay')
+    overlayDiv.style.display = 'block'
+    overlayDiv.focus()
+    overlayDiv.tabIndex = 0
   }
 
   const listingCard = () => {

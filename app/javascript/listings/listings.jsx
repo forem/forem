@@ -74,7 +74,9 @@ export class Listings extends Component {
 
   handleCloseModal = (e) => {
     if (e.type === "click" || e.key === "Escape") {
-      document.getElementById('listing-overlay').style.display = 'none';
+      const overlayDiv = document.getElementById('listing-overlay')
+      overlayDiv.style.display = 'none'
+      overlayDiv.tabIndex = -1
       const selectedListingView = document.querySelector('a.selected')
       // TODO: account for people visiting the permalink directly
       window.history.pushState('', '', selectedListingView.href)
@@ -192,7 +194,7 @@ export class Listings extends Component {
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
     return (
       <div>
-        <div className="listing__overlay" id="listing-overlay" style={{ display: "none" }} onClick={this.handleCloseModal} onKeyDown={this.handleCloseModal} role="presentation" tabIndex="0" />
+        <div className="listing__overlay" id="listing-overlay" onClick={this.handleCloseModal} onKeyDown={this.handleCloseModal} role="presentation" tabIndex="0" />
         <div className="classified-filters">
           <div className="classified-filters-categories">
             <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')}  data-no-instant>all</a>
