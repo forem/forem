@@ -14,7 +14,7 @@ module SocialImageHelper
   end
 
   def article_social_image_url(article)
-    image = article.social_image || article.main_image || article.video_thumbnail_url
+    image = user_defined_image(article)
     if image.present?
       return cl_image_path(image,
                            type: "fetch",
@@ -52,5 +52,11 @@ module SocialImageHelper
 
   def use_new_social_url?(resource)
     resource.updated_at > SOCIAL_PREVIEW_MIGRATION_DATETIME
+  end
+
+  def user_defined_image(article)
+    return article.social_image if article.social_image.present?
+    return article.main_image if article.main_image.present?
+    return article.video_thumbnail_url if article.video_thumbnail_url.present?
   end
 end
