@@ -5,7 +5,7 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
   const tagLinks = listing.tag_list.map(tag => (
     <a href={`/listings?t=${tag}`} onClick={e => onAddTag(e, tag)} data-no-instant>{tag}</a>
   ));
-  const editButton = currentUserId === listing.user_id ? <a href={`/listings/${listing.id}/edit`} className="classified-listing-edit-button">edit</a> : '';
+  const editButton = currentUserId === listing.user_id ? <a href={`/listings/${listing.id}/edit`} className="classified-listing-edit-button">・edit</a> : <a href={`/report-abuse?url=https://dev.to/listings/${listing.category}/${listing.slug}`}>・report abuse</a>;
   return (
     <div className="single-classified-listing">
       <div className="listing-content">
