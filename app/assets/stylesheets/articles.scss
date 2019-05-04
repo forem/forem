@@ -1129,9 +1129,11 @@
       }
       &.podcast-pic-widget {
         a {
-          &:hover {
-            text-decoration: none;
-          }
+          @include themeable(
+            color, 
+            theme-color, 
+            $black
+          );
         }
         .widget-body {
           padding-bottom: 10px;
@@ -1154,6 +1156,7 @@
             width: calc(100% - 55px);
             display: inline-block;
             padding-left: 4px;
+            font-weight: bold;
             .podcast-name-inner {
               font-size: 14px;
               line-height: 15px;
