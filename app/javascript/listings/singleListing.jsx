@@ -10,19 +10,26 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
 
   const handleOpenModal = (e) => {
     e.preventDefault()
+
     window.history.pushState('', '', e.target.href)
-    const overlayDiv = document.getElementById('listing-overlay')
-    overlayDiv.style.display = 'block'
-    overlayDiv.focus()
-    overlayDiv.tabIndex = 0
+    const overlay = document.getElementById('listing-overlay')
+    overlay.style.display = 'block'
+    overlay.focus()
+    overlay.tabIndex = 0
+
+    const { listingId } = e.target.dataset
+    const clonedListing = document.getElementById(`single-classified-listing-${listingId}`).cloneNode(true)
+    clonedListing.id = `single-classified-listing-modal-${listingId}`
+    clonedListing.className += ' singlelisting__modal'
+    overlay.insertAdjacentElement('afterend', clonedListing)
   }
 
   const listingCard = () => {
     return(
-      <div className="single-classified-listing">
+      <div className="single-classified-listing" id={`single-classified-listing-${listing.id}`}>
         <div className="listing-content">
           <h3>
-            <a href={`/listings/${listing.category}/${listing.slug}`} data-no-instant onClick={handleOpenModal}>
+            <a href={`/listings/${listing.category}/${listing.slug}`} data-no-instant onClick={handleOpenModal} data-listing-id={listing.id}>
               {listing.title}
             </a>
           </h3>
