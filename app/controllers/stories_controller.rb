@@ -243,10 +243,12 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
+    num_hours = Rails.env.production? ? 24 : 800
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").
-      select(:slug, :title, :podcast_id).limit(5)
+      where("published_at > ?", num_hours.hours.ago).
+      select(:slug, :title, :podcast_id)
   end
 
   def article_finder(num_articles)

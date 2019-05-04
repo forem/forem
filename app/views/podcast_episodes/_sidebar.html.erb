@@ -3,9 +3,6 @@
   <div class="side-bar">
     <% if @podcast_index && @podcasts %>
       <div class="widget podcast-pic-widget">
-        <header>
-          <h4>&lt;ALL SHOWS&gt;</h4>
-        </header>
         <div class="widget-body">
           <% @podcasts.each do |podcast| %>
             <a href="/<%= podcast.slug %>">
@@ -28,6 +25,7 @@
               </div>
             </a>
           <% end %>
+          <p>If you know of a great dev podcast that should be added to this list, contact <a href="mailto:yo@dev.to">yo@dev.to</a></p>
         </div>
       </div>
     <% elsif @podcast %>

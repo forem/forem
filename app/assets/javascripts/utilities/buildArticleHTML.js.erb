@@ -1,6 +1,6 @@
 function buildArticleHTML(article) {
   if (article && article.type_of == "podcast_episodes") {
-    return '<div class="single-article single-article-small-pic">\
+    return '<div class="single-article single-article-small-pic single-article-single-podcast">\
       <div class="small-pic">\
        <a href="/'+article.podcast.slug+'" class="small-pic-link-wrapper">\
          <img src="'+article.podcast.image_url+'" alt="'+article.podcast.title+' image">\

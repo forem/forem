@@ -41,6 +41,7 @@ class AsyncInfoController < ApplicationController
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
         followed_user_ids: @user.cached_following_users_ids,
         followed_organization_ids: @user.cached_following_organizations_ids,
+        followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
@@ -57,6 +58,7 @@ class AsyncInfoController < ApplicationController
   def user_cache_key
     "#{current_user&.id}__
     #{current_user&.last_sign_in_at}__
+    #{current_user&.last_followed_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
     #{current_user&.comments_count}__

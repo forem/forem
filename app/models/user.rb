@@ -250,6 +250,15 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_following_podcasts_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
       preferred_languages_array

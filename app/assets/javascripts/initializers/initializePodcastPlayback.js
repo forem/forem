@@ -14,7 +14,6 @@ function initializePodcastPlayback() {
     return document.getElementById(name);
   }
 
-
   function getByClass(name) {
     return document.getElementsByClassName(name);
   }
