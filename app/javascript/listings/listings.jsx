@@ -185,7 +185,10 @@ export class Listings extends Component {
     this.triggerMasonry()
     const selectedTags = tags.map(tag => (
       <span className="classified-tag">
-        <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant><span>{tag}</span><span className='tag-close' onClick={e => this.removeTag(e, tag)} data-no-instant>×</span></a>
+        <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant>
+          <span>{tag}</span>
+          <span className='tag-close' onClick={e => this.removeTag(e, tag)} data-no-instant>×</span>
+        </a>
       </span>
     ))
     const categoryLinks = allCategories.map(cat => (
@@ -197,12 +200,14 @@ export class Listings extends Component {
         <div className="listing__overlay" id="listing-overlay" onClick={this.handleCloseModal} onKeyDown={this.handleCloseModal} role="presentation" tabIndex="0" />
         <div className="classified-filters">
           <div className="classified-filters-categories">
-            <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')}  data-no-instant>all</a>
+            <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
             {categoryLinks}
             <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
           </div>
           <div className="classified-filters-tags" id="classified-filters-tags">
-            <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)}/>{clearQueryButton}{selectedTags}
+            <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)} />
+            {clearQueryButton}
+            {selectedTags}
           </div>
         </div>
         <div className="classifieds-columns" id="classified-listings-results">
@@ -236,7 +241,7 @@ function resizeAllMasonryItems(){
    * each list-item (i.e. each masonry item)
    */
   // eslint-disable-next-line vars-on-top
-  for(var i=0;i<allItems.length;i++){
+  for(let i=0;i<allItems.length;i++){
     resizeMasonryItem(allItems[i]);
   }
 }
