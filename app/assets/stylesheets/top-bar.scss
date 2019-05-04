@@ -1,4 +1,6 @@
 @import 'variables';
+@import 'mixins';
+
 .stories-index,
 .comments-index,
 .users-index,
@@ -191,10 +193,10 @@
         border-radius: 100%;
         margin-top: -1px;
         margin-left: -1px;
-        -ms-user-select:none;
-        -moz-user-select:none;
-        -webkit-user-select:none;
-        user-select:none;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
     }
     .bars {
@@ -213,7 +215,9 @@
         }
       }
       &.desktop {
-        &:hover,&:active,&:focus {
+        &:hover,
+        &:active,
+        &:focus {
           .menu {
             display: block;
           }
@@ -283,7 +287,12 @@
           padding: 6px 10px;
         }
         &.prime-option {
-          border-bottom: 3px solid #7a7e81;
+          border-bottom: 3px solid;
+          @include themeable(
+            border-color,
+            theme-prime-option-border-color,
+            #7a7e81
+          );
           margin-bottom: 5px;
           font-size: 1.22em;
           font-weight: 500;
@@ -301,7 +310,7 @@
       }
     }
   }
-  
+
   .skip-content-link {
     position: absolute;
     top: 0;
@@ -316,7 +325,7 @@
     opacity: 0;
     transition: opacity 0.3s $ease-in-cubic, transform 0.3s $ease-in-cubic;
 
-    &:focus {      
+    &:focus {
       pointer-events: auto;
       opacity: 1;
       transform: translate(-50%, 22px);
