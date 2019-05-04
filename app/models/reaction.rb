@@ -12,7 +12,7 @@ class Reaction < ApplicationRecord
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: %w[Comment Article] }
-  validates :status, inclusion: { in: %w[valid invalid confirmed] }
+  validates :status, inclusion: { in: %w[valid invalid confirmed archived] }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
@@ -20,6 +20,18 @@ class Reaction < ApplicationRecord
   after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
+  before_destroy :remove_algolia
+
+  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
+  end
+
+  def self.trigger_delayed_index(_record, remove)
+    # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
+    return if remove
+
+    delay.remove_from_index! if status == "archived"
+    delay.index! if category == "readinglist"
+  end
 
   class << self
     def count_for_article(id)
@@ -85,6 +97,10 @@ class Reaction < ApplicationRecord
 
   def update_reactable_without_delay
     Reactions::UpdateReactableJob.perform_now(id)
+  end
+
+  def remove_from_index
+    remove_from_index!
   end
 
   BASE_POINTS = {
