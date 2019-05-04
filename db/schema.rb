@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_25_210432) do
+ActiveRecord::Schema.define(version: 2019_05_04_015859) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,6 +52,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_210432) do
     t.float "amount_due", default: 0.0
     t.float "amount_paid", default: 0.0
     t.boolean "approved", default: false
+    t.boolean "archived", default: false
     t.boolean "automatically_renew", default: false
     t.text "body_html"
     t.text "body_markdown"
