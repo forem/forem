@@ -187,7 +187,7 @@ function insertPodcasts() {
       var podcastHTML = '';
       var episodeCount = 0;
       data.forEach(function(ep) {
-        if (user.followed_podcast_ids.indexOf(ep.podcast.id)) {
+        if (user.followed_podcast_ids.indexOf(ep.podcast.id) > -1) {
           episodeCount += 1;
           podcastHTML = podcastHTML + '<a class="individual-podcast-link" href="/' + ep.podcast.slug + '/' + ep.slug + '"><strong>' + ep.podcast.title + '</strong> ' + ep.title + '</a>'
         }
@@ -195,7 +195,7 @@ function insertPodcasts() {
       if (episodeCount > 0) {
         insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3>' + podcastHTML + '</div>';
       } else {
-        insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3><p>Nothing in your feed today</p></a></div>';
+        insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3><p>Nothing in your feed today</p></div>';
       }
     }
   }
