@@ -12,8 +12,6 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
     e.preventDefault()
     window.history.pushState('', '', e.target.href)
     document.getElementById('listing-overlay').style.display = 'block';
-    // open the modal
-    // change the link to `/listings/${listing.category}/${listing.slug}`
   }
 
   const listingCard = () => {

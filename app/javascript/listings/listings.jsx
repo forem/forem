@@ -77,7 +77,7 @@ export class Listings extends Component {
       document.getElementById('listing-overlay').style.display = 'none';
       const selectedListingView = document.querySelector('a.selected')
       // TODO: account for people visiting the permalink directly
-      window.history.pushState('', '', selectedListingView.href )
+      window.history.pushState('', '', selectedListingView.href)
     }
   }
 
