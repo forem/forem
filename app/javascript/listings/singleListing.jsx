@@ -11,8 +11,9 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
   const handleOpenModal = (e) => {
     e.preventDefault()
 
-    window.history.pushState('', '', e.target.href)
     const overlay = document.getElementById('listing-overlay')
+    overlay.dataset.originLink = window.location.href
+    window.history.pushState('', '', e.target.href)
     overlay.style.display = 'block'
     overlay.focus()
     overlay.tabIndex = 0
