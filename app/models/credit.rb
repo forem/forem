@@ -15,4 +15,16 @@ class Credit < ApplicationRecord
   def self.remove_from(user, amount)
     user.credits.where(spent: false).limit(amount).delete_all
   end
+
+  def self.add_to_org(org, amount)
+    credit_objects = []
+    amount.times do
+      credit_objects << Credit.new(organization_id: org.id)
+    end
+    Credit.import credit_objects
+  end
+
+  def self.remove_from_org(org, amount)
+    org.credits.where(spent: false).limit(amount).delete_all
+  end
 end
