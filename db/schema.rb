@@ -10,9 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_02_165056) do
+ActiveRecord::Schema.define(version: 2019_05_04_131412) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -248,7 +247,6 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.string "slug"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
@@ -542,6 +540,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.string "company_size"
     t.string "country"
     t.datetime "created_at", null: false
+    t.integer "credits_count", default: 0, null: false
     t.text "cta_body_markdown"
     t.string "cta_button_text"
     t.string "cta_button_url"
@@ -563,6 +562,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.integer "spent_credits_count", default: 0, null: false
     t.text "sponsorship_blurb_html"
     t.integer "sponsorship_featured_number", default: 0
     t.string "sponsorship_tagline"
@@ -574,6 +574,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.string "tech_stack"
     t.string "text_color_hex"
     t.string "twitter_username"
+    t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
     t.string "zip_code"
@@ -829,6 +830,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.datetime "confirmed_at"
     t.boolean "contact_consent", default: false
     t.datetime "created_at", null: false
+    t.integer "credits_count", default: 0, null: false
     t.datetime "current_sign_in_at"
     t.inet "current_sign_in_ip"
     t.string "currently_hacking_on"
@@ -937,6 +939,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.string "signup_refer_code"
     t.string "signup_referring_site"
     t.string "specialty"
+    t.integer "spent_credits_count", default: 0, null: false
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
@@ -951,6 +954,7 @@ ActiveRecord::Schema.define(version: 2019_05_02_165056) do
     t.integer "twitter_following_count"
     t.string "twitter_username"
     t.string "unconfirmed_email"
+    t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
