@@ -34,7 +34,7 @@ module Streams
           "hub.lease_seconds" => WEBHOOK_LEASE_SECONDS,
           "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=#{twitch_user_id}",
           "hub.secret" => ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
-        }.to_json
+        }
       end
 
       def authentication_request_headers
