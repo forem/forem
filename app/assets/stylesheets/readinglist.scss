@@ -1,0 +1,36 @@
+@import 'variables';
+@import 'mixins';
+.reading-list-container {
+  a {
+    display: block;
+  }
+  .readinglist-filters {
+    width: 300px;
+    float: left;
+    input {
+      width: 100%;
+      border-radius: 100px;
+      border: 0px;
+      padding: 3px;
+      font-size: 1em;
+    }
+    .readinglist-tag {
+      padding: 10px 0px;
+      position: relative;
+    }
+    .readinglist-tag--selected {
+      background: $black;
+      border-radius: 100px;
+    }
+  }
+  .readinglist-results {
+    width: calc(100% - 350px);
+    float: left;
+    margin-left: 20px;
+    .readinglist-item {
+      @include themeable(color, theme-color, $black);
+      font-size: 1.1em;
+      padding: 10px;
+    }
+  }
+}

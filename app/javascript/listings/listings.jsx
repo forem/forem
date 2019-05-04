@@ -196,9 +196,7 @@ export class Listings extends Component {
           {allListings}
         </div>
       </div>
-)
-
-    return <div className="github-repos">{allListings}</div>;
+    )
   }
 }
 

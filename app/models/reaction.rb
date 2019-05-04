@@ -1,4 +1,5 @@
 class Reaction < ApplicationRecord
+  include AlgoliaSearch
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
 
   belongs_to :reactable, polymorphic: true
@@ -22,10 +23,19 @@ class Reaction < ApplicationRecord
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
 
-  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
+  algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_remove: false, enqueue: :trigger_delayed_index do
+    attribute :id, :searchable_reactable_user, :searchable_reactable_title, :searchable_reactable_path,
+    :searchable_reactable_text, :searchable_reactable_tags, :viewable_by
+    searchableAttributes %i[searchable_reactable_title searchable_reactable_text searchable_reactable_text searchable_reactable_tags]
+    tags do 
+      reactable_tags
+    end
+    attributesForFaceting ["filterOnly(viewable_by)"]
   end
 
   def self.trigger_delayed_index(_record, remove)
+    raise
+    raise
     # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
     return if remove
 
@@ -101,6 +111,34 @@ class Reaction < ApplicationRecord
 
   def remove_from_index
     remove_from_index!
+  end
+
+  def searchable_reactable_user
+    "#{reactable.user_username} #{reactable.user_name}" if category == "readinglist"
+  end
+
+  def searchable_reactable_title
+    reactable.title if category == "readinglist"
+  end
+
+  def searchable_reactable_text
+    reactable.body_text[0..350] if category == "readinglist"
+  end
+
+  def searchable_reactable_tags
+    reactable.cached_tag_list if category == "readinglist"
+  end
+
+  def searchable_reactable_path
+    reactable.path if category == "readinglist"
+  end
+
+  def reactable_tags
+    reactable.decorate.cached_tag_list_array if category == "readinglist"
+  end
+
+  def viewable_by
+    user_id
   end
 
   BASE_POINTS = {
