@@ -266,11 +266,12 @@
 }
 
 .singlelisting__modal {
-  z-index: 20000;
+  z-index: 11000;
   position: absolute;
   top: 15%;
   left: 33%;
   max-width: 33%;
+  padding-bottom: 10px;
 }
 
 .single-classified-listing {
