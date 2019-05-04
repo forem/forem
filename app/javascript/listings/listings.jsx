@@ -36,7 +36,7 @@ export class Listings extends Component {
       listings = JSON.parse(container.dataset.listings)
     }
     t.setState({query, tags, index, category, allCategories, listings });
-    t.listingSearch(params.q || '', tags, category);
+    t.listingSearch(query, tags, category);
     t.setUser()
   }
 
@@ -69,6 +69,16 @@ export class Listings extends Component {
     const { query, tags } = this.state;
     this.setState({category: cat})
     this.listingSearch(query, tags, cat)
+  }
+
+  handleCloseModal = (e) => {
+    if (e.type === "click" || e.key === "Escape") {
+      const overlay = document.getElementById('listing-overlay')
+      overlay.style.display = 'none'
+      overlay.tabIndex = -1
+      window.history.pushState('', '', overlay.dataset.originLink)
+      overlay.parentElement.removeChild(overlay.nextElementSibling)
+    }
   }
 
   handleQuery = e => {
@@ -134,7 +144,7 @@ export class Listings extends Component {
     .then(function searchDone(content) {
       if (t.state.initialFetch && t.state.category === '') {
         const fullListings = t.state.listings;
-        content.hits.forEach(function(listing) {
+        content.hits.forEach(listing => {
           if (!t.state.listings.map(l => (l.id)).includes(listing.id)) {
             fullListings.push(listing)
           }
@@ -173,7 +183,10 @@ export class Listings extends Component {
     this.triggerMasonry()
     const selectedTags = tags.map(tag => (
       <span className="classified-tag">
-        <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant><span>{tag}</span><span className='tag-close' onClick={e => this.removeTag(e, tag)} data-no-instant>×</span></a>
+        <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant>
+          <span>{tag}</span>
+          <span className='tag-close' onClick={e => this.removeTag(e, tag)} data-no-instant>×</span>
+        </a>
       </span>
     ))
     const categoryLinks = allCategories.map(cat => (
@@ -181,18 +194,21 @@ export class Listings extends Component {
     ))
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
     return (
-      <div>
+      <div className="listings__container">
+        <div className="listing__overlay" id="listing-overlay" onClick={this.handleCloseModal} onKeyDown={this.handleCloseModal} role="presentation" tabIndex="0" data-origin-link="" />
         <div className="classified-filters">
-            <div className="classified-filters-categories">
-              <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')}  data-no-instant>all</a>
-              {categoryLinks}
-              <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
-            </div>
+          <div className="classified-filters-categories">
+            <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
+            {categoryLinks}
+            <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
+          </div>
           <div className="classified-filters-tags" id="classified-filters-tags">
-            <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)}/>{clearQueryButton}{selectedTags}
+            <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)} />
+            {clearQueryButton}
+            {selectedTags}
           </div>
         </div>
-        <div class="classifieds-columns" id="classified-listings-results">
+        <div className="classifieds-columns" id="classified-listings-results">
           {allListings}
         </div>
       </div>
@@ -223,7 +239,7 @@ function resizeAllMasonryItems(){
    * each list-item (i.e. each masonry item)
    */
   // eslint-disable-next-line vars-on-top
-  for(var i=0;i<allItems.length;i++){
+  for(let i=0;i<allItems.length;i++){
     resizeMasonryItem(allItems[i]);
   }
 }
