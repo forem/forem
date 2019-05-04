@@ -35,10 +35,10 @@ class TwitchStreamUpdatesController < ApplicationController
 
   def secret_verified?
     twitch_sha = request.headers["x-hub-signature"]
-    digest = Digest::SHA256.new
-    digest << ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
-    digest << request.raw_post
+    digest = OpenSSL::Digest::SHA256.new
+    hmac = OpenSSL::HMAC.new(ApplicationConfig["TWITCH_WEBHOOK_SECRET"], digest)
+    hmac << request.raw_post
 
-    twitch_sha == "sha256=#{digest.hexdigest}"
+    twitch_sha == "sha256=#{hmac.hexdigest}"
   end
 end
