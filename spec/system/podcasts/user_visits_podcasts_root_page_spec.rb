@@ -6,12 +6,6 @@ RSpec.describe "User visits /pod page", type: :system do
 
   before { visit "/pod" }
 
-  it "displays the header" do
-    within "h4" do
-      expect(page).to have_text("podcasts")
-    end
-  end
-
   it "displays the podcasts" do
     within "#articles-list" do
       expect(page).to have_link(nil, href: podcast_episode.path)
