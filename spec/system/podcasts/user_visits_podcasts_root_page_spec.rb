@@ -7,8 +7,8 @@ RSpec.describe "User visits /pod page", type: :system do
   before { visit "/pod" }
 
   it "displays the header" do
-    within "h1" do
-      expect(page).to have_text("Podcasts")
+    within "h4" do
+      expect(page).to have_text("podcasts")
     end
   end
 
