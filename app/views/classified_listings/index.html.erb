@@ -23,7 +23,7 @@
 <div class="home">
   <div class="classifieds-container" id="classifieds-index-container"
     data-category="<%= params[:category] %>" data-listings="<%= @classified_listings.to_json(
-            only: %i[title processed_html tag_list category id user_id],
+            only: %i[title processed_html tag_list category id user_id slug],
             include: {
               author: { only: %i[username name], methods: %i[username profile_image_90] },
             },
