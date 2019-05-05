@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'mixins';
 
 .classifieds-container {
   margin: 60px auto 150px;
@@ -204,10 +205,6 @@
   font-size: 18px;
 }
 
-.listingform__input {
-  margin-top: 10px;
-}
-
 .listingform__bodymarkdown {
   width: 100%;
   height: 300px;
@@ -215,6 +212,7 @@
   font-size: 17px;
   border-radius: 3px;
   background: white;
+  margin-top: 10px;
   background: var(--theme-container-background, white);
   color: $black;
   color: var(--theme-color, $black);
@@ -248,32 +246,6 @@
   font-weight: bold;
 }
 
-.listing__overlay {
-  display: none;
-  background-color: $black;
-  opacity: .7;
-  z-index: 10000;
-  animation: fadein 0.20s ease;
-  @keyframes fadein{
-      0% { opacity: 0; }
-      100% { opacity: .7; }
-  }
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-.singlelisting__modal {
-  z-index: 11000;
-  position: absolute;
-  top: 15%;
-  left: 33%;
-  max-width: 33%;
-  padding-bottom: 10px;
-}
-
 .single-classified-listing {
   width: 100%;
   display: inline-block;
@@ -294,6 +266,7 @@
     background: var(--theme-container-accent-background, lighten($light-medium-gray, 8%));
     border-bottom: 1px solid $light-medium-gray;
     font-size: 16px;
+    a { @include themeable(color, theme-color, $black); }
   }
   .single-classified-listing-body {
     padding: 10px 15px;
@@ -338,4 +311,30 @@
       }
     }
   }
+  &.single-classified-listing--opened {
+    z-index: 20;
+    position: fixed;
+    top: 110px;
+    width: 90%;
+    left: 0px;
+    right: 0px;
+    padding-bottom: 12px;
+    @media screen and (min-width: 950px) {
+      top: calc( 50px + 15vh);
+      left: 50%;
+      width: 600px;
+      margin-left: -300px; /* Negative half of width. */  
+      h3 { font-size: calc(20px + 0.05vw);}
+      .single-classified-listing-body {
+        font-size: calc(18px + 0.05vw);
+      }  
+    }
+  }  
+}
+.classified-listings-modal-background {
+  z-index: 15;
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  user-select: none;
 }
