@@ -77,7 +77,7 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "lists followed users" do
-        expect(response.body).to include second_user.name
+        expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
     end
 

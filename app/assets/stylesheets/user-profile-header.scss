@@ -37,12 +37,6 @@
       }
     }
   }
-  &.readinglist-header{
-    display: block;
-    @media screen and ( min-width: 950px ){
-      display: none;
-    }
-  }
   &.podcast-header{
     background:rgb(5, 22, 32);
     text-align:center;
