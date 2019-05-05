@@ -18,7 +18,7 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
-  before_save :index_to_algolia
+  after_save :index_to_algolia
   after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
@@ -26,17 +26,18 @@ class Reaction < ApplicationRecord
 
   algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_index: false, auto_remove: false do
     attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status,
-              :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags
+              :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags, :reactable_published_date
     searchableAttributes %i[searchable_reactable_title searchable_reactable_text
                             searchable_reactable_text searchable_reactable_tags reactable_user]
     tags do
       reactable_tags
     end
     attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
+    ranking ["desc(updated_at)"]
   end
 
   def index_to_algolia
-    index! if category == "readinglist"
+    index! if category == "readinglist" && reactable && reactable.published
   end
 
   class << self
@@ -116,6 +117,10 @@ class Reaction < ApplicationRecord
       name: reactable.user_name,
       profile_image_90: reactable.user.profile_image_90
     }
+  end
+
+  def reactable_published_date
+    reactable.readable_publish_date if category == "readinglist"
   end
 
   def searchable_reactable_title

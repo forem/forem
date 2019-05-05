@@ -127,6 +127,16 @@ input[type='email'] {
   @media screen and (min-width: 430px) {
     right: auto;
     display: inline-block;
+    -webkit-animation: ease-out;
+    -webkit-animation-name: slide-in-from-left;
+    -webkit-animation-duration: 0.25s;
   }
 
+}
+
+@-webkit-keyframes slide-in-from-left {
+  0% { left: -300px;}
+  50%{ left : 0px;}
+  90%{ left : 24px;}
+  100%{ left: 20px;}
 }

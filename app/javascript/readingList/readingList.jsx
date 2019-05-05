@@ -107,7 +107,8 @@ export class ReadingList extends Component {
           <div className='readinglist-item-details'>
             <a className='readinglist-item-user' href={`/${item.reactable_user.username}`}>
               <img src={item.reactable_user.profile_image_90} alt='Profile Pic' />
-              {item.reactable_user.name}
+              {item.reactable_user.name}・
+              {item.reactable_published_date}
             </a>
             <span className='readinglist-item-tag-collection'>
               {item.reactable_tags.map(tag => (<a className='readinglist-item-tag' href={`/t/${tag}`}>#{tag}</a>))}

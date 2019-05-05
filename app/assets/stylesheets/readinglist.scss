@@ -10,17 +10,18 @@
   .readinglist-filters {
     width: 300px;
     float: left;
-    min-height: 360px;
+    min-height: 356px;
     position: relative;
     input {
       width: 100%;
       border: 0px;
       padding: 5px;
-      border: 1px solid $light-medium-gray;
+      @include themeable(border, theme-container-border, 1px solid $light-medium-gray);
       border-radius: 3px;
       font-size: 1em;
       box-sizing: border-box;
       margin-bottom: 4px;
+      @include themeable(background, theme-container-accent-background, lighten($light-gray, 2%));
     }
     .readinglist-tags {
       padding-bottom: 25px;
@@ -30,6 +31,9 @@
       position: relative;
       padding-left: 5px;
       @include themeable(color, theme-color, $black);
+      &:hover {
+        @include themeable(background, theme-container-background-hover, $light-gray);
+      }
       &.selected {
         background: $purple;
       }
@@ -46,8 +50,8 @@
     margin: 10px auto;
     margin-left: 10px;
     float: left;
-    background: white;
-    border: 1px solid $light-medium-gray;
+    @include themeable(background, theme-container-background, white);
+    @include themeable(border, theme-container-border, 1px solid $light-medium-gray);
     border-radius: 3px;
     min-height: 350px;
     display: none;
@@ -88,7 +92,7 @@
       @include themeable(color, theme-color, $black);
       font-size: 0.8em;
       padding: 17px 17px 25px;
-      border-bottom: 1px solid $light-medium-gray;
+      @include themeable(border-bottom, theme-container-border, 1px solid $light-medium-gray);
       .readinglist-item-title {
         font-weight: bold;
         font-size:1.7em;
