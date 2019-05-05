@@ -52,5 +52,4 @@ Categories.propTypes = {
   categoriesForDetails: PropTypes.array.isRequired,
 }
 
-
 export default Categories;

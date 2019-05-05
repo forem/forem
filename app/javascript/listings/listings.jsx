@@ -11,6 +11,8 @@ export class Listings extends Component {
     allCategories: [],
     initialFetch: true,
     currentUserId: null,
+    openedListing: null,
+    slug: null
   };
 
   componentWillMount() {
@@ -35,9 +37,20 @@ export class Listings extends Component {
     if (tags.length === 0 && query === '') {
       listings = JSON.parse(container.dataset.listings)
     }
-    t.setState({query, tags, index, category, allCategories, listings });
-    t.listingSearch(params.q || '', tags, category);
+    let openedListing = null;
+    let slug = null;
+    if (container.dataset.displayedlisting) {
+      openedListing = JSON.parse(container.dataset.displayedlisting);
+      slug = openedListing.slug;
+      document.body.classList.add('modal-open');
+    }
+    t.setState({query, tags, index, category, allCategories, listings, openedListing, slug });
+    t.listingSearch(query, tags, category, slug);
     t.setUser()
+  }
+
+  componentDidUpdate() {
+    this.triggerMasonry()
   }
 
   addTag = (e, tag) => {
@@ -48,7 +61,7 @@ export class Listings extends Component {
       newTags.push(tag)
     }
     this.setState({tags: newTags})
-    this.listingSearch(query, newTags, category)
+    this.listingSearch(query, newTags, category, null)
     window.scroll(0,0)
   }
 
@@ -61,27 +74,42 @@ export class Listings extends Component {
       newTags.splice(index, 1);
     }
     this.setState({tags: newTags})
-    this.listingSearch(query, newTags, category)
+    this.listingSearch(query, newTags, category, null)
   }
 
   selectCategory = (e, cat) => {
     e.preventDefault();
     const { query, tags } = this.state;
     this.setState({category: cat})
-    this.listingSearch(query, tags, cat)
+    this.listingSearch(query, tags, cat, null)
+  }
+
+  handleCloseModal = (e) => {
+    const { query, tags, category } = this.state;
+    this.setState({openedListing: null})
+    this.setLocation(query, tags, category, null);
+    document.body.classList.remove('modal-open');
+
+  }
+
+  handleOpenModal = (e, listing) => {
+    e.preventDefault();
+    this.setState({openedListing: listing});
+    window.history.replaceState(null, null, `/listings/${listing.category}/${listing.slug}`);
+    document.body.classList.add('modal-open');
   }
 
   handleQuery = e => {
     const { tags, category } = this.state;
     this.setState({query: e.target.value})
-    this.listingSearch(e.target.value, tags, category)
+    this.listingSearch(e.target.value, tags, category, null)
   }
 
   clearQuery = () => {
     const { tags, category } = this.state;
     document.getElementById('listings-search').value = '';
     this.setState({query: ''});
-    this.listingSearch('', tags, category);
+    this.listingSearch('', tags, category, null);
   }
 
   getQueryParams = () => {
@@ -124,29 +152,11 @@ export class Listings extends Component {
     }, 3)
   }
 
-  listingSearch(query, tags, category) {
-    const t = this;
-    const filterObject = {tagFilters: tags, hitsPerPage: 120,}
-    if (category.length > 0) {
-      filterObject.filters = `category:${category}`
-    }
-    t.state.index.search(query, filterObject)
-    .then(function searchDone(content) {
-      if (t.state.initialFetch && t.state.category === '') {
-        const fullListings = t.state.listings;
-        content.hits.forEach(function(listing) {
-          if (!t.state.listings.map(l => (l.id)).includes(listing.id)) {
-            fullListings.push(listing)
-          }
-        });
-        t.setState({listings: fullListings, initialFetch: false});
-    } else {
-      t.setState({listings: content.hits, initialFetch: false});
-    }
-
-    });
+  setLocation = (query, tags, category, slug) => {
     let newLocation = ''
-    if (query.length > 0 && tags.length > 0) {
+    if (slug) {
+
+    } else if (query.length > 0 && tags.length > 0) {
       newLocation = `/listings/${category}?q=${query}&t=${tags}`;
     } else if (query.length > 0){
       newLocation = `/listings/${category}?q=${query}`;
@@ -160,41 +170,91 @@ export class Listings extends Component {
     window.history.replaceState(null, null, newLocation);
   }
 
+  listingSearch(query, tags, category, slug) {
+    const t = this;
+    const filterObject = {tagFilters: tags, hitsPerPage: 120,}
+    if (category.length > 0) {
+      filterObject.filters = `category:${category}`
+    }
+    t.state.index.search(query, filterObject)
+    .then(function searchDone(content) {
+      if (t.state.initialFetch && t.state.category === '') {
+        const fullListings = t.state.listings;
+        content.hits.forEach(listing => {
+          if (!t.state.listings.map(l => (l.id)).includes(listing.id)) {
+            fullListings.push(listing)
+          }
+        });
+        t.setState({listings: fullListings, initialFetch: false});
+    } else {
+      t.setState({listings: content.hits, initialFetch: false});
+    }
+
+    });
+    this.setLocation(query, tags, category, slug);
+  }
+
   render() {
-    const { listings, query, tags, category, allCategories, currentUserId } = this.state;
+    const { listings, query, tags, category, allCategories, currentUserId, openedListing } = this.state;
     const allListings = listings.map(listing => (
       <SingleListing
         onAddTag={this.addTag}
         onChangeCategory={this.selectCategory}
         listing={listing}
         currentUserId={currentUserId}
+        onOpenModal={this.handleOpenModal}
+        isOpen={false}
       />
     ));
-    this.triggerMasonry()
     const selectedTags = tags.map(tag => (
       <span className="classified-tag">
-        <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant><span>{tag}</span><span className='tag-close' onClick={e => this.removeTag(e, tag)} data-no-instant>×</span></a>
+        <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant>
+          <span>{tag}</span>
+          <span className='tag-close' onClick={e => this.removeTag(e, tag)} data-no-instant>×</span>
+        </a>
       </span>
     ))
     const categoryLinks = allCategories.map(cat => (
       <a href={`/listings/${cat.slug}`} className={cat.slug === category ? 'selected' : ''} onClick={e => this.selectCategory(e, cat.slug)} data-no-instant>{cat.name}</a>
     ))
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
+    let modal = '';
+    let modalBg = '';
+    if (openedListing) {
+      modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
+      modal = (
+        <SingleListing
+          onAddTag={this.addTag}
+          onChangeCategory={this.selectCategory}
+          listing={openedListing}
+          currentUserId={currentUserId}
+          onOpenModal={this.handleOpenModal}
+          isOpen
+        />
+      )
+    }
+    if (this.state.initialFetch) {
+      this.triggerMasonry();
+    }
     return (
-      <div>
+      <div className="listings__container">
+        {modalBg}
         <div className="classified-filters">
-            <div className="classified-filters-categories">
-              <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')}  data-no-instant>all</a>
-              {categoryLinks}
-              <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
-            </div>
+          <div className="classified-filters-categories">
+            <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
+            {categoryLinks}
+            <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
+          </div>
           <div className="classified-filters-tags" id="classified-filters-tags">
-            <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)}/>{clearQueryButton}{selectedTags}
+            <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)} />
+            {clearQueryButton}
+            {selectedTags}
           </div>
         </div>
-        <div class="classifieds-columns" id="classified-listings-results">
+        <div className="classifieds-columns" id="classified-listings-results">
           {allListings}
         </div>
+        {modal}
       </div>
     )
   }
@@ -221,7 +281,7 @@ function resizeAllMasonryItems(){
    * each list-item (i.e. each masonry item)
    */
   // eslint-disable-next-line vars-on-top
-  for(var i=0;i<allItems.length;i++){
+  for(let i=0;i<allItems.length;i++){
     resizeMasonryItem(allItems[i]);
   }
 }

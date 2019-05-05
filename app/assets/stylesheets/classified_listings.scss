@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'mixins';
 
 .classifieds-container {
   margin: 60px auto 150px;
@@ -113,71 +114,6 @@
     grid-gap: 1em;
     grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
     grid-auto-rows: 0;
-    .single-classified-listing {
-      width: 100%;
-      display: inline-block;
-      border: 1px solid $light-medium-gray;
-      margin: 0px auto;
-      box-sizing: border-box;
-      border-radius: 3px;
-      overflow: hidden;
-      text-overflow: ellipsis;   
-      font-size: 0.9em; 
-      column-break-inside: avoid;
-      background: white;
-      background: var(--theme-container-background, white);
-      h3 {
-        margin: 0px;
-        padding: 9px 15px;
-        background: lighten($light-medium-gray, 8%);
-        background: var(--theme-container-accent-background, lighten($light-medium-gray, 8%));
-        border-bottom: 1px solid $light-medium-gray;
-        font-size: 16px;
-      }
-      .single-classified-listing-body {
-        padding: 10px 15px;
-        font-size: 15px;
-        .classified-listing-contact-cta {
-          border: 2px solid $black;
-          color: $black;
-          padding: 8px 10px;
-          text-align: center;
-          display: block;
-          border-radius: 200px;
-          margin: 4px auto;
-          width: 80%;
-        }
-      }
-      .single-classified-listing-tags {
-        padding: 10px 15px;
-        a {
-          color: $dark-medium-gray;
-          color: var(--theme-secondary-color, $dark-medium-gray);
-          background: $light-medium-gray;
-          background: var(--theme-container-accent-background, $light-medium-gray);
-          display: inline-block;
-          margin: 2px;
-          padding: 2px 7px;
-          font-size: 0.77em;
-          border-radius: 3px;
-          font-weight: bold;
-        }
-      }
-      .single-classified-listing-author-info {
-        font-size: 0.69em;
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
-        padding: 0px 15px 4px;
-        a {
-          color: $medium-gray;
-          color: var(--theme-secondary-color, $medium-gray);
-          display: inline-block;
-          &.classified-listing-edit-button {
-            margin-left: 4px;
-          }
-        }
-      }
-    }  
   }
   form {
     margin: 100px auto 20px;
@@ -269,10 +205,6 @@
   font-size: 18px;
 }
 
-.listingform__input {
-  margin-top: 10px;
-}
-
 .listingform__bodymarkdown {
   width: 100%;
   height: 300px;
@@ -280,6 +212,7 @@
   font-size: 17px;
   border-radius: 3px;
   background: white;
+  margin-top: 10px;
   background: var(--theme-container-background, white);
   color: $black;
   color: var(--theme-color, $black);
@@ -311,4 +244,97 @@
   border-radius: 3px;
   padding: 6px 0px;
   font-weight: bold;
+}
+
+.single-classified-listing {
+  width: 100%;
+  display: inline-block;
+  border: 1px solid $light-medium-gray;
+  margin: 0px auto;
+  box-sizing: border-box;
+  border-radius: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  break-inside: avoid;
+  background: white;
+  background: var(--theme-container-background, white);
+  h3 {
+    margin: 0px;
+    padding: 9px 15px;
+    background: lighten($light-medium-gray, 8%);
+    background: var(--theme-container-accent-background, lighten($light-medium-gray, 8%));
+    border-bottom: 1px solid $light-medium-gray;
+    font-size: 16px;
+    a { @include themeable(color, theme-color, $black); }
+  }
+  .single-classified-listing-body {
+    padding: 10px 15px;
+    font-size: 15px;
+    .classified-listing-contact-cta {
+      border: 2px solid $black;
+      color: $black;
+      padding: 8px 10px;
+      text-align: center;
+      display: block;
+      border-radius: 200px;
+      margin: 4px auto;
+      width: 80%;
+    }
+  }
+  .single-classified-listing-tags {
+    padding: 10px 15px;
+    a {
+      color: $dark-medium-gray;
+      color: var(--theme-secondary-color, $dark-medium-gray);
+      background: $light-medium-gray;
+      background: var(--theme-container-accent-background, $light-medium-gray);
+      display: inline-block;
+      margin: 2px;
+      padding: 2px 7px;
+      font-size: 0.77em;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+  }
+  .single-classified-listing-author-info {
+    font-size: 0.69em;
+    color: $medium-gray;
+    color: var(--theme-secondary-color, $medium-gray);
+    padding: 0px 15px 4px;
+    a {
+      color: $medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
+      display: inline-block;
+      &.classified-listing-edit-button {
+        margin-left: 4px;
+      }
+    }
+  }
+  &.single-classified-listing--opened {
+    z-index: 20;
+    position: fixed;
+    top: 110px;
+    width: 90%;
+    left: 0px;
+    right: 0px;
+    padding-bottom: 12px;
+    @media screen and (min-width: 950px) {
+      top: calc( 50px + 15vh);
+      left: 50%;
+      width: 600px;
+      margin-left: -300px; /* Negative half of width. */  
+      h3 { font-size: calc(20px + 0.05vw);}
+      .single-classified-listing-body {
+        font-size: calc(18px + 0.05vw);
+      }  
+    }
+  }  
+}
+.classified-listings-modal-background {
+  z-index: 15;
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  user-select: none;
 }

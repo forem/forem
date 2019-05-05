@@ -257,6 +257,47 @@
           margin-top: 12px;
         }
       }
+      &.single-article-single-podcast {
+        h4 {
+          bottom: 10px;
+        }
+        .content {
+          padding-bottom: 40px;
+        }
+      }
+      &.single-article-podcast-div {
+        margin-top: 8px;
+        padding: 8px 0px 15px;
+        font-size: 0.8em;
+        h3 {
+          font-size: 1.5em;
+          margin-left: 13px;
+          font-weight: 800;
+        }
+        a.individual-podcast-link {
+          strong {
+            display: block;
+            margin-bottom: 4px;
+          }
+          display: block;
+          padding: 4px 14px 7px;
+          &:hover {
+            @include themeable(background, theme-container-background-hover, $light-gray);
+          }
+        }
+        p {
+          margin-left: 14px;
+        }
+        @media screen and (min-width: 430px) {
+          margin-top: 12px;
+          a.individual-podcast-link {
+            strong {
+              margin-bottom: 5px;
+            }
+            padding: 5px 14px 9px;
+          }
+        }
+      }
       h4 {
         white-space: nowrap;
         overflow: hidden;
@@ -844,7 +885,7 @@
     width: 280px;
     margin: auto;
     text-align: left;
-    font-size: 0.9em;
+    font-size: 0.92em;
     line-height: 1.35em;
     margin-left: 0.786vw;
     min-height: 5px;
@@ -876,7 +917,7 @@
         @include themeable(background, theme-container-background, #fff);
         margin-bottom: 14px;
         border-radius: 3px;
-        width: calc(100% - 4px);
+        width: calc(100% - 6px);
         @include themeable(
           border,
           theme-container-border,
@@ -934,7 +975,7 @@
       margin-bottom: 20px;
       .sidebar-nav-block {
         padding: 0px;
-        width: 100%;
+        width: calc(100% - 4px);
         box-sizing: border-box;
         &.principle-sidebar-nav-block {
           padding: 9px 0px;
@@ -1012,7 +1053,8 @@
             display: inline-block;
             width: calc(100% - 10px);
             font-weight: 500;
-            padding: 3px 8px;
+            padding: 4px 9px;
+            font-size: 1em;
             &:hover {
               @include themeable(
                 background,
@@ -1087,43 +1129,46 @@
       }
       &.podcast-pic-widget {
         a {
-          &:hover {
-            text-decoration: none;
-          }
+          @include themeable(
+            color, 
+            theme-color, 
+            $black
+          );
         }
         .widget-body {
-          text-align: center;
           padding-bottom: 10px;
         }
         .podcast-pic {
           position: relative;
-          display: inline-block;
+          padding: 5px 0px;
+          border-top-left-radius: 100px;
+          border-bottom-left-radius: 100px;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
           img {
-            width: 100px;
-            height: 100px;
+            width: 23px;
+            height: 23px;
+            border-radius: 100px;
+            vertical-align: -7px;
+            margin-left: 3px;
           }
           .podcast-name {
-            bottom: 12px;
-            display: none;
-            position: absolute;
-            width: 90%;
-            left: 5%;
-            z-index: 15;
-            text-align: left;
-            height: 54px;
+            width: calc(100% - 55px);
+            display: inline-block;
+            padding-left: 4px;
+            font-weight: bold;
             .podcast-name-inner {
-              font-size: 12px;
+              font-size: 14px;
               line-height: 15px;
-              padding: 2px;
-              color: white;
-              background: rgba(0, 0, 0, 0.89);
               display: block;
             }
           }
           &:hover {
-            .podcast-name {
-              display: block;
-            }
+            @include themeable(
+              background, 
+              theme-container-background-hover, 
+              $light-gray
+            );
           }
         }
       }

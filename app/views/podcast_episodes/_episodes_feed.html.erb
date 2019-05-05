@@ -1,6 +1,6 @@
 <% @podcast_episodes.each_with_index do |episode, i| %>
   <a href="<%= episode.path %>" class="small-pic-link-wrapper" id="article-link-<%= episode.id %>">
-    <div class="single-article single-article-small-pic">
+    <div class="single-article single-article-small-pic single-article-single-podcast">
       <div class="small-pic">
         <%= cl_image_tag(episode.image_url || episode.podcast.image_url,
                          type: "fetch",
