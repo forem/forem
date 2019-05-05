@@ -15,11 +15,11 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
         "hub.lease_seconds" => 604_800,
         "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=654321",
         "hub.secret" => ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
-      }.to_json
+      }
     end
     let!(:twitch_webhook_registration_stubbed_route) do
       stub_request(:post, "https://api.twitch.tv/helix/webhooks/hub").
-        with(body: expected_twitch_webhook_params, headers: expected_headers).
+        with(body: URI.encode_www_form(expected_twitch_webhook_params), headers: expected_headers).
         and_return(status: 204)
     end
 
