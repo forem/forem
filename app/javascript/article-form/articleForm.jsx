@@ -22,7 +22,7 @@ import Errors from './elements/errors';
 export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props)
     this.article = JSON.parse(this.props.article);
     const organization = this.props.organization
       ? JSON.parse(this.props.organization)
@@ -53,6 +53,7 @@ export default class ArticleForm extends Component {
       postUnderOrg: !!this.article.organization_id,
       errors: null,
       edited: false,
+      version: this.props.version,
     };
   }
 
@@ -256,8 +257,10 @@ export default class ArticleForm extends Component {
       postUnderOrg,
       mainImage,
       errors,
+      version
     } = this.state;
     const notice = submitting ? <Notice published={published} /> : '';
+    console.log(version)
     const imageArea = mainImage ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
@@ -309,6 +312,8 @@ export default class ArticleForm extends Component {
     } else if (helpShowing) {
       editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
     } else {
+      let controls = '';
+      
       editorView = (
         <div>
           {errorsArea}
