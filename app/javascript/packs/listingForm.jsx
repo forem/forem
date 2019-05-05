@@ -3,13 +3,13 @@ import ListingForm from '../listings/listingForm';
 
 function loadElement() {
   const root = document.getElementById('listingform-data');
-  const {
-    listing,
-    organizations,
-    categoriesForSelect,
-    categoriesForDetails,
-  } = root.dataset;
   if (root) {
+    const {
+      listing,
+      organizations,
+      categoriesForSelect,
+      categoriesForDetails,
+    } = root.dataset;  
     render(
       <ListingForm
         organizations={organizations}
@@ -18,6 +18,7 @@ function loadElement() {
         categoriesForDetails={categoriesForDetails}
       />,
       root,
+      root.firstElementChild
     );
   }
 }
