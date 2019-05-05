@@ -83,7 +83,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 4.  Push to the branch: `git push origin feature/that-new-feature`
 5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
 
-Note: be sure to [maintain your fork](https://docs.dev.to/maintaining-your-fork)!
+Note: be sure to [keep your fork in sync](https://docs.dev.to/getting-started/syncing/)!
 
 ## Contribution guideline
 
