@@ -145,6 +145,7 @@ Rails.application.routes.draw do
   resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
+  resources :reading_list_items, only: [:update]
 
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
@@ -298,6 +299,7 @@ Rails.application.routes.draw do
 
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
+  get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
