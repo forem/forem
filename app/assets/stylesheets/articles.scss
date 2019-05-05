@@ -1047,6 +1047,12 @@
             vertical-align: -8px;
             margin-right: 4px;
           }
+          img.nav-emoji {
+            height: 19px;
+            width: 19px;
+            vertical-align: -2px;
+          }
+  
           a.sidebar-nav-link {
             @include themeable(color, theme-container-color, $black);
             padding: 5px;

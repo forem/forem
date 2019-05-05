@@ -18,29 +18,25 @@ class Reaction < ApplicationRecord
   validate  :permissions
 
   before_save :assign_points
+  before_save :index_to_algolia
   after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
   before_destroy :remove_algolia
 
-  algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_remove: false, enqueue: :trigger_delayed_index do
-    attribute :id, :searchable_reactable_user, :searchable_reactable_title, :searchable_reactable_path,
-    :searchable_reactable_text, :searchable_reactable_tags, :viewable_by
-    searchableAttributes %i[searchable_reactable_title searchable_reactable_text searchable_reactable_text searchable_reactable_tags]
-    tags do 
+  algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_index: false, auto_remove: false do
+    attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status,
+              :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags
+    searchableAttributes %i[searchable_reactable_title searchable_reactable_text
+                            searchable_reactable_text searchable_reactable_tags reactable_user]
+    tags do
       reactable_tags
     end
-    attributesForFaceting ["filterOnly(viewable_by)"]
+    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
   end
 
-  def self.trigger_delayed_index(_record, remove)
-    raise
-    raise
-    # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
-    return if remove
-
-    delay.remove_from_index! if status == "archived"
-    delay.index! if category == "readinglist"
+  def index_to_algolia
+    index! if category == "readinglist"
   end
 
   class << self
@@ -113,8 +109,13 @@ class Reaction < ApplicationRecord
     remove_from_index!
   end
 
-  def searchable_reactable_user
-    "#{reactable.user_username} #{reactable.user_name}" if category == "readinglist"
+  def reactable_user
+    return unless category == "readinglist"
+    {
+      username: reactable.user_username,
+      name: reactable.user_name,
+      profile_image_90: reactable.user.profile_image_90
+    }
   end
 
   def searchable_reactable_title
@@ -161,6 +162,10 @@ class Reaction < ApplicationRecord
 
   def negative_reaction_from_untrusted_user?
     negative? && !user.trusted
+  end
+
+  def remove_algolia
+    remove_from_index!
   end
 
   def negative?
