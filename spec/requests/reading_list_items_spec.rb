@@ -6,7 +6,6 @@ RSpec.describe "ReadingListItems", type: :request do
   let(:reaction) { create(:reaction, reactable_id: article.id, user_id: user.id) }
 
   before do
-    user = create(:user)
     sign_in user
   end
 
@@ -18,7 +17,6 @@ RSpec.describe "ReadingListItems", type: :request do
     it "unarchives an item if current_status is passed as archived" do
       put "/reading_list_items/#{reaction.id}", params: {current_status: "archived"}
       expect(reaction.reload.status).to eq("valid")
-
     end
   end
 end
