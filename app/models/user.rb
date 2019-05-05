@@ -358,6 +358,14 @@ class User < ApplicationRecord
     errors.add(:username, "is taken.") if Organization.find_by(slug: username)
   end
 
+  def subscribe_to_mailchimp_newsletter_without_delay
+    return unless email.present? && email.include?("@")
+
+    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+
+    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
+  end
+
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
 
