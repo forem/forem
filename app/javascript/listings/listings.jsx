@@ -11,6 +11,8 @@ export class Listings extends Component {
     allCategories: [],
     initialFetch: true,
     currentUserId: null,
+    openedListing: null,
+    slug: null
   };
 
   componentWillMount() {
@@ -35,9 +37,20 @@ export class Listings extends Component {
     if (tags.length === 0 && query === '') {
       listings = JSON.parse(container.dataset.listings)
     }
-    t.setState({query, tags, index, category, allCategories, listings });
-    t.listingSearch(query, tags, category);
+    let openedListing = null;
+    let slug = null;
+    if (container.dataset.displayedlisting) {
+      openedListing = JSON.parse(container.dataset.displayedlisting);
+      slug = openedListing.slug;
+      document.body.classList.add('modal-open');
+    }
+    t.setState({query, tags, index, category, allCategories, listings, openedListing, slug });
+    t.listingSearch(query, tags, category, slug);
     t.setUser()
+  }
+
+  componentDidUpdate() {
+    this.triggerMasonry()
   }
 
   addTag = (e, tag) => {
@@ -48,7 +61,7 @@ export class Listings extends Component {
       newTags.push(tag)
     }
     this.setState({tags: newTags})
-    this.listingSearch(query, newTags, category)
+    this.listingSearch(query, newTags, category, null)
     window.scroll(0,0)
   }
 
@@ -61,37 +74,42 @@ export class Listings extends Component {
       newTags.splice(index, 1);
     }
     this.setState({tags: newTags})
-    this.listingSearch(query, newTags, category)
+    this.listingSearch(query, newTags, category, null)
   }
 
   selectCategory = (e, cat) => {
     e.preventDefault();
     const { query, tags } = this.state;
     this.setState({category: cat})
-    this.listingSearch(query, tags, cat)
+    this.listingSearch(query, tags, cat, null)
   }
 
   handleCloseModal = (e) => {
-    if (e.type === "click" || e.key === "Escape") {
-      const overlay = document.getElementById('listing-overlay')
-      overlay.style.display = 'none'
-      overlay.tabIndex = -1
-      window.history.pushState('', '', overlay.dataset.originLink)
-      overlay.parentElement.removeChild(overlay.nextElementSibling)
-    }
+    const { query, tags, category } = this.state;
+    this.setState({openedListing: null})
+    this.setLocation(query, tags, category, null);
+    document.body.classList.remove('modal-open');
+
+  }
+
+  handleOpenModal = (e, listing) => {
+    e.preventDefault();
+    this.setState({openedListing: listing});
+    window.history.replaceState(null, null, `/listings/${listing.category}/${listing.slug}`);
+    document.body.classList.add('modal-open');
   }
 
   handleQuery = e => {
     const { tags, category } = this.state;
     this.setState({query: e.target.value})
-    this.listingSearch(e.target.value, tags, category)
+    this.listingSearch(e.target.value, tags, category, null)
   }
 
   clearQuery = () => {
     const { tags, category } = this.state;
     document.getElementById('listings-search').value = '';
     this.setState({query: ''});
-    this.listingSearch('', tags, category);
+    this.listingSearch('', tags, category, null);
   }
 
   getQueryParams = () => {
@@ -134,7 +152,25 @@ export class Listings extends Component {
     }, 3)
   }
 
-  listingSearch(query, tags, category) {
+  setLocation = (query, tags, category, slug) => {
+    let newLocation = ''
+    if (slug) {
+
+    } else if (query.length > 0 && tags.length > 0) {
+      newLocation = `/listings/${category}?q=${query}&t=${tags}`;
+    } else if (query.length > 0){
+      newLocation = `/listings/${category}?q=${query}`;
+    } else if (tags.length > 0) {
+      newLocation = `/listings/${category}?t=${tags}`;
+    } else if (category.length > 0) {
+      newLocation = `/listings/${category}`;
+    } else {
+      newLocation = '/listings'
+    }
+    window.history.replaceState(null, null, newLocation);
+  }
+
+  listingSearch(query, tags, category, slug) {
     const t = this;
     const filterObject = {tagFilters: tags, hitsPerPage: 120,}
     if (category.length > 0) {
@@ -155,32 +191,21 @@ export class Listings extends Component {
     }
 
     });
-    let newLocation = ''
-    if (query.length > 0 && tags.length > 0) {
-      newLocation = `/listings/${category}?q=${query}&t=${tags}`;
-    } else if (query.length > 0){
-      newLocation = `/listings/${category}?q=${query}`;
-    } else if (tags.length > 0) {
-      newLocation = `/listings/${category}?t=${tags}`;
-    } else if (category.length > 0) {
-      newLocation = `/listings/${category}`;
-    } else {
-      newLocation = '/listings'
-    }
-    window.history.replaceState(null, null, newLocation);
+    this.setLocation(query, tags, category, slug);
   }
 
   render() {
-    const { listings, query, tags, category, allCategories, currentUserId } = this.state;
+    const { listings, query, tags, category, allCategories, currentUserId, openedListing } = this.state;
     const allListings = listings.map(listing => (
       <SingleListing
         onAddTag={this.addTag}
         onChangeCategory={this.selectCategory}
         listing={listing}
         currentUserId={currentUserId}
+        onOpenModal={this.handleOpenModal}
+        isOpen={false}
       />
     ));
-    this.triggerMasonry()
     const selectedTags = tags.map(tag => (
       <span className="classified-tag">
         <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant>
@@ -193,9 +218,27 @@ export class Listings extends Component {
       <a href={`/listings/${cat.slug}`} className={cat.slug === category ? 'selected' : ''} onClick={e => this.selectCategory(e, cat.slug)} data-no-instant>{cat.name}</a>
     ))
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
+    let modal = '';
+    let modalBg = '';
+    if (openedListing) {
+      modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
+      modal = (
+        <SingleListing
+          onAddTag={this.addTag}
+          onChangeCategory={this.selectCategory}
+          listing={openedListing}
+          currentUserId={currentUserId}
+          onOpenModal={this.handleOpenModal}
+          isOpen
+        />
+      )
+    }
+    if (this.state.initialFetch) {
+      this.triggerMasonry();
+    }
     return (
       <div className="listings__container">
-        <div className="listing__overlay" id="listing-overlay" onClick={this.handleCloseModal} onKeyDown={this.handleCloseModal} role="presentation" tabIndex="0" data-origin-link="" />
+        {modalBg}
         <div className="classified-filters">
           <div className="classified-filters-categories">
             <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
@@ -211,10 +254,9 @@ export class Listings extends Component {
         <div className="classifieds-columns" id="classified-listings-results">
           {allListings}
         </div>
+        {modal}
       </div>
-)
-
-    return <div className="github-repos">{allListings}</div>;
+    )
   }
 }
 

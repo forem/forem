@@ -917,7 +917,7 @@
         @include themeable(background, theme-container-background, #fff);
         margin-bottom: 14px;
         border-radius: 3px;
-        width: calc(100% - 4px);
+        width: calc(100% - 6px);
         @include themeable(
           border,
           theme-container-border,
@@ -975,7 +975,7 @@
       margin-bottom: 20px;
       .sidebar-nav-block {
         padding: 0px;
-        width: 100%;
+        width: calc(100% - 4px);
         box-sizing: border-box;
         &.principle-sidebar-nav-block {
           padding: 9px 0px;

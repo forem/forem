@@ -10,11 +10,8 @@ class ClassifiedListingsController < ApplicationController
                            else
                              []
                            end
+    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
     set_surrogate_key_header "classified-listings-#{params[:category]}"
-  end
-
-  def show
-    @classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug])
   end
 
   def new
@@ -96,5 +93,7 @@ class ClassifiedListingsController < ApplicationController
   def clear_listings_cache
     CacheBuster.new.bust("/listings")
     CacheBuster.new.bust("/listings?i=i")
+    CacheBuster.new.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}")
+    CacheBuster.new.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}?i=i")
   end
 end
