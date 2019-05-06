@@ -5,6 +5,7 @@ import BodyMarkdown from './elements/bodyMarkdown';
 import Categories from './elements/categories';
 import Tags from './elements/tags';
 
+
 export default class ListingForm extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +22,7 @@ export default class ListingForm extends Component {
     this.state = {
       id: this.listing.id || null,
       title: this.listing.title || '',
+      category: this.listing.category || '',
       tagList: this.listing.cached_tag_list || '',
       bodyMarkdown: this.listing.body_markdown || '',
       organizations: organizations || null,
@@ -35,18 +37,20 @@ export default class ListingForm extends Component {
       title,
       bodyMarkdown,
       tagList,
+      category,
       organizations,
       categoriesForDetails,
       categoriesForSelect,
     } = this.state;
-
+    console.log(category)
+    console.log(this.state)
     if (id === null) {
       return(
         <div>
           <Title defaultValue={title} onChange={linkState(this, 'title')} />
           <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
-          <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} />
-          <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+          <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} onChange={linkState(this, 'category')} />
+          <Tags defaultValue={tagList} category={category} onInput={linkState(this, 'tagList')} />
           {/* add contact via connect checkbox later */}
         </div>
       )
