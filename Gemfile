@@ -90,7 +90,7 @@ gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 2.2" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.14" # Ruby library for the Stripe API
+gem "stripe", "~> 4.16" # Ruby library for the Stripe API
 gem "timber", "~> 2.6" # Great Ruby logging made easy
 gem "twilio-ruby", "~> 5.22" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
