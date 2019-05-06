@@ -20,7 +20,7 @@ export class ReadingList extends Component {
     const client = algoliasearch(algoliaId, algoliaKey);
     const index = client.initIndex(`SecuredReactions_${env}`);
     const t = this;
-    index.search('', {hitsPerPage: 256, filters: `status:${t.state.statusView}`}).then(content => {
+    index.search('', {hitsPerPage: 64, filters: `status:${t.state.statusView}`}).then(content => {
       t.setState({readingListItems: content.hits, index, itemsLoaded: true});
     });
     const waitingOnUser = setInterval(function(){
