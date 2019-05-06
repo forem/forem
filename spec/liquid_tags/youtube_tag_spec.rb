@@ -36,36 +36,31 @@ RSpec.describe YoutubeTag, type: :liquid_template do
       Liquid::Template.parse("{% youtube #{id} %}")
     end
 
-    def generate_iframe(id)
-      "<iframe "\
-        "width=\"710\" "\
-        "height=\"399\" "\
-        "src=\"https://www.youtube.com/embed/#{parsed_id(id)}\" "\
-        "allowfullscreen> "\
-      "</iframe>"
-    end
-
     it "accepts a valid YouTube ID with no starting time" do
-      liquid = generate_new_liquid(valid_id_no_time)
-      expect(liquid.render).to eq(generate_iframe(valid_id_no_time))
+      liquid = generate_new_liquid(valid_id_no_time).render
+      Approvals.verify(liquid, name: "youtube_liquid_tag_no_time", format: :html)
     end
 
     it "accepts valid YouTube IDs with starting times" do
+      count = 0
       valid_ids_with_time.each do |id|
-        generated_liquid = generate_new_liquid(id)
-        expect(generated_liquid.render).to eq generate_iframe(id)
+        liquid = generate_new_liquid(id).render
+        count = count + 1
+        Approvals.verify(liquid, name: "youtube_liquid_tag_with_time_#{count}", format: :html)
       end
     end
 
     it "accepts YouTube ID with no start time and an empty space" do
-      liquid = generate_new_liquid(valid_id_no_time + " ")
-      expect(liquid.render).to eq(generate_iframe(valid_id_no_time))
+      liquid = generate_new_liquid(valid_id_no_time + " ").render
+      Approvals.verify(liquid, name: "youtube_liquid_tag_no_time_trailing_space", format: :html)
     end
 
     it "accepts YouTube IDs with start times and one empty space" do
+      count = 0
       valid_ids_with_time.each do |id|
-        generated_liquid = generate_new_liquid(id + " ")
-        expect(generated_liquid.render).to eq generate_iframe(id)
+        liquid = generate_new_liquid(id + " ").render
+        count = count + 1
+        Approvals.verify(liquid, name: "youtube_liquid_tag_with_time_#{count}", format: :html)
       end
     end
 
