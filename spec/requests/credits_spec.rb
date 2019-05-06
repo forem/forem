@@ -139,7 +139,7 @@ RSpec.describe "Credits", type: :request do
           },
           stripe_token: stripe_helper.generate_card_token
         }
-        expect(user.credits.where(spent: false).size).to eq 0
+        expect(org_admin.credits.where(spent: false).size).to eq 0
       end
     end
   end
