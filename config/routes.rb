@@ -41,6 +41,8 @@ Rails.application.routes.draw do
         post "merge"
       end
     end
+    resources :classified_listings
+    resources :listings, controller: "classified_listings"
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: %i[create update]
