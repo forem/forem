@@ -118,14 +118,34 @@
   form {
     margin: 100px auto 20px;
     width: 90%;
-    max-width: 600px;
+    max-width: 580px;
+    @include themeable(background, theme-container-background, white);
+    border-radius: 8px;
+    box-sizing: border-box;
+    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    box-shadow: var(--theme-container-box-shadow, 2px 2px 8px darken($light-medium-gray, 5%));
     * {
       box-sizing: border-box;
     }
+    header {
+      @include themeable(background, theme-container-accent-background, #f2f7fc);
+      padding: 25px 22px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+
+    }
+    .classified-form-inner {
+      padding: 0px 15px 15px;
+    }
     .listings-back-button {
       font-size: 0.8em;
-      margin: 5px 0px 10px;
+      margin: 2px 0px 8px;
       display: block;
+    }
+    h2 {
+      font-size: 1.45em;
+      @include themeable(color, theme-color, #32325d);
+      margin: 0px;
     }
     .classified-errors {
       background: $red;
@@ -144,11 +164,11 @@
     input {
       width: 100%;
       font-size: 18px;
-      padding: 5px;
+      padding: 10px 7px;
       border-radius: 3px;
       border: 1px solid $light-medium-gray;
       background: white;
-      background: var(--theme-container-background, white);
+      background: var(--theme-container-accent-background, $light-gray);
       color: $black;
       color: var(--theme-color, $black);
       &[type="checkbox"] {
@@ -161,8 +181,8 @@
       padding: 5px;
       font-size: 17px;
       border-radius: 3px;
-      background: white;
-      background: var(--theme-container-background, white);
+      background: $light-gray;
+      background: var(--theme-container-accent-background, $light-gray);
       color: $black;
       color: var(--theme-color, $black);
       border: 1px solid $light-medium-gray;
@@ -180,23 +200,48 @@
     }
     input[type="submit"] {
       border: 0px;
-      padding: 25px 0px;
+      padding: 12px 0px;
       border-radius: 3px;
-      background: $blue;
-      font-size: 1.5em;
+      background-color: $dark-purple;
+      background-image: linear-gradient(141deg, $dark-purple 0%, #1f89db 51%, #2981e5 75%);
+      border-radius: 100px;
+      font-size: 1.4em;
       color: white;
       margin-top: 20px;
+      width: 380px;
+      margin: 35px auto;
+      display: block;
+      box-shadow: 2px 2px 4px darken($light-medium-gray, 5%);
+      box-shadow: var(--theme-container-box-shadow, 2px 2px 8px darken($light-medium-gray, 5%));  
     }
     .listings-current-credits {
-      margin-top: 75px;
-      border-radius: 8px;
-      font-weight: bold;
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      padding: 18px 0px;
+      background-color: #aecfef;
+      background-image: linear-gradient(141deg, #aecfef 0%, #ddeeff 51%, #c8ebf1 75%);
+      color: #32325d;
+      text-align: center;
+      z-index: 20;
+      font-size: 1.1em;
+      .listings-current-credits-inner {
+        display: inline-block;
+        margin: 20px;
+      }
+      a {
+        text-decoration: underline;
+        display: inline-block;
+        @include themeable(color, theme-anchor-color, $bold-blue);
+      }
     }
     .classified-listings-unpublish {
       background: $red;
     }
     p {
       font-size: 0.8em;
+      color: var(--theme-secondary-color, $medium-gray);
     }
   }
 }
