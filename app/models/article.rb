@@ -81,7 +81,7 @@ class Article < ApplicationRecord
                       }
 
   scope :limited_column_select, lambda {
-    select(:path, :title, :id,
+    select(:path, :title, :id, :published,
            :comments_count, :positive_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
@@ -131,15 +131,13 @@ class Article < ApplicationRecord
 
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
-    add_index "searchables",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_delayed_index do
+    add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
       attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
                  :path, :class_name, :user_name, :user_username, :comments_blob,
-                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag
+                 :body_text, :tag_keywords_for_search, :search_score, :flare_tag,
+                 :readable_publish_date, :published_timestamp
       attribute :user do
         { username: user.username,
           name: user.name,
@@ -163,13 +161,11 @@ class Article < ApplicationRecord
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
-    add_index "ordered_articles",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_delayed_index do
+    add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
                  :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
-                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
+                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution,
+                 :published_timestamp
       attribute :published_at_int do
         published_at.to_i
       end
@@ -385,6 +381,13 @@ class Article < ApplicationRecord
     end
   end
 
+  def published_timestamp
+    return "" unless published
+    return "" unless crossposted_at || published_at
+
+    (crossposted_at || published_at).utc.iso8601
+  end
+
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
     time_ago = 75.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
@@ -539,7 +542,6 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    cached_org_object = nil
     if organization
       cached_org_object = {
         name: organization.name,
@@ -550,7 +552,7 @@ class Article < ApplicationRecord
       }
       self.cached_organization = OpenStruct.new(cached_org_object)
     end
-    cached_user_object = nil
+
     if user
       cached_user_object = {
         name: user.name,

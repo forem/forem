@@ -55,10 +55,4 @@ class ArticleDecorator < ApplicationDecorator
   def published_at_int
     published_at.to_i
   end
-
-  def published_timestamp
-    return "" if published_at.nil?
-
-    (crossposted_at || published_at).utc.iso8601
-  end
 end
