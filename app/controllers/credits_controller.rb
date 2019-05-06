@@ -36,7 +36,7 @@ class CreditsController < ApplicationController
     create_charge
   rescue Stripe::CardError => e
     flash[:error] = e.message
-    redirect_to "/credits/new"
+    redirect_to "/credits/purchase"
   end
 
   def find_or_create_customer
