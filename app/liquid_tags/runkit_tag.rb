@@ -13,7 +13,7 @@ class RunkitTag < Liquid::Block
       partial: PARTIAL,
       locals: {
         preamble: @preamble,
-        parsed_content: parsed_content,
+        parsed_content: parsed_content
       },
     )
   end
