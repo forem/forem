@@ -313,30 +313,49 @@ export default class ArticleForm extends Component {
       editorView = <BodyPreview previewHTML={helpHTML} version="help" />;
     } else {
       let controls = '';
-      
+      if (version === 'v2') {
+        controls = (
+          <div>
+            <Title defaultValue={title} onChange={linkState(this, 'title')} />
+            <div className="articleform__detailfields">
+              <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+              <button
+                className="articleform__detailsButton articleform__detailsButton--image"
+                onClick={this.toggleImageManagement}
+              >
+                <img src={ImageUploadIcon} />
+                {' '}
+  IMAGES
+              </button>
+              <button
+                className="articleform__detailsButton articleform__detailsButton--moreconfig"
+                onClick={this.toggleMoreConfig}
+              >
+                <img src={ThreeDotsIcon} />
+              </button>
+            </div>
+          </div>
+        )
+      } else {
+        controls = (
+          <div>
+            <button
+                className="articleform__detailsButton articleform__detailsButton--image"
+                onClick={this.toggleImageManagement}
+              >
+                <img src={ImageUploadIcon} />
+                {' '}
+  IMAGES
+              </button>
+          </div>
+        )
+      }
       editorView = (
         <div>
           {errorsArea}
           {orgArea}
           {imageArea}
-          <Title defaultValue={title} onChange={linkState(this, 'title')} />
-          <div className="articleform__detailfields">
-            <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-            <button
-              className="articleform__detailsButton articleform__detailsButton--image"
-              onClick={this.toggleImageManagement}
-            >
-              <img src={ImageUploadIcon} />
-              {' '}
-IMAGES
-            </button>
-            <button
-              className="articleform__detailsButton articleform__detailsButton--moreconfig"
-              onClick={this.toggleMoreConfig}
-            >
-              <img src={ThreeDotsIcon} />
-            </button>
-          </div>
+          {controls}
           <BodyMarkdown
             defaultValue={bodyMarkdown}
             onChange={linkState(this, 'bodyMarkdown')}
