@@ -1,33 +1,31 @@
 <blockquote class="ltag__twitter-tweet"
   data-url=<%= "https://twitter.com/#{tweet.twitter_username}/status/#{id}" %>>
 
-  <% if false %>
-    <% if tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size == 1 %>
-      <% if tweet.extended_entities_serialized[:media].first[:type] == "animated_gif" || tweet.extended_entities_serialized[:media].first[:type] == "video" %>
-        <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__video-wrapper'>
-          <div class='ltag__twitter-tweet__media--video-preview'>
-            <img src='<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>'/>
-            <img src="/assets/play-butt.svg" class="ltag__twitter-tweet__play-butt" alt="Play butt" />
-          </div>
-          <div class='ltag__twitter-tweet__video'>
-            <video loop>
-              <source src='<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:url] %>'
-                type='<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:content_type] %>'
-                />
-            </video>
-          </div>
-        </div>
-      <% else %>
-        <div class='ltag__twitter-tweet__media'>
-          <img src='<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>'/>
-        </div>
-      <% end %>
-    <% elsif tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size > 1 %>
-      <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__two-pics'>
+<% if tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size == 1 %>
+  <% if tweet.extended_entities_serialized[:media].first[:type] == "animated_gif" || tweet.extended_entities_serialized[:media].first[:type] == "video" %>
+    <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__video-wrapper'>
+      <div class='ltag__twitter-tweet__media--video-preview'>
         <img src='<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>'/>
+        <img src="/assets/play-butt.svg" class="ltag__twitter-tweet__play-butt" alt="Play butt" />
       </div>
-    <% end %>
+      <div class='ltag__twitter-tweet__video'>
+        <video loop>
+          <source src='<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:url] %>'
+            type='<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:content_type] %>'
+            />
+        </video>
+      </div>
+    </div>
+  <% else %>
+    <div class='ltag__twitter-tweet__media'>
+      <img src='<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>'/>
+    </div>
   <% end %>
+<% elsif tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size > 1 %>
+  <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__two-pics'>
+    <img src='<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>'/>
+  </div>
+<% end %>
 
   <div class="ltag__twitter-tweet__main"
     data-url=<%= "https://twitter.com/#{tweet.twitter_username}/status/#{id}" %>>
