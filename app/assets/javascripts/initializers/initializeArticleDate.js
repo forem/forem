@@ -13,7 +13,7 @@ function initializeArticleDate() {
     second: 'numeric',
   };
 
-  var articleDates = document.querySelectorAll('.single-article time');
+  var articleDates = document.querySelectorAll('.single-article time, article time');
   for (var i = 0; i < articleDates.length; i += 1) {
     // get UTC timestamp set by the server
     var ts = articleDates[i].getAttribute('datetime');
