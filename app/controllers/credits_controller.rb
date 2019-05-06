@@ -66,7 +66,7 @@ class CreditsController < ApplicationController
 
   def create_charge
     @amount = generate_cost
-    source = Rails.env.test? ? @card.id : @card || @customer.default_source
+    source = Rails.env.test? ? @card.id : (@card || @customer.default_source)
     Stripe::Charge.create(
       customer: @customer.id,
       source: source,
