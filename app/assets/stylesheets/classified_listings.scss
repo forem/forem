@@ -219,6 +219,12 @@
   border: 1px solid $light-medium-gray;
 }
 
+.listingform__tagsoptions {
+  @include themeable(border, theme-border, 1px solid $light-medium-gray);
+  border-bottom-left-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
 .listingform__tagoptionrow {
   padding: 10px;
   cursor: pointer;

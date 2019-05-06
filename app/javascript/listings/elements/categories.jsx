@@ -33,12 +33,13 @@ class Categories extends Component {
   }
 
   render() {
+    const { onChange } = this.props
     return(
       <div className="field">
         <label className="listingform__label" htmlFor="category">
           Category
         </label>
-        <select className="listingform__input" name="classified_listing[category]">
+        <select className="listingform__input" name="classified_listing[category]" onChange={onChange} >
           {this.options()}
         </select>
         {this.details()}
@@ -50,6 +51,7 @@ class Categories extends Component {
 Categories.propTypes = {
   categoriesForSelect: PropTypes.array.isRequired,
   categoriesForDetails: PropTypes.array.isRequired,
+  onChange: PropTypes.func.isRequired,
 }
 
 export default Categories;
