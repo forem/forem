@@ -69,8 +69,8 @@ class ClassifiedListing < ApplicationRecord
       "mentors" => { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
       "products" => { cost: 10, name: "Products/Tools", rules: "Must be available right now." },
       "mentees" => { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
-      "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale" },
-      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included" },
+      "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
+      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
   end
