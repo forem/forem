@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { login_as user }
 
       it "renders various settings tabs properly" do
-        %w[organization switch-organizations billing misc account].each do |tab|
+        %w[organization switch-organizations misc account].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
@@ -24,17 +24,6 @@ RSpec.describe "UserSettings", type: :request do
       it "handles unknown settings tab properly" do
         expect { get "/settings/does-not-exist" }.
           to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "doesn't let user access membership if user has no monthly_dues" do
-        get "/settings/membership"
-        expect(response.body).not_to include("Settings for")
-      end
-
-      it "allows user with monthly_dues to access membership" do
-        user.update_column(:monthly_dues, 5)
-        get "/settings/membership"
-        expect(response.body).to include("Settings for")
       end
 
       it "allows users to visit the account page" do
