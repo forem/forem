@@ -3,8 +3,14 @@ import { h, Component } from 'preact';
 
 class Categories extends Component {
   options = () => {
-    const { categoriesForSelect } = this.props
+    const { categoriesForSelect, category } = this.props
     return categoriesForSelect.map(array => {
+      // array example: ["Education/Courses (1 Credit)", "education"]
+      if(category === array[1]) {
+        return(
+          <option value={array[1]} selected>{array[0]}</option>
+        )
+      }
       return(
         <option value={array[1]}>{array[0]}</option>
       )
@@ -51,6 +57,7 @@ class Categories extends Component {
 Categories.propTypes = {
   categoriesForSelect: PropTypes.array.isRequired,
   categoriesForDetails: PropTypes.array.isRequired,
+  category: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 }
 

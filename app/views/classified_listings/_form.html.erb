@@ -6,7 +6,7 @@
   <div class="classified-form-inner">
     <% if classified_listing.errors.any? %>
       <div class="classified-errors">
-        <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this classified_listing from being saved:</h2>
+        <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
 
         <ul>
         <% classified_listing.errors.full_messages.each do |message| %>
@@ -16,7 +16,7 @@
       </div>
     <% end %>
     <div id="listingform-data"
-        data-listing="<%= classified_listing.to_json(only: %i[id title slug cached_tag_list]) %>"
+        data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
         data-organizations="<%= @organizations.to_json %>"
         data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
         data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values{ |value_hash| value_hash.except(:cost) }.values.to_json %>"

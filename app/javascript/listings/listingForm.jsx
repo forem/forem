@@ -47,7 +47,7 @@ export default class ListingForm extends Component {
         <div>
           <Title defaultValue={title} onChange={linkState(this, 'title')} />
           <BodyMarkdown defaultValue={bodyMarkdown} onChange={linkState(this, 'bodyMarkdown')} />
-          <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} onChange={linkState(this, 'category')} />
+          <Categories categoriesForSelect={categoriesForSelect} categoriesForDetails={categoriesForDetails} onChange={linkState(this, 'category')} category={category} />
           <Tags defaultValue={tagList} category={category} onInput={linkState(this, 'tagList')} />
           {/* add contact via connect checkbox later */}
         </div>
