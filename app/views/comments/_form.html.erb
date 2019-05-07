@@ -34,7 +34,8 @@
                     onkeydown: "handleKeyDown(event)",
                     id: "text-area",
                     autofocus: @comment.persisted?,
-                    required: true %>
+                    required: true,
+                    'aria-label': "Add a comment to the discussion" %>
     <div class="preview-toggle comment-preview-div" id="preview-div"></div>
   </div>
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
@@ -52,7 +53,7 @@
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
   <div class="actions" id="submit-wrapper">
-    <%= link_to request.referer.present? ? :back : commentable.path do %>
+    <%= link_to(request.referer.present? ? :back : commentable.path, "aria-label": "Cancel action") do %>
       <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
     <% end %>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
