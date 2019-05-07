@@ -1,7 +1,7 @@
 <!-- cached at: <%= Time.current %> -->
 <h3>Billing Details</h3>
 <% if current_user.stripe_id_code.blank? %>
-  <%= form_tag stripe_subscriptions_path, id: "credit-card-form" do %>
+  <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
     <article>
       <% if flash[:error].present? %>
         <div id="error_explanation">
