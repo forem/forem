@@ -22,10 +22,12 @@ module ArticlesHelper
   end
 
   def image_tag_or_inline_svg(service_name)
+    name = "#{service_name}-logo.svg"
+
     if internal_navigation?
-      image_tag("#{service_name}-logo.svg", class: "icon-img")
+      image_tag(name, class: "icon-img", alt: "#{service_name} logo")
     else
-      inline_svg("#{service_name}-logo.svg", class: "icon-img")
+      inline_svg(name, class: "icon-img", aria: true, title: "#{service_name} logo")
     end
   end
 

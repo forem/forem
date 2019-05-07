@@ -41,6 +41,8 @@ Rails.application.routes.draw do
         post "merge"
       end
     end
+    resources :classified_listings
+    resources :listings, controller: "classified_listings"
     resources :events
     resources :dogfood, only: [:index]
     resources :buffer_updates, only: %i[create update]
@@ -147,8 +149,11 @@ Rails.application.routes.draw do
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
 
+  get "/credits/purchase" => "credits#new"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
+  get "/listings/:category/:slug/:view" => "classified_listings#index",
+      constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
