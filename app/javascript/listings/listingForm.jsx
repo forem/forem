@@ -42,8 +42,6 @@ export default class ListingForm extends Component {
       categoriesForDetails,
       categoriesForSelect,
     } = this.state;
-    console.log(category)
-    console.log(this.state)
     if (id === null) {
       return(
         <div>
