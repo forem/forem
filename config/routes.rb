@@ -152,6 +152,8 @@ Rails.application.routes.draw do
   get "/credits/purchase" => "credits#new"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
+  get "/listings/:category/:slug/:view" => "classified_listings#index",
+      constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
