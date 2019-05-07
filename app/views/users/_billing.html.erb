@@ -13,10 +13,6 @@
       <button id="custom-stripe-button" class="credit-card-button">+ Add Credit Card</button>
     </div>
   <% end %>
-<% elsif current_user.stripe_id_code == "special" %>
-  <h3>
-    Billing questions? Send an email to <a href="mailto:yo@dev.to">yo@dev.to</a>.
-  </h3>
 <% else %>
   <div class="billing-history-header">Your Credit Cards</div>
   <% @customer.sources.each do |source| %>
