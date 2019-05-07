@@ -53,6 +53,7 @@ class ClassifiedListingsController < ApplicationController
       redirect_to "/listings"
     else
       @credits = current_user.credits.where(spent: false)
+      @classified_listing.cached_tag_list = classified_listing_params[:tag_list]
       render :new
     end
   end
