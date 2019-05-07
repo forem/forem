@@ -149,6 +149,7 @@ Rails.application.routes.draw do
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
 
+  get "/credits/purchase" => "credits#new"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
   get "/notifications/:filter" => "notifications#index"

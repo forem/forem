@@ -69,11 +69,11 @@
     <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
     <div class="listings-current-credits">
       <div class="listings-current-credits-inner">
-        You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/new" data-no-instant>Buy More</a>
+        You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/purchase" data-no-instant>Buy More</a>
       </div>
       <% if current_user.organization && current_user.org_admin %>
         <div class="listings-current-credits-inner">
-          <%= current_user.organization.name %> has <%= current_user.organization.credits.where(spent: false).size%> — <a href="/credits/new?purchaser=organization" data-no-instant>Buy More</a>
+          <%= current_user.organization.name %> has <%= current_user.organization.credits.where(spent: false).size%> — <a href="/credits/purchase?purchaser=organization" data-no-instant>Buy More</a>
         </div>
       <% end %>
     </div>
