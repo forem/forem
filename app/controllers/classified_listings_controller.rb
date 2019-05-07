@@ -5,12 +5,13 @@ class ClassifiedListingsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update new]
 
   def index
+    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
+    mod_page if params[:view] == "moderate"
     @classified_listings = if params[:category].blank?
                              ClassifiedListing.where(published: true).order("bumped_at DESC").limit(12)
                            else
                              []
                            end
-    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 
@@ -78,6 +79,10 @@ class ClassifiedListingsController < ApplicationController
   end
 
   private
+
+  def mod_page
+    redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_classified_listing
