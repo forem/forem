@@ -5,9 +5,9 @@
     <h1>Purchase credits for @<%= @purchaser.username %></h1>
     <% if current_user.org_admin %>
       <% if @purchaser.username == current_user.username %>
-        <a href="/credits/new?purchaser=organization">Switch to <%= current_user.organization.name %></a>
+        <a href="/credits/purchase?purchaser=organization" data-no-instant>Switch to <%= current_user.organization.name %></a>
       <% else %>
-        <a href="/credits/new">Switch to personal purchase</a>
+        <a href="/credits/purchase" data-no-instant>Switch to personal purchase</a>
       <% end %>
     <% end %>
   </div>

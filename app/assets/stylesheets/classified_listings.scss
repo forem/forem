@@ -4,7 +4,7 @@
 .classifieds-container {
   margin: 60px auto 150px;
   text-align: left;
-  max-width: 96%;
+  max-width: 100%;
   min-height: 100vh;
   @media screen and (min-width: 950px) {
     margin: 40px auto;
@@ -116,14 +116,17 @@
     grid-auto-rows: 0;
   }
   form {
-    margin: 100px auto 20px;
-    width: 90%;
+    margin: 60px auto 0px;
+    width: 100%;
     max-width: 580px;
     @include themeable(background, theme-container-background, white);
-    border-radius: 8px;
     box-sizing: border-box;
     @include themeable(border, theme-border, 1px solid $light-medium-gray);
     box-shadow: var(--theme-container-box-shadow, 2px 2px 8px darken($light-medium-gray, 5%));
+    @media screen and (min-width: 580px) {
+      border-radius: 8px;
+      margin: 100px auto 20px;
+    }
     * {
       box-sizing: border-box;
     }
@@ -135,7 +138,10 @@
 
     }
     .classified-form-inner {
-      padding: 0px 15px 15px;
+      padding: 0px 15px 40px;
+      @media screen and (min-width: 580px) {
+        padding: 0px 15px 18px;
+      }
     }
     .listings-back-button {
       font-size: 0.8em;
@@ -209,6 +215,7 @@
       color: white;
       margin-top: 20px;
       width: 380px;
+      max-width: 90%;
       margin: 35px auto;
       display: block;
       box-shadow: 2px 2px 4px darken($light-medium-gray, 5%);
@@ -225,7 +232,7 @@
       color: #32325d;
       text-align: center;
       z-index: 20;
-      font-size: 1.1em;
+      font-size: 0.85em;
       .listings-current-credits-inner {
         display: inline-block;
         margin: 20px;
@@ -234,6 +241,9 @@
         text-decoration: underline;
         display: inline-block;
         @include themeable(color, theme-anchor-color, $bold-blue);
+      }
+      @media screen and (min-width: 580px) {
+        font-size: 1.1em;
       }
     }
     .classified-listings-unpublish {
