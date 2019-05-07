@@ -11,7 +11,7 @@ class SpotifyTag < LiquidTagBase
 
   def initialize(tag_name, uri, tokens)
     super
-    @parsed_uri = parse_uri(uri)
+    @parsed_uri = generate_embed_link(parse_uri(uri))
     @height = TYPE_HEIGHT[@parsed_uri[1].to_sym]
   end
 
