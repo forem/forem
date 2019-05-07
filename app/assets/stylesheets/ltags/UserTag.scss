@@ -56,9 +56,10 @@
         background: $green;
         border-radius: 5px;
         font-size: 0.6em;
-        vertical-align: 0.1em;
+        vertical-align: 0.3em;
         padding: 2px 20px;
         border: 1px solid $green;
+        margin: 0.2em 0.5em;
         cursor: pointer;
         &.following-butt {
           background: $green;
@@ -69,8 +70,31 @@
         }
       }
     }
+    .ltag__user__social {
+      margin: 2px 0px;
+      padding-left: 0px;
+      line-height: 22px;
+      font-size: 0.75em;
+      a {
+        color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
+        margin-right: 10px;
+        display: inline-block;
+        .icon-img {
+          float: left;
+          width: 15px;
+          height: 15px;
+          border-radius: 3px;
+          vertical-align: -2px;
+          margin: 3px 0;
+          opacity: 0.7;
+          background: transparent;
+          background: var(--theme-secondary-color, transparent);
+        }
+      }
+    }
     .ltag__user__summary {
-      margin: 0.5em 0;
+      margin: 0.3em 0;
       padding: 0;
       font-size: 0.889em;
       margin-bottom: 0;
