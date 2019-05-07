@@ -46,12 +46,15 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing.bumped_at = Time.current
     @classified_listing.published = true
     @classified_listing.organization_id = current_user.organization_id if @org
-    return unless @classified_listing.save
-
-    clear_listings_cache
-    credits.limit(@number_of_credits_needed).update_all(spent: true)
-    @classified_listing.index!
-    redirect_to "/listings"
+    if @classified_listing.save
+      clear_listings_cache
+      credits.limit(@number_of_credits_needed).update_all(spent: true)
+      @classified_listing.index!
+      redirect_to "/listings"
+    else
+      @credits = current_user.credits.where(spent: false)
+      render :new
+    end
   end
 
   def update
