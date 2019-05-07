@@ -85,7 +85,7 @@ class ClassifiedListing < ApplicationRecord
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
     self.category = category.to_s.downcase
-    self.body_markdown = body_markdown.gsub(/\r\n/, "\n")
+    self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
   def restrict_markdown_input
