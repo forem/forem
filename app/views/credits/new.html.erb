@@ -61,11 +61,11 @@
     </details>
     <details>
       <summary>
-        How many credits <%= params[:purchaser] == "organization" ? "does #{@purchaser.username}" : "do I currently" %> have?
+        How many credits <%= params[:purchaser] == "organization" ? "does #{@purchaser.name}" : "do I currently" %> have?
       </summary>
       <div>
         <p>
-          <%= params[:purchaser] == "organization" ? "#{@purchaser.username} has" : "You have" %> <%= @purchaser.credits.where(spent: false).size %> credits.
+          <%= params[:purchaser] == "organization" ? "#{@purchaser.name} has" : "You have" %> <%= @purchaser.credits.where(spent: false).size %> credits.
         </p>
       </div>
     </details>
