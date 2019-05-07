@@ -12,7 +12,7 @@ function initializeReadingListIcons() {
 // set SAVE or SAVED articles buttons
 function setReadingListButtonsState() {
   var readingListButtons = document.getElementsByClassName('bookmark-engage');
-  Array.from(readingListButtons).forEach(button => highlightButton(button));
+  Array.from(readingListButtons).forEach(highlightButton);
 }
 
 // private
@@ -22,6 +22,7 @@ function highlightButton(button) {
   var buttonIdInt = parseInt(button.dataset.reactableId, 10);
   if (user && user.reading_list_ids.indexOf(buttonIdInt) > -1) {
     button.classList.add('selected');
+    addHoverEffectToReadingListButton(button);
   } else {
     button.classList.remove('selected');
   }
@@ -75,6 +76,7 @@ function reactToReadingListButtonClick(event) {
 function renderButtonState(button, json) {
   if (json.result === 'create') {
     button.classList.add('selected');
+    addHoverEffectToReadingListButton(button);
   } else {
     button.classList.remove('selected');
   }
@@ -114,6 +116,29 @@ function properButtonFromEvent(event) {
     properElement = event.target.parentElement;
   }
   return properElement;
+}
+
+function addHoverEffectToReadingListButton(button) {
+  if (button.classList.contains('selected')) {
+    button.addEventListener('mouseenter', readingListButtonMouseEnter);
+    button.addEventListener('mouseleave', readingListButtonMouseLeave);
+  }
+}
+
+function readingListButtonMouseEnter(event) {
+  event.preventDefault();
+
+  // replace 'SAVED' with 'UNSAVE'
+  var textSpan = event.target.getElementsByClassName('bm-success')[0];
+  textSpan.innerHTML = 'UNSAVE';
+}
+
+function readingListButtonMouseLeave(event) {
+  event.preventDefault();
+
+  // replace 'UNSAVE' with 'SAVED'
+  var textSpan = event.target.getElementsByClassName('bm-success')[0];
+  textSpan.innerHTML = 'SAVED';
 }
 
 /* eslint-enable no-use-before-define */
