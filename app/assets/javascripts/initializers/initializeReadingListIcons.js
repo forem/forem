@@ -132,15 +132,24 @@ function addHoverEffectToReadingListButtons() {
   });
 }
 
+/*
+  Determines if the element is the target of the reading list button hover.
+*/
+function isReadingListButtonHoverTarrget(element) {
+  var classList = element.classList;
+
+  return (
+    (element.tagName === 'BUTTON' &&
+      classList.contains('bookmark-engage') &&
+      classList.contains('selected')) ||
+    (element.tagName === 'SPAN' && classList.contains('bm-success'))
+  );
+}
+
 function readingListButtonMouseHandler(event) {
   var target = event.target;
-  var performTheSwap =
-    (target.tagName === 'BUTTON' &&
-      target.classList.contains('bookmark-engage') &&
-      target.classList.contains('selected')) ||
-    (target.tagName === 'SPAN' && target.classList.contains('bm-success'));
 
-  if (performTheSwap) {
+  if (isReadingListButtonHoverTarrget(target)) {
     event.preventDefault();
 
     var textReplacement = this; // see .bind below, this becomes the bound text
