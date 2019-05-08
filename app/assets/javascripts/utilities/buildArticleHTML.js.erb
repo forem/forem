@@ -77,15 +77,15 @@ function buildArticleHTML(article) {
     }
     var saveButton = '';
     if (article.class_name === "Article") {
-      var saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
-                        <span class="bm-success"></span>\
-                        <span class="bm-initial"></span>\
-                      </button>'
+      saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
+                      <span class="bm-initial">SAVE</span>\
+                      <span class="bm-success">SAVED</span>\
+                    </button>'
     } else if (article.class_name === "User") {
-      var saveButton = '<button style="width: 122px" class="article-engagement-count bookmark-engage follow-action-button"\
+      saveButton = '<button style="width: 122px" class="article-engagement-count bookmark-engage follow-action-button"\
                        data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
-                      </button>'
+                    </button>'
     }
 
     var publishDate = '';

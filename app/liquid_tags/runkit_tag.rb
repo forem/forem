@@ -1,4 +1,6 @@
 class RunkitTag < Liquid::Block
+  PARTIAL = "liquids/runkit".freeze
+
   def initialize(tag_name, markup, tokens)
     super
     @preamble = sanitized_preamble(markup)
@@ -7,13 +9,13 @@ class RunkitTag < Liquid::Block
   def render(context)
     content = Nokogiri::HTML.parse(super)
     parsed_content = content.xpath("//html/body").text
-    html = <<~HTML
-      <div class="runkit-element">
-        <code style="display: none">#{@preamble}</code>
-        <code>#{parsed_content}</code>
-      </div>
-    HTML
-    html
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        preamble: @preamble,
+        parsed_content: parsed_content
+      },
+    )
   end
 
   def self.special_script

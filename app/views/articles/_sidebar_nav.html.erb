@@ -20,21 +20,18 @@
       </div>
       <div class="sidebar-nav-element">
         <a class="sidebar-nav-link" href="/readinglist?we-hope-you-like-the-new-and-improved-reading-list---more-positive-changes-coming=woohoo">
-          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /> Reading List
+          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" alt="reading list icon" /> Reading List
           <span id="reading-list-count"></span>
         </a>
+        <a class="sidebar-nav-link" href="/listings">
+          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-clipboard.png") %>" alt="listings icon" /> Listings
+        </a>
         <a class="sidebar-nav-link" href="/videos">
-          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-videocamera.png") %>" /> Videos
+          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-videocamera.png") %>" alt="videos icon" /> Videos
         </a>
         <a class="sidebar-nav-link" href="/pod">
-          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-headphones.png") %>" /> Podcasts
+          <img class="nav-emoji" src="<%= asset_path("emoji/emoji-one-headphones.png") %>" alt="podcasts icon" /> Podcasts
         </a>
-        <% if 1==2 #not for display yet %>
-          <a class="sidebar-nav-link" href="/listings">
-            listings
-            <span id="reading-list-count"></span>
-          </a>
-        <% end %>
       </div>
     <% end %>
     <div class="sidebar-nav-header sidebar-nav-header-middle">

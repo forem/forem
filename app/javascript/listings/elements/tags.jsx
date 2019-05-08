@@ -21,6 +21,7 @@ class Tags extends Component {
     this.state = {
       selectedIndex: -1,
       searchResults: [],
+      additionalTags: [],
       cursorIdx: 0,
       prevLen: 0,
     };
@@ -39,6 +40,17 @@ class Tags extends Component {
       .split(',')
       .map(item => item !== undefined && item.trim())
       .filter(item => item.length > 0);
+  }
+
+  componentDidMount() {
+    this.setState({
+      additionalTags: {jobs: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
+                       forhire: ['remote', 'remoteoptional', 'lgbtbenefits', 'greencard', 'senior', 'junior', 'intermediate', '401k', 'fulltime', 'contract', 'temp'],
+                       forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+                       events: ['conference', 'meetup'],
+                       collabs: ['paid', 'temp']
+                      }
+    })
   }
 
   componentDidUpdate() {
@@ -178,6 +190,15 @@ class Tags extends Component {
         filters: 'supported:true',
       })
       .then(content => {
+        const { additionalTags } = this.state
+        const { category } = this.props
+        const additionalItems = (additionalTags[category] || []).filter(t => (t.indexOf(query) > -1))
+        const resultsArray = content.hits;
+        additionalItems.forEach(t => {
+          if (resultsArray.indexOf(t) === -1) {
+            resultsArray.push({name: t});
+          }
+        })
         this.setState({
           searchResults: content.hits.filter(
             hit => !this.selected.includes(hit.name),
@@ -331,6 +352,7 @@ class Tags extends Component {
 
 Tags.propTypes = {
   defaultValue: PropTypes.string.isRequired,
+  category: PropTypes.string.isRequired,
 };
 
 export default Tags;
