@@ -6,7 +6,7 @@ class GlitchTag < LiquidTagBase
 
   def initialize(tag_name, id, tokens)
     super
-    @uri = build_uri(id)
+    @query = parse_options(id)
     @id = parse_id(id)
   end
 
@@ -14,7 +14,7 @@ class GlitchTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        uri: @uri,
+        query: @query,
         id: @id
       },
     )
@@ -76,12 +76,6 @@ class GlitchTag < LiquidTagBase
     raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     build_options(options)
-  end
-
-  def build_uri(input)
-    id = parse_id(input)
-    query = parse_options(input)
-    "https://glitch.com/embed/#!/embed/#{id}?#{query}"
   end
 end
 
