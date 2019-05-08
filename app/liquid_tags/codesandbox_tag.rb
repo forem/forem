@@ -1,4 +1,6 @@
 class CodesandboxTag < LiquidTagBase
+  PARTIAL = "liquids/codesandbox".freeze
+
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
@@ -6,10 +8,13 @@ class CodesandboxTag < LiquidTagBase
   end
 
   def render(_context)
-    '<iframe src="https://codesandbox.io/embed/' + @id + @query + '"
-      style="width:100%; height:calc(300px + 8vw); border:0; border-radius: 4px; overflow:hidden;"
-      sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation-by-user-activation>"
-    </iframe>'
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        query: @query
+      },
+    )
   end
 
   private
