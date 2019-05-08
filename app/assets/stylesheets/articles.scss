@@ -232,6 +232,7 @@
       );
       @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       border-radius: 3px;
+      cursor: pointer;
       width: 96%;
       margin: auto;
       position: relative;
