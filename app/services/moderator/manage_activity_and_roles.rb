@@ -17,7 +17,7 @@ module Moderator
 
       user.comments.find_each do |comment|
         comment.reactions.delete_all
-        CacheBuster.new.bust_comment(comment.commentable, user.username) if comment.commentable?
+        CacheBuster.new.bust_comment(comment.commentable, user.username)
         comment.delete
         comment.remove_notifications
       end
