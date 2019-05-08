@@ -3,19 +3,7 @@ require "rails_helper"
 RSpec.describe YoutubeTag, type: :liquid_template do
   describe "#id" do
     let(:valid_id_no_time) { "dQw4w9WgXcQ" }
-
-    let(:valid_ids_with_time) do
-      %w[
-        QASbw8_0meM?t=8h12m26s
-        QASbw8_0meM?t=6h34m
-        QASbw8_0meM?t=7h
-        QASbw8_0meM?t=1h57s
-        dQw4w9WgXcQ?t=4m45s
-        dQw4w9WgXcQ?t=5m
-        dQw4w9WgXcQ?t=8s
-      ]
-    end
-
+    let(:valid_ids_with_time) { "QASbw8_0meM?t=8h12m26s" }
     let(:invalid_id) { Faker::Lorem.characters(rand(12..100)) }
 
     def parsed_id(id)
@@ -41,13 +29,9 @@ RSpec.describe YoutubeTag, type: :liquid_template do
       Approvals.verify(liquid, name: "youtube_liquid_tag_no_time", format: :html)
     end
 
-    it "accepts valid YouTube IDs with starting times" do
-      count = 0
-      valid_ids_with_time.each do |id|
-        liquid = generate_new_liquid(id).render
-        count = count + 1
-        Approvals.verify(liquid, name: "youtube_liquid_tag_with_time_#{count}", format: :html)
-      end
+    it "accepts valid YouTube ID with starting times" do
+      liquid = generate_new_liquid(valid_ids_with_time).render
+      Approvals.verify(liquid, name: "youtube_liquid_tag_with_time", format: :html)
     end
 
     it "accepts YouTube ID with no start time and an empty space" do
@@ -55,13 +39,9 @@ RSpec.describe YoutubeTag, type: :liquid_template do
       Approvals.verify(liquid, name: "youtube_liquid_tag_no_time_trailing_space", format: :html)
     end
 
-    it "accepts YouTube IDs with start times and one empty space" do
-      count = 0
-      valid_ids_with_time.each do |id|
-        liquid = generate_new_liquid(id + " ").render
-        count = count + 1
-        Approvals.verify(liquid, name: "youtube_liquid_tag_with_time_#{count}", format: :html)
-      end
+    it "accepts YouTube ID with start times and one empty space" do
+      liquid = generate_new_liquid(valid_ids_with_time + " ").render
+      Approvals.verify(liquid, name: "youtube_liquid_tag_with_time", format: :html)
     end
 
     it "raises an error for invalid IDs" do
