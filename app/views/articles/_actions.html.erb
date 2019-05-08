@@ -1,13 +1,13 @@
 <div class="article-actions" id="article-reaction-actions">
   <% cache("article-main-reactions", expires_in: 200.hours) do %>
     <button id="reaction-butt-like" class="article-reaction-butt like-reaction-button" data-category="like" alt="heart-emoji" title="heart">
-      <img src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
+      <img alt="heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" /><span class="reaction-number" id="reaction-number-like"></span>
     </button>
     <button id="reaction-butt-unicorn" class="article-reaction-butt unicorn-reaction-button" data-category="unicorn" alt="unicorn-emoji" title="unicorn">
-      <img src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
+      <img alt="unicorn" src="<%= asset_path("emoji/emoji-one-unicorn.png") %>" /><span class="reaction-number" id="reaction-number-unicorn"></span>
     </button>
     <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
-      <img src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
+      <img alt="reading list" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
     </button>
   <% end %>
   <a class="article-actions-tweet-button"
@@ -23,8 +23,8 @@
     <% end %>
   </a>
   <div class="article-share-action-block">
-    <button id="article-show-more-button" class="dropbtn">
-      <img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" />
+    <button id="article-show-more-button" class="dropbtn" aria-label="Toggle dropdown menu">
+      <img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon" />
     </button>
     <div class="dropdown-content">
       <div>

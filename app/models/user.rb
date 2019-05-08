@@ -250,6 +250,15 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_following_podcasts_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
       preferred_languages_array
@@ -376,14 +385,12 @@ class User < ApplicationRecord
   def settings_tab_list
     tab_list = %w[
       Profile
-      Mentorship
       Integrations
       Notifications
       Publishing\ from\ RSS
       Organization
       Billing
     ]
-    tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
     tab_list.push("Account", "Misc")
   end
@@ -495,6 +502,9 @@ class User < ApplicationRecord
 
   def bust_cache
     CacheBuster.new.bust("/#{username}")
+    CacheBuster.new.bust("/#{username}?i=i")
+    CacheBuster.new.bust("/live/#{username}")
+    CacheBuster.new.bust("/live/#{username}?i=i")
     CacheBuster.new.bust("/feed/#{username}")
   end
   handle_asynchronously :bust_cache

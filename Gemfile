@@ -17,10 +17,10 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord objects
 gem "acts-as-taggable-on", "~> 6.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
-gem "addressable", "~> 2.5", ">= 2.5.2" # A replacement for the URI implementation that is part of Ruby's standard library
+gem "addressable", "~> 2.6" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.0" # Email analytics for Rails
-gem "airbrake", "~> 9.1" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
+gem "airbrake", "~> 9.2" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.0" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
@@ -48,9 +48,9 @@ gem "feedjira", "~> 2.2" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "fog-aws", "2.0.0" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
-gem "gemoji", "~> 3.0.0" # Character information and metadata for standard and custom emoji
+gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
-gem "google-api-client", "~> 0.27" # Client for accessing Google APIs
+gem "google-api-client", "~> 0.29" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.4" # Embed SVG documents in your Rails views and style them with CSS
@@ -90,7 +90,7 @@ gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 2.2" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.14" # Ruby library for the Stripe API
+gem "stripe", "~> 4.16" # Ruby library for the Stripe API
 gem "timber", "~> 2.6" # Great Ruby logging made easy
 gem "twilio-ruby", "~> 5.22" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
@@ -125,7 +125,7 @@ end
 group :development, :test do
   gem "capybara", "~> 3.18" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.67", require: false # Automatic Ruby code style checking tool

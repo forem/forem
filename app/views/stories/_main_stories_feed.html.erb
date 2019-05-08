@@ -6,6 +6,8 @@
          order("published_at DESC").
          limit(rand(15..60)).
          decorate %>
+    <div id="followed-podcasts" data-episodes="<%= @podcast_episodes.to_json(include: { podcast: { only: %i[slug title id] } }) %>">
+    </div>
     <div id="new-articles-object" data-articles="
       <%= @new_stories.to_json(
             only: %i[title path id user_id comments_count positive_reactions_count organization_id

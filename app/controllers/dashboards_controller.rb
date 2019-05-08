@@ -21,6 +21,8 @@ class DashboardsController < ApplicationController
       order("points DESC").includes(:followable).limit(80)
     @followed_organizations = @user.follows_by_type("Organization").
       order("created_at DESC").includes(:followable).limit(80)
+    @followed_podcasts = @user.follows_by_type("Podcast").
+      order("created_at DESC").includes(:followable).limit(80)
   end
 
   def followers
