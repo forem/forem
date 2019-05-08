@@ -183,12 +183,11 @@ module ApplicationHelper
   end
 
   def logo_svg
-    logo = if ApplicationConfig["LOGO_SVG"].present?
-             ApplicationConfig["LOGO_SVG"].html_safe
-           else
-             inline_svg("devplain.svg", class: "logo", size: "20% * 20%")
-           end
-    logo
+    if ApplicationConfig["LOGO_SVG"].present?
+      ApplicationConfig["LOGO_SVG"].html_safe
+    else
+      inline_svg("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+    end
   end
 
   def community_qualified_name
