@@ -11,14 +11,45 @@ module Moderator
       new(user: user, admin: admin).banish
     end
 
+    def self.call_ghost(admin:, user:)
+      new(user: user, admin: admin).ghostify
+    end
+
     def self.call_full_delete(admin:, user:)
       new(user: user, admin: admin).full_delete
+    end
+
+    def reassign_comments
+      return unless user.comments.any?
+
+      user.comments.find_each do |comment|
+        comment.update_column(user_id: 34981)
+      end
+    end
+
+    def reassign_articles
+      return unless user.articles.any?
+
+      user.articles.find_each do |article|
+        article.update_column(user_id: 34981)
+      end
+    end
+
+    def ghostify
+      user.unsubscribe_from_newsletters
+      reassign_articles
+      reassign_comments
+      delete_user_activity
+      CacheBuster.new.bust("/#{user.username}")
+      user.delete
     end
 
     def full_delete
       user.unsubscribe_from_newsletters
       delete_user_activity
-      CacheBuster.new.bust("/#{user.old_username}")
+      delete_comments
+      delete_articles
+      CacheBuster.new.bust("/#{user.username}")
       user.delete
     end
 
@@ -27,6 +58,8 @@ module Moderator
       remove_profile_info
       handle_user_status("Ban", "spam account")
       delete_user_activity
+      delete_comments
+      delete_articles
       user.remove_from_algolia_index
       reassign_and_bust_username
     end

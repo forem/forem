@@ -49,8 +49,6 @@ module Moderator
       user.mentions.delete_all
       user.badge_achievements.delete_all
       user.github_repos.delete_all
-      delete_comments
-      delete_articles
     end
 
     def remove_privileges

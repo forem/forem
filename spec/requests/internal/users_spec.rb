@@ -1,13 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Internal::Users", type: :request do
-  let!(:user) { create(:user, twitter_username: nil) }
+  let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
+  let(:ghost) { create(:user, id: 34981, username: "ghost", github_username: "Ghost") }
 
   before do
     sign_in super_admin
@@ -135,6 +136,20 @@ RSpec.describe "Internal::Users", type: :request do
       create_list(:credit, 5, user: user)
       put "/internal/users/#{user.id}", params: { user: { remove_credits: "3" } }
       expect(user.credits.size).to eq(2)
+    end
+  end
+
+  context "when deleting user and converting content to ghost", focus: true do
+    it "raises a 'record not found' error after deletion" do
+      post "/internal/users/#{user.id}/ghost"
+      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "reassigns comment and article content to ghost account" do
+      create(:article, user: user)
+      post "/internal/users/#{user.id}/ghost"
+      expect(ghost.articles.count).to eq(2)
+      expect(ghost.comments.count).to eq(1)
     end
   end
 

@@ -122,6 +122,17 @@ class Internal::UsersController < Internal::ApplicationController
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
+  def ghost
+    @user = User.find(params[:id])
+    begin
+      Moderator::BanishUser.call_ghost(admin: current_user, user: @user)
+      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted and their articles & comments have been ghostified."
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "internal/users"
+  end
+
   def full_delete
     @user = User.find(params[:id])
     begin
