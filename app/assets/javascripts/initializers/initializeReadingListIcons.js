@@ -125,21 +125,15 @@ function addHoverEffectToReadingListButton(button) {
   }
 }
 
-function readingListButtonMouseEnter(event) {
+function readingListButtonMouseHandler(event) {
   event.preventDefault();
+  var textReplacement = this; // see .bind below, this becomes the bound text
 
-  // replace 'SAVED' with 'UNSAVE'
   var textSpan = event.target.getElementsByClassName('bm-success')[0];
-  textSpan.innerHTML = 'UNSAVE';
+  textSpan.innerHTML = textReplacement;
 }
-
-function readingListButtonMouseLeave(event) {
-  event.preventDefault();
-
-  // replace 'UNSAVE' with 'SAVED'
-  var textSpan = event.target.getElementsByClassName('bm-success')[0];
-  textSpan.innerHTML = 'SAVED';
-}
+var readingListButtonMouseEnter = readingListButtonMouseHandler.bind('UNSAVE');
+var readingListButtonMouseLeave = readingListButtonMouseHandler.bind('SAVED');
 
 /* eslint-enable no-use-before-define */
 /* eslint-enable no-undef */
