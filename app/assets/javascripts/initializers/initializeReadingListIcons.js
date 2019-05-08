@@ -7,6 +7,7 @@
 function initializeReadingListIcons() {
   setReadingListButtonsState();
   addReadingListCountToHomePage();
+  addHoverEffectToReadingListButtons();
 }
 
 // set SAVE or SAVED articles buttons
@@ -22,7 +23,6 @@ function highlightButton(button) {
   var buttonIdInt = parseInt(button.dataset.reactableId, 10);
   if (user && user.reading_list_ids.indexOf(buttonIdInt) > -1) {
     button.classList.add('selected');
-    addHoverEffectToReadingListButton(button);
   } else {
     button.classList.remove('selected');
   }
@@ -118,22 +118,44 @@ function properButtonFromEvent(event) {
   return properElement;
 }
 
-function addHoverEffectToReadingListButton(button) {
-  if (button.classList.contains('selected')) {
-    button.addEventListener('mouseenter', readingListButtonMouseEnter);
-    button.addEventListener('mouseleave', readingListButtonMouseLeave);
-  }
+/*
+  Add the hover effect to reading list buttons.
+
+  This function makes use of mouseover/mouseevent bubbling behaviors to attach
+  only two event handlers to the articles container for performance reasons.
+*/
+function addHoverEffectToReadingListButtons() {
+  var articlesList = document.getElementsByClassName('articles-list');
+  Array.from(articlesList).forEach(function(container) {
+    container.addEventListener('mouseover', readingListButtonMouseOver);
+    container.addEventListener('mouseout', readingListButtonMouseOut);
+  });
 }
 
 function readingListButtonMouseHandler(event) {
-  event.preventDefault();
-  var textReplacement = this; // see .bind below, this becomes the bound text
+  var target = event.target;
+  var performTheSwap =
+    (target.tagName === 'BUTTON' &&
+      target.classList.contains('bookmark-engage') &&
+      target.classList.contains('selected')) ||
+    (target.tagName === 'SPAN' && target.classList.contains('bm-success'));
 
-  var textSpan = event.target.getElementsByClassName('bm-success')[0];
-  textSpan.innerHTML = textReplacement;
+  if (performTheSwap) {
+    event.preventDefault();
+
+    var textReplacement = this; // see .bind below, this becomes the bound text
+    var textSpan;
+    if (target.tagName === 'BUTTON') {
+      textSpan = target.getElementsByClassName('bm-success')[0];
+    } else {
+      textSpan = target;
+    }
+
+    textSpan.innerHTML = textReplacement;
+  }
 }
-var readingListButtonMouseEnter = readingListButtonMouseHandler.bind('UNSAVE');
-var readingListButtonMouseLeave = readingListButtonMouseHandler.bind('SAVED');
+var readingListButtonMouseOver = readingListButtonMouseHandler.bind('UNSAVE');
+var readingListButtonMouseOut = readingListButtonMouseHandler.bind('SAVED');
 
 /* eslint-enable no-use-before-define */
 /* eslint-enable no-undef */
