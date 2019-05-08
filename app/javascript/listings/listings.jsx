@@ -47,10 +47,16 @@ export class Listings extends Component {
     t.setState({query, tags, index, category, allCategories, listings, openedListing, slug });
     t.listingSearch(query, tags, category, slug);
     t.setUser()
+
+    document.body.addEventListener('keydown', t.handleKeyDown)
   }
 
   componentDidUpdate() {
     this.triggerMasonry()
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.handleKeyDown)
   }
 
   addTag = (e, tag) => {
@@ -84,6 +90,13 @@ export class Listings extends Component {
     this.listingSearch(query, tags, cat, null)
   }
 
+  handleKeyDown = (e) => {
+    // Enable Escape key to close an open listing.
+    if (this.openedListing !== null && e.key === 'Escape') {
+      this.handleCloseModal()
+    }
+  }
+
   handleCloseModal = (e) => {
     const { query, tags, category } = this.state;
     this.setState({openedListing: null})
@@ -115,16 +128,16 @@ export class Listings extends Component {
   getQueryParams = () => {
     let qs = document.location.search;
     qs = qs.split('+').join(' ');
-  
+
     const params = {};
     let tokens;
     const re = /[?&]?([^=]+)=([^&]*)/g;
-  
+
     // eslint-disable-next-line no-cond-assign
     while (tokens = re.exec(qs)) {
       params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
     }
-  
+
     return params;
   }
 
