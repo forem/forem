@@ -32,7 +32,7 @@
       </div>
       $2.50/per credit
     </div>
-      <br/> 
+      <br />
     </div>
     <p class="bulk-description"><em>Contact <a href="mailto:biz@dev.to">biz@dev.to</a> to for custom bulk pricing and partnerships.</em></p>
     <details>
@@ -61,11 +61,11 @@
     </details>
     <details>
       <summary>
-        How many credits do I currently have?
+        How many credits <%= params[:purchaser] == "organization" ? "does #{@purchaser.name}" : "do I currently" %> have?
       </summary>
       <div>
         <p>
-          You have <%= current_user.credits.where(spent: false).size %> credits
+          <%= params[:purchaser] == "organization" ? "#{@purchaser.name} has" : "You have" %> <%= @purchaser.credits.where(spent: false).size %> credits.
         </p>
       </div>
     </details>

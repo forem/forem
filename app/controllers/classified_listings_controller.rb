@@ -5,12 +5,13 @@ class ClassifiedListingsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update new]
 
   def index
+    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
+    mod_page if params[:view] == "moderate"
     @classified_listings = if params[:category].blank?
                              ClassifiedListing.where(published: true).order("bumped_at DESC").limit(12)
                            else
                              []
                            end
-    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 
@@ -45,12 +46,16 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing.bumped_at = Time.current
     @classified_listing.published = true
     @classified_listing.organization_id = current_user.organization_id if @org
-    return unless @classified_listing.save
-
-    clear_listings_cache
-    credits.limit(@number_of_credits_needed).update_all(spent: true)
-    @classified_listing.index!
-    redirect_to "/listings"
+    if @classified_listing.save
+      clear_listings_cache
+      credits.limit(@number_of_credits_needed).update_all(spent: true)
+      @classified_listing.index!
+      redirect_to "/listings"
+    else
+      @credits = current_user.credits.where(spent: false)
+      @classified_listing.cached_tag_list = classified_listing_params[:tag_list]
+      render :new
+    end
   end
 
   def update
@@ -78,6 +83,10 @@ class ClassifiedListingsController < ApplicationController
   end
 
   private
+
+  def mod_page
+    redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_classified_listing

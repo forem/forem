@@ -67,10 +67,10 @@ class ClassifiedListing < ApplicationRecord
       "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps." },
       "jobs" => { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
       "mentors" => { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
-      "products" => { cost: 10, name: "Products/Tools", rules: "Must be available right now." },
+      "products" => { cost: 5, name: "Products/Tools", rules: "Must be available right now." },
       "mentees" => { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
-      "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale" },
-      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included" },
+      "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
+      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
   end
@@ -85,10 +85,11 @@ class ClassifiedListing < ApplicationRecord
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
     self.category = category.to_s.downcase
+    self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
   def restrict_markdown_input
-    errors.add(:body_markdown, "has too many linebreaks. No no more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
+    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
     errors.add(:body_markdown, "is not allowed to include images.") if body_markdown.to_s.include?("![")
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if body_markdown.to_s.include?("{% ")
   end

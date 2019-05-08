@@ -126,7 +126,6 @@ Rails.application.routes.draw do
   resources :blocks
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
-  resources :stripe_subscriptions, only: %i[create update destroy]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :stripe_cancellations, only: [:create]
   resources :live_articles, only: [:index]
@@ -152,6 +151,8 @@ Rails.application.routes.draw do
   get "/credits/purchase" => "credits#new"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
+  get "/listings/:category/:slug/:view" => "classified_listings#index",
+      constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
@@ -170,9 +171,6 @@ Rails.application.routes.draw do
   get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
   get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
   get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
-
-  ### Subscription vanity url
-  post "membership-action" => "stripe_subscriptions#create"
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
@@ -243,7 +241,6 @@ Rails.application.routes.draw do
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/now" => "pages#now"
-  get "/membership" => "pages#membership"
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
@@ -257,7 +254,6 @@ Rails.application.routes.draw do
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")
   get "/scholarships", to: redirect("/p/scholarships")
-  get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
   get "/community-moderation" => "pages#community_moderation"
@@ -269,7 +265,7 @@ Rails.application.routes.draw do
 
   scope "p" do
     pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
-                       markdown_basics scholarships wall_of_patrons membership_form badges]
+                       markdown_basics scholarships wall_of_patrons badges]
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
     end
