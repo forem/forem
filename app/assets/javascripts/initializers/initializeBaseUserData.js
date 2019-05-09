@@ -57,7 +57,9 @@ function initializeUserSidebar(user) {
 
 function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile-pic').innerHTML =
-    '<img alt="" class="sidebar-profile-pic-img" src="' +
+    '<img alt="' +
+    user.username +
+    '" class="sidebar-profile-pic-img" src="' +
     user.profile_image_90 +
     '" />';
   document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
@@ -73,12 +75,17 @@ function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId) == user.id) {
-      var manageButtonHTML = '<a href="' +articleContainer.dataset.path+ '/manage" rel="nofollow">MANAGE</a>'
+      var manageButtonHTML =
+        '<a href="' +
+        articleContainer.dataset.path +
+        '/manage" rel="nofollow">MANAGE</a>';
       document.getElementById('action-space').innerHTML =
         '<a href="' +
         articleContainer.dataset.path +
         '/edit" rel="nofollow">EDIT</a>' +
-        (JSON.parse(articleContainer.dataset.published) == true ? manageButtonHTML : "")
+        (JSON.parse(articleContainer.dataset.published) == true
+          ? manageButtonHTML
+          : '');
     } else if (user.trusted) {
       document.getElementById('action-space').innerHTML =
         '<a href="' +

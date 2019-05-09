@@ -321,7 +321,7 @@ export default class ArticleForm extends Component {
               className="articleform__detailsButton articleform__detailsButton--image"
               onClick={this.toggleImageManagement}
             >
-              <img src={ImageUploadIcon} />
+              <img src={ImageUploadIcon} alt="upload images" />
               {' '}
 IMAGES
             </button>
@@ -329,7 +329,7 @@ IMAGES
               className="articleform__detailsButton articleform__detailsButton--moreconfig"
               onClick={this.toggleMoreConfig}
             >
-              <img src={ThreeDotsIcon} />
+              <img src={ThreeDotsIcon} alt="open overlay menu" />
             </button>
           </div>
           <BodyMarkdown
@@ -340,7 +340,7 @@ IMAGES
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
           >
-            <img src={ImageUploadIcon} />
+            <img src={ImageUploadIcon} alt="upload images" />
             {' '}
 IMAGES
           </button>
@@ -348,7 +348,7 @@ IMAGES
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
             onClick={this.toggleMoreConfig}
           >
-            <img src={ThreeDotsIcon} />
+            <img src={ThreeDotsIcon} alt="open overlay menu" />
           </button>
         </div>
       );

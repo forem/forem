@@ -1,13 +1,17 @@
 class ReplitTag < LiquidTagBase
+  PARTIAL = "liquids/replit".freeze
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
   end
 
   def render(_context)
-    '<div class="ltag__replit">
-      <iframe frameborder="0" height="550px" src="https://repl.it/' + @id + '?lite=true"></iframe>
-    </div>'
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id
+      },
+    )
   end
 
   private

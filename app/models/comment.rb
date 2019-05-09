@@ -180,11 +180,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def self.comment_async_bust(commentable, username)
-    CacheBuster.new.bust_comment(commentable, username)
-    commentable.index!
-  end
-
   def remove_notifications
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Moderation")
