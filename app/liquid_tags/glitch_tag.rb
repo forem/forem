@@ -6,7 +6,7 @@ class GlitchTag < LiquidTagBase
 
   def initialize(tag_name, id, tokens)
     super
-    @query = parse_options(input)
+    @query = parse_options(id)
     @id = parse_id(id)
   end
 
