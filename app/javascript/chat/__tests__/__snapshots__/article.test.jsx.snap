@@ -86,6 +86,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="like reaction"
         data-category="like"
         src=""
       />
@@ -96,6 +97,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="unicorn reaction"
         data-category="unicorn"
         src=""
       />
@@ -106,6 +108,7 @@ exports[`<Article /> should load article 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="readinglist reaction"
         data-category="readinglist"
         src=""
       />

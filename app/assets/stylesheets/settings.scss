@@ -215,7 +215,7 @@
           max-width: 100%;
           padding: 14px 0px;
           margin-top: 20px;
-          font-size: 1.8em;
+          font-size: 1.5em;
           cursor: pointer;
           &.danger-button {
             background: $red;
@@ -247,7 +247,7 @@
         }
         cursor: pointer;
         &.danger-button {
-          background-color: $red;
+          background-color: #b30000;
           color: $off-white;
         }
         &:disabled {

@@ -232,6 +232,7 @@
       );
       @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       border-radius: 3px;
+      cursor: pointer;
       width: 96%;
       margin: auto;
       position: relative;
@@ -746,11 +747,6 @@
           position: relative;
           top: 1px;
         }
-        .bm-initial {
-          &:after {
-            content: 'SAVE';
-          }
-        }
         &.selected {
           color: darken($purple, 33%);
           background: transparent;
@@ -760,14 +756,6 @@
           }
           .bm-success {
             display: inline-block;
-
-            &:before {
-              content: 'SAVED';
-            }
-
-            &:hover:before {
-              content: 'UNSAVE';
-            }
           }
         }
         &.following-butt {

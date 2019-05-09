@@ -85,10 +85,11 @@ class ClassifiedListing < ApplicationRecord
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
     self.category = category.to_s.downcase
+    self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
   def restrict_markdown_input
-    errors.add(:body_markdown, "has too many linebreaks. No no more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
+    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
     errors.add(:body_markdown, "is not allowed to include images.") if body_markdown.to_s.include?("![")
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if body_markdown.to_s.include?("{% ")
   end
