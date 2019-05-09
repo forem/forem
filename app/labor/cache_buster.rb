@@ -13,22 +13,20 @@ class CacheBuster
   end
 
   def bust_comment(commentable, username)
-    if commentable
-      bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
-      if commentable.decorate.cached_tag_list_array.include?("discuss") &&
-          commentable.featured_number.to_i > 35.hours.ago.to_i
-        bust("/")
-        bust("/?i=i")
-        bust("?i=i")
-      end
-      bust("#{commentable.path}/comments/")
-      bust(commentable.path.to_s)
-      commentable.comments.find_each do |c|
-        bust(c.path)
-        bust(c.path + "?i=i")
-      end
-      bust("#{commentable.path}/comments/*")
+    bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
+    if commentable.decorate.cached_tag_list_array.include?("discuss") &&
+        commentable.featured_number.to_i > 35.hours.ago.to_i
+      bust("/")
+      bust("/?i=i")
+      bust("?i=i")
     end
+    bust("#{commentable.path}/comments/")
+    bust(commentable.path.to_s)
+    commentable.comments.find_each do |c|
+      bust(c.path)
+      bust(c.path + "?i=i")
+    end
+    bust("#{commentable.path}/comments/*")
     bust("/#{username}")
     bust("/#{username}/comments")
     bust("/#{username}/comments?i=i")
