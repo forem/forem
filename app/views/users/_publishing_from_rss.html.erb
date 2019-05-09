@@ -1,4 +1,17 @@
 <h3>Publishing to dev.to from RSS</h3>
+<% if @user.feed_url.present? %>
+  <%= form_for(@user) do |f| %>
+    <div class="field">
+      <label></label>
+      <%= f.hidden_field :feed_url, value: @user.feed_url %>
+      <%= f.hidden_field :tab, value: @tab %>
+      <%= f.submit "Re-Fetch" %>
+      <p><em>
+        Last Updated: <%= @user.feed_fetched_at.getlocal.strftime("%b %d, %I:%M%p") %>
+      </em></p>
+    </div>
+  <% end %>
+<% end %>
 <p>
   Posts will land in your <a href="/dashboard">dashboard</a>
   <b><em>as drafts</em></b>, and then you can publish from there (or give dev.to admins permission to do so).
@@ -37,6 +50,7 @@
   <div class="field">
     <label></label>
     <%= f.hidden_field :tab, value: @tab %>
-    <%= f.submit "SUBMIT", class: "cta" %>
+    <% button_text = @user.feed_url.present? ? "UPDATE" : "SUBMIT" %>
+    <%= f.submit button_text, class: "cta" %>
   </div>
 <% end %>
