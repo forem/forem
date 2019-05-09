@@ -1,35 +1,31 @@
 <div align="center">
   <br>
-  <img
-    alt="DEV"
-    src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png"
-    width=500px
-  />
+  <img alt="DEV" src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png" width="500px">
   <h1>DEV Community 👩‍💻👨‍💻</h1>
   <strong>The Human Layer of the Stack</strong>
 </div>
-<br/>
+<br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.3-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.6.3-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version"/>
+    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
   </a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
-    <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to"/>
+    <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
   </a>
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" />
+    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" alt="Code Climate maintainability">
   </a>
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" />
+    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" alt="Code Climate test coverage">
   </a>
   <a href="https://oss.skylight.io/app/applications/K9H5IV3RqKGu">
-    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge" />
+    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge">
   </a>
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
-    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge" />
+    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
 </p>
 
@@ -242,14 +238,10 @@ Our version of the CLA was adapted from the Microsoft Contributor License Agreem
 
 Any questions, please refer to our [license FAQ](http://docs.dev.to/license-faq/) doc or email yo@dev.to
 
-<br/>
+<br>
 
 <p align="center">
-  <img
-    alt="sloan"
-    width=250px
-    src="https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
-  />
-  <br/>
+  <img alt="Sloan, the sloth mascot" width="250px" src="https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg">
+  <br>
   <strong>Happy Coding</strong> ❤️
 </p>

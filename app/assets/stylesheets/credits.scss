@@ -43,10 +43,16 @@
   }
 
   .InputElement {
-    background-color: white;
-    background-color: var(--theme-container-background, white);
-    color: $black;
-    color: var(--theme-color, $black);
+    @include themeable(
+      background-color, 
+      theme-container-background, 
+      white
+    );
+    @include themeable(
+      color, 
+      theme-color, 
+      $black
+    );
   }
 
   .StripeElement, input[type="number"], button, .existing-card {
@@ -55,10 +61,16 @@
     padding: 10px 12px;
     border: 1px solid transparent;
     border-radius: 4px;
-    background-color: white;
-    background-color: var(--theme-container-background, white);
-    color: $black;
-    color: var(--theme-color, $black);
+    @include themeable(
+      background-color, 
+      theme-container-background, 
+      white
+    );
+    @include themeable(
+      color, 
+      theme-color, 
+      $black
+    );
 
     box-shadow: 0 1px 3px 0 #e6ebf1;
     -webkit-transition: box-shadow 150ms ease;
@@ -183,10 +195,16 @@
     font-weight: bold;
   }
   button#add-new-card {
-    background-color: $light-gray;
-    background-color: var(--theme-container-background, $light-gray);
-    color: $black;
-    color: var(--theme-color, $black);
+    @include themeable(
+      background-color, 
+      theme-container-background, 
+      $light-gray
+    );
+    @include themeable(
+      color, 
+      theme-color, 
+      $black
+    );
     font-size: 15px;
   }
 
@@ -202,8 +220,11 @@
       padding: 10px 0px;
     }
     .credit-card-component {
-      background: $lightest-gray;
-      background: var(--theme-container-accent-background, $lightest-gray);
+      @include themeable(
+        background, 
+        theme-container-accent-background, 
+        $lightest-gray
+      );
       border-radius: 3px;
       margin: 0px 5px;
       display: inline-block;
@@ -213,8 +234,11 @@
 
   label.main-form-label {
     margin-bottom: 4px;
-    background: $light-gray;
-    background: var(--theme-container-accent-background, $light-gray);
+    @include themeable(
+      background, 
+      theme-container-accent-background, 
+      $light-gray
+    );
     border-radius: 3px;
     padding: 2px 8px;
     display: inline-block;
