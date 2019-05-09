@@ -23,7 +23,7 @@
   <meta property="og:image" content="<%= tag_social_preview_url(@tag_model, format: :png) %>">
   <meta name="twitter:image:src" content="<%= tag_social_preview_url(@tag_model, format: :png) %>">
 <% else %>
-  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
-  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+  <meta property="og:image" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
+  <meta name="twitter:image:src" content="<%= ApplicationConfig["MAIN_SOCIAL_IMAGE"] %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>

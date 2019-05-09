@@ -31,7 +31,7 @@
     </div>
     <% if @podcast_episode.image %>
       <div class="field" style="text-align:center;margin-top:30px;">
-        <%= image_tag @podcast_episode.image_url, width: 398, style: "border-radius:500px;height:auto;max-width:70%;" %>
+        <%= image_tag(@podcast_episode.image_url, width: 398, style: "border-radius:500px;height:auto;max-width:70%;", alt: "Podcast #{@podcast_episode.title} logo") %>
       </div>
     <% end %>
     <div class="field">
@@ -44,7 +44,7 @@
     </div>
     <% if @podcast_episode.social_image %>
       <div class="field" style="text-align:center;margin-top:30px;">
-        <%= image_tag @podcast_episode.social_image_url, width: 398, style: "height:auto;max-width:70%;" %>
+        <%= image_tag(@podcast_episode.social_image_url, width: 398, style: "height:auto;max-width:70%;", alt: "Podcast #{@podcast_episode.title} social media") %>
       </div>
     <% end %>
 

@@ -3,6 +3,7 @@ class PodcastTag < LiquidTagBase
   include CloudinaryHelper
 
   attr_reader :episode, :podcast
+  PARTIAL = "podcast_episodes/liquid".freeze
 
   IMAGE_LINK = {
     itunes: "https://d.ibtimes.co.uk/en/full/1423047/itunes-12.png",
@@ -14,102 +15,21 @@ class PodcastTag < LiquidTagBase
   def initialize(_tag_name, link, _tokens)
     @episode = fetch_podcast(link)
     @podcast ||= Podcast.new
+    @podcast_links = [["iTunes", @podcast.itunes_url, cloudinary(IMAGE_LINK["iTunes".downcase.to_sym], 40, 90, "png")],
+                      ["Overcast", @podcast.overcast_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
+                      ["Android", @podcast.android_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")],
+                      ["RSS", @podcast.feed_url, cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, "png")]]
   end
 
   def render(_context)
-    html = <<-HTML
-      <div class="podcastliquidtag" style="#{render_style}">
-        <div class="podcastliquidtag__info">
-          <a href="/#{@podcast.slug}/#{@episode.slug}">
-            <h1 class="podcastliquidtag__info__episodetitle">#{@episode.title}</h1>
-          </a>
-          <a href="/#{@podcast.slug}">
-              #{cl_image_tag(@podcast.image_url,
-                             type: 'fetch',
-                             crop: 'fill',
-                             quality: 'auto',
-                             sign_url: true,
-                             flags: 'progressive',
-                             fetch_format: 'auto',
-                             class: 'tinyimage')}
-            <h1 class="podcastliquidtag__info__podcasttitle">#{@podcast.title}</h1>
-          </a>
-
-          #{render_subscribe_links}
-        </div>
-
-        <div id="record-#{episode.slug}" data-podcast="#{podcast.slug}" data-episode="#{episode.slug}" class="podcastliquidtag__record">
-          <img class="button play-butt" id="play-butt-#{episode.slug}" src="/assets/playbutt.png"/>
-          <img class="button pause-butt" id="pause-butt-#{episode.slug}" src="/assets/pausebutt.png"/>
-          #{cl_image_tag(@podcast.image_url,
-                         type: 'fetch',
-                         crop: 'fill',
-                         quality: 'auto',
-                         sign_url: true,
-                         flags: 'progressive',
-                         fetch_format: 'auto',
-                         class: 'podcastliquidtag__podcastimage',
-                         id: "podcastimage-#{episode.slug}")}
-        </div>
-        #{render_hidden_audio}
-      </div>
-    HTML
-    finalize_html(html)
-  end
-
-  def render_style
-    "background:##{@podcast.main_color_hex} " \
-    "url(#{cl_image_path(@podcast.pattern_image_url || 'https://i.imgur.com/fKYKgo4.png', type: 'fetch', quality: 'auto', sign_url: true, flags: 'progressive', fetch_format: 'jpg')})"
-  end
-
-  def render_hidden_audio
-    <<~HTML
-      <div class="hidden-audio" id="hidden-audio-#{@episode.slug}" style="display:none" data-episode="#{@episode.slug}" data-podcast="#{@podcast.slug}">
-        <audio id="audio" data-episode="#{@episode.slug}" data-podcast="#{@podcast.slug}">
-          <source src="#{@episode.media_url}" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-        <div id="progressBar" class="audio-player-display">
-          <a href="/#{@podcast.slug}/#{@episode.slug}">
-            #{cl_image_tag(@episode.image_url || @podcast.image_url,
-                           type: 'fetch',
-                           crop: 'fill',
-                           width: 420,
-                           height: 420,
-                           quality: 'auto',
-                           sign_url: true,
-                           flags: 'progressive',
-                           fetch_format: 'auto',
-                           id: 'episode-profile-image')}
-            <img id="animated-bars" src="/assets/animated-bars.gif" />
-          </a>
-          <span id="barPlayPause">
-            <img class="butt play-butt" src="/assets/playbutt.png"/>
-            <img class="butt pause-butt" src="/assets/pausebutt.png"/>
-          </span>
-          <span id="volume">
-            <span id="volumeindicator" class="volume-icon-wrapper showing">
-              <span id="volbutt">
-                #{image_tag('/assets/volume.png', alt: name, class: 'icon-img', height: 16, width: 16)}
-              </span>
-              <span class="range-wrapper">
-                <input type="range" name="points" id="volumeslider" value="50" min="0" max="100" data-show-value="true">
-              </span>
-            </span>
-            <span id="mutebutt" class="volume-icon-wrapper hidden">
-              #{image_tag('/assets/volume-mute.png', alt: name, class: 'icon-img', height: 16, width: 16)}
-            </span>
-            <span class="speed" id="speed" data-speed=1 >1x</span>
-          </span>
-          <span class="buffer-wrapper" id="bufferwrapper">
-            <span id="buffer"></span>
-            <span id="progress"></span>
-            <span id="time"></span>
-            <span id="closebutt">[ x ]</span>
-          </span>
-        </div>
-      </div>
-    HTML
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        episode: @episode,
+        podcast: @podcast,
+        podcast_links: @podcast_links
+      },
+    )
   end
 
   def self.script
@@ -121,28 +41,6 @@ class PodcastTag < LiquidTagBase
         }
       },1);
     JAVASCRIPT
-  end
-
-  def render_subscribe_links
-    <<~HTML
-      <div class="podcastliquidtag__links">
-        #{render_podcast_links('iTunes', @podcast.itunes_url)}
-        #{render_podcast_links('Overcast', @podcast.overcast_url)}
-        #{render_podcast_links('Android', @podcast.android_url)}
-        #{render_podcast_links('RSS', @podcast.feed_url)}
-      </div>
-    HTML
-  end
-
-  def render_podcast_links(name, source)
-    return unless source
-
-    <<~HTML
-      <a href="#{source}" target="_blank" rel="noopener noreferrer">
-        <img src="#{cloudinary(IMAGE_LINK[name.downcase.to_sym], 40, 90, 'png')}" />
-        <span class="service-name">#{name}</span>
-      </a>
-    HTML
   end
 
   private

@@ -98,7 +98,7 @@
       <% if current_user.organization %>
         <a href="<%= current_user.organization.path %>" class="org-branded-title-link">
           <div class="org-branded-title" id="org-branded-title">
-            <img src="<%= ProfileImage.new(current_user.organization).get(50) %>" class="org-pic" /> <%= current_user.organization.name %>
+            <img src="<%= ProfileImage.new(current_user.organization).get(50) %>" class="org-pic" alt="<%= current_user.organization.name %> profile image"> <%= current_user.organization.name %>
           </div>
         </a>
       <% end %>
@@ -106,7 +106,7 @@
       </h1>
       <h3>
         <a href="/<%= @user.username %>">
-          <img class="profile-pic" src="<%= cloudinary(@user.profile_image_url, 50) %>" alt="<%= @user.username %> profile" />
+          <img class="profile-pic" src="<%= cloudinary(@user.profile_image_url, 50) %>" alt="<%= @user.username %> profile image">
           By <%= @user.name %>
         </a>
         <% if @user.twitter_username.present? %>

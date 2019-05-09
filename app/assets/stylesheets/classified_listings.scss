@@ -181,9 +181,12 @@
     }
     .classified-errors {
       background: $red;
-      color: white;
+      color: $black;
       padding: 20px;
       border-radius: 3px;
+      h2 {
+        color: $black;
+      }
     }
     label {
       display: inline-block;
