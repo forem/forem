@@ -1,4 +1,5 @@
 class SpotifyTag < LiquidTagBase
+  PARTIAL = "liquids/spotify".freeze
   URI_REGEXP = /spotify:(track|user|artist|album|episode):\w{22}/.freeze
   TYPE_HEIGHT = {
     track: 80,
@@ -11,22 +12,18 @@ class SpotifyTag < LiquidTagBase
   def initialize(tag_name, uri, tokens)
     super
     @parsed_uri = parse_uri(uri)
+    @embed_link = generate_embed_link(@parsed_uri)
     @height = TYPE_HEIGHT[@parsed_uri[1].to_sym]
   end
 
   def render(_context)
-    html = <<-HTML
-      <iframe
-        width="100%"
-        height="#{@height}px"
-        scrolling="no"
-        frameborder="0"
-        allowtransparency="true"
-        allow="encrypted-media"
-        src="#{generate_embed_link(@parsed_uri)}">
-      </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        embed_link: @embed_link,
+        height: @height
+      },
+    )
   end
 
   private
