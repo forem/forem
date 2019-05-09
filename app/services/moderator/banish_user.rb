@@ -11,52 +11,6 @@ module Moderator
       new(user: user, admin: admin).banish
     end
 
-    def self.call_ghost(admin:, user:)
-      new(user: user, admin: admin).ghostify
-    end
-
-    def self.call_full_delete(admin:, user:)
-      new(user: user, admin: admin).full_delete
-    end
-
-    def reassign_comments
-      return unless user.comments.any?
-
-      user.comments.find_each do |comment|
-        comment.update_columns(user_id: @ghost.id)
-        comment.save
-        comment.path
-      end
-    end
-
-    def reassign_articles
-      return unless user.articles.any?
-
-      user.articles.find_each do |article|
-        path = "/#{@ghost.username}/" + article.slug
-        article.update_columns(user_id: @ghost.id, path: path)
-      end
-    end
-
-    def ghostify
-      user.unsubscribe_from_newsletters
-      @ghost = User.find_by(username: "ghost")
-      reassign_articles
-      reassign_comments
-      delete_user_activity
-      CacheBuster.new.bust("/#{user.username}")
-      user.delete
-    end
-
-    def full_delete
-      user.unsubscribe_from_newsletters
-      delete_user_activity
-      delete_comments
-      delete_articles
-      CacheBuster.new.bust("/#{user.username}")
-      user.delete
-    end
-
     def banish
       user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
