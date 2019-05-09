@@ -142,14 +142,14 @@ RSpec.describe "Internal::Users", type: :request do
   context "when deleting user and converting content to ghost" do
     it "raises a 'record not found' error after deletion" do
       ghost
-      post "/internal/users/#{user.id}/ghost"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "reassigns comment and article content to ghost account" do
       create(:article, user: user)
       ghost
-      post "/internal/users/#{user.id}/ghost"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
       expect(ghost.articles.count).to eq(2)
       expect(ghost.comments.count).to eq(1)
       expect(ghost.comments.last.path).to include("ghost")
@@ -182,12 +182,12 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect(request.flash.notice).to include("fully deleted")
     end
   end
