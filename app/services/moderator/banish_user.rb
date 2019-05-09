@@ -23,7 +23,9 @@ module Moderator
       return unless user.comments.any?
 
       user.comments.find_each do |comment|
-        comment.update_column(user_id: 34981)
+        comment.update_columns(user_id: @ghost.id)
+        comment.save
+        comment.path
       end
     end
 
@@ -31,12 +33,14 @@ module Moderator
       return unless user.articles.any?
 
       user.articles.find_each do |article|
-        article.update_column(user_id: 34981)
+        path = "/#{@ghost.username}/" + article.slug
+        article.update_columns(user_id: @ghost.id, path: path)
       end
     end
 
     def ghostify
       user.unsubscribe_from_newsletters
+      @ghost = User.find_by(username: "ghost")
       reassign_articles
       reassign_comments
       delete_user_activity

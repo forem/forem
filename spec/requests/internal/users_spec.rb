@@ -8,7 +8,7 @@ RSpec.describe "Internal::Users", type: :request do
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
-  let(:ghost) { create(:user, id: 34981, username: "ghost", github_username: "Ghost") }
+  let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
 
   before do
     sign_in super_admin
@@ -139,17 +139,21 @@ RSpec.describe "Internal::Users", type: :request do
     end
   end
 
-  context "when deleting user and converting content to ghost", focus: true do
+  context "when deleting user and converting content to ghost" do
     it "raises a 'record not found' error after deletion" do
+      ghost
       post "/internal/users/#{user.id}/ghost"
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "reassigns comment and article content to ghost account" do
       create(:article, user: user)
+      ghost
       post "/internal/users/#{user.id}/ghost"
       expect(ghost.articles.count).to eq(2)
       expect(ghost.comments.count).to eq(1)
+      expect(ghost.comments.last.path).to include("ghost")
+      expect(ghost.articles.last.path).to include("ghost")
     end
   end
 

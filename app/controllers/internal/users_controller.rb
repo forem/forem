@@ -130,7 +130,7 @@ class Internal::UsersController < Internal::ApplicationController
     rescue StandardError => e
       flash[:error] = e.message
     end
-    redirect_to "internal/users"
+    redirect_to "/internal/users"
   end
 
   def full_delete
