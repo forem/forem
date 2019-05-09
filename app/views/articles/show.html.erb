@@ -106,7 +106,7 @@
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
             <div class="org-branded-title">
-              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" /> <%= @organization.name %>
+              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
             </div>
           </a>
         <% end %>

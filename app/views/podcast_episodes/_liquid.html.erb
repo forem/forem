@@ -23,7 +23,7 @@
       <% podcast_links.each do |name, source, img_src| %>
         <% if source %>
           <a href="<%= source %>" target="_blank" rel="noopener noreferrer">
-            <img src="<%= img_src %>">
+            <img src="<%= img_src %>" alt="<%= name %>">
             <span class="service-name"><%= name %></span>
           </a>
         <% end %>
@@ -31,23 +31,23 @@
     </div>
   </div>
   <div id="record-<%= episode.slug %>" data-podcast="<%= podcast.slug %>" data-episode="<%= episode.slug %>" class="podcastliquidtag__record">
-    <img class="button play-butt" id="play-butt-<%= episode.slug %>" src="/assets/playbutt.png">
-    <img class="button pause-butt" id="pause-butt-<%= episode.slug %>" src="/assets/pausebutt.png">
-      <%= cl_image_tag(podcast.image_url,
-                       type: "fetch",
-                       crop: "fill",
-                       quality: "auto",
-                       sign_url: true,
-                       flags: "progressive",
-                       fetch_format: "auto",
-                       class: "podcastliquidtag__podcastimage",
-                       id: "podcastimage-#{episode.slug}",
-                       alt: podcast.title) %>
+    <img class="button play-butt" id="play-butt-<%= episode.slug %>" src="/assets/playbutt.png" alt="play">
+    <img class="button pause-butt" id="pause-butt-<%= episode.slug %>" src="/assets/pausebutt.png" alt="pause">
+    <%= cl_image_tag(podcast.image_url,
+                     type: "fetch",
+                     crop: "fill",
+                     quality: "auto",
+                     sign_url: true,
+                     flags: "progressive",
+                     fetch_format: "auto",
+                     class: "podcastliquidtag__podcastimage",
+                     id: "podcastimage-#{episode.slug}",
+                     alt: podcast.title) %>
   </div>
   <div class="hidden-audio" id="hidden-audio-<%= episode.slug %>" style="display:none" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
     <audio id="audio" data-episode="<%= episode.slug %>" data-podcast="<%= podcast.slug %>">
       <source src="<%= episode.media_url %>" type="audio/mpeg">
-        Your browser does not support the audio element.
+      Your browser does not support the audio element.
     </audio>
     <div id="progressBar" class="audio-player-display">
       <a href="/<%= podcast.slug + "/" + episode.slug %>">
@@ -62,11 +62,11 @@
                          fetch_format: "auto",
                          id: "episode-profile-image",
                          alt: episode.title) %>
-        <img id="animated-bars" src="/assets/animated-bars.gif">
+        <img id="animated-bars" src="/assets/animated-bars.gif" alt="animated volume bars">
       </a>
       <span id="barPlayPause">
-        <img class="butt play-butt" src="/assets/playbutt.png">
-        <img class="butt pause-butt" src="/assets/pausebutt.png">
+        <img class="butt play-butt" src="/assets/playbutt.png" alt="play">
+        <img class="butt pause-butt" src="/assets/pausebutt.png" alt="pause">
       </span>
       <span id="volume">
         <span id="volumeindicator" class="volume-icon-wrapper showing">
