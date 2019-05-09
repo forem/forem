@@ -39,6 +39,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         onClick={[Function]}
       >
         <img
+          alt="upload images"
           src=""
         />
          IMAGES
@@ -48,6 +49,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         onClick={[Function]}
       >
         <img
+          alt="open overlay menu"
           src=""
         />
       </button>
@@ -65,6 +67,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="upload images"
         src=""
       />
        IMAGES
@@ -74,6 +77,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       onClick={[Function]}
     >
       <img
+        alt="open overlay menu"
         src=""
       />
     </button>

@@ -20,7 +20,7 @@ class MediumTag < LiquidTagBase
           <div class='ltag__link__content'>
             <h2>#{response[:title]}</h2>
             <h3>#{response[:author]}</h3>
-            #{inline_svg('medium_icon.svg', size: '27px*27px')} Medium
+            #{inline_svg('medium_icon.svg', size: '27px*27px', aria: true, title: 'medium logo')} Medium
             <div class='ltag__link__taglist'>#{response[:reading_time]}</div>
           </div>
         </a>
