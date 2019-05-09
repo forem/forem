@@ -31,7 +31,9 @@
       data-algolia-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
+
     <%= render "articles/sidebar" %>
+
     <div class="articles-list" id="articles-list">
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label">
@@ -80,10 +82,12 @@
           <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
         </button>
       </div>
+
       <% if @home_page %>
         <% @featured_story ||= @stories.where.not(main_image: nil).first&.decorate || Article.new %>
         <% @stories = @stories.decorate %>
-        <% end %>
+      <% end %>
+
       <% if @featured_story.id %>
         <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
         <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
@@ -98,8 +102,12 @@
             <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
               <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(90) %>" alt="<%= @featured_story.title %>" />
             </a>
-            <div class="featured-user-name"><a href="/<%= @featured_story.cached_user.username %>"><%= @featured_story.cached_user.name %>
-              ・<%= @featured_story.readable_publish_date %><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span></a></div>
+            <div class="featured-user-name">
+              <a href="/<%= @featured_story.cached_user.username %>">
+                <%= @featured_story.cached_user.name %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
+                <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
+              </a>
+            </div>
             <div class="featured-tags tags">
               <% @featured_story.cached_tag_list_array.each do |tag| %>
                 <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
@@ -136,16 +144,20 @@
           </div>
         </a>
       <% end %>
+
       <div id="article-index-podcast-div"></div>
+
       <div class="substories" id="substories">
         <% if @stories.any? %>
           <%= render "stories/main_stories_feed" %>
         <% end %>
       </div>
+
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>
     </div>
+
     <%= render "articles/sidebar_additional" %>
   </div>
 
