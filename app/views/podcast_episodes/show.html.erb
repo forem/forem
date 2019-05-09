@@ -32,14 +32,13 @@
 
 <div class="podcast-episode-container">
   <div class="hero">
-    <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= cl_image_path(
-                                                                                @podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
-                                                                                type: "fetch",
-                                                                                quality: "auto",
-                                                                                sign_url: true,
-                                                                                flags: "progressive",
-                                                                                fetch_format: "jpg")
-                                                                             %>)">
+    <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
+                                 type: "fetch",
+                                 quality: "auto",
+                                 sign_url: true,
+                                 flags: "progressive",
+                                 fetch_format: "jpg") %>
+    <div class="title" style="background:#<%= @podcast.main_color_hex %> url(<%= image_url %>)">
       <h2>
         <a href="/<%= @podcast.slug %>">
           <img alt="<%= @podcast.title %>" src="<%= cloudinary(@podcast.image_url, 60, 80) %>" /><%= @podcast.title %>
@@ -63,7 +62,8 @@
                          sign_url: true,
                          flags: "progressive",
                          fetch_format: "auto",
-                         class: "main-image") %>
+                         class: "main-image",
+                         alt: @podcast.title) %>
         <img alt="Play Button" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
         <img alt="Pause Button" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
         <div class="status-message" id="status-message-<%= @episode.slug %>">
