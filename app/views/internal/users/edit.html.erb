@@ -82,7 +82,8 @@
       <strong>completely destroy the user</strong> and convert all of their articles & comments into a ghost author. This action is irreversible.
     </p>
     <p><strong>Do not do this lightly.</strong></p>
-    <%= form_for(@user, url: ghost_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? 👻 This is extremely destructive and irreversible. The user will be deleted and their articles & comments will be converted to Ghost')" }) do %>
+    <%= form_for(@user, url: full_delete_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? 👻 This is extremely destructive and irreversible. The user will be deleted and their articles & comments will be converted to Ghost')" }) do |f| %>
+      <%= f.hidden_field :ghostify, value: true %>
       <button class="btn btn-danger" style="font-size:2em;">👻 Fully Delete User & Ghostify 👻</button>
     <% end %>
   <% else %>

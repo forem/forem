@@ -39,7 +39,6 @@ Rails.application.routes.draw do
         post "full_delete"
         patch "user_status"
         post "merge"
-        post "ghost"
       end
     end
     resources :classified_listings
