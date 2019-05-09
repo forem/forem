@@ -30,6 +30,8 @@ module ApplicationHelper
       notifications
       reading_list_items
       html_variants
+      classified_listings
+      credits
     ].include?(controller_name)
   end
 
@@ -67,7 +69,7 @@ module ApplicationHelper
   end
 
   def icon(name, pixels = "20")
-    image_tag icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels
+    image_tag(icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels)
   end
 
   def icon_url(name)
@@ -116,25 +118,6 @@ module ApplicationHelper
                   flags: "progressive",
                   fetch_format: "auto",
                   sign_url: true)
-  end
-
-  def cloud_social_image(article)
-    cache_key = "article-social-img-#{article}-#{article.updated_at}-#{article.comments_count}"
-
-    Rails.cache.fetch(cache_key, expires_in: 1.hour) do
-      src = GeneratedImage.new(article).social_image
-      return src if src.start_with? "https://res.cloudinary.com/"
-
-      cl_image_path(src,
-                    type: "fetch",
-                    width: "1000",
-                    height: "500",
-                    crop: "imagga_scale",
-                    quality: "auto",
-                    flags: "progressive",
-                    fetch_format: "auto",
-                    sign_url: true)
-    end
   end
 
   def tag_colors(tag)
@@ -200,12 +183,11 @@ module ApplicationHelper
   end
 
   def logo_svg
-    logo = if ApplicationConfig["LOGO_SVG"].present?
-             ApplicationConfig["LOGO_SVG"].html_safe
-           else
-             inline_svg("devplain.svg", class: "logo", size: "20% * 20%")
-           end
-    logo
+    if ApplicationConfig["LOGO_SVG"].present?
+      ApplicationConfig["LOGO_SVG"].html_safe
+    else
+      inline_svg("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
+    end
   end
 
   def community_qualified_name

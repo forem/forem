@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe User, type: :model do
-  let(:user)            { create(:user) }
+  let!(:user)           { create(:user) }
   let(:returning_user)  { create(:user, signup_cta_variant: nil) }
   let(:second_user)     { create(:user) }
   let(:article)         { create(:article, user_id: user.id) }
@@ -140,6 +140,18 @@ RSpec.describe User, type: :model do
     it "does not accept invalid behance url" do
       user.behance_url = "ben.com"
       expect(user).not_to be_valid
+    end
+
+    it "does not accept invalid twitch url" do
+      user.twitch_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid https twitch url" do
+      %w[pandyzhao pandyzhao/ PandyZhao_ pandy_Zhao].each do |username|
+        user.twitch_url = "https://twitch.tv/#{username}"
+        expect(user).to be_valid
+      end
     end
 
     it "accepts valid https stackoverflow url" do
@@ -380,6 +392,18 @@ RSpec.describe User, type: :model do
     end
 
     context "when estimating the default language" do
+      it "sets correct language_settings by default" do
+        user2 = create(:user, email: nil)
+        expect(user2.language_settings).to eq("preferred_languages" => %w[en])
+      end
+
+      it "sets correct language_settings by default after the callbacks" do
+        perform_enqueued_jobs do
+          user2 = create(:user, email: nil)
+          expect(user2.language_settings).to eq("preferred_languages" => %w[en])
+        end
+      end
+
       it "estimates default language to be nil" do
         perform_enqueued_jobs do
           user.estimate_default_language!
@@ -399,6 +423,7 @@ RSpec.describe User, type: :model do
         perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
           new_user.estimate_default_language!
+          expect(user.reload.estimated_default_language).to eq(nil)
         end
       end
 
@@ -407,8 +432,20 @@ RSpec.describe User, type: :model do
           user.update_column(:email, "ben@hello.jp")
           user.estimate_default_language!
         end
-        expect(user.reload.decorate.preferred_languages_array).to include("ja")
+        expect(user.reload.preferred_languages_array).to include("ja")
       end
+    end
+  end
+
+  describe "#preferred_languages_array" do
+    it "returns a correct array when language settings are in a new format" do
+      user.update_columns(language_settings: { estimated_default_language: "en", preferred_languages: %w[en ru it] })
+      expect(user.preferred_languages_array).to eq(%w[en ru it])
+    end
+
+    it "returns a correct array when language settings are in the old format" do
+      user.update_columns(language_settings: { estimated_default_language: "en", prefer_language_en: true, prefer_language_ja: false, prefer_language_es: true })
+      expect(user.preferred_languages_array).to eq(%w[en es])
     end
   end
 

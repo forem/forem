@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'connect/_channel-details';
+@import 'mixins';
 
 // High level classes
 .chat-page-wrapper{
@@ -53,8 +54,11 @@
   background: lighten($green,30%);
   margin-bottom: 5px;
   &:hover{
-    background: lighten($green, 20%);
-    background: var(--theme-container-background-hover, lighten($green, 20%))
+    @include themeable(
+      background, 
+      theme-container-background-hover, 
+      lighten($green, 20%)
+    );
   }
 }
 
@@ -139,8 +143,11 @@
 }
 
 .chat__channeltypefilterbutton--inactive {
-  color: black;
-  color: var(--theme-container-color, black);
+  @include themeable(
+    color, 
+    theme-container-color, 
+    black
+  );
 }
 
 .chat_chatconfig{
@@ -152,8 +159,11 @@
   padding: 3px 12px;
   display: inline-block;
   border-radius: 3px;
-  background: $lightest-gray;
-  background: var(--theme-background, $lightest-gray);
+  @include themeable(
+    background, 
+    theme-background, 
+    $lightest-gray
+  );
   border: 1px solid $light-medium-gray;
   font-weight: bold;
   cursor: default;
@@ -266,8 +276,11 @@
   padding: 20px;
   margin-bottom: 10px;
   max-width: 900px;
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
+  @include themeable(
+    box-shadow, 
+    theme-container-box-shadow, 
+    $bold-shadow
+  );
   h2{
     margin:5px auto 5px;
   }
@@ -299,18 +312,30 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid $outline-color;
-  border: var(--theme-container-border, 1px solid $outline-color);
-  box-shadow: $bold-shadow;
-  box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-  background: white;
-  background: var(--theme-container-background, white);
+  @include themeable(
+    border, 
+    theme-container-border, 
+    1px solid $outline-color
+  );
+  @include themeable(
+    box-shadow, 
+    theme-container-box-shadow, 
+    $bold-shadow
+  );
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
   flex-flow: row nowrap;
 }
 
 .activechatchannel__conversation{
-  border-top: 1px solid $outline-color;
-  border-top: var(--theme-container-border, 1px solid $outline-color);
+  @include themeable(
+    border-top, 
+    theme-container-border, 
+    1px solid $outline-color
+  );
   order: 1;
   display: flex;
   flex-direction: column;
@@ -323,16 +348,25 @@
 }
 
 .activechatchannel__header{
-  border-bottom: 1px solid $light-medium-gray;
-  border-bottom: var(--theme-container-border, 1px solid $light-medium-gray);
+  @include themeable(
+    border-bottom, 
+    theme-container-border, 
+    1px solid $light-medium-gray
+  );
   padding: 10px 12px;
   font-weight: bold;
   font-size:14px;
-  background: $light-gray;
-  background: var(--theme-container-accent-background, $light-gray);
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    $light-gray
+  );
   a {
-    color: $black;
-    color: var(--theme-color, $black);
+    @include themeable(
+      color, 
+      theme-color, 
+      $black
+    );
   }
 }
 
@@ -370,10 +404,16 @@
 }
 
 .activechatchannel__form {
-  border-top: 1px solid $outline-color;
-  border-top: var(--theme-container-border, 1px solid $outline-color);
-  background: #ededed;
-  background: var(--theme-container-accent-background, #ededed);
+  @include themeable(
+    border-top, 
+    theme-container-border, 
+    1px solid $outline-color
+  );
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    #ededed
+  );
   width: 100%;
   height: 70px;
 }
@@ -398,8 +438,11 @@
   padding: 13px;
   min-width: 45%;
   // margin-left: -50%;
-  background: white;
-  background: var(--theme-container-accent-background, white);
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    white
+  );
   // flex-basis: 80%;
   z-index: 200;
   position: relative;
@@ -435,8 +478,11 @@
 .activechatchannel__activecontentexitbutton{
   border:  0px;
   font-size: 36px;
-  color: $medium-gray;
-  color: var(--theme-container-color, $medium-gray);
+  @include themeable(
+    color, 
+    theme-container-color, 
+    $medium-gray
+  );
   padding:0px;
   background: transparent;
   position: absolute;
@@ -458,8 +504,11 @@
   font-family: $monospace;
   font-size:0.85em;
   a{
-    color: $dark-gray;
-    color: var(--theme-container-color, $dark-gray);
+    @include themeable(
+      color, 
+      theme-container-color, 
+      $dark-gray
+    );
   }
   .activechatchannel__activeArticleDetailsPath{
     display: inline-block;
@@ -551,8 +600,11 @@
   left:0px;
   right:0px;
   padding: 19px;
-  background: white;
-  background: var(--theme-container-accent-background, white);
+  @include themeable(
+    background, 
+    theme-container-accent-background, 
+    white
+  );
   z-index: 20;
   border-top: 1px solid $light-medium-gray;
   border-bottom: 1px solid $light-medium-gray;
@@ -560,8 +612,11 @@
   button {
     margin-right: 15px;
     width: 54px;
-    background: #f2f3f5;
-    background: var(--theme-container-background, #f2f3f5);
+    @include themeable(
+      background, 
+      theme-container-background, 
+      #f2f3f5
+    );
     border-radius: 100px !important;
     border-width: 0;
     padding: 5px 10px;
@@ -631,8 +686,11 @@
   background: transparent;
   padding:3px 0px;
   margin-bottom: -5px 0;
-  color: $black;
-  color: var(--theme-color, $black);
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
   &:hover {
     .chatchanneltab--inactive {
       border: 1px solid $outline-color;
@@ -662,8 +720,11 @@
 }
 
 .chatchanneltab--active {
-  background: white;
-  background: var(--theme-container-background, white);
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
   border: 1px solid $dark-purple;
   box-shadow: 3px 3px 0px $dark-purple;
 }
@@ -744,8 +805,11 @@
   bottom: -14px;
   left: 0;
   right: 0;
-  background: $lightest-gray;
-  background: var(--theme-background, $lightest-gray);
+  @include themeable(
+    background, 
+    theme-background, 
+    $lightest-gray
+  );
   border-top: 1px solid $light-medium-gray;
   padding: 8px 10px 20px;
   font-weight: bold;
@@ -790,11 +854,17 @@
   // justify-content: space-between;
   max-width: 100%;
   &:hover {
-    background: $light-gray;
-    background: var(--theme-container-background-hover, $light-gray);
+    @include themeable(
+      background, 
+      theme-container-background-hover, 
+      $light-gray
+    );
     .chatmessagebody__username--link {
-      background: transparent;
-      background: var(--theme-container-background-hover, transparent);
+      @include themeable(
+        background, 
+        theme-container-background-hover, 
+        transparent
+      );
     }
 
   }
@@ -862,8 +932,11 @@
   padding: 0px 2px;
   display: inline-block;
   &:hover {
-    background: transparent;
-    background: var(--theme-container-background-hover, transparent);
+    @include themeable(
+      background, 
+      theme-container-background-hover, 
+      transparent
+    );
   }
 }
 
@@ -885,10 +958,16 @@
     padding-left: 8px;
   }
   a h1 {
-    color: $black;
-    color: var(--theme-container-color, $black);
-    border-color: #0a0a0a !important;
-    border-color: var(--theme-container-color, #0a0a0a) !important;
+    @include themeable(
+      color, 
+      theme-container-color, 
+      $black
+    );
+    @include themeable-important(
+      border-color, 
+      theme-container-color, 
+      #0a0a0a
+    );
   }
 }
 
@@ -943,8 +1022,11 @@
   top: -27px;
   left: 35px;
   font-family: $monospace;
-  color: $dark-gray;
-  color: var(--theme-color, $dark-gray);
+  @include themeable(
+    color, 
+    theme-color, 
+    $dark-gray
+  );
 }
 
 .CodeMirror{

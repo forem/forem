@@ -1,10 +1,7 @@
-require "dry-types"
-require "dry-struct"
-
 module Notifications
   module NewFollower
     module Types
-      include Dry::Types.module
+      include Dry.Types
     end
 
     class FollowData < Dry::Struct

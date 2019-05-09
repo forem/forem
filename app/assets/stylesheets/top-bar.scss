@@ -1,4 +1,6 @@
 @import 'variables';
+@import 'mixins';
+
 .stories-index,
 .comments-index,
 .users-index,
@@ -20,8 +22,11 @@
   z-index: 1000;
   font-size: 17px;
   height: 48px;
-  background: $tan;
-  background: var(--theme-top-bar-background, $tan);
+  @include themeable(
+    background, 
+    theme-top-bar-background, 
+    $tan
+  );
   position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
@@ -41,8 +46,11 @@
         width: 28px;
         text-align: center;
         opacity: 0.75;
-        filter: invert(0);
-        filter: var(--theme-social-icon-invert, invert(0));
+        @include themeable(
+          filter, 
+          theme-social-icon-invert, 
+          invert(0)
+        );
         img {
           width: 15px;
           height: 15px;
@@ -87,8 +95,16 @@
       border-radius: 3px;
       border: 2px solid $black;
       border: 2px solid var(--theme-top-bar-write-color, $black);
-      color: var(--theme-top-bar-write-color, $black);
-      background: var(--theme-top-bar-write-background, $green);
+      @include themeable(
+        color, 
+        theme-top-bar-write-color, 
+        $black
+      );
+      @include themeable(
+        background, 
+        theme-top-bar-write-background, 
+        $green
+      );
       @media screen and (min-width: 560px) {
         display: block;
         right: 140px;
@@ -106,7 +122,11 @@
       z-index: 10;
       top: 1px;
       right: 90px;
-      fill: var(--theme-top-bar-color, $black);
+      @include themeable(
+        fill, 
+        theme-top-bar-color, 
+        $black
+      );
       @media screen and (min-width: 700px) {
         right: 110px;
       }
@@ -145,7 +165,11 @@
       display: block;
       text-align: center;
       z-index: 10;
-      fill: var(--theme-top-bar-color, $black);
+      @include themeable(
+        fill, 
+        theme-top-bar-color, 
+        $black
+      );
       @media screen and (min-width: 700px) {
         right: 73px;
       }
@@ -191,10 +215,10 @@
         border-radius: 100%;
         margin-top: -1px;
         margin-left: -1px;
-        -ms-user-select:none;
-        -moz-user-select:none;
-        -webkit-user-select:none;
-        user-select:none;
+        -ms-user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
     }
     .bars {
@@ -213,7 +237,9 @@
         }
       }
       &.desktop {
-        &:hover,&:active,&:focus {
+        &:hover,
+        &:active,
+        &:focus {
           .menu {
             display: block;
           }
@@ -252,8 +278,11 @@
       right: -3px;
       padding: 5px 10px;
       text-align: left;
-      background: $tan;
-      background: var(--theme-top-bar-background, $tan);
+      @include themeable(
+        background, 
+        theme-top-bar-background, 
+        $tan
+      );
       border: 1px solid rgb(219, 222, 225);
       border-top: 0px;
       display: none;
@@ -283,7 +312,12 @@
           padding: 6px 10px;
         }
         &.prime-option {
-          border-bottom: 3px solid #7a7e81;
+          border-bottom: 3px solid;
+          @include themeable(
+            border-color,
+            theme-prime-option-border-color,
+            #7a7e81
+          );
           margin-bottom: 5px;
           font-size: 1.22em;
           font-weight: 500;
@@ -291,17 +325,23 @@
           text-overflow: ellipsis;
         }
         &:hover {
-          background: darken($tan, 2%);
-          background: var(--theme-top-bar-background-hover, darken($tan, 2%));
+          @include themeable(
+            background, 
+            theme-top-bar-background-hover, 
+            darken($tan, 2%)
+          );
         }
       }
       a {
-        color: $black;
-        color: var(--theme-color, $black);
+        @include themeable(
+          color, 
+          theme-color, 
+          $black
+        );
       }
     }
   }
-  
+
   .skip-content-link {
     position: absolute;
     top: 0;
@@ -316,7 +356,7 @@
     opacity: 0;
     transition: opacity 0.3s $ease-in-cubic, transform 0.3s $ease-in-cubic;
 
-    &:focus {      
+    &:focus {
       pointer-events: auto;
       opacity: 1;
       transform: translate(-50%, 22px);
@@ -333,11 +373,17 @@
     height: 21px;
     padding: 7px 8px 6px 10px;
     margin-top: 7px;
-    fill: white;
-    fill: var(--theme-logo-color, white);
+    @include themeable(
+      fill, 
+      theme-logo-color, 
+      white
+    );
     border-radius: 3px;
-    background: $black;
-    background: var(--theme-logo-background, $black);
+    @include themeable(
+      background, 
+      theme-logo-background, 
+      $black
+    );
   }
 }
 
@@ -372,14 +418,24 @@
     border: 0px;
     padding: 8px;
     font-size: 0.9em;
-    background: #e8e7e7;
-    background: var(--theme-top-bar-search-background, #e8e7e7);
-    color: var(--theme-top-bar-search-color, $black);
+    @include themeable(
+      background, 
+      theme-top-bar-search-background, 
+      #e8e7e7
+    );
+    @include themeable(
+      color, 
+      theme-top-bar-search-color, 
+      $black
+    );
     -webkit-appearance: none;
     &::placeholder {
       opacity: 0.5;
-      color: $black;
-      color: var(--theme-top-bar-search-color, $black);
+      @include themeable(
+        color, 
+        theme-top-bar-search-color, 
+        $black
+      );
     }
   }
 }

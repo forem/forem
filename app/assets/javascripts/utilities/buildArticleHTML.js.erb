@@ -1,6 +1,6 @@
 function buildArticleHTML(article) {
   if (article && article.type_of == "podcast_episodes") {
-    return '<div class="single-article single-article-small-pic">\
+    return '<div class="single-article single-article-small-pic single-article-single-podcast">\
       <div class="small-pic">\
        <a href="/'+article.podcast.slug+'" class="small-pic-link-wrapper">\
          <img src="'+article.podcast.image_url+'" alt="'+article.podcast.title+' image">\
@@ -77,20 +77,24 @@ function buildArticleHTML(article) {
     }
     var saveButton = '';
     if (article.class_name === "Article") {
-      var saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
-                        <span class="bm-success">SAVED</span>\
-                        <span class="bm-initial">SAVE</span>\
-                      </button>'
+      saveButton = '<button class="article-engagement-count bookmark-engage" data-reactable-id="'+article.id+'">\
+                      <span class="bm-initial">SAVE</span>\
+                      <span class="bm-success">SAVED</span>\
+                    </button>'
     } else if (article.class_name === "User") {
-      var saveButton = '<button style="width: 122px" class="article-engagement-count bookmark-engage follow-action-button"\
+      saveButton = '<button style="width: 122px" class="article-engagement-count bookmark-engage follow-action-button"\
                        data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
-                      </button>'
+                    </button>'
     }
 
     var publishDate = '';
     if (article.readable_publish_date) {
-      publishDate = '・'+article.readable_publish_date
+      if (article.published_timestamp) {
+        publishDate = '・' + '<time datetime="'+article.published_timestamp+'">'+article.readable_publish_date+'</time>';
+      } else {
+        publishDate = '・' + '<time>'+article.readable_publish_date+'</time>';
+      }
     }
     var readingTimeHTML = '';
     if (article.reading_time && article.class_name === "Article") {
@@ -100,7 +104,7 @@ function buildArticleHTML(article) {
     }
     var videoHTML = '';
     if (article.cloudinary_video_url) {
-      videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" />'+article.video_duration_in_minutes+'</div></a>'
+      videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+article.video_duration_in_minutes+'</div></a>'
     }
     var timeAgoInWords = '';
     if (article.published_at_int) {

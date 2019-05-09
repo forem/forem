@@ -22,7 +22,7 @@
     <meta name="twitter:image:src" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= cloudinary(@podcast.image_url, 300) %>">
   <% end %>
 <% else %>
-  <% title "Podcasts on The Practical Dev" %>
+  <% title "Podcasts" %>
   <%= content_for :page_meta do %>
     <link rel="canonical" href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/pod" />
     <meta name="description" content="Discover technical podcasts for developers">

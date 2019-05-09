@@ -75,7 +75,7 @@ class GithubTag
 
       "<h1> " \
         "<a href=\"#{link}\">" \
-          "<img class=\"github-logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\" /><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \
+          "<img class=\"github-logo\" alt=\"GitHub logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\"><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \
         "</a>" \
       "</h1> "
     end

@@ -1,6 +1,11 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[rlyweb now membership survey badge shecoded]
+  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded]
+
+  def show
+    @page = Page.find_by!(slug: params[:slug])
+    set_surrogate_key_header "show-page-#{params[:slug]}"
+  end
 
   def now
     set_surrogate_key_header "now_page"
@@ -11,6 +16,8 @@ class PagesController < ApplicationController
   end
 
   def about
+    @page = Page.find_by(slug: "about")
+    render :show if @page
     set_surrogate_key_header "about_page"
   end
 
@@ -18,17 +25,6 @@ class PagesController < ApplicationController
     @html_variant = HtmlVariant.find_for_test([], "badge_landing_page")
     render layout: false
     set_surrogate_key_header "badge_page"
-  end
-
-  def membership
-    flash[:notice] = ""
-    flash[:error] = ""
-    @members = members_for_display
-    set_surrogate_key_header "membership_page"
-  end
-
-  def membership_form
-    render "membership_form", layout: false
   end
 
   def report_abuse

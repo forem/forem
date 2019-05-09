@@ -40,12 +40,20 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
     make_matches
+    manage_credits
     add_note if user_params[:new_note]
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
     else
       redirect_to "/internal/users/#{params[:id]}"
     end
+  end
+
+  def manage_credits
+    add_credits if user_params[:add_credits]
+    add_org_credits if user_params[:add_org_credits]
+    remove_org_credits if user_params[:remove_org_credits]
+    remove_credits if user_params[:remove_credits]
   end
 
   def add_note
@@ -56,6 +64,28 @@ class Internal::UsersController < Internal::ApplicationController
       reason: "misc_note",
       content: user_params[:new_note],
     )
+  end
+
+  def add_credits
+    amount = user_params[:add_credits].to_i
+    Credit.add_to(@user, amount)
+  end
+
+  def remove_credits
+    amount = user_params[:remove_credits].to_i
+    Credit.remove_from(@user, amount)
+  end
+
+  def add_org_credits
+    org = Organization.find(@user.organization_id)
+    amount = user_params[:add_org_credits].to_i
+    Credit.add_to_org(org, amount)
+  end
+
+  def remove_org_credits
+    org = Organization.find(@user.organization_id)
+    amount = user_params[:remove_org_credits].to_i
+    Credit.remove_from_org(org, amount)
   end
 
   def user_status
@@ -127,6 +157,10 @@ class Internal::UsersController < Internal::ApplicationController
                                  :user_status,
                                  :toggle_mentorship,
                                  :pro,
-                                 :merge_user_id)
+                                 :merge_user_id,
+                                 :add_credits,
+                                 :remove_credits,
+                                 :add_org_credits,
+                                 :remove_org_credits)
   end
 end

@@ -30,12 +30,16 @@ RSpec.describe "Moderations", type: :request do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }
+  let(:dev_account) { create(:user) }
 
   it_behaves_like "an elevated privilege required request", "/username/random-article/mod"
   it_behaves_like "an elevated privilege required request", "/username/comment/1/mod"
 
   context "when user is trusted" do
-    before { sign_in user }
+    before do
+      sign_in user
+      allow(User).to receive(:dev_account).and_return(dev_account)
+    end
 
     it "grant access to comment moderation" do
       get comment.path + "/mod"

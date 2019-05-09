@@ -23,7 +23,7 @@ module Moderator
     end
 
     def banish
-      user.unsubscribe_from_newsletters
+      user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
       handle_user_status("Ban", "spam account")
       delete_user_activity
@@ -50,7 +50,7 @@ module Moderator
         location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
         mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "",
         email_public: false, facebook_url: nil, dribbble_url: nil, medium_url: nil, stackoverflow_url: nil,
-        behance_url: nil, linkedin_url: nil, gitlab_url: nil, mastodon_url: nil
+        behance_url: nil, linkedin_url: nil, gitlab_url: nil, mastodon_url: nil, twitch_url: nil
       )
 
       user.update_columns(profile_image: "https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png")

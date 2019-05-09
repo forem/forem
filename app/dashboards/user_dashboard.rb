@@ -38,6 +38,7 @@ class UserDashboard < Administrate::BaseDashboard
     medium_url: Field::String,
     gitlab_url: Field::String,
     linkedin_url: Field::String,
+    twitch_url: Field::String,
     feed_admin_publish_permission: Field::Boolean,
     feed_mark_canonical: Field::Boolean,
     saw_onboarding: Field::Boolean,
@@ -83,6 +84,7 @@ class UserDashboard < Administrate::BaseDashboard
     medium_url
     gitlab_url
     linkedin_url
+    twitch_url
     bg_color_hex
     text_color_hex
     reputation_modifier

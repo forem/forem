@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id, :add_credits, :remove_credits, :add_org_credits, :remove_org_credits
 
   rolify
   include AlgoliaSearch
@@ -34,6 +34,7 @@ class User < ApplicationRecord
   has_many    :rating_votes
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
+  has_many    :credits
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
@@ -91,6 +92,9 @@ class User < ApplicationRecord
   validates :gitlab_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+  validates :twitch_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
   validates :shirt_gender,
             inclusion: { in: %w[unisex womens],
                          message: "%{value} is not a valid shirt style" },
@@ -126,6 +130,7 @@ class User < ApplicationRecord
   validates :mentee_description, :mentor_description,
             length: { maximum: 1000 }
   validates :inbox_type, inclusion: { in: %w[open private] }
+  validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
@@ -138,10 +143,11 @@ class User < ApplicationRecord
   after_save  :subscribe_to_mailchimp_newsletter
   after_save  :conditionally_resave_articles
   after_create :estimate_default_language!
+  before_create :set_default_language
   before_update :mentorship_status_update
   before_validation :set_username
   # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email
+  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -178,15 +184,8 @@ class User < ApplicationRecord
     end
   end
 
-  # Via https://github.com/G5/storext
-  store_attributes :language_settings do
-    estimated_default_language String
-    prefer_language_en Boolean, default: true
-    prefer_language_ja Boolean, default: false
-    prefer_language_es Boolean, default: false
-    prefer_language_fr Boolean, default: false
-    prefer_language_it Boolean, default: false
-    prefer_language_pt Boolean, default: false
+  def estimated_default_language
+    language_settings["estimated_default_language"]
   end
 
   def self.trigger_delayed_index(record, remove)
@@ -251,16 +250,36 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_following_podcasts_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
-      langs = []
-      langs << "en" if prefer_language_en
-      langs << "ja" if prefer_language_ja
-      langs << "es" if prefer_language_es
-      langs << "fr" if prefer_language_fr
-      langs << "it" if prefer_language_it
-      langs
+      preferred_languages_array
     end
+  end
+
+  # handles both old (prefer_language_*) and new (Array of language codes) formats
+  def preferred_languages_array
+    # return @prefer_languages_array if defined? @preferred_languages_array
+    return @preferred_languages_array if defined?(@preferred_languages_array)
+
+    if language_settings["preferred_languages"].present?
+      @preferred_languages_array = language_settings["preferred_languages"].to_a
+    else
+      languages = []
+      language_settings.keys.each do |setting|
+        languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
+      end
+      @preferred_languages_array = languages
+    end
+    @preferred_languages_array
   end
 
   def processed_website_url
@@ -366,14 +385,12 @@ class User < ApplicationRecord
   def settings_tab_list
     tab_list = %w[
       Profile
-      Mentorship
       Integrations
       Notifications
       Publishing\ from\ RSS
       Organization
       Billing
     ]
-    tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
     tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
     tab_list.push("Account", "Misc")
   end
@@ -396,7 +413,19 @@ class User < ApplicationRecord
     roles.where(name: "tag_moderator").any?
   end
 
+  def currently_streaming?
+    currently_streaming_on.present?
+  end
+
+  def currently_streaming_on_twitch?
+    currently_streaming_on == "twitch"
+  end
+
   private
+
+  def set_default_language
+    language_settings["preferred_languages"] ||= ["en"]
+  end
 
   def send_welcome_notification
     Notification.send_welcome_notification(id)
@@ -412,6 +441,10 @@ class User < ApplicationRecord
 
   def verify_email
     self.email = nil if email == ""
+  end
+
+  def verify_twitch_username
+    self.twitch_username = nil if twitch_username == ""
   end
 
   def set_username
@@ -469,6 +502,9 @@ class User < ApplicationRecord
 
   def bust_cache
     CacheBuster.new.bust("/#{username}")
+    CacheBuster.new.bust("/#{username}?i=i")
+    CacheBuster.new.bust("/live/#{username}")
+    CacheBuster.new.bust("/live/#{username}?i=i")
     CacheBuster.new.bust("/feed/#{username}")
   end
   handle_asynchronously :bust_cache

@@ -2,7 +2,7 @@
   <h2> Mentee Description </h2>
   <div class="row" style="font-size:0.85em;position:sticky;top:50px;background:white;z-index:1000;border:2px solid black">
     <div class="col-md-2">
-      <img src="<%= @user.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+      <img src="<%= @user.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" alt="<%= @user.username %> profile image">
       <br />
       <a href="/<%= @user.username %>" target="_blank">@<%= @user.username %></a>
       <br />
@@ -34,7 +34,7 @@
     <% if !possible_mentor.banned_from_mentorship %>
       <div class="row" style="font-size:0.9em">
         <div class="col-md-2">
-          <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" />
+          <img src="<%= possible_mentor.profile_image_90 %>" style="border-radius:100px;width:50px;height:50px;" alt="<%= possible_mentor.username %> profile image">
           <br />
           <a href="/<%= possible_mentor.username %>" target="_blank">@<%= possible_mentor.username %></a>
           <br />

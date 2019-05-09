@@ -68,6 +68,27 @@ RSpec.describe "Following/Unfollowing", type: :request do
       end
     end
 
+    context "when followable_type is a Podcast" do
+      let(:podcast) { create(:podcast) }
+
+      before do
+        post "/follows", params: {
+          followable_type: "Podcast", followable_id: podcast.id
+        }
+      end
+
+      it "follows" do
+        expect(JSON.parse(response.body)["outcome"]).to eq("followed")
+      end
+
+      it "unfollows if already followed" do
+        post "/follows", params: {
+          followable_type: "Podcast", followable_id: podcast.id, verb: "unfollow"
+        }
+        expect(JSON.parse(response.body)["outcome"]).to eq("unfollowed")
+      end
+    end
+
     it "returns articles of tag the user follows" do
       article = create(:article)
       user.follow(Tag.find_by(name: article.tag_list.first))

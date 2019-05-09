@@ -17,7 +17,7 @@
   <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
     <%= render "analytics" %>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: true %>
+      <%= render "dashboard_article", article: article, org_admin: true, manage_view: false %>
     <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
@@ -29,10 +29,9 @@
       <% end %>
 
       <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
-      <div class="clear"></div>
     </div>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: false %>
+      <%= render "dashboard_article", article: article, org_admin: false, manage_view: false %>
     <% end %>
   <% else %>
     <div class="no-articles">
@@ -47,7 +46,7 @@
                                   quality: "auto",
                                   flags: "progressive",
                                   fetch_format: "auto",
-                                  sign_url: true), class: "sloan", alt: "sloth-mascot") %>
+                                  sign_url: true), class: "sloan", alt: "Sloan, the sloth mascot") %>
       <br />
       <h3>Also check out the <a href="/welcome" data-no-instant>Welcome Thread</a> to introduce yourself!</h3>
     </div>

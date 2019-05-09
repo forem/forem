@@ -11,13 +11,13 @@
                            quality: "auto",
                            flags: "progressive",
                            fetch_format: "auto",
-                           sign_url: true) %>
+                           sign_url: true,
+                           alt: "#{article.user.username} profile image") %>
         </div>
         <div class="content">
           <h3><%= article.title %></h3>
           <h4>
-            <%= article.user.name %>
-            <span class="published-at">- <%= article.readable_publish_date if article.published_at %></span>
+            <%= article.user.name %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
           </h4>
         </div>
       </div>
