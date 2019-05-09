@@ -69,7 +69,7 @@ module ApplicationHelper
   end
 
   def icon(name, pixels = "20")
-    image_tag icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels
+    image_tag(icon_url(name), alt: name, class: "icon-img", height: pixels, width: pixels)
   end
 
   def icon_url(name)
