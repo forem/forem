@@ -14,15 +14,15 @@ class GithubTag
       @link = parse_link(link)
       @content = GithubIssue.find_or_fetch(@link)
       @content_json = @content.issue_serialized
-      @body = @content.processed_html
-      @title = generate_title
+      @body = @content.processed_html.html_safe
     end
 
     def render
       ActionController::Base.new.render_to_string(
         partial: PARTIAL,
         locals: {
-          title: @title,
+          title: @content_json[:title],
+          issue_number: @content_json[:number],
           user_html_url: @content_json[:user][:html_url],
           user_avatar_url: @content_json[:user][:avatar_url],
           username: @content_json[:user][:login],
@@ -49,20 +49,6 @@ class GithubTag
       input = input.gsub(/\?.*/, "")
       input = input.gsub(/\d{1,}#issuecomment-/, "comments/") if input.include?("#issuecomment-")
       "https://api.github.com/repos/#{input.gsub(/.*github\.com\//, '')}"
-    end
-
-    def generate_title
-      content_json = @content.issue_serialized
-      title = content_json[:title]
-      number = content_json[:number]
-      link = content_json[:html_url]
-      return unless title
-
-      "<h1> " \
-        "<a href=\"#{link}\">" \
-          "<img class=\"github-logo\" alt=\"GitHub logo\" src=\"#{ActionController::Base.helpers.asset_path('github-logo.svg')}\"><span class=\"issue-title\">#{title}</span> <span class=\"issue-number\">##{number}</span> " \
-        "</a>" \
-      "</h1> "
     end
 
     def finalize_html(input)
