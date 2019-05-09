@@ -37,9 +37,9 @@ RSpec.describe ClassifiedListing, type: :model do
     end
 
     it "cleans images" do
-      classified_listing.body_markdown = "hello <img src='/dssdsdsd.jpg' /> hey hey hey"
+      classified_listing.body_markdown = "hello <img src='/dssdsdsd.jpg'> hey hey hey"
       classified_listing.save
-      expect(classified_listing.processed_html).not_to include("<img>")
+      expect(classified_listing.processed_html).not_to include("<img")
     end
 
     it "doesn't accept more than 8 tags" do
