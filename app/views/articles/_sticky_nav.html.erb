@@ -99,7 +99,7 @@
               </div>
             <% end %>
             <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" alt="<%= article.user.name %> profile image">
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
@@ -115,11 +115,11 @@
           <div class="primary-sticky-nav-element-wrapper">
             <% if index == 0 %>
               <div class="primary-sticky-nav-title">
-                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji"> Trending on <a href="https://dev.to">dev.to</a>
+                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="https://dev.to">dev.to</a>
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" alt="<%= article.user.name %> profile image">
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image"  loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
