@@ -1,4 +1,6 @@
 class YoutubeTag < LiquidTagBase
+  PARTIAL = "liquids/youtube".freeze
+
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
@@ -7,15 +9,14 @@ class YoutubeTag < LiquidTagBase
   end
 
   def render(_context)
-    html = <<-HTML
-    <iframe
-      width="#{@width}"
-      height="#{@height}"
-      src="https://www.youtube.com/embed/#{@id}"
-      allowfullscreen>
-    </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        width: @width,
+        height: @height
+      },
+    )
   end
 
   private
