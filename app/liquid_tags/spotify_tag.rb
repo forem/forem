@@ -16,7 +16,7 @@ class SpotifyTag < LiquidTagBase
   end
 
   def render(_context)
-    ActionController.Base.new.render_to_string(
+    ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
         parsed_uri: @parsed_uri,
