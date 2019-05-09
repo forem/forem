@@ -90,7 +90,11 @@ function buildArticleHTML(article) {
 
     var publishDate = '';
     if (article.readable_publish_date) {
-      publishDate = '・'+article.readable_publish_date
+      if (article.published_timestamp) {
+        publishDate = '・' + '<time datetime="'+article.published_timestamp+'">'+article.readable_publish_date+'</time>';
+      } else {
+        publishDate = '・' + '<time>'+article.readable_publish_date+'</time>';
+      }
     }
     var readingTimeHTML = '';
     if (article.reading_time && article.class_name === "Article") {
