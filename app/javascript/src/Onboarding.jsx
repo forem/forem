@@ -459,6 +459,7 @@ class Onboarding extends Component {
                 <img
                   src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
                   className="sloan-img"
+                  alt="Sloan, the sloth mascot"
                 />
               </div>
               <div className="body-message">{this.toggleOnboardingSlide()}</div>
