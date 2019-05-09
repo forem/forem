@@ -22,6 +22,7 @@
       <img class="profile-image"
            src="<%= ProfileImage.new(followable).get(200) %>"
            alt="<%= followable.name %> profile image"
+           loading="lazy"
            data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"
            style="border: 4px solid <%= followable.bg_color_hex %>" /></a>
   </div>

@@ -49,7 +49,7 @@ function buildArticleHTML(article) {
     var profileUsername = article.user.username
     var orgHeadline = "";
     if (article.organization && !document.getElementById("organization-article-index")) {
-      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><span class="article-organization-headline-inner"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'">'+article.organization.name+'</span></a></div>'
+      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><span class="article-organization-headline-inner"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</span></a></div>'
     }
     var bodyTextSnippet = "";
     var commentsBlobSnippet = "";
@@ -115,7 +115,7 @@ function buildArticleHTML(article) {
       '+orgHeadline+'\
       <div class="small-pic">\
        <a href="/'+profileUsername+'" class="small-pic-link-wrapper">\
-         <img src="'+picUrl+'" alt="'+profileUsername+' profile">\
+         <img src="'+picUrl+'" alt="'+profileUsername+' profile" loading="lazy">\
        </a>\
        </div>\
        <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
