@@ -1,22 +1,17 @@
 class BlogcastTag < LiquidTagBase
+  PARTIAL = "liquids/blogcast".freeze
   def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
   end
 
   def render(_context)
-    html = <<-HTML
-      <div class="ltag_blogcast">
-        <iframe frameborder="0"
-          scrolling="no"
-          id="blogcast_#{@id}"
-          mozallowfullscreen="true"
-          src="https://blogcast.host/embed/#{@id}"
-          style="width:100%;min-height:132px;overflow:hidden;margin:0;"
-          webkitallowfullscreen="true"></iframe>
-      </div>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        id: @id
+      },
+    )
   end
 
   private
