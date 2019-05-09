@@ -10,6 +10,25 @@ RSpec.describe SpotifyTag, type: :liquid_template do
       Liquid::Template.parse("{% spotify #{link} %}")
     end
 
+    def generate_iframe(uri, height)
+      parsed_uri = uri.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
+      <<~HTML
+        <iframe
+          width="100%"
+          height="#{height}px"
+          scrolling="no"
+          frameborder="0"
+          allowtransparency="true"
+          allow="encrypted-media"
+          src="#{parsed_uri} ">
+        </iframe>
+      HTML
+    end
+
+    it "generals the proper iframe if the uri is valid" do
+      expect(generate_tag(valid_uri).render).to eq(generate_iframe(valid_uri, 80))
+    end
+
     it "does not raise an error if the uri is valid" do
       expect { generate_tag(valid_uri) }.not_to raise_error
     end
