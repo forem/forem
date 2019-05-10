@@ -301,27 +301,6 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "#send_tag_adjustment_notification" do
-    let(:tag)             { create(:tag) }
-    let(:article)         { create(:article, user: user2, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
-    let(:tag_adjustment)  { create(:tag_adjustment, tag: tag, user: user, article: article) }
-
-    before do
-      user.add_role(:tag_moderator, tag)
-    end
-
-    it "notifies the author of the article" do
-      Notification.send_tag_adjustment_notification_without_delay(tag_adjustment)
-      expect(Notification.first.user_id).to eq user2.id
-    end
-
-    it "updates the author's last_moderation_notification" do
-      original_last_moderation_notification_timestamp = user2.last_moderation_notification
-      Notification.send_tag_adjustment_notification_without_delay(tag_adjustment)
-      expect(user2.reload.last_moderation_notification).to be > original_last_moderation_notification_timestamp
-    end
-  end
-
   describe "#send_milestone_notification" do
     # milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
     let(:view_milestone_hash) { { type: "View", article: article } }
