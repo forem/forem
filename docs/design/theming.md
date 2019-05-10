@@ -62,7 +62,7 @@ div {
 }
 ```
 
-This can be too much work and browser fallback can be forgotten. For a better developer experience, you should use the 2 minxins defined in `app/assets/stylesheets/_mixins.scss` called `themeable` and `themeable-important`. They take 3 arguments. The first argument is the CSS property like `color` or `background`, the second argument is the CSS custom property name (without `--`) like `theme-color` and the third argument is the CSS value like `$black` or `white`.
+This can be too much work and browser fallback can be forgotten. For a better developer experience, you should use the 2 mixins defined in `app/assets/stylesheets/_mixins.scss` called `themeable` and `themeable-important`. They take 3 arguments. The first argument is the CSS property like `color` or `background`, the second argument is the CSS custom property name (without `--`) like `theme-color` and the third argument is the CSS value like `$black` or `white`.
 
 Make sure to import the mixin in your SCSS file and use it like this:
 
