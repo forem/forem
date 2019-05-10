@@ -5,9 +5,11 @@
       <label></label>
       <%= f.hidden_field :feed_url, value: @user.feed_url %>
       <%= f.hidden_field :tab, value: @tab %>
-      <%= f.submit "Re-Fetch" %>
+      <%= f.submit "Refresh Feed" %>
       <p><em>
-        Last Updated: <%= @user.feed_fetched_at.getlocal.strftime("%b %d, %I:%M%p") %>
+        Last Updated: <time id="rss-fetch-time" datetime="<%= @user.feed_fetched_at.iso8601 %>">
+          <%= @user.feed_fetched_at.strftime("%b %d, %H:%M:%S %Z") %>
+        </time>
       </em></p>
     </div>
   <% end %>
