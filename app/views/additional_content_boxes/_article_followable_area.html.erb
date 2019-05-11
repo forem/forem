@@ -1,14 +1,17 @@
 <% if followable.class.name == "Organization" && followable.nav_image.present? %>
   <div class="profile-pic-wrapper wide-profile-image-wrapper">
     <a href="<%= followable.path + article.decorate.internal_utm_params %>">
-      <img class="wide-image" src="<%= cl_image_path(followable.nav_image_url,
-                                                     type: "fetch",
-                                                     crop: "fill",
-                                                     width: 220,
-                                                     quality: "auto",
-                                                     flags: "progressive",
-                                                     fetch_format: "auto",
-                                                     sign_url: true) %>" />
+      <img
+        class="wide-image"
+        alt="<%= followable.name %> profile image"
+        src="<%= cl_image_path(followable.nav_image_url,
+                               type: "fetch",
+                               crop: "fill",
+                               width: 220,
+                               quality: "auto",
+                               flags: "progressive",
+                               fetch_format: "auto",
+                               sign_url: true) %>">
     </a>
   </div>
 <% else %>
@@ -18,6 +21,8 @@
        data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE">
       <img class="profile-image"
            src="<%= ProfileImage.new(followable).get(200) %>"
+           alt="<%= followable.name %> profile image"
+           loading="lazy"
            data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"
            style="border: 4px solid <%= followable.bg_color_hex %>" /></a>
   </div>

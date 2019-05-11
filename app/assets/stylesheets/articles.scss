@@ -232,6 +232,7 @@
       );
       @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
       border-radius: 3px;
+      cursor: pointer;
       width: 96%;
       margin: auto;
       position: relative;
@@ -282,7 +283,11 @@
           display: block;
           padding: 4px 14px 7px;
           &:hover {
-            @include themeable(background, theme-container-background-hover, $light-gray);
+            @include themeable(
+              background,
+              theme-container-background-hover,
+              $light-gray
+            );
           }
         }
         p {
@@ -742,11 +747,6 @@
           position: relative;
           top: 1px;
         }
-        .bm-initial {
-          &:after {
-            content: 'SAVE';
-          }
-        }
         &.selected {
           color: darken($purple, 33%);
           background: transparent;
@@ -756,14 +756,6 @@
           }
           .bm-success {
             display: inline-block;
-
-            &:before {
-              content: 'SAVED';
-            }
-
-            &:hover:before {
-              content: 'UNSAVE';
-            }
           }
         }
         &.following-butt {
@@ -929,7 +921,11 @@
           $bold-shadow
         );
         &:hover {
-          @include themeable(background, theme-container-background-hover, $light-gray);
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            $light-gray
+          );
         }
         // background:red;
         .sidebar-profile-snapshot-inner {
@@ -1052,7 +1048,7 @@
             width: 19px;
             vertical-align: -2px;
           }
-  
+
           a.sidebar-nav-link {
             @include themeable(color, theme-container-color, $black);
             padding: 5px;
@@ -1135,11 +1131,7 @@
       }
       &.podcast-pic-widget {
         a {
-          @include themeable(
-            color, 
-            theme-color, 
-            $black
-          );
+          @include themeable(color, theme-color, $black);
         }
         .widget-body {
           padding-bottom: 10px;
@@ -1171,8 +1163,8 @@
           }
           &:hover {
             @include themeable(
-              background, 
-              theme-container-background-hover, 
+              background,
+              theme-container-background-hover,
               $light-gray
             );
           }
@@ -1532,7 +1524,7 @@
   .loading-articles {
     padding: calc(3vw + 15px) 0px 60px;
     text-align: center;
-    opacity: 0.5;
+    opacity: 0.7;
     display: none;
   }
 }

@@ -1,0 +1,39 @@
+<div class="<%= "ltag__user ltag__user__id__" + user.id.to_s %>" style="<%= "border-color:" + user.decorate.darker_color + ";box-shadow: 3px 3px 0px " + user.decorate.darker_color + ";" %>">
+  <style>
+    .ltag__user__id__<%= user.id %> .follow-action-button {
+      background-color: <%= user_colors[:bg] %> !important;
+      color: <%= user_colors[:text] %> !important;
+      border-color: <%= user_colors[:bg].casecmp("#ffffff").zero? ? user_colors[:text] : user_colors[:bg] %> !important;
+    }
+  </style>
+  <a href="<%= user.path %>" class="ltag__user__link profile-image-link">
+    <div class="ltag__user__pic">
+      <img src="<%= ProfileImage.new(user).get(150) %>" alt="<%= user.username + " image" %>" />
+    </div>
+  </a>
+  <div class="ltag__user__content">
+    <h2><a href="<%= user.path %>" class="ltag__user__link"><%= user.name %></a><%= follow_button %></h2>
+    <div class="ltag__user__summary">
+      <a href="<%= user.path %>" class="ltag__user__link">
+        <%= user.summary %>
+      </a>
+    </div>
+    <p class="ltag__user__social">
+      <% if !user.twitter_username.blank? %>
+        <a href="https://twitter.com/<%= user.twitter_username %>" target="_blank" rel="noopener">
+          <%= image_tag("/assets/twitter-logo.svg", class: "icon-img", alt: "twitter logo") %><%= user.twitter_username %>
+        </a>
+      <% end %>
+      <% if !user.github_username.blank? %>
+        <a href="https://github.com/<%= user.github_username %>" target="_blank" rel="noopener">
+          <%= image_tag("/assets/github-logo.svg", class: "icon-img", alt: "github logo") %><%= user.github_username %>
+        </a>
+      <% end %>
+      <% if !user.website_url.blank? %>
+        <a href="<%= user.website_url %>" target="_blank" rel="noopener">
+          <%= image_tag("/assets/link.svg", class: "icon-img", alt: "external link icon") %><%= user.website_url %>
+        </a>
+      <% end %>
+    </p>
+  </div>
+</div>

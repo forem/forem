@@ -23,7 +23,7 @@ There are two ways to install Yarn.
 1. Run `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
 1. To test the installation you can run `sudo -u postgres psql` which should open a PostgreSQL prompt. Exit the prompt by running `\q` then run `sudo -u postgres createuser -s $YOUR_USERNAME` where `$YOUR_USERNAME` is the username you are currently logged in as.
 
-There are more than one ways to setup PostgreSQL. For additional configuration, check out our [PostgreSQL setup guide](/installation/postgres) or the official [PostgreSQL](https://www.postgresql.org/) site for further information.
+There are more than one ways to setup PostgreSQL. For additional configuration, check out our [PostgreSQL setup guide](/installation/postgresql) or the official [PostgreSQL](https://www.postgresql.org/) site for further information.
 
 ## Installing DEV
 

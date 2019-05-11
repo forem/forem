@@ -6,7 +6,7 @@ class Page < ApplicationRecord
   validate :body_present
 
   before_save :evaluate_markdown
-  before_save :bust_cache
+  after_save :bust_cache
   before_validation :set_default_template
 
   mount_uploader :social_image, ProfileImageUploader
@@ -31,7 +31,9 @@ class Page < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust "/page/"
+    CacheBuster.new.bust "/page/#{slug}"
     CacheBuster.new.bust "/page/#{slug}?i=i"
+    CacheBuster.new.bust "/#{slug}"
+    CacheBuster.new.bust "/#{slug}?i=i"
   end
 end

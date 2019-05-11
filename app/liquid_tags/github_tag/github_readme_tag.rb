@@ -12,7 +12,7 @@ class GithubTag
         <div class="ltag-github-readme-tag">
           <div class="readme-overview">
             <h2>
-              <img src="#{ActionController::Base.helpers.asset_path('github-logo.svg')}" /><a href="https://github.com/#{@content.owner.login}">#{@content.owner.login}</a> / <a style="font-weight: 600;" href="#{@content.html_url}">#{@content.name}</a>
+              <img src="#{ActionController::Base.helpers.asset_path('github-logo.svg')}" alt="GitHub logo"><a href="https://github.com/#{@content.owner.login}">#{@content.owner.login}</a> / <a style="font-weight: 600;" href="#{@content.html_url}">#{@content.name}</a>
             </h2>
             <h3>#{@content.description}</h3>
           </div><div class="ltag-github-body">

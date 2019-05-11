@@ -36,7 +36,7 @@ class CreditsController < ApplicationController
     create_charge
   rescue Stripe::CardError => e
     flash[:error] = e.message
-    redirect_to "/credits/new"
+    redirect_to "/credits/purchase"
   end
 
   def find_or_create_customer
@@ -66,9 +66,10 @@ class CreditsController < ApplicationController
 
   def create_charge
     @amount = generate_cost
+    source = Rails.env.test? ? @card.id : (@card || @customer.default_source)
     Stripe::Charge.create(
       customer: @customer.id,
-      source: @card || @customer.default_source,
+      source: source,
       amount: @amount,
       description: "Purchase of #{@number_to_purchase} credits.",
       currency: "usd",

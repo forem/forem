@@ -1,4 +1,5 @@
 class ReadingListItemsController < ApplicationController
+  
   def index
     @reading_list_items_index = true
     set_view

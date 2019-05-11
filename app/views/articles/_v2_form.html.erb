@@ -7,7 +7,7 @@
     <form class="articleform__form articleform__form--<%= current_user.editor_version %>">
       <% if @organization %>
         <div class="articleform__orgsettings">
-          <img src="<%= @organization.profile_image_90 %>" style="opacity: <%= @article.organization ? "1.0" : "0.7" %>" />
+          <img src="<%= @organization.profile_image_90 %>" style="opacity: <%= @article.organization ? "1.0" : "0.7" %>" alt="<%= @organization.name %> profile image">
           <%= @organization.name %>
           <button class="<%= @article.organization ? "yes" : "no" %>">
             <%= @article.organization ? "✅ YES" : "◻️ NO" %>

@@ -58,13 +58,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /membership" do
-    it "has proper headline" do
-      get "/membership"
-      expect(response.body).to include("Sustaining Membership")
-    end
-  end
-
   describe "GET /welcome" do
     it "has proper headline" do
       get "/welcome"

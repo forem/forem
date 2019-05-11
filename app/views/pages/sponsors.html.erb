@@ -27,7 +27,9 @@
     <p style="margin:5px 5px;"><em>for supporting our community</em></p>
 
     <h4>
-      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>"><span style="background-color: #fefa87; padding:3px;">Gold Sponsors</span><img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>">
+      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
+      <span style="background-color: #fefa87; padding:3px;">Gold Sponsors</span>
+      <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
     </h4>
     <div id="gold-sponsors">
       <% Organization.where(is_gold_sponsor: true).order("sponsorship_featured_number ASC").each do |organization| %>

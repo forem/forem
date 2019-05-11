@@ -1,65 +1,81 @@
 <%= form_with(model: classified_listing, local: true) do |form| %>
-  <a href="/listings" class="listings-back-button">< go back to listings</a>
-  <% if classified_listing.errors.any? %>
-    <div class="classified-errors">
-      <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this classified_listing from being saved:</h2>
+  <header>
+    <a href="/listings" class="listings-back-button">< go back to listings</a>
+    <h2>Create a Community Listing</h2>
+  </header>
+  <div class="classified-form-inner">
+    <% if classified_listing.errors.any? %>
+      <div class="classified-errors">
+        <h2><%= pluralize(classified_listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
 
-      <ul>
-      <% classified_listing.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-  <div id="listingform-data"
-       data-listing="<%= classified_listing.to_json(only: %i[id title slug cached_tag_list]) %>"
-       data-organizations="<%= @organizations.to_json %>"
-       data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
-       data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values{ |value_hash| value_hash.except(:cost) }.values.to_json %>"
-       >
-    <div style="height: 650px;">
-      <div class="field">
-        <%= form.label "title" %>
-        <%= form.text_field "title", placeholder: "128 characters max, plain text" %>
+        <ul>
+        <% classified_listing.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
       </div>
-      <div class="field">
-        <%= form.label "body_markdown", "Body Markdown" %>
-        <%= form.text_area "body_markdown", placeholder: "400 characters max, 12 line break max, no images allowed" %>
-      </div>
-      <div class="field">
-        <label>Category</label>
-        <select></select>
-      </div>
-      <div class="field">
-        <%= form.label "tags_list", "Tags" %>
-        <%= form.text_field "tags_list" %>
-      </div>
-    </div>
-  </div>
-  <%= javascript_pack_tag "listingForm", defer: true %>
-  <% if false # Put connect button (future feature) %>
-  <div class="field">
-    <%= form.label "contact_via_connect" %>
-    <%= form.check_box "contact_via_connect" %>
-  </div>
-  <% end %>
-  <% if current_user.organization && current_user.org_admin %>
-    <div class="field">
-      <%= form.label "post_as_organization", "Post as #{current_user.organization.name} organization" %>
-      <%= form.check_box "post_as_organization" %>
-    </div>
-    <p><em>Posting on behalf of org spends org credits.</em></p>
-  <% end %>
-  <div class="actions">
-    <%= form.submit "CREATE LISTING", class: "cta" %>
-  </div>
-  <div class="listings-current-credits">
-    You have <%= @credits.size %> credits available — <a href="/credits/new" data-no-instant>Buy More</a>
-    <% if current_user.organization && current_user.org_admin %>
-      <br/><br/><%= current_user.organization.name %> has <%= current_user.organization.credits.where(spent: false).size %> credits available — <a href="/credits/new?purchaser=organization" data-no-instant>Buy More</a>
     <% end %>
+    <div id="listingform-data"
+        data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
+        data-organizations="<%= @organizations.to_json %>"
+        data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
+        data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values{ |value_hash| value_hash.except(:cost) }.values.to_json %>"
+        >
+      <div style="height: 650px;">
+        <div class="field">
+          <%= form.label "title" %>
+          <%= form.text_field "title", placeholder: "128 characters max, plain text" %>
+        </div>
+        <div class="field">
+          <%= form.label "body_markdown", "Body Markdown" %>
+          <%= form.text_area "body_markdown", placeholder: "400 characters max, 12 line break max, no images allowed" %>
+        </div>
+
+        <div class="field" style="padding-top: 9px">
+          <label>Category</label>
+          <select>
+            <option>
+              Conference CFP (1 Credit)
+            </option>
+          </select>
+          <details>
+            <summary>Category details/rules</summary>
+          </details>
+        </div>
+        <div class="field">
+          <%= form.label "tags_list", "Tags" %>
+          <%= form.text_field "tags_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
+        </div>
+      </div>
+    </div>
+    <%= javascript_pack_tag "listingForm", defer: true %>
+    <% if false # Put connect button (future feature) %>
+    <div class="field">
+      <%= form.label "contact_via_connect" %>
+      <%= form.check_box "contact_via_connect" %>
+    </div>
+    <% end %>
+    <% if current_user.organization && current_user.org_admin %>
+      <div class="field">
+        <%= form.label "post_as_organization", "Post as #{current_user.organization.name} organization" %>
+        <%= form.check_box "post_as_organization" %>
+      </div>
+      <p><em>Posting on behalf of org spends org credits.</em></p>
+    <% end %>
+    <div class="actions">
+      <%= form.submit "CREATE LISTING", class: "cta" %>
+    </div>
+    <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
+    <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
+    <div class="listings-current-credits">
+      <div class="listings-current-credits-inner">
+        You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/purchase" data-no-instant>Buy More</a>
+      </div>
+      <% if current_user.organization && current_user.org_admin %>
+        <div class="listings-current-credits-inner">
+          <%= current_user.organization.name %> has <%= current_user.organization.credits.where(spent: false).size%> — <a href="/credits/purchase?purchaser=organization" data-no-instant>Buy More</a>
+        </div>
+      <% end %>
+    </div>
   </div>
-  <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund listings which are miscategorized or otherwise inappropriate.</em></p>
-  <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
-  <p><em>Email <a href="mailto:yo@dev.to">yo@dev.to</a> if you need support.</em></p>
 <% end %>
