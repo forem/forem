@@ -14,6 +14,19 @@ function hideAllEllipsisMenusExcept(menu) {
   }
 }
 
+function hideEllipsisMenus(e) {
+  console.log(e.target.closest('div.ellipsis-menu'));
+  if (!e.target.closest('div.ellipsis-menu')) {
+    var menus = document.querySelectorAll('ul.ellipsis-menu');
+
+    for (var i = 0; i < menus.length; i += 1) {
+      if (!menus[i].classList.contains('hidden')) {
+        menus[i].classList.add('hidden');
+      }
+    }
+  }
+}
+
 function toggleEllipsisMenu(e) {
   var menu = getMenu(e.target);
 
@@ -34,4 +47,9 @@ function initializeEllipsisMenu() {
   for (var i = 0; i < buttons.length; i += 1) {
     buttons[i].addEventListener('click', toggleEllipsisMenu);
   }
+
+  // Hide ellipsis menus when you click outside of the ellipsis menu parent div
+  document
+    .getElementsByTagName('BODY')[0]
+    .addEventListener('click', hideEllipsisMenus);
 }
