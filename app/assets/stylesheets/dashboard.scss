@@ -234,10 +234,6 @@
     background: white;
     background: var(--theme-container-background, white);
 
-    &.single-article-archived {
-      display: none;
-    }
-
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
       background: var(--theme-container-accent-background,
