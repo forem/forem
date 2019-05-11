@@ -14,12 +14,13 @@ function hideAllEllipsisMenusExcept(menu) {
   var menus = document.querySelectorAll('ul.ellipsis-menu');
 
   for (var i = 0; i < menus.length; i += 1) {
-    hideIfNotAlreadyHidden(menus[i]);
+    if (menus[i] !== menu) {
+      hideIfNotAlreadyHidden(menus[i]);
+    }
   }
 }
 
 function hideEllipsisMenus(e) {
-  console.log(e.target.closest('div.ellipsis-menu'));
   if (!e.target.closest('div.ellipsis-menu')) {
     var menus = document.querySelectorAll('ul.ellipsis-menu');
 
