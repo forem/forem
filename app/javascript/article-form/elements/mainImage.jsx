@@ -2,8 +2,8 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 const MainImage = ({ mainImage, onEdit }) => (
-  <div className="articleform__mainimage">
-    <img src={mainImage} onClick={onEdit} />
+  <div className="articleform__mainimage" onClick={onEdit}>
+    <img src={mainImage} />
   </div>
 );
 

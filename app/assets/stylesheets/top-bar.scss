@@ -27,6 +27,9 @@
   position: fixed;
   border-bottom: 1px solid rgba(0, 0, 0, 0.33);
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.13);
+  &.hidden {
+    display: none;
+  }
   nav {
     max-width: 100%;
     width: 1250px;
