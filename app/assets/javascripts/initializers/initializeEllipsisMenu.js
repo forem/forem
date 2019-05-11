@@ -4,13 +4,17 @@ function getMenu(el) {
   return menu;
 }
 
+function hideIfNotAlreadyHidden(menu) {
+  if (!menu.classList.contains('hidden')) {
+    menu.classList.add('hidden');
+  }
+}
+
 function hideAllEllipsisMenusExcept(menu) {
   var menus = document.querySelectorAll('ul.ellipsis-menu');
 
   for (var i = 0; i < menus.length; i += 1) {
-    if (menus[i] !== menu && !menus[i].classList.contains('hidden')) {
-      menus[i].classList.add('hidden');
-    }
+    hideIfNotAlreadyHidden(menus[i]);
   }
 }
 
@@ -20,9 +24,7 @@ function hideEllipsisMenus(e) {
     var menus = document.querySelectorAll('ul.ellipsis-menu');
 
     for (var i = 0; i < menus.length; i += 1) {
-      if (!menus[i].classList.contains('hidden')) {
-        menus[i].classList.add('hidden');
-      }
+      hideIfNotAlreadyHidden(menus[i]);
     }
   }
 }
