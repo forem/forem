@@ -21,7 +21,7 @@
       <li class="ellipsis-menu-item">
         <%= form_for(article, method: "patch", remote: true) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived %>
-          <%= f.submit article.archived ? "Archive Article" : "Unarchive Article" %>
+          <%= f.submit article.archived ? "Unarchive Article" : "Archive Article" %>
         <% end %>
       </li>
     </ul>
