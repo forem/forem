@@ -21,6 +21,22 @@ function getFormValues(form) {
   return formData;
 }
 
+function toggleArchived(article, needsArchived) {
+  if (needsArchived === 'true') {
+    article.classList.add('single-article-archived', 'hidden');
+  } else {
+    article.classList.remove('single-article-archived');
+  }
+}
+
+function toggleNotifications(submit, action) {
+  if (action === 'Mute Notifications') {
+    submit.setAttribute('value', 'Receive Notifications');
+  } else {
+    submit.setAttribute('value', 'Mute Notifications');
+  }
+}
+
 function handleFormSubmit(e) {
   e.preventDefault();
   e.stopPropagation();
@@ -39,24 +55,15 @@ function handleFormSubmit(e) {
 
     if (xhr.status === 200) {
       if (values.article.archived) {
-        if (values.article.archived === 'true') {
-          article.classList.add('single-article-archived', 'hidden');
-        } else {
-          article.classList.remove('single-article-archived');
-          article.querySelector('ul.ellipsis-menu').classList.add('hidden');
-        }
+        toggleArchived(article, values.article.archived);
       } else {
         var submit = form.querySelector('input[type="submit"]');
         var submitValue = submit.getAttribute('value');
 
-        if (submitValue === 'Mute Notifications') {
-          submit.setAttribute('value', 'Receive Notifications');
-        } else {
-          submit.setAttribute('value', 'Mute Notifications');
-        }
-
-        article.querySelector('ul.ellipsis-menu').classList.add('hidden');
+        toggleNotifications(submit, submitValue);
       }
+
+      article.querySelector('ul.ellipsis-menu').classList.add('hidden');
     } else {
       article.querySelector('.dashboard-meta-details').innerHTML =
         'Failed to update article.';
