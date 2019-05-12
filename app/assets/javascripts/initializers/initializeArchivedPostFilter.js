@@ -1,20 +1,20 @@
-function showArchivedPosts() {
-  var archivedPosts = document.getElementsByClassName(
-    'single-article-archived',
-  );
+function archivedPosts() {
+  return document.getElementsByClassName('single-article-archived');
+}
 
-  for (var i = 0; i < archivedPosts.length; i += 1) {
-    archivedPosts[i].classList.remove('hidden');
+function showArchivedPosts() {
+  var posts = archivedPosts();
+
+  for (var i = 0; i < posts.length; i += 1) {
+    posts[i].classList.remove('hidden');
   }
 }
 
 function hideArchivedPosts() {
-  var archivedPosts = document.getElementsByClassName(
-    'single-article-archived',
-  );
+  var posts = archivedPosts();
 
-  for (var i = 0; i < archivedPosts.length; i += 1) {
-    archivedPosts[i].classList.add('hidden');
+  for (var i = 0; i < posts.length; i += 1) {
+    posts[i].classList.add('hidden');
   }
 }
 

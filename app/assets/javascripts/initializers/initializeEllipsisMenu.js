@@ -37,6 +37,19 @@ function toggleNotifications(submit, action) {
   }
 }
 
+function onXhrSuccess(form, article, values) {
+  if (values.article.archived) {
+    toggleArchived(article, values.article.archived);
+  } else {
+    var submit = form.querySelector('input[type="submit"]');
+    var submitValue = submit.getAttribute('value');
+
+    toggleNotifications(submit, submitValue);
+  }
+
+  article.querySelector('ul.ellipsis-menu').classList.add('hidden');
+}
+
 function handleFormSubmit(e) {
   e.preventDefault();
   e.stopPropagation();
@@ -54,16 +67,7 @@ function handleFormSubmit(e) {
     var article = form.closest('div.single-article');
 
     if (xhr.status === 200) {
-      if (values.article.archived) {
-        toggleArchived(article, values.article.archived);
-      } else {
-        var submit = form.querySelector('input[type="submit"]');
-        var submitValue = submit.getAttribute('value');
-
-        toggleNotifications(submit, submitValue);
-      }
-
-      article.querySelector('ul.ellipsis-menu').classList.add('hidden');
+      onXhrSuccess(form, article, values);
     } else {
       article.querySelector('.dashboard-meta-details').innerHTML =
         'Failed to update article.';
