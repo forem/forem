@@ -86,7 +86,7 @@ module Api
         elsif params["article"]["series"] == ""
           params["article"]["collection_id"] = nil
         end
-        if current_user.editor_version == "v1"
+        if params["article"]["version"] == "v1"
           params.require(:article).permit(
             :body_markdown, :organization_id
           )
