@@ -2,7 +2,6 @@ function showArchivedPosts() {
   var archivedPosts = document.getElementsByClassName(
     'single-article-archived',
   );
-  console.log('showing');
 
   for (var i = 0; i < archivedPosts.length; i += 1) {
     archivedPosts[i].classList.remove('hidden');
@@ -18,6 +17,7 @@ function hideArchivedPosts() {
     archivedPosts[i].classList.add('hidden');
   }
 }
+
 function toggleArchivedPosts(e) {
   var link = e.target;
 

@@ -12,14 +12,14 @@
     <button class="ellipsis-menu-btn"><i class="material-icons">more_horiz</i></button>
     <ul class="ellipsis-menu hidden">
       <li class="ellipsis-menu-item">
-        <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", remote: true, authenticity_token: true) do |f| %>
+        <%= form_for(article, url: "/article_mutes/#{article.id}", method: :patch, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
           <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
           <%= f.submit article.receive_notifications ? "Mute Notifications" : "Receive Notifications" %>
         <% end %>
       </li>
       <hr />
       <li class="ellipsis-menu-item">
-        <%= form_for(article, method: "patch", remote: true, authenticity_token: true) do |f| %>
+        <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived %>
           <%= f.submit article.archived ? "Unarchive Article" : "Archive Article" %>
         <% end %>
