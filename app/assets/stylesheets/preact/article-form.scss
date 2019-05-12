@@ -9,6 +9,33 @@
   padding-bottom: calc(94px + 2vw);
 }
 
+.article-form-video-preview {
+  text-align: center;
+  padding-top: 60px;
+  margin: auto;
+  max-width: 880px;
+  margin-bottom: -50px;
+  .article-form-video-image-url {
+    padding-top: 15px;
+    font-family: $monospace;
+    input {
+      padding: 3px;
+      font-size: 1em;
+      border-radius: 3px;
+      border: 1px solid darken($light-medium-gray, 5%);
+      border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
+      width: 340px;
+      margin: 10px;
+      &[type='submit'] {
+        padding: 3px 8px;
+        border: 1px solid $green;
+        border-radius: 100px;
+        width: 200px;
+      }
+    }
+  }
+}
+
 .articleform {
   margin: 0 auto;
   width: 97%;
