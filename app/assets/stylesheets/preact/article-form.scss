@@ -12,7 +12,7 @@
 .articleform {
   margin: 0 auto;
   width: 97%;
-  max-width: 880px;
+  max-width: 860px;
   padding: 0px 6px;
   background: white;
   background: var(--theme-container-background, white);
@@ -25,12 +25,15 @@
   border-radius: 3px;
 
   @media screen and (min-width: 500px) {
-    width: calc(95% - 40px);
     padding: 0px 12px;
     border: 1px solid darken($light-medium-gray, 5%);
     border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
   }
+  @media screen and (min-width: 600px) {
+    width: calc(97% - 30px);
+  }
   @media screen and (min-width: 800px) {
+    width: calc(95% - 40px);
     padding: 0px 20px;
   }
   .container {
