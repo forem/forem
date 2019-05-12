@@ -6,7 +6,7 @@ const BodyMarkdown = ({ onChange, defaultValue }) => (
   <Textarea
     className="articleform__body"
     id="article_body_markdown"
-    placeholder="Body"
+    placeholder="Body Markdown"
     value={defaultValue}
     onInput={onChange}
     name="body_markdown"

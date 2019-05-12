@@ -3,7 +3,7 @@
 .articleformcontainer {
   padding-top: 80px;
   @media screen and (min-width: 500px) {
-    padding-top: calc(98px + 0.2vw);
+    padding-top: calc(90px + 0.2vw);
   }
 
   padding-bottom: calc(94px + 2vw);
@@ -13,7 +13,7 @@
   margin: 0 auto;
   width: 97%;
   max-width: 880px;
-  padding: 0px 20px;
+  padding: 0px 6px;
   background: white;
   background: var(--theme-container-background, white);
   position: relative;
@@ -26,8 +26,12 @@
 
   @media screen and (min-width: 500px) {
     width: calc(95% - 40px);
+    padding: 0px 12px;
     border: 1px solid darken($light-medium-gray, 5%);
     border: var(--theme-container-border, 1px solid darken($light-medium-gray, 5%));
+  }
+  @media screen and (min-width: 800px) {
+    padding: 0px 20px;
   }
   .container {
     border: 1px solid $light-medium-gray;
@@ -121,8 +125,6 @@
   border: var(--theme-container-border, 1px solid $light-medium-gray);
   margin-top: 10px;
   cursor: pointer;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
   @media screen and (min-width: 550px) {
     width: 40%;
   }
@@ -149,16 +151,13 @@
     border-radius: 0px;
     border: 0px;
     margin-top: 0px;
-    border-top-left-radius: 3px;
-    border-bottom-left-radius: 0px;
-    border-top-right-radius: 3px;
+    border-radius: 3px;
+    width: 100%;
     cursor: default;
     img {
       width: 100%;
       height: calc(42vw - 44px);
-      border-top-left-radius: 3px;
-      border-bottom-left-radius: 0px;
-      border-top-right-radius: 3px;
+      border-radius: 3px;
       @media screen and (min-width: 985px) {
         height: 355px;
       }
@@ -339,7 +338,7 @@
     }
   }
   &.articleform__detailsButton--bottom {
-    margin-left: -5px;
+    margin-left: 2px;
     margin-top: 10px;
     margin-bottom: 8px;
     display: inline-block;
@@ -347,6 +346,7 @@
     border-radius: 3px;
     width: 100px;
     @media screen and (min-width: 600px) {
+      margin-left: -5px;
       display: none;
     }
   }
@@ -411,6 +411,8 @@
   background: var(--theme-container-background, white);
   z-index: 20;
   border-top: 1px solid $light-medium-gray;
+  border-top: var(--theme-container-border, 1px solid $light-medium-gray);
+
   * {
     margin: 4px calc(0.7vw);
   }
@@ -544,14 +546,15 @@
   bottom: 0;
   background: $dark-gray;
   color: white;
-  padding: 5%;
+  padding: 4%;
   box-shadow: $bold-shadow;
   box-shadow: var(--theme-container-box-shadow, $bold-shadow);
   text-align: center;
   border-radius: 3px;
+  overflow-y: scroll;
   h2 {
     color: $green;
-    font-size: 2em;
+    font-size: 1.9em;
     font-family: $helvetica-condensed;
   }
   p {
@@ -650,7 +653,9 @@
   img {
     display: block;
     margin: 10px auto;
-    max-width: 80%;
+    width: 200px;
+    height: 84px;
+    border-radius: 8px;
   }
 }
 

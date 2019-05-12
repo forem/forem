@@ -27,7 +27,7 @@
           <button class="articleform__detailsButton articleform__detailsButton--moreconfig"></button>
         </div>
       <% end %>
-      <textarea class="articleform__body" placeholder="Body" name="body_markdown"><%= @article.body_markdown %></textarea>
+      <textarea class="articleform__body" placeholder="Body Markdown" name="body_markdown"><%= @article.body_markdown %></textarea>
       <div>
         <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"></button>
         <% if current_user.editor_version == "v2" %>

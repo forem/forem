@@ -61,7 +61,7 @@ class Tags extends Component {
         onClick={this.handleTagClick}
         data-content={tag.name}
       >
-        {tag.name} <span className='articleform__tagoptionsummary'>{tag.short_summary}</span>
+        {tag.name}
       </div>
     ));
     if (

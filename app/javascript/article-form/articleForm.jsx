@@ -276,7 +276,6 @@ export default class ArticleForm extends Component {
       version
     } = this.state;
     const notice = submitting ? <Notice published={published} /> : '';
-    console.log(mainImage)
     const imageArea = (mainImage && !previewShowing && version === 'v2') ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
