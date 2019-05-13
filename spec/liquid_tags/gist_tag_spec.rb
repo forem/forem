@@ -40,14 +40,14 @@ RSpec.describe GistTag, type: :liquid_template do
     it "accepts proper gist url" do
       gist_links.each do |link|
         liquid = generate_new_liquid(link)
-        expect(liquid.render.delete(" ")).to eq(generate_script(link))
+        expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link))
       end
     end
 
     it "handles 'file' option" do
       liquid = generate_new_liquid(link_with_file_option)
       link, option = link_with_file_option.split(" ", 2)
-      expect(liquid.render.delete(" ")).to eq(generate_script(link, option))
+      expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link, option))
     end
 
     it "rejects invalid gist url" do
