@@ -55,6 +55,7 @@ class Article < ApplicationRecord
   before_save       :calculate_base_scores
   before_save       :set_caches
   before_save       :fetch_video_duration
+  before_save       :clean_data
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
@@ -597,6 +598,10 @@ class Article < ApplicationRecord
 
   def title_to_slug
     title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
+  end
+
+  def clean_data
+    self.canonical_url = nil if canonical_url == ""
   end
 
   def bust_cache
