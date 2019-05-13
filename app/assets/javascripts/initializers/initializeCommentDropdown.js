@@ -2,6 +2,16 @@
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
+  function isIOSDevice() {
+    return (
+      navigator.userAgent.match(/iPhone/i) ||
+      navigator.userAgent.match('CriOS') ||
+      navigator.userAgent.match(
+        /iPad/i || navigator.userAgent === 'DEV-Native-ios',
+      )
+    );
+  }
+
   function removeClass(className) {
     return element => element.classList.remove(className);
   }
@@ -25,6 +35,13 @@ function initializeCommentDropdown() {
     announcer.hidden = true;
   }
 
+  function iOSCopyText() {
+    const input = document.getElementById('article-copy-link-input');
+    input.setSelectionRange(0, input.value.length);
+    document.execCommand('copy');
+    showAnnouncer();
+  }
+
   function shouldCloseDropdown(event) {
     return !(
       event.target.matches('.dropdown-icon') ||
@@ -44,7 +61,14 @@ function initializeCommentDropdown() {
   }
 
   function removeCopyListener() {
-    document.removeEventListener('clipboard-copy', showAnnouncer);
+    if (isIOSDevice) {
+      const clipboardCopyElement = document.getElementsByTagName(
+        'clipboard-copy',
+      )[0];
+      clipboardCopyElement.removeEventListener('click', iOSCopyText);
+    } else {
+      document.removeEventListener('clipboard-copy', showAnnouncer);
+    }
   }
 
   function removeAllShowing() {
@@ -71,8 +95,17 @@ function initializeCommentDropdown() {
     } else {
       removeAllShowing();
       dropdownContent.classList.add('showing');
-      document.addEventListener('click', outsideClickListener);
-      document.addEventListener('clipboard-copy', showAnnouncer);
+      if (isIOSDevice) {
+        const clipboardCopyElement = document.getElementsByTagName(
+          'clipboard-copy',
+        )[0];
+
+        document.addEventListener('click', outsideClickListener);
+        clipboardCopyElement.addEventListener('click', iOSCopyText);
+      } else {
+        document.addEventListener('click', outsideClickListener);
+        document.addEventListener('clipboard-copy', showAnnouncer);
+      }
     }
   }
 

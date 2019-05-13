@@ -29,15 +29,11 @@
     <div class="dropdown-content">
       <div>
         <div class="dropdown-link-row">
-        <% if request.env["HTTP_USER_AGENT"].include?("iPhone") %>
-          <input id="article-copy-link-input" type="text" value="<%= ApplicationConfig["APP_DOMAIN"].to_s + @article.path %>" onclick="this.setSelectionRange(0, this.value.length)" readonly />
-        <% else %>
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
             <input id="article-copy-link-input" value="<%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
-            <img src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
+            <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>
-        <% end %>
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
