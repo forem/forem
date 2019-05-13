@@ -105,12 +105,12 @@
         </div>
 
         <br>
-        <button class="btn btn-primary" type="submit" id="send__email__btn__<%= feedback_message.id %>">SEND EMAIL ✉️</button>
+        <button class="btn btn-primary" type="button" id="send__email__btn__<%= feedback_message.id %>">SEND EMAIL ✉️</button>
         <div class="email__alert alert fade in" id="email__alert__<%= feedback_message.id %>">
         </div>
         <h3>
           Status:  <%= f.select :status, ["Open", "Invalid", "Resolved"], {}, id: "status__#{feedback_message.id}" %>
-          <button class="btn btn-primary" role="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
+          <button class="btn btn-primary" type="button" id="save__status__<%= feedback_message.id %>">SAVE STATUS</button>
         </h3>
         <h3>Notes:</h3>
         <div class="notes__container" id="notes__<%= feedback_message.id %>">
@@ -137,7 +137,7 @@
           id="note__content__<%= feedback_message.id %>"
           required>
         <br>
-        <button class="btn btn-primary" type="submit" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝</button>
+        <button class="btn btn-primary" type="button" id="note__submit__<%= feedback_message.id %>">SUBMIT NOTE 📝</button>
         <br>
         <br>
         <button class="btn btn-primary" type="button" id="minimize__report__button__<%= feedback_message.id %>">
