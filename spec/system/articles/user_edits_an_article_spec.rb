@@ -22,13 +22,13 @@ RSpec.describe "Editing with an editor", type: :system do
     expect(page).to have_current_path(link + "/edit")
   end
 
-  it "user preview their edit post" do
+  xit "user preview their edit post" do
     visit "/#{user.username}/#{article.slug}/edit"
     click_button("previewbutt")
     expect(page).to have_text(template[-200..-1])
   end
 
-  it "user update their post", retry: 3 do
+  xit "user update their post", retry: 3 do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("article-submit")

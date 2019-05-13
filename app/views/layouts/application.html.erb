@@ -98,8 +98,8 @@
         <%= render "layouts/signup_modal" unless user_signed_in? %>
       <% end %>
       <div id="live-article-indicator" class="live-article-indicator"></div>
-      <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none") %>
-      <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none") %>
+      <%= image_tag("twitter-logo.svg", class: "icon-img", style: "display:none", alt: "twitter logo") %>
+      <%= image_tag("github-logo.svg", class: "icon-img", style: "display:none", alt: "github logo") %>
     <% end %>
   </body>
 </html>

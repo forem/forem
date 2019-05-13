@@ -1,30 +1,29 @@
 ---
 items:
-  - linux.md
-  - path: mac-os.md
-    title: macOS
+  - mac.md
   - windows.md
+  - linux.md
+  - docker.md
+  - gitpod.md
+  - postgresql.md
 ---
 
-# Installation Guides For macOS, Linux, and Windows
+# Installation Guide
 
-Below are the guides for installing the app on different operating systems.
+There are many different ways you can install the **development environment** so you can help contribute code to DEV.
 
-These guides could be incorrect or outdated. If you come across anything that needs to be changed, make a PR! Thanks!
+## Installing locally
 
-# GitPod
+You can install DEV to your local machine and we have instructions for [Mac](/installation/mac-os), [Windows](/installation/windows) and [Linux](/installation/linux).
 
-You can also [spin up a "local" instance of DEV in the cloud with GitPod (It's incredibly simple)](https://dev.to/ben/spin-up-a-local-instance-of-dev-in-the-cloud-with-gitpod-it-s-incredibly-simple-pij): https://gitpod.io/#https://github.com/thepracticaldev/dev.to
+## Running Docker
 
-# Docker [Beta]
+Installing to your local machine can be troublesome for many reasons such as a conflicting database and runtime versions.
 
-Our docker implementation is incomplete and may not work smoothly. Please kindly report any issues and any contribution is welcomed!
+Another way you can get a development environment up and running is with Docker. Docker will install everything you need in an isolated container, and you need not concern about the details. We have instructions for installing with [Docker](/installation/docker).
 
-1. Install `docker` and `docker-compose`
-1. `git clone git@github.com:thepracticaldev/dev.to.git`
-1. Set environment variables above as described in the "Basic Installation"
-1. run `docker-compose build`
-1. run `docker-compose run web rails db:setup`
-1. run `docker-compose run web yarn install`
-1. run `docker-compose up`
-1. That's it! Navigate to `localhost:3000`
+## GitPod
+
+If you are having trouble with local installation and Docker confuses you, then you can launch a **development environment** with the press of a button with GitPod.
+
+GitPod is an IDE in the cloud which is also attached to a web server. It will install everything you need. If you are comfortable doing everything from a web browser, then we have instructions for installing with [GitPod](/installation/gitpod) as well.

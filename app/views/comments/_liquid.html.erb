@@ -1,0 +1,24 @@
+<div class="liquid-comment">
+  <div class="details">
+    <a href="/<%= comment.user.username %>">
+      <img class="profile-pic" src="<%= ProfileImage.new(comment.user).get(50) %>" alt="<%= comment.user.username %> profile image" />
+    </a>
+    <a href="/<%= comment.user.username %>">
+      <span class="comment-username"><%= comment.user.name %></span>
+    </a>
+    <% if comment.user.twitter_username.present? %>
+      <a href="https://twitter.com/<%= comment.user.twitter_username %>">
+        <img src="/assets/twitter-logo.svg" class="icon-img" alt="twitter" />
+      </a>
+    <% end %>
+    <% if comment.user.github_username.present? %>
+      <a href="https://github.com/<%= comment.user.github_username %>">
+        <img src="/assets/github-logo.svg" class="icon-img" alt="github" />
+      </a>
+    <% end %>
+    <%= render "comments/comment_date", decorated_comment: comment.decorate %>
+  </div>
+  <div class="body">
+    <%= comment.processed_html.html_safe %>
+  </div>
+</div>

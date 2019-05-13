@@ -1,4 +1,5 @@
 function initializeFetchFollowedArticles() {
+  insertPodcasts();
   if ( document.getElementById("featured-story-marker") && checkUserLoggedIn() ) {
     algoliaFollowedArticles();
   }
@@ -8,6 +9,12 @@ function initializeFetchFollowedArticles() {
 function insertArticle(article,parent,insertPlace) {
   if (article){
     var newItem = document.createElement("DIV");
+    if (article.cached_user) {
+      article.user = article.cached_user.table
+    }
+    if (article.cached_organization) {
+      article.organization = article.cached_organization.table
+    }
     newItem.innerHTML = buildArticleHTML(article)
     parent.insertBefore(newItem, insertPlace);
     initializeReadingListIcons();
@@ -168,6 +175,28 @@ function algoliaFollowedArticles(){
         if (el){el.outerHTML = ''}
       });
     }
+}
+
+function insertPodcasts() {
+  var el = document.getElementById('followed-podcasts');
+  var insertPlace = document.getElementById('article-index-podcast-div');
+  if (el && insertPlace){
+    var user = userData();
+    if (user && user.followed_podcast_ids && user.followed_podcast_ids.length > 0) {
+      var data = JSON.parse(el.dataset.episodes);
+      var podcastHTML = '';
+      var episodeCount = 0;
+      data.forEach(function(ep) {
+        if (user.followed_podcast_ids.indexOf(ep.podcast.id) > -1) {
+          episodeCount += 1;
+          podcastHTML = podcastHTML + '<a class="individual-podcast-link" href="/' + ep.podcast.slug + '/' + ep.slug + '"><strong>' + ep.podcast.title + '</strong> ' + ep.title + '</a>'
+        }
+      });
+      if (episodeCount > 0) {
+        insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3>' + podcastHTML + '</div>';
+      }
+    }
+  }
 }
 
 function findOne(haystack, arr) {

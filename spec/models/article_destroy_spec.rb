@@ -22,7 +22,7 @@ RSpec.describe Article, type: :model do
     it "queues BustCacheJob with user and organization article_ids" do
       expect do
         article.destroy
-      end.to have_enqueued_job(Articles::BustCacheJob).exactly(:once).
+      end.to have_enqueued_job(Articles::BustMultipleCachesJob).exactly(:once).
         with([user_article.id, org_user_article.id, org_article.id].sort)
     end
   end

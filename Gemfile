@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-ruby "2.6.1"
+ruby "2.6.3"
 
 # Enforce git to transmitted via https.
 # workaround until bundler 2.0 is released.
@@ -17,15 +17,15 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "activerecord-import", "~> 1.0" # Adds ability to bulk create activerecord objects
 gem "acts-as-taggable-on", "~> 6.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
-gem "addressable", "~> 2.5", ">= 2.5.2" # A replacement for the URI implementation that is part of Ruby's standard library
+gem "addressable", "~> 2.6" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.0" # Email analytics for Rails
-gem "airbrake", "~> 9.1" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
+gem "airbrake", "~> 9.2" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.0" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.5" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.16" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.22" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 1.3" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -46,11 +46,11 @@ gem "fastly", "~> 1.15" # Client library for the Fastly acceleration system
 gem "fastly-rails", "~> 0.8" # Fastly dynamic caching integration for Rails
 gem "feedjira", "~> 2.2" # A feed fetching and parsing library
 gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
-gem "fog", "~> 1.41" # The Ruby cloud services library
+gem "fog-aws", "2.0.0" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
-gem "gemoji", "~> 3.0.0" # Character information and metadata for standard and custom emoji
+gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
-gem "google-api-client", "~> 0.27" # Client for accessing Google APIs
+gem "google-api-client", "~> 0.29" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.4" # Embed SVG documents in your Rails views and style them with CSS
@@ -64,18 +64,16 @@ gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider au
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "pg", "~> 1.1" # Pg is the Ruby interface to the PostgreSQL RDBMS
-gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
-gem "pry-rails", "~> 0.3" # Use Pry as your rails console
 gem "puma", "~> 3.12" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.0" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
-gem "pusher-push-notifications", "~> 1.0" # Pusher Push Notifications Ruby server SDK
+gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
 gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
 gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
-gem "recaptcha", "~> 4.13", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 4.14", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
@@ -92,7 +90,7 @@ gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 2.2" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.14" # Ruby library for the Stripe API
+gem "stripe", "~> 4.16" # Ruby library for the Stripe API
 gem "timber", "~> 2.6" # Great Ruby logging made easy
 gem "twilio-ruby", "~> 5.22" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
@@ -105,7 +103,7 @@ group :development do
   gem "better_errors", "~> 2.5" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.5", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
-  gem "bullet", "~> 5.9" # help to kill N+1 queries and unused eager loading
+  gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.3", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0", require: false # ERB Linter tool
@@ -116,18 +114,23 @@ group :development do
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
   gem "guard-rspec", "~> 4.7", require: false # Guard::RSpec automatically run your specs
   gem "memory_profiler", "~> 0.9", require: false # Memory profiling routines for Ruby 2.3+
+  gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
+  gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 3.7" # Rails Console on the Browser
+  gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
+  gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
+  gem "yard", "~> 0.9.19" # YARD is a documentation generation tool for the Ruby programming language
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.18" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.19" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "parallel_tests", "~> 2.28" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
+  gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.67", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.69", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.0", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rspec", "~> 1.32", require: false # Code style checking for RSpec files
+  gem "rubocop-rspec", "~> 1.33", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.0" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
@@ -146,7 +149,7 @@ group :test do
   gem "test-prof", "~> 0.7" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 3.7" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "webdrivers", "~> 3.9" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.5" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

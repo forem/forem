@@ -1,6 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
+  describe "GET /:slug" do
+    it "has proper headline" do
+      page = create(:page)
+      get "/page/#{page.slug}"
+      expect(response.body).to include(page.title)
+    end
+  end
+
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
@@ -50,13 +58,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /membership" do
-    it "has proper headline" do
-      get "/membership"
-      expect(response.body).to include("Sustaining Membership")
-    end
-  end
-
   describe "GET /welcome" do
     it "has proper headline" do
       get "/welcome"
@@ -77,7 +78,7 @@ RSpec.describe "Pages", type: :request do
     context "when nothing is live" do
       it "shows the correct message" do
         get "/live"
-        expect(response.body).to include("Nothing is live right now")
+        expect(response.body).to include("We are working on more ways to bring live coding to the community")
       end
     end
   end

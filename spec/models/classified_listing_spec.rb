@@ -7,6 +7,25 @@ RSpec.describe ClassifiedListing, type: :model do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
 
+  describe "valid associations" do
+    it "is not valid w/o user and org" do
+      cl = build(:classified_listing, user_id: nil, organization_id: nil)
+      expect(cl).not_to be_valid
+      expect(cl.errors[:user_id]).to be_truthy
+      expect(cl.errors[:organization_id]).to be_truthy
+    end
+
+    it "is valid with user_id" do
+      cl = build(:classified_listing, user_id: user.id, organization_id: nil)
+      expect(cl).to be_valid
+    end
+
+    it "is valid with organization_id" do
+      cl = build(:classified_listing, user_id: nil, organization_id: create(:organization).id)
+      expect(cl).to be_valid
+    end
+  end
+
   describe "body html" do
     it "converts markdown to html" do
       expect(classified_listing.processed_html).to include("<p>")
@@ -17,13 +36,19 @@ RSpec.describe ClassifiedListing, type: :model do
       expect(classified_listing.valid?).to eq(true)
     end
 
+    it "cleans images" do
+      classified_listing.body_markdown = "hello <img src='/dssdsdsd.jpg'> hey hey hey"
+      classified_listing.save
+      expect(classified_listing.processed_html).not_to include("<img")
+    end
+
     it "doesn't accept more than 8 tags" do
       classified_listing.tag_list = "a, b, c, d, e, f, g, h, z, t, s, p"
       expect(classified_listing.valid?).to eq(false)
       expect(classified_listing.errors[:tag_list]).to be_truthy
     end
 
-    it "parses away spaces" do
+    it "parses away tag spaces" do
       classified_listing.tag_list = "the best, tag list"
       classified_listing.save
       expect(classified_listing.tag_list).to eq(%w[thebest taglist])

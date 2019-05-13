@@ -95,7 +95,7 @@ export default class Article extends Component {
         onClick={this.handleReactionClick}
         data-category={curType[1]}
       >
-        <img src={curType[2]} data-category={curType[1]} />
+        <img src={curType[2]} data-category={curType[1]} alt={`${curType[1]} reaction`} />
       </button>
     )
   };
@@ -173,7 +173,7 @@ export default class Article extends Component {
                 </span>
                 <span className="published-at">
                   {' '}
-                  | 
+                  |
                   {' '}
                   {article.readable_publish_date}
                 </span>

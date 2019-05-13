@@ -24,7 +24,7 @@ class Article < ApplicationRecord
   has_many :rating_votes
   has_many :page_views
 
-  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-_]*\z/,
+  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,
                    uniqueness: { scope: :user_id }
   validates :title, presence: true,
                     length: { maximum: 128 }
@@ -59,12 +59,15 @@ class Article < ApplicationRecord
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
+  before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
+  serialize :cached_user
+  serialize :cached_organization
 
   scope :published, -> { where(published: true) }
 
@@ -78,12 +81,12 @@ class Article < ApplicationRecord
                       }
 
   scope :limited_column_select, lambda {
-    select(:path, :title, :id,
+    select(:path, :title, :id, :published,
            :comments_count, :positive_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
-           :experience_level_rating, :experience_level_rating_distribution,
+           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
@@ -128,10 +131,7 @@ class Article < ApplicationRecord
 
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
-    add_index "searchables",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_delayed_index do
+    add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
       attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
@@ -160,10 +160,7 @@ class Article < ApplicationRecord
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
-    add_index "ordered_articles",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_delayed_index do
+    add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
                  :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
                  :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
@@ -355,19 +352,29 @@ class Article < ApplicationRecord
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
+  def update_main_image_background_hex_without_delay
+    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
+
+    Articles::UpdateMainImageBackgroundHexJob.perform_now(id)
+  end
+
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
+    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
   end
-  handle_asynchronously :update_main_image_background_hex
+
+  def detect_human_language_without_delay
+    return if language.present?
+
+    Articles::DetectHumanLanguageJob.perform_now(id)
+  end
 
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    Articles::DetectHumanLanguageJob.perform_later(id)
   end
-  handle_asynchronously :detect_human_language
 
   def tag_keywords_for_search
     tags.pluck(:keywords_for_search).join
@@ -380,6 +387,13 @@ class Article < ApplicationRecord
     else
       relevant_date&.strftime("%b %e '%y")
     end
+  end
+
+  def published_timestamp
+    return "" unless published
+    return "" unless crossposted_at || published_at
+
+    (crossposted_at || published_at).utc.iso8601
   end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
@@ -459,7 +473,7 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustCacheJob.perform_later(ids)
+      Articles::BustMultipleCachesJob.perform_later(ids)
     end
   end
 
@@ -535,6 +549,30 @@ class Article < ApplicationRecord
     self.password = SecureRandom.hex(60)
   end
 
+  def update_cached_user
+    if organization
+      cached_org_object = {
+        name: organization.name,
+        username: organization.username,
+        slug: organization.slug,
+        profile_image_90: organization.profile_image_90,
+        profile_image_url: organization.profile_image_url
+      }
+      self.cached_organization = OpenStruct.new(cached_org_object)
+    end
+
+    if user
+      cached_user_object = {
+        name: user.name,
+        username: user.username,
+        slug: user.username,
+        profile_image_90: user.profile_image_90,
+        profile_image_url: user.profile_image_url
+      }
+      self.cached_user = OpenStruct.new(cached_user_object)
+    end
+  end
+
   def set_all_dates
     set_published_date
     set_featured_number
@@ -582,8 +620,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    CacheBuster.new.bust_article(self)
-    HTTParty.get GeneratedImage.new(self).social_image if published
+    Articles::BustCacheJob.perform_later(id)
   end
-  handle_asynchronously :async_bust
 end

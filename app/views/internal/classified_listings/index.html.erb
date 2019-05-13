@@ -1,0 +1,32 @@
+<a href="/listings">Visit /listings</a>
+
+<div class="wrapper">
+  <div class="grid-item">Title (direct link)</div>
+  <div class="grid-item">Category</div>
+  <div class="grid-item">Tags (cached_tag_list)</div>
+  <div class="grid-item">Published?</div>
+  <div class="grid-item">Last Bumped</div>
+</div>
+<% @classified_listings.each do |listing| %>
+  <div class="wrapper">
+    <div class="grid-item">
+      <a href="/listings/<%= listing.category %>/<%= listing.slug %>" target="_blank">
+        <%= listing.title %>
+      </a>
+    </div>
+    <div class="grid-item"><%= listing.category %></div>
+    <div class="grid-item"><%= listing.cached_tag_list %></div>
+    <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
+    <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
+    <div class="grid-item">
+      <a class="btn btn-success" href="/internal/listings/<%= listing.id %>/edit">Edit</a>
+    </div>
+  </div>
+<% end %>
+
+<style>
+.wrapper {
+  border-bottom: 1px solid grey;
+  padding: 10px;
+}
+</style>

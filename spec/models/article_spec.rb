@@ -111,7 +111,7 @@ RSpec.describe Article, type: :model do
     let(:article1) { build(:article, title: title, published: false) }
 
     before do
-      article0.validate
+      article0.validate!
     end
 
     context "when unpublished" do
@@ -388,6 +388,22 @@ RSpec.describe Article, type: :model do
       article = create(:article, user_id: user.id)
       expect(article.cached_user_username).to eq(article.user_username)
     end
+    it "assigns cached_user on save" do
+      article = create(:article, user_id: user.id)
+      expect(article.cached_user.username).to eq(article.user.username)
+      expect(article.cached_user.name).to eq(article.user.name)
+      expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
+      expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
+    end
+    it "assigns cached_organization on save" do
+      organization = create(:organization)
+      article = create(:article, user_id: user.id, organization_id: organization.id)
+      expect(article.cached_organization.username).to eq(article.organization.username)
+      expect(article.cached_organization.name).to eq(article.organization.name)
+      expect(article.cached_organization.slug).to eq(article.organization.slug)
+      expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
+      expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
+    end
   end
 
   describe "validations" do
@@ -488,6 +504,32 @@ RSpec.describe Article, type: :model do
 
     it "can have a template" do
       expect(build(:article, comment_template: "my comment template").comment_template).to eq("my comment template")
+    end
+  end
+
+  describe "published_timestamp" do
+    it "returns empty string if the article is new" do
+      expect(Article.new.published_timestamp).to eq("")
+    end
+
+    it "returns empty string if the article is not published" do
+      article.update_column(:published, false)
+      expect(article.published_timestamp).to eq("")
+    end
+
+    it "returns the timestamp of the crossposting date over the publishing date" do
+      crossposted_at = 1.week.ago
+      published_at = 1.day.ago
+      article.update_columns(
+        published: true, crossposted_at: crossposted_at, published_at: published_at,
+      )
+      expect(article.published_timestamp).to eq(crossposted_at.utc.iso8601)
+    end
+
+    it "returns the timestamp of the publishing date if there is no crossposting date" do
+      published_at = 1.day.ago
+      article.update_columns(published: true, crossposted_at: nil, published_at: published_at)
+      expect(article.published_timestamp).to eq(published_at.utc.iso8601)
     end
   end
 
