@@ -111,6 +111,7 @@ class Reaction < ApplicationRecord
 
   def reactable_user
     return unless category == "readinglist"
+
     {
       username: reactable.user_username,
       name: reactable.user_name,
