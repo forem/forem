@@ -20,7 +20,7 @@ function hideArchivedPosts() {
 
 function toggleArchivedPosts(e) {
   var link = e.target;
-
+  
   if (link.innerHTML.match(/Show/)) {
     link.innerHTML = 'Hide Archived';
     showArchivedPosts();
@@ -32,6 +32,7 @@ function toggleArchivedPosts(e) {
 
 function initializeArchivedPostFilter() {
   var link = document.getElementById('toggleArchivedLink');
-
-  link.addEventListener('click', toggleArchivedPosts);
+  if (link) {
+    link.addEventListener('click', toggleArchivedPosts);
+  }
 }
