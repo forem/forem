@@ -76,7 +76,7 @@ function reactToReadingListButtonClick(event) {
 function renderButtonState(button, json) {
   if (json.result === 'create') {
     button.classList.add('selected');
-    addHoverEffectToReadingListButton(button);
+    addHoverEffectToReadingListButtons(button);
   } else {
     button.classList.remove('selected');
   }
