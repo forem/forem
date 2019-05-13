@@ -6,9 +6,8 @@ function initializeCommentDropdown() {
     return (
       navigator.userAgent.match(/iPhone/i) ||
       navigator.userAgent.match('CriOS') ||
-      navigator.userAgent.match(
-        /iPad/i || navigator.userAgent === 'DEV-Native-ios',
-      )
+      navigator.userAgent.match(/iPad/i) ||
+      navigator.userAgent === 'DEV-Native-ios'
     );
   }
 
