@@ -458,11 +458,6 @@ class Article < ApplicationRecord
     Notification.update_notifications(self, "Published")
   end
 
-  # def send_to_moderator
-  #   ModerationService.new.send_moderation_notification(self) if published
-  #   turned off for now
-  # end
-
   def before_destroy_actions
     bust_cache
     remove_algolia_index
