@@ -179,7 +179,8 @@ export default class ArticleForm extends Component {
   };
 
   removeLocalStorage = () => {
-    localStorage.removeItem(this.url);
+    const {version} = this.state
+    localStorage.removeItem(`editor-${version}-${this.url}`);
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
