@@ -251,6 +251,13 @@
         lighten($yellow, 20%)
       );
     }
+    &.single-article-archived {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($yellow, 10%)
+      );
+    }
     &.thanks-for-suggesting-a-tweet {
       background: lighten($green, 20%);
       padding: 30px 0px;
@@ -325,8 +332,13 @@
       & button.ellipsis-menu-btn {
         display: block;
         float: right;
-        margin-top: 1em;
-        border-radius: 15px;
+        margin-top: 0.3em;
+        margin-right: -0.6em;
+        border: 0px;
+        background: transparent;
+        img {
+          width: 20px;
+        }
 
         &:hover {
           background-color: #eee;
@@ -341,9 +353,10 @@
         padding-left: 0;
         border-style: solid;
         border-color: #ccc;
-        border-radius: 5px;
+        border-radius: 3px;
         border-width: 1px;
-        margin-top: 2.75em;
+        margin-top: 1.75em;
+        margin-right: -0.6em;
 
         &.hidden {
           display: none;
