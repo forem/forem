@@ -15,7 +15,7 @@ RSpec.describe "ReadingListItems", type: :request do
       expect(reaction.reload.status).to eq("archived")
     end
     it "unarchives an item if current_status is passed as archived" do
-      put "/reading_list_items/#{reaction.id}", params: {current_status: "archived"}
+      put "/reading_list_items/#{reaction.id}", params: { current_status: "archived" }
       expect(reaction.reload.status).to eq("valid")
     end
   end
