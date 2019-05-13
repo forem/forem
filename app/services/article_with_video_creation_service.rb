@@ -11,7 +11,6 @@ class ArticleWithVideoCreationService
 
   def create!
     Article.create! do |article|
-
       article = initial_article_with_params(article)
       article.processed_html = ""
       article.user_id = @current_user.id
