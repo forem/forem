@@ -15,6 +15,9 @@
     overflow: hidden;
     z-index: 100;
   }
+  &.hidden {
+    display: none;
+  }
   .primary-sticky-nav-author{
     a{
       @include themeable(
