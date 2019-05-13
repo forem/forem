@@ -42,9 +42,7 @@ module Moderator
       return unless user.comments.any?
 
       user.comments.find_each do |comment|
-        comment.update_columns(user_id: @ghost.id)
-        comment.save
-        comment.path
+        comment.update(user_id: @ghost.id)
       end
     end
 
