@@ -145,9 +145,16 @@ class ArticlesController < ApplicationController
         Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
-      redirect_to(params[:destination] || path)
+
+      respond_to do |format|
+        format.json { head :ok }
+        format.html { redirect_to(params[:destination] || path) }
+      end
     else
-      render :edit
+      respond_to do |format|
+        format.html { redirect_to :edit }
+        format.json { head :unprocessable_entity }
+      end
     end
   end
 
