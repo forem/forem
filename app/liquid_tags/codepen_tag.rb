@@ -1,22 +1,21 @@
 class CodepenTag < LiquidTagBase
+  PARTIAL = "liquids/codepen".freeze
+
   def initialize(tag_name, link, tokens)
     super
     @link = parse_link(link)
     @build_options = parse_options(link)
-    @height = 600
   end
 
   def render(_context)
-    html = <<-HTML
-      <iframe height="#{@height}"
-        src="#{@link}?height=#{@height}&#{@build_options}&embed-version=2"
-        scrolling="no"
-        frameborder="no"
-        allowtransparency="true"
-        style="width: 100%;">
-      </iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        link: @link,
+        height: 600,
+        build_options: @build_options
+      },
+    )
   end
 
   private

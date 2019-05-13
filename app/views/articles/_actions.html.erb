@@ -17,7 +17,7 @@
   </a>
   <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
     DISCUSS
-    <% if @article.comments_count.nonzero? %>
+    <% if @article.comments_count.positive? %>
       <span class="article-actions-comments-count-number">(<%= @article.comments_count %>)</span>
     <% else %>
     <% end %>

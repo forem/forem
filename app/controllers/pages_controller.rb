@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded]
+  before_action :set_cache_control_headers, only: %i[show rlyweb now survey badge shecoded bounty faq]
 
   def show
     @page = Page.find_by!(slug: params[:slug])
@@ -19,6 +19,18 @@ class PagesController < ApplicationController
     @page = Page.find_by(slug: "about")
     render :show if @page
     set_surrogate_key_header "about_page"
+  end
+
+  def faq
+    @page = Page.find_by(slug: "faq")
+    render :show if @page
+    set_surrogate_key_header "faq_page"
+  end
+
+  def bounty
+    @page = Page.find_by(slug: "security")
+    render :show if @page
+    set_surrogate_key_header "bounty_page"
   end
 
   def badge

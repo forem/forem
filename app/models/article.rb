@@ -352,19 +352,29 @@ class Article < ApplicationRecord
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
+  def update_main_image_background_hex_without_delay
+    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
+
+    Articles::UpdateMainImageBackgroundHexJob.perform_now(id)
+  end
+
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
+    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
   end
-  handle_asynchronously :update_main_image_background_hex
+
+  def detect_human_language_without_delay
+    return if language.present?
+
+    Articles::DetectHumanLanguageJob.perform_now(id)
+  end
 
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    Articles::DetectHumanLanguageJob.perform_later(id)
   end
-  handle_asynchronously :detect_human_language
 
   def tag_keywords_for_search
     tags.pluck(:keywords_for_search).join
@@ -463,7 +473,7 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustCacheJob.perform_later(ids)
+      Articles::BustMultipleCachesJob.perform_later(ids)
     end
   end
 
@@ -610,7 +620,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    CacheBuster.new.bust_article(self)
+    Articles::BustCacheJob.perform_later(id)
   end
-  handle_asynchronously :async_bust
 end
