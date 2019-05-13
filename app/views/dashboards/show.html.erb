@@ -29,6 +29,9 @@
       <% end %>
 
       <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
+      <% if @articles.any? {|article| article.archived } %>
+        <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>
+      <% end %>
     </div>
     <% @articles.each do |article| %>
       <%= render "dashboard_article", article: article, org_admin: false, manage_view: false %>
