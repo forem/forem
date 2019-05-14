@@ -110,7 +110,7 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by(secret: params[:org_secret].strip))
+    if (@organization = Organization.find_by(secret: "params[:org_secret].strip"))
       ActiveRecord::Base.transaction do
         current_user.update(organization_id: @organization.id)
         OrganizationMembership.create(user_id: current_user.id, organization_id: current_user.organization_id, type_of_user: "member")
@@ -118,7 +118,8 @@ class UsersController < ApplicationController
       redirect_to "/settings/organization",
                   notice: "You have joined the #{@organization.name} organization."
     else
-      not_found
+      flash[:error] = "The given organization secret was invalid."
+      redirect_to "/settings/organization"
     end
   end
 
