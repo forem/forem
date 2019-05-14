@@ -11,6 +11,7 @@
     </button>
   <% end %>
   <a class="article-actions-tweet-button"
+     id="article-actions-tweet-button"
      target='_blank'
      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
     <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">

@@ -87,7 +87,7 @@ article {
     theme-container-background, 
     white
   );
-  margin: 68px auto 20px;
+  margin: 66px auto 20px;
   text-align: left;
   @include themeable(
     box-shadow, 
@@ -782,7 +782,7 @@ article {
         margin-bottom: 10px !important;
         display: block !important;
         width: 100% !important;
-        padding: 6px 0px !important;
+        padding: 2px 0px 1px !important;
         margin-left: 0px !important;
         margin-right: 0px !important;
         border-radius: 100px !important;
@@ -791,16 +791,9 @@ article {
         &.user-animated {
           animation: wide-reaction-animation 0.25s !important;
         }
-        &:not(.user-activated) {
-          @include themeable-important(
-            background, 
-            theme-container-background, 
-            darken($light-gray, 1%)
-          );
-        }
         &:focus {
           outline: 0;
-          box-shadow: 0px 0px 7px $medium-gray !important;
+          box-shadow: 0px 0px 4px $medium-gray !important;
         }
       }
       a {
@@ -812,7 +805,7 @@ article {
         }
       }
       .dropdown-content {
-        left: 150px !important;
+        left: 80px !important;
         bottom: 0px !important;
         a {
           background: transparent !important;
@@ -826,6 +819,12 @@ article {
       a {
         font-size: 0.70em !important;
       }
+      button {
+        padding: 5px 0px 4px !important;
+      }
+      .dropdown-content {
+        left: 100px !important;
+      }
     }
     @media screen and (min-width: 1530px) {
       width: 156px;
@@ -837,19 +836,18 @@ article {
       a {
         font-size: 0.79em !important;
       }
+      .dropdown-content {
+        left: 150px !important;
+      }
     }
     button {
-      @include themeable(
-        background, 
-        theme-container-background, 
-        transparent
-      );
+      background: transparent;
       margin: 0px calc(0.22vw + 2px);
       padding: 3px calc(0.88vw + 8px);
       border-radius: 100px;
       border: 2px solid darken($light-gray, 20%);
       // background: linear-gradient(60deg, #f4d2d2, #ffffff);
-      font-family: $helvetica-condensed;
+      font-weight: bold;
       font-stretch: condensed;
       img {
         height: 23px;
@@ -862,6 +860,13 @@ article {
         @media screen and (min-width: 1365px) {
           height: 19px;
           width: 19px;
+          @include themeable(
+            background, 
+            theme-container-accent-background, 
+            darken($light-gray, 3%)
+          );  
+          border-radius: 100px;
+          padding: 7px;
         }
         @media screen and (min-width: 1439px) {
           height: 23px;
@@ -891,17 +896,18 @@ article {
         }
         @media screen and (min-width: 1365px) {
           font-size: 13px;
-          vertical-align: 4px;
+          vertical-align: 11px;
+          margin-left: 3px;
           width: 28px;
         }
         @media screen and (min-width: 1439px) {
           font-size: 15px;
-          vertical-align: 5px;
+          vertical-align: 13px;
           width: 37px;
         }
         @media screen and (min-width: 1530px) {
-          font-size: 18px;
-          vertical-align: 7px;
+          font-size: 16px;
+          vertical-align: 14px;
         }
       }
       &:hover {
@@ -915,16 +921,16 @@ article {
       }
       &.user-activated {
         border: 2px solid darken($bold-blue, 35%);
-        background: linear-gradient(60deg, #f4d2d2, #efb6b6);
+        background: linear-gradient(60deg, #ffccdb, #ff97b8);
         img {
           filter: none;
           opacity: 1;
         }
         &.unicorn-reaction-button {
-          background: linear-gradient(60deg, #d6e5fc, #c9deff);
+          background: linear-gradient(60deg, #d6e5fc, #b5d1ff);
         }
         &.readinglist-reaction-button {
-          background: linear-gradient(60deg, #d2cdf2, #beb8ef);
+          background: linear-gradient(60deg, #d2cdf2, #b6aef2);
         }
         .reaction-number {
           color: darken($bold-blue, 40%);
@@ -948,6 +954,9 @@ article {
         .dropdown-icon {
           vertical-align: -2px;
         }
+      }
+      img {
+        background: transparent !important;
       }
       .dropdown-content {
         display: none;

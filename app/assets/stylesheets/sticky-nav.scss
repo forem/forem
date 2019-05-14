@@ -120,25 +120,6 @@
     );
     width: 262px;
     border-radius: 3px;
-    &.sticky-join-cta{
-      margin-top: 12px;
-      padding: 16px 13px;
-      background: lighten($yellow, 16%);
-      border: 1px solid darken($yellow, 15%);
-      box-shadow: 5px 6px 0px darken($yellow, 15%);
-      img{
-        width: 22px;
-        height: 22px;
-        margin-left: 3px;
-        margin-right: 2px;
-        vertical-align: -3px;
-      }
-      &:hover{
-        background: lighten($yellow, 12%);
-        border: 1px solid darken($yellow, 12%);
-        box-shadow: 5px 6px 0px darken($yellow, 12%);
-      }
-    }
     .primary-sticky-nav-element-details{
       margin-top:9px;
       font-size: 0.8em;
@@ -147,10 +128,6 @@
         theme-secondary-color, 
         $medium-gray
       );
-    }
-    &:hover{
-      border: 1px solid darken($light-medium-gray, 17%);
-      box-shadow: 3px 4px 0px darken($light-medium-gray, 17%);
     }
   }
   .user-metadata-details {
