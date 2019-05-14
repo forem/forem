@@ -212,10 +212,11 @@ export default class ArticleForm extends Component {
 
   onClearChanges = e => {
     e.preventDefault();
+    // eslint-disable-next-line no-restricted-globals
     const revert = confirm(
       'Are you sure you want to revert to the previous save?',
     );
-    if (!revert) return;
+    if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
     this.setState({
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
@@ -276,7 +277,7 @@ export default class ArticleForm extends Component {
       errors,
       version
     } = this.state;
-    const notice = submitting ? <Notice published={published} /> : '';
+    const notice = submitting ? <Notice published={published} version={version} /> : '';
     const imageArea = (mainImage && !previewShowing && version === 'v2') ? (
       <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
     ) : (
@@ -343,9 +344,11 @@ export default class ArticleForm extends Component {
         )
         controls = (
           <div className={title.length > 128 ? 'articleform__titleTooLong' : ''}>
-            <Title defaultValue={title}
+            <Title
+              defaultValue={title}
               onKeyDown={this.handleTitleKeyDown}
-              onChange={linkState(this, 'title')} />
+              onChange={linkState(this, 'title')}
+            />
             <div className="articleform__detailfields">
               <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
               <button
