@@ -127,7 +127,7 @@ class MarkdownParser
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/", "https://cdn-images-1.medium.com")
+    src.start_with?("https://camo.githubusercontent.com/")
   end
 
   def giphy_img?(source)
