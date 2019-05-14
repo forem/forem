@@ -1,6 +1,10 @@
 <% title @article.title %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
+<%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-loader.js" %>
+
+<%= javascript_pack_tag "clipboardCopy", defer: true %>
+
+<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", :expires_in => 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js", defer: true %>
     <script defer>
