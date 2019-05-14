@@ -844,7 +844,8 @@ article {
     button {
       background: transparent;
       margin: 0px calc(0.22vw + 2px);
-      padding: 3px calc(0.88vw + 8px);
+      padding: 3px calc(0.88vw + 6px);
+      padding-right: calc(0.88vw + 10px);
       border-radius: 100px;
       border: 2px solid darken($light-gray, 20%);
       // background: linear-gradient(60deg, #f4d2d2, #ffffff);
@@ -855,8 +856,8 @@ article {
         width: 23px;
         transition: -webkit-filter 0.2s, opacity 0.2s;
         @media screen and (min-width: 500px) {
-          height: 28px;
-          width: 28px;
+          height: 26px;
+          width: 26px;
         }
         @media screen and (min-width: 1365px) {
           height: 19px;
@@ -882,18 +883,18 @@ article {
       }
       .reaction-number {
         display: inline-block;
-        vertical-align: 5px;
+        vertical-align: 6px;
         margin-left: 4px;
         @include themeable(
           color, 
           theme-secondary-color, 
           $medium-gray
         );
-        font-size: 14px;
+        font-size: 13px;
         width: 27px;
         @media screen and (min-width: 500px) {
           width: 37px;
-          font-size: 18px;
+          font-size: 16px;
           vertical-align: 7px;
           margin-left: 7px;
         }
