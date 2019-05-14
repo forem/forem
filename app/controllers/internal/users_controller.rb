@@ -125,8 +125,8 @@ class Internal::UsersController < Internal::ApplicationController
   def full_delete
     @user = User.find(params[:id])
     begin
-      Moderator::BanishUser.call_full_delete(admin: current_user, user: @user)
-      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
+      Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
+      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
     rescue StandardError => e
       flash[:error] = e.message
     end
@@ -161,6 +161,7 @@ class Internal::UsersController < Internal::ApplicationController
                                  :add_credits,
                                  :remove_credits,
                                  :add_org_credits,
-                                 :remove_org_credits)
+                                 :remove_org_credits,
+                                 :ghostify)
   end
 end
