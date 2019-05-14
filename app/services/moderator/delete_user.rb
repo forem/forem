@@ -21,6 +21,7 @@ module Moderator
       reassign_articles
       reassign_comments
       delete_non_content_activity_and_user
+      CacheBuster.new.bust("/ghost")
     end
 
     def full_delete
@@ -44,6 +45,7 @@ module Moderator
       user.comments.find_each do |comment|
         comment.update(user_id: @ghost.id)
       end
+      @ghost.touch(:last_comment_at)
     end
 
     def reassign_articles
@@ -52,6 +54,7 @@ module Moderator
       user.articles.find_each do |article|
         path = "/#{@ghost.username}/#{article.slug}"
         article.update_columns(user_id: @ghost.id, path: path)
+        article.index!
       end
     end
   end
