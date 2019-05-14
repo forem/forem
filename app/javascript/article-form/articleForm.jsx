@@ -372,26 +372,7 @@ export default class ArticleForm extends Component {
           {errorsArea}
           {orgArea}
           {imageArea}
-          <Title defaultValue={title} onChange={linkState(this, 'title')} />
-          <div className="articleform__detailfields">
-            <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
-            <button
-              className="articleform__detailsButton articleform__detailsButton--image"
-              onClick={this.toggleImageManagement}
-              type="button"
-            >
-              <img src={ImageUploadIcon} alt="" />
-              {' '}
-IMAGES
-            </button>
-            <button
-              className="articleform__detailsButton articleform__detailsButton--moreconfig"
-              onClick={this.toggleMoreConfig}
-              type="button"
-            >
-              <img src={ThreeDotsIcon} alt="" />
-            </button>
-          </div>
+          {controls}
           <BodyMarkdown
             defaultValue={bodyMarkdown}
             onKeyDown={this.handleBodyKeyDown}
@@ -402,17 +383,11 @@ IMAGES
             onClick={this.toggleImageManagement}
             type="button"
           >
-            <img src={ImageUploadIcon} alt="" />
+            <img src={ImageUploadIcon} alt="upload images" />
             {' '}
 IMAGES
           </button>
-          <button
-            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-            onClick={this.toggleMoreConfig}
-            type="button"
-          >
-            <img src={ThreeDotsIcon} alt="" />
-          </button>
+          {moreConfigBottomButton}
         </div>
       );
     }
