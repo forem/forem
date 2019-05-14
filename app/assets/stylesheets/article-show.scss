@@ -832,6 +832,7 @@ article {
       button,
       a {
         width: 140px !important;
+        padding: 7px 0px 6px !important;
       }
       a {
         font-size: 0.79em !important;
@@ -852,7 +853,7 @@ article {
       img {
         height: 23px;
         width: 23px;
-        transition: -webkit-filter 0.2s, opacity 0.2s, background-color 0.2s;
+        transition: -webkit-filter 0.2s, opacity 0.2s;
         @media screen and (min-width: 500px) {
           height: 28px;
           width: 28px;
@@ -866,7 +867,7 @@ article {
             darken($light-gray, 3%)
           );  
           border-radius: 100px;
-          padding: 7px;
+          padding: 4px;
         }
         @media screen and (min-width: 1439px) {
           height: 23px;
@@ -875,6 +876,8 @@ article {
         @media screen and (min-width: 1530px) {
           height: 28px;
           width: 28px;
+          padding: 7px;
+
         }
       }
       .reaction-number {
@@ -895,19 +898,20 @@ article {
           margin-left: 7px;
         }
         @media screen and (min-width: 1365px) {
-          font-size: 13px;
-          vertical-align: 11px;
-          margin-left: 3px;
+          font-size: 12px;
+          vertical-align: 9px;
+          margin-left: 1px;
           width: 28px;
         }
         @media screen and (min-width: 1439px) {
           font-size: 15px;
-          vertical-align: 13px;
+          vertical-align: 9px;
           width: 37px;
+          margin-left: 7px;
         }
         @media screen and (min-width: 1530px) {
           font-size: 16px;
-          vertical-align: 14px;
+          vertical-align: 15px;
         }
       }
       &:hover {
@@ -925,6 +929,7 @@ article {
         img {
           filter: none;
           opacity: 1;
+          background: transparent;
         }
         &.unicorn-reaction-button {
           background: linear-gradient(60deg, #d6e5fc, #b5d1ff);

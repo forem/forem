@@ -30,6 +30,12 @@ body {
   height: 90vh;
 }
 
+.zen-mode {
+  .top-bar, .primary-sticky-nav, .article-actions {
+    display: none !important;
+  }
+}
+
 .universal-page-content-wrapper {
   overflow: hidden;
   min-height: 88vh;
