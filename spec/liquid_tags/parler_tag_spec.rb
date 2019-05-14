@@ -12,11 +12,13 @@ RSpec.describe ParlerTag, type: :liquid_template do
     end
 
     def generate_iframe(_id)
-      "<iframe "\
-        "width=\"710\" "\
-        "height=\"120\" "\
-        "src=\"https://api.parler.io/ss/player?url=#{valid_id}\"> "\
-      "</iframe>"
+      <<~HTML
+        <iframe
+          width="710"
+          height="120"
+          src="https://api.parler.io/ss/player?url=#{valid_id}">
+        </iframe>
+      HTML
     end
 
     it "accepts a valid Parler URL" do
