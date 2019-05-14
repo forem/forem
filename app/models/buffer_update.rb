@@ -20,7 +20,7 @@ class BufferUpdate < ApplicationRecord
   def self.upbuff!(buffer_update_id, admin_id, body_text, status)
     buffer_update = BufferUpdate.find(buffer_update_id)
     if status == "confirmed"
-      buffer_response = send_to_buffer(buffer_update.body_text, buffer_update.buffer_profile_id_code)
+      buffer_response = send_to_buffer(body_text, buffer_update.buffer_profile_id_code)
       buffer_update.update!(buffer_response: buffer_response, status: status, approver_user_id: admin_id, body_text: body_text)
     else
       buffer_update.update!(status: status, approver_user_id: admin_id)

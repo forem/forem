@@ -2,7 +2,7 @@ Rails.logger.info "1. Creating Organizations"
 
 3.times do
   Organization.create!(
-    name: Faker::SiliconValley.company,
+    name: Faker::TvShows::SiliconValley.company,
     summary: Faker::Company.bs,
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
@@ -149,7 +149,7 @@ podcast_objects = [
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
-    main_color_hex: "",
+    main_color_hex: Faker::Color.hex_color,
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
@@ -227,7 +227,7 @@ Badge.create!(
   badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
 )
 
-Rails.logger.info "10. Creating FeedbackMessages"
+Rails.logger.info "11. Creating FeedbackMessages"
 
 FeedbackMessage.create!(
   reporter: User.last,
@@ -236,6 +236,25 @@ FeedbackMessage.create!(
   category: "spam",
   status: "Open",
 )
+
+Rails.logger.info "12. Creating Classified listings"
+
+users = User.order(Arel.sql("RANDOM()")).to_a
+users.each { |user| Credit.add_to(user, rand(100)) }
+
+listings_categories = ClassifiedListing.categories_available.keys
+listings_categories.each_with_index do |category, index|
+  # rotate users if they are less than the categories
+  user = users.at((index + 1) % users.length)
+  2.times do
+    ClassifiedListing.create!(
+      user: user,
+      title: Faker::Lorem.sentence,
+      body_markdown: Faker::Markdown.random,
+      category: category,
+    )
+  end
+end
 ##############################################################################
 
 Rails.logger.info <<-ASCII

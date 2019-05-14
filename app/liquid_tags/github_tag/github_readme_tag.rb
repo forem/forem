@@ -2,23 +2,21 @@ require "nokogiri"
 
 class GithubTag
   class GithubReadmeTag
+    PARTIAL = "liquids/github_readme".freeze
+
     def initialize(link)
       @link = parse_link(link)
       @content = get_content(@link)
     end
 
     def render
-      <<~HTML
-        <div class="ltag-github-readme-tag">
-          <div class="readme-overview">
-            <h2>
-              <img src="#{ActionController::Base.helpers.asset_path('github-logo.svg')}" /><a href="https://github.com/#{@content.owner.login}">#{@content.owner.login}</a> / <a style="font-weight: 600;" href="#{@content.html_url}">#{@content.name}</a>
-            </h2>
-            <h3>#{@content.description}</h3>
-          </div><div class="ltag-github-body">
-            <p>#{HTML_Truncator.truncate @updated_html, 150}</p>
-          </div><div class="gh-btn-container"><a class="gh-btn" href="#{@content.html_url}">View on GitHub</a></div></div>
-      HTML
+      ActionController::Base.new.render_to_string(
+        partial: PARTIAL,
+        locals: {
+          content: @content,
+          updated_html: @updated_html
+        },
+      )
     end
 
     def parse_link(link)

@@ -1,10 +1,12 @@
 class ClassifiedListingsController < ApplicationController
-  before_action :set_classified_listing, only: %i[show edit update]
+  before_action :set_classified_listing, only: %i[edit update]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
   before_action :authenticate_user!, only: %i[edit update new]
 
   def index
+    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
+    mod_page if params[:view] == "moderate"
     @classified_listings = if params[:category].blank?
                              ClassifiedListing.where(published: true).order("bumped_at DESC").limit(12)
                            else
@@ -12,8 +14,6 @@ class ClassifiedListingsController < ApplicationController
                            end
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
-
-  def show; end
 
   def new
     @classified_listing = ClassifiedListing.new
@@ -28,22 +28,33 @@ class ClassifiedListingsController < ApplicationController
   def create
     @classified_listing = ClassifiedListing.new(classified_listing_params)
     @classified_listing.user_id = current_user.id
-    number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
-    available_credits = current_user.credits.where(spent: false)
-    if available_credits.size >= number_of_credits_needed
-      @classified_listing.bumped_at = Time.current
-      @classified_listing.published = true
-      @classified_listing.organization_id = current_user.organization_id if @classified_listing.post_as_organization.to_i == 1
-      if @classified_listing.save
-        clear_listings_cache
-        available_credits.limit(number_of_credits_needed).update_all(spent: true)
-        redirect_to "/listings"
-      else
-        @credits = current_user.credits.where(spent: false)
-        render :new
-      end
+    @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
+    @org = Organization.find(current_user.organization_id) if @classified_listing.post_as_organization.to_i == 1
+    available_org_credits = @org.credits.where(spent: false) if @org
+    available_individual_credits = current_user.credits.where(spent: false)
+
+    if @org && available_org_credits.size >= @number_of_credits_needed
+      create_listing(available_org_credits)
+    elsif available_individual_credits.size >= @number_of_credits_needed
+      create_listing(available_individual_credits)
     else
       redirect_to "/credits"
+    end
+  end
+
+  def create_listing(credits)
+    @classified_listing.bumped_at = Time.current
+    @classified_listing.published = true
+    @classified_listing.organization_id = current_user.organization_id if @org
+    if @classified_listing.save
+      clear_listings_cache
+      credits.limit(@number_of_credits_needed).update_all(spent: true)
+      @classified_listing.index!
+      redirect_to "/listings"
+    else
+      @credits = current_user.credits.where(spent: false)
+      @classified_listing.cached_tag_list = classified_listing_params[:tag_list]
+      render :new
     end
   end
 
@@ -73,6 +84,10 @@ class ClassifiedListingsController < ApplicationController
 
   private
 
+  def mod_page
+    redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_classified_listing
     @classified_listing = ClassifiedListing.find(params[:id])
@@ -87,5 +102,7 @@ class ClassifiedListingsController < ApplicationController
   def clear_listings_cache
     CacheBuster.new.bust("/listings")
     CacheBuster.new.bust("/listings?i=i")
+    CacheBuster.new.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}")
+    CacheBuster.new.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}?i=i")
   end
 end

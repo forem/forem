@@ -7,9 +7,17 @@
 
 [build]
   base = "docs/"
+  command = "make"
+
 [[redirects]]
   from = "http://docs.dev.to"
   to = "https://docs.dev.to"
+[[redirects]]
+  from = "http://docs.dev.to/ruby-doc"
+  to = "https://docs.dev.to/ruby-doc/index.html"
+[[redirects]]
+  from = "http://docs.dev.to/ruby-doc/"
+  to = "https://docs.dev.to/ruby-doc/index.html"
 [[redirects]]
   from = "http://docs.dev.to/*"
   to = "https://docs.dev.to/:splat"

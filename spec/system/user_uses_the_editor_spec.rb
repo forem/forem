@@ -37,14 +37,14 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Submitting an article" do
-    it "fill out form and submit" do
+    xit "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
       click_button("article-submit")
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       Approvals.verify(article_body, name: "user_submit_article", format: :html)
     end
 
-    it "user write and publish an article" do
+    xit "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
       click_button("article-submit")
       ["Sample Article", template[-200..-1], "test"].each do |text|
@@ -52,7 +52,7 @@ RSpec.describe "Using the editor", type: :system do
       end
     end
 
-    it "user write and publish an article without a title" do
+    xit "user write and publish an article without a title" do
       fill_markdown_with(template.gsub("Sample Article", ""))
       click_button("article-submit")
       expect(page).to have_css("div#error_explanation",

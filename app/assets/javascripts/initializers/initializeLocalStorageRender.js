@@ -6,7 +6,6 @@ function initializeLocalStorageRender() {
       initializeBaseUserData();
       initializeReadingListIcons();
       initializeAllFollowButts();
-      initializeReadingListPage();
       initializeSponsorshipVisibility();
     }
   }
