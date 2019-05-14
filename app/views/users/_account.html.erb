@@ -98,13 +98,17 @@
         <li>delete any and all content you have, such as your reading list or chat messages.</li>
         <li>allow your username to become available to anyone.</li>
       </ul>
-      <b>To delete your account, type in your username:</b>
       <div class="field">
-        <input type="text" id="delete__account__username__field">
+        <label for="delete__account__username__field">
+          <b>To delete your account, type in your username:</b>
+        </label>
+        <input type="text" name="delete__account__username__field" id="delete__account__username__field">
       </div>
-      <b>For verification, type the words:</b> <i>delete my account</i>
       <div class="field">
-        <input type="text" id="delete__account__verification__field">
+        <label for="delete__account__verification__field">
+          <b>For verification, type the words:</b><i> delete my account</i>
+        </label>
+        <input type="text" name="delete__account__verification__field" id="delete__account__verification__field">
       </div>
       <button class="big-action danger-button small-button" id="delete__account__btn" type="submit" disabled="true">
         DELETE ACCOUNT
