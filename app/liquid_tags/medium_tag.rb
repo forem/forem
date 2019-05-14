@@ -32,3 +32,5 @@ class MediumTag < LiquidTagBase
     raise StandardError, "Invalid link URL or link URL does not exist"
   end
 end
+
+Liquid::Template.register_tag("medium", MediumTag)
