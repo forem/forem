@@ -62,6 +62,12 @@ RSpec.describe "Internal::Users", type: :request do
     Delayed::Worker.new(quiet: true).work_off
   end
 
+  def call_ghost
+    ghost
+    post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
+    Delayed::Worker.new(quiet: true).work_off
+  end
+
   context "when merging users" do
     before do
       full_profile
@@ -141,15 +147,13 @@ RSpec.describe "Internal::Users", type: :request do
 
   context "when deleting user and converting content to ghost" do
     it "raises a 'record not found' error after deletion" do
-      ghost
-      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
+      call_ghost
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "reassigns comment and article content to ghost account" do
       create(:article, user: user)
-      ghost
-      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
+      call_ghost
       expect(ghost.articles.count).to eq(2)
       expect(ghost.comments.count).to eq(1)
       expect(ghost.comments.last.path).to include("ghost")

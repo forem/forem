@@ -50,7 +50,7 @@ module Moderator
       return unless user.articles.any?
 
       user.articles.find_each do |article|
-        path = "/#{@ghost.username}/" + article.slug
+        path = "/#{@ghost.username}/#{article.slug}"
         article.update_columns(user_id: @ghost.id, path: path)
       end
     end
