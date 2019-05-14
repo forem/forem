@@ -7,9 +7,11 @@
   <a href='<%= response[:url] %>' class='ltag__link__link'>
     <div class='ltag__link__content'>
       <h2><%= response[:title] %></h2>
-      <h3><%= response[:author] %></h3>
-        <%= inline_svg('medium_icon.svg', size: '27px*27px', aria: true, title: 'medium logo') %> Medium
-      <div class='ltag__link__taglist'><%= response[:reading_time] %></div>
+      <h3><%= response[:author] %> ・ <%= response[:reading_time] %></h3>
+      <div class="ltag__link__servicename">
+        <img src="<%= asset_path("medium_icon.svg") %>" alt="Medium Logo" aria-label="Medium Logo" />
+        <%= ApplicationController.helpers.get_host_without_www response[:url] %>
+      </div>
     </div>
   </a>
 </div>
