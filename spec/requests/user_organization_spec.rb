@@ -25,6 +25,11 @@ RSpec.describe "UserOrganization", type: :request do
       expect { post "/users/join_org", params: { org_secret: "NOT SECRET" } }.
         to raise_error ActiveRecord::RecordNotFound
     end
+
+    it "correctly strips the secret of the org_secret param" do
+      post "/users/join_org", params: { org_secret: organization.secret + "     " }
+      expect(user.organization_id).to eq(organization.id)
+    end
   end
 
   context "when leaving an org" do

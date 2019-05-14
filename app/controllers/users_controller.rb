@@ -110,7 +110,7 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by(secret: params[:org_secret]))
+    if (@organization = Organization.find_by(secret: params[:org_secret].strip))
       ActiveRecord::Base.transaction do
         current_user.update(organization_id: @organization.id)
         OrganizationMembership.create(user_id: current_user.id, organization_id: current_user.organization_id, type_of_user: "member")
