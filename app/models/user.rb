@@ -352,7 +352,7 @@ class User < ApplicationRecord
   end
 
   def org_admin?(organization)
-    user.org_admin && user.organization_id == organization.id
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
   def unique_including_orgs

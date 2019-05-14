@@ -21,8 +21,8 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
     this.article = JSON.parse(this.props.article);
-    const organization = this.props.organization
-      ? JSON.parse(this.props.organization)
+    const organization = this.props.organizations
+      ? JSON.parse(this.props.organizations)
       : null;
 
     this.url = window.location.href;
@@ -46,7 +46,7 @@ export default class ArticleForm extends Component {
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
-      organization,
+      organizations,
       postUnderOrg: !!this.article.organization_id,
       errors: null,
       edited: false,
@@ -372,7 +372,26 @@ export default class ArticleForm extends Component {
           {errorsArea}
           {orgArea}
           {imageArea}
-          {controls}
+          <Title defaultValue={title} onChange={linkState(this, 'title')} />
+          <div className="articleform__detailfields">
+            <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+            <button
+              className="articleform__detailsButton articleform__detailsButton--image"
+              onClick={this.toggleImageManagement}
+              type="button"
+            >
+              <img src={ImageUploadIcon} alt="" />
+              {' '}
+IMAGES
+            </button>
+            <button
+              className="articleform__detailsButton articleform__detailsButton--moreconfig"
+              onClick={this.toggleMoreConfig}
+              type="button"
+            >
+              <img src={ThreeDotsIcon} alt="" />
+            </button>
+          </div>
           <BodyMarkdown
             defaultValue={bodyMarkdown}
             onKeyDown={this.handleBodyKeyDown}
@@ -381,12 +400,19 @@ export default class ArticleForm extends Component {
           <button
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
+            type="button"
           >
-            <img src={ImageUploadIcon} alt="upload images" />
+            <img src={ImageUploadIcon} alt="" />
             {' '}
 IMAGES
           </button>
-          {moreConfigBottomButton}
+          <button
+            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
+            onClick={this.toggleMoreConfig}
+            type="button"
+          >
+            <img src={ThreeDotsIcon} alt="" />
+          </button>
         </div>
       );
     }
