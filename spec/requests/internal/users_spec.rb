@@ -1,13 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Internal::Users", type: :request do
-  let!(:user) { create(:user, twitter_username: nil) }
+  let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
+  let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
 
   before do
     sign_in super_admin
@@ -58,6 +59,12 @@ RSpec.describe "Internal::Users", type: :request do
       url: Faker::Internet.url
     }
     GithubRepo.create(params)
+    Delayed::Worker.new(quiet: true).work_off
+  end
+
+  def call_ghost
+    ghost
+    post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
     Delayed::Worker.new(quiet: true).work_off
   end
 
@@ -138,6 +145,22 @@ RSpec.describe "Internal::Users", type: :request do
     end
   end
 
+  context "when deleting user and converting content to ghost" do
+    it "raises a 'record not found' error after deletion" do
+      call_ghost
+      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "reassigns comment and article content to ghost account" do
+      create(:article, user: user)
+      call_ghost
+      expect(ghost.articles.count).to eq(2)
+      expect(ghost.comments.count).to eq(1)
+      expect(ghost.comments.last.path).to include("ghost")
+      expect(ghost.articles.last.path).to include("ghost")
+    end
+  end
+
   context "when deleting user" do
     def create_mention
       comment = create(
@@ -163,12 +186,12 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect(request.flash.notice).to include("fully deleted")
     end
   end
