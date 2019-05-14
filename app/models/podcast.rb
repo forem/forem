@@ -4,6 +4,8 @@ class Podcast < ApplicationRecord
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
 
+  validates :main_color_hex, presence: true
+
   after_save :bust_cache
   after_create :pull_all_episodes
 

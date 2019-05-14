@@ -72,7 +72,6 @@ class MembershipService
   def assign_membership_role
     # change role names here, in role.rb, users_controller#handle_settings_tab => @membership_names
     remove_all_membership_roles
-    user.add_role :analytics_beta_tester
     if monthly_dues >= 100_000
       user.add_role :triple_unicorn_member
     elsif monthly_dues > 2500
@@ -87,8 +86,7 @@ class MembershipService
   end
 
   def remove_all_membership_roles
-    tiers = %i[ triple_unicorn_member level_4_member level_3_member level_2_member level_1_member
-                analytics_beta_tester]
+    tiers = %i[triple_unicorn_member level_4_member level_3_member level_2_member level_1_member]
     tiers.each { |t| user.remove_role(t) }
   end
 

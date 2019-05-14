@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe CodepenTag, type: :liquid_template do
   describe "#link" do
     let(:codepen_link) { "https://codepen.io/twhite96/pen/XKqrJX" }
+    let(:codepen_team_link) { "https://codepen.io/team/keyframers/pen/ZMRMEw" }
     let(:codepen_link_with_default_tab) { "https://codepen.io/twhite96/pen/XKqrJX default-tab=js,result" }
 
     xss_links = %w(
@@ -24,6 +25,13 @@ RSpec.describe CodepenTag, type: :liquid_template do
 
     it "accepts codepen link with a / at the end" do
       codepen_link = "https://codepen.io/twhite96/pen/XKqrJX/"
+      expect do
+        generate_new_liquid(codepen_link)
+      end.not_to raise_error
+    end
+
+    it "accepts codepen team link" do
+      codepen_link = codepen_team_link
       expect do
         generate_new_liquid(codepen_link)
       end.not_to raise_error

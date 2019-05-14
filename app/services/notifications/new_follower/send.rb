@@ -37,7 +37,7 @@ module Notifications
           notification = Notification.find_by(notification_params)&.destroy
         else
           json_data = { user: user_data(follower), aggregated_siblings: aggregated_siblings }
-          notification = Notification.find_or_create_by(notification_params)
+          notification = Notification.find_or_initialize_by(notification_params)
           notification.notifiable_id = recent_follows.first.id
           notification.notifiable_type = "Follow"
           notification.json_data = json_data

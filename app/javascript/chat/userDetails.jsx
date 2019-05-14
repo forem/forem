@@ -26,6 +26,7 @@ export default class UserDetails extends Component {
           <img
             src={twitterImage}
             style={{ width: '30px', margin: '5px 15px 15px 0px' }}
+            alt="twitter logo"
           />
         </a>,
       );
@@ -36,6 +37,7 @@ export default class UserDetails extends Component {
           <img
             src={githubImage}
             style={{ width: '30px', margin: '5px 15px 15px 0px' }}
+            alt="github logo"
           />
         </a>,
       );
@@ -47,6 +49,7 @@ export default class UserDetails extends Component {
             className="external-link-img"
             src={websiteImage}
             style={{ width: '30px', margin: '5px 15px 15px 0px' }}
+            alt="external link icon"
           />
         </a>,
       );
@@ -85,6 +88,7 @@ export default class UserDetails extends Component {
       <div>
         <img
           src={user.profile_image}
+          alt={`${user.username} profile image`}
           style={{
             height: '210px',
             width: '210px',

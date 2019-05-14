@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit update destroy]
+  before_action :set_article, only: %i[edit manage update destroy]
   before_action :raise_banned, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -14,17 +14,17 @@ class ArticlesController < ApplicationController
       order(published_at: :desc).
       page(params[:page].to_i).per(12)
 
-    if params[:username]
-      if (@user = User.find_by(username: params[:username]))
-        @articles = @articles.where(user_id: @user.id)
-      elsif (@user = Organization.find_by(slug: params[:username]))
-        @articles = @articles.where(organization_id: @user.id).includes(:user)
-      else
-        render body: nil
-        return
-      end
-    else
-      @articles = @articles.where(featured: true).includes(:user)
+    @articles = if params[:username]
+                  handle_user_or_organization_feed
+                elsif params[:tag]
+                  handle_tag_feed
+                else
+                  @articles.where(featured: true).includes(:user)
+                end
+
+    unless @articles
+      render body: nil
+      return
     end
 
     set_surrogate_key_header "feed"
@@ -80,6 +80,15 @@ class ArticlesController < ApplicationController
     @organization = @user&.organization
   end
 
+  def manage
+    @article = @article.decorate
+    authorize @article
+    @user = @article.user
+    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
+    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
+    @organization = @user&.organization
+  end
+
   def preview
     authorize Article
     begin
@@ -95,7 +104,15 @@ class ArticlesController < ApplicationController
       if @article
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
-        format.json { render json: { processed_html: processed_html, title: parsed["title"] }, status: 200 }
+        format.json do
+          render json: {
+            processed_html: processed_html,
+            title: parsed["title"],
+            tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
+            cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
+          },
+                 status: 200
+        end
       end
     end
   end
@@ -129,9 +146,16 @@ class ArticlesController < ApplicationController
         Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
-      redirect_to(params[:destination] || path)
+
+      respond_to do |format|
+        format.json { head :ok }
+        format.html { redirect_to(params[:destination] || path) }
+      end
     else
-      render :edit
+      respond_to do |format|
+        format.html { redirect_to :edit }
+        format.json { head :unprocessable_entity }
+      end
     end
   end
 
@@ -169,6 +193,23 @@ class ArticlesController < ApplicationController
     elsif @article.job_opportunity && !@article.tag_list.include?("hiring")
       @article.job_opportunity.destroy!
     end
+  end
+
+  def handle_user_or_organization_feed
+    if (@user = User.find_by(username: params[:username]))
+      @articles = @articles.where(user_id: @user.id)
+    elsif (@user = Organization.find_by(slug: params[:username]))
+      @articles = @articles.where(organization_id: @user.id).includes(:user)
+    end
+  end
+
+  def handle_tag_feed
+    tag = Tag.find_by(name: params[:tag].downcase)
+
+    return unless tag
+
+    @tag = tag.alias_for.presence || tag
+    @articles = @articles.cached_tagged_with(@tag)
   end
 
   def create_or_update_job_opportunity

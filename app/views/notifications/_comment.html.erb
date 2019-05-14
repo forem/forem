@@ -16,9 +16,12 @@
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
         <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
       </a>
+      <div>
+        <small><%= time_ago_in_words notification.created_at %> ago</small>
+      </div>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
     <% elsif notification.action == "Moderation" %>
-      Hey there! <%= image_tag "emoji/apple-hugging-face.png", class: "reaction-image" %> As a trusted member, could you react to this comment
+      Hey there! <%= image_tag("emoji/apple-hugging-face.png", class: "reaction-image", alt: "Hugging face emoji") %> As a trusted member, could you react to this comment
       so we know it fits our community code of conduct?
       <br /><br>
       <b>Here's the article for context:
@@ -34,6 +37,9 @@
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
         <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
       </a>
+      <div>
+        <small><%= time_ago_in_words notification.created_at %> ago</small>
+      </div>
       <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
       Give them their first reply! 🎉
       <br>

@@ -79,7 +79,7 @@ export function getChannels(
   paginationNumber,
   additionalFilters,
   successCb,
-  failureCb,
+  _failureCb,
 ) {
   const client = algoliasearch(props.algoliaId, props.algoliaKey);
   const index = client.initIndex(props.algoliaIndex);
@@ -90,7 +90,7 @@ export function getChannels(
     },
     ...additionalFilters,
   };
-  index.search(query, filters).then(function(content) {
+  index.search(query, filters).then(content => {
     const channels = content.hits;
     if (
       retrievalID === null ||
@@ -98,7 +98,7 @@ export function getChannels(
     ) {
       successCb(channels, query);
     } else {
-      index.getObjects([`${retrievalID}`], function(err, content) {
+      index.getObjects([`${retrievalID}`], (_err, _content) => {
         channels.unshift(content.results[0]);
         successCb(channels, query);
       });

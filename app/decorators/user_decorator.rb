@@ -83,12 +83,4 @@ class UserDecorator < ApplicationDecorator
     ]
     colors[id % 10]
   end
-
-  def preferred_languages_array
-    languages = []
-    language_settings.keys.each do |setting|
-      languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
-    end
-    languages
-  end
 end

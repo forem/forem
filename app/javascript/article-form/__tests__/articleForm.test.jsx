@@ -49,10 +49,14 @@ describe('<ArticleForm />', () => {
 
   it('loads text from sessionstorage when available', () => {
     localStorage.setItem(
-      'http://localhost/',
+      'editor-v2-http://localhost/',
       JSON.stringify({ bodyMarkdown: 'hello, world' }),
     );
+    console.log(localStorage)
     const form = shallow(getArticleForm());
+    console.log("&&&&&")
+    console.log(form.state())
+    console.log(form.state().bodyMarkdown)
     expect(form.state().bodyMarkdown).toBe('hello, world');
   });
 
@@ -65,6 +69,7 @@ describe('<ArticleForm />', () => {
 
 const getArticleForm = () => (
   <ArticleForm
+    version='v2'
     article={
       '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
     }

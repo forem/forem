@@ -103,7 +103,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "creates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
       post "/api/articles", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", version: "v2" }
       }
       expect(Article.last.user_id).to eq(user1.id)
     end
@@ -112,7 +112,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       post "/api/articles", params: {
         article: {
           body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
-          tag_list: "yo"
+          version: "v1"
         }
       }
       expect(Article.last.title).to eq("hey hey hahuu")
@@ -124,6 +124,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         article: { title: new_title,
                    body_markdown: "Yo ho ho#{rand(100)}",
                    tag_list: "yo",
+                   version: "v2",
                    series: "helloyo" }
       }
       expect(Article.last.collection).to eq(Collection.find_by(slug: "helloyo"))
@@ -134,7 +135,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       post "/api/articles", params: {
         article: {
           body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
-          tag_list: "yo"
+          version: "v1"
         }
       }
       expect(Article.last.collection).to eq(Collection.find_by(slug: "helloyo"))
@@ -152,7 +153,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "updates ordinary article with proper params" do
       new_title = "NEW TITLE #{rand(100)}"
       put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", version: "v2" }
       }
       expect(Article.last.title).to eq(new_title)
     end
@@ -164,7 +165,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put "/api/articles/#{article.id}", params: {
           article: { title: "NEW TITLE #{rand(100)}",
                      body_markdown: "Yo ho ho#{rand(100)}",
-                     tag_list: "yo" }
+                     tag_list: "yo",
+                     version: "v2" }
         }
       end
 
@@ -176,7 +178,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       article.update_column(:user_id, user2.id)
       user1.add_role(:super_admin)
       put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", version: "v2" }
       }
       expect(Article.last.title).to eq(new_title)
     end
@@ -185,7 +187,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: article.user_id, slug: "yoyoyo")
       put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id }
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id, version: "v2" }
       }
       expect(Article.last.collection_id).to eq(collection.id)
     end
@@ -194,7 +196,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: 3333, slug: "yoyoyo")
       put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id }
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id, version: "v2" }
       }
       expect(Article.last.collection_id).not_to eq(collection.id)
     end

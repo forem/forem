@@ -57,11 +57,14 @@ VCR.configure do |config|
   )
 end
 
+RSpec::Matchers.define_negated_matcher :not_change, :change
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include ApplicationHelper
+  config.include ActionMailer::TestHelper
   config.include ActiveJob::TestHelper
   config.include Devise::Test::ControllerHelpers, type: :view
   config.include Devise::Test::IntegrationHelpers, type: :system
