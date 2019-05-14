@@ -182,7 +182,7 @@ function insertPodcasts() {
   var insertPlace = document.getElementById('article-index-podcast-div');
   if (el && insertPlace){
     var user = userData();
-    if (user.followed_podcast_ids && user.followed_podcast_ids.length > 0) {
+    if (user && user.followed_podcast_ids && user.followed_podcast_ids.length > 0) {
       var data = JSON.parse(el.dataset.episodes);
       var podcastHTML = '';
       var episodeCount = 0;
@@ -194,8 +194,6 @@ function insertPodcasts() {
       });
       if (episodeCount > 0) {
         insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3>' + podcastHTML + '</div>';
-      } else {
-        insertPlace.innerHTML = '<div class="single-article single-article-podcast-div"><h3><a href="/pod">Today\'s Podcasts</a></h3><p>Nothing in your feed today</p></div>';
       }
     }
   }

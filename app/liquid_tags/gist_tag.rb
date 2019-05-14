@@ -1,16 +1,18 @@
 class GistTag < LiquidTagBase
+  PARTIAL = "liquids/gist".freeze
+
   def initialize(tag_name, link, tokens)
     super
     @uri = build_uri(link)
   end
 
   def render(_context)
-    html = <<~HTML
-      <div class="ltag_gist-liquid-tag">
-          <script id="gist-ltag" src="#{@uri}"></script>
-      </div>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        uri: @uri
+      },
+    )
   end
 
   def self.special_script

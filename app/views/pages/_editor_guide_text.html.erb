@@ -8,6 +8,7 @@
     <% else %>
       <p><em>Use <strong>markdown</strong> to write and format <a href="/">dev.to</a> posts. Use
         <strong>liquid tags</strong> to make add rich content such as tweets and videos. More below.</em> ❤️</p>
+      <p><em><b>We have two editor versions</b>. If you prefer Jekyll-style "frontmatter", switch to "v1" in <a href="/settings/misc">/settings/misc</a>.</em></p>
     <% end %>
     <h2 style="font-size:2.8em"><strong>✍ Markdown Basics</strong></h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
@@ -249,6 +250,12 @@
     <p>All you need is the article id code from the embed code:</p>
     <pre>
       {% blogcast <span style="color: orange;">1234</span> %}
+    </pre>
+
+    <h3><strong>Parler Tag</strong></h3>
+    <p>Enter the full url of the Parler.io audio file you want to embed. </p>
+    <pre>
+      {% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}
     </pre>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>

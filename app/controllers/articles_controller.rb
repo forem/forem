@@ -104,7 +104,15 @@ class ArticlesController < ApplicationController
       if @article
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
-        format.json { render json: { processed_html: processed_html, title: parsed["title"] }, status: 200 }
+        format.json do
+          render json: {
+            processed_html: processed_html,
+            title: parsed["title"],
+            tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
+            cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
+          },
+                 status: 200
+        end
       end
     end
   end
@@ -138,9 +146,16 @@ class ArticlesController < ApplicationController
         Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
         path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
       end
-      redirect_to(params[:destination] || path)
+
+      respond_to do |format|
+        format.json { head :ok }
+        format.html { redirect_to(params[:destination] || path) }
+      end
     else
-      render :edit
+      respond_to do |format|
+        format.html { redirect_to :edit }
+        format.json { head :unprocessable_entity }
+      end
     end
   end
 

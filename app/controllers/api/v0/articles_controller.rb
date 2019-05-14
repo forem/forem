@@ -86,10 +86,16 @@ module Api
         elsif params["article"]["series"] == ""
           params["article"]["collection_id"] = nil
         end
-        params.require(:article).permit(
-          :title, :body_markdown, :main_image, :published, :description,
-          :tag_list, :organization_id, :canonical_url, :series, :collection_id
-        )
+        if params["article"]["version"] == "v1"
+          params.require(:article).permit(
+            :body_markdown, :organization_id
+          )
+        else
+          params.require(:article).permit(
+            :title, :body_markdown, :main_image, :published, :description,
+            :tag_list, :organization_id, :canonical_url, :series, :collection_id
+          )
+        end
       end
     end
   end

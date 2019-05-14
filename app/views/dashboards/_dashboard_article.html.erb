@@ -1,4 +1,4 @@
-<div class="single-article <%= "single-article-unpublished" unless article.published %>">
+<div class="single-article <%= "single-article-unpublished" unless article.published %> <%= "single-article-archived hidden" if article.archived %>">
   <div class="dashboard-collection-org-details">
     <% if article.organization_id %>
       <span class="dashboard-top-pill"><%= article.organization&.name %></span>
@@ -7,7 +7,27 @@
       <span class="dashboard-top-pill"><strong>Series:</strong> <%= article.series %></span>
     <% end %>
   </div>
-  <a href="<%= article.current_state_path %>"><h2><%= article.title %></h2></a>
+
+  <div class="ellipsis-menu">
+    <button class="ellipsis-menu-btn"><img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
+    <ul class="ellipsis-menu hidden">
+      <li class="ellipsis-menu-item">
+        <%= form_for(article, url: "/article_mutes/#{article.id}", method: :patch, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
+          <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
+          <%= f.submit article.receive_notifications ? "Mute Notifications" : "Receive Notifications" %>
+        <% end %>
+      </li>
+      <hr />
+      <li class="ellipsis-menu-item">
+        <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
+          <%= f.hidden_field :archived, value: !article.archived %>
+          <%= f.submit article.archived ? "Unarchive Post" : "Archive Post" %>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+
+  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
       <%= article.readable_publish_date %>
@@ -29,6 +49,8 @@
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% elsif article.published %>
       <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
+    <% else %>
+      <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% end %>
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">

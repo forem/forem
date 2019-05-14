@@ -358,16 +358,21 @@ class User < ApplicationRecord
     errors.add(:username, "is taken.") if Organization.find_by(slug: username)
   end
 
+  def subscribe_to_mailchimp_newsletter_without_delay
+    return unless email.present? && email.include?("@")
+
+    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+
+    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
+  end
+
   def subscribe_to_mailchimp_newsletter
     return unless email.present? && email.include?("@")
 
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    # This is when user is updating their email. There
-    # is no need to update mailchimp until email is confirmed.
-    MailchimpBot.new(self).upsert
+    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
   end
-  handle_asynchronously :subscribe_to_mailchimp_newsletter
 
   def a_sustaining_member?
     monthly_dues.positive?
@@ -501,13 +506,8 @@ class User < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust("/#{username}")
-    CacheBuster.new.bust("/#{username}?i=i")
-    CacheBuster.new.bust("/live/#{username}")
-    CacheBuster.new.bust("/live/#{username}?i=i")
-    CacheBuster.new.bust("/feed/#{username}")
+    Users::BustCacheJob.perform_later(id)
   end
-  handle_asynchronously :bust_cache
 
   def core_profile_details_changed?
     saved_change_to_username? ||

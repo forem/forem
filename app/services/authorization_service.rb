@@ -62,6 +62,7 @@ class AuthorizationService
       user.set_remember_fields
       add_social_identity_data(user)
       user.saw_onboarding = false
+      user.editor_version = "v2"
       user.save!
     end
     user

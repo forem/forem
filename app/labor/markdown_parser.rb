@@ -91,6 +91,7 @@ class MarkdownParser
       # allow image to render as-is
       next if allowed_image_host?(src)
 
+      img["loading"] = "lazy"
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else

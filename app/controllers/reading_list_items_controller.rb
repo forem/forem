@@ -1,5 +1,4 @@
 class ReadingListItemsController < ApplicationController
-
   def index
     @reading_list_items_index = true
     set_view
@@ -9,6 +8,7 @@ class ReadingListItemsController < ApplicationController
   def update
     @reaction = Reaction.find(params[:id])
     raise if @reaction.user_id != current_user.id # Lazy but I'm tired. HACK
+
     @reaction.status = params[:current_status] == "archived" ? "valid" : "archived"
     @reaction.save
     head :ok

@@ -66,15 +66,14 @@ export default class ImageManagement extends Component {
   };
 
   render() {
-    const { onExit, mainImageUrl } = this.props;
+    const { onExit, mainImage, version } = this.props;
     const { insertionImageUrl, uploadError, uploadErrorMessage } = this.state;
     let mainImageArea;
 
-    if (mainImageUrl) {
+    if (mainImage) {
       mainImageArea = (
         <div>
-          <img src={mainImageUrl} alt="main" />
-
+          <img src={mainImage} alt="main" />
           <button type="button" onClick={this.triggerMainImageRemoval}>
             Remove Cover Image
           </button>
@@ -105,7 +104,27 @@ export default class ImageManagement extends Component {
         </div>
       );
     }
-
+    let imageOptions;
+    if (version === 'v1') {
+      imageOptions = (
+        <div>
+          <h2>Upload an Image</h2>
+          {insertionImageArea}
+          <div>
+            <p><em>To add a cover image for the post, add <code>cover_image: direct_url_to_image.jpg</code> to the frontmatter</em></p>
+          </div>
+        </div>
+      )
+    } else {
+      imageOptions = (
+        <div>
+          <h2>Cover Image</h2>
+          {mainImageArea}
+          <h2>Body Images</h2>
+          {insertionImageArea}
+        </div>
+      )
+    }
     return (
       <div className="articleform__overlay">
         <button
@@ -119,10 +138,7 @@ export default class ImageManagement extends Component {
         {uploadError && (
           <span className="articleform__uploaderror">{uploadErrorMessage}</span>
         )}
-        <h2>Cover Image</h2>
-        {mainImageArea}
-        <h2>Body Images</h2>
-        {insertionImageArea}
+        {imageOptions}
         <div>
           <button
             type="button"
@@ -140,9 +156,6 @@ export default class ImageManagement extends Component {
 ImageManagement.propTypes = {
   onExit: PropTypes.func.isRequired,
   onMainImageUrlChange: PropTypes.func.isRequired,
-  mainImageUrl: PropTypes.string,
-};
-
-ImageManagement.defaultProps = {
-  mainImageUrl: '',
+  mainImage: PropTypes.string.isRequired,
+  version: PropTypes.string.isRequired
 };

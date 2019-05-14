@@ -12,7 +12,9 @@ export class Listings extends Component {
     initialFetch: true,
     currentUserId: null,
     openedListing: null,
-    slug: null
+    slug: null,
+    page: 0, 
+    showNextPageButt: false,
   };
 
   componentWillMount() {
@@ -47,10 +49,16 @@ export class Listings extends Component {
     t.setState({query, tags, index, category, allCategories, listings, openedListing, slug });
     t.listingSearch(query, tags, category, slug);
     t.setUser()
+
+    document.body.addEventListener('keydown', t.handleKeyDown)
   }
 
   componentDidUpdate() {
     this.triggerMasonry()
+  }
+
+  componentWillUnmount() {
+    document.body.removeEventListener('keydown', this.handleKeyDown)
   }
 
   addTag = (e, tag) => {
@@ -60,7 +68,7 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) === -1) {
       newTags.push(tag)
     }
-    this.setState({tags: newTags})
+    this.setState({tags: newTags, page: 0, listings: []})
     this.listingSearch(query, newTags, category, null)
     window.scroll(0,0)
   }
@@ -73,20 +81,28 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) > -1) {
       newTags.splice(index, 1);
     }
-    this.setState({tags: newTags})
+    this.setState({tags: newTags, page: 0, listings: []})
     this.listingSearch(query, newTags, category, null)
   }
 
   selectCategory = (e, cat) => {
     e.preventDefault();
     const { query, tags } = this.state;
-    this.setState({category: cat})
+    this.setState({category: cat, page: 0, listings: []})
     this.listingSearch(query, tags, cat, null)
   }
 
+  handleKeyDown = (e) => {
+    // Enable Escape key to close an open listing.
+    if (this.openedListing !== null && e.key === 'Escape') {
+      this.handleCloseModal()
+    }
+  }
+
   handleCloseModal = (e) => {
+
     const { query, tags, category } = this.state;
-    this.setState({openedListing: null})
+    this.setState({openedListing: null, page: 0})
     this.setLocation(query, tags, category, null);
     document.body.classList.remove('modal-open');
 
@@ -96,36 +112,43 @@ export class Listings extends Component {
     e.preventDefault();
     this.setState({openedListing: listing});
     window.history.replaceState(null, null, `/listings/${listing.category}/${listing.slug}`);
+    this.setLocation(null, null, listing.category, listing.slug);
     document.body.classList.add('modal-open');
   }
 
   handleQuery = e => {
     const { tags, category } = this.state;
-    this.setState({query: e.target.value})
+    this.setState({query: e.target.value, page: 0, listings: []})
     this.listingSearch(e.target.value, tags, category, null)
   }
 
   clearQuery = () => {
     const { tags, category } = this.state;
     document.getElementById('listings-search').value = '';
-    this.setState({query: ''});
+    this.setState({query: '', page: 0, listings: []});
     this.listingSearch('', tags, category, null);
   }
 
   getQueryParams = () => {
     let qs = document.location.search;
     qs = qs.split('+').join(' ');
-  
+
     const params = {};
     let tokens;
     const re = /[?&]?([^=]+)=([^&]*)/g;
-  
+
     // eslint-disable-next-line no-cond-assign
     while (tokens = re.exec(qs)) {
       params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
     }
-  
+
     return params;
+  }
+
+  loadNextPage = () => {
+    const { query, tags, category, slug, page } = this.state;
+    this.setState({page: page + 1});
+    this.listingSearch(query, tags, category, slug); 
   }
 
   setUser = () => {
@@ -155,7 +178,7 @@ export class Listings extends Component {
   setLocation = (query, tags, category, slug) => {
     let newLocation = ''
     if (slug) {
-
+      newLocation = `/listings/${category}/${slug}`;
     } else if (query.length > 0 && tags.length > 0) {
       newLocation = `/listings/${category}?q=${query}&t=${tags}`;
     } else if (query.length > 0){
@@ -172,30 +195,26 @@ export class Listings extends Component {
 
   listingSearch(query, tags, category, slug) {
     const t = this;
-    const filterObject = {tagFilters: tags, hitsPerPage: 120,}
+    const { index, page, listings } = t.state;
+    const filterObject = {tagFilters: tags, hitsPerPage: 75, page}
     if (category.length > 0) {
       filterObject.filters = `category:${category}`
     }
-    t.state.index.search(query, filterObject)
+    index.search(query, filterObject)
     .then(function searchDone(content) {
-      if (t.state.initialFetch && t.state.category === '') {
-        const fullListings = t.state.listings;
-        content.hits.forEach(listing => {
-          if (!t.state.listings.map(l => (l.id)).includes(listing.id)) {
-            fullListings.push(listing)
-          }
-        });
-        t.setState({listings: fullListings, initialFetch: false});
-    } else {
-      t.setState({listings: content.hits, initialFetch: false});
-    }
-
+      const fullListings = listings;
+      content.hits.forEach(listing => {
+        if (!listings.map(l => (l.id)).includes(listing.id)) {
+          fullListings.push(listing)
+        }
+      });
+      t.setState({listings: fullListings, initialFetch: false, showNextPageButt: content.hits.length === 75});
     });
     this.setLocation(query, tags, category, slug);
   }
 
   render() {
-    const { listings, query, tags, category, allCategories, currentUserId, openedListing } = this.state;
+    const { listings, query, tags, category, allCategories, currentUserId, openedListing, showNextPageButt, initialFetch } = this.state;
     const allListings = listings.map(listing => (
       <SingleListing
         onAddTag={this.addTag}
@@ -217,6 +236,14 @@ export class Listings extends Component {
     const categoryLinks = allCategories.map(cat => (
       <a href={`/listings/${cat.slug}`} className={cat.slug === category ? 'selected' : ''} onClick={e => this.selectCategory(e, cat.slug)} data-no-instant>{cat.name}</a>
     ))
+    let nextPageButt = '';
+    if (showNextPageButt) {
+      nextPageButt = (
+        <div className='classifieds-load-more-button'>
+          <button onClick={e => this.loadNextPage(e)} type='button'>Load More Listings</button>
+        </div>
+      )
+    }
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
     let modal = '';
     let modalBg = '';
@@ -233,7 +260,7 @@ export class Listings extends Component {
         />
       )
     }
-    if (this.state.initialFetch) {
+    if (initialFetch) {
       this.triggerMasonry();
     }
     return (
@@ -254,6 +281,7 @@ export class Listings extends Component {
         <div className="classifieds-columns" id="classified-listings-results">
           {allListings}
         </div>
+        {nextPageButt}
         {modal}
       </div>
     )
