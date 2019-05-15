@@ -27,7 +27,8 @@ class ClassifiedListing < ApplicationRecord
     attribute :author do
       { username: author.username,
         name: author.name,
-        profile_image_90: ProfileImage.new(author).get(90) }
+        profile_image_90: ProfileImage.new(author).get(90),
+        inbox_type: author.inbox_type || 'private' }
     end
     tags do
       [tag_list,
