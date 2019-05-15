@@ -147,32 +147,38 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
-    @article.tag_list = []
-    @article.main_image = nil
-    edited_at_date = if @article.user == current_user && @article.published
-                       Time.current
-                     else
-                       @article.edited_at
-                     end
-    if @article.update(article_params.merge(edited_at: edited_at_date))
-      handle_org_assignment
-      handle_hiring_tag
-      if @article.published
-        Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
-        path = @article.path
-      else
-        Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
-        path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
-      end
 
-      respond_to do |format|
-        format.json { head :ok }
-        format.html { redirect_to(params[:destination] || path) }
-      end
+    if request.format.json?
+      not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
+      render json: if @article.update(article_params_json)
+                     @article.to_json(only: [:id], methods: [:current_state_path])
+                   else
+                     @article.errors.to_json
+                   end
     else
-      respond_to do |format|
-        format.html { redirect_to :edit }
-        format.json { head :unprocessable_entity }
+      @article.tag_list = []
+      @article.main_image = nil
+      edited_at_date = if @article.user == current_user && @article.published
+                         Time.current
+                       else
+                         @article.edited_at
+                       end
+
+      if @article.update(article_params.merge(edited_at: edited_at_date))
+        handle_org_assignment
+        handle_hiring_tag
+        if @article.published
+          # why does it send a notification each time the published flag is true?
+          Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
+          path = @article.path
+        else
+          Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+          path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
+        end
+
+        redirect_to(params[:destination] || path)
+      else
+        redirect_to :edit
       end
     end
   end
