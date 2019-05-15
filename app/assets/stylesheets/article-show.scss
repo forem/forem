@@ -848,7 +848,7 @@ article {
 
   .article-actions {
     text-align: center;
-    padding: 7px 0 15px;
+    padding: 5px 0 12px;
     position: fixed;
     bottom: 0;
     z-index: 22;
@@ -1009,10 +1009,9 @@ article {
     button {
       background: transparent;
       margin: 0px calc(0.22vw + 2px);
-      padding: 0px calc(0.88vw + 6px);
+      padding: 2px calc(0.88vw + 6px);
       padding-right: calc(0.88vw + 10px);
       border: 0px;
-      // background: linear-gradient(60deg, #f4d2d2, #ffffff);
       font-weight: bold;
       font-stretch: condensed;
 
@@ -1099,20 +1098,20 @@ article {
           filter: none;
           opacity: 1;
           box-shadow: 0px 0px 0px 2px #ffc0d3;
-          background: linear-gradient(60deg, #ffc0d3, #ff90b3);
+          background: linear-gradient(60deg, #fdbace, #fa86aa);
         }
 
         &.unicorn-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #d0e3ff;
-            background: linear-gradient(60deg, #d0e3ff, #adccff);
+            background: linear-gradient(60deg, #c5d9f8, #94baf8);
           }
         }
 
         &.readinglist-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #cfc9f3;
-            background: linear-gradient(60deg, #cfc9f3, #b0a7f0);
+            background: linear-gradient(60deg, #c1baec, #988ee9);
           }
         }
 
@@ -1296,7 +1295,7 @@ article {
 .dev-ios-native-body {
   .container {
     .article-actions {
-      padding: 6px 0 0;
+      padding: 4px 0 0;
       border-bottom: 1px solid $tan;
       border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
