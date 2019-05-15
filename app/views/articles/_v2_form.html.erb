@@ -2,13 +2,13 @@
   <div class="articleform"
        id="article-form"
        data-article="<%= @article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url], methods: %i[series all_series]) %>"
-       data-organizations="<%= @organizations&.to_json(only: %i[name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>">
+       data-organizations="<%= @organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>">
     <form class="articleform__form--<%= current_user.editor_version %>">
       <% if @organizations %>
         <div class="articleform__orgsettings">
           Publish under an organization:
-          <select name="article[publish_under_org]" id="article_publish_under_org" style="vertical-align:middle;">
-            <%= options_for_select(@organizations.pluck(:name, :id).to_h.merge("None" => ""), @article.organization_id || "") %>
+          <select name="article[publish_under_org]" id="article_publish_under_org">
+            <%= options_for_select({ "None" => "" }.merge(@organizations.pluck(:name, :id).to_h), @article.organization_id || "") %>
           </select>
         </div>
       <% end %>

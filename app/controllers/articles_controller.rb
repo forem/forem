@@ -35,7 +35,7 @@ class ArticlesController < ApplicationController
 
   def new
     @user = current_user
-    @organization = @user&.organization
+    @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @article = if @tag.present? && @user&.editor_version == "v2"
@@ -77,7 +77,7 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
-    @organization = @user&.organization
+    @organizations = @user&.organizations
   end
 
   def manage
@@ -86,7 +86,7 @@ class ArticlesController < ApplicationController
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
-    @organization = @user&.organization
+    @organizations = @user&.organizations
   end
 
   def preview

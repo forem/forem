@@ -21,7 +21,7 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
     this.article = JSON.parse(this.props.article);
-    const organization = this.props.organizations
+    const organizations = this.props.organizations
       ? JSON.parse(this.props.organizations)
       : null;
 
@@ -47,7 +47,7 @@ export default class ArticleForm extends Component {
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       organizations,
-      postUnderOrg: !!this.article.organization_id,
+      organizationId: this.article.organization_id,
       errors: null,
       edited: false,
       version: this.props.version,
@@ -144,11 +144,6 @@ export default class ArticleForm extends Component {
       helpShowing: false,
       previewResponse: response,
     });
-  };
-
-  toggleOrgPosting = e => {
-    e.preventDefault();
-    this.setState({ postUnderOrg: !this.state.postUnderOrg });
   };
 
   failedPreview = response => {
@@ -262,8 +257,8 @@ export default class ArticleForm extends Component {
       submitting,
       imageManagementShowing,
       moreConfigShowing,
-      organization,
-      postUnderOrg,
+      organizations,
+      organizationId,
       mainImage,
       errors,
       version
@@ -294,11 +289,10 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    const orgArea = organization ? (
+    const orgArea = organizations ? (
       <OrgSettings
-        organization={organization}
-        postUnderOrg={postUnderOrg}
-        onToggle={this.toggleOrgPosting}
+        organizations={organizations}
+        organizationId={organizationId}
       />
     ) : (
       ''
