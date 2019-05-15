@@ -11,22 +11,13 @@ module Moderator
       new(user: user, admin: admin).banish
     end
 
-    def self.call_full_delete(admin:, user:)
-      new(user: user, admin: admin).full_delete
-    end
-
-    def full_delete
-      user.unsubscribe_from_newsletters
-      delete_user_activity
-      CacheBuster.new.bust("/#{user.old_username}")
-      user.delete
-    end
-
     def banish
       user.unsubscribe_from_newsletters if user.email?
       remove_profile_info
       handle_user_status("Ban", "spam account")
       delete_user_activity
+      delete_comments
+      delete_articles
       user.remove_from_algolia_index
       reassign_and_bust_username
     end

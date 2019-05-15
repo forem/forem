@@ -31,7 +31,11 @@
     <div class="dropdown-content">
       <div>
         <div class="dropdown-link-row">
-          <input value="https://dev.to<%= @article.path %>" onClick="this.setSelectionRange(0, this.value.length)" readonly />
+          <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
+            <input id="article-copy-link-input" value="<%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
+            <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
+            <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
+          </clipboard-copy>
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
