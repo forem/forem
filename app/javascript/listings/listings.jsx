@@ -13,7 +13,7 @@ export class Listings extends Component {
     currentUserId: null,
     openedListing: null,
     slug: null,
-    page: 0, 
+    page: 0,
     showNextPageButt: false,
   };
 
@@ -116,6 +116,17 @@ export class Listings extends Component {
     document.body.classList.add('modal-open');
   }
 
+  handleMessageModal = (e, listing) => {
+    e.preventDefault();
+    console.log(listing);
+    console.log("HEEEY ");
+  }
+
+  handleOpenModalAndMessage = (e, listing) => {
+    this.handleOpenModal(e, listing);
+    this.handleMessageModal(e, listing);
+  }
+
   handleQuery = e => {
     const { tags, category } = this.state;
     this.setState({query: e.target.value, page: 0, listings: []})
@@ -148,7 +159,7 @@ export class Listings extends Component {
   loadNextPage = () => {
     const { query, tags, category, slug, page } = this.state;
     this.setState({page: page + 1});
-    this.listingSearch(query, tags, category, slug); 
+    this.listingSearch(query, tags, category, slug);
   }
 
   setUser = () => {
@@ -222,6 +233,7 @@ export class Listings extends Component {
         listing={listing}
         currentUserId={currentUserId}
         onOpenModal={this.handleOpenModal}
+        onMessageModal={this.handleOpenModalAndMessage}
         isOpen={false}
       />
     ));
@@ -256,6 +268,7 @@ export class Listings extends Component {
           listing={openedListing}
           currentUserId={currentUserId}
           onOpenModal={this.handleOpenModal}
+          onMessageModal={this.handleMessageModal}
           isOpen
         />
       )
