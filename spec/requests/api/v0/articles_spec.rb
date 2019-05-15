@@ -251,6 +251,52 @@ RSpec.describe "Api::V0::Articles", type: :request do
         end.to change(Article, :count).by(1)
         expect(Article.find(json_response["id"]).organization).to eq(user.organization)
       end
+
+      it "creates an article with a main/cover image" do
+        image_url = "https://dummyimage.com/100x100"
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "Yo ho ho #{rand(100)}",
+            main_image: image_url,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).main_image).to eq(image_url)
+      end
+
+      it "creates an article with a main/cover image in the front matter" do
+        image_url = "https://dummyimage.com/100x100"
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).main_image).to eq(image_url)
+      end
+
+      it "creates an article with a canonical url" do
+        canonical_url = "https://example.com/"
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "Yo ho ho #{rand(100)}",
+            canonical_url: canonical_url,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).canonical_url).to eq(canonical_url)
+      end
+
+      it "creates an article with a canonical url in the front matter" do
+        canonical_url = "https://example.com/"
+        body_markdown = file_fixture("article_published_canonical_url.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).canonical_url).to eq(canonical_url)
+      end
     end
   end
 
