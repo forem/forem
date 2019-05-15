@@ -39,6 +39,10 @@ class PagesController < ApplicationController
     set_surrogate_key_header "badge_page"
   end
 
+  def onboarding
+    set_surrogate_key_header "onboarding_page"
+  end
+
   def report_abuse
     reported_url = params[:reported_url] || params[:url] || request.referer
     @feedback_message = FeedbackMessage.new(

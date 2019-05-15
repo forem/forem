@@ -236,6 +236,7 @@ Rails.application.routes.draw do
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/badge" => "pages#badge"
+  get "/onboarding" => "pages#onboarding"
   get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
