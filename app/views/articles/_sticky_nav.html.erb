@@ -2,7 +2,7 @@
 <style>
   .primary-sticky-nav-author, .primary-sticky-nav-author-element {
     border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-    box-shadow: 2px 2px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
+    box-shadow: 1px 1px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
   }
 
   .primary-sticky-nav-author button {
@@ -73,7 +73,7 @@
     <% end %>
   </div>
   <% if @variant_number.to_i == 1 %>
-    <% cache("html-variant-sidebar#{rand(50)}", expires_in: 8.hours) do %>
+    <% cache("html-variant-sidebar#{rand(150)}", expires_in: 8.hours) do %>
       <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
       <% if @html_variant %>
         <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>">
@@ -115,7 +115,7 @@
           <div class="primary-sticky-nav-element-wrapper">
             <% if index == 0 %>
               <div class="primary-sticky-nav-title">
-                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="https://dev.to">dev.to</a>
+                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>"><%= ApplicationConfig["COMMUNITY_NAME"] %></a>
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">

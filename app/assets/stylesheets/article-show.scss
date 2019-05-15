@@ -98,7 +98,7 @@ article {
     theme-container-background, 
     white
   );
-  margin: 68px auto 20px;
+  margin: 66px auto 20px;
   text-align: left;
   @include themeable(
     box-shadow, 
@@ -922,10 +922,9 @@ article {
       margin-right: -1px;
       width: calc(55px + 1.1vw);
       top: 0%;
-      padding: calc(10px + 5.5%) 0px;
+      padding: calc(11px + 6%) 0px;
       bottom: 5%;
       left: calc(50% - 672px);
-      border-radius: 20px;
       background: transparent;
       border: 0;
       box-shadow: none;
@@ -938,31 +937,23 @@ article {
 
       button,
       a {
-        margin-bottom: 10px !important;
         display: block !important;
         width: 100% !important;
-        padding: 6px 0px !important;
+        padding: 7px 0px !important;
         margin-left: 0px !important;
         margin-right: 0px !important;
-        border-radius: 100px !important;
-        border: 0 !important;
+        border: 0px !important;
         transition-delay: 0.1s;
 
         &.user-animated {
           animation: wide-reaction-animation 0.25s !important;
+          img {
+            animation: image-reaction-animation 0.25s !important;
+          }
         }
-
-        &:not(.user-activated) {
-          @include themeable-important(
-            background, 
-            theme-container-background, 
-            darken($light-gray, 1%)
-          );
-        }
-
-        &:focus {
+        &:focus-visible {
           outline: 0;
-          box-shadow: 0 0 7px $medium-gray !important;
+          box-shadow: 0px 0px 4px $medium-gray !important;
         }
       }
 
@@ -976,9 +967,8 @@ article {
       }
 
       .dropdown-content {
-        left: 150px !important;
-        bottom: 0 !important;
-
+        left: 80px !important;
+        bottom: 0px !important;
         a {
           background: transparent !important;
           padding-left: 10px !important;
@@ -991,10 +981,16 @@ article {
       a {
         font-size: 0.70em !important;
       }
+      button {
+        padding: 9px 0px !important;
+      }
+      .dropdown-content {
+        left: 100px !important;
+      }
     }
     @media screen and (min-width: 1530px) {
       width: 156px;
-      left: calc(50% - 756px);
+      left: calc(50% - 750px);
       button,
       a {
         width: 140px !important;
@@ -1002,29 +998,38 @@ article {
       a {
         font-size: 0.79em !important;
       }
+      .dropdown-content {
+        left: 150px !important;
+      }
+      button {
+        padding: 11px 0px !important;
+      }
     }
     button {
-      @include themeable(
-        background, 
-        theme-container-background, 
-        transparent
-      );
+      background: transparent;
       margin: 0px calc(0.22vw + 2px);
-      padding: 3px calc(0.88vw + 8px);
-      border-radius: 100px;
-      border: 2px solid darken($light-gray, 20%);
+      padding: 3px calc(0.88vw + 6px);
+      padding-right: calc(0.88vw + 10px);
+      border: 0px;
       // background: linear-gradient(60deg, #f4d2d2, #ffffff);
-      font-family: $helvetica-condensed;
+      font-weight: bold;
       font-stretch: condensed;
 
       img {
         height: 23px;
         width: 23px;
-        transition: -webkit-filter 0.2s, opacity 0.2s, background-color 0.2s;
-
+        transition: -webkit-filter 0.2s, opacity 0.2s;
+        padding: 4px;
+        border-radius: 100px;
+        transition: box-shadow 0.18s;
+        @include themeable(
+          background, 
+          theme-container-accent-background, 
+          darken($light-gray, 3%)
+        );
         @media screen and (min-width: 500px) {
-          height: 28px;
-          width: 28px;
+          height: 26px;
+          width: 26px;
         }
         @media screen and (min-width: 1365px) {
           height: 19px;
@@ -1037,47 +1042,50 @@ article {
         @media screen and (min-width: 1530px) {
           height: 28px;
           width: 28px;
+          padding: 7px;
+        }
+      }
+      &:hover {
+        img {
+          box-shadow: 0px 0px 0px 2px var(--theme-container-accent-background, $purple);
         }
       }
 
       .reaction-number {
         display: inline-block;
-        vertical-align: 5px;
-        margin-left: 4px;
+        vertical-align: 6px;
+        margin-left: 5px;
+        vertical-align: 10px;
         @include themeable(
           color, 
           theme-secondary-color, 
           $medium-gray
         );
-        font-size: 14px;
+        font-size: 13px;
         width: 27px;
 
         @media screen and (min-width: 500px) {
           width: 37px;
-          font-size: 18px;
-          vertical-align: 7px;
-          margin-left: 7px;
+          font-size: 16px;
+          vertical-align: 9px;
         }
         @media screen and (min-width: 1365px) {
-          font-size: 13px;
-          vertical-align: 4px;
+          font-size: 12px;
+          vertical-align: 9px;
+          margin-left: 1px;
           width: 28px;
         }
         @media screen and (min-width: 1439px) {
           font-size: 15px;
-          vertical-align: 5px;
+          vertical-align: 9px;
           width: 37px;
+          margin-left: 7px;
         }
         @media screen and (min-width: 1530px) {
-          font-size: 18px;
-          vertical-align: 7px;
+          font-size: 16px;
+          vertical-align: 15px;
         }
       }
-
-      &:hover {
-        border: 2px solid #8ac;
-      }
-
       &.activated {
         img {
           filter: none;
@@ -1086,28 +1094,32 @@ article {
       }
 
       &.user-activated {
-        border: 2px solid darken($bold-blue, 35%);
-        background: linear-gradient(60deg, #f4d2d2, #efb6b6);
-
         img {
           filter: none;
           opacity: 1;
+          box-shadow: 0px 0px 0px 2px #ffc0d3;
+          background: linear-gradient(60deg, #ffc0d3, #ff90b3);
         }
 
         &.unicorn-reaction-button {
-          background: linear-gradient(60deg, #d6e5fc, #c9deff);
+          img {
+            box-shadow: 0px 0px 0px 2px #d0e3ff;
+            background: linear-gradient(60deg, #d0e3ff, #adccff);
+          }
         }
 
         &.readinglist-reaction-button {
-          background: linear-gradient(60deg, #d2cdf2, #beb8ef);
-        }
-
-        .reaction-number {
-          color: darken($bold-blue, 40%);
+          img {
+            box-shadow: 0px 0px 0px 2px #cfc9f3;
+            background: linear-gradient(60deg, #cfc9f3, #b0a7f0);
+          }
         }
 
         &.user-animated {
           animation: reaction 0.25s;
+          img {
+            animation: image-reaction-animation 0.25s !important;
+          }
         }
       }
     }
@@ -1118,7 +1130,6 @@ article {
       width: 40px;
 
       button {
-        border: 2px solid transparent;
         min-width: 38px;
         opacity: 0.7;
 
@@ -1130,7 +1141,9 @@ article {
           vertical-align: -2px;
         }
       }
-
+      img {
+        background: transparent !important;
+      }
       .dropdown-content {
         display: none;
         position: fixed;
@@ -1142,7 +1155,6 @@ article {
         font-size: 1em;
         text-align: left;
         min-width: 300px;
-        border-top: 2px solid $light-medium-gray;
         padding-bottom: 15px;
         padding-top: 15px;
 
@@ -1200,7 +1212,6 @@ article {
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
-      border: 2px solid darken($light-gray, 20%);
       font-family: $helvetica-condensed;
       font-stretch: condensed;
       padding: 4px 0.88vw;
@@ -1226,7 +1237,6 @@ article {
     .article-actions-tweet-button {
       padding: 2px 0 2px !important;
       border-radius: 3px;
-      border: 2px solid darken($light-gray, 20%);
       margin-right: 0.15vw;
       margin-left: calc(0.2vw + 11px);
       vertical-align: calc(3px - 0.07vw);
@@ -1498,6 +1508,16 @@ article {
     width: calc(100% + 5px);
   }
 
+  100% {
+  }
+}
+
+@keyframes image-reaction-animation {
+  0% {
+  }
+  50% {
+    transform: rotate(10deg);
+  }
   100% {
   }
 }

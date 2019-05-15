@@ -113,10 +113,12 @@
       margin: 15px 20px 0px;
     }
     .content-classification-text {
-      background: $light-gray;
       display: inline-block;
       padding: 3px 25px;
-      color: $dark-gray;
+      border-radius: 3px;
+      @include themeable(background, theme-container-accent-background, $light-gray);
+      @include themeable(color, theme-color, $black);
+
     }
   }
   .main-content-display {
