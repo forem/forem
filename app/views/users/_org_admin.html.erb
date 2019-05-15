@@ -18,12 +18,12 @@
 <div class="settings-org-members">
   <h3>Organization Members</h3>
   <% @organization.users.each do |user| %>
-    <div class="settings-org-member-row <%= "settings-org-admin-row" if user.org_admin %>">
+    <div class="settings-org-member-row <%= "settings-org-admin-row" if @organization_membership.type_of_user == "admin" %>">
       <a href="<%= user.path %>"><%= user.name %></a>
       <div class="settings-org-member-actions">
-        <% if user.org_admin && user == current_user %>
+        <% if @organization_membership.type_of_user == "admin" && user == current_user %>
           <button class="settings-org-member settings-org-member-admin-self">you (admin)</button>
-        <% elsif user.org_admin && user != current_user %>
+        <% elsif @organization_membership.type_of_user == "admin" && user != current_user %>
           <button class="settings-org-member settings-org-member-admin-other">admin</button>
           <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{user.name}?');" do %>
             <%= hidden_field_tag "user_id", user.id %>
