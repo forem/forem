@@ -183,6 +183,18 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(Article.last.title).to eq(new_title)
     end
 
+    it "does not modify the organization ID when updating someone else's article as an admin" do
+      article_org = create(:organization)
+      article.update_columns(organization_id: article_org.id, user_id: user2.id)
+      new_org = create(:organization)
+      user1.update_column(:organization_id, new_org.id)
+      user1.add_role(:super_admin)
+      put "/api/articles/#{article.id}", params: {
+        article: { publish_under_org: true }
+      }
+      expect(article.organization_id).to eq article_org.id
+    end
+
     it "allows collection to be assigned via api" do
       new_title = "NEW TITLE #{rand(100)}"
       collection = Collection.create(user_id: article.user_id, slug: "yoyoyo")
