@@ -362,12 +362,6 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#update_notifications" do
-    context "when there are no notifications to begin with" do
-      it "returns nil" do
-        expect(Notification.update_notifications_without_delay(article, "Published")).to be nil
-      end
-    end
-
     context "when there are notifications to update" do
       before do
         user2.follow(user)
@@ -377,16 +371,22 @@ RSpec.describe Notification, type: :model do
       it "updates the notification with the new article title" do
         new_title = "hehehe hohoho!"
         article.update_column(:title, new_title)
-        Notification.update_notifications_without_delay(article.reload, "Published")
-        first_notification_article_title = Notification.first.json_data["article"]["title"]
-        expect(first_notification_article_title).to eq new_title
+        article.reload
+        perform_enqueued_jobs do
+          Notification.update_notifications(article, "Published")
+          first_notification_article_title = Notification.first.json_data["article"]["title"]
+          expect(first_notification_article_title).to eq new_title
+        end
       end
 
       it "adds organization data when the article now belongs to an org" do
         article.update_column(:organization_id, organization.id)
-        Notification.update_notifications_without_delay(article.reload, "Published")
-        first_notification_organization_id = Notification.first.json_data["organization"]["id"]
-        expect(first_notification_organization_id).to eq organization.id
+        article.reload
+        perform_enqueued_jobs do
+          Notification.update_notifications(article.reload, "Published")
+          first_notification_organization_id = Notification.first.json_data["organization"]["id"]
+          expect(first_notification_organization_id).to eq organization.id
+        end
       end
     end
   end

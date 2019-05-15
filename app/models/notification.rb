@@ -176,20 +176,12 @@ class Notification < ApplicationRecord
     handle_asynchronously :remove_each
 
     def update_notifications(notifiable, action = nil)
-      notifications = Notification.where(
-        notifiable_id: notifiable.id,
-        notifiable_type: notifiable.class.name,
-        action: action,
-      )
-      return if notifications.blank?
-
-      new_json_data = notifications.first.json_data
-      new_json_data[notifiable.class.name.downcase] = send("#{notifiable.class.name.downcase}_data", notifiable)
-      new_json_data[:user] = user_data(notifiable.user)
-      new_json_data[:organization] = organization_data(notifiable.organization) if notifiable.is_a?(Article) && notifiable.organization_id
-      notifications.update_all(json_data: new_json_data)
+      Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
-    handle_asynchronously :update_notifications
+
+    def update_notifications_without_delay(notifiable, action = nil)
+      Notifications::UpdateJob.perform_now(notifiable.id, notifiable.class.name, action)
+    end
 
     private
 
@@ -212,25 +204,11 @@ class Notification < ApplicationRecord
     end
 
     def organization_data(organization)
-      {
-        id: organization.id,
-        class: { name: "Organization" },
-        name: organization.name,
-        slug: organization.slug,
-        path: organization.path,
-        profile_image_90: organization.profile_image_90
-      }
+      Notifications.organization_data(organization)
     end
 
     def article_data(article)
-      {
-        id: article.id,
-        cached_tag_list_array: article.decorate.cached_tag_list_array,
-        class: { name: "Article" },
-        title: article.title,
-        path: article.path,
-        updated_at: article.updated_at
-      }
+      Notifications.article_data(article)
     end
 
     def should_send_milestone?(milestone_hash)
