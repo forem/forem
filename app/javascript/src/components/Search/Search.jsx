@@ -69,25 +69,14 @@ export class Search extends Component {
       ) {
         return;
       }
-      const topBar = document.getElementById('top-bar');
-      const stickySideBar = document.getElementById('article-show-primary-sticky-nav');
-      const actionBar = document.getElementById('article-reaction-actions')
       if (event.which === GLOBAL_SEARCH_KEY_CODE) {
-        topBar.classList.remove('hidden');
-        stickySideBar.classList.remove('hidden');
-        actionBar.classList.remove('hidden');
+        document.getElementsByTagName('body')[0].classList.remove('zen-mode')
         event.preventDefault();
         searchBox.focus();
         searchBox.select();  
       } else if (event.which === GLOBAL_MINIMIZE_KEY_CODE) {
         event.preventDefault();
-        topBar.classList.toggle('hidden');
-        if (stickySideBar) {
-          stickySideBar.classList.toggle('hidden');
-        }
-        if (actionBar) {
-          actionBar.classList.toggle('hidden');
-        }
+        document.getElementsByTagName('body')[0].classList.toggle('zen-mode')
       }
     };
 

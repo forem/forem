@@ -2,6 +2,7 @@
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
+
   function isIOSDevice() {
     return (
       navigator.userAgent.match(/iPhone/i) ||
