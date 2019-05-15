@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -816,6 +818,7 @@ ActiveRecord::Schema.define(version: 2019_05_04_131412) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
+    t.boolean "allows_article_edits", default: true
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false

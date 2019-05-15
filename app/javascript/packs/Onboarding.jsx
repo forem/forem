@@ -19,7 +19,7 @@ function isUserSignedIn() {
 }
 
 function renderPage() {
-  import('../src/Onboarding')
+  import('../onboarding/Onboarding')
     .then(({ default: Onboarding }) => {
       const waitingForOnboarding = setInterval(function() {
         if (document.getElementById('main-head-stylesheet')) {
