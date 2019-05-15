@@ -79,18 +79,6 @@ function initializeArticleReactions() {
           behavior: 'instant',
           block: 'start',
         });
-        setTimeout(function(){
-          e.target.blur();
-        },1)
-      };
-    }
-    if (document.getElementById('article-actions-tweet-button')) {
-      document.getElementById('article-actions-tweet-button').onclick = function(e) {
-        console.log(e.target)
-        setTimeout(function(){
-          e.target.blur();
-          e.target.parentElement.blur();
-        },50)
       };
     }
   }, 3)

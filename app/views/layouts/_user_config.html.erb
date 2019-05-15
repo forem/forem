@@ -52,6 +52,9 @@
       --theme-social-icon-invert: invert(0);\
       --theme-prime-option-border-color: rgba(255, 255, 255, 0.55)</style>'
     }
+    if (navigator.userAgent === 'DEV-Native-ios') {
+      document.getElementsByTagName("body")[0].classList.add("dev-ios-native-body");
+    }
   } catch(e) {
       console.log(e)
   }

@@ -18,6 +18,10 @@ body {
   }
 }
 
+*:focus:not(.focus-visible) {
+  outline: none;
+}
+
 .ptr--ptr {
   margin-top: 70px;
   margin-bottom: -70px;
