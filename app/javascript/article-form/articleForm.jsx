@@ -354,14 +354,16 @@ export default class ArticleForm extends Component {
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
                 onClick={this.toggleImageManagement}
+                type="button"
               >
-                <img src={ImageUploadIcon} />
+                <img src={ImageUploadIcon} alt="Upload an image" />
               </button>
               <button
                 className="articleform__detailsButton articleform__detailsButton--moreconfig"
                 onClick={this.toggleMoreConfig}
+                type="button"
               >
-                <img src={ThreeDotsIcon} />
+                <img src={ThreeDotsIcon} alt="Menu" />
               </button>
             </div>
           </div>
