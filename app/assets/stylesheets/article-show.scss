@@ -848,7 +848,7 @@ article {
 
   .article-actions {
     text-align: center;
-    padding: 9px 0 16px;
+    padding: 7px 0 15px;
     position: fixed;
     bottom: 0;
     z-index: 22;
@@ -1009,7 +1009,7 @@ article {
     button {
       background: transparent;
       margin: 0px calc(0.22vw + 2px);
-      padding: 3px calc(0.88vw + 6px);
+      padding: 0px calc(0.88vw + 6px);
       padding-right: calc(0.88vw + 10px);
       border: 0px;
       // background: linear-gradient(60deg, #f4d2d2, #ffffff);
@@ -1296,7 +1296,7 @@ article {
 .dev-ios-native-body {
   .container {
     .article-actions {
-      padding: 8px 0 0;
+      padding: 6px 0 0;
       border-bottom: 1px solid $tan;
       border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
