@@ -124,16 +124,14 @@ class ArticlesController < ApplicationController
     respond_to do |format|
       format.html do
         @article = ArticleCreationService.
-          new(@user, article_params, job_opportunity_params).
+          new(@user, article_params, job_opportunity_params: job_opportunity_params).
           create!
 
         redirect_after_creation
       end
 
       format.json do
-        @article = ArticleCreationService.
-          new(@user, article_params_json, {}).
-          create!
+        @article = ArticleCreationService.new(@user, article_params_json).create!
 
         render json: if @article.persisted?
                        @article.to_json(only: [:id], methods: [:current_state_path])
