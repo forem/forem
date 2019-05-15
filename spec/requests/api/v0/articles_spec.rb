@@ -95,51 +95,162 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
-  describe "POST /api/articles w/ current_user" do
-    before do
-      sign_in user1
+  describe "POST /api/articles" do
+    let!(:api_secret) { create(:api_secret) }
+    let!(:user) { api_secret.user }
+    let!(:path) { "/api/articles" }
+
+    describe "when unauthorized" do
+      it "fails with no api key" do
+        post path
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with the wrong api key" do
+        post path, headers: { "api-key" => "foobar" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with a failing secure compare" do
+        allow(ActiveSupport::SecurityUtils).
+          to receive(:secure_compare).and_return(false)
+        post path, headers: { "api-key" => api_secret.secret }
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
-    it "creates ordinary article with proper params" do
-      new_title = "NEW TITLE #{rand(100)}"
-      post "/api/articles", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", version: "v2" }
-      }
-      expect(Article.last.user_id).to eq(user1.id)
-    end
+    describe "when authorized" do
+      def post_article(**params)
+        headers = { "api-key" => api_secret.secret }
+        post path, params: { "article" => params }, headers: headers
+      end
 
-    it "creates article with front matter params" do
-      post "/api/articles", params: {
-        article: {
-          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
-          version: "v1"
-        }
-      }
-      expect(Article.last.title).to eq("hey hey hahuu")
-    end
+      def json_response
+        JSON.parse(response.body)
+      end
 
-    it "creates article w/ series param" do
-      new_title = "NEW TITLE #{rand(100)}"
-      post "/api/articles", params: {
-        article: { title: new_title,
-                   body_markdown: "Yo ho ho#{rand(100)}",
-                   tag_list: "yo",
-                   version: "v2",
-                   series: "helloyo" }
-      }
-      expect(Article.last.collection).to eq(Collection.find_by(slug: "helloyo"))
-      expect(Article.last.collection.user_id).to eq(Article.last.user_id)
-    end
+      it "fails if no params are given" do
+        post_article
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
-    it "creates article within series with front matter params" do
-      post "/api/articles", params: {
-        article: {
-          body_markdown: "---\ntitle: hey hey hahuu\npublished: false\nseries: helloyo\n---\nYo ho ho#{rand(100)}",
-          version: "v1"
-        }
-      }
-      expect(Article.last.collection).to eq(Collection.find_by(slug: "helloyo"))
-      expect(Article.last.collection.user_id).to eq(Article.last.user_id)
+      it "creates an article belonging to the user" do
+        post_article(title: Faker::Book.title + rand(100).to_s)
+        expect(response).to have_http_status(:created)
+        expect(Article.find(json_response["id"]).user).to eq(user)
+      end
+
+      it "creates an unpublished article by default" do
+        post_article(title: Faker::Book.title + rand(100).to_s)
+        expect(response).to have_http_status(:created)
+        expect(Article.find(json_response["id"]).published).to be(false)
+      end
+
+      it "returns the location of the article" do
+        post_article(title: Faker::Book.title + rand(100).to_s)
+        expect(response).to have_http_status(:created)
+        expect(response.location).not_to be_blank
+      end
+
+      it "creates an article with only a title" do
+        title = Faker::Book.title + rand(100).to_s
+        expect do
+          post_article(title: title)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).title).to eq(title)
+      end
+
+      it "creates a published article" do
+        title = Faker::Book.title + rand(100).to_s
+        expect do
+          post_article(title: title, published: true)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).published).to be(true)
+      end
+
+      it "creates an article with a title and the markdown body" do
+        body_markdown = "Yo ho ho #{rand(100)}"
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: body_markdown,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).body_markdown).to eq(body_markdown)
+      end
+
+      it "creates an article with a title, body and a list of tags" do
+        tags = %w[meta discussion]
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "Yo ho ho #{rand(100)}",
+            tags: tags,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).cached_tag_list).to eq(tags.join(", "))
+      end
+
+      it "creates an unpublished article with the front matter in the body" do
+        body_markdown = file_fixture("article_unpublished.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        article = Article.find(json_response["id"])
+        expect(article.title).to eq("Sample Article")
+        expect(article.published).to be(false)
+      end
+
+      it "creates published article with the front matter in the body" do
+        body_markdown = file_fixture("article_published.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        article = Article.find(json_response["id"])
+        expect(article.title).to eq("Sample Article")
+        expect(article.published).to be(true)
+      end
+
+      it "creates an article within a series" do
+        series = "a series"
+        post_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: "Yo ho ho #{rand(100)}",
+          series: series,
+        )
+        expect(response).to have_http_status(:created)
+        article = Article.find(json_response["id"])
+        expect(article.collection).to eq(Collection.find_by(slug: series))
+        expect(article.collection.user).to eq(user)
+      end
+
+      it "creates article within a series using the front matter" do
+        body_markdown = file_fixture("article_published_series.txt").read
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        article = Article.find(json_response["id"])
+        expect(article.collection).to eq(Collection.find_by(slug: "a series"))
+        expect(article.collection.user).to eq(user)
+      end
+
+      it "creates an article on behalf of an organization" do
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            publish_under_org: true,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).organization).to eq(user.organization)
+      end
     end
   end
 

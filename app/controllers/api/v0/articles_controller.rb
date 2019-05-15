@@ -1,15 +1,20 @@
 module Api
   module V0
     class ArticlesController < ApiController
+      respond_to :json
+
+      before_action :authenticate_with_api_key, only: %i[create update]
+
       before_action :set_cache_control_headers, only: [:index]
       caches_action :show,
                     cache_path: proc { |c| c.params.permit! },
                     expires_in: 5.minutes
-      respond_to :json
 
       before_action :cors_preflight_check
-      before_action :set_user
       after_action :cors_set_access_control_headers
+
+      # skip CSRF checks for create and update
+      skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
         @articles = ArticleApiIndexService.new(params).get
@@ -55,11 +60,7 @@ module Api
 
       def create
         @article = ArticleCreationService.new(@user, article_params, {}).create!
-        render json: if @article.persisted?
-                       @article.to_json(only: [:id], methods: [:current_state_path])
-                     else
-                       @article.errors.to_json
-                     end
+        render "show", status: :created, location: @article.url
       end
 
       def update
@@ -74,29 +75,33 @@ module Api
 
       private
 
-      def set_user
-        @user = current_user
+      def article_params
+        allowed_params = [
+          :title, :body_markdown, :published, :series,
+          :publish_under_org, tags: []
+        ]
+        params.require(:article).permit(allowed_params)
       end
 
-      def article_params
-        params["article"].transform_keys!(&:underscore)
-        params["article"]["organization_id"] = (@user.organization_id if params["article"]["post_under_org"])
-        if params["article"]["series"].present?
-          params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
-        elsif params["article"]["series"] == ""
-          params["article"]["collection_id"] = nil
-        end
-        if params["article"]["version"] == "v1"
-          params.require(:article).permit(
-            :body_markdown, :organization_id
-          )
-        else
-          params.require(:article).permit(
-            :title, :body_markdown, :main_image, :published, :description,
-            :tag_list, :organization_id, :canonical_url, :series, :collection_id
-          )
-        end
-      end
+      # def article_params
+      #   params["article"].transform_keys!(&:underscore)
+      #   params["article"]["organization_id"] = (@user.organization_id if params["article"]["post_under_org"])
+      #   if params["article"]["series"].present?
+      #     params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
+      #   elsif params["article"]["series"] == ""
+      #     params["article"]["collection_id"] = nil
+      #   end
+      #   if params["article"]["version"] == "v1"
+      #     params.require(:article).permit(
+      #       :body_markdown, :organization_id
+      #     )
+      #   else
+      #     params.require(:article).permit(
+      #       :title, :body_markdown, :main_image, :published, :description,
+      #       :tag_list, :organization_id, :canonical_url, :series, :collection_id
+      #     )
+      #   end
+      # end
     end
   end
 end

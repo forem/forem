@@ -17,13 +17,37 @@ class Api::V0::ApiController < ApplicationController
     render text: "", content_type: "text/plain"
   end
 
-  def unprocessable_entity(exception)
-    render json: { error: exception, status: 422 },
-           status: :unprocessable_entity
+  rescue_from ActionController::ParameterMissing do |exc|
+    error_unprocessable_entity(exc.message)
   end
 
-  def not_authorized
-    render json: { error: "Not authorized", status: 401 },
-           status: :unauthorized
+  rescue_from ActiveRecord::RecordInvalid do |exc|
+    error_unprocessable_entity(exc.message)
+  end
+
+  protected
+
+  def error_unprocessable_entity(message)
+    render json: { error: message, status: 422 }, status: :unprocessable_entity
+  end
+
+  def error_unauthorized
+    render json: { error: "unauthorized", status: 401 }, status: :unauthorized
+  end
+
+  def authenticate_with_api_key
+    api_key = request.headers["api-key"]
+    return not_authorized unless api_key
+
+    api_secret = ApiSecret.includes(:user).find_by(secret: api_key)
+    return not_authorized unless api_secret
+
+    # guard against timing attacks
+    # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
+    if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key) # rubocop:disable Style/GuardClause
+      @user = api_secret.user
+    else
+      return not_authorized
+    end
   end
 end
