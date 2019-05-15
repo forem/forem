@@ -118,11 +118,30 @@ class ArticlesController < ApplicationController
 
   def create
     authorize Article
+
     @user = current_user
-    @article = ArticleCreationService.
-      new(@user, article_params, job_opportunity_params).
-      create!
-    redirect_after_creation
+
+    respond_to do |format|
+      format.html do
+        @article = ArticleCreationService.
+          new(@user, article_params, job_opportunity_params).
+          create!
+
+        redirect_after_creation
+      end
+
+      format.json do
+        @article = ArticleCreationService.
+          new(@user, article_params_json, {}).
+          create!
+
+        render json: if @article.persisted?
+                       @article.to_json(only: [:id], methods: [:current_state_path])
+                     else
+                       @article.errors.to_json
+                     end
+      end
+    end
   end
 
   def update
@@ -237,6 +256,26 @@ class ArticlesController < ApplicationController
     modified_params << :user_id if org_admin_user_change_privilege
     modified_params << :comment_template if current_user.has_role?(:admin)
     params.require(:article).permit(modified_params)
+  end
+
+  def article_params_json
+    params["article"].transform_keys!(&:underscore)
+    params["article"]["organization_id"] = (@user.organization_id if params["article"]["post_under_org"])
+    if params["article"]["series"].present?
+      params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
+    elsif params["article"]["series"] == ""
+      params["article"]["collection_id"] = nil
+    end
+    if params["article"]["version"] == "v1"
+      params.require(:article).permit(
+        :body_markdown, :organization_id
+      )
+    else
+      params.require(:article).permit(
+        :title, :body_markdown, :main_image, :published, :description,
+        :tag_list, :organization_id, :canonical_url, :series, :collection_id
+      )
+    end
   end
 
   def job_opportunity_params
