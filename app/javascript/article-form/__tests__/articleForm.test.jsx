@@ -27,7 +27,6 @@ describe('<ArticleForm />', () => {
         },
       };
     };
-    global.window.initEditorResize = jest.fn();
 
     global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
