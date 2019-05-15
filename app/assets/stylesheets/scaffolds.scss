@@ -18,6 +18,10 @@ body {
   }
 }
 
+*:focus:not(.focus-visible) {
+  outline: none;
+}
+
 .ptr--ptr {
   margin-top: 70px;
   margin-bottom: -70px;
@@ -28,6 +32,12 @@ body {
   overflow: hidden;
   overflow-y: hidden;
   height: 90vh;
+}
+
+.zen-mode {
+  .top-bar, .primary-sticky-nav, .article-actions {
+    display: none !important;
+  }
 }
 
 .universal-page-content-wrapper {

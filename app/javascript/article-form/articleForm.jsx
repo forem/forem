@@ -106,9 +106,6 @@ export default class ArticleForm extends Component {
       helpShowing: !this.state.helpShowing,
       previewShowing: false,
     });
-    setTimeout(function(){
-      e.target.blur();
-    },3)
   };
 
   fetchPreview = e => {
@@ -125,9 +122,6 @@ export default class ArticleForm extends Component {
         this.failedPreview,
       );
     }
-    setTimeout(function(){
-      e.target.blur();
-    },3)
   };
 
   toggleImageManagement = e => {
@@ -155,9 +149,6 @@ export default class ArticleForm extends Component {
   toggleOrgPosting = e => {
     e.preventDefault();
     this.setState({ postUnderOrg: !this.state.postUnderOrg });
-    setTimeout(function(){
-      e.target.blur();
-    },3)
   };
 
   failedPreview = response => {

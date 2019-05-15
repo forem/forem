@@ -29,4 +29,26 @@ module Notifications
       }
     }
   end
+
+  def self.article_data(article)
+    {
+      id: article.id,
+      cached_tag_list_array: article.decorate.cached_tag_list_array,
+      class: { name: "Article" },
+      title: article.title,
+      path: article.path,
+      updated_at: article.updated_at
+    }
+  end
+
+  def self.organization_data(organization)
+    {
+      id: organization.id,
+      class: { name: "Organization" },
+      name: organization.name,
+      slug: organization.slug,
+      path: organization.path,
+      profile_image_90: organization.profile_image_90
+    }
+  end
 end

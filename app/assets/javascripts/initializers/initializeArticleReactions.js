@@ -79,9 +79,6 @@ function initializeArticleReactions() {
           behavior: 'instant',
           block: 'start',
         });
-        setTimeout(function(){
-          e.target.blur();
-        },50)
       };
     }
   }, 3)
