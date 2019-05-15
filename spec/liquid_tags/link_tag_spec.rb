@@ -29,7 +29,7 @@ RSpec.describe LinkTag, type: :liquid_template do
         <a href='#{article.path}' class='ltag__link__link'>
           <div class='ltag__link__content'>
             <h2>#{ActionController::Base.helpers.strip_tags(article.title)}</h2>
-            <h3>#{article.user.name}</h3>
+            <h3>#{article.user.name} ・ #{article.reading_time} min read</h3>
             <div class='ltag__link__taglist'>
               #{tags}
             </div>
