@@ -25,6 +25,10 @@ class Api::V0::ApiController < ApplicationController
     error_unprocessable_entity(exc.message)
   end
 
+  rescue_from ActiveRecord::RecordNotFound do |_exc|
+    error_not_found
+  end
+
   protected
 
   def error_unprocessable_entity(message)
@@ -35,19 +39,23 @@ class Api::V0::ApiController < ApplicationController
     render json: { error: "unauthorized", status: 401 }, status: :unauthorized
   end
 
+  def error_not_found
+    render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
   def authenticate_with_api_key
     api_key = request.headers["api-key"]
-    return not_authorized unless api_key
+    return error_unauthorized unless api_key
 
     api_secret = ApiSecret.includes(:user).find_by(secret: api_key)
-    return not_authorized unless api_secret
+    return error_unauthorized unless api_secret
 
     # guard against timing attacks
     # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
     if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key) # rubocop:disable Style/GuardClause
       @user = api_secret.user
     else
-      return not_authorized
+      return error_unauthorized
     end
   end
 end

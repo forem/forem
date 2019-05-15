@@ -1,5 +1,5 @@
 class ArticleCreationService
-  def initialize(user, article_params, job_opportunity_params)
+  def initialize(user, article_params, job_opportunity_params: {})
     @user = user
     @article_params = article_params
     @job_opportunity_params = job_opportunity_params
@@ -17,8 +17,8 @@ class ArticleCreationService
 
     # convert tags from array to a string
     if tags.present?
-      @article_params.delete(:tags)
-      @article_params[:tag_list] = tags.join(", ")
+      article_params.delete(:tags)
+      article_params[:tag_list] = tags.join(", ")
     end
 
     article = Article.new(article_params)
@@ -45,5 +45,6 @@ class ArticleCreationService
 
   private
 
-  attr_reader :user, :article_params, :job_opportunity_params
+  attr_reader :user, :job_opportunity_params
+  attr_accessor :article_params
 end

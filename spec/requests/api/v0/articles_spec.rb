@@ -4,6 +4,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 
+  def json_response
+    JSON.parse(response.body)
+  end
+
   describe "GET /api/articles" do
     it "returns json response" do
       get "/api/articles"
@@ -81,17 +85,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     it "fails with an unpublished article" do
       article = create(:article, published: false)
-      invalid_request = lambda do
-        get "/api/articles/#{article.id}"
-      end
-      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
+      get "/api/articles/#{article.id}"
+      expect(response).to have_http_status(:not_found)
     end
 
     it "fails with an unknown article ID" do
-      invalid_request = lambda do
-        get "/api/articles/99999"
-      end
-      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
+      get "/api/articles/99999"
+      expect(response).to have_http_status(:not_found)
     end
   end
 
@@ -122,11 +122,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     describe "when authorized" do
       def post_article(**params)
         headers = { "api-key" => api_secret.secret }
-        post path, params: { "article" => params }, headers: headers
-      end
-
-      def json_response
-        JSON.parse(response.body)
+        post path, params: { article: params }, headers: headers
       end
 
       it "fails if no params are given" do
@@ -300,62 +296,147 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
-  describe "PUT /api/articles/:id w/ current_user" do
-    before do
-      sign_in user1
-    end
+  describe "PUT /api/articles/:id" do
+    let!(:api_secret) { create(:api_secret) }
+    let!(:user) { api_secret.user }
+    let(:article) { create(:article, user: user) }
+    let(:path) { "/api/articles/#{article.id}" }
 
-    let(:article) { create(:article, user: user1) }
-
-    it "updates ordinary article with proper params" do
-      new_title = "NEW TITLE #{rand(100)}"
-      put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", version: "v2" }
-      }
-      expect(Article.last.title).to eq(new_title)
-    end
-
-    it "does not allow user to update a different article" do
-      article.update_column(:user_id, user2.id)
-
-      invalid_update_request = lambda do
-        put "/api/articles/#{article.id}", params: {
-          article: { title: "NEW TITLE #{rand(100)}",
-                     body_markdown: "Yo ho ho#{rand(100)}",
-                     tag_list: "yo",
-                     version: "v2" }
-        }
+    describe "when unauthorized" do
+      it "fails with no api key" do
+        put path
+        expect(response).to have_http_status(:unauthorized)
       end
 
-      expect(invalid_update_request).to raise_error(ActiveRecord::RecordNotFound)
+      it "fails with the wrong api key" do
+        put path, headers: { "api-key" => "foobar" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "fails with a failing secure compare" do
+        allow(ActiveSupport::SecurityUtils).
+          to receive(:secure_compare).and_return(false)
+        put path, headers: { "api-key" => api_secret.secret }
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
-    it "does allow super user to update a different article" do
-      new_title = "NEW TITLE #{rand(100)}"
-      article.update_column(:user_id, user2.id)
-      user1.add_role(:super_admin)
-      put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", version: "v2" }
-      }
-      expect(Article.last.title).to eq(new_title)
-    end
+    describe "when authorized" do
+      def put_article(**params)
+        headers = { "api-key" => api_secret.secret }
+        put path, params: { article: params }, headers: headers
+      end
 
-    it "allows collection to be assigned via api" do
-      new_title = "NEW TITLE #{rand(100)}"
-      collection = Collection.create(user_id: article.user_id, slug: "yoyoyo")
-      put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id, version: "v2" }
-      }
-      expect(Article.last.collection_id).to eq(collection.id)
-    end
+      it "returns not found if the article does not belong to the user" do
+        article = create(:article, user: create(:user))
+        headers = { "api-key" => api_secret.secret }
+        params = { article: { title: "foobar" } }
+        put "/api/articles/#{article.id}", params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
 
-    it "does not allow collection which is not of user" do
-      new_title = "NEW TITLE #{rand(100)}"
-      collection = Collection.create(user_id: 3333, slug: "yoyoyo")
-      put "/api/articles/#{article.id}", params: {
-        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo", collection_id: collection.id, version: "v2" }
-      }
-      expect(Article.last.collection_id).not_to eq(collection.id)
+      it "lets a super admin update an article belonging to another user" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        headers = { "api-key" => api_secret.secret }
+        params = { article: { title: "foobar" } }
+        put "/api/articles/#{article.id}", params: params, headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not update title if only given a title" do
+        put_article(title: Faker::Book.title + rand(100).to_s)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.title).to eq(article.title)
+        expect(json_response["title"]).to eq(article.title)
+      end
+
+      it "updates the title and the body if given a title and a body" do
+        title = Faker::Book.title + rand(100).to_s
+        body_markdown = "foobar"
+        put_article(title: title, body_markdown: body_markdown)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.title).to eq(title)
+        expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "updates the tags" do
+        tags = %w[meta discussion]
+        body_markdown = "Yo ho ho #{rand(100)}"
+        put_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: body_markdown,
+          tags: tags,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.cached_tag_list).to eq(tags.join(", "))
+        expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "assigns the article to a new series belonging to the user" do
+        expect do
+          put_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "Yo ho ho #{rand(100)}",
+            series: "a series",
+          )
+        end.to change(Collection, :count).by(1)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).not_to be(nil)
+      end
+
+      it "assigns the article to an existing series belonging to the user" do
+        collection = create(:collection, user: user)
+        expect do
+          put_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "Yo ho ho #{rand(100)}",
+            series: collection.slug,
+          )
+        end.to change(Collection, :count).by(0)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).to eq(collection)
+      end
+
+      it "does not remove the article from a series" do
+        collection = create(:collection, user: user)
+        body_markdown = "Yo ho ho #{rand(100)}"
+        article.update!(body_markdown: body_markdown, collection: collection)
+        expect(article.collection).not_to be_nil
+
+        put_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).to eq(collection)
+      end
+
+      it "removes the article from a series if asked explicitly" do
+        body_markdown = "Yo ho ho #{rand(100)}"
+
+        # for some weird reason the front matter's title resets the collection
+        article.update!(
+          body_markdown: body_markdown,
+          collection: create(:collection, user: user),
+        )
+        expect(article.collection).not_to be_nil
+
+        put_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: body_markdown,
+          series: nil, # nil will assign the article to no collections
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.collection).to be_nil
+      end
+
+      it "publishes an article" do
+        article.update_columns(published: false)
+        put_article(published: true)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.published).to be(true)
+      end
     end
   end
 end

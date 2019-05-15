@@ -59,18 +59,13 @@ module Api
       end
 
       def create
-        @article = ArticleCreationService.new(@user, article_params, {}).create!
+        @article = ArticleCreationService.new(@user, article_params).create!
         render "show", status: :created, location: @article.url
       end
 
       def update
-        @article = Article.find(params[:id])
-        not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
-        render json: if @article.update(article_params)
-                       @article.to_json(only: [:id], methods: [:current_state_path])
-                     else
-                       @article.errors.to_json
-                     end
+        @article = Articles::Updater.call(@user, params[:id], article_params)
+        render "show", status: :ok
       end
 
       private
