@@ -1,9 +1,6 @@
 require "rails_helper"
 
 RSpec.describe Notifications::Update, type: :service do
-  # before do
-  #   allow(User).to receive(:dev_account).and_return(create(:user))
-  # end
   let!(:user) { create(:user) }
   let!(:org) { create(:organization) }
   let(:article) { create(:article, organization_id: org.id) }
