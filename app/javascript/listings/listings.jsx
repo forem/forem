@@ -12,6 +12,7 @@ export class Listings extends Component {
     initialFetch: true,
     currentUserId: null,
     openedListing: null,
+    message: '',
     slug: null,
     page: 0,
     showNextPageButt: false,
@@ -114,7 +115,7 @@ export class Listings extends Component {
     document.body.classList.add('modal-open');
   }
 
-  handleMessageModal = (e, listing) => {
+  handleOpenMessageModal = (e, listing) => {
     e.preventDefault();
     console.log(listing);
     console.log("HEEEY ");
@@ -122,7 +123,30 @@ export class Listings extends Component {
 
   handleOpenModalAndMessage = (e, listing) => {
     this.handleOpenModal(e, listing);
-    this.handleMessageModal(e, listing);
+    this.handleOpenMessageModal(e, listing);
+  }
+
+  handleDraftingMessage = (e) => {
+    e.preventDefault();
+    this.setState({ message: e.target.value })
+  }
+
+  handleSubmitMessage = (e) => {
+    if (this.state.message.replace(/\s/g, '').length === 0) {
+      e.preventDefault();
+      return;
+    }
+
+    var formData = new FormData();
+    formData.append('user_id', this.state.openedListing.user_id);
+    formData.append('message', this.state.message)
+    formData.append('controller', 'chat_channels');
+
+    getCsrfToken()
+      .then(sendFetch('chat-creation', formData))
+      .then(() => {
+        window.location.href = `/connect/@${this.state.openedListing.author.username}`;
+      });
   }
 
   handleQuery = e => {
@@ -267,15 +291,15 @@ export class Listings extends Component {
           listing={openedListing}
           currentUserId={currentUserId}
           onOpenModal={this.handleOpenModal}
-          onMessageModal={this.handleMessageModal}
+          onMessageModal={this.handleOpenMessageModal}
           isOpen
         />
       )
-      if (openedListing.contact_via_connect) {
+      if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
         messageModal = (
-          <form id="new-message-form" class="message-form">
+          <form id="new-message-form" class="message-form" onSubmit={this.handleSubmitMessage}>
             <button title="Close" class="close-modal">X</button>
-            <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
+            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
             <button type="submit" value="Submit" class="submit-message">SEND</button>
           </form>
         );
