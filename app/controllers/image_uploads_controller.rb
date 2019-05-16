@@ -35,18 +35,8 @@ class ImageUploadsController < ApplicationController
   end
 
   def limit_uploads
-    count = Rails.cache.read("#{current_user.id}_image_upload")
-
-    if count.nil?
-      count = 1
-    else
-      count += 1
-    end
-
-    if count == 10
-      Rails.cache.write("#{current_user.id}_image_upload", count, expires_in: 30.seconds)
-    else
-      Rails.cache.write("#{current_user.id}_image_upload", count)
-    end
+    count = Rails.cache.read("#{current_user.id}_image_upload").to_i
+    count += 1
+    Rails.cache.write("#{current_user.id}_image_upload", count, expires_in: 30.seconds)
   end
 end
