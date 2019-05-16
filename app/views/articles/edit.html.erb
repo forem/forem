@@ -30,6 +30,5 @@
   </div>
 <% end %>
 
-<% current_user.editor_version == "v1" if @article.has_frontmatter? %>
 <%= javascript_pack_tag "articleForm", defer: true %>
 <%= render "articles/v2_form" %>
