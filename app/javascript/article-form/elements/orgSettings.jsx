@@ -17,18 +17,17 @@ const orgOptions = (organizations, organizationId) => {
   return orgs
 }
 
-const OrgSettings = ({ organizations, organizationId }) => (
+const OrgSettings = ({ organizations, organizationId, onToggle }) => (
   <div className="articleform__orgsettings">
     Publish under an organization:
-    <select name="article[publish_under_org]" id="article_publish_under_org">
+    <select name="article[publish_under_org]" id="article_publish_under_org" onBlur={onToggle}>
       {orgOptions(organizations, organizationId)}
     </select>
   </div>
 );
 
 OrgSettings.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  defaultValue: PropTypes.string.isRequired,
+  onToggle: PropTypes.func.isRequired,
 };
 
 export default OrgSettings;

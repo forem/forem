@@ -146,6 +146,11 @@ export default class ArticleForm extends Component {
     });
   };
 
+  handleOrgIdChange = e => {
+    const organizationId = e.target.selectedOptions[0].value;
+    this.setState({ organizationId })
+  }
+
   failedPreview = response => {
     console.log(response);
   };
@@ -293,6 +298,7 @@ export default class ArticleForm extends Component {
       <OrgSettings
         organizations={organizations}
         organizationId={organizationId}
+        onToggle={this.handleOrgIdChange}
       />
     ) : (
       ''
