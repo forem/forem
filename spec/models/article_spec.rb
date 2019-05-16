@@ -305,6 +305,19 @@ RSpec.describe Article, type: :model do
     expect(article.decorate.title_length_classification).to eq("short")
   end
 
+  it "determines that an article has frontmatter" do
+    body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
+    article.body_markdown = body
+    expect(article.has_frontmatter?).to eq(true)
+  end
+
+  it "determines that an article has frontmatter" do
+    body = "Hey hey Ho Ho"
+    article.body_markdown = body
+    expect(article.has_frontmatter?).to eq(false)
+  end
+
+
   it "returns stripped canonical url" do
     article.canonical_url = " http://google.com "
     expect(article.decorate.processed_canonical_url).to eq("http://google.com")
