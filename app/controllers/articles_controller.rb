@@ -176,14 +176,6 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def handle_hiring_tag
-    if job_opportunity_params.present? && @article.tag_list.include?("hiring")
-      create_or_update_job_opportunity
-    elsif @article.job_opportunity && !@article.tag_list.include?("hiring")
-      @article.job_opportunity.destroy!
-    end
-  end
-
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)
@@ -199,16 +191,6 @@ class ArticlesController < ApplicationController
 
     @tag = tag.alias_for.presence || tag
     @articles = @articles.cached_tagged_with(@tag)
-  end
-
-  def create_or_update_job_opportunity
-    if @article.job_opportunity.present?
-      @article.job_opportunity.update(job_opportunity_params)
-    else
-      @job_opportunity = JobOpportunity.create(job_opportunity_params)
-      @article.job_opportunity = @job_opportunity
-      @article.save
-    end
   end
 
   def set_article
@@ -248,15 +230,6 @@ class ArticlesController < ApplicationController
         :tag_list, :organization_id, :canonical_url, :series, :collection_id
       )
     end
-  end
-
-  def job_opportunity_params
-    return nil if params[:article][:job_opportunity].blank?
-
-    params[:article].require(:job_opportunity).permit(
-      :remoteness, :location_given, :location_city, :location_postal_code,
-      :location_country_code, :location_lat, :location_long
-    )
   end
 
   def redirect_after_creation
