@@ -293,6 +293,43 @@ RSpec.describe "Api::V0::Articles", type: :request do
         end.to change(Article, :count).by(1)
         expect(Article.find(json_response["id"]).canonical_url).to eq(canonical_url)
       end
+
+      it "creates an article with the given description" do
+        description = "this is a very interesting article"
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "Yo ho ho #{rand(100)}",
+            description: description,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).description).to eq(description)
+      end
+
+      it "creates an article with description in the front matter" do
+        description = "this is a very interesting article"
+        body_markdown = file_fixture("article_published_canonical_url.txt").read
+        expect do
+          post_article(
+            body_markdown: body_markdown,
+            description: description,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).description).not_to eq(description)
+      end
+
+      it "creates an article with a part of the body as a description" do
+        expect do
+          post_article(
+            title: Faker::Book.title + rand(100).to_s,
+            body_markdown: "yooo" * 100 + rand(100).to_s,
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        expect(Article.find(json_response["id"]).description).to eq("yooo" * 20 + "y...")
+      end
     end
   end
 
@@ -415,11 +452,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "removes the article from a series if asked explicitly" do
         body_markdown = "Yo ho ho #{rand(100)}"
 
-        # for some weird reason the front matter's title resets the collection
-        article.update!(
-          body_markdown: body_markdown,
-          collection: create(:collection, user: user),
-        )
+        article.update!(body_markdown: body_markdown, collection: create(:collection, user: user))
         expect(article.collection).not_to be_nil
 
         put_article(
@@ -436,6 +469,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(published: true)
         expect(response).to have_http_status(:ok)
         expect(article.reload.published).to be(true)
+      end
+
+      it "updates a description" do
+        description = "this is a very interesting article"
+        put_article(description: description)
+        expect(response).to have_http_status(:ok)
+        expect(Article.find(json_response["id"]).description).to eq(description)
       end
     end
   end
