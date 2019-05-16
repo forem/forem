@@ -458,6 +458,63 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
         expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
       end
+
+      it "does not update the editing time when updated before publication" do
+        article.update_columns(edited_at: nil)
+        expect(article.published).to be(false)
+        put_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: "Yo ho ho #{rand(100)}",
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).to be_nil
+      end
+
+      it "updates the editing time when updated after publication" do
+        article.update_columns(published: true)
+        put_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: "Yo ho ho #{rand(100)}",
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).not_to be_nil
+      end
+
+      it "does not update the editing time before publication if changed by an admin" do
+        article.update_columns(edited_at: nil)
+        expect(article.published).to be(false)
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        headers = { "api-key" => api_secret.secret }
+        params = { article: { title: Faker::Book.title + rand(100).to_s,
+                              body_markdown: "Yo ho ho #{rand(100)}" } }
+        put "/api/articles/#{article.id}", params: params, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).to be_nil
+      end
+
+      it "does not update the editing time after publication if changed by an admin" do
+        article.update_columns(edited_at: nil, published: true)
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        headers = { "api-key" => api_secret.secret }
+        params = { article: { title: Faker::Book.title + rand(100).to_s,
+                              body_markdown: "Yo ho ho #{rand(100)}" } }
+        put "/api/articles/#{article.id}", params: params, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).to be_nil
+      end
+
+      it "updates the editing time when updated after publication if the owner is an admin" do
+        user.add_role(:super_admin)
+        article.update_columns(edited_at: nil, published: true)
+        put_article(
+          title: Faker::Book.title + rand(100).to_s,
+          body_markdown: "Yo ho ho #{rand(100)}",
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.edited_at).not_to be_nil
+      end
     end
   end
 end
