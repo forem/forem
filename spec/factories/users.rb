@@ -13,6 +13,7 @@ FactoryBot.define do
     name               { Faker::Name.name }
     email              { generate :email }
     username           { generate :username }
+    profile_image      { image }
     twitter_username   { generate :twitter_username }
     github_username    { generate :github_username }
     summary            { Faker::Lorem.paragraph[0..rand(190)] }
