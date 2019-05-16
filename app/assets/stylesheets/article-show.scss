@@ -1024,7 +1024,7 @@ article {
         transition: box-shadow 0.18s;
         @include themeable(
           background, 
-          theme-container-accent-background, 
+          theme-reaction-background, 
           darken($light-gray, 3%)
         );
         @media screen and (min-width: 500px) {
@@ -1098,20 +1098,20 @@ article {
           filter: none;
           opacity: 1;
           box-shadow: 0px 0px 0px 2px #ffc0d3;
-          background: linear-gradient(60deg, #fdbace, #fa86aa);
+          background: linear-gradient(111deg, #ffb4cb, #ff80a8);
         }
 
         &.unicorn-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #d0e3ff;
-            background: linear-gradient(60deg, #c5d9f8, #94baf8);
+            background: linear-gradient(111deg, #c5d9f8, #90bbff);
           }
         }
 
         &.readinglist-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #cfc9f3;
-            background: linear-gradient(60deg, #c1baec, #988ee9);
+            background: linear-gradient(111deg, #cac3f3, #958aee);
           }
         }
 
