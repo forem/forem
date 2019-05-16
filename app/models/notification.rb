@@ -29,7 +29,7 @@ class Notification < ApplicationRecord
       # for now, arguments are always: notifiable = article, action = "Published"
       json_data = {
         user: user_data(notifiable.user),
-        article: article_data(notifiable)
+        article: Notifications.article_data(notifiable)
       }
       followers = if notifiable.organization_id
                     json_data[:organization] = organization_data(notifiable.organization)
@@ -130,29 +130,12 @@ class Notification < ApplicationRecord
     end
 
     def send_milestone_notification(milestone_hash)
-      milestone_hash[:next_milestone] = next_milestone(milestone_hash)
-      return unless should_send_milestone?(milestone_hash)
-
-      json_data = { article: article_data(milestone_hash[:article]), gif_id: RandomGif.new.random_id }
-
-      Notification.create!(
-        user_id: milestone_hash[:article].user_id,
-        notifiable_id: milestone_hash[:article].id,
-        notifiable_type: "Article",
-        json_data: json_data,
-        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-      )
-      return unless milestone_hash[:article].organization_id
-
-      Notification.create!(
-        organization_id: milestone_hash[:article].organization_id,
-        notifiable_id: milestone_hash[:article].id,
-        notifiable_type: "Article",
-        json_data: json_data,
-        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-      )
+      Notifications::MilestoneJob.perform_later(milestone_hash)
     end
-    handle_asynchronously :send_milestone_notification
+
+    def send_milestone_notification_without_delay(milestone_hash)
+      Notifications::MilestoneJob.perform_now(milestone_hash)
+    end
 
     def remove_all(notifiable_hash)
       Notification.where(
@@ -193,6 +176,10 @@ class Notification < ApplicationRecord
       Notifications.comment_data(comment)
     end
 
+    def article_data(article)
+      Notifications.article_data(article)
+    end
+
     def reaction_notification_attributes(reaction, receiver)
       reactable_data = {
         reactable_id: reaction.reactable_id,
@@ -205,45 +192,6 @@ class Notification < ApplicationRecord
 
     def organization_data(organization)
       Notifications.organization_data(organization)
-    end
-
-    def article_data(article)
-      Notifications.article_data(article)
-    end
-
-    def should_send_milestone?(milestone_hash)
-      return if milestone_hash[:article].published_at < Time.zone.local(2019, 2, 25)
-
-      last_milestone_notification = Notification.find_by(
-        user_id: milestone_hash[:article].user_id,
-        notifiable_type: "Article",
-        notifiable_id: milestone_hash[:article].id,
-        action: "Milestone::#{milestone_hash[:type]}::#{milestone_hash[:next_milestone]}",
-      )
-
-      if milestone_hash[:type] == "View"
-        last_milestone_notification.blank? && milestone_hash[:article].page_views_count > milestone_hash[:next_milestone]
-      elsif milestone_hash[:type] == "Reaction"
-        last_milestone_notification.blank? && milestone_hash[:article].positive_reactions_count > milestone_hash[:next_milestone]
-      end
-    end
-
-    def next_milestone(milestone_hash)
-      case milestone_hash[:type]
-      when "View"
-        milestones = [1024, 2048, 4096, 8192, 16_384, 32_768, 65_536, 131_072, 262_144, 524_288, 1_048_576]
-        milestone_count = milestone_hash[:article].page_views_count
-      when "Reaction"
-        milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
-        milestone_count = milestone_hash[:article].positive_reactions_count
-      end
-
-      closest_number = milestones.min_by { |num| (milestone_count - num).abs }
-      if milestone_count > closest_number
-        closest_number
-      else
-        milestones[milestones.index(closest_number) - 1]
-      end
     end
   end
 
