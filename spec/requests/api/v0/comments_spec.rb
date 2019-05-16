@@ -1,7 +1,6 @@
-# http://localhost:3000/api/comments?a_id=23
 require "rails_helper"
 
-RSpec.describe "CommentsApi", type: :request do
+RSpec.describe "Api::V0::Comments", type: :request do
   let(:article) { create(:article) }
 
   before do
@@ -11,7 +10,8 @@ RSpec.describe "CommentsApi", type: :request do
 
   describe "GET /api/comments" do
     it "returns not found if inproper article id" do
-      expect { get "/api/comments?a_id=gobbledygook" }.to raise_error(ActiveRecord::RecordNotFound)
+      get "/api/comments?a_id=gobbledygook"
+      expect(response).to have_http_status(:not_found)
     end
 
     it "returns comments for article passed" do

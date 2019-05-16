@@ -13,8 +13,8 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   context "when an invalid token is given" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
 
-    it "renders an error message: 'Not authorized' in JSON" do
-      expect(JSON.parse(response.body)["error"]).to eq "Not authorized"
+    it "renders an error message: 'unauthorized' in JSON" do
+      expect(JSON.parse(response.body)["error"]).to eq "unauthorized"
     end
 
     it "has a status 401" do
@@ -25,8 +25,8 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   context "when a valid token is given but the user is not a pro" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
 
-    it "renders an error message: 'Not authorized' in JSON" do
-      expect(JSON.parse(response.body)["error"]).to eq "Not authorized"
+    it "renders an error message: 'unauthorized' in JSON" do
+      expect(JSON.parse(response.body)["error"]).to eq "unauthorized"
     end
 
     it "has a status 401" do
@@ -47,8 +47,8 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
       get "/api/analytics/#{endpoint}?organization_id=#{org.id}#{params}", headers: { "api-key" => pro_api_token.secret }
     end
 
-    it "renders an error message: 'Not authorized' in JSON" do
-      expect(JSON.parse(response.body)["error"]).to eq "Not authorized"
+    it "renders an error message: 'unauthorized' in JSON" do
+      expect(JSON.parse(response.body)["error"]).to eq "unauthorized"
     end
 
     it "has a status 401" do
