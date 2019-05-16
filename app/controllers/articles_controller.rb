@@ -35,6 +35,7 @@ class ArticlesController < ApplicationController
 
   def new
     @user = current_user
+    @version = @user.editor_version if @user
     @organization = @user&.organization
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
@@ -77,6 +78,7 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
+    @version = @article.has_frontmatter? ? "v1" : "v2"
     @organization = @user&.organization
   end
 
