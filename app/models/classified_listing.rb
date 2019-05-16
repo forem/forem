@@ -18,17 +18,19 @@ class ClassifiedListing < ApplicationRecord
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
                             length: { maximum: 400 }
+  validates :contact_via_connect, presence: true,
+                                  inclusion: { in: [true, false] },
+                                  exclusion: { in: [nil] }
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect
     attribute :author do
       { username: author.username,
         name: author.name,
-        profile_image_90: ProfileImage.new(author).get(90),
-        inbox_type: author.inbox_type || 'private' }
+        profile_image_90: ProfileImage.new(author).get(90) }
     end
     tags do
       [tag_list,

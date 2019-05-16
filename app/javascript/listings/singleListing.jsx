@@ -7,7 +7,7 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
   ));
 
   const editButton = currentUserId === listing.user_id ? <a href={`/listings/${listing.id}/edit`} className="classified-listing-edit-button">・edit</a> : <a href={`/report-abuse?url=https://dev.to/listings/${listing.category}/${listing.slug}`}>・report abuse</a>;
-  const messageButton = onMessageModal && (currentUserId !== listing.user_id) && (listing.author.inbox_type === "open") ? <a href={`/listings/${listing.category}/${listing.slug}`} data-no-instant onClick={e => onMessageModal(e, listing)} data-listing-id={listing.id}>・message</a> : ''
+  const messageButton = onMessageModal && (currentUserId !== listing.user_id) && (listing.contact_via_connect) ? <a href={`/listings/${listing.category}/${listing.slug}`} data-no-instant onClick={e => onMessageModal(e, listing)} data-listing-id={listing.id}>・message</a> : ''
   const definedClass = isOpen ? 'single-classified-listing single-classified-listing--opened' : 'single-classified-listing';
 
   const listingCard = () => {

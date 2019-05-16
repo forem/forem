@@ -100,12 +100,10 @@ export class Listings extends Component {
   }
 
   handleCloseModal = (e) => {
-
     const { query, tags, category } = this.state;
     this.setState({openedListing: null, page: 0})
     this.setLocation(query, tags, category, null);
     document.body.classList.remove('modal-open');
-
   }
 
   handleOpenModal = (e, listing) => {
@@ -259,6 +257,7 @@ export class Listings extends Component {
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
     let modal = '';
     let modalBg = '';
+    let messageModal = '';
     if (openedListing) {
       modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
       modal = (
@@ -272,6 +271,15 @@ export class Listings extends Component {
           isOpen
         />
       )
+      if (openedListing.contact_via_connect) {
+        messageModal = (
+          <form id="new-message-form" class="message-form">
+            <button title="Close" class="close-modal">X</button>
+            <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
+            <button type="submit" value="Submit" class="submit-message">SEND</button>
+          </form>
+        );
+      }
     }
     if (initialFetch) {
       this.triggerMasonry();
@@ -296,6 +304,7 @@ export class Listings extends Component {
         </div>
         {nextPageButt}
         {modal}
+        {messageModal}
       </div>
     )
   }
