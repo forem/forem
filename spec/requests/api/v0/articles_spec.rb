@@ -299,7 +299,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   describe "PUT /api/articles/:id" do
     let!(:api_secret) { create(:api_secret) }
     let!(:user) { api_secret.user }
-    let(:article) { create(:article, user: user) }
+    let(:article) { create(:article, user: user, published: false) }
     let(:path) { "/api/articles/#{article.id}" }
 
     describe "when unauthorized" do
@@ -432,10 +432,31 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "publishes an article" do
+        expect(article.published).to be(false)
+        put_article(body_markdown: "Yo ho ho #{rand(100)}", published: true)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.published).to be(true)
+      end
+
+      it "sends a notification when the article gets published" do
+        expect(article.published).to be(false)
+        allow(Notification).to receive(:send_to_followers)
+        put_article(body_markdown: "Yo ho ho #{rand(100)}", published: true)
+        expect(response).to have_http_status(:ok)
+        expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
+      end
+
+      it "only sends a notification the first time the article gets published" do
+        expect(article.published).to be(false)
+        allow(Notification).to receive(:send_to_followers)
+        put_article(body_markdown: "Yo ho ho #{rand(100)}", published: true)
+        expect(response).to have_http_status(:ok)
+
         article.update_columns(published: false)
         put_article(published: true)
         expect(response).to have_http_status(:ok)
-        expect(article.reload.published).to be(true)
+
+        expect(Notification).to have_received(:send_to_followers).with(article, "Published").once
       end
     end
   end

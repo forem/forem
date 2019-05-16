@@ -33,6 +33,10 @@ module Articles
 
       article.update!(article_params)
 
+      # send notification only the first time an article is published
+      send_notification = article.published && article.saved_change_to_published_at.present?
+      Notification.send_to_followers(article, "Published") if send_notification
+
       article.decorate
     end
 
