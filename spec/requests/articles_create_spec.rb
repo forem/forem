@@ -1,7 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "ArticlesCreate", type: :request do
-  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
+  let(:user) { create(:user, organization_id: organization.id) }
 
   before do
     sign_in user
@@ -25,29 +26,15 @@ RSpec.describe "ArticlesCreate", type: :request do
     expect(Article.last.title).to eq("hey hey hahuu")
   end
 
-  it "does not allow job opportunity job to not include hiring tag" do
-    new_title = "NEW TITLE #{rand(100)}"
-    expect do
-      post "/articles", params: {
-        article: {
-          title: new_title,
-          body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yoyo",
-          job_opportunity: { remoteness: "on_premise" }
-        }
-      }
-    end .to raise_error(RuntimeError)
-  end
-
-  it "creates article with job opportunity nested" do
-    new_title = "NEW TITLE #{rand(100)}"
+  it "creates article with front matter params and org" do
     post "/articles", params: {
       article: {
-        title: new_title,
-        body_markdown: "Yo ho ho#{rand(100)}", tag_list: "hiring",
-        job_opportunity: { remoteness: "on_premise" }
+        body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
+        tag_list: "yo",
+        post_under_org: true
       }
     }
-    expect(Article.last.job_opportunity.remoteness).to eq("on_premise")
+    expect(Article.last.organization_id).to eq(organization.id)
   end
 
   it "creates series when series is created with frontmatter" do

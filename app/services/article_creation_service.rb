@@ -1,8 +1,7 @@
 class ArticleCreationService
-  def initialize(user, article_params, job_opportunity_params: {})
+  def initialize(user, article_params)
     @user = user
     @article_params = article_params
-    @job_opportunity_params = job_opportunity_params
   end
 
   def create!
@@ -27,24 +26,14 @@ class ArticleCreationService
     article.organization = user.organization if publish_under_org
     article.collection = Collection.find_series(series, user) if series.present?
 
-    create_job_opportunity(article)
-
     if article.save!
       Notification.send_to_followers(article, "Published") if article.published
     end
     article.decorate
   end
 
-  def create_job_opportunity(article)
-    return if job_opportunity_params.blank?
-
-    job_opportunity = JobOpportunity.create(job_opportunity_params)
-    article.job_opportunity = job_opportunity
-    raise unless article.tag_list.include? "hiring"
-  end
-
   private
 
-  attr_reader :user, :job_opportunity_params
+  attr_reader :user
   attr_accessor :article_params
 end

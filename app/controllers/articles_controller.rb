@@ -121,64 +121,31 @@ class ArticlesController < ApplicationController
 
     @user = current_user
 
-    respond_to do |format|
-      format.html do
-        @article = ArticleCreationService.
-          new(@user, article_params, job_opportunity_params: job_opportunity_params).
-          create!
+    @article = ArticleCreationService.new(@user, article_params_json).create!
 
-        redirect_after_creation
-      end
-
-      format.json do
-        @article = ArticleCreationService.new(@user, article_params_json).create!
-
-        render json: if @article.persisted?
-                       @article.to_json(only: [:id], methods: [:current_state_path])
-                     else
-                       @article.errors.to_json
-                     end
-      end
-    end
+    render json: if @article.persisted?
+                   @article.to_json(only: [:id], methods: [:current_state_path])
+                 else
+                   @article.errors.to_json
+                 end
   end
 
   def update
     authorize @article
     @user = @article.user || current_user
+    not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
+    edited_at_date = if @article.user == current_user && @article.published
+                       Time.current
+                     else
+                       @article.edited_at
+                     end
 
-    if request.format.json?
-      not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
-      render json: if @article.update(article_params_json)
-                     @article.to_json(only: [:id], methods: [:current_state_path])
-                   else
-                     @article.errors.to_json
-                   end
-    else
-      @article.tag_list = []
-      @article.main_image = nil
-      edited_at_date = if @article.user == current_user && @article.published
-                         Time.current
-                       else
-                         @article.edited_at
-                       end
-
-      if @article.update(article_params.merge(edited_at: edited_at_date))
-        handle_org_assignment
-        handle_hiring_tag
-        if @article.published
-          # why does it send a notification each time the published flag is true?
-          Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
-          path = @article.path
-        else
-          Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
-          path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
-        end
-
-        redirect_to(params[:destination] || path)
-      else
-        redirect_to :edit
-      end
-    end
+    render json: if @article.update(article_params_json.merge(edited_at: edited_at_date))
+                   Notification.send_to_followers(@article, "Published") if @article.published && @article.saved_changes["published_at"]&.include?(nil)
+                   @article.to_json(only: [:id], methods: [:current_state_path])
+                 else
+                   @article.errors.to_json
+                 end
   end
 
   def delete_confirm
@@ -209,14 +176,6 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def handle_hiring_tag
-    if job_opportunity_params.present? && @article.tag_list.include?("hiring")
-      create_or_update_job_opportunity
-    elsif @article.job_opportunity && !@article.tag_list.include?("hiring")
-      @article.job_opportunity.destroy!
-    end
-  end
-
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)
@@ -232,16 +191,6 @@ class ArticlesController < ApplicationController
 
     @tag = tag.alias_for.presence || tag
     @articles = @articles.cached_tagged_with(@tag)
-  end
-
-  def create_or_update_job_opportunity
-    if @article.job_opportunity.present?
-      @article.job_opportunity.update(job_opportunity_params)
-    else
-      @job_opportunity = JobOpportunity.create(job_opportunity_params)
-      @article.job_opportunity = @job_opportunity
-      @article.save
-    end
   end
 
   def set_article
@@ -270,6 +219,7 @@ class ArticlesController < ApplicationController
     elsif params["article"]["series"] == ""
       params["article"]["collection_id"] = nil
     end
+
     if params["article"]["version"] == "v1"
       params.require(:article).permit(
         :body_markdown, :organization_id
@@ -280,15 +230,6 @@ class ArticlesController < ApplicationController
         :tag_list, :organization_id, :canonical_url, :series, :collection_id
       )
     end
-  end
-
-  def job_opportunity_params
-    return nil if params[:article][:job_opportunity].blank?
-
-    params[:article].require(:job_opportunity).permit(
-      :remoteness, :location_given, :location_city, :location_postal_code,
-      :location_country_code, :location_lat, :location_long
-    )
   end
 
   def redirect_after_creation
