@@ -16,25 +16,15 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(Article.last.title).to eq(new_title)
   end
 
-  it "does not create a job opportunity if no hiring tag" do
-    new_title = "NEW TITLE #{rand(100)}"
+  it "updates article with front matter params" do
     put "/articles/#{article.id}", params: {
       article: {
-        title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo",
-        job_opportunity: { remoteness: "on_premise" }
+        title: "hello",
+        body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
+        tag_list: "yo"
       }
     }
-    expect(JobOpportunity.count).to eq(0)
-  end
-
-  it "updates ordinary article with job opportunity nested" do
-    new_title = "NEW TITLE #{rand(100)}"
-    put "/articles/#{article.id}", params: {
-      article: {
-        title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "hiring",
-        job_opportunity: { remoteness: "on_premise" }
-      }
-    }
-    expect(Article.last.job_opportunity.remoteness).to eq("on_premise")
+    expect(Article.last.edited_at).to be > 5.seconds.ago
+    expect(Article.last.title).to eq("hey hey hahuu")
   end
 end
