@@ -301,66 +301,6 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "#send_milestone_notification" do
-    # milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
-    let(:view_milestone_hash) { { type: "View", article: article } }
-    let(:reaction_milestone_hash) { { type: "Reaction", article: article } }
-
-    context "when a user has never received a milestone notification" do
-      it "sends the appropriate level view milestone notification" do
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        expect(user.notifications.first.action).to include "2048"
-      end
-
-      it "sends the appropriate level reaction milestone notification" do
-        Notification.send_milestone_notification_without_delay(reaction_milestone_hash)
-        expect(user.notifications.first.action).to include "64"
-      end
-    end
-
-    context "when a user has received a milestone notification before" do
-      def mock_previous_view_milestone_notification
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        article.update_column(:page_views_count, 9001)
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-      end
-
-      def mock_previous_reaction_milestone_notification
-        Notification.send_milestone_notification_without_delay(reaction_milestone_hash)
-        article.update_column(:positive_reactions_count, 150)
-        Notification.send_milestone_notification_without_delay(reaction_milestone_hash)
-      end
-
-      it "sends the appropriate level view milestone notification" do
-        mock_previous_view_milestone_notification
-        expect(user.notifications.second.action).to include "8192"
-      end
-
-      it "sends the appropriate level reaction milestone notification" do
-        mock_previous_reaction_milestone_notification
-        expect(user.notifications.last.action).to include "128"
-      end
-
-      it "adds an additional view milestone notification" do
-        mock_previous_view_milestone_notification
-        expect(user.notifications.count).to eq 2
-      end
-
-      it "does not the same view milestone notification if called again" do
-        mock_previous_view_milestone_notification
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        expect(user.notifications.count).to eq 2
-      end
-
-      it "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
-        mock_previous_view_milestone_notification
-        article.update_column(:page_views_count, rand(9002..16_383))
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        expect(user.notifications.count).to eq 2
-      end
-    end
-  end
-
   describe "#update_notifications" do
     context "when there are notifications to update" do
       before do
