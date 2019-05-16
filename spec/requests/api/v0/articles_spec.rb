@@ -77,14 +77,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
+    let(:article) { create(:article) }
+
     it "gets article based on ID" do
-      article = create(:article)
       get "/api/articles/#{article.id}"
-      expect(JSON.parse(response.body)["title"]).to eq(article.title)
+      expect(json_response["title"]).to eq(article.title)
     end
 
     it "fails with an unpublished article" do
-      article = create(:article, published: false)
+      article.update_columns(published: false)
       get "/api/articles/#{article.id}"
       expect(response).to have_http_status(:not_found)
     end
@@ -92,6 +93,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "fails with an unknown article ID" do
       get "/api/articles/99999"
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "contains tags as an array" do
+      get "/api/articles/#{article.id}"
+      expect(json_response["tags"]).to eq(article.decorate.cached_tag_list_array)
     end
   end
 
