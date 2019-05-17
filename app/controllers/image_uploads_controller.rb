@@ -28,6 +28,10 @@ class ImageUploadsController < ApplicationController
       return
     end
 
+    cloudinary_link(uploader)
+  end
+
+  def cloudinary_link(uploader)
     link = if params[:wrap_cloudinary]
              ApplicationController.helpers.cloud_cover_url(uploader.url)
            else
