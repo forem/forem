@@ -68,6 +68,7 @@ function display(props) {
       <UserDetails
         user={props.resource}
         activeChannelId={props.activeChannelId}
+        activeChannel={props.activeChannel}
       />
     );
   }

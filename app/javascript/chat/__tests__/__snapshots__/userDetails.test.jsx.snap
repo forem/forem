@@ -126,11 +126,6 @@ exports[`<UserDetails /> for user1 should render and test snapshot 1`] = `
     <button
       onClick={[Function]}
     >
-      Block User
-    </button>
-    <button
-      onClick={[Function]}
-    >
       Report Abuse
     </button>
   </div>
@@ -342,11 +337,6 @@ exports[`<UserDetails /> for user2 should render and test snapshot 1`] = `
   <div
     class="userdetails__blockreport"
   >
-    <button
-      onClick={[Function]}
-    >
-      Block User
-    </button>
     <button
       onClick={[Function]}
     >
