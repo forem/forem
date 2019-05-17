@@ -431,6 +431,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(article.reload.collection).to be_nil
       end
 
+      it "assigns the article to a series belonging to the article's owner, not the admin" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: Faker::Book.title + rand(100).to_s,
+                              body_markdown: "Yo ho ho #{rand(100)}",
+                              series: "a series" } }
+        expect do
+          put "/api/articles/#{article.id}", params: params, headers: { "api-key" => api_secret.secret }
+          expect(response).to have_http_status(:ok)
+        end.to change(Collection, :count).by(1)
+        expect(article.reload.collection.user).to eq(article.user)
+      end
+
       it "publishes an article" do
         article.update_columns(published: false)
         put_article(published: true)

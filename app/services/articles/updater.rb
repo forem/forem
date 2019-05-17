@@ -20,7 +20,7 @@ module Articles
       # the client can change the series the article belongs to
       if article_params.key?(:series)
         series = article_params[:series]
-        article.collection = Collection.find_series(series, user) if series.present?
+        article.collection = Collection.find_series(series, article.user) if series.present?
         article.collection = nil if series.nil?
       end
 
