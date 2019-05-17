@@ -44,14 +44,10 @@ class Internal::TagsController < Internal::ApplicationController
   end
 
   def tag_params
-    params.require(:tag).permit(:supported,
-                                :rules_markdown,
-                                :short_summary,
-                                :pretty_name,
-                                :bg_color_hex,
-                                :text_color_hex,
-                                :tag_moderator_id,
-                                :remove_moderator_id,
-                                :alias_for)
+    allowed_params = %i[
+      supported rules_markdown short_summary pretty_name bg_color_hex
+      text_color_hex tag_moderator_id remove_moderator_id alias_for
+    ]
+    params.require(:tag).permit(allowed_params)
   end
 end

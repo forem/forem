@@ -1,6 +1,7 @@
 module Internal
   class EventsController < ApplicationController
     layout "internal"
+
     def index
       @event = Event.new(
         location_name: "dev.to/live",
@@ -38,19 +39,12 @@ module Internal
     private
 
     def event_params
-      params.require(:event).permit(:title,
-                                    :category,
-                                    :event_date,
-                                    :starts_at,
-                                    :ends_at,
-                                    :location_name,
-                                    :cover_image,
-                                    :location_url,
-                                    :description_markdown,
-                                    :published,
-                                    :host_name,
-                                    :profile_image,
-                                    :live_now)
+      allowed_params = %i[
+        title category event_date starts_at ends_at
+        location_name cover_image location_url description_markdown published
+        host_name profile_image live_now
+      ]
+      params.require(:event).permit(allowed_params)
     end
   end
 end

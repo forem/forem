@@ -13,16 +13,6 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     @vomits = get_vomits
   end
 
-  def get_vomits
-    if params[:status] == "Open" || params[:status].blank?
-      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
-    elsif params[:status] == "Resolved"
-      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
-    else
-      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
-    end
-  end
-
   def save_status
     feedback_message = FeedbackMessage.find(params[:id])
     if feedback_message.update(status: params[:status])
@@ -69,6 +59,16 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   private
+
+  def get_vomits
+    if params[:status] == "Open" || params[:status].blank?
+      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
+    elsif params[:status] == "Resolved"
+      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    else
+      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    end
+  end
 
   def send_slack_message(params)
     SlackBot.ping(
