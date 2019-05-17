@@ -73,7 +73,7 @@ module Api
       def article_params
         allowed_params = [
           :title, :body_markdown, :published, :series, :publish_under_org,
-          :main_image, :canonical_url, tags: []
+          :main_image, :canonical_url, :description, tags: []
         ]
         params.require(:article).permit(allowed_params)
       end
