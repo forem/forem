@@ -210,6 +210,7 @@ export class Listings extends Component {
 
   setLocation = (query, tags, category, slug) => {
     let newLocation = ''
+    console.log(query, tags, category, slug)
     if (slug) {
       newLocation = `/listings/${category}/${slug}`;
     } else if (query.length > 0 && tags.length > 0) {
@@ -286,7 +287,7 @@ export class Listings extends Component {
       modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
       if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
         messageModal = (
-          <form id="new-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
+          <form id="listings-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
             <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
             <button type="submit" value="Submit" className="submit-button cta">SEND</button>
           </form>
