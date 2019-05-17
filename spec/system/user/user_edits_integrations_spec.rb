@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User edits their profile", type: :system, js: true do
+RSpec.describe "User edits their integrations", type: :system, js: true do
   let(:user) { create(:user, saw_onboarding: true) }
   let(:github_response_body) do
     [
@@ -19,7 +19,7 @@ RSpec.describe "User edits their profile", type: :system, js: true do
   end
 
   describe "via visiting /settings" do
-    it "goes to /settings" do
+    it "and sets a Twitch Username" do
       visit "/settings"
       expect(page).to have_current_path("/settings")
 
