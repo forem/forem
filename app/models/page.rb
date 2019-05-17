@@ -1,4 +1,6 @@
 class Page < ApplicationRecord
+  has_paper_trail
+
   validates :title, presence: true
   validates :description, presence: true
   validates :slug, presence: true, format: /\A[0-9a-z\-_]*\z/
