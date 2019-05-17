@@ -1,5 +1,5 @@
 class ArticleObserver < ApplicationObserver
-  def after_save(article)
+  def after_create(article)
     return if Rails.env.development?
 
     if article.published && article.published_at > 30.seconds.ago
