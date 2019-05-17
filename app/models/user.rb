@@ -274,7 +274,7 @@ class User < ApplicationRecord
       @preferred_languages_array = language_settings["preferred_languages"].to_a
     else
       languages = []
-      language_settings.keys.each do |setting|
+      language_settings.each_key do |setting|
         languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
       end
       @preferred_languages_array = languages
