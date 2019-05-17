@@ -31,7 +31,15 @@ module Articles
         article_params.delete(:tags)
       end
 
+      # updated edited time only if already published and not edited by an admin
+      update_edited_at = article.user == user && article.published
+      article_params[:edited_at] = Time.current if update_edited_at
+
       article.update!(article_params)
+
+      # send notification only the first time an article is published
+      send_notification = article.published && article.saved_change_to_published_at.present?
+      Notification.send_to_followers(article, "Published") if send_notification
 
       article.decorate
     end
