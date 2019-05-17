@@ -203,6 +203,7 @@ Rails.application.routes.draw do
 
   # Settings
   post "users/update_language_settings" => "users#update_language_settings"
+  post "users/update_twitch_username" => "users#update_twitch_username"
   post "users/join_org" => "users#join_org"
   post "users/leave_org" => "users#leave_org"
   post "users/add_org_admin" => "users#add_org_admin"

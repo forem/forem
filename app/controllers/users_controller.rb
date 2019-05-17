@@ -8,23 +8,17 @@ class UsersController < ApplicationController
       skip_authorization
       return redirect_to "/enter"
     end
-    @user = current_user
-    @tab_list = @user.settings_tab_list
-    @tab = params["tab"]
-
-    authorize @user
+    set_user
+    set_tabs(params["tab"])
     handle_settings_tab
   end
 
   # PATCH/PUT /users/:id.:format
   def update
-    @user = current_user
-    @tab_list = @user.settings_tab_list
-    @tab = params["user"]["tab"] || "profile"
-    authorize @user
+    set_user
+    set_tabs(params["user"]["tab"])
     if @user.update(permitted_attributes(@user))
       RssReader.new.delay.fetch_user(@user) if @user.feed_url.present?
-      Streams::TwitchWebhookRegistrationJob.perform_later(@user.id) if @user.twitch_username.present?
       notice = "Your profile was successfully updated."
       if @user.export_requested?
         notice += " The export will be emailed to you shortly."
@@ -39,11 +33,23 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_twitch_username
+    set_user
+    set_tabs("integrations")
+    new_twitch_username = params[:user][:twitch_username]
+    if @user.twitch_username != new_twitch_username
+      if @user.update(twitch_username: new_twitch_username)
+        @user.touch(:profile_updated_at)
+        Streams::TwitchWebhookRegistrationJob.perform_later(@user.id) if @user.twitch_username?
+        notice = "Your profile was successfully updated."
+      end
+    end
+    redirect_to "/settings/#{@tab}", notice: notice
+  end
+
   def update_language_settings
-    @user = current_user
-    @tab_list = @user.settings_tab_list
-    @tab = "misc"
-    authorize @user
+    set_user
+    set_tabs("misc")
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
       notice = "Your profile was successfully updated."
@@ -55,10 +61,8 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user = current_user
-    @tab_list = @user.settings_tab_list
-    @tab = "account"
-    authorize @user
+    set_user
+    set_tabs("account")
     if @user.articles_count.zero? && @user.comments_count.zero?
       @user.destroy!
       NotifyMailer.account_deleted_email(@user).deliver
@@ -71,13 +75,10 @@ class UsersController < ApplicationController
   end
 
   def remove_association
-    @user = current_user
-    authorize @user
-
+    set_user
     provider = params[:provider]
     identity = @user.identities.find_by(provider: provider)
-    @tab_list = @user.settings_tab_list
-    @tab = "account"
+    set_tabs("account")
 
     if @user.identities.size == 2 && identity
       identity.destroy
@@ -216,5 +217,17 @@ class UsersController < ApplicationController
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
+  end
+
+  private
+
+  def set_user
+    @user = current_user
+    authorize @user
+  end
+
+  def set_tabs(current_tab = "profile")
+    @tab_list = @user.settings_tab_list
+    @tab = current_tab
   end
 end
