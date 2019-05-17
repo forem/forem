@@ -129,12 +129,12 @@ class Notification < ApplicationRecord
       Notifications::TagAdjustmentNotificationJob.perform_now(tag_adjustment.id)
     end
 
-    def send_milestone_notification(milestone_hash)
-      Notifications::MilestoneJob.perform_later(milestone_hash)
+    def send_milestone_notification(type:, article_id:)
+      Notifications::MilestoneJob.perform_later(type, article_id)
     end
 
-    def send_milestone_notification_without_delay(milestone_hash)
-      Notifications::MilestoneJob.perform_now(milestone_hash)
+    def send_milestone_notification_without_delay(type:, article_id:)
+      Notifications::MilestoneJob.perform_now(type, article_id)
     end
 
     def remove_all(notifiable_hash)
