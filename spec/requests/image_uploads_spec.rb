@@ -115,32 +115,19 @@ RSpec.describe "ImageUploads", type: :request do
         Rails.cache.clear
       end
 
-      def post_images
-        post "/image_uploads", headers: headers, params: { image: image }
-        post "/image_uploads", headers: headers, params: { image: image2 }
-        post "/image_uploads", headers: headers, params: { image: image3 }
-        post "/image_uploads", headers: headers, params: { image: image4 }
-        post "/image_uploads", headers: headers, params: { image: image5 }
-      end
-
-      def post_more_images
-        post "/image_uploads", headers: headers, params: { image: image6 }
-        post "/image_uploads", headers: headers, params: { image: image7 }
-        post "/image_uploads", headers: headers, params: { image: image8 }
-        post "/image_uploads", headers: headers, params: { image: image9 }
-        post "/image_uploads", headers: headers, params: { image: image10 }
-        post "/image_uploads", headers: headers, params: { image: image }
-      end
-
       it "counts number of uploads in cache" do
         post "/image_uploads", headers: headers, params: { image: image }
         expect(cache.read("#{user.id}_image_upload")).to eq(1)
       end
 
       it "raises error with too many uploads" do
+        upload = proc do
+          Rack::Test::UploadedFile.new(
+            Rails.root.join("spec", "support", "fixtures", "images", "images1.jpeg"), "image/jpeg"
+          )
+        end
         expect do
-          post_images
-          post_more_images
+          11.times { post "/image_uploads", headers: headers, params: { image: upload.call } }
         end.to raise_error(RuntimeError)
       end
     end

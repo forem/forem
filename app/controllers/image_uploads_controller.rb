@@ -4,12 +4,18 @@ class ImageUploadsController < ApplicationController
 
   def create
     authorize :image_upload
-    raise "too many uploads" if RateLimitChecker.new(current_user).limit_by_situation("image_upload")
 
     uploader = ArticleImageUploader.new
     begin
+      raise ImageRateLimitError if RateLimitChecker.new(current_user).limit_by_situation("image_upload")
+
       uploader.store!(params[:image])
       RateLimitChecker.new(current_user).track_image_uploads
+    rescue ImageRateLimitError => e
+      respond_to do |format|
+        format.json { render json: { error: e.message } }
+      end
+      return
     rescue CarrierWave::IntegrityError => e # client error
       respond_to do |format|
         format.json { render json: { error: e.message }, status: :unprocessable_entity }
