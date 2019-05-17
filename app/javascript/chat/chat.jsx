@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import ConfigImage from 'images/three-dots.svg';
 import {
   conductModeration,
   getAllMessages,
@@ -859,6 +860,7 @@ are
         onTriggerContent={this.triggerActiveContent}
         resource={this.state.activeContent[this.state.activeChannelId]}
         activeChannelId={this.state.activeChannelId}
+        activeChannel={this.state.activeChannel}
         pusherKey={this.props.pusherKey}
         githubToken={this.props.githubToken}
       />
@@ -872,8 +874,8 @@ are
         ? ' chat--iossafari'
         : '';
     let channelHeader = <div className="activechatchannel__header">&nbsp;</div>;
-    const channelHeaderInner = '';
     const currentChannel = this.state.activeChannel;
+    let channelConfigImage = ''
     if (currentChannel) {
       let channelHeaderInner = '';
       if (currentChannel.channel_type === 'direct') {
@@ -890,6 +892,7 @@ are
             {username}
           </a>
         );
+        channelConfigImage = <img src={ConfigImage} onClick={this.triggerActiveContent} data-content={`users/by_username?url=${username}`} />;
       } else {
         channelHeaderInner = (
           <a
@@ -900,9 +903,17 @@ are
             {currentChannel.channel_name}
           </a>
         );
+        channelConfigImage = <img src={ConfigImage} onClick={this.triggerActiveContent} data-content="channel-details" />;
+      }
+      if (this.state.activeContent[this.state.activeChannelId] && this.state.activeContent[this.state.activeChannelId].type_of) {
+        channelConfigImage = '';
       }
       channelHeader = (
-        <div className="activechatchannel__header">{channelHeaderInner}</div>
+        <div className="activechatchannel__header">
+          {channelHeaderInner} 
+          {' '}
+          {channelConfigImage}
+        </div>
       );
     }
     let vid = '';
