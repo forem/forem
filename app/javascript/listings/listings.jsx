@@ -137,7 +137,7 @@ export class Listings extends Component {
       return;
     }
 
-    var formData = new FormData();
+    const formData = new FormData();
     formData.append('user_id', this.state.openedListing.user_id);
     formData.append('message', this.state.message)
     formData.append('controller', 'chat_channels');
@@ -284,26 +284,28 @@ export class Listings extends Component {
     let messageModal = '';
     if (openedListing) {
       modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
-      modal = (
-        <SingleListing
-          onAddTag={this.addTag}
-          onChangeCategory={this.selectCategory}
-          listing={openedListing}
-          currentUserId={currentUserId}
-          onOpenModal={this.handleOpenModal}
-          onMessageModal={this.handleOpenMessageModal}
-          isOpen
-        />
-      )
       if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
         messageModal = (
-          <form id="new-message-form" class="message-form" onSubmit={this.handleSubmitMessage}>
-            <button title="Close" class="close-modal">X</button>
-            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
-            <button type="submit" value="Submit" class="submit-message">SEND</button>
+          <form id="new-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
+            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
+            <button type="submit" value="Submit" className="submit-button cta">SEND</button>
           </form>
         );
       }
+      modal = (
+        <div className="single-classified-listing-container">
+          <SingleListing
+            onAddTag={this.addTag}
+            onChangeCategory={this.selectCategory}
+            listing={openedListing}
+            currentUserId={currentUserId}
+            onOpenModal={this.handleOpenModal}
+            onMessageModal={this.handleOpenMessageModal}
+            isOpen
+          />
+          {messageModal}
+        </div>
+      )
     }
     if (initialFetch) {
       this.triggerMasonry();
@@ -328,7 +330,6 @@ export class Listings extends Component {
         </div>
         {nextPageButt}
         {modal}
-        {messageModal}
       </div>
     )
   }
