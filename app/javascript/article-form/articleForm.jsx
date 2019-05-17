@@ -139,11 +139,19 @@ export default class ArticleForm extends Component {
   };
 
   showPreview = response => {
-    this.setState({
-      previewShowing: true,
-      helpShowing: false,
-      previewResponse: response,
-    });
+    if (response.processed_html) {
+      this.setState({
+        previewShowing: true,
+        helpShowing: false,
+        previewResponse: response,
+        errors: null,
+      });  
+    } else {
+      this.setState({
+        errors: response,
+        submitting: false,
+      });  
+    }
   };
 
   toggleOrgPosting = e => {

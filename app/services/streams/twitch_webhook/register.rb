@@ -14,6 +14,8 @@ module Streams
 
       def call
         user_resp = HTTParty.get("https://api.twitch.tv/helix/users", query: { login: user.twitch_username }, headers: authentication_request_headers)
+        return unless user_resp["data"]
+
         twitch_user_id = user_resp["data"].first["id"]
 
         HTTParty.post(

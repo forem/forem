@@ -338,7 +338,7 @@ class Article < ApplicationRecord
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed.front_matter["title"]
+      parsed.front_matter["title"].present?
     rescue Psych::SyntaxError
       # if frontmatter is invalid, still render editor with errors instead of 500ing
       true
@@ -474,7 +474,6 @@ class Article < ApplicationRecord
   end
 
   def evaluate_front_matter(front_matter)
-    token_msg = body_text[0..80] + "..."
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
@@ -488,7 +487,7 @@ class Article < ApplicationRecord
     self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] || token_msg
+    self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")

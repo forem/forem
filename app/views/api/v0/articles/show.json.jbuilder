@@ -7,6 +7,7 @@ json.published_at       @article.published_at
 json.readable_publish_date @article.readable_publish_date
 json.social_image       article_social_image_url(@article)
 json.tag_list           @article.cached_tag_list
+json.tags               @article.cached_tag_list_array
 json.slug               @article.slug
 json.path               @article.path
 json.url                @article.url
