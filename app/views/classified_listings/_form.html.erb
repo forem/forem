@@ -50,7 +50,7 @@
       <div class="field">
         <%= form.label "post_as_organization", "Post under an organization:" %>
         <%= form.select :organization_id, { "None" => "None" } %>
-        <p><em>Posting on behalf of org spends org credits.</em></p>
+        <p><em>Posting on behalf of an organization spends the organization's credits.</em></p>
       </div>
       <% end %>
       </div>
@@ -78,26 +78,10 @@
             <option value="<%= org.id %>" data-credits="<%= org.unspent_credits.size %>"><%= org.name %></option>
           <% end %>
         </select>
-        has <span id="org-credits-number">0</span> credits -
+        has <span id="org-credits-number"><%= @organizations.first.unspent_credits.size %></span> credits -
           <a id="org-credits-purchase-link" href="/credits/purchase?purchaser=organization" data-no-instant>Buy More</a>
         </div>
-        <script>
-          const orgCreditsSelect = document.getElementById('org-credits-select')
-          const orgCreditsNumber = document.getElementById('org-credits-number')
-          const orgCreditsLink = document.getElementById('org-credits-purchase-link')
-
-          orgCreditsNumber.innerText = orgCreditsSelect.selectedOptions[0].dataset.credits
-
-          const changeOrgCredits = (event) => {
-            const selectedOrgCreditsCount = event.target.selectedOptions[0].dataset.credits
-            const selectedOrgId = event.target.selectedOptions[0].value
-
-            orgCreditsNumber.innerText = selectedOrgCreditsCount
-            orgCreditsLink.href = `/credits/purchase?organization_id=${selectedOrgId}`
-          }
-
-          orgCreditsSelect.addEventListener('change', changeOrgCredits)
-        </script>
+        <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
       <% end %>
     </div>
   </div>
