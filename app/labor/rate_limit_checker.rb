@@ -4,6 +4,8 @@ class RateLimitChecker
     @user = user
   end
 
+  class UploadRateLimitReached < StandardError; end
+
   def limit_by_situation(situation)
     result = case situation
              when "comment_creation"

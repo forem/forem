@@ -7,13 +7,13 @@ class ImageUploadsController < ApplicationController
 
     uploader = ArticleImageUploader.new
     begin
-      raise ImageRateLimitError if RateLimitChecker.new(current_user).limit_by_situation("image_upload")
+      raise RateLimitChecker::UploadRateLimitReached if RateLimitChecker.new(current_user).limit_by_situation("image_upload")
 
       uploader.store!(params[:image])
       RateLimitChecker.new(current_user).track_image_uploads
-    rescue ImageRateLimitError => e
+    rescue RateLimitChecker::UploadRateLimitReached
       respond_to do |format|
-        format.json { render json: { error: e.message } }
+        format.json { render json: { error: "Upload limit reached!" } }
       end
       return
     rescue CarrierWave::IntegrityError => e # client error
