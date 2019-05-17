@@ -361,12 +361,21 @@
     theme-container-accent-background, 
     $light-gray
   );
+  position: relative;
   a {
     @include themeable(
       color, 
       theme-color, 
       $black
     );
+  }
+
+  img {
+    height: 17px;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
   }
 }
 
