@@ -10,60 +10,6 @@ RSpec.describe "ImageUploads", type: :request do
         "image/jpeg",
       )
     end
-    let(:image2) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image3) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image4) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image5) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image6) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image7) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image8) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image9) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
-    let(:image10) do
-      Rack::Test::UploadedFile.new(
-        Rails.root.join("spec", "support", "fixtures", "images", "image1.jpeg"),
-        "image/jpeg",
-      )
-    end
     let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
     let(:cache) { Rails.cache }
     let(:bad_image) do
