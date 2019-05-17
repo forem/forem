@@ -21,7 +21,7 @@ const orgOptions = (organizations, organizationId) => {
 const OrgSettings = ({ organizations, organizationId, onToggle }) => (
   <div className="field">
     <label htmlFor="organizationId">Post under an organization:</label>
-    <select name="listing[publish_under_org]" id="article_publish_under_org" onBlur={onToggle}>
+    <select name="classified_listing[organization_id]" id="listing_organization_id" onBlur={onToggle}>
       {orgOptions(organizations, organizationId)}
     </select>
     <p><em>Posting on behalf of org spends org credits.</em></p>

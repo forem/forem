@@ -7,6 +7,10 @@ class ClassifiedListingPolicy < ApplicationPolicy
     user_is_author?
   end
 
+  def authorized_organization_poster?
+    OrganizationMembership.exists?(user: user, organization_id: record.organization_id, type_of_user: ["admin", "member"])
+  end
+
   private
 
   def user_is_author?

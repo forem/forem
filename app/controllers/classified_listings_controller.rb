@@ -47,7 +47,8 @@ class ClassifiedListingsController < ApplicationController
   def create_listing(credits)
     @classified_listing.bumped_at = Time.current
     @classified_listing.published = true
-    @classified_listing.organization_id = current_user.organization_id if @org
+    # this will 500 for now if they don't belong in the org
+    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
     if @classified_listing.save
       clear_listings_cache
       credits.limit(@number_of_credits_needed).update_all(spent: true)
@@ -95,9 +96,9 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow a specific list through.
   def classified_listing_params
-    accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
+    accessible = %i[title body_markdown category tag_list contact_via_connect organization_id action]
     params.require(:classified_listing).permit(accessible)
   end
 
