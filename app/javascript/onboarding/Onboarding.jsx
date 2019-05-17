@@ -1,13 +1,23 @@
 import 'preact/devtools';
-import WelcomeSlide from './components/WelcomeSlide';
 import { h, Component } from 'preact';
+import WelcomeSlide from './components/WelcomeSlide';
+import PersonalInfoForm from './components/PersonalInfoForm';
+import EmailListTermsConditionsForm from './components/EmailListTermsConditionsForm';
+import ClosingSlide from './components/ClosingSlide';
 
 export default class Onboarding extends Component {
   constructor(props) {
     super(props);
 
     this.nextSlide = this.nextSlide.bind(this);
-    this.slides = [<WelcomeSlide />];
+    this.prevSlide = this.prevSlide.bind(this);
+
+    this.slides = [
+      <WelcomeSlide />,
+      <PersonalInfoForm />,
+      <EmailListTermsConditionsForm />,
+      <ClosingSlide />,
+    ];
 
     this.state = {
       currentSlide: 0,
@@ -15,16 +25,17 @@ export default class Onboarding extends Component {
   }
 
   nextSlide() {
-    let nextSlide = this.state.currentSlide + 1;
-    if (nextSlide < this.slides.length)
+    const nextSlide = this.state.currentSlide + 1;
+    if (nextSlide < this.slides.length) {
       this.setState({
         currentSlide: nextSlide,
       });
+    }
   }
 
   prevSlide() {
-    let prevSlide = this.state.currentSlide - 1;
-    if (prevSlide > 0) {
+    const prevSlide = this.state.currentSlide - 1;
+    if (prevSlide >= 0) {
       this.setState({
         currentSlide: prevSlide,
       });
@@ -35,8 +46,12 @@ export default class Onboarding extends Component {
     return (
       <div>
         {this.slides[this.state.currentSlide]}
-        <button onClick={this.prevSlide}>BACK</button>
-        <button onClick={this.nextSlide}>NEXT</button>
+        <button onClick={this.prevSlide} className="back-button">
+          BACK
+        </button>
+        <button onClick={this.nextSlide} className="next-button">
+          NEXT
+        </button>
       </div>
     );
   }
