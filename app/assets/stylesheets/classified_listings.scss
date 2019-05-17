@@ -283,6 +283,9 @@
       .listings-current-credits-inner {
         display: inline-block;
         margin: 20px;
+        select {
+          width: initial;
+        }
       }
       a {
         text-decoration: underline;

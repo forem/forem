@@ -17,7 +17,7 @@ class ClassifiedListingsController < ApplicationController
 
   def new
     @classified_listing = ClassifiedListing.new
-    @organizations = current_user.organizations
+    @organizations = current_user.organizations.includes(:unspent_credits)
     @credits = current_user.credits.where(spent: false)
   end
 

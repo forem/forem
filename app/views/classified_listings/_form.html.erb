@@ -19,7 +19,7 @@
         data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
         data-organizations="<%= @organizations.to_json(only: %i[id name]) %>"
         data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
-        data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values{ |value_hash| value_hash.except(:cost) }.values.to_json %>"
+        data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values { |value_hash| value_hash.except(:cost) }.values.to_json %>"
         >
       <div style="height: 745px;">
         <div class="field">
@@ -71,10 +71,33 @@
       <div class="listings-current-credits-inner">
         You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/purchase" data-no-instant>Buy More</a>
       </div>
-      <% if current_user.organization && current_user.org_admin %>
+      <% if @organizations %>
         <div class="listings-current-credits-inner">
-          <%= current_user.organization.name %> has <%= current_user.organization.credits.where(spent: false).size%> — <a href="/credits/purchase?purchaser=organization" data-no-instant>Buy More</a>
+        <select id="org-credits-select" class="org-credits-select">
+          <% @organizations.each do |org| %>
+            <option value="<%= org.id %>" data-credits="<%= org.unspent_credits.size %>"><%= org.name %></option>
+          <% end %>
+        </select>
+        has <span id="org-credits-number">0</span> credits -
+          <a id="org-credits-purchase-link" href="/credits/purchase?purchaser=organization" data-no-instant>Buy More</a>
         </div>
+        <script>
+          const orgCreditsSelect = document.getElementById('org-credits-select')
+          const orgCreditsNumber = document.getElementById('org-credits-number')
+          const orgCreditsLink = document.getElementById('org-credits-purchase-link')
+
+          orgCreditsNumber.innerText = orgCreditsSelect.selectedOptions[0].dataset.credits
+
+          const changeOrgCredits = (event) => {
+            const selectedOrgCreditsCount = event.target.selectedOptions[0].dataset.credits
+            const selectedOrgId = event.target.selectedOptions[0].value
+
+            orgCreditsNumber.innerText = selectedOrgCreditsCount
+            orgCreditsLink.href = `/credits/purchase?organization_id=${selectedOrgId}`
+          }
+
+          orgCreditsSelect.addEventListener('change', changeOrgCredits)
+        </script>
       <% end %>
     </div>
   </div>

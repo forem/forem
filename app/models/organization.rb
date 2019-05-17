@@ -12,6 +12,7 @@ class Organization < ApplicationRecord
   has_many :display_ads
   has_many :notifications
   has_many :credits
+  has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
