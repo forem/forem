@@ -21,7 +21,7 @@
         data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
         data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values{ |value_hash| value_hash.except(:cost) }.values.to_json %>"
         >
-      <div style="height: 650px;">
+      <div style="height: 745px;">
         <div class="field">
           <%= form.label "title" %>
           <%= form.text_field "title", placeholder: "128 characters max, plain text" %>
@@ -46,6 +46,13 @@
           <%= form.label "tags_list", "Tags" %>
           <%= form.text_field "tags_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
         </div>
+      <% if @organizations %>
+      <div class="field">
+        <%= form.label "post_as_organization", "Post under an organization:" %>
+        <%= form.select :organization_id, { "None" => "None" } %>
+        <p><em>Posting on behalf of org spends org credits.</em></p>
+      </div>
+      <% end %>
       </div>
     </div>
     <%= javascript_pack_tag "listingForm", defer: true %>
@@ -54,13 +61,6 @@
       <%= form.label "contact_via_connect" %>
       <%= form.check_box "contact_via_connect" %>
     </div>
-    <% end %>
-    <% if current_user.organization && current_user.org_admin %>
-      <div class="field">
-        <%= form.label "post_as_organization", "Post as #{current_user.organization.name} organization" %>
-        <%= form.check_box "post_as_organization" %>
-      </div>
-      <p><em>Posting on behalf of org spends org credits.</em></p>
     <% end %>
     <div class="actions">
       <%= form.submit "CREATE LISTING", class: "cta" %>

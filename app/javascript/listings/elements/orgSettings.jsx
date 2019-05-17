@@ -1,10 +1,11 @@
+// listings
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 const orgOptions = (organizations, organizationId) => {
   const orgs = organizations.map((organization) => {
-    if(organizationId === organization.id) {
-      return(
+    if (organizationId === organization.id) {
+      return (
         <option value={organization.id} selected>{organization.name}</option>
       )
     }
@@ -18,11 +19,12 @@ const orgOptions = (organizations, organizationId) => {
 }
 
 const OrgSettings = ({ organizations, organizationId, onToggle }) => (
-  <div className="articleform__orgsettings">
-    Publish under an organization:
-    <select name="article[publish_under_org]" id="article_publish_under_org" onBlur={onToggle}>
+  <div className="field">
+    <label htmlFor="organizationId">Post under an organization:</label>
+    <select name="listing[publish_under_org]" id="article_publish_under_org" onBlur={onToggle}>
       {orgOptions(organizations, organizationId)}
     </select>
+    <p><em>Posting on behalf of org spends org credits.</em></p>
   </div>
 );
 

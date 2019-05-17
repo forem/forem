@@ -17,11 +17,13 @@ class ClassifiedListingsController < ApplicationController
 
   def new
     @classified_listing = ClassifiedListing.new
+    @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
 
   def edit
     authorize @classified_listing
+    @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
 
