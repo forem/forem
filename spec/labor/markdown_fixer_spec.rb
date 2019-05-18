@@ -115,4 +115,13 @@ RSpec.describe MarkdownFixer do
       expect(result).to eq(expected_result)
     end
   end
+
+  describe "::underscores_in_usernames" do
+    it "escapes the leading underscore in a username" do
+      test_string = "@_x_y_"
+      expected_result = "@\\_x_y_"
+
+      expect(described_class.underscores_in_usernames(test_string)).to eq(expected_result)
+    end
+  end
 end
