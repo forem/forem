@@ -47,7 +47,7 @@ class MarkdownFixer
     end
 
     def underscores_in_usernames(markdown)
-      markdown.gsub(/@_/, "@\\_")
+      markdown.gsub(/_/, "\\_")
     end
 
     private
