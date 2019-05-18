@@ -227,6 +227,7 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@aspittel](https://dev.to/aspittel)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@mariocsee](https://dev.to/mariocsee)
+- [@rhymes](https://dev.to/rhymes)
 
 ## License
 
