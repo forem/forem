@@ -145,11 +145,6 @@ export default class Article extends Component {
             <span className="activechatchannel__activeArticleDetailsPath">
               {article.path}
             </span>
-            <img
-              alt="External Link Icon"
-              className="external-link-img"
-              src={openLink}
-            />
           </a>
         </div>
         <div className="container">
