@@ -10,6 +10,8 @@ RSpec.describe "ImageUploads", type: :request do
         "image/jpeg",
       )
     end
+    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+    let(:cache) { Rails.cache }
     let(:bad_image) do
       Rack::Test::UploadedFile.new(
         Rails.root.join("spec", "support", "fixtures", "images", "bad-image.jpg"),
@@ -49,6 +51,30 @@ RSpec.describe "ImageUploads", type: :request do
         post "/image_uploads", headers: headers, params: { image: bad_image }
         result = JSON.parse(response.body)
         expect(result["error"]).not_to be_nil
+      end
+    end
+
+    context "when uploading rate limiting works" do
+      before do
+        sign_in user
+        allow(Rails).to receive(:cache).and_return(memory_store)
+        Rails.cache.clear
+      end
+
+      it "counts number of uploads in cache" do
+        post "/image_uploads", headers: headers, params: { image: image }
+        expect(cache.read("#{user.id}_image_upload")).to eq(1)
+      end
+
+      it "raises error with too many uploads" do
+        upload = proc do
+          Rack::Test::UploadedFile.new(
+            Rails.root.join("spec", "support", "fixtures", "images", "images1.jpeg"), "image/jpeg"
+          )
+        end
+        expect do
+          11.times { post "/image_uploads", headers: headers, params: { image: upload.call } }
+        end.to raise_error(RuntimeError)
       end
     end
   end
