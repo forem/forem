@@ -13,7 +13,7 @@ class RateLimitChecker
              else
                false
              end
-    ping_admins if result == true
+    Labor::RateLimitCheckerJob.perform_later(user.id) if result == true
     result
   end
 
@@ -22,16 +22,4 @@ class RateLimitChecker
     EmailMessage.where(to: address).
       where("sent_at > ?", 2.minutes.ago).size > 5
   end
-
-  def ping_admins
-    return unless user && Rails.env.production?
-
-    SlackBot.ping(
-      "Rate limit exceeded. https://dev.to#{user.path}",
-      channel: "abuse-reports",
-      username: "rate_limit",
-      icon_emoji: ":hand:",
-    )
-  end
-  handle_asynchronously :ping_admins
 end
