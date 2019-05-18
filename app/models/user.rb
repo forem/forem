@@ -152,6 +152,7 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
+  before_validation :evaluate_markdown
   before_destroy :remove_from_algolia_index
   before_destroy :destroy_empty_dm_channels
   before_destroy :destroy_follows
@@ -534,6 +535,10 @@ class User < ApplicationRecord
     return if summary_was && summary_was.size > 200
 
     errors.add(:summary, "is too long.") if summary.present? && summary.size > 200
+  end
+
+  def evaluate_markdown
+    self.summary_html = MarkdownParser.new(summary).evaluate_limited_markdown
   end
 
   def validate_feed_url
