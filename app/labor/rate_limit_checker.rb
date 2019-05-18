@@ -13,7 +13,7 @@ class RateLimitChecker
              else
                false
              end
-    Labor::RateLimitCheckerJob.perform_later(user.id) if result == true
+    ping_admins if result == true
     result
   end
 
@@ -21,5 +21,13 @@ class RateLimitChecker
     # This is related to the recipient, not the "user" initiator, like in situation.
     EmailMessage.where(to: address).
       where("sent_at > ?", 2.minutes.ago).size > 5
+  end
+
+  def ping_admins
+    Labor::RateLimitCheckerJob.perform_later(user.id)
+  end
+
+  def ping_admins_without_delay
+    Labor::RateLimitCheckerJob.perform_now(user.id)
   end
 end

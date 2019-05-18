@@ -1,5 +1,5 @@
 module Labor
-  class PingAdminsService
+  class PingAdmins
     def initialize(user)
       @user = user
     end

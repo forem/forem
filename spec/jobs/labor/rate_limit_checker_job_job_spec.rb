@@ -1,18 +1,18 @@
 require "rails_helper"
 
 RSpec.describe Labor::RateLimitCheckerJob, type: :job do
-  include_examples "#enqueues_job", "labor_rate_limit_checker", 2
+  include_examples "#enqueues_job", "rate_limit_checker", 2
 
   describe "#perform_later" do
     let(:user) { create(:user) }
-    let(:service) { Labor::PingAdminsService }
+    let(:service) { Labor::PingAdmins }
 
     before { allow(service).to receive(:call) }
 
     it "enqueues the job" do
       expect do
         described_class.perform_later(user.id)
-      end.to have_enqueued_job.with(user.id).on_queue("labor_rate_limit_checker")
+      end.to have_enqueued_job.with(user.id).on_queue("rate_limit_checker")
     end
 
     it "calls a service" do
