@@ -152,7 +152,7 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_validation :evaluate_markdown
+  before_validation :evaluate_markdown, if: :summary
   before_destroy :remove_from_algolia_index
   before_destroy :destroy_empty_dm_channels
   before_destroy :destroy_follows
