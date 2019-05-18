@@ -670,8 +670,10 @@ RSpec.describe User, type: :model do
       expect(user.summary_html.include?("<strong")).to be(true)
     end
 
-    it "contains no value if no value in summary" do
-      user.update(summary: "")
+    it "contains no value if no value in summary or summary is not blank" do
+      user.update(summary: nil)
+      expect(user.summary_html.present?).to be false
+      user.update(summary: " ")
       expect(user.summary_html.present?).to be false
     end
   end
