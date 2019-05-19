@@ -12,6 +12,7 @@
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
   </a>
+<a href="https://app.fossa.io/projects/git%2Bgithub.com%2Fthepracticaldev%2Fdev.to?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.io/api/projects/git%2Bgithub.com%2Fthepracticaldev%2Fdev.to.svg?type=shield"/></a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
     <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
   </a>
@@ -246,3 +247,6 @@ Any questions, please refer to our [license FAQ](http://docs.dev.to/license-faq/
   <br>
   <strong>Happy Coding</strong> ❤️
 </p>
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fthepracticaldev%2Fdev.to.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fthepracticaldev%2Fdev.to?ref=badge_large)
