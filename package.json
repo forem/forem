@@ -59,7 +59,7 @@
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
     "@storybook/addon-actions": "^5.0.2",
-    "@storybook/addon-links": "^5.0.3",
+    "@storybook/addon-links": "^5.0.11",
     "@storybook/addons": "^5.0.11",
     "@storybook/react": "^3.4.11",
     "babel-eslint": "^10.0.1",
