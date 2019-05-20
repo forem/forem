@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe Labor::RateLimitCheckerJob, type: :job do
+RSpec.describe RateLimitCheckerJob, type: :job do
   include_examples "#enqueues_job", "rate_limit_checker", 2
 
   describe "#perform_later" do
     let(:user) { create(:user) }
-    let(:service) { Labor::PingAdmins }
+    let(:service) { PingAdmins }
 
     before { allow(service).to receive(:call) }
 

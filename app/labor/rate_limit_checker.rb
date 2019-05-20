@@ -24,10 +24,10 @@ class RateLimitChecker
   end
 
   def ping_admins
-    Labor::RateLimitCheckerJob.perform_later(user.id)
+    RateLimitCheckerJob.perform_later(user.id)
   end
 
   def ping_admins_without_delay
-    Labor::RateLimitCheckerJob.perform_now(user.id)
+    RateLimitCheckerJob.perform_now(user.id)
   end
 end
