@@ -53,7 +53,4 @@ module ArticlesHelper
     host.start_with?("www.") ? host[4..-1] : host
   end
 
-  def hiring_form?(tag, article)
-    tag.to_s == "hiring" || article.tag_list.include?("hiring")
-  end
 end
