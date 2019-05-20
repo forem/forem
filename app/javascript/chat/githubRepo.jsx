@@ -92,13 +92,7 @@ export default class GithubRepo extends Component {
             <em>Authentication required</em>
           </div>
           <p>
-            You must
-            {' '}
-            <a href="/users/auth/github" data-no-instant>
-              authenticate with GitHub
-            </a>
-            {' '}
-            to use this feature.
+            This feature is in internal alpha testing mode.
           </p>
         </div>
       );
@@ -143,8 +137,9 @@ export default class GithubRepo extends Component {
     if (this.state.readme) {
       readme = (
         <div
+          className="activecontent__githubreporeadme"
           dangerouslySetInnerHTML={{
-            __html: marked(this.state.readme, { sanitize: true }),
+            __html: marked(this.state.readme),
           }}
         />
       );
@@ -156,7 +151,7 @@ export default class GithubRepo extends Component {
             <a href="/Users/benhalpern/dev/dev.to_core/app" />
             {this.state.path}
           </div>
-          <div className="activecontent__githubrepofiles">
+          <div className="activecontent__githubrepofiles activecontent__githubrepofiles--root">
             {directories}
             {files}
           </div>

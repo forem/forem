@@ -8,8 +8,8 @@ exports[`<Video /> should render properly and test snapshot 1`] = `
   onDrag={[Function]}
   style={
     Object {
-      "left": "200px",
-      "top": "200px",
+      "left": "170.66666666666666px",
+      "top": "76.8px",
     }
   }
 >
@@ -26,6 +26,18 @@ exports[`<Video /> should render properly and test snapshot 1`] = `
     onClick={[Function]}
   >
     ×
+  </button>
+  <button
+    class="chat__videocallcontrolbutton"
+    onClick={[Function]}
+  >
+    UnMute
+  </button>
+  <button
+    class="chat__videocallcontrolbutton chat__videocallcontrolbutton--videoonoff"
+    onClick={[Function]}
+  >
+    Turn On Video
   </button>
 </div>
 `;

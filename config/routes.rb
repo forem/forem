@@ -70,6 +70,7 @@ Rails.application.routes.draw do
         end
       end
       resources :comments
+      resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create] do
@@ -148,6 +149,7 @@ Rails.application.routes.draw do
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
 
+  get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
