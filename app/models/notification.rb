@@ -137,14 +137,13 @@ class Notification < ApplicationRecord
       Notifications::MilestoneJob.perform_now(type, article_id)
     end
 
-    def remove_all(notifiable_hash)
-      Notification.where(
-        notifiable_id: notifiable_hash[:notifiable_id],
-        notifiable_type: notifiable_hash[:notifiable_type],
-        action: notifiable_hash[:action],
-      ).delete_all
+    def remove_all(notifiable_id:, notifiable_type:, action: nil)
+      Notifications::RemoveAllJob.perform_later(notifiable_id, notifiable_type, action)
     end
-    handle_asynchronously :remove_all
+
+    def remove_all_without_delay(notifiable_id:, notifiable_type:, action: nil)
+      Notifications::RemoveAllJob.perform_now(notifiable_id, notifiable_type, action)
+    end
 
     def remove_each(notifiable_collection, action = nil)
       # only used for mentions since it's an array
