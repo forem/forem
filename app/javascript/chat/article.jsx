@@ -58,7 +58,6 @@ export default class Article extends Component {
   handleReactionClick = e => {
     e.preventDefault();
     const { target } = e;
-    console.log(target.dataset.category);
     this.setState({ optimisticUserReaction: target.dataset.category });
     const article = this.props.resource;
     fetch('/reactions', {
