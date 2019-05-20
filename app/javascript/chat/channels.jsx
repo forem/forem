@@ -12,7 +12,6 @@ const Channels = ({
   channelsLoaded,
   incomingVideoCallChannelIds,
 }) => {
-  console.log(incomingVideoCallChannelIds)
   const channels = chatChannels.map(channel => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
     const lastOpened = channel.last_opened_at;

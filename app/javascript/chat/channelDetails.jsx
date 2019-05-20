@@ -68,7 +68,6 @@ class ChannelDetails extends Component {
 
   triggerLeaveChannel = e => {
     e.preventDefault();
-    console.log(e)
     const id = e.target.dataset.content;
     fetch(`/chat_channel_memberships/${id}`, {
       method: 'DELETE',

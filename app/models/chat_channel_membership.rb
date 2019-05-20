@@ -38,7 +38,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_name
     if chat_channel.channel_type == "direct"
-      "@#{other_user.username}"
+      "@#{other_user&.username}"
     else
       chat_channel.channel_name
     end
@@ -57,12 +57,12 @@ class ChatChannelMembership < ApplicationRecord
   end
 
   def channel_username
-    other_user.username if chat_channel.channel_type == "direct"
+    other_user&.username if chat_channel.channel_type == "direct"
   end
 
   def channel_color
     if chat_channel.channel_type == "direct"
-      other_user.decorate.darker_color
+      other_user&.decorate.darker_color
     else
       "#111111"
     end
@@ -70,7 +70,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_modified_slug
     if chat_channel.channel_type == "direct"
-      "@" + other_user.username
+      "@" + other_user&.username
     else
       chat_channel.slug
     end
