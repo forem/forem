@@ -92,7 +92,7 @@ gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
 gem "stripe", "~> 4.16" # Ruby library for the Stripe API
 gem "timber", "~> 2.6" # Great Ruby logging made easy
-gem "twilio-ruby", "~> 5.22" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.23" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
