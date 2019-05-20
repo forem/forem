@@ -33,16 +33,5 @@ describe('<Video />', () => {
     // test exit button behaves
     exitButton.simulate('click');
     expect(exited).toEqual(true);
-
-    // check initial state
-    expect(context.state()).toEqual({
-      leftPx: 200,
-      topPx: 200,
-      pageX: null,
-      pageY: null,
-      token: null,
-      room: null,
-      participants: [],
-    });
   });
 });

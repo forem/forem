@@ -51,11 +51,7 @@ describe('<ArticleForm />', () => {
       'editor-v2-http://localhost/',
       JSON.stringify({ bodyMarkdown: 'hello, world' }),
     );
-    console.log(localStorage)
     const form = shallow(getArticleForm());
-    console.log("&&&&&")
-    console.log(form.state())
-    console.log(form.state().bodyMarkdown)
     expect(form.state().bodyMarkdown).toBe('hello, world');
   });
 

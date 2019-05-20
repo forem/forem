@@ -85,10 +85,10 @@ function display(props) {
       />
     );
   }
-  if (props.resource.type_of === 'channel-details') {
+  if (props.resource.type_of === 'chat_channel') {
     return (
       <ChannelDetails
-        channel={props.resource.channel}
+        channel={props.resource}
         activeChannelId={props.activeChannelId}
       />
     );
