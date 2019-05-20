@@ -1,9 +1,8 @@
 class ArticleObserver < ApplicationObserver
-  def after_create(article)
+  def after_save(article)
     return if Rails.env.development?
 
     ping_new_article(article)
-    warned_user_ping(article)
   rescue StandardError => e
     Rails.logger.error(e)
   end
