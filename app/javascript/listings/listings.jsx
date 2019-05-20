@@ -142,11 +142,16 @@ export class Listings extends Component {
     formData.append('message', this.state.message)
     formData.append('controller', 'chat_channels');
 
+    var destination = `/connect/@${this.state.openedListing.author.username}`;
+
     getCsrfToken()
       .then(sendFetch('chat-creation', formData))
       .then(() => {
-        window.location.href = `/connect/@${this.state.openedListing.author.username}`;
-      });
+        window.location.href = destination;
+      })
+      .catch((error) => {
+        console.log(error);
+    });
   }
 
   handleQuery = e => {
@@ -210,7 +215,6 @@ export class Listings extends Component {
 
   setLocation = (query, tags, category, slug) => {
     let newLocation = ''
-    console.log(query, tags, category, slug)
     if (slug) {
       newLocation = `/listings/${category}/${slug}`;
     } else if (query.length > 0 && tags.length > 0) {
