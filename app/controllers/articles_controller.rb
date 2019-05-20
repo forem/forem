@@ -142,12 +142,24 @@ class ArticlesController < ApplicationController
                        @article.edited_at
                      end
 
-    render json: if @article.update(article_params_json.merge(edited_at: edited_at_date))
-                   Notification.send_to_followers(@article, "Published") if @article.published && @article.saved_changes["published_at"]&.include?(nil)
-                   @article.to_json(only: [:id], methods: [:current_state_path])
-                 else
-                   @article.errors.to_json
-                 end
+    updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
+    Notification.send_to_followers(@article, "Published") if updated && @article.published && @article.saved_changes["published_at"]&.include?(nil)
+
+    respond_to do |format|
+      format.html do
+        # NOTE: destination is used by /dashboard/organization when it re-assigns an article
+        # not a great solution but for now it will do
+        redirect_to(params[:destination] || @article.path)
+      end
+
+      format.json do
+        render json: if updated
+                       @article.to_json(only: [:id], methods: [:current_state_path])
+                     else
+                       @article.errors.to_json
+                     end
+      end
+    end
   end
 
   def delete_confirm
@@ -213,25 +225,39 @@ class ArticlesController < ApplicationController
     params.require(:article).permit(modified_params)
   end
 
+  # TODO: refactor all of this update logic into the Articles::Updater possibly,
+  # ideally there should only be one place to handle the update logic
   def article_params_json
+    params.require(:article) # to trigger the correct exception in case `:article` is missing
+
     params["article"].transform_keys!(&:underscore)
-    params["article"]["organization_id"] = (@user.organization_id if params["article"]["post_under_org"])
+
+    # handle series/collections
     if params["article"]["series"].present?
       params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
     elsif params["article"]["series"] == ""
       params["article"]["collection_id"] = nil
     end
 
-    if params["article"]["version"] == "v1"
-      params.require(:article).permit(
-        :body_markdown, :organization_id
-      )
-    else
-      params.require(:article).permit(
-        :title, :body_markdown, :main_image, :published, :description,
-        :tag_list, :organization_id, :canonical_url, :series, :collection_id
-      )
+    allowed_params = if params["article"]["version"] == "v1"
+                       %i[body_markdown organization_id]
+                     else
+                       %i[
+                         title body_markdown main_image published description
+                         tag_list organization_id canonical_url series collection_id
+                       ]
+                     end
+
+    # NOTE: the organization logic is still a little counter intuitive but this should
+    # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
+    if params["article"]["user_id"] && org_admin_user_change_privilege
+      allowed_params << :user_id
+    elsif params["article"]["post_under_org"]
+      # change the organization of the article only if explicitly asked to do so
+      params["article"]["organization_id"] = @user.organization_id
     end
+
+    params.require(:article).permit(allowed_params)
   end
 
   def redirect_after_creation
