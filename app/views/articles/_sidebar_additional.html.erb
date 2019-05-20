@@ -27,6 +27,22 @@
           </div>
         </div>
       <% end %>
+      <% if params[:timeframe].blank? && @classified_listings.any? %>
+        <div class="widget">
+          <header class="widget-header-listings">
+            <a href="/listings"><h4>newest listings <span class="widget-listing-live-count"><%= @classified_listings.size %> active</span></h4></a>
+          </header>
+          <div class="widget-body widget-body-listings">
+            <% @classified_listings.order("bumped_at DESC").limit(8).each do |listing| %>
+              <a class="widget-listing-link" href="<%= listing.path %>">
+                <span class="widget-listing-link-category"><%= listing.category %></span>
+                <span class="widget-listing-link-title"><%= listing.title %></span>
+              </a>
+            <% end %>
+            <a class="cta cta-button" href="/listings/new">CREATE A LISTING</a>
+          </div>
+        </div>
+      <% end %>
       <% if Article.active_help.any? %>
         <div class="widget">
           <header>
