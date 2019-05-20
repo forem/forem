@@ -21,7 +21,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when signed out" do
       it "renders the signup cue" do
         get "/notifications"
-        expect(response.body).to include "signup-cue"
+        expect(response.body).to include "Great to have you"
       end
     end
 
