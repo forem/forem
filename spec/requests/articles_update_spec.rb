@@ -16,7 +16,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     put "/articles/#{article.id}", params: {
       article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
     }
-    expect(Article.last.title).to eq(new_title)
+    expect(article.reload.title).to eq(new_title)
   end
 
   it "updates article with front matter params" do
@@ -27,8 +27,8 @@ RSpec.describe "ArticlesUpdate", type: :request do
         tag_list: "yo"
       }
     }
-    expect(Article.last.edited_at).to be > 5.seconds.ago
-    expect(Article.last.title).to eq("hey hey hahuu")
+    expect(article.reload.edited_at).to be > 5.seconds.ago
+    expect(article.reload.title).to eq("hey hey hahuu")
   end
 
   it "adds organization ID when user updates" do
@@ -45,5 +45,15 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: { post_under_org: true }
     }
     expect(article.reload.organization_id).to eq user2.organization_id
-  end 
+  end
+
+  it "allows an org admin to assign an org article to another user" do
+    user.update_columns(org_admin: true)
+    article.update_columns(organization_id: user.organization_id)
+    other_user = create(:user, organization: user.organization)
+
+    put "/articles/#{article.id}", params: { article: { user_id: other_user.id } }
+    expect(article.reload.user).to eq(other_user)
+    expect(article.organization).to eq(user.organization)
+  end
 end
