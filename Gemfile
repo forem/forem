@@ -54,7 +54,7 @@ gem "google-api-client", "~> 0.29" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.4" # Embed SVG documents in your Rails views and style them with CSS
-gem "jbuilder", "~> 2.8" # Create JSON structures via a Builder-style DSL
+gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
