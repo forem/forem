@@ -4,7 +4,6 @@ function showModal(context) {
   document.getElementById("global-signup-modal").classList.add("showing");
   document.getElementsByTagName("body")[0].classList.add("modal-open");
   initSignupModal();
-  sendSplitViewData(document.getElementById("global-signup-modal").dataset.version);
 }
 
 function initSignupModal() {

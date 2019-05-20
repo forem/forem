@@ -58,7 +58,6 @@ export default class Article extends Component {
   handleReactionClick = e => {
     e.preventDefault();
     const { target } = e;
-    console.log(target.dataset.category);
     this.setState({ optimisticUserReaction: target.dataset.category });
     const article = this.props.resource;
     fetch('/reactions', {
@@ -145,11 +144,6 @@ export default class Article extends Component {
             <span className="activechatchannel__activeArticleDetailsPath">
               {article.path}
             </span>
-            <img
-              alt="External Link Icon"
-              className="external-link-img"
-              src={openLink}
-            />
           </a>
         </div>
         <div className="container">

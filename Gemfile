@@ -22,10 +22,10 @@ gem "administrate", "~> 0.11" # A Rails engine that helps you put together a sup
 gem "ahoy_email", "~> 1.0" # Email analytics for Rails
 gem "airbrake", "~> 9.2" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
 gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
-gem "algorithmia", "~> 1.0" # Ruby Client for Algorithmia Algorithms and Data API
+gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.5" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.22" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.25" # Official AWS Ruby gem for AWS Lambda
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 1.3" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -54,7 +54,7 @@ gem "google-api-client", "~> 0.29" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.4" # Embed SVG documents in your Rails views and style them with CSS
-gem "jbuilder", "~> 2.8" # Create JSON structures via a Builder-style DSL
+gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
@@ -90,9 +90,9 @@ gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets", "~> 3.7" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 4.16" # Ruby library for the Stripe API
+gem "stripe", "~> 4.17" # Ruby library for the Stripe API
 gem "timber", "~> 2.6" # Great Ruby logging made easy
-gem "twilio-ruby", "~> 5.22" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.23" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
@@ -123,7 +123,8 @@ group :development do
 end
 
 group :development, :test do
-  gem "capybara", "~> 3.19" # Capybara is an integration testing tool for rack based web applications
+  gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
+  gem "capybara", "~> 3.20" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution

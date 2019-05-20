@@ -29,7 +29,7 @@ RSpec.describe "Views an article", type: :system do
       article.update_column(:published_at, Time.zone.parse(timestamp))
     end
 
-    it "shows the readable publish date" do
+    it "shows the readable publish date", js: true do
       visit "/#{user.username}/#{article.slug}"
       expect(page).to have_selector("article time", text: "Mar 4")
     end

@@ -51,6 +51,7 @@ class ChatChannelsController < ApplicationController
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     @chat_channel.index!
+    membership.index!
     render json: { status: "success", channel: params[:id] }, status: 200
   end
 
@@ -111,6 +112,7 @@ class ChatChannelsController < ApplicationController
     authorize chat_channel
     chat_channel.status = "blocked"
     chat_channel.save
+    chat_channel.chat_channel_memberships.map(&:remove_from_index!)
     render json: { status: "success", message: "chat channel blocked" }, status: 200
   end
 
@@ -158,7 +160,7 @@ class ChatChannelsController < ApplicationController
       @active_channel = ChatChannel.find_by(slug: slug)
       @active_channel.current_user = current_user if @active_channel
     end
-    generate_github_token
+    # @github_token = generate_github_token Not yet fully baked, not needed.
     generate_algolia_search_key
   end
 
@@ -171,6 +173,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def generate_github_token
-    @github_token = Identity.where(user_id: current_user.id, provider: "github").first&.token
+    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
+      Identity.where(user_id: current_user.id, provider: "github").first&.token
+    end
   end
 end
