@@ -10,6 +10,7 @@ import {
 import { SearchForm } from './SearchForm';
 
 const GLOBAL_SEARCH_KEY_CODE = 191;
+const GLOBAL_MINIMIZE_KEY_CODE = 48;
 const ENTER_KEY_CODE = 13;
 
 export class Search extends Component {
@@ -48,7 +49,9 @@ export class Search extends Component {
   }
 
   enableSearchPageChecker = true;
+
   globalSearchKeyListener;
+
   enableSearchPageListener = () => {
     this.enableSearchPageChecker = true;
   };
@@ -59,24 +62,32 @@ export class Search extends Component {
     this.globalSearchKeyListener = event => {
       const { tagName, classList } = document.activeElement;
       if (
-        event.which !== GLOBAL_SEARCH_KEY_CODE ||
+        (event.which !== GLOBAL_SEARCH_KEY_CODE && event.which !== GLOBAL_MINIMIZE_KEY_CODE) ||
         tagName === 'INPUT' ||
         tagName === 'TEXTAREA' ||
         classList.contains('input')
       ) {
         return;
       }
-
-      event.preventDefault();
-      searchBox.focus();
-      searchBox.select();
+      if (event.which === GLOBAL_SEARCH_KEY_CODE) {
+        document.getElementsByTagName('body')[0].classList.remove('zen-mode')
+        event.preventDefault();
+        searchBox.focus();
+        searchBox.select();  
+      } else if (event.which === GLOBAL_MINIMIZE_KEY_CODE) {
+        event.preventDefault();
+        document.getElementsByTagName('body')[0].classList.toggle('zen-mode')
+      }
     };
 
     document.addEventListener('keydown', this.globalSearchKeyListener);
   }
 
   search = event => {
-    const { keyCode, target: { value } } = event;
+    const {
+      keyCode,
+      target: { value },
+    } = event;
 
     this.enableSearchPageChecker = false;
 

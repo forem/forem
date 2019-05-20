@@ -21,7 +21,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when signed out" do
       it "renders the signup cue" do
         get "/notifications"
-        expect(response.body).to include "signup-cue"
+        expect(response.body).to include "Great to have you"
       end
     end
 
@@ -221,7 +221,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
         badge = create(:badge)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        Notification.send_new_badge_notification_without_delay(badge_achievement)
+        perform_enqueued_jobs do
+          Notification.send_new_badge_achievement_notification(badge_achievement)
+        end
         get "/notifications"
       end
 

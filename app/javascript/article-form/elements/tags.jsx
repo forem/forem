@@ -100,7 +100,7 @@ class Tags extends Component {
   };
 
   handleInput = e => {
-    let value = e.target.value;
+    let { value } = e.target;
     // If we start typing immediately after a comma, add a space
     // before what we typed.
     // e.g. If value = "javascript," and we type a "p",

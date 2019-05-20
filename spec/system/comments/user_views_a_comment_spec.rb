@@ -18,11 +18,11 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
 
   context "when showing the date" do
     it "shows the readable publish date" do
-      expect(page).to have_selector(".comment-date", text: "Mar 4")
+      expect(page).to have_selector(".comment-date time", text: "Mar 4")
     end
 
     it "embeds the published timestamp" do
-      selector = ".comment-date[data-published-timestamp='#{timestamp}']"
+      selector = ".comment-date time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
     end
   end

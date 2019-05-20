@@ -15,7 +15,7 @@ RSpec.describe "UserSettings", type: :request do
       before { login_as user }
 
       it "renders various settings tabs properly" do
-        %w[organization switch-organizations billing misc account].each do |tab|
+        %w[organization switch-organizations misc account].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
@@ -24,17 +24,6 @@ RSpec.describe "UserSettings", type: :request do
       it "handles unknown settings tab properly" do
         expect { get "/settings/does-not-exist" }.
           to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "doesn't let user access membership if user has no monthly_dues" do
-        get "/settings/membership"
-        expect(response.body).not_to include("Settings for")
-      end
-
-      it "allows user with monthly_dues to access membership" do
-        user.update_column(:monthly_dues, 5)
-        get "/settings/membership"
-        expect(response.body).to include("Settings for")
       end
 
       it "allows users to visit the account page" do
@@ -99,16 +88,40 @@ RSpec.describe "UserSettings", type: :request do
       end
 
       it "sends an email" do
-        run_background_jobs_immediately do
+        perform_enqueued_jobs do
           expect { send_request }.to change { ActionMailer::Base.deliveries.count }.by(1)
         end
       end
 
       it "does not send an email if there was no request" do
-        run_background_jobs_immediately do
+        perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
+    end
+  end
+
+  describe "POST /users/update_language_settings" do
+    before { login_as user }
+
+    it "updates language settings" do
+      post "/users/update_language_settings", params: { user: { preferred_languages: %w[ja es] } }
+      user.reload
+      expect(user.language_settings["preferred_languages"]).to eq(%w[ja es])
+    end
+
+    it "keeps the estimated_default_language" do
+      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
+      post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en] } }
+      user.reload
+      expect(user.language_settings["estimated_default_language"]).to eq("ru")
+    end
+
+    it "doesn't set non-existent languages" do
+      user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
+      post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en blah] } }
+      user.reload
+      expect(user.language_settings["preferred_languages"].sort).to eq(%w[en it])
     end
   end
 

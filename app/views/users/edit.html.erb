@@ -76,16 +76,18 @@
 
   <div class="settings-hub">
     <% @tab_list.each do |possible_tab| %>
-      <% if @tab == possible_tab.downcase.gsub(" ", "-") %>
+      <% if @tab == possible_tab.downcase.tr(" ", "-") %>
         <div class="single-settings-tab selected">
           <%= possible_tab %>
         </div>
       <% else %>
-        <a class="single-settings-tab" href="/settings/<%= possible_tab.downcase.gsub(" ", "-") %>"><%= possible_tab %></a>
+        <a class="single-settings-tab" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
+          <%= possible_tab %>
+        </a>
       <% end %>
     <% end %>
   </div>
   <div class="settings-form">
-    <%= render "users/" + @tab.gsub("-", "_"), tab: @tab %>
+    <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
   </div>
 </div>

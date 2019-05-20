@@ -24,7 +24,7 @@ class Article < ApplicationRecord
   has_many :rating_votes
   has_many :page_views
 
-  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z-]*\z/,
+  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,
                    uniqueness: { scope: :user_id }
   validates :title, presence: true,
                     length: { maximum: 128 }
@@ -55,16 +55,20 @@ class Article < ApplicationRecord
   before_save       :calculate_base_scores
   before_save       :set_caches
   before_save       :fetch_video_duration
+  before_save       :clean_data
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
-  after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
+  before_save       :update_cached_user
+  after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   # after_save        :send_to_moderator
   # turned off for now
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
+  serialize :cached_user
+  serialize :cached_organization
 
   scope :published, -> { where(published: true) }
 
@@ -78,12 +82,12 @@ class Article < ApplicationRecord
                       }
 
   scope :limited_column_select, lambda {
-    select(:path, :title, :id,
+    select(:path, :title, :id, :published,
            :comments_count, :positive_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
-           :experience_level_rating, :experience_level_rating_distribution,
+           :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
   }
 
@@ -128,10 +132,7 @@ class Article < ApplicationRecord
 
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_delayed_index do
     attribute :title
-    add_index "searchables",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_delayed_index do
+    add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
       attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
                  :featured, :published, :published_at, :featured_number,
                  :comments_count, :reactions_count, :positive_reactions_count,
@@ -160,10 +161,7 @@ class Article < ApplicationRecord
       customRanking ["desc(search_score)", "desc(hotness_score)"]
     end
 
-    add_index "ordered_articles",
-              id: :index_id,
-              per_environment: true,
-              enqueue: :trigger_delayed_index do
+    add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_delayed_index do
       attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
                  :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
                  :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution
@@ -340,7 +338,7 @@ class Article < ApplicationRecord
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed.front_matter["title"]
+      parsed.front_matter["title"].present?
     rescue Psych::SyntaxError
       # if frontmatter is invalid, still render editor with errors instead of 500ing
       true
@@ -355,19 +353,29 @@ class Article < ApplicationRecord
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
 
+  def update_main_image_background_hex_without_delay
+    return if main_image.blank? || main_image_background_hex_color != "#dddddd"
+
+    Articles::UpdateMainImageBackgroundHexJob.perform_now(id)
+  end
+
   def update_main_image_background_hex
     return if main_image.blank? || main_image_background_hex_color != "#dddddd"
 
-    update_column(:main_image_background_hex_color, ColorFromImage.new(main_image).main)
+    Articles::UpdateMainImageBackgroundHexJob.perform_later(id)
   end
-  handle_asynchronously :update_main_image_background_hex
+
+  def detect_human_language_without_delay
+    return if language.present?
+
+    Articles::DetectHumanLanguageJob.perform_now(id)
+  end
 
   def detect_human_language
     return if language.present?
 
-    update_column(:language, LanguageDetector.new(self).detect)
+    Articles::DetectHumanLanguageJob.perform_later(id)
   end
-  handle_asynchronously :detect_human_language
 
   def tag_keywords_for_search
     tags.pluck(:keywords_for_search).join
@@ -382,9 +390,16 @@ class Article < ApplicationRecord
     end
   end
 
+  def published_timestamp
+    return "" unless published
+    return "" unless crossposted_at || published_at
+
+    (crossposted_at || published_at).utc.iso8601
+  end
+
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
-    time_ago = 18.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
+    time_ago = 75.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
     if tag
       Article.published.
         cached_tagged_with(tag).order("organic_page_views_past_month_count DESC").where("score > ?", 8).where("published_at > ?", time_ago).
@@ -444,11 +459,6 @@ class Article < ApplicationRecord
     Notification.update_notifications(self, "Published")
   end
 
-  # def send_to_moderator
-  #   ModerationService.new.send_moderation_notification(self) if published
-  #   turned off for now
-  # end
-
   def before_destroy_actions
     bust_cache
     remove_algolia_index
@@ -459,12 +469,11 @@ class Article < ApplicationRecord
     end
     # perform busting cache in chunks in case there're a lot of articles
     (article_ids.uniq.sort - [id]).each_slice(10) do |ids|
-      Articles::BustCacheJob.perform_later(ids)
+      Articles::BustMultipleCachesJob.perform_later(ids)
     end
   end
 
   def evaluate_front_matter(front_matter)
-    token_msg = body_text[0..80] + "..."
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
@@ -478,7 +487,7 @@ class Article < ApplicationRecord
     self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] || token_msg
+    self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
@@ -535,6 +544,30 @@ class Article < ApplicationRecord
     self.password = SecureRandom.hex(60)
   end
 
+  def update_cached_user
+    if organization
+      cached_org_object = {
+        name: organization.name,
+        username: organization.username,
+        slug: organization.slug,
+        profile_image_90: organization.profile_image_90,
+        profile_image_url: organization.profile_image_url
+      }
+      self.cached_organization = OpenStruct.new(cached_org_object)
+    end
+
+    if user
+      cached_user_object = {
+        name: user.name,
+        username: user.username,
+        slug: user.username,
+        profile_image_90: user.profile_image_90,
+        profile_image_url: user.profile_image_url
+      }
+      self.cached_user = OpenStruct.new(cached_user_object)
+    end
+  end
+
   def set_all_dates
     set_published_date
     set_featured_number
@@ -563,7 +596,11 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    title.to_s.downcase.parameterize + "-" + rand(100_000).to_s(26)
+    title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
+  end
+
+  def clean_data
+    self.canonical_url = nil if canonical_url == ""
   end
 
   def bust_cache
@@ -582,8 +619,6 @@ class Article < ApplicationRecord
   end
 
   def async_bust
-    CacheBuster.new.bust_article(self)
-    HTTParty.get GeneratedImage.new(self).social_image if published
+    Articles::BustCacheJob.perform_later(id)
   end
-  handle_asynchronously :async_bust
 end

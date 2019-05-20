@@ -28,8 +28,8 @@
     <meta name="twitter:title" content="[Discussion] <%= @commentable.title %> — DEV">
   <% end %>
   <% if @commentable.class.name == "Article" %>
-    <meta property="og:image" content="<%= cloud_social_image(@commentable) %>" />
-    <meta name="twitter:image:src" content="<%= cloud_social_image(@commentable) %>">
+    <meta property="og:image" content="<%= article_social_image_url(@commentable) %>" />
+    <meta name="twitter:image:src" content="<%= article_social_image_url(@commentable) %>">
   <% end %>
 <% end %>
 

@@ -5,21 +5,52 @@ RSpec.describe "User visits a homepage", type: :system do
   let!(:article2) { create(:article, reactions_count: 20, featured: true) }
   let!(:bad_article) { create(:article, reactions_count: 0) }
   let!(:user) { create(:user) }
+  let!(:timestamp) { "2019-03-04T10:00:00Z" }
 
   context "when no options specified" do
-    before { visit "/" }
+    context "when main featured article" do
+      before do
+        article.update_column(:published_at, Time.zone.parse(timestamp))
+        article2.update_column(:published_at, Time.zone.parse(timestamp))
+        visit "/"
+      end
 
-    it "shows the main article" do
-      expect(page).to have_selector(".big-article", visible: true)
+      it "shows the main article" do
+        expect(page).to have_selector(".big-article", visible: true)
+      end
+
+      it "shows the main article readable date", js: true do
+        expect(page).to have_selector(".big-article time", text: "Mar 4")
+      end
+
+      it "embeds the main article published timestamp" do
+        selector = ".big-article time[datetime='#{timestamp}']"
+        expect(page).to have_selector(selector)
+      end
     end
 
-    it "shows correct articles" do
-      article.update_column(:score, 15)
-      article2.update_column(:score, 15)
-      expect(page).to have_selector(".single-article", count: 2)
-      expect(page).to have_text(article.title)
-      expect(page).to have_text(article2.title)
-      expect(page).not_to have_text(bad_article.title)
+    context "when all other articles" do
+      before do
+        article.update_columns(score: 15, published_at: Time.zone.parse(timestamp))
+        article2.update_columns(score: 15, published_at: Time.zone.parse(timestamp))
+        visit "/"
+      end
+
+      it "shows correct articles" do
+        expect(page).to have_selector(".single-article", count: 2)
+        expect(page).to have_text(article.title)
+        expect(page).to have_text(article2.title)
+        expect(page).not_to have_text(bad_article.title)
+      end
+
+      it "shows all articles dates", js: true do
+        expect(page).to have_selector(".single-article time", text: "Mar 4", count: 2)
+      end
+
+      it "embeds all articles published timestamps" do
+        selector = ".single-article time[datetime='#{timestamp}']"
+        expect(page).to have_selector(selector, count: 2)
+      end
     end
   end
 

@@ -1,18 +1,17 @@
 require "rails_helper"
 
 RSpec.describe "Internal::Users", type: :request do
-  let(:user) { create(:user, twitter_username: nil) }
-  let(:user2) { create(:user, twitter_username: "Twitter") }
+  let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
+  let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
+  let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
 
   before do
     sign_in super_admin
-    user
-    user2
     Delayed::Worker.new(quiet: true).work_off
     dependents_for_offending_user_article
     offender_activity_on_other_content
@@ -63,38 +62,59 @@ RSpec.describe "Internal::Users", type: :request do
     Delayed::Worker.new(quiet: true).work_off
   end
 
+  def call_ghost
+    ghost
+    post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "true" } }
+    Delayed::Worker.new(quiet: true).work_off
+  end
+
   context "when merging users" do
     before do
       full_profile
-      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
-      Delayed::Worker.new(quiet: true).work_off
     end
 
     it "deletes duplicate user" do
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
       expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "merges all content" do
-      expect(user.comments.count).to eq(2)
-      expect(user.articles.count).to eq(2)
-      expect(user.reactions.count).to eq(4)
+      expected_articles_count = user.articles.count + user2.articles.count
+      expected_comments_count = user.comments.count + user2.comments.count
+      expected_reactions_count = user.reactions.count + user2.reactions.count
+
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
+      expect(user.comments.count).to eq(expected_articles_count)
+      expect(user.articles.count).to eq(expected_comments_count)
+      expect(user.reactions.count).to eq(expected_reactions_count)
     end
 
     it "merges all relationships" do
-      expect(user.follows.count).to eq(2)
+      expected_follows_count = user.follows.count + user2.follows.count
+      expected_channel_memberships_count = user.chat_channel_memberships.count + user2.chat_channel_memberships.count
+      expected_mentions_count = user.mentions.count + user2.mentions.count
+
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
+      expect(user.follows.count).to eq(expected_follows_count)
       expect(Follow.where(followable_id: user.id, followable_type: "User").count).to eq(1)
-      expect(user.chat_channel_memberships.count).to eq(1)
-      expect(user.mentions.count).to eq(1)
+      expect(user.chat_channel_memberships.count).to eq(expected_channel_memberships_count)
+      expect(user.mentions.count).to eq(expected_mentions_count)
     end
 
     it "merges misc profile info" do
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
       expect(user.github_repos.any?).to be true
       expect(user.badge_achievements.any?).to be true
     end
 
     it "merges social identities and usernames" do
-      user.reload
-      expect(user.twitter_username).to eq("Twitter")
+      post "/internal/users/#{user.id}/merge", params: { user: { merge_user_id: user2.id } }
+
+      expect(user.reload.twitter_username).to eq("Twitter")
     end
   end
 
@@ -116,6 +136,28 @@ RSpec.describe "Internal::Users", type: :request do
     it "creates a general note on the user" do
       put "/internal/users/#{user.id}", params: { user: { new_note: "general note about whatever" } }
       expect(Note.last.content).to eq("general note about whatever")
+    end
+
+    it "remove credits from account" do
+      create_list(:credit, 5, user: user)
+      put "/internal/users/#{user.id}", params: { user: { remove_credits: "3" } }
+      expect(user.credits.size).to eq(2)
+    end
+  end
+
+  context "when deleting user and converting content to ghost" do
+    it "raises a 'record not found' error after deletion" do
+      call_ghost
+      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+
+    it "reassigns comment and article content to ghost account" do
+      create(:article, user: user)
+      call_ghost
+      expect(ghost.articles.count).to eq(2)
+      expect(ghost.comments.count).to eq(1)
+      expect(ghost.comments.last.path).to include("ghost")
+      expect(ghost.articles.last.path).to include("ghost")
     end
   end
 
@@ -144,12 +186,12 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "raises a 'record not found' error after deletion" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "expect flash message" do
-      post "/internal/users/#{user.id}/full_delete"
+      post "/internal/users/#{user.id}/full_delete", params: { user: { ghostify: "false" } }
       expect(request.flash.notice).to include("fully deleted")
     end
   end

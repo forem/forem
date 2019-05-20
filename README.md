@@ -1,35 +1,31 @@
 <div align="center">
   <br>
-  <img
-    alt="DEV"
-    src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png"
-    width=500px
-  />
+  <img alt="DEV" src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png" width="500px">
   <h1>DEV Community 👩‍💻👨‍💻</h1>
   <strong>The Human Layer of the Stack</strong>
 </div>
-<br/>
+<br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.1-green.svg" alt="ruby version"/>
+    <img src="https://img.shields.io/badge/Ruby-v2.6.3-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
-    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version"/>
+    <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
   </a>
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
-    <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to"/>
+    <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
   </a>
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" />
+    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" alt="Code Climate maintainability">
   </a>
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" />
+    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" alt="Code Climate test coverage">
   </a>
   <a href="https://oss.skylight.io/app/applications/K9H5IV3RqKGu">
-    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge" />
+    <img src="https://badges.skylight.io/status/K9H5IV3RqKGu.svg?token=Ofd-9PTSyus3BqEZZZbM1cWKJ94nHWaPiTphGsWJMAY" alt="Skylight badge">
   </a>
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
-    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge" />
+    <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
 </p>
 
@@ -83,7 +79,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 4.  Push to the branch: `git push origin feature/that-new-feature`
 5.  [Create a pull request](#create-a-pull-request) for your branch 🎉
 
-Note: be sure to [maintain your fork](https://docs.dev.to/maintaining-your-fork)!
+Note: be sure to [keep your fork in sync](https://docs.dev.to/getting-started/syncing/)!
 
 ## Contribution guideline
 
@@ -156,8 +152,8 @@ This section provides a high-level requirement & quick start guide. For detailed
 1. Clone your forked repository, ie. `git clone https://github.com/<your-username>/dev.to.git`
 1. Set up your environment variables/secrets
 
-   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](http://docs.dev.to/get-api-keys-dev-env/#algolia) to get your development environment running.
-   - This [guide](http://docs.dev.to/get-api-keys-dev-env/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
+   - Take a look at `Envfile`. This file lists all the `ENV` variables we use and provides a fake default for any missing keys. You'll need to get your own free [Algolia credentials](https://docs.dev.to/backend/algolia/) to get your development environment running.
+   - This [guide](https://docs.dev.to/backend/) will show you how to get free API keys for additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
      1. Create `config/application.yml` by copying from the provided template (ie. with bash: `cp config/sample_application.yml config/application.yml`). This is a personal file that is ignored in git.
      2. Obtain the development variable and apply the key you wish to enter/replace. ie:
@@ -231,6 +227,7 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@aspittel](https://dev.to/aspittel)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@mariocsee](https://dev.to/mariocsee)
+- [@rhymes](https://dev.to/rhymes)
 
 ## License
 
@@ -242,14 +239,10 @@ Our version of the CLA was adapted from the Microsoft Contributor License Agreem
 
 Any questions, please refer to our [license FAQ](http://docs.dev.to/license-faq/) doc or email yo@dev.to
 
-<br/>
+<br>
 
 <p align="center">
-  <img
-    alt="sloan"
-    width=250px
-    src="https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg"
-  />
-  <br/>
+  <img alt="Sloan, the sloth mascot" width="250px" src="https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg">
+  <br>
   <strong>Happy Coding</strong> ❤️
 </p>

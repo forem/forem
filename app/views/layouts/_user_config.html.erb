@@ -9,6 +9,7 @@
         --theme-color: #fff;\
         --theme-logo-background: #0a0a0a;\
         --theme-logo-color: #fff;\
+        --theme-reaction-background: #202c3d;\
         --theme-anchor-color: #17a1f6;\
         --theme-secondary-color: #cedae2;\
         --theme-top-bar-background: #1c2938;\
@@ -24,7 +25,7 @@
         --theme-gradient-background: linear-gradient(to right, #293d56 8%, #282833 18%, #293d56 33%);\
         --theme-container-color: #fff;\
         --theme-container-box-shadow: none;\
-        --theme-container-border: 1px solid #141d26;\
+        --theme-container-border: 1px solid #22303f;\
         --theme-social-icon-invert: invert(100)</style>'
     } else if (bodyClass.includes('pink-theme')) {
       document.getElementById('body-styles').innerHTML = '<style>\
@@ -33,6 +34,7 @@
       --theme-color: #333;\
       --theme-logo-background: #fff7f9;\
       --theme-logo-color: #ff4983;\
+      --theme-reaction-background: #eff0f2;\
       --theme-anchor-color: #4e57ef;\
       --theme-secondary-color: #4e57ef;\
       --theme-top-bar-background: #ff4983;\
@@ -43,13 +45,17 @@
       --theme-top-bar-write-background: #ff4983;\
       --theme-top-bar-write-color: #fff;\
       --theme-container-background: #fff;\
-      --theme-container-accent-background: #ff9ebb;\
-      --theme-container-background-hover: #FFF7F9;\
+      --theme-container-accent-background: #ffccdb;\
+      --theme-container-background-hover: #ffe5eb;\
       --theme-gradient-background: linear-gradient(to right, #fff 8%, #ffceda 18%, #FFF7F9 33%);\
       --theme-container-color: #333;\
       --theme-container-box-shadow: none;\
       --theme-container-border: 1px solid #ff4983;\
-      --theme-social-icon-invert: invert(0)</style>'
+      --theme-social-icon-invert: invert(0);\
+      --theme-prime-option-border-color: rgba(255, 255, 255, 0.55)</style>'
+    }
+    if (navigator.userAgent === 'DEV-Native-ios') {
+      document.getElementsByTagName("body")[0].classList.add("dev-ios-native-body");
     }
   } catch(e) {
       console.log(e)

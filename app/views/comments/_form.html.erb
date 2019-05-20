@@ -16,7 +16,10 @@
       This post comes with a comment template
     </div>
   <% end %>
+
+  <%# this is used by JS and it will be replaced with the CSRF token received from the server %>
   <input type="hidden" name="authenticity_token" value="NOTHING" id="new_comment_authenticity_token">
+
   <% unless @comment.persisted? %>
     <%= f.hidden_field :commentable_id, value: commentable.id %>
     <%= f.hidden_field :commentable_type, value: commentable_type %>
@@ -31,25 +34,26 @@
                     onkeydown: "handleKeyDown(event)",
                     id: "text-area",
                     autofocus: @comment.persisted?,
-                    required: true %>
+                    required: true,
+                    'aria-label': "Add a comment to the discussion" %>
     <div class="preview-toggle comment-preview-div" id="preview-div"></div>
   </div>
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
   </div>
   <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
-    <img class="icon-image" src="<%= asset_path("info.svg") %>" />
+    <img alt="markdown guide" class="icon-image" src="<%= asset_path("info.svg") %>" />
   </a>
   <div class="editor-image-upload">
     <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
     <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
-      <img class="icon-image" src="<%= asset_path("image-upload.svg") %>" />
+      <img alt="upload image" class="icon-image" src="<%= asset_path("image-upload.svg") %>" />
     </button>
     <label class="image-upload-file-label" id="image-upload-file-label-main"></label>
     <input type="submit" id='image-upload-submit-main' value="Upload" style="display:none">
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
   <div class="actions" id="submit-wrapper">
-    <%= link_to request.referer.present? ? :back : commentable.path do %>
+    <%= link_to(request.referer.present? ? :back : commentable.path, "aria-label": "Cancel action") do %>
       <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
     <% end %>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>
@@ -58,7 +62,6 @@
 <% end %>
 
 <% if @comment.persisted? %>
-
   <script defer>
     if (document.getElementById("edit_comment_<%= @comment&.id %>")) {
       document.getElementById("edit_comment_<%= @comment&.id %>").onsubmit = function (e) {

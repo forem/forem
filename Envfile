@@ -11,6 +11,7 @@ enable_defaults! { ENV["RACK_ENV"] != "production" }
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
+variable :MAIN_SOCIAL_IMAGE, :String, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
 
 # Logo
 variable :LOGO_SVG, :String, default: ""
@@ -101,9 +102,7 @@ variable :GA_SERVICE_ACCOUNT_JSON, :String, default: "Optional"
 variable :GA_TRACKING_ID, :String, default: "Optional"
 variable :GA_OPTIMIZE_ID, :String, default: "Optional"
 variable :GA_VIEW_ID, :String, default: "Optional"
-
-# Honeycomb
-variable :HONEYCOMB_API_KEY, :String, default: "Optional"
+variable :GA_FETCH_RATE, :Integer, default: 25
 
 # Mailchimp for mails
 variable :MAILCHIMP_API_KEY, :String, default: "Optional-valid"
@@ -145,6 +144,11 @@ variable :VAPID_PRIVATE_KEY, :String, default: "VGhpcyBpcyBtb3JlIHRlc3QgZGF0YQ==
 variable :TWILIO_ACCOUNT_SID, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_KEY, :String, default: "Optional"
 variable :TWILIO_VIDEO_API_SECRET, :String, default: "Optional"
+
+# For Twitch live stream integration
+variable :TWITCH_CLIENT_ID, :String, default: "Optional"
+variable :TWITCH_CLIENT_SECRET, :String, default: "Optional"
+variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 
 # Trending tags on home page
 variable :TRENDING_TAGS, :String, default: "git,beginners"

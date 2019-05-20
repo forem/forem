@@ -44,7 +44,7 @@ module BadgeRewarder
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
     client = Octokit::Client.new
     badge = Badge.find_by(slug: "dev-contributor")
-    ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios"].each do |repo|
+    ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
       commits = client.commits repo, since: since.iso8601
       authors_uids = commits.map { |c| c.author.id }
       Identity.where(provider: "github", uid: authors_uids).find_each do |i|
@@ -57,7 +57,11 @@ module BadgeRewarder
 
   def self.award_streak_badge(num_weeks)
     article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
-    message = "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+    message = if num_weeks == 16
+                "16 weeks! You've achieved the longest DEV writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!"
+              else
+                "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+              end
     users = User.where(id: article_user_ids).where("articles_count >= ?", num_weeks)
     usernames = []
     users.find_each do |user|

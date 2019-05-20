@@ -1,23 +1,19 @@
 class SoundcloudTag < LiquidTagBase
+  PARTIAL = "liquids/soundcloud".freeze
+
   def initialize(tag_name, link, tokens)
     super
     @link = parse_link(link)
-    @height = 166
   end
 
   def render(_context)
-    # src = build_src
-    html = <<-HTML
-      <iframe
-		width="100%"
-		height="#{@height}"
-		scrolling="no"
-		frameborder="no"
-		allow="autoplay"
-		src="https://w.soundcloud.com/player/?url=#{@link}&auto_play=false&color=%23000000&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
-	</iframe>
-    HTML
-    finalize_html(html)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        link: @link,
+        height: 166
+      },
+    )
   end
 
   private
