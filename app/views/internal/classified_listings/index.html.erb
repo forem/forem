@@ -17,7 +17,7 @@
     <div class="grid-item"><%= listing.category %></div>
     <div class="grid-item"><%= listing.cached_tag_list %></div>
     <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
-    <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
+    <div class="grid-item"><%= "#{time_ago_in_words(listing.bumped_at)} ago" if listing.bumped_at %></div>
     <div class="grid-item">
       <a class="btn btn-success" href="/internal/listings/<%= listing.id %>/edit">Edit</a>
     </div>
