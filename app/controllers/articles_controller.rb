@@ -245,13 +245,12 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description
                          tag_list organization_id canonical_url series collection_id
-                         user_id
                        ]
                      end
 
     # NOTE: the organization logic is still a little counter intuitive but this should
     # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
-    if org_admin_user_change_privilege
+    if params["article"]["user_id"] && org_admin_user_change_privilege
       allowed_params << :user_id
     elsif params["article"]["post_under_org"]
       # change the organization of the article only if explicitly asked to do so
