@@ -76,14 +76,7 @@ exports[`<GithubRepo /> with no token should render and test snapshot 1`] = `
     </em>
   </div>
   <p>
-    You must 
-    <a
-      data-no-instant={true}
-      href="/users/auth/github"
-    >
-      authenticate with GitHub
-    </a>
-     to use this feature.
+    This feature is in internal alpha testing mode.
   </p>
 </div>
 `;

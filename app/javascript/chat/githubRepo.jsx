@@ -92,13 +92,7 @@ export default class GithubRepo extends Component {
             <em>Authentication required</em>
           </div>
           <p>
-            You must
-            {' '}
-            <a href="/users/auth/github" data-no-instant>
-              authenticate with GitHub
-            </a>
-            {' '}
-            to use this feature.
+            This feature is in internal alpha testing mode.
           </p>
         </div>
       );
