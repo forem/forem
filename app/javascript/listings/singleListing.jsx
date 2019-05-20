@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 import { h } from 'preact';
 
-export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategory, onOpenModal, onMessageModal, isOpen}) => {
+export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategory, onOpenModal, isOpen}) => {
   const tagLinks = listing.tag_list.map(tag => (
     <a href={`/listings?t=${tag}`} onClick={e => onAddTag(e, tag)} data-no-instant>{tag}</a>
   ));
 
   const editButton = currentUserId === listing.user_id ? <a href={`/listings/${listing.id}/edit`} className="classified-listing-edit-button">・edit</a> : <a href={`/report-abuse?url=https://dev.to/listings/${listing.category}/${listing.slug}`}>・report abuse</a>;
-  const messageButton = (currentUserId !== listing.user_id) && (listing.contact_via_connect) ? <a href={`/listings/${listing.category}/${listing.slug}`} data-no-instant onClick={e => onMessageModal(e, listing)} data-listing-id={listing.id}>・message </a> : ''
   const definedClass = isOpen ? 'single-classified-listing single-classified-listing--opened' : 'single-classified-listing';
 
   const listingCard = () => {
@@ -25,7 +24,6 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
             <a href={`/listings/${listing.category}`} onClick={e => onChangeCategory(e, listing.category)} data-no-instant>{listing.category}</a>
             ・
             <a href={`/${listing.author.username}`}>{listing.author.name}</a>
-            {messageButton}
             {editButton}
           </div>
         </div>
@@ -43,7 +41,6 @@ SingleListing.propTypes = {
   onAddTag: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,
   onChangeCategory: PropTypes.func.isRequired,
-  onMessageModal: PropTypes.func,
   isOpen: PropTypes.bool.isRequired,
   currentUserId: PropTypes.number,
 };

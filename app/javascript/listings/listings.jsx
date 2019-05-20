@@ -115,17 +115,6 @@ export class Listings extends Component {
     document.body.classList.add('modal-open');
   }
 
-  handleOpenMessageModal = (e, listing) => {
-    e.preventDefault();
-    console.log(listing);
-    console.log("HEEEY ");
-  }
-
-  handleOpenModalAndMessage = (e, listing) => {
-    this.handleOpenModal(e, listing);
-    this.handleOpenMessageModal(e, listing);
-  }
-
   handleDraftingMessage = (e) => {
     e.preventDefault();
     this.setState({ message: e.target.value })
@@ -260,7 +249,6 @@ export class Listings extends Component {
         listing={listing}
         currentUserId={currentUserId}
         onOpenModal={this.handleOpenModal}
-        onMessageModal={this.handleOpenModalAndMessage}
         isOpen={false}
       />
     ));
@@ -305,7 +293,6 @@ export class Listings extends Component {
             listing={openedListing}
             currentUserId={currentUserId}
             onOpenModal={this.handleOpenModal}
-            onMessageModal={this.handleOpenMessageModal}
             isOpen
           />
           {messageModal}
