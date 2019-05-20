@@ -272,7 +272,6 @@ export default class Chat extends Component {
 
   receiveNewMessage = message => {
     const receivedChatChannelId = message.chat_channel_id;
-    console.log(this.state.messages)
     let newMessages = []
     if (this.state.messages[receivedChatChannelId]) {
       newMessages = this.state.messages[receivedChatChannelId].slice();
@@ -321,9 +320,6 @@ export default class Chat extends Component {
   };
 
   receiveVideoCallHangup = () => {
-    console.log(this.state.videoCallParticipants)
-    console.log(this.state.videoCallParticipants.size)
-    console.log(this.state.videoCallParticipants)
     if (this.state.videoCallParticipants.size < 1) {
       this.setState({ activeVideoChannelId: null });
     }
@@ -562,7 +558,6 @@ export default class Chat extends Component {
   };
 
   setActiveContent = response => {
-    console.log(response)
     const newActiveContent = this.state.activeContent;
     newActiveContent[this.state.activeChannelId] = response;
     this.setState({ activeContent: newActiveContent });
