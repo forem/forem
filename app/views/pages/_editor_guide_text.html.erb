@@ -21,6 +21,14 @@
 
     <h3><strong>Links</strong></h3>
     <p><a href="https://dev.to">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
+    <p><a name="anchored">Anchored links</a> (For things like a Table of Contents)</p>
+    <pre>
+      ## Table Of Contents
+        * [Chapter 1](#chapter-1)
+        * [Chapter 2](#chapter-2)
+
+      ### Chapter 1 <%= "<a name=\"chapter-1\"></a>" %>
+    </pre>
 
     <h3><strong>Inline Images</strong></h3>
     <p>
