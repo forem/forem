@@ -58,4 +58,10 @@ Rails.application.configure do
   logger = Timber::Logger.new(nil)
   logger.level = config.log_level
   config.logger = ActiveSupport::TaggedLogging.new(logger)
+
+  # enable Bullet in testing mode only if requested
+  config.after_initialize do
+    Bullet.enable = ENV["BULLET"]
+    Bullet.raise = ENV["BULLET"]
+  end
 end

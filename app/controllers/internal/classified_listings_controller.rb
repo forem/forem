@@ -23,7 +23,10 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
     redirect_to "/internal/listings"
   end
 
+  private
+
   def listing_params
-    params.require(:classified_listing).permit(:published, :body_markdown, :title, :category, :tag_list)
+    allowed_params = %i[published body_markdown title category tag_list]
+    params.require(:classified_listing).permit(allowed_params)
   end
 end
