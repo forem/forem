@@ -214,7 +214,7 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
-    dalli (2.7.9)
+    dalli (2.7.10)
     dante (0.2.0)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
