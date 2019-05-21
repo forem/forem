@@ -2,7 +2,7 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @classified_listings = ClassifiedListing.all
+    @classified_listings = ClassifiedListing.page(params[:page]).per(50)
   end
 
   def edit
