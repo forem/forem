@@ -1,3 +1,12 @@
+<h1>Classified Listings</h1>
+<%= form_tag("/internal/listings", method: "get") do %>
+  <%= label_tag(:search, "Find by listing title or username:") %>
+  <%= text_field_tag(:search, params[:search]) %>
+  <% if params[:state].present? %>
+    <%= hidden_field_tag(:state, params[:state]) %>
+  <% end %>
+  <%= submit_tag("Search") %>
+<% end %>
 <%= paginate @classified_listings %>
 <div class="wrapper">
   <div class="grid-item">Title Link</div>
