@@ -26,7 +26,7 @@ class ArticleCreationService
     article.organization = user.organization if publish_under_org
     article.collection = Collection.find_series(series, user) if series.present?
 
-    if article.save!
+    if article.save
       Notification.send_to_followers(article, "Published") if article.published
     end
     article.decorate
