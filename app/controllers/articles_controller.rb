@@ -34,11 +34,7 @@ class ArticlesController < ApplicationController
   end
 
   def new
-    @user = current_user
-    @version = @user.editor_version if @user
-    @organization = @user&.organization
-    @tag = Tag.find_by(name: params[:template])
-    @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+    base_editor_assigments
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  submission_template = @tag.submission_template_customized(@user.name).to_s
@@ -179,14 +175,12 @@ class ArticlesController < ApplicationController
 
   private
 
-  def handle_org_assignment
-    if @user.organization_id.present? && article_params[:publish_under_org].to_i == 1
-      @article.organization_id = @user.organization_id
-      @article.save
-    elsif article_params[:publish_under_org].present?
-      @article.organization_id = nil
-      @article.save
-    end
+  def base_editor_assigments
+    @user = current_user
+    @version = @user.editor_version if @user
+    @organization = @user&.organization
+    @tag = Tag.find_by(name: params[:template])
+    @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
   end
 
   def handle_user_or_organization_feed
@@ -251,9 +245,12 @@ class ArticlesController < ApplicationController
     # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
     if params["article"]["user_id"] && org_admin_user_change_privilege
       allowed_params << :user_id
-    elsif params["article"]["post_under_org"]
-      # change the organization of the article only if explicitly asked to do so
+    elsif params["article"]["post_under_org"].to_s == "true"
+      # add the organization of the article if explicitly asked to do so
       params["article"]["organization_id"] = @user.organization_id
+    elsif params["article"]["post_under_org"].to_s == "false"
+      # remove the organization of the article if explicitly asked to do so
+      params["article"]["organization_id"] = nil
     end
 
     params.require(:article).permit(allowed_params)
