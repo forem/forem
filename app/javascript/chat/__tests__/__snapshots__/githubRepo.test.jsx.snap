@@ -8,7 +8,7 @@ preact-render-spy (1 nodes)
     <a href="/Users/benhalpern/dev/dev.to_core/app"></a>
     invalid json response body at undefined reason: Unexpected end of JSON input
   </div>
-  <div class="activecontent__githubrepofiles">
+  <div class="activecontent__githubrepofiles activecontent__githubrepofiles--root">
     <div class="activecontent__githubrepofilerow">
       <a
         href="https://github.com/username/repositoryname/tree/master/Camera"
@@ -76,14 +76,7 @@ exports[`<GithubRepo /> with no token should render and test snapshot 1`] = `
     </em>
   </div>
   <p>
-    You must 
-    <a
-      data-no-instant={true}
-      href="/users/auth/github"
-    >
-      authenticate with GitHub
-    </a>
-     to use this feature.
+    This feature is in internal alpha testing mode.
   </p>
 </div>
 `;

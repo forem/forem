@@ -122,5 +122,10 @@ RSpec.describe "Articles", type: :request do
       article = create(:article, user_id: second_user.id)
       expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
     end
+    it "shows v1 if article has frontmatter" do
+      article = create(:article, user_id: user.id)
+      get "#{article.path}/edit"
+      expect(response.body).to include("articleform__form--v1")
+    end
   end
 end

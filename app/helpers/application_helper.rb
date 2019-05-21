@@ -150,10 +150,6 @@ module ApplicationHelper
                                             tags: %w[p b i em strike strong u br]
   end
 
-  def track_split_version(url, version)
-    "trackOutboundLink('#{url}','#{version}'); return false;"
-  end
-
   def follow_button(followable, style = "full")
     tag :button, # Yikes
         class: "cta follow-action-button",
