@@ -9,7 +9,7 @@ class UsersController < ApplicationController
       return redirect_to "/enter"
     end
     set_user
-    set_tabs(params["tab"])
+    set_tabs(params["tab"] || "profile")
     handle_settings_tab
   end
 
