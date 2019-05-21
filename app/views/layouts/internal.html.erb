@@ -38,7 +38,7 @@
 
   .wrapper {
     display: grid;
-    grid-template-columns: 25% 5% 15% 15% 15% 15% 10%;
+    grid-template-columns: 25% 15% 15% 15% 15% 15%;
     padding: 2px;
   }
 
@@ -112,7 +112,7 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <% controller_names = %w(comments articles users members dogfood tags welcome broadcasts reports pages classified_listings) %>
+        <% controller_names = %w[comments articles users members dogfood tags welcome broadcasts reports pages classified_listings] %>
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>
