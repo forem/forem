@@ -34,14 +34,10 @@ class RateLimitChecker
   end
 
   def ping_admins
-    return unless user && Rails.env.production?
-
-    SlackBot.ping(
-      "Rate limit exceeded. https://dev.to#{user.path}",
-      channel: "abuse-reports",
-      username: "rate_limit",
-      icon_emoji: ":hand:",
-    )
+    RateLimitCheckerJob.perform_later(user.id)
   end
-  handle_asynchronously :ping_admins
+
+  def ping_admins_without_delay
+    RateLimitCheckerJob.perform_now(user.id)
+  end
 end
