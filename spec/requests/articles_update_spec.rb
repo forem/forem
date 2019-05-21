@@ -38,6 +38,22 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.reload.organization_id).to eq organization.id
   end
 
+  it "removes organization ID when user updates" do
+    article.update_column(:organization_id, organization.id)
+    put "/articles/#{article.id}", params: {
+      article: { post_under_org: false }
+    }
+    expect(article.reload.organization_id).to eq nil
+  end
+
+  it "does not modify the organization ID when the user neither adds nor removes the org" do
+    article.update_column(:organization_id, organization.id)
+    put "/articles/#{article.id}", params: {
+      article: { title: "new_title", body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
+    }
+    expect(article.reload.organization_id).to eq organization.id
+  end
+
   it "does not modify the organization ID when updating someone else's article as an admin" do
     article.update_columns(organization_id: organization2.id, user_id: user2.id)
     user.add_role(:super_admin)
