@@ -16,6 +16,13 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /api" do
+    it "has proper headline" do
+      get "/api"
+      expect(response.body).to include("DEV Articles API")
+    end
+  end
+
   describe "GET /privacy" do
     it "has proper headline" do
       get "/privacy"
