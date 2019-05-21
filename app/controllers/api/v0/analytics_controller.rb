@@ -9,7 +9,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 raise UnauthorizedError unless org && belongs_to_org?(user, org)
+                 raise UnauthorizedError unless org && org_member?(user, org)
 
                  AnalyticsService.new(org, article_id: params[:article_id]).totals
                else
@@ -26,7 +26,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 raise UnauthorizedError unless org && belongs_to_org?(user, org)
+                 raise UnauthorizedError unless org && org_member?(user, org)
 
                  AnalyticsService.new(org, start_date: params[:start], end_date: params[:end], article_id: params[:article_id]).stats_grouped_by_day
                else
@@ -40,7 +40,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 raise UnauthorizedError unless org && belongs_to_org?(user, org)
+                 raise UnauthorizedError unless org && org_member?(user, org)
 
                  AnalyticsService.new(org, start_date: 1.day.ago, article_id: params[:article_id]).stats_grouped_by_day
                else
@@ -66,8 +66,8 @@ module Api
         user
       end
 
-      def belongs_to_org?(user, org)
-        user.organization_id == org.id
+      def org_member?(user, org)
+        OrganizationMembership.exists?(user: user, organization: org, type_of_user: %w[admin member])
       end
 
       def valid_date_params?
