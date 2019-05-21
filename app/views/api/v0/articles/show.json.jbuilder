@@ -15,10 +15,10 @@ json.comments_count     @article.comments_count
 json.positive_reactions_count @article.positive_reactions_count
 
 json.created_at         @article.created_at.utc.iso8601
-json.edited_at          @article.edited_at.utc.iso8601
-json.crossposted_at     @article.crossposted_at.utc.iso8601
-json.published_at       @article.published_at.utc.iso8601
-json.last_comment_at    @article.last_comment_at.utc.iso8601
+json.edited_at          @article.edited_at&.utc&.iso8601
+json.crossposted_at     @article.crossposted_at&.utc&.iso8601
+json.published_at       @article.published_at&.utc&.iso8601
+json.last_comment_at    @article.last_comment_at&.utc&.iso8601
 
 json.body_html @article.processed_html
 json.ltag_style(@article.liquid_tags_used.map { |ltag| Rails.application.assets["ltags/#{ltag}.css"].to_s.html_safe })
