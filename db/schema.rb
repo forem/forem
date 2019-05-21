@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -12,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_18_142144) do
+ActiveRecord::Schema.define(version: 2019_05_04_131412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -824,7 +822,6 @@ ActiveRecord::Schema.define(version: 2019_05_18_142144) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
-    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -947,7 +944,6 @@ ActiveRecord::Schema.define(version: 2019_05_18_142144) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
-    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"
