@@ -77,7 +77,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
-    let(:article) { create(:article) }
+    let(:article) { create(:article, published: true) }
 
     it "gets article based on ID" do
       get "/api/articles/#{article.id}"
@@ -98,6 +98,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "contains tags as an array" do
       get "/api/articles/#{article.id}"
       expect(json_response["tags"]).to eq(article.decorate.cached_tag_list_array)
+    end
+
+    it "contains all the relevant datetimes" do
+      article.update_columns(
+        edited_at: 1.minute.from_now,
+        crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago
+      )
+      get "/api/articles/#{article.id}"
+      expect(json_response["created_at"]).to eq(article.created_at.utc.iso8601)
+      expect(json_response["edited_at"]).to eq(article.edited_at.utc.iso8601)
+      expect(json_response["crossposted_at"]).to eq(article.crossposted_at.utc.iso8601)
+      expect(json_response["published_at"]).to eq(article.published_at.utc.iso8601)
+      expect(json_response["last_comment_at"]).to eq(article.last_comment_at.utc.iso8601)
     end
   end
 
