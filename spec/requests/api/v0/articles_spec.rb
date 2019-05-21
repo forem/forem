@@ -105,30 +105,31 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let!(:api_secret) { create(:api_secret) }
     let!(:user) { api_secret.user }
     let!(:path) { "/api/articles" }
+    let(:organization) { create(:organization) }
 
     describe "when unauthorized" do
       it "fails with no api key" do
-        post path
+        post path, headers: { "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        post path, headers: { "api-key" => "foobar" }
+        post path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with a failing secure compare" do
         allow(ActiveSupport::SecurityUtils).
           to receive(:secure_compare).and_return(false)
-        post path, headers: { "api-key" => api_secret.secret }
+        post path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
     describe "when authorized" do
       def post_article(**params)
-        headers = { "api-key" => api_secret.secret }
-        post path, params: { article: params }, headers: headers
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        post path, params: { article: params }.to_json, headers: headers
       end
 
       it "fails if no params are given" do
@@ -244,6 +245,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "creates an article on behalf of an organization" do
+        user.update_columns(organization_id: organization.id)
         expect do
           post_article(
             title: Faker::Book.title + rand(100).to_s,
@@ -251,7 +253,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
-        expect(Article.find(json_response["id"]).organization).to eq(user.organization)
+        expect(Article.find(json_response["id"]).organization).to eq(organization)
       end
 
       it "creates an article with a main/cover image" do
@@ -344,36 +346,37 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let!(:user) { api_secret.user }
     let(:article) { create(:article, user: user, published: false) }
     let(:path) { "/api/articles/#{article.id}" }
+    let!(:organization) { create(:organization) }
 
     describe "when unauthorized" do
       it "fails with no api key" do
-        put path
+        put path, headers: { "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
-        put path, headers: { "api-key" => "foobar" }
+        put path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with a failing secure compare" do
         allow(ActiveSupport::SecurityUtils).
           to receive(:secure_compare).and_return(false)
-        put path, headers: { "api-key" => api_secret.secret }
+        put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
     end
 
     describe "when authorized" do
       def put_article(**params)
-        headers = { "api-key" => api_secret.secret }
-        put path, params: { article: params }, headers: headers
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        put path, params: { article: params }.to_json, headers: headers
       end
 
       it "returns not found if the article does not belong to the user" do
         article = create(:article, user: create(:user))
-        headers = { "api-key" => api_secret.secret }
-        params = { article: { title: "foobar" } }
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = { article: { title: "foobar" } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: headers
         expect(response).to have_http_status(:not_found)
       end
@@ -381,8 +384,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "lets a super admin update an article belonging to another user" do
         user.add_role(:super_admin)
         article = create(:article, user: create(:user))
-        headers = { "api-key" => api_secret.secret }
-        params = { article: { title: "foobar" } }
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = { article: { title: "foobar" } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: headers
         expect(response).to have_http_status(:ok)
       end
@@ -537,9 +540,9 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(article.published).to be(false)
         user.add_role(:super_admin)
         article = create(:article, user: create(:user))
-        headers = { "api-key" => api_secret.secret }
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = { article: { title: Faker::Book.title + rand(100).to_s,
-                              body_markdown: "Yo ho ho #{rand(100)}" } }
+                              body_markdown: "Yo ho ho #{rand(100)}" } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: headers
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).to be_nil
@@ -549,9 +552,9 @@ RSpec.describe "Api::V0::Articles", type: :request do
         article.update_columns(edited_at: nil, published: true)
         user.add_role(:super_admin)
         article = create(:article, user: create(:user))
-        headers = { "api-key" => api_secret.secret }
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = { article: { title: Faker::Book.title + rand(100).to_s,
-                              body_markdown: "Yo ho ho #{rand(100)}" } }
+                              body_markdown: "Yo ho ho #{rand(100)}" } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: headers
         expect(response).to have_http_status(:ok)
         expect(article.reload.edited_at).to be_nil
@@ -572,7 +575,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
         description = "this is a very interesting article"
         put_article(description: description)
         expect(response).to have_http_status(:ok)
-        expect(Article.find(json_response["id"]).description).to eq(description)
+        expect(article.reload.description).to eq(description)
+      end
+
+      it "assigns the article to the organization" do
+        expect(article.organization).to be_nil
+        user.update_columns(organization_id: organization.id)
+        put_article(publish_under_org: true)
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(organization)
       end
     end
   end
