@@ -1,9 +1,10 @@
 <a href="/listings">Visit /listings</a>
 
 <div class="wrapper">
-  <div class="grid-item">Title (direct link)</div>
+  <div class="grid-item">Title Link</div>
+  <div class="grid-item">User</div>
   <div class="grid-item">Category</div>
-  <div class="grid-item">Tags (cached_tag_list)</div>
+  <div class="grid-item">Cached Tags</div>
   <div class="grid-item">Published?</div>
   <div class="grid-item">Last Bumped</div>
 </div>
@@ -14,6 +15,7 @@
         <%= listing.title %>
       </a>
     </div>
+    <div cclass="grid-item"><a href="/internal/users/<%= listing.user_id %>"><%= listing.user_id %></a></div>
     <div class="grid-item"><%= listing.category %></div>
     <div class="grid-item"><%= listing.cached_tag_list %></div>
     <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
