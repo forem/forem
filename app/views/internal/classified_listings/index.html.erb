@@ -1,29 +1,36 @@
-<a href="/listings">Visit /listings</a>
-
+<h1>Classified Listings</h1>
+<%= form_tag("/internal/listings", method: "get") do %>
+  <%= label_tag(:search, "Find by listing title or username:") %>
+  <%= text_field_tag(:search, params[:search]) %>
+  <% if params[:state].present? %>
+    <%= hidden_field_tag(:state, params[:state]) %>
+  <% end %>
+  <%= submit_tag("Search") %>
+<% end %>
+<%= paginate @classified_listings %>
 <div class="wrapper">
-  <div class="grid-item">Title (direct link)</div>
+  <div class="grid-item">Title Link</div>
+  <div class="grid-item">User/Org</div>
   <div class="grid-item">Category</div>
-  <div class="grid-item">Tags (cached_tag_list)</div>
+  <div class="grid-item">Cached Tags</div>
   <div class="grid-item">Published?</div>
   <div class="grid-item">Last Bumped</div>
 </div>
 <% @classified_listings.each do |listing| %>
   <div class="wrapper">
     <div class="grid-item">
-      <a href="/listings/<%= listing.category %>/<%= listing.slug %>" target="_blank">
+      <a href="/internal/listings/<%= listing.id %>/edit" target="_blank">
         <%= listing.title %>
       </a>
     </div>
+    <div class="grid-item"><a href="/internal/users/<%= listing.user_id %>"><%= User.find(listing.user_id).username %></a><%= " / " + Organization.find(listing.organization_id).name if listing.organization_id.present? %></div>
     <div class="grid-item"><%= listing.category %></div>
     <div class="grid-item"><%= listing.cached_tag_list %></div>
     <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
-    <div class="grid-item"><%= "#{time_ago_in_words(listing.bumped_at)} ago" if listing.bumped_at %></div>
-    <div class="grid-item">
-      <a class="btn btn-success" href="/internal/listings/<%= listing.id %>/edit">Edit</a>
-    </div>
+    <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
   </div>
 <% end %>
-
+<%= paginate @classified_listings %>
 <style>
 .wrapper {
   border-bottom: 1px solid grey;
