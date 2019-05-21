@@ -29,7 +29,7 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   end
 
   def reindex_and_bust_cache
-    @classified_listing.index!
+    @classified_listing.index! if @classified_listing.published
     cb = CacheBuster.new
     cb.bust("/listings")
     cb.bust("/listings/#{@classified_listing.category}")
