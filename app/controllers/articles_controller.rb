@@ -276,8 +276,9 @@ class ArticlesController < ApplicationController
 
   def org_admin_user_change_privilege
     params[:article][:user_id] &&
-      current_user.org_admin &&
-      current_user.organization_id == @article.organization_id &&
-      User.find(params[:article][:user_id])&.organization_id == @article.organization_id
+      # if current_user is an org admin of the article's org
+      current_user.org_admin?(@article.organization_id) &&
+      # and if the author being changed to belongs to the article's org
+      OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
   end
 end

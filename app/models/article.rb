@@ -15,9 +15,12 @@ class Article < ApplicationRecord
 
   belongs_to :user
   belongs_to :job_opportunity, optional: true
-  counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
+
+  counter_culture :user
+  counter_culture :organization
+
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :buffer_updates
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
