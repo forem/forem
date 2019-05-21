@@ -1,4 +1,6 @@
 class CodepenPrefillTag < Liquid::Block
+  PARTIAL = "liquids/codepen_prefill".freeze
+
   def initialize(tag_name, options, tokens)
     super
     @data = parse_data(options)
@@ -6,22 +8,31 @@ class CodepenPrefillTag < Liquid::Block
   end
 
   def render(context)
-    content = Nokogiri::HTML(super)
-    # parsed_content = content.xpath("//html/body").text # dont parse for text???
-    html = <<~HTML
-      <div
-        class="codepen"
-        data-prefill='#{@prefill}'
-        #{@data}
-        >
-        #{content}
-      </div>
-      <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
-    HTML
-    html
+    content = Nokogiri::HTML(super).at("body")
+    data_langs = parse_data_langs(super)
+    ActionController::Base.new.render_to_string(
+      partial: PARTIAL,
+      locals: {
+        prefill: @prefill,
+        data: @data,
+        data_langs: data_langs,
+        content: content
+      },
+    )
   end
 
   private
+
+  def parse_data_langs(input)
+    data_langs = []
+    content = Nokogiri::HTML(input)
+
+    content.at("body").xpath("//pre").each do |node|
+      data_langs.push(node.attributes["data-lang"].value)
+    end
+
+    data_langs
+  end
 
   def parse_data(input)
     options = create_options(input)
@@ -53,7 +64,6 @@ class CodepenPrefillTag < Liquid::Block
   def parse_prefill(input)
     options = create_options(input)
     prefill_attr = %w[title description head tags html_classes stylesheets scripts].to_set
-
     prefill = {}
     options.each do |i|
       key = i.split("=")[0]
@@ -68,7 +78,7 @@ class CodepenPrefillTag < Liquid::Block
   end
 
   def split_multiple_options(_key, val)
-    val = val.split(",") if val.include? ","
+    val = val.split(",") if val.include?(",")
     val
   end
 

@@ -1,0 +1,16 @@
+<div
+  class="codepen"
+  data-prefill="<%= prefill %>"
+  <%= data %>
+  >
+  <% data_langs.each do |val| %>
+  <pre data-lang="<%= val %>">
+    <% if val == "html" %>
+      <%= raw content.xpath("//pre[@data-lang='" + val + "']").inner_html %>
+    <% else %>
+      <%= content.xpath("//pre[@data-lang='" + val + "']").inner_html %>
+    <% end %>
+  </pre>
+  <% end %>
+</div>
+<script async src="https://static.codepen.io/assets/embed/ei.js"></script>
