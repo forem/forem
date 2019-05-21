@@ -40,6 +40,14 @@ body {
   }
 }
 
+.config_minimize_newest_listings {
+  #sidebar-listings-widget {
+    .widget-body {
+      display: none !important;
+    }
+  }
+}
+
 .universal-page-content-wrapper {
   overflow: hidden;
   min-height: 88vh;
