@@ -1200,6 +1200,20 @@
             cursor: default;
           }
         }
+        .widget-listing-live-count {
+          @include themeable(background, theme-secondary-color, $green);
+          @include themeable(color, theme-opposite-color, white);
+          border-radius: 3px;
+          display: inline-block;
+          font-size: 0.8em;
+          padding: 1px 5px 0px;
+          line-height: 1.4em;
+        }
+        &.widget-header-listings {
+          @include themeable(background, theme-container-accent-background, $light-gray);
+          padding: 10px 12px;
+          margin: -10px -12px;
+        }
       }
       .widget-body {
         margin-top: 9px;
@@ -1211,6 +1225,11 @@
           height: calc(100vh - 300px);
           max-height: 390px;
           overflow-y: scroll;
+        }
+        &.widget-body-listings {
+          .cta-button {
+            margin-top: 15px;
+          }
         }
         &.signup-cta-widget-body {
           ul {
@@ -1285,6 +1304,37 @@
             opacity: 0.86;
           }
         }
+        .widget-listing-link {
+          display: block;
+          padding: 6px 12px 4px;
+          font-size: 0.92em;
+          width: 100%;
+          margin-left: -12px;
+          @include themeable(color, theme-color, $black);
+          @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
+          &:first-child {
+            @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
+          }
+          .widget-listing-link-title {
+            display: block;
+            font-weight: 600;
+          }
+          .widget-listing-link-category {
+            display: inline-block;
+            @include themeable(border, theme-container-border, 1px solid darken($light-medium-gray, 10%));
+            @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
+
+            padding: 0px 5px;
+            font-size: 0.77em;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            line-height: 1.3em;
+          }
+          &:hover {
+            background: $lightest-gray;
+            @include themeable(background, theme-container-background-hover, $lightest-gray);
+          }
+        }
         .widget-accent {
           background: $purple;
           color: $bold-blue;
@@ -1305,7 +1355,7 @@
           }
         }
         .widget-events-single-link {
-          color: #000000;
+          color: $black;
           font-weight: 500;
         }
         .widget-user-pic {

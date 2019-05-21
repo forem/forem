@@ -45,6 +45,13 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).not_to include(org.sponsorship_tagline)
     end
+
+    it "shows listings" do
+      user = create(:user)
+      listing = create(:classified_listing, user_id: user.id)
+      get "/"
+      expect(response.body).to include(listing.title)
+    end
   end
 
   describe "GET query page" do

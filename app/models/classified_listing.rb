@@ -75,6 +75,10 @@ class ClassifiedListing < ApplicationRecord
     }
   end
 
+  def path
+    "/listings/#{category}/#{slug}"
+  end
+
   private
 
   def evaluate_markdown
