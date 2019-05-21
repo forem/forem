@@ -26,7 +26,8 @@ function initializePWAFunctionality() {
           ) {
             // Is internal link. Do nothing right now.
         } else {
-          a.setAttribute('target', '_blank');    
+          a.setAttribute('target', '_blank');
+          a.setAttribute('rel', 'noopener noreferrer');
         }
       }  
     }
