@@ -11,6 +11,7 @@ class Organization < ApplicationRecord
   has_many :display_ads
   has_many :notifications
   has_many :credits
+  has_many :classified_listings
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
