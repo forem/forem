@@ -43,11 +43,11 @@ RSpec.describe "Credits", type: :request do
     it "creates unspent credits" do
       post "/credits", params: {
         credit: {
-          number_to_purchase: 20
+          number_to_purchase: 25
         },
         stripe_token: stripe_helper.generate_card_token
       }
-      expect(user.credits.where(spent: false).size).to eq(20)
+      expect(user.credits.where(spent: false).size).to eq(25)
     end
 
     it "makes a valid Stripe charge" do
@@ -140,6 +140,19 @@ RSpec.describe "Credits", type: :request do
           stripe_token: stripe_helper.generate_card_token
         }
         expect(org_admin.credits.where(spent: false).size).to eq 0
+      end
+    end
+
+    context "when payment fails" do
+      it "does not reward credits" do
+        StripeMock.prepare_error(Stripe::CardError.new(2, 3, 4), :new_charge)
+        post "/credits", params: {
+          credit: {
+            number_to_purchase: 25
+          },
+          stripe_token: stripe_helper.generate_card_token
+        }
+        expect(user.credits.where(spent: false).size).to eq(0)
       end
     end
   end
