@@ -121,7 +121,7 @@ class MarkdownParser
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
-      raise if markdown.include?(xss_attempt)
+      raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
     end
   end
 
