@@ -1,0 +1,317 @@
+<% title "DEV API" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="https://dev.to/api" />
+  <meta name="description" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> API info and guides">
+  <meta name="keywords" content="software development,engineering,rails,javascript,ruby,security">
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://dev.to/api" />
+  <meta property="og:title" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> API" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:title" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> API">
+<% end %>
+
+<div class="blank-space"></div>
+<div class="container article">
+  <div class="title">
+    <h1>
+      DEV Articles API (beta)
+    </h1>
+    <h3>As of May 16th 2019 DEV has released a beta version of a REST API to create or update articles. Check back to this page for all updates related to the API.</h3>
+  </div>
+  <div class="body">
+<div class="body" style="width: 90%;">
+
+  <h2>
+    <a name="getting-an-access-token" href="#getting-an-access-token" class="anchor">
+    </a>
+    About the Articles API
+  </h2>
+  <p>"Articles" are all the posts that users create DEV that typically show up in the feed. It can be a blog post, discussion question, help thread etc. but is referred to as <code>article</code> within the code. It is different from <a href="/listings">listings</a>, comments, podcasts, etc.</p>
+
+  <h2>
+    <a name="getting-an-access-token" href="#getting-an-access-token" class="anchor">
+    </a>
+    Getting an access token
+  </h2>
+
+  <p>Authentication for the Articles API requires the <em>DEV API access token.</em> To obtain one, please follow these steps:</p>
+
+  <ul>
+  <li>Connect to <a href="https://dev.to/settings/account">https://dev.to/settings/account</a>
+  </li>
+  <li>
+  <p>In the <strong>DEV API Access Tokens</strong> section create a new token by adding a description and clicking on "Generate Token":</p>
+
+  <p><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--6q7qI4Ny--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/Screenshot_2019-05-21_Settings_-_DEV_Community_-d9357f0f-c7d2-42e4-817e-cfb8157c955d.png" class="article-body-image-wrapper"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--6q7qI4Ny--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/Screenshot_2019-05-21_Settings_-_DEV_Community_-d9357f0f-c7d2-42e4-817e-cfb8157c955d.png" alt="" loading="lazy"></a></p>
+  </li>
+  <li><p>You'll see the newly generated token in the same view:</p></li>
+  </ul>
+
+  <p><a href="https://res.cloudinary.com/practicaldev/image/fetch/s--2iW1yJpj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/Screenshot_2019-05-21_Settings_-_DEV_Community_%281%29-aea42488-014f-4bf4-81c7-845b594ed69b.png" class="article-body-image-wrapper"><img src="https://res.cloudinary.com/practicaldev/image/fetch/s--2iW1yJpj--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/Screenshot_2019-05-21_Settings_-_DEV_Community_%281%29-aea42488-014f-4bf4-81c7-845b594ed69b.png" alt="" loading="lazy"></a></p>
+
+  <h2>
+    <a name="creating-an-article-through-the-api" href="#creating-an-article-through-the-api" class="anchor">
+    </a>
+    Creating an article through the API
+  </h2>
+
+  <p>Here is an example of how to create an article:</p>
+
+  <div class="highlight"><pre class="highlight plaintext"><code>curl -X POST -H "Content-Type: application/json" \
+  -H "api-key: ACCESS_TOKEN" \
+  -d '{"article": {"title": "Title", "body_markdown": "Body", "published": false, "tags": ["discuss", "javascript"]}}' \
+  https://dev.to/api/articles
+  </code></pre></div>
+
+  <p>If <code>published</code> is set to <code>true</code> then the article will be live instantly.</p>
+
+  <h3>
+    <a name="successful-response" href="#successful-response" class="anchor">
+    </a>
+    Successful response
+  </h3>
+
+  <p>In case of a successful response (HTTP 201), the full article resource will be returned to the client:</p>
+
+  <div class="highlight"><pre class="highlight plaintext"><code>{
+    "type_of": "article",
+    "id": 110878,
+    "title": "Title",
+    "description": "Body\n\n...",
+    "cover_image": null,
+    "readable_publish_date": null,
+    "social_image": "http://dev.to/social_previews/article/110878.png",
+    "tag_list": "discuss, javascript",
+    "tags": [
+      "discuss",
+      "javascript"
+    ],
+    "slug": "title-2bp3-temp-slug-5875367",
+    "path": "/rhymes/title-2bp3-temp-slug-5875367",
+    "url": "https://dev.to/rhymes/title-2bp3-temp-slug-5875367",
+    "canonical_url": "https://dev.to/rhymes/title-2bp3-temp-slug-5875367",
+    "comments_count": 0,
+    "positive_reactions_count": 0,
+    "created_at": "2019-05-21T13:34:26Z",
+    "edited_at": null,
+    "crossposted_at": null,
+    "published_at": null,
+    "last_comment_at": "2017-01-01T05:00:00Z",
+    "body_html": "&lt;p&gt;Body&lt;/p&gt;\n\n",
+    "ltag_style": [],
+    "ltag_script": [],
+    "user": {
+      "name": "rhymes",
+      "username": "rhymes",
+      "twitter_username": "rhymes_",
+      "github_username": "rhymes",
+      "website_url": null,
+      "profile_image": "https://res.cloudinary.com/practicaldev/image/fetch/s--qhCNe-v6--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg",
+      "profile_image_90": "https://res.cloudinary.com/practicaldev/image/fetch/s--IQPhTQnb--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg"
+    }
+  }
+  </code></pre></div>
+  <h3>
+    <a name="create-an-article-on-behalf-an-organisation" href="#create-an-article-on-behalf-an-organisation" class="anchor">
+    </a>
+    Create an article on behalf an organisation
+  </h3>
+
+  <p>Just add <code>publish_under_org</code> as <code>true</code> to the JSON request:</p>
+  <div class="highlight"><pre class="highlight plaintext"><code>curl -X POST -H "Content-Type: application/json" \
+  -H "api-key: ACCESS_TOKEN" \
+  -d '{"article": {"title": "Title", "body_markdown": "Body", "published": false, "publish_under_org": true}}' \
+  https://dev.to/api/articles
+  </code></pre></div>
+  <h3>
+    <a name="using-the-front-matter" href="#using-the-front-matter" class="anchor">
+    </a>
+    Using the front matter
+  </h3>
+
+  <p>You can omit most JSON parameters by using the markdown front matter. So for example, if you have markdown article similar to the following:</p>
+  <div class="highlight"><pre class="highlight plaintext"><code>---
+  title: "A sample article about JavaScript"
+  published: false
+  description: "this is a sample article about javascript"
+  tags: discuss, javascript
+  series: intro-to-javascript
+  canonical_url: canonical URL of the article
+  ---
+
+  This is an intro about JavaScript
+  </code></pre></div>
+
+  <p>you can send it within the <code>body_markdown</code> parameter:</p>
+
+  <div class="highlight"><pre class="highlight plaintext"><code>curl -X POST -H "Content-Type: application/json" \
+  -H "api-key: ACCESS_TOKEN" \
+  -d '{"article": {"body_markdown": "---\ntitle: A sample article about...\npublished: false\n...", "publish_under_org": true}}' \
+  https://dev.to/api/articles
+  </code></pre></div>
+
+  <p>The front matter will take precedence on other JSON params with the same name.</p>
+
+  <h3>
+    <a name="available-json-parameters" href="#available-json-parameters" class="anchor">
+    </a>
+    Available JSON parameters
+  </h3>
+
+  <div class="highlight"><pre class="highlight plaintext"><code>title: The title of an article (string, optional)
+  description: Description of the article (string, optional)
+  body_markdown: The Markdown body, with or without a front matter (string, required)
+  published: True if the article should be published right away, defaults to false (boolean, optional)
+  tags: A list of tags for the article (array, optional)
+  series: The name of the series the article should be published within (string, optional)
+  publish_under_org: True if the article should be placed under the organization belonging to the user creating the article, defaults to false (boolean, optional)
+  main_image: URL of the image to use as the cover (string, optional)
+  canonical_url: canonical URL of the article (string, optional)
+  </code></pre></div>
+  <h3>
+    <a name="error-responses" href="#error-responses" class="anchor">
+    </a>
+    Error responses
+  </h3>
+
+  <p><strong>Unauthorized</strong></p>
+  <div class="highlight"><pre class="highlight plaintext"><code>{
+    "error": "unauthorized",
+    "status": 401
+  }
+  </code></pre></div>
+
+  <p><strong>Parameter validation error</strong></p>
+
+  <div class="highlight"><pre class="highlight plaintext"><code>{
+    "error": "Validation failed: Title can't be blank",
+    "status": 422
+  }
+  </code></pre></div>
+  <h2>
+    <a name="updating-an-article-through-the-api" href="#updating-an-article-through-the-api" class="anchor">
+    </a>
+    Updating an article through the API
+  </h2>
+
+  <p>Here is an example of how to update an article:</p>
+  <div class="highlight"><pre class="highlight plaintext"><code>curl -X PUT -H "Content-Type: application/json" \
+  -H "api-key: ACCESS_TOKEN" \
+  -d '{"article": {"title": "New Title"}}' \
+  https://dev.to/api/articles/ARTICLE_ID
+  </code></pre></div>
+  <h3>
+    <a name="successful-response" href="#successful-response" class="anchor">
+    </a>
+    Successful response
+  </h3>
+
+  <p>In case of a successful response (HTTP 200), the full article resource will be returned to the client:</p>
+  <div class="highlight"><pre class="highlight plaintext"><code>{
+    "type_of": "article",
+    "id": 110878,
+    "title": "New Title",
+    "description": "Body\n\n...",
+    "cover_image": null,
+    "readable_publish_date": null,
+    "social_image": "http://dev.to/social_previews/article/110878.png",
+    "tag_list": "discuss, javascript",
+    "tags": [
+      "discuss",
+      "javascript"
+    ],
+    "slug": "title-2bp3-temp-slug-5875367",
+    "path": "/rhymes/title-2bp3-temp-slug-5875367",
+    "url": "https://dev.to/rhymes/title-2bp3-temp-slug-5875367",
+    "canonical_url": "https://dev.to/rhymes/title-2bp3-temp-slug-5875367",
+    "comments_count": 0,
+    "positive_reactions_count": 0,
+    "created_at": "2019-05-21T13:34:26Z",
+    "edited_at": null,
+    "crossposted_at": null,
+    "published_at": null,
+    "last_comment_at": "2017-01-01T05:00:00Z",
+    "body_html": "&lt;p&gt;Body&lt;/p&gt;\n\n",
+    "ltag_style": [],
+    "ltag_script": [],
+    "user": {
+      "name": "rhymes",
+      "username": "rhymes",
+      "twitter_username": "rhymes_",
+      "github_username": "rhymes",
+      "website_url": null,
+      "profile_image": "https://res.cloudinary.com/practicaldev/image/fetch/s--qhCNe-v6--/c_fill,f_auto,fl_progressive,h_640,q_auto,w_640/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg",
+      "profile_image_90": "https://res.cloudinary.com/practicaldev/image/fetch/s--IQPhTQnb--/c_fill,f_auto,fl_progressive,h_90,q_auto,w_90/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/2693/146201.jpeg"
+    }
+  }
+  </code></pre></div>
+  <h3>
+    <a name="notes-about-the-front-matter-during-an-update" href="#notes-about-the-front-matter-during-an-update" class="anchor">
+    </a>
+    Notes about the front matter during an update
+  </h3>
+
+  <p>Keep in mind that if the original article was created with the front matter in the markdown then that front matter will still take precedence over the partial updates. So if you need to change parameters present in the front matter, you should send the whole edited body (with the front matter parameter changed) in the <code>body_markdown</code> parameter.</p>
+  <h3>
+    <a name="available-json-parameters" href="#available-json-parameters" class="anchor">
+    </a>
+    Available JSON parameters
+  </h3>
+  <div class="highlight"><pre class="highlight plaintext"><code>title: The title of an article (optional)
+  description: Description of the article (optional)
+  body_markdown: The Markdown body, with or without a front matter (required)
+  published: True if the article should be published right away, defaults to false (optional)
+  series: The name of the series the article should be published within (optional)
+  publish_under_org: True if the article should be placed under the organization belonging to the user creating the article, defaults to false (optional)
+  main_image: URL of the image to use as the cover (optional)
+  canonical_url: canonical URL of the article (optional)
+  </code></pre></div>
+  <h3>
+    <a name="error-responses" href="#error-responses" class="anchor">
+    </a>
+    Error responses
+  </h3>
+
+  <p><strong>Unauthorized</strong></p>
+  <div class="highlight"><pre class="highlight plaintext"><code>{
+    "error": "unauthorized",
+    "status": 401
+  }
+  </code></pre></div>
+
+  <p><strong>Parameter validation error</strong></p>
+
+
+  <div class="highlight"><pre class="highlight plaintext"><code>{<br>
+    "error": "Validation failed: Title can't be blank",<br>
+    "status": 422<br>
+  }<br>
+  </code></pre></div>
+  <h2>
+  <br>
+    <a name="rate-limiting" href="#rate-limiting" class="anchor"><br>
+    </a><br>
+    Rate limiting<br>
+  </h2>
+
+  <p>There is a limit of 10 articles created each 30 seconds by the same user. </p>
+
+  <p>There are no limits on the updates.</p>
+
+  <h2>
+    <a name="additional-resources" href="#additional-resources" class="anchor">
+    </a>
+    Additional resources
+  </h2>
+
+  <ul>
+  <li><a href="https://github.com/thepracticaldev/dev.to/blob/master/spec/requests/api/v0/articles_spec.rb">Rails tests for the Articles API</a></li>
+  </ul>
+
+  </div>
+</div>
+</div>
