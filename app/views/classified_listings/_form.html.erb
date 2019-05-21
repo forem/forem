@@ -1,6 +1,6 @@
 <%= form_with(model: classified_listing, local: true) do |form| %>
   <header>
-    <a href="/listings" class="listings-back-button">< go back to listings</a>
+    <a href="/listings" class="listings-back-button">&lt; go back to listings</a>
     <h2>Create a Community Listing</h2>
   </header>
   <div class="classified-form-inner">
@@ -49,7 +49,7 @@
       <% if @organizations %>
       <div class="field">
         <%= form.label "post_as_organization", "Post under an organization:" %>
-        <%= form.select :organization_id, { "None" => "None" } %>
+        <%= form.select :organization_id, "None" => "None" %>
         <p><em>Posting on behalf of an organization spends the organization's credits.</em></p>
       </div>
       <% end %>
@@ -79,7 +79,7 @@
           <% end %>
         </select>
         has <span id="org-credits-number"><%= @organizations.first.unspent_credits.size %></span> credits -
-          <a id="org-credits-purchase-link" href="/credits/purchase?purchaser=organization" data-no-instant>Buy More</a>
+          <a id="org-credits-purchase-link" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Buy More</a>
         </div>
         <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
       <% end %>

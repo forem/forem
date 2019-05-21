@@ -351,6 +351,11 @@ class User < ApplicationRecord
     has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
   end
 
+  def admin_organizations
+    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
   def org_admin?(organization)
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
