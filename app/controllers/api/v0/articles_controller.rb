@@ -72,9 +72,10 @@ module Api
 
       def article_params
         allowed_params = [
-          :title, :body_markdown, :published, :series, :publish_under_org,
+          :title, :body_markdown, :published, :series,
           :main_image, :canonical_url, :description, tags: []
         ]
+        allowed_params << :organization_id if params["article"]["organization_id"]
         params.require(:article).permit(allowed_params)
       end
     end
