@@ -8,6 +8,7 @@ class DashboardsController < ApplicationController
 
     target = @user
     @organizations = @user.admin_organizations
+    @member_organizations = @user.member_organizations
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id])
 
     if params[:which] == "organization" && params[:org_id] && @user.org_admin?(params[:org_id])
@@ -51,7 +52,7 @@ class DashboardsController < ApplicationController
                     authorize current_user, :pro_user?
                     current_user
                   end
-    @organizations = current_user.organizations
+    @organizations = current_user.member_organizations
     @dashboard = Dashboard::Pro.new(user_or_org)
   end
 

@@ -11,7 +11,7 @@
       <% if @user.has_role? :pro %>
       <br>
         <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
-        <% @organizations.each do |org| %>
+        <% @member_organizations.each do |org| %>
           <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
         <% end %>
       <% end %>
