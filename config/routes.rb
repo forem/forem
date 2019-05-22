@@ -212,6 +212,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/about" => "pages#about"
+  get "/api", to: "pages#api"
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
@@ -223,7 +224,6 @@ Rails.application.routes.draw do
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
-  get "/infiniteloop" => "pages#infinite_loop"
   get "/faq" => "pages#faq"
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"

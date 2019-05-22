@@ -34,11 +34,15 @@ class ArticlesController < ApplicationController
   end
 
   def new
+<<<<<<< HEAD
     @user = current_user
     @version = @user.editor_version if @user
     @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+=======
+    base_editor_assigments
+>>>>>>> master
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  submission_template = @tag.submission_template_customized(@user.name).to_s
@@ -122,7 +126,6 @@ class ArticlesController < ApplicationController
     authorize Article
 
     @user = current_user
-
     @article = ArticleCreationService.new(@user, article_params_json).create!
 
     render json: if @article.persisted?
@@ -180,6 +183,17 @@ class ArticlesController < ApplicationController
 
   private
 
+<<<<<<< HEAD
+=======
+  def base_editor_assigments
+    @user = current_user
+    @version = @user.editor_version if @user
+    @organization = @user&.organization
+    @tag = Tag.find_by(name: params[:template])
+    @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+  end
+
+>>>>>>> master
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)

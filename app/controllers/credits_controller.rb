@@ -21,6 +21,9 @@ class CreditsController < ApplicationController
     not_authorized if params[:organization_id].present? && !current_user.org_admin?(params[:organization_id])
 
     @number_to_purchase = params[:credit][:number_to_purchase].to_i
+
+    return unless make_payment
+
     make_payment
     credit_objects = Array.new(@number_to_purchase) do
       if params[:organization_id].present?
@@ -38,9 +41,11 @@ class CreditsController < ApplicationController
     find_or_create_card
     update_user_stripe_info
     create_charge
+    true
   rescue Stripe::CardError => e
     flash[:error] = e.message
     redirect_to "/credits/purchase"
+    false
   end
 
   def find_or_create_customer

@@ -85,6 +85,7 @@
             p.badge-reward-message {
               margin: 8px auto;
               width: 90%;
+              @include themeable(color, theme-color, $black);
             }
           }
           .follow-action-button {

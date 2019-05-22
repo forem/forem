@@ -13,6 +13,7 @@ class Organization < ApplicationRecord
   has_many :notifications
   has_many :credits
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
+  has_many :classified_listings
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
