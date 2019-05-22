@@ -180,16 +180,6 @@ class ArticlesController < ApplicationController
 
   private
 
-  def handle_org_assignment
-    if @user.organization_id.present? && article_params[:publish_under_org].to_i == 1
-      @article.organization_id = @user.organization_id
-      @article.save
-    elsif article_params[:publish_under_org].present?
-      @article.organization_id = nil
-      @article.save
-    end
-  end
-
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)
