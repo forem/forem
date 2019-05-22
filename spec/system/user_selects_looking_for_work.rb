@@ -5,7 +5,7 @@ RSpec.describe "Looking For Work" do
   let(:tag) { create(:tag, name: "hiring") }
 
   before do
-    login_as(user)
+    sign_in(user)
     tag
   end
 

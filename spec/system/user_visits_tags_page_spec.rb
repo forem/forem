@@ -10,7 +10,7 @@
 #     checkmark == "✔" || checkmark == "✓"
 #   end
 
-#   before { login_as(user) }
+#   before { sign_in(user) }
 
 #   context "when a tag is not already followed" do
 #     before do

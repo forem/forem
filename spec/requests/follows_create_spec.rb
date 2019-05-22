@@ -6,7 +6,7 @@ RSpec.describe "Following/Unfollowing", type: :request do
 
   describe "POST #create" do
     before do
-      login_as user
+      sign_in user
     end
 
     context "when followable_type is a Tag" do

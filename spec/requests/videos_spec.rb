@@ -27,14 +27,14 @@ RSpec.describe "Videos", type: :request do
       end
 
       it "redirects logged in users" do
-        login_as unauthorized_user
+        sign_in unauthorized_user
         expect { get "/videos/new" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     context "when authorized" do
       it "allows authorized users" do
-        login_as authorized_user
+        sign_in authorized_user
         get "/videos/new"
         expect(response.body).to include "Upload Video File"
       end
@@ -48,14 +48,14 @@ RSpec.describe "Videos", type: :request do
       end
 
       it "redirects logged in users" do
-        login_as unauthorized_user
+        sign_in unauthorized_user
         expect { post "/videos" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     context "when authorized" do
       before do
-        login_as authorized_user
+        sign_in authorized_user
       end
 
       valid_params = {

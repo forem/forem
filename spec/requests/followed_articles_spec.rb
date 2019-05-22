@@ -5,7 +5,7 @@ RSpec.describe "FollowedArticles", type: :request do
     let(:user) { create(:user) }
 
     before do
-      login_as user
+      sign_in user
     end
 
     it "returns empty articles array if not following anyone" do
