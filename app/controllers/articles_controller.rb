@@ -122,6 +122,7 @@ class ArticlesController < ApplicationController
     authorize Article
 
     @user = current_user
+
     @article = ArticleCreationService.new(@user, article_params_json).create!
 
     render json: if @article.persisted?
