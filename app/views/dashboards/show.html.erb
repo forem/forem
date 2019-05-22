@@ -9,10 +9,10 @@
         <a href="/dashboard/organization/<%= org.id %>" class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>"><%= org.name %> (<%= org.articles_count %>)</a>
       <% end %>
       <% if @user.has_role? :pro %>
-      <br>
+      <hr>
         <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
         <% @member_organizations.each do |org| %>
-          <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+          <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>"><%= org.name %></a>
         <% end %>
       <% end %>
     </h1>
