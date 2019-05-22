@@ -20,7 +20,7 @@ const orgOptions = (organizations, organizationId) => {
 const OrgSettings = ({ organizations, organizationId, onToggle }) => (
   <div className="articleform__orgsettings">
     Publish under an organization:
-    <select name="article[publish_under_org]" id="article_publish_under_org" onBlur={onToggle}>
+    <select name="article[organization_id]" id="article_publish_under_org" onBlur={onToggle}>
       {orgOptions(organizations, organizationId)}
     </select>
   </div>

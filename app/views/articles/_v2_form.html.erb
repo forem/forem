@@ -8,7 +8,7 @@
       <% if @organizations %>
         <div class="articleform__orgsettings">
           Publish under an organization:
-          <select name="article[publish_under_org]" id="article_publish_under_org">
+          <select name="article[organization_id]" id="article_publish_under_org">
             <%= options_for_select({ "None" => "" }.merge(@organizations.pluck(:name, :id).to_h), @article.organization_id || "") %>
           </select>
         </div>
@@ -17,7 +17,7 @@
         <% if @article.main_image.present? %>
           <div class="articleform__mainimage"><img src="<%= @article.main_image %>"></div>
         <% end %>
-        <input class="articleform__title articleform__titlepreview" type="text" value="<%= @article.title %>" placeholder="Title"  />
+        <input class="articleform__title articleform__titlepreview" type="text" value="<%= @article.title %>" placeholder="Title" />
         <div class="articleform__detailfields">
           <div class="articleform__tagswrapper">
             <textarea type="text" class="articleform__tags" placeholder="tags"><%= @article.cached_tag_list %></textarea>

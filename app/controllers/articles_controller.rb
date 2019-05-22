@@ -230,11 +230,11 @@ class ArticlesController < ApplicationController
     end
 
     allowed_params = if params["article"]["version"] == "v1"
-                       %i[body_markdown organization_id]
+                       %i[body_markdown]
                      else
                        %i[
                          title body_markdown main_image published description
-                         tag_list organization_id canonical_url series collection_id
+                         tag_list canonical_url series collection_id
                        ]
                      end
 
@@ -242,9 +242,9 @@ class ArticlesController < ApplicationController
     # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
     if params["article"]["user_id"] && org_admin_user_change_privilege
       allowed_params << :user_id
-    elsif params["article"]["post_under_org"]
+    elsif params["article"]["organization_id"] && allowed_to_change_org_id?
       # change the organization of the article only if explicitly asked to do so
-      params["article"]["organization_id"] = @user.organization_id
+      allowed_params << :organization_id
     end
 
     params.require(:article).permit(allowed_params)
@@ -262,6 +262,12 @@ class ArticlesController < ApplicationController
       end
       render :new
     end
+  end
+
+  def allowed_to_change_org_id?
+    potential_user = @article&.user || current_user
+    OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"]) ||
+      current_user.any_admin?
   end
 
   def org_admin_user_change_privilege
