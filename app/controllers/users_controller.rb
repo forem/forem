@@ -126,8 +126,7 @@ class UsersController < ApplicationController
   def leave_org
     authorize User
     type_of_user = current_user.org_admin ? "admin" : "member"
-    OrganizationMembership.find_by(organization_id: current_user.organization_id, user_id: current_user.id, type_of_user: type_of_user)&.delete
-    current_user.update(organization_id: nil, org_admin: nil)
+    OrganizationMembership.find_by(organization_id: params[:organization_id], user_id: current_user.id, type_of_user: type_of_user)&.delete
     redirect_to "/settings/organization",
                 notice: "You have left your organization."
   end
