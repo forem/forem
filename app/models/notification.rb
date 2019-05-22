@@ -26,9 +26,12 @@ class Notification < ApplicationRecord
     end
 
     def send_to_followers(notifiable, action = nil)
-      Notifications::NotifiableAction::Send.call(notifiable, action)
+      Notifications::NotifiableActionJob.perform_later(notifiable.id, notifiable.class.name, action)
     end
-    handle_asynchronously :send_to_followers
+
+    def send_to_followers_without_delay(notifiable, action = nil)
+      Notifications::NotifiableActionJob.perform_now(notifiable.id, notifiable.class.name, action)
+    end
 
     def send_new_comment_notifications(comment)
       return if comment.commentable_type == "PodcastEpisode"
