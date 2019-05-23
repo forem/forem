@@ -81,8 +81,12 @@ module Api
 
       def allowed_to_change_org_id?
         potential_user = @article&.user || @user
-        OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"]) ||
-          current_user.any_admin?
+        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
+          OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
+        elsif potential_user == @user
+          OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"], type_of_user: "admin") ||
+            @user.any_admin?
+        end
       end
     end
   end
