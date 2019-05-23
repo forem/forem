@@ -48,6 +48,7 @@ class MarkdownFixer
 
     def underscores_in_usernames(markdown)
       markdown.gsub(/^(@)(_\w+)(_)$/, '\1\\\\\2\\\\\3')
+      # markdown.match(/(?<beginning>@_)(.+)(?<last_underscore>_)/)
       # escaped_user_names = user_names.map { |name| name.gsub(/_/, "\\_") }
       # markdown.gsub(/_/, "\\_")
       # return markdown
