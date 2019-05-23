@@ -21,10 +21,11 @@ module Notifications
           article: article_data(notifiable)
         }
         json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
+        notifications = []
         # followers is an array and not an activerecord object
         # followers can occasionally be nil because orphaned follows can possibly exist in the db (for now)
         followers.compact.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
-          Notification.create(
+          notifications.push Notification.new(
             user_id: follower.id,
             notifiable_id: notifiable.id,
             notifiable_type: notifiable.class.name,
@@ -32,6 +33,7 @@ module Notifications
             json_data: json_data,
           )
         end
+        Notification.import notifications
       end
 
       private
