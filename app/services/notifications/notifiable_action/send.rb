@@ -22,7 +22,8 @@ module Notifications
         }
         json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
         # followers is an array and not an activerecord object
-        followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
+        # followers can occasionally be nil because orphaned follows can possibly exist in the db (for now)
+        followers.compact.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
           Notification.create(
             user_id: follower.id,
             notifiable_id: notifiable.id,
