@@ -31,9 +31,10 @@ module Notifications
             notifiable_type: notifiable.class.name,
             action: action,
             json_data: json_data,
+            notified_at: Time.current,
           )
         end
-        Notification.import notifications
+        Notification.import! notifications
       end
 
       private
