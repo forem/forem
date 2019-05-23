@@ -58,14 +58,10 @@ RSpec.describe "Videos", type: :request do
         sign_in authorized_user
       end
 
-      valid_params = {
-        article: {
-          video: "something.mp4"
-        }
-      }
-
-      xit "creates an article for the logged in user" do
-        post "/videos", params: valid_params
+      it "redirects to the article's edit page for the logged in user" do
+        stub_request(:get, /dw71fyauz7yz9\.cloudfront\.net\//).to_return(status: 200, body: "", headers: {})
+        post "/videos", params: { article: { video: "https://www.something.com/something.mp4" } }
+        expect(response.status).to eq(302)
       end
     end
   end
