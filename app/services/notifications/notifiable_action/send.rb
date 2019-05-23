@@ -20,12 +20,7 @@ module Notifications
           user: user_data(notifiable.user),
           article: article_data(notifiable)
         }
-        followers = if notifiable.organization_id
-                      json_data[:organization] = organization_data(notifiable.organization)
-                      (notifiable.user.followers + notifiable.organization.followers).uniq
-                    else
-                      notifiable.user.followers
-                    end
+        json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
         # followers is an array and not an activerecord object
         followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
           Notification.create(
@@ -41,6 +36,12 @@ module Notifications
       private
 
       attr_reader :notifiable, :action
+
+      def followers
+        followers = notifiable.user.followers
+        followers += notifiable.organization.followers if notifiable.organization_id
+        followers.uniq
+      end
     end
   end
 end
