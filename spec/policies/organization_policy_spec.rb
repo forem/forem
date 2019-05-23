@@ -26,8 +26,9 @@ RSpec.describe OrganizationPolicy do
 
   context "when user is an org admin of an org" do
     let(:user) { build(:user) }
+    let(:org)  { create(:organization) }
 
-    before { user.update(organization: organization, org_admin: true) }
+    before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }
 
     it "allows the user to update their own org" do
       expect(organization_policy).to permit_action(:update)
