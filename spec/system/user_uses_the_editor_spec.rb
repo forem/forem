@@ -32,6 +32,7 @@ RSpec.describe "Using the editor", type: :system do
       page.execute_script("window.scrollTo(0, -100000)")
       find("button", text: /\APREVIEW\z/).click
       article_body = find("div.body")["innerHTML"]
+      article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
   end
@@ -41,6 +42,7 @@ RSpec.describe "Using the editor", type: :system do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASAVE CHANGES\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
+      article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
 
