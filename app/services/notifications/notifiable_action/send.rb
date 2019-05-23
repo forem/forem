@@ -24,7 +24,7 @@ module Notifications
         notifications = []
         # followers is an array and not an activerecord object
         # followers can occasionally be nil because orphaned follows can possibly exist in the db (for now)
-        followers.compact.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
+        followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
           notifications.push Notification.new(
             user_id: follower.id,
             notifiable_id: notifiable.id,
@@ -44,7 +44,7 @@ module Notifications
       def followers
         followers = notifiable.user.followers
         followers += notifiable.organization.followers if notifiable.organization_id
-        followers.uniq
+        followers.uniq.compact
       end
     end
   end
