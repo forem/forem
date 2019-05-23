@@ -195,4 +195,12 @@ module ApplicationHelper
   def community_qualified_name
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
   end
+
+  def truncate_html(html, length)
+    html_without_tags = strip_tags(html)
+    tags_length = html.length - html_without_tags.length
+    return html if html_without_tags.length <= length
+
+    Nokogiri::HTML::DocumentFragement.parse(html.truncate(length + tags_length)).to_xml
+  end
 end

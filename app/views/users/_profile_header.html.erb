@@ -24,7 +24,11 @@
         </span>
       </h1>
       <p class="profile-description" itemprop="description">
-        <%= @user.summary.presence || ["404 bio not found"].sample %>
+        <% if @user.has_attribute?(:summary_html) %>
+          <%= @user.summary_html.present? ? @user.summary_html.html_safe : "404 bio not found" %>
+        <% else %>
+          <%= @user.summary.presence || "404 bio not found" %>
+        <% end %>
       </p>
       <style>
         .profile-details .social .icon-img path {

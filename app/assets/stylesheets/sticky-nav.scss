@@ -54,6 +54,9 @@
       overflow: hidden;
       text-overflow: ellipsis;
       overflow-wrap: break-word;
+      p{
+        margin: 0;
+      }
     }
     .primary-sticky-nav-author-follow{
       padding-top:8px;

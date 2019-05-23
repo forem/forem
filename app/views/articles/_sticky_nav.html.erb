@@ -51,7 +51,11 @@
     </div>
     <div class="primary-sticky-nav-author-summary">
       <% if @actor.tag_line.present? %>
-        <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
+        <% if @actor.has_attribute?(:summary_html) %>
+          <%= truncate_html(@actor.summary_html, 200).html_safe %>
+        <% else %>
+          <%= truncate (@actor.summary || "Posts in this tag"), length: 200 %>
+        <% end %>
       <% end %>
     </div>
     <div class="primary-sticky-nav-author-follow">
@@ -119,7 +123,7 @@
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">
-              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image"  loading="lazy" alt="<%= article.user.name %> profile image">
+              <img src="<%= ProfileImage.new(article.user).get(90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
               <%= article.title %>
               <div class="primary-sticky-nav-element-details">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>

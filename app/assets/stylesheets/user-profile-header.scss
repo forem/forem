@@ -163,22 +163,24 @@
           display: block;
         }
       }
-      p.profile-description{
-        padding:0px 0px;
-        margin:0;
-        font-style: italic;
-        @include themeable(
-          color, 
-          theme-secondary-color, 
-          $medium-gray
-        );
-        width: 94%;
-        font-size:0.9em;
-        margin-top:12px;
-        max-width:550px;
-        @media screen and ( min-width: 430px ){
-          font-size:0.97em;
-          margin-top:0px;
+      .profile-description{
+        p{
+          padding:0px 0px;
+          margin:0;
+          font-style: italic;
+          @include themeable(
+            color, 
+            theme-secondary-color, 
+            $medium-gray
+          );
+          width: 94%;
+          font-size:0.9em;
+          margin-top:12px;
+          max-width:550px;
+          @media screen and ( min-width: 430px ){
+            font-size:0.97em;
+            margin-top:0px;
+          }
         }
       }
     }

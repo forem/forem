@@ -15,7 +15,7 @@
     <h2><a href="<%= user.path %>" class="ltag__user__link"><%= user.name %></a><%= follow_button %></h2>
     <div class="ltag__user__summary">
       <a href="<%= user.path %>" class="ltag__user__link">
-        <%= user.summary %>
+        <%= user.summary_html.html_safe if user.summary_html.present? %>
       </a>
     </div>
     <p class="ltag__user__social">
