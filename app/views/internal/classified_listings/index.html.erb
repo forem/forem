@@ -8,7 +8,7 @@
   <%= submit_tag("Search") %>
 <% end %>
 <%= paginate @classified_listings %>
-<div class="wrapper">
+<div class="wrapper" style="border-bottom: 1px solid black">
   <div class="grid-item">Title Link</div>
   <div class="grid-item">User/Org</div>
   <div class="grid-item">Category</div>
@@ -30,25 +30,49 @@
       <div class="grid-item"><%= listing.published ? "Yes" : "No" %></div>
       <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
     </div>
-    <div class="buffer-area">
-      <button class="btn toggle-buffering-butt" style="border: none;">Share to Buffer</button>
-      <div class="buffering-area-for-single-listing" style="display:none;">
-        <p>show up!</p>
+    <div class="buffer-area" style="text-align: left">
+      <button class="btn toggle-buffering-butt" style="border: 1px solid grey; margin-top: 2px">Share to Buffer</button>
+      <div class="buffering-area-for-single-listing">
+        <div class="grid-item">
+          <p class="listing-title"><strong><%= listing.title %></strong></p>
+          <p class="listing-body"><%= listing.processed_html&.html_safe %></p>
+        </div>
+        <div class="grid-item">
+          <%= form_tag "/internal/buffer_updates" do %>
+            <input type="hidden" name="social_channel" value="listings_twitter" />
+            <input type="hidden" name="listing_id" value="<%= listing.id %>" />
+            <textarea cols="37" rows="5" wrap="hard" name="tweet" maxlength="255"><%= listing.title %></textarea>
+            <br>
+            <button class="btn-info tweet-listing">🐦 Tweet 🐦</button>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>
 <% end %>
 <%= paginate @classified_listings %>
-<style>
-.single-internal-listing {
-  border-bottom: 1px solid grey;
-  padding: 10px;
-}
-</style>
 
 <script>
-$(".toggle-buffering-butt").click(function (e) {
-    e.preventDefault()
-    console.log($(this).closest(".buffer-area").find(".buffering-area-for-single-listing").toggle());
-  })
+  $(".toggle-buffering-butt").click(function (e) {
+      e.preventDefault()
+      console.log($(this).closest(".buffer-area").find(".buffering-area-for-single-listing").toggle());
+    })
+
+  $('.tweet-listing').on("submit", "form", function () {
+    var form = $(this);
+    var valuesToSubmit = $(this).serialize();
+    $.ajax({
+      type: "POST",
+      url: $(this).attr('action'),
+      data: valuesToSubmit,
+    }).success(function (json) {
+      console.log("success")
+      form.parents(".row").addClass("highlighted-bg")
+      form.parents(".row").addClass("highlighted-border")
+      setTimeout(function () {
+        form.parents(".row").removeClass("highlighted-bg")
+      }, 350)
+    });
+    return false; // prevents normal behaviour
+  });
 </script>

@@ -1,7 +1,11 @@
 class Bufferizer
-  attr_accessor :article, :text
-  def initialize(article, text)
-    @article = article
+  attr_accessor :post_type, :post, :text
+  def initialize(post_type, post, text)
+    if post_type == "article"
+      @article = post
+    else
+      @listing = post
+    end
     @text = text
   end
 
@@ -21,6 +25,11 @@ class Bufferizer
     BufferUpdate.buff!(article.id, fb_buffer_text, ApplicationConfig["BUFFER_FACEBOOK_ID"], "facebook")
     BufferUpdate.buff!(article.id, fb_buffer_text, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin")
     article.update(facebook_last_buffered: Time.current)
+  end
+
+  def listings_tweet!
+    binding.pry
+    BufferUpdate.buff!(article.id)
   end
 
   private
