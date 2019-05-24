@@ -115,4 +115,21 @@ RSpec.describe MarkdownFixer do
       expect(result).to eq(expected_result)
     end
   end
+
+  describe "::underscores_in_usernames" do
+    it "escapes underscores in a username" do
+      test_string1 = "@_xy_"
+      expected_result1 = "@\\_xy\\_"
+      test_string2 = "@_x_y_"
+      expected_result2 = "@\\_x_y\\_"
+
+      expect(described_class.underscores_in_usernames(test_string1)).to eq(expected_result1)
+      expect(described_class.underscores_in_usernames(test_string2)).to eq(expected_result2)
+    end
+    it "does not escape underscores when it is not a username" do
+      test_string = "_make this cursive_"
+      expected_result = "_make this cursive_"
+      expect(described_class.underscores_in_usernames(test_string)).to eq(expected_result)
+    end
+  end
 end
