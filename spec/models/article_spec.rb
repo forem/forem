@@ -365,26 +365,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "::filter_excluded_tags" do
-    before do
-      create(:article, tags: "hiring")
-    end
-
-    it "exlude #hiring when no argument is given" do
-      expect(described_class.filter_excluded_tags.length).to be(0)
-    end
-
-    it "filters #hiring articles when argument is 'hiring'" do
-      # this is not checking for newest article
-      expect(described_class.filter_excluded_tags("hiring").length).to be(1)
-    end
-
-    it "filters the tag it is asked to filter" do
-      create(:article, tags: "filter")
-      expect(described_class.filter_excluded_tags("filter").length).to be(1)
-    end
-  end
-
   describe "before save" do
     # before do
     #   article = create(:article, user_id: user.id)
