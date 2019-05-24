@@ -128,17 +128,13 @@ class Notification < ApplicationRecord
       Notifications::RemoveAllJob.perform_now(notifiable_id, notifiable_type, action)
     end
 
-    def remove_each(notifiable_collection, action = nil)
-      # only used for mentions since it's an array
-      notifiable_collection.each do |notifiable|
-        Notification.where(
-          notifiable_id: notifiable.id,
-          notifiable_type: notifiable.class.name,
-          action: action,
-        ).destroy_all
-      end
+    def remove_each(notifiable_collection)
+      Notifications::RemoveEachJob.perform_later(notifiable_collection.pluck(:id))
     end
-    handle_asynchronously :remove_each
+
+    def remove_each_without_delay(notifiable_collection)
+      Notifications::RemoveEachJob.perform_now(notifiable_collection.pluck(:id))
+    end
 
     def update_notifications(notifiable, action = nil)
       Notifications::UpdateJob.perform_later(notifiable.id, notifiable.class.name, action)
