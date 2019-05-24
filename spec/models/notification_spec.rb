@@ -274,7 +274,7 @@ RSpec.describe Notification, type: :model do
     context "when the notifiable is an article from a user" do
       before do
         user2.follow(user)
-        run_background_jobs_immediately { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to the author's followers" do
@@ -288,7 +288,7 @@ RSpec.describe Notification, type: :model do
       before do
         user2.follow(user)
         user3.follow(organization)
-        run_background_jobs_immediately { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to author's followers" do
