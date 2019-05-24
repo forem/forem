@@ -5,9 +5,6 @@ class ClassifiedListing < ApplicationRecord
 
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
-
-  has_many :buffer_updates
-
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs

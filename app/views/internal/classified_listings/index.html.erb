@@ -31,7 +31,10 @@
       <div class="grid-item"><%= time_ago_in_words(listing.bumped_at) %> ago</div>
     </div>
     <div class="buffer-area" style="text-align: left">
-      <button class="btn toggle-buffering-butt" style="border: 1px solid grey; margin-top: 2px">Share to Buffer</button>
+      <br>
+      <button class="btn toggle-buffering-butt" style="border: 1px solid grey; margin-top: 2px">Share to Buffer</button><% if listing.last_buffered.present? %> <em>Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %></em><% end %>
+      <br>
+      <br>
       <div class="buffering-area-for-single-listing">
         <div class="grid-item">
           <p class="listing-title"><strong><%= listing.title %></strong></p>
