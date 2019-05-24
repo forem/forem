@@ -48,7 +48,7 @@
         </div>
       <% if @organizations %>
       <div class="field">
-        <%= form.label "post_as_organization", "Post under an organization:" %>
+        <%= form.label "organization_id", "Post under an organization:" %>
         <%= form.select :organization_id, "None" => "None" %>
         <p><em>Posting on behalf of an organization spends the organization's credits.</em></p>
       </div>

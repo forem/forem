@@ -1,7 +1,7 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
 
-  attr_accessor :post_as_organization, :action
+  attr_accessor :action
 
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
