@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
-  after_action :verify_authorized, except: [:signout_confirm]
+  after_action :verify_authorized, except: %i[signout_confirm add_org_admin remove_org_admin remove_from_org]
 
   # GET /settings/@tab
   def edit
@@ -111,54 +111,53 @@ class UsersController < ApplicationController
   def join_org
     authorize User
     if (@organization = Organization.find_by(secret: params[:org_secret].strip))
-      ActiveRecord::Base.transaction do
-        current_user.update(organization_id: @organization.id)
-        OrganizationMembership.create(user_id: current_user.id, organization_id: current_user.organization_id, type_of_user: "member")
-      end
-      redirect_to "/settings/organization",
+      OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
+      redirect_to "/settings/organization/#{@organization.id}",
                   notice: "You have joined the #{@organization.name} organization."
     else
       flash[:error] = "The given organization secret was invalid."
-      redirect_to "/settings/organization"
+      redirect_to "/settings/organization/new"
     end
   end
 
   def leave_org
-    authorize User
-    type_of_user = current_user.org_admin ? "admin" : "member"
-    OrganizationMembership.find_by(organization_id: params[:organization_id], user_id: current_user.id, type_of_user: type_of_user)&.delete
-    redirect_to "/settings/organization",
+    org = Organization.find_by(id: params[:organization_id])
+    authorize org
+    OrganizationMembership.find_by(organization_id: org, user_id: current_user.id)&.delete
+    redirect_to "/settings/organization/new",
                 notice: "You have left your organization."
   end
 
   def add_org_admin
-    user = User.find(params[:user_id])
-    authorize user
-    user.update(org_admin: true)
-    org_membership = OrganizationMembership.find_or_initialize_by(user_id: user.id, organization_id: user.organization_id)
-    org_membership.type_of_user = "admin"
-    org_membership.save
-    redirect_to "/settings/organization",
-                notice: "#{user.name} is now an admin."
+    adminable = User.find(params[:user_id])
+    org = Organization.find_by(id: params[:organization_id])
+
+    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exist?(user: adminable, organization: org)
+
+    OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
+    redirect_to "/settings/organization#{params[:organization_id]}",
+                notice: "#{adminable.name} is now an admin."
   end
 
   def remove_org_admin
-    user = User.find(params[:user_id])
-    authorize user
-    user.update(org_admin: false)
-    org_membership = OrganizationMembership.find_or_initialize_by(user_id: user.id, organization_id: user.organization_id)
-    org_membership.type_of_user = "member"
-    org_membership.save
+    unadminable = User.find(params[:user_id])
+    org = Organization.find_by(id: params[:organization_id])
+
+    not_authorized unless current_user.org_admin?(org) && unadminable.org_admin?(org)
+
+    OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
     redirect_to "/settings/organization",
-                notice: "#{user.name} is no longer an admin."
+                notice: "#{unadminable.name} is no longer an admin."
   end
 
   def remove_from_org
-    user = User.find(params[:user_id])
-    authorize user
-    type_of_user = user.org_admin ? "admin" : "member"
-    OrganizationMembership.find_by(organization_id: current_user.organization_id, user_id: current_user.id, type_of_user: type_of_user)&.delete
-    user.update(organization_id: nil)
+    removable = User.find(params[:user_id])
+    org = Organization.find_by(id: params[:organization_id])
+    removable_org_membership = OrganizationMembership.find_by(user_id: removable.id, organization_id: org)
+
+    not_authorized unless current_user.org_admin?(org) && removable_org_membership
+
+    removable_org_membership.delete
     redirect_to "/settings/organization",
                 notice: "#{user.name} is no longer part of your organization."
   end
