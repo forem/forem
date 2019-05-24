@@ -45,7 +45,7 @@ document.ready.then(
 
       getUnopenedChannels();
 
-      if (isUserSignedIn() /*&& !currentUser.saw_onboarding*/) {
+      if (isUserSignedIn() /* && !currentUser.saw_onboarding */) {
         renderPage();
       }
     })

@@ -372,7 +372,8 @@ class Onboarding extends Component {
           onClick={this.handleBackButton}
         >
           {' '}
-          BACK{' '}
+          BACK
+          {' '}
         </button>
       );
     }
