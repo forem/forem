@@ -63,8 +63,8 @@ class UnopenedChannelNotice extends Component {
     if (unopenedChannels.length === 0) {
       number.classList.remove('showing');
     } else {
-      document.getElementById('connect-link').href = `/connect?active_channel=${
-        unopenedChannels[0].id
+      document.getElementById('connect-link').href = `/connect/${
+        unopenedChannels[0].adjusted_slug
       }`;
     }
     setTimeout(() => {
@@ -83,7 +83,7 @@ class UnopenedChannelNotice extends Component {
       const channels = unopenedChannels.map(channel => {
         return (
           <a
-            href={`/connect?active_channel=${channel.id}`}
+            href={`/connect/${unopenedChannels[0].adjusted_slug}`}
             style={{
               background: '#66e2d5',
               color: 'black',
@@ -134,9 +134,7 @@ function manageChannel(json) {
   if (json.length > 0) {
     number.classList.add('showing');
     number.innerHTML = json.length;
-    document.getElementById('connect-link').href = `/connect?active_channel=${
-      json[0].id
-    }`; // Jump the user directly to the channel where appropriate
+    document.getElementById('connect-link').href = `/connect/${json[0].adjusted_slug}`; // Jump the user directly to the channel where appropriate
   } else {
     number.classList.remove('showing');
   }
