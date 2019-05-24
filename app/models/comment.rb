@@ -199,7 +199,7 @@ class Comment < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.modify_hr_tags(body_markdown)
+    fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
     parsed_markdown = MarkdownParser.new(fixed_body_markdown)
     self.processed_html = parsed_markdown.finalize
     wrap_timestamps_if_video_present!

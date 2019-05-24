@@ -11,6 +11,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def update_twitch_username?
+    current_user?
+  end
+
   def update_language_settings?
     current_user?
   end

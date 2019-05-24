@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, twitch_username: nil) }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -98,6 +98,47 @@ RSpec.describe "UserSettings", type: :request do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
+    end
+  end
+
+  describe "POST /users/update_twitch_username" do
+    before { login_as user }
+
+    it "updates twitch username" do
+      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
+      user.reload
+      expect(user.twitch_username).to eq("anna_lightalloy")
+    end
+
+    it "redirects after updating" do
+      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
+      expect(response).to redirect_to "/settings/integrations"
+    end
+
+    it "schedules the job while updating" do
+      expect do
+        post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
+      end.to have_enqueued_job(Streams::TwitchWebhookRegistrationJob).exactly(:once).with(user.id)
+    end
+
+    it "removes twitch_username" do
+      user.update_column(:twitch_username, "robot")
+      post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
+      user.reload
+      expect(user.twitch_username).to be_nil
+    end
+
+    it "doesn't schedule the job when removing" do
+      expect do
+        post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
+      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+    end
+
+    it "doesn't schedule the job when saving the same twitch username" do
+      user.update_column(:twitch_username, "robot")
+      expect do
+        post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
+      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
     end
   end
 
