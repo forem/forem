@@ -17,27 +17,28 @@
 </style>
 <div class="settings-org-members">
   <h3>Organization Members</h3>
-  <% @organization.users.each do |user| %>
-    <div class="settings-org-member-row <%= "settings-org-admin-row" if @organization_membership.type_of_user == "admin" %>">
-      <a href="<%= user.path %>"><%= user.name %></a>
+  <% @org_organization_memberships.each do |org_membership| %>
+    <div class="settings-org-member-row <%= "settings-org-admin-row" if org_membership.type_of_user == "admin" %>">
+      <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
       <div class="settings-org-member-actions">
-        <% if @organization_membership.type_of_user == "admin" && user == current_user %>
+        <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
           <button class="settings-org-member settings-org-member-admin-self">you (admin)</button>
-        <% elsif @organization_membership.type_of_user == "admin" && user != current_user %>
+        <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
           <button class="settings-org-member settings-org-member-admin-other">admin</button>
-          <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{user.name}?');" do %>
-            <%= hidden_field_tag "user_id", user.id %>
-            <button class="settings-org-member settings-org-member-remove" title="Remove from org">revoke admin status</button>
+          <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{org_membership.user.name}?');" do %>
+            <%= hidden_field_tag "user_id", org_membership.user_id %>
+            <%= hidden_field_tag "organization_id", @organization.id %>
+            <button class="settings-org-member settings-org-member-remove" title="Revoke admin status" type="submit">revoke admin status</button>
           <% end %>
         <% else %>
           <button class="settings-org-member settings-org-member-admin-self">org member</button>
-          <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{user.name} admin status?');" do %>
-            <%= hidden_field_tag "user_id", user.id %>
-            <button class="settings-org-member settings-org-member-make-admin">make admin</button>
+          <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{org_membership.user.name} admin status?');" do %>
+            <%= hidden_field_tag "user_id", org_membership.user_id %>
+            <button class="settings-org-member settings-org-member-make-admin" title="Make admin" type="submit">make admin</button>
           <% end %>
-          <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{user.name} from the organization?');" do %>
-            <%= hidden_field_tag "user_id", user.id %>
-            <button class="settings-org-member settings-org-member-remove" title="Remove from org">remove from org</button>
+          <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{org_membership.user.name} from the organization?');" do %>
+            <%= hidden_field_tag "user_id", org_membership.user_id %>
+            <button class="settings-org-member settings-org-member-remove" title="Remove from org" type="submit">remove from org</button>
           <% end %>
         <% end %>
       </div>
