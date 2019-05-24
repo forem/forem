@@ -24,7 +24,6 @@ class CreditsController < ApplicationController
 
     return unless make_payment
 
-    make_payment
     credit_objects = Array.new(@number_to_purchase) do
       if params[:organization_id].present?
         Credit.new(organization_id: params[:organization_id], cost: cost_per_credit / 100.0)
