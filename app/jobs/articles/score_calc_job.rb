@@ -9,7 +9,7 @@ module Articles
       article.update_columns(score: article.reactions.sum(:points),
                              hotness_score: BlackBox.article_hotness_score(article),
                              spaminess_rating: BlackBox.calculate_spaminess(article))
-      article.index! if article.tag_list.exclude?("hiring")
+      article.index!
     end
   end
 end

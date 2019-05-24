@@ -203,17 +203,6 @@ class Article < ApplicationRecord
     boosted_additional_tags String, default: ""
   end
 
-  def self.filter_excluded_tags(tag = nil)
-    if tag == "hiring"
-      tagged_with("hiring")
-    elsif tag
-      tagged_with(tag).
-        tagged_with("hiring", exclude: true)
-    else
-      tagged_with("hiring", exclude: true)
-    end
-  end
-
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
     stories = published.limit(number)
     stories = if time_ago == "latest"
