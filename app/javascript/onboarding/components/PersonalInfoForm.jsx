@@ -14,7 +14,7 @@ export default class extends Component {
       summary: '',
       location: '',
       employment_title: '',
-      workplace: '',
+      employer_name: '',
     };
   }
 
@@ -28,13 +28,14 @@ export default class extends Component {
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
-  
+
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
       },
-      body: jsonToForm([{ key: 'user', value: JSON.stringify(this.state) }]),
+      body: JSON.stringify({ user: this.state }),
       credentials: 'same-origin',
     }).then(response => {
       if (response.ok) {
@@ -71,10 +72,10 @@ export default class extends Component {
             onChange={this.handleChange}
             maxLength="60"
           />
-          <label htmlFor="workplace">Where do you work?</label>
+          <label htmlFor="employer_name">Where do you work?</label>
           <input
             type="text"
-            name="workplace"
+            name="employer_name"
             onChange={this.handleChange}
             maxLength="60"
           />
