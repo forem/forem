@@ -41,7 +41,8 @@
           <%= form_tag "/internal/buffer_updates" do %>
             <input type="hidden" name="social_channel" value="listings_twitter" />
             <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-            <textarea cols="37" rows="5" wrap="hard" name="tweet" maxlength="255"><%= listing.title %></textarea>
+            <textarea cols="37" rows="5" wrap="hard" name="tweet" maxlength="255"><%= listing.title %><% if User.find(listing.user_id).twitter_username.present? %>&#013Listed by @<%= User.find(listing.user_id).twitter_username %>&#013<% end %>&#013#DEVCommunity
+            </textarea>
             <br>
             <button class="btn-info tweet-listing">🐦 Tweet 🐦</button>
           <% end %>
@@ -58,7 +59,7 @@
       console.log($(this).closest(".buffer-area").find(".buffering-area-for-single-listing").toggle());
     })
 
-  $('.tweet-listing').on("submit", "form", function () {
+  $('.buffering-area-for-single-listing').on("submit", "form", function () {
     var form = $(this);
     var valuesToSubmit = $(this).serialize();
     $.ajax({
@@ -67,10 +68,10 @@
       data: valuesToSubmit,
     }).success(function (json) {
       console.log("success")
-      form.parents(".row").addClass("highlighted-bg")
-      form.parents(".row").addClass("highlighted-border")
+      form.parents(".single-internal-listing").addClass("highlighted-bg")
+      form.parents(".single-internal-listing").addClass("highlighted-border")
       setTimeout(function () {
-        form.parents(".row").removeClass("highlighted-bg")
+        form.parents(".single-internal-listing").removeClass("highlighted-bg")
       }, 350)
     });
     return false; // prevents normal behaviour

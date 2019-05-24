@@ -28,8 +28,7 @@ class Bufferizer
   end
 
   def listings_tweet!
-    binding.pry
-    # buffer_profile_id_code = ApplicationConfig["BUFFER_LISTINGS_PROFILE"]
+    # buffer_listings_id = ApplicationConfig["BUFFER_LISTINGS_PROFILE"]
     BufferUpdate.send_to_buffer(listings_twitter_text, 123)
   end
 
