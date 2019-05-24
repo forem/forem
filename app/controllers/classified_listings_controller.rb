@@ -17,7 +17,7 @@ class ClassifiedListingsController < ApplicationController
 
   def new
     @classified_listing = ClassifiedListing.new
-    @organizations = current_user.organizations.includes(:unspent_credits)
+    @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
 
@@ -31,7 +31,7 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.new(classified_listing_params)
     @classified_listing.user_id = current_user.id
     @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
-    @org = Organization.find(current_user.organization_id) if @classified_listing.post_as_organization.to_i == 1
+    @org = Organization.find_by(id: @classified_listing.organization_id)
     available_org_credits = @org.credits.where(spent: false) if @org
     available_individual_credits = current_user.credits.where(spent: false)
 
