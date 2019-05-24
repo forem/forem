@@ -63,5 +63,6 @@ Rails.application.configure do
   config.after_initialize do
     Bullet.enable = ENV["BULLET"]
     Bullet.raise = ENV["BULLET"]
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
   end
 end

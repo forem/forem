@@ -11,11 +11,7 @@ module Articles
     end
 
     def call
-      article = if user.has_role?(:super_admin)
-                  Article.includes(:user).find(article_id)
-                else
-                  user.articles.find(article_id)
-                end
+      article = load_article
 
       # the client can change the series the article belongs to
       if article_params.key?(:series)
@@ -51,5 +47,14 @@ module Articles
 
     attr_reader :user, :article_id
     attr_accessor :article_params
+
+    def load_article
+      relation = user.has_role?(:super_admin) ? Article.includes(:user) : user.articles
+
+      # if there are tags involved, preload the tags relationship
+      # relation = relation.preload(:tags) if article_params[:tags]
+
+      relation.find(article_id)
+    end
   end
 end
