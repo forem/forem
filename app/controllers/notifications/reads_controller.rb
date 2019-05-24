@@ -2,7 +2,10 @@ class Notifications::ReadsController < ApplicationController
   def create
     result = ""
     result = ReadNotificationsService.new(current_user).mark_as_read if current_user
-    ReadNotificationsService.new(current_user.organization).mark_as_read if params[:org_id]&.to_i && user_belongs_to_org?
+    if params[:org_id] && user_belongs_to_org?
+      org = Organization.find_by(id: params[:org_id])
+      ReadNotificationsService.new(org).mark_as_read
+    end
     current_user&.touch(:last_notification_activity)
     render plain: result
   end
@@ -10,7 +13,6 @@ class Notifications::ReadsController < ApplicationController
   private
 
   def user_belongs_to_org?
-    # this can be changed later with roles
-    current_user.organization_id == params[:org_id].to_i
+    OrganizationMembership.exist?(user_id: current_user.id, organization_id: params[:org_id], type_of_user: %w[admin member])
   end
 end
