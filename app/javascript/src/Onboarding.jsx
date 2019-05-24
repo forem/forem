@@ -128,6 +128,7 @@ class Onboarding extends Component {
       { key: 'user', value: JSON.stringify(profileInfo) },
     ]);
 
+    debugger;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
@@ -371,8 +372,7 @@ class Onboarding extends Component {
           onClick={this.handleBackButton}
         >
           {' '}
-          BACK
-          {' '}
+          BACK{' '}
         </button>
       );
     }

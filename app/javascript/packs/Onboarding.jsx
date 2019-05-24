@@ -23,7 +23,10 @@ function renderPage() {
     .then(({ default: Onboarding }) => {
       const waitingForOnboarding = setInterval(function() {
         if (document.getElementById('main-head-stylesheet')) {
-          render(<Onboarding />, document.getElementById('top-bar'));
+          render(
+            <Onboarding />,
+            document.getElementById('onboarding-container'),
+          );
           clearInterval(waitingForOnboarding);
         }
       }, 3);
@@ -42,7 +45,7 @@ document.ready.then(
 
       getUnopenedChannels();
 
-      if (isUserSignedIn() && !currentUser.saw_onboarding) {
+      if (isUserSignedIn() /*&& !currentUser.saw_onboarding*/) {
         renderPage();
       }
     })

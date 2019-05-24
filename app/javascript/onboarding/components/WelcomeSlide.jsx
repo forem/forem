@@ -1,7 +1,8 @@
-import 'preact/devtools';
 import { h, Component } from 'preact';
 
-export default () => (
+import Navigation from './Navigation';
+
+export default ({ prev, next }) => (
   <div>
     <h1>Welcome to the DEV community!</h1>
     <p>
@@ -10,5 +11,6 @@ export default () => (
       debates, and making friends.
     </p>
     <p>A couple quick questions for you before you get started...</p>
+    <Navigation prev={prev} next={next} />
   </div>
 );

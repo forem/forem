@@ -1,5 +1,6 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
+
 import WelcomeSlide from './components/WelcomeSlide';
 import PersonalInfoForm from './components/PersonalInfoForm';
 import EmailListTermsConditionsForm from './components/EmailListTermsConditionsForm';
@@ -12,12 +13,15 @@ export default class Onboarding extends Component {
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
 
-    this.slides = [
-      <WelcomeSlide />,
-      <PersonalInfoForm />,
-      <EmailListTermsConditionsForm />,
-      <ClosingSlide />,
+    const slides = [
+      WelcomeSlide,
+      PersonalInfoForm,
+      EmailListTermsConditionsForm,
+      ClosingSlide,
     ];
+    this.slides = slides.map(SlideComponent => (
+      <SlideComponent next={this.nextSlide} prev={this.prevSlide} />
+    ));
 
     this.state = {
       currentSlide: 0,
@@ -43,16 +47,6 @@ export default class Onboarding extends Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.slides[this.state.currentSlide]}
-        <button onClick={this.prevSlide} className="back-button">
-          BACK
-        </button>
-        <button onClick={this.nextSlide} className="next-button">
-          NEXT
-        </button>
-      </div>
-    );
+    return <div>{this.slides[this.state.currentSlide]}</div>;
   }
 }
