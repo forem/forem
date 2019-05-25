@@ -1,3 +1,4 @@
+<% if articles %>
 <div class="more-articles container">
   <% articles.each do |article| %>
     <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>">
@@ -25,3 +26,4 @@
     </a>
   <% end %>
 </div>
+<% end %>
