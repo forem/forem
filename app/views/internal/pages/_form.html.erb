@@ -1,0 +1,25 @@
+<%= form_for [:internal, @page] do |form| %>
+  <%= form.label :title %>
+  <br/>
+  <%= form.text_field :title %>
+  <hr/>
+  <%= form.label :slug %>
+  <br/>
+  <%= form.text_field :slug %>
+  <hr/>
+  <%= form.label :body_markdown %>
+  <br/>
+  <%= form.text_area :body_markdown %>
+  <hr/>
+  <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
+  <br/>
+  <%= form.text_area :body_html %>
+  <hr/>
+  <%= form.label :description %>
+  <br/>
+  <%= form.text_field :description %>
+  <hr/>
+  <%= form.submit %>
+
+  <hr/>
+<% end %>

@@ -79,7 +79,7 @@ class StoriesController < ApplicationController
     @tag = params[:tag].downcase
     @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
-    @moderators = User.with_role(:tag_moderator, @tag_model)
+    @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
       redirect_to "/t/#{@tag_model.alias_for}"
       return
@@ -121,6 +121,7 @@ class StoriesController < ApplicationController
       end
     end
     assign_podcasts
+    assign_classified_listings
     @article_index = true
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
@@ -140,7 +141,6 @@ class StoriesController < ApplicationController
     @user = @organization
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.
       limited_column_select.
-      includes(:user).
       order("published_at DESC").page(@page).per(8))
     @article_index = true
     @organization_article_index = true
@@ -244,15 +244,21 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
+    num_hours = Rails.env.production? ? 24 : 800
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").
-      select(:slug, :title, :podcast_id).limit(5)
+      where("published_at > ?", num_hours.hours.ago).
+      select(:slug, :title, :podcast_id)
+  end
+
+  def assign_classified_listings
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
   end
 
   def article_finder(num_articles)
     tag = params[:tag]
-    articles = Article.published.includes(:user).limited_column_select.page(@page).per(num_articles)
+    articles = Article.published.limited_column_select.page(@page).per(num_articles)
     articles = articles.cached_tagged_with(tag) if tag.present? # More efficient than tagged_with
     articles
   end

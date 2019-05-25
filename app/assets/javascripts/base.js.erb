@@ -1,6 +1,7 @@
 //= require_tree ./initializers
 //= require_tree ./utilities
 //= require lib/xss
+//= require lib/webcomponents-loader
 //= require initializePage
 //= require utilities/getImageForLink
 //= require airbrake-js-client
@@ -457,7 +458,7 @@ var instantClick
   }
 
   function removeExpiredKeys(option) {
-    if ( Object.keys($fetchedBodies).length > 16 || option == "force" ) {
+    if ( Object.keys($fetchedBodies).length > 13 || option == "force" ) {
       $fetchedBodies = {};
     }
 

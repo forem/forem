@@ -3,9 +3,8 @@ require "rails_helper"
 RSpec.describe "Creating Comment", type: :system, js: true do
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
-  let(:article) do
-    create(:article, user_id: user.id, show_comments: true)
-  end
+  # the article should be created before signing in
+  let!(:article) { create(:article, user_id: user.id, show_comments: true) }
 
   before do
     sign_in user

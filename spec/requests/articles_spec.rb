@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Articles", type: :request do
   let(:user) { create(:user) }
+  let(:tag)  { create(:tag) }
 
   describe "GET /feed" do
     it "returns rss+xml content" do
@@ -56,6 +57,40 @@ RSpec.describe "Articles", type: :request do
     end
   end
 
+  describe "GET /feed/tag" do
+    shared_context "when tagged articles exist" do
+      let!(:tag_article) { create(:article, tags: tag.name) }
+    end
+
+    context "when :tag param is given and tag exists" do
+      include_context "when tagged articles exist"
+      before { get "/feed/tag/#{tag.name}" }
+
+      it "returns only articles for that tag" do
+        expect(response.body).to include(tag_article.title)
+      end
+    end
+
+    context "when :tag param is given and tag exists and is an alias" do
+      include_context "when tagged articles exist"
+      before do
+        alias_tag = create(:tag, alias_for: tag.name)
+        get "/feed/tag/#{alias_tag.name}"
+      end
+
+      it "returns only articles for the aliased for tag" do
+        expect(response.body).to include(tag_article.title)
+      end
+    end
+
+    context "when :tag param is given and tag does not exist" do
+      include_context "when tagged articles exist"
+      before { get "/feed/tag/unknown" }
+
+      it("renders empty body") { expect(response.body).to be_empty }
+    end
+  end
+
   describe "GET /new" do
     before { sign_in user }
 
@@ -71,6 +106,26 @@ RSpec.describe "Articles", type: :request do
         get "/new", params: { slug: "shecoded" }
         expect(response).to have_http_status(:ok)
       end
+    end
+  end
+
+  describe "GET /:path/edit" do
+    before { sign_in user }
+
+    it "returns a new article" do
+      article = create(:article, user_id: user.id)
+      get "#{article.path}/manage"
+      expect(response.body).to include("Manage Your Post")
+    end
+    it "returns unauthorized if user not author" do
+      second_user = create(:user)
+      article = create(:article, user_id: second_user.id)
+      expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+    it "shows v1 if article has frontmatter" do
+      article = create(:article, user_id: user.id)
+      get "#{article.path}/edit"
+      expect(response.body).to include("articleform__form--v1")
     end
   end
 end

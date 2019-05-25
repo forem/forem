@@ -73,10 +73,8 @@ function insertVideos(video_articles) {
   video_articles.forEach(function(video_article){
     var existingEl = document.getElementById("video-article-"+video_article.id);
     if(!existingEl) {
-      console.log('existing')
       var newHTML = buildVideoArticleHTML(video_article)
       newVideosHTML += newHTML
-      console.log(newHTML)
     }
   });
 
@@ -87,7 +85,6 @@ function insertVideos(video_articles) {
   var singleArticles = document.getElementsByClassName("single-article");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
-  console.log(nextPage)
   if (nextPage > 0) {
     fetching = false;
   }
@@ -95,10 +92,12 @@ function insertVideos(video_articles) {
 
 function buildVideoArticleHTML(video_article) {
   return '<a class="single-video-article single-article" href="'+video_article.path+'" id="video-article-'+video_article.id+'">\
-    <img src="'+video_article.cloudinary_video_url+'">\
-    <p><strong>'+video_article.title+'</strong></p>\
-    <p>'+video_article.user.name+'</p>\
-    <span class="video-timestamp">'+video_article.video_duration_in_minutes+'</span></a>';
+            <div class="video-image" style="background-image: url('+video_article.cloudinary_video_url+')">\
+              <span class="video-timestamp">'+video_article.video_duration_in_minutes+'</span>\
+            </div>\
+            <p><strong>'+video_article.title+'</strong></p>\
+           <p>'+video_article.user.name+'</p>\
+          </a>';
 }
 
 

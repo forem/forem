@@ -21,7 +21,7 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when signed out" do
       it "renders the signup cue" do
         get "/notifications"
-        expect(response.body).to include "signup-cue"
+        expect(response.body).to include "Great to have you"
       end
     end
 
@@ -61,12 +61,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include follow_message
       end
 
-      xit "does not group notifications that occur on different days" do
+      it "does group notifications that occur on different days" do
         mock_follow_notifications(2)
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.count).to eq 2
+        expect(notifications.count).to eq 1
       end
     end
 
@@ -110,12 +110,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
       end
 
-      xit "does not group notifications that are on different days but have the same reactable" do
+      it "does group notifications that are on different days but have the same reactable" do
         mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.count).to eq 2
+        expect(notifications.count).to eq 1
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
@@ -221,7 +221,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         sign_in user
         badge = create(:badge)
         badge_achievement = create(:badge_achievement, user: user, badge: badge)
-        Notification.send_new_badge_notification_without_delay(badge_achievement)
+        perform_enqueued_jobs do
+          Notification.send_new_badge_achievement_notification(badge_achievement)
+        end
         get "/notifications"
       end
 

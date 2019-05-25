@@ -11,6 +11,14 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def update_twitch_username?
+    current_user?
+  end
+
+  def update_language_settings?
+    current_user?
+  end
+
   def destroy?
     current_user?
   end
@@ -87,6 +95,7 @@ class UserPolicy < ApplicationPolicy
        feed_mark_canonical
        feed_url
        gitlab_url
+       inbox_guidelines
        linkedin_url
        location
        looking_for_work
@@ -104,17 +113,13 @@ class UserPolicy < ApplicationPolicy
        permit_adjacent_sponsors
        password
        password_confirmation
-       prefer_language_en
-       prefer_language_es
-       prefer_language_fr
-       prefer_language_it
-       prefer_language_pt
-       prefer_language_ja
        profile_image
        seeking_mentorship
        stackoverflow_url
        summary
        text_color_hex
+       twitch_url
+       twitch_username
        username
        website_url
        export_requested]

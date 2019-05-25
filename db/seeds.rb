@@ -3,7 +3,7 @@ Rails.logger.info "1/10 Creating Organizations"
 40.times do
   hex = SecureRandom.hex 7
   Organization.create!(
-    name: Faker::SiliconValley.company,
+    name: Faker::TvShows::SiliconValley.company,
     summary: Faker::Company.bs,
     remote_profile_image_url: logo = Faker::Company.logo,
     nav_image: logo,
@@ -153,7 +153,7 @@ podcast_objects = [
     slug: "developeronfire",
     twitter_username: "raelyard",
     website_url: "http://developeronfire.com",
-    main_color_hex: "",
+    main_color_hex: Faker::Color.hex_color,
     overcast_url: "https://overcast.fm/itunes1006105326/developer-on-fire",
     android_url: "http://subscribeonandroid.com/developeronfire.com/rss.xml",
     image: Rack::Test::UploadedFile.new(image_file, "image/jpeg")
@@ -201,12 +201,19 @@ ChatChannel.without_auto_index do
       slug: chan,
     )
   end
+
+  direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+  Message.create!(
+    chat_channel: direct_channel,
+    user: User.last,
+    message_markdown: "This is **awesome**",
+  )
 end
 ChatChannel.reindex!
 
 Rails.logger.info "9/10 Creating html_variant"
 
-HtmlVariant.create(
+HtmlVariant.create!(
   name: rand(100).to_s,
   group: "badge_landing_page",
   html: rand(1000).to_s,
@@ -215,6 +222,43 @@ HtmlVariant.create(
   approved: true,
   user_id: User.first.id,
 )
+
+Rails.logger.info "10. Creating Badges"
+
+Badge.create!(
+  title: Faker::Lorem.word,
+  description: Faker::Lorem.sentence,
+  badge_image: File.open(Rails.root.join("app", "assets", "images", "#{rand(1..40)}.png")),
+)
+
+Rails.logger.info "11. Creating FeedbackMessages"
+
+FeedbackMessage.create!(
+  reporter: User.last,
+  feedback_type: "spam",
+  message: Faker::Lorem.sentence,
+  category: "spam",
+  status: "Open",
+)
+
+Rails.logger.info "12. Creating Classified listings"
+
+users = User.order(Arel.sql("RANDOM()")).to_a
+users.each { |user| Credit.add_to(user, rand(100)) }
+
+listings_categories = ClassifiedListing.categories_available.keys
+listings_categories.each_with_index do |category, index|
+  # rotate users if they are less than the categories
+  user = users.at((index + 1) % users.length)
+  2.times do
+    ClassifiedListing.create!(
+      user: user,
+      title: Faker::Lorem.sentence,
+      body_markdown: Faker::Markdown.random,
+      category: category,
+    )
+  end
+end
 ##############################################################################
 
 Rails.logger.info "9/10 Devvy Ruxpin"

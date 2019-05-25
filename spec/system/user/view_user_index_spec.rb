@@ -52,7 +52,7 @@ RSpec.describe "User index", type: :system do
       it "embeds comment timestamp" do
         within("#substories .index-comments .single-comment") do
           ts = comment.decorate.published_timestamp
-          timestamp_selector = ".comment-date[data-published-timestamp='#{ts}']"
+          timestamp_selector = ".comment-date time[datetime='#{ts}']"
           expect(page).to have_selector(timestamp_selector)
         end
       end

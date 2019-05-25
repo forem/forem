@@ -94,8 +94,12 @@
     .onboarding-initial-welcome {
       font-weight: bold;
       font-size: calc( 1.9vw + 2.1vh + 10px);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
       p{
-        margin: 1.2em 0px;
+        margin: 0;
       }
       @media screen and (min-width: 800px) {
         font-size: 48px;

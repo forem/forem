@@ -1,3 +1,5 @@
+<% title "Edit #{@tag.name}" %>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"
   integrity="sha256-CJWfUCeP3jLdUMVNUll6yQx37gh9AKmXTRxvRf7jzro=" crossorigin="anonymous"></script>
 
@@ -82,4 +84,13 @@
       <%= submit_tag "Save Changes", class: "tag-edit-submit" %>
     </div>
   </div>
+<% end %>
+
+<% if current_user.has_role?(:super_admin) || current_user.has_role?(:admin) %>
+  <center>
+    <h1><a href="/internal/tags/<%= @tag.id %>" data-no-instant><%= @tag.name %> admin</a></h1>
+    <br/>
+    <br/>
+    <br/>
+  </center>
 <% end %>

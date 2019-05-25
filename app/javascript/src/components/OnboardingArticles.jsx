@@ -27,8 +27,11 @@ class OnboardingArticles extends Component {
     return (
       <div className="onboarding-user-container">
         <div className="onboarding-user-cta">
-          When you see an interesting post, you can{' '}
-          <strong className="purple">SAVE</strong> it. To get started, here are
+          When you see an interesting post, you can
+          {' '}
+          <strong className="purple">SAVE</strong>
+          {' '}
+it. To get started, here are
           pre-selected suggestions.
         </div>
         <div className="onboarding-user-list">

@@ -19,7 +19,7 @@ class EmailDigest
 
       articles = user_email_heuristic.articles_to_send
       begin
-        DigestMailer.digest_email(user, articles).deliver
+        DigestMailer.digest_email(user, articles).deliver if user.email_digest_periodic == true
       rescue StandardError => e
         Rails.logger.error("Email issue: #{e}")
       end

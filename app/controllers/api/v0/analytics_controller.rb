@@ -1,8 +1,8 @@
 module Api
   module V0
     class AnalyticsController < ApiController
-      rescue_from ArgumentError, with: :unprocessable_entity
-      rescue_from UnauthorizedError, with: :not_authorized
+      rescue_from ArgumentError, with: :error_unprocessable_entity
+      rescue_from UnauthorizedError, with: :error_unauthorized
 
       def totals
         user = get_authenticated_user!

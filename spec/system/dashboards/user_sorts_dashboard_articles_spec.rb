@@ -7,10 +7,10 @@ RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
   let(:article3) { create(:article, user_id: user.id, published_at: 5.minutes.ago, created_at: 3.days.ago, positive_reactions_count: 0, page_views_count: 1000, comments_count: 50) }
 
   before do
-    sign_in user
     article1
     article2
     article3
+    sign_in user
   end
 
   it "shows articles sorted by default in created_at DESC" do

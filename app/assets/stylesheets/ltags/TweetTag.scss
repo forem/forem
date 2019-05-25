@@ -78,6 +78,7 @@ blockquote.ltag__twitter-tweet{
       }
     }
     .ltag__twitter-tweet__full-name{
+      color: #1c2022;
       position:absolute;
       left:calc(0.3vw + 57px);
       top:calc(0.3vw + 13px);
@@ -109,6 +110,7 @@ blockquote.ltag__twitter-tweet{
     padding:0px calc(0.3vw + 13px);
   }
   .ltag__twitter-tweet__quote{
+    color: #1c2022;
     margin:calc(0.3vw + 13px) calc(0.3vw + 13px) 0px;
     padding:calc(0.2vw + 8px) calc(0.2vw + 8px);
     border:1px solid #dce3e8;

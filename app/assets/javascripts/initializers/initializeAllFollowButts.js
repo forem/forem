@@ -146,7 +146,7 @@ function assignState(butt, newState) {
     addFollowText(butt, style);
   } else if (newState === 'self') {
     butt.dataset.verb = 'self';
-    butt.innerHTML = 'EDIT PROFILE';
+    butt.textContent = 'EDIT PROFILE';
   } else {
     butt.dataset.verb = 'follow';
     addFollowingText(butt, style);
@@ -156,18 +156,18 @@ function assignState(butt, newState) {
 
 function addFollowText(butt, style) {
   if (style === 'small') {
-    butt.innerHTML = '+';
+    butt.textContent = '+';
   } else if (style === 'follow-back') {
-    butt.innerHTML = '+ FOLLOW BACK';
+    butt.textContent = '+ FOLLOW BACK';
   } else {
-    butt.innerHTML = '+ FOLLOW';
+    butt.textContent = '+ FOLLOW';
   }
 }
 
 function addFollowingText(butt, style) {
   if (style === 'small') {
-    butt.innerHTML = '✓';
+    butt.textContent = '✓';
   } else {
-    butt.innerHTML = '✓ FOLLOWING';
+    butt.textContent = '✓ FOLLOWING';
   }
 }

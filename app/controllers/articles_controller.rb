@@ -1,7 +1,7 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit update destroy]
+  before_action :set_article, only: %i[edit manage update destroy]
   before_action :raise_banned, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -14,17 +14,17 @@ class ArticlesController < ApplicationController
       order(published_at: :desc).
       page(params[:page].to_i).per(12)
 
-    if params[:username]
-      if (@user = User.find_by(username: params[:username]))
-        @articles = @articles.where(user_id: @user.id)
-      elsif (@user = Organization.find_by(slug: params[:username]))
-        @articles = @articles.where(organization_id: @user.id).includes(:user)
-      else
-        render body: nil
-        return
-      end
-    else
-      @articles = @articles.where(featured: true).includes(:user)
+    @articles = if params[:username]
+                  handle_user_or_organization_feed
+                elsif params[:tag]
+                  handle_tag_feed
+                else
+                  @articles.where(featured: true).includes(:user)
+                end
+
+    unless @articles
+      render body: nil
+      return
     end
 
     set_surrogate_key_header "feed"
@@ -34,10 +34,7 @@ class ArticlesController < ApplicationController
   end
 
   def new
-    @user = current_user
-    @organization = @user&.organization
-    @tag = Tag.find_by(name: params[:template])
-    @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+    base_editor_assigments
     @article = if @tag.present? && @user&.editor_version == "v2"
                  authorize Article
                  submission_template = @tag.submission_template_customized(@user.name).to_s
@@ -77,6 +74,16 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
     @user = @article.user
+    @version = @article.has_frontmatter? ? "v1" : "v2"
+    @organization = @user&.organization
+  end
+
+  def manage
+    @article = @article.decorate
+    authorize @article
+    @user = @article.user
+    @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
+    @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
     @organization = @user&.organization
   end
 
@@ -95,43 +102,58 @@ class ArticlesController < ApplicationController
       if @article
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
-        format.json { render json: { processed_html: processed_html, title: parsed["title"] }, status: 200 }
+        format.json do
+          render json: {
+            processed_html: processed_html,
+            title: parsed["title"],
+            tags: (Article.new.tag_list.add(parsed["tags"], parser: ActsAsTaggableOn::TagParser) if parsed["tags"]),
+            cover_image: (ApplicationController.helpers.cloud_cover_url(parsed["cover_image"]) if parsed["cover_image"])
+          }
+        end
       end
     end
   end
 
   def create
     authorize Article
+
     @user = current_user
-    @article = ArticleCreationService.
-      new(@user, article_params, job_opportunity_params).
-      create!
-    redirect_after_creation
+    @article = ArticleCreationService.new(@user, article_params_json).create!
+
+    render json: if @article.persisted?
+                   @article.to_json(only: [:id], methods: [:current_state_path])
+                 else
+                   @article.errors.to_json
+                 end
   end
 
   def update
     authorize @article
     @user = @article.user || current_user
-    @article.tag_list = []
-    @article.main_image = nil
+    not_found if @article.user_id != @user.id && !@user.has_role?(:super_admin)
     edited_at_date = if @article.user == current_user && @article.published
                        Time.current
                      else
                        @article.edited_at
                      end
-    if @article.update(article_params.merge(edited_at: edited_at_date))
-      handle_org_assignment
-      handle_hiring_tag
-      if @article.published
-        Notification.send_to_followers(@article, "Published") if @article.saved_changes["published_at"]&.include?(nil)
-        path = @article.path
-      else
-        Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
-        path = "/#{@article.username}/#{@article.slug}?preview=#{@article.password}"
+
+    updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
+    Notification.send_to_followers(@article, "Published") if updated && @article.published && @article.saved_changes["published_at"]&.include?(nil)
+
+    respond_to do |format|
+      format.html do
+        # NOTE: destination is used by /dashboard/organization when it re-assigns an article
+        # not a great solution but for now it will do
+        redirect_to(params[:destination] || @article.path)
       end
-      redirect_to(params[:destination] || path)
-    else
-      render :edit
+
+      format.json do
+        render json: if updated
+                       @article.to_json(only: [:id], methods: [:current_state_path])
+                     else
+                       @article.errors.to_json
+                     end
+      end
     end
   end
 
@@ -153,32 +175,29 @@ class ArticlesController < ApplicationController
 
   private
 
-  def handle_org_assignment
-    if @user.organization_id.present? && article_params[:publish_under_org].to_i == 1
-      @article.organization_id = @user.organization_id
-      @article.save
-    elsif article_params[:publish_under_org].present?
-      @article.organization_id = nil
-      @article.save
+  def base_editor_assigments
+    @user = current_user
+    @version = @user.editor_version if @user
+    @organization = @user&.organization
+    @tag = Tag.find_by(name: params[:template])
+    @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+  end
+
+  def handle_user_or_organization_feed
+    if (@user = User.find_by(username: params[:username]))
+      @articles = @articles.where(user_id: @user.id)
+    elsif (@user = Organization.find_by(slug: params[:username]))
+      @articles = @articles.where(organization_id: @user.id).includes(:user)
     end
   end
 
-  def handle_hiring_tag
-    if job_opportunity_params.present? && @article.tag_list.include?("hiring")
-      create_or_update_job_opportunity
-    elsif @article.job_opportunity && !@article.tag_list.include?("hiring")
-      @article.job_opportunity.destroy!
-    end
-  end
+  def handle_tag_feed
+    tag = Tag.find_by(name: params[:tag].downcase)
 
-  def create_or_update_job_opportunity
-    if @article.job_opportunity.present?
-      @article.job_opportunity.update(job_opportunity_params)
-    else
-      @job_opportunity = JobOpportunity.create(job_opportunity_params)
-      @article.job_opportunity = @job_opportunity
-      @article.save
-    end
+    return unless tag
+
+    @tag = tag.alias_for.presence || tag
+    @articles = @articles.cached_tagged_with(@tag)
   end
 
   def set_article
@@ -199,13 +218,42 @@ class ArticlesController < ApplicationController
     params.require(:article).permit(modified_params)
   end
 
-  def job_opportunity_params
-    return nil if params[:article][:job_opportunity].blank?
+  # TODO: refactor all of this update logic into the Articles::Updater possibly,
+  # ideally there should only be one place to handle the update logic
+  def article_params_json
+    params.require(:article) # to trigger the correct exception in case `:article` is missing
 
-    params[:article].require(:job_opportunity).permit(
-      :remoteness, :location_given, :location_city, :location_postal_code,
-      :location_country_code, :location_lat, :location_long
-    )
+    params["article"].transform_keys!(&:underscore)
+
+    # handle series/collections
+    if params["article"]["series"].present?
+      params["article"]["collection_id"] = Collection.find_series(params["article"]["series"], @user)&.id
+    elsif params["article"]["series"] == ""
+      params["article"]["collection_id"] = nil
+    end
+
+    allowed_params = if params["article"]["version"] == "v1"
+                       %i[body_markdown organization_id]
+                     else
+                       %i[
+                         title body_markdown main_image published description
+                         tag_list organization_id canonical_url series collection_id
+                       ]
+                     end
+
+    # NOTE: the organization logic is still a little counter intuitive but this should
+    # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
+    if params["article"]["user_id"] && org_admin_user_change_privilege
+      allowed_params << :user_id
+    elsif params["article"]["post_under_org"].to_s == "true"
+      # add the organization of the article if explicitly asked to do so
+      params["article"]["organization_id"] = @user.organization_id
+    elsif params["article"]["post_under_org"].to_s == "false"
+      # remove the organization of the article if explicitly asked to do so
+      params["article"]["organization_id"] = nil
+    end
+
+    params.require(:article).permit(allowed_params)
   end
 
   def redirect_after_creation

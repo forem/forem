@@ -2,8 +2,8 @@ class BufferUpdatesController < ApplicationController
   after_action :verify_authorized
 
   def create
-    authorize BufferUpdate
     @article = Article.find(params[:buffer_update][:article_id])
+    authorize @article, policy_class: BufferUpdatePolicy
     create_main_tweet
     create_satellite_tweets
     create_facebook_post

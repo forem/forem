@@ -10,7 +10,7 @@ class DashboardsController < ApplicationController
     target = @user.organization if @user&.organization && @user&.org_admin && params[:which] == "organization"
     @articles = target.articles.sorting(params[:sort]).decorate
     # Updates analytics in background if appropriate:
-    ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles
+    ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
   end
 
   def following
@@ -20,6 +20,8 @@ class DashboardsController < ApplicationController
     @followed_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
       order("points DESC").includes(:followable).limit(80)
     @followed_organizations = @user.follows_by_type("Organization").
+      order("created_at DESC").includes(:followable).limit(80)
+    @followed_podcasts = @user.follows_by_type("Podcast").
       order("created_at DESC").includes(:followable).limit(80)
   end
 

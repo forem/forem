@@ -58,7 +58,6 @@ export default class Article extends Component {
   handleReactionClick = e => {
     e.preventDefault();
     const { target } = e;
-    console.log(target.dataset.category);
     this.setState({ optimisticUserReaction: target.dataset.category });
     const article = this.props.resource;
     fetch('/reactions', {
@@ -95,7 +94,7 @@ export default class Article extends Component {
         onClick={this.handleReactionClick}
         data-category={curType[1]}
       >
-        <img src={curType[2]} data-category={curType[1]} />
+        <img src={curType[2]} data-category={curType[1]} alt={`${curType[1]} reaction`} />
       </button>
     )
   };
@@ -145,11 +144,6 @@ export default class Article extends Component {
             <span className="activechatchannel__activeArticleDetailsPath">
               {article.path}
             </span>
-            <img
-              alt="External Link Icon"
-              className="external-link-img"
-              src={openLink}
-            />
           </a>
         </div>
         <div className="container">
@@ -173,7 +167,7 @@ export default class Article extends Component {
                 </span>
                 <span className="published-at">
                   {' '}
-                  | 
+                  |
                   {' '}
                   {article.readable_publish_date}
                 </span>

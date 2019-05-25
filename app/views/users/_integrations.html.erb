@@ -6,3 +6,15 @@
   </div>
   <%= javascript_pack_tag "githubRepos", defer: true %>
 <% end %>
+
+<%= form_tag users_update_twitch_username_path do |f| %>
+  <h2>Live Streaming (Beta)</h2>
+  <div class="field">
+    <%= label_tag "user[twitch_username]", "Twitch Username" %>
+    <%= text_field_tag "user[twitch_username]", @user.twitch_username %>
+  </div>
+  <p><em>Add your Twitch username, and then checkout <a href="/live/<%= @user.username %>">dev.to/live/<%= @user.username %></a>.</em></p>
+  <p><em>It's a new thing we're trying out. Soon we'll be able to indicate when any community member is currently streaming.</em></p>
+
+  <%= submit_tag "SUBMIT", class: "cta" %>
+<% end %>

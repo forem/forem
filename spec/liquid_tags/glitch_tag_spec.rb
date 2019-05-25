@@ -31,31 +31,31 @@ RSpec.describe GlitchTag, type: :liquid_template do
 
     it "handles 'app' option" do
       template = generate_tag(id_with_app_option)
-      expected = "src=\"" + base_uri + "some-id?previewSize=100&path=index.html"
+      expected = "src=\"" + base_uri + "some-id?previewSize=100&amp;path=index.html"
       expect(template.render(nil)).to include(expected)
     end
 
     it "handles 'code' option" do
       template = generate_tag(id_with_code_option)
-      expected = "src=\"" + base_uri + "some-id?previewSize=0&path=index.html"
+      expected = "src=\"" + base_uri + "some-id?previewSize=0&amp;path=index.html"
       expect(template.render(nil)).to include(expected)
     end
 
     it "handles 'no-files' option" do
       template = generate_tag(id_with_no_files_option)
-      expected = "src=\"" + base_uri + "some-id?sidebarCollapsed=true&path=index.html"
+      expected = "src=\"" + base_uri + "some-id?sidebarCollapsed=true&amp;path=index.html"
       expect(template.render(nil)).to include(expected)
     end
 
     it "handles 'preview-first' option" do
       template = generate_tag(id_with_preview_first_option)
-      expected = "src=\"" + base_uri + "some-id?previewFirst=true&path=index.html"
+      expected = "src=\"" + base_uri + "some-id?previewFirst=true&amp;path=index.html"
       expect(template.render(nil)).to include(expected)
     end
 
     it "handles 'no-attribution' option" do
       template = generate_tag(id_with_no_attribution_option)
-      expected = "src=\"" + base_uri + "some-id?attributionHidden=true&path=index.html"
+      expected = "src=\"" + base_uri + "some-id?attributionHidden=true&amp;path=index.html"
       expect(template.render(nil)).to include(expected)
     end
 
@@ -68,7 +68,7 @@ RSpec.describe GlitchTag, type: :liquid_template do
     it "handles complex case" do
       template = generate_tag(id_with_many_options)
       expected = "src=\"" + base_uri +
-        "some-id?previewSize=100&attributionHidden=true&sidebarCollapsed=true&path=script.js"
+        "some-id?previewSize=100&amp;attributionHidden=true&amp;sidebarCollapsed=true&amp;path=script.js"
       expect(template.render(nil)).to include(expected)
     end
 

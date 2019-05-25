@@ -8,6 +8,7 @@
     <% else %>
       <p><em>Use <strong>markdown</strong> to write and format <a href="/">dev.to</a> posts. Use
         <strong>liquid tags</strong> to make add rich content such as tweets and videos. More below.</em> ❤️</p>
+      <p><em><b>We have two editor versions</b>. If you prefer Jekyll-style "frontmatter", switch to "v1" in <a href="/settings/misc">/settings/misc</a>.</em></p>
     <% end %>
     <h2 style="font-size:2.8em"><strong>✍ Markdown Basics</strong></h2>
     <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
@@ -20,6 +21,14 @@
 
     <h3><strong>Links</strong></h3>
     <p><a href="https://dev.to">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
+    <p><a name="anchored">Anchored links</a> (For things like a Table of Contents)</p>
+    <pre>
+      ## Table Of Contents
+        * [Chapter 1](#chapter-1)
+        * [Chapter 2](#chapter-2)
+
+      ### Chapter 1 <%= "<a name=\"chapter-1\"></a>" %>
+    </pre>
 
     <h3><strong>Inline Images</strong></h3>
     <p>
@@ -122,9 +131,16 @@
 
     <h3><strong>GitHub Gist Embed</strong></h3>
     <p>All you need is the gist link:</p>
-    <pre>
-    {% gist https://gist.github.com/QuincyLarson/4bb1682ce590dc42402b2edddbca7aaa %}
-    </pre>
+    <code>
+    {% gist https://gist.github.com/CristinaSolana/1885435 %}
+    </code>
+    <dl>
+      <dt><code>Single File Embed</code></dt>
+      <dd>
+        You can choose to embed a single gist file. <br>
+        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code>
+      </dd>
+    </dl>
 
     <h3><strong>Video Embed</strong></h3>
     <p>All you need is the <code>id</code> from the URL.
@@ -132,6 +148,10 @@
       <li><strong>YouTube:</strong> <code>{% youtube dQw4w9WgXcQ %}</code></li>
       <li><strong>Vimeo:</strong> <code>{% vimeo 193110695 %}</code></li>
     </ul>
+
+    <h3><strong>Medium Embed</strong></h3>
+    <p>Just enter the full URL of the Medium article you are trying to embed.</p>
+    <code>{% medium https://medium.com/s/story/boba-science-how-can-i-drink-a-bubble-tea-to-ensure-that-i-dont-finish-the-tea-before-the-bobas-7fc5fd0e442d %}</code>
 
     <h3><strong>SlideShare Embed</strong></h3>
     <p>All you need is the SlideShare <code>key</code></p>
@@ -156,12 +176,18 @@
     <h3><strong>Stackblitz Embed</strong></h3>
     <p>All you need is the ID of the Stackblitz:</p>
     <code>{% stackblitz ball-demo %}</code>
-    <dt><code>Default view</code></dt>
-    <dd>
-      You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
-      <i>both</i><br>
-      <code>{% stackblitz ball-demo view=preview %}</code>
-    </dd>
+    <dl>
+      <dt><code>Default view</code></dt>
+      <dd>
+        You can change the default view, the options are <i>both</i>, <i>preview</i>, <i>editor</i>. Defaults to
+        <i>both</i><br>
+        <code>{% stackblitz ball-demo view=preview %}</code>
+      </dd>
+      <dt><code>Default file</code></dt>
+      <dd>
+        You can change the default file you want your embed to point to<br>
+        <code>{% stackblitz ball-demo file=style.css %}</code>
+      </dd>
 
     <h3><strong>CodeSandbox Embed</strong></h3>
     <p>All you need is the ID of the Sandbox:</p>
@@ -236,6 +262,12 @@
     <p>All you need is the article id code from the embed code:</p>
     <pre>
       {% blogcast <span style="color: orange;">1234</span> %}
+    </pre>
+
+    <h3><strong>Parler Tag</strong></h3>
+    <p>Enter the full url of the Parler.io audio file you want to embed. </p>
+    <pre>
+      {% parler https://www.parler.io/audio/73240183203/d53cff009eac2ab1bc9dd8821a638823c39cbcea.7dd28611-b7fc-4cf8-9977-b6e3aaf644a1.mp3 %}
     </pre>
 
     <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>

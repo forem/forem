@@ -40,22 +40,13 @@ class Internal::UsersController < Internal::ApplicationController
     @new_mentee = user_params[:add_mentee]
     @new_mentor = user_params[:add_mentor]
     make_matches
+    manage_credits
     add_note if user_params[:new_note]
     if user_params[:quick_match]
       redirect_to "/internal/users/unmatched_mentee"
     else
       redirect_to "/internal/users/#{params[:id]}"
     end
-  end
-
-  def add_note
-    Note.create(
-      author_id: current_user.id,
-      noteable_id: @user.id,
-      noteable_type: "User",
-      reason: "misc_note",
-      content: user_params[:new_note],
-    )
   end
 
   def user_status
@@ -67,19 +58,6 @@ class Internal::UsersController < Internal::ApplicationController
       flash[:error] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  def make_matches
-    return if @new_mentee.blank? && @new_mentor.blank?
-
-    if @new_mentee.present?
-      mentee = User.find(@new_mentee)
-      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
-    end
-    return if @new_mentor.blank?
-
-    mentor = User.find(@new_mentor)
-    MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
   end
 
   def banish
@@ -95,8 +73,8 @@ class Internal::UsersController < Internal::ApplicationController
   def full_delete
     @user = User.find(params[:id])
     begin
-      Moderator::BanishUser.call_full_delete(admin: current_user, user: @user)
-      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If this is a GDPR delete, remember to delete them from Mailchimp and Google Analytics."
+      Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
+      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
     rescue StandardError => e
       flash[:error] = e.message
     end
@@ -115,18 +93,65 @@ class Internal::UsersController < Internal::ApplicationController
 
   private
 
+  def manage_credits
+    add_credits if user_params[:add_credits]
+    add_org_credits if user_params[:add_org_credits]
+    remove_org_credits if user_params[:remove_org_credits]
+    remove_credits if user_params[:remove_credits]
+  end
+
+  def add_note
+    Note.create(
+      author_id: current_user.id,
+      noteable_id: @user.id,
+      noteable_type: "User",
+      reason: "misc_note",
+      content: user_params[:new_note],
+    )
+  end
+
+  def add_credits
+    amount = user_params[:add_credits].to_i
+    Credit.add_to(@user, amount)
+  end
+
+  def remove_credits
+    amount = user_params[:remove_credits].to_i
+    Credit.remove_from(@user, amount)
+  end
+
+  def add_org_credits
+    org = Organization.find(@user.organization_id)
+    amount = user_params[:add_org_credits].to_i
+    Credit.add_to_org(org, amount)
+  end
+
+  def remove_org_credits
+    org = Organization.find(@user.organization_id)
+    amount = user_params[:remove_org_credits].to_i
+    Credit.remove_from_org(org, amount)
+  end
+
+  def make_matches
+    return if @new_mentee.blank? && @new_mentor.blank?
+
+    if @new_mentee.present?
+      mentee = User.find(@new_mentee)
+      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
+    end
+    return if @new_mentor.blank?
+
+    mentor = User.find(@new_mentor)
+    MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
+  end
+
   def user_params
-    params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :quick_match,
-                                 :new_note,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :note_for_current_role,
-                                 :mentorship_note,
-                                 :user_status,
-                                 :toggle_mentorship,
-                                 :pro,
-                                 :merge_user_id)
+    allowed_params = %i[
+      seeking_mentorship offering_mentorship quick_match new_note add_mentor
+      add_mentee note_for_current_role mentorship_note user_status
+      toggle_mentorship pro merge_user_id add_credits remove_credits
+      add_org_credits remove_org_credits ghostify
+    ]
+    params.require(:user).permit(allowed_params)
   end
 end

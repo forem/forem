@@ -1,4 +1,6 @@
 @import 'variables';
+@import 'mixins';
+
 .user-profile-header{
   padding:calc(1.4vw + 8px) 0px;
   font-family: $helvetica;
@@ -7,8 +9,11 @@
   width:1216px;
   max-width:92%;
   margin: 30px auto 20px;
-  background: white;
-  background: var(--theme-container-background, #fff);
+  @include themeable(
+    background, 
+    theme-container-background, 
+    #fff
+  );
   border-radius: 3px;
   @media screen and ( min-width: 950px ){
     max-width:98%;
@@ -35,12 +40,6 @@
         max-height:calc(3vw + 33px);
         max-width:calc(3vw + 33px);
       }
-    }
-  }
-  &.readinglist-header{
-    display: block;
-    @media screen and ( min-width: 950px ){
-      display: none;
     }
   }
   &.podcast-header{
@@ -162,8 +161,11 @@
         padding:0px 0px;
         margin:0;
         font-style: italic;
-        color:$medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(
+          color, 
+          theme-secondary-color, 
+          $medium-gray
+        );
         width: 94%;
         font-size:0.9em;
         margin-top:12px;
@@ -252,8 +254,11 @@
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(
+          color, 
+          theme-secondary-color, 
+          $medium-gray
+        );
       }
       .value{
         display: inline-block;
@@ -392,45 +397,62 @@
     border: 1px solid #d6d6d6;
     box-shadow: 3px 3px 0px #bababa;
     border-radius: 3px;
-    max-width: 90%;
-    width: 80%;
+    max-width: 95%;
+    width: 600px;
 
     .message-form {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       flex-wrap: nowrap;
       justify-content: space-around;
       align-items: center;
       align-content: stretch;
-
+      @media screen and ( min-width: 500px ){
+        flex-direction: row;
+      }
       textarea {
         border-radius: 3px;
         border: 1px solid #d6d6d6;
         font-size: 14px;
         margin: 10px;
         padding: 5px;
-        width: calc(100% - 100px);
+        width: calc(100% - 50px);
         order: 1;
         flex-grow: 1;
+        height: 80px;
         resize: vertical;
-        max-height:30%;
+        max-height:50vh;
+        @media screen and ( min-width: 500px ){
+          width: calc(100% - 100px);
+        }
       }
 
       .submit-message {
-        margin: 10px 10px 10px 0;
+        margin: 0px auto;
         border-radius: 3px;
         background: $dark-purple;
         font-weight: 600px;
         font-family: $helvetica-condensed;
-        width: 80px;
+        width: 220px;
         color: white;
-        font-size: 18px;
-        height: 80px;
+        font-size: 17px;
+        height: 40px;
         order: 10;
         flex-grow: 1;
+        border: 0px;
+        @media screen and ( min-width: 500px ){
+          margin: 10px 10px 10px 0;
+          width: 82px;
+          height: 80px;
+        }  
       }
     }
-
+    p {
+      color: $dark-gray;
+      font-size: 0.8em;
+      margin: 5px auto;
+      width: 96%;
+    }
     .close-modal {
       position: absolute;
       right: 10px;

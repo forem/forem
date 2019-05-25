@@ -4,12 +4,12 @@ function setReactionCount(reactionName, newCount) {
   var reactionNumber = document.getElementById("reaction-number-" + reactionName);
   if (newCount > 0) {
     reactionClassList.add("activated");
-    reactionNumber.innerHTML = newCount;
+    reactionNumber.textContent = newCount;
 
   }
   else {
     reactionClassList.remove("activated");
-    reactionNumber.innerHTML = "0";
+    reactionNumber.textContent = "0";
   }
 }
 
@@ -28,7 +28,7 @@ function hasUserReacted(reactionName) {
 }
 
 function getNumReactions(reactionName) {
-  var num = document.getElementById("reaction-number-" + reactionName).innerHTML;
+  var num = document.getElementById("reaction-number-" + reactionName).textContent;
   if (num == "") {
     return 0;
   }
@@ -79,9 +79,6 @@ function initializeArticleReactions() {
           behavior: 'instant',
           block: 'start',
         });
-        setTimeout(function(){
-          e.target.blur();
-        },50)
       };
     }
   }, 3)
