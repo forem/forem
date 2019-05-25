@@ -48,7 +48,7 @@ RSpec.describe "feedback_messages", type: :request do
 
       before do
         verify_captcha_and_slack_ping
-        login_as(user)
+        sign_in(user)
         post "/feedback_messages", params: valid_abuse_report_params
       end
 
