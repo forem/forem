@@ -32,10 +32,10 @@
     </div>
     <div class="buffer-area" style="text-align: left">
       <br>
-      <button class="btn toggle-buffering-butt" style="border: 1px solid grey; margin-top: 2px">Share to Buffer</button><% if listing.last_buffered.present? %> <em>Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %></em><% end %>
+      <button class="btn toggle-buffering-butt" style="border: 1px solid grey; margin-top: 2px">Share to Buffer</button><% if listing.last_buffered.present? %> <em> Last shared: <%= listing.last_buffered.strftime("%d %B %Y") %></em><% end %>
       <br>
       <br>
-      <div class="buffering-area-for-single-listing">
+      <div class="buffering-area-for-single-listing" style="display: none;">
         <div class="grid-item">
           <p class="listing-title"><strong><%= listing.title %></strong></p>
           <p class="listing-body"><%= listing.processed_html&.html_safe %></p>
@@ -44,7 +44,7 @@
           <%= form_tag "/internal/buffer_updates" do %>
             <input type="hidden" name="social_channel" value="listings_twitter" />
             <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-            <textarea cols="37" rows="5" wrap="hard" name="tweet" maxlength="255"><%= listing.title %><% if User.find(listing.user_id).twitter_username.present? %>&#013Listed by @<%= User.find(listing.user_id).twitter_username %>&#013<% end %>&#013#DEVCommunity</textarea>
+            <textarea cols="37" rows="5" wrap="hard" name="tweet" maxlength="255"><%= listing.title %><% if User.find(listing.user_id).twitter_username.present? %>&#013&#013Listed by @<%= User.find(listing.user_id).twitter_username %> 😎&#013<% end %>&#013#DEVCommunity</textarea>
             <br>
             <button class="btn-info tweet-listing">🐦 Tweet 🐦</button>
           <% end %>
@@ -54,28 +54,4 @@
   </div>
 <% end %>
 <%= paginate @classified_listings %>
-
-<script>
-  $(".toggle-buffering-butt").click(function (e) {
-      e.preventDefault()
-      console.log($(this).closest(".buffer-area").find(".buffering-area-for-single-listing").toggle());
-    })
-
-  $('.buffering-area-for-single-listing').on("submit", "form", function () {
-    var form = $(this);
-    var valuesToSubmit = $(this).serialize();
-    $.ajax({
-      type: "POST",
-      url: $(this).attr('action'),
-      data: valuesToSubmit,
-    }).success(function (json) {
-      console.log("success")
-      form.parents(".single-internal-listing").addClass("highlighted-bg")
-      form.parents(".single-internal-listing").addClass("highlighted-border")
-      setTimeout(function () {
-        form.parents(".single-internal-listing").removeClass("highlighted-bg")
-      }, 350)
-    });
-    return false; // prevents normal behaviour
-  });
-</script>
+<%= render "internal/articles/article_script" %>

@@ -4,8 +4,8 @@ class Internal::BufferUpdatesController < Internal::ApplicationController
     article = Article.find(article_id) if article_id.present?
     fb_post = params[:fb_post]
     tweet = params[:tweet]
-    listing = ClassifiedListing.find(params[:listing_id])
-
+    listing_id = params[:listing_id]
+    listing = ClassifiedListing.find(params[:listing_id]) if listing_id.present?
     case params[:social_channel]
     when "main_twitter"
       Bufferizer.new("article", article, tweet).main_teet!
