@@ -13,8 +13,8 @@ module Api
       respond_to :json
 
       def index
-        @commentable = Article.find(params[:a_id])
-        @commentable_type = "Article"
+        article = Article.find(params[:a_id])
+        @comments = Comment.rooted_on(article, "Article").order(score: :desc)
       end
 
       def show
