@@ -1,33 +1,44 @@
 class ArticleSuggester
   attr_accessor :article
+
   def initialize(article)
     @article = article
   end
 
-  def articles(num = 4)
+  def articles(max: 4)
     if article.tag_list.any?
-      (suggestions_by_tag + other_suggestions(num)).flatten.first(num).to_a
+      # avoid loading more data if we don't need to
+      articles_with_requested_tags = suggestions_by_tag(max: max)
+      if articles_with_requested_tags.size == max
+        articles_with_requested_tags
+      else
+        # if there are not enough articles with the requested tags, load other suggestions
+        num_remaining_needed = max - articles_with_requested_tags.size
+        articles_with_requested_tags.union(other_suggestions(max: num_remaining_needed))
+      end
     else
-      other_suggestions(num).to_a
+      other_suggestions(max: max)
     end
   end
 
-  def other_suggestions(num = 4)
+  private
+
+  def other_suggestions(max: 4)
     Article.published.where(featured: true).
       where.not(id: article.id).
       order("hotness_score DESC").
       includes(:user).
       offset(rand(0..offsets[1])).
-      first(num)
+      first(max)
   end
 
-  def suggestions_by_tag
+  def suggestions_by_tag(max: 4)
     Article.published.tagged_with(article.tag_list, any: true).
       where.not(id: article.id).
       order("hotness_score DESC").
       includes(:user).
       offset(rand(0..offsets[0])).
-      first(4)
+      first(max)
   end
 
   def offsets
