@@ -18,7 +18,6 @@
       <br /><br />
       <%= render "articles/video_player", meta_tags: false, article: @article %>
       <div class="article-form-video-image-url">
-
         <%= form_for(@article) do |f| %>
           Preview Image URL: <%= f.text_field :video_thumbnail_url, placeholder: "New Thumbnail URL" %>
           <%= f.submit "Submit Change", class: "cta" %>
@@ -29,4 +28,4 @@
 <% end %>
 
 <%= javascript_pack_tag "articleForm", defer: true %>
-<%= render "articles/v2_form" %>
+<%= render "articles/v2_form", article: @article, organization: @organization, version: @version %>
