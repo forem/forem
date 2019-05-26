@@ -50,10 +50,6 @@ module Articles
 
     def load_article
       relation = user.has_role?(:super_admin) ? Article.includes(:user) : user.articles
-
-      # if there are tags involved, preload the tags relationship
-      # relation = relation.preload(:tags) if article_params[:tags]
-
       relation.find(article_id)
     end
   end
