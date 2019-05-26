@@ -1,6 +1,4 @@
 class ArticleSuggester
-  attr_accessor :article
-
   def initialize(article)
     @article = article
   end
@@ -8,14 +6,17 @@ class ArticleSuggester
   def articles(max: 4)
     if article.tag_list.any?
       # avoid loading more data if we don't need to
-      articles_with_requested_tags = suggestions_by_tag(max: max)
-      if articles_with_requested_tags.size == max
-        articles_with_requested_tags
-      else
-        # if there are not enough articles with the requested tags, load other suggestions
-        num_remaining_needed = max - articles_with_requested_tags.size
-        articles_with_requested_tags.union(other_suggestions(max: num_remaining_needed))
-      end
+      tagged_suggestions = suggestions_by_tag(max: max)
+      return tagged_suggestions if tagged_suggestions.size == max
+
+      # if there are not enough tagged articles, load other suggestions
+      # ignoring tagged articles that might be relevant twice, hence avoiding duplicates
+      num_remaining_needed = max - tagged_suggestions.size
+      other_articles = other_suggestions(
+        max: num_remaining_needed,
+        ids_to_ignore: tagged_suggestions.pluck(:id),
+      )
+      tagged_suggestions.union(other_articles)
     else
       other_suggestions(max: max)
     end
@@ -23,9 +24,12 @@ class ArticleSuggester
 
   private
 
-  def other_suggestions(max: 4)
+  attr_reader :article
+
+  def other_suggestions(max: 4, ids_to_ignore: [])
+    ids_to_ignore << article.id
     Article.published.where(featured: true).
-      where.not(id: article.id).
+      where.not(id: ids_to_ignore).
       order("hotness_score DESC").
       includes(:user).
       offset(rand(0..offsets[1])).
