@@ -57,6 +57,10 @@ export class Search extends Component {
     this.enableSearchPageChecker = true;
   };
 
+  hasKeyModifiers = event => {
+    return event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
+  };
+
   search = event => {
     const {
       key,
@@ -109,7 +113,10 @@ export class Search extends Component {
         document.getElementsByTagName('body')[0].classList.remove('zen-mode');
         searchBox.focus();
         searchBox.select();
-      } else if (event.key === GLOBAL_MINIMIZE_KEY) {
+      } else if (
+        event.key === GLOBAL_MINIMIZE_KEY &&
+        !this.hasKeyModifiers(event)
+      ) {
         event.preventDefault();
         document.getElementsByTagName('body')[0].classList.toggle('zen-mode');
       }
