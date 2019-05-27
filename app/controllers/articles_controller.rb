@@ -89,6 +89,7 @@ class ArticlesController < ApplicationController
 
   def preview
     authorize Article
+
     begin
       fixed_body_markdown = MarkdownFixer.fix_for_preview(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
@@ -98,6 +99,7 @@ class ArticlesController < ApplicationController
       @article = Article.new(body_markdown: params[:article_body])
       @article.errors[:base] << ErrorMessageCleaner.new(e.message).clean
     end
+
     respond_to do |format|
       if @article
         format.json { render json: @article.errors, status: :unprocessable_entity }
