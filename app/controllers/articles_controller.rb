@@ -73,9 +73,8 @@ class ArticlesController < ApplicationController
 
   def edit
     authorize @article
-    @user = @article.user
+    @organization = @article.user&.organization
     @version = @article.has_frontmatter? ? "v1" : "v2"
-    @organization = @user&.organization
   end
 
   def manage
@@ -203,7 +202,7 @@ class ArticlesController < ApplicationController
   def set_article
     owner = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username])
     found_article = if params[:slug]
-                      owner.articles.includes(:user).find_by(slug: params[:slug])
+                      owner.articles.find_by(slug: params[:slug])
                     else
                       Article.includes(:user).find(params[:id])
                     end

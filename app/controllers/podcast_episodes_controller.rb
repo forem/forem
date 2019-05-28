@@ -5,7 +5,7 @@ class PodcastEpisodesController < ApplicationController
   def index
     @podcast_index = true
     @podcasts = Podcast.order("title asc")
-    @podcast_episodes = PodcastEpisode.order("published_at desc").first(20)
+    @podcast_episodes = PodcastEpisode.includes(:podcast).order("published_at desc").first(20)
     if params[:q].blank?
       set_surrogate_key_header("podcast_episodes_all " + params[:q].to_s,
                                @podcast_episodes.map { |e| e["record_key"] })
