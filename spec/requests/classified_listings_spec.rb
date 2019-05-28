@@ -34,18 +34,18 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect(response.body).to include("prohibited this listing from being saved")
       end
 
-      xit "renders error if the user does not have enough credits" do
+      it "redirects if the user does not have enough credits" do
         Credit.delete_all
         post "/listings", params: valid_listing_params
-        expect(response.body).to include("prohibited this listing from being saved")
+        expect(response.body).to redirect_to("/credits")
       end
 
-      xit "renders errors if the org does not have enough credits" do
+      it "redirects if the org does not have enough credits" do
         org_admin = create(:user, :org_admin)
         valid_listing_params[:classified_listing][:post_as_organization] = "1"
         sign_in org_admin
         post "/listings", params: valid_listing_params
-        expect(response.body).to include("prohibited this listing from being saved")
+        expect(response.body).to redirect_to("/credits")
       end
     end
 

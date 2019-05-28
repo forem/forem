@@ -16,7 +16,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when logged in" do
       it "renders user's articles" do
-        login_as user
+        sign_in user
         article
         get "/dashboard"
         expect(response.body).to include CGI.escapeHTML(article.title)
@@ -27,7 +27,7 @@ RSpec.describe "Dashboards", type: :request do
       it "renders the specified user's articles" do
         article
         user
-        login_as super_admin
+        sign_in super_admin
         get "/dashboard/#{user.username}"
         expect(response.body).to include CGI.escapeHTML(article.title)
       end
@@ -48,7 +48,7 @@ RSpec.describe "Dashboards", type: :request do
       it "renders user's organization articles" do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
         article.update(organization_id: organization.id)
-        login_as user
+        sign_in user
         get "/dashboard/organization"
         expect(response.body).to include "#{CGI.escapeHTML(organization.name)} ("
       end
@@ -65,7 +65,7 @@ RSpec.describe "Dashboards", type: :request do
 
     describe "followed users section" do
       before do
-        login_as user
+        sign_in user
         user.follow second_user
         user.reload
         get "/dashboard/following"
@@ -84,7 +84,7 @@ RSpec.describe "Dashboards", type: :request do
       let(:tag) { create(:tag) }
 
       before do
-        login_as user
+        sign_in user
         user.follow tag
         user.reload
         get "/dashboard/following"
@@ -103,7 +103,7 @@ RSpec.describe "Dashboards", type: :request do
       let(:organization) { create(:organization) }
 
       before do
-        login_as user
+        sign_in user
         user.follow organization
         user.reload
         get "/dashboard/following"
@@ -130,7 +130,7 @@ RSpec.describe "Dashboards", type: :request do
     context "when logged in" do
       it "renders the current user's followers" do
         second_user.follow user
-        login_as user
+        sign_in user
         get "/dashboard/user_followers"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
@@ -147,7 +147,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when user does not have permission" do
       it "raises unauthorized" do
-        login_as user
+        sign_in user
         expect { get "/dashboard/pro" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
@@ -155,7 +155,7 @@ RSpec.describe "Dashboards", type: :request do
     context "when user has pro permission" do
       it "shows page properly" do
         user.add_role(:pro)
-        login_as user
+        sign_in user
         get "/dashboard/pro"
         expect(response.body).to include("pro")
       end
@@ -177,7 +177,7 @@ RSpec.describe "Dashboards", type: :request do
         org = create :organization
         create(:organization_membership, user: user, organization: org)
         user.add_role(:pro)
-        login_as user
+        sign_in user
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end

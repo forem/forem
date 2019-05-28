@@ -12,7 +12,7 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     context "when signed-in" do
-      before { login_as user }
+      before { sign_in user }
 
       it "renders various settings tabs properly" do
         %w[organization switch-organizations misc account].each do |tab|
@@ -40,7 +40,7 @@ RSpec.describe "UserSettings", type: :request do
   end
 
   describe "PUT /update/:id" do
-    before { login_as user }
+    before { sign_in user }
 
     it "updates summary" do
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
@@ -143,7 +143,7 @@ RSpec.describe "UserSettings", type: :request do
   end
 
   describe "POST /users/update_language_settings" do
-    before { login_as user }
+    before { sign_in user }
 
     it "updates language settings" do
       post "/users/update_language_settings", params: { user: { preferred_languages: %w[ja es] } }
@@ -170,7 +170,7 @@ RSpec.describe "UserSettings", type: :request do
     context "when user has two identities" do
       let(:user) { create(:user, :two_identities) }
 
-      before { login_as user }
+      before { sign_in user }
 
       it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }
@@ -211,7 +211,7 @@ RSpec.describe "UserSettings", type: :request do
 
     # Users won't be able to do this via the view, but in case they hit the route somehow...
     context "when user has only one identity" do
-      before { login_as user }
+      before { sign_in user }
 
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
@@ -235,7 +235,7 @@ RSpec.describe "UserSettings", type: :request do
   describe "DELETE /users/destroy" do
     context "when user has no articles or comments" do
       before do
-        login_as user
+        sign_in user
         delete "/users/destroy"
       end
 
@@ -264,7 +264,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "does not allow invalid users to delete their account" do
         users.each do |user|
-          login_as user
+          sign_in user
           delete "/users/destroy"
           expect(user.persisted?).to eq true
         end
@@ -272,7 +272,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "redirects successfully to /settings/account" do
         users.each do |user|
-          login_as user
+          sign_in user
           delete "/users/destroy"
           expect(response).to redirect_to "/settings/account"
         end
@@ -280,7 +280,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "shows the proper error message after redirecting" do
         users.each do |user|
-          login_as user
+          sign_in user
           delete "/users/destroy"
           expect(flash[:error]).to eq "An error occurred. Try requesting an account deletion below."
         end

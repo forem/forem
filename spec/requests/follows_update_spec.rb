@@ -6,7 +6,7 @@ RSpec.describe "Following/Unfollowing", type: :request do
   let(:tag) { create(:tag) }
 
   before do
-    login_as user
+    sign_in user
   end
 
   describe "PUT follows/:id" do

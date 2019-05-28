@@ -61,12 +61,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include follow_message
       end
 
-      xit "does not group notifications that occur on different days" do
+      it "does group notifications that occur on different days" do
         mock_follow_notifications(2)
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.count).to eq 2
+        expect(notifications.count).to eq 1
       end
     end
 
@@ -110,12 +110,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
       end
 
-      xit "does not group notifications that are on different days but have the same reactable" do
+      it "does group notifications that are on different days but have the same reactable" do
         mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
-        expect(notifications.count).to eq 2
+        expect(notifications.count).to eq 1
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
