@@ -202,7 +202,6 @@ class StoriesController < ApplicationController
     assign_second_and_third_user
     not_found if permission_denied?
     @comment = Comment.new(body_markdown: @article&.comment_template)
-    @suggested_articles = ArticleSuggester.new(@article).articles(max: 4)
   end
 
   def permission_denied?

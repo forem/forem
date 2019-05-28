@@ -207,7 +207,8 @@
                  follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
-    <%= render "articles/bottom_content", articles: @suggested_articles %>
+    <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+    <%= render "articles/bottom_content", articles: suggested_articles %>
   <% end %>
 </div>
 
