@@ -25,7 +25,9 @@ RSpec.describe OrganizationPolicy do
   end
 
   context "when user is an org admin of an org" do
-    let(:user) { build(:user) }
+    subject(:organization_policy) { described_class.new(user, org) }
+
+    let(:user) { create(:user) }
     let(:org)  { create(:organization) }
 
     before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }
@@ -36,10 +38,13 @@ RSpec.describe OrganizationPolicy do
   end
 
   context "when user is an org admin of another org" do
-    let(:user) { build(:user) }
-    let(:new_org) { build(:organization) }
+    subject(:organization_policy) { described_class.new(user, new_org) }
 
-    before { user.update(organization: new_org, org_admin: true) }
+    let(:user) { create(:user) }
+    let(:org)  { create(:organization) }
+    let(:new_org) { create(:organization) }
+
+    before { create(:organization_membership, user: user, organization: org, type_of_user: "admin") }
 
     it "does not allow the user to update another org" do
       expect(organization_policy).to forbid_action(:update)
