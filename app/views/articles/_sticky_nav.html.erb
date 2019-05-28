@@ -73,7 +73,7 @@
     <% end %>
   </div>
   <% if @variant_number.to_i == 1 %>
-    <% cache("html-variant-sidebar#{rand(150)}", expires_in: 8.hours) do %>
+    <% cache("html-variant-sidebar#{rand(300)}", expires_in: 2.hours) do %>
       <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array) %>
       <% if @html_variant %>
         <div class="html-variant-wrapper" id="html-variant-article-show-sidebar" data-variant-id="<%= @html_variant.id %>">
