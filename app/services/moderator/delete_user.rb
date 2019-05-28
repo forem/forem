@@ -51,7 +51,8 @@ module Moderator
     def reassign_articles
       return unless user.articles.any?
 
-      user.articles.find_each do |article|
+      # preload associations that are going to be used during indexing
+      user.articles.preload(:taggings, :organization).find_each do |article|
         path = "/#{@ghost.username}/#{article.slug}"
         article.update_columns(user_id: @ghost.id, path: path)
         article.index!

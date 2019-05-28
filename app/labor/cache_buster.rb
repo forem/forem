@@ -22,7 +22,7 @@ class CacheBuster
     end
     bust("#{commentable.path}/comments/")
     bust(commentable.path.to_s)
-    commentable.comments.find_each do |c|
+    commentable.comments.includes(:user).find_each do |c|
       bust(c.path)
       bust(c.path + "?i=i")
     end
