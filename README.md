@@ -73,7 +73,7 @@ When in doubt, ask a [core team member](#core-team)! You can mention us in any i
 
 ### How to contribute
 
-1.  Fork the project & clone locally. Follow the initial setup [here](#getting-started).
+1.  Fork the project & clone locally. Follow the initial setup [here](#getting-started). test test test test test test
 2.  Create a branch, naming it either a feature or bug: `git checkout -b feature/that-new-feature` or `bug/fixing-that-bug`
 3.  Code and commit your changes. Bonus points if you write a [good commit message](https://chris.beams.io/posts/git-commit/): `git commit -m 'Add some feature'`
 4.  Push to the branch: `git push origin feature/that-new-feature`
