@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_04_131412) do
+ActiveRecord::Schema.define(version: 2019_05_25_233934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -659,6 +659,33 @@ ActiveRecord::Schema.define(version: 2019_05_04_131412) do
     t.string "website_url"
   end
 
+  create_table "poll_options", force: :cascade do |t|
+    t.boolean "counts_in_tabulation"
+    t.datetime "created_at", null: false
+    t.string "markdown"
+    t.bigint "poll_id"
+    t.string "processed_html"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "poll_votes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "markdown"
+    t.bigint "poll_option_id"
+    t.string "processed_html"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+  end
+
+  create_table "polls", force: :cascade do |t|
+    t.boolean "allow_multiple_selections", default: false
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.string "prompt_html"
+    t.string "prompt_markdown"
+    t.datetime "updated_at", null: false
+  end
+
   create_table "push_notification_subscriptions", force: :cascade do |t|
     t.string "auth_key"
     t.datetime "created_at", null: false
@@ -824,6 +851,7 @@ ActiveRecord::Schema.define(version: 2019_05_04_131412) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -946,6 +974,7 @@ ActiveRecord::Schema.define(version: 2019_05_04_131412) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

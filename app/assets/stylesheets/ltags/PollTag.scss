@@ -1,0 +1,56 @@
+@import 'variables';
+
+.ltag-poll {
+  width: 600px;
+  max-width: 96%;
+  margin: auto;
+  border-radius: 3px;
+  border:1px solid $light-medium-gray !important;
+  box-shadow: $shadow;
+  box-sizing: border-box;
+  padding: 2px 15px 18px;
+  font-family: $helvetica;
+  margin:1.6em auto !important;
+  h3 {
+    margin: 15px 0px;
+  }
+  .ltag-pollanswers {
+    list-style-type: none !important;
+    margin: 0 !important; /* To remove default bottom margin */ 
+    padding: 0 !important;
+    padding-bottom: 8px !important;
+    font-size: 0.9em !important;
+    li {
+      padding-left: 8px;
+      border-radius: 3px;
+      width: 95%;
+      &:hover {
+        background: $light-gray;
+      }
+    }
+    label {
+      width: calc(100% - 40px);
+      padding: 2px 6px;
+      cursor: pointer;
+      vertical-align: -3px;
+      display: inline-block;
+    }
+    button {
+      width: 100%;
+      background: transparent;
+      border: 0px;
+      font-size: 0.7em;
+      color: $medium-gray;
+      text-align: left;
+      padding-left: 20px;
+    }
+  }
+  button.cta {
+    background: $bold-blue;
+    color: white;
+    font-size: 1em;
+    border-radius: 100px;
+    padding: 5px 20px;
+    margin-left: 5px;
+  }
+}

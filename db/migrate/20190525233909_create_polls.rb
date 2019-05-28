@@ -1,0 +1,11 @@
+class CreatePolls < ActiveRecord::Migration[5.2]
+  def change
+    create_table :polls do |t|
+      t.bigint  :article_id
+      t.string  :prompt_markdown
+      t.string  :prompt_html
+      t.boolean :allow_multiple_selections, default: false
+      t.timestamps
+    end
+  end
+end

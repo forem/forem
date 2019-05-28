@@ -1,0 +1,2 @@
+class PollOption < ApplicationRecord
+end
