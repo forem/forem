@@ -3,7 +3,7 @@ class CreditsController < ApplicationController
 
   def index
     @credits = current_user.credits.where(spent: false)
-    @organizations = current_user.admin_organizations.includes(:unspent_credits)
+    @organizations = current_user.admin_organizations
   end
 
   def new
