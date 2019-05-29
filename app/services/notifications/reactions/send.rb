@@ -18,6 +18,7 @@ module Notifications
         new(*args).call
       end
 
+      # @return [OpenStruct, #action, #notification_id]
       def call
         return unless receiver.is_a?(User) || receiver.is_a?(Organization)
 
@@ -41,6 +42,7 @@ module Notifications
 
         if aggregated_reaction_siblings.size.zero?
           Notification.where(notification_params).delete_all
+          OpenStruct.new(action: :deleted)
         else
           recent_reaction = reaction_siblings.first
 
@@ -53,7 +55,9 @@ module Notifications
           notification.notified_at = Time.current
           notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
 
-          save_notification(notification)
+          notification_id = save_notification(notification)
+
+          OpenStruct.new(action: :saved, notification_id: notification_id)
         end
       end
 
@@ -69,15 +73,15 @@ module Notifications
       def save_notification(notification)
         if notification.persisted?
           notification.save!
+          notification.id
         else
           import_result = Notification.import! [notification],
                                                on_duplicate_key_update: {
                                                  conflict_target: %i[notifiable_id notifiable_type user_id organization_id action],
                                                  columns: %i[json_data notified_at read]
                                                }
-          notification = Notification.find(import_result.ids.first)
+          import_result.ids.first
         end
-        notification
       end
 
       def reaction_json_data(recent_reaction, siblings)
