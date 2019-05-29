@@ -1,19 +1,22 @@
 module Api
   module V0
     class AnalyticsController < ApiController
+      respond_to :json
+
       rescue_from ArgumentError, with: :error_unprocessable_entity
       rescue_from UnauthorizedError, with: :error_unauthorized
 
-      def totals
-        user = get_authenticated_user!
+      before_action :authenticate_with_api_key_or_current_user
+      before_action :authorize_pro_user
 
+      def totals
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && user.org_member?(org)
 
                  AnalyticsService.new(org, article_id: params[:article_id]).totals
                else
-                 AnalyticsService.new(user, article_id: params[:article_id]).totals
+                 AnalyticsService.new(@user, article_id: params[:article_id]).totals
                end
         render json: data.to_json
       end
@@ -22,48 +25,33 @@ module Api
         raise ArgumentError, "Required 'start' parameter is missing" if params[:start].blank?
         raise ArgumentError, "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'" unless valid_date_params?
 
-        user = get_authenticated_user!
-
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && user.org_member?(org)
 
                  AnalyticsService.new(org, start_date: params[:start], end_date: params[:end], article_id: params[:article_id]).stats_grouped_by_day
                else
-                 AnalyticsService.new(user, start_date: params[:start], end_date: params[:end], article_id: params[:article_id]).stats_grouped_by_day
+                 AnalyticsService.new(@user, start_date: params[:start], end_date: params[:end], article_id: params[:article_id]).stats_grouped_by_day
                end
         render json: data.to_json
       end
 
       def past_day
-        user = get_authenticated_user!
-
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
                  raise UnauthorizedError unless org && user.org_member?(org)
 
                  AnalyticsService.new(org, start_date: 1.day.ago, article_id: params[:article_id]).stats_grouped_by_day
                else
-                 AnalyticsService.new(user, start_date: 1.day.ago, article_id: params[:article_id]).stats_grouped_by_day
+                 AnalyticsService.new(@user, start_date: 1.day.ago, article_id: params[:article_id]).stats_grouped_by_day
                end
         render json: data.to_json
       end
 
       private
 
-      def get_authenticated_user!
-        user = if request.headers["api-key"].blank?
-                 current_user
-               else
-                 api_secret = ApiSecret.find_by(secret: request.headers["api-key"])
-                 raise UnauthorizedError if api_secret.blank?
-
-                 api_secret.user
-               end
-
-        raise UnauthorizedError unless user.present? && user.has_role?(:pro)
-
-        user
+      def authorize_pro_user
+        raise UnauthorizedError unless @user&.has_role?(:pro)
       end
 
       def valid_date_params?
