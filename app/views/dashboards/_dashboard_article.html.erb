@@ -84,7 +84,7 @@
   <% if org_admin %>
     <%= form_for(article) do |f| %>
       <input type="hidden" name="destination" value="/dashboard" />
-      AUTHOR: <%= f.select(:user_id, options_for_select(@org_members, article.user_id)) %>
+      AUTHOR: <%= f.select(:user_id, options_for_select(User.find(article.user_id).organization.users.pluck(:name, :id), article.user_id)) %>
       <%= f.submit "SUBMIT AUTHOR CHANGE", class: "cta pill black" %>
     <% end %>
   <% end %>
