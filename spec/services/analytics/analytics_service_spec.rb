@@ -31,7 +31,7 @@ RSpec.describe AnalyticsService, type: :service do
 
     describe "comments stats" do
       it "returns stats" do
-        stats = described_class.new(user).totals[:comments]
+        stats = analytics_service.totals[:comments]
         expect(stats.keys).to eq(%i[total])
       end
 
@@ -98,9 +98,27 @@ RSpec.describe AnalyticsService, type: :service do
       end
     end
 
+    describe "follows stats" do
+      it "returns stats" do
+        stats = analytics_service.totals[:follows]
+        expect(stats.keys).to eq(%i[total])
+      end
+
+      it "returns the total number of follows" do
+        create(:follow, followable: user)
+        expected_stats = { total: 1 }
+        expect(analytics_service.totals[:follows]).to eq(expected_stats)
+      end
+
+      it "returns zero as total if there are no follows" do
+        expected_stats = { total: 0 }
+        expect(analytics_service.totals[:follows]).to eq(expected_stats)
+      end
+    end
+
     describe "page views stats" do
       it "returns stats" do
-        stats = described_class.new(user).totals[:page_views]
+        stats = analytics_service.totals[:page_views]
         expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
       end
 
@@ -134,16 +152,6 @@ RSpec.describe AnalyticsService, type: :service do
       it "returns zero as the total read time in seconds with no page views" do
         expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(0)
       end
-    end
-
-    it "returns stats for reactions for a user" do
-      totals = described_class.new(user).totals
-      expect(totals[:reactions].keys).to eq(%i[total like readinglist unicorn])
-    end
-
-    it "returns stats for follows for a user" do
-      totals = described_class.new(user).totals
-      expect(totals[:follows].keys).to eq([:total])
     end
 
     it "returns totals stats for an org" do
