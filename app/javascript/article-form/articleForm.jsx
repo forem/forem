@@ -128,6 +128,7 @@ export default class ArticleForm extends Component {
 
   toggleImageManagement = e => {
     e.preventDefault();
+    window.scrollTo(0, 0);
     this.setState({
       imageManagementShowing: !this.state.imageManagementShowing,
     });
