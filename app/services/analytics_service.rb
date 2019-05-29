@@ -4,12 +4,13 @@ class AnalyticsService
     @article_id = article_id
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
-
     load_data
   end
 
   def totals
+    # page views
     total_views = article_data.sum(:page_views_count)
+    # this can be moved in a private method
     logged_in_page_view_data = page_view_data.where.not(user_id: nil)
     average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
 
@@ -17,12 +18,7 @@ class AnalyticsService
       comments: {
         total: comment_data.size
       },
-      reactions: {
-        total: reaction_data.size,
-        like: reaction_data.count { |rxn| rxn.category == "like" },
-        readinglist: reaction_data.count { |rxn| rxn.category == "readinglist" },
-        unicorn: reaction_data.count { |rxn| rxn.category == "unicorn" }
-      },
+      reactions: reactions_totals,
       follows: {
         total: follow_data.size
       },
@@ -52,7 +48,7 @@ class AnalyticsService
     @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
     if @article_id
       @article_data = @article_data.where(id: @article_id)
-      raise UnauthorizedError if @article_data.blank?
+      raise ArgumentError if @article_data.blank?
 
       article_ids = @article_id
     else
@@ -76,8 +72,25 @@ class AnalyticsService
     @follow_data = Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
   end
 
+  def reactions_totals
+    # NOTE: the order of the keys needs to be the same as the one of the counts
+    keys = %i[total like readinglist unicorn]
+    counts = reaction_data.pluck(
+      Arel.sql("COUNT(*)"),
+      Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
+      Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
+      Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')"),
+    ).first
+
+    # this transforms the counts, eg. [1, 0, 1, 0]
+    # in a hash, eg. {total: 1, like: 0, readinglist: 1, unicorn: 0}
+    keys.zip(counts).to_h
+  end
+
   def average_read_time(page_view_data)
-    page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
+    average = page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
+    average || 0
+    # page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 
   def cached_data_for_date(date)
