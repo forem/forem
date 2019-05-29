@@ -3,32 +3,35 @@ require "rails_helper"
 RSpec.describe "Credits", type: :request do
   describe "GET /credits" do
     let(:user) { create(:user) }
-    let(:organization) { create(:organization) }
-
-    before do
-      sign_in user
-    end
+    let(:org_member) { create(:user, :org_member) }
+    let(:org_admin) { create(:user, :org_admin) }
 
     it "shows credits page" do
+      sign_in user
       get "/credits"
       expect(response.body).to include("You have")
     end
 
     it "shows credits page if user belongs to an org" do
-      user.update_column(:organization_id, organization.id)
+      org = org_member.organizations.first
+      sign_in org_member
       get "/credits"
       expect(response.body).to include("You have")
+      expect(response.body).not_to include(CGI.escapeHTML(org.name))
     end
 
     it "shows credits page if user belongs to an org and is org admin" do
-      user.update_columns(organization_id: organization.id, org_admin: true)
+      org = org_admin.organizations.first
+      sign_in org_admin
       get "/credits"
-      expect(response.body).to include(CGI.escapeHTML(organization.name))
+      expect(response.body).to include(CGI.escapeHTML(org.name))
     end
   end
 
   describe "POST credits" do
     let(:user) { create(:user) }
+    let(:org_admin) { create(:user, :org_admin) }
+    let(:admin_org_id) { org_admin.organizations.first.id }
     let(:stripe_helper) { StripeMock.create_test_helper }
 
     before do
@@ -104,24 +107,22 @@ RSpec.describe "Credits", type: :request do
     end
 
     context "when purchasing as an organization" do
-      let(:org_admin) { create(:user, :org_admin) }
-
       before { sign_in org_admin }
 
       it "creates unspent credits for the organization" do
         post "/credits", params: {
-          user_type: "organization",
+          organization_id: admin_org_id,
           credit: {
             number_to_purchase: 20
           },
           stripe_token: stripe_helper.generate_card_token
         }
-        expect(Credit.where(organization_id: org_admin.organization_id, spent: false).size).to eq 20
+        expect(Credit.where(organization_id: admin_org_id, spent: false).size).to eq 20
       end
 
       it "makes a valid Stripe charge" do
         post "/credits", params: {
-          user_type: "organization",
+          organization_id: admin_org_id,
           credit: {
             number_to_purchase: 20
           },
@@ -133,7 +134,7 @@ RSpec.describe "Credits", type: :request do
 
       it "does not create unspent credits for the current_user" do
         post "/credits", params: {
-          user_type: "organization",
+          organization_id: admin_org_id,
           credit: {
             number_to_purchase: 20
           },
