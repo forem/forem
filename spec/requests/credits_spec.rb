@@ -155,6 +155,19 @@ RSpec.describe "Credits", type: :request do
         }
         expect(user.credits.where(spent: false).size).to eq(0)
       end
+
+      it "does not reward credits for orgs" do
+        sign_in org_admin
+        StripeMock.prepare_error(Stripe::CardError.new(2, 3, 4), :new_charge)
+        post "/credits", params: {
+          organization_id: admin_org_id,
+          credit: {
+            number_to_purchase: 25
+          },
+          stripe_token: stripe_helper.generate_card_token
+        }
+        expect(Credit.where(organization_id: admin_org_id, spent: false).size).to eq(0)
+      end
     end
   end
 end
