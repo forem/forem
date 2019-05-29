@@ -129,12 +129,16 @@
     .readinglist-empty {
       text-align: center;
       padding: 100px 0px;
-      span {
+      span.highlight {
         background: $bold-blue;
         border-radius: 3px;
         padding: 3px 8px;
+        margin: 0px 8px;
         color: white;
         display: inline-block;
+        span[role="img"] {
+          margin-left: 8px;
+        }
       }
     }
   }
