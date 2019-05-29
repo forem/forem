@@ -8,29 +8,17 @@ class AnalyticsService
   end
 
   def totals
-    # page views
-    total_views = article_data.sum(:page_views_count)
-    # this can be moved in a private method
-    logged_in_page_view_data = page_view_data.where.not(user_id: nil)
-    average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
-
     {
-      comments: {
-        total: comment_data.size
-      },
+      comments: { total: comment_data.size },
       reactions: reactions_totals,
-      follows: {
-        total: follow_data.size
-      },
-      page_views: {
-        total: total_views,
-        average_read_time_in_seconds: average_read_time_in_seconds,
-        total_read_time_in_seconds: average_read_time_in_seconds * total_views
-      }
+      follows: { total: follow_data.size },
+      page_views: page_views_totals
     }
   end
 
   def stats_grouped_by_day
+    return {} unless start_date && end_date
+
     result = {}
 
     (start_date.to_date..end_date.to_date).each do |date|
@@ -47,10 +35,11 @@ class AnalyticsService
   def load_data
     @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
     if @article_id
+      # check article_id is published and belongs to the user/org
       @article_data = @article_data.where(id: @article_id)
-      raise ArgumentError if @article_data.blank?
+      raise ArgumentError unless @article_data.exists?
 
-      article_ids = @article_id
+      article_ids = [@article_id]
     else
       article_ids = @article_data.pluck(:id)
     end
@@ -87,9 +76,22 @@ class AnalyticsService
     keys.zip(counts).to_h
   end
 
+  def page_views_totals
+    total_views = article_data.sum(:page_views_count)
+    logged_in_page_view_data = page_view_data.where.not(user_id: nil)
+    average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
+
+    {
+      total: total_views,
+      average_read_time_in_seconds: average_read_time_in_seconds,
+      total_read_time_in_seconds: average_read_time_in_seconds * total_views
+    }
+  end
+
   def average_read_time(page_view_data)
     average = page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
-    average || 0
+    # average is returned as a BigDecimal, it needs to be rounded to an integer
+    (average || 0).round
     # page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 
