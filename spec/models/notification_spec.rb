@@ -379,4 +379,22 @@ RSpec.describe Notification, type: :model do
       end.to change(Notification, :count).by(1)
     end
   end
+
+  describe "#remove_each" do
+    let(:mention) { create(:mention, user_id: user.id, mentionable_id: comment.id, mentionable_type: "Comment") }
+    let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+    let(:notifiable_collection) { [mention] }
+
+    before do
+      create(:notification, user_id: mention.user_id, notifiable_id: mention.id, notifiable_type: "Mention")
+    end
+
+    it "removes each mention related notifiable" do
+      perform_enqueued_jobs do
+        expect do
+          Notification.remove_each(notifiable_collection)
+        end.to change(Notification, :count).by(-1)
+      end
+    end
+  end
 end
