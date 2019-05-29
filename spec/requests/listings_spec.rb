@@ -50,12 +50,11 @@ RSpec.describe "/listings", type: :request do
       expect(ClassifiedListing.last.cached_tag_list).to include("rails")
     end
 
-    it "creates the listing for the user" do
-      user.update_column(:organization_id, organization.id)
+    it "creates the listing under the user" do
       post "/listings", params: {
         classified_listing: { title: "Hey", category: "education", body_markdown: "hey hey my my", tag_list: "ruby, rails, go" }
       }
-      expect(ClassifiedListing.last.organization_id).not_to eq(organization.id)
+      expect(ClassifiedListing.last.user_id).to eq user.id
     end
 
     it "creates the listing for the organization" do
