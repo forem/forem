@@ -57,12 +57,31 @@ RSpec.describe "/listings", type: :request do
       expect(ClassifiedListing.last.user_id).to eq user.id
     end
 
-    it "creates the listing for the organization" do
-      user.update_column(:organization_id, organization.id)
+    it "creates the listing for the user if no organization_id is selected" do
+      create(:organization_membership, user_id: user.id, organization_id: organization.id)
       post "/listings", params: {
         classified_listing: { title: "Hey", category: "education", body_markdown: "hey hey my my", tag_list: "ruby, rails, go" }
       }
+      expect(ClassifiedListing.last.organization_id).to eq nil
+      expect(ClassifiedListing.last.user_id).to eq user.id
+    end
+
+    it "creates the listing for the organization" do
+      create(:organization_membership, user_id: user.id, organization_id: organization.id)
+      post "/listings", params: {
+        classified_listing: { title: "Hey", category: "education", body_markdown: "hey hey my my", tag_list: "ruby, rails, go", organization_id: organization.id }
+      }
       expect(ClassifiedListing.last.organization_id).to eq(organization.id)
+    end
+
+    it "does not create an org listing if a different org member doesn't belong to the org" do
+      another_org = create(:organization)
+      create(:organization_membership, user_id: user.id, organization_id: another_org.id)
+      expect do
+        post "/listings", params: {
+          classified_listing: { title: "Hey", category: "education", body_markdown: "hey hey my my", tag_list: "ruby, rails, go", organization_id: organization.id }
+        }
+      end.to raise_error Pundit::NotAuthorizedError
     end
   end
 
