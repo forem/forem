@@ -13,25 +13,31 @@ class CacheBuster
   end
 
   def bust_comment(commentable, username)
-    bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
-    if commentable.decorate.cached_tag_list_array.include?("discuss") &&
-        commentable.featured_number.to_i > 35.hours.ago.to_i
-      bust("/")
-      bust("/?i=i")
-      bust("?i=i")
+    if commentable
+      bust("/") if Article.published.order("hotness_score DESC").limit(3).pluck(:id).include?(commentable.id)
+      if commentable.decorate.cached_tag_list_array.include?("discuss") &&
+          commentable.featured_number.to_i > 35.hours.ago.to_i
+        bust("/")
+        bust("/?i=i")
+        bust("?i=i")
+      end
+      commentable.touch(:last_comment_at)
+      bust("#{commentable.path}/comments/")
+      bust(commentable.path.to_s)
+      commentable.comments.includes(:user).find_each do |c|
+        bust(c.path)
+        bust(c.path + "?i=i")
+      end
+      bust("#{commentable.path}/comments/*")
     end
-    commentable.touch(:last_comment_at)
-    bust("#{commentable.path}/comments/")
-    bust(commentable.path.to_s)
-    commentable.comments.includes(:user).find_each do |c|
-      bust(c.path)
-      bust(c.path + "?i=i")
-    end
-    bust("#{commentable.path}/comments/*")
-    bust("/#{username}")
-    bust("/#{username}/comments")
-    bust("/#{username}/comments?i=i")
-    bust("/#{username}/comments/?i=i")
+
+    return unless username
+
+    paths = [
+      "/#{username}", "/#{username}/comments",
+      "/#{username}/comments?i=i", "/#{username}/comments/?i=i"
+    ]
+    paths.each { |path| bust(path) }
   end
 
   def bust_article(article)
