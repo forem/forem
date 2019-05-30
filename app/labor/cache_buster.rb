@@ -20,6 +20,7 @@ class CacheBuster
       bust("/?i=i")
       bust("?i=i")
     end
+    commentable.touch(:last_comment_at)
     bust("#{commentable.path}/comments/")
     bust(commentable.path.to_s)
     commentable.comments.includes(:user).find_each do |c|
