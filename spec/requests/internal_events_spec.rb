@@ -6,7 +6,7 @@ RSpec.describe "Internal Events", type: :request do
 
   describe "PUT internal/events" do
     before do
-      login_as(admin)
+      sign_in(admin)
     end
 
     it "marks an event as not live now" do

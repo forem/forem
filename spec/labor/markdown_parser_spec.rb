@@ -37,6 +37,10 @@ RSpec.describe MarkdownParser do
     expect(generate_and_parse_markdown(inline_code)).to include(inline_code[1..-2])
   end
 
+  it "raises an error if it detects a XSS attempt" do
+    expect { generate_and_parse_markdown("data:text/html") }.to raise_error(ArgumentError)
+  end
+
   context "when provided with an @username" do
     it "links to a user if user exist" do
       username = create(:user).username

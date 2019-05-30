@@ -27,8 +27,8 @@ class CommentsController < ApplicationController
       @article = @commentable
       not_found unless @commentable.published
     end
+
     @commentable_type = @commentable.class.name
-    @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
   end

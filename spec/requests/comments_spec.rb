@@ -60,7 +60,7 @@ RSpec.describe "Comments", type: :request do
 
     context "when logged-in" do
       before do
-        login_as user
+        sign_in user
       end
 
       it "returns 200" do
@@ -85,7 +85,7 @@ RSpec.describe "Comments", type: :request do
 
     context "when logged-in" do
       before do
-        login_as user
+        sign_in user
         post "/comments/preview",
              params: { comment: { body_markdown: "hi" } },
              headers: { HTTP_ACCEPT: "application/json" }

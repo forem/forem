@@ -54,6 +54,7 @@ class Message < ApplicationRecord
   def update_chat_channel_last_message_at
     chat_channel.touch(:last_message_at)
     chat_channel.index!
+    chat_channel.chat_channel_memberships.reindex!
     chat_channel.delay.index!
   end
 
@@ -107,10 +108,10 @@ class Message < ApplicationRecord
   def send_email_if_appropriate
     recipient = direct_receiver
     return if !chat_channel.direct? ||
-      recipient.updated_at > 2.hours.ago ||
+      recipient.updated_at > 1.hour.ago ||
       recipient.chat_channel_memberships.order("last_opened_at DESC").
-        first.last_opened_at > 18.hours.ago ||
-      chat_channel.last_message_at > 45.minutes.ago ||
+        first.last_opened_at > 15.hours.ago ||
+      chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false
 
     NotifyMailer.new_message_email(self).deliver

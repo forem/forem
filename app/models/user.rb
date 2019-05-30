@@ -35,6 +35,7 @@ class User < ApplicationRecord
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
   has_many    :credits
+  has_many    :classified_listings
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
@@ -274,7 +275,7 @@ class User < ApplicationRecord
       @preferred_languages_array = language_settings["preferred_languages"].to_a
     else
       languages = []
-      language_settings.keys.each do |setting|
+      language_settings.each_key do |setting|
         languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
       end
       @preferred_languages_array = languages

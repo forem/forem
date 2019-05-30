@@ -49,6 +49,50 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
+  def user_status
+    @user = User.find(params[:id])
+    begin
+      Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
+      flash[:notice] = "User has been udated"
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def banish
+    @user = User.find(params[:id])
+    begin
+      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def full_delete
+    @user = User.find(params[:id])
+    begin
+      Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
+      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users"
+  end
+
+  def merge
+    @user = User.find(params[:id])
+    begin
+      Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  private
+
   def manage_credits
     add_credits if user_params[:add_credits]
     add_org_credits if user_params[:add_org_credits]
@@ -88,17 +132,6 @@ class Internal::UsersController < Internal::ApplicationController
     Credit.remove_from_org(org, amount)
   end
 
-  def user_status
-    @user = User.find(params[:id])
-    begin
-      Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
-      flash[:notice] = "User has been udated"
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
   def make_matches
     return if @new_mentee.blank? && @new_mentor.blank?
 
@@ -112,56 +145,13 @@ class Internal::UsersController < Internal::ApplicationController
     MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
   end
 
-  def banish
-    @user = User.find(params[:id])
-    begin
-      Moderator::BanishUser.call_banish(admin: current_user, user: @user)
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  def full_delete
-    @user = User.find(params[:id])
-    begin
-      Moderator::DeleteUser.call_deletion(admin: current_user, user: @user, user_params: user_params)
-      flash[:notice] = "@" + @user.username + " (email: " + @user.email + ", user_id: " + @user.id.to_s + ") has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users"
-  end
-
-  def merge
-    @user = User.find(params[:id])
-    begin
-      Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
-    rescue StandardError => e
-      flash[:error] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  private
-
   def user_params
-    params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :quick_match,
-                                 :new_note,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :note_for_current_role,
-                                 :mentorship_note,
-                                 :user_status,
-                                 :toggle_mentorship,
-                                 :pro,
-                                 :merge_user_id,
-                                 :add_credits,
-                                 :remove_credits,
-                                 :add_org_credits,
-                                 :remove_org_credits,
-                                 :ghostify)
+    allowed_params = %i[
+      seeking_mentorship offering_mentorship quick_match new_note add_mentor
+      add_mentee note_for_current_role mentorship_note user_status
+      toggle_mentorship pro merge_user_id add_credits remove_credits
+      add_org_credits remove_org_credits ghostify
+    ]
+    params.require(:user).permit(allowed_params)
   end
 end

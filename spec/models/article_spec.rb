@@ -305,6 +305,19 @@ RSpec.describe Article, type: :model do
     expect(article.decorate.title_length_classification).to eq("short")
   end
 
+  it "determines that an article has frontmatter" do
+    body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
+    article.body_markdown = body
+    expect(article.has_frontmatter?).to eq(true)
+  end
+
+  it "determines that an article has frontmatter" do
+    body = "Hey hey Ho Ho"
+    article.body_markdown = body
+    expect(article.has_frontmatter?).to eq(false)
+  end
+
+
   it "returns stripped canonical url" do
     article.canonical_url = " http://google.com "
     expect(article.decorate.processed_canonical_url).to eq("http://google.com")
@@ -349,26 +362,6 @@ RSpec.describe Article, type: :model do
     it "returns proper string" do
       article.validate
       expect(article.index_id).to eq("articles-#{article.id}")
-    end
-  end
-
-  describe "::filter_excluded_tags" do
-    before do
-      create(:article, tags: "hiring")
-    end
-
-    it "exlude #hiring when no argument is given" do
-      expect(described_class.filter_excluded_tags.length).to be(0)
-    end
-
-    it "filters #hiring articles when argument is 'hiring'" do
-      # this is not checking for newest article
-      expect(described_class.filter_excluded_tags("hiring").length).to be(1)
-    end
-
-    it "filters the tag it is asked to filter" do
-      create(:article, tags: "filter")
-      expect(described_class.filter_excluded_tags("filter").length).to be(1)
     end
   end
 

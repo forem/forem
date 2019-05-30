@@ -1,0 +1,18 @@
+function toggleListingsMinimization() {
+  const body = document.getElementsByTagName("body")[0]
+  if( body.classList.contains('config_minimize_newest_listings')) {
+    //Un-minimize
+    localStorage.setItem(
+      'config_minimize_newest_listings',
+      'no') 
+      body.classList.remove("config_minimize_newest_listings");
+  } else {
+    //Minimize
+    localStorage.setItem(
+      'config_minimize_newest_listings',
+      'yes')
+      body.classList.add("config_minimize_newest_listings");
+  }
+}
+
+document.getElementById('sidebar-listings-widget-minimize-button').addEventListener('click', toggleListingsMinimization);

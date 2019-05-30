@@ -607,10 +607,10 @@ article {
 
     code {
       margin: auto;
-      background: $lightest-gray;
+      @include themeable(background, theme-code-background, $lightest-gray);
       padding: 0.1em 0.3em 0;
       border-radius: 2px;
-      color: #333842;
+      @include themeable(color, theme-code-color, #333842);
       font-size: 0.84em;
       vertical-align: 0;
       max-width: 100%;
@@ -848,7 +848,7 @@ article {
 
   .article-actions {
     text-align: center;
-    padding: 9px 0 16px;
+    padding: 5px 0 12px;
     position: fixed;
     bottom: 0;
     z-index: 22;
@@ -879,7 +879,7 @@ article {
         position: relative;
         width: calc(100% - 24px);
         margin-left: 12px;
-
+        cursor: pointer;
         #article-copy-link-input {
           border-radius: 3px;
           border: 1px dashed black;
@@ -895,13 +895,15 @@ article {
           max-width: 24px;
           margin-left: 5px;
         }
-
+        input {
+          cursor: pointer;
+        }
         #article-copy-link-announcer {
           flex: 1 0 100%;
           color: $bold-blue;
           position: absolute;
-          bottom: -18px;
-          padding-left: 4px;
+          bottom: -8px;
+          padding-left: 0px;
           font-size: 12px;
           text-align: left;
 
@@ -946,9 +948,8 @@ article {
         transition-delay: 0.1s;
 
         &.user-animated {
-          animation: wide-reaction-animation 0.25s !important;
           img {
-            animation: image-reaction-animation 0.25s !important;
+            animation: image-reaction-animation 0.3s !important;
           }
         }
         &:focus-visible {
@@ -1002,16 +1003,15 @@ article {
         left: 150px !important;
       }
       button {
-        padding: 11px 0px !important;
+        padding: 12px 0px !important;
       }
     }
     button {
       background: transparent;
       margin: 0px calc(0.22vw + 2px);
-      padding: 3px calc(0.88vw + 6px);
+      padding: 2px calc(0.88vw + 6px);
       padding-right: calc(0.88vw + 10px);
       border: 0px;
-      // background: linear-gradient(60deg, #f4d2d2, #ffffff);
       font-weight: bold;
       font-stretch: condensed;
 
@@ -1024,7 +1024,7 @@ article {
         transition: box-shadow 0.18s;
         @include themeable(
           background, 
-          theme-container-accent-background, 
+          theme-reaction-background, 
           darken($light-gray, 3%)
         );
         @media screen and (min-width: 500px) {
@@ -1098,27 +1098,26 @@ article {
           filter: none;
           opacity: 1;
           box-shadow: 0px 0px 0px 2px #ffc0d3;
-          background: linear-gradient(60deg, #ffc0d3, #ff90b3);
+          background: linear-gradient(111deg, #ffb4cb, #ff80a8);
         }
 
         &.unicorn-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #d0e3ff;
-            background: linear-gradient(60deg, #d0e3ff, #adccff);
+            background: linear-gradient(111deg, #c5d9f8, #90bbff);
           }
         }
 
         &.readinglist-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #cfc9f3;
-            background: linear-gradient(60deg, #cfc9f3, #b0a7f0);
+            background: linear-gradient(111deg, #cac3f3, #958aee);
           }
         }
 
         &.user-animated {
-          animation: reaction 0.25s;
           img {
-            animation: image-reaction-animation 0.25s !important;
+            animation: image-reaction-animation 0.3s !important;
           }
         }
       }
@@ -1143,6 +1142,11 @@ article {
       }
       img {
         background: transparent !important;
+      }
+      &:hover {
+        img {
+          box-shadow: none !important;
+        }
       }
       .dropdown-content {
         display: none;
@@ -1255,21 +1259,21 @@ article {
         vertical-align: calc(6px - 0.07vw);
       }
       @media screen and (min-width: 1365px) {
-        padding: 6px 0 6px !important;
+        padding: 7px 0px !important;
         img {
           height: 17px;
           width: 17px;
         }
       }
       @media screen and (min-width: 1439px) {
-        padding: 7px 0 7px !important;
+        padding: 8px 0px !important;
         img {
           height: 20px;
           width: 20px;
         }
       }
       @media screen and (min-width: 1530px) {
-        padding: 9px 0 9px !important;
+        padding: 20px 0px 12px !important;
         img {
           height: 23px;
           width: 23px;
@@ -1291,7 +1295,7 @@ article {
 .dev-ios-native-body {
   .container {
     .article-actions {
-      padding: 8px 0 0;
+      padding: 4px 0 0;
       border-bottom: 1px solid $tan;
       border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
@@ -1480,43 +1484,11 @@ article {
   }
 }
 
-@keyframes reaction {
-  0% {
-  }
-
-  50% {
-    padding-top: 6px;
-    padding-bottom: 4px;
-    padding-left: calc(1.1vw + 10px);
-    padding-right: calc(1.1vw + 10px);
-    margin: 0 0;
-    margin-top: -4px;
-    margin-bottom: -1px;
-  }
-
-  100% {
-  }
-}
-
-@keyframes wide-reaction-animation {
-  0% {
-  }
-
-  50% {
-    margin-left: -8px;
-    margin-right: -5px;
-    width: calc(100% + 5px);
-  }
-
-  100% {
-  }
-}
-
 @keyframes image-reaction-animation {
   0% {
   }
-  50% {
-    transform: rotate(10deg);
+  30% {
+    transform: rotate(-15deg);
   }
   100% {
   }

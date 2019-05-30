@@ -192,8 +192,7 @@ class ChannelDetails extends Component {
           <h2>Pending Invites:</h2>
           {pendingInvites}
           <div style={{ marginTop: '10px' }}>
-            All functionality is early beta. Contact us if you need help with
-            anything.
+            Contact yo@dev.to for assistance.
           </div>
         </div>
       ); // eslint-disable-next-line
@@ -208,14 +207,7 @@ class ChannelDetails extends Component {
               😢😢😢
             </span>
           </h3>
-          <h4>It may not be immediately in the sidebar</h4>
-          <p>
-            Contact the admins at 
-            {' '}
-            <a href="mailto:yo@dev.to">yo@dev.to</a>
-            {' '}
-            if this was a mistake
-          </p>
+          <h4>This may take a few minutes to be reflected in the sidebar</h4>
         </div>
       );
     } else {
@@ -224,7 +216,7 @@ class ChannelDetails extends Component {
           <h2>Danger Zone</h2>
           <button
             type="button"
-            Click={this.triggerLeaveChannel}
+            onClick={this.triggerLeaveChannel}
             data-content={channel.id}
           >
             Leave Channel

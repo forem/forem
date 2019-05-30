@@ -14,7 +14,8 @@ class CreditsController < ApplicationController
 
   def create
     @number_to_purchase = params[:credit][:number_to_purchase].to_i
-    make_payment
+    return unless make_payment
+
     credit_objects = []
     @number_to_purchase.times do
       if params[:user_type] == "organization"
@@ -34,9 +35,11 @@ class CreditsController < ApplicationController
     find_or_create_card
     update_user_stripe_info
     create_charge
+    true
   rescue Stripe::CardError => e
     flash[:error] = e.message
     redirect_to "/credits/purchase"
+    false
   end
 
   def find_or_create_customer

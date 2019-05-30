@@ -31,10 +31,8 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
     end
 
     it "returns not found if the username does not exist" do
-      invalid_request = lambda do
-        get "/api/podcast_episodes?username=foobar"
-      end
-      expect(invalid_request).to raise_error(ActiveRecord::RecordNotFound)
+      get "/api/podcast_episodes?username=foobar"
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

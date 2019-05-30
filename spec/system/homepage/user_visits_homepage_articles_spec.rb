@@ -19,7 +19,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_selector(".big-article", visible: true)
       end
 
-      it "shows the main article readable date" do
+      it "shows the main article readable date", js: true do
         expect(page).to have_selector(".big-article time", text: "Mar 4")
       end
 
@@ -43,7 +43,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).not_to have_text(bad_article.title)
       end
 
-      it "shows all articles dates" do
+      it "shows all articles dates", js: true do
         expect(page).to have_selector(".single-article time", text: "Mar 4", count: 2)
       end
 

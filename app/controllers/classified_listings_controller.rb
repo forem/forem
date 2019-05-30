@@ -5,7 +5,7 @@ class ClassifiedListingsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update new]
 
   def index
-    @displayed_classified_listing = ClassifiedListing.find_by!(category: params[:category], slug: params[:slug]) if params[:slug]
+    @displayed_classified_listing = ClassifiedListing.find_by!(slug: params[:slug]) if params[:slug]
     mod_page if params[:view] == "moderate"
     @classified_listings = if params[:category].blank?
                              ClassifiedListing.where(published: true).order("bumped_at DESC").limit(12)
