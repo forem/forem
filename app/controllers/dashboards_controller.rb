@@ -7,9 +7,10 @@ class DashboardsController < ApplicationController
     fetch_and_authorize_user
 
     target = @user
-    @organizations = @user.admin_organizations
-    @member_organizations = @user.member_organizations
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id])
+
+    @organizations = @user.admin_organizations.includes(:users)
+    @member_organizations = @user.member_organizations
 
     if params[:which] == "organization" && params[:org_id] && @user.org_admin?(params[:org_id])
       target = @organizations.find_by(id: params[:org_id])

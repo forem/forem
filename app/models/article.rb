@@ -65,8 +65,6 @@ class Article < ApplicationRecord
   after_save        :detect_human_language
   before_save       :update_cached_user
   after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
-  # after_save        :send_to_moderator
-  # turned off for now
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
@@ -469,11 +467,9 @@ class Article < ApplicationRecord
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
-      self.tag_list = []
+      self.tag_list = [] # overwrite any existing tag with those from the front matter
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
-      TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
-        tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
-      end
+      remove_tag_adjustments_from_tag_list
     end
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if published
@@ -497,15 +493,20 @@ class Article < ApplicationRecord
 
   def validate_tag
     # remove adjusted tags
-    TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
-      tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
-      self.tag_list = tag_list
-    end
-    return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
+    remove_tag_adjustments_from_tag_list
 
+    # check there are not too many tags
+    return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
+
+    # check tags names aren't too long
     tag_list.each do |tag|
       errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)") if tag.length > 20
     end
+  end
+
+  def remove_tag_adjustments_from_tag_list
+    tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
+    tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove
   end
 
   def validate_video

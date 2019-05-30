@@ -62,7 +62,7 @@
   </center>
   <div class="container">
     <% @articles.each do |article| %>
-      <% @rating_vote = article.rating_votes.where(user_id: current_user.id).first %>
+      <% @rating_vote = @rating_votes.where(article: article).first %>
       <% if !@rating_vote || article.last_buffered.nil? %>
         <div style="border-bottom: 20px solid black; margin-bottom: 15px;">
           <center>
@@ -76,8 +76,10 @@
             <% end %>
           </center>
           <div class="body">
-            <%= HTML_Truncator.truncate(article.processed_html,
-                                        200, ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe %>
+            <%= HTML_Truncator.truncate(
+                  article.processed_html,
+                  200,
+                  ellipsis: '<a class="comment-read-more" href="' + article.path + '">... Read Entire Post</a>').html_safe %>
           </div>
           <center>
             <% if article.last_buffered.nil? %>

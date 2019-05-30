@@ -86,7 +86,7 @@
     <% if @root_comment.present? %>
       <div class="root-comment">
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= tree_for(@root_comment, @root_comment.subtree.arrange[@root_comment], @commentable) %>
+          <%= tree_for(@root_comment, @root_comment.subtree.includes(:user).arrange[@root_comment], @commentable) %>
         <% end %>
       </div>
     <% else %>

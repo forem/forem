@@ -30,7 +30,6 @@
           Upload a Video 🎥
         </a>
       <% end %>
-
       <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
       <% if @articles.any? {|article| article.archived } %>
         <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>

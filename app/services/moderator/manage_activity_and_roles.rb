@@ -28,7 +28,7 @@ module Moderator
 
       user.articles.find_each do |article|
         article.reactions.delete_all
-        article.comments.find_each do |comment|
+        article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
           CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
           comment.delete
