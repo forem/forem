@@ -28,7 +28,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def leave_org?
-    OrganizationMembership.exist?(user_id: user.id, organization_id: record.id)
+    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
   def remove_association?

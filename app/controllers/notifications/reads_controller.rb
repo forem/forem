@@ -13,6 +13,6 @@ class Notifications::ReadsController < ApplicationController
   private
 
   def user_belongs_to_org?
-    OrganizationMembership.exist?(user_id: current_user.id, organization_id: params[:org_id], type_of_user: %w[admin member])
+    OrganizationMembership.exists?(user_id: current_user.id, organization_id: params[:org_id], type_of_user: %w[admin member])
   end
 end
