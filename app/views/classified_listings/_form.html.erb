@@ -49,12 +49,10 @@
       </div>
     </div>
     <%= javascript_pack_tag "listingForm", defer: true %>
-    <% if false # Put connect button (future feature) %>
     <div class="field">
       <%= form.label "contact_via_connect" %>
       <%= form.check_box "contact_via_connect" %>
     </div>
-    <% end %>
     <% if current_user.organization && current_user.org_admin %>
       <div class="field">
         <%= form.label "post_as_organization", "Post as #{current_user.organization.name} organization" %>
