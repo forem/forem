@@ -29,6 +29,10 @@
         <%= f.label "tag_list", "Tags" %>
         <%= f.text_field "tag_list", value: @classified_listing.cached_tag_list, placeholder: "8 tags max, comma separated, no spaces or special characters" %>
       </div>
+      <div class="field">
+        <%= f.label "contact_via_connect" %>
+        <%= f.check_box "contact_via_connect" %>
+      </div>
       <%= f.submit "Update Listings Info" %>
     <% end %>
   <% end %>

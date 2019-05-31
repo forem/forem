@@ -12,8 +12,9 @@ export class Listings extends Component {
     initialFetch: true,
     currentUserId: null,
     openedListing: null,
+    message: '',
     slug: null,
-    page: 0, 
+    page: 0,
     showNextPageButt: false,
   };
 
@@ -108,12 +109,10 @@ export class Listings extends Component {
   }
 
   handleCloseModal = (e) => {
-
     const { query, tags, category } = this.state;
     this.setState({openedListing: null, page: 0})
     this.setLocation(query, tags, category, null);
     document.body.classList.remove('modal-open');
-
   }
 
   handleOpenModal = (e, listing) => {
@@ -122,6 +121,34 @@ export class Listings extends Component {
     window.history.replaceState(null, null, `/listings/${listing.category}/${listing.slug}`);
     this.setLocation(null, null, listing.category, listing.slug);
     document.body.classList.add('modal-open');
+  }
+
+  handleDraftingMessage = (e) => {
+    e.preventDefault();
+    this.setState({ message: e.target.value })
+  }
+
+  handleSubmitMessage = (e) => {
+    if (this.state.message.replace(/\s/g, '').length === 0) {
+      e.preventDefault();
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('user_id', this.state.openedListing.user_id);
+    formData.append('message', this.state.message)
+    formData.append('controller', 'chat_channels');
+
+    var destination = `/connect/@${this.state.openedListing.author.username}`;
+
+    getCsrfToken()
+      .then(sendFetch('chat-creation', formData))
+      .then(() => {
+        window.location.href = destination;
+      })
+      .catch((error) => {
+        console.log(error);
+    });
   }
 
   handleQuery = e => {
@@ -156,7 +183,7 @@ export class Listings extends Component {
   loadNextPage = () => {
     const { query, tags, category, slug, page } = this.state;
     this.setState({page: page + 1});
-    this.listingSearch(query, tags, category, slug); 
+    this.listingSearch(query, tags, category, slug);
   }
 
   setUser = () => {
@@ -255,17 +282,29 @@ export class Listings extends Component {
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
     let modal = '';
     let modalBg = '';
+    let messageModal = '';
     if (openedListing) {
       modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
+      if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
+        messageModal = (
+          <form id="listings-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
+            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
+            <button type="submit" value="Submit" className="submit-button cta">SEND</button>
+          </form>
+        );
+      }
       modal = (
-        <SingleListing
-          onAddTag={this.addTag}
-          onChangeCategory={this.selectCategory}
-          listing={openedListing}
-          currentUserId={currentUserId}
-          onOpenModal={this.handleOpenModal}
-          isOpen
-        />
+        <div className="single-classified-listing-container">
+          <SingleListing
+            onAddTag={this.addTag}
+            onChangeCategory={this.selectCategory}
+            listing={openedListing}
+            currentUserId={currentUserId}
+            onOpenModal={this.handleOpenModal}
+            isOpen
+          />
+          {messageModal}
+        </div>
       )
     }
     if (initialFetch) {
