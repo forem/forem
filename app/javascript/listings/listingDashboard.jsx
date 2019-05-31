@@ -37,7 +37,6 @@ export class ListingDashboard extends Component {
 
   render() {
     const { listings } = this.state
-    console.log(listings);
     const userListings = listings.map(listing => (
       <ListingRow
         listing = {listing}
@@ -45,14 +44,15 @@ export class ListingDashboard extends Component {
     ))
 
     return (
-      <div className="dashboard__listings__container">
-        <div>
-          {/* Show number of listings */}
+      <div className="dashboard-listings-container">
+        <div className="dashboard-listings-actions">
+          {listings.length}
           <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
           {/* Show number of user / org credits available */}
           {/* Link to purchase credits */}
+          <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
         </div>
-        <div> // show all listings here in list form
+        <div className="dashboard-listings-view"> // show all listings here in list form
           {userListings}
         </div>
       </div>

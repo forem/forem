@@ -60,13 +60,13 @@
       input {
         font-size: 0.8em;
         @include themeable(
-          color, 
-          theme-color, 
+          color,
+          theme-color,
           $black
         );
         @include themeable(
-          background, 
-          theme-container-accent-background, 
+          background,
+          theme-container-accent-background,
           $light-gray
         );
         border-radius: 100px;
@@ -126,19 +126,19 @@
     width: 100%;
     max-width: 580px;
     @include themeable(
-      background, 
+      background,
       theme-container-background,
       white
     );
     box-sizing: border-box;
     @include themeable(
-      border, 
-      theme-border, 
+      border,
+      theme-border,
       1px solid $light-medium-gray
     );
     @include themeable(
-      box-shadow, 
-      theme-container-box-shadow, 
+      box-shadow,
+      theme-container-box-shadow,
       2px 2px 8px darken($light-medium-gray, 5%)
     );
     @media screen and (min-width: 580px) {
@@ -150,8 +150,8 @@
     }
     header {
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
       #f2f7fc
       );
       padding: 25px 22px;
@@ -173,8 +173,8 @@
     h2 {
       font-size: 1.45em;
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
       #32325d
       );
       margin: 0px;
@@ -203,13 +203,13 @@
       border-radius: 3px;
       border: 1px solid $light-medium-gray;
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $light-gray
       );
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         $black
       );
       &[type="checkbox"] {
@@ -223,13 +223,13 @@
       font-size: 17px;
       border-radius: 3px;
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $light-gray
       );
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         $black
       );
       border: 1px solid $light-medium-gray;
@@ -243,8 +243,8 @@
       font-size: 0.8em;
       padding: 8px 0px;
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
     }
@@ -263,8 +263,8 @@
       margin: 35px auto;
       display: block;
       @include themeable(
-        box-shadow, 
-        theme-container-box-shadow, 
+        box-shadow,
+        theme-container-box-shadow,
         2px 2px 8px darken($light-medium-gray, 5%)
       );
     }
@@ -288,8 +288,8 @@
         text-decoration: underline;
         display: inline-block;
         @include themeable(
-          color, 
-          theme-anchor-color, 
+          color,
+          theme-anchor-color,
           $bold-blue
         );
       }
@@ -303,8 +303,8 @@
     p {
       font-size: 0.8em;
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
     }
@@ -314,8 +314,8 @@
     button {
       background: transparent;
       @include themeable(
-        border, 
-        theme-border, 
+        border,
+        theme-border,
         1px solid $light-medium-gray
       );
       font-size: 17px;
@@ -339,14 +339,14 @@
   font-size: 17px;
   border-radius: 3px;
   @include themeable(
-    background, 
-    theme-container-background, 
+    background,
+    theme-container-background,
     white
   );
   margin-top: 10px;
   @include themeable(
-    color, 
-    theme-color, 
+    color,
+    theme-color,
     $black
   );
   border: 1px solid $light-medium-gray;
@@ -354,8 +354,8 @@
 
 .listingform__tagsoptions {
   @include themeable(
-    border, 
-    theme-border, 
+    border,
+    theme-border,
     1px solid $light-medium-gray
   );
   border-bottom-left-radius: 3px;
@@ -401,16 +401,16 @@
   font-size: 0.9em;
   break-inside: avoid;
   @include themeable(
-    background, 
-    theme-container-background, 
+    background,
+    theme-container-background,
     white
   );
   h3 {
     margin: 0px;
     padding: 9px 15px;
     @include themeable(
-      background, 
-      theme-container-accent-background, 
+      background,
+      theme-container-accent-background,
       lighten($light-medium-gray, 8%)
     );
     border-bottom: 1px solid $light-medium-gray;
@@ -435,13 +435,13 @@
     padding: 10px 15px;
     a {
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $dark-medium-gray
       );
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $light-medium-gray
       );
       display: inline-block;
@@ -455,15 +455,15 @@
   .single-classified-listing-author-info {
     font-size: 0.69em;
     @include themeable(
-      color, 
-      theme-secondary-color, 
+      color,
+      theme-secondary-color,
       $medium-gray
     );
     padding: 0px 15px 4px;
     a {
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
       display: inline-block;
@@ -484,13 +484,13 @@
       top: calc( 50px + 15vh);
       left: 50%;
       width: 600px;
-      margin-left: -300px; /* Negative half of width. */  
+      margin-left: -300px; /* Negative half of width. */
       h3 { font-size: calc(20px + 0.05vw);}
       .single-classified-listing-body {
         font-size: calc(18px + 0.05vw);
-      }  
+      }
     }
-  }  
+  }
 }
 .classified-listings-modal-background {
   z-index: 15;
@@ -498,4 +498,50 @@
   left: 0; top: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   user-select: none;
+}
+
+.dashboard-listings-container {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  width: 800px;
+  max-width: 96%;
+  margin: auto;
+
+  .dashboard-listings-actions {
+    a {
+
+    }
+  }
+
+  .dashboard-listings-view {
+
+    .dashboard-listing-row {
+
+
+      .dashboard-listing-tags {
+        padding: 10px 15px;
+        a {
+          @include themeable(
+            color,
+            theme-secondary-color,
+            $dark-medium-gray
+          );
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-medium-gray
+          );
+          display: inline-block;
+          margin: 2px;
+          padding: 2px 7px;
+          font-size: 0.77em;
+          border-radius: 3px;
+          font-weight: bold;
+        }
+
+      }
+    }
+
+
+  }
 }
