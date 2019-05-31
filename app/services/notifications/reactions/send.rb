@@ -55,7 +55,10 @@ module Notifications
           notification.notified_at = Time.current
           notification.read = false if json_data[:reaction][:aggregated_siblings].size > previous_siblings_size
 
-          notification_id = save_notification(notification)
+          # temporarily returning validations to prevent creating duplicate notifications
+          # notification_id = save_notification(notification)
+          notification.save!
+          notification_id = notification.id
 
           OpenStruct.new(action: :saved, notification_id: notification_id)
         end
