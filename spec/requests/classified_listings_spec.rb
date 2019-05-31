@@ -62,11 +62,12 @@ RSpec.describe "ClassifiedListings", type: :request do
 
       it "creates a listing under the org" do
         org_admin = create(:user, :org_admin)
-        Credit.create(organization_id: org_admin.organization_id)
-        valid_listing_params[:classified_listing][:post_as_organization] = "1"
+        org_id = org_admin.organizations.first.id
+        Credit.create(organization_id: org_id)
+        valid_listing_params[:classified_listing][:organization_id] = org_id
         sign_in org_admin
         post "/listings", params: valid_listing_params
-        expect(ClassifiedListing.first.organization_id).to eq org_admin.organization_id
+        expect(ClassifiedListing.first.organization_id).to eq org_id
       end
     end
   end
