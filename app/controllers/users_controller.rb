@@ -177,8 +177,6 @@ class UsersController < ApplicationController
     case @tab
     when "organization"
       handle_organization_tab
-    when "switch-organizations"
-      @organization = Organization.new
     when "integrations"
       if current_user.identities.where(provider: "github").any?
         @client = Octokit::Client.

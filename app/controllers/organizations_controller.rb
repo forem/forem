@@ -12,7 +12,6 @@ class OrganizationsController < ApplicationController
       redirect_to "/settings/organization/#{@organization.id}", notice:
         "Your organization was successfully created and you are an admin."
     else
-      @tab = "switch-organizations" if @user.has_role?(:switch_between_orgs)
       render template: "users/edit"
     end
   end
