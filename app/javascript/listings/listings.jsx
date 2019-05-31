@@ -51,6 +51,14 @@ export class Listings extends Component {
     t.setUser()
 
     document.body.addEventListener('keydown', t.handleKeyDown)
+    
+    /* 
+      The width of the columns also changes when the browser is resized 
+      so we will also call this function on window resize to recalculate
+      each grid item's height to avoid content overflow
+    */
+    window.addEventListener("resize", resizeAllMasonryItems);
+
   }
 
   componentDidUpdate() {
