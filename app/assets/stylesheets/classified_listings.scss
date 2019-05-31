@@ -248,7 +248,7 @@
         $medium-gray
       );
     }
-    input[type="submit"] {
+    .cta-main-listing-form {
       border: 0px;
       padding: 12px 0px;
       border-radius: 3px;
@@ -262,6 +262,7 @@
       max-width: 90%;
       margin: 35px auto;
       display: block;
+      text-align: center;
       @include themeable(
         box-shadow,
         theme-container-box-shadow,
@@ -392,13 +393,28 @@
 .single-classified-listing-container {
   width: 90%;
   z-index: 20;
-  top: 110px;
   position: fixed;
   left: 0;
+  top: 0;
   right: 0;
-  margin: 12px auto;
+  bottom: 0px;
+  margin: 12px auto 0px;
+  .single-classified-listing-container__inner {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 110px;
+    margin-bottom: 150px;
+    @media screen and (min-width: 950px) {
+      padding-top: calc( 50px + 15vh);
+    }
+    .single-classified-listing-container__spacer {
+      margin-bottom: 150px;
+    }
+  }
   @media screen and (min-width: 950px) {
-    top: calc( 50px + 15vh);
     left: 50%;
     width: 600px;
     margin-left: -300px; /* Negative half of width. */
@@ -515,6 +531,7 @@ form.listings-contact-via-connect {
   box-shadow: none;
   max-width: 100%;
   text-align: right;
+  p {text-align: left}
   @media screen and (min-width: 950px) {
     max-width: 600px;
   }
@@ -534,6 +551,8 @@ form.listings-contact-via-connect {
     font-size: 1em;
     line-height: 1em;
     text-align: center;
+    border-radius: 3px;
+    border: 0px;
   }
 }
 

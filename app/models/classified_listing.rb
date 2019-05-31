@@ -18,7 +18,6 @@ class ClassifiedListing < ApplicationRecord
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
                             length: { maximum: 400 }
-  validate :contact_via_connect
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
