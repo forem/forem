@@ -1,23 +1,43 @@
 import { h, Component } from 'preact';
-import { ListingRow } from './listingRow';
+import { ListingRow } from './dashboard/listingRow';
 
-export default class ListingForm extends Component {
+export class ListingDashboard extends Component {
   state = {
     listings: [],
     user_credits: 0,
     org_credits: 0,
-
   }
 
   componentWillMount() {
-
+    const t = this;
+    const container = document.getElementById('classifieds-listings-dashboard')
+    let listings = [];
+    listings = JSON.parse(container.dataset.listings)
+    t.setState({ listings });
+    t.setUser()
   }
 
   componentWillUnmount() {
 
   }
 
+  setUser = () => {
+    const t = this;
+    setTimeout(function() {
+      if (window.currentUser && t.state.currentUserId === null) {
+        t.setState({currentUserId: window.currentUser.id });
+      }
+    }, 300)
+    setTimeout(function() {
+      if (window.currentUser && t.state.currentUserId === null) {
+        t.setState({currentUserId: window.currentUser.id });
+      }
+    }, 1000)
+  }
+
   render() {
+    const { listings } = this.state
+    console.log(listings);
     const userListings = listings.map(listing => (
       <ListingRow
         listing = {listing}
@@ -27,10 +47,10 @@ export default class ListingForm extends Component {
     return (
       <div className="dashboard__listings__container">
         <div>
-          // display number of listings; active and inactive
+          {/* Show number of listings */}
           <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
-          // display credit counts
-          // button for buying credits
+          {/* Show number of user / org credits available */}
+          {/* Link to purchase credits */}
         </div>
         <div> // show all listings here in list form
           {userListings}

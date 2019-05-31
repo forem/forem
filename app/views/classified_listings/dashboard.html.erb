@@ -1,0 +1,9 @@
+
+<div id="classifieds-listings-dashboard" data-listings="<%= @classified_listings.to_json(
+        only: %i[title processed_html tag_list bumped_at category id user_id slug],
+        include: {
+          author: { only: %i[username name], methods: %i[username profile_image_90] },
+        },
+      )%>" >
+</div>
+<%= javascript_pack_tag "listingDashboard", defer: true %>

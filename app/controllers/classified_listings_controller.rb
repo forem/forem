@@ -2,7 +2,7 @@ class ClassifiedListingsController < ApplicationController
   before_action :set_classified_listing, only: %i[edit update]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
-  before_action :authenticate_user!, only: %i[edit update new]
+  before_action :authenticate_user!, only: %i[edit update new dashboard]
 
   def index
     @displayed_classified_listing = ClassifiedListing.find_by!(slug: params[:slug]) if params[:slug]
@@ -80,6 +80,10 @@ class ClassifiedListingsController < ApplicationController
     end
     clear_listings_cache
     redirect_to "/listings"
+  end
+
+  def dashboard
+    @classified_listings = ClassifiedListing.where(user_id: current_user.id)
   end
 
   private
