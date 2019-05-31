@@ -221,14 +221,14 @@ class UsersController < ApplicationController
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order("name ASC")
-    if params[:org_id].blank? || params[:org_id].match?(/\d/)
+    if params[:org_id] == "new" || params[:org_id].blank? && @organizations.size.zero?
+      @organization = Organization.new
+    elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
       authorize @organization, :part_of_org?
 
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
       @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
-    elsif params[:org_id] == "new"
-      @organization = Organization.new
     end
   end
 
