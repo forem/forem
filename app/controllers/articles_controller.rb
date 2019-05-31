@@ -73,8 +73,8 @@ class ArticlesController < ApplicationController
 
   def edit
     authorize @article
-    @organization = @article.user&.organization
     @version = @article.has_frontmatter? ? "v1" : "v2"
+    @user = @article.user
     @organizations = @user&.organizations
   end
 

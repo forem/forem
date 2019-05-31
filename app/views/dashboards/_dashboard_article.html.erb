@@ -81,10 +81,10 @@
       </span>
     <% end %>
   </div>
-  <% if org_admin %>
+  <% if organization && org_admin %>
     <%= form_for(article) do |f| %>
-      <input type="hidden" name="destination" value="/dashboard/organization/<%= @organization.id %>" />
-      AUTHOR: <%= f.select(:user_id, options_for_select(@organization.users.pluck(:name, :id), article.user_id)) %>
+      <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
+      AUTHOR: <%= f.select(:user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id)) %>
       <%= f.submit "SUBMIT AUTHOR CHANGE", class: "cta pill black" %>
     <% end %>
   <% end %>

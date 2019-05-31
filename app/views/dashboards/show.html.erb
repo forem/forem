@@ -17,10 +17,10 @@
       <% end %>
     </h1>
   <% end %>
-  <% if @organizations && params[:which] == "organization" %>
+  <% if params[:which] == "organization" %>
     <%= render "analytics" %>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: true, manage_view: false %>
+      <%= render "dashboard_article", article: article, organization: article.organization, org_admin: true, manage_view: false %>
     <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
@@ -36,7 +36,7 @@
       <% end %>
     </div>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: false, manage_view: false %>
+      <%= render "dashboard_article", article: article, organization: nil, org_admin: false, manage_view: false %>
     <% end %>
   <% else %>
     <div class="no-articles">
