@@ -1214,6 +1214,18 @@
           padding: 10px 12px;
           margin: -10px -12px;
         }
+        .widget-minimize-button {
+          position: absolute;
+          right: 8px;
+          top: 15px;
+          background: transparent;
+          padding: 0px 5px 1px;
+          border-radius: 3px;
+          font-size: 1.2em;
+          line-height: 0.6em;
+          @include themeable(border, theme-secondary-color-border, 1px solid $light-medium-gray);
+          @include themeable(color, theme-secondary-color, darken($light-medium-gray, 10%));
+        }
       }
       .widget-body {
         margin-top: 9px;

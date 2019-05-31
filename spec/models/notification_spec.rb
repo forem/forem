@@ -163,14 +163,18 @@ RSpec.describe Notification, type: :model do
       it "sends a notification to the author of a comment" do
         comment = create(:comment, user: user2, commentable: article)
         reaction = create(:reaction, reactable: comment, user: user)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-        expect(user2.notifications.count).to eq 1
+        perform_enqueued_jobs do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+          expect(user2.notifications.count).to eq 1
+        end
       end
 
       it "sends a notification to the author of an article" do
         reaction = create(:reaction, reactable: article, user: user2)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-        expect(user.notifications.count).to eq 1
+        perform_enqueued_jobs do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+          expect(user.notifications.count).to eq 1
+        end
       end
     end
 
@@ -239,34 +243,38 @@ RSpec.describe Notification, type: :model do
     end
 
     it "creates positive reaction notification" do
-      reaction = Reaction.create!(
+      reaction = article.reactions.create!(
         user_id: user2.id,
-        reactable_id: article.id,
-        reactable_type: "Article",
         category: "like",
       )
-      notification = Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      expect(notification).to be_valid
+      perform_enqueued_jobs do
+        expect do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        end.to change(Notification, :count).by(1)
+      end
     end
 
     it "does not create negative notification" do
       user2.add_role(:trusted)
-      reaction = Reaction.create!(
+      reaction = article.reactions.create!(
         user_id: user2.id,
-        reactable_id: article.id,
-        reactable_type: "Article",
         category: "vomit",
       )
-      notification = Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      expect(notification).to eq nil
+      perform_enqueued_jobs do
+        expect do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        end.not_to change(Notification, :count)
+      end
     end
 
     it "destroys the notification properly" do
       reaction = create(:reaction, user: user2, reactable: article, category: "like")
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      reaction.destroy!
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      expect(Notification.count).to eq 0
+      perform_enqueued_jobs do
+        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        reaction.destroy!
+        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        expect(Notification.count).to eq 0
+      end
     end
   end
 
@@ -274,7 +282,7 @@ RSpec.describe Notification, type: :model do
     context "when the notifiable is an article from a user" do
       before do
         user2.follow(user)
-        run_background_jobs_immediately { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to the author's followers" do
@@ -288,7 +296,7 @@ RSpec.describe Notification, type: :model do
       before do
         user2.follow(user)
         user3.follow(organization)
-        run_background_jobs_immediately { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to author's followers" do
@@ -369,6 +377,24 @@ RSpec.describe Notification, type: :model do
       expect do
         Notification.send_new_badge_notification_without_delay(badge_achievement)
       end.to change(Notification, :count).by(1)
+    end
+  end
+
+  describe "#remove_each" do
+    let(:mention) { create(:mention, user_id: user.id, mentionable_id: comment.id, mentionable_type: "Comment") }
+    let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+    let(:notifiable_collection) { [mention] }
+
+    before do
+      create(:notification, user_id: mention.user_id, notifiable_id: mention.id, notifiable_type: "Mention")
+    end
+
+    it "removes each mention related notifiable" do
+      perform_enqueued_jobs do
+        expect do
+          Notification.remove_each(notifiable_collection)
+        end.to change(Notification, :count).by(-1)
+      end
     end
   end
 end

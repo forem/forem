@@ -110,6 +110,7 @@ RSpec.configure do |config|
   end
 
   OmniAuth.config.test_mode = true
+  OmniAuth.config.logger = Rails.logger
 
   config.infer_spec_type_from_file_location!
 

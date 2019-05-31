@@ -52,9 +52,11 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "grants access to /mod index" do
+      create(:rating_vote, article: article, user: user)
       get "/mod"
       expect(response).to have_http_status(:ok)
     end
+
     it "grants access to /mod index with articles" do
       create(:article, published: true)
       get "/mod"

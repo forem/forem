@@ -10,9 +10,12 @@
         --theme-opposite-color: #0d1219;\
         --theme-logo-background: #0a0a0a;\
         --theme-logo-color: #fff;\
+        --theme-code-background: #29292e;\
+        --theme-code-color: #e6db74;\
         --theme-reaction-background: #202c3d;\
         --theme-anchor-color: #17a1f6;\
         --theme-secondary-color: #cedae2;\
+        --theme-secondary-color-border: 1px solid #cedae2;\
         --theme-top-bar-background: #1c2938;\
         --theme-top-bar-background-hover: #27384c;\
         --theme-top-bar-color: #fff;\
@@ -37,9 +40,12 @@
       --theme-opposite-color: #fff7f9;\
       --theme-logo-background: #fff7f9;\
       --theme-logo-color: #ff4983;\
+      --theme-code-background: #f9f9fa;\
+      --theme-code-color: #f92671;\
       --theme-reaction-background: #eff0f2;\
       --theme-anchor-color: #4e57ef;\
       --theme-secondary-color: #4e57ef;\
+      --theme-secondary-color-border: 1px solid #4e57ef;\
       --theme-top-bar-background: #ff4983;\
       --theme-top-bar-background-hover: #ff5b8f;\
       --theme-top-bar-color: #fff;\
@@ -60,6 +66,9 @@
     }
     if (navigator.userAgent === 'DEV-Native-ios') {
       document.getElementsByTagName("body")[0].classList.add("dev-ios-native-body");
+    }
+    if (localStorage.getItem('config_minimize_newest_listings') === 'yes') {
+      document.getElementsByTagName("body")[0].classList.add("config_minimize_newest_listings");
     }
   } catch(e) {
       console.log(e)

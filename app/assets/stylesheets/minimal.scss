@@ -6,7 +6,6 @@
 @import 'articles';
 @import 'index-comments';
 @import 'article-show';
-@import 'article_form';
 @import 'shared';
 @import 'dashboard';
 @import 'settings';
@@ -39,3 +38,5 @@
 @import 'chat';
 
 @import 'email_subscriptions';
+
+@import 'article-form-needed-legacy'

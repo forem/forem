@@ -96,7 +96,7 @@ Some existing code may be poorly written or untested, so we must have more scrut
 #### Create a pull request
 
 - Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
-- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
+- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/tests/)
 - Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
 - If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
 - If you follow the pull request template, you can't go wrong.
@@ -175,7 +175,7 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 
 1. Install `docker` and `docker-compose`
 1. `git clone git@github.com:thepracticaldev/dev.to.git`
-1. Set environment variables above as described in the "Basic Installation"
+1. Set environment variables above as described in the ["Standard Installation"](#standard-installation)
 1. run `docker-compose build`
 1. run `docker-compose run web rails db:setup`
 1. run `docker-compose run web yarn install`
