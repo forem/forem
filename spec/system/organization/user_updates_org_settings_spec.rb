@@ -16,8 +16,9 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
   end
 
   it "remove user from organization" do
-    user.update(organization_id: organization.id, org_admin: true)
-    user2 = create(:user, username: "newuser", organization_id: organization.id)
+    create(:organization_membership, user_id: user.id, organization_id: organization.id, type_of_user: "admin")
+    user2 = create(:user, username: "newuser")
+    create(:organization_membership, user_id: user2.id, organization_id: organization.id)
     visit "settings/organization"
     click_button("Remove from org")
     page.driver.browser.switch_to.alert.accept

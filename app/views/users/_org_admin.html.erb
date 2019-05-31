@@ -34,10 +34,12 @@
           <button class="settings-org-member settings-org-member-admin-self">org member</button>
           <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{org_membership.user.name} admin status?');" do %>
             <%= hidden_field_tag "user_id", org_membership.user_id %>
+            <%= hidden_field_tag "organization_id", @organization.id %>
             <button class="settings-org-member settings-org-member-make-admin" title="Make admin" type="submit">make admin</button>
           <% end %>
           <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{org_membership.user.name} from the organization?');" do %>
             <%= hidden_field_tag "user_id", org_membership.user_id %>
+            <%= hidden_field_tag "organization_id", @organization.id %>
             <button class="settings-org-member settings-org-member-remove" title="Remove from org" type="submit">remove from org</button>
           <% end %>
         <% end %>

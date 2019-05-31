@@ -154,13 +154,13 @@ class UsersController < ApplicationController
   def remove_from_org
     removable = User.find(params[:user_id])
     org = Organization.find_by(id: params[:organization_id])
-    removable_org_membership = OrganizationMembership.find_by(user_id: removable.id, organization_id: org)
+    removable_org_membership = OrganizationMembership.find_by(user_id: removable.id, organization_id: org.id)
 
     not_authorized unless current_user.org_admin?(org) && removable_org_membership
 
     removable_org_membership.delete
     redirect_to "/settings/organization",
-                notice: "#{user.name} is no longer part of your organization."
+                notice: "#{removable.name} is no longer part of your organization."
   end
 
   def signout_confirm; end
