@@ -124,7 +124,7 @@ class UsersController < ApplicationController
   def leave_org
     org = Organization.find_by(id: params[:organization_id])
     authorize org
-    OrganizationMembership.find_by(organization_id: org, user_id: current_user.id)&.delete
+    OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.delete
     redirect_to "/settings/organization/new",
                 notice: "You have left your organization."
   end
@@ -133,7 +133,7 @@ class UsersController < ApplicationController
     adminable = User.find(params[:user_id])
     org = Organization.find_by(id: params[:organization_id])
 
-    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exist?(user: adminable, organization: org)
+    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable, organization: org)
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
     redirect_to "/settings/organization#{params[:organization_id]}",

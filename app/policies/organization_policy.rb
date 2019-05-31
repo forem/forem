@@ -7,6 +7,10 @@ class OrganizationPolicy < ApplicationPolicy
     user.org_admin?(record)
   end
 
+  def leave_org?
+    part_of_org?
+  end
+
   def part_of_org?
     return false if record.blank?
 
