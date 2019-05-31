@@ -128,7 +128,8 @@ export class ReadingList extends Component {
                 src={item.reactable_user.profile_image_90}
                 alt="Profile Pic"
               />
-              {item.reactable_user.name}・{item.reactable_published_date}
+              {item.reactable_user.name}・{item.reactable_published_date}・
+              {item.reading_time} min read・
             </a>
             <span className="readinglist-item-tag-collection">
               {item.reactable_tags.map(tag => (
