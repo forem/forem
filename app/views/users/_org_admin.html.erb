@@ -57,11 +57,13 @@
   <h5>Your secret: (You should rotate this regularly)</h5>
   <input type="text" class="settings-org-secret" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
   <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
+    <%= hidden_field_tag "organization[id]", @organization.id %>
     <button class="settings-generate-new-secret">Generate New Secret</button>
   <% end %>
 </div>
 <h3>Organization Details</h3>
 <%= form_for(@organization) do |f| %>
+<%= f.hidden_field :id %>
   <div class="field">
     <%= f.label :name %>
     <%= f.text_field :name, maxlength: 50 %>

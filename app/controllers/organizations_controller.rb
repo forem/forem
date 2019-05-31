@@ -21,7 +21,7 @@ class OrganizationsController < ApplicationController
     @user = current_user
     @tab = "organization"
     @tab_list = @user.settings_tab_list
-    @organization = @user.organization
+    @organization = Organization.find_by(id: organization_params[:id])
     authorize @organization
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
@@ -32,9 +32,7 @@ class OrganizationsController < ApplicationController
   end
 
   def generate_new_secret
-    raise unless current_user.org_admin
-
-    @organization = current_user.organization
+    @organization = Organization.find_by(id: organization_params[:id])
     authorize @organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
@@ -45,6 +43,7 @@ class OrganizationsController < ApplicationController
 
   def permitted_params
     accessible = %i[
+      id
       name
       summary
       tag_line
