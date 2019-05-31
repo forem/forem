@@ -129,25 +129,27 @@ export class Listings extends Component {
   }
 
   handleSubmitMessage = (e) => {
+    e.preventDefault();
+    const { message, openedListing} = this.state
     if (this.state.message.replace(/\s/g, '').length === 0) {
-      e.preventDefault();
       return;
     }
-
     const formData = new FormData();
-    formData.append('user_id', this.state.openedListing.user_id);
-    formData.append('message', this.state.message)
+    formData.append('user_id', openedListing.user_id);
+    formData.append('message', `**re: ${openedListing.title}** ${message}`)
     formData.append('controller', 'chat_channels');
 
-    var destination = `/connect/@${this.state.openedListing.author.username}`;
-
-    getCsrfToken()
-      .then(sendFetch('chat-creation', formData))
-      .then(() => {
-        window.location.href = destination;
-      })
-      .catch((error) => {
-        console.log(error);
+    const destination = `/connect/@${openedListing.author.username}`;
+    const metaTag = document.querySelector("meta[name='csrf-token']");
+    window.fetch('/chat_channels/create_chat', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': metaTag.getAttribute("content"),
+      },
+      body: formData,
+      credentials: 'same-origin',
+    }).then(() => {
+      window.location.href = destination;
     });
   }
 
@@ -288,22 +290,40 @@ export class Listings extends Component {
       if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
         messageModal = (
           <form id="listings-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
+            <p><b>Contact {openedListing.author.name} via DEV Connect</b></p>
             <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
             <button type="submit" value="Submit" className="submit-button cta">SEND</button>
+            <p>
+              <em>Message must be relevant and on-topic with the listing. All private interactions <b>must</b> abide by the <a href="/code-of-conduct">code of conduct</a></em>
+            </p>
+          </form>
+        );
+      } else if (openedListing.contact_via_connect) {
+        messageModal = (
+          <form id="listings-message-form" className="listings-contact-via-connect">
+            <p>This is your active listing. Any member can contact you via this form.</p>
+            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
+            <button type="submit" value="Submit" className="submit-button cta">SEND</button>
+            <p>
+              <em>All private interactions <b>must</b> abide by the <a href="/code-of-conduct">code of conduct</a></em>
+            </p>
           </form>
         );
       }
       modal = (
         <div className="single-classified-listing-container">
-          <SingleListing
-            onAddTag={this.addTag}
-            onChangeCategory={this.selectCategory}
-            listing={openedListing}
-            currentUserId={currentUserId}
-            onOpenModal={this.handleOpenModal}
-            isOpen
-          />
-          {messageModal}
+          <div className="single-classified-listing-container__inner">
+            <SingleListing
+              onAddTag={this.addTag}
+              onChangeCategory={this.selectCategory}
+              listing={openedListing}
+              currentUserId={currentUserId}
+              onOpenModal={this.handleOpenModal}
+              isOpen
+            />
+            {messageModal}
+            <div className="single-classified-listing-container__spacer"></div>
+          </div>
         </div>
       )
     }
