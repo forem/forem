@@ -28,7 +28,7 @@ class Reaction < ApplicationRecord
     attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status, :reading_time,
               :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags, :reactable_published_date
     searchableAttributes %i[searchable_reactable_title searchable_reactable_text
-                            searchable_reactable_text searchable_reactable_tags reactable_user]
+                            searchable_reactable_tags reactable_user]
     tags do
       reactable_tags
     end
