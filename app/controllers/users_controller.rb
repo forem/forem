@@ -26,8 +26,9 @@ class UsersController < ApplicationController
       end
       cookies.permanent[:user_experience_level] = @user.experience_level.to_s if @user.experience_level.present?
       follow_hiring_tag(@user)
+      flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}", notice: notice
+      redirect_to "/settings/#{@tab}"
     else
       render :edit
     end
@@ -41,10 +42,10 @@ class UsersController < ApplicationController
       if @user.update(twitch_username: new_twitch_username)
         @user.touch(:profile_updated_at)
         Streams::TwitchWebhookRegistrationJob.perform_later(@user.id) if @user.twitch_username?
-        notice = "Your profile was successfully updated."
       end
+      flash[:settings_notice] = "Your Twitch username was successfully updated."
     end
-    redirect_to "/settings/#{@tab}", notice: notice
+    redirect_to "/settings/#{@tab}"
   end
 
   def update_language_settings
@@ -52,9 +53,9 @@ class UsersController < ApplicationController
     set_tabs("misc")
     @user.language_settings["preferred_languages"] = Languages::LIST.keys & params[:user][:preferred_languages].to_a
     if @user.save
-      notice = "Your profile was successfully updated."
+      flash[:settings_notice] = "Your language settings were successfully updated."
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}", notice: notice
+      redirect_to "/settings/#{@tab}"
     else
       render :edit
     end
@@ -66,8 +67,9 @@ class UsersController < ApplicationController
     if @user.articles_count.zero? && @user.comments_count.zero?
       @user.destroy!
       NotifyMailer.account_deleted_email(@user).deliver
+      flash[:settings_notice] = "Your account has been deleted."
       sign_out @user
-      redirect_to root_path, notice: "Your account has been deleted."
+      redirect_to root_path
     else
       flash[:error] = "An error occurred. Try requesting an account deletion below."
       redirect_to "/settings/#{@tab}"
@@ -86,12 +88,11 @@ class UsersController < ApplicationController
       identity_username = "#{provider}_username".to_sym
       @user.update(identity_username => nil, profile_updated_at: Time.current)
 
-      redirect_to "/settings/#{@tab}",
-                  notice: "Your #{provider.capitalize} account was successfully removed."
+      flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
       flash[:error] = "An error occurred. Please try again or send an email to: yo@dev.to"
-      redirect_to "/settings/#{@tab}"
     end
+    redirect_to "/settings/#{@tab}"
   end
 
   def onboarding_update
@@ -113,8 +114,8 @@ class UsersController < ApplicationController
     authorize User
     if (@organization = Organization.find_by(secret: params[:org_secret].strip))
       OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
-      redirect_to "/settings/organization/#{@organization.id}",
-                  notice: "You have joined the #{@organization.name} organization."
+      flash[:settings_notice] = "You have joined the #{@organization.name} organization."
+      redirect_to "/settings/organization/#{@organization.id}"
     else
       flash[:error] = "The given organization secret was invalid."
       redirect_to "/settings/organization/new"
@@ -125,8 +126,8 @@ class UsersController < ApplicationController
     org = Organization.find_by(id: params[:organization_id])
     authorize org
     OrganizationMembership.find_by(organization_id: org.id, user_id: current_user.id)&.delete
-    redirect_to "/settings/organization/new",
-                notice: "You have left your organization."
+    flash[:settings_notice] = "You have left your organization."
+    redirect_to "/settings/organization/new"
   end
 
   def add_org_admin
@@ -136,8 +137,8 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable, organization: org)
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
-    redirect_to "/settings/organization/#{org.id}",
-                notice: "#{adminable.name} is now an admin."
+    flash[:settings_notice] = "#{adminable.name} is now an admin."
+    redirect_to "/settings/organization/#{org.id}"
   end
 
   def remove_org_admin
@@ -147,8 +148,8 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && unadminable.org_admin?(org)
 
     OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
-    redirect_to "/settings/organization/#{org.id}",
-                notice: "#{unadminable.name} is no longer an admin."
+    flash[:settings_notice] = "#{unadminable.name} is no longer an admin."
+    redirect_to "/settings/organization/#{org.id}"
   end
 
   def remove_from_org
@@ -159,8 +160,8 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && removable_org_membership
 
     removable_org_membership.delete
-    redirect_to "/settings/organization/#{org.id}",
-                notice: "#{removable.name} is no longer part of your organization."
+    flash[:settings_notice] = "#{removable.name} is no longer part of your organization."
+    redirect_to "/settings/organization/#{org.id}"
   end
 
   def signout_confirm; end

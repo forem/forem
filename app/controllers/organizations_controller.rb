@@ -9,8 +9,8 @@ class OrganizationsController < ApplicationController
     authorize @organization
     if @organization.save
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
-      redirect_to "/settings/organization/#{@organization.id}", notice:
-        "Your organization was successfully created and you are an admin."
+      flash[:settings_notice] = "Your organization was successfully created and you are an admin."
+      redirect_to "/settings/organization/#{@organization.id}"
     else
       render template: "users/edit"
     end
@@ -24,7 +24,8 @@ class OrganizationsController < ApplicationController
     authorize @organization
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
-      redirect_to "/settings/organization", notice: "Your organization was successfully updated."
+      flash[:settings_notice] = "Your organization was successfully updated."
+      redirect_to "/settings/organization"
     else
       render template: "users/edit"
     end
@@ -35,7 +36,8 @@ class OrganizationsController < ApplicationController
     authorize @organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
-    redirect_to "/settings/organization", notice: "Your org secret was updated"
+    flash[:settings_notice] = "Your org secret was updated"
+    redirect_to "/settings/organization"
   end
 
   private
