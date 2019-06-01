@@ -1,6 +1,6 @@
 <% title "Settings" %>
 
-<% if flash[:notice] && flash[:notice].include?("Your ") %>
+<% if flash[:notice] %>
   <div class="notice" id="notice">
     <%= flash[:notice] %>
   </div>
