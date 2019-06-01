@@ -529,7 +529,11 @@ a.header-link {
   .low-quality-comment-marker {
     font-size: 0.66em;
     padding: 6px 13px;
-    background: $light-gray;
+    @include themeable(
+      background,
+      theme-container-accent-background,
+      $light-gray
+    );
     font-weight: bold;
     border-bottom: 1px solid $light-medium-gray;
     a {
