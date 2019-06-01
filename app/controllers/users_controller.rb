@@ -136,7 +136,7 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable, organization: org)
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
-    redirect_to "/settings/organization#{params[:organization_id]}",
+    redirect_to "/settings/organization/#{org.id}",
                 notice: "#{adminable.name} is now an admin."
   end
 
@@ -147,7 +147,7 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && unadminable.org_admin?(org)
 
     OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
-    redirect_to "/settings/organization",
+    redirect_to "/settings/organization/#{org.id}",
                 notice: "#{unadminable.name} is no longer an admin."
   end
 
@@ -159,7 +159,7 @@ class UsersController < ApplicationController
     not_authorized unless current_user.org_admin?(org) && removable_org_membership
 
     removable_org_membership.delete
-    redirect_to "/settings/organization",
+    redirect_to "/settings/organization/#{org.id}",
                 notice: "#{removable.name} is no longer part of your organization."
   end
 
