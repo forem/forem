@@ -109,10 +109,14 @@ export class Listings extends Component {
   }
 
   handleCloseModal = (e) => {
-    const { query, tags, category } = this.state;
-    this.setState({openedListing: null, page: 0})
-    this.setLocation(query, tags, category, null);
-    document.body.classList.remove('modal-open');
+    if (e.target.id === 'single-classified-listing-container__inner' ||
+      e.target.id === 'classified-filters' ||
+      e.target.id === 'classified-listings-modal-background' ) {
+      const { query, tags, category } = this.state;
+      this.setState({openedListing: null, page: 0})
+      this.setLocation(query, tags, category, null);
+      document.body.classList.remove('modal-open');  
+    }
   }
 
   handleOpenModal = (e, listing) => {
@@ -286,7 +290,7 @@ export class Listings extends Component {
     let modalBg = '';
     let messageModal = '';
     if (openedListing) {
-      modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
+      modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' id='classified-listings-modal-background' />
       if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
         messageModal = (
           <form id="listings-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
@@ -312,7 +316,7 @@ export class Listings extends Component {
       }
       modal = (
         <div className="single-classified-listing-container">
-          <div className="single-classified-listing-container__inner">
+          <div id="single-classified-listing-container__inner" className="single-classified-listing-container__inner" onClick={this.handleCloseModal}>
             <SingleListing
               onAddTag={this.addTag}
               onChangeCategory={this.selectCategory}
@@ -333,7 +337,7 @@ export class Listings extends Component {
     return (
       <div className="listings__container">
         {modalBg}
-        <div className="classified-filters">
+        <div className="classified-filters" id="classified-filters">
           <div className="classified-filters-categories">
             <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
             {categoryLinks}
