@@ -90,11 +90,10 @@ class ChatChannelsController < ApplicationController
 
   def create_chat
     chat_recipient = User.find(params[:user_id])
+    valid_listing = ClassifiedListing.where({ user_id: params[:user_id], contact_via_connect: true }).limit(1)
     authorize ChatChannel
-    if chat_recipient.inbox_type == "open"
+    if chat_recipient.inbox_type == "open" || valid_listing.length == 1
       chat = ChatChannel.create_with_users([current_user, chat_recipient], "direct")
-      # get message param to generate message to send
-      # message_markdown = "Hi #{chat_recipient.username}! I am #{current_user.username}. I can message you on DEV Connect because your inbox is open."
       message_markdown = params[:message]
       message = Message.new(
         chat_channel: chat,

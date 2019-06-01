@@ -79,6 +79,7 @@ class ClassifiedListingsController < ApplicationController
       @classified_listing.title = params[:classified_listing][:title] if params[:classified_listing][:title]
       @classified_listing.body_markdown = params[:classified_listing][:body_markdown] if params[:classified_listing][:body_markdown]
       @classified_listing.tag_list = params[:classified_listing][:tag_list] if params[:classified_listing][:tag_list]
+      @classified_listing.contact_via_connect = params[:classified_listing][:contact_via_connect] if params[:classified_listing][:contact_via_connect]
       @classified_listing.save
     end
     clear_listings_cache
