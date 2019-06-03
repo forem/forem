@@ -72,7 +72,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays a flash with a reminder for the user to expect an email" do
         send_request
-        expect(flash[:notice]).to include("The export will be emailed to you shortly.")
+        expect(flash[:settings_notice]).to include("The export will be emailed to you shortly.")
       end
 
       it "hides the checkbox" do
@@ -200,7 +200,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "renders a successful response message" do
         delete "/users/remove_association", params: { provider: "twitter" }
-        expect(flash[:notice]).to eq "Your Twitter account was successfully removed."
+        expect(flash[:settings_notice]).to eq "Your Twitter account was successfully removed."
       end
 
       it "does not show the Remove OAuth section afterward" do
