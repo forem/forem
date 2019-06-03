@@ -84,7 +84,7 @@ module Api
         if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
           OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"])
         elsif potential_user == @user
-          OrganizationMembership.exists?(user: potential_user, organization_id: params["article"]["organization_id"], type_of_user: "admin") ||
+          potential_user.org_admin?(params["article"]["organization_id"]) ||
             @user.any_admin?
         end
       end
