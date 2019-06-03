@@ -7,7 +7,7 @@ export const ListingRow = ({listing}) => {
     <a href={`/listings?t=${tag}`} data-no-instant>#{tag} </a>
   ));
 
-  const listingDate = (new Date(listing.bumped_at.toString())).toDateString();
+  const listingDate = listing.bumped_at ? (new Date(listing.bumped_at.toString())).toDateString() : (new Date(listing.updated_at.toString())).toDateString() ;
   return(
     <div className="dashboard-listing-row">
       <a href={`${`${listing.category  }/${  listing.slug}`}`}>

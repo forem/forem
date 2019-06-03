@@ -4,6 +4,7 @@ import { ListingRow } from './dashboard/listingRow';
 export class ListingDashboard extends Component {
   state = {
     listings: [],
+    org_listings: [],
     user_credits: 0,
     currentUserId: null,
   }
@@ -12,9 +13,11 @@ export class ListingDashboard extends Component {
     const t = this;
     const container = document.getElementById('classifieds-listings-dashboard')
     let listings = [];
-    listings = JSON.parse(container.dataset.listings)
-    let user_credits = container.dataset.usercredits
-    t.setState({ listings, user_credits });
+    let org_listings = [];
+    listings = JSON.parse(container.dataset.listings);
+    org_listings = JSON.parse(container.dataset.orglistings);
+    let user_credits = container.dataset.usercredits;
+    t.setState({ listings, org_listings, user_credits });
     t.setUser()
   }
 
@@ -37,20 +40,26 @@ export class ListingDashboard extends Component {
   }
 
   render() {
-    const { listings, user_credits } = this.state
+    const { listings, org_listings, user_credits, currentUserId } = this.state
     const userListings = listings.map(listing => (
       <ListingRow
         listing = {listing}
       />
-    ))
+    ));
+    console.log(org_listings)
+    const orgListings = org_listings.map(listing => (
+      <ListingRow
+        listing = {listing}
+      />
+    ));
 
     return (
       <div className="dashboard-listings-container">
         <div className="dashboard-listings-actions">
           <div className="dashboard-listings-info">
             <h3>Listings</h3>
-            <h4> mariocsee: {listings.length}</h4>
-            {/* info for orgs? */}
+            <h4> {currentUserId}: {listings.length}</h4>
+
             <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
           </div>
 
@@ -58,11 +67,13 @@ export class ListingDashboard extends Component {
             <h3>Credits</h3>
             {/* Show number of user / org credits available */}
             {user_credits}
-            <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
+            <a href="/credits/purchase" data-no-instant>Buy More Credits for user</a>
+            <a href="/credits/purchase?purchaser=organization" data-no-instant>Buy More Credits for organization</a>
           </div>
         </div>
         <div className="dashboard-listings-view"> // show all listings here in list form
           {userListings}
+          {orgListings}
         </div>
       </div>
     )
