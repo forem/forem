@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 
 import Navigation from './Navigation';
-import { jsonToForm, getContentOfToken } from '../utilities';
+import { getContentOfToken } from '../utilities';
 
 export default class extends Component {
   constructor(props) {
@@ -11,19 +11,11 @@ export default class extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      summary: '',
-      location: '',
-      employment_title: '',
-      employer_name: '',
+      summary: '', // eslint-disable-line no-unused-state
+      location: '', // eslint-disable-line no-unused-state
+      employment_title: '', // eslint-disable-line no-unused-state
+      employer_name: '', // eslint-disable-line no-unused-state
     };
-  }
-
-  handleChange() {
-    const { name, value } = event.target;
-
-    this.setState({
-      [name]: value,
-    });
   }
 
   onSubmit() {
@@ -39,9 +31,16 @@ export default class extends Component {
       credentials: 'same-origin',
     }).then(response => {
       if (response.ok) {
-        console.log(response.json().then(data => console.log(data)));
         this.props.next();
       }
+    });
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+
+    this.setState({
+      [name]: value,
     });
   }
 

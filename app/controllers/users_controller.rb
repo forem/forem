@@ -108,6 +108,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def onboarding_checkbox_update
+    current_user.update(params[:user].permit(:checked_code_of_conduct, :location, :employment_title, :employer_name)) if params[:user]
+    current_user.saw_onboarding = true
+    authorize User
+    if current_user.save!
+      respond_to do |format|
+        format.json { render json: { outcome: "onboarding closed" } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { outcome: "onboarding opened" } }
+      end
+    end
+  end
+
   def join_org
     authorize User
     if (@organization = Organization.find_by(secret: params[:org_secret]))

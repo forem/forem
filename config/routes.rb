@@ -156,6 +156,7 @@ Rails.application.routes.draw do
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
+  patch "/onboarding_checkbox_update" => "users#onboarding_checkbox_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
   post "/chat_channels/:id/open" => "chat_channels#open"
