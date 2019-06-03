@@ -28,7 +28,7 @@ RSpec.describe "User edits their integrations", type: :system, js: true do
       fill_in "Twitch Username", with: "TestTwitchUser"
       click_button("SUBMIT")
 
-      expect(page).to have_content "Your profile was successfully updated."
+      expect(page).to have_content "Your Twitch username was successfully updated."
 
       visit "/settings/integrations"
       expect(find_field("Twitch Username").value).to eq "TestTwitchUser"
