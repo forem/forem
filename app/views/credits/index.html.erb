@@ -13,10 +13,10 @@
     <div class="existing-credits-status">
       <select id="org-credits-select" class="org-credits-select">
         <% @organizations.each do |org| %>
-          <option value="<%= org.id %>" data-credits="<%= org.unspent_credits.size %>"><%= org.name %></option>
+          <option value="<%= org.id %>" data-credits="<%= org.unspent_credits_count %>"><%= org.name %></option>
         <% end %>
       </select>
-      has <span id="org-credits-number"><%= @organizations.first.unspent_credits.size %></span> credits to spend
+      has <span id="org-credits-number"><%= @organizations.first.unspent_credits_count %></span> credits to spend
     </div>
     <a id="org-credits-purchase-link" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant>Purchase additional credits</a>
     <%= javascript_pack_tag "orgCreditsSelector", defer: true %>
