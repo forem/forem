@@ -11,12 +11,14 @@ export const ListingRow = ({listing}) => {
   return(
     <div className="dashboard-listing-row">
       <h3>
-        <a href={`${listing.category + '/' + listing.slug}`}>
+        <a href={`${`${listing.category  }/${  listing.slug}`}`}>
           {listing.title}
         </a>
       </h3>
-      <div className="listing-body" dangerouslySetInnerHTML={{ __html: listing.processed_html }} />
-      <span className="listing-date">{listingDate} </span>
+      <span className="listing-date">
+        {listingDate}
+        {' '}
+      </span>
       <span className="listing-category">{listing.category}</span>
       <span className="dashboard-listing-tags">{tagLinks}</span>
       <div className="dashboard-listing-actions">
