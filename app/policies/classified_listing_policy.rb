@@ -8,7 +8,7 @@ class ClassifiedListingPolicy < ApplicationPolicy
   end
 
   def authorized_organization_poster?
-    OrganizationMembership.exists?(user: user, organization_id: record.organization_id, type_of_user: %w[admin member])
+    user.org_member?(record.organization_id)
   end
 
   private

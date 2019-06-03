@@ -362,6 +362,10 @@ class User < ApplicationRecord
     organizations.where(id: org_ids)
   end
 
+  def org_member?(organization)
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: %w[admin member])
+  end
+
   def org_admin?(organization)
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
