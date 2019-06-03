@@ -248,7 +248,7 @@
         $medium-gray
       );
     }
-    input[type="submit"] {
+    .cta-main-listing-form {
       border: 0px;
       padding: 12px 0px;
       border-radius: 3px;
@@ -262,6 +262,7 @@
       max-width: 90%;
       margin: 35px auto;
       display: block;
+      text-align: center;
       @include themeable(
         box-shadow,
         theme-container-box-shadow,
@@ -389,6 +390,37 @@
   font-weight: bold;
 }
 
+.single-classified-listing-container {
+  width: 90%;
+  z-index: 20;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0px;
+  margin: 12px auto 0px;
+  .single-classified-listing-container__inner {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 110px;
+    margin-bottom: 150px;
+    @media screen and (min-width: 950px) {
+      padding-top: calc( 50px + 15vh);
+    }
+    .single-classified-listing-container__spacer {
+      margin-bottom: 150px;
+    }
+  }
+  @media screen and (min-width: 950px) {
+    left: 50%;
+    width: 600px;
+    margin-left: -300px; /* Negative half of width. */
+  }
+}
+
 .single-classified-listing {
   width: 100%;
   display: inline-block;
@@ -474,17 +506,12 @@
   }
   &.single-classified-listing--opened {
     z-index: 20;
-    position: fixed;
-    top: 110px;
-    width: 90%;
+    display: inline-block;
+    position: relative;
     left: 0px;
     right: 0px;
     padding-bottom: 12px;
     @media screen and (min-width: 950px) {
-      top: calc( 50px + 15vh);
-      left: 50%;
-      width: 600px;
-      margin-left: -300px; /* Negative half of width. */
       h3 { font-size: calc(20px + 0.05vw);}
       .single-classified-listing-body {
         font-size: calc(18px + 0.05vw);
@@ -492,6 +519,43 @@
     }
   }
 }
+
+form.listings-contact-via-connect {
+  border-radius: 3px;
+  z-index: 20;
+  position: relative;
+  padding: 10px 15px;
+  margin: 12px auto;
+  width: 100%;
+  padding-bottom: 12px;
+  box-shadow: none;
+  max-width: 100%;
+  text-align: right;
+  p {text-align: left}
+  @media screen and (min-width: 950px) {
+    max-width: 600px;
+  }
+  textarea#new-message {
+    height: 100px;
+    margin: 5px auto 10px auto;
+    font-size: 15px;
+    @media screen and (min-width: 950px) {
+      font-size: calc(18px + 0.05vw);
+    }
+  }
+  .submit-button {
+    margin: none 10px;
+    padding: 0.5em;
+    height: 2em;
+    width: 4em;
+    font-size: 1em;
+    line-height: 1em;
+    text-align: center;
+    border-radius: 3px;
+    border: 0px;
+  }
+}
+
 .classified-listings-modal-background {
   z-index: 15;
   position: fixed;
