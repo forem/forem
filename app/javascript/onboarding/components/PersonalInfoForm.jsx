@@ -1,9 +1,10 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
-export default class extends Component {
+class PersonalInfoForm extends Component {
   constructor(props) {
     super(props);
 
@@ -84,3 +85,10 @@ export default class extends Component {
     );
   }
 }
+
+PersonalInfoForm.propTypes = {
+  prev: PropTypes.func.isRequired,
+  next: PropTypes.string.isRequired,
+};
+
+export default PersonalInfoForm;
