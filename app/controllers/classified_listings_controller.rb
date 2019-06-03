@@ -57,6 +57,7 @@ class ClassifiedListingsController < ApplicationController
     else
       @credits = current_user.credits.where(spent: false)
       @classified_listing.cached_tag_list = classified_listing_params[:tag_list]
+      @organizations = current_user.organizations
       render :new
     end
   end

@@ -8,18 +8,72 @@ RSpec.describe "ClassifiedListings", type: :request do
         title: "something",
         body_markdown: "something else",
         category: "cfp",
-        tag_list: "",
-        post_as_organization: "0"
+        tag_list: ""
       }
     }
   end
 
-  before do
-    sign_in user
-    create_list(:credit, 25, user: user)
+  describe "GET /listings/new" do
+    before { sign_in user }
+
+    context "when the user has no credits" do
+      it "shows the proper messages" do
+        get "/listings/new"
+        expect(response.body).to include "Listings Require Credits"
+        expect(response.body).to include "You need at least one credit to create a listing."
+      end
+    end
+
+    context "when the user has credits" do
+      it "shows the number of credits" do
+        random_number = rand(2..100)
+        create_list(:credit, random_number, user: user)
+        get "/listings/new"
+        expect(response.body).to include "You have #{random_number} credits available"
+      end
+    end
+
+    context "when the user has no credits and belongs to an organization" do
+      let(:organization) { create(:organization) }
+
+      before { create(:organization_membership, user_id: user.id, organization_id: organization.id) }
+
+      it "shows the proper message when both user and org have no credits" do
+        get "/listings/new"
+        expect(response.body).to include "Listings Require Credits"
+      end
+
+      it "shows the number of credits of the user if the user has credits but the org has no credits" do
+        random_number = rand(2..100)
+        create_list(:credit, random_number, user: user)
+        get "/listings/new"
+        expect(response.body).to include "You have #{random_number} credits available"
+      end
+
+      it "shows the number of credits of the organization if the org has credits" do
+        random_number = rand(100)
+        create_list(:credit, random_number, organization: organization)
+        get "/listings/new"
+        expect(response.body).to include "has <span id=\"org-credits-number\">#{random_number}</span> credits"
+      end
+
+      it "shows the number of credits of both the user and the organization if they both have credits" do
+        random_number = rand(100)
+        create_list(:credit, random_number, organization: organization)
+        create_list(:credit, random_number, user: user)
+        get "/listings/new"
+        expect(response.body).to include "has <span id=\"org-credits-number\">#{random_number}</span> credits"
+        expect(response.body).to include "You have #{random_number} credits available"
+      end
+    end
   end
 
   describe "POST /listings" do
+    before do
+      sign_in user
+      create_list(:credit, 25, user: user)
+    end
+
     context "when the listing is invalid" do
       it "renders errors with the listing" do
         post "/listings", params: {
@@ -27,8 +81,7 @@ RSpec.describe "ClassifiedListings", type: :request do
             title: "nothing",
             body_markdown: "",
             category: "cfp",
-            tag_list: "",
-            post_as_organization: "0"
+            tag_list: ""
           }
         }
         expect(response.body).to include("prohibited this listing from being saved")

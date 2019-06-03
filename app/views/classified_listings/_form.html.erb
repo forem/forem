@@ -64,7 +64,7 @@
         <%= form.submit "CREATE LISTING", class: "cta cta-main-listing-form" %>
       <% else %>
         <p>You need at least one credit to create a listing.</p>
-        <a href="/credits/new" class="cta cta-main-listing-form">Purchase Credits Now</a>
+        <a href="/credits/new" class="cta cta-main-listing-form" data-no-instant>Purchase Credits Now</a>
       <% end %>
     </div>
     <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
@@ -76,7 +76,7 @@
       <div class="listings-current-credits-inner">
         You have <%= pluralize @credits.size, "credit" %> available — <a href="/credits/purchase" data-no-instant>Buy More</a>
       </div>
-      <% if @organizations %>
+      <% if @organizations.present? %>
         <div class="listings-current-credits-inner">
         <select id="org-credits-select" class="org-credits-select">
           <% @organizations.each do |org| %>
