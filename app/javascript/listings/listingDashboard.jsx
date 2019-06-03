@@ -5,7 +5,7 @@ export class ListingDashboard extends Component {
   state = {
     listings: [],
     user_credits: 0,
-    org_credits: 0,
+    currentUserId: null,
   }
 
   componentWillMount() {
@@ -13,7 +13,8 @@ export class ListingDashboard extends Component {
     const container = document.getElementById('classifieds-listings-dashboard')
     let listings = [];
     listings = JSON.parse(container.dataset.listings)
-    t.setState({ listings });
+    let user_credits = container.dataset.usercredits
+    t.setState({ listings, user_credits });
     t.setUser()
   }
 
@@ -36,7 +37,7 @@ export class ListingDashboard extends Component {
   }
 
   render() {
-    const { listings } = this.state
+    const { listings, user_credits } = this.state
     const userListings = listings.map(listing => (
       <ListingRow
         listing = {listing}
@@ -46,11 +47,19 @@ export class ListingDashboard extends Component {
     return (
       <div className="dashboard-listings-container">
         <div className="dashboard-listings-actions">
-          {listings.length}
-          <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
-          {/* Show number of user / org credits available */}
-          {/* Link to purchase credits */}
-          <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
+          <div className="dashboard-listings-info">
+            <h3>Listings</h3>
+            <h4> mariocsee: {listings.length}</h4>
+            {/* info for orgs? */}
+            <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
+          </div>
+
+          <div className="dashboard-listings-credit-info">
+            <h3>Credits</h3>
+            {/* Show number of user / org credits available */}
+            {user_credits}
+            <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
+          </div>
         </div>
         <div className="dashboard-listings-view"> // show all listings here in list form
           {userListings}

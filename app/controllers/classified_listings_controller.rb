@@ -85,7 +85,7 @@ class ClassifiedListingsController < ApplicationController
 
   def dashboard
     @classified_listings = ClassifiedListing.where(user_id: current_user.id)
-    @credits = current_user.credits.where(spent: false)
+    @user_credits = current_user.unspent_credits_count
   end
 
   private

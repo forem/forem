@@ -4,29 +4,27 @@ import { h } from 'preact';
 export const ListingRow = ({listing}) => {
 
   const tagLinks = listing.tag_list.map(tag => (
-    <a href={`/listings?t=${tag}`} data-no-instant>{tag}</a>
+    <a href={`/listings?t=${tag}`} data-no-instant>#{tag} </a>
   ));
 
   const listingDate = (new Date(listing.bumped_at.toString())).toDateString();
   return(
     <div className="dashboard-listing-row">
-      <h3>
-        <a href={`${`${listing.category  }/${  listing.slug}`}`}>
+      <a href={`${`${listing.category  }/${  listing.slug}`}`}>
+        <h2>
           {listing.title}
-        </a>
-      </h3>
-      <span className="listing-date">
+        </h2>
+      </a>
+      <span className="dashboard-listing-date">
         {listingDate}
         {' '}
       </span>
-      <span className="listing-category">{listing.category}</span>
+      <span className="dashboard-listing-category"><a href={`/listings/${listing.category}/`}>{listing.category}</a></span>
       <span className="dashboard-listing-tags">{tagLinks}</span>
       <div className="dashboard-listing-actions">
-        {/* bump button */}
-        <a className="dashboard-listing-bump-button">bump</a>
-        <a href={`/listings/${listing.id}/edit`} className="dashboard-listing-edit-button">・edit</a>
-        {/* delete button */}
-        <a className="dashboard-listing-delete-button">・delete</a>
+        <a className="dashboard-listing-bump-button cta pill black">bump</a>
+        <a href={`/listings/${listing.id}/edit`} className="dashboard-listing-edit-button cta pill green">edit</a>
+        <a className="dashboard-listing-delete-button cta pill red">delete</a>
       </div>
     </div>
   );

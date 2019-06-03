@@ -580,9 +580,33 @@ form.listings-contact-via-connect {
   .dashboard-listings-view {
 
     .dashboard-listing-row {
+      border: var(--theme-container-border, 1px solid #dbdbdb);
+      box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
+      padding: 5px 15px;
+      margin-bottom: 13px;
+      border-radius: 3px;
+      position: relative;
+      background: var(--theme-container-background, #fff);
 
+      h2 {
+        color: var(--theme-container-color, #0a0a0a);
+        font-weight: 500;
+        margin-bottom: 10px;
+        margin-top: 8px;
+        font-size: 22px;
+        width: 100%;
+        @media screen and (min-width: 800px) {
+          font-size: 34px;
+        }
+      }
 
-      .dashboard-listing-tags {
+      .dashboard-listing-date {
+        font-size: 0.85em;
+        padding: 3px 0px 6px;
+        color: var(--theme-secondary-color, #666666);
+      }
+
+      .dashboard-listing-category {
         padding: 10px 15px;
         a {
           @include themeable(
@@ -602,8 +626,16 @@ form.listings-contact-via-connect {
           border-radius: 3px;
           font-weight: bold;
         }
-
       }
+
+      .dashboard-listing-tags {
+        font-size: 0.85em;
+        padding: 3px 0px 6px;
+        a {
+          color: var(--theme-container-color, #0a0a0a);
+        }
+      }
+
     }
 
 
