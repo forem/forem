@@ -150,7 +150,7 @@ group :test do
   gem "stripe-ruby-mock", "~> 2.5", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
   gem "test-prof", "~> 0.9" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
-  gem "vcr", "~> 4.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
+  gem "vcr", "~> 5.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 3.9" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.5" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
