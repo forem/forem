@@ -40,7 +40,7 @@ module Api
 
         data = if params[:organization_id]
                  org = Organization.find_by(id: params[:organization_id])
-                 raise UnauthorizedError unless org && org_member?(user, org)
+                 raise UnauthorizedError unless org && user.org_member?(org)
 
                  AnalyticsService.new(org, start_date: 1.day.ago, article_id: params[:article_id]).stats_grouped_by_day
                else
