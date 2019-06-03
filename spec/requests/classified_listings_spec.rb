@@ -51,14 +51,14 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "shows the number of credits of the organization if the org has credits" do
-        random_number = rand(100)
+        random_number = rand(2..100)
         create_list(:credit, random_number, organization: organization)
         get "/listings/new"
         expect(response.body).to include "has <span id=\"org-credits-number\">#{random_number}</span> credits"
       end
 
       it "shows the number of credits of both the user and the organization if they both have credits" do
-        random_number = rand(100)
+        random_number = rand(2..100)
         create_list(:credit, random_number, organization: organization)
         create_list(:credit, random_number, user: user)
         get "/listings/new"
