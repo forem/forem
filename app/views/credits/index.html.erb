@@ -11,7 +11,7 @@
   <% if @organizations.present? %>
   <div class="existing-credits">
     <div class="existing-credits-status">
-      <select id="org-credits-select" class="org-credits-select" style="vertical-align:middle; font-size:initial;">
+      <select id="org-credits-select" class="org-credits-select">
         <% @organizations.each do |org| %>
           <option value="<%= org.id %>" data-credits="<%= org.unspent_credits.size %>"><%= org.name %></option>
         <% end %>
