@@ -1,6 +1,6 @@
 <div class="settings-org-members">
-  <h3><%= @user.organization.name %></h3>
-  <% @user.organization.users.each do |user| %>
+  <h3><%= @organization.name %></h3>
+  <% @organization.users.each do |user| %>
     <div class="settings-org-member-row">
       <a href="<%= user.path %>"><%= user.name %></a>
     </div>

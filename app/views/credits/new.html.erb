@@ -3,13 +3,16 @@
 <div class="credits-container">
   <div class="credits-banner">
     <h1>Purchase credits for @<%= @purchaser.username %></h1>
-    <% if current_user.org_admin %>
-      <% if @purchaser.username == current_user.username %>
-        <a href="/credits/purchase?purchaser=organization" data-no-instant>Switch to <%= current_user.organization.name %></a>
-      <% else %>
+    <% if @organizations %>
+        <% @organizations.each do |org| %>
+          <% unless @purchaser.id == org.id %>
+            <a href="/credits/purchase?organization_id=<%= org.id %>" data-no-instant>Switch to <%= org.name %></a>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% unless @purchaser.is_a? User %>
         <a href="/credits/purchase" data-no-instant>Switch to personal purchase</a>
       <% end %>
-    <% end %>
   </div>
   <script src="https://js.stripe.com/v3/"></script>
   <p class="hook-description">Credits are used for <a href="/listings">DEV listings</a> as well as upcoming products and services.</p>
@@ -61,11 +64,11 @@
     </details>
     <details>
       <summary>
-        How many credits <%= params[:purchaser] == "organization" ? "does #{@purchaser.name}" : "do I currently" %> have?
+        How many credits <%= params[:organization_id].present? ? "does #{@purchaser.name}" : "do I currently" %> have?
       </summary>
       <div>
         <p>
-          <%= params[:purchaser] == "organization" ? "#{@purchaser.name} has" : "You have" %> <%= @purchaser.credits.where(spent: false).size %> credits.
+          <%= params[:organization_id].present? ? "#{@purchaser.name} has" : "You have" %> <%= @purchaser.credits.where(spent: false).size %> credits.
         </p>
       </div>
     </details>
@@ -85,17 +88,15 @@
       </label>
       <div class="amount-wrapper">
         <%= f.number_field :number_to_purchase,
-          id: "amount-input",
-          placeholder: "Enter any amount", autocomplete: "off",
-          min: "0",
-          max: "10000000",
-          required: true %>
+                           id: "amount-input",
+                           placeholder: "Enter any amount", autocomplete: "off",
+                           min: "0",
+                           max: "10000000",
+                           required: true %>
         <div id="calculated-price"></div>
       </div>
-      <% if params[:purchaser] == "organization" %>
-        <div>
-        <input type="hidden" name="user_type" value="organization">
-        </div>
+      <% if @purchaser.is_a? Organization %>
+        <input type="hidden" name="organization_id" value="<%= @purchaser.id %>">
       <% end %>
       <div class="form-row">
       <label for="card-element" class="main-form-label">
@@ -125,7 +126,7 @@
       <div id="card-errors" role="alert"></div>
       </div>
       <button id="add-credit-card-button" class="credit-card-button">Complete Purchase</button>
-      <% if params[:purchaser] == "organization" %>
+      <% if @purchaser.is_a? Organization %>
         <p><em>*All org admins have access to credits owned by organization</em></p>
       <% end %>
     <% end %>

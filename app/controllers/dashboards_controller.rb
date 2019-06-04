@@ -6,17 +6,17 @@ class DashboardsController < ApplicationController
   def show
     fetch_and_authorize_user
 
-    @org_dashboard = @user&.organization && @user&.org_admin && params[:which] == "organization"
+    target = @user
+    not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 
-    if @org_dashboard
-      articles = @user.organization.articles
-      @org_members = @user.organization.users.pluck(:name, :id)
-    else
-      articles = @user.articles.includes(:organization)
+    @organizations = @user.admin_organizations.includes(:users)
+    @member_organizations = @user.member_organizations
+
+    if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
+      target = @organizations.find_by(id: params[:org_id])
+      @organization = target
     end
-
-    @articles = articles.sorting(params[:sort]).decorate
-
+    @articles = target.articles.sorting(params[:sort]).decorate
     # Updates analytics in background if appropriate:
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
   end
@@ -53,6 +53,7 @@ class DashboardsController < ApplicationController
                     authorize current_user, :pro_user?
                     current_user
                   end
+    @organizations = current_user.member_organizations
     @dashboard = Dashboard::Pro.new(user_or_org)
   end
 

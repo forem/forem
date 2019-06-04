@@ -17,9 +17,11 @@ RSpec.describe "Notifications::Reads", type: :request do
       expect(stubbed_service_object).to have_received(:mark_as_read).once
     end
 
-    it "marks personal and org Notifications as read" do
-      allow(user).to receive(:organization_id).and_return(1)
-      post "/notifications/reads/", params: { org_id: 1 }
+    it "marks personal and org notifications as read" do
+      org_admin = create(:user, :org_admin)
+      org_id = org_admin.organizations.first.id
+      sign_in org_admin
+      post "/notifications/reads/", params: { org_id: org_id }
       expect(response).to have_http_status(:ok)
       expect(stubbed_service_object).to have_received(:mark_as_read).twice
     end

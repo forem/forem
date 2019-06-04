@@ -111,7 +111,7 @@ RSpec.describe Notification, type: :model do
 
       it "sends a notification to the organization" do
         org = create(:organization)
-        user.update(organization: org)
+        create(:organization_membership, user: user, organization: org)
         article.update(organization: org)
         comment = create(:comment, user: user2, commentable: article)
         Notification.send_new_comment_notifications_without_delay(comment)
@@ -231,7 +231,7 @@ RSpec.describe Notification, type: :model do
       let(:org) { create(:organization) }
 
       before do
-        user.update(organization: org, org_admin: true)
+        create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         article.update(organization: org)
       end
 

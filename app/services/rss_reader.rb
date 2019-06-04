@@ -77,7 +77,7 @@ class RssReader
       published_from_feed: true,
       show_comments: true,
       body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
-      organization_id: user.organization_id.presence,
+      organization_id: nil,
     )
 
     send_slack_notification(article)
