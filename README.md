@@ -229,6 +229,10 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@mariocsee](https://dev.to/mariocsee)
 - [@rhymes](https://dev.to/rhymes)
 
+## Vulnerability disclosure
+
+We welcome security research on DEV under the terms of our [vulnerability disclosure policy](https://dev.to/security).
+
 ## License
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. Please see the [LICENSE](./LICENSE.md) file in our repository for the full text.
