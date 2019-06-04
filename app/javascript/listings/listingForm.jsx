@@ -48,7 +48,7 @@ export default class ListingForm extends Component {
       organizations,
       organizationId,
     } = this.state;
-    const orgArea = organizations.length > 0 ? (
+    const orgArea = (organizations && organizations.length > 0) ? (
       <OrgSettings
         organizations={organizations}
         organizationId={organizationId}
