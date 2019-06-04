@@ -15,9 +15,10 @@ module Moderator
     def delete_comments
       return unless user.comments.any?
 
+      cachebuster = CacheBuster.new
       user.comments.find_each do |comment|
         comment.reactions.delete_all
-        CacheBuster.new.bust_comment(comment.commentable, user.username)
+        cachebuster.bust_comment(comment.commentable, user.username)
         comment.delete
         comment.remove_notifications
       end
@@ -26,19 +27,20 @@ module Moderator
     def delete_articles
       return unless user.articles.any?
 
+      cachebuster = CacheBuster.new
       virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|
         article.reactions.delete_all
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
-          CacheBuster.new.bust_comment(comment.commentable, comment.user.username)
+          cachebuster.bust_comment(comment.commentable, comment.user.username)
           comment.delete
         end
         article.remove_algolia_index
         article.delete
       end
       virtual_articles.each do |article|
-        CacheBuster.new.bust_article(article)
+        cachebuster.bust_article(article)
       end
     end
 
