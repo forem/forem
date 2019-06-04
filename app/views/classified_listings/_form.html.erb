@@ -45,13 +45,13 @@
           <%= form.label "tags_list", "Tags" %>
           <%= form.text_field "tags_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
         </div>
-      <% if @organizations.present? %>
-      <div class="field">
-        <%= form.label "organization_id", "Post under an organization:" %>
-        <%= form.select :organization_id, "None" => "None" %>
-        <p><em>Posting on behalf of an organization spends the organization's credits.</em></p>
-      </div>
-      <% end %>
+      <% if @organizations.present? && @organizations.size > 0 %>
+        <div class="field">
+          <%= form.label "organization_id", "Post under an organization:" %>
+          <%= form.select :organization_id, "None" => "None" %>
+          <p><em>Posting on behalf of an organization spends the organization's credits.</em></p>
+        </div>
+        <% end %>
       </div>
     </div>
       <%= javascript_pack_tag "listingForm", defer: true %>
