@@ -2,7 +2,7 @@
 
 <div class="dashboard-container" id="user-dashboard">
   <%= render "actions" %>
-  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+  <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
     <h1>
       <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
       <% @organizations.each do |org| %>
