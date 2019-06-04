@@ -26,12 +26,18 @@ class CreditsController < ApplicationController
 
     credit_objects = Array.new(@number_to_purchase) do
       if params[:organization_id].present?
+        @purchaser = Organization.find(params[:organization_id])
         Credit.new(organization_id: params[:organization_id], cost: cost_per_credit / 100.0)
       else
+        @purchaser = current_user
         Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
       end
     end
     Credit.import credit_objects
+    @purchaser.credits_count = @purchaser.credits.size
+    @purchaser.spent_credits_count = @purchaser.credits.where(spent: true).size
+    @purchaser.unspent_credits_count = @purchaser.credits.where(spent: false).size
+    @purchaser.save
     redirect_to "/credits", notice: "#{@number_to_purchase} new credits purchased!"
   end
 
