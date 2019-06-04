@@ -258,11 +258,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "creates an article on behalf of an organization" do
-        user.update_columns(organization_id: organization.id)
+        create(:organization_membership, user: user, organization: organization)
         expect do
           post_article(
             title: Faker::Book.title + rand(100).to_s,
-            publish_under_org: true,
+            organization_id: organization.id,
           )
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
@@ -593,8 +593,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "assigns the article to the organization" do
         expect(article.organization).to be_nil
-        user.update_columns(organization_id: organization.id)
-        put_article(publish_under_org: true)
+        create(:organization_membership, user: user, organization: organization)
+        put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
       end

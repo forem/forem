@@ -10,7 +10,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  belongs_to  :organization, optional: true
+  has_many    :organization_memberships
+  has_many    :organizations, through: :organization_memberships
   has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
@@ -351,8 +352,22 @@ class User < ApplicationRecord
     has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
   end
 
+  def admin_organizations
+    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
+  def member_organizations
+    org_ids = organization_memberships.where(type_of_user: %w[admin member]).pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
+  def org_member?(organization)
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: %w[admin member])
+  end
+
   def org_admin?(organization)
-    user.org_admin && user.organization_id == organization.id
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
   def unique_including_orgs

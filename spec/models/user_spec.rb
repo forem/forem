@@ -643,12 +643,12 @@ RSpec.describe User, type: :model do
 
   describe "organization admin privileges" do
     it "recognizes an org admin" do
-      user.update(organization: org, org_admin: true)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
       expect(user.org_admin?(org)).to be true
     end
 
     it "forbids an incorrect org admin" do
-      user.update(organization: org, org_admin: true)
+      create(:organization_membership, user: user, organization: org, type_of_user: "admin")
       expect(user.org_admin?(second_org)).to be false
       expect(second_user.org_admin?(org)).to be false
     end

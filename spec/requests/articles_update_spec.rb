@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "ArticlesUpdate", type: :request do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
-  let(:user) { create(:user, organization_id: organization.id) }
+  let(:user) { create(:user, :org_admin) }
   let(:user2) { create(:user, organization_id: organization2.id) }
   let(:article) { create(:article, user_id: user.id) }
 
@@ -32,16 +32,18 @@ RSpec.describe "ArticlesUpdate", type: :request do
   end
 
   it "adds organization ID when user updates" do
+    user_org_id = user.organizations.first.id
     put "/articles/#{article.id}", params: {
-      article: { post_under_org: true }
+      article: { organization_id: user_org_id }
     }
-    expect(article.reload.organization_id).to eq organization.id
+    expect(article.reload.organization_id).to eq user_org_id
   end
 
   it "removes organization ID when user updates" do
-    article.update_column(:organization_id, organization.id)
+    article.update_column(:organization_id, user.organizations.first.id)
     put "/articles/#{article.id}", params: {
-      article: { post_under_org: false }
+      # use empty string instead of nil to mock article form submission
+      article: { organization_id: "" }
     }
     expect(article.reload.organization_id).to eq nil
   end
@@ -64,12 +66,13 @@ RSpec.describe "ArticlesUpdate", type: :request do
   end
 
   it "allows an org admin to assign an org article to another user" do
-    user.update_columns(org_admin: true)
-    article.update_columns(organization_id: user.organization_id)
-    other_user = create(:user, organization: user.organization)
+    admin_org_id = user.organizations.first.id
+    article.update_columns(organization_id: admin_org_id)
+    other_user = create(:user)
+    create(:organization_membership, user_id: other_user.id, organization_id: admin_org_id)
 
     put "/articles/#{article.id}", params: { article: { user_id: other_user.id } }
     expect(article.reload.user).to eq(other_user)
-    expect(article.organization).to eq(user.organization)
+    expect(article.organization_id).to eq(admin_org_id)
   end
 end

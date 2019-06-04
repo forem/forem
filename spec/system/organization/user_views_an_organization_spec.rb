@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Organization index", type: :system do
-  let!(:organization) { create(:organization) }
-  let!(:org_user) { create(:user, organization: organization) }
+  let!(:org_user) { create(:user, :org_member) }
+  let(:organization) { org_user.organizations.first }
 
   before do
     create_list(:article, 2, organization: organization)
