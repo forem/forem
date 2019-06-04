@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_04_131412) do
+ActiveRecord::Schema.define(version: 2019_06_03_190201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -904,6 +904,7 @@ ActiveRecord::Schema.define(version: 2019_05_04_131412) do
     t.boolean "offering_mentorship"
     t.string "old_old_username"
     t.string "old_username"
+    t.string "onboarding_checklist", default: [], array: true
     t.datetime "onboarding_package_form_submmitted_at"
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false

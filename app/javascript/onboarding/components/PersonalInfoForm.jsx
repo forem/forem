@@ -52,33 +52,40 @@ class PersonalInfoForm extends Component {
           <label htmlFor="summary">
             Tell the community about yourself! Write a quick bio about what you
             do, what you're interested in, or anything else!
+            <textarea
+              name="summary"
+              onChange={this.handleChange}
+              maxLength="120"
+            />
           </label>
-          <textarea
-            name="summary"
-            onChange={this.handleChange}
-            maxLength="120"
-          />
-          <label htmlFor="location">Where are you located?</label>
-          <input
-            type="text"
-            name="location"
-            onChange={this.handleChange}
-            maxLength="60"
-          />
-          <label htmlFor="employment_title">What is your title?</label>
-          <input
-            type="text"
-            name="employment_title"
-            onChange={this.handleChange}
-            maxLength="60"
-          />
-          <label htmlFor="employer_name">Where do you work?</label>
-          <input
-            type="text"
-            name="employer_name"
-            onChange={this.handleChange}
-            maxLength="60"
-          />
+          <label htmlFor="location">
+            Where are you located?
+            <input
+              type="text"
+              name="location"
+              onChange={this.handleChange}
+              maxLength="60"
+            />
+          </label>
+          <label htmlFor="employment_title">
+            What is your title?
+            <input
+              type="text"
+              name="employment_title"
+              onChange={this.handleChange}
+              maxLength="60"
+            />
+          </label>
+
+          <label htmlFor="employer_name">
+            Where do you work?
+            <input
+              type="text"
+              name="employer_name"
+              onChange={this.handleChange}
+              maxLength="60"
+            />
+          </label>
         </form>
         <Navigation prev={this.props.prev} next={this.onSubmit} />
       </div>

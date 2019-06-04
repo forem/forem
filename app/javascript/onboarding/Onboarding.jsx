@@ -5,6 +5,8 @@ import WelcomeSlide from './components/WelcomeSlide';
 import PersonalInfoForm from './components/PersonalInfoForm';
 import EmailListTermsConditionsForm from './components/EmailListTermsConditionsForm';
 import ClosingSlide from './components/ClosingSlide';
+import FollowTags from './components/FollowTags';
+import FollowUsers from './components/FollowUsers';
 
 export default class Onboarding extends Component {
   constructor(props) {
@@ -13,12 +15,18 @@ export default class Onboarding extends Component {
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
 
+    const slidesIndex = 0;
     const slides = [
-      WelcomeSlide,
-      PersonalInfoForm,
-      EmailListTermsConditionsForm,
-      ClosingSlide,
-    ];
+      [
+        WelcomeSlide,
+        PersonalInfoForm,
+        EmailListTermsConditionsForm,
+        FollowTags,
+        FollowUsers,
+        ClosingSlide,
+      ],
+      [WelcomeSlide, PersonalInfoForm, FollowTags, FollowUsers, ClosingSlide],
+    ][slidesIndex];
     this.slides = slides.map(SlideComponent => (
       <SlideComponent next={this.nextSlide} prev={this.prevSlide} />
     ));
