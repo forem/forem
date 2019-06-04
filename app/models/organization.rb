@@ -4,13 +4,15 @@ class Organization < ApplicationRecord
   acts_as_followable
 
   has_many :job_listings
-  has_many :users
+  has_many :organization_memberships
+  has_many :users, through: :organization_memberships
   has_many :api_secrets, through: :users
   has_many :articles
   has_many :collections
   has_many :display_ads
   has_many :notifications
   has_many :credits
+  has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :classified_listings
 
   validates :name, :summary, :url, :profile_image, presence: true

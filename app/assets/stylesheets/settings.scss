@@ -301,6 +301,48 @@
         color: $black;
         background: $yellow;
       }
+      .organization-dropdown {
+        position: relative;
+        display: inline-block;
+        color: $black;
+        background: $yellow;
+      }
+      select {
+        color: inherit;
+        background: inherit;
+        vertical-align: baseline;
+        font-size: inherit;
+        font-family: inherit;
+        font-stretch: inherit;
+        border: 0;
+        margin: 0;
+        padding-right: 1.25em;
+        text-indent: 0.01px;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        text-overflow: '';
+      }
+      .organization-dropdown::before,
+      .organization-dropdown::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+      }
+      .organization-dropdown::after { /*  Custom dropdown arrow */
+        content: "\25BC";
+        height: 1em;
+        font-size: 0.625em;
+        line-height: 1;
+        right: 0.25em;
+        top: 50%;
+        margin-top: -.5em;
+      }
+      .organization-dropdown::before { /*  Custom dropdown arrow cover */
+        width: 1em;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
     }
     .secret-field {
       margin: 30px 0px;

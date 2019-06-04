@@ -109,7 +109,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
-  resources :feedback_messages, only: %i[create]
+  resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
   resources :follows, only: %i[show create update]
@@ -199,7 +199,7 @@ Rails.application.routes.draw do
   post "users/update_language_settings" => "users#update_language_settings"
   post "users/update_twitch_username" => "users#update_twitch_username"
   post "users/join_org" => "users#join_org"
-  post "users/leave_org" => "users#leave_org"
+  post "users/leave_org/:organization_id" => "users#leave_org"
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
@@ -267,6 +267,7 @@ Rails.application.routes.draw do
   end
 
   get "/settings/(:tab)" => "users#edit"
+  get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"
@@ -276,9 +277,9 @@ Rails.application.routes.draw do
       constraints: {
         which: /organization_user_followers|user_followers/
       }
-  get "/dashboard/:which" => "dashboards#show",
+  get "/dashboard/:which/:org_id" => "dashboards#show",
       constraints: {
-        which: /organization|reading/
+        which: /organization/
       }
   get "/dashboard/:username" => "dashboards#show"
 

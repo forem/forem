@@ -1,8 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "ArticlesCreate", type: :request do
-  let(:organization) { create(:organization) }
-  let(:user) { create(:user, organization_id: organization.id) }
+  let(:user) { create(:user, :org_member) }
 
   before do
     sign_in user
@@ -27,14 +26,15 @@ RSpec.describe "ArticlesCreate", type: :request do
   end
 
   it "creates article with front matter params and org" do
+    user_org_id = user.organizations.first.id
     post "/articles", params: {
       article: {
         body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
         tag_list: "yo",
-        post_under_org: true
+        organization_id: user_org_id
       }
     }
-    expect(Article.last.organization_id).to eq(organization.id)
+    expect(Article.last.organization_id).to eq(user_org_id)
   end
 
   it "creates series when series is created with frontmatter" do

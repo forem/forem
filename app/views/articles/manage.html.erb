@@ -23,7 +23,7 @@
   </div>
 
 <div class="dashboard-container">
-  <%= render "dashboards/dashboard_article", article: @article, org_admin: @user.org_admin, manage_view: true %>
+  <%= render "dashboards/dashboard_article", article: @article, organization: @article.organization, org_admin: @user.org_admin?(@article.organization), manage_view: true %>
   <% if @buffer_updates.any? %>
     <div class="single-article thanks-for-suggesting-a-tweet">
       Tweet Suggestion Sent 🙏

@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe ClassifiedListing, type: :model do
   let(:classified_listing) { create(:classified_listing, user_id: user.id) }
   let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
 
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:body_markdown) }
@@ -21,7 +22,7 @@ RSpec.describe ClassifiedListing, type: :model do
     end
 
     it "is valid with organization_id" do
-      cl = build(:classified_listing, user_id: nil, organization_id: create(:organization).id)
+      cl = build(:classified_listing, user_id: nil, organization_id: organization.id)
       expect(cl).to be_valid
     end
   end

@@ -9,10 +9,6 @@ class ArticleCreationService
 
     tags = article_params[:tags]
     series = article_params[:series]
-    publish_under_org = (
-      article_params[:publish_under_org] == true ||
-      article_params[:publish_under_org].to_i == 1
-    )
 
     # convert tags from array to a string
     if tags.present?
@@ -23,7 +19,6 @@ class ArticleCreationService
     article = Article.new(article_params)
     article.user_id = user.id
     article.show_comments = true
-    article.organization = user.organization if publish_under_org
     article.collection = Collection.find_series(series, user) if series.present?
 
     if article.save
