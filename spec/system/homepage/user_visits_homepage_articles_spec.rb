@@ -60,21 +60,6 @@ RSpec.describe "User visits a homepage", type: :system do
       articles.each { |a| a.update_column(:score, 31) }
     end
 
-    context "when unauthorized" do
-      before { visit "/" }
-
-      include_examples "shows the sign_in invitation"
-    end
-
-    context "when signed in" do
-      before do
-        sign_in user
-        visit "/"
-      end
-
-      include_examples "no sign_in invitation"
-    end
-
     describe "meta tags" do
       before { visit "/" }
 

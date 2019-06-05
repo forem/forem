@@ -40,8 +40,6 @@ RSpec.describe "Organization index", type: :system do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
       end
-
-      include_examples "shows the sign_in invitation"
     end
   end
 
