@@ -27,7 +27,7 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def create
-    @classified_listing = ClassifiedListing.new(classified_listing_params)
+    @classified_listing = ClassifiedListing.new(listing_params)
     @classified_listing.user_id = current_user.id
     @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
     @org = Organization.find(current_user.organization_id) if @classified_listing.post_as_organization.to_i == 1
@@ -54,7 +54,7 @@ class ClassifiedListingsController < ApplicationController
       redirect_to "/listings"
     else
       @credits = current_user.credits.where(spent: false)
-      @classified_listing.cached_tag_list = classified_listing_params[:tag_list]
+      @classified_listing.cached_tag_list = listing_params[:tag_list]
       render :new
     end
   end
@@ -63,22 +63,16 @@ class ClassifiedListingsController < ApplicationController
     authorize @classified_listing
     available_credits = current_user.credits.where(spent: false)
     number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category) # Bumping
-    if params[:classified_listing][:action] == "bump"
-      @classified_listing.bumped_at = Time.current
+    if listing_params[:action] == "bump"
+      bump_listing
       if available_credits.size >= number_of_credits_needed
         @classified_listing.save
         available_credits.limit(number_of_credits_needed).update_all(spent: true)
       end
-    elsif params[:classified_listing][:action] == "unpublish"
-      @classified_listing.published = false
-      @classified_listing.save
-      @classified_listing.remove_from_index!
-    elsif params[:classified_listing][:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
-      @classified_listing.title = params[:classified_listing][:title] if params[:classified_listing][:title]
-      @classified_listing.body_markdown = params[:classified_listing][:body_markdown] if params[:classified_listing][:body_markdown]
-      @classified_listing.tag_list = params[:classified_listing][:tag_list] if params[:classified_listing][:tag_list]
-      @classified_listing.contact_via_connect = params[:classified_listing][:contact_via_connect] if params[:classified_listing][:contact_via_connect]
-      @classified_listing.save
+    elsif listing_params[:action] == "unpublish"
+      unpublish_listing
+    elsif listing_params[:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
+      update_listing_details
     end
     clear_listings_cache
     redirect_to "/listings"
@@ -90,8 +84,12 @@ class ClassifiedListingsController < ApplicationController
     redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
   end
 
+  def set_classified_listing
+    @classified_listing = ClassifiedListing.find(params[:id])
+  end
+
   # Never trust parameters from the scary internet, only allow the white list through.
-  def classified_listing_params
+  def listing_params
     accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
     params.require(:classified_listing).permit(accessible)
   end
