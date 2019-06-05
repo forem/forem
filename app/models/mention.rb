@@ -47,9 +47,12 @@ class Mention < ApplicationRecord
   end
 
   def send_email_notification
-    NotifyMailer.new_mention_email(self).deliver if User.find(user_id).email.present? && User.find(user_id).email_mention_notifications
+    Mentions::SendEmailNotificationJob.perform_later(id) if User.find(user_id).email.present? && User.find(user_id).email_mention_notifications
   end
-  handle_asynchronously :send_email_notification
+
+  def send_email_notification_without_delay
+    Mentions::SendEmailNotificationJob.perform_now(id) if User.find(user_id).email.present? && User.find(user_id).email_mention_notifications
+  end
 
   def permission
     errors.add(:mentionable_id, "is not valid.") unless mentionable.valid?
