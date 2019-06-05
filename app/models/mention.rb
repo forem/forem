@@ -12,37 +12,11 @@ class Mention < ApplicationRecord
 
   class << self
     def create_all(notifiable)
-      # Only works for comments right now.
-      # Paired with the process that creates the "comment-mentioned-user"
-      @notifiable = notifiable
-      doc = Nokogiri::HTML(notifiable.processed_html)
-      usernames = []
-      mentions = []
-      doc.css(".comment-mentioned-user").each do |link|
-        username = link.text.delete("@").downcase
-        if (user = User.find_by(username: username))
-          usernames << username
-          mentions << create_mention(user)
-        end
-      end
-      delete_removed_mentions(usernames)
-      mentions
-    end
-    handle_asynchronously :create_all
-
-    private
-
-    def delete_removed_mentions(usernames)
-      user_ids = User.where(username: usernames).pluck(:id)
-      mentions = @notifiable.mentions.where.not(user_id: user_ids).destroy_all
-      Notification.remove_each(mentions) if mentions.present?
+      Mentions::CreateAllJob.perform_later(notifiable.id, notifiable.class.name)
     end
 
-    def create_mention(user)
-      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
-      # mentionable_type = model that created the mention, user = user to be mentioned
-      Notification.send_mention_notification(mention)
-      mention
+    def create_all_without_delay(notifiable)
+      Mentions::CreateAllJob.perform_now(notifiable.id)
     end
   end
 
