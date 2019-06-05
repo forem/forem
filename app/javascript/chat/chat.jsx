@@ -647,7 +647,6 @@ export default class Chat extends Component {
               You and 
               {' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
-@
                 {activeChannel.channel_modified_slug}
               </a>
               {' '}

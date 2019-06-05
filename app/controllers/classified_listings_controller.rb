@@ -18,11 +18,13 @@ class ClassifiedListingsController < ApplicationController
 
   def new
     @classified_listing = ClassifiedListing.new
+    @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
 
   def edit
     authorize @classified_listing
+    @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
 
@@ -30,7 +32,7 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.new(listing_params)
     @classified_listing.user_id = current_user.id
     @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
-    @org = Organization.find(current_user.organization_id) if @classified_listing.post_as_organization.to_i == 1
+    @org = Organization.find_by(id: @classified_listing.organization_id)
     available_org_credits = @org.credits.where(spent: false) if @org
     available_individual_credits = current_user.credits.where(spent: false)
 
@@ -46,7 +48,8 @@ class ClassifiedListingsController < ApplicationController
   def create_listing(credits)
     @classified_listing.bumped_at = Time.current
     @classified_listing.published = true
-    @classified_listing.organization_id = current_user.organization_id if @org
+    # this will 500 for now if they don't belong in the org
+    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
     if @classified_listing.save
       clear_listings_cache
       credits.limit(@number_of_credits_needed).update_all(spent: true)
@@ -55,6 +58,7 @@ class ClassifiedListingsController < ApplicationController
     else
       @credits = current_user.credits.where(spent: false)
       @classified_listing.cached_tag_list = listing_params[:tag_list]
+      @organizations = current_user.organizations
       render :new
     end
   end
@@ -88,9 +92,9 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing = ClassifiedListing.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow a specific list through.
   def listing_params
-    accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
+    accessible = %i[title body_markdown category tag_list contact_via_connect organization_id action]
     params.require(:classified_listing).permit(accessible)
   end
 end

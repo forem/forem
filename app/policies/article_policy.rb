@@ -41,6 +41,6 @@ class ArticlePolicy < ApplicationPolicy
   end
 
   def user_org_admin?
-    user.org_admin && user.organization_id == record.organization_id
+    user.org_admin?(record.organization_id)
   end
 end

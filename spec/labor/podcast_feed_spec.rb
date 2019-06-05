@@ -13,13 +13,37 @@ RSpec.describe PodcastFeed, vcr: vcr_option do
     podcast
   end
 
-  it "fetches podcast episodes" do
-    PodcastFeed.new.get_episodes(podcast, 2)
-    expect(PodcastEpisode.all.size).to eq(2)
+  context "when creating" do
+    it "fetches podcast episodes" do
+      expect do
+        PodcastFeed.new.get_episodes(podcast, 2)
+      end.to change(PodcastEpisode, :count).by(2)
+    end
+
+    it "fetches correct podcasts" do
+      PodcastFeed.new.get_episodes(podcast, 2)
+      episodes = podcast.podcast_episodes
+      expect(episodes.pluck(:title).sort).to eq(["Analyse Asia with Bernard Leong", "IFTTT Architecture with Nicky Leach"])
+      expect(episodes.pluck(:media_url).sort).to eq(%w[https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3 https://traffic.libsyn.com/sedaily/IFTTT.mp3])
+    end
   end
 
-  it "does not refetch already fetched episodes" do
-    2.times { PodcastFeed.new.get_episodes(podcast, 2) }
-    expect(PodcastEpisode.all.size).to eq(2)
+  context "when updating" do
+    let!(:episode) { create(:podcast_episode, media_url: "http://traffic.libsyn.com/sedaily/AnalyseAsia.mp3", title: "Old Title", published_at: nil) }
+    let!(:episode2) { create(:podcast_episode, media_url: "http://traffic.libsyn.com/sedaily/IFTTT.mp3", title: "SuperPodcast", published_at: nil) }
+
+    it "does not refetch already fetched episodes" do
+      expect do
+        PodcastFeed.new.get_episodes(podcast, 2)
+      end.not_to change(PodcastEpisode, :count)
+    end
+
+    it "updates published_at for existing episodes" do
+      PodcastFeed.new.get_episodes(podcast, 2)
+      episode.reload
+      episode2.reload
+      expect(episode.published_at).to be_truthy
+      expect(episode2.published_at).to be_truthy
+    end
   end
 end

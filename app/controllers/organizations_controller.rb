@@ -8,14 +8,10 @@ class OrganizationsController < ApplicationController
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
-      ActiveRecord::Base.transaction do
-        current_user.update(organization_id: @organization.id, org_admin: true)
-        OrganizationMembership.create(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
-      end
-      redirect_to "/settings/organization", notice:
-        "Your organization was successfully created and you are an admin."
+      @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
+      flash[:settings_notice] = "Your organization was successfully created and you are an admin."
+      redirect_to "/settings/organization/#{@organization.id}"
     else
-      @tab = "switch-organizations" if @user.has_role?(:switch_between_orgs)
       render template: "users/edit"
     end
   end
@@ -24,30 +20,31 @@ class OrganizationsController < ApplicationController
     @user = current_user
     @tab = "organization"
     @tab_list = @user.settings_tab_list
-    @organization = @user.organization
+    @organization = Organization.find_by(id: organization_params[:id])
     authorize @organization
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
-      redirect_to "/settings/organization", notice: "Your organization was successfully updated."
+      flash[:settings_notice] = "Your organization was successfully updated."
+      redirect_to "/settings/organization"
     else
       render template: "users/edit"
     end
   end
 
   def generate_new_secret
-    raise unless current_user.org_admin
-
-    @organization = current_user.organization
+    @organization = Organization.find_by(id: organization_params[:id])
     authorize @organization
     @organization.secret = @organization.generated_random_secret
     @organization.save
-    redirect_to "/settings/organization", notice: "Your org secret was updated"
+    flash[:settings_notice] = "Your org secret was updated"
+    redirect_to "/settings/organization"
   end
 
   private
 
   def permitted_params
     accessible = %i[
+      id
       name
       summary
       tag_line

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_04_131412) do
+ActiveRecord::Schema.define(version: 2019_05_21_190118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -538,6 +538,7 @@ ActiveRecord::Schema.define(version: 2019_05_04_131412) do
   create_table "organizations", id: :serial, force: :cascade do |t|
     t.string "address"
     t.boolean "approved", default: false
+    t.integer "articles_count", default: 0, null: false
     t.string "bg_color_hex"
     t.string "city"
     t.string "company_size"

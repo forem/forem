@@ -7,6 +7,10 @@ class ClassifiedListingPolicy < ApplicationPolicy
     user_is_author?
   end
 
+  def authorized_organization_poster?
+    user.org_member?(record.organization_id)
+  end
+
   private
 
   def user_is_author?

@@ -12,15 +12,28 @@ class PodcastFeed
     rss = HTTParty.get(podcast.feed_url).body
     feed = RSS::Parser.parse(rss, false)
     feed.items.first(num).each do |item|
-      if !existing_episode(item, podcast)
-        create_new_episode(item, podcast)
-      elsif (ep = existing_episode(item, podcast).first)
+      ep = existing_episode(item, podcast).first
+      if ep
         update_existing_episode(ep, item, podcast)
+      else
+        create_new_episode(item, podcast)
       end
     end
     feed.items.size
   rescue StandardError => e
     Rails.logger.error(e)
+  end
+
+  private
+
+  # returns empty array if an episode doesn't exist
+  def existing_episode(item, podcast)
+    # presence returns nil if the query is an empty array, otherwise returns the array
+    podcasts = PodcastEpisode.where(media_url: item.enclosure.url).presence ||
+      PodcastEpisode.where(title: item.title).presence ||
+      PodcastEpisode.where(guid: item.guid.to_s).presence ||
+      (podcast.unique_website_url? && PodcastEpisode.where(website_url: item.link).presence)
+    podcasts.to_a
   end
 
   def create_new_episode(item, podcast)
@@ -52,14 +65,6 @@ class PodcastFeed
       end
     end
     update_media_url(episode, item)
-  end
-
-  def existing_episode(item, podcast)
-    # presence returns nil if the query is an empty array, otherwise returns the array
-    PodcastEpisode.where(media_url: item.enclosure.url).presence ||
-      PodcastEpisode.where(title: item.title).presence ||
-      PodcastEpisode.where(guid: item.guid.to_s).presence ||
-      (podcast.unique_website_url? && PodcastEpisode.where(website_url: item.link).presence)
   end
 
   def get_media_url(episode, item, podcast)

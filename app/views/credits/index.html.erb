@@ -1,3 +1,5 @@
+<% title "Credits" %>
+
 <div class="credits-container">
 <% if flash[:notice].present? %>
   <div class="notice" id="notice">
@@ -8,16 +10,19 @@
     <div class="existing-credits-status">You have <%= @credits.size %> credits to spend</div>
     <a href="/credits/purchase" data-no-instant>Purchase additional credits</a>
   </div>
-  <% if current_user.organization && current_user.org_admin %>
-    <div class="existing-credits">
-      <div class="existing-credits-status"><%= current_user.organization.name %> has <%= @org_credits.size %> credits to spend</div>
-      <a href="/credits/purchase?purchaser=organization" data-no-instant>Purchase additional credits</a>
-    </div>
+  <% if @organizations.present? %>
+    <% @organizations.each do |org| %>
+      <div class="existing-credits">
+        <div class="existing-credits-status">
+          <%= org.name %> has <span id="org-credits-number"><%= org.unspent_credits_count %></span> credits to spend
+        </div>
+        <a id="org-credits-purchase-link" href="/credits/purchase?organization_id=<%= org.id %>" data-no-instant>Purchase additional credits</a>
+      </div>
+    <% end %>
   <% end %>
   <% if @credits.size > 0 %>
     <center>
       <a href="/listings/new">Create a Listing</a>
     </center>
   <% end %>
-
 </div>
