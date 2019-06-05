@@ -1,8 +1,9 @@
 desc "This task is called by the Heroku scheduler add-on"
 
 task get_podcast_episodes: :environment do
+  feed = PodcastFeed.new
   Podcast.find_each do |p|
-    PodcastFeed.new.get_episodes(p, 5)
+    feed.get_episodes(p, 5)
   end
 end
 
