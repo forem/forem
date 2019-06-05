@@ -404,16 +404,16 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = %w[
+    %w[
       Profile
       Integrations
       Notifications
       Publishing\ from\ RSS
       Organization
       Billing
+      Account
+      Misc
     ]
-    tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list.push("Account", "Misc")
   end
 
   def profile_image_90
