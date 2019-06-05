@@ -1,4 +1,5 @@
 class ClassifiedListingsController < ApplicationController
+  include ClassifiedListingsToolkit
   before_action :set_classified_listing, only: %i[edit update]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
@@ -89,21 +90,9 @@ class ClassifiedListingsController < ApplicationController
     redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
   end
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_classified_listing
-    @classified_listing = ClassifiedListing.find(params[:id])
-  end
-
   # Never trust parameters from the scary internet, only allow the white list through.
   def classified_listing_params
     accessible = %i[title body_markdown category tag_list contact_via_connect post_as_organization action]
     params.require(:classified_listing).permit(accessible)
-  end
-
-  def clear_listings_cache
-    CacheBuster.new.bust("/listings")
-    CacheBuster.new.bust("/listings?i=i")
-    CacheBuster.new.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}")
-    CacheBuster.new.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}?i=i")
   end
 end

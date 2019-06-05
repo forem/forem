@@ -1,4 +1,5 @@
 class Internal::ClassifiedListingsController < Internal::ApplicationController
+  include ClassifiedListingsToolkit
   layout "internal"
 
   def index
