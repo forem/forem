@@ -2,12 +2,6 @@ require "rss"
 require "rss/itunes"
 
 class PodcastFeed
-  def get_all_episodes
-    Podcast.find_each do |podcast|
-      get_episodes(podcast)
-    end
-  end
-
   def get_episodes(podcast, num = 1000)
     rss = HTTParty.get(podcast.feed_url).body
     feed = RSS::Parser.parse(rss, false)
