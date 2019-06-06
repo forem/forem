@@ -21,8 +21,16 @@ class AnalyticsService
 
     result = {}
 
+    # 1. calculate all stats using group queries
+    comments_stats_per_day = calculate_comments_stats_per_day(comment_data)
+
+    # 2. build the final hash, one per each day
     (start_date.to_date..end_date.to_date).each do |date|
-      result[date.to_s(:iso)] = cached_data_for_date(date)
+      iso_date = date.to_s(:iso)
+      result[iso_date] = cached_data_for_date(date)
+
+      # add back comments data during the transition
+      result[iso_date][:comments] = { total: comments_stats_per_day[iso_date] || 0 }
     end
 
     result
@@ -95,6 +103,11 @@ class AnalyticsService
     # page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 
+  def calculate_comments_stats_per_day(comment_data)
+    # AR returns a hash with date => count, we transform it using ISO dates for convenience
+    comment_data.group("date(created_at)").count.transform_keys(&:iso8601)
+  end
+
   def cached_data_for_date(date)
     expiration_date = if date == Time.current.to_date
                         30.minutes
@@ -109,9 +122,9 @@ class AnalyticsService
       total_views = page_view_data.where("date(created_at) = ?", date).sum(:counts_for_number_of_views)
 
       {
-        comments: {
-          total: comment_data.where("date(created_at) = ?", date).size
-        },
+        # comments: {
+        #   total: comment_data.where("date(created_at) = ?", date).size
+        # },
         reactions: {
           total: reaction_data_of_date.size,
           like: reaction_data_of_date.where("category = ?", "like").size,

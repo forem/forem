@@ -174,7 +174,7 @@ RSpec.describe AnalyticsService, type: :service do
 
     it "returns stats for comments, reactions, follows and page views for a specific day" do
       stats = described_class.new(user, start_date: "2019-04-01").grouped_by_day
-      expect(stats["2019-04-01"].keys).to eq(%i[comments reactions page_views follows])
+      expect(stats["2019-04-01"].keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
     end
 
     it "returns stats for an org" do
@@ -182,7 +182,7 @@ RSpec.describe AnalyticsService, type: :service do
         organization, start_date: "2019-04-01", end_date: "2019-04-04"
       ).grouped_by_day
       expect(stats.keys).to eq(["2019-04-01", "2019-04-02", "2019-04-03", "2019-04-04"])
-      expect(stats["2019-04-01"].keys).to eq(%i[comments reactions page_views follows])
+      expect(stats["2019-04-01"].keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
     end
 
     describe "comments stats on a specific day" do
