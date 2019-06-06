@@ -68,6 +68,8 @@ function handleFormSubmit(e) {
 
     if (xhr.status === 200) {
       onXhrSuccess(form, article, values);
+      var message = values.commit === 'Mute Notifications' ? 'Notifications Muted' : 'Notifications Restored';
+      article.querySelector('.dashboard-meta-details').innerHTML = message;
     } else {
       article.querySelector('.dashboard-meta-details').innerHTML =
         'Failed to update article.';
