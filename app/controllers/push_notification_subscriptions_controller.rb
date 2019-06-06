@@ -8,7 +8,7 @@ class PushNotificationSubscriptionsController < ApplicationController
         user_id: current_user.id,
         notification_type: "browser",
       )
-    render json: { status: "success", endpoint: @subscription.endpoint }, status: 201
+    render json: { status: "success", endpoint: @subscription.endpoint }, status: :created
   end
 
   private
