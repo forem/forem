@@ -16,7 +16,7 @@ class Mention < ApplicationRecord
     end
 
     def create_all_without_delay(notifiable)
-      Mentions::CreateAllJob.perform_now(notifiable.id)
+      Mentions::CreateAllJob.perform_now(notifiable.id, notifiable.class.name)
     end
   end
 
