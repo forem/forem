@@ -20,10 +20,10 @@ class MessagesController < ApplicationController
       end
 
       if success
-        render json: { status: "success", message: "Message created" }, status: 201
+        render json: { status: "success", message: "Message created" }, status: :created
       else
         error_message = "Message created but could not trigger Pusher"
-        render json: { status: "error", message: error_message }, status: 201
+        render json: { status: "error", message: error_message }, status: :created
       end
     else
       render json: {
@@ -33,7 +33,7 @@ class MessagesController < ApplicationController
           message: @message.errors.full_messages,
           type: "error"
         }
-      }, status: 401
+      }, status: :unauthorized
     end
   end
 
@@ -67,7 +67,7 @@ class MessagesController < ApplicationController
             message: "You can not do that because you are banned",
             type: "error"
           }
-        }, status: 401
+        }, status: :unauthorized
       end
     end
   end

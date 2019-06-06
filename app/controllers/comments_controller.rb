@@ -143,7 +143,7 @@ class CommentsController < ApplicationController
       processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|
-      format.json { render json: { processed_html: processed_html }, status: 200 }
+      format.json { render json: { processed_html: processed_html }, status: :ok }
     end
   end
 
