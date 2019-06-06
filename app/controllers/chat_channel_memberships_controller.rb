@@ -47,7 +47,7 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel_membership.remove_from_index!
     @chat_channel_membership.chat_channel.index!
     @chat_channels_memberships = []
-    render json: { result: "left channel" }, status: 201
+    render json: { result: "left channel" }, status: :created
   end
 
   def permitted_params

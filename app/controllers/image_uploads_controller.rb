@@ -39,7 +39,7 @@ class ImageUploadsController < ApplicationController
            end
 
     respond_to do |format|
-      format.json { render json: { link: link }, status: 200 }
+      format.json { render json: { link: link }, status: :ok }
     end
   end
 end

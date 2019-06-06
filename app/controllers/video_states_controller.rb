@@ -5,7 +5,7 @@ class VideoStatesController < ApplicationController
 
   def create
     unless valid_user
-      render json: { message: "invalid_user" }, status: 422
+      render json: { message: "invalid_user" }, status: :unprocessable_entity
       return
     end
     begin
