@@ -75,4 +75,11 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.reload.user).to eq(other_user)
     expect(article.organization_id).to eq(admin_org_id)
   end
+
+  it "archives" do
+    put "/articles/#{article.id}", params: {
+      article: { archived: true }
+    }
+    expect(article.archived).to eq(false)
+  end
 end
