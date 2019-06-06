@@ -4,6 +4,7 @@ class AnalyticsService
     @article_id = article_id
     @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
     @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
+
     load_data
   end
 
@@ -23,14 +24,17 @@ class AnalyticsService
 
     # 1. calculate all stats using group queries
     comments_stats_per_day = calculate_comments_stats_per_day(comment_data)
+    follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
 
     # 2. build the final hash, one per each day
     (start_date.to_date..end_date.to_date).each do |date|
       iso_date = date.to_s(:iso)
       result[iso_date] = cached_data_for_date(date)
 
-      # add back comments data during the transition
-      result[iso_date][:comments] = { total: comments_stats_per_day[iso_date] || 0 }
+      result[iso_date].merge!(
+        comments: { total: comments_stats_per_day[iso_date] || 0 },
+        follows: { total: follows_stats_per_day[iso_date] || 0 },
+      )
     end
 
     result
@@ -108,6 +112,11 @@ class AnalyticsService
     comment_data.group("date(created_at)").count.transform_keys(&:iso8601)
   end
 
+  def calculate_follows_stats_per_day(follow_data)
+    # AR returns a hash with date => count, we transform it using ISO dates for convenience
+    follow_data.group("date(created_at)").count.transform_keys(&:iso8601)
+  end
+
   def cached_data_for_date(date)
     expiration_date = if date == Time.current.to_date
                         30.minutes
@@ -135,10 +144,10 @@ class AnalyticsService
           total: total_views,
           average_read_time_in_seconds: average_read_time_in_seconds,
           total_read_time_in_seconds: average_read_time_in_seconds * total_views
-        },
-        follows: {
-          total: follow_data.where("date(created_at) = ?", date).size
         }
+        # follows: {
+        #   total: follow_data.where("date(created_at) = ?", date).size
+        # }
       }
     end
   end
