@@ -53,7 +53,7 @@ RSpec.describe "User visits articles by tag", type: :system do
     end
 
     context "when more articles" do
-      before do
+      it "visits ok" do
         create_list(:article, 3, tags: "javascript", user: author, published_at: Time.current)
         visit "/t/javascript"
       end
