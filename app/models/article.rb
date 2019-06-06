@@ -22,7 +22,7 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
-  has_many :buffer_updates
+  has_many :buffer_updates, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
   has_many :rating_votes
   has_many :page_views
