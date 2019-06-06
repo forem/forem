@@ -16,7 +16,7 @@ class AnalyticsService
     }
   end
 
-  def stats_grouped_by_day
+  def grouped_by_day
     return {} unless start_date && end_date
 
     result = {}
@@ -120,8 +120,8 @@ class AnalyticsService
         },
         page_views: {
           total: total_views,
-          total_read_time_in_seconds: average_read_time_in_seconds * total_views,
-          average_read_time_in_seconds: average_read_time_in_seconds
+          average_read_time_in_seconds: average_read_time_in_seconds,
+          total_read_time_in_seconds: average_read_time_in_seconds * total_views
         },
         follows: {
           total: follow_data.where("date(created_at) = ?", date).size

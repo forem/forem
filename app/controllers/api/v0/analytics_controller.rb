@@ -23,7 +23,7 @@ module Api
           @owner,
           start_date: params[:start], end_date: params[:end], article_id: params[:article_id],
         )
-        data = analytics.stats_grouped_by_day
+        data = analytics.grouped_by_day
         render json: data.to_json
       end
 
@@ -31,7 +31,7 @@ module Api
         analytics = AnalyticsService.new(
           @owner, start_date: 1.day.ago, article_id: params[:article_id]
         )
-        data = analytics.stats_grouped_by_day
+        data = analytics.grouped_by_day
         render json: data.to_json
       end
 
