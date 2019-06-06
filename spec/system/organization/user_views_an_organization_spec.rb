@@ -36,7 +36,7 @@ RSpec.describe "Organization index", type: :system do
     end
 
     context "when more articles" do
-      before do
+      it "visits ok" do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
       end
