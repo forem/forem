@@ -5,7 +5,7 @@ RSpec.describe AnalyticsService, type: :service do
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, published: true) }
 
-  before { Timecop.freeze(Time.current) }
+  before { Timecop.freeze(Time.current.utc) }
 
   after { Timecop.return }
 
