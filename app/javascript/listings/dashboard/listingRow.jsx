@@ -4,12 +4,20 @@ import { h } from 'preact';
 export const ListingRow = ({listing}) => {
 
   const tagLinks = listing.tag_list.map(tag => (
-    <a href={`/listings?t=${tag}`} data-no-instant>#{tag} </a>
+    <a href={`/listings?t=${tag}`} data-no-instant>
+#
+      {tag}
+      {' '}
+ 
+    </a>
   ));
 
   const listingDate = listing.bumped_at ? (new Date(listing.bumped_at.toString())).toDateString() : (new Date(listing.updated_at.toString())).toDateString() ;
+  const orgName = (listing) => (listing.organization_id) ? (<span>{listing.author.name}</span>) : '';
+
   return(
     <div className="dashboard-listing-row">
+      {orgName(listing)}
       <a href={`${`${listing.category  }/${  listing.slug}`}`}>
         <h2>
           {listing.title}

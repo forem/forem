@@ -583,8 +583,13 @@ form.listings-contact-via-connect {
   margin: auto;
 
   .dashboard-listings-actions {
-    a {
-
+    display: flex;
+    flex-direction: row;
+    .dashboard-listings-info {
+      width: 43%;
+      text-align: center;
+      padding: 1.2%;
+      margin: 1.2%;
     }
   }
 

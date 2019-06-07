@@ -4,20 +4,24 @@ import { ListingRow } from './dashboard/listingRow';
 export class ListingDashboard extends Component {
   state = {
     listings: [],
-    org_listings: [],
-    user_credits: 0,
+    orgListings: [],
+    orgs: [],
+    userCredits: 0,
     currentUserId: null,
+    selectedListings: "user",
   }
 
   componentWillMount() {
     const t = this;
     const container = document.getElementById('classifieds-listings-dashboard')
     let listings = [];
-    let org_listings = [];
+    let orgs = [];
+    let orgListings = [];
     listings = JSON.parse(container.dataset.listings);
-    org_listings = JSON.parse(container.dataset.orglistings);
-    let user_credits = container.dataset.usercredits;
-    t.setState({ listings, org_listings, user_credits });
+    orgs = JSON.parse(container.dataset.orgs);
+    orgListings = JSON.parse(container.dataset.orglistings);
+    const userCredits = container.dataset.usercredits;
+    t.setState({ listings, orgListings, orgs, userCredits });
     t.setUser()
   }
 
@@ -40,40 +44,47 @@ export class ListingDashboard extends Component {
   }
 
   render() {
-    const { listings, org_listings, user_credits, currentUserId } = this.state
-    const userListings = listings.map(listing => (
-      <ListingRow
-        listing = {listing}
-      />
-    ));
-    console.log(org_listings)
-    const orgListings = org_listings.map(listing => (
-      <ListingRow
-        listing = {listing}
-      />
-    ));
+    const { listings, orgListings, userCredits, orgs, selectedListings } = this.state
+
+    const showListings = (selected, userListings, organizationListings) => {
+      if (selected === "user") {
+        return userListings.map(listing => <ListingRow listing={listing} />)
+      }
+        return organizationListings.map(listing => (listing.organization_id === selected) ? <ListingRow listing={listing} /> : '')
+
+    }
+
+    const orgButtons = orgs.map(org => (
+      <span onClick={() => this.setState({selectedListings: org.id})}>
+        {org.name}
+        {' '}
+      </span>
+    ))
 
     return (
       <div className="dashboard-listings-container">
+        <span onClick={() => this.setState({selectedListings: "user"})}>Personal</span>
+        {orgButtons}
         <div className="dashboard-listings-actions">
           <div className="dashboard-listings-info">
             <h3>Listings</h3>
-            <h4> {currentUserId}: {listings.length}</h4>
-
+            <h4>
+Listings Made:
+              {listings.length}
+            </h4>
             <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
           </div>
-
-          <div className="dashboard-listings-credit-info">
+          <div className="dashboard-listings-info">
             <h3>Credits</h3>
-            {/* Show number of user / org credits available */}
-            {user_credits}
-            <a href="/credits/purchase" data-no-instant>Buy More Credits for user</a>
-            <a href="/credits/purchase?purchaser=organization" data-no-instant>Buy More Credits for organization</a>
+            <h4>
+Credits Available:
+              {userCredits}
+            </h4>
+            <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
           </div>
         </div>
-        <div className="dashboard-listings-view"> // show all listings here in list form
-          {userListings}
-          {orgListings}
+        <div className="dashboard-listings-view">
+          {showListings(selectedListings, listings, orgListings)}
         </div>
       </div>
     )

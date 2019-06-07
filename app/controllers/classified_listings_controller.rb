@@ -89,7 +89,8 @@ class ClassifiedListingsController < ApplicationController
 
   def dashboard
     @classified_listings = ClassifiedListing.where(user_id: current_user.id)
-    @org_listings = ClassifiedListing.where(organization_id: current_user.organization_id)
+    @orgs = Organization.where(id: current_user.organization_memberships.where(type_of_user: "admin").ids)
+    @org_listings = ClassifiedListing.where(organization_id: current_user.organization_memberships.where(type_of_user: "admin").ids)
     @user_credits = current_user.unspent_credits_count
   end
 
