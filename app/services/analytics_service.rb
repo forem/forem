@@ -20,8 +20,6 @@ class AnalyticsService
   def grouped_by_day
     return {} unless start_date && end_date
 
-    result = {}
-
     # 1. calculate all stats using group queries at once
     comments_stats_per_day = calculate_comments_stats_per_day(comment_data)
     follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
@@ -29,25 +27,18 @@ class AnalyticsService
     page_views_stats_per_day = calculate_page_views_stats_per_day(page_view_data)
 
     # 2. build the final hash, one per each day
+    stats = {}
     (start_date.to_date..end_date.to_date).each do |date|
-      iso_date = date.to_s(:iso)
-      result[iso_date] = cached_data_for_date(date)
-
-      result[iso_date].merge!(
-        comments: { total: comments_stats_per_day[iso_date] || 0 },
-        follows: { total: follows_stats_per_day[iso_date] || 0 },
-        reactions: (
-          reactions_stats_per_day[iso_date] ||
-          { total: 0, like: 0, readinglist: 0, unicorn: 0 } # default
-        ),
-        page_views: (
-          page_views_stats_per_day[iso_date] ||
-          { total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0 } # default
-        ),
+      stats[date.iso8601] = calculate_stats_per_day(
+        date,
+        comments_stats: comments_stats_per_day,
+        follows_stats: follows_stats_per_day,
+        reactions_stats: reactions_stats_per_day,
+        page_views_stats: page_views_stats_per_day,
       )
     end
 
-    result
+    stats
   end
 
   private
@@ -114,7 +105,6 @@ class AnalyticsService
     average = page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
     # average is returned as a BigDecimal, it needs to be rounded to an integer
     (average || 0).round
-    # page_view_data.size.positive? ? page_view_data.sum(:time_tracked_in_seconds) / page_view_data.size : 0
   end
 
   def calculate_comments_stats_per_day(comment_data)
@@ -163,45 +153,29 @@ class AnalyticsService
     # this transforms the collection of pseudo PageView objects previously selected
     # in a hash, eg. {total: 2, average_read_time_in_seconds: 10, total_read_time_in_seconds: 20}
     page_views.each_with_object({}) do |page_view, hash|
+      average = page_view.average.round # average is a BigDecimal
       hash[page_view.date.iso8601] = {
         total: page_view.total,
-        average_read_time_in_seconds: page_view.average,
-        total_read_time_in_seconds: page_view.total * page_view.average
+        average_read_time_in_seconds: average,
+        total_read_time_in_seconds: page_view.total * average
       }
     end
   end
 
-  def cached_data_for_date(date)
-    expiration_date = if date == Time.current.to_date
-                        30.minutes
-                      else
-                        7.days
-                      end
+  def calculate_stats_per_day(date, comments_stats:, follows_stats:, reactions_stats:, page_views_stats:)
+    cache_key = "analytics-for-date-#{date}-#{user_or_org.class.name}-#{user_or_org.id}"
+    cache_expiration_date = date == Time.current.to_date ? 30.minutes : 7.days
 
-    Rails.cache.fetch("analytics-for-date-#{date}-#{user_or_org.class.name}-#{user_or_org.id}", expires_in: expiration_date) do
-      # reaction_data_of_date = reaction_data.where("DATE(created_at) = ?", date)
-      # logged_in_page_view_data = page_view_data.where("DATE(created_at) = ?", date).where.not(user_id: nil)
-      # average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
-      # total_views = page_view_data.where("DATE(created_at) = ?", date).sum(:counts_for_number_of_views)
+    default_reactions_stats = { total: 0, like: 0, readinglist: 0, unicorn: 0 }
+    default_page_views_stats = { total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0 }
+    iso_date = date.iso8601
 
+    Rails.cache.fetch(cache_key, expires_in: cache_expiration_date) do
       {
-        # comments: {
-        #   total: comment_data.where("DATE(created_at) = ?", date).size
-        # },
-        # reactions: {
-        #   total: reaction_data_of_date.size,
-        #   like: reaction_data_of_date.where("category = ?", "like").size,
-        #   readinglist: reaction_data_of_date.where("category = ?", "readinglist").size,
-        #   unicorn: reaction_data_of_date.where("category = ?", "unicorn").size
-        # },
-        # page_views: {
-        #   total: total_views,
-        #   average_read_time_in_seconds: average_read_time_in_seconds,
-        #   total_read_time_in_seconds: average_read_time_in_seconds * total_views
-        # }
-        # follows: {
-        #   total: follow_data.where("DATE(created_at) = ?", date).size
-        # }
+        comments: { total: comments_stats[iso_date] || 0 },
+        follows: { total: follows_stats[iso_date] || 0 },
+        reactions: reactions_stats[iso_date] || default_reactions_stats,
+        page_views: page_views_stats[iso_date] || default_page_views_stats
       }
     end
   end
