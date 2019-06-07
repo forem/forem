@@ -22,30 +22,38 @@ class AnalyticsService
   def grouped_by_day
     return {} unless start_date && end_date
 
-    # 1. calculate all stats using group queries at once
-    comments_stats_per_day = calculate_comments_stats_per_day(comment_data)
-    follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
-    reactions_stats_per_day = calculate_reactions_stats_per_day(reaction_data)
-    page_views_stats_per_day = calculate_page_views_stats_per_day(page_view_data)
+    # cache all stats in the date range for the requested user or organization
+    cache_key = "analytics-for-dates-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
 
-    # 2. build the final hash, one per each day
-    stats = {}
-    (start_date.to_date..end_date.to_date).each do |date|
-      stats[date.iso8601] = calculate_stats_per_day(
-        date,
-        comments_stats: comments_stats_per_day,
-        follows_stats: follows_stats_per_day,
-        reactions_stats: reactions_stats_per_day,
-        page_views_stats: page_views_stats_per_day,
-      )
+    Rails.cache.fetch(cache_key, expires_in: 7.days) do
+      # 1. calculate all stats using group queries at once
+      comments_stats_per_day = calculate_comments_stats_per_day(comment_data)
+      follows_stats_per_day = calculate_follows_stats_per_day(follow_data)
+      reactions_stats_per_day = calculate_reactions_stats_per_day(reaction_data)
+      page_views_stats_per_day = calculate_page_views_stats_per_day(page_view_data)
+
+      # 2. build the final hash, one per each day
+      stats = {}
+      (start_date.to_date..end_date.to_date).each do |date|
+        stats[date.iso8601] = stats_per_day(
+          date,
+          comments_stats: comments_stats_per_day,
+          follows_stats: follows_stats_per_day,
+          reactions_stats: reactions_stats_per_day,
+          page_views_stats: page_views_stats_per_day,
+        )
+      end
+
+      stats
     end
-
-    stats
   end
 
   private
 
-  attr_reader :user_or_org, :start_date, :end_date, :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
+  attr_reader(
+    :user_or_org, :start_date, :end_date,
+    :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
+  )
 
   def load_data
     @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
@@ -72,7 +80,7 @@ class AnalyticsService
     @page_view_data = PageView.where(article_id: article_ids)
 
     # filter data by date if needed
-    return unless @start_date && @end_date
+    return unless start_date && end_date
 
     @comment_data = @comment_data.where(created_at: @start_date..@end_date)
     @reaction_data = @reaction_data.where(created_at: @start_date..@end_date)
@@ -162,22 +170,17 @@ class AnalyticsService
     end
   end
 
-  def calculate_stats_per_day(date, comments_stats:, follows_stats:, reactions_stats:, page_views_stats:)
-    cache_key = "analytics-for-date-#{date}-#{user_or_org.class.name}-#{user_or_org.id}"
-    cache_expiration_date = date == Time.current.to_date ? 30.minutes : 7.days
-
+  def stats_per_day(date, comments_stats:, follows_stats:, reactions_stats:, page_views_stats:)
     # we need these defaults because SQL doesn't return any data for dates that don't have any
     default_reactions_stats = { total: 0, like: 0, readinglist: 0, unicorn: 0 }
     default_page_views_stats = { total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0 }
     iso_date = date.iso8601
 
-    Rails.cache.fetch(cache_key, expires_in: cache_expiration_date) do
-      {
-        comments: { total: comments_stats[iso_date] || 0 },
-        follows: { total: follows_stats[iso_date] || 0 },
-        reactions: reactions_stats[iso_date] || default_reactions_stats,
-        page_views: page_views_stats[iso_date] || default_page_views_stats
-      }
-    end
+    {
+      comments: { total: comments_stats[iso_date] || 0 },
+      follows: { total: follows_stats[iso_date] || 0 },
+      reactions: reactions_stats[iso_date] || default_reactions_stats,
+      page_views: page_views_stats[iso_date] || default_page_views_stats
+    }
   end
 end
