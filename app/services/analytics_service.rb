@@ -8,15 +8,17 @@ class AnalyticsService
     load_data
   end
 
+  # Totals computes total counts for comments, reactions, follows and page views
   def totals
     {
       comments: { total: comment_data.size },
-      reactions: reactions_totals,
       follows: { total: follow_data.size },
-      page_views: page_views_totals
+      reactions: calculate_reactions_totals,
+      page_views: calculate_page_views_totals
     }
   end
 
+  # Grouped by day computes counts for comments, reactions, follows and page views per each day
   def grouped_by_day
     return {} unless start_date && end_date
 
@@ -48,8 +50,9 @@ class AnalyticsService
   def load_data
     @article_data = Article.published.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
     if @article_id
-      # check article_id is published and belongs to the user/org
       @article_data = @article_data.where(id: @article_id)
+
+      # check article_id is published and belongs to the user/org
       raise ArgumentError unless @article_data.exists?
 
       article_ids = [@article_id]
@@ -57,24 +60,26 @@ class AnalyticsService
       article_ids = @article_data.pluck(:id)
     end
 
-    if @start_date && @end_date
-      @reaction_data = Reaction.where(reactable_id: article_ids, reactable_type: "Article").
-        where(created_at: @start_date..@end_date).
-        where("points > 0")
-      @comment_data = Comment.where(commentable_id: article_ids, commentable_type: "Article").
-        where(created_at: @start_date..@end_date).
-        where("score > 0")
-      @page_view_data = PageView.where(article_id: article_ids).where(created_at: @start_date..@end_date)
-    else
-      @reaction_data = Reaction.where(reactable_id: article_ids, reactable_type: "Article").where("points > 0")
-      @comment_data = Comment.where(commentable_id: article_ids, commentable_type: "Article").where("score > 0")
-      @page_view_data = PageView.where(article_id: article_ids)
-    end
+    # prepare relations for metrics
+    @comment_data = Comment.
+      where(commentable_id: article_ids, commentable_type: "Article").
+      where("score > 0")
+    @follow_data = Follow.
+      where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
+    @reaction_data = Reaction.
+      where(reactable_id: article_ids, reactable_type: "Article").
+      where("points > 0")
+    @page_view_data = PageView.where(article_id: article_ids)
 
-    @follow_data = Follow.where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
+    # filter data by date if needed
+    return unless @start_date && @end_date
+
+    @comment_data = @comment_data.where(created_at: @start_date..@end_date)
+    @reaction_data = @reaction_data.where(created_at: @start_date..@end_date)
+    @page_view_data = @page_view_data.where(created_at: @start_date..@end_date)
   end
 
-  def reactions_totals
+  def calculate_reactions_totals
     # NOTE: the order of the keys needs to be the same as the one of the counts
     keys = %i[total like readinglist unicorn]
     counts = reaction_data.pluck(
@@ -89,22 +94,17 @@ class AnalyticsService
     keys.zip(counts).to_h
   end
 
-  def page_views_totals
+  def calculate_page_views_totals
     total_views = article_data.sum(:page_views_count)
     logged_in_page_view_data = page_view_data.where.not(user_id: nil)
-    average_read_time_in_seconds = average_read_time(logged_in_page_view_data)
+    average = logged_in_page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
+    average_read_time_in_seconds = (average || 0).round # average is a BigDecimal
 
     {
       total: total_views,
       average_read_time_in_seconds: average_read_time_in_seconds,
       total_read_time_in_seconds: average_read_time_in_seconds * total_views
     }
-  end
-
-  def average_read_time(page_view_data)
-    average = page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
-    # average is returned as a BigDecimal, it needs to be rounded to an integer
-    (average || 0).round
   end
 
   def calculate_comments_stats_per_day(comment_data)
@@ -166,6 +166,7 @@ class AnalyticsService
     cache_key = "analytics-for-date-#{date}-#{user_or_org.class.name}-#{user_or_org.id}"
     cache_expiration_date = date == Time.current.to_date ? 30.minutes : 7.days
 
+    # we need these defaults because SQL doesn't return any data for dates that don't have any
     default_reactions_stats = { total: 0, like: 0, readinglist: 0, unicorn: 0 }
     default_page_views_stats = { total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0 }
     iso_date = date.iso8601

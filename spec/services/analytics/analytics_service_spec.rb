@@ -26,12 +26,12 @@ RSpec.describe AnalyticsService, type: :service do
 
     it "returns totals stats for comments, reactions, follows and page views" do
       totals = analytics_service.totals
-      expect(totals.keys).to eq(%i[comments reactions follows page_views])
+      expect(totals.keys.to_set).to eq(%i[comments reactions follows page_views].to_set)
     end
 
     it "returns totals stats for an org" do
       totals = described_class.new(organization).totals
-      expect(totals.keys).to eq(%i[comments reactions follows page_views])
+      expect(totals.keys.to_set).to eq(%i[comments reactions follows page_views].to_set)
     end
 
     describe "comments stats" do
