@@ -1,5 +1,7 @@
 <% title @article.title %>
 
+<%= javascript_pack_tag "clipboardCopy", defer: true %>
+
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js", defer: true %>
@@ -106,7 +108,7 @@
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
             <div class="org-branded-title">
-              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" /> <%= @organization.name %>
+              <img src="<%= ProfileImage.new(@organization).get(50) %>" class="org-pic" alt="<%= @organization.name %> profile image"> <%= @organization.name %>
             </div>
           </a>
         <% end %>
@@ -127,7 +129,9 @@
           <% if @user.github_username.present? %>
             <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg "github" %></a>
           <% end %>
-          <span class="published-at" itemprop="datePublished"><%= @article.readable_publish_date if @article.published_at %></span>
+          <% if @article.published_timestamp.present? %>
+            <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
+          <% end %>
           <% if @second_user.present? %>
             <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
           <% end %>
@@ -135,14 +139,16 @@
             <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
           <% end %>
           <% if should_show_updated_on?(@article) %>
-            <span class="published-at updated-at"><em>Updated on <span itemprop="dateModified"><%= @article.edited_at&.strftime("%b %d, %Y") %></span> </em></span>
+            <span><em>Updated on <time itemprop="dateModified" datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
           <% elsif should_show_crossposted_on?(@article) %>
-            <span class="published-at updated-at">
+            <span>
               <em>
                 Originally published at
                 <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
                 on
-                <span class="posted-date-inline"><%= (@article.originally_published_at || @article.published_at).strftime("%b %d, %Y") if @article.crossposted_at %></span>
+                <% if @article.crossposted_at %>
+                  <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
+                <% end %>
               </em>
             </span>
           <% end %>
@@ -190,6 +196,7 @@
     <%= render "articles/org_branding", organization: @organization %>
     <%= render "articles/full_comment_area" %>
   </div>
+
   <% cache("article-bottom-content-#{@article.id}", expires_in: 18.hours) do %>
     <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
     <% if @classic_article %>
@@ -200,7 +207,8 @@
                  follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
-    <%= render "articles/bottom_content" %>
+    <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+    <%= render "articles/bottom_content", articles: suggested_articles %>
   <% end %>
 </div>
 

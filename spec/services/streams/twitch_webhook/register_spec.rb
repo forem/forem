@@ -15,26 +15,48 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
         "hub.lease_seconds" => 604_800,
         "hub.topic" => "https://api.twitch.tv/helix/streams?user_id=654321",
         "hub.secret" => ApplicationConfig["TWITCH_WEBHOOK_SECRET"]
-      }.to_json
-    end
-    let!(:twitch_webhook_registration_stubbed_route) do
-      stub_request(:post, "https://api.twitch.tv/helix/webhooks/hub").
-        with(body: expected_twitch_webhook_params, headers: expected_headers).
-        and_return(status: 204)
+      }
     end
 
     let(:expected_twitch_user_params) { { login: "test-username" } }
-    let!(:twitch_user_stubbed_route) do
-      stub_request(:get, "https://api.twitch.tv/helix/users").
-        with(query: expected_twitch_user_params, headers: expected_headers).
-        and_return(body: { data: [{ id: 654_321 }] }.to_json, headers: { "Content-Type" => "application/json" })
+
+    let!(:twitch_webhook_registration_stubbed_route) do
+      stub_request(:post, "https://api.twitch.tv/helix/webhooks/hub").
+        with(body: URI.encode_www_form(expected_twitch_webhook_params), headers: expected_headers).
+        and_return(status: 204)
     end
 
-    it "registers for webhooks" do
-      described_class.call(user, twitch_access_token_get)
+    context "when twitch returns data" do
+      let!(:twitch_user_stubbed_route) do
+        stub_request(:get, "https://api.twitch.tv/helix/users").
+          with(query: expected_twitch_user_params, headers: expected_headers).
+          and_return(body: { data: [{ id: 654_321 }] }.to_json, headers: { "Content-Type" => "application/json" })
+      end
 
-      expect(twitch_webhook_registration_stubbed_route).to have_been_requested
-      expect(twitch_user_stubbed_route).to have_been_requested
+      it "registers for webhooks" do
+        described_class.call(user, twitch_access_token_get)
+
+        expect(twitch_webhook_registration_stubbed_route).to have_been_requested
+        expect(twitch_user_stubbed_route).to have_been_requested
+      end
+    end
+
+    context "when twitch return no data" do
+      let!(:twitch_user_stubbed_route) do
+        stub_request(:get, "https://api.twitch.tv/helix/users").
+          with(query: expected_twitch_user_params, headers: expected_headers).
+          and_return(body: {}.to_json, headers: { "Content-Type" => "application/json" })
+      end
+
+      it "doesn't fail when twitch doesn't return data" do
+        described_class.call(user, twitch_access_token_get)
+        expect(twitch_user_stubbed_route).to have_been_requested
+      end
+
+      it "doesn't register for webhooks" do
+        described_class.call(user, twitch_access_token_get)
+        expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
+      end
     end
   end
 end

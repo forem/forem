@@ -91,6 +91,7 @@ class MarkdownParser
       # allow image to render as-is
       next if allowed_image_host?(src)
 
+      img["loading"] = "lazy"
       img["src"] = if giphy_img?(src)
                      src.gsub("https://media.", "https://i.")
                    else
@@ -120,13 +121,13 @@ class MarkdownParser
   def catch_xss_attempts(markdown)
     bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
     bad_xss.each do |xss_attempt|
-      raise if markdown.include?(xss_attempt)
+      raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
     end
   end
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/", "https://cdn-images-1.medium.com")
+    src.start_with?("https://camo.githubusercontent.com/")
   end
 
   def giphy_img?(source)

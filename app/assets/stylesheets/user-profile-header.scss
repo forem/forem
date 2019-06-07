@@ -1,4 +1,6 @@
 @import 'variables';
+@import 'mixins';
+
 .user-profile-header{
   padding:calc(1.4vw + 8px) 0px;
   font-family: $helvetica;
@@ -7,8 +9,11 @@
   width:1216px;
   max-width:92%;
   margin: 30px auto 20px;
-  background: white;
-  background: var(--theme-container-background, #fff);
+  @include themeable(
+    background, 
+    theme-container-background, 
+    #fff
+  );
   border-radius: 3px;
   @media screen and ( min-width: 950px ){
     max-width:98%;
@@ -35,12 +40,6 @@
         max-height:calc(3vw + 33px);
         max-width:calc(3vw + 33px);
       }
-    }
-  }
-  &.readinglist-header{
-    display: block;
-    @media screen and ( min-width: 950px ){
-      display: none;
     }
   }
   &.podcast-header{
@@ -162,8 +161,11 @@
         padding:0px 0px;
         margin:0;
         font-style: italic;
-        color:$medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(
+          color, 
+          theme-secondary-color, 
+          $medium-gray
+        );
         width: 94%;
         font-size:0.9em;
         margin-top:12px;
@@ -252,8 +254,11 @@
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $medium-gray);
+        @include themeable(
+          color, 
+          theme-secondary-color, 
+          $medium-gray
+        );
       }
       .value{
         display: inline-block;

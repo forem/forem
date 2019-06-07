@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   include CloudinaryHelper
 
-  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id, :add_credits, :remove_credits
+  attr_accessor :scholar_email, :new_note, :quick_match, :mentorship_note, :note_for_current_role, :add_mentor, :add_mentee, :user_status, :toggle_mentorship, :pro, :merge_user_id, :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
 
   rolify
   include AlgoliaSearch
@@ -10,7 +10,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  belongs_to  :organization, optional: true
+  has_many    :organization_memberships
+  has_many    :organizations, through: :organization_memberships
   has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
   has_many    :badge_achievements, dependent: :destroy
@@ -35,6 +36,7 @@ class User < ApplicationRecord
   has_many    :html_variants, dependent: :destroy
   has_many    :page_views
   has_many    :credits
+  has_many    :classified_listings
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
@@ -250,6 +252,15 @@ class User < ApplicationRecord
     end
   end
 
+  def cached_following_podcasts_ids
+    Rails.cache.fetch(
+      "user-#{id}-#{updated_at}-#{last_followed_at}/following_podcasts_ids",
+      expires_in: 120.hours,
+    ) do
+      Follow.where(follower_id: id, followable_type: "Podcast").pluck(:followable_id)
+    end
+  end
+
   def cached_preferred_langs
     Rails.cache.fetch("user-#{id}-#{updated_at}/cached_preferred_langs", expires_in: 24.hours) do
       preferred_languages_array
@@ -265,7 +276,7 @@ class User < ApplicationRecord
       @preferred_languages_array = language_settings["preferred_languages"].to_a
     else
       languages = []
-      language_settings.keys.each do |setting|
+      language_settings.each_key do |setting|
         languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
       end
       @preferred_languages_array = languages
@@ -341,12 +352,34 @@ class User < ApplicationRecord
     has_any_role?(:workshop_pass, :level_3_member, :level_4_member, :triple_unicorn_member)
   end
 
+  def admin_organizations
+    org_ids = organization_memberships.where(type_of_user: "admin").pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
+  def member_organizations
+    org_ids = organization_memberships.where(type_of_user: %w[admin member]).pluck(:organization_id)
+    organizations.where(id: org_ids)
+  end
+
+  def org_member?(organization)
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: %w[admin member])
+  end
+
   def org_admin?(organization)
-    user.org_admin && user.organization_id == organization.id
+    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
   def unique_including_orgs
     errors.add(:username, "is taken.") if Organization.find_by(slug: username)
+  end
+
+  def subscribe_to_mailchimp_newsletter_without_delay
+    return unless email.present? && email.include?("@")
+
+    return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
+
+    Users::SubscribeToMailchimpNewsletterJob.perform_now(id)
   end
 
   def subscribe_to_mailchimp_newsletter
@@ -354,11 +387,8 @@ class User < ApplicationRecord
 
     return if saved_changes["unconfirmed_email"] && saved_changes["confirmation_sent_at"]
 
-    # This is when user is updating their email. There
-    # is no need to update mailchimp until email is confirmed.
-    MailchimpBot.new(self).upsert
+    Users::SubscribeToMailchimpNewsletterJob.perform_later(id)
   end
-  handle_asynchronously :subscribe_to_mailchimp_newsletter
 
   def a_sustaining_member?
     monthly_dues.positive?
@@ -374,18 +404,16 @@ class User < ApplicationRecord
   end
 
   def settings_tab_list
-    tab_list = %w[
+    %w[
       Profile
-      Mentorship
       Integrations
       Notifications
       Publishing\ from\ RSS
       Organization
       Billing
+      Account
+      Misc
     ]
-    tab_list << "Membership" if monthly_dues&.positive? && stripe_id_code
-    tab_list << "Switch Organizations" if has_role?(:switch_between_orgs)
-    tab_list.push("Account", "Misc")
   end
 
   def profile_image_90
@@ -494,10 +522,8 @@ class User < ApplicationRecord
   end
 
   def bust_cache
-    CacheBuster.new.bust("/#{username}")
-    CacheBuster.new.bust("/feed/#{username}")
+    Users::BustCacheJob.perform_later(id)
   end
-  handle_asynchronously :bust_cache
 
   def core_profile_details_changed?
     saved_change_to_username? ||

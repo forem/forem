@@ -35,7 +35,7 @@
     <div class="articles-list" id="articles-list">
       <% if @tag_model && @tag_model.supported %>
         <style>
-          .nav-chronofiter-link.selected {
+          .nav-chronofiter-link.selected, .nav-chronofiter-link:hover {
             background: <%= @tag_model.bg_color_hex %> !important;
             color: <%= @tag_model.text_color_hex %> !important;
             box-shadow: 3px 4px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;

@@ -4,6 +4,8 @@ class Podcast < ApplicationRecord
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
 
+  validates :main_color_hex, presence: true
+
   after_save :bust_cache
   after_create :pull_all_episodes
 
@@ -26,7 +28,10 @@ class Podcast < ApplicationRecord
   end
 
   def pull_all_episodes
-    PodcastFeed.new.get_episodes(self)
+    Podcasts::GetEpisodesJob.perform_later(id)
   end
-  handle_asynchronously :pull_all_episodes
+
+  def pull_all_episodes_without_delay
+    Podcasts::GetEpisodesJob.perform_now(id)
+  end
 end

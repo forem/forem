@@ -1,4 +1,5 @@
 class Reaction < ApplicationRecord
+  include AlgoliaSearch
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
 
   belongs_to :reactable, polymorphic: true
@@ -12,14 +13,31 @@ class Reaction < ApplicationRecord
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: %w[Comment Article] }
-  validates :status, inclusion: { in: %w[valid invalid confirmed] }
+  validates :status, inclusion: { in: %w[valid invalid confirmed archived] }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
   validate  :permissions
 
   before_save :assign_points
+  after_save :index_to_algolia
   after_save :update_reactable, :bust_reactable_cache, :touch_user, :async_bust
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
+  before_destroy :remove_algolia
+
+  algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_index: false, auto_remove: false do
+    attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status, :reading_time,
+              :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags, :reactable_published_date
+    searchableAttributes %i[searchable_reactable_title searchable_reactable_text
+                            searchable_reactable_tags reactable_user]
+    tags do
+      reactable_tags
+    end
+    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
+  end
+
+  def index_to_algolia
+    index! if category == "readinglist" && reactable && reactable.published
+  end
 
   class << self
     def count_for_article(id)
@@ -87,6 +105,52 @@ class Reaction < ApplicationRecord
     Reactions::UpdateReactableJob.perform_now(id)
   end
 
+  def reading_time
+    reactable.reading_time if category == "readinglist"
+  end
+
+  def remove_from_index
+    remove_from_index!
+  end
+
+  def reactable_user
+    return unless category == "readinglist"
+
+    {
+      username: reactable.user_username,
+      name: reactable.user_name,
+      profile_image_90: reactable.user.profile_image_90
+    }
+  end
+
+  def reactable_published_date
+    reactable.readable_publish_date if category == "readinglist"
+  end
+
+  def searchable_reactable_title
+    reactable.title if category == "readinglist"
+  end
+
+  def searchable_reactable_text
+    reactable.body_text[0..350] if category == "readinglist"
+  end
+
+  def searchable_reactable_tags
+    reactable.cached_tag_list if category == "readinglist"
+  end
+
+  def searchable_reactable_path
+    reactable.path if category == "readinglist"
+  end
+
+  def reactable_tags
+    reactable.decorate.cached_tag_list_array if category == "readinglist"
+  end
+
+  def viewable_by
+    user_id
+  end
+
   BASE_POINTS = {
     "vomit" => -50.0,
     "thumbsdown" => -10.0
@@ -107,6 +171,10 @@ class Reaction < ApplicationRecord
 
   def negative_reaction_from_untrusted_user?
     negative? && !user.trusted
+  end
+
+  def remove_algolia
+    remove_from_index!
   end
 
   def negative?

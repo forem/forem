@@ -5,6 +5,9 @@ class ArticleMutesController < ApplicationController
     @article = Article.find_by(id: params[:id])
     authorize @article
     @article.update(receive_notifications: permitted_attributes(@article)[:receive_notifications])
-    redirect_to "/dashboard"
+    respond_to do |format|
+      format.json { head :ok }
+      format.html { redirect_to "/dashboard" }
+    end
   end
 end

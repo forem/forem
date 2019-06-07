@@ -2,7 +2,7 @@
   <% if story.video.present? && story.video_thumbnail_url.present? %>
     <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>">
       <div class="single-article-video-duration">
-        <img src="<%= asset_path("video-camera.svg") %>" /><%= story.video_duration_in_minutes %></div>
+        <img src="<%= asset_path("video-camera.svg") %>" alt="video camera"><%= story.video_duration_in_minutes %></div>
     </a>
   <% end %>
   <% if story.cached_organization && !@organization_article_index %>
@@ -27,8 +27,10 @@
     </div>
   </a>
   <h4>
-    <a href="/<%= story.cached_user.username %>"><%= story.cached_user.name %>・<%= story.readable_publish_date %><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
-
+    <a href="/<%= story.cached_user.username %>">
+      <%= story.cached_user.name %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time>
+      <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
+    </a>
   </h4>
   <div class="tags">
     <% story.cached_tag_list_array.each do |tag| %>
@@ -59,7 +61,7 @@
     data-reactable-id="<%= story.id %>"
     aria-label="Save to reading list"
     title="Save to reading list">
-    <span class="bm-success"></span>
-    <span class="bm-initial"></span>
+    <span class="bm-initial">SAVE</span>
+    <span class="bm-success">SAVED</span>
   </button>
 </div>

@@ -122,12 +122,10 @@ class Comment < ApplicationRecord
   end
 
   def self.rooted_on(commentable_id, commentable_type)
-    includes(:user, :commentable).
+    includes(:user).
       select(:id, :user_id, :commentable_type, :commentable_id,
              :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
-      where(commentable_id: commentable_id,
-            ancestry: nil,
-            commentable_type: commentable_type)
+      where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
   end
 
   def self.tree_for(commentable, limit = 0)
@@ -180,11 +178,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def self.comment_async_bust(commentable, username)
-    CacheBuster.new.bust_comment(commentable, username)
-    commentable.index!
-  end
-
   def remove_notifications
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment")
     Notification.remove_all_without_delay(notifiable_id: id, notifiable_type: "Comment", action: "Moderation")
@@ -204,7 +197,7 @@ class Comment < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.modify_hr_tags(body_markdown)
+    fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
     parsed_markdown = MarkdownParser.new(fixed_body_markdown)
     self.processed_html = parsed_markdown.finalize
     wrap_timestamps_if_video_present!

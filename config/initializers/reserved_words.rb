@@ -188,7 +188,6 @@ class ReservedWords
     yes
     social
     rails
-    angular
     script
     work
     1024

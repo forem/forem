@@ -12,6 +12,7 @@ require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
 require "test_prof/recipes/rspec/before_all"
+require "test_prof/recipes/rspec/let_it_be"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -110,6 +111,7 @@ RSpec.configure do |config|
   end
 
   OmniAuth.config.test_mode = true
+  OmniAuth.config.logger = Rails.logger
 
   config.infer_spec_type_from_file_location!
 

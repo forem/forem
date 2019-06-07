@@ -1,7 +1,7 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
 
-  attr_accessor :post_as_organization, :action
+  attr_accessor :action
 
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
@@ -23,7 +23,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -61,18 +61,22 @@ class ClassifiedListing < ApplicationRecord
 
   def self.categories_available
     {
-      "cfp" => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form" },
-      "contractors" => { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
-      "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted" },
-      "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps" },
+      "cfp" => { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
+      "forhire" => { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
+      "collabs" => { cost: 1, name: "Contributors/Collaborators Wanted", rules: "Projects looking for volunteers. Not job listings." },
+      "education" => { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps." },
       "jobs" => { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
-      "mentors" => { cost: 1, name: "Offering Mentorship"},
-      "products" => { cost: 10, name: "Products/Tools", rules: "Must be available right now" },
-      "mentees" => { cost: 1, name: "Seeking a Mentor"},
-      "sale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale" },
-      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included" },
+      "mentors" => { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
+      "products" => { cost: 5, name: "Products/Tools", rules: "Must be available right now." },
+      "mentees" => { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
+      "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
+      "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
+  end
+
+  def path
+    "/listings/#{category}/#{slug}"
   end
 
   private
@@ -85,10 +89,11 @@ class ClassifiedListing < ApplicationRecord
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
     self.category = category.to_s.downcase
+    self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
   def restrict_markdown_input
-    errors.add(:body_markdown, "has too many linebreaks. No no more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
+    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if body_markdown.to_s.scan(/(?=\n)/).count > 12
     errors.add(:body_markdown, "is not allowed to include images.") if body_markdown.to_s.include?("![")
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if body_markdown.to_s.include?("{% ")
   end

@@ -1,0 +1,36 @@
+<a href="/internal/listings">Back to All Listings</a>
+
+<h1>Edit <a href="/listings/<%= @classified_listing.category %>/<%= @classified_listing.slug %>" target="_blank">"<%= @classified_listing.title %>"</a></h1>
+
+<%= form_for [:internal, @classified_listing] do |form| %>
+  <%= form.label :title %>
+  <br>
+  <%= form.text_field :title, size: 100, maxlength: 128 %>
+  <hr>
+  <%= form.label :body_markdown %>
+  <br>
+  <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400 %>
+  <hr>
+  <%= form.label :tag_list %>
+  <br>
+  <i style="font-size: 15px;">Comma separated, one space, 8 tags max</i>
+  <br>
+  <%= form.text_field :tag_list, value: @classified_listing.cached_tag_list, size: 100 %>
+  <hr>
+  <%= form.label :category %>
+  <br>
+  <%= form.select :category, options_for_select(ClassifiedListing.select_options_for_categories.map(&:last), @classified_listing.category) %>
+  <hr>
+  <%= form.label :published %>
+  <%= form.check_box :published, checked: @classified_listing.published? %>
+  <hr>
+  <%= form.submit "Update Listing", class: "btn btn-lg btn-primary" %>
+  <hr>
+<% end %>
+<%= form_for [:internal, @classified_listing] do |f| %>
+  <input type="hidden" name="classified_listing[action]" value="bump" />
+  <%= f.submit "Bump Listing ⏫", class: "btn btn-lg btn-primary" %>
+<% end %>
+<hr>
+<%= link_to "Destroy Listing", url_for(action: :destroy, id: @classified_listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<br><br><br>

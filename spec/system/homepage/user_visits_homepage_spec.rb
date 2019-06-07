@@ -35,7 +35,7 @@ RSpec.describe "User visits a homepage", type: :system do
     let(:user) { create(:user) }
 
     before do
-      login_as(user)
+      sign_in(user)
     end
 
     it "shows profile content", js: true do

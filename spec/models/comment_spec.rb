@@ -38,7 +38,7 @@ RSpec.describe Comment, type: :model do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
   end
 
-  xit "generates character count before saving" do
+  it "generates character count before saving" do
     expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
   end
 

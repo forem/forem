@@ -10,20 +10,20 @@
 <% end %>
 
 <h2>Features</h2>
-<%= form_for(@user) do |f| %>
+<%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="sub-field">
     <%= f.label :editor_version, "Editor version: v1 or v2" %>
     <%= f.select :editor_version, options_for_select(%w[v1 v2], @user.editor_version) %>
-    <sub><em>v2 is currently in beta</em></sub>
   </div>
   <div class="field">
     <label></label>
-    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
+
 <h2>Feed Customization</h2>
-<%= form_for(@user) do |f| %>
+<%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="sub-field">
     <%= f.label :experience_level, "Enter your coding experience level (1-10)" %>
     <%= f.text_field :experience_level %>
@@ -31,12 +31,13 @@
   </div>
   <div class="field">
     <label></label>
-    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
+
 <h2>Style Customization</h2>
-<%= form_for(@user) do |f| %>
+<%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="sub-field">
     <%= f.label :config_theme, "Site Theme" %>
     <%= f.select(:config_theme, options_for_select(["default", "night theme", "pink theme"], @user.config_theme.tr("_", " "))) %>
@@ -49,7 +50,7 @@
   </div>
   <div class="field">
     <label></label>
-    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
@@ -60,8 +61,7 @@
 <h4 style="font-weight:400">
   You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence constructive to the community, but feel free to use this setting if you wish.
 </h4>
-
-<%= form_for(@user) do |f| %>
+<%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="checkbox-field">
     <div class="sub-field">
       <%= f.check_box :display_sponsors %>
@@ -74,13 +74,12 @@
   </div>
   <div class="field">
     <label></label>
-    <%= f.hidden_field :tab, value: @tab %>
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
     <%= f.submit "SUBMIT", class: "cta" %>
   </div>
 <% end %>
 
 <h2>Export content</h2>
-
 <% if @user.export_requested? %>
   <h4 style="font-weight:400">
     You have recently requested an export of your content.
@@ -93,7 +92,7 @@
     They will be emailed to your inbox.
   </h4>
 
-  <%= form_for(@user) do |f| %>
+  <%= form_for(@user, html: { id: nil }) do |f| %>
     <div class="checkbox-field">
       <div class="sub-field">
         <%= f.check_box :export_requested %>
@@ -102,17 +101,15 @@
     </div>
     <div class="field">
       <label></label>
-      <%= f.hidden_field :tab, value: @tab %>
+      <%= f.hidden_field :tab, value: @tab, id: nil %>
       <%= f.submit "SUBMIT", class: "cta" %>
     </div>
   <% end %>
 <% end %>
 
 <h2> Connect </h2>
-
 <h3> Inbox Type </h3>
-
-<%= form_for(@user) do |f| %>
+<%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="field checkbox-label-first">
     <%= f.label :inbox_type, "Open your inbox to messages from people you don't follow or keep your inbox private to mutual follows." %>
     <div class="sub-field">

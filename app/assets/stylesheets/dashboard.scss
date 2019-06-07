@@ -8,12 +8,12 @@
   margin: auto;
 
   h1 {
-    font-size: calc(16px + 0.3vw);
+    font-size: calc(15px + 0.2vw);
     font-family: $helvetica-condensed;
     font-stretch: condensed;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     text-align: center;
-
+    margin-bottom: 0px;
     @media screen and (min-width: 600px) {
       text-align: left;
     }
@@ -27,29 +27,59 @@
   }
 
   .rounded-btn {
-    font-size: calc(16px + 0.3vw);
+    font-size: calc(15px + 0.2vw);
     font-family: $helvetica-condensed;
     font-stretch: condensed;
     padding: 4px 20px;
     border-radius: 100px;
     margin-right: 5px;
-    display: block;
+    display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    color: $black;
-    background: lighten($light-medium-gray, 5%);
-
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+    @include themeable(
+      background,
+      theme-container-background,
+      lighten($light-medium-gray, 5%)
+    );
     &:hover {
-      background: $light-medium-gray;
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-medium-gray
+      );
     }
 
     &.active {
-      background: $dark-gray;
-      color: white;
+      @include themeable(
+        background,
+        theme-secondary-color,
+        $dark-gray
+      );
+      @include themeable(
+        color,
+        theme-container-background,
+        white
+      );
     }
 
     &.back-nav {
       left: 2vw;
+    }
+    &.rounded-btn--transparent {
+      background: transparent;
+      font-size: calc(15px + 0.2vw);
+      &:hover {
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          lighten($light-medium-gray, 10%)
+        );
+      }
     }
   }
 
@@ -77,7 +107,7 @@
       transition: background-color 250ms ease, opacity 250ms ease;
       font-family: $helvetica-condensed;
       font-stretch: condensed;
-      font-size: 1.1em;
+      font-size: 0.95em;
       text-align: center;
 
       &.active {
@@ -251,6 +281,13 @@
         lighten($yellow, 20%)
       );
     }
+    &.single-article-archived {
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($yellow, 10%)
+      );
+    }
     &.thanks-for-suggesting-a-tweet {
       background: lighten($green, 20%);
       padding: 30px 0px;
@@ -313,6 +350,65 @@
           .scale-pod {
             display: inline-block;
             width: 160px;
+          }
+        }
+      }
+    }
+
+    & div.ellipsis-menu {
+      float: right;
+      position: relative;
+
+      & button.ellipsis-menu-btn {
+        display: block;
+        float: right;
+        margin-top: 0.3em;
+        margin-right: -0.6em;
+        border: 0px;
+        background: transparent;
+        img {
+          width: 20px;
+        }
+
+        &:hover {
+          background-color: #eee;
+        }
+      }
+
+      & ul.ellipsis-menu {
+        position: absolute;
+        right: 0;
+        display: block;
+        background-color: white;
+        padding-left: 0;
+        border-style: solid;
+        border-color: #ccc;
+        border-radius: 3px;
+        border-width: 1px;
+        margin-top: 1.75em;
+        margin-right: -0.6em;
+
+        &.hidden {
+          display: none;
+        }
+
+        & hr {
+          margin: 0;
+          color: #ccc;
+          background-color: #ccc;
+          height: 1px;
+          border: 0;
+        }
+
+        & li.ellipsis-menu-item {
+          list-style: none;
+          
+          & form * {
+            background-color: transparent;
+          }
+
+          &:hover {
+            background-color: #eee;
           }
         }
       }

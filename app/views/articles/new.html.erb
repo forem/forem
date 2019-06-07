@@ -1,12 +1,8 @@
 <% title "New Post" %>
 
 <% if user_signed_in? %>
-  <% if current_user.editor_version == "v2" %>
-    <%= javascript_packs_with_chunks_tag "articleForm", defer: true %>
-    <%= render "articles/v2_form" %>
-  <% else %>
-    <%= render "articles/markdown_form" %>
-  <% end %>
+  <%= javascript_packs_with_chunks_tag "articleForm", defer: true %>
+  <%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>
 <% else %>
   <% @new_article_not_logged_in = true %>
   <%= render "devise/registrations/registration_form" %>

@@ -1,8 +1,8 @@
 <% title "Settings" %>
 
-<% if flash[:notice] && flash[:notice].include?("Your ") %>
+<% if flash[:settings_notice] %>
   <div class="notice" id="notice">
-    <%= flash[:notice] %>
+    <%= flash[:settings_notice] %>
   </div>
 <% end %>
 
@@ -20,8 +20,21 @@
 <% end %>
 
 <div class="user-settings-page">
-  <% if @tab == "organization" && @user.organization.present? %>
-    <h2>Settings for <a href="/<%= @user.organization.slug %>">@<%= @user.organization.slug %></a></h2>
+  <% if @tab == "organization" && @organizations.present? %>
+    <h2>Settings for
+      <span class="organization-dropdown">
+        <select id="organization-dropdown-select" onchange="window.location.href=this.value">
+          <% options = @organizations.pluck(:slug, :id).each do |arr| %>
+            <% arr[0] = "@#{arr[0]}" %>
+            <% arr[1] = "/settings/organization/#{arr[1]}" %>
+          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
+          <%# For example: %>
+          <%# <option value="/settings/organization/1>@devteam</option> %>
+          <%# <option value="/settings/organization/new" selected>New Organization</option> %>
+        </select>
+      </span>
+    </h2>
   <% else %>
     <h2>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h2>
   <% end %>

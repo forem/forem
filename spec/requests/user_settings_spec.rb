@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserSettings", type: :request do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, twitch_username: nil) }
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
@@ -12,10 +12,10 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     context "when signed-in" do
-      before { login_as user }
+      before { sign_in user }
 
       it "renders various settings tabs properly" do
-        %w[organization switch-organizations billing misc account].each do |tab|
+        %w[organization misc account].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
@@ -24,17 +24,6 @@ RSpec.describe "UserSettings", type: :request do
       it "handles unknown settings tab properly" do
         expect { get "/settings/does-not-exist" }.
           to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "doesn't let user access membership if user has no monthly_dues" do
-        get "/settings/membership"
-        expect(response.body).not_to include("Settings for")
-      end
-
-      it "allows user with monthly_dues to access membership" do
-        user.update_column(:monthly_dues, 5)
-        get "/settings/membership"
-        expect(response.body).to include("Settings for")
       end
 
       it "allows users to visit the account page" do
@@ -51,7 +40,7 @@ RSpec.describe "UserSettings", type: :request do
   end
 
   describe "PUT /update/:id" do
-    before { login_as user }
+    before { sign_in user }
 
     it "updates summary" do
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
@@ -83,7 +72,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays a flash with a reminder for the user to expect an email" do
         send_request
-        expect(flash[:notice]).to include("The export will be emailed to you shortly.")
+        expect(flash[:settings_notice]).to include("The export will be emailed to you shortly.")
       end
 
       it "hides the checkbox" do
@@ -112,8 +101,49 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
-  describe "POST /users/update_language_settings" do
+  describe "POST /users/update_twitch_username" do
     before { login_as user }
+
+    it "updates twitch username" do
+      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
+      user.reload
+      expect(user.twitch_username).to eq("anna_lightalloy")
+    end
+
+    it "redirects after updating" do
+      post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
+      expect(response).to redirect_to "/settings/integrations"
+    end
+
+    it "schedules the job while updating" do
+      expect do
+        post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
+      end.to have_enqueued_job(Streams::TwitchWebhookRegistrationJob).exactly(:once).with(user.id)
+    end
+
+    it "removes twitch_username" do
+      user.update_column(:twitch_username, "robot")
+      post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
+      user.reload
+      expect(user.twitch_username).to be_nil
+    end
+
+    it "doesn't schedule the job when removing" do
+      expect do
+        post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
+      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+    end
+
+    it "doesn't schedule the job when saving the same twitch username" do
+      user.update_column(:twitch_username, "robot")
+      expect do
+        post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
+      end.not_to have_enqueued_job(Streams::TwitchWebhookRegistrationJob)
+    end
+  end
+
+  describe "POST /users/update_language_settings" do
+    before { sign_in user }
 
     it "updates language settings" do
       post "/users/update_language_settings", params: { user: { preferred_languages: %w[ja es] } }
@@ -140,7 +170,7 @@ RSpec.describe "UserSettings", type: :request do
     context "when user has two identities" do
       let(:user) { create(:user, :two_identities) }
 
-      before { login_as user }
+      before { sign_in user }
 
       it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }
@@ -170,7 +200,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "renders a successful response message" do
         delete "/users/remove_association", params: { provider: "twitter" }
-        expect(flash[:notice]).to eq "Your Twitter account was successfully removed."
+        expect(flash[:settings_notice]).to eq "Your Twitter account was successfully removed."
       end
 
       it "does not show the Remove OAuth section afterward" do
@@ -181,7 +211,7 @@ RSpec.describe "UserSettings", type: :request do
 
     # Users won't be able to do this via the view, but in case they hit the route somehow...
     context "when user has only one identity" do
-      before { login_as user }
+      before { sign_in user }
 
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
@@ -205,7 +235,7 @@ RSpec.describe "UserSettings", type: :request do
   describe "DELETE /users/destroy" do
     context "when user has no articles or comments" do
       before do
-        login_as user
+        sign_in user
         delete "/users/destroy"
       end
 
@@ -234,7 +264,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "does not allow invalid users to delete their account" do
         users.each do |user|
-          login_as user
+          sign_in user
           delete "/users/destroy"
           expect(user.persisted?).to eq true
         end
@@ -242,7 +272,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "redirects successfully to /settings/account" do
         users.each do |user|
-          login_as user
+          sign_in user
           delete "/users/destroy"
           expect(response).to redirect_to "/settings/account"
         end
@@ -250,7 +280,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "shows the proper error message after redirecting" do
         users.each do |user|
-          login_as user
+          sign_in user
           delete "/users/destroy"
           expect(flash[:error]).to eq "An error occurred. Try requesting an account deletion below."
         end

@@ -18,7 +18,6 @@ class Role < ApplicationRecord
                 trusted
                 banned
                 warned
-                switch_between_orgs
                 triple_unicorn_member
                 level_4_member
                 level_3_member

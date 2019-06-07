@@ -121,6 +121,7 @@ class StoriesController < ApplicationController
       end
     end
     assign_podcasts
+    assign_classified_listings
     @article_index = true
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
@@ -243,10 +244,16 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
+    num_hours = Rails.env.production? ? 24 : 800
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").
-      select(:slug, :title, :podcast_id).limit(5)
+      where("published_at > ?", num_hours.hours.ago).
+      select(:slug, :title, :podcast_id)
+  end
+
+  def assign_classified_listings
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
   end
 
   def article_finder(num_articles)

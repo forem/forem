@@ -26,7 +26,7 @@ class ChatChannelsController < ApplicationController
     if @chat_channel.valid?
       render json: { status: "success",
                      chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
-             status: 200
+             status: :ok
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
@@ -39,7 +39,7 @@ class ChatChannelsController < ApplicationController
     if @chat_channel.valid?
       render json: { status: "success",
                      chat_channel: @chat_channel.to_json(only: %i[channel_name slug]) },
-             status: 200
+             status: :ok
     else
       render json: { errors: @chat_channel.errors.full_messages }
     end
@@ -51,7 +51,8 @@ class ChatChannelsController < ApplicationController
     membership = @chat_channel.chat_channel_memberships.where(user_id: current_user.id).first
     membership.update(last_opened_at: 1.second.from_now, has_unopened_messages: false)
     @chat_channel.index!
-    render json: { status: "success", channel: params[:id] }, status: 200
+    membership.index!
+    render json: { status: "success", channel: params[:id] }, status: :ok
   end
 
   def moderate
@@ -67,33 +68,32 @@ class ChatChannelsController < ApplicationController
         Pusher.trigger(@chat_channel.pusher_channels,
                        "user-banned",
                        { userId: banned_user.id }.to_json)
-        render json: { status: "success", message: "banned!" }, status: 200
+        render json: { status: "success", message: "banned!" }, status: :ok
       else
-        render json: { status: "error", message: "username not found" }, status: 400
+        render json: { status: "error", message: "username not found" }, status: :bad_request
       end
     when "/unban"
       banned_user = User.find_by(username: command[1])
       if banned_user
         banned_user.remove_role :banned
-        render json: { status: "success", message: "unbanned!" }, status: 200
+        render json: { status: "success", message: "unbanned!" }, status: :ok
       else
-        render json: { status: "error", message: "username not found" }, status: 400
+        render json: { status: "error", message: "username not found" }, status: :bad_request
       end
     when "/clearchannel"
       @chat_channel.clear_channel
-      render json: { status: "success", message: "cleared!" }, status: 200
+      render json: { status: "success", message: "cleared!" }, status: :ok
     else
-      render json: { status: "error", message: "invalid command" }, status: 400
+      render json: { status: "error", message: "invalid command" }, status: :bad_request
     end
   end
 
   def create_chat
     chat_recipient = User.find(params[:user_id])
+    valid_listing = ClassifiedListing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
     authorize ChatChannel
-    if chat_recipient.inbox_type == "open"
+    if chat_recipient.inbox_type == "open" || valid_listing.length == 1
       chat = ChatChannel.create_with_users([current_user, chat_recipient], "direct")
-      # get message param to generate message to send
-      # message_markdown = "Hi #{chat_recipient.username}! I am #{current_user.username}. I can message you on DEV Connect because your inbox is open."
       message_markdown = params[:message]
       message = Message.new(
         chat_channel: chat,
@@ -101,9 +101,9 @@ class ChatChannelsController < ApplicationController
         user: current_user,
       )
       chat.messages.append(message)
-      render json: { status: "success", message: "chat channel created!" }, status: 200
+      render json: { status: "success", message: "chat channel created!" }, status: :ok
     else
-      render json: { status: "error", message: "not allowed!" }, status: 400
+      render json: { status: "error", message: "not allowed!" }, status: :bad_request
     end
   end
 
@@ -112,7 +112,8 @@ class ChatChannelsController < ApplicationController
     authorize chat_channel
     chat_channel.status = "blocked"
     chat_channel.save
-    render json: { status: "success", message: "chat channel blocked" }, status: 200
+    chat_channel.chat_channel_memberships.map(&:remove_from_index!)
+    render json: { status: "success", message: "chat channel blocked" }, status: :ok
   end
 
   private
@@ -159,7 +160,7 @@ class ChatChannelsController < ApplicationController
       @active_channel = ChatChannel.find_by(slug: slug)
       @active_channel.current_user = current_user if @active_channel
     end
-    generate_github_token
+    # @github_token = generate_github_token Not yet fully baked, not needed.
     generate_algolia_search_key
   end
 
@@ -172,6 +173,8 @@ class ChatChannelsController < ApplicationController
   end
 
   def generate_github_token
-    @github_token = Identity.where(user_id: current_user.id, provider: "github").first&.token
+    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
+      Identity.where(user_id: current_user.id, provider: "github").first&.token
+    end
   end
 end

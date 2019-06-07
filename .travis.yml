@@ -15,6 +15,7 @@ env:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
+    - COVERAGE=true
 branches:
   only:
     - master
@@ -22,7 +23,6 @@ before_install:
   - nvm install
 install:
   - bundle install --path vendor/bundle
-  - bundle exec rails runner bin/chromedriver-update
   - yarn install
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter

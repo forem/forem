@@ -26,14 +26,27 @@ Rails.application.routes.draw do
   end
 
   namespace :internal do
-    resources :comments
-    resources :articles
-    resources :tags
-    resources :welcome, only: %i[index create]
+    resources :articles, only: %i[index show update]
+    resources :broadcasts, only: %i[index new create edit update]
+    resources :buffer_updates, only: %i[create update]
+    resources :classified_listings, only: %i[index edit update destroy]
+    resources :comments, only: [:index]
+    resources :dogfood, only: [:index]
+    resources :events, only: %i[index create update]
+    resources :feedback_messages, only: %i[index show]
+    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
+    resources :members, only: [:index]
+    resources :pages, only: %i[index new create edit update destroy]
     resources :reactions, only: [:update]
-    resources :broadcasts
-    resources :pages
-    resources :users do
+    resources :reports, only: %i[index show], controller: "feedback_messages" do
+      collection do
+        post "send_email"
+        post "create_note"
+        post "save_status"
+      end
+    end
+    resources :tags, only: %i[index show edit update]
+    resources :users, only: %i[index show edit update] do
       member do
         post "banish"
         post "full_delete"
@@ -41,22 +54,7 @@ Rails.application.routes.draw do
         post "merge"
       end
     end
-    resources :events
-    resources :dogfood, only: [:index]
-    resources :buffer_updates, only: %i[create update]
-    resources :articles, only: %i[index update] do
-      get "rss_articles", on: :collection
-    end
-    resources :members, only: [:index]
-    resources :events
-    resources :feedback_messages, only: %i[update show]
-    resources :reports, only: %i[index update show], controller: "feedback_messages" do
-      collection do
-        post "send_email"
-        post "create_note"
-        post "save_status"
-      end
-    end
+    resources :welcome, only: %i[index create]
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -67,7 +65,8 @@ Rails.application.routes.draw do
           get "/onboarding", to: "articles#onboarding"
         end
       end
-      resources :comments
+      resources :comments, only: %i[index show]
+      resources :chat_channels, only: [:show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
       resources :reactions, only: [:create] do
@@ -75,11 +74,7 @@ Rails.application.routes.draw do
           post "/onboarding", to: "reactions#onboarding"
         end
       end
-      resources :users, only: %i[index show] do
-        collection do
-          get "/sidebar_suggestions", to: "users#sidebar_suggestions"
-        end
-      end
+      resources :users, only: %i[index show]
       resources :tags, only: [:index] do
         collection do
           get "/onboarding", to: "tags#onboarding"
@@ -115,16 +110,14 @@ Rails.application.routes.draw do
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
   resources :feedback_messages, only: %i[index create]
-  get "/reports/:slug", to: "feedback_messages#show"
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
   resources :follows, only: %i[show create update]
-  resources :giveaways, only: %i[create update]
+  resources :giveaways, only: %i[new edit update]
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
   resources :tags, only: [:index]
-  resources :stripe_subscriptions, only: %i[create update destroy]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :stripe_cancellations, only: [:create]
   resources :live_articles, only: [:index]
@@ -135,7 +128,7 @@ Rails.application.routes.draw do
   resources :videos, only: %i[index create new]
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]
-  resources :html_variants
+  resources :html_variants, only: %i[index new create show edit update]
   resources :html_variant_trials, only: [:create]
   resources :html_variant_successes, only: [:create]
   resources :push_notification_subscriptions, only: [:create]
@@ -145,9 +138,14 @@ Rails.application.routes.draw do
   resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
+  resources :reading_list_items, only: [:update]
 
+  get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
+  get "/credits/purchase" => "credits#new"
   get "/listings/:category" => "classified_listings#index"
-  get "/listings/:category/:slug" => "classified_listings#show"
+  get "/listings/:category/:slug" => "classified_listings#index"
+  get "/listings/:category/:slug/:view" => "classified_listings#index",
+      constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   patch "/onboarding_update" => "users#onboarding_update"
@@ -166,9 +164,6 @@ Rails.application.routes.draw do
   get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
   get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
   get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
-
-  ### Subscription vanity url
-  post "membership-action" => "stripe_subscriptions#create"
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
@@ -201,8 +196,9 @@ Rails.application.routes.draw do
 
   # Settings
   post "users/update_language_settings" => "users#update_language_settings"
+  post "users/update_twitch_username" => "users#update_twitch_username"
   post "users/join_org" => "users#join_org"
-  post "users/leave_org" => "users#leave_org"
+  post "users/leave_org/:organization_id" => "users#leave_org"
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
@@ -217,6 +213,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root
   get "/about" => "pages#about"
+  get "/api", to: "pages#api"
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
@@ -228,7 +225,6 @@ Rails.application.routes.draw do
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
-  get "/infiniteloop" => "pages#infinite_loop"
   get "/faq" => "pages#faq"
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
@@ -239,7 +235,6 @@ Rails.application.routes.draw do
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/now" => "pages#now"
-  get "/membership" => "pages#membership"
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
@@ -253,7 +248,6 @@ Rails.application.routes.draw do
   get "/freestickers/edit" => "giveaways#edit"
   get "/scholarship", to: redirect("/p/scholarships")
   get "/scholarships", to: redirect("/p/scholarships")
-  get "/memberships", to: redirect("/membership")
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/tag-moderation" => "pages#tag_moderation"
   get "/community-moderation" => "pages#community_moderation"
@@ -265,13 +259,14 @@ Rails.application.routes.draw do
 
   scope "p" do
     pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
-                       markdown_basics scholarships wall_of_patrons membership_form badges]
+                       markdown_basics scholarships wall_of_patrons badges]
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
     end
   end
 
   get "/settings/(:tab)" => "users#edit"
+  get "/settings/:tab/:org_id" => "users#edit"
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"
@@ -281,9 +276,9 @@ Rails.application.routes.draw do
       constraints: {
         which: /organization_user_followers|user_followers/
       }
-  get "/dashboard/:which" => "dashboards#show",
+  get "/dashboard/:which/:org_id" => "dashboards#show",
       constraints: {
-        which: /organization|reading/
+        which: /organization/
       }
   get "/dashboard/:username" => "dashboards#show"
 
@@ -298,6 +293,7 @@ Rails.application.routes.draw do
 
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
+  get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",

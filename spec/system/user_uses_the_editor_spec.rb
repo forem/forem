@@ -27,26 +27,28 @@ RSpec.describe "Using the editor", type: :system do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    xit "fill out form with rich content and click preview" do
+    it "fill out form with rich content and click preview" do
       fill_markdown_with(read_from_file(raw_text))
       page.execute_script("window.scrollTo(0, -100000)")
-      find("button#previewbutt").click
-      article_body = find(:xpath, "//div[@id='article_body']")["innerHTML"]
+      find("button", text: /\APREVIEW\z/).click
+      article_body = find("div.body")["innerHTML"]
+      article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
   end
 
-  describe "Submitting an article" do
+  describe "Submitting an article", js: true do
     it "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
-      click_button("article-submit")
+      find("button", text: /\ASAVE CHANGES\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
-      Approvals.verify(article_body, name: "user_submit_article", format: :html)
+      article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+      Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
 
     it "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
-      click_button("article-submit")
+      find("button", text: /\ASAVE CHANGES\z/).click
       ["Sample Article", template[-200..-1], "test"].each do |text|
         expect(page).to have_text(text)
       end
@@ -54,9 +56,8 @@ RSpec.describe "Using the editor", type: :system do
 
     it "user write and publish an article without a title" do
       fill_markdown_with(template.gsub("Sample Article", ""))
-      click_button("article-submit")
-      expect(page).to have_css("div#error_explanation",
-                               text: "Title can't be blank")
+      find("button", text: /\ASAVE CHANGES\z/).click
+      expect(page).to have_text(/title:  can't be blank/)
     end
   end
 end

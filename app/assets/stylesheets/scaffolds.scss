@@ -18,6 +18,10 @@ body {
   }
 }
 
+*:focus:not(.focus-visible) {
+  outline: none;
+}
+
 .ptr--ptr {
   margin-top: 70px;
   margin-bottom: -70px;
@@ -28,6 +32,20 @@ body {
   overflow: hidden;
   overflow-y: hidden;
   height: 90vh;
+}
+
+.zen-mode {
+  .top-bar, .primary-sticky-nav, .article-actions {
+    display: none !important;
+  }
+}
+
+.config_minimize_newest_listings {
+  #sidebar-listings-widget {
+    .widget-body {
+      display: none !important;
+    }
+  }
 }
 
 .universal-page-content-wrapper {
@@ -111,4 +129,32 @@ textarea,
 input[type='url'],
 input[type='email'] {
   outline: 0;
+}
+
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  @include themeable(background, theme-container-accent-background, $light-purple);
+  @include themeable(border, container-border, 2px solid $purple);
+  padding: 12px 30px;
+  z-index: 20;
+  border-radius: 3px;
+  font-weight: bold;
+  @media screen and (min-width: 430px) {
+    right: auto;
+    display: inline-block;
+    -webkit-animation: ease-out;
+    -webkit-animation-name: slide-in-from-left;
+    -webkit-animation-duration: 0.25s;
+  }
+
+}
+
+@-webkit-keyframes slide-in-from-left {
+  0% { left: -300px;}
+  50%{ left : 0px;}
+  90%{ left : 24px;}
+  100%{ left: 20px;}
 }

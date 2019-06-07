@@ -19,18 +19,21 @@ RSpec.describe LinkTag, type: :liquid_template do
 
   def correct_link_html(article)
     tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.reverse.join
-    <<-HTML
+    <<~HTML
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
             <img src='#{ProfileImage.new(article.user).get(150)}' alt='#{article.user.username} image'/>
-          </div></a>
-          <a href='#{article.path}' class='ltag__link__link'>
-            <div class='ltag__link__content'>
-              <h2>#{ActionController::Base.helpers.strip_tags(article.title)}</h2>
-              <h3>#{article.user.name}</h3>
-              <div class='ltag__link__taglist'>#{tags}</div>
+          </div>
+        </a>
+        <a href='#{article.path}' class='ltag__link__link'>
+          <div class='ltag__link__content'>
+            <h2>#{ActionController::Base.helpers.strip_tags(article.title)}</h2>
+            <h3>#{article.user.name} ・ #{article.reading_time} min read</h3>
+            <div class='ltag__link__taglist'>
+              #{tags}
             </div>
+          </div>
         </a>
       </div>
     HTML

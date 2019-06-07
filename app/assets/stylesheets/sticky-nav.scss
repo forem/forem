@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'mixins';
 
 .primary-sticky-nav {
   display: none;
@@ -14,10 +15,16 @@
     overflow: hidden;
     z-index: 100;
   }
+  &.hidden {
+    display: none;
+  }
   .primary-sticky-nav-author{
     a{
-      color: $black;
-      color: var(--theme-container-color, $black);
+      @include themeable(
+        color, 
+        theme-container-color, 
+        $black
+      );
     }
     .primary-sticky-nav-author-top-profile-image{
       width: 35px;
@@ -36,8 +43,11 @@
     }
     .primary-sticky-nav-author-summary{
       font-weight: 400;
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      @include themeable(
+        color, 
+        theme-secondary-color, 
+        $medium-gray
+      );
       padding: 10px 0px 5px;
       font-style: italic;
       font-size:0.88em;
@@ -73,8 +83,11 @@
       vertical-align: -1px;
     }
     a{
-      color: $black;
-      color: var(--theme-container-color, $black);
+      @include themeable(
+        color, 
+        theme-container-color, 
+        $black
+      );
       display: inline-block;
     }
   }
@@ -83,46 +96,38 @@
     padding: 10px 13px;
     font-size:0.9em;
     font-weight: bold;
-    background: white;
-    background: var(--theme-container-background,	#fff);
+    @include themeable(
+      background, 
+      theme-container-background, 
+      #fff
+    );
     margin-bottom: 10px;
     margin-left: 10px;
-    border: 1px solid $outline-color;
-    border: var(--theme-container-border, 1px solid $outline-color);
-    box-shadow: $bold-shadow;
-    box-shadow: var(--theme-container-box-shadow, $bold-shadow);
-    color: $black;
-    color: var(--theme-container-color, $black);
+    @include themeable(
+      border, 
+      theme-container-border, 
+      1px solid $outline-color
+    );
+    @include themeable(
+      box-shadow, 
+      theme-container-box-shadow, 
+      $bold-shadow
+    );
+    @include themeable(
+      color, 
+      theme-container-color, 
+      $black
+    );
     width: 262px;
     border-radius: 3px;
-    &.sticky-join-cta{
-      margin-top: 12px;
-      padding: 16px 13px;
-      background: lighten($yellow, 16%);
-      border: 1px solid darken($yellow, 15%);
-      box-shadow: 5px 6px 0px darken($yellow, 15%);
-      img{
-        width: 22px;
-        height: 22px;
-        margin-left: 3px;
-        margin-right: 2px;
-        vertical-align: -3px;
-      }
-      &:hover{
-        background: lighten($yellow, 12%);
-        border: 1px solid darken($yellow, 12%);
-        box-shadow: 5px 6px 0px darken($yellow, 12%);
-      }
-    }
     .primary-sticky-nav-element-details{
       margin-top:9px;
       font-size: 0.8em;
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
-    }
-    &:hover{
-      border: 1px solid darken($light-medium-gray, 17%);
-      box-shadow: 3px 4px 0px darken($light-medium-gray, 17%);
+      @include themeable(
+        color, 
+        theme-secondary-color, 
+        $medium-gray
+      );
     }
   }
   .user-metadata-details {
@@ -138,8 +143,11 @@
       font-size: 0.8em;
       font-weight: 800;
       margin-bottom: 2px;
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      @include themeable(
+        color, 
+        theme-secondary-color, 
+        $medium-gray
+      );
     }
     .value{
       display: inline-block;
@@ -155,8 +163,11 @@
 
   .primary-sticky-nav-org-summary{
     font-weight: 400;
-    color: $black;
-    color: var(--theme-container-color, $black);
+    @include themeable(
+      color, 
+      theme-container-color, 
+      $black
+    );
     padding: 4px 0px;
     font-size:0.95em;
     margin-top: 20px;

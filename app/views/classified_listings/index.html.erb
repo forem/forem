@@ -8,31 +8,41 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
   <meta property="og:title" content="Listings" />
-  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:site" content="@ThePracticalDev">
   <meta name="twitter:title" content="Listings">
   <meta name="twitter:description" content="Where programmers share ideas, experiences, and help each other grow.">
-  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/g355ol6qsrg0j2mhngz9.png">
+  <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
   <meta name="twitter:card" content="summary_large_image">
-  <%= auto_discovery_link_tag(:rss, "https://dev.to/feed", title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
 <% end %>
 
 <div class="home">
   <div class="classifieds-container" id="classifieds-index-container"
     data-category="<%= params[:category] %>" data-listings="<%= @classified_listings.to_json(
-            only: %i[title processed_html tag_list category id user_id],
+            only: %i[title processed_html tag_list category id user_id slug contact_via_connect],
             include: {
               author: { only: %i[username name], methods: %i[username profile_image_90] },
             },
           ) %>"
     data-allcategories="<%= ClassifiedListing.categories_for_display.to_json %>"
+    <% if @displayed_classified_listing %>
+      data-displayedlisting="<%= @displayed_classified_listing.to_json(
+            only: %i[title processed_html tag_list category id user_id slug contact_via_connect],
+            include: {
+              author: { only: %i[username name], methods: %i[username profile_image_90] },
+            },
+          ) %> "
+    <% end %>
   >
     <div class="classified-filters">
     <div class="classified-filters-categories">
       <a href="/listings" class="<%= "selected" if params[:category].blank? %> data-no-instant="true">all</a><% ClassifiedListing.categories_for_display.each do |cat| %><a href="/listings/<%= cat[:slug] %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a><% end %><a href='/listings/new' class='classified-create-link'>Create a Listing</a>
+      <% if @displayed_classified_listing %>
+        <div class="classified-listings-modal-background" role='presentation'></div>
+      <% end %>
     </div>
   </div>
 </div>
