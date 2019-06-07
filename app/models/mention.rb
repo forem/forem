@@ -21,11 +21,13 @@ class Mention < ApplicationRecord
   end
 
   def send_email_notification
-    Mentions::SendEmailNotificationJob.perform_later(id) if User.find(user_id).email.present? && User.find(user_id).email_mention_notifications
+    user = User.find(user_id)
+    Mentions::SendEmailNotificationJob.perform_later(id) if user.email.present? && user.email_mention_notifications
   end
 
   def send_email_notification_without_delay
-    Mentions::SendEmailNotificationJob.perform_now(id) if User.find(user_id).email.present? && User.find(user_id).email_mention_notifications
+    user = User.find(user_id)
+    Mentions::SendEmailNotificationJob.perform_now(id) if user.email.present? && user.email_mention_notifications
   end
 
   def permission
