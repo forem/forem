@@ -77,12 +77,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def bust_cache
-    cache_buster = CacheBuster.new
-    cache_buster.bust("/t/#{name}")
-    cache_buster.bust("/t/#{name}?i=i")
-    cache_buster.bust("/t/#{name}/?i=i")
-    cache_buster.bust("/t/#{name}/")
-    cache_buster.bust("/tags")
+    Tags::BustCacheJob.perform_later(name)
   end
 
   def validate_alias

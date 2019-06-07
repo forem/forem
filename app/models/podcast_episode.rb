@@ -114,19 +114,7 @@ class PodcastEpisode < ApplicationRecord
   alias positive_reactions_count zero_method
 
   def bust_cache
-    purge
-    purge_all
-    begin
-      cache_buster = CacheBuster.new
-      cache_buster.bust(path)
-      cache_buster.bust("/" + podcast_slug)
-      cache_buster.bust("/pod")
-      cache_buster.bust(path)
-    rescue StandardError => e
-      Rails.logger.warn(e)
-    end
-    purge
-    purge_all
+    PodcastEpisodes::BustCacheJob.perform_later(id, path, podcast_slug)
   end
 
   def class_name
