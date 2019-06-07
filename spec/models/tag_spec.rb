@@ -38,4 +38,8 @@ RSpec.describe Tag, type: :model do
     tag.save
     expect(tag.reload.updated_at).to be > 1.minute.ago
   end
+
+  it "knows class valid categories" do
+    expect(Tag.valid_categories).to include("tool")
+  end
 end
