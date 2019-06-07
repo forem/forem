@@ -1,4 +1,5 @@
 class Internal::ClassifiedListingsController < Internal::ApplicationController
+  include ClassifiedListingsToolkit
   layout "internal"
 
   def index
@@ -12,8 +13,10 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
 
   def update
     @classified_listing = ClassifiedListing.find(params[:id])
-    @classified_listing.update!(listing_params)
-    reindex_and_bust_cache
+    handle_publish_status if listing_params[:published]
+    bump_listing if listing_params[:action] == "bump"
+    update_listing_details
+    clear_listings_cache
     flash[:success] = "Listing updated successfully"
     redirect_to "/internal/listings/#{@classified_listing.id}/edit"
   end
@@ -28,15 +31,12 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   private
 
   def listing_params
-    allowed_params = %i[published body_markdown title category tag_list]
+    allowed_params = %i[published body_markdown title category tag_list action]
     params.require(:classified_listing).permit(allowed_params)
   end
 
-  def reindex_and_bust_cache
-    @classified_listing.index! if @classified_listing.published
-    cb = CacheBuster.new
-    cb.bust("/listings")
-    cb.bust("/listings/#{@classified_listing.category}")
-    cb.bust("/listings/#{@classified_listing.category}/#{@classified_listing.path}")
+  def handle_publish_status
+    unpublish_listing if listing_params[:published] == "0"
+    publish_listing if listing_params[:published] == "1"
   end
 end

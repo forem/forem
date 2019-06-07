@@ -62,7 +62,7 @@ class ChatChannelMembership < ApplicationRecord
 
   def channel_color
     if chat_channel.channel_type == "direct"
-      other_user&.decorate.darker_color
+      other_user&.decorate&.darker_color
     else
       "#111111"
     end

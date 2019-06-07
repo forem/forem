@@ -303,7 +303,7 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    const orgArea = organizations ? (
+    const orgArea = (organizations && organizations.length > 0) ? (
       <OrgSettings
         organizations={organizations}
         organizationId={organizationId}

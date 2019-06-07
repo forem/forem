@@ -146,6 +146,10 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       format.html do
+        if article_params_json[:archived] && @article.archived #just to get archived working
+          render json: @article.to_json(only: [:id], methods: [:current_state_path])
+          return
+        end
         # NOTE: destination is used by /dashboard/organization when it re-assigns an article
         # not a great solution but for now it will do
         redirect_to(params[:destination] || @article.path)
@@ -241,7 +245,7 @@ class ArticlesController < ApplicationController
                      else
                        %i[
                          title body_markdown main_image published description
-                         tag_list canonical_url series collection_id
+                         tag_list canonical_url series collection_id archived
                        ]
                      end
 

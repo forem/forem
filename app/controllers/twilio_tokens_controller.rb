@@ -5,12 +5,12 @@ class TwilioTokensController < ApplicationController
     video_channel = params[:id].split("private-video-channel-")[1] if params[:id].start_with?("private-video-channel-")
     unless video_channel
       skip_authorization
-      render json: { status: "failure", token: @twilio_token }, status: 404
+      render json: { status: "failure", token: @twilio_token }, status: :not_found
       return
     end
     @chat_channel = ChatChannel.find(video_channel.to_i)
     authorize @chat_channel # show pundit method for chat_channel_policy works here, should always check though
     @twilio_token = TwilioToken.new(current_user, params[:id]).get
-    render json: { status: "success", token: @twilio_token }, status: 200
+    render json: { status: "success", token: @twilio_token }, status: :ok
   end
 end

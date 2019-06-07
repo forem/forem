@@ -5,10 +5,9 @@
        data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
        data-version="<%= version %>">
     <form class="articleform__form articleform__form--<%= version %>">
-      <% if organizations %>
+      <% if organizations && organizations.size > 0 %>
         <div class="articleform__orgsettings">
-          Publish under an organization:
-          <select name="article[organization_id]" id="article_publish_under_org">
+          Publish under an organization:<select name="article[organization_id]" id="article_publish_under_org">
             <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
           </select>
         </div>

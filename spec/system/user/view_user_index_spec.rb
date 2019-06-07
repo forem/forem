@@ -57,15 +57,6 @@ RSpec.describe "User index", type: :system do
         end
       end
     end
-
-    context "when more articles" do
-      before do
-        create_list(:article, 4, user: user)
-        visit "/user3000"
-      end
-
-      include_examples "shows the sign_in invitation"
-    end
   end
 
   context "when visiting own profile" do
