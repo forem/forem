@@ -33,7 +33,7 @@
   </div>
   <div>
     <%= f.label :badge_id %>
-    <% badges_array = Badge.all.map { |badge| [badge.title, badge.id] } %>
+    <% badges_array = Badge.pluck(:title, :id) %>
     <%= f.select(:badge_id, options_for_select([["None", nil]] + badges_array, @tag.badge_id)) %>
   </div>
   <div>
