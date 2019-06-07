@@ -2,6 +2,7 @@ class Badge < ApplicationRecord
   mount_uploader :badge_image, BadgeUploader
 
   has_many :badge_achievements
+  has_many :tags
   has_many :users, through: :badge_achievements
 
   validates :title, presence: true, uniqueness: true
