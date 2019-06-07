@@ -104,6 +104,12 @@
     overflow-y: auto;
     h1 {
       position:relative;
+      img {
+        height: 1.5em;
+        width: 1.5em;
+        vertical-align: -0.22em;
+        margin-right: 0.15em;
+      }
     }
     a{
       color:rgb(97, 97, 97);
