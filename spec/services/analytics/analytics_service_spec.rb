@@ -5,6 +5,10 @@ RSpec.describe AnalyticsService, type: :service do
   let(:organization) { create(:organization) }
   let(:article) { create(:article, user: user, published: true) }
 
+  before { Timecop.freeze(Time.current) }
+
+  after { Timecop.return }
+
   describe "initialization" do
     it "raises an error if start date is invalid" do
       expect(-> { described_class.new(user, start_date: "2000-") }).to raise_error(ArgumentError)
