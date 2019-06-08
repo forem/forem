@@ -48,7 +48,6 @@ class Api::V0::ApiController < ApplicationController
       authenticate_with_api_key
     else
       @user = current_user
-      @user
     end
   end
 
@@ -61,11 +60,10 @@ class Api::V0::ApiController < ApplicationController
 
     # guard against timing attacks
     # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
-    if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key) # rubocop:disable Style/GuardClause
+    if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
       @user = api_secret.user
-      @user
     else
-      return error_unauthorized
+      error_unauthorized
     end
   end
 end
