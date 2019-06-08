@@ -71,6 +71,7 @@ export default class MoreConfig extends Component {
         </div>
         <small>
           Change meta tag
+          {' '}
           <code>canonical_url</code>
           {' '}
 if this post was first published elsewhere
