@@ -32,8 +32,8 @@ class StripeCancellationsController < ApplicationController
     monthly_dues = event.data.object.items.data[0].plan.amount
     user = User.where(stripe_id_code: stripe_id).first
     MembershipService.new(customer, user, monthly_dues).unsubscribe_customer
-    render body: nil, status: 200
+    render body: nil, status: :ok
   rescue Stripe::APIConnectionError, Stripe::StripeError
-    render body: nil, status: 400
+    render body: nil, status: :bad_request
   end
 end

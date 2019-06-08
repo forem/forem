@@ -1,15 +1,39 @@
 require "rails_helper"
 
 RSpec.describe Credit, type: :model do
-  it "counts credits for user" do
-    user = create(:user)
-    Credit.create(user_id: user.id)
-    Credit.create(user_id: user.id)
-    expect(user.reload.credits_count).to eq(2)
+  let(:user) { create(:user) }
+  let(:organization) { create(:organization) }
+  let(:random_number) { rand(100) }
+
+  xit "counts credits for user" do
+    # See https://github.com/magnusvk/counter_culture/issues/259
+    create_list(:credit, random_number, user: user)
+    expect(user.reload.credits_count).to eq(random_number)
   end
-  it "counts credits for organization" do
-    organization = create(:organization)
-    Credit.create(organization_id: organization.id)
-    expect(organization.reload.credits_count).to eq(1)
+
+  xit "counts credits for organization" do
+    # See https://github.com/magnusvk/counter_culture/issues/259
+    create_list(:credit, random_number, organization: organization)
+    expect(organization.reload.credits_count).to eq(random_number)
+  end
+
+  it "counts the number of unspent credits for a user" do
+    create_list(:credit, random_number, user: user)
+    expect(user.reload.unspent_credits_count).to eq(random_number)
+  end
+
+  it "counts the number of spent credits for a user" do
+    create_list(:credit, random_number, user: user, spent: true)
+    expect(user.reload.spent_credits_count).to eq(random_number)
+  end
+
+  it "counts the number of unspent credits for an organization" do
+    create_list(:credit, random_number, organization: organization)
+    expect(organization.reload.unspent_credits_count).to eq(random_number)
+  end
+
+  it "counts the number of spent credits for an organization" do
+    create_list(:credit, random_number, organization: organization, spent: true)
+    expect(organization.reload.spent_credits_count).to eq(random_number)
   end
 end

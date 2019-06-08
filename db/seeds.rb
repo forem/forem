@@ -252,6 +252,7 @@ listings_categories.each_with_index do |category, index|
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
       category: category,
+      contact_via_connect: true,
     )
   end
 end

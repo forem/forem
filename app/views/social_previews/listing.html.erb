@@ -1,0 +1,13 @@
+<div clas="listing-content">
+  <h3><%= @listing.title %></h3>
+  <div class="single-classified-listing-body">
+    <%= @listing.processed_html.html_safe %>
+  </div>
+  <div class="single-classified-listing-tags">
+    <% if @listing.tags.present? %>
+      <%= @listing.tags.each do |tag|  %>
+        <%= tag.name %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

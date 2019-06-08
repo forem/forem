@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html { redirect_to "/enter" }
-      format.json { render json: { error: "Please sign in" }, status: 401 }
+      format.json { render json: { error: "Please sign in" }, status: :unauthorized }
     end
   end
 

@@ -2,7 +2,7 @@
 
 <%= javascript_pack_tag "clipboardCopy", defer: true %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", :expires_in => 30.hours) do %>
+<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js", defer: true %>
     <script defer>
@@ -196,6 +196,7 @@
     <%= render "articles/org_branding", organization: @organization %>
     <%= render "articles/full_comment_area" %>
   </div>
+
   <% cache("article-bottom-content-#{@article.id}", expires_in: 18.hours) do %>
     <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
     <% if @classic_article %>
@@ -206,7 +207,8 @@
                  follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
-    <%= render "articles/bottom_content" %>
+    <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+    <%= render "articles/bottom_content", articles: suggested_articles %>
   <% end %>
 </div>
 

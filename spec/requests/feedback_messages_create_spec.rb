@@ -74,6 +74,15 @@ RSpec.describe "feedback_messages", type: :request do
       it "send a Slack message when completed" do
         expect(SlackBot).to have_received(:ping)
       end
+
+      it "redirects to /feedback_message and continues to the index page" do
+        expect(response).to redirect_to "/feedback_messages"
+      end
+
+      it "redirects and continues to the index page with the correct message" do
+        follow_redirect!
+        expect(response.body).to include "Thank you for your report."
+      end
     end
   end
 end

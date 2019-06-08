@@ -54,7 +54,7 @@
     <% end %>
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
-        <span class='page-views-count'>
+        <span class="page-views-count">
           <span class="value">
             <% if article.page_views_count > 100 %>
                <span class="value"><%= article.page_views_count %></span>
@@ -65,14 +65,14 @@
           views
         </span>
         //
-        <span class='reactions-count'>
+        <span class="reactions-count">
           <span class="value">
             <%= article.positive_reactions_count %>
           </span>
           <%= "reaction".pluralize(count: article.positive_reactions_count) %>
         </span>
         //
-        <span class='comments-count'>
+        <span class="comments-count">
           <span class="value">
             <%= article.comments_count %>
           </span>
@@ -81,10 +81,10 @@
       </span>
     <% end %>
   </div>
-  <% if org_admin %>
+  <% if organization && org_admin %>
     <%= form_for(article) do |f| %>
-      <input type="hidden" name="destination" value="/dashboard" />
-      AUTHOR: <%= f.select(:user_id, options_for_select(@user.organization.users.map { |x| [x.name, x.id] }, article.user_id)) %>
+      <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
+      AUTHOR: <%= f.select(:user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id)) %>
       <%= f.submit "SUBMIT AUTHOR CHANGE", class: "cta pill black" %>
     <% end %>
   <% end %>

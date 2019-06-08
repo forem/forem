@@ -8,12 +8,16 @@ class Tag < ActsAsTaggableOn::Tag
   NAMES = %w[
     beginners career computerscience git go java javascript react vue webassembly
     linux productivity python security webdev css php laravel opensource npm a11y
-    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain
+    ruby cpp dotnet swift testing devops vim kotlin rust elixir graphql blockchain sre
     scala vscode docker kubernetes aws android ios angular csharp typescript django rails
     clojure ubuntu elm gamedev flutter dart bash machinelearning sql
   ].freeze
 
+  ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
+
   attr_accessor :tag_moderator_id, :remove_moderator_id
+
+  belongs_to :badge, optional: true
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -22,6 +26,7 @@ class Tag < ActsAsTaggableOn::Tag
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :bg_color_hex,
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
+  validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
   validate :validate_alias
   before_validation :evaluate_markdown
@@ -49,6 +54,10 @@ class Tag < ActsAsTaggableOn::Tag
     Rails.cache.fetch("bufferized_tags_cache", expires_in: 2.hours) do
       where.not(buffer_profile_id_code: nil).pluck(:name)
     end
+  end
+
+  def self.valid_categories
+    ALLOWED_CATEGORIES
   end
 
   private

@@ -31,7 +31,7 @@ RSpec.describe "UserProfiles", type: :request do
     end
 
     it "renders organization users on sidebar" do
-      user.update(organization_id: organization.id)
+      create(:organization_membership, user_id: user.id, organization_id: organization.id)
       get organization.path
       expect(response.body).to include user.profile_image_url
     end

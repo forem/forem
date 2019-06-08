@@ -96,7 +96,7 @@ Some existing code may be poorly written or untested, so we must have more scrut
 #### Create a pull request
 
 - Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
-- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
+- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/tests/)
 - Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
 - If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
 - If you follow the pull request template, you can't go wrong.
@@ -228,6 +228,10 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@lightalloy](https://dev.to/lightalloy)
 - [@mariocsee](https://dev.to/mariocsee)
 - [@rhymes](https://dev.to/rhymes)
+
+## Vulnerability disclosure
+
+We welcome security research on DEV under the terms of our [vulnerability disclosure policy](https://dev.to/security).
 
 ## License
 

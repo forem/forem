@@ -311,12 +311,11 @@ RSpec.describe Article, type: :model do
     expect(article.has_frontmatter?).to eq(true)
   end
 
-  it "determines that an article has frontmatter" do
+  it "determines that an article doesn't have frontmatter" do
     body = "Hey hey Ho Ho"
     article.body_markdown = body
     expect(article.has_frontmatter?).to eq(false)
   end
-
 
   it "returns stripped canonical url" do
     article.canonical_url = " http://google.com "

@@ -1,10 +1,12 @@
 <div class="ltag-poll">
-  <h3>What is your favorite programming language?</h3>
+  <h3><%= poll.prompt_html.html_safe %></h3>
   <ul class="ltag-pollanswers">
-    <li><input type="radio" id="d" name="option" value="d"><label for="d">JavaScript</label></li>
-    <li><input type="radio" id="r" name="option" value="r"><label for="r">Ruby</label></li>
-    <li><input type="radio" id="o" name="option" value="o"><label for="o">Objective C</label></li>
-    <li><input type="radio" id="s" name="option" value="s"><label for="s">Swift</label></li>
+    <% poll.poll_options.each do |option| %>
+      <li>
+        <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>">
+        <label for="d"><%= option.processed_html.html_safe %></label>
+      </li>
+    <% end %>
     <li><button>Just show me the results</button>
   </ul>
   <button class="cta">Submit</button>

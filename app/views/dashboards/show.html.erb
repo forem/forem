@@ -1,23 +1,19 @@
-<% title "Dashboard - DEV" %>
+<% title "Dashboard" %>
 
 <div class="dashboard-container" id="user-dashboard">
   <%= render "actions" %>
-  <% if @user.org_admin && @user.organization && (params[:which].blank? || params[:which] == "organization") %>
+  <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
     <h1>
       <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
-      <a href="/dashboard/organization" class="rounded-btn <%= "active" if params[:which] == "organization" %>"><%= @user.organization.name %> (<%= @user.organization.articles.size %>)</a>
-      <% if @user.has_role? :pro %>
-        <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
-      <% end %>
-      <% if @user.has_role?(:pro) && @user.organization_id %>
-        <a class="rounded-btn" href="/dashboard/pro/org/<%= @user.organization_id %>">Pro Analytics for <%= @user.organization.name %></a>
+      <% @organizations.each do |org| %>
+        <a href="/dashboard/organization/<%= org.id %>" class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>"><%= org.name %> (<%= org.articles_count %>)</a>
       <% end %>
     </h1>
   <% end %>
-  <% if @user.org_admin && @user.organization && params[:which] == "organization" %>
+  <% if params[:which] == "organization" %>
     <%= render "analytics" %>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: true, manage_view: false %>
+      <%= render "dashboard_article", article: article, organization: article.organization, org_admin: true, manage_view: false %>
     <% end %>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
@@ -27,14 +23,13 @@
           Upload a Video 🎥
         </a>
       <% end %>
-
       <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
       <% if @articles.any? {|article| article.archived } %>
         <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>
       <% end %>
     </div>
     <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, org_admin: false, manage_view: false %>
+      <%= render "dashboard_article", article: article, organization: nil, org_admin: false, manage_view: false %>
     <% end %>
   <% else %>
     <div class="no-articles">

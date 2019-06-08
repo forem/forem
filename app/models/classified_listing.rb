@@ -1,7 +1,7 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
 
-  attr_accessor :post_as_organization, :action
+  attr_accessor :action
 
   belongs_to :user, optional: true
   belongs_to :organization, optional: true
@@ -23,7 +23,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect
     attribute :author do
       { username: author.username,
         name: author.name,

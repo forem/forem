@@ -28,7 +28,10 @@ class Podcast < ApplicationRecord
   end
 
   def pull_all_episodes
-    PodcastFeed.new.get_episodes(self)
+    Podcasts::GetEpisodesJob.perform_later(id)
   end
-  handle_asynchronously :pull_all_episodes
+
+  def pull_all_episodes_without_delay
+    Podcasts::GetEpisodesJob.perform_now(id)
+  end
 end

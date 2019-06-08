@@ -122,12 +122,10 @@ class Comment < ApplicationRecord
   end
 
   def self.rooted_on(commentable_id, commentable_type)
-    includes(:user, :commentable).
+    includes(:user).
       select(:id, :user_id, :commentable_type, :commentable_id,
              :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
-      where(commentable_id: commentable_id,
-            ancestry: nil,
-            commentable_type: commentable_type)
+      where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
   end
 
   def self.tree_for(commentable, limit = 0)
@@ -253,6 +251,7 @@ class Comment < ApplicationRecord
 
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    ancestors.update_all(updated_at: Time.current)
     remove_notifications
     bust_cache_without_delay
     remove_algolia_index

@@ -12,8 +12,9 @@ export class Listings extends Component {
     initialFetch: true,
     currentUserId: null,
     openedListing: null,
+    message: '',
     slug: null,
-    page: 0, 
+    page: 0,
     showNextPageButt: false,
   };
 
@@ -51,6 +52,14 @@ export class Listings extends Component {
     t.setUser()
 
     document.body.addEventListener('keydown', t.handleKeyDown)
+    
+    /* 
+      The width of the columns also changes when the browser is resized 
+      so we will also call this function on window resize to recalculate
+      each grid item's height to avoid content overflow
+    */
+    window.addEventListener("resize", resizeAllMasonryItems);
+
   }
 
   componentDidUpdate() {
@@ -100,12 +109,14 @@ export class Listings extends Component {
   }
 
   handleCloseModal = (e) => {
-
-    const { query, tags, category } = this.state;
-    this.setState({openedListing: null, page: 0})
-    this.setLocation(query, tags, category, null);
-    document.body.classList.remove('modal-open');
-
+    if (e.target.id === 'single-classified-listing-container__inner' ||
+      e.target.id === 'classified-filters' ||
+      e.target.id === 'classified-listings-modal-background' ) {
+      const { query, tags, category } = this.state;
+      this.setState({openedListing: null, page: 0})
+      this.setLocation(query, tags, category, null);
+      document.body.classList.remove('modal-open');  
+    }
   }
 
   handleOpenModal = (e, listing) => {
@@ -114,6 +125,36 @@ export class Listings extends Component {
     window.history.replaceState(null, null, `/listings/${listing.category}/${listing.slug}`);
     this.setLocation(null, null, listing.category, listing.slug);
     document.body.classList.add('modal-open');
+  }
+
+  handleDraftingMessage = (e) => {
+    e.preventDefault();
+    this.setState({ message: e.target.value })
+  }
+
+  handleSubmitMessage = (e) => {
+    e.preventDefault();
+    const { message, openedListing} = this.state
+    if (this.state.message.replace(/\s/g, '').length === 0) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append('user_id', openedListing.user_id);
+    formData.append('message', `**re: ${openedListing.title}** ${message}`)
+    formData.append('controller', 'chat_channels');
+
+    const destination = `/connect/@${openedListing.author.username}`;
+    const metaTag = document.querySelector("meta[name='csrf-token']");
+    window.fetch('/chat_channels/create_chat', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': metaTag.getAttribute("content"),
+      },
+      body: formData,
+      credentials: 'same-origin',
+    }).then(() => {
+      window.location.href = destination;
+    });
   }
 
   handleQuery = e => {
@@ -148,7 +189,7 @@ export class Listings extends Component {
   loadNextPage = () => {
     const { query, tags, category, slug, page } = this.state;
     this.setState({page: page + 1});
-    this.listingSearch(query, tags, category, slug); 
+    this.listingSearch(query, tags, category, slug);
   }
 
   setUser = () => {
@@ -247,17 +288,47 @@ export class Listings extends Component {
     const clearQueryButton = query.length > 0 ? <button type="button" className='classified-search-clear' onClick={this.clearQuery}>×</button> : '';
     let modal = '';
     let modalBg = '';
+    let messageModal = '';
     if (openedListing) {
-      modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' />
+      modalBg = <div className='classified-listings-modal-background' onClick={this.handleCloseModal} role='presentation' id='classified-listings-modal-background' />
+      if (openedListing.contact_via_connect && openedListing.user_id !== currentUserId) {
+        messageModal = (
+          <form id="listings-message-form" className="listings-contact-via-connect" onSubmit={this.handleSubmitMessage}>
+            <p><b>Contact {openedListing.author.name} via DEV Connect</b></p>
+            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
+            <button type="submit" value="Submit" className="submit-button cta">SEND</button>
+            <p>
+              <em>Message must be relevant and on-topic with the listing. All private interactions <b>must</b> abide by the <a href="/code-of-conduct">code of conduct</a></em>
+            </p>
+          </form>
+        );
+      } else if (openedListing.contact_via_connect) {
+        messageModal = (
+          <form id="listings-message-form" className="listings-contact-via-connect">
+            <p>This is your active listing. Any member can contact you via this form.</p>
+            <textarea value={this.state.message} onChange={this.handleDraftingMessage} id="new-message" rows="4" cols="70" placeholder="Enter your message here..." />
+            <button type="submit" value="Submit" className="submit-button cta">SEND</button>
+            <p>
+              <em>All private interactions <b>must</b> abide by the <a href="/code-of-conduct">code of conduct</a></em>
+            </p>
+          </form>
+        );
+      }
       modal = (
-        <SingleListing
-          onAddTag={this.addTag}
-          onChangeCategory={this.selectCategory}
-          listing={openedListing}
-          currentUserId={currentUserId}
-          onOpenModal={this.handleOpenModal}
-          isOpen
-        />
+        <div className="single-classified-listing-container">
+          <div id="single-classified-listing-container__inner" className="single-classified-listing-container__inner" onClick={this.handleCloseModal}>
+            <SingleListing
+              onAddTag={this.addTag}
+              onChangeCategory={this.selectCategory}
+              listing={openedListing}
+              currentUserId={currentUserId}
+              onOpenModal={this.handleOpenModal}
+              isOpen
+            />
+            {messageModal}
+            <div className="single-classified-listing-container__spacer"></div>
+          </div>
+        </div>
       )
     }
     if (initialFetch) {
@@ -266,7 +337,7 @@ export class Listings extends Component {
     return (
       <div className="listings__container">
         {modalBg}
-        <div className="classified-filters">
+        <div className="classified-filters" id="classified-filters">
           <div className="classified-filters-categories">
             <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
             {categoryLinks}

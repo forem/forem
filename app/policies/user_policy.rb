@@ -28,19 +28,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def leave_org?
-    true
-  end
-
-  def add_org_admin?
-    user.org_admin && within_the_same_org?
-  end
-
-  def remove_org_admin?
-    user.org_admin && not_self? && within_the_same_org?
-  end
-
-  def remove_from_org?
-    user.org_admin && not_self? && within_the_same_org?
+    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
   def remove_association?
@@ -126,10 +114,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   private
-
-  def within_the_same_org?
-    user.organization == record.organization
-  end
 
   def not_self?
     user != record

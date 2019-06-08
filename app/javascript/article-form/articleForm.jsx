@@ -21,8 +21,8 @@ export default class ArticleForm extends Component {
   constructor(props) {
     super(props);
     this.article = JSON.parse(this.props.article);
-    const organization = this.props.organization
-      ? JSON.parse(this.props.organization)
+    const organizations = this.props.organizations
+      ? JSON.parse(this.props.organizations)
       : null;
 
     this.url = window.location.href;
@@ -46,8 +46,8 @@ export default class ArticleForm extends Component {
       imageManagementShowing: false,
       moreConfigShowing: false,
       mainImage: this.article.main_image || null,
-      organization,
-      postUnderOrg: !!this.article.organization_id,
+      organizations,
+      organizationId: this.article.organization_id,
       errors: null,
       edited: false,
       version: this.props.version,
@@ -126,6 +126,7 @@ export default class ArticleForm extends Component {
 
   toggleImageManagement = e => {
     e.preventDefault();
+    window.scrollTo(0, 0);
     this.setState({
       imageManagementShowing: !this.state.imageManagementShowing,
     });
@@ -154,10 +155,10 @@ export default class ArticleForm extends Component {
     }
   };
 
-  toggleOrgPosting = e => {
-    e.preventDefault();
-    this.setState({ postUnderOrg: !this.state.postUnderOrg });
-  };
+  handleOrgIdChange = e => {
+    const organizationId = e.target.selectedOptions[0].value;
+    this.setState({ organizationId })
+  }
 
   failedPreview = response => {
     console.log(response);
@@ -270,8 +271,8 @@ export default class ArticleForm extends Component {
       submitting,
       imageManagementShowing,
       moreConfigShowing,
-      organization,
-      postUnderOrg,
+      organizations,
+      organizationId,
       mainImage,
       errors,
       version
@@ -302,11 +303,11 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    const orgArea = organization ? (
+    const orgArea = (organizations && organizations.length > 0) ? (
       <OrgSettings
-        organization={organization}
-        postUnderOrg={postUnderOrg}
-        onToggle={this.toggleOrgPosting}
+        organizations={organizations}
+        organizationId={organizationId}
+        onToggle={this.handleOrgIdChange}
       />
     ) : (
       ''
@@ -353,14 +354,16 @@ export default class ArticleForm extends Component {
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
                 onClick={this.toggleImageManagement}
+                type="button"
               >
-                <img src={ImageUploadIcon} />
+                <img src={ImageUploadIcon} alt="Upload an image" />
               </button>
               <button
                 className="articleform__detailsButton articleform__detailsButton--moreconfig"
                 onClick={this.toggleMoreConfig}
+                type="button"
               >
-                <img src={ThreeDotsIcon} />
+                <img src={ThreeDotsIcon} alt="Menu" />
               </button>
             </div>
           </div>
@@ -380,6 +383,7 @@ export default class ArticleForm extends Component {
           <button
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
+            type="button"
           >
             <img src={ImageUploadIcon} alt="upload images" />
             {' '}

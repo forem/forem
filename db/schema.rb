@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_25_233934) do
+ActiveRecord::Schema.define(version: 2019_06_06_202826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -538,6 +538,7 @@ ActiveRecord::Schema.define(version: 2019_05_25_233934) do
   create_table "organizations", id: :serial, force: :cascade do |t|
     t.string "address"
     t.boolean "approved", default: false
+    t.integer "articles_count", default: 0, null: false
     t.string "bg_color_hex"
     t.string "city"
     t.string "company_size"
@@ -788,8 +789,10 @@ ActiveRecord::Schema.define(version: 2019_05_25_233934) do
 
   create_table "tags", id: :serial, force: :cascade do |t|
     t.string "alias_for"
+    t.integer "badge_id"
     t.string "bg_color_hex"
     t.string "buffer_profile_id_code"
+    t.string "category", default: "uncategorized", null: false
     t.datetime "created_at"
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"

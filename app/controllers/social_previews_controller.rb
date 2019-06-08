@@ -16,7 +16,7 @@ class SocialPreviewsController < ApplicationController
       end
       format.png do
         html = render_to_string(template, formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: 302
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto|Roboto+Condensed"), status: :found
       end
     end
   end
@@ -30,7 +30,7 @@ class SocialPreviewsController < ApplicationController
       end
       format.png do
         html = render_to_string(formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: 302
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
       end
     end
   end
@@ -44,7 +44,7 @@ class SocialPreviewsController < ApplicationController
       end
       format.png do
         html = render_to_string("user", formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: 302
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
       end
     end
   end
@@ -58,7 +58,7 @@ class SocialPreviewsController < ApplicationController
       end
       format.png do
         html = render_to_string(formats: :html, layout: false)
-        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: 302
+        redirect_to HtmlCssToImage.fetch_url(html: html, css: PNG_CSS, google_fonts: "Roboto"), status: :found
       end
     end
   end

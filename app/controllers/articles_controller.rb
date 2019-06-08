@@ -73,9 +73,9 @@ class ArticlesController < ApplicationController
 
   def edit
     authorize @article
-    @user = @article.user
     @version = @article.has_frontmatter? ? "v1" : "v2"
-    @organization = @user&.organization
+    @user = @article.user
+    @organizations = @user&.organizations
   end
 
   def manage
@@ -84,11 +84,14 @@ class ArticlesController < ApplicationController
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
-    @organization = @user&.organization
+    @organizations = @user&.organizations
+    # TODO: fix this for multi orgs
+    @org_members = @organization.users.pluck(:name, :id) if @organization
   end
 
   def preview
     authorize Article
+
     begin
       fixed_body_markdown = MarkdownFixer.fix_for_preview(params[:article_body])
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
@@ -98,6 +101,7 @@ class ArticlesController < ApplicationController
       @article = Article.new(body_markdown: params[:article_body])
       @article.errors[:base] << ErrorMessageCleaner.new(e.message).clean
     end
+
     respond_to do |format|
       if @article
         format.json { render json: @article.errors, status: :unprocessable_entity }
@@ -142,6 +146,10 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       format.html do
+        if article_params_json[:archived] && @article.archived #just to get archived working
+          render json: @article.to_json(only: [:id], methods: [:current_state_path])
+          return
+        end
         # NOTE: destination is used by /dashboard/organization when it re-assigns an article
         # not a great solution but for now it will do
         redirect_to(params[:destination] || @article.path)
@@ -178,7 +186,7 @@ class ArticlesController < ApplicationController
   def base_editor_assigments
     @user = current_user
     @version = @user.editor_version if @user
-    @organization = @user&.organization
+    @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
   end
@@ -203,7 +211,7 @@ class ArticlesController < ApplicationController
   def set_article
     owner = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username])
     found_article = if params[:slug]
-                      owner.articles.includes(:user).find_by(slug: params[:slug])
+                      owner.articles.find_by(slug: params[:slug])
                     else
                       Article.includes(:user).find(params[:id])
                     end
@@ -233,11 +241,11 @@ class ArticlesController < ApplicationController
     end
 
     allowed_params = if params["article"]["version"] == "v1"
-                       %i[body_markdown organization_id]
+                       %i[body_markdown]
                      else
                        %i[
                          title body_markdown main_image published description
-                         tag_list organization_id canonical_url series collection_id
+                         tag_list canonical_url series collection_id archived
                        ]
                      end
 
@@ -245,12 +253,9 @@ class ArticlesController < ApplicationController
     # fix the bug <https://github.com/thepracticaldev/dev.to/issues/2871>
     if params["article"]["user_id"] && org_admin_user_change_privilege
       allowed_params << :user_id
-    elsif params["article"]["post_under_org"].to_s == "true"
-      # add the organization of the article if explicitly asked to do so
-      params["article"]["organization_id"] = @user.organization_id
-    elsif params["article"]["post_under_org"].to_s == "false"
-      # remove the organization of the article if explicitly asked to do so
-      params["article"]["organization_id"] = nil
+    elsif params["article"]["organization_id"] && allowed_to_change_org_id?
+      # change the organization of the article only if explicitly asked to do so
+      allowed_params << :organization_id
     end
 
     params.require(:article).permit(allowed_params)
@@ -270,10 +275,18 @@ class ArticlesController < ApplicationController
     end
   end
 
+  def allowed_to_change_org_id?
+    potential_user = @article&.user || current_user
+    potential_org_id = params["article"]["organization_id"].presence || @article&.organization_id
+    OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
+      current_user.any_admin?
+  end
+
   def org_admin_user_change_privilege
     params[:article][:user_id] &&
-      current_user.org_admin &&
-      current_user.organization_id == @article.organization_id &&
-      User.find(params[:article][:user_id])&.organization_id == @article.organization_id
+      # if current_user is an org admin of the article's org
+      current_user.org_admin?(@article.organization_id) &&
+      # and if the author being changed to belongs to the article's org
+      OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
   end
 end

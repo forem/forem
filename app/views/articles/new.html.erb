@@ -2,7 +2,7 @@
 
 <% if user_signed_in? %>
   <%= javascript_pack_tag "articleForm", defer: true %>
-  <%= render "articles/v2_form" %>
+  <%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>
 <% else %>
   <% @new_article_not_logged_in = true %>
   <%= render "devise/registrations/registration_form" %>

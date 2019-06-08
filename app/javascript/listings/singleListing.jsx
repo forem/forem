@@ -7,7 +7,6 @@ export const SingleListing = ({listing, onAddTag, currentUserId, onChangeCategor
   ));
 
   const editButton = currentUserId === listing.user_id ? <a href={`/listings/${listing.id}/edit`} className="classified-listing-edit-button">・edit</a> : <a href={`/report-abuse?url=https://dev.to/listings/${listing.category}/${listing.slug}`}>・report abuse</a>;
-
   const definedClass = isOpen ? 'single-classified-listing single-classified-listing--opened' : 'single-classified-listing';
 
   const listingCard = () => {

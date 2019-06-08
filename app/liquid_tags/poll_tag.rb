@@ -3,10 +3,11 @@ class PollTag < LiquidTagBase
   PARTIAL = "liquids/poll".freeze
 
   def render(_context)
+    @poll = Poll.first
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        prompt_html: "hello"
+        poll: @poll,
       },
     )
   end
@@ -17,6 +18,18 @@ class PollTag < LiquidTagBase
         'meta[name="user-signed-in"][content="true"]',
       )) {
         console.log('create poll functionality')
+        // logged in
+        window.fetch('/poll_votes/1')
+        .then(function(response){
+          response.json().then(
+            function(json){
+              console.log(json)
+              if (json.poll_option_id) {
+                console.log(json.poll_option_id)
+              }
+            }
+          )
+        })
       }
     JAVASCRIPT
   end
