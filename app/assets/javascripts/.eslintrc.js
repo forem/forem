@@ -11,4 +11,8 @@ module.exports = {
     'no-unused-vars': 'off',
     'vars-on-top': 'off',
   },
+  globals: {
+    getCsrfToken: false,
+    sendFetch: false,
+  },
 };
