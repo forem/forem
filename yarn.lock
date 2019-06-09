@@ -212,6 +212,11 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.2.tgz#63985d3d8b02530e0869962f4da09142ee8e200e"
   integrity sha512-n/VQ4mbfr81aqkx/XmVicOLjviMuy02eenSdJY33SVA7S2J42EU0P1H0mOogfYedb3wXA0d/LVtBrgTSm04WEA==
 
+"@github/clipboard-copy-element@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.0.1.tgz#4fac5153d41f6397006de42caa531aa41921bb92"
+  integrity sha512-ghpI9HTFryiOUcvqgFSqqO0gb2Gb01w7L9q+4uxJI56Wb+WWCTd4deB8IMXex3eQ8elcYwL3XfhcANfw0lTeZw==
+
 "@rails/webpacker@^3.5.5":
   version "3.5.5"
   resolved "https://registry.yarnpkg.com/@rails/webpacker/-/webpacker-3.5.5.tgz#8911c66bcefc8bc6b91270e92f0d39e3c2d43116"
@@ -2796,11 +2801,6 @@ cli-width@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/cli-width/-/cli-width-2.2.0.tgz#ff19ede8a9a5e579324147b0c11f0fbcbabed639"
   integrity sha1-/xnt6Kml5XkyQUewwR8PvLq+1jk=
-
-clipboard-copy-element@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/clipboard-copy-element/-/clipboard-copy-element-1.0.0.tgz#655fa5e234690f8cbcf2e1b35e4f20ef5a259908"
-  integrity sha512-nQYDzyBAC3+3OQGrPvaGijLOrBuB6Slw4DFGr5gBAQeFTfCCeHdRy8rt7Moa0HOGc1RNnTZ4YsAkeJNRSAAbMA==
 
 clipboard@^2.0.0:
   version "2.0.4"

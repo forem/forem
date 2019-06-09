@@ -1,1 +1,1 @@
-import 'clipboard-copy-element';
+import '@github/clipboard-copy-element';
