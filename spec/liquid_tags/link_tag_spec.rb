@@ -74,6 +74,18 @@ RSpec.describe LinkTag, type: :liquid_template do
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
+  it "renders default reading time of 1 minute for short articles" do
+    liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
+    expect(liquid.render).to include('1 min read')
+  end
+
+  it "renders reading time of article lengthy articles" do
+    template = file_fixture("article_long_content.txt").read
+    article = create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3", body_markdown: template)
+    liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
+    expect(liquid.render).to include('3 min read')
+  end
+
   it "renders with a full link with a trailing slash" do
     liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
