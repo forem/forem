@@ -38,6 +38,39 @@ function writeCards(data, timeFrame) {
   followerCard.innerHTML = cardHTML(follows, `Followers ${timeFrame}`);
 }
 
+function drawChart({ canvas, title, labels, datasets }) {
+  const options = {
+    legend: {
+      position: 'bottom',
+    },
+    responsive: true,
+    title: {
+      display: true,
+      text: title,
+    },
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            suggestedMin: 0,
+            precision: 0,
+          },
+        },
+      ],
+    },
+  };
+
+  // eslint-disable-next-line no-new
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels,
+      datasets,
+      options,
+    },
+  });
+}
+
 function drawCharts(data, timeRange) {
   const labels = Object.keys(data);
   const parsedData = Object.entries(data).map(date => date[1]);
@@ -49,182 +82,85 @@ function drawCharts(data, timeRange) {
   const followers = parsedData.map(date => date.follows.total);
   const readers = parsedData.map(date => date.page_views.total);
 
-  const reactionsCanvas = document.getElementById('reactionsChart');
-  const commentsCanvas = document.getElementById('commentsChart');
-  const readersCanvas = document.getElementById('readersChart');
-  const followersCanvas = document.getElementById('followersChart');
-
-  // eslint-disable-next-line no-new
-  new Chart(reactionsCanvas, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Total',
-          data: reactions,
-          // data: [5, 10, 15, 17, 25, 23],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          lineTension: 0.1,
-        },
-        {
-          label: 'Likes',
-          data: likes,
-          // data: [2, 5, 10, 10, 15, 13],
-          fill: false,
-          borderColor: 'rgb(229, 100, 100)',
-          lineTension: 0.1,
-        },
-        {
-          label: 'Unicorns',
-          data: unicorns,
-          // data: [1, 2, 2, 4, 5, 3],
-          fill: false,
-          borderColor: 'rgb(157, 57, 233)',
-          lineTension: 0.1,
-        },
-        {
-          label: 'Bookmarks',
-          data: readingList,
-          // data: [2, 3, 3, 3, 5, 7],
-          fill: false,
-          borderColor: 'rgb(10, 133, 255)',
-          lineTension: 0.1,
-        },
-      ],
-    },
-    options: {
-      legend: {
-        position: 'bottom',
+  drawChart({
+    canvas: document.getElementById('reactionsChart'),
+    title: `Reactions ${timeRange}`,
+    labels,
+    datasets: [
+      {
+        label: 'Total',
+        data: reactions,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        lineTension: 0.1,
       },
-      responsive: true,
-      title: {
-        display: true,
-        text: `Reactions ${timeRange}`,
+      {
+        label: 'Likes',
+        data: likes,
+        fill: false,
+        borderColor: 'rgb(229, 100, 100)',
+        lineTension: 0.1,
       },
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              suggestedMin: 0,
-              precision: 0,
-            },
-          },
-        ],
+      {
+        label: 'Unicorns',
+        data: unicorns,
+        fill: false,
+        borderColor: 'rgb(157, 57, 233)',
+        lineTension: 0.1,
       },
-    },
+      {
+        label: 'Bookmarks',
+        data: readingList,
+        fill: false,
+        borderColor: 'rgb(10, 133, 255)',
+        lineTension: 0.1,
+      },
+    ],
   });
 
-  // eslint-disable-next-line no-new
-  new Chart(commentsCanvas, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Comments',
-          data: comments,
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          lineTension: 0.1,
-        },
-      ],
-    },
-    options: {
-      legend: {
-        position: 'bottom',
+  drawChart({
+    canvas: document.getElementById('commentsChart'),
+    title: `Comments ${timeRange}`,
+    labels,
+    datasets: [
+      {
+        label: 'Comments',
+        data: comments,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        lineTension: 0.1,
       },
-      responsive: true,
-      title: {
-        display: true,
-        text: `Comments ${timeRange}`,
-      },
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              suggestedMin: 0,
-              precision: 0,
-            },
-          },
-        ],
-      },
-    },
+    ],
   });
 
-  // eslint-disable-next-line no-new
-  new Chart(followersCanvas, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Followers',
-          data: followers,
-          fill: false,
-          borderColor: 'rgb(10, 133, 255)',
-          lineTension: 0.1,
-        },
-      ],
-    },
-    options: {
-      legend: {
-        position: 'bottom',
+  drawChart({
+    canvas: document.getElementById('followersChart'),
+    title: `New Followers ${timeRange}`,
+    labels,
+    datasets: [
+      {
+        label: 'Followers',
+        data: followers,
+        fill: false,
+        borderColor: 'rgb(10, 133, 255)',
+        lineTension: 0.1,
       },
-      responsive: true,
-      title: {
-        display: true,
-        text: `New Followers ${timeRange}`,
-      },
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              suggestedMin: 0,
-              precision: 0,
-            },
-          },
-        ],
-      },
-    },
+    ],
   });
 
-  // eslint-disable-next-line no-new
-  new Chart(readersCanvas, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Reads',
-          data: readers,
-          fill: false,
-          borderColor: 'rgb(157, 57, 233)',
-          lineTension: 0.1,
-        },
-      ],
-    },
-    options: {
-      legend: {
-        position: 'bottom',
+  drawChart({
+    canvas: document.getElementById('readersChart'),
+    title: `Reads ${timeRange}`,
+    labels,
+    datasets: [
+      {
+        label: 'Reads',
+        data: readers,
+        fill: false,
+        borderColor: 'rgb(157, 57, 233)',
+        lineTension: 0.1,
       },
-      responsive: true,
-      title: {
-        display: true,
-        text: `Reads ${timeRange}`,
-      },
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              suggestedMin: 0,
-              precision: 0,
-            },
-          },
-        ],
-      },
-    },
+    ],
   });
 }
 
