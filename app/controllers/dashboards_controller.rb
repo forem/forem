@@ -9,15 +9,16 @@ class DashboardsController < ApplicationController
     target = @user
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 
-    @organizations = @user.admin_organizations.includes(:users)
-    @member_organizations = @user.member_organizations
+    @organizations = @user.admin_organizations
 
     if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
       target = @organizations.find_by(id: params[:org_id])
       @organization = target
     end
-    @articles = target.articles.sorting(params[:sort]).decorate
-    # Updates analytics in background if appropriate:
+
+    @articles = target.articles.includes(:organization).sorting(params[:sort]).decorate
+
+    # Updates analytics in background if appropriate
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
   end
 
