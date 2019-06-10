@@ -43,6 +43,14 @@ class Api::V0::ApiController < ApplicationController
     render json: { error: "not found", status: 404 }, status: :not_found
   end
 
+  def authenticate_with_api_key_or_current_user
+    if request.headers["api-key"]
+      authenticate_with_api_key
+    else
+      @user = current_user
+    end
+  end
+
   def authenticate_with_api_key
     api_key = request.headers["api-key"]
     return error_unauthorized unless api_key
@@ -52,10 +60,10 @@ class Api::V0::ApiController < ApplicationController
 
     # guard against timing attacks
     # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
-    if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key) # rubocop:disable Style/GuardClause
+    if ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
       @user = api_secret.user
     else
-      return error_unauthorized
+      error_unauthorized
     end
   end
 end
