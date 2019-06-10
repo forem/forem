@@ -53,7 +53,6 @@ export class ListingDashboard extends Component {
     const orgButtons = orgs.map(org => (
       <span onClick={() => this.setState({selectedListings: org.id})} className={"rounded-btn " + (selectedListings === org.id ? 'active': '')}>
         {org.name}
-        {' '}
       </span>
     ))
 
