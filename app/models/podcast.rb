@@ -7,7 +7,6 @@ class Podcast < ApplicationRecord
   validates :main_color_hex, presence: true
 
   after_save :bust_cache
-  after_create :pull_all_episodes
 
   def path
     slug
@@ -25,13 +24,5 @@ class Podcast < ApplicationRecord
 
   def bust_cache
     CacheBuster.new.bust("/" + path)
-  end
-
-  def pull_all_episodes
-    Podcasts::GetEpisodesJob.perform_later(id)
-  end
-
-  def pull_all_episodes_without_delay
-    Podcasts::GetEpisodesJob.perform_now(id)
   end
 end
