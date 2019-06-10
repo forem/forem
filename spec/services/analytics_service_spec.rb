@@ -166,7 +166,8 @@ RSpec.describe AnalyticsService, type: :service do
 
   describe "#grouped_by_day" do
     def format_date(datetime)
-      datetime.to_date.iso8601
+      # Postgre's DATE(..) method uses UTC.
+      datetime.utc.to_date.iso8601
     end
 
     it "returns stats grouped by day" do
