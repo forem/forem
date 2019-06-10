@@ -47,10 +47,7 @@ export class ListingDashboard extends Component {
     const { listings, orgListings, userCredits, orgs, selectedListings } = this.state
 
     const showListings = (selected, userListings, organizationListings) => {
-      if (selected === "user") {
-        return userListings.map(listing => <ListingRow listing={listing} />)
-      }
-      return organizationListings.map(listing => (listing.organization_id === selected) ? <ListingRow listing={listing} /> : '')
+      return (selected === "user") ? userListings.map(listing => <ListingRow listing={listing} />) : organizationListings.map(listing => (listing.organization_id === selected) ? <ListingRow listing={listing} /> : '');
     }
 
     const orgButtons = orgs.map(org => (
@@ -61,17 +58,11 @@ export class ListingDashboard extends Component {
     ))
 
     const listingLength = (selected, userListings, organizationListings) => {
-      if (selected === "user") {
-        return (<h4>Listings Made: {userListings.length}</h4>);
-      }
-      return (<h4>Listings Made: {organizationListings.filter((listing) => (listing.organization_id == selected)).length}</h4>);
+      return (selected === "user") ? (<h4>Listings Made: {userListings.length}</h4>) : (<h4>Listings Made: {organizationListings.filter((listing) => (listing.organization_id == selected)).length}</h4>);
     }
 
     const creditCount = (selected, userCreds, organizations) => {
-      if (selected === "user") {
-        return (<h4>Credits Available: {userCredits}</h4>)
-      }
-      return (<h4>Credits Available: {organizations.find((org) => (org.id === selected)).unspent_credits_count}</h4>)
+      return (selected === "user") ? (<h4>Credits Available: {userCredits}</h4>) : (<h4>Credits Available: {organizations.find((org) => (org.id === selected)).unspent_credits_count}</h4>);
     }
 
     return (
