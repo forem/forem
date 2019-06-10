@@ -1,7 +1,7 @@
 import Chart from 'chart.js';
 
 function resetActive(activeButton) {
-  const buttons = document.getElementsByClassName('timespan-button');
+  const buttons = document.getElementsByClassName('timerange-button');
   for (let i = 0; i < buttons.length; i += 1) {
     const button = buttons[i];
     button.classList.remove('selected');
@@ -21,7 +21,7 @@ function cardHTML(stat, header) {
   `;
 }
 
-function writeCards(data, timeFrame) {
+function writeCards(data, timeRangeLabel) {
   const readers = sumAnalytics(data, 'page_views');
   const reactions = sumAnalytics(data, 'reactions');
   const comments = sumAnalytics(data, 'comments');
@@ -32,10 +32,10 @@ function writeCards(data, timeFrame) {
   const followerCard = document.getElementById('followers-card');
   const readerCard = document.getElementById('readers-card');
 
-  readerCard.innerHTML = cardHTML(readers, `Readers ${timeFrame}`);
-  commentCard.innerHTML = cardHTML(comments, `Comments ${timeFrame}`);
-  reactionCard.innerHTML = cardHTML(reactions, `Reactions ${timeFrame}`);
-  followerCard.innerHTML = cardHTML(follows, `Followers ${timeFrame}`);
+  readerCard.innerHTML = cardHTML(readers, `Readers ${timeRangeLabel}`);
+  commentCard.innerHTML = cardHTML(comments, `Comments ${timeRangeLabel}`);
+  reactionCard.innerHTML = cardHTML(reactions, `Reactions ${timeRangeLabel}`);
+  followerCard.innerHTML = cardHTML(follows, `Followers ${timeRangeLabel}`);
 }
 
 function drawChart({ canvas, title, labels, datasets }) {
@@ -71,7 +71,7 @@ function drawChart({ canvas, title, labels, datasets }) {
   });
 }
 
-function drawCharts(data, timeRange) {
+function drawCharts(data, timeRangeLabel) {
   const labels = Object.keys(data);
   const parsedData = Object.entries(data).map(date => date[1]);
   const comments = parsedData.map(date => date.comments.total);
@@ -84,7 +84,7 @@ function drawCharts(data, timeRange) {
 
   drawChart({
     canvas: document.getElementById('reactionsChart'),
-    title: `Reactions ${timeRange}`,
+    title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
       {
@@ -120,7 +120,7 @@ function drawCharts(data, timeRange) {
 
   drawChart({
     canvas: document.getElementById('commentsChart'),
-    title: `Comments ${timeRange}`,
+    title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
       {
@@ -135,7 +135,7 @@ function drawCharts(data, timeRange) {
 
   drawChart({
     canvas: document.getElementById('followersChart'),
-    title: `New Followers ${timeRange}`,
+    title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
       {
@@ -150,7 +150,7 @@ function drawCharts(data, timeRange) {
 
   drawChart({
     canvas: document.getElementById('readersChart'),
-    title: `Reads ${timeRange}`,
+    title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
       {
@@ -164,12 +164,12 @@ function drawCharts(data, timeRange) {
   });
 }
 
-function callAnalyticsApi(date, timeRange) {
+function callAnalyticsApi(date, timeRangeLabel) {
   fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
     .then(data => data.json())
     .then(data => {
-      drawCharts(data, timeRange);
-      writeCards(data, timeRange);
+      drawCharts(data, timeRangeLabel);
+      writeCards(data, timeRangeLabel);
     });
 }
 
