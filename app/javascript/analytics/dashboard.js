@@ -258,7 +258,7 @@ function drawInfinityCharts() {
   callAnalyticsApi(beginningOfTime, '');
 }
 
-function init() {
+export default function initCharts() {
   const weekButton = document.getElementById('week-button');
   weekButton.addEventListener('click', drawWeekCharts);
 
@@ -271,5 +271,3 @@ function init() {
   // draw week charts by default
   drawWeekCharts();
 }
-
-init();
