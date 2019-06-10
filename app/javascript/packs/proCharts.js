@@ -1,23 +1,11 @@
 import Chart from 'chart.js';
 
-const reactionsCanvas = document.getElementById('reactionsChart');
-const commentsCanvas = document.getElementById('commentsChart');
-const readersCanvas = document.getElementById('readersChart');
-const followersCanvas = document.getElementById('followersChart');
-
-const weekButton = document.getElementById('week-button');
-const monthButton = document.getElementById('month-button');
-const infinityButton = document.getElementById('infinity-button');
-
-const reactionCard = document.getElementById('reactions-card');
-const commentCard = document.getElementById('comments-card');
-const followerCard = document.getElementById('followers-card');
-const readerCard = document.getElementById('readers-card');
-
 function resetActive(activeButton) {
-  [weekButton, monthButton, infinityButton].forEach(button => {
+  const buttons = document.getElementsByClassName('timespan-button');
+  for (let i = 0; i < buttons.length; i += 1) {
+    const button = buttons[i];
     button.classList.remove('selected');
-  });
+  }
 
   activeButton.classList.add('selected');
 }
@@ -39,6 +27,11 @@ function writeCards(data, timeFrame) {
   const comments = sumAnalytics(data, 'comments');
   const follows = sumAnalytics(data, 'follows');
 
+  const reactionCard = document.getElementById('reactions-card');
+  const commentCard = document.getElementById('comments-card');
+  const followerCard = document.getElementById('followers-card');
+  const readerCard = document.getElementById('readers-card');
+
   readerCard.innerHTML = cardHTML(readers, `Readers ${timeFrame}`);
   commentCard.innerHTML = cardHTML(comments, `Comments ${timeFrame}`);
   reactionCard.innerHTML = cardHTML(reactions, `Reactions ${timeFrame}`);
@@ -55,6 +48,11 @@ function drawCharts(data, timeRange) {
   const unicorns = parsedData.map(date => date.reactions.unicorn);
   const followers = parsedData.map(date => date.follows.total);
   const readers = parsedData.map(date => date.page_views.total);
+
+  const reactionsCanvas = document.getElementById('reactionsChart');
+  const commentsCanvas = document.getElementById('commentsChart');
+  const readersCanvas = document.getElementById('readersChart');
+  const followersCanvas = document.getElementById('followersChart');
 
   // eslint-disable-next-line no-new
   new Chart(reactionsCanvas, {
@@ -240,30 +238,37 @@ function callAnalyticsApi(date, timeRange) {
 }
 
 function drawWeekCharts() {
-  resetActive(weekButton);
+  resetActive(document.getElementById('week-button'));
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   callAnalyticsApi(oneWeekAgo, 'this Week');
 }
 
 function drawMonthCharts() {
-  resetActive(monthButton);
+  resetActive(document.getElementById('month-button'));
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
   callAnalyticsApi(oneMonthAgo, 'this Month');
 }
 
 function drawInfinityCharts() {
-  resetActive(infinityButton);
+  resetActive(document.getElementById('infinity-button'));
   // April 1st is when the DEV analytics feature went into place
   const beginningOfTime = new Date('2019-4-1');
   callAnalyticsApi(beginningOfTime, '');
 }
 
 function init() {
+  const weekButton = document.getElementById('week-button');
   weekButton.addEventListener('click', drawWeekCharts);
+
+  const monthButton = document.getElementById('month-button');
   monthButton.addEventListener('click', drawMonthCharts);
+
+  const infinityButton = document.getElementById('infinity-button');
   infinityButton.addEventListener('click', drawInfinityCharts);
+
+  // draw week charts by default
   drawWeekCharts();
 }
 
