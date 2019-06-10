@@ -26,8 +26,8 @@ function sumAnalytics(data, key) {
   return Object.entries(data).reduce((sum, day) => sum + day[1][key].total, 0);
 }
 
-function writeCard(stat, element, header) {
-  element.innerHTML = `
+function cardHTML(stat, header) {
+  return `
     <h4>${header}</h4>
     <div class="featured-stat">${stat}</div>
   `;
@@ -39,46 +39,11 @@ function writeCards(data, timeFrame) {
   const comments = sumAnalytics(data, 'comments');
   const follows = sumAnalytics(data, 'follows');
 
-  writeCard(readers, readerCard, `Readers ${timeFrame}`);
-  writeCard(comments, commentCard, `Comments ${timeFrame}`);
-  writeCard(reactions, reactionCard, `Reactions ${timeFrame}`);
-  writeCard(follows, followerCard, `Followers ${timeFrame}`);
+  readerCard.innerHTML = cardHTML(readers, `Readers ${timeFrame}`);
+  commentCard.innerHTML = cardHTML(comments, `Comments ${timeFrame}`);
+  reactionCard.innerHTML = cardHTML(reactions, `Reactions ${timeFrame}`);
+  followerCard.innerHTML = cardHTML(follows, `Followers ${timeFrame}`);
 }
-
-function callAnalyticsApi(date, timeRange) {
-  fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
-    .then(data => data.json())
-    .then(data => {
-      drawCharts(data, timeRange);
-      writeCards(data, timeRange);
-    });
-}
-
-function drawWeekCharts() {
-  resetActive(weekButton);
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo, 'this Week');
-}
-
-function drawMonthCharts() {
-  resetActive(monthButton);
-  const oneMonthAgo = new Date();
-  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo, 'this Month');
-}
-
-function drawInfinityCharts() {
-  resetActive(infinityButton);
-  // April 1st is when the DEV analytics feature went into place
-  const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime, '');
-}
-
-drawWeekCharts();
-weekButton.addEventListener('click', drawWeekCharts);
-monthButton.addEventListener('click', drawMonthCharts);
-infinityButton.addEventListener('click', drawInfinityCharts);
 
 function drawCharts(data, timeRange) {
   const labels = Object.keys(data);
@@ -91,7 +56,8 @@ function drawCharts(data, timeRange) {
   const followers = parsedData.map(date => date.follows.total);
   const readers = parsedData.map(date => date.page_views.total);
 
-  const reactionsChart = new Chart(reactionsCanvas, {
+  // eslint-disable-next-line no-new
+  new Chart(reactionsCanvas, {
     type: 'line',
     data: {
       labels,
@@ -152,7 +118,8 @@ function drawCharts(data, timeRange) {
     },
   });
 
-  const commentsChart = new Chart(commentsCanvas, {
+  // eslint-disable-next-line no-new
+  new Chart(commentsCanvas, {
     type: 'line',
     data: {
       labels,
@@ -188,7 +155,8 @@ function drawCharts(data, timeRange) {
     },
   });
 
-  const followChart = new Chart(followersCanvas, {
+  // eslint-disable-next-line no-new
+  new Chart(followersCanvas, {
     type: 'line',
     data: {
       labels,
@@ -224,7 +192,8 @@ function drawCharts(data, timeRange) {
     },
   });
 
-  const readsChart = new Chart(readersCanvas, {
+  // eslint-disable-next-line no-new
+  new Chart(readersCanvas, {
     type: 'line',
     data: {
       labels,
@@ -259,5 +228,43 @@ function drawCharts(data, timeRange) {
       },
     },
   });
-
 }
+
+function callAnalyticsApi(date, timeRange) {
+  fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
+    .then(data => data.json())
+    .then(data => {
+      drawCharts(data, timeRange);
+      writeCards(data, timeRange);
+    });
+}
+
+function drawWeekCharts() {
+  resetActive(weekButton);
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  callAnalyticsApi(oneWeekAgo, 'this Week');
+}
+
+function drawMonthCharts() {
+  resetActive(monthButton);
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+  callAnalyticsApi(oneMonthAgo, 'this Month');
+}
+
+function drawInfinityCharts() {
+  resetActive(infinityButton);
+  // April 1st is when the DEV analytics feature went into place
+  const beginningOfTime = new Date('2019-4-1');
+  callAnalyticsApi(beginningOfTime, '');
+}
+
+function init() {
+  weekButton.addEventListener('click', drawWeekCharts);
+  monthButton.addEventListener('click', drawMonthCharts);
+  infinityButton.addEventListener('click', drawInfinityCharts);
+  drawWeekCharts();
+}
+
+init();

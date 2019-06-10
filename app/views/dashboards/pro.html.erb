@@ -2,30 +2,36 @@
 
 <div class="dashboard-container pro-container" id="user-dashboard">
   <a href="/dashboard" class="rounded-btn rounded-btn--transparent">👈 Back to Main Dashboard</a>
-    <a class="rounded-btn <%= "active" if params[:org_id].blank? %>" href="/dashboard/pro">
-      Your Pro Dashboard
+
+  <a class="rounded-btn <%= "active" if params[:org_id].blank? %>" href="/dashboard/pro">
+    Your Pro Dashboard
+  </a>
+
+  <% @organizations.each do |org| %>
+    <a class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>" href="/dashboard/pro/org/<%= org.id %>">
+      <%= org.name %> Pro Dashboard
     </a>
-    <% @organizations.each do |org| %>
-      <a class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>" href="/dashboard/pro/org/<%= org.id %>">
-        <%= org.name %> Pro Dashboard
-      </a>
-    <% end %>
+  <% end %>
+
   <section class="header-card card">
     <h1 class="pro-header">Pro Dashboard <%= "for #{@dashboard.user_or_org.name}" %></h1>
-    <p>Welcome to the pro dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
+    <p>Welcome to the Pro Dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
     <p>This dashboard will highlight deep insights especially relevant to developer relations authors and serious bloggers.</p>
   </section>
+
   <div class="toggles">
     <button class="selected" id="week-button">Week</button>
     <button id="month-button">Month</button>
     <button id="infinity-button">Infinity</button>
   </div>
+
   <div class="summary-stats">
     <div class="card" id="readers-card"></div>
     <div class="card" id="reactions-card"></div>
     <div class="card" id="comments-card"></div>
     <div class="card" id="followers-card"></div>
   </div>
+
   <div class="graphs">
     <div class="row">
       <div class="card">
@@ -56,5 +62,6 @@
       </div>
     </div>
   </div>
+
   <%= javascript_pack_tag "proCharts", defer: true %>
 </div>
