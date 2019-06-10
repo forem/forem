@@ -164,8 +164,16 @@ function drawCharts(data, timeRangeLabel) {
   });
 }
 
-function callAnalyticsApi(date, timeRangeLabel) {
-  fetch(`/api/analytics/historical?start=${date.toISOString().split('T')[0]}`)
+function callAnalyticsApi(date, timeRangeLabel, organizationId) {
+  let url = `/api/analytics/historical?start=${
+    date.toISOString().split('T')[0]
+  }`;
+
+  if (organizationId) {
+    url = `${url}&organization_id=${organizationId}`;
+  }
+
+  fetch(url)
     .then(data => data.json())
     .then(data => {
       drawCharts(data, timeRangeLabel);
@@ -173,37 +181,46 @@ function callAnalyticsApi(date, timeRangeLabel) {
     });
 }
 
-function drawWeekCharts() {
+function drawWeekCharts(organizationId) {
   resetActive(document.getElementById('week-button'));
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo, 'this Week');
+  callAnalyticsApi(oneWeekAgo, 'this Week', organizationId);
 }
 
-function drawMonthCharts() {
+function drawMonthCharts(organizationId) {
   resetActive(document.getElementById('month-button'));
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo, 'this Month');
+  callAnalyticsApi(oneMonthAgo, 'this Month', organizationId);
 }
 
-function drawInfinityCharts() {
+function drawInfinityCharts(organizationId) {
   resetActive(document.getElementById('infinity-button'));
   // April 1st is when the DEV analytics feature went into place
   const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime, '');
+  callAnalyticsApi(beginningOfTime, '', organizationId);
 }
 
-export default function initCharts() {
+export default function initCharts({ organizationId }) {
   const weekButton = document.getElementById('week-button');
-  weekButton.addEventListener('click', drawWeekCharts);
+  weekButton.addEventListener(
+    'click',
+    drawWeekCharts.bind(null, organizationId),
+  );
 
   const monthButton = document.getElementById('month-button');
-  monthButton.addEventListener('click', drawMonthCharts);
+  monthButton.addEventListener(
+    'click',
+    drawMonthCharts.bind(null, organizationId),
+  );
 
   const infinityButton = document.getElementById('infinity-button');
-  infinityButton.addEventListener('click', drawInfinityCharts);
+  infinityButton.addEventListener(
+    'click',
+    drawInfinityCharts.bind(null, organizationId),
+  );
 
   // draw week charts by default
-  drawWeekCharts();
+  drawWeekCharts(organizationId);
 }
