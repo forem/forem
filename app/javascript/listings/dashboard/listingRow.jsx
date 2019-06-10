@@ -12,8 +12,8 @@ export const ListingRow = ({listing}) => {
     </a>
   ));
 
-  const listingDate = listing.bumped_at ? (new Date(listing.bumped_at.toString())).toDateString() : (new Date(listing.updated_at.toString())).toDateString() ;
-  const orgName = (listing) => (listing.organization_id) ? (<span>{listing.author.name}</span>) : '';
+  const listingDate = listing.bumped_at ? (new Date(listing.bumped_at.toString())).toLocaleDateString("default", {day: "2-digit", month: "short"}) : (new Date(listing.updated_at.toString())).toLocaleDateString("default", {day: "2-digit", month: "short"}) ;
+  const orgName = (l) => (l.organization_id) ? (<span className="listing-org">{l.author.name}</span>) : '';
 
   return(
     <div className="dashboard-listing-row">
@@ -29,10 +29,10 @@ export const ListingRow = ({listing}) => {
       </span>
       <span className="dashboard-listing-category"><a href={`/listings/${listing.category}/`}>{listing.category}</a></span>
       <span className="dashboard-listing-tags">{tagLinks}</span>
-      <div className="dashboard-listing-actions">
-        <a className="dashboard-listing-bump-button cta pill black">bump</a>
-        <a href={`/listings/${listing.id}/edit`} className="dashboard-listing-edit-button cta pill green">edit</a>
-        <a className="dashboard-listing-delete-button cta pill red">delete</a>
+      <div className="listing-row-actions">
+        <a className="dashboard-listing-bump-button cta pill black">BUMP</a>
+        <a href={`/listings/${listing.id}/edit`} className="dashboard-listing-edit-button cta pill green">EDIT</a>
+        <a className="dashboard-listing-delete-button cta pill red">DELETE</a>
       </div>
     </div>
   );

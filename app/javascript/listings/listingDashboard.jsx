@@ -54,25 +54,39 @@ export class ListingDashboard extends Component {
     }
 
     const orgButtons = orgs.map(org => (
-      <span onClick={() => this.setState({selectedListings: org.id})}>
+      <span onClick={() => this.setState({selectedListings: org.id})} className={"rounded-btn " + (selectedListings === org.id ? 'active': '')}>
         {org.name}
         {' '}
       </span>
     ))
 
+    const listingLength = (selected, userListings, organizationListings) => {
+      if (selected === "user") {
+        return (<h4>Listings Made: {userListings.length}</h4>);
+      }
+      return (<h4>Listings Made: {organizationListings.filter((listing) => (listing.organization_id == selected)).length}</h4>);
+    }
+
+    const creditCount = (selected, userCreds, organizations) => {
+      if (selected === "user") {
+        return (<h4>Credits Available: {userCredits}</h4>)
+      }
+      return (<h4>Credits Available: {organizations.find((org) => (org.id === selected)).unspent_credits_count}</h4>)
+    }
+
     return (
       <div className="dashboard-listings-container">
-        <span onClick={() => this.setState({selectedListings: "user"})}>Personal</span>
+        <span onClick={() => this.setState({selectedListings: "user"})} className={"rounded-btn " + (selectedListings === "user" ? 'active': '')}>Personal</span>
         {orgButtons}
-        <div className="dashboard-listings-actions">
-          <div className="dashboard-listings-info">
+        <div className="dashboard-listings-header-wrapper">
+          <div className="dashboard-listings-header">
             <h3>Listings</h3>
-            <h4>Listings Made: {listings.length}</h4>
-            <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
+            {listingLength(selectedListings, listings, orgListings)}
+            <a href='/listings/new'>Create a Listing</a>
           </div>
-          <div className="dashboard-listings-info">
+          <div className="dashboard-listings-header">
             <h3>Credits</h3>
-            <h4>Credits Available: {userCredits}</h4>
+            {creditCount(selectedListings, userCredits, orgs)}
             <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
           </div>
         </div>

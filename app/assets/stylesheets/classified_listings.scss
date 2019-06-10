@@ -582,14 +582,82 @@ form.listings-contact-via-connect {
   max-width: 96%;
   margin: auto;
 
-  .dashboard-listings-actions {
+  .rounded-btn {
+    font-size: calc(15px + 0.2vw);
+    font-family: $helvetica-condensed;
+    font-stretch: condensed;
+    padding: 4px 20px;
+    border-radius: 100px;
+    margin-right: 5px;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 10px;
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+    @include themeable(
+      background,
+      theme-container-background,
+      lighten($light-medium-gray, 5%)
+    );
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-medium-gray
+      );
+    }
+
+    &.active {
+      @include themeable(
+        background,
+        theme-secondary-color,
+        $dark-gray
+      );
+      @include themeable(
+        color,
+        theme-container-background,
+        white
+      );
+    }
+  }
+
+  .dashboard-listings-header-wrapper {
     display: flex;
     flex-direction: row;
-    .dashboard-listings-info {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    background: $dark-gray;
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+    padding: 15px 0px;
+
+    .dashboard-listings-header {
       width: 43%;
       text-align: center;
-      padding: 1.2%;
+      color: white;
+      margin: 5px auto;
+      font-size: calc(1.1em + 0.1vw);
+      padding: 18px 0px 7px;
+      padding-left: 10px;
+      font-family: $monospace;
+      border: 1px solid $light-gray;
+      display: block;
+      text-align: center;
       margin: 1.2%;
+      padding: 1.2%;
+      padding-bottom: 30px;
+      a {
+        font-size: 0.9em;
+        border: 2px solid #2ad7c5;
+        color: #25c2b2;
+        padding: 6px 16px;
+        margin-top: 6px;
+        border-radius: 100px;
+      }
     }
   }
 
@@ -603,6 +671,21 @@ form.listings-contact-via-connect {
       border-radius: 3px;
       position: relative;
       background: var(--theme-container-background, #fff);
+
+      .listing-org {
+        @include themeable(
+          background,
+          theme-secondary-color,
+          darken($light-gray, 6%)
+        );
+        @include themeable(color, theme-container-background, #fff);
+        margin-right: 5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 0.9em;
+      }
 
       h2 {
         color: var(--theme-container-color, #0a0a0a);
@@ -649,6 +732,35 @@ form.listings-contact-via-connect {
         padding: 3px 0px 6px;
         a {
           color: var(--theme-container-color, #0a0a0a);
+        }
+      }
+
+      .listing-row-actions {
+        padding: 7px 0px 10px;
+
+        .pill {
+          background: $bold-blue;
+          padding: 4px 20px;
+          border-radius: 100px;
+          color: white;
+          margin-right: 5px;
+          font-size: 14px;
+          border: 2px solid transparent;
+          margin-top: 6px;
+          display: inline-block;
+    
+          &.green {
+            background: $green;
+            color: $black;
+          }
+    
+          &.red {
+            background: $red;
+          }
+    
+          &.black {
+            background: $dark-gray;
+          }
         }
       }
 
