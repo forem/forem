@@ -169,13 +169,9 @@ podcast_objects = [
   },
 ]
 
-# skip after create callback to avoid pulling 1000 episodes during seeding
-Podcast.skip_callback(:create, :after, :pull_all_episodes)
 podcast_objects.each do |attributes|
   Podcast.create!(attributes)
 end
-# restore the callback for future usage
-Podcast.set_callback(:create, :after, :pull_all_episodes)
 
 ##############################################################################
 
