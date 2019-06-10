@@ -635,6 +635,10 @@ form.listings-contact-via-connect {
     @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
     padding: 15px 0px;
 
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+    }
+
     .dashboard-listings-header {
       width: 43%;
       text-align: center;
@@ -650,6 +654,10 @@ form.listings-contact-via-connect {
       margin: 1.2%;
       padding: 1.2%;
       padding-bottom: 30px;
+
+      @media screen and (max-width: 768px) {
+        width: 90%; 
+      }
       a {
         font-size: 0.9em;
         border: 2px solid #2ad7c5;

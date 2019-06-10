@@ -343,7 +343,7 @@ export class Listings extends Component {
             <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
             {categoryLinks}
             <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
-            <a href='/listings/dashboard' className='classified-create-link'>Your Listings</a>
+            <a href='/listings/dashboard' className='classified-create-link'>Manage Listings</a>
           </div>
           <div className="classified-filters-tags" id="classified-filters-tags">
             <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)} />
