@@ -50,8 +50,7 @@ export class ListingDashboard extends Component {
       if (selected === "user") {
         return userListings.map(listing => <ListingRow listing={listing} />)
       }
-        return organizationListings.map(listing => (listing.organization_id === selected) ? <ListingRow listing={listing} /> : '')
-
+      return organizationListings.map(listing => (listing.organization_id === selected) ? <ListingRow listing={listing} /> : '')
     }
 
     const orgButtons = orgs.map(org => (
@@ -68,18 +67,12 @@ export class ListingDashboard extends Component {
         <div className="dashboard-listings-actions">
           <div className="dashboard-listings-info">
             <h3>Listings</h3>
-            <h4>
-Listings Made:
-              {listings.length}
-            </h4>
+            <h4>Listings Made: {listings.length}</h4>
             <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
           </div>
           <div className="dashboard-listings-info">
             <h3>Credits</h3>
-            <h4>
-Credits Available:
-              {userCredits}
-            </h4>
+            <h4>Credits Available: {userCredits}</h4>
             <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
           </div>
         </div>
