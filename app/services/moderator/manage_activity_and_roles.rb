@@ -25,22 +25,19 @@ module Moderator
     end
 
     def delete_articles
-      return unless user.articles.any?
-
       cachebuster = CacheBuster.new
-      virtual_articles = user.articles.map { |article| Article.new(article.attributes) }
       user.articles.find_each do |article|
         article.reactions.delete_all
+
         article.comments.includes(:user).find_each do |comment|
           comment.reactions.delete_all
           cachebuster.bust_comment(comment.commentable, comment.user.username)
           comment.delete
         end
+
         article.remove_algolia_index
         article.delete
-      end
-      virtual_articles.each do |article|
-        cachebuster.bust_article(article)
+        article.purge
       end
     end
 
