@@ -7,11 +7,10 @@ export class ListingDashboard extends Component {
     orgListings: [],
     orgs: [],
     userCredits: 0,
-    currentUserId: null,
     selectedListings: "user",
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const t = this;
     const container = document.getElementById('classifieds-listings-dashboard')
     let listings = [];
@@ -22,25 +21,6 @@ export class ListingDashboard extends Component {
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
     t.setState({ listings, orgListings, orgs, userCredits });
-    t.setUser()
-  }
-
-  componentWillUnmount() {
-
-  }
-
-  setUser = () => {
-    const t = this;
-    setTimeout(function() {
-      if (window.currentUser && t.state.currentUserId === null) {
-        t.setState({currentUserId: window.currentUser.id });
-      }
-    }, 300)
-    setTimeout(function() {
-      if (window.currentUser && t.state.currentUserId === null) {
-        t.setState({currentUserId: window.currentUser.id });
-      }
-    }, 1000)
   }
 
   render() {

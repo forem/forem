@@ -266,7 +266,6 @@ export class Listings extends Component {
         isOpen={false}
       />
     ));
-    console.log(listings);
     const selectedTags = tags.map(tag => (
       <span className="classified-tag">
         <a href='/listings?tags=' className='tag-name' onClick={e => this.removeTag(e, tag)} data-no-instant>
