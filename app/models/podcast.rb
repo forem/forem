@@ -4,26 +4,21 @@ class Podcast < ApplicationRecord
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
 
-  validates :main_color_hex, presence: true
+  validates :main_color_hex, :title, :feed_url, :image, :slug, presence: true
+  validates :feed_url, :slug, uniqueness: true
 
   after_save :bust_cache
   after_create :pull_all_episodes
 
-  def path
-    slug
-  end
-
-  def profile_image_url
-    image_url
-  end
-
-  def name
-    title
-  end
+  alias_attribute :path, :slug
+  alias_attribute :profile_image_url, :image_url
+  alias_attribute :name, :title
 
   private
 
   def bust_cache
+    return unless path
+
     CacheBuster.new.bust("/" + path)
   end
 
