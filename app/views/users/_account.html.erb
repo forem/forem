@@ -43,8 +43,9 @@
       <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
     </div>
     <div class='api__secret__revoke'>
-      <%= form_tag users_api_secrets_path(id: api_secret.id), method: :delete do %>
-        <%= button_tag("Revoke", class: "big-action danger-button") %>
+      <%= form_tag users_api_secrets_path, method: :delete do %>
+        <%= hidden_field_tag "id", api_secret.id %>
+        <%= button_tag "Revoke", class: "big-action danger-button" %>
       <% end %>
     </div>
   </div>
