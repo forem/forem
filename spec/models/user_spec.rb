@@ -664,5 +664,11 @@ RSpec.describe User, type: :model do
       user.destroy
       expect(user.persisted?).to be false
     end
+
+    it "destroys associated organization memberships" do
+      organization_membership = create(:organization_membership, user_id: user.id, organization_id: org.id)
+      user.destroy
+      expect { organization_membership.reload }.to raise_error ActiveRecord::RecordNotFound
+    end
   end
 end
