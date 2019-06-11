@@ -155,7 +155,7 @@ RSpec.describe "Articles", type: :request do
       article = create(:article, user: user)
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("Stats for Your Post")
+      expect(response.body).to include("Stats for Your Article")
     end
   end
 end

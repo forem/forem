@@ -24,6 +24,7 @@ class AnalyticsService
 
     # cache all stats in the date range for the requested user or organization
     cache_key = "analytics-for-dates-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
+    cache_key = "#{cache_key}-article-#{article_id}" if article_id
 
     Rails.cache.fetch(cache_key, expires_in: 7.days) do
       # 1. calculate all stats using group queries at once
@@ -51,7 +52,7 @@ class AnalyticsService
   private
 
   attr_reader(
-    :user_or_org, :start_date, :end_date,
+    :user_or_org, :article_id, :start_date, :end_date,
     :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
   )
 
