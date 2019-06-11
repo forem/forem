@@ -32,6 +32,10 @@ class ApiSecretsController < ApplicationController
   private
 
   def load_api_secret
-    @secret = ApiSecret.find_by(id: params[:id]) || not_found
+    @secret = ApiSecret.find(destroy_params[:id])
+  end
+
+  def destroy_params
+    params.permit(:id)
   end
 end
