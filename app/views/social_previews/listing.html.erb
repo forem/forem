@@ -1,13 +1,38 @@
-<div clas="listing-content">
-  <h3><%= @listing.title %></h3>
-  <div class="single-classified-listing-body">
-    <%= @listing.processed_html.html_safe %>
-  </div>
-  <div class="single-classified-listing-tags">
-    <% if @listing.tags.present? %>
-      <%= @listing.tags.each do |tag|  %>
-        <%= tag.name %>
-      <% end %>
-    <% end %>
+<%= stylesheet_link_tag "classified_listings", media: "all" %>
+<style>
+  .listing-og-container {
+    width: 90vw;
+    height: 44vw;
+    margin: 2.5vw auto 5vw;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .single-classified-listing h3 {
+    font-size: 2.62vw;
+  }
+
+  .single-classified-listing .single-classified-listing-body {
+    font-size: 2.08vw;
+  }
+</style>
+<div class="listing-og-container">
+  <div class="single-classified-listing ">
+    <div class="listing-content">
+      <h3><%= @listing.title %></h3>
+      <div class="single-classified-listing-body">
+        <%= @listing.processed_html.html_safe %>
+      </div>
+      <div class="single-classified-listing-tags">
+        <% if @listing.tags.present? %>
+          <%= @listing.tags.each do |tag|  %>
+            <%= tag.name %>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="single-classified-listing-author-info">
+        <%= @listing.category %>・<%= @listing.author.username %>
+      </div>
+    </div>
   </div>
 </div>

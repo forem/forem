@@ -4,11 +4,14 @@
   <link rel="canonical" href="https://dev.to<%= request.path %>" />
   <meta name="description" content="Where programmers share ideas and help each other grow.">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
-
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://dev.to<%= request.path %>" />
   <meta property="og:title" content="Listings" />
-  <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
+  <% if @displayed_classified_listing %>
+    <meta property="og:image" content="<%= listing_social_image_url(@displayed_classified_listing) %>">
+  <% else %>
+    <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/sa3xjflbtvt9zw0xpan5.png">
+  <% end %>
   <meta property="og:description" content="Where programmers share ideas and help each other grow." />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 

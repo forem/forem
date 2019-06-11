@@ -13,9 +13,9 @@ module SocialImageHelper
     end
   end
 
-  # def listing_social_image_url(listing)
-  #   listing_social_preview_url(listing)
-  # end
+  def listing_social_image_url(listing)
+    listing_social_preview_url(listing, format: :png)
+  end
 
   def article_social_image_url(article)
     image = user_defined_image(article)
