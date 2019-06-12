@@ -30,6 +30,7 @@ class User < ApplicationRecord
   has_many    :tweets, dependent: :destroy
   has_many    :chat_channel_memberships, dependent: :destroy
   has_many    :chat_channels, through: :chat_channel_memberships
+  has_many    :notification_subscriptions, dependent: :destroy
   has_many    :push_notification_subscriptions, dependent: :destroy
   has_many    :feedback_messages
   has_many    :rating_votes
