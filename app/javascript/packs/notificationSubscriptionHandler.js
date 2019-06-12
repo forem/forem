@@ -9,6 +9,9 @@ const notifiableId = document.getElementById(
 const notifiableType = document.getElementById(
   'notification-subscription-notifiable-type',
 ).value;
+const userStatus = document
+  .getElementsByTagName('body')[0]
+  .getAttribute('data-user-status');
 
 // do a check for signed out users
 // check if showModal() function is defined (probably not necessary b/c of defer)
@@ -27,54 +30,66 @@ fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
     checkbox.checked = result;
   });
 
-const handleClick = e => {
-  e.preventDefault();
+let handleClick = () => {};
 
-  const originalSubscriptionStatusValue = subscriptionStatusInput.value;
-  checkbox.checked = !checkbox.checked;
+if (userStatus === 'logged-out') {
+  handleClick = e => {
+    e.preventDefault();
 
-  fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-    body: JSON.stringify({
-      subscription_status: subscriptionStatusInput.value,
-      // notifiable params are passed via URL
-    }),
-  })
-    .then(response => response.json())
-    .then(result => {
-      if (result === 'Subscription rate limit reached') {
-        label.firstChild.data = result;
-        checkbox.checked = !checkbox.checked;
-        subscriptionStatusInput.value = originalSubscriptionStatusValue;
+    // Disabled because showModal() is globally defined in asset pipeline
+    // eslint-disable-next-line no-undef
+    showModal('notification-subscription');
+  };
+} else {
+  handleClick = e => {
+    e.preventDefault();
 
-        label.classList.remove('enabled');
-        label.classList.add('disabled');
+    const originalSubscriptionStatusValue = subscriptionStatusInput.value;
+    checkbox.checked = !checkbox.checked;
 
-        setTimeout(() => {
-          label.firstChild.data = 'Subscribe to Notifications';
-          label.classList.remove('disabled');
-          label.classList.add('enabled');
-        }, 30000);
-      } else {
-        subscriptionStatusInput.value = result;
-        checkbox.checked = result;
+    fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        subscription_status: subscriptionStatusInput.value,
+        // notifiable params are passed via URL
+      }),
+    })
+      .then(response => response.json())
+      .then(result => {
+        if (result === 'Subscription rate limit reached') {
+          label.firstChild.data = result;
+          checkbox.checked = !checkbox.checked;
+          subscriptionStatusInput.value = originalSubscriptionStatusValue;
 
-        label.classList.remove('enabled');
-        label.classList.add('disabled');
+          label.classList.remove('enabled');
+          label.classList.add('disabled');
 
-        setTimeout(() => {
-          label.classList.remove('disabled');
-          label.classList.add('enabled');
-        }, 1500);
-      }
-    });
-};
+          setTimeout(() => {
+            label.firstChild.data = 'Subscribe to Notifications';
+            label.classList.remove('disabled');
+            label.classList.add('enabled');
+          }, 30000);
+        } else {
+          subscriptionStatusInput.value = result;
+          checkbox.checked = result;
+
+          label.classList.remove('enabled');
+          label.classList.add('disabled');
+
+          setTimeout(() => {
+            label.classList.remove('disabled');
+            label.classList.add('enabled');
+          }, 1500);
+        }
+      });
+  };
+}
 
 label.addEventListener('click', handleClick);
 checkbox.addEventListener('click', handleClick);
