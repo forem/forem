@@ -14,6 +14,8 @@ class RateLimitChecker
                user.articles.published.where("created_at > ?", 30.seconds.ago).size > 9
              when "image_upload"
                Rails.cache.read("#{user.id}_image_upload").to_i > 9
+             when "notification_subscription"
+               Rails.cache.read("#{user.id}_notification_subscription").to_i > 9
              else
                false
              end

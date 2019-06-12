@@ -1220,7 +1220,6 @@ article {
           }
 
           label {
-            cursor: pointer;
             width: inherit;
             @media screen and (min-width: 400px) {
               padding-left: 18px;
@@ -1233,6 +1232,12 @@ article {
               padding-left: 10px;
               font-size: 0.7em;
             }
+          }
+          label.enabled {
+            cursor: pointer;
+          }
+          label.disabled {
+            pointer-events: none;
           }
         }
       }
