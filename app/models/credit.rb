@@ -20,7 +20,10 @@ class Credit < ApplicationRecord
                   }
 
   def self.add_to(user, amount)
-    credit_objects = Array.new(amount) { Credit.new(user_id: user.id) }
+    credit_objects = []
+    amount.times do
+      credit_objects << Credit.new(user_id: user.id)
+    end
     Credit.import credit_objects
   end
 
@@ -29,7 +32,10 @@ class Credit < ApplicationRecord
   end
 
   def self.add_to_org(org, amount)
-    credit_objects = Array.new(amount) { Credit.new(organization_id: org.id) }
+    credit_objects = []
+    amount.times do
+      credit_objects << Credit.new(organization_id: org.id)
+    end
     Credit.import credit_objects
   end
 

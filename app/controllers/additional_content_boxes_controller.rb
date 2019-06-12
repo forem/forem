@@ -20,8 +20,6 @@ class AdditionalContentBoxesController < ApplicationController
     render "boxes", layout: false
   end
 
-  private
-
   def randomize
     return true unless Rails.env.production?
 

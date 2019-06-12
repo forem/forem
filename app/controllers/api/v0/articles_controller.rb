@@ -45,7 +45,10 @@ module Api
                    else
                      %w[career discuss productivity]
                    end
-        @articles = Array.new(4) { Suggester::Articles::Classic.new.get(tag_list) }
+        @articles = []
+        4.times do
+          @articles << Suggester::Articles::Classic.new.get(tag_list)
+        end
         Article.tagged_with(tag_list, any: true).
           order("published_at DESC").
           where("positive_reactions_count > ? OR comments_count > ? AND published = ?", 10, 3, true).

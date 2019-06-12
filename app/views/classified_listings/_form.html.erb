@@ -57,7 +57,7 @@
       <%= javascript_pack_tag "listingForm", defer: true %>
     <div class="field">
       <%= form.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>
-      <%= form.check_box "contact_via_connect", checked: true %>
+      <%= form.check_box "contact_via_connect" %>
     </div>
     <div class="actions">
       <% if @credits.size > 0 || (@organizations.present? && @organizations.sum(:unspent_credits_count) > 0) %>
