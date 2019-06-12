@@ -30,20 +30,16 @@ fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
     checkbox.checked = result;
   });
 
-let handleClick = () => {};
+let updateStatus = () => {};
 
 if (userStatus === 'logged-out') {
-  handleClick = e => {
-    e.preventDefault();
-
+  updateStatus = () => {
     // Disabled because showModal() is globally defined in asset pipeline
     // eslint-disable-next-line no-undef
     showModal('notification-subscription');
   };
 } else {
-  handleClick = e => {
-    e.preventDefault();
-
+  updateStatus = () => {
     const originalSubscriptionStatusValue = subscriptionStatusInput.value;
     checkbox.checked = !checkbox.checked;
 
@@ -91,5 +87,17 @@ if (userStatus === 'logged-out') {
   };
 }
 
-label.addEventListener('click', handleClick);
-checkbox.addEventListener('click', handleClick);
+label.addEventListener('click', e => {
+  e.preventDefault();
+  updateStatus();
+});
+checkbox.addEventListener('click', e => {
+  e.preventDefault();
+  updateStatus();
+});
+
+checkbox.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    updateStatus();
+  }
+});
