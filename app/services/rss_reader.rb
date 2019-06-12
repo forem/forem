@@ -112,8 +112,8 @@ class RssReader
   def send_slack_notification(article)
     return unless Rails.env.production?
 
-    SlackBot.delay.ping(
-      "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
+    SlackBotPingJob.perform_later(
+      message: "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
       channel: "activity",
       username: "article_bot",
       icon_emoji: ":robot_face:",
