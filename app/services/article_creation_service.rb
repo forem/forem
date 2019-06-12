@@ -19,6 +19,8 @@ class ArticleCreationService
     article.show_comments = true
     article.collection = Collection.find_series(series, user) if series.present?
 
+    article.published = false if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
+
     if article.save
       Notification.send_to_followers(article, "Published") if article.published
     end

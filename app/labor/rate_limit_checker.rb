@@ -12,7 +12,7 @@ class RateLimitChecker
              when "comment_creation"
                user.comments.where("created_at > ?", 30.seconds.ago).size > 9
              when "published_article_creation"
-               user.articles.published.where("created_at > ?", 1.hour.ago).size > 4
+               user.articles.published.where("created_at > ?", 1.hour.ago).size > 3
              when "image_upload"
                Rails.cache.read("#{user.id}_image_upload").to_i > 9
              else

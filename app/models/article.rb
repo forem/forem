@@ -328,7 +328,7 @@ class Article < ApplicationRecord
   def check_post_rate_limit
     raise RateLimitChecker::ArticleLimitReached if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
   rescue RateLimitChecker::ArticleLimitReached
-    errors[:base] << ErrorMessageCleaner.new("You are posting a little too frequently, please try again later!").clean
+    errors[:rate] << ErrorMessageCleaner.new("You are posting a little too frequently, please try again later!").clean
   end
 
   def has_frontmatter?
