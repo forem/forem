@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_11_102923) do
+ActiveRecord::Schema.define(version: 2019_06_12_095959) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -626,23 +626,25 @@ ActiveRecord::Schema.define(version: 2019_06_11_102923) do
     t.integer "duration_in_seconds"
     t.boolean "featured", default: true
     t.integer "featured_number"
-    t.string "guid"
+    t.string "guid", null: false
     t.string "image"
     t.string "itunes_url"
-    t.string "media_url"
+    t.string "media_url", null: false
     t.string "order_key"
     t.integer "podcast_id"
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
     t.integer "reactions_count", default: 0, null: false
-    t.string "slug"
+    t.string "slug", null: false
     t.string "social_image"
     t.string "subtitle"
     t.text "summary"
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
+    t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
