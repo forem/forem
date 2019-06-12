@@ -53,6 +53,7 @@ class Article < ApplicationRecord
 
   before_validation :evaluate_markdown
   before_validation :create_slug
+  before_validation :check_post_rate_limit
   before_create     :create_password
   before_save       :set_all_dates
   before_save       :calculate_base_scores
@@ -322,6 +323,12 @@ class Article < ApplicationRecord
     evaluate_front_matter(parsed.front_matter)
   rescue StandardError => e
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
+  end
+
+  def check_post_rate_limit
+    raise RateLimitChecker::ArticleLimitReached if RateLimitChecker.new(user).limit_by_situation("published_article_creation")
+  rescue RateLimitChecker::ArticleLimitReached
+    errors[:base] << ErrorMessageCleaner.new("You are posting a little too frequently, please try again later!").clean
   end
 
   def has_frontmatter?

@@ -5,19 +5,20 @@ class RateLimitChecker
   end
 
   class UploadRateLimitReached < StandardError; end
+  class ArticleLimitReached < StandardError; end
 
   def limit_by_situation(situation)
     result = case situation
              when "comment_creation"
                user.comments.where("created_at > ?", 30.seconds.ago).size > 9
              when "published_article_creation"
-               user.articles.published.where("created_at > ?", 30.seconds.ago).size > 9
+               user.articles.published.where("created_at > ?", 1.hour.ago).size > 4
              when "image_upload"
                Rails.cache.read("#{user.id}_image_upload").to_i > 9
              else
                false
              end
-    ping_admins if result == true
+    ping_admins_without_delay if result == true
     result
   end
 

@@ -19,7 +19,7 @@ RSpec.describe RateLimitChecker do
   end
 
   it ". limit_by_situation returns true if too many published articles at once" do
-    create_list(:article, 10, user_id: user.id, published: true)
+    create_list(:article, 5, user_id: user.id, published: true)
     expect(described_class.new(user).limit_by_situation("published_article_creation")).to eq(true)
   end
 
