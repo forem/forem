@@ -1,32 +1,85 @@
-<%= stylesheet_link_tag "classified_listings", media: "all" %>
+
 <style>
+  body {
+    background-color: #f9f9fa;
+  }
   .listing-og-container {
-    width: 90vw;
+    width: 88vw;
     height: 44vw;
-    margin: 2.5vw auto 5vw;
+    margin: 2.5vw auto;
+    padding: 0 1.8vw;
+    overflow: hidden;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
+  }
+
+  .single-classified-listing {
+    display: inline-block;
+    border: 0.1vw solid #dbdbdb;
+    box-sizing: border-box;
+    border-radius: .2vw;
+    width: 100%;
+    height: 100%;
+  }
+
+  .single-classified-listing h3 {
+    font-size: 4.1vw;
+    margin: 0;
+    border-bottom: 0.1vw solid #dbdbdb;
+    background-color: #efefef;
+    break-inside: avoid;
+    padding: 1vw 1.5vw;
+  }
+
+  .single-classified-listing .long-title {
+    font-size: 3vw;
+  }
+
+  .single-classified-listing p {
+    margin: 1.6vw 0;
+  }
+
+  .single-classified-listing .single-classified-listing-body {
+    font-size: 3vw;
+    padding: 0 1.5vw;
+    height: 65%;
     overflow: hidden;
     position: relative;
   }
 
-  .single-classified-listing h3 {
-    font-size: 2.62vw;
+  .single-classified-listing-tags {
+    margin-top: 2vw;
+    padding: 0 1.5vw;
   }
 
-  .single-classified-listing .single-classified-listing-body {
-    font-size: 2.08vw;
+  .single-classified-listing-tags span {
+    background-color: #dbdbdb;
+    margin: .1vw;
+    padding: .2vw .5vw;
+    border-radius: .3vw;
+    font-weight: bold;
+    font-size: 1.6vw;
+  }
+  .single-classified-listing-author-info {
+    padding: 0 1.5vw;
+    margin: .5vw 0;
+    font-size: 1.5vw;
   }
 </style>
 <div class="listing-og-container">
   <div class="single-classified-listing ">
     <div class="listing-content">
-      <h3><%= @listing.title %></h3>
+      <% if @listing.title.length > 75 %>
+        <h3 class="long-title"><%= @listing.title %></h3>
+      <% else %>
+        <h3><%= @listing.title %></h3>
+      <% end %>
       <div class="single-classified-listing-body">
         <%= @listing.processed_html.html_safe %>
       </div>
       <div class="single-classified-listing-tags">
         <% if @listing.tags.present? %>
-          <%= @listing.tags.each do |tag|  %>
-            <%= tag.name %>
+          <% @listing.tags.each do |tag|  %>
+            <span><%= tag.name %></span>
           <% end %>
         <% end %>
       </div>
