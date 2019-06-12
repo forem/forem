@@ -13,7 +13,9 @@ module Notifications
       end
 
       def call
-        user_ids = comment.ancestors.select(:user_id).where(receive_notifications: true).pluck(:user_id).to_set
+        comment_user_ids = comment.ancestors.select(:user_id).where(receive_notifications: true).pluck(:user_id)
+        subscribed_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article").pluck(:user_id)
+        user_ids = (comment_user_ids + subscribed_user_ids).to_set
         user_ids.add(comment.commentable.user_id) if comment.commentable.receive_notifications
         json_data = {
           user: user_data(comment.user),

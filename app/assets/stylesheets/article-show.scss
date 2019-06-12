@@ -1183,7 +1183,7 @@ article {
         }
 
         .dropdown-link-row {
-          input {
+          input[type="text"] {
             border: 1px dashed black;
             padding: 4px 6px;
             font-size: 1em;
@@ -1193,7 +1193,21 @@ article {
             margin-left: 15px;
           }
 
-          a {
+          input[type="checkbox"] {
+            float: right;
+            cursor: pointer;
+            @media screen and (min-width: 400px) {
+              margin: 5px;
+            }
+            @media screen and (min-width: 500px) {
+              margin: 3px;
+            }
+            @media screen and (min-width: 1365px) {
+              margin: 1px;
+            }
+          }
+
+          a, label {
             font-weight: bold;
             color: $black;
             padding: 12px 18px;
@@ -1202,6 +1216,22 @@ article {
 
             &:hover {
               background: $light-gray;
+            }
+          }
+
+          label {
+            cursor: pointer;
+            width: inherit;
+            @media screen and (min-width: 400px) {
+              padding-left: 18px;
+              font-size: 1em;
+            }
+            @media screen and (min-width: 500px) {
+              font-size: 0.92em;
+            }
+            @media screen and (min-width: 1365px) {
+              padding-left: 10px;
+              font-size: 0.7em;
             }
           }
         }

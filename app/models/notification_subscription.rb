@@ -1,0 +1,2 @@
+class NotificationSubscription < ApplicationRecord
+end
