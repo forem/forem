@@ -1,24 +1,26 @@
 
 <style>
   body {
-    background-color: #f9f9fa;
+    background: white;
+    padding: 0;
+    margin: 0;
   }
   .listing-og-container {
     width: 88vw;
     height: 44vw;
-    margin: 2.5vw auto;
-    padding: 0 1.8vw;
-    overflow: hidden;
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    padding: 1vw 0;
+    margin: 1.72vw auto;
   }
-
   .single-classified-listing {
     display: inline-block;
+    overflow: hidden;
+    font-family: "Roboto";
     border: 0.1vw solid #dbdbdb;
-    box-sizing: border-box;
     border-radius: .2vw;
-    width: 100%;
-    height: 100%;
+    width: 78vw;
+    height: 39vw;
+    margin: 0 auto;
+    display: block;
   }
 
   .single-classified-listing h3 {
@@ -41,13 +43,13 @@
   .single-classified-listing .single-classified-listing-body {
     font-size: 3vw;
     padding: 0 1.5vw;
-    height: 30vw;
+    height: 27.5vw;
     position: relative;
     overflow: hidden;
   }
 
   .single-classified-listing-tags {
-    margin-top: 2vw;
+    margin-top: 1vw;
     padding: 0 1.5vw;
   }
 
@@ -68,7 +70,7 @@
 <div class="listing-og-container">
   <div class="single-classified-listing ">
     <div class="listing-content">
-      <% if @listing.title.length > 75 %>
+      <% if @listing.title.length > 70 %>
         <h3 class="long-title"><%= @listing.title %></h3>
       <% else %>
         <h3><%= @listing.title %></h3>
