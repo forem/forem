@@ -32,5 +32,25 @@ RSpec.describe Podcast, type: :model do
       expect(podcast2).not_to be_valid
       expect(podcast2.errors[:feed_url]).to be_present
     end
+
+    it "doesn't allow to create a podcast with a reserved word slug" do
+      enter_podcast = build(:podcast, slug: "enter")
+      expect(enter_podcast).not_to be_valid
+      expect(enter_podcast.errors[:slug]).to be_present
+    end
+
+    it "is invalid when a user with a username equal to the podcast slug exists" do
+      create(:user, username: "annabu")
+      user_podcast = build(:podcast, slug: "annabu")
+      expect(user_podcast).not_to be_valid
+      expect(user_podcast.errors[:slug]).to be_present
+    end
+
+    it "is invalid when an org with a slug equal to the podcast slug exists" do
+      create(:organization, slug: "superorganization")
+      user_podcast = build(:podcast, slug: "superorganization")
+      expect(user_podcast).not_to be_valid
+      expect(user_podcast.errors[:slug]).to be_present
+    end
   end
 end
