@@ -79,40 +79,20 @@ class SocialPreviewsController < ApplicationController
   private
 
   def define_categories
-    case @listing.category
-    when "collabs"
-      @category = "Collaborators Wanted"
-      @cat_color = "#5AE8D9"
-    when "cfp"
-      @category = "Call For Proposal"
-      @cat_color = "#f58f8d"
-    when "forhire"
-      @category = "Available For Hire"
-      @cat_color = "#b78cf4"
-    when "education"
-      @category = "Education"
-      @cat_color = "#5AABE8"
-    when "jobs"
-      @category = "Now Hiring"
-      @cat_color = "#53c3ad"
-    when "mentors"
-      @category = "Offering Mentorship"
-      @cat_color = "#A69EE8"
-    when "mentees"
-      @category = "Looking For Mentorship"
-      @cat_color = "#88aedb"
-    when "forsale"
-      @category = "Stuff For Sale"
-      @cat_color = "#d0adfb"
-    when "events"
-      @category = "Upcoming Event"
-      @cat_color = "#f8b3d0"
-    when "misc"
-      @category = "Miscellaneous"
-      @cat_color = "#6393FF"
-    when "products"
-      @category = "Products & Tools"
-      @cat_color = "#5AE8D9"
-    end
+    cat_info = {
+      "collabs": ["Collaborators Wanted", "#5AE8D9"],
+      "cfp": ["Call For Proposal", "#f58f8d"],
+      "forhire": ["Available For Hire", "#b78cf4"],
+      "education": ["Education", "#5AABE8"],
+      "jobs": ["Now Hiring", "#53c3ad"],
+      "mentors": ["Offering Mentorship", "#A69EE8"],
+      "mentees": ["Looking For Mentorship", "#88aedb"],
+      "forsale": ["Stuff For Sale", "#d0adfb"],
+      "events": ["Upcoming Event", "#f8b3d0"],
+      "misc": ["Miscellaneous", "#6393FF"],
+      "products": ["Products & Tools", "#5AE8D9"]
+    }
+    @category = cat_info[@listing.category.to_sym][0]
+    @cat_color = cat_info[@listing.category.to_sym][1]
   end
 end
