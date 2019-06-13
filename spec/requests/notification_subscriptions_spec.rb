@@ -79,12 +79,6 @@ RSpec.describe "NotificationSubscriptions", type: :request do
         expect { subscription.reload }.to raise_error ActiveRecord::RecordNotFound
       end
 
-      it "raises the rate limit error if there are too many attempts" do
-        expect do
-          15.times { post "/notification_subscriptions/Article/#{article.id}", headers: headers, params: { currently_subscribed: "true" } }
-        end.to raise_error(RuntimeError)
-      end
-
       it "updates the article.receive_notifications column correctly if the current_user is the author" do
         post "/notification_subscriptions/Article/#{article.id}",
              headers: headers,

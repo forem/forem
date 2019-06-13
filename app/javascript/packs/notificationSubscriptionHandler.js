@@ -40,7 +40,6 @@ if (userStatus === 'logged-out') {
   };
 } else {
   updateStatus = () => {
-    const originalSubscriptionStatusValue = subscriptionStatusInput.value;
     checkbox.checked = !checkbox.checked;
 
     fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
@@ -58,31 +57,16 @@ if (userStatus === 'logged-out') {
     })
       .then(response => response.json())
       .then(result => {
-        if (result === 'Subscription rate limit reached') {
-          label.firstChild.data = result;
-          checkbox.checked = !checkbox.checked;
-          subscriptionStatusInput.value = originalSubscriptionStatusValue;
+        subscriptionStatusInput.value = result;
+        checkbox.checked = result;
 
-          label.classList.remove('enabled');
-          label.classList.add('disabled');
+        label.classList.remove('enabled');
+        label.classList.add('disabled');
 
-          setTimeout(() => {
-            label.firstChild.data = 'Subscribe to Notifications';
-            label.classList.remove('disabled');
-            label.classList.add('enabled');
-          }, 30000);
-        } else {
-          subscriptionStatusInput.value = result;
-          checkbox.checked = result;
-
-          label.classList.remove('enabled');
-          label.classList.add('disabled');
-
-          setTimeout(() => {
-            label.classList.remove('disabled');
-            label.classList.add('enabled');
-          }, 1500);
-        }
+        setTimeout(() => {
+          label.classList.remove('disabled');
+          label.classList.add('enabled');
+        }, 1500);
       });
   };
 }

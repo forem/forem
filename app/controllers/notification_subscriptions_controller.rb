@@ -10,7 +10,6 @@ class NotificationSubscriptionsController < ApplicationController
 
   def upsert
     not_found unless current_user
-    raise RateLimitChecker::UploadRateLimitReached if RateLimitChecker.new(current_user).limit_by_situation("notification_subscriptions")
 
     @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: current_user.id, notifiable_id: params[:notifiable_id], notifiable_type: params[:notifiable_type].capitalize)
     if params[:currently_subscribed] == "true"
@@ -25,10 +24,6 @@ class NotificationSubscriptionsController < ApplicationController
     respond_to do |format|
       format.json { render json: result }
       format.html { redirect_to request.referer }
-    end
-  rescue RateLimitChecker::UploadRateLimitReached
-    respond_to do |format|
-      format.json { render json: "Subscription rate limit reached".to_json }
     end
   end
 
