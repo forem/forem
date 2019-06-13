@@ -1,7 +1,6 @@
-import 'clipboard-copy-element';
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import linkCopyIcon from 'images/content-copy.svg';
+import linkCopyIcon from '../../../assets/images/content-copy.svg';
 import { generateMainImage } from '../actions';
 
 export default class ImageManagement extends Component {
@@ -74,8 +73,9 @@ export default class ImageManagement extends Component {
     this.imageMarkdownInput = document.getElementById(
       'image-markdown-copy-link-input',
     );
-    
-    const isIOSDevice = navigator.userAgent.match(/iPhone|iPad/i) ||
+
+    const isIOSDevice =
+      navigator.userAgent.match(/iPhone|iPad/i) ||
       navigator.userAgent.match('CriOS') ||
       navigator.userAgent === 'DEV-Native-ios';
 
