@@ -52,7 +52,7 @@ if (userStatus === 'logged-out') {
       },
       credentials: 'same-origin',
       body: JSON.stringify({
-        subscription_status: subscriptionStatusInput.value,
+        currently_subscribed: subscriptionStatusInput.value,
         // notifiable params are passed via URL
       }),
     })

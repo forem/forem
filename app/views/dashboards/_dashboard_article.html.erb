@@ -13,7 +13,7 @@
     <ul class="ellipsis-menu hidden">
       <li class="ellipsis-menu-item">
         <%= form_tag("/notification_subscriptions/Article/#{article.id}", method: :post, data: { type: "json" }) do %>
-          <input type="hidden" name="subscription_status" value="<%= article.receive_notifications %>">
+          <input type="hidden" name="currently_subscribed" value="<%= article.receive_notifications %>">
           <%= submit_tag article.receive_notifications ? "Mute Notifications" : "Receive Notifications" %>
         <% end %>
       </li>
@@ -43,7 +43,7 @@
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <% if manage_view %>
       <%= form_tag("/notification_subscriptions/Article/#{article.id}", method: :post, class: "mute-form") do %>
-      <input type="hidden" name="subscription_status" value="<%= article.receive_notifications %>">
+      <input type="hidden" name="currently_subscribed" value="<%= article.receive_notifications %>">
         <%= submit_tag article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
       <% end %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>

@@ -138,6 +138,7 @@ class ReservedWords
     hack
     started
     push_notification_subscriptions
+    notification_subscriptions
     getting-started
     hackers
     podcast
