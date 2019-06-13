@@ -136,7 +136,7 @@ class User < ApplicationRecord
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?
-  validate  :unique_including_orgs, if: :username_changed?
+  validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   scope :dev_account, -> { find_by(id: ApplicationConfig["DEVTO_USER_ID"]) }
 
@@ -370,8 +370,8 @@ class User < ApplicationRecord
     OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
   end
 
-  def unique_including_orgs
-    errors.add(:username, "is taken.") if Organization.find_by(slug: username)
+  def unique_including_orgs_and_podcasts
+    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username)
   end
 
   def subscribe_to_mailchimp_newsletter_without_delay
