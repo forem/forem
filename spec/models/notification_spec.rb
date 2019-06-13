@@ -5,7 +5,7 @@ RSpec.describe Notification, type: :model do
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
   let(:organization)    { create(:organization) }
-  let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
+  let(:article)         { create(:article, :with_notification_subscription, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
   let(:follow_instance) { user.follow(user2) }
   let(:badge_achievement) { create(:badge_achievement) }
 
@@ -124,6 +124,7 @@ RSpec.describe Notification, type: :model do
 
       before do
         article.update(receive_notifications: false)
+        article.notification_subscriptions.delete_all
       end
 
       it "does not send a notification to the author of the article" do
