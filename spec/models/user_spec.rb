@@ -36,6 +36,26 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+
+    it "validates username against reserved words" do
+      user = build(:user, username: "readinglist")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("reserved")).to be true
+    end
+
+    it "takes organization slug into account" do
+      create(:organization, slug: "lightalloy")
+      user = build(:user, username: "lightalloy")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
+
+    it "takes podcast slug into account" do
+      create(:podcast, slug: "lightpodcast")
+      user = build(:user, username: "lightpodcast")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
   end
 
   # the followings are failing
