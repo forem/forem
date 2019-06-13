@@ -28,8 +28,8 @@ class Bufferizer
   end
 
   def listings_tweet!
-    # buffer_listings_id = ApplicationConfig["BUFFER_LISTINGS_PROFILE"]
-    BufferUpdate.send_to_buffer(listings_twitter_text, 123)
+    buffer_listings_id = ApplicationConfig["BUFFER_LISTINGS_PROFILE"]
+    BufferUpdate.send_to_buffer(listings_twitter_text, buffer_listings_id)
     @listing.update(last_buffered: Time.current)
   end
 
