@@ -20,6 +20,7 @@ class ReservedWords
     videos
     video_states
     twilio_tokens
+    twitter
     latest
     contact
     merch
