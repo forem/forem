@@ -13,22 +13,21 @@ const userStatus = document
   .getElementsByTagName('body')[0]
   .getAttribute('data-user-status');
 
-// do a check for signed out users
-// check if showModal() function is defined (probably not necessary b/c of defer)
-
-fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
-  headers: {
-    Accept: 'application/json',
-    'X-CSRF-Token': window.csrfToken,
-    'Content-Type': 'application/json',
-  },
-  credentials: 'same-origin',
-})
-  .then(response => response.json())
-  .then(result => {
-    subscriptionStatusInput.value = result;
-    checkbox.checked = result;
-  });
+if (userStatus === 'logged-in') {
+  fetch(`/notification_subscriptions/${notifiableType}/${notifiableId}`, {
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then(result => {
+      subscriptionStatusInput.value = result;
+      checkbox.checked = result;
+    });
+}
 
 let updateStatus = () => {};
 

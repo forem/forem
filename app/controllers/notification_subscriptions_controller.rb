@@ -1,8 +1,10 @@
 class NotificationSubscriptionsController < ApplicationController
   def show
-    not_found unless current_user
-
-    result = NotificationSubscription.exists?(user_id: current_user.id, notifiable_id: params[:notifiable_id], notifiable_type: params[:notifiable_type])
+    result = if current_user
+               NotificationSubscription.exists?(user_id: current_user.id, notifiable_id: params[:notifiable_id], notifiable_type: params[:notifiable_type])
+             else
+               false
+             end
     respond_to do |format|
       format.json { render json: result }
     end
