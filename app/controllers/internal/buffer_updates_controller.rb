@@ -8,7 +8,7 @@ class Internal::BufferUpdatesController < Internal::ApplicationController
     listing = ClassifiedListing.find(params[:listing_id]) if listing_id.present?
     case params[:social_channel]
     when "main_twitter"
-      Bufferizer.new("article", article, tweet).main_teet!
+      Bufferizer.new("article", article, tweet).main_tweet!
       render body: nil
     when "satellite_twitter"
       Bufferizer.new("article", article, tweet).satellite_tweet!

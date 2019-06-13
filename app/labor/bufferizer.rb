@@ -16,7 +16,7 @@ class Bufferizer
     @article.update(last_buffered: Time.current)
   end
 
-  def main_teet!
+  def main_tweet!
     BufferUpdate.buff!(@article.id, twitter_buffer_text, ApplicationConfig["BUFFER_TWITTER_ID"], "twitter", nil)
     @article.update(last_buffered: Time.current)
   end

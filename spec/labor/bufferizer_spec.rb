@@ -7,7 +7,7 @@ RSpec.describe Bufferizer do
 
   it "sends to buffer twitter" do
     tweet = "test tweet"
-    described_class.new("article", article, tweet).main_teet!
+    described_class.new("article", article, tweet).main_tweet!
     expect(article.last_buffered.utc.to_i).to be > 2.minutes.ago.to_i
   end
 
