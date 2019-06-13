@@ -635,4 +635,15 @@ RSpec.describe User, type: :model do
       expect { organization_membership.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end
+
+  describe "#pro?" do
+    it "returns false if the user is not a pro" do
+      expect(user.pro?).to be(false)
+    end
+
+    it "returns true if the user is a pro" do
+      user.add_role(:pro)
+      expect(user.pro?).to be(true)
+    end
+  end
 end

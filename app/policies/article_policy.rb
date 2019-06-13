@@ -23,6 +23,10 @@ class ArticlePolicy < ApplicationPolicy
     true
   end
 
+  def stats?
+    user_is_author? || user_admin?
+  end
+
   def permitted_attributes
     %i[title body_html body_markdown main_image published canonical_url
        description allow_small_edits allow_big_edits tag_list publish_under_org
