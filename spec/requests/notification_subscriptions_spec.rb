@@ -40,11 +40,10 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       end
     end
 
-    it "returns 404 if there is no logged in user" do
-      expect do
-        get "/notification_subscriptions/Article/#{article.id}",
-            headers: headers
-      end.to raise_error ActiveRecord::RecordNotFound
+    it "returns a JSON response 'false' if there is no logged in user" do
+      get "/notification_subscriptions/Article/#{article.id}", headers: headers
+      expect(response.body).to eq "false"
+      expect(response.content_type).to eq "application/json"
     end
   end
 
