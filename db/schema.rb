@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_202826) do
+ActiveRecord::Schema.define(version: 2019_06_11_195955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -665,15 +665,21 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.datetime "created_at", null: false
     t.string "markdown"
     t.bigint "poll_id"
+    t.integer "poll_votes_count", default: 0, null: false
     t.string "processed_html"
     t.datetime "updated_at", null: false
   end
 
+  create_table "poll_skips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+  end
+
   create_table "poll_votes", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "markdown"
     t.bigint "poll_option_id"
-    t.string "processed_html"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
   end
@@ -682,6 +688,9 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.boolean "allow_multiple_selections", default: false
     t.bigint "article_id"
     t.datetime "created_at", null: false
+    t.integer "poll_options_count", default: 0, null: false
+    t.integer "poll_skips_count", default: 0, null: false
+    t.integer "poll_votes_count", default: 0, null: false
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.datetime "updated_at", null: false

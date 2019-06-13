@@ -24,8 +24,15 @@
       padding-left: 8px;
       border-radius: 3px;
       width: 95%;
+      position: relative;
       &:hover {
         background: $light-gray;
+      }
+      &.ltag-polloption-justshowmetheresults:hover {
+        background: transparent;
+      }
+      &.already-voted {
+        background: transparent;
       }
     }
     label {
@@ -44,13 +51,25 @@
       text-align: left;
       padding-left: 20px;
     }
-  }
-  button.cta {
-    background: $bold-blue;
-    color: white;
-    font-size: 1em;
-    border-radius: 100px;
-    padding: 5px 20px;
-    margin-left: 5px;
+    .ltag-votepercent {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 3;
+      border-radius: 3px;
+      &.ltag-optionvotedfor {
+        background: $green;
+        font-weight: bold;
+      }
+      &.ltag-optionnotvotedfor {
+        background: $light-medium-gray;
+      }
+    }
+    .ltag-votepercenttext {
+      position: relative;
+      z-index: 5;
+    }
   }
 }

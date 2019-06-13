@@ -5,6 +5,7 @@ class CreatePollOptions < ActiveRecord::Migration[5.2]
       t.string  :markdown
       t.string  :processed_html
       t.boolean :counts_in_tabulation
+      t.integer :poll_votes_count, null: false, default: 0
       t.timestamps
     end
   end

@@ -4,6 +4,8 @@ class PollOption < ApplicationRecord
 
   before_save :evaluate_markdown
 
+  counter_culture :poll
+
   private
 
   def evaluate_markdown
