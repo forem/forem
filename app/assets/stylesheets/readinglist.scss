@@ -22,6 +22,7 @@
       box-sizing: border-box;
       margin-bottom: 4px;
       @include themeable(background, theme-container-accent-background, lighten($light-gray, 2%));
+      @include themeable(color, theme-color, $black);
     }
     .readinglist-tags {
       padding-bottom: 25px;
