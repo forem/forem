@@ -5,7 +5,7 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
   let(:organization)    { create(:organization) }
-  let(:article)         { create(:article, user_id: user.id) }
+  let(:article)         { create(:article, :with_notification_subscription, user_id: user.id) }
   let(:comment)         { create(:comment, commentable: article, user: user2) }
   let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user3) }
 
