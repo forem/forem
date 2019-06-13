@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe "Pages", type: :request do
   describe "GET /:slug" do
     it "has proper headline" do
-      page = create(:page)
+      page = create(:page, title: "Edna O'Brien96")
       get "/page/#{page.slug}"
-      expect(response.body).to include(page.title)
+      expect(response.body).to include(CGI.escapeHTML(page.title))
     end
   end
 

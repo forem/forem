@@ -1,15 +1,22 @@
-class PollTag < LiquidTagBase
-  include ActionView::Helpers
+class PollTag < Liquid::Block
   PARTIAL = "liquids/poll".freeze
 
   def render(_context)
-    @poll = Poll.first
+    # content = Nokogiri::HTML.parse(super)
+    # parsed_content = content.xpath("//html/body").text
+
+    @poll = generate_poll("parsed_content")
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        poll: @poll,
+        poll: @poll
       },
     )
+  end
+
+  def generate_poll(input_string)
+    poll = Poll.first
+    poll.processed_html = input_string
   end
 
   def self.script

@@ -10,7 +10,7 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many    :organization_memberships
+  has_many    :organization_memberships, dependent: :destroy
   has_many    :organizations, through: :organization_memberships
   has_many    :api_secrets, dependent: :destroy
   has_many    :articles, dependent: :destroy
@@ -38,6 +38,7 @@ class User < ApplicationRecord
   has_many    :credits
   has_many    :classified_listings
   has_many    :poll_votes
+  has_many    :poll_skips
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,

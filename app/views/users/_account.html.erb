@@ -17,7 +17,7 @@
 <% end %>
 
 <h2>DEV API Access Tokens</h2>
-<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though.</p>
+<p>You can generate personal access tokens to use for authentication with the DEV API. The API is still in early beta though. The <a href="/api">DEV API documentation</a> contains further information.</a></p>
 <h3>Generate an access token</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
@@ -35,6 +35,7 @@
 <% if @user.api_secrets.empty? %>
   <p>None yet!</p>
 <% end %>
+
 <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
   <div class='api__secret__container'>
     <div class='api__secret__desc'>
@@ -42,9 +43,10 @@
       <p class='content'><%= api_secret.secret %></p>
       <p class='subtitle'>Created <%= api_secret.created_at.to_date.to_s %></p>
     </div>
+
     <div class='api__secret__revoke'>
-      <%= form_tag users_api_secrets_path(id: api_secret.id), method: :delete do %>
-        <%= button_tag("Revoke", class: "big-action danger-button") %>
+      <%= form_tag users_api_secret_path(api_secret.id), method: :delete do %>
+        <%= button_tag "Revoke", class: "big-action danger-button" %>
       <% end %>
     </div>
   </div>

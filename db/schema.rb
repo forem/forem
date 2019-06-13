@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
+    t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
@@ -291,6 +292,8 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.integer "user_id"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
+    t.index ["created_at"], name: "index_comments_on_created_at"
+    t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -378,6 +381,7 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.string "follower_type", null: false
     t.float "points", default: 1.0
     t.datetime "updated_at"
+    t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
@@ -595,6 +599,7 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.string "user_agent"
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
+    t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
@@ -728,6 +733,8 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["category"], name: "index_reactions_on_category"
+    t.index ["created_at"], name: "index_reactions_on_created_at"
+    t.index ["points"], name: "index_reactions_on_points"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["user_id"], name: "index_reactions_on_user_id"

@@ -11,7 +11,7 @@ RSpec.describe Poll, type: :model do
   end
 
   it "creates options from input" do
-    poll = create(:poll, article_id: article.id, poll_options_input_array: ["hello", "goodbye", "heyheyhey"])
+    poll = create(:poll, article_id: article.id, poll_options_input_array: %w[hello goodbye heyheyhey])
     expect(poll.poll_options.size).to eq(3)
   end
 end

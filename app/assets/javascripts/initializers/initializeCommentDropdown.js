@@ -2,7 +2,6 @@
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
-
   function isIOSDevice() {
     return (
       navigator.userAgent.match(/iPhone/i) ||
@@ -85,7 +84,9 @@ function initializeCommentDropdown() {
 
   function dropdownFunction(e) {
     var button = e.target.parentElement;
-    var dropdownContent = button.parentElement.getElementsByClassName('dropdown-content')[0];	
+    var dropdownContent = button.parentElement.getElementsByClassName(
+      'dropdown-content',
+    )[0];
     if (dropdownContent.classList.contains('showing')) {
       dropdownContent.classList.remove('showing');
       removeClickListener();
