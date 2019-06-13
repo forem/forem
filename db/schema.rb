@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_07_110030) do
+ActiveRecord::Schema.define(version: 2019_06_12_095959) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -626,43 +626,47 @@ ActiveRecord::Schema.define(version: 2019_06_07_110030) do
     t.integer "duration_in_seconds"
     t.boolean "featured", default: true
     t.integer "featured_number"
-    t.string "guid"
+    t.string "guid", null: false
     t.string "image"
     t.string "itunes_url"
-    t.string "media_url"
+    t.string "media_url", null: false
     t.string "order_key"
     t.integer "podcast_id"
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
     t.integer "reactions_count", default: 0, null: false
-    t.string "slug"
+    t.string "slug", null: false
     t.string "social_image"
     t.string "subtitle"
     t.text "summary"
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
+    t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
     t.text "description"
-    t.string "feed_url"
-    t.string "image"
+    t.string "feed_url", null: false
+    t.string "image", null: false
     t.string "itunes_url"
-    t.string "main_color_hex"
+    t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
-    t.string "slug"
+    t.string "slug", null: false
     t.string "soundcloud_url"
     t.text "status_notice", default: ""
-    t.string "title"
+    t.string "title", null: false
     t.string "twitter_username"
     t.boolean "unique_website_url?", default: true
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
+    t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
 
   create_table "push_notification_subscriptions", force: :cascade do |t|
