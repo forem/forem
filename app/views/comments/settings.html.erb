@@ -35,15 +35,15 @@
 <div class="container">
   <h1>Comment Settings</h1>
 
-  <% if @comment.receive_notifications %>
+  <% if @notification_subscription.persisted? %>
+    <p>All notifications for this comment and any of your comments in the thread are currently muted.</p>
+  <% else %>
     <h4>Don't want notifications for this thread?</h4>
     <p><em>This will mute all notifications for this comment and any of your comments in this chain.</em></p>
-  <% else %>
-    <p>All notifications for this comment and any of your comments in the thread are currently muted.</p>
   <% end %>
-  <%= form_for(@comment, url: "/comment_mutes/#{@comment.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
-    <%= f.hidden_field :receive_notifications, value: !@comment.receive_notifications %>
-    <%= f.submit @comment.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{@comment.receive_notifications ? 'mute' : 'unmute'}" %>
+  <%= form_for(@notification_subscription, url: "/notification_subscriptions/Comment/#{@comment.id}", method: "post", html: { class: "mute-form" }) do |f| %>
+    <input type="hidden" name="subscription_status" value="<%= @notification_subscription.persisted? %>">
+    <%= f.submit @notification_subscription.persisted? ? "NOTIFICATIONS MUTED" : "MUTE NOTIFICATIONS", class: "cta pill #{@notification_subscription.persisted? ? 'unmute' : 'mute'}" %>
   <% end %>
   <br>
 </div>
