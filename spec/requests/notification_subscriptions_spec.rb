@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "NotificationSubscriptions", type: :request do
-  let(:user)  { create(:user) }
+  let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:article) { create(:article, :with_notification_subscription, user: user) }
   let(:other_article) { create(:article, :with_notification_subscription, user: other_user) }
@@ -22,20 +22,20 @@ RSpec.describe "NotificationSubscriptions", type: :request do
 
       it "returns a JSON response" do
         get "/notification_subscriptions/Article/#{article.id}",
-          headers: headers
+            headers: headers
         expect(response.content_type).to eq "application/json"
       end
 
       it "returns the correct subscription boolean as JSON" do
         get "/notification_subscriptions/Article/#{article.id}",
-          headers: headers
+            headers: headers
         expect(response.body).to eq "true"
       end
 
       it "returns the correct subscription boolean as JSON if unsubscribed" do
         article.notification_subscriptions.first.delete
         get "/notification_subscriptions/Article/#{article.id}",
-          headers: headers
+            headers: headers
         expect(response.body).to eq "false"
       end
     end
@@ -43,29 +43,27 @@ RSpec.describe "NotificationSubscriptions", type: :request do
     it "returns 404 if there is no logged in user" do
       expect do
         get "/notification_subscriptions/Article/#{article.id}",
-        headers: headers
+            headers: headers
       end.to raise_error ActiveRecord::RecordNotFound
     end
   end
-  
+
   describe "#upsert or POST /notification_subscriptions/:notifiable_type/:notifiable_id" do
     it "returns 404 if there is no logged in user" do
       expect do
         post "/notification_subscriptions/Article/#{article.id}",
-        headers: headers,
-        params: { currently_subscribed: "false" }
+             headers: headers,
+             params: { currently_subscribed: "false" }
       end.to raise_error ActiveRecord::RecordNotFound
     end
 
     context "when sent as a JSON request with the correct params" do
       before { sign_in user }
-      let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
-      let(:cache) { Rails.cache }
 
       it "completes a proper subscription" do
         post "/notification_subscriptions/Article/#{other_article.id}",
-          headers: headers,
-          params: { currently_subscribed: "false" }
+             headers: headers,
+             params: { currently_subscribed: "false" }
         subscription = NotificationSubscription.last
         expect(subscription.user_id).to eq user.id
         expect(subscription.notifiable_id).to eq other_article.id
@@ -75,24 +73,13 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       it "removes a previous subscription" do
         subscription = article.notification_subscriptions.first
         post "/notification_subscriptions/Article/#{article.id}",
-          headers: headers,
-          params: { currently_subscribed: "true" }
-        
+             headers: headers,
+             params: { currently_subscribed: "true" }
+
         expect { subscription.reload }.to raise_error ActiveRecord::RecordNotFound
       end
 
-      it "increments the cache counter by one" do
-        allow(Rails).to receive(:cache).and_return(memory_store)
-        Rails.cache.clear
-        post "/notification_subscriptions/Article/#{article.id}",
-          headers: headers,
-          params: { currently_subscribed: "false" }
-        expect(cache.read("#{user.id}_notification_subscriptions")).to eq(1)
-      end
-
       it "raises the rate limit error if there are too many attempts" do
-        allow(Rails).to receive(:cache).and_return(memory_store)
-        Rails.cache.clear
         expect do
           15.times { post "/notification_subscriptions/Article/#{article.id}", headers: headers, params: { currently_subscribed: "true" } }
         end.to raise_error(RuntimeError)
@@ -100,15 +87,15 @@ RSpec.describe "NotificationSubscriptions", type: :request do
 
       it "updates the article.receive_notifications column correctly if the current_user is the author" do
         post "/notification_subscriptions/Article/#{article.id}",
-          headers: headers,
-          params: { currently_subscribed: "true" }
+             headers: headers,
+             params: { currently_subscribed: "true" }
         expect(article.reload.receive_notifications).to eq false
       end
 
       it "updates the comment.receive_notifications column correctly if the current_user is the commenter" do
         post "/notification_subscriptions/Comment/#{comment.id}",
-          headers: headers,
-          params: { currently_subscribed: "true" }
+             headers: headers,
+             params: { currently_subscribed: "true" }
         expect(comment.reload.receive_notifications).to eq false
       end
     end

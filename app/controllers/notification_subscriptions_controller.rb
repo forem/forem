@@ -21,11 +21,6 @@ class NotificationSubscriptionsController < ApplicationController
       @notification_subscription.save!
     end
 
-
-    count = Rails.cache.read("#{current_user.id}_notification_subscriptions").to_i
-    count += 1
-    Rails.cache.write("#{current_user.id}_notification_subscriptions", count, expires_in: 30.seconds)
-
     result = @notification_subscription.persisted?
     respond_to do |format|
       format.json { render json: result }
