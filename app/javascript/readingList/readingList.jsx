@@ -33,6 +33,7 @@ export class ReadingList extends Component {
         t.setState({
           totalReadingList: content.nbHits,
           readingListItems: content.hits,
+          totalCount: content.nbHits,
           index,
           itemsLoaded: true,
         });
@@ -81,7 +82,7 @@ export class ReadingList extends Component {
 
   archive = (e, item) => {
     e.preventDefault();
-    const { statusView, readingListItems } = this.state;
+    const { statusView, readingListItems, totalCount } = this.state;
     const t = this;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
@@ -94,7 +95,11 @@ export class ReadingList extends Component {
     });
     const newItems = readingListItems;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({ archiving: true, readingListItems: newItems });
+    t.setState({
+      archiving: true,
+      readingListItems: newItems,
+      totalCount: totalCount - 1,
+    });
     setTimeout(() => {
       t.setState({ archiving: false });
     }, 1800);
@@ -146,13 +151,13 @@ export class ReadingList extends Component {
 
   render() {
     const {
-      readingListItems,
+      archiving,
       availableTags,
-      selectedTags,
       itemsLoaded,
       query,
+      readingListItems,
+      selectedTags,
       statusView,
-      archiving,
       showLoadMoreButton,
     } = this.state;
     let allItems = readingListItems.map(item => (
