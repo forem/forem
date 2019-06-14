@@ -29,20 +29,20 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       it "returns the correct subscription boolean as JSON" do
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(response.body).to eq "true"
+        expect(JSON.parse(response.body)["config"]).to eq "all_comments"
       end
 
       it "returns the correct subscription boolean as JSON if unsubscribed" do
         article.notification_subscriptions.first.delete
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(response.body).to eq "false"
+        expect(JSON.parse(response.body)["config"]).to eq "not_subscribed"
       end
     end
 
-    it "returns a JSON response 'false' if there is no logged in user" do
+    it "returns a JSON response 'null' if there is no logged in user" do
       get "/notification_subscriptions/Article/#{article.id}", headers: headers
-      expect(response.body).to eq "false"
+      expect(response.body).to eq "null"
       expect(response.content_type).to eq "application/json"
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       expect do
         post "/notification_subscriptions/Article/#{article.id}",
              headers: headers,
-             params: { currently_subscribed: "false" }
+             params: { config: "all_comments" }
       end.to raise_error ActiveRecord::RecordNotFound
     end
 
@@ -73,7 +73,7 @@ RSpec.describe "NotificationSubscriptions", type: :request do
         subscription = article.notification_subscriptions.first
         post "/notification_subscriptions/Article/#{article.id}",
              headers: headers,
-             params: { currently_subscribed: "true" }
+             params: { config: "not_subscribed" }
 
         expect { subscription.reload }.to raise_error ActiveRecord::RecordNotFound
       end
@@ -81,14 +81,14 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       it "updates the article.receive_notifications column correctly if the current_user is the author" do
         post "/notification_subscriptions/Article/#{article.id}",
              headers: headers,
-             params: { currently_subscribed: "true" }
+             params: { config: "not_subscribed" }
         expect(article.reload.receive_notifications).to eq false
       end
 
       it "updates the comment.receive_notifications column correctly if the current_user is the commenter" do
         post "/notification_subscriptions/Comment/#{comment.id}",
              headers: headers,
-             params: { currently_subscribed: "true" }
+             params: { config: "not_subscribed" }
         expect(comment.reload.receive_notifications).to eq false
       end
     end
@@ -101,18 +101,18 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       end
 
       it "mutes the parent comment" do
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { currently_subscribed: "true" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "not_subscribed" }
         expect(parent_comment_by_og.reload.receive_notifications).to be false
       end
 
       it "does not mute the someone else's parent comment" do
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { currently_subscribed: "false" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "all_comments" }
         expect(parent_comment_by_other.reload.receive_notifications).to be true
       end
 
       it "unmutes the parent comment if already muted" do
         parent_comment_by_og.update(receive_notifications: false)
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { currently_subscribed: "false" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "all_comments" }
         expect(parent_comment_by_og.reload.receive_notifications).to eq true
       end
     end
@@ -124,7 +124,7 @@ RSpec.describe "NotificationSubscriptions", type: :request do
         child2_of_child_of_child_by_og
         parent_comment_by_other
         sign_in user
-        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { currently_subscribed: "true" }
+        post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: { config: "not_subscribed" }
       end
 
       it "mutes all of the original commenter's comments in a single thread" do

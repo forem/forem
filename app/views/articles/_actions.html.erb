@@ -30,22 +30,32 @@
     </button>
     <div class="dropdown-content">
       <div>
+        <% if user_signed_in? %>
+          <div class="dropdown-link-row notification-subscriptions-area-row"
+            id="notification-subscriptions-area" data-notifiable-id="<%= @article.id %>" data-notifiable-type="Article">
+            <div class="notification-subscriptions-area-header">🔔 Notification Subscriptions
+              <button for="subscribe_notifications" id="notification-subscription-label_not_subscribed" class="notification-subscription-label notification-subscription-label-unsubscribe" data-payload="not_subscribed">
+                Unsubscribe
+              </button>
+            </div>
+            <button for="subscribe_notifications" id="notification-subscription-label_all_comments" class="notification-subscription-label" data-payload="all_comments">
+              All Comments <span class="selected-emoji">✅</span>
+            </button>
+            <button for="subscribe_notifications" id="notification-subscription-label_top_level_comments" class="notification-subscription-label" data-payload="top_level_comments">
+              Top Level Comments <span class="selected-emoji">✅</span>
+            </button>
+            <button for="subscribe_notifications" id="notification-subscription-label_only_author_comments" class="notification-subscription-label" data-payload="only_author_comments">
+              Post Author Comments <span class="selected-emoji">✅</span>
+            </button>
+            <%= javascript_pack_tag "notificationSubscriptionHandler", defer: true %>
+          </div>
+        <% end %>
         <div class="dropdown-link-row">
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
-            <input type="text" id="article-copy-link-input" value="<%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
+            <input type="text" id="article-copy-link-input" value="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
             <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>
-        </div>
-        <div class="dropdown-link-row">
-          <label for="subscribe_notifications" id="notification-subscription-label" class="notification-subscription-label enabled">
-            Subscribe to Notifications
-            <input type="hidden" name="subscribe_notifications[currently_subscribed]" id="notification-subscription-status" value="">
-            <input type="hidden" name="subscribe_notifications[notifiable_id]" id="notification-subscription-notifiable-id" value="<%= @article.id %>">
-            <input type="hidden" name="subscribe_notifications[notifiable_type]" id="notification-subscription-notifiable-type" value="Article">
-            <input type="checkbox" name="subscribe_notifications" id="notification-subcription-checkbox" autocomplete="off">
-          </label>
-          <%= javascript_pack_tag "notificationSubscriptionHandler", defer: true %>
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
