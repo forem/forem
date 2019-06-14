@@ -54,6 +54,11 @@ Rails.application.routes.draw do
       end
     end
     resources :welcome, only: %i[index create]
+    resources :tools, only: %i[index create] do
+      collection do
+        post "bust_cache"
+      end
+    end
   end
 
   namespace :api, defaults: { format: "json" } do
