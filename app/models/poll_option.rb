@@ -2,6 +2,9 @@ class PollOption < ApplicationRecord
   belongs_to :poll
   has_many :poll_votes
 
+  validates :markdown, presence: true,
+                              length: { maximum: 128 }
+
   before_save :evaluate_markdown
 
   counter_culture :poll

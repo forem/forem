@@ -35,12 +35,22 @@
         background: transparent;
       }
     }
+    input {
+      vertical-align: top;
+      margin-top: 1.05em;
+    }
     label {
       width: calc(100% - 40px);
       padding: 2px 6px;
       cursor: pointer;
       vertical-align: -3px;
       display: inline-block;
+      line-height: 1.25em;
+    }
+    .ltag-voting-results-count {
+      font-size: 0.7em;
+      color: $medium-gray;
+      text-align: left;
     }
     button {
       width: 100%;

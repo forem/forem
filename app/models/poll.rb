@@ -9,7 +9,7 @@ class Poll < ApplicationRecord
   belongs_to :article
   has_many :poll_options
   has_many :poll_skips
-  has_many :poll_votes, through: :poll_options
+  has_many :poll_votes
 
   validates :prompt_markdown, presence: true,
                               length: { maximum: 128 }

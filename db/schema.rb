@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_11_195955) do
+ActiveRecord::Schema.define(version: 2019_06_12_095959) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -511,6 +511,14 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "notification_subscriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "notifiable_id", null: false
+    t.string "notifiable_type", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+  end
+
   create_table "notifications", id: :serial, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
@@ -525,7 +533,10 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
-    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
+    t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
+    t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
+    t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -626,43 +637,47 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.integer "duration_in_seconds"
     t.boolean "featured", default: true
     t.integer "featured_number"
-    t.string "guid"
+    t.string "guid", null: false
     t.string "image"
     t.string "itunes_url"
-    t.string "media_url"
+    t.string "media_url", null: false
     t.string "order_key"
     t.integer "podcast_id"
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
     t.integer "reactions_count", default: 0, null: false
-    t.string "slug"
+    t.string "slug", null: false
     t.string "social_image"
     t.string "subtitle"
     t.text "summary"
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
+    t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
     t.text "description"
-    t.string "feed_url"
-    t.string "image"
+    t.string "feed_url", null: false
+    t.string "image", null: false
     t.string "itunes_url"
-    t.string "main_color_hex"
+    t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
-    t.string "slug"
+    t.string "slug", null: false
     t.string "soundcloud_url"
     t.text "status_notice", default: ""
-    t.string "title"
+    t.string "title", null: false
     t.string "twitter_username"
     t.boolean "unique_website_url?", default: true
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
+    t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
 
   create_table "poll_options", force: :cascade do |t|
@@ -680,13 +695,16 @@ ActiveRecord::Schema.define(version: 2019_06_11_195955) do
     t.bigint "poll_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
   end
 
   create_table "poll_votes", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "poll_option_id"
+    t.bigint "poll_id", null: false
+    t.bigint "poll_option_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
+    t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
   end
 
   create_table "polls", force: :cascade do |t|
