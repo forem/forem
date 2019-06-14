@@ -81,7 +81,7 @@ RSpec.describe LinkTag, type: :liquid_template do
 
   it "renders reading time of article lengthy articles" do
     template = file_fixture("article_long_content.txt").read
-    article = create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3", body_markdown: template)
+    article = create(:article, user: user, body_markdown: template)
     liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
     expect(liquid.render).to include('3 min read')
   end
