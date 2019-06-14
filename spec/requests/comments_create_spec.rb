@@ -21,6 +21,6 @@ RSpec.describe "CommentsCreate", type: :request do
     post "/comments", params: {
       comment: { body_markdown: new_body, commentable_id: article.id, commentable_type: "Article" }
     }
-    expect(NotificationSubscription.last.notifiable).to eq(comment.last)
+    expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
   end
 end
