@@ -142,7 +142,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
     context "when a user has a new comment notification" do
       let(:user2)    { create(:user) }
-      let(:article)  { create(:article, user_id: user.id) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
