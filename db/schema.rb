@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_12_095959) do
+ActiveRecord::Schema.define(version: 2019_06_14_093041) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -527,6 +527,7 @@ ActiveRecord::Schema.define(version: 2019_06_12_095959) do
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id"], name: "index_notifications_on_user_id"
