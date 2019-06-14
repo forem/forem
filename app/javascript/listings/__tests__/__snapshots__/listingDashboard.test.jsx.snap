@@ -35,7 +35,7 @@ preact-render-spy (1 nodes)
         href="/credits/purchase"
         data-no-instant={true}
       >
-        Buy More Credits
+        Buy Credits
       </a>
     </div>
   </div>

@@ -57,7 +57,7 @@ export class ListingDashboard extends Component {
           <div className="dashboard-listings-header">
             <h3>Credits</h3>
             {creditCount(selectedListings, userCredits, orgs)}
-            <a href="/credits/purchase" data-no-instant>Buy More Credits</a>
+            <a href="/credits/purchase" data-no-instant>Buy Credits</a>
           </div>
         </div>
         <div className="dashboard-listings-view">
