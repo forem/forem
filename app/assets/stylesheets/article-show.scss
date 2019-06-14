@@ -1159,7 +1159,7 @@ article {
       .dropdown-content {
         display: none;
         position: fixed;
-        bottom: 60px;
+        bottom: 55px;
         right: 0;
         left: 0;
         z-index: 100;
@@ -1307,6 +1307,8 @@ article {
             .selected-emoji {
               visibility: hidden;
               margin-left: 4px;
+              font-size: 1.2em;
+              vertical-align: -0.1em;
             }
             &.selected {
               .selected-emoji {
