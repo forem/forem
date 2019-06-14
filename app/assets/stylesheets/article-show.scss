@@ -898,6 +898,7 @@ article {
           flex: 1 0 24px;
           max-width: 24px;
           margin-left: 5px;
+          @include themeable(filter, theme-social-icon-invert, invert(0));
         }
         input {
           cursor: pointer;
@@ -974,6 +975,9 @@ article {
       .dropdown-content {
         left: 80px !important;
         bottom: 0px !important;
+        @media screen and (min-width: 1365px) {
+          bottom: -155px !important;
+        }
         a {
           background: transparent !important;
           padding-left: 10px !important;
@@ -1159,7 +1163,11 @@ article {
         right: 0;
         left: 0;
         z-index: 100;
-        background: $tan;
+        @include themeable(
+          background, 
+          theme-top-bar-background, 
+          $tan
+        );
         font-size: 1em;
         text-align: left;
         min-width: 300px;
@@ -1208,37 +1216,109 @@ article {
             }
           }
 
-          a, label {
+          a {
             font-weight: bold;
-            color: $black;
+            @include themeable(
+              color, 
+              theme-color, 
+              $black
+            );
             padding: 12px 18px;
             width: calc(100% - 36px);
             display: block;
-
+            font-size: 0.8em;
             &:hover {
-              background: $light-gray;
-            }
+              @include themeable(
+                background, 
+                theme-top-bar-background-hover, 
+                $light-gray
+              );
+              }
           }
 
-          label {
-            width: inherit;
-            @media screen and (min-width: 400px) {
-              padding-left: 18px;
-              font-size: 1em;
-            }
+          &.notification-subscriptions-area-row {
+            padding: 0px;
+            @include themeable(
+              border-bottom, 
+              theme-container-border, 
+              1px solid $medium-gray
+            );
+          }
+          .notification-subscriptions-area-header {
+            padding: 12px 6px;
+            padding-left: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-top: -5px;
             @media screen and (min-width: 500px) {
-              font-size: 0.92em;
+              border-top-right-radius: 3px;
+              border-top-left-radius: 3px;
             }
-            @media screen and (min-width: 1365px) {
-              padding-left: 10px;
-              font-size: 0.7em;
+            @include themeable-important(
+              background, 
+              theme-container-background, 
+              darken($tan, 3%)
+            );
+            @include themeable-important(
+              border-bottom, 
+              theme-subtle-border, 
+              1px solid $light-medium-gray
+            );
+            button.notification-subscription-label {
+              display: inline-block;
+              width: 90px !important;
+              margin-left: 5px !important;
+              text-align: center !important;
+              float: right !important;
+              padding: 4px 0px !important;
+              @include themeable-important(
+                border, 
+                theme-border, 
+                1px solid $light-medium-gray
+              );
+              border-radius: 100px;
+              &.selected {
+                visibility: hidden !important;
+              }
             }
           }
-          label.enabled {
-            cursor: pointer;
-          }
-          label.disabled {
-            pointer-events: none;
+          button.notification-subscription-label {
+            width: 100% !important;
+            opacity: 1.0 !important;
+            text-align: left;
+            font-size: 0.8em;
+            box-sizing: border-box !important;
+            padding: 13px 4px !important;
+            padding-left: 13px !important;
+            margin: auto !important;
+            cursor: pointer !important;
+            @include themeable-important(
+              color, 
+              theme-color, 
+              $black
+            );
+            &:hover {
+              @include themeable-important(
+                background, 
+                theme-top-bar-background-hover, 
+                $light-gray
+              );
+            }
+            .selected-emoji {
+              visibility: hidden;
+              margin-left: 4px;
+            }
+            &.selected {
+              .selected-emoji {
+                display: inline-block;
+                visibility: visible;
+              }
+              @include themeable-important(
+                color, 
+                theme-color, 
+                $black
+              );
+            }
           }
         }
       }

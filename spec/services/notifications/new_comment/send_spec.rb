@@ -8,6 +8,7 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
   let(:organization)         { create(:organization) }
   let(:article)              { create(:article, :with_notification_subscription, user_id: user.id) }
   let(:comment)              { create(:comment, commentable: article, user: user2) }
+  let(:author_comment)       { create(:comment, commentable: article, user: user) }
   let!(:child_comment)       { create(:comment, commentable: article, parent: comment, user: user3) }
 
   it "creates users notifications" do
@@ -25,10 +26,17 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
 
   it "creates notifications for all subscribed users" do
     create(:notification_subscription, user: user3, notifiable: article)
-    create(:notification_subscription, user: top_level_subscriber, notifiable: article)
+    create(:notification_subscription, user: top_level_subscriber, notifiable: article, config: "top_level_comments")
     described_class.call(comment)
     notified_user_ids = Notification.where(notifiable_type: "Comment", notifiable_id: comment.id).pluck(:user_id)
     expect(notified_user_ids.sort).to eq([user.id, user3.id, top_level_subscriber.id].sort)
+  end
+
+  it "creates author comments notification" do
+    create(:notification_subscription, user: user3, notifiable: article, config: "only_author_comments")
+    described_class.call(author_comment)
+    notified_user_ids = Notification.where(notifiable_type: "Comment", notifiable_id: author_comment.reload.id).pluck(:user_id)
+    expect(notified_user_ids.sort).to eq([user3.id].sort)
   end
 
   it "doesn't create a notification for top-level-only subscribed users" do
