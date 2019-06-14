@@ -28,8 +28,8 @@ module Mentions
     private
 
     def delete_removed_mentions(usernames)
-      user_ids = User.where(username: usernames).pluck(:id)
-      mentions = @notifiable.mentions.where.not(user_id: user_ids).destroy_all
+      users = User.where(username: usernames)
+      mentions = @notifiable.mentions.where.not(user_id: users).destroy_all
       Notification.remove_each(mentions) if mentions.present?
     end
 
