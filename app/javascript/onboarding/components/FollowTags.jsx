@@ -67,6 +67,7 @@ class FollowTags extends Component {
   render() {
     return (
       <div>
+        <h2>Follow some tags!</h2>
         {this.state.allTags.map(tag => (
           <button onClick={() => this.handleClick(tag)}>{tag.name}</button>
         ))}

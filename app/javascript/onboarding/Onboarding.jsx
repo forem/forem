@@ -15,24 +15,21 @@ export default class Onboarding extends Component {
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
 
-    const slidesIndex = 0;
     const slides = [
-      [
-        WelcomeSlide,
-        PersonalInfoForm,
-        EmailListTermsConditionsForm,
-        FollowTags,
-        FollowUsers,
-        ClosingSlide,
-      ],
-      [WelcomeSlide, PersonalInfoForm, FollowTags, FollowUsers, ClosingSlide],
-    ][slidesIndex];
+      WelcomeSlide,
+      PersonalInfoForm,
+      EmailListTermsConditionsForm,
+      FollowTags,
+      FollowUsers,
+      ClosingSlide,
+    ];
+
     this.slides = slides.map(SlideComponent => (
       <SlideComponent next={this.nextSlide} prev={this.prevSlide} />
     ));
 
     this.state = {
-      currentSlide: 0,
+      currentSlide: 2,
     };
   }
 
@@ -55,6 +52,17 @@ export default class Onboarding extends Component {
   }
 
   render() {
-    return <div>{this.slides[this.state.currentSlide]}</div>;
+    return (
+      <div className="onboarding-body">
+        <div className="onboarding-content">
+          <img
+            src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+            className="sloan-img"
+            alt="Sloan, the sloth mascot"
+          />
+          {this.slides[this.state.currentSlide]}
+        </div>
+      </div>
+    );
   }
 }

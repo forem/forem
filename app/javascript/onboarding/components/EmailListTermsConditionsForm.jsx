@@ -14,6 +14,7 @@ class EmailTermsConditionsForm extends Component {
 
     this.state = {
       checked_code_of_conduct: false,
+      checked_terms_and_conditions: false,
       email_membership_newsletter: true,
       email_digest_periodic: true,
       message: '',
@@ -24,6 +25,12 @@ class EmailTermsConditionsForm extends Component {
     if (!this.state.checked_code_of_conduct) {
       this.setState({
         message: 'You must agree to our Code of Conduct before continuing!',
+      });
+      return;
+    } else if (!this.state.checked_terms_and_conditions) {
+      this.setState({
+        message:
+          'You must agree to our Terms and Conditions before continuing!',
       });
       return;
     }
@@ -58,38 +65,47 @@ class EmailTermsConditionsForm extends Component {
 
   render() {
     return (
-      <div>
-        <p>{this.state.message}</p>
+      <div className="checkbox-slide">
+        <h2>Some things to check off!</h2>
+        {this.state.message && <span className="warning-message">{this.state.message}</span>}
         <form>
           <label htmlFor="checked_code_of_conduct">
-            You agree to uphold our
-            {' '}
-            <a href="/code-of-conduct">Code of Conduct</a>
             <input
               type="checkbox"
               name="checked_code_of_conduct"
               onChange={this.handleChange}
             />
+            You agree to uphold our{' '}
+            <a href="/code-of-conduct">Code of Conduct</a>
           </label>
+          <label htmlFor="checked_terms_and_conditions">
+            <input
+              type="checkbox"
+              name="checked_terms_and_conditions"
+              onChange={this.handleChange}
+            />
+            You agree to our <a href="/terms">Terms and Conditions</a>
+          </label>
+          <h3>Email Preferences</h3>
           <label htmlFor="email_membership_newsletter">
-            Do you want to receive our weekly newsletter emails?
             <input
               type="checkbox"
               name="email_membership_newsletter"
               checked
               onChange={this.handleChange}
             />
+            Do you want to receive our weekly newsletter emails?
           </label>
 
           <label htmlFor="email_digest_periodic">
-            Do you want to receive a periodic digest with some of the top posts
-            from your tags?
             <input
               type="checkbox"
               name="email_membership_newsletter"
               checked
               onChange={this.handleChange}
             />
+            Do you want to receive a periodic digest with some of the top posts
+            from your tags?
           </label>
         </form>
         <Navigation prev={this.props.prev} next={this.onSubmit} />

@@ -47,7 +47,8 @@ class PersonalInfoForm extends Component {
 
   render() {
     return (
-      <div>
+      <div className="about">
+        <h2>About You!</h2>
         <form>
           <label htmlFor="summary">
             Tell the community about yourself! Write a quick bio about what you

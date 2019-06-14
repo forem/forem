@@ -73,6 +73,7 @@ class FollowUsers extends Component {
   render() {
     return (
       <div>
+        <h2>Follow some users!</h2>
         {this.state.users.map(user => (
           <button onClick={() => this.handleClick(user)}>{user.name}</button>
         ))}
