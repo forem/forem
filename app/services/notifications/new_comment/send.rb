@@ -15,7 +15,7 @@ module Notifications
       def call
         comment_user_ids = comment.ancestors.select(:user_id).where(receive_notifications: true).pluck(:user_id)
         subscribed_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: "all_comments").pluck(:user_id)
-        top_level_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: "top_level_comments").pluck(:user_id) if comment.ancestry.present?
+        top_level_user_ids = NotificationSubscription.where(notifiable_id: comment.commentable_id, notifiable_type: "Article", config: "top_level_comments").pluck(:user_id) if comment.ancestry.blank?
         user_ids = (comment_user_ids + subscribed_user_ids).to_set
         user_ids += top_level_user_ids.to_set if top_level_user_ids
         json_data = {

@@ -35,7 +35,7 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     create(:notification_subscription, user: top_level_subscriber, notifiable: article, config: "top_level_comments")
     described_class.call(child_comment)
     notified_user_ids = Notification.where(notifiable_type: "Comment", notifiable_id: child_comment.id).pluck(:user_id)
-    expect(notified_user_ids.sort).to eq([user.id, user2.id, top_level_subscriber.id].sort)
+    expect(notified_user_ids.sort).to eq([user.id, user2.id].sort)
   end
 
   it "doesn't create a notification for the author of the article if they are not subscribed" do
