@@ -12,9 +12,9 @@
     <button class="ellipsis-menu-btn"><img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
     <ul class="ellipsis-menu hidden">
       <li class="ellipsis-menu-item">
-        <%= form_for(article, url: "/article_mutes/#{article.id}", method: :patch, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
-          <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
-          <%= f.submit article.receive_notifications ? "Mute Notifications" : "Receive Notifications" %>
+        <%= form_tag("/notification_subscriptions/Article/#{article.id}", method: :post, data: { type: "json" }) do %>
+          <input type="hidden" name="currently_subscribed" value="<%= article.receive_notifications %>">
+          <%= submit_tag article.receive_notifications ? "Mute Notifications" : "Receive Notifications" %>
         <% end %>
       </li>
       <hr />
@@ -42,9 +42,9 @@
     <% end %>
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <% if manage_view %>
-      <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
-        <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
-        <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
+      <%= form_tag("/notification_subscriptions/Article/#{article.id}", method: :post, class: "mute-form") do %>
+      <input type="hidden" name="currently_subscribed" value="<%= article.receive_notifications %>">
+        <%= submit_tag article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
       <% end %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% elsif article.published %>

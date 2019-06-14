@@ -511,6 +511,16 @@ ActiveRecord::Schema.define(version: 2019_06_14_093041) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "notification_subscriptions", force: :cascade do |t|
+    t.text "config", default: "all_comments", null: false
+    t.datetime "created_at", null: false
+    t.bigint "notifiable_id", null: false
+    t.string "notifiable_type", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["notifiable_id", "notifiable_type", "config"], name: "index_notification_subscriptions_on_notifiable_and_config"
+  end
+
   create_table "notifications", id: :serial, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
