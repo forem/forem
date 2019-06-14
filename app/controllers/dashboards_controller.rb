@@ -46,16 +46,15 @@ class DashboardsController < ApplicationController
   end
 
   def pro
-    user_or_org = if params[:org_id]
-                    org = Organization.find_by(id: params[:org_id])
-                    authorize org, :pro_org_user?
-                    org
-                  else
-                    authorize current_user, :pro_user?
-                    current_user
-                  end
+    @user_or_org = if params[:org_id]
+                     org = Organization.find_by(id: params[:org_id])
+                     authorize org, :pro_org_user?
+                     org
+                   else
+                     authorize current_user, :pro_user?
+                     current_user
+                   end
     @organizations = current_user.member_organizations
-    @dashboard = Dashboard::Pro.new(user_or_org)
   end
 
   private
