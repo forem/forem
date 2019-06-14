@@ -25,9 +25,10 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
 
   it "creates notifications for all subscribed users" do
     create(:notification_subscription, user: user3, notifiable: article)
+    create(:notification_subscription, user: top_level_subscriber, notifiable: article)
     described_class.call(comment)
     notified_user_ids = Notification.where(notifiable_type: "Comment", notifiable_id: comment.id).pluck(:user_id)
-    expect(notified_user_ids.sort).to eq([user.id, user3.id].sort)
+    expect(notified_user_ids.sort).to eq([user.id, user3.id, top_level_subscriber.id].sort)
   end
 
   it "doesn't create a notification for top-level-only subscribed users" do
