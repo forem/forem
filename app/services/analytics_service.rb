@@ -162,7 +162,7 @@ class AnalyticsService
     # this transforms the collection of pseudo PageView objects previously selected
     # in a hash, eg. {total: 2, average_read_time_in_seconds: 10, total_read_time_in_seconds: 20}
     page_views.each_with_object({}) do |page_view, hash|
-      average = page_view.average.round # average is a BigDecimal
+      average = (page_view.average || 0).round # average is a BigDecimal
       hash[page_view.date.iso8601] = {
         total: page_view.total,
         average_read_time_in_seconds: average,
