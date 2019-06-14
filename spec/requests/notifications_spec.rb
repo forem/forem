@@ -307,39 +307,5 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).not_to include "reaction-button reacted"
       end
     end
-
-    context "when a user is subscribed to an article" do
-      let(:article) { create(:article, user: dev_account) }
-      let(:comment) { create(:comment, commentable: article, user: dev_account) }
-
-      before do
-        create(:notification_subscription, user: user, notifiable: article)
-        sign_in user
-        Notification.send_new_comment_notifications_without_delay(comment)
-        get "/notifications"
-      end
-
-      it "sends the user/subscriber a new comment notification" do
-        expect(response.body).to include "commented on"
-        expect(response.body).to include article.path
-        expect(response.body).to include comment.processed_html
-      end
-    end
-
-    context "when the author is not subscribed to their own article" do
-      let(:article) { create(:article, user: user) }
-      let(:comment) { create(:comment, commentable: article, user: dev_account) }
-
-      before do
-        comment
-        sign_in user
-        Notification.send_new_comment_notifications_without_delay(comment)
-        get "/notifications"
-      end
-
-      it "does not send a notification to the author" do
-        expect(response.body).not_to include article.path
-      end
-    end
   end
 end
