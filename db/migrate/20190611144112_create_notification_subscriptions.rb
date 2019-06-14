@@ -4,6 +4,7 @@ class CreateNotificationSubscriptions < ActiveRecord::Migration[5.2]
       t.bigint :user_id, null: false
       t.bigint :notifiable_id, null: false
       t.string :notifiable_type, null: false
+      t.text :config, null: false, default: "all_comments"
 
       t.timestamps
     end

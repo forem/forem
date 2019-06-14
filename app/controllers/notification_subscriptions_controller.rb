@@ -13,7 +13,7 @@ class NotificationSubscriptionsController < ApplicationController
   def upsert
     not_found unless current_user
 
-    @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: current_user.id, notifiable_id: params[:notifiable_id], notifiable_type: params[:notifiable_type].capitalize)
+    @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: current_user.id, notifiable_id: params[:notifiable_id], notifiable_type: params[:notifiable_type].capitalize, config: "all_comments")
     if params[:currently_subscribed] == "true"
       @notification_subscription.notifiable.update(receive_notifications: false) if current_user_is_author?
       @notification_subscription.delete
