@@ -8,5 +8,6 @@ class CreateNotificationSubscriptions < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
+    add_index :notification_subscriptions, %i[notifiable_id notifiable_type config], name: "index_notification_subscriptions_on_notifiable_and_config"
   end
 end
