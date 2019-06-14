@@ -166,6 +166,7 @@ Rails.application.routes.draw do
   get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
   get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
   get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
+  get "/social_previews/listing/:id" => "social_previews#listing", as: :listing_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
