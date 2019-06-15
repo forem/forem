@@ -15,4 +15,12 @@ RSpec.describe "CommentsCreate", type: :request do
     }
     expect(Comment.last.user_id).to eq(user.id)
   end
+
+  it "creates NotificationSubscription for comment" do
+    new_body = "NEW BODY #{rand(100)}"
+    post "/comments", params: {
+      comment: { body_markdown: new_body, commentable_id: article.id, commentable_type: "Article" }
+    }
+    expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
+  end
 end
