@@ -38,6 +38,8 @@ class User < ApplicationRecord
   has_many    :page_views
   has_many    :credits
   has_many    :classified_listings
+  has_many    :poll_votes
+  has_many    :poll_skips
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,

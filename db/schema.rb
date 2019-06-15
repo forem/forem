@@ -685,6 +685,45 @@ ActiveRecord::Schema.define(version: 2019_06_14_093041) do
     t.index ["slug"], name: "index_podcasts_on_slug", unique: true
   end
 
+  create_table "poll_options", force: :cascade do |t|
+    t.boolean "counts_in_tabulation"
+    t.datetime "created_at", null: false
+    t.string "markdown"
+    t.bigint "poll_id"
+    t.integer "poll_votes_count", default: 0, null: false
+    t.string "processed_html"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "poll_skips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
+  end
+
+  create_table "poll_votes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id", null: false
+    t.bigint "poll_option_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
+  end
+
+  create_table "polls", force: :cascade do |t|
+    t.boolean "allow_multiple_selections", default: false
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.integer "poll_options_count", default: 0, null: false
+    t.integer "poll_skips_count", default: 0, null: false
+    t.integer "poll_votes_count", default: 0, null: false
+    t.string "prompt_html"
+    t.string "prompt_markdown"
+    t.datetime "updated_at", null: false
+  end
+
   create_table "push_notification_subscriptions", force: :cascade do |t|
     t.string "auth_key"
     t.datetime "created_at", null: false
