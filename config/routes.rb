@@ -143,6 +143,8 @@ Rails.application.routes.draw do
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
+  resources :poll_votes, only: %i[show create]
+  resources :poll_skips, only: [:create]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"
