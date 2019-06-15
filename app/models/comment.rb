@@ -164,7 +164,7 @@ class Comment < ApplicationRecord
   end
 
   def title
-    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 60)
+    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 80)
   end
 
   def video
