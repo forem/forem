@@ -23,7 +23,8 @@ class Article < ApplicationRecord
 
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :buffer_updates, dependent: :destroy
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
   has_many :page_views
 

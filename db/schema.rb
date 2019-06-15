@@ -12,8 +12,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_12_095959) do
+ActiveRecord::Schema.define(version: 2019_06_14_093041) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -244,6 +245,7 @@ ActiveRecord::Schema.define(version: 2019_06_12_095959) do
     t.string "category"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
+    t.datetime "last_buffered"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
@@ -512,11 +514,13 @@ ActiveRecord::Schema.define(version: 2019_06_12_095959) do
   end
 
   create_table "notification_subscriptions", force: :cascade do |t|
+    t.text "config", default: "all_comments", null: false
     t.datetime "created_at", null: false
     t.bigint "notifiable_id", null: false
     t.string "notifiable_type", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["notifiable_id", "notifiable_type", "config"], name: "index_notification_subscriptions_on_notifiable_and_config"
   end
 
   create_table "notifications", id: :serial, force: :cascade do |t|
@@ -535,6 +539,7 @@ ActiveRecord::Schema.define(version: 2019_06_12_095959) do
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id"], name: "index_notifications_on_user_id"
@@ -888,7 +893,6 @@ ActiveRecord::Schema.define(version: 2019_06_12_095959) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
-    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -1011,7 +1015,6 @@ ActiveRecord::Schema.define(version: 2019_06_12_095959) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
-    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

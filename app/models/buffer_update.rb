@@ -1,6 +1,5 @@
 class BufferUpdate < ApplicationRecord
   belongs_to :article
-
   validate :validate_body_text_recent_uniqueness
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 

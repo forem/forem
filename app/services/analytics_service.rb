@@ -24,6 +24,7 @@ class AnalyticsService
 
     # cache all stats in the date range for the requested user or organization
     cache_key = "analytics-for-dates-#{start_date}-#{end_date}-#{user_or_org.class.name}-#{user_or_org.id}"
+    cache_key = "#{cache_key}-article-#{article_id}" if article_id
 
     Rails.cache.fetch(cache_key, expires_in: 7.days) do
       # 1. calculate all stats using group queries at once
@@ -51,7 +52,7 @@ class AnalyticsService
   private
 
   attr_reader(
-    :user_or_org, :start_date, :end_date,
+    :user_or_org, :article_id, :start_date, :end_date,
     :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
   )
 
@@ -161,7 +162,7 @@ class AnalyticsService
     # this transforms the collection of pseudo PageView objects previously selected
     # in a hash, eg. {total: 2, average_read_time_in_seconds: 10, total_read_time_in_seconds: 20}
     page_views.each_with_object({}) do |page_view, hash|
-      average = page_view.average.round # average is a BigDecimal
+      average = (page_view.average || 0).round # average is a BigDecimal
       hash[page_view.date.iso8601] = {
         total: page_view.total,
         average_read_time_in_seconds: average,

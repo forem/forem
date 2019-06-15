@@ -1,25 +1,16 @@
-<% title "Pro Analytics" %>
+<% title "Stats for Your Article" %>
 
 <div class="dashboard-container pro-container" id="user-dashboard">
-  <a href="/dashboard" class="rounded-btn rounded-btn--transparent">👈 Back to Main Dashboard</a>
-
-  <a class="rounded-btn <%= "active" unless params[:org_id] %>" href="/dashboard/pro">
-    Your Pro Dashboard
+  <a
+    href="<%= @article.current_state_path %>"
+    class="rounded-btn rounded-btn--transparent"
+    id="article"
+    data-article-id="<%= @article.id %>">
+    👈 Back to the article
   </a>
 
-  <% @organizations.each do |org| %>
-    <a
-      class="rounded-btn organization <%= "active" if params[:org_id].to_i == org.id %>"
-      href="/dashboard/pro/org/<%= org.id %>"
-      data-organization-id="<%= org.id %>">
-      <%= org.name %> Pro Dashboard
-    </a>
-  <% end %>
-
   <section class="header-card card">
-    <h1 class="pro-header">Pro Dashboard for <%= @user_or_org.name %></h1>
-    <p>Welcome to the Pro Dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
-    <p>This dashboard will highlight deep insights especially relevant to developer relations authors and serious bloggers.</p>
+    <h1 class="pro-header">Stats for "<%= @article.title %>"</h1>
   </section>
 
   <div class="toggles">
@@ -67,4 +58,4 @@
   </div>
 </div>
 
-<%= javascript_pack_tag "analyticsDashboard", defer: true %>
+<%= javascript_pack_tag "analyticsArticle", defer: true %>

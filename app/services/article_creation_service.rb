@@ -22,6 +22,7 @@ class ArticleCreationService
     article.collection = Collection.find_series(series, user) if series.present?
 
     if article.save
+      NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article", config: "all_comments")
       Notification.send_to_followers(article, "Published") if article.published
     end
     article.decorate
