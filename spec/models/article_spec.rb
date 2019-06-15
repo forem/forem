@@ -412,6 +412,19 @@ RSpec.describe Article, type: :model do
       article.main_image = "https://image.com/image.png"
       expect(article.valid?).to eq(true)
     end
+
+    it "does not allow the use of admin-only liquid tags for non-admins" do
+      poll = create(:poll, article_id: article.id)
+      article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
+      expect(article.valid?).to eq(false)
+    end
+
+    it "allows admins" do
+      poll = create(:poll, article_id: article.id)
+      article.user.add_role(:admin)
+      article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
+      expect(article.valid?).to eq(true)
+    end
   end
 
   it "updates main_image_background_hex_color" do

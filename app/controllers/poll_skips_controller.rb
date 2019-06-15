@@ -1,9 +1,11 @@
 class PollSkipsController < ApplicationController
+  before_action :authenticate_user!, only: %i[create]
+
   def create
     @poll_skip = PollSkip.create(poll_id: poll_skips_params[:poll_id], user_id: current_user.id)
     @poll = Poll.find(poll_skips_params[:poll_id])
     render json: { voting_data: @poll.voting_data,
-      poll_id: poll_skips_params[:poll_id],
+      poll_id: poll_skips_params[:poll_id].to_i,
       user_vote_poll_option_id: nil,
       voted: false }
   end

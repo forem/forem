@@ -41,6 +41,7 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
+  validate :validate_liquid_tag_permissions
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :cached_tag_list, length: { maximum: 86 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
@@ -443,6 +444,10 @@ class Article < ApplicationRecord
     Rails.logger.error(e)
   end
 
+  def liquid_tags_used
+    MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  end
+
   private
 
   def update_notifications
@@ -516,6 +521,10 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
+  end
+
+  def validate_liquid_tag_permissions #Admin only beta tags etc.
+    errors.add(:body_markdown, "must only use permitted tags") if liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
   def create_slug

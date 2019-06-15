@@ -6,7 +6,7 @@ class PollVote < ApplicationRecord
   counter_culture :poll_option
   counter_culture :poll
 
-  validates :poll_id, presence: true
+  validates :poll_id, presence: true, presence: true, uniqueness: { scope: :user_id } # In the future we'll remove this constraint if/when we allow multi-answer polls
   validates :poll_option_id, presence: true, uniqueness: { scope: :user_id }
   validate :one_vote_per_poll_per_user
 

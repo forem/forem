@@ -2,8 +2,6 @@ class Poll < ApplicationRecord
 
   attr_accessor :poll_options_input_array
 
-  validates :prompt_markdown, presence: true
-
   serialize :voting_data
 
   belongs_to :article
