@@ -33,7 +33,7 @@ module Notifications
             json_data: json_data,
           )
           # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-          send_push_notifications(user_id, "@#{comment.user.username}\nre: #{comment.parent_or_root_article.title.strip}", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
+          send_push_notifications(user_id, "@#{comment.user.username}", "re: #{comment.parent_or_root_article.title.strip}", comment.title, "/notifications/comments") if User.find_by(id: user_id)&.mobile_comment_notifications
         end
         return unless comment.commentable.organization_id
 
@@ -51,7 +51,7 @@ module Notifications
 
       attr_reader :comment
 
-      def send_push_notifications(user_id, title, body, path)
+      def send_push_notifications(user_id, title, subtitle, body, path)
         return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
 
         payload = {
@@ -59,6 +59,7 @@ module Notifications
             aps: {
               alert: {
                 title: title,
+                subtitle: subtitle,
                 body: CGI.unescapeHTML(body.strip!)
               }
             },
