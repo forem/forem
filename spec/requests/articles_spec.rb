@@ -122,16 +122,40 @@ RSpec.describe "Articles", type: :request do
   describe "GET /:path/manage" do
     before { sign_in user }
 
-    it "returns a new article" do
-      article = create(:article, user_id: user.id)
+    it "works successfully" do
+      article = create(:article, user: user)
       get "#{article.path}/manage"
+      expect(response).to have_http_status(:ok)
       expect(response.body).to include("Manage Your Post")
     end
 
-    it "returns unauthorized if user not author" do
+    it "returns unauthorized if the user is not the author" do
       second_user = create(:user)
-      article = create(:article, user_id: second_user.id)
+      article = create(:article, user: second_user)
       expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
+  describe "GET /:path/stats" do
+    before { sign_in user }
+
+    it "returns unauthorized if the user is not the author" do
+      second_user = create(:user)
+      article = create(:article, user: second_user)
+      expect { get "#{article.path}/stats" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "returns unauthorized if the user is not pro" do
+      article = create(:article, user: user)
+      expect { get "#{article.path}/stats" }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "works successfully" do
+      user.add_role(:pro)
+      article = create(:article, user: user)
+      get "#{article.path}/stats"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Stats for Your Article")
     end
   end
 end

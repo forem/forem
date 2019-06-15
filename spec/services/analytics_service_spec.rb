@@ -166,7 +166,8 @@ RSpec.describe AnalyticsService, type: :service do
 
   describe "#grouped_by_day" do
     def format_date(datetime)
-      datetime.to_date.iso8601
+      # Postgre's DATE(..) method uses UTC.
+      datetime.utc.to_date.iso8601
     end
 
     it "returns stats grouped by day" do
@@ -356,6 +357,16 @@ RSpec.describe AnalyticsService, type: :service do
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][
           :page_views][:total_read_time_in_seconds]).to eq(0)
+      end
+
+      it "works correctly if the page views contain nil in time_tracked_in_seconds" do
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: nil)
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: nil)
+        date = format_date(article.created_at)
+        analytics_service = described_class.new(user, start_date: date)
+        expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(2)
+        expect(analytics_service.grouped_by_day[date][:page_views][:average_read_time_in_seconds]).to eq(0)
+        expect(analytics_service.grouped_by_day[date][:page_views][:total_read_time_in_seconds]).to eq(0)
       end
     end
   end

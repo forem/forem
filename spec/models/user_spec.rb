@@ -29,6 +29,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
     it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
     it { is_expected.to have_many(:push_notification_subscriptions).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
     it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
     it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
     it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
@@ -36,6 +37,26 @@ RSpec.describe User, type: :model do
     it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+
+    it "validates username against reserved words" do
+      user = build(:user, username: "readinglist")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("reserved")).to be true
+    end
+
+    it "takes organization slug into account" do
+      create(:organization, slug: "lightalloy")
+      user = build(:user, username: "lightalloy")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
+
+    it "takes podcast slug into account" do
+      create(:podcast, slug: "lightpodcast")
+      user = build(:user, username: "lightpodcast")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
   end
 
   # the followings are failing
@@ -568,62 +589,6 @@ RSpec.describe User, type: :model do
     expect(new_user.github_created_at).to be_kind_of(ActiveSupport::TimeWithZone)
   end
 
-  describe "onboarding checklist" do
-    it "returns onboarding checklist made first article if made first published article" do
-      article.update(published: true)
-      checklist = UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist made first article false if hasn't written article" do
-      article.update(published: false)
-      checklist = UserStates.new(user).cached_onboarding_checklist[:write_your_first_article]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist follow_your_first_tag if has followed tag" do
-      user.follow(tag)
-      expect(UserStates.new(user).cached_onboarding_checklist[:follow_your_first_tag]).to eq(true)
-    end
-
-    it "returns onboarding checklist follow_your_first_tag false if has not followed tag" do
-      expect(UserStates.new(user).cached_onboarding_checklist[:follow_your_first_tag]).to eq(false)
-    end
-
-    it "returns onboarding checklist fill_out_your_profile if has filled out summary" do
-      user.update(summary: "Hello")
-      expect(UserStates.new(user).cached_onboarding_checklist[:fill_out_your_profile]).to eq(true)
-    end
-
-    it "returns onboarding checklist fill_out_your_profile false if has not filled out summary" do
-      user.update(summary: "")
-      expect(UserStates.new(user).cached_onboarding_checklist[:fill_out_your_profile]).to eq(false)
-    end
-
-    it "returns onboarding checklist leave_your_first_reaction if has reacted to a post" do
-      create(:reaction, user_id: user.id, reactable_id: article.id)
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist leave_your_first_reaction false if hasn't reacted to a post" do
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_reaction]
-      expect(checklist).to eq(false)
-    end
-
-    it "returns onboarding checklist leave_your_first_comment if has left comment" do
-      create(:comment, user_id: user.id, commentable_id: article.id, commentable_type: "Article")
-      user.reload
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
-      expect(checklist).to eq(true)
-    end
-
-    it "returns onboarding checklist leave_your_first_comment false if has not left comment" do
-      checklist = UserStates.new(user).cached_onboarding_checklist[:leave_your_first_comment]
-      expect(checklist).to eq(false)
-    end
-  end
-
   describe "cache counts" do
     it "has an accurate tag follow count" do
       user.follow(tag)
@@ -663,6 +628,23 @@ RSpec.describe User, type: :model do
     it "successfully destroys a user" do
       user.destroy
       expect(user.persisted?).to be false
+    end
+
+    it "destroys associated organization memberships" do
+      organization_membership = create(:organization_membership, user_id: user.id, organization_id: org.id)
+      user.destroy
+      expect { organization_membership.reload }.to raise_error ActiveRecord::RecordNotFound
+    end
+  end
+
+  describe "#pro?" do
+    it "returns false if the user is not a pro" do
+      expect(user.pro?).to be(false)
+    end
+
+    it "returns true if the user is a pro" do
+      user.add_role(:pro)
+      expect(user.pro?).to be(true)
     end
   end
 end
