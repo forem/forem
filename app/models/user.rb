@@ -378,7 +378,7 @@ class User < ApplicationRecord
   end
 
   def unique_including_orgs_and_podcasts
-    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username)
+    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
 
   def subscribe_to_mailchimp_newsletter_without_delay

@@ -12,9 +12,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_14_093041) do
+ActiveRecord::Schema.define(version: 2019_06_16_024727) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
@@ -626,12 +625,14 @@ ActiveRecord::Schema.define(version: 2019_06_14_093041) do
     t.string "description"
     t.string "group"
     t.integer "group_order_number"
+    t.boolean "is_top_level_path", default: false
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
     t.string "template"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
@@ -893,6 +894,7 @@ ActiveRecord::Schema.define(version: 2019_06_14_093041) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -1015,6 +1017,7 @@ ActiveRecord::Schema.define(version: 2019_06_14_093041) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

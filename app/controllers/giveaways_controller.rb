@@ -4,29 +4,6 @@ class GiveawaysController < ApplicationController
     @errors = []
   end
 
-  def edit
-    @user = current_user
-    @errors = []
-  end
-
-  # POST /giveaways
-  # POST /giveaways.json
-  # def create
-  #   @user = User.new(giveaway_params)
-  #
-  #   respond_to do |format|
-  #     if @user.save
-  #       format.html { redirect_to @user, notice: 'Giveaway was successfully created.' }
-  #       format.json { render :show, status: :created, location: @user }
-  #     else
-  #       format.html { render :new }
-  #       format.json { render json: @user.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
-
-  # PATCH/PUT /giveaways/1
-  # PATCH/PUT /giveaways/1.json
   def update
     prevent_request_if_requested_twice
     @user = current_user
