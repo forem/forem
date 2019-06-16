@@ -226,7 +226,6 @@ Rails.application.routes.draw do
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
-  get "/merch" => "pages#merch"
   get "/rlygenerator" => "pages#generator"
   get "/orlygenerator" => "pages#generator"
   get "/rlyslack" => "pages#generator"
@@ -254,12 +253,7 @@ Rails.application.routes.draw do
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
-  get "/freestickers/edit" => "giveaways#edit"
-  get "/scholarship", to: redirect("/p/scholarships")
-  get "/scholarships", to: redirect("/p/scholarships")
   get "/shop", to: redirect("https://shop.dev.to/")
-  get "/tag-moderation" => "pages#tag_moderation"
-  get "/community-moderation" => "pages#community_moderation"
   get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"

@@ -2,10 +2,19 @@ require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
   describe "GET /:slug" do
-    it "has proper headline" do
+    it "has proper headline for non-top-level" do
       page = create(:page, title: "Edna O'Brien96")
       get "/page/#{page.slug}"
       expect(response.body).to include(CGI.escapeHTML(page.title))
+      expect(response.body).to include("/page/#{page.slug}")
+    end
+
+    it "has proper headline for top-level" do
+      page = create(:page, title: "Edna O'Brien96", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+      expect(response.body).not_to include("/page/#{page.slug}")
+      expect(response.body).to include("stories-show")
     end
   end
 

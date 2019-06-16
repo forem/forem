@@ -57,6 +57,13 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:username].to_s.include?("taken")).to be true
     end
+
+    it "takes page slug into account" do
+      create(:page, slug: "page_yo")
+      user = build(:user, username: "page_yo")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
   end
 
   # the followings are failing
