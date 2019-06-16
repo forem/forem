@@ -117,8 +117,8 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme],
-                         message: "%{value} must be either default, pink theme, or night theme" }
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
+                         message: "%{value} is not a valid theme" }
   validates :config_font,
             inclusion: { in: %w[default sans_serif comic_sans],
                          message: "%{value} must be either default or sans serif" }

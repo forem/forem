@@ -549,6 +549,11 @@ RSpec.describe User, type: :model do
     expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
   end
 
+  it "creates proper body class with pink theme" do
+    user.config_theme = "minimal_light_theme"
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body")
+  end
+
   it "inserts into mailchimp" do
     expect(user.subscribe_to_mailchimp_newsletter_without_delay).to eq true
   end

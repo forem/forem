@@ -40,7 +40,7 @@
 <%= form_for(@user, html: { id: nil }) do |f| %>
   <div class="sub-field">
     <%= f.label :config_theme, "Site Theme" %>
-    <%= f.select(:config_theme, options_for_select(["default", "night theme", "pink theme"], @user.config_theme.tr("_", " "))) %>
+    <%= f.select(:config_theme, options_for_select(["default", "night theme", "minimal light theme", "pink theme"], @user.config_theme.tr("_", " "))) %>
     <sub><em>Default is light style. Night theme is in public alpha.</em></sub>
   </div>
   <div class="sub-field">
