@@ -94,6 +94,13 @@ RSpec.describe Organization, type: :model do
       expect(organization).not_to be_valid
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
     end
+
+    it "takes page slug into account" do
+      create(:page, slug: "needed_info_for_site")
+      organization = build(:organization, slug: "needed_info_for_site")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
   end
 
   describe "#url" do

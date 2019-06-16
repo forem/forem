@@ -22,7 +22,7 @@ class Podcast < ApplicationRecord
   private
 
   def unique_slug_including_users_and_orgs
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Organization.find_by(slug: slug)
+    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Organization.find_by(slug: slug) || Page.find_by(slug: slug)
   end
 
   def bust_cache

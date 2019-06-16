@@ -46,6 +46,13 @@ RSpec.describe Podcast, type: :model do
       expect(user_podcast.errors[:slug]).to be_present
     end
 
+    it "is invalid when a page with a slug equal to the podcast slug exists" do
+      create(:page, slug: "superpage")
+      user_podcast = build(:podcast, slug: "superpage")
+      expect(user_podcast).not_to be_valid
+      expect(user_podcast.errors[:slug]).to be_present
+    end
+
     it "is invalid when an org with a slug equal to the podcast slug exists" do
       create(:organization, slug: "superorganization")
       user_podcast = build(:podcast, slug: "superorganization")

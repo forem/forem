@@ -132,6 +132,6 @@ class Organization < ApplicationRecord
   handle_asynchronously :bust_cache
 
   def unique_slug_including_users_and_podcasts
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug)
+    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug)
   end
 end
