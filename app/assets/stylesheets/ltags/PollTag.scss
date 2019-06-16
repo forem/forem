@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'mixins';
 
 .ltag-poll {
   width: 600px;
@@ -74,7 +75,11 @@
         font-weight: bold;
       }
       &.ltag-optionnotvotedfor {
-        background: $light-medium-gray;
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          $light-medium-gray
+        );
       }
     }
     .ltag-votepercenttext {
