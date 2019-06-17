@@ -13,11 +13,13 @@ class PollVote < ApplicationRecord
   after_save :touch_poll_votes_count
   after_destroy :touch_poll_votes_count
 
-  delegate :poll, to: :poll_option
+  delegate :poll, to: :poll_option, allow_nil: true
 
   private
 
   def one_vote_per_poll_per_user
+    return false unless poll
+
     has_votes = (
       poll.poll_votes.where(user_id: user_id).any? || poll.poll_skips.where(user_id: user_id).any?)
     errors.add(:base, "cannot vote more than once in one poll") if has_votes
