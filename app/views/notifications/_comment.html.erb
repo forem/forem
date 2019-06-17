@@ -17,7 +17,7 @@
         <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
       </a>
       <div>
-        <small><%= time_ago_in_words notification.created_at %> ago</small>
+        <small><%= time_ago_in_words notification.notifiable.created_at %> ago</small>
       </div>
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
     <% elsif notification.action == "Moderation" %>
