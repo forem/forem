@@ -1,0 +1,22 @@
+<div class="<%= "ltag__user ltag__user__id__" + organization.id.to_s %>" style="<%= "border-color:" + organization.decorate.darker_color + ";box-shadow: 3px 3px 0px " + organization.decorate.darker_color + ";" %>">
+  <style>
+    .ltag__user__id__<%= organization.id %> .follow-action-button {
+      background-color: <%= organization_colors[:bg] %> !important;
+      color: <%= organization_colors[:text] %> !important;
+      border-color: <%= organization_colors[:bg].casecmp("#ffffff").zero? ? organization_colors[:text] : organization_colors[:bg] %> !important;
+    }
+  </style>
+  <a href="<%= organization.path %>" class="ltag__user__link profile-image-link">
+    <div class="ltag__user__pic">
+      <img src="<%= ProfileImage.new(organization).get(150) %>" alt="<%= organization.slug + " image" %>" />
+    </div>
+  </a>
+  <div class="ltag__user__content">
+    <h2><a href="/<%= organization.slug %>" class="ltag__user__link"><%= organization.name %></a><%= follow_button %></h2>
+    <div class="ltag__user__summary">
+      <a href="/<%= organization.slug %>" class="ltag__user__link">
+        <%= organization.summary %>
+      </a>
+    </div>
+  </div>
+</div>

@@ -51,7 +51,7 @@ class Organization < ApplicationRecord
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
 
-  validate :unique_slug_including_users
+  validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -131,7 +131,7 @@ class Organization < ApplicationRecord
   end
   handle_asynchronously :bust_cache
 
-  def unique_slug_including_users
-    errors.add(:slug, "is taken.") if User.find_by(username: slug)
+  def unique_slug_including_users_and_podcasts
+    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug)
   end
 end

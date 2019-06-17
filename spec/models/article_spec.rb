@@ -23,6 +23,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
+  it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
@@ -410,6 +411,19 @@ RSpec.describe Article, type: :model do
       article.main_image = "hello"
       expect(article.valid?).to eq(false)
       article.main_image = "https://image.com/image.png"
+      expect(article.valid?).to eq(true)
+    end
+
+    it "does not allow the use of admin-only liquid tags for non-admins" do
+      poll = create(:poll, article_id: article.id)
+      article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
+      expect(article.valid?).to eq(false)
+    end
+
+    it "allows admins" do
+      poll = create(:poll, article_id: article.id)
+      article.user.add_role(:admin)
+      article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
       expect(article.valid?).to eq(true)
     end
   end

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_202826) do
+ActiveRecord::Schema.define(version: 2019_06_16_024727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
+    t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
@@ -243,6 +244,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.string "category"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
+    t.datetime "last_buffered"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
@@ -291,6 +293,8 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.integer "user_id"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
+    t.index ["created_at"], name: "index_comments_on_created_at"
+    t.index ["score"], name: "index_comments_on_score"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
@@ -378,6 +382,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.string "follower_type", null: false
     t.float "points", default: 1.0
     t.datetime "updated_at"
+    t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
@@ -507,6 +512,16 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "notification_subscriptions", force: :cascade do |t|
+    t.text "config", default: "all_comments", null: false
+    t.datetime "created_at", null: false
+    t.bigint "notifiable_id", null: false
+    t.string "notifiable_type", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["notifiable_id", "notifiable_type", "config"], name: "index_notification_subscriptions_on_notifiable_and_config"
+  end
+
   create_table "notifications", id: :serial, force: :cascade do |t|
     t.string "action"
     t.datetime "created_at", null: false
@@ -521,7 +536,11 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
-    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_organization_notifiable_and_action", unique: true
+    t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
+    t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["organization_id"], name: "index_notifications_on_organization_id"
+    t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
+    t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -595,6 +614,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.string "user_agent"
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
+    t.index ["created_at"], name: "index_page_views_on_created_at"
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
@@ -605,12 +625,14 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.string "description"
     t.string "group"
     t.integer "group_order_number"
+    t.boolean "is_top_level_path", default: false
     t.text "processed_html"
     t.string "slug"
     t.string "social_image"
     t.string "template"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_pages_on_slug", unique: true
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
@@ -621,43 +643,86 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.integer "duration_in_seconds"
     t.boolean "featured", default: true
     t.integer "featured_number"
-    t.string "guid"
+    t.string "guid", null: false
     t.string "image"
     t.string "itunes_url"
-    t.string "media_url"
+    t.string "media_url", null: false
     t.string "order_key"
     t.integer "podcast_id"
     t.text "processed_html"
     t.datetime "published_at"
     t.text "quote"
     t.integer "reactions_count", default: 0, null: false
-    t.string "slug"
+    t.string "slug", null: false
     t.string "social_image"
     t.string "subtitle"
     t.text "summary"
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["guid"], name: "index_podcast_episodes_on_guid", unique: true
+    t.index ["media_url"], name: "index_podcast_episodes_on_media_url", unique: true
   end
 
   create_table "podcasts", id: :serial, force: :cascade do |t|
     t.string "android_url"
     t.datetime "created_at", null: false
     t.text "description"
-    t.string "feed_url"
-    t.string "image"
+    t.string "feed_url", null: false
+    t.string "image", null: false
     t.string "itunes_url"
-    t.string "main_color_hex"
+    t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
-    t.string "slug"
+    t.string "slug", null: false
     t.string "soundcloud_url"
     t.text "status_notice", default: ""
-    t.string "title"
+    t.string "title", null: false
     t.string "twitter_username"
     t.boolean "unique_website_url?", default: true
     t.datetime "updated_at", null: false
     t.string "website_url"
+    t.index ["feed_url"], name: "index_podcasts_on_feed_url", unique: true
+    t.index ["slug"], name: "index_podcasts_on_slug", unique: true
+  end
+
+  create_table "poll_options", force: :cascade do |t|
+    t.boolean "counts_in_tabulation"
+    t.datetime "created_at", null: false
+    t.string "markdown"
+    t.bigint "poll_id"
+    t.integer "poll_votes_count", default: 0, null: false
+    t.string "processed_html"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "poll_skips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["poll_id", "user_id"], name: "index_poll_skips_on_poll_and_user", unique: true
+  end
+
+  create_table "poll_votes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "poll_id", null: false
+    t.bigint "poll_option_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
+  end
+
+  create_table "polls", force: :cascade do |t|
+    t.boolean "allow_multiple_selections", default: false
+    t.bigint "article_id"
+    t.datetime "created_at", null: false
+    t.integer "poll_options_count", default: 0, null: false
+    t.integer "poll_skips_count", default: 0, null: false
+    t.integer "poll_votes_count", default: 0, null: false
+    t.string "prompt_html"
+    t.string "prompt_markdown"
+    t.datetime "updated_at", null: false
   end
 
   create_table "push_notification_subscriptions", force: :cascade do |t|
@@ -692,6 +757,8 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["category"], name: "index_reactions_on_category"
+    t.index ["created_at"], name: "index_reactions_on_created_at"
+    t.index ["points"], name: "index_reactions_on_points"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["user_id"], name: "index_reactions_on_user_id"
@@ -827,6 +894,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -949,6 +1017,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_202826) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

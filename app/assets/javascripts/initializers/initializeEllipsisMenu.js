@@ -59,7 +59,7 @@ function handleFormSubmit(e) {
   var data = JSON.stringify(values);
 
   var xhr = new XMLHttpRequest();
-  xhr.open('PATCH', form.action);
+  xhr.open('POST', form.action);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(data);
 

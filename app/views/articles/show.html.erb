@@ -1,5 +1,6 @@
 <% title @article.title %>
 
+<%= javascript_include_tag "https://unpkg.com/@webcomponents/webcomponentsjs@2.2.10/webcomponents-loader.js", defer: true %>
 <%= javascript_pack_tag "clipboardCopy", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
@@ -48,7 +49,7 @@
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
-    <meta name="twitter:site" content="@ThePracticalDev">
+    <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -235,6 +236,7 @@
     <%= PodcastTag.script.html_safe %>
     <%= GistTag.script.html_safe %>
     <%= RunkitTag.script.html_safe %>
+    <%= PollTag.script.html_safe %>
   </script>
 <% end %>
 
