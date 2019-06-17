@@ -297,6 +297,7 @@ Rails.application.routes.draw do
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
+  get "/history", to: "history#index", as: :history
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
