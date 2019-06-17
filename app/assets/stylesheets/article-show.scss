@@ -477,7 +477,13 @@ article {
     hr {
       width: calc(25% + 12px);
       opacity: 0.1;
-      border: 1px solid black;
+      border-width: 1px;
+      border-style: solid;
+      @include themeable(
+        border-color,
+        theme-color,
+        $black
+      );
       margin: 1.3em auto 1.5em;
     }
 
