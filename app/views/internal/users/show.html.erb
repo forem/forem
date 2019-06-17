@@ -43,49 +43,7 @@
 </div>
 <%= render "activity" %>
 <%= render "credits" %>
-<div class="row">
-  <h3><u>Mentorship</u></h3>
-  <% if @user.mentors.count > 0 %>
-    <h4> Mentor(s):</h4>
-    <ul>
-      <% @user_mentor_relationships.each do |relationship| %>
-        <li>
-          <a href="https://dev.to/<%= User.find(relationship.mentor_id).username %>" target=">blank">@<%= User.find(relationship.mentor_id).username %></a>
-          <% if relationship.active %>
-            <span style="color:green"><em> (active)</em></span>
-          <% else %>
-            <span style="color:red"><em> (inactive)</em></span>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-  <% elsif @user.mentees.count > 0 %>
-    <h4>Mentee(s):</h4>
-    <ul>
-      <% @user_mentee_relationships.each do |relationship| %>
-        <li>
-          <a href="https://dev.to/<%= User.find(relationship.mentee_id).username %>" target=">blank">@<%= User.find(relationship.mentee_id).username %></a>
-          <% if relationship.active %>
-            <span style="color:green"><em> (active)</em></span>
-          <% else %>
-            <span style="color:red"><em> (inactive)</em></span>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
-  <% elsif @user.has_role? :banned_from_mentorship %>
-    <p style="background-color: red;">User is banned from the mentorship program.</p>
-  <% else %>
-    <p>Currently not in a mentorship relationship.</p>
-  <% end %>
-  <%= form_for(@user, url: user_status_internal_user_path(@user)) do |f| %>
-    <p>Ban from mentorship: <%= f.check_box :toggle_mentorship, checked: @user.has_role?(:banned_from_mentorship) %></p>
-    <p>Reason for action: <%= f.text_area :mentorship_note %></p>
-    <%= f.submit %>
-  <% end %>
-</div>
 <%= render "notes" %>
-<%= render "mentee_match" %>
 <div class="row">
   <h2><u>Recent Emails</u></h2>
   <ul>

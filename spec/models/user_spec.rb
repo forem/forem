@@ -283,42 +283,6 @@ RSpec.describe User, type: :model do
       expect(user.old_old_username).to eq(old_username)
     end
 
-    it "updates mentor_form_updated_at at appropriate time" do
-      user.mentor_description = "hello"
-      user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
-    end
-
-    it "updates mentee_form_updated_at at appropriate time" do
-      user.mentee_description = "hello"
-      user.save
-      expect(user.mentee_form_updated_at).not_to eq(nil)
-    end
-
-    it "does not allow mentee description to be too long" do
-      user.mentee_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentee_form_updated_at).to eq(nil)
-    end
-
-    it "does not allow mentor description to be too long" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1001)
-      user.save
-      expect(user.mentor_form_updated_at).to eq(nil)
-    end
-
-    it "allow mentee description to be the max length" do
-      user.mentee_description = Faker::Lorem.paragraph_by_chars(1000)
-      user.save
-      expect(user.mentee_form_updated_at).not_to eq(nil)
-    end
-
-    it "allow mentor description to be the max length" do
-      user.mentor_description = Faker::Lorem.paragraph_by_chars(1000)
-      user.save
-      expect(user.mentor_form_updated_at).not_to eq(nil)
-    end
-
     it "does not allow too short or too long name" do
       user.name = ""
       expect(user).not_to be_valid
@@ -570,7 +534,7 @@ RSpec.describe User, type: :model do
     expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
   end
 
-  it "creates proper body class with pink theme" do
+  it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
     expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body")
   end
