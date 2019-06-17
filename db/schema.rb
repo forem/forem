@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_16_024727) do
+ActiveRecord::Schema.define(version: 2019_06_16_053854) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -722,6 +722,15 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.integer "poll_votes_count", default: 0, null: false
     t.string "prompt_html"
     t.string "prompt_markdown"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "profile_pins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "pinnable_id"
+    t.string "pinnable_type"
+    t.bigint "profile_id"
+    t.string "profile_type"
     t.datetime "updated_at", null: false
   end
 

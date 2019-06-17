@@ -14,6 +14,7 @@ class Organization < ApplicationRecord
   has_many :credits
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :classified_listings
+  has_many :profile_pins, as: :profile, inverse_of: :profile
 
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name,
