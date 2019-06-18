@@ -14,7 +14,7 @@ export class History extends Component {
       totalCount: 0,
       index: null,
       itemsLoaded: false,
-      hitsPerPage: 20,
+      hitsPerPage: 100,
       availableTags,
       selectedTags: [],
       page: 0,
