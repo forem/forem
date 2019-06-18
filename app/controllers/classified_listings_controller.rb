@@ -23,7 +23,7 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def edit
-    authorize @classified_listing
+    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
     @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
@@ -75,6 +75,8 @@ class ClassifiedListingsController < ApplicationController
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
+    elsif listing_params[:action] == "publish"
+      publish_listing
     elsif listing_params[:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
       update_listing_details
     end
