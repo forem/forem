@@ -21,8 +21,8 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "eslint --fix",
       "prettier --write",
+      "eslint --fix",
       "git add"
     ],
     "{app,spec}/**/*.rb": [

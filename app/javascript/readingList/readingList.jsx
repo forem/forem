@@ -31,6 +31,7 @@ export class ReadingList extends Component {
       });
     const waitingOnUser = setInterval(() => {
       if (window.currentUser) {
+        console.log('current user', window.currentUser);
         t.setState({ availableTags: window.currentUser.followed_tag_names });
         clearInterval(waitingOnUser);
       }

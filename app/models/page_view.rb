@@ -5,11 +5,13 @@ class PageView < ApplicationRecord
   belongs_to :article
 
   algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
-    attributes :referrer, :time_tracked_in_seconds, :user_agent
+    attributes :referrer, :time_tracked_in_seconds, :user_agent, :article_tags
 
     attribute(:article_title) { article.title }
     attribute(:article_path) { article.path }
+    attribute(:article_reading_time) { article.reading_time }
     attribute(:viewable_by) { user_id }
+    attribute(:visited_at_timestamp) { created_at.to_i }
 
     attribute :article_user do
       user = article.user
@@ -20,7 +22,7 @@ class PageView < ApplicationRecord
       }
     end
 
-    attribute :created_at do
+    attribute :readable_visited_at do
       if created_at.year == Time.current.year
         created_at.strftime("%b %e")
       else
@@ -28,16 +30,26 @@ class PageView < ApplicationRecord
       end
     end
 
-    searchableAttributes %i[referrer user_agent]
+    searchableAttributes %i[referrer user_agent article_searchable_tags]
 
-    tags do
-      article.decorate.cached_tag_list_array
-    end
+    tags { article_tags }
 
     attributesForFaceting ["filterOnly(viewable_by)"]
+
+    customRanking ["desc(visited_at_timestamp)"]
   end
+
+  private
 
   def belongs_to_pro_user?
     user&.pro?
+  end
+
+  def article_searchable_tags
+    article.cached_tag_list
+  end
+
+  def article_tags
+    article.decorate.cached_tag_list_array
   end
 end
