@@ -1,7 +1,11 @@
 module Liquid
   class Variable
-    def initialize(_markup, _parse_context)
-      raise StandardError, "Liquid variables are disabled"
+    def initialize(markup, _parse_context)
+      @markup = markup
+    end
+
+    def render(_context)
+      "{{#{@markup}}}"
     end
   end
 end
