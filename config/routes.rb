@@ -139,7 +139,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
+  resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
@@ -148,6 +148,7 @@ Rails.application.routes.draw do
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"
+  get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
   get "/listings/:category/:slug/:view" => "classified_listings#index",

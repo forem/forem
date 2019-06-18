@@ -22,7 +22,7 @@ export class Listings extends Component {
     const params = this.getQueryParams();
     const t = this;
     const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-    .content;
+      .content;
     const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
       .content;
     const env = document.querySelector("meta[name='environment']").content;
@@ -52,9 +52,9 @@ export class Listings extends Component {
     t.setUser()
 
     document.body.addEventListener('keydown', t.handleKeyDown)
-    
-    /* 
-      The width of the columns also changes when the browser is resized 
+
+    /*
+      The width of the columns also changes when the browser is resized
       so we will also call this function on window resize to recalculate
       each grid item's height to avoid content overflow
     */
@@ -342,6 +342,7 @@ export class Listings extends Component {
             <a href="/listings" className={category === '' ? 'selected' : ''} onClick={e => this.selectCategory(e, '')} data-no-instant>all</a>
             {categoryLinks}
             <a href='/listings/new' className='classified-create-link'>Create a Listing</a>
+            <a href='/listings/dashboard' className='classified-create-link'>Manage Listings</a>
           </div>
           <div className="classified-filters-tags" id="classified-filters-tags">
             <input type="text" placeholder="search" id="listings-search" autoComplete="off" defaultValue={query} onKeyUp={e => this.handleQuery(e)} />
