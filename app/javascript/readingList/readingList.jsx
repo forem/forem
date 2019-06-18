@@ -12,7 +12,7 @@ export class ReadingList extends Component {
     itemsLoaded: false,
     archiving: false,
     statusView: document.getElementById('reading-list').dataset.view,
-    showLoadMoreButton: true,
+    showLoadMoreButton: false,
   };
 
   componentDidMount() {
