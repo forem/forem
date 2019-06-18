@@ -31,7 +31,6 @@ export class ReadingList extends Component {
       });
     const waitingOnUser = setInterval(() => {
       if (window.currentUser) {
-        console.log('current user', window.currentUser);
         t.setState({ availableTags: window.currentUser.followed_tag_names });
         clearInterval(waitingOnUser);
       }
@@ -129,13 +128,19 @@ export class ReadingList extends Component {
                 src={item.reactable_user.profile_image_90}
                 alt="Profile Pic"
               />
-              {item.reactable_user.name}・{item.reactable_published_date}・
-              {item.reading_time} min read・
+              {item.reactable_user.name}
+・
+              {item.reactable_published_date}
+・
+              {item.reading_time}
+              {' '}
+min read・
             </a>
             <span className="readinglist-item-tag-collection">
               {item.reactable_tags.map(tag => (
                 <a className="readinglist-item-tag" href={`/t/${tag}`}>
-                  #{tag}
+                  #
+                  {tag}
                 </a>
               ))}
             </span>
@@ -194,7 +199,8 @@ export class ReadingList extends Component {
         data-no-instant
         onClick={e => this.toggleTag(e, tag)}
       >
-        #{tag}
+        #
+        {tag}
       </a>
     ));
     const snackBar = archiving ? (
