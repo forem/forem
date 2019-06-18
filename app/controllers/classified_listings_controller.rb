@@ -23,7 +23,7 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def edit
-    authorize @classified_listing, :authorized_organization_poster? if @current_user.organization_memberships.where(type_of_user: "admin").pluck(:organization_id).include?(@classified_listing.organization_id)
+    authorize @classified_listing, :authorized_organization_admin_editor? if @classified_listing.organization_id.present?
     @organizations = current_user.organizations
     @credits = current_user.credits.where(spent: false)
   end
@@ -64,7 +64,7 @@ class ClassifiedListingsController < ApplicationController
   end
 
   def update
-    authorize @classified_listing, :authorized_organization_poster? if @current_user.organization_memberships.where(type_of_user: "admin").pluck(:organization_id).include?(@classified_listing.organization_id)
+    authorize @classified_listing, :authorized_organization_admin_editor? if @classified_listing.organization_id.present?
     available_credits = current_user.credits.where(spent: false)
     number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category) # Bumping
     if listing_params[:action] == "bump"
