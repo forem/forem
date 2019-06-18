@@ -44,7 +44,7 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    resources :tags, only: %i[index show edit update]
+    resources :tags, only: %i[index edit update]
     resources :users, only: %i[index show edit update] do
       member do
         post "banish"
@@ -298,6 +298,7 @@ Rails.application.routes.draw do
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
+  get "/history", to: "history#index", as: :history
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
@@ -307,7 +308,7 @@ Rails.application.routes.draw do
   get "/rss" => "articles#feed", defaults: { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
-  get "/t/:tag" => "stories#index"
+  get "/t/:tag", to: "stories#index", as: :tag
   get "/t/:tag/edit", to: "tags#edit"
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"

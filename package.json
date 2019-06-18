@@ -21,8 +21,8 @@
   },
   "lint-staged": {
     "*.{js,jsx}": [
-      "eslint --fix",
       "prettier --write",
+      "eslint --fix",
       "git add"
     ],
     "{app,spec}/**/*.rb": [
@@ -85,15 +85,16 @@
     "webpack-dev-server": "^2.11.3"
   },
   "dependencies": {
+    "@github/clipboard-copy-element": "^1.0.1",
     "@rails/webpacker": "^3.5.5",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-preact": "^1.1.0",
     "chart.js": "^2.8.0",
     "codemirror": "^5.47.0",
     "focus-visible": "^4.1.5",
-    "@github/clipboard-copy-element": "^1.0.1",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
+    "lodash.debounce": "4.0.8",
     "marked": "^0.6.2",
     "preact": "^8.4.2",
     "preact-compat": "^3.19.0",
