@@ -194,6 +194,20 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "accepts valid stackoverflow sub community url" do
+      %w[pt ru es ja].each do |subcommunity|
+        user.stackoverflow_url = "https://#{subcommunity}.stackoverflow.com/users/7381391/mazen"
+        expect(user).to be_valid
+      end
+    end
+
+
+    it "does not accept invalid stackoverflow sub community url" do
+      user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
+      expect(user).not_to be_valid
+    end
+
+
     it "accepts valid https linkedin url" do
       %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
         user.linkedin_url = "https://linkedin.com/in/#{username}"
