@@ -30,7 +30,9 @@ class PageView < ApplicationRecord
       end
     end
 
-    searchableAttributes %i[referrer user_agent article_searchable_tags]
+    searchableAttributes(
+      %i[referrer user_agent article_title article_searchable_tags article_searchable_text],
+    )
 
     tags { article_tags }
 
@@ -47,6 +49,10 @@ class PageView < ApplicationRecord
 
   def article_searchable_tags
     article.cached_tag_list
+  end
+
+  def article_searchable_text
+    article.body_text[0..350]
   end
 
   def article_tags
