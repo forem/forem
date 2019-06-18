@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { PropTypes } from 'preact-compat';
+import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
 export class History extends Component {
@@ -19,6 +20,10 @@ export class History extends Component {
       page: 0,
       showNextPageButton: false,
     };
+
+    this.handleTyping = debounce(this.handleTyping.bind(this), 300, {
+      leading: true,
+    });
   }
 
   componentDidMount() {
