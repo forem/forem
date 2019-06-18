@@ -58,5 +58,23 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
         expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
       end
     end
+
+    context "when twitch returns empty data" do
+      let!(:twitch_user_stubbed_route) do
+        stub_request(:get, "https://api.twitch.tv/helix/users").
+          with(query: expected_twitch_user_params, headers: expected_headers).
+          and_return(body: { "data" => [] }.to_json, headers: { "Content-Type" => "application/json" })
+      end
+
+      it "doesn't fail" do
+        described_class.call(user, twitch_access_token_get)
+        expect(twitch_user_stubbed_route).to have_been_requested
+      end
+
+      it "doesn't register for webhooks" do
+        described_class.call(user, twitch_access_token_get)
+        expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
+      end
+    end
   end
 end
