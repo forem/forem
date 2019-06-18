@@ -1,7 +1,9 @@
 class HistoryController < ApplicationController
   before_action :generate_algolia_search_key
 
-  def index; end
+  def index
+    @history_index = true # used exclusively by the ERb templates
+  end
 
   private
 
