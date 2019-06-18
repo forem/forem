@@ -7,8 +7,7 @@ RSpec.describe "History", type: :request do
   describe "GET /history" do
     it "does not allow access to a regular user" do
       sign_in user
-      get history_path
-      expect(response).to have_http_status(:unauthorized)
+      expect { get history_path }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "allows access to a pro user" do

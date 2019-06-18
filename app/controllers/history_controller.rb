@@ -2,6 +2,7 @@ class HistoryController < ApplicationController
   before_action :generate_algolia_search_key
 
   def index
+    authorize current_user, :pro_user?
     @history_index = true # used exclusively by the ERb templates
   end
 
