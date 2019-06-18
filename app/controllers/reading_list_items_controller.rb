@@ -14,6 +14,8 @@ class ReadingListItemsController < ApplicationController
     head :ok
   end
 
+  private
+
   def generate_algolia_search_key
     params = { filters: "viewable_by:#{current_user.id}" }
     @secured_algolia_key = Algolia.generate_secured_api_key(

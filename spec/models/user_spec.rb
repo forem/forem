@@ -57,6 +57,13 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:username].to_s.include?("taken")).to be true
     end
+
+    it "takes page slug into account" do
+      create(:page, slug: "page_yo")
+      user = build(:user, username: "page_yo")
+      expect(user).not_to be_valid
+      expect(user.errors[:username].to_s.include?("taken")).to be true
+    end
   end
 
   # the followings are failing
@@ -547,6 +554,11 @@ RSpec.describe User, type: :model do
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
     expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
+  end
+
+  it "creates proper body class with pink theme" do
+    user.config_theme = "minimal_light_theme"
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body")
   end
 
   it "inserts into mailchimp" do
