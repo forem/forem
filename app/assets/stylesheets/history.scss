@@ -5,14 +5,17 @@
   @media screen and (min-width: 950px) {
     margin-top: -25px;
   }
+
   a {
     display: block;
   }
+
   .history-filters {
     width: 300px;
     float: left;
     min-height: 356px;
     position: relative;
+
     input {
       width: 100%;
       border: 0px;
@@ -33,9 +36,11 @@
       );
       @include themeable(color, theme-color, $black);
     }
+
     .history-tags {
       padding-bottom: 25px;
     }
+
     .history-tag {
       padding: 5px 0px;
       position: relative;
@@ -52,6 +57,7 @@
         background: $purple;
       }
     }
+
     .history-view-toggle {
       position: absolute;
       bottom: 10px;
@@ -59,6 +65,7 @@
       font-size: 0.8em;
     }
   }
+
   .history-results {
     width: calc(100% - 20px);
     margin: 10px auto;
@@ -75,6 +82,7 @@
     display: none;
     text-align: left;
     font-size: 14px;
+
     @media screen and (min-width: 950px) {
       width: calc(100% - 332px);
       margin-left: 20px;
@@ -85,6 +93,7 @@
     &.history-results--loaded {
       display: block;
     }
+
     .history-results-header {
       @include themeable(
         background,
@@ -95,6 +104,7 @@
       font-size: 1.8em;
       font-weight: bold;
     }
+
     .history-item-wrapper {
       position: relative;
       .history-archive-butt {
@@ -110,6 +120,7 @@
         @include themeable(border-color, theme-secondary-color, $medium-gray);
       }
     }
+
     .history-item {
       @include themeable(color, theme-color, $black);
       font-size: 0.8em;
@@ -119,11 +130,13 @@
         theme-container-border,
         1px solid $light-medium-gray
       );
+
       .history-item-title {
         font-weight: bold;
         font-size: 1.7em;
         margin-bottom: 10px;
       }
+
       .history-item-details {
         a {
           display: inline-block;
@@ -148,6 +161,7 @@
           }
         }
       }
+
       &:hover {
         @include themeable(
           background,
@@ -156,6 +170,7 @@
         );
       }
     }
+
     .history-empty {
       text-align: center;
       padding: 100px 0px;
@@ -169,6 +184,22 @@
         span[role='img'] {
           margin-left: 8px;
         }
+      }
+    }
+
+    .history-results-load-more {
+      text-align: center;
+
+      button {
+        background: transparent;
+        @include themeable(border, theme-border, 1px solid $light-medium-gray);
+        font-size: 17px;
+        padding: 14px 5px;
+        margin: 30px auto;
+        width: 120px;
+        max-width: 80%;
+        border-radius: 100px;
+        font-weight: bold;
       }
     }
   }

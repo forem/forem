@@ -13,9 +13,11 @@ export class History extends Component {
       totalCount: 0,
       index: null,
       itemsLoaded: false,
-      hitsPerPage: 100,
+      hitsPerPage: 20,
       availableTags,
       selectedTags: [],
+      page: 0,
+      showNextPageButton: false,
     };
   }
 
@@ -33,6 +35,7 @@ export class History extends Component {
         totalCount: content.nbHits,
         index,
         itemsLoaded: true,
+        showNextPageButton: content.hits.length === hitsPerPage,
       });
     });
   }
@@ -41,6 +44,7 @@ export class History extends Component {
     const query = event.target.value;
     const { selectedTags } = this.state;
 
+    this.setState({ page: 0, items: [] });
     this.search(query, { tags: selectedTags });
   };
 
@@ -55,23 +59,39 @@ export class History extends Component {
       newTags.splice(newTags.indexOf(tag), 1);
     }
 
-    this.setState({ selectedTags: newTags });
+    this.setState({ selectedTags: newTags, page: 0, items: [] });
     this.search(query, { tags: newTags });
   };
 
-  search(query, { tags }) {
-    const { index, hitsPerPage } = this.state;
-    const filters = { hitsPerPage };
+  loadNextPage = () => {
+    const { query, selectedTags, page } = this.state;
+    this.setState({ page: page + 1 });
+    this.search(query, { selectedTags });
+  };
 
-    if (tags.length > 0) {
+  search(query, { tags }) {
+    const { index, hitsPerPage, page, items } = this.state;
+    const filters = { hitsPerPage, page };
+
+    if (tags && tags.length > 0) {
       filters.tagFilters = tags;
     }
 
     index.search(query, filters).then(content => {
+      // add new items to the bottom
+      const allItems = items;
+      const itemsIds = items.map(i => i.objectID);
+      content.hits.forEach(item => {
+        if (!itemsIds.includes(item.objectID)) {
+          allItems.push(item);
+        }
+      });
+
       this.setState({
         query,
-        items: content.hits,
+        items: allItems,
         totalCount: content.nbHits,
+        showNextPageButton: content.hits.length === hitsPerPage,
       });
     });
   }
@@ -84,6 +104,7 @@ export class History extends Component {
       availableTags,
       selectedTags,
       query,
+      showNextPageButton,
     } = this.state;
 
     let allItems = items.map(item => (
@@ -144,6 +165,17 @@ min read・
       </a>
     ));
 
+    let nextPageButton = '';
+    if (showNextPageButton) {
+      nextPageButton = (
+        <div className="history-results-load-more">
+          <button onClick={e => this.loadNextPage(e)} type="button">
+            Load More
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="home history-home">
         <div className="side-bar">
@@ -163,6 +195,7 @@ min read・
             {`(${totalCount})`}
           </div>
           <div>{allItems}</div>
+          {nextPageButton}
         </div>
       </div>
     );
