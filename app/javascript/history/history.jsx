@@ -101,18 +101,28 @@ export class History extends Component {
     });
   }
 
-  render() {
-    const {
-      items,
-      itemsLoaded,
-      totalCount,
-      availableTags,
-      selectedTags,
-      query,
-      showNextPageButton,
-    } = this.state;
+  renderNoItems() {
+    const { selectedTags, query } = this.state;
 
-    let allItems = items.map(item => (
+    return (
+      <div className="history-empty">
+        <h1>
+          {selectedTags.length === 0 && query.length === 0
+            ? 'Your History is Lonely'
+            : 'Nothing with this filter 🤔'}
+        </h1>
+      </div>
+    );
+  }
+
+  renderItems() {
+    const { items, itemsLoaded } = this.state;
+
+    if (items.length === 0 && itemsLoaded) {
+      return this.renderNoItems();
+    }
+
+    return items.map(item => (
       <div className="history-item-wrapper">
         <a className="history-item" href={item.article_path}>
           <div className="history-item-title">{item.article_title}</div>
@@ -143,20 +153,12 @@ min read・
         </a>
       </div>
     ));
+  }
 
-    if (items.length === 0 && itemsLoaded) {
-      allItems = (
-        <div className="history-empty">
-          <h1>
-            {selectedTags.length === 0 && query.length === 0
-              ? 'Your History is Lonely'
-              : 'Nothing with this filter 🤔'}
-          </h1>
-        </div>
-      );
-    }
+  renderTags() {
+    const { availableTags, selectedTags } = this.state;
 
-    const allTags = availableTags.map(tag => (
+    return availableTags.map(tag => (
       <a
         className={`history-tag ${
           selectedTags.indexOf(tag) > -1 ? 'selected' : ''
@@ -169,17 +171,30 @@ min read・
         {tag}
       </a>
     ));
+  }
 
-    let nextPageButton = '';
+  renderNextPageButton() {
+    const { showNextPageButton } = this.state;
+
     if (showNextPageButton) {
-      nextPageButton = (
+      return (
         <div className="history-results-load-more">
           <button onClick={e => this.loadNextPage(e)} type="button">
             Load More
           </button>
         </div>
       );
-    }
+    } 
+      return '';
+    
+  }
+
+  render() {
+    const { itemsLoaded, totalCount } = this.state;
+
+    const allItems = this.renderItems();
+    const allTags = this.renderTags();
+    const nextPageButton = this.renderNextPageButton();
 
     return (
       <div className="home history-home">
