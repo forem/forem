@@ -6,6 +6,8 @@ class DashboardsController < ApplicationController
   def show
     fetch_and_authorize_user
 
+    @current_user_pro = current_user.pro?
+
     target = @user
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 

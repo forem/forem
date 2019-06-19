@@ -4,7 +4,8 @@ RSpec.describe "Dashboards", type: :request do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
-  let(:article)       { create(:article, user_id: user.id) }
+  let(:pro_user)      { create(:user, :pro) }
+  let(:article)       { create(:article, user: user) }
 
   describe "GET /dashboard" do
     context "when not logged in" do
@@ -19,7 +20,14 @@ RSpec.describe "Dashboards", type: :request do
         sign_in user
         article
         get "/dashboard"
-        expect(response.body).to include CGI.escapeHTML(article.title)
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+      end
+
+      it 'does not show "STATS" for articles' do
+        sign_in user
+        article
+        get "/dashboard"
+        expect(response.body).not_to include("STATS")
       end
     end
 
@@ -29,7 +37,17 @@ RSpec.describe "Dashboards", type: :request do
         user
         sign_in super_admin
         get "/dashboard/#{user.username}"
-        expect(response.body).to include CGI.escapeHTML(article.title)
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+      end
+    end
+
+    context "when logged in as a pro user" do
+      it 'shows "STATS" for articles' do
+        article = create(:article, user: pro_user)
+        sign_in pro_user
+        get "/dashboard"
+        expect(response.body).to include("STATS")
+        expect(response.body).to include("#{article.path}/stats")
       end
     end
   end
