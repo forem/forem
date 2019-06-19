@@ -106,7 +106,7 @@ class RssReader
       # Medium articles does not wrap {{ }} content in liquid tag.
       # This will wrap do so for content that isn't in pre and code tag
       html_doc.css("//body :not(pre):not(code)").each do |node|
-        node.inner_html = node.text.gsub(/{{.*?}}/) { |liquid| "`#{liquid}`" }
+        node.inner_html = node.inner_html.gsub(/{{.*?}}/) { |liquid| "`#{liquid}`" }
       end
     end
 
