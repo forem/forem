@@ -1,4 +1,5 @@
 import Chart from 'chart.js';
+import handleFetchAPIErrors from '../src/utils/errors';
 
 function resetActive(activeButton) {
   const buttons = document.getElementsByClassName('timerange-button');
@@ -177,11 +178,14 @@ function callAnalyticsApi(date, timeRangeLabel, { organizationId, articleId }) {
   }
 
   fetch(url)
-    .then(data => data.json())
+    .then(handleFetchAPIErrors)
+    .then(response => response.json())
     .then(data => {
       drawCharts(data, timeRangeLabel);
       writeCards(data, timeRangeLabel);
-    });
+    })
+    // eslint-disable-next-line no-console
+    .catch(error => console.error(error)); // we should come up with better error handling
 }
 
 function drawWeekCharts({ organizationId, articleId }) {
