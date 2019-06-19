@@ -185,6 +185,7 @@ class ArticlesController < ApplicationController
   def stats
     authorize current_user, :pro_user?
     authorize @article
+    @organization_id = @article.organization_id
   end
 
   private

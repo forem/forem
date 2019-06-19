@@ -2,7 +2,8 @@ import initCharts from '../analytics/dashboard';
 
 function initDashboardArticle() {
   const article = document.getElementById('article');
-  initCharts({ articleId: article.dataset.articleId });
+  const { articleId, organizationId } = article.dataset;
+  initCharts({ articleId, organizationId });
 }
 
 window.InstantClick.on('change', () => {
