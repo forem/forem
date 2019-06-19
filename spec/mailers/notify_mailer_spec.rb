@@ -58,7 +58,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#new_mention_email" do
-    let(:mention) { create(:mention, user_id: user2.id, mentionable_id: comment.id) }
+    let(:mention) { create(:mention, user_id: user2.id, mentionable: comment) }
 
     it "renders proper subject" do
       email = described_class.new_mention_email(mention)
