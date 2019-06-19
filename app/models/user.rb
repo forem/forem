@@ -80,7 +80,7 @@ class User < ApplicationRecord
   validates :stackoverflow_url,
             allow_blank: true,
             format:
-            /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
+            /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\Z/
   validates :behance_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
