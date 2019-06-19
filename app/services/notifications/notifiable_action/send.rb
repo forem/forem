@@ -42,8 +42,9 @@ module Notifications
       attr_reader :notifiable, :action
 
       def followers
-        followers = notifiable.user.followers
-        followers += notifiable.organization.followers if notifiable.organization_id
+        # .followers returns an array
+        followers = notifiable.user.followers_scoped.where(subscription_status: "all_posts").map(&:follower)
+        followers += notifiable.organization.followers_scoped.where(subscription_status: "all_posts").map(&:follower) if notifiable.organization_id
         followers.uniq.compact
       end
     end
