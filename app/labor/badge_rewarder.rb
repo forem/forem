@@ -45,6 +45,7 @@ module BadgeRewarder
     Tag.where.not(badge_id: nil).find_each do |tag|
       past_winner_user_ids = BadgeAchievement.where(badge_id: tag.badge_id).pluck(:user_id)
       winning_article = Article.where("score > 100").
+        published.
         where.not(user_id: past_winner_user_ids).
         order("score DESC").
         where("published_at > ?", (7.5).days.ago). # More than seven days, to have some wiggle room.

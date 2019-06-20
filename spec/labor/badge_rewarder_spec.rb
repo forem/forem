@@ -154,8 +154,13 @@ RSpec.describe BadgeRewarder do
       described_class.award_tag_badges
       expect(user.badge_achievements.size).to eq(0)
     end
-    it "does not award badge if tagged appropriately but not high enoughs core" do
-      article.update_columns(cached_tag_list: tag.name, score: 80)
+    it "does not award badge if qualifying article by score but not from past week" do
+      article.update_columns(published_at: 8.days.ago, cached_tag_list: tag.name, score: 333)
+      described_class.award_tag_badges
+      expect(user.badge_achievements.size).to eq(0)
+    end
+    it "does not award badge if tagged appropriately but not published" do
+      article.update_columns(cached_tag_list: tag.name, score: 101, published: false)
       described_class.award_tag_badges
       expect(user.badge_achievements.size).to eq(0)
     end
