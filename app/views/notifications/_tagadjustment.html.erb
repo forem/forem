@@ -8,7 +8,7 @@
   <br /><br />
   Moderators removed the
   <b><a href="/t/<%= data["tag_name"] %>" style="font-weight: 900">#<%= data["tag_name"] %></a></b> tag from your post
-  <a href="<%= data["article"]["path"] %>"><%= data["article"]["title"] %></a>.
+  <a href="<%= data["article"]["path"] %>"><%= h(data["article"]["title"]) %></a>.
   <br /><br />
   Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
   <br /><br />
