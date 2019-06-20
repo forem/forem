@@ -4,6 +4,10 @@ RSpec.describe Follow, type: :model do
   let(:user) { create(:user) }
   let(:user_2) { create(:user) }
 
+  describe "validations" do
+    it { is_expected.to validate_inclusion_of(:subscription_status).in_array(%w[all_articles none]) }
+  end
+
   it "follows user" do
     user.follow(user_2)
     expect(user.following?(user_2)).to eq(true)

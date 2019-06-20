@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_16_024727) do
+ActiveRecord::Schema.define(version: 2019_06_19_153428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -381,6 +381,7 @@ ActiveRecord::Schema.define(version: 2019_06_16_024727) do
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
     t.float "points", default: 1.0
+    t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
     t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
