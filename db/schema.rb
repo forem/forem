@@ -380,7 +380,7 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.integer "follower_id", null: false
     t.string "follower_type", null: false
     t.float "points", default: 1.0
-    t.string "subscription_status", default: "all_posts", null: false
+    t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
     t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type"], name: "fk_followables"
