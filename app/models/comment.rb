@@ -164,6 +164,8 @@ class Comment < ApplicationRecord
   end
 
   def title
+    return "[deleted]" if deleted
+
     ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 80)
   end
 

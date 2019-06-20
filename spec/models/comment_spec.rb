@@ -174,6 +174,11 @@ RSpec.describe Comment, type: :model do
       text = comment.title.gsub("...", "").delete("\n")
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
+
+    it "is converted to deleted if the comment is deleted" do
+      comment.update_column(:deleted, true)
+      expect(comment.title).to eq "[deleted]"
+    end
   end
 
   describe "#custom_css" do
