@@ -75,6 +75,8 @@ class ClassifiedListingsController < ApplicationController
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
+    elsif listing_params[:action] == "publish"
+      publish_listing
     elsif listing_params[:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
       update_listing_details
     end
