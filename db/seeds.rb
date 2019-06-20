@@ -253,6 +253,8 @@ listings_categories.each_with_index do |category, index|
       body_markdown: Faker::Markdown.random,
       category: category,
       contact_via_connect: true,
+      published: true,
+      bumped_at: Time.current,
     )
   end
 end

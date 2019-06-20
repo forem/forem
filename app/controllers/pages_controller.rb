@@ -76,7 +76,7 @@ class PagesController < ApplicationController
     @articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
       where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
       order(Arel.sql("RANDOM()")).
-      where.not(id: @top_articles.pluck(:id)).
+      where.not(id: @top_articles).
       includes(:user).decorate
     render layout: false
     set_surrogate_key_header "shecoded_page"

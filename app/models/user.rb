@@ -38,6 +38,8 @@ class User < ApplicationRecord
   has_many    :page_views
   has_many    :credits
   has_many    :classified_listings
+  has_many    :poll_votes
+  has_many    :poll_skips
   has_many :mentor_relationships_as_mentee,
            class_name: "MentorRelationship", foreign_key: "mentee_id", inverse_of: :mentee
   has_many :mentor_relationships_as_mentor,
@@ -78,7 +80,7 @@ class User < ApplicationRecord
   validates :stackoverflow_url,
             allow_blank: true,
             format:
-            /\A(http(s)?:\/\/)?(www.stackoverflow.com|stackoverflow.com|www.stackexchange.com|stackexchange.com)\/.*\Z/
+            /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\Z/
   validates :behance_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
@@ -115,8 +117,8 @@ class User < ApplicationRecord
                          message: "%{value} must be either v1 or v2" }
 
   validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme],
-                         message: "%{value} must be either default, pink theme, or night theme" }
+            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme],
+                         message: "%{value} is not a valid theme" }
   validates :config_font,
             inclusion: { in: %w[default sans_serif comic_sans],
                          message: "%{value} must be either default or sans serif" }
@@ -376,7 +378,7 @@ class User < ApplicationRecord
   end
 
   def unique_including_orgs_and_podcasts
-    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username)
+    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
   end
 
   def subscribe_to_mailchimp_newsletter_without_delay

@@ -11,7 +11,7 @@ class ModerationsController < ApplicationController
       order("hotness_score DESC").limit(100)
     @articles = @articles.cached_tagged_with(params[:tag]) if params[:tag].present?
 
-    @rating_votes = RatingVote.where(article: @articles.pluck(:id), user: current_user)
+    @rating_votes = RatingVote.where(article: @articles, user: current_user)
     @articles = @articles.decorate
   end
 

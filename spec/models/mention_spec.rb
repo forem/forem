@@ -10,4 +10,12 @@ RSpec.describe Mention, type: :model do
       expect(Mentions::CreateAllJob).to have_received(:perform_later).with(comment.id, "Comment")
     end
   end
+
+  it "creates a valid mention" do
+    expect(create(:mention)).to be_valid
+  end
+
+  it "doesn't raise undefined method for NilClass on valid?" do
+    expect(Mention.new.valid?).to eq(false)
+  end
 end

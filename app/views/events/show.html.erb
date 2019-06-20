@@ -16,7 +16,7 @@
   <meta property="og:site_name" content="The Practical Dev" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
   <meta name="twitter:title" content="<%= truncate(strip_tags(@event.title), length: 70) %>">
   <meta property="og:description" content="<%= truncate(strip_tags(@event.description_html), length: 140) %>" />
   <% if @event.cover_image.present? %>
