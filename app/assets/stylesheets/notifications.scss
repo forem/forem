@@ -348,6 +348,9 @@
           }
         }
       }
+      .single-notification {
+        cursor: default;
+      }
       .unseen {
         @include themeable(
           background,

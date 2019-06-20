@@ -1,5 +1,5 @@
 <% if @root_comment.present? %>
-  <% title truncate(strip_tags(@root_comment.processed_html), length: 100) + " — DEV" %>
+  <% title @root_comment.title + " — DEV" %>
 <% else %>
   <% title "Discussion of " + @commentable.title + " — DEV" %>
 <% end %>
