@@ -5,7 +5,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe PodcastFeed, vcr: vcr_option do
+RSpec.describe Podcasts::Feed, vcr: vcr_option do
   let(:feed_url) { "http://softwareengineeringdaily.com/feed/podcast/" }
   let(:podcast) { create(:podcast, feed_url: feed_url) }
 
@@ -14,14 +14,19 @@ RSpec.describe PodcastFeed, vcr: vcr_option do
   end
 
   context "when creating" do
+    before do
+      stub_request(:head, "https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3").to_return(status: 200)
+      stub_request(:head, "https://traffic.libsyn.com/sedaily/IFTTT.mp3").to_return(status: 200)
+    end
+
     it "fetches podcast episodes" do
       expect do
-        PodcastFeed.new.get_episodes(podcast, 2)
+        described_class.new.get_episodes(podcast, 2)
       end.to change(PodcastEpisode, :count).by(2)
     end
 
     it "fetches correct podcasts" do
-      PodcastFeed.new.get_episodes(podcast, 2)
+      described_class.new.get_episodes(podcast, 2)
       episodes = podcast.podcast_episodes
       expect(episodes.pluck(:title).sort).to eq(["Analyse Asia with Bernard Leong", "IFTTT Architecture with Nicky Leach"])
       expect(episodes.pluck(:media_url).sort).to eq(%w[https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3 https://traffic.libsyn.com/sedaily/IFTTT.mp3])
@@ -34,12 +39,12 @@ RSpec.describe PodcastFeed, vcr: vcr_option do
 
     it "does not refetch already fetched episodes" do
       expect do
-        PodcastFeed.new.get_episodes(podcast, 2)
+        described_class.new.get_episodes(podcast, 2)
       end.not_to change(PodcastEpisode, :count)
     end
 
     it "updates published_at for existing episodes" do
-      PodcastFeed.new.get_episodes(podcast, 2)
+      described_class.new.get_episodes(podcast, 2)
       episode.reload
       episode2.reload
       expect(episode.published_at).to be_truthy
