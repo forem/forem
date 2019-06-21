@@ -48,7 +48,7 @@ module BadgeRewarder
         published.
         where.not(user_id: past_winner_user_ids).
         order("score DESC").
-        where("published_at > ?", (7.5).days.ago). # More than seven days, to have some wiggle room.
+        where("published_at > ?", 7.5.days.ago). # More than seven days, to have some wiggle room.
         cached_tagged_with(tag).first
       if winning_article
         award_badges(
