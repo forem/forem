@@ -221,5 +221,27 @@ RSpec.describe Comment, type: :model do
     end
   end
 
+  describe "deleted" do
+    let(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
+
+    it "deletes the comment's notifications" do
+      create(:notification, notifiable: comment, user: user2)
+      create(:notification, notifiable: child_comment, user: user)
+      perform_enqueued_jobs do
+        child_comment.update(deleted: true)
+        expect(child_comment.notifications).to be_empty
+      end
+    end
+
+    it "updates the notifications of the ancestors and descendants" do
+      create(:notification, notifiable: comment, user: user2)
+      create(:notification, notifiable: child_comment, user: user)
+      perform_enqueued_jobs do
+        comment.update(deleted: true)
+        expect(child_of_child_comment.notifications.first.json_data["comment"]["ancestors"][1]["title"]).to eq "[deleted]"
+      end
+    end
+  end
+
   include_examples "#sync_reactions_count", :article_comment
 end
