@@ -31,7 +31,7 @@ class Comment < ApplicationRecord
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
-  after_update   :update_familial_notifications, if: :deleted
+  after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
   validate :permissions, if: :commentable
 
@@ -195,10 +195,10 @@ class Comment < ApplicationRecord
     Notification.update_notifications(self)
   end
 
-  def update_familial_notifications
+  def update_descendant_notifications
     return unless has_children?
 
-    Comment.where(id: ancestor_ids + descendant_ids).find_each do |comment|
+    Comment.where(id: descendant_ids).find_each do |comment|
       Notification.update_notifications(comment)
     end
   end
