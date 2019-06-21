@@ -1,0 +1,43 @@
+.ltag__listing {
+  font-family: $helvetica;
+  border:1px solid $light-medium-gray;
+  box-shadow: $shadow;
+  border-radius:3px;
+  display:block;
+  margin:0.95em 0 1.20em;
+  max-width: 100%;
+  @media screen and (min-width: 760px) {
+    margin: 0.95em auto;
+    width:620px;
+  }
+
+  a {
+    color: var(--theme-color, $black) !important;
+  }
+
+  .ltag__listing-content {
+    padding: calc(0.5vw + 6px);
+    h3 {
+      margin:0;
+      padding:0;
+      font-weight: 500;
+      font-size: 1.5em;
+    }
+
+    .ltag__listing-body {
+
+    }
+
+    .ltag__listing-tags {
+      a {
+
+      }
+    }
+
+    .ltag__listing-author-info {
+      a {
+
+      }
+    }
+  }
+}
