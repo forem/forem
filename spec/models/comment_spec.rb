@@ -238,7 +238,7 @@ RSpec.describe Comment, type: :model do
       create(:notification, notifiable: child_comment, user: user)
       perform_enqueued_jobs do
         comment.update(deleted: true)
-        expect(child_of_child_comment.notifications.first.json_data["comment"]["ancestors"][1]["title"]).to eq "[deleted]"
+        expect(child_comment.notifications.first.json_data["comment"]["ancestors"][0]["title"]).to eq "[deleted]"
       end
     end
   end

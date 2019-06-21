@@ -65,7 +65,7 @@ module Notifications
         depth: ancestor.depth,
         user: {
           username: ancestor.user.username,
-          name: ancestor.user.name,
+          name: ancestor.user.name
         }
       }
     end
