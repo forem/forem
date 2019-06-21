@@ -14,12 +14,12 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
 
     it "creates an episode" do
       expect do
-        described_class.call(podcast, item)
+        described_class.call(podcast.id, item)
       end.to change(PodcastEpisode, :count).by(1)
     end
 
     it "creates an episode with correct data" do
-      episode = described_class.call(podcast, item)
+      episode = described_class.call(podcast.id, item)
       expect(episode.title).to eq("Individual Contributor Career Growth w/ Matt Klein (part 1)")
       expect(episode.podcast_id).to eq(podcast.id)
       expect(episode.website_url).to eq("http://developertea.simplecast.fm/50464d4b")
@@ -28,7 +28,7 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
 
     it "rescues an exception when pubDate is invalid" do
       allow(item).to receive(:pubDate).and_return("not a date, haha")
-      episode = described_class.call(podcast, item)
+      episode = described_class.call(podcast.id, item)
       expect(episode).to be_persisted
       expect(episode.published_at).to eq(nil)
     end
@@ -40,20 +40,20 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
 
     it "sets media_url to https version when it is available" do
       stub_request(:head, https_url).to_return(status: 200)
-      episode = described_class.call(podcast, item)
+      episode = described_class.call(podcast.id, item)
       expect(episode.media_url).to eq(https_url)
     end
 
     it "keeps an http media url when https version is not available" do
       stub_request(:head, https_url).to_return(status: 404)
-      episode = described_class.call(podcast, item)
+      episode = described_class.call(podcast.id, item)
       expect(episode.media_url).to eq(item.enclosure.url)
     end
 
     # enable when the logic will not rely solely on exception
     xit "sets status notice when https version is not available" do
       stub_request(:head, https_url).to_return(status: 404)
-      described_class.call(podcast, item)
+      described_class.call(podcast.id, item)
       podcast.reload
       expect(podcast.status_notice).to include("may not be playable")
     end

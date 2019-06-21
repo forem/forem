@@ -9,7 +9,7 @@ module Podcasts
       if ep
         Podcasts::UpdateEpisode.call(ep, item)
       else
-        Podcasts::CreateEpisode.call(podcast, item)
+        Podcasts::CreateEpisode.call(podcast.id, item)
       end
     end
 
