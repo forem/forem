@@ -387,7 +387,7 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#update_notifications" do
-    context "when there are notifications to update" do
+    context "when there are article notifications to update" do
       before do
         user2.follow(user)
         Notification.send_to_followers_without_delay(article, "Published")
