@@ -8,9 +8,9 @@ class HtmlVariantsController < ApplicationController
                      elsif params[:state] == "admin"
                        HtmlVariant.where(published: true, approved: false).order("created_at DESC").includes(:user).page(params[:page]).per(30)
                      elsif params[:state].present?
-                        HtmlVariant.where(published: true, approved: true, group: params[:state]).order("success_rate DESC").includes(:user).page(params[:page]).per(30)
+                       HtmlVariant.where(published: true, approved: true, group: params[:state]).order("success_rate DESC").includes(:user).page(params[:page]).per(30)
                      else
-                        HtmlVariant.where(published: true, approved: true).order("success_rate DESC").includes(:user).page(params[:page]).per(30)
+                       HtmlVariant.where(published: true, approved: true).order("success_rate DESC").includes(:user).page(params[:page]).per(30)
                      end
   end
 

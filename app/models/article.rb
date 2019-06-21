@@ -524,7 +524,8 @@ class Article < ApplicationRecord
     errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
   end
 
-  def validate_liquid_tag_permissions #Admin only beta tags etc.
+  # Admin only beta tags etc.
+  def validate_liquid_tag_permissions
     errors.add(:body_markdown, "must only use permitted tags") if liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
