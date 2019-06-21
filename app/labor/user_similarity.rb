@@ -31,18 +31,14 @@ class UserSimilarity
   ].freeze
 
   attr_accessor :first_user, :second_user
+
   def initialize(first_user, second_user)
     @first_user = first_user
     @second_user = second_user
   end
 
   def score
-    mentorship_score + profile_score + tag_score
-  end
-
-  def mentorship_score
-    (first_user.mentee_description.to_s.tr("0-9", "").split(" ") & second_user.mentor_description.to_s.tr("0-9", "").split(" ") - STOP_WORDS).size +
-      (first_user.mentor_description.to_s.tr("0-9", "").split(" ") & second_user.mentee_description.to_s.tr("0-9", "").split(" ") - STOP_WORDS).size
+    profile_score + tag_score
   end
 
   def profile_score

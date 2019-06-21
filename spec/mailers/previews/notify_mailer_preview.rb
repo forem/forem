@@ -31,14 +31,6 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.new_badge_email(badge_achievement)
   end
 
-  def mentee_email
-    NotifyMailer.mentee_email(User.first, User.second)
-  end
-
-  def mentor_email
-    NotifyMailer.mentor_email(User.first, User.second)
-  end
-
   def tag_moderator_confirmation_email
     NotifyMailer.tag_moderator_confirmation_email(User.first, "discuss")
   end
