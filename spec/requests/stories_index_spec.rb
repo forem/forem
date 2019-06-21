@@ -57,7 +57,7 @@ RSpec.describe "StoriesIndex", type: :request do
       user = create(:user)
       listing = create(:classified_listing, user_id: user.id)
       get "/"
-      expect(response.body).to include(listing.title)
+      expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
   end
 
