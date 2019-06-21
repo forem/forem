@@ -7,6 +7,7 @@ class Comment < ApplicationRecord
   belongs_to :user
   counter_culture :user
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25_000 },
