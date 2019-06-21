@@ -3,10 +3,6 @@ class Internal::UsersController < Internal::ApplicationController
 
   def index
     @users = case params[:state]
-             when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(50)
-             when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(50)
              when /role\-/
                User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
              else
@@ -26,27 +22,14 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    @user = if params[:id] == "unmatched_mentee"
-              MentorRelationship.unmatched_mentees.order(Arel.sql("RANDOM()")).first
-            else
-              User.find(params[:id])
-            end
-    @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-    @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+    @user = User.find(params[:id])
   end
 
   def update
     @user = User.find(params[:id])
-    @new_mentee = user_params[:add_mentee]
-    @new_mentor = user_params[:add_mentor]
-    make_matches
     manage_credits
     add_note if user_params[:new_note]
-    if user_params[:quick_match]
-      redirect_to "/internal/users/unmatched_mentee"
-    else
-      redirect_to "/internal/users/#{params[:id]}"
-    end
+    redirect_to "/internal/users/#{params[:id]}"
   end
 
   def user_status
@@ -132,24 +115,10 @@ class Internal::UsersController < Internal::ApplicationController
     Credit.remove_from_org(org, amount)
   end
 
-  def make_matches
-    return if @new_mentee.blank? && @new_mentor.blank?
-
-    if @new_mentee.present?
-      mentee = User.find(@new_mentee)
-      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
-    end
-    return if @new_mentor.blank?
-
-    mentor = User.find(@new_mentor)
-    MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
-  end
-
   def user_params
     allowed_params = %i[
-      seeking_mentorship offering_mentorship quick_match new_note add_mentor
-      add_mentee note_for_current_role mentorship_note user_status
-      toggle_mentorship pro merge_user_id add_credits remove_credits
+      new_note note_for_current_role user_status
+      pro merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits ghostify
     ]
     params.require(:user).permit(allowed_params)
