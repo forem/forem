@@ -4,6 +4,11 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
   # create user, organization and two listings (one user only and other with organization)
   # def generate new liquid
   # raises error when invalid link/slug/path
+  def generate_new_liquid(slug)
+    Liquid::Template.register_tag("listing", ClassifiedListingTag)
+    Liquid::Template.parse("{% listing #{slug} %}")
+  end 
+  
   it "raises an error when invalid" do
     expect { generate_new_liquid("/listings/fakecategory/fakeslug") }.
       to raise_error("Invalid listing URL or listing does not exist").
