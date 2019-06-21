@@ -70,4 +70,5 @@ module Notifications
       }
     end
   end
+  private_class_method :ancestor_data
 end
