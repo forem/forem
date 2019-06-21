@@ -201,12 +201,10 @@ RSpec.describe User, type: :model do
       end
     end
 
-
     it "does not accept invalid stackoverflow sub community url" do
       user.stackoverflow_url = "https://fr.stackoverflow.com/users/7381391/mazen"
       expect(user).not_to be_valid
     end
-
 
     it "accepts valid https linkedin url" do
       %w[jessleenyc jessleenyc/ jess-lee-nyc].each do |username|
@@ -570,7 +568,7 @@ RSpec.describe User, type: :model do
     expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
   end
 
-  it "creates proper body class with pink theme" do
+  it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
     expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body")
   end

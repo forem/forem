@@ -1,9 +1,9 @@
 require "rails_helper"
 
 RSpec.describe OrganizationTag, type: :liquid_template do
-  let(:organization)  { create(:organization) }
+  let(:organization) { create(:organization) }
 
-  setup       { Liquid::Template.register_tag("organization", OrganizationTag) }
+  setup { Liquid::Template.register_tag("organization", OrganizationTag) }
 
   def generate_user_tag(id_code)
     Liquid::Template.parse("{% organization #{id_code} %}")
