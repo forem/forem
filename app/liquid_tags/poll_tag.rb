@@ -25,7 +25,8 @@ class PollTag < LiquidTagBase
         if (document.head.querySelector(
           'meta[name="user-signed-in"][content="true"]',
         )) {
-           function displayPollResults(json) {
+
+          function displayPollResults(json) {
             var totalVotes = json.voting_data.votes_count;
             json.voting_data.votes_distribution.forEach(function(point) {
               var pollOptionItem = document.getElementById('poll_option_list_item_'+point[0]);
@@ -49,7 +50,8 @@ class PollTag < LiquidTagBase
               document.getElementById('showmethemoney-'+json.poll_id).innerHTML = '<span class="ltag-voting-results-count">'+totalVotes+' total votes</span>';
             })
           }
-           var polls = document.getElementsByClassName('ltag-poll');
+
+          var polls = document.getElementsByClassName('ltag-poll');
           for (i = 0; i < polls.length; i += 1) {
             var poll = polls[i]
             var pollId = poll.dataset.pollId
