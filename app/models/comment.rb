@@ -165,10 +165,10 @@ class Comment < ApplicationRecord
     end.join
   end
 
-  def title
+  def title(length = 80)
     return "[deleted]" if deleted
 
-    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 80)
+    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html).strip, length: length)
   end
 
   def video
