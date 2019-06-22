@@ -21,6 +21,17 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(response.body).to include CGI.escapeHTML(article.title)
     end
 
+    it "renders consistent HTML between requests" do
+      # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
+      get "/social_previews/article/#{article.id}"
+      first_request_body = response.body
+
+      get "/social_previews/article/#{article.id}"
+      second_request_body = response.body
+
+      expect(first_request_body).to eq second_request_body
+    end
+
     it "renders shecoded template when tagged with shecoded" do
       she_coded_article = create(:article, tags: "shecoded")
 
@@ -42,6 +53,17 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(response.body).to include CGI.escapeHTML(user.name)
     end
 
+    it "renders consistent HTML between requests" do
+      # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
+      get "/social_previews/user/#{user.id}"
+      first_request_body = response.body
+
+      get "/social_previews/user/#{user.id}"
+      second_request_body = response.body
+
+      expect(first_request_body).to eq second_request_body
+    end
+
     it "renders an image when requested and redirects to image url" do
       get "/social_previews/user/#{user.id}.png"
 
@@ -53,6 +75,17 @@ RSpec.describe "SocialPreviews", type: :request do
     it "renders proper organization name" do
       get "/social_previews/organization/#{organization.id}"
       expect(response.body).to include CGI.escapeHTML(organization.name)
+    end
+
+    it "renders consistent HTML between requests" do
+      # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
+      get "/social_previews/organization/#{organization.id}"
+      first_request_body = response.body
+
+      get "/social_previews/organization/#{organization.id}"
+      second_request_body = response.body
+
+      expect(first_request_body).to eq second_request_body
     end
 
     it "renders an image when requested and redirects to image url" do
@@ -68,6 +101,17 @@ RSpec.describe "SocialPreviews", type: :request do
       expect(response.body).to include CGI.escapeHTML(tag.name)
     end
 
+    it "renders consistent HTML between requests" do
+      # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
+      get "/social_previews/tag/#{tag.id}"
+      first_request_body = response.body
+
+      get "/social_previews/tag/#{tag.id}"
+      second_request_body = response.body
+
+      expect(first_request_body).to eq second_request_body
+    end
+
     it "renders an image when requested and redirects to image url" do
       get "/social_previews/tag/#{tag.id}.png"
 
@@ -79,6 +123,17 @@ RSpec.describe "SocialPreviews", type: :request do
     it "renders pretty category name" do
       get "/social_previews/listing/#{listing.id}"
       expect(response.body).to include CGI.escapeHTML("Call For Proposal")
+    end
+
+    it "renders consistent HTML between requests" do
+      # We use the HTML for caching. It needs to be deterministic (if data is unchanged, the HTML should be the same)
+      get "/social_previews/listing/#{listing.id}"
+      first_request_body = response.body
+
+      get "/social_previews/listing/#{listing.id}"
+      second_request_body = response.body
+
+      expect(first_request_body).to eq second_request_body
     end
 
     it "renders and image when requested and redirects to iamge url" do
