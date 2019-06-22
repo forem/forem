@@ -460,6 +460,7 @@ a.header-link {
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 0.8em;
+        @include themeable(background, theme-container-accent-background, lighten($lightest-gray, 1%));
       }
     }
   }

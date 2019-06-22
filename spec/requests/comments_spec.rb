@@ -44,13 +44,13 @@ RSpec.describe "Comments", type: :request do
     context "when the a child comment" do
       it "displays proper button and text for child comment" do
         child = create(:comment,
-          parent_id: comment.id,
-          commentable_id: article.id,
-          commentable_type: "Article",
-          user_id: user.id)
+                       parent_id: comment.id,
+                       commentable_id: article.id,
+                       commentable_type: "Article",
+                       user_id: user.id)
         get child.path
         expect(response.body).to include("TOP OF THREAD")
-        expect(response.body).to include(comment.title)
+        expect(response.body).to include(comment.title(150))
         expect(response.body).to include(child.processed_html)
       end
     end
