@@ -171,6 +171,11 @@ RSpec.describe Comment, type: :model do
       expect(comment.title.length).to be <= 80
     end
 
+    it "is allows title of greater length if passed" do
+      expect(comment.title(5).length).to eq(5)
+    end
+
+
     it "retains content from #processed_html" do
       text = comment.title.gsub("...", "").delete("\n")
       expect(comment.processed_html).to include CGI.unescapeHTML(text)

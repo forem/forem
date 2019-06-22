@@ -56,7 +56,7 @@
         <% @organizations.each do |org| %>
           <div class="notifications-mobile-filters">
             <hr>
-            <span class="organization-name"><%= org.name %></span>
+            <span class="organization-name">@<%= org.slug %>:</span>
             <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">ALL</a>
             <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">COMMENTS</a>
           </div>
