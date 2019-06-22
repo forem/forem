@@ -155,6 +155,10 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include "commented on"
       end
 
+      it "does not render incorrect message" do
+        expect(response.body).not_to include "replied to a thread in"
+      end
+
       it "does not render the moderation message" do
         expect(response.body).not_to include "As a trusted member"
       end
@@ -177,6 +181,33 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).not_to include "reaction-button reacted"
       end
     end
+
+    context "when a user has a new second level comment notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+      let(:second_comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: comment.id) }
+      let(:third_comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: second_comment.id) }
+
+      before do
+        sign_in user
+        Notification.send_new_comment_notifications_without_delay(comment)
+        Notification.send_new_comment_notifications_without_delay(second_comment)
+        Notification.send_new_comment_notifications_without_delay(third_comment)
+        get "/notifications"
+      end
+
+      it "contextual comment notification text properly" do
+        expect(response.body).to include "replied to a thread in"
+      end
+
+      it "contextual comment notification text properly" do
+        expect(response.body).to include "re: #{comment.title}"
+      end
+
+
+    end
+
 
     context "when a user has a new moderation notification" do
       let(:user2)    { create(:user) }
