@@ -9,7 +9,7 @@ RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do
   let(:podcast) { create(:podcast, feed_url: "http://softwareengineeringdaily.com/feed/podcast/") }
 
   before do
-    PodcastFeed.new.get_episodes(podcast, 2)
+    Podcasts::Feed.new.get_episodes(podcast, 2)
   end
 
   describe "GET /api/articles" do
