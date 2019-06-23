@@ -164,8 +164,12 @@ class StoriesController < ApplicationController
       return
     end
     assign_user_comments
+    @pinned_stories = Article.published.where(id: @user.profile_pins.pluck(:pinnable_id)).
+      limited_column_select.
+      order("published_at DESC").decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
+      where.not(id: @pinned_stories.pluck(:id)).
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
     @article_index = true
     @list_of = "articles"

@@ -7,5 +7,7 @@ class CreateProfilePins < ActiveRecord::Migration[5.2]
       t.string  :pinnable_type
       t.timestamps
     end
+    add_index("profile_pins", "profile_id")
+    add_index("profile_pins", "pinnable_id")
   end
 end

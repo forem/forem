@@ -1,13 +1,13 @@
-<% @pinned_stories = Article.published.where(user_id: @user.profile_pins.pluck(:profile_id)).
-    limited_column_select.
-    order("published_at DESC").decorate %>
-<% @pinned_stories.each do |story| %>
-  <%= render "articles/single_story", story: story %>
+<% if @pinned_stories.any? %>
+  <div class="pinned-articles">
+    <div class="pinned-articles-indicator"><img src="<%= asset_path("pushpin.svg") %>" alt="pin" /> Pinned</div>
+    <% @pinned_stories.each do |story| %>
+      <%= render "articles/single_story", story: story %>
+    <% end %>
+  </div>
 <% end %>
 <% @stories.each_with_index do |story, i| %>
-  <% unless @pinned_stories.pluck(:id).include?(story.id) %>
-    <%= render "articles/single_story", story: story %>
-  <% end %>
+  <%= render "articles/single_story", story: story %>
   <% if i == 0 && @comments.any? %>
     <%= render "users/comments_section" %>
   <% end %>

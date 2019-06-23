@@ -37,6 +37,16 @@
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <% if manage_view %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+      <% if article.profile_pins.any? %>
+        <%= form_for(article.profile_pins.first) do |f| %>
+          <button class="pill cta">UNPIN</button>
+        <% end %>
+      <% else %>
+        <%= form_for(ProfilePin.new) do |f| %>
+          <%= f.hidden_field :pinnable_id, value: article.id %>
+          <button class="pill cta">PIN TO PROFILE</button>
+        <% end %>
+      <% end %>
     <% elsif article.published %>
       <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
     <% else %>

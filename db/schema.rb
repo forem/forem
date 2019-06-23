@@ -732,6 +732,8 @@ ActiveRecord::Schema.define(version: 2019_06_16_053854) do
     t.bigint "profile_id"
     t.string "profile_type"
     t.datetime "updated_at", null: false
+    t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
+    t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
   create_table "push_notification_subscriptions", force: :cascade do |t|

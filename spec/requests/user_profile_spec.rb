@@ -10,6 +10,20 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).to include CGI.escapeHTML(user.name)
     end
 
+    it "renders pins if any" do
+      create(:article, user_id: user.id)
+      create(:article, user_id: user.id)
+      last_article = create(:article, user_id: user.id)
+      create(:profile_pin, pinnable_id: last_article.id, profile_id: user.id)
+      get "/#{user.username}"
+      expect(response.body).to include "Pinned"
+    end
+
+    it "does not render pins if they don't exist" do
+      get "/#{user.username}"
+      expect(response.body).not_to include "Pinned"
+    end
+
     it "renders profile page of user after changed username" do
       old_username = user.username
       user.update(username: "new_username_yo_#{rand(10_000)}")
