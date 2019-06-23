@@ -52,6 +52,10 @@
     <% else %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% end %>
+    <% if @current_user_pro %>
+      <a href="<%= article.path %>/stats" data-no-instant class="cta pill blue">STATS</a>
+    <% end %>
+
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">

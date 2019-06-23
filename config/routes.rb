@@ -44,7 +44,7 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    resources :tags, only: %i[index show edit update]
+    resources :tags, only: %i[index edit update]
     resources :users, only: %i[index show edit update] do
       member do
         post "banish"
@@ -139,7 +139,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
+  resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
@@ -149,6 +149,7 @@ Rails.application.routes.draw do
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"
+  get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
   get "/listings/:category/:slug/:view" => "classified_listings#index",
@@ -298,6 +299,7 @@ Rails.application.routes.draw do
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
+  get "/history", to: "history#index", as: :history
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
@@ -307,7 +309,7 @@ Rails.application.routes.draw do
   get "/rss" => "articles#feed", defaults: { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
-  get "/t/:tag" => "stories#index"
+  get "/t/:tag", to: "stories#index", as: :tag
   get "/t/:tag/edit", to: "tags#edit"
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"

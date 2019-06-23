@@ -35,7 +35,9 @@ body {
 }
 
 .zen-mode {
-  .top-bar, .primary-sticky-nav, .article-actions {
+  .top-bar,
+  .primary-sticky-nav,
+  .article-actions {
     display: none !important;
   }
 }
@@ -57,6 +59,7 @@ body {
   &.stories-search,
   &.podcast_episodes-index,
   &.reading_list_items-index,
+  &.history-index,
   .tags-index,
   &.twitch_live_streams-show {
     margin-top: 68px;
@@ -136,7 +139,11 @@ input[type='email'] {
   bottom: 20px;
   left: 20px;
   right: 20px;
-  @include themeable(background, theme-container-accent-background, $light-purple);
+  @include themeable(
+    background,
+    theme-container-accent-background,
+    $light-purple
+  );
   @include themeable(border, container-border, 2px solid $purple);
   padding: 12px 30px;
   z-index: 20;
@@ -149,12 +156,19 @@ input[type='email'] {
     -webkit-animation-name: slide-in-from-left;
     -webkit-animation-duration: 0.25s;
   }
-
 }
 
 @-webkit-keyframes slide-in-from-left {
-  0% { left: -300px;}
-  50%{ left : 0px;}
-  90%{ left : 24px;}
-  100%{ left: 20px;}
+  0% {
+    left: -300px;
+  }
+  50% {
+    left: 0px;
+  }
+  90% {
+    left: 24px;
+  }
+  100% {
+    left: 20px;
+  }
 }

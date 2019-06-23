@@ -82,7 +82,7 @@
         width: 27%;
         padding: 9px 0px;
         text-align: center;
-        color: $black;
+        @include themeable(color, theme-secondary-color, $medium-gray);
         margin: 1%;
       }
       .query-filter-button {
@@ -111,7 +111,11 @@
             theme-container-accent-background,
             lighten($bold-blue, 8%)
           );
-          color: white;
+          @include themeable(
+            color,
+            theme-color,
+            white
+          );
         }
       }
     }

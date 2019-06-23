@@ -54,7 +54,7 @@ gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.30" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
-gem "inline_svg", "~> 1.4" # Embed SVG documents in your Rails views and style them with CSS
+gem "inline_svg", "~> 1.5" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
 gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.1" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
@@ -73,7 +73,7 @@ gem "rack-timeout", "~> 0.5" # Rack middleware which aborts requests that have b
 gem "rails", "~> 5.2", ">= 5.2.3" # Ruby on Rails
 gem "rails-assets-airbrake-js-client", "~> 1.6", source: "https://rails-assets.org" # Airbrake JavaScript Notifier
 gem "rails-observers", "~> 0.1" # Rails observer (removed from core in Rails 4.0)
-gem "recaptcha", "~> 4.14", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.0", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
@@ -93,7 +93,7 @@ gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 4.18" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.23" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.24" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
@@ -125,7 +125,7 @@ end
 group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.0" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.22" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.24" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 1.9" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
@@ -134,7 +134,7 @@ group :development, :test do
   gem "rubocop-performance", "~> 1.0", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.0", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.33", require: false # Code style checking for RSpec files
-  gem "spring", "~> 2.0" # Preloads your application so things like console, rake and tests run faster
+  gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
 
@@ -152,7 +152,7 @@ group :test do
   gem "test-prof", "~> 0.9" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 5.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 3.9" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "webdrivers", "~> 4.0" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.6" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

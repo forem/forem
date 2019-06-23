@@ -20,8 +20,8 @@ RSpec.describe UserSimilarity, vcr: {} do
   end
 
   it "Is affected by non-stop words" do
-    user.mentee_description = "Hot dogs languages punk rock hello"
-    dissimilar_user.mentor_description = "Hot dogs languages punk rock hello "
+    user.summary = "Hot dogs languages punk rock hello"
+    dissimilar_user.summary = "Hot dogs languages punk rock hello "
     similar_score = UserSimilarity.new(user, similar_user).score
     dissimilar_score = UserSimilarity.new(user, dissimilar_user).score
     expect(similar_score).to be < dissimilar_score

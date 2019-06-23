@@ -58,7 +58,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#new_mention_email" do
-    let(:mention) { create(:mention, user_id: user2.id, mentionable_id: comment.id) }
+    let(:mention) { create(:mention, user_id: user2.id, mentionable: comment) }
 
     it "renders proper subject" do
       email = described_class.new_mention_email(mention)
@@ -268,70 +268,6 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.html_part.body).not_to include(CGI.escape("utm_medium=email"))
       expect(email.html_part.body).not_to include(CGI.escape("utm_source=notify_mailer"))
       expect(email.html_part.body).not_to include(CGI.escape("utm_campaign=account_deleted_email"))
-    end
-  end
-
-  describe "#mentee_email" do
-    let(:mentee) { user }
-    let(:mentor) { user2 }
-
-    it "renders proper subject" do
-      email = described_class.mentee_email(mentee, mentor)
-      expect(email.subject).to eq("You have been matched with a DEV mentor!")
-    end
-
-    it "renders proper from" do
-      email = described_class.mentee_email(mentee, mentor)
-      expect(email.from).to eq(["liana@dev.to"])
-    end
-
-    it "renders proper receiver" do
-      email = described_class.mentee_email(mentee, mentor)
-      expect(email.to).to eq([mentee.email])
-    end
-
-    it "includes the tracking pixel" do
-      email = described_class.mentee_email(mentee, mentor)
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      email = described_class.mentee_email(mentee, mentor)
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=mentee_email"))
-    end
-  end
-
-  describe "#mentor_email" do
-    let(:mentee) { user }
-    let(:mentor) { user2 }
-
-    it "renders proper subject" do
-      email = described_class.mentor_email(mentor, mentee)
-      expect(email.subject).to eq("You have been matched with a new DEV mentee!")
-    end
-
-    it "renders proper from" do
-      email = described_class.mentor_email(mentor, mentee)
-      expect(email.from).to eq(["liana@dev.to"])
-    end
-
-    it "renders proper receiver" do
-      email = described_class.mentor_email(mentor, mentee)
-      expect(email.to).to eq([mentor.email])
-    end
-
-    it "includes the tracking pixel" do
-      email = described_class.mentor_email(mentor, mentee)
-      expect(email.html_part.body).to include("open.gif")
-    end
-
-    it "includes UTM params" do
-      email = described_class.mentor_email(mentor, mentee)
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=mentor_email"))
     end
   end
 

@@ -90,19 +90,13 @@ class UserPolicy < ApplicationPolicy
        looking_for_work_publicly
        mastodon_url
        medium_url
-       mentee_description
-       mentee_form_updated_at
-       mentor_description
-       mentor_form_updated_at
        mostly_work_with
        name
-       offering_mentorship
        inbox_type
        permit_adjacent_sponsors
        password
        password_confirmation
        profile_image
-       seeking_mentorship
        stackoverflow_url
        summary
        text_color_hex

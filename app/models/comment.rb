@@ -7,6 +7,7 @@ class Comment < ApplicationRecord
   belongs_to :user
   counter_culture :user
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25_000 },
@@ -30,6 +31,7 @@ class Comment < ApplicationRecord
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
+  after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
   validate :permissions, if: :commentable
 
@@ -163,8 +165,10 @@ class Comment < ApplicationRecord
     end.join
   end
 
-  def title
-    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 80)
+  def title(length = 80)
+    return "[deleted]" if deleted
+
+    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html).strip, length: length)
   end
 
   def video
@@ -189,6 +193,14 @@ class Comment < ApplicationRecord
 
   def update_notifications
     Notification.update_notifications(self)
+  end
+
+  def update_descendant_notifications
+    return unless has_children?
+
+    Comment.where(id: descendant_ids).find_each do |comment|
+      Notification.update_notifications(comment)
+    end
   end
 
   def send_to_moderator

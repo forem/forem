@@ -5,6 +5,10 @@ RSpec.describe PollVote, type: :model do
   let(:user) { create(:user) }
   let(:poll) { create(:poll, article_id: article.id) }
 
+  it "is not valid as a new object" do
+    expect(PollVote.new.valid?).to be(false)
+  end
+
   it "limits one vote per user per poll" do
     create(:poll_vote, poll_option_id: poll.poll_options.last.id, user_id: user.id, poll_id: poll.id)
     PollVote.create(poll_option_id: poll.poll_options.first.id, user_id: user.id, poll_id: poll.id)
