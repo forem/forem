@@ -87,7 +87,7 @@
       <div class="root-comment">
         <% if @root_comment.depth > 0 && parent = @root_comment.parent %>
           <a href="<%= parent.path %>" class="comment-parent-link">
-            re: <%= parent.title(150).strip %>
+            re: <%= parent.title(150) %>
           </a>
         <% end %>
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
