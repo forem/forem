@@ -11,7 +11,7 @@ class DecsTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        link: @link,
+        link: @snippet["url"],
         height: @snippet["height"]
       },
     )
