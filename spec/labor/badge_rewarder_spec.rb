@@ -180,6 +180,5 @@ RSpec.describe BadgeRewarder do
       expect(third_user.reload.badge_achievements.size).to eq(1)
     end
     # rubocop:enable RSpec/ExampleLength
-    # rubocop:enable RSpec/MultipleExpectations
   end
 end

@@ -120,8 +120,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "shortens long urls" do
-    comment.body_markdown = "Hello https://longurl.com/dsjkdsdsjdsdskhjdsjbhkdshjdshudsdsbhdsbiudsuidsuidsuidsuidsuidsuidsiudsiudsuidsuisduidsuidsiuiuweuiweuiewuiweuiweuiew?sdhiusduisduidsiudsuidsiusdiusdiuewiuewiuewiuweiuweiuweiuewiuweuiweuiewibsdiubdsiubdsisbdiudsbsdiusdbiu" # rubocop:disable Metrics/LineLength
-    comment.save
+    comment.update(body_markdown: "Hello https://longurl.com/#{'x' * 100}?#{'y' * 100}")
     expect(comment.processed_html.include?("...</a>")).to eq(true)
     expect(comment.processed_html.size).to be < 450
   end
@@ -174,7 +173,6 @@ RSpec.describe Comment, type: :model do
     it "is allows title of greater length if passed" do
       expect(comment.title(5).length).to eq(5)
     end
-
 
     it "retains content from #processed_html" do
       text = comment.title.gsub("...", "").delete("\n")
