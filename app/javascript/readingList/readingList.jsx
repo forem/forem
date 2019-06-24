@@ -33,7 +33,6 @@ export class ReadingList extends Component {
         t.setState({
           totalReadingList: content.nbHits,
           readingListItems: content.hits,
-          totalCount: content.nbHits,
           index,
           itemsLoaded: true,
         });
@@ -82,7 +81,7 @@ export class ReadingList extends Component {
 
   archive = (e, item) => {
     e.preventDefault();
-    const { statusView, readingListItems, totalCount } = this.state;
+    const { statusView, readingListItems, totalReadingList } = this.state;
     const t = this;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
@@ -98,7 +97,7 @@ export class ReadingList extends Component {
     t.setState({
       archiving: true,
       readingListItems: newItems,
-      totalCount: totalCount - 1,
+      totalReadingList: totalReadingList - 1,
     });
     setTimeout(() => {
       t.setState({ archiving: false });
@@ -126,7 +125,7 @@ export class ReadingList extends Component {
     if (!isLoadMore) {
       this.setState({ page: 0 });
     }
-    const { index, page } = this.state; 
+    const { index, page } = this.state;
     const filters = { page, hitsPerPage: 64, filters: `status:${statusView}` };
     if (tags.length > 0) {
       filters.tagFilters = tags;
@@ -277,16 +276,18 @@ min read・
             </div>
           </div>
         </div>
-        <div
-          className={`readinglist-results ${
-            itemsLoaded ? 'readinglist-results--loaded' : ''
-          }`}
-        >
-          <div className="readinglist-results-header">
-            {statusView === 'valid' ? 'Reading List' : 'Archive'}
-            {` (${totalReadingList})`}
+        <div className="readinglist-result-container">
+          <div
+            className={`readinglist-results ${
+              itemsLoaded ? 'readinglist-results--loaded' : ''
+            }`}
+          >
+            <div className="readinglist-results-header">
+              {statusView === 'valid' ? 'Reading List' : 'Archive'}
+              {` (${totalReadingList})`}
+            </div>
+            <div>{allItems}</div>
           </div>
-          <div>{allItems}</div>
           <div className="loadmore-wrapper">{loadMoreButton}</div>
         </div>
         {snackBar}
