@@ -42,4 +42,8 @@ RSpec.describe Tag, type: :model do
   it "knows class valid categories" do
     expect(Tag.valid_categories).to include("tool")
   end
+
+  it "triggers cache busting on save" do
+    expect { build(:tag).save }.to have_enqueued_job.on_queue("tags_bust_cache")
+  end
 end
