@@ -165,12 +165,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 }
 
-function renderReferrers(data, timeRangeLabel) {
-  document.getElementById('referrers-card').innerHTML = cardHTML(
-    data.domains.length,
-    `Referrers ${timeRangeLabel}`,
-  );
-
+function renderReferrers(data) {
   const container = document.getElementById('referrers-container');
   const tableBody = data.domains
     .filter(referrer => referrer.domain)
@@ -206,7 +201,7 @@ function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
   });
 
   callReferrersAPI(date, { organizationId, articleId }, data => {
-    renderReferrers(data, timeRangeLabel);
+    renderReferrers(data);
   });
 }
 
