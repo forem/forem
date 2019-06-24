@@ -14,6 +14,10 @@ RSpec.describe Podcast, type: :model do
       expect(podcast).to be_valid
     end
 
+    it "triggers cache busting on save" do
+      expect { podcast.save }.to have_enqueued_job.on_queue("podcasts_bust_cache").twice
+    end
+
     # Couldn't use shoulda uniqueness matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations
     # So an invalid record is trying to be saved but fails because of the db constraints

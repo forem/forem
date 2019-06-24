@@ -82,4 +82,8 @@ RSpec.describe PodcastEpisode, type: :model do
       end
     end
   end
+
+  it "triggers cache busting on save" do
+    expect { build(:podcast_episode).save }.to have_enqueued_job.on_queue("podcast_episodes_bust_cache")
+  end
 end

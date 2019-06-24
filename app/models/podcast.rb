@@ -28,6 +28,10 @@ class Podcast < ApplicationRecord
   def bust_cache
     return unless path
 
-    CacheBuster.new.bust("/" + path)
+    Podcasts::BustCacheJob.perform_later(path)
+  end
+
+  def pull_all_episodes
+    Podcasts::GetEpisodesJob.perform_later(id)
   end
 end
