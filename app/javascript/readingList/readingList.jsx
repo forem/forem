@@ -125,12 +125,26 @@ export class ReadingList extends Component {
     if (!isLoadMore) {
       this.setState({ page: 0 });
     }
-    const { index, page } = this.state;
+    const { index, page, readingListItems } = this.state;
     const filters = { page, hitsPerPage: 64, filters: `status:${statusView}` };
     if (tags.length > 0) {
       filters.tagFilters = tags;
     }
     index.search(query, filters).then(content => {
+      if (!isLoadMore) {
+        t.setState({
+          readingListItems: content.hits,
+          totalReadingList: content.nbHits,
+          query,
+        });
+      } else {
+        t.setState({
+          readingListItems: [...readingListItems, ...content.hits],
+          totalReadingList: content.nbHits,
+          query,
+        });
+      }
+      this.shouldShowLoadMoreButton();
       t.setState({
         readingListItems: content.hits,
         totalReadingList: content.nbHits,
