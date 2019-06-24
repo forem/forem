@@ -598,8 +598,8 @@ ActiveRecord::Schema.define(version: 2019_06_24_093012) do
     t.bigint "article_id"
     t.integer "counts_for_number_of_views", default: 1
     t.datetime "created_at", null: false
-    t.string "domain", default: "", null: false
-    t.string "path", default: "", null: false
+    t.string "domain"
+    t.string "path"
     t.string "referrer"
     t.integer "time_tracked_in_seconds", default: 15
     t.datetime "updated_at", null: false
