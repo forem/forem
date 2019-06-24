@@ -1,0 +1,59 @@
+<div class="toggles">
+  <button class="selected timerange-button" id="week-button">Week</button>
+  <button class="timerange-button" id="month-button">Month</button>
+  <button class="timerange-button" id="infinity-button">Infinity</button>
+</div>
+
+<div class="summary-stats">
+  <div class="card" id="readers-card"></div>
+  <div class="card" id="reactions-card"></div>
+  <div class="card" id="comments-card"></div>
+  <div class="card" id="followers-card"></div>
+</div>
+
+<div class="graphs">
+  <div class="row">
+    <div class="card">
+      <h2>Readers Summary</h2>
+      <div class="charts-container">
+        <canvas id="readers-chart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h2>New Followers Summary</h2>
+      <div class="charts-container">
+        <canvas id="followers-chart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <h2>Reactions Summary ❤🦄🔖</h2>
+      <div class="charts-container">
+        <canvas id="reactions-chart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Comments Summary 💬</h2>
+      <div class="charts-container">
+        <canvas id="comments-chart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="card">
+      <h2>Traffic Source Summary 🚦</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Views</th>
+          </tr>
+        </thead>
+
+        <tbody id="referrers-container">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
