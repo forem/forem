@@ -56,7 +56,8 @@ export class ListingDashboard extends Component {
     const listingLength = (selected, userListings, organizationListings) => {
       return selected === 'user' ? (
         <h4>
-Listings Made:
+          Listings Made:
+          {' '}
           {userListings.length}
         </h4>
       ) : (
@@ -75,7 +76,8 @@ Listings Made:
     const creditCount = (selected, userCreds, organizations) => {
       return selected === 'user' ? (
         <h4>
-Credits Available:
+          Credits Available:
+          {' '}
           {userCredits}
         </h4>
       ) : (
