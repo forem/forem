@@ -425,7 +425,7 @@ GEM
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
-    inline_svg (1.5.0)
+    inline_svg (1.5.2)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     ipaddress (0.8.3)
