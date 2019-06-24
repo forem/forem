@@ -38,4 +38,8 @@ RSpec.describe "Api::V0::Analytics", type: :request do
   describe "GET /api/analytics/past_day" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "past_day"
   end
+
+  describe "GET /api/analytics/referrers" do
+    include_examples "GET /api/analytics/:endpoint authorization examples", "referrers"
+  end
 end
