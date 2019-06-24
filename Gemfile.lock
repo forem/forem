@@ -754,7 +754,7 @@ GEM
     stripe (4.19.0)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
-    stripe-ruby-mock (2.5.4)
+    stripe-ruby-mock (2.5.7)
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (>= 2.0.3)
