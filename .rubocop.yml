@@ -120,6 +120,12 @@ Style/FrozenStringLiteralComment:
     to help transition from Ruby 2.3.0 to Ruby 3.0.
   Enabled: false
 
+Style/IfUnlessModifier:
+  Description: >-
+    Favor modifier if/unless usage when you have a
+    single-line body.
+  Enabled: false
+
 Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
