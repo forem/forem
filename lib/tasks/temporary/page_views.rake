@@ -5,7 +5,9 @@ namespace :page_views do
 
     ActiveRecord::Base.transaction do
       PageView.find_each do |pv|
-        parsed_url = Addressable::URI.parse(pv.referrer || '')
+        next unless pv.referrer
+
+        parsed_url = Addressable::URI.parse(pv.referrer)
         pv.update!(domain: parsed_url.domain, path: parsed_url.path)
       end
     end
