@@ -27,6 +27,7 @@ class User < ApplicationRecord
   has_many    :mentions, dependent: :destroy
   has_many    :messages, dependent: :destroy
   has_many    :notes, as: :noteable, inverse_of: :noteable
+  has_many    :profile_pins, as: :profile, inverse_of: :profile
   has_many    :authored_notes, as: :author, inverse_of: :author, class_name: "Note"
   has_many    :notifications, dependent: :destroy
   has_many    :reactions, dependent: :destroy

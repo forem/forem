@@ -7,12 +7,12 @@ export class ListingDashboard extends Component {
     orgListings: [],
     orgs: [],
     userCredits: 0,
-    selectedListings: "user",
-  }
+    selectedListings: 'user',
+  };
 
   componentDidMount() {
     const t = this;
-    const container = document.getElementById('classifieds-listings-dashboard')
+    const container = document.getElementById('classifieds-listings-dashboard');
     let listings = [];
     let orgs = [];
     let orgListings = [];
@@ -24,46 +24,100 @@ export class ListingDashboard extends Component {
   }
 
   render() {
-    const { listings, orgListings, userCredits, orgs, selectedListings } = this.state
+    const {
+      listings,
+      orgListings,
+      userCredits,
+      orgs,
+      selectedListings,
+    } = this.state;
 
     const showListings = (selected, userListings, organizationListings) => {
-      return (selected === "user") ? userListings.map(listing => <ListingRow listing={listing} />) : organizationListings.map(listing => (listing.organization_id === selected) ? <ListingRow listing={listing} /> : '');
-    }
+      return selected === 'user'
+        ? userListings.map(listing => <ListingRow listing={listing} />)
+        : organizationListings.map(listing =>
+            listing.organization_id === selected ? (
+              <ListingRow listing={listing} />
+            ) : (
+              ''
+            ),
+          );
+    };
 
     const orgButtons = orgs.map(org => (
-      <span onClick={() => this.setState({selectedListings: org.id})} className={"rounded-btn " + (selectedListings === org.id ? 'active': '')}>
+      <span
+        onClick={() => this.setState({ selectedListings: org.id })}
+        className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
+      >
         {org.name}
       </span>
-    ))
+    ));
 
     const listingLength = (selected, userListings, organizationListings) => {
-      return (selected === "user") ? (<h4>Listings Made: {userListings.length}</h4>) : (<h4>Listings Made: {organizationListings.filter((listing) => (listing.organization_id == selected)).length}</h4>);
-    }
+      return selected === 'user' ? (
+        <h4>
+          Listings Made:
+          {' '}
+          {userListings.length}
+        </h4>
+      ) : (
+        <h4>
+          Listings Made:
+          {' '}
+          {
+            organizationListings.filter(
+              listing => listing.organization_id === selected,
+            ).length
+          }
+        </h4>
+      );
+    };
 
     const creditCount = (selected, userCreds, organizations) => {
-      return (selected === "user") ? (<h4>Credits Available: {userCredits}</h4>) : (<h4>Credits Available: {organizations.find((org) => (org.id === selected)).unspent_credits_count}</h4>);
-    }
+      return selected === 'user' ? (
+        <h4>
+          Credits Available:
+          {' '}
+          {userCredits}
+        </h4>
+      ) : (
+        <h4>
+          Credits Available:
+          {' '}
+          {organizations.find(org => org.id === selected).unspent_credits_count}
+        </h4>
+      );
+    };
 
     return (
       <div className="dashboard-listings-container">
-        <span onClick={() => this.setState({selectedListings: "user"})} className={"rounded-btn " + (selectedListings === "user" ? 'active': '')}>Personal</span>
+        <span
+          onClick={() => this.setState({ selectedListings: 'user' })}
+          className={`rounded-btn ${
+            selectedListings === 'user' ? 'active' : ''
+          }`}
+        >
+          Personal
+        </span>
         {orgButtons}
         <div className="dashboard-listings-header-wrapper">
           <div className="dashboard-listings-header">
             <h3>Listings</h3>
             {listingLength(selectedListings, listings, orgListings)}
-            <a href='/listings/new'>Create a Listing</a>
+            <a href="/listings/new">Create a Listing</a>
           </div>
           <div className="dashboard-listings-header">
             <h3>Credits</h3>
             {creditCount(selectedListings, userCredits, orgs)}
-            <a href="/credits/purchase" data-no-instant>Buy Credits</a>
+            <a href="/credits/purchase" data-no-instant>
+              Buy Credits
+            </a>
           </div>
         </div>
         <div className="dashboard-listings-view">
           {showListings(selectedListings, listings, orgListings)}
         </div>
       </div>
-    )
+    );
   }
 }
