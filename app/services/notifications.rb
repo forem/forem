@@ -19,6 +19,9 @@ module Notifications
       path: comment.path,
       processed_html: comment.processed_html,
       updated_at: comment.updated_at,
+      ancestry: comment.ancestry,
+      depth: comment.depth,
+      ancestors: ancestor_data(comment),
       commentable: {
         id: comment.commentable.id,
         title: comment.commentable.title,
@@ -51,4 +54,21 @@ module Notifications
       profile_image_90: organization.profile_image_90
     }
   end
+
+  def self.ancestor_data(comment)
+    comment.ancestors.includes(:user).map do |ancestor|
+      {
+        id: ancestor.id,
+        title: ancestor.title,
+        path: ancestor.path,
+        ancestry: ancestor.ancestry,
+        depth: ancestor.depth,
+        user: {
+          username: ancestor.user.username,
+          name: ancestor.user.name
+        }
+      }
+    end
+  end
+  private_class_method :ancestor_data
 end

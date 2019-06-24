@@ -481,17 +481,6 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.integer "user_id"
   end
 
-  create_table "mentor_relationships", force: :cascade do |t|
-    t.boolean "active", default: true
-    t.datetime "created_at", null: false
-    t.integer "mentee_id", null: false
-    t.integer "mentor_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["mentee_id", "mentor_id"], name: "index_mentor_relationships_on_mentee_id_and_mentor_id", unique: true
-    t.index ["mentee_id"], name: "index_mentor_relationships_on_mentee_id"
-    t.index ["mentor_id"], name: "index_mentor_relationships_on_mentor_id"
-  end
-
   create_table "messages", force: :cascade do |t|
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
@@ -895,7 +884,6 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
-    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -964,15 +952,10 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.string "mastodon_url"
     t.string "medium_url"
     t.datetime "membership_started_at"
-    t.text "mentee_description"
-    t.datetime "mentee_form_updated_at"
-    t.text "mentor_description"
-    t.datetime "mentor_form_updated_at"
     t.boolean "mobile_comment_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"
-    t.boolean "offering_mentorship"
     t.string "old_old_username"
     t.string "old_username"
     t.datetime "onboarding_package_form_submmitted_at"
@@ -996,7 +979,6 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.boolean "saw_onboarding", default: true
     t.integer "score", default: 0
     t.string "secret"
-    t.boolean "seeking_mentorship"
     t.string "shipping_address"
     t.string "shipping_address_line_2"
     t.string "shipping_city"
@@ -1018,7 +1000,6 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
-    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

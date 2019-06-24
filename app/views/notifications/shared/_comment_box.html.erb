@@ -1,6 +1,11 @@
 <% cache "comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{json_data['comment']['updated_at']}-#{json_data['comment']['id']}" do %>
   <% if json_data["comment"]["commentable"] %>
     <div class="comment-text">
+      <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
+        <a href="<%= json_data["comment"]["ancestors"].last["path"] %>" class="comment-text-header">
+          re: <%= json_data["comment"]["ancestors"].last["title"].strip %>
+        </a>
+      <% end %>
       <a href="<%= json_data["comment"]["path"] %>" class="comment-link-wrapper"></a>
       <%= json_data["comment"]["processed_html"].html_safe %>
     </div>

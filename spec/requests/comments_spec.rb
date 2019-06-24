@@ -29,6 +29,32 @@ RSpec.describe "Comments", type: :request do
       expect(response.body).to include(comment.processed_html)
     end
 
+    it "displays full discussion text" do
+      get comment.path
+      expect(response.body).to include("FULL DISCUSSION")
+    end
+
+    context "when the comment a root" do
+      it "does not display top of thread button" do
+        get comment.path
+        expect(response.body).not_to include("TOP OF THREAD")
+      end
+    end
+
+    context "when the a child comment" do
+      it "displays proper button and text for child comment" do
+        child = create(:comment,
+                       parent_id: comment.id,
+                       commentable_id: article.id,
+                       commentable_type: "Article",
+                       user_id: user.id)
+        get child.path
+        expect(response.body).to include("TOP OF THREAD")
+        expect(response.body).to include(comment.title(150))
+        expect(response.body).to include(child.processed_html)
+      end
+    end
+
     context "when the comment is for a podcast's episode" do
       it "works" do
         get podcast_comment.path

@@ -1,5 +1,4 @@
 class Poll < ApplicationRecord
-
   attr_accessor :poll_options_input_array
 
   serialize :voting_data

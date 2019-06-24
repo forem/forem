@@ -2,7 +2,7 @@ class PollVotesController < ApplicationController
   before_action :authenticate_user!, only: %i[create]
 
   def show
-    @poll = Poll.find(params[:id]) #Querying the poll instead of the poll vote
+    @poll = Poll.find(params[:id]) # Querying the poll instead of the poll vote
     @poll_vote = @poll.poll_votes.where(user_id: current_user).first
     @poll_skip = @poll.poll_skips.where(user_id: current_user).first if @poll_vote.blank?
     render json: { voting_data: @poll.voting_data,

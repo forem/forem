@@ -14,7 +14,7 @@ module Notifications
       Notification.where(
         notifiable_id: notifiable_collection_ids,
         notifiable_type: "Mention",
-      ).destroy_all
+      ).delete_all
     end
 
     private

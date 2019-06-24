@@ -12,7 +12,11 @@
   <div class="content notification-content comment-content">
     <% if notification.action.blank? %>
       <a href="<%= json_data["user"]["path"] %>"><%= json_data["user"]["name"] %></a>
+      <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
+      replied to a thread in 
+      <% else %>
       commented on
+      <% end %>
       <a href="<%= json_data["comment"]["commentable"]["path"] %>">
         <%= sanitize(json_data["comment"]["commentable"]["title"]) %>
       </a>
