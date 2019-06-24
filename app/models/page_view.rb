@@ -4,6 +4,8 @@ class PageView < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :article
 
+  before_create :extract_domain_and_path
+
   algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
     attributes :referrer, :time_tracked_in_seconds, :user_agent, :article_tags
 
@@ -42,6 +44,12 @@ class PageView < ApplicationRecord
   end
 
   private
+
+  def extract_domain_and_path
+    parsed_url = Addressable::URI.parse(referrer || "")
+    self.domain = parsed_url.domain
+    self.path = parsed_url.path
+  end
 
   def belongs_to_pro_user?
     user&.pro?
