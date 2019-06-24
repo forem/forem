@@ -60,7 +60,7 @@ module Notifications
               alert: {
                 title: title,
                 subtitle: subtitle,
-                body: CGI.unescapeHTML(body.strip!)
+                body: CGI.unescapeHTML(body.strip)
               }
             },
             data: {
