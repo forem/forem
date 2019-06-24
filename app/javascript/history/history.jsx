@@ -184,9 +184,8 @@ min read・
           </button>
         </div>
       );
-    } 
-      return '';
-    
+    }
+    return '';
   }
 
   render() {

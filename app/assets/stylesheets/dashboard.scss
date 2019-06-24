@@ -513,13 +513,13 @@
 
     .dashboard-actions {
       padding: 7px 0px 10px;
-
-      .mute-form {
+      
+      form {
         margin: 0;
         padding: 0;
         display: inline;
 
-        input[type='submit'] {
+        input[type='submit'], button {
           height: 30.4px;
           border: 2px solid transparent;
         }
@@ -747,6 +747,19 @@
   padding: 50px 0px 120px;
   margin-bottom: -160px;
   line-height: 1.3em;
+  .manage-page-error {
+    background:$red;
+    color:white;
+    padding:20px 10px;
+    line-height: 1.4em;
+    border-radius: 3px;
+  }
+  .manage-page-success {
+    background:$green;
+    padding:20px 10px;
+    line-height: 1.4em;
+    border-radius: 3px;
+  }
   li {
     margin: 20px auto;
   }
