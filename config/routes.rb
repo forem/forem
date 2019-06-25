@@ -90,9 +90,11 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
+      get "/analytics/referrers", to: "analytics#referrers"
     end
   end
 

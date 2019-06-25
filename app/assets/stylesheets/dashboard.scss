@@ -36,11 +36,7 @@
     display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    @include themeable(
-      color,
-      theme-color,
-      $black
-    );
+    @include themeable(color, theme-color, $black);
     @include themeable(
       background,
       theme-container-background,
@@ -55,16 +51,8 @@
     }
 
     &.active {
-      @include themeable(
-        background,
-        theme-secondary-color,
-        $dark-gray
-      );
-      @include themeable(
-        color,
-        theme-container-background,
-        white
-      );
+      @include themeable(background, theme-secondary-color, $dark-gray);
+      @include themeable(color, theme-container-background, white);
     }
 
     &.back-nav {
@@ -402,7 +390,7 @@
 
         & li.ellipsis-menu-item {
           list-style: none;
-          
+
           & form * {
             background-color: transparent;
           }
@@ -721,6 +709,7 @@
   padding: 20px;
   margin: 5px;
   @include themeable(background-color, theme-container-background, #fff);
+
   h4 {
     font-size: 0.8em;
     margin: 0px;
@@ -729,6 +718,28 @@
 
   .stat-percentage {
     font-size: 0.8em;
+  }
+
+  table {
+    margin: 1rem auto;
+    text-align: left;
+    width: 50%;
+
+    thead {
+      line-height: 3rem;
+
+      th:last-child {
+        text-align: right;
+      }
+    }
+
+    tbody {
+      line-height: 2rem;
+
+      td:last-child {
+        text-align: right;
+      }
+    }
   }
 }
 
