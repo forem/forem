@@ -5,7 +5,7 @@ class PageView < ApplicationRecord
   belongs_to :article
 
   algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
-    attributes :referrer, :time_tracked_in_seconds, :user_agent, :article_tags
+    attributes :referrer, :user_agent, :article_tags
 
     attribute(:article_title) { article.title }
     attribute(:article_path) { article.path }
@@ -37,6 +37,9 @@ class PageView < ApplicationRecord
     tags { article_tags }
 
     attributesForFaceting ["filterOnly(viewable_by)"]
+
+    attributeForDistinct :article_path
+    distinct true
 
     customRanking ["desc(visited_at_timestamp)"]
   end

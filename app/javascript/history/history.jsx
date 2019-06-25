@@ -83,14 +83,7 @@ export class History extends Component {
     }
 
     index.search(query, filters).then(content => {
-      // add new items to the bottom
-      const allItems = items;
-      const itemsIds = items.map(i => i.objectID);
-      content.hits.forEach(item => {
-        if (!itemsIds.includes(item.objectID)) {
-          allItems.push(item);
-        }
-      });
+      const allItems = [...items, ...content.hits];
 
       this.setState({
         query,
