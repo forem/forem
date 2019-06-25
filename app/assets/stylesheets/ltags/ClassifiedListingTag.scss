@@ -12,7 +12,7 @@
   }
 
   a {
-    color: var(--theme-color, $black) !important;
+    color: var(--theme-color, $black);
   }
 
   .ltag__listing-content {
@@ -25,18 +25,36 @@
     }
 
     .ltag__listing-body {
-
+      max-width: 90%;
+      padding: 10px 15px;
+      font-size: 15px;
     }
 
     .ltag__listing-tags {
-      a {
-
+      margin: 0;
+      padding: 0;
+      line-height: 1;
+      font-size: 0.88em;
+      margin-bottom: 5px;
+      
+      .ltag__listing-tag{
+        margin-right: calc(0.4vw + 4px);
+        font-size: 0.8em;
+        margin-left: 1px;
       }
     }
 
     .ltag__listing-author-info {
+      color: #666666;
+      color: var(--theme-secondary-color, #666666);
       a {
-
+        margin: 0.1vw 0;
+        padding: 0;
+        font-size: 0.7em;
+        margin-bottom: 0;
+        font-weight: bold;
+        color: #666666;
+        color: var(--theme-secondary-color, #666666);
       }
     }
   }

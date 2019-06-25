@@ -10,7 +10,9 @@
     </div>
     <div class="ltag__listing-tags">
       <% listing.tag_list.each do |tag| %>
-      <a href="/listings?t=<%= tag %>"><%= tag %></a>
+        <span class="ltag__listings-tag">
+          <a href="/listings?t=<%= tag %>">#<%= tag %></a>
+        </span>
       <% end %>
     </div>
     <div class="ltag__listing-author-info">
