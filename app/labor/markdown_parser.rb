@@ -6,8 +6,8 @@ class MarkdownParser
     @content = content
   end
 
-  def finalize
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+  def finalize(options = { hard_wrap: true, filter_html: false })
+    renderer = Redcarpet::Render::HTMLRouge.new(options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
