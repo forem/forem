@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", as: :new_user_registration_path
+    get "/enter" => "registrations#new", as: :sign_up
   end
 
   namespace :admin do
