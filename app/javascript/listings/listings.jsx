@@ -112,12 +112,13 @@ export class Listings extends Component {
   handleKeyDown = e => {
     // Enable Escape key to close an open listing.
     if (this.openedListing !== null && e.key === 'Escape') {
-      this.handleCloseModal();
+      this.handleCloseModal(e);
     }
   };
 
   handleCloseModal = e => {
     if (
+      e.key === 'Escape' ||
       e.target.id === 'single-classified-listing-container__inner' ||
       e.target.id === 'classified-filters' ||
       e.target.id === 'classified-listings-modal-background'
@@ -370,10 +371,11 @@ export class Listings extends Component {
           >
             <p>
               <b>
-Contact
+                Contact
+                {' '}
                 {openedListing.author.name}
                 {' '}
-via DEV Connect
+                via DEV Connect
               </b>
             </p>
             <textarea
