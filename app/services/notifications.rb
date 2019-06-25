@@ -40,7 +40,10 @@ module Notifications
       class: { name: "Article" },
       title: article.title,
       path: article.path,
-      updated_at: article.updated_at
+      updated_at: article.updated_at,
+      published_at: article.published_at,
+      readable_publish_date: article.readable_publish_date,
+      reading_time: article.reading_time
     }
   end
 
