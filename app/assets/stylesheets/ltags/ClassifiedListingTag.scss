@@ -13,10 +13,6 @@
     width:620px;
   }
 
-  a {
-    color: var(--theme-color, $black);
-  }
-
   .ltag__listing-content {
     padding: calc(0.5vw + 6px);
     h3 {
@@ -24,6 +20,9 @@
       padding:0;
       font-weight: 500;
       font-size: 1.5em;
+      a {
+        color: var(--theme-color, $black); 
+      }
     }
 
     .ltag__listing-body {
@@ -33,16 +32,15 @@
     }
 
     .ltag__listing-tags {
-      margin: 0;
-      padding: 0;
-      line-height: 1;
-      font-size: 0.88em;
-      margin-bottom: 5px;
+      font-size: 0.7em;
       
-      .ltag__listing-tag{
+      .ltag__listing-tag {
         margin-right: calc(0.4vw + 4px);
-        font-size: 0.8em;
         margin-left: 1px;
+
+        a {
+          color: var(--theme-color, $black); 
+        }
       }
     }
 
