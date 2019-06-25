@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   def edit
     unless current_user
       skip_authorization
-      return redirect_to "/enter"
+      return redirect_to sign_up_path
     end
     set_user
     set_tabs(params["tab"] || "profile")
