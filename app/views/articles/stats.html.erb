@@ -14,49 +14,7 @@
     <h1 class="pro-header">Stats for "<%= @article.title %>"</h1>
   </section>
 
-  <div class="toggles">
-    <button class="selected timerange-button" id="week-button">Week</button>
-    <button class="timerange-button" id="month-button">Month</button>
-    <button class="timerange-button" id="infinity-button">Infinity</button>
-  </div>
-
-  <div class="summary-stats">
-    <div class="card" id="readers-card"></div>
-    <div class="card" id="reactions-card"></div>
-    <div class="card" id="comments-card"></div>
-    <div class="card" id="followers-card"></div>
-  </div>
-
-  <div class="graphs">
-    <div class="row">
-      <div class="card">
-        <h2>Readers Summary</h2>
-        <div class="charts-container">
-          <canvas id="readersChart"></canvas>
-        </div>
-      </div>
-      <div class="card">
-        <h2>New Followers Summary</h2>
-        <div class="charts-container">
-          <canvas id="followersChart"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="card">
-        <h2>Reactions Summary ❤🦄🔖</h2>
-        <div class="charts-container">
-          <canvas id="reactionsChart"></canvas>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Comments Summary 💬</h2>
-        <div class="charts-container">
-          <canvas id="commentsChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
+  <%= render "shared/stats" %>
 </div>
 
 <%= javascript_pack_tag "analyticsArticle", defer: true %>

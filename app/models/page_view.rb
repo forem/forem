@@ -4,8 +4,10 @@ class PageView < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :article
 
+  before_create :extract_domain_and_path
+
   algoliasearch index_name: "UserHistory", per_environment: true, if: :belongs_to_pro_user? do
-    attributes :referrer, :time_tracked_in_seconds, :user_agent, :article_tags
+    attributes :referrer, :user_agent, :article_tags
 
     attribute(:article_title) { article.title }
     attribute(:article_path) { article.path }
@@ -38,10 +40,21 @@ class PageView < ApplicationRecord
 
     attributesForFaceting ["filterOnly(viewable_by)"]
 
+    attributeForDistinct :article_path
+    distinct true
+
     customRanking ["desc(visited_at_timestamp)"]
   end
 
   private
+
+  def extract_domain_and_path
+    return unless referrer
+
+    parsed_url = Addressable::URI.parse(referrer)
+    self.domain = parsed_url.domain
+    self.path = parsed_url.path
+  end
 
   def belongs_to_pro_user?
     user&.pro?

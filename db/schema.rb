@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_19_153428) do
+ActiveRecord::Schema.define(version: 2019_06_25_143841) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -598,6 +598,8 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.bigint "article_id"
     t.integer "counts_for_number_of_views", default: 1
     t.datetime "created_at", null: false
+    t.string "domain"
+    t.string "path"
     t.string "referrer"
     t.integer "time_tracked_in_seconds", default: 15
     t.datetime "updated_at", null: false
@@ -605,6 +607,7 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
+    t.index ["domain"], name: "index_page_views_on_domain"
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
@@ -713,6 +716,17 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.string "prompt_html"
     t.string "prompt_markdown"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "profile_pins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "pinnable_id"
+    t.string "pinnable_type"
+    t.bigint "profile_id"
+    t.string "profile_type"
+    t.datetime "updated_at", null: false
+    t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
+    t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
 
   create_table "push_notification_subscriptions", force: :cascade do |t|
@@ -884,6 +898,7 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -1000,6 +1015,7 @@ ActiveRecord::Schema.define(version: 2019_06_19_153428) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

@@ -22,4 +22,8 @@ RSpec.describe Event, type: :model do
     event.published = true
     expect(event).to be_valid
   end
+
+  it "triggers cache busting on save" do
+    expect { build(:event).save }.to have_enqueued_job.on_queue("events_bust_cache")
+  end
 end

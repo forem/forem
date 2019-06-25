@@ -28,11 +28,6 @@ module ClassifiedListingsToolkit
   end
 
   def clear_listings_cache
-    cb = CacheBuster.new
-    cb.bust("/listings")
-    cb.bust("/listings?i=i")
-    cb.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}")
-    cb.bust("/listings/#{@classified_listing.category}/#{@classified_listing.slug}?i=i")
-    cb.bust("/listings/#{@classified_listing.category}")
+    ClassifiedListings::BustCacheJob.perform_now(@classified_listing.id)
   end
 end

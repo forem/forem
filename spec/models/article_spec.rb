@@ -16,7 +16,7 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
-  it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(86) }
+  it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:organization).optional }
   it { is_expected.to belong_to(:collection).optional }
@@ -181,6 +181,11 @@ RSpec.describe Article, type: :model do
       it "rejects if there are more than 4 tags" do
         five_tags = "one, two, three, four, five"
         expect(build(:article, tags: five_tags).valid?).to be(false)
+      end
+
+      it "rejects if there are tags with length > 30" do
+        tags = "'testing tag length with more than 30 chars', tag"
+        expect(build(:article, tags: tags).valid?).to be(false)
       end
     end
 

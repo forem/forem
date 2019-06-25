@@ -22,6 +22,7 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
@@ -44,7 +45,7 @@ class Article < ApplicationRecord
   validate :validate_collection_permission
   validate :validate_liquid_tag_permissions
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
-  validates :cached_tag_list, length: { maximum: 86 }
+  validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
@@ -506,7 +507,7 @@ class Article < ApplicationRecord
 
     # check tags names aren't too long
     tag_list.each do |tag|
-      errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)") if tag.length > 20
+      errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
     end
   end
 

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", as: :new_user_registration_path
+    get "/enter" => "registrations#new", as: :sign_up
   end
 
   namespace :admin do
@@ -90,9 +90,11 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
+      get "/analytics/referrers", to: "analytics#referrers"
     end
   end
 
@@ -145,6 +147,7 @@ Rails.application.routes.draw do
   resources :reading_list_items, only: [:update]
   resources :poll_votes, only: %i[show create]
   resources :poll_skips, only: [:create]
+  resources :profile_pins, only: %i[create update]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"

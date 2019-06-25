@@ -35,6 +35,15 @@ module Api
         render json: data.to_json
       end
 
+      def referrers
+        analytics = AnalyticsService.new(
+          @owner,
+          start_date: params[:start], end_date: params[:end], article_id: params[:article_id],
+        )
+        data = analytics.referrers
+        render json: data.to_json
+      end
+
       private
 
       def authorize_pro_user
