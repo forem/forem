@@ -111,14 +111,13 @@ export class Listings extends Component {
 
   handleKeyDown = e => {
     // Enable Escape key to close an open listing.
-    if (this.openedListing !== null && e.key === 'Escape') {
-      this.handleCloseModal(e);
-    }
+    this.handleCloseModal(e);
   };
 
   handleCloseModal = e => {
+    const { openedListing } = this.state;
     if (
-      e.key === 'Escape' ||
+      openedListing !== null && e.key === 'Escape' ||
       e.target.id === 'single-classified-listing-container__inner' ||
       e.target.id === 'classified-filters' ||
       e.target.id === 'classified-listings-modal-background'
