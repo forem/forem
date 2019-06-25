@@ -81,7 +81,7 @@ export class ReadingList extends Component {
 
   archive = (e, item) => {
     e.preventDefault();
-    const { statusView, readingListItems } = this.state;
+    const { statusView, readingListItems, totalReadingList } = this.state;
     const t = this;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
@@ -94,7 +94,11 @@ export class ReadingList extends Component {
     });
     const newItems = readingListItems;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({ archiving: true, readingListItems: newItems });
+    t.setState({
+      archiving: true,
+      readingListItems: newItems,
+      totalReadingList: totalReadingList - 1,
+    });
     setTimeout(() => {
       t.setState({ archiving: false });
     }, 1800);
@@ -141,19 +145,25 @@ export class ReadingList extends Component {
         });
       }
       this.shouldShowLoadMoreButton();
+      t.setState({
+        readingListItems: content.hits,
+        totalReadingList: content.nbHits,
+        query,
+      });
     });
   }
 
   render() {
     const {
-      readingListItems,
+      archiving,
       availableTags,
-      selectedTags,
       itemsLoaded,
       query,
+      readingListItems,
+      selectedTags,
       statusView,
-      archiving,
       showLoadMoreButton,
+      totalReadingList,
     } = this.state;
     let allItems = readingListItems.map(item => (
       <div className="readinglist-item-wrapper">
@@ -288,6 +298,7 @@ min read・
           >
             <div className="readinglist-results-header">
               {statusView === 'valid' ? 'Reading List' : 'Archive'}
+              {` (${totalReadingList})`}
             </div>
             <div>{allItems}</div>
           </div>
