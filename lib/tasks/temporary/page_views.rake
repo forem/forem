@@ -6,9 +6,15 @@ namespace :page_views do
     ActiveRecord::Base.transaction do
       PageView.find_each do |pv|
         next unless pv.referrer
+        next if pv.domain # allows retries
 
-        parsed_url = Addressable::URI.parse(pv.referrer)
-        pv.update!(domain: parsed_url.domain, path: parsed_url.path)
+        begin
+          parsed_url = Addressable::URI.parse(pv.referrer)
+          pv.update!(domain: parsed_url.domain, path: parsed_url.path)
+        rescue StandardError => e
+          Rails.logger.error("#{pv.id}: #{e.message}")
+          next
+        end
       end
     end
 
