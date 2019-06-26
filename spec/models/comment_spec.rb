@@ -79,6 +79,12 @@ RSpec.describe Comment, type: :model do
     expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
   end
 
+  it "adds rel=nofollow to links" do
+    comment.body_markdown = "this is a comment with a link: http://dev.to"
+    comment.save
+    expect(comment.processed_html.include?('rel="nofollow"')).to eq(true)
+  end
+
   it "adds a mention url if user is mentioned like @mention" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save

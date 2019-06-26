@@ -213,7 +213,7 @@ class Comment < ApplicationRecord
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
     parsed_markdown = MarkdownParser.new(fixed_body_markdown)
-    self.processed_html = parsed_markdown.finalize
+    self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present!
     shorten_urls!
   end

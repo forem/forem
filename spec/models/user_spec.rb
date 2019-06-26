@@ -257,6 +257,18 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
     end
 
+    it "does not accept invalid instagram url" do
+      user.instagram_url = "ben.com"
+      expect(user).not_to be_valid
+    end
+
+    it "accepts valid instagram url" do
+      %w[jess je_ss].each do |username|
+        user.instagram_url = "https://instagram.com/#{username}"
+        expect(user).to be_valid
+      end
+    end
+
     it "accepts valid https gitlab url" do
       %w[jess jess/ je-ss je_ss].each do |username|
         user.gitlab_url = "https://gitlab.com/#{username}"
