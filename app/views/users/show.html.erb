@@ -105,6 +105,11 @@
               <%= inline_svg("gitlab.svg", class: "icon-img", aria: true, title: "GitLab logo") %>
             </a>
           <% end %>
+          <% if @user.instagram_url? %>
+            <a href="<%= @user.instagram_url %>" target="_blank" rel="noopener nofollow me">
+              <%= inline_svg("instagram-logo.svg", class: "icon-img", aria: true, title: "Instagram logo") %>
+            </a>
+          <% end %>
           <% if @user.twitch_username? %>
             <%= link_to twitch_live_stream_path(username: @user.username) do %>
               <%= inline_svg("twitch-logo.svg", class: "icon-img", id: "icon-twitch", aria: true, title: "Twitch logo") %>
