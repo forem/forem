@@ -128,8 +128,26 @@
     <dl>
       <dt><code>Single File Embed</code></dt>
       <dd>
-        You can choose to embed a single gist file. <br>
-        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code>
+        <p>You can choose to embed a single gist file. <br>
+        <code>{% gist https://gist.github.com/CristinaSolana/1885435 file=gistfile1.md %}</code></p>
+      </dd>
+      <dt><code>Specific Version Embed</code></dt>
+      <dd>
+        <p>You can choose to embed a specific version of a gist file. All you need
+        the link and the commit hash for that specific version. <br>
+        The format is <code>{% gist [gist-link]/[commit-hash] %}</code> <br>
+        e.g. <br>
+        <code>{% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 %}</code></p>
+      </dd>
+      <dt><code>Specific Version File Embed</code></dt>
+      <dd>
+        <p>You can choose to embed a specific version of a gist file. All you need
+        the link, the filename and the commit hash for that specific version . <br>
+        The format is <code>{% gist [gist-link]/[commit-hash] file=[filename] %}</code> <br>
+        e.g. <br>
+        <code>
+          {% gist https://gist.github.com/suntong/3a31faf8129d3d7a380122d5a6d48ff6/f77d01e82defbf736ebf4879a812cf9c916a9252 file=Images.tmpl %}
+        </code></p>
       </dd>
     </dl>
     <h3><strong>Video Embed</strong></h3>
