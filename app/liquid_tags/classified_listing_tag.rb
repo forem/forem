@@ -22,8 +22,8 @@ class ClassifiedListingTag < LiquidTagBase
   def get_listing(url)
     url = ActionController::Base.helpers.strip_tags(url).strip
     hash = get_hash(url)
-    listing = ClassifiedListing.find_by(hash) 
-    raise StandardError, "Wrong URL or slug. Listing not found." unless listing
+    listing = ClassifiedListing.find_by(hash)
+    raise StandardError, "Invalid URL or slug. Listing not found." unless listing
     raise StandardError, "Listing has expired and must be bumped to display as Liquid tag." if listing.bumped_at < (Time.zone.today - 30)
     return unless listing
 

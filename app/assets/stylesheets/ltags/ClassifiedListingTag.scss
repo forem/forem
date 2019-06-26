@@ -26,20 +26,38 @@
     }
 
     .ltag__listing-body {
-      max-width: 90%;
-      padding: 10px 15px;
-      font-size: 15px;
+      max-width: 100%;
+      margin: 5px 0 15px 0;
+      font-size: 0.9em;
+      a {
+        color: var(--theme-color, $black); 
+      }
     }
 
     .ltag__listing-tags {
       font-size: 0.7em;
+      line-height: 1.3em;
       
       .ltag__listing-tag {
         margin-right: calc(0.4vw + 4px);
         margin-left: 1px;
 
         a {
-          color: var(--theme-color, $black); 
+          @include themeable(
+            color,
+            theme-secondary-color,
+            $dark-medium-gray
+          );
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-medium-gray
+          );
+          display: inline-block;
+          margin: 2px;
+          padding: 2px 7px;
+          border-radius: 3px;
+          font-weight: bold;
         }
       }
     }
@@ -47,6 +65,7 @@
     .ltag__listing-author-info {
       color: #666666;
       color: var(--theme-secondary-color, #666666);
+      line-height: 1.3em;
       a {
         margin: 0.1vw 0;
         padding: 0;
