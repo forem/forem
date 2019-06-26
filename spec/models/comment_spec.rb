@@ -181,9 +181,9 @@ RSpec.describe Comment, type: :model do
     end
 
     it "retains content from #processed_html" do
+      comment.update_column(:processed_html, "Hello this is a post.") # Remove randomness
       text = comment.title.gsub("...", "").delete("\n")
-      escaped_text = HTMLEntities.new.decode text.gsub("&#39;", "'")
-      expect(comment.processed_html).to include CGI.unescapeHTML(escaped_text)
+      expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
 
     it "is converted to deleted if the comment is deleted" do
