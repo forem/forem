@@ -193,10 +193,6 @@ RSpec.describe Comment, type: :model do
     it "does not contain the wrong encoding" do
       comment.body_markdown = "It's the best post ever. It's so great."
       comment.save
-      p comment.title
-      p comment.title
-      p comment.title
-      p comment.title
       expect(comment.title).not_to include "&#39;"
     end
   end
