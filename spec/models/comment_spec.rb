@@ -181,6 +181,7 @@ RSpec.describe Comment, type: :model do
     end
 
     it "retains content from #processed_html" do
+      comment.update_column(:processed_html, "Hello this is a post.") # Remove randomness
       text = comment.title.gsub("...", "").delete("\n")
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
     end
@@ -188,6 +189,12 @@ RSpec.describe Comment, type: :model do
     it "is converted to deleted if the comment is deleted" do
       comment.update_column(:deleted, true)
       expect(comment.title).to eq "[deleted]"
+    end
+
+    it "does not contain the wrong encoding" do
+      comment.body_markdown = "It's the best post ever. It's so great."
+      comment.save
+      expect(comment.title).not_to include "&#39;"
     end
   end
 
