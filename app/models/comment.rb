@@ -169,7 +169,7 @@ class Comment < ApplicationRecord
     return "[deleted]" if deleted
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
-    ActionController::Base.helpers.truncate(text, length: length)
+    HTMLEntities.new.decode ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'")
   end
 
   def video
