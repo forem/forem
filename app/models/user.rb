@@ -91,6 +91,9 @@ class User < ApplicationRecord
   validates :gitlab_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
+  validates :instagram_url,
+            allow_blank: true,
+            format: /\A(http(s)?:\/\/)?(www.instagram.com|instagram.com)\/[a-z\d_]{1,30}\Z/
   validates :twitch_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/

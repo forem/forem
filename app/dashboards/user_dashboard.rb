@@ -37,6 +37,7 @@ class UserDashboard < Administrate::BaseDashboard
     dribbble_url: Field::String,
     medium_url: Field::String,
     gitlab_url: Field::String,
+    instagram_url: Field::String,
     linkedin_url: Field::String,
     twitch_url: Field::String,
     feed_admin_publish_permission: Field::Boolean,
@@ -83,6 +84,7 @@ class UserDashboard < Administrate::BaseDashboard
     dribbble_url
     medium_url
     gitlab_url
+    instagram_url
     linkedin_url
     twitch_url
     bg_color_hex
