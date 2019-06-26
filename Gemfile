@@ -53,6 +53,7 @@ gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and c
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.30" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
+gem 'htmlentities', '~> 4.3', '>= 4.3.4'
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.5" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
