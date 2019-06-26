@@ -49,7 +49,7 @@
       <% end %>
     <% elsif article.published %>
       <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
-    <% else %>
+    <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% end %>
     <% if @current_user_pro %>
