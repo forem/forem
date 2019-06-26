@@ -1,7 +1,7 @@
 import { Component } from 'preact';
 import PropTypes from 'prop-types';
 
-class HotkeyLinstener extends Component {
+class KeyboardShortcutsHandler extends Component {
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDowm());
   }
@@ -31,8 +31,8 @@ class HotkeyLinstener extends Component {
   }
 }
 
-HotkeyLinstener.propTypes = {
+KeyboardShortcutsHandler.propTypes = {
   togglePreview: PropTypes.func.isRequired,
 };
 
-export default HotkeyLinstener;
+export default KeyboardShortcutsHandler;
