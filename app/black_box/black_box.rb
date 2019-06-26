@@ -9,6 +9,9 @@ class BlackBox
       today_bonus = usable_date > 26.hours.ago ? 395 : 0
       two_day_bonus = usable_date > 48.hours.ago ? 330 : 0
       four_day_bonus = usable_date > 96.hours.ago ? 330 : 0
+      if usable_date < 10.days.ago
+        reaction_points /= 2 # Older posts should fade
+      end
       function_caller.call("blackbox-production-articleHotness",
                            { article: article, user: article.user }.to_json).to_i +
         reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
