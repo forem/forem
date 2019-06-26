@@ -84,6 +84,7 @@ class UserPolicy < ApplicationPolicy
        feed_url
        gitlab_url
        inbox_guidelines
+       instagram_url
        linkedin_url
        location
        looking_for_work
