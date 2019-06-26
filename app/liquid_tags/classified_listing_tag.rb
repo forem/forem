@@ -2,7 +2,8 @@ class ClassifiedListingTag < LiquidTagBase
   PARTIAL = "classified_listings/liquid".freeze
 
   def initialize(_tag_name, slug_path_url, _tokens)
-    @listing = get_listing(slug_path_url)
+    striped_path = ActionController::Base.helpers.strip_tags(slug_path_url).strip
+    @listing = get_listing(striped_path)
   end
 
   def render(_context)
@@ -20,14 +21,12 @@ class ClassifiedListingTag < LiquidTagBase
   end
 
   def get_listing(url)
-    url = ActionController::Base.helpers.strip_tags(url).strip
     hash = get_hash(url)
     raise StandardError, "Invalid URL or slug. Listing not found." if hash.nil?
 
     listing = ClassifiedListing.find_by(hash)
     raise StandardError, "Invalid URL or slug. Listing not found." unless listing
     raise StandardError, "Listing has expired and must be bumped to display as Liquid tag." if listing.bumped_at < (Time.zone.today - 30)
-    return unless listing
 
     listing
   end
