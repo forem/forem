@@ -298,7 +298,7 @@ min read・
           >
             <div className="readinglist-results-header">
               {statusView === 'valid' ? 'Reading List' : 'Archive'}
-              {` (${totalReadingList})`}
+              {` (${totalReadingList > 0 ? totalReadingList : 'empty'})`}
             </div>
             <div>{allItems}</div>
           </div>
