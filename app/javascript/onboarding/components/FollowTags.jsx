@@ -77,7 +77,8 @@ class FollowTags extends Component {
             }}
             className="tag"
           >
-            #{tag.name}
+            #
+            {tag.name}
           </button>
         ))}
         <Navigation prev={this.props.prev} next={this.handleComplete} />

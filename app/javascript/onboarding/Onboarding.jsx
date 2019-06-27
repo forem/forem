@@ -8,6 +8,7 @@ import ClosingSlide from './components/ClosingSlide';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
 import BioForm from './components/BioForm'
+
 export default class Onboarding extends Component {
   constructor(props) {
     super(props);

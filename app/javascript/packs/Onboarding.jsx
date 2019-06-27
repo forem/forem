@@ -21,15 +21,8 @@ function isUserSignedIn() {
 function renderPage() {
   import('../onboarding/Onboarding')
     .then(({ default: Onboarding }) => {
-      const waitingForOnboarding = setInterval(function() {
-        if (document.getElementById('main-head-stylesheet')) {
-          render(
-            <Onboarding />,
-            document.getElementById('onboarding-container'),
-          );
-          clearInterval(waitingForOnboarding);
-        }
-      }, 3);
+      console.log('here');
+      render(<Onboarding />, document.getElementById('onboarding-container'));
     })
     .catch(error => {
       // eslint-disable-next-line no-console
@@ -44,10 +37,7 @@ document.ready.then(
       window.csrfToken = csrfToken;
 
       getUnopenedChannels();
-
-      if (isUserSignedIn() /* && !currentUser.saw_onboarding */) {
-        renderPage();
-      }
+      renderPage();
     })
     .catch(error => {
       // eslint-disable-next-line no-console

@@ -9,7 +9,8 @@ export default ({ prev, next }) => (
       <img
         src="/assets/purple-dev-logo.png"
         className="sticker-logo"
-      />{' '}
+      />
+      {' '}
       <span>community!</span>
     </h1>
     <p>
