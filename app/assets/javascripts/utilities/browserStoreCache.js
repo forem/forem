@@ -12,7 +12,7 @@ function browserStoreCache(action, userData) {
         localStorage.removeItem('current_user');
         break;
       default:
-        localStorage.getItem('current_user');
+        return localStorage.getItem('current_user');
     }
   } catch (err) {
     if (navigator.cookieEnabled) {
