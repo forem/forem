@@ -24,7 +24,7 @@ class Podcast < ApplicationRecord
       or(PodcastEpisode.where(title: item.title)).
       or(PodcastEpisode.where(guid: item.guid.to_s)).presence
     episode ||= PodcastEpisode.where(website_url: item.link).presence if unique_website_url?
-    episode
+    episode.to_a.first
   end
 
   private

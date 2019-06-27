@@ -7,7 +7,7 @@ module Podcasts
     def call(item)
       episode = podcast.existing_episode(item)
       if episode
-        Podcasts::UpdateEpisode.call(ep, item)
+        Podcasts::UpdateEpisode.call(episode, item)
       else
         Podcasts::CreateEpisode.call(podcast.id, item)
       end

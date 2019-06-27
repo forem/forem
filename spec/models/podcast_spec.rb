@@ -79,22 +79,22 @@ RSpec.describe Podcast, type: :model do
 
     it "determines existing episode by media_url" do
       episode = create(:podcast_episode, podcast: podcast, media_url: "https://audio.simplecast.com/2330f132.mp3")
-      expect(podcast.existing_episode(item)).to eq([episode])
+      expect(podcast.existing_episode(item)).to eq(episode)
     end
 
     it "determines existing episode by title" do
       episode = create(:podcast_episode, podcast: podcast, title: "lightalloy's podcast")
-      expect(podcast.existing_episode(item)).to eq([episode])
+      expect(podcast.existing_episode(item)).to eq(episode)
     end
 
     it "determines existing episode by guid" do
       episode = create(:podcast_episode, podcast: podcast, guid: guid)
-      expect(podcast.existing_episode(item)).to eq([episode])
+      expect(podcast.existing_episode(item)).to eq(episode)
     end
 
     it "determines existing episode by website_url" do
       episode = create(:podcast_episode, podcast: podcast, website_url: "https://litealloy.ru")
-      expect(podcast.existing_episode(item)).to eq([episode])
+      expect(podcast.existing_episode(item)).to eq(episode)
     end
 
     it "doesn't determine existing episode by non-unique website_url" do
