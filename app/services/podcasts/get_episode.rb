@@ -5,8 +5,8 @@ module Podcasts
     end
 
     def call(item)
-      ep = existing_episode(item, podcast).first
-      if ep
+      episode = podcast.existing_episode(item)
+      if episode
         Podcasts::UpdateEpisode.call(ep, item)
       else
         Podcasts::CreateEpisode.call(podcast.id, item)
@@ -16,15 +16,5 @@ module Podcasts
     private
 
     attr_reader :podcast
-
-    # returns empty array if an episode doesn't exist
-    def existing_episode(item, podcast)
-      # presence returns nil if the query is an empty array, otherwise returns the array
-      podcasts = PodcastEpisode.where(media_url: item.enclosure.url).presence ||
-        PodcastEpisode.where(title: item.title).presence ||
-        PodcastEpisode.where(guid: item.guid.to_s).presence ||
-        (podcast.unique_website_url? && PodcastEpisode.where(website_url: item.link).presence)
-      podcasts.to_a
-    end
   end
 end
