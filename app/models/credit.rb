@@ -22,18 +22,29 @@ class Credit < ApplicationRecord
   def self.add_to(user, amount)
     credit_objects = Array.new(amount) { Credit.new(user_id: user.id) }
     Credit.import credit_objects
+    Credit.update_cache_columns(user)
   end
 
   def self.remove_from(user, amount)
     user.credits.where(spent: false).limit(amount).delete_all
+    Credit.update_cache_columns(user)
   end
 
   def self.add_to_org(org, amount)
     credit_objects = Array.new(amount) { Credit.new(organization_id: org.id) }
     Credit.import credit_objects
+    Credit.update_cache_columns(org)
   end
 
   def self.remove_from_org(org, amount)
     org.credits.where(spent: false).limit(amount).delete_all
+    Credit.update_cache_columns(org)
+  end
+
+  def self.update_cache_columns(user_or_org)
+    user_or_org.credits_count = user_or_org.credits.size
+    user_or_org.spent_credits_count = user_or_org.credits.where(spent: true).size
+    user_or_org.unspent_credits_count = user_or_org.credits.where(spent: false).size
+    user_or_org.save
   end
 end
