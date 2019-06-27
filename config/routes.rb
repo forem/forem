@@ -44,7 +44,7 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    resources :tags, only: %i[index edit update]
+    resources :tags, only: %i[index edit update show]
     resources :users, only: %i[index show edit update] do
       member do
         post "banish"
