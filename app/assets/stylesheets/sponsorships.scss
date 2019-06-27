@@ -1,0 +1,97 @@
+@import 'variables';
+@import 'mixins';
+
+.sponsorships-container {
+  width: 800px;
+  max-width: 96%;
+  margin: 100px auto;
+  .sponsor-credits-explainer {
+    @include themeable(
+      background,
+      theme-container-background,
+      $white
+    );
+    box-sizing: border-box;
+    padding: 25px 20px 30px;
+    border-radius: 12px;
+    margin: 50px auto 40px;
+    width: calc(100% - 20px);
+    @include themeable(
+      border,
+      theme-border,
+      1px solid $light-medium-gray
+    );
+    @include themeable(
+      box-shadow,
+      theme-container-box-shadow,
+      2px 2px 8px darken($light-medium-gray, 5%)
+    );
+    h4 {
+      font-size: 0.8em;
+      margin: 3px 0px;
+      @include themeable(
+        color,
+        theme-secondary-color,
+        $medium-gray
+      );
+    }
+    h3 {
+      margin: 5px 0px;
+      font-size: 2em;
+      @include themeable(
+        color,
+        theme-color,
+        #131a38
+      );
+    }
+    a {
+      padding: 5px 20px;
+      font-size: 1.5em;
+      border-radius: 8px;
+      font-weight: bold;
+      margin: 8px 0px;
+      display: inline-block;
+      @include themeable(
+        background,
+        theme-anchor-color,
+        $bold-blue
+      );
+      @include themeable(
+        color,
+        theme-container-background,
+        white
+      );
+    }
+  }
+  .sponsorship-options {
+    text-align: center;
+  }
+  form {
+    @include themeable(
+      background,
+      theme-container-background,
+      $white
+    );
+    text-align: left;
+    width: calc(50% - 20px);
+    box-sizing: border-box;
+    padding: 15px;
+    border-radius: 12px;
+    margin: 10px 5px;
+    display: inline-block;
+    @include themeable(
+      border,
+      theme-border,
+      1px solid $light-medium-gray
+    );
+    @include themeable(
+      box-shadow,
+      theme-container-box-shadow,
+      2px 2px 8px darken($light-medium-gray, 5%)
+    );
+    h2 {
+      margin: 0px; 
+      padding: 10px 0px;
+    }
+  }
+}

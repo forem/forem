@@ -10,7 +10,7 @@
             <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
           </span>
         </header>
-        <% @sponsors = Organization.where(is_gold_sponsor: true).order("sponsorship_featured_number ASC") %>
+        <% @sponsors = Organization.where(sponsorship_level: "gold").order("sponsorship_featured_number ASC") %>
         <% if @sponsors.any? %>
           <div class="widget-body">
             <% @sponsors.each do |organization| %>

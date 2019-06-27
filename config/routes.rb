@@ -148,6 +148,7 @@ Rails.application.routes.draw do
   resources :poll_votes, only: %i[show create]
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
+  resources :sponsorships, only: %i[new create]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"

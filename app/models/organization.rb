@@ -26,6 +26,7 @@ class Organization < ApplicationRecord
   validates :jobs_email, email: true, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
+  validates :sponsorship_level, inclusion: { in: %w[gold silver bronze] }, allow_nil: true
   validates :slug,
             presence: true,
             uniqueness: { case_sensitive: false },
