@@ -64,4 +64,43 @@ RSpec.describe Podcast, type: :model do
       expect(user_podcast.errors[:slug]).to be_present
     end
   end
+
+  describe "#existing_episode" do
+    let(:podcast) { create(:podcast) }
+    let(:enclosure) { instance_double("RSS::Rss::Channel::Item::Enclosure", url: "https://audio.simplecast.com/2330f132.mp3") }
+    let(:guid) { "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>" }
+    let(:item) do
+      instance_double("RSS::Rss::Channel::Item", pubDate: "2019-06-19",
+                                                 enclosure: enclosure,
+                                                 title: "lightalloy's podcast",
+                                                 guid: guid,
+                                                 link: "https://litealloy.ru")
+    end
+
+    it "determines existing episode by media_url" do
+      episode = create(:podcast_episode, podcast: podcast, media_url: "https://audio.simplecast.com/2330f132.mp3")
+      expect(podcast.existing_episode(item)).to eq(episode)
+    end
+
+    it "determines existing episode by title" do
+      episode = create(:podcast_episode, podcast: podcast, title: "lightalloy's podcast")
+      expect(podcast.existing_episode(item)).to eq(episode)
+    end
+
+    it "determines existing episode by guid" do
+      episode = create(:podcast_episode, podcast: podcast, guid: guid)
+      expect(podcast.existing_episode(item)).to eq(episode)
+    end
+
+    it "determines existing episode by website_url" do
+      episode = create(:podcast_episode, podcast: podcast, website_url: "https://litealloy.ru")
+      expect(podcast.existing_episode(item)).to eq(episode)
+    end
+
+    it "doesn't determine existing episode by non-unique website_url" do
+      podcast.update_columns(unique_website_url?: false)
+      create(:podcast_episode, podcast: podcast, website_url: "https://litealloy.ru")
+      expect(podcast.existing_episode(item)).to eq(nil)
+    end
+  end
 end
