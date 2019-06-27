@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
 
-class PersonalInfoForm extends Component {
+class BioForm extends Component {
   constructor(props) {
     super(props);
 
@@ -12,9 +12,7 @@ class PersonalInfoForm extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      location: '', // eslint-disable-line no-unused-state
-      employment_title: '', // eslint-disable-line no-unused-state
-      employer_name: '', // eslint-disable-line no-unused-state
+      summary: '', // eslint-disable-line no-unused-state
     };
   }
 
@@ -49,32 +47,13 @@ class PersonalInfoForm extends Component {
       <div className="about">
         <h1>About You!</h1>
         <form>
-          <label htmlFor="location">
-            Where are you located?
-            <input
-              type="text"
-              name="location"
+          <label htmlFor="summary">
+            Tell the community about yourself! Write a quick bio about what you
+            do, what you're interested in, or anything else!
+            <textarea
+              name="summary"
               onChange={this.handleChange}
-              maxLength="60"
-            />
-          </label>
-          <label htmlFor="employment_title">
-            What is your title?
-            <input
-              type="text"
-              name="employment_title"
-              onChange={this.handleChange}
-              maxLength="60"
-            />
-          </label>
-
-          <label htmlFor="employer_name">
-            Where do you work?
-            <input
-              type="text"
-              name="employer_name"
-              onChange={this.handleChange}
-              maxLength="60"
+              maxLength="120"
             />
           </label>
         </form>
@@ -84,9 +63,9 @@ class PersonalInfoForm extends Component {
   }
 }
 
-PersonalInfoForm.propTypes = {
+BioForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
 };
 
-export default PersonalInfoForm;
+export default BioForm;

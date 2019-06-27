@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 
 export default ({ next, prev }) => (
-  <div className="navigation">
+  <div>
     <button onClick={prev} className="back-button">
       BACK
     </button>

@@ -69,7 +69,16 @@ class FollowTags extends Component {
       <div>
         <h2>Follow some tags!</h2>
         {this.state.allTags.map(tag => (
-          <button onClick={() => this.handleClick(tag)}>{tag.name}</button>
+          <button
+            onClick={() => this.handleClick(tag)}
+            style={{
+              backgroundColor: tag.bg_color_hex,
+              color: tag.text_color_hex,
+            }}
+            className="tag"
+          >
+            #{tag.name}
+          </button>
         ))}
         <Navigation prev={this.props.prev} next={this.handleComplete} />
       </div>

@@ -27,7 +27,7 @@ class EmailTermsConditionsForm extends Component {
         message: 'You must agree to our Code of Conduct before continuing!',
       });
       return;
-    } else if (!this.state.checked_terms_and_conditions) {
+    } if (!this.state.checked_terms_and_conditions) {
       this.setState({
         message:
           'You must agree to our Terms and Conditions before continuing!',
@@ -75,7 +75,8 @@ class EmailTermsConditionsForm extends Component {
               name="checked_code_of_conduct"
               onChange={this.handleChange}
             />
-            You agree to uphold our{' '}
+            You agree to uphold our
+            {' '}
             <a href="/code-of-conduct">Code of Conduct</a>
           </label>
           <label htmlFor="checked_terms_and_conditions">
@@ -84,7 +85,9 @@ class EmailTermsConditionsForm extends Component {
               name="checked_terms_and_conditions"
               onChange={this.handleChange}
             />
-            You agree to our <a href="/terms">Terms and Conditions</a>
+            You agree to our 
+            {' '}
+            <a href="/terms">Terms and Conditions</a>
           </label>
           <h3>Email Preferences</h3>
           <label htmlFor="email_membership_newsletter">

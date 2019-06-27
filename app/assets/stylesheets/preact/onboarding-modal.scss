@@ -1,9 +1,9 @@
 .onboarding-body {
   background-color: white;
-  position: absolute;
-  top: 0;
+  position: fixed;
+  margin-top: 50px;
   bottom: 0;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -12,76 +12,102 @@
   line-height: 200%;
   z-index: 11;
   margin: 0;
+  background-image: url('/assets/onboarding-background-white.png');
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
 
+  a {
+    color: #2e3b9e;
+  }
+  .sticker-logo {
+    height: 80px;
+    transform: rotate(-5deg);
+    padding: 10px;
+    vertical-align: middle;
+    top: -10px;
+    padding-top: 5px;
+  }
   .onboarding-content {
     display: flex;
     flex-direction: row;
-    max-width: 800px;
+    width: 800px;
+    height: 350px;
+    background-color: white;
+    border: 8px solid #6b55c9;
+    padding: 30px;
+    border-radius: 3px;
+    z-index: 1;
+    font-size: 20px;
+    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3), 8px 0px 13px rgba(0, 0, 0, 0.21);
+    // box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
+    align-items: center;
   }
 
+  .background-image {
+    z-index: -1;
+    position: absolute;
+    top: 60px;
+    left: 0px;
+  }
+
+  h1 {
+    text-align: center;
+  }
   h2 {
     font-size: 25px;
   }
 
-  .sloan-img {
-    margin-right: 20px;
-    height: 200px;
-    margin-top: 40px;
+  button {
+    width: 130px;
+    padding: 6px 0px;
+    height: auto;
+    margin: 11px 20px;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 3px;
+    border: 2px solid #0a0a0a;
+    border: 2px solid var(--theme-top-bar-write-color, #0a0a0a);
+    color: #0a0a0a;
+    color: var(--theme-top-bar-write-color, #0a0a0a);
+    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
+    -webkit-appearance: none;
+    font-stretch: condensed;
+    font-size: 26px;
   }
 
-  .navigation {
-    height: 56px;
-    background-color: var(--theme-top-bar-background, #fdf9f3);
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.2);
-
-    button {
-      width: 118px;
-      padding: 3px 0px;
-      height: auto;
-      margin: 11px 20px;
-      text-align: center;
-      font-weight: bold;
-      border-radius: 3px;
-      border: 2px solid #0a0a0a;
-      border: 2px solid var(--theme-top-bar-write-color, #0a0a0a);
-      color: #0a0a0a;
-      color: var(--theme-top-bar-write-color, #0a0a0a);
-      font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-        'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-        'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-        'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-        'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-      -webkit-appearance: none;
-      font-stretch: condensed;
-      font-size: 20px;
-    }
-
-    .next-button {
-      background: #66e2d5;
-      background: var(--theme-top-bar-write-background, #66e2d5);
-      float: right;
-    }
+  .next-button {
+    background: #66e2d5;
+    background: var(--theme-top-bar-write-background, #66e2d5);
+    float: right;
   }
 
   .about {
+    width: 100%;
     label,
     input,
     textarea {
       display: block;
-      width: 100%;
+      width: 95%;
+      margin: 0 auto;
     }
 
     input,
     textarea {
       padding: 12px;
       font-size: 19px;
+      text-emphasis: bold;
       border: 1px solid #dee6e9;
       border-radius: 3px;
     }
+
   }
 
   .checkbox-slide {
@@ -107,10 +133,72 @@
   .warning-message {
     background-color: red;
     opacity: 0.7;
-    border: 2px solid red;
     padding: 10px;
     width: 100%;
     border-radius: 3px;
     color: white;
+  }
+
+  .tag {
+    padding: 4px 10px 6px;
+    font-size: 16px;
+    margin: 14px;
+    border-radius: 2px;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol';
+  }
+
+  .badge-image {
+    position: absolute;
+  }
+  @media screen and (max-width: 800px) {
+    .onboarding-content {
+      width: 100%;
+      height: 100%;
+      background-image: url('/assets/mobile-onboarding-background.png');
+      background-size: cover;
+      background-position: center; /* Center the image */
+      background-repeat: no-repeat; /* Do not repeat the image */
+      border: none;
+    }
+
+    span {
+      display: block;
+    }
+
+    .back-button {
+      background-color: white;
+    }
+  }
+  @media screen and (max-width: 400px) {
+    .onboarding-content {
+      font-size: 16px;
+    }
+
+    button {
+      width: 100px;
+      font-size: 18px;
+    }
+  }
+
+  @media screen and (max-width: 330px) {
+    button {
+      width: 80px;
+      font-size: 14px;
+    }
+
+    .sticker-logo {
+      height: 40px;
+    }
+
+    h1 {
+      font-size: 20px;
+    }
   }
 }

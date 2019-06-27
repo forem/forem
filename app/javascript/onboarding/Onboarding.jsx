@@ -7,7 +7,7 @@ import EmailListTermsConditionsForm from './components/EmailListTermsConditionsF
 import ClosingSlide from './components/ClosingSlide';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
-
+import BioForm from './components/BioForm'
 export default class Onboarding extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +17,7 @@ export default class Onboarding extends Component {
 
     const slides = [
       WelcomeSlide,
+      BioForm,
       PersonalInfoForm,
       EmailListTermsConditionsForm,
       FollowTags,
@@ -29,7 +30,7 @@ export default class Onboarding extends Component {
     ));
 
     this.state = {
-      currentSlide: 2,
+      currentSlide: 0,
     };
   }
 
@@ -55,11 +56,6 @@ export default class Onboarding extends Component {
     return (
       <div className="onboarding-body">
         <div className="onboarding-content">
-          <img
-            src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
-            className="sloan-img"
-            alt="Sloan, the sloth mascot"
-          />
           {this.slides[this.state.currentSlide]}
         </div>
       </div>

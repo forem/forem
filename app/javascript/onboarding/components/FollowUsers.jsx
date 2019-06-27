@@ -27,6 +27,7 @@ class FollowUsers extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({ users: data, checkedUsers: data });
+        console.log(data)
       })
       .catch(error => {
         console.log(error);
