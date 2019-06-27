@@ -48,7 +48,7 @@ class ChatChannelMembership < ApplicationRecord
     if chat_channel.channel_type == "direct"
       ProfileImage.new(other_user).get(90)
     else
-      "https://dev.to/packs/_/assets/images/organization-3b55af0077e044d0743cf401c945ca6c.svg"
+      ActionController::Base.helpers.asset_path("organization.svg")
     end
   end
 

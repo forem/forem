@@ -35,7 +35,6 @@ Rails.application.routes.draw do
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
-    resources :members, only: [:index]
     resources :pages, only: %i[index new create edit update destroy]
     resources :reactions, only: [:update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
@@ -45,7 +44,7 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    resources :tags, only: %i[index show edit update]
+    resources :tags, only: %i[index edit update]
     resources :users, only: %i[index show edit update] do
       member do
         post "banish"
@@ -55,6 +54,11 @@ Rails.application.routes.draw do
       end
     end
     resources :welcome, only: %i[index create]
+    resources :tools, only: %i[index create] do
+      collection do
+        post "bust_cache"
+      end
+    end
   end
 
   namespace :api, defaults: { format: "json" } do
@@ -86,9 +90,11 @@ Rails.application.routes.draw do
           post "/update_or_create", to: "github_repos#update_or_create"
         end
       end
+
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
+      get "/analytics/referrers", to: "analytics#referrers"
     end
   end
 
@@ -135,19 +141,25 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: [:create]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update delete]
+  resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
   resources :credits, only: %i[index new create]
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
+  resources :poll_votes, only: %i[show create]
+  resources :poll_skips, only: [:create]
+  resources :profile_pins, only: %i[create update]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"
+  get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
   get "/listings/:category/:slug" => "classified_listings#index"
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
+  get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
+  post "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#upsert"
   patch "/onboarding_update" => "users#onboarding_update"
   get "email_subscriptions/unsubscribe"
   post "/chat_channels/:id/moderate" => "chat_channels#moderate"
@@ -164,6 +176,7 @@ Rails.application.routes.draw do
   get "/social_previews/user/:id" => "social_previews#user", as: :user_social_preview
   get "/social_previews/organization/:id" => "social_previews#organization", as: :organization_social_preview
   get "/social_previews/tag/:id" => "social_previews#tag", as: :tag_social_preview
+  get "/social_previews/listing/:id" => "social_previews#listing", as: :listing_social_preview
 
   get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 
@@ -217,7 +230,6 @@ Rails.application.routes.draw do
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
-  get "/merch" => "pages#merch"
   get "/rlygenerator" => "pages#generator"
   get "/orlygenerator" => "pages#generator"
   get "/rlyslack" => "pages#generator"
@@ -245,12 +257,7 @@ Rails.application.routes.draw do
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
   get "/freestickers" => "giveaways#new"
-  get "/freestickers/edit" => "giveaways#edit"
-  get "/scholarship", to: redirect("/p/scholarships")
-  get "/scholarships", to: redirect("/p/scholarships")
   get "/shop", to: redirect("https://shop.dev.to/")
-  get "/tag-moderation" => "pages#tag_moderation"
-  get "/community-moderation" => "pages#community_moderation"
   get "/mod" => "moderations#index"
 
   post "/fallback_activity_recorder" => "ga_events#create"
@@ -294,6 +301,7 @@ Rails.application.routes.draw do
   get "/pod" => "podcast_episodes#index"
   get "/readinglist" => "reading_list_items#index"
   get "/readinglist/:view" => "reading_list_items#index", constraints: { view: /archive/ }
+  get "/history", to: "history#index", as: :history
 
   get "/feed" => "articles#feed", as: "feed", defaults: { format: "rss" }
   get "/feed/tag/:tag" => "articles#feed",
@@ -303,7 +311,7 @@ Rails.application.routes.draw do
   get "/rss" => "articles#feed", defaults: { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
-  get "/t/:tag" => "stories#index"
+  get "/t/:tag", to: "stories#index", as: :tag
   get "/t/:tag/edit", to: "tags#edit"
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
@@ -338,6 +346,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/manage" => "articles#manage"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
+  get "/:username/:slug/stats" => "articles#stats"
   get "/:username/:view" => "stories#index",
       constraints: { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"

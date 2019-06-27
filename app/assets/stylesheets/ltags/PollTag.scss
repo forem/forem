@@ -1,0 +1,90 @@
+@import 'variables';
+@import 'mixins';
+
+.ltag-poll {
+  width: 600px;
+  max-width: 96%;
+  margin: auto;
+  border-radius: 3px;
+  border:1px solid $light-medium-gray !important;
+  box-shadow: $shadow;
+  box-sizing: border-box;
+  padding: 2px 15px 18px;
+  font-family: $helvetica;
+  margin:1.6em auto !important;
+  h3 {
+    margin: 15px 0px;
+  }
+  .ltag-pollanswers {
+    list-style-type: none !important;
+    margin: 0 !important; /* To remove default bottom margin */ 
+    padding: 0 !important;
+    padding-bottom: 8px !important;
+    font-size: 0.9em !important;
+    li {
+      padding-left: 8px;
+      border-radius: 3px;
+      width: 95%;
+      position: relative;
+      &:hover {
+        background: $light-gray;
+      }
+      &.ltag-polloption-justshowmetheresults:hover {
+        background: transparent;
+      }
+      &.already-voted {
+        background: transparent;
+      }
+    }
+    input {
+      vertical-align: top;
+      margin-top: 1.05em;
+    }
+    label {
+      width: calc(100% - 40px);
+      padding: 2px 6px;
+      cursor: pointer;
+      vertical-align: -3px;
+      display: inline-block;
+      line-height: 1.25em;
+    }
+    .ltag-voting-results-count {
+      font-size: 0.7em;
+      color: $medium-gray;
+      text-align: left;
+    }
+    button {
+      width: 100%;
+      background: transparent;
+      border: 0px;
+      font-size: 0.7em;
+      color: $medium-gray;
+      text-align: left;
+      padding-left: 20px;
+    }
+    .ltag-votepercent {
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 3;
+      border-radius: 3px;
+      &.ltag-optionvotedfor {
+        background: $green;
+        font-weight: bold;
+      }
+      &.ltag-optionnotvotedfor {
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          $light-medium-gray
+        );
+      }
+    }
+    .ltag-votepercenttext {
+      position: relative;
+      z-index: 5;
+    }
+  }
+}

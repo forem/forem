@@ -9,6 +9,11 @@ RSpec.describe AnalyticsService, type: :service do
 
   after { Timecop.return }
 
+  def format_date(datetime)
+    # PostgreSQL DATE(..) function uses UTC.
+    datetime.utc.to_date.iso8601
+  end
+
   describe "initialization" do
     it "raises an error if start date is invalid" do
       expect(-> { described_class.new(user, start_date: "2000-") }).to raise_error(ArgumentError)
@@ -165,11 +170,6 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "#grouped_by_day" do
-    def format_date(datetime)
-      # Postgre's DATE(..) method uses UTC.
-      datetime.utc.to_date.iso8601
-    end
-
     it "returns stats grouped by day" do
       stats = described_class.new(
         user, start_date: "2019-04-01", end_date: "2019-04-04"
@@ -357,6 +357,75 @@ RSpec.describe AnalyticsService, type: :service do
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][
           :page_views][:total_read_time_in_seconds]).to eq(0)
+      end
+
+      it "works correctly if the page views contain nil in time_tracked_in_seconds" do
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: nil)
+        create(:page_view, user: user, article: article, time_tracked_in_seconds: nil)
+        date = format_date(article.created_at)
+        analytics_service = described_class.new(user, start_date: date)
+        expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(2)
+        expect(analytics_service.grouped_by_day[date][:page_views][:average_read_time_in_seconds]).to eq(0)
+        expect(analytics_service.grouped_by_day[date][:page_views][:total_read_time_in_seconds]).to eq(0)
+      end
+    end
+  end
+
+  describe "#referrers" do
+    let(:analytics_service) { described_class.new(user) }
+
+    context "when working on domains" do
+      before { PageView.where(article: article).delete_all }
+
+      it "returns unique domains with a count" do
+        url = Faker::Internet.url
+        create(:page_view, user: user, article: article, referrer: url)
+        create(:page_view, user: user, article: article, referrer: url)
+        domains = analytics_service.referrers[:domains]
+        expect(domains.first).to eq(domain: Addressable::URI.parse(url).domain, count: 2)
+      end
+
+      it "returns unique domains with a count when there is a date range" do
+        url = Faker::Internet.url
+        create(:page_view, user: user, article: article, referrer: url)
+        create(:page_view, user: user, article: article, referrer: url)
+        date = format_date(article.created_at)
+        analytics_service = described_class.new(user, start_date: date)
+        domains = analytics_service.referrers[:domains]
+        expect(domains.first).to eq(domain: Addressable::URI.parse(url).domain, count: 2)
+      end
+
+      it "returns nothing if there is no data" do
+        expect(analytics_service.referrers[:domains]).to be_empty
+      end
+
+      it "returns the domains ordered by count" do
+        other_url = Faker::Internet.url
+        create_list(:page_view, 2, user: user, article: article, referrer: other_url)
+        top_url = Faker::Internet.url
+        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
+
+        expected_result = [
+          { domain: Addressable::URI.parse(top_url).domain, count: 3 },
+          { domain: Addressable::URI.parse(other_url).domain, count: 2 },
+        ]
+        expect(analytics_service.referrers[:domains]).to eq(expected_result)
+      end
+
+      it "returns 20 domains at most by default" do
+        21.times { create(:page_view, user: user, article: article, referrer: Faker::Internet.url) } # rubocop:disable FactoryBot/CreateList
+        expect(analytics_service.referrers[:domains].size).to eq(20)
+      end
+
+      it "returns the most visited domain if asked for only one result" do
+        top_url = Faker::Internet.url
+        create_list(:page_view, 3, user: user, article: article, referrer: top_url)
+        other_url = Faker::Internet.url
+        create_list(:page_view, 2, user: user, article: article, referrer: other_url)
+
+        top_domain = Addressable::URI.parse(top_url).domain
+        result = analytics_service.referrers(top: 1)[:domains]
+        expect(result).to eq([{ domain: top_domain, count: 3 }])
       end
     end
   end

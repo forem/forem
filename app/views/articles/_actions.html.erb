@@ -12,7 +12,7 @@
   <% end %>
   <a class="article-actions-tweet-button"
      id="article-actions-tweet-button"
-	 rel="noopener"
+     rel="noopener"
      target='_blank'
      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
     <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
@@ -30,26 +30,54 @@
     </button>
     <div class="dropdown-content">
       <div>
+        <% if user_signed_in? %>
+          <div class="dropdown-link-row notification-subscriptions-area-row"
+            id="notification-subscriptions-area" data-notifiable-id="<%= @article.id %>" data-notifiable-type="Article">
+            <div class="notification-subscriptions-area-header">🔔 Notification Subscriptions
+              <button for="subscribe_notifications" id="notification-subscription-label_not_subscribed" class="notification-subscription-label notification-subscription-label-unsubscribe" data-payload="not_subscribed">
+                Unsubscribe
+              </button>
+            </div>
+            <button for="subscribe_notifications" id="notification-subscription-label_all_comments" class="notification-subscription-label" data-payload="all_comments">
+              All Comments <span class="selected-emoji">✅</span>
+            </button>
+            <button for="subscribe_notifications" id="notification-subscription-label_top_level_comments" class="notification-subscription-label" data-payload="top_level_comments">
+              Top Level Comments <span class="selected-emoji">✅</span>
+            </button>
+            <button for="subscribe_notifications" id="notification-subscription-label_only_author_comments" class="notification-subscription-label" data-payload="only_author_comments">
+              Post Author Comments <span class="selected-emoji">✅</span>
+            </button>
+            <%= javascript_pack_tag "notificationSubscriptionHandler", defer: true %>
+          </div>
+        <% end %>
         <div class="dropdown-link-row">
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
-            <input id="article-copy-link-input" value="<%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
+            <input type="text" id="article-copy-link-input" value="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
             <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>
         </div>
         <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>Share
-              to Twitter</a></div>
+            <a target="_blank" href='https://twitter.com/intent/tweet?text="<%= @article.title %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+              Share to Twitter
+            </a>
+          </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to'>Share
-              to LinkedIn</a></div>
+            <a target='_blank' href='https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to'>
+              Share to LinkedIn
+            </a>
+          </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>'>Share
-              to Reddit</a></div>
+            <a target='_blank' href='https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>'>
+              Share to Reddit
+            </a>
+          </div>
           <div class="dropdown-link-row">
-            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>'>Share to
-              Facebook</a></div>
+            <a target='_blank' href='https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>'>
+              Share to Facebook
+            </a>
+          </div>
         </web-share-wrapper>
         <template id="web-share-button">
           <div class="dropdown-link-row"><a href="#">Share Post</a></div>

@@ -3,7 +3,7 @@ class ClassifiedListingsController < ApplicationController
   before_action :set_classified_listing, only: %i[edit update]
   before_action :set_cache_control_headers, only: %i[index]
   after_action :verify_authorized, only: %i[edit update]
-  before_action :authenticate_user!, only: %i[edit update new]
+  before_action :authenticate_user!, only: %i[edit update new dashboard]
 
   def index
     @displayed_classified_listing = ClassifiedListing.find_by!(slug: params[:slug]) if params[:slug]
@@ -75,11 +75,23 @@ class ClassifiedListingsController < ApplicationController
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
+    elsif listing_params[:action] == "publish"
+      publish_listing
     elsif listing_params[:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
       update_listing_details
     end
     clear_listings_cache
     redirect_to "/listings"
+  end
+
+  def dashboard
+    @classified_listings = current_user.classified_listings
+    organizations_ids = current_user.organization_memberships.
+      where(type_of_user: "admin").
+      pluck(:organization_id)
+    @orgs = Organization.where(id: organizations_ids)
+    @org_listings = ClassifiedListing.where(organization_id: organizations_ids)
+    @user_credits = current_user.unspent_credits_count
   end
 
   private

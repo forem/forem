@@ -41,4 +41,11 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
     expect(notification.json_data["organization"]["id"]).to eq(organization.id)
     expect(notification.json_data["organization"]["name"]).to eq(organization.name)
   end
+
+  it "does not create a notification if the follower has muted the user" do
+    user2.follows.first.update(subscription_status: "none")
+    user3.stop_following(organization)
+    described_class.call(article, "Published")
+    expect(Notification.count).to eq 0
+  end
 end

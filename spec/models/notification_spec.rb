@@ -5,11 +5,87 @@ RSpec.describe Notification, type: :model do
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
   let(:organization)    { create(:organization) }
-  let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
+  let(:article)         { create(:article, :with_notification_subscription, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
   let(:follow_instance) { user.follow(user2) }
   let(:badge_achievement) { create(:badge_achievement) }
 
   it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[organization_id notifiable_id notifiable_type action]) }
+
+  describe "when trying to create duplicate notifications" do
+    # Duplicate notifications are not allowed even when validations are skipped
+    it "doesn't allow to create a duplicate notification via import" do
+      create(:notification, user: user, notifiable: article, action: "Reaction")
+      duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction")
+      expect do
+        Notification.import([duplicate_notification],
+                            on_duplicate_key_update: {
+                              conflict_target: %i[notifiable_id notifiable_type user_id action],
+                              index_predicate: "action IS NOT NULL",
+                              columns: %i[json_data notified_at read]
+                            })
+      end.not_to change(Notification, :count)
+    end
+
+    it "updates when trying to create a duplicate notification via import" do
+      notification = create(:notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 1 })
+      duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 2 })
+      Notification.import([duplicate_notification],
+                          on_duplicate_key_update: {
+                            conflict_target: %i[notifiable_id notifiable_type user_id action],
+                            index_predicate: "action IS NOT NULL",
+                            columns: %i[json_data notified_at read]
+                          })
+      notification.reload
+      expect(notification.json_data["user_id"]).to eq(2)
+    end
+
+    it "doesn't allow to create a duplicate organization notification via import" do
+      create(:notification, organization: organization, notifiable: article, action: "Reaction")
+      duplicate_notification = build(:notification, organization: organization, notifiable: article, action: "Reaction")
+      expect do
+        Notification.import([duplicate_notification],
+                            on_duplicate_key_update: {
+                              conflict_target: %i[notifiable_id notifiable_type organization_id action],
+                              index_predicate: "action IS NOT NULL",
+                              columns: %i[json_data notified_at read]
+                            })
+      end.not_to change(Notification, :count)
+    end
+
+    describe "when notifiable is a Comment" do
+      let!(:comment) { create(:comment, commentable: article) }
+
+      # rubocop:disable RSpec/ExampleLength
+      it "doesn't allow to create a duplicate user notification via import when action is nil" do
+        notification_attributes = { user: user, notifiable: comment, action: nil }
+        create(:notification, notification_attributes)
+        duplicate_notification = build(:notification, notification_attributes)
+        expect do
+          Notification.import([duplicate_notification],
+                              on_duplicate_key_update: {
+                                conflict_target: %i[notifiable_id notifiable_type user_id],
+                                index_predicate: "action IS NULL",
+                                columns: %i[json_data notified_at read]
+                              })
+        end.not_to change(Notification, :count)
+      end
+
+      it "doesn't allow to create a duplicate org notification via import when action is nil" do
+        notification_attributes = { organization: organization, notifiable: comment, action: nil }
+        create(:notification, notification_attributes)
+        duplicate_notification = build(:notification, notification_attributes)
+        expect do
+          Notification.import([duplicate_notification],
+                              on_duplicate_key_update: {
+                                conflict_target: %i[notifiable_id notifiable_type organization_id],
+                                index_predicate: "action IS NULL",
+                                columns: %i[json_data notified_at read]
+                              })
+        end.not_to change(Notification, :count)
+      end
+      # rubocop:enable RSpec/ExampleLength
+    end
+  end
 
   describe "when trying to #send_new_follower_notification after following a tag" do
     let(:tag) { create(:tag) }
@@ -124,6 +200,7 @@ RSpec.describe Notification, type: :model do
 
       before do
         article.update(receive_notifications: false)
+        article.notification_subscriptions.delete_all
       end
 
       it "does not send a notification to the author of the article" do
@@ -310,7 +387,7 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "#update_notifications" do
-    context "when there are notifications to update" do
+    context "when there are article notifications to update" do
       before do
         user2.follow(user)
         Notification.send_to_followers_without_delay(article, "Published")

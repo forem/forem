@@ -3,15 +3,14 @@ class ClassifiedListing < ApplicationRecord
 
   attr_accessor :action
 
-  belongs_to :user, optional: true
+  belongs_to :user
   belongs_to :organization, optional: true
-
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
 
-  validates :user_id, presence: true, unless: :organization_id?
+  validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
 
   validates :title, presence: true,

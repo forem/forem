@@ -7,9 +7,15 @@
       <h2>
         Last Published or Bumped: <%= time_ago_in_words @classified_listing.bumped_at %> ago
       </h2>
-      <h4>
-        (Expires in <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %>)
-      </h4>
+      <% if (@classified_listing.bumped_at + 30.days) < Date.today %>
+        <h4>
+          (Expired <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %> ago)
+        </h4>
+      <% else %>
+        <h4>
+          (Expires in <%= time_ago_in_words (@classified_listing.bumped_at + 30.days) %>)
+        </h4>
+      <% end %>
       <input type="hidden" name="classified_listing[action]" value="bump" />
       <%= f.submit "Bump Listing", class: "cta cta-main-listing-form" %>
     </div>
@@ -45,8 +51,13 @@
       <h2>
         Published: <%= @classified_listing.published %>
       </h2>
-      <input type="hidden" name="classified_listing[action]" value="unpublish" />
-      <%= f.submit "Unpublish Listing", class: "classified-listings-unpublish cta-main-listing-form" %>
+      <% if @classified_listing.published == false %>
+        <%# <input type="hidden" name="classified_listing[action]" value="publish" />
+        <%= f.submit "Publish Listing", class: "classified-listings-publish cta-main-listing-form" %>
+      <%# <% else %>
+        <input type="hidden" name="classified_listing[action]" value="unpublish" />
+        <%= f.submit "Unpublish Listing", class: "classified-listings-unpublish cta-main-listing-form" %>
+      <% end %>
     </div>
   <% end %>
 </div>

@@ -77,7 +77,12 @@
           <br /><br />
           <textarea cols="70" rows="6" wrap="hard" name="article[body_markdown]"><%= article.body_markdown %></textarea>
         <% end %>
-
+        &nbsp
+        <% if article.last_buffered %>
+          <em>Last Buffered <%= article.last_buffered %></em>
+        <% else %>
+          Buffered: <input name="article[last_buffered]" value="<%= Time.current %>" type="checkbox">
+        <% end %>
         &nbsp &nbsp
         <button class="btn btn-primary">SUBMIT</button>
       </form>
@@ -132,9 +137,8 @@
                 <% if !article.user.twitter_username.blank? %>
 
 { author: @<%= article.user.twitter_username %> } #DEVCommunity
-                <% end %>
-                </textarea>
-              <button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @ThePracticalDev</button>
+                <% end %></textarea>
+              <button class="btn btn-info" style="font-size:1em;">🦅 Tweet to @<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %></button>
             <% end %>
             <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
               <%= form_tag "/internal/buffer_updates" do %>

@@ -74,6 +74,37 @@ RSpec.describe Organization, type: :model do
       organization.save
       expect(organization.slug).to eq("hahaha")
     end
+
+    it "rejects reserved slug" do
+      organization = build(:organization, slug: "settings")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("reserved")).to be true
+    end
+
+    it "takes organization slug into account " do
+      create(:user, username: "lightalloy")
+      organization = build(:organization, slug: "lightalloy")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "takes podcast slug into account" do
+      create(:podcast, slug: "devpodcast")
+      organization = build(:organization, slug: "devpodcast")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "takes page slug into account" do
+      create(:page, slug: "needed_info_for_site")
+      organization = build(:organization, slug: "needed_info_for_site")
+      expect(organization).not_to be_valid
+      expect(organization.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "triggers cache busting on save" do
+      expect { build(:organization).save }.to have_enqueued_job.on_queue("organizations_bust_cache")
+    end
   end
 
   describe "#url" do

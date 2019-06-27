@@ -5,11 +5,14 @@ export class ReadingList extends Component {
     readingListItems: [],
     query: '',
     index: '',
+    page: 0,
+    totalReadingList: 0,
     availableTags: [],
     selectedTags: [],
     itemsLoaded: false,
     archiving: false,
     statusView: document.getElementById('reading-list').dataset.view,
+    showLoadMoreButton: false,
   };
 
   componentDidMount() {
@@ -21,13 +24,19 @@ export class ReadingList extends Component {
     const index = client.initIndex(`SecuredReactions_${env}`);
     const t = this;
     index
-      .search('', { hitsPerPage: 64, filters: `status:${t.state.statusView}` })
+      .search('', {
+        page: t.state.page,
+        hitsPerPage: 64,
+        filters: `status:${t.state.statusView}`,
+      })
       .then(content => {
         t.setState({
+          totalReadingList: content.nbHits,
           readingListItems: content.hits,
           index,
           itemsLoaded: true,
         });
+        this.shouldShowLoadMoreButton();
       });
     const waitingOnUser = setInterval(() => {
       if (window.currentUser) {
@@ -72,7 +81,7 @@ export class ReadingList extends Component {
 
   archive = (e, item) => {
     e.preventDefault();
-    const { statusView, readingListItems } = this.state;
+    const { statusView, readingListItems, totalReadingList } = this.state;
     const t = this;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
@@ -85,33 +94,76 @@ export class ReadingList extends Component {
     });
     const newItems = readingListItems;
     newItems.splice(newItems.indexOf(item), 1);
-    t.setState({ archiving: true, readingListItems: newItems });
+    t.setState({
+      archiving: true,
+      readingListItems: newItems,
+      totalReadingList: totalReadingList - 1,
+    });
     setTimeout(() => {
       t.setState({ archiving: false });
     }, 1800);
   };
 
-  listSearch(query, tags, statusView) {
+  shouldShowLoadMoreButton = () => {
+    const { totalReadingList, readingListItems } = this.state;
+    const totalReadingListLoaded = readingListItems.length;
+    this.setState({ showLoadMoreButton: true });
+    if (totalReadingListLoaded >= totalReadingList) {
+      this.setState({ showLoadMoreButton: false });
+    }
+  };
+
+  loadNextReadingList = () => {
+    const { statusView, query, selectedTags, page } = this.state;
+    const isLoadMore = true;
+    this.setState({ page: page + 1 });
+    this.listSearch(query, selectedTags, statusView, isLoadMore);
+  };
+
+  listSearch(query, tags, statusView, isLoadMore = false) {
     const t = this;
-    const { index } = this.state;
-    const filters = { hitsPerPage: 256, filters: `status:${statusView}` };
+    if (!isLoadMore) {
+      this.setState({ page: 0 });
+    }
+    const { index, page, readingListItems } = this.state;
+    const filters = { page, hitsPerPage: 64, filters: `status:${statusView}` };
     if (tags.length > 0) {
       filters.tagFilters = tags;
     }
     index.search(query, filters).then(content => {
-      t.setState({ readingListItems: content.hits, query });
+      if (!isLoadMore) {
+        t.setState({
+          readingListItems: content.hits,
+          totalReadingList: content.nbHits,
+          query,
+        });
+      } else {
+        t.setState({
+          readingListItems: [...readingListItems, ...content.hits],
+          totalReadingList: content.nbHits,
+          query,
+        });
+      }
+      this.shouldShowLoadMoreButton();
+      t.setState({
+        readingListItems: content.hits,
+        totalReadingList: content.nbHits,
+        query,
+      });
     });
   }
 
   render() {
     const {
-      readingListItems,
+      archiving,
       availableTags,
-      selectedTags,
       itemsLoaded,
       query,
+      readingListItems,
+      selectedTags,
       statusView,
-      archiving,
+      showLoadMoreButton,
+      totalReadingList,
     } = this.state;
     let allItems = readingListItems.map(item => (
       <div className="readinglist-item-wrapper">
@@ -128,13 +180,19 @@ export class ReadingList extends Component {
                 src={item.reactable_user.profile_image_90}
                 alt="Profile Pic"
               />
-              {item.reactable_user.name}・{item.reactable_published_date}・
-              {item.reading_time} min read・
+              {item.reactable_user.name}
+・
+              {item.reactable_published_date}
+・
+              {item.reading_time}
+              {' '}
+min read・
             </a>
             <span className="readinglist-item-tag-collection">
               {item.reactable_tags.map(tag => (
                 <a className="readinglist-item-tag" href={`/t/${tag}`}>
-                  #{tag}
+                  #
+                  {tag}
                 </a>
               ))}
             </span>
@@ -160,9 +218,9 @@ export class ReadingList extends Component {
             </h1>
             <h3>
               Hit the
-              <span class="highlight">SAVE</span>
+              <span className="highlight">SAVE</span>
               or
-              <span class="highlight">
+              <span className="highlight">
                 Bookmark
                 <span role="img" aria-label="Bookmark">
                   🔖
@@ -193,7 +251,8 @@ export class ReadingList extends Component {
         data-no-instant
         onClick={e => this.toggleTag(e, tag)}
       >
-        #{tag}
+        #
+        {tag}
       </a>
     ));
     const snackBar = archiving ? (
@@ -204,6 +263,16 @@ export class ReadingList extends Component {
     ) : (
       ''
     );
+    let loadMoreButton = '';
+    if (showLoadMoreButton) {
+      loadMoreButton = (
+        <div className="classifieds-load-more-button">
+          <button onClick={e => this.loadNextReadingList(e)} type="button">
+            Load More Reading List
+          </button>
+        </div>
+      );
+    }
     return (
       <div className="home readinglist-home">
         <div className="side-bar">
@@ -221,15 +290,19 @@ export class ReadingList extends Component {
             </div>
           </div>
         </div>
-        <div
-          className={`readinglist-results ${
-            itemsLoaded ? 'readinglist-results--loaded' : ''
-          }`}
-        >
-          <div className="readinglist-results-header">
-            {statusView === 'valid' ? 'Reading List' : 'Archive'}
+        <div className="readinglist-result-container">
+          <div
+            className={`readinglist-results ${
+              itemsLoaded ? 'readinglist-results--loaded' : ''
+            }`}
+          >
+            <div className="readinglist-results-header">
+              {statusView === 'valid' ? 'Reading List' : 'Archive'}
+              {` (${totalReadingList})`}
+            </div>
+            <div>{allItems}</div>
           </div>
-          <div>{allItems}</div>
+          <div className="loadmore-wrapper">{loadMoreButton}</div>
         </div>
         {snackBar}
       </div>

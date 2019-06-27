@@ -11,12 +11,6 @@
   <div class="ellipsis-menu">
     <button class="ellipsis-menu-btn"><img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
     <ul class="ellipsis-menu hidden">
-      <li class="ellipsis-menu-item">
-        <%= form_for(article, url: "/article_mutes/#{article.id}", method: :patch, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
-          <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
-          <%= f.submit article.receive_notifications ? "Mute Notifications" : "Receive Notifications" %>
-        <% end %>
-      </li>
       <hr />
       <li class="ellipsis-menu-item">
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json" }) do |f| %>
@@ -42,16 +36,26 @@
     <% end %>
     <a href="<%= article.path %>/edit" class="pill cta green">EDIT</a>
     <% if manage_view %>
-      <%= form_for(article, url: "/article_mutes/#{article.id}", method: "patch", html: { class: "mute-form" }) do |f| %>
-        <%= f.hidden_field :receive_notifications, value: !article.receive_notifications %>
-        <%= f.submit article.receive_notifications ? "MUTE NOTIFICATIONS" : "NOTIFICATIONS MUTED", class: "cta pill #{article.receive_notifications ? 'mute' : 'unmute'}" %>
-      <% end %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
+      <% if article.profile_pins.any? %>
+        <%= form_for(article.profile_pins.first) do |f| %>
+          <button class="pill cta">UNPIN</button>
+        <% end %>
+      <% else %>
+        <%= form_for(ProfilePin.new) do |f| %>
+          <%= f.hidden_field :pinnable_id, value: article.id %>
+          <button class="pill cta">PIN TO PROFILE</button>
+        <% end %>
+      <% end %>
     <% elsif article.published %>
       <a href="<%= article.path %>/manage" class="cta pill black">MANAGE</a>
-    <% else %>
+    <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="cta pill black">DELETE</a>
     <% end %>
+    <% if @current_user_pro %>
+      <a href="<%= article.path %>/stats" data-no-instant class="cta pill blue">STATS</a>
+    <% end %>
+
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="page-views-count">

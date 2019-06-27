@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <atom:link rel="self" type="application/atom+xml" href="https://rss.simplecast.com/podcasts/363/rss" title="MP3 Audio"/>
+    <title>Developer Tea</title>
+    <generator>https://simplecast.com</generator>
+    <description>Developer Tea exists to help driven developers connect to their ultimate purpose and excel at their work so that they can positively impact the people they influence.
+
+With over 13 million downloads to date, Developer Tea  is a short podcast hosted by Jonathan Cutrell (@jcutrell), co-founder of Spec and developer at @Clearbit. We hope you'll take the topics from this podcast and continue the conversation, either online or in person with your peers. Twitter: @developertea :: Email: developertea@gmail.com</description>
+    <copyright>© 2018 Spec Network, Inc.</copyright>
+    <language>en-us</language>
+    <pubDate>Wed, 19 Jun 2019 05:00:00 -0400</pubDate>
+    <lastBuildDate>Wed, 19 Jun 2019 19:24:51 -0400</lastBuildDate>
+    <link>http://www.developertea.com</link>
+    <image>
+      <url>https://media.simplecast.com/podcast/image/363/1471485029-artwork.jpg</url>
+      <title>Developer Tea</title>
+      <link>http://www.developertea.com</link>
+    </image>
+    <itunes:new-feed-url>https://rss.simplecast.com/podcasts/363/rss</itunes:new-feed-url>
+    <itunes:author>Spec</itunes:author>
+    <itunes:image href="https://media.simplecast.com/podcast/image/363/1471485029-artwork.jpg"/>
+    <itunes:summary>Developer Tea exists to help driven developers connect to their ultimate purpose and excel at their work so that they can positively impact the people they influence.
+
+With over 13 million downloads to date, Developer Tea  is a short podcast hosted by Jonathan Cutrell (@jcutrell), co-founder of Spec and developer at @Clearbit. We hope you'll take the topics from this podcast and continue the conversation, either online or in person with your peers. Twitter: @developertea :: Email: developertea@gmail.com</itunes:summary>
+    <itunes:subtitle>Developer Tea exists to help driven developers connect to their ultimate purpose and excel at their work so that they can positively impact the people they influence.</itunes:subtitle>
+    <itunes:explicit>no</itunes:explicit>
+    <itunes:keywords>short podcasts for developers, development, programming, web development</itunes:keywords>
+    <itunes:type>episodic</itunes:type>
+    <itunes:owner>
+      <itunes:name>Spec Network, Inc.</itunes:name>
+      <itunes:email>shows@spec.fm</itunes:email>
+    </itunes:owner>
+    <itunes:category text="Technology"/>
+    <itunes:category text="Business">
+      <itunes:category text="Careers"/>
+    </itunes:category>
+    <itunes:category text="Society &amp; Culture"/>
+    <item>
+      <title>Individual Contributor Career Growth w/ Matt Klein (part 1)</title>
+      <guid isPermaLink="false">53b17a1e-271b-40e3-a084-a67b4fcba562</guid>
+      <link>http://developertea.simplecast.fm/50464d4b</link>
+      <description>What does a long career as an individual contributor look like? The answer isn't always clear cut, especially if you're give the option of becoming a manager. Today, we'll talk to Matt Klein about how he approaches that.
+</description>
+      <content:encoded>
+        <![CDATA[<p>What does a long career as an individual contributor look like? The answer isn't always clear cut, especially if you're given the option of becoming a manager. Today, we'll talk to <a href="https://twitter.com/mattklein123?lang=en">Matt Klein</a> about how he approaches this in part 1 of our two part interview.</p>
+
+<a name="Matt.on.the.Web"></a>
+<h2>Matt on the Web</h2>
+
+<p>Matt is on the engineering team at <a href="https://twitter.com/lyft">Lyft</a> and one of the main contributors to the open source project, <a href="https://twitter.com/envoyproxy">Envoy</a>.</p>
+
+<ul>
+<li><a href="https://twitter.com/mattklein123?lang=en">Twitter</a></li>
+<li><a href="https://blog.envoyproxy.io/@mattklein123">Medium</a></li>
+</ul>
+
+
+<a name="Get.in.touch"></a>
+<h2>Get in touch</h2>
+
+<p>If you have questions about today's episode, want to start a conversation about today's topic or just want to let us know if you found this episode valuable I encourage you to join the conversation or start your own on our community platform  <a href="https://spectrum.chat/specfm/developer-tea">Spectrum.chat/specfm/developer-tea</a></p>
+
+<a name="L.....Leave.a.Review"></a>
+<h2>🧡 Leave a Review</h2>
+
+<p>If you're enjoying the show and want to support the content head over to iTunes and <a href="https://itunes.apple.com/us/artist/spec/1019380766?mt=2">leave a review</a>! It helps other developers discover the show and keep us focused on what matters to you.</p>
+
+<a name="L.....Subscribe.to.the.Tea.Break.Challenge"></a>
+<h2>🍵 Subscribe to the Tea Break Challenge</h2>
+
+<p> This is a daily challenge designed help you become more self-aware and be a better developer so you can have a positive impact on the people around you. Check it out and give it a try at <a href="https://www.teabreakchallenge.com/.">https://www.teabreakchallenge.com/.</a></p>
+
+<a name="L.....Thanks.to.today.s.sponsor:.Sentry"></a>
+<h2>🙏 Thanks to today's sponsor: <a href="https://sentry.io/welcome/">Sentry</a></h2>
+
+<p>Sentry tells you about errors in your code before your customers have a chance to encounter them.</p>
+
+<p>Not only do we tell you about them, we also give you all the details you’ll need to be able to fix them. You’ll see exactly how many users have been impacted by a bug, the stack trace, the commit that the error was released as part of, the engineer who wrote the line of code that is currently busted, and a lot more.</p>
+
+<p>Give it a try for yourself at <a href="https://www.sentry.io">Sentry.io</a></p>
+]]>
+      </content:encoded>
+      <pubDate>Wed, 19 Jun 2019 05:00:00 -0400</pubDate>
+      <author>shows@spec.fm (Spec)</author>
+      <enclosure url="https://audio.simplecast.com/4071c0b8.mp3" length="30373893" type="audio/mpeg"/>
+      <itunes:author>Spec</itunes:author>
+      <itunes:image href="https://media.simplecast.com/episode/image/301708/1560835715-artwork.jpg"/>
+      <itunes:duration>00:31:35</itunes:duration>
+      <itunes:summary>What does a long career as an individual contributor look like? The answer isn't always clear cut, especially if you're give the option of becoming a manager. Today, we'll talk to Matt Klein about how he approaches that.
+</itunes:summary>
+      <itunes:subtitle>What does a long career as an individual contributor look like? The answer isn't always clear cut, especially if you're give the option of becoming a manager. Today, we'll talk to Matt Klein about how he approaches that.
+</itunes:subtitle>
+      <itunes:keywords></itunes:keywords>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:episode>696</itunes:episode>
+    </item>
+  </channel>
+</rss>

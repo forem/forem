@@ -1,0 +1,20 @@
+<% title "Stats for Your Article" %>
+
+<div class="dashboard-container pro-container" id="user-dashboard">
+  <a
+    href="<%= @article.current_state_path %>"
+    class="rounded-btn rounded-btn--transparent"
+    id="article"
+    data-article-id="<%= @article.id %>"
+    data-organization-id="<%= @organization_id %>">
+    👈 Back to the article
+  </a>
+
+  <section class="header-card card">
+    <h1 class="pro-header">Stats for "<%= @article.title %>"</h1>
+  </section>
+
+  <%= render "shared/stats" %>
+</div>
+
+<%= javascript_pack_tag "analyticsArticle", defer: true %>

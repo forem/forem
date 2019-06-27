@@ -19,6 +19,10 @@
   <br/>
   <%= form.text_field :description %>
   <hr/>
+  <%= form.label :is_top_level_path %> (Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️
+  <br/>
+  <%= form.check_box :is_top_level_path %>
+  <hr/>
   <%= form.submit %>
 
   <hr/>

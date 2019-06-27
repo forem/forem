@@ -6,6 +6,8 @@ class DashboardsController < ApplicationController
   def show
     fetch_and_authorize_user
 
+    @current_user_pro = current_user.pro?
+
     target = @user
     not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
 
@@ -46,16 +48,15 @@ class DashboardsController < ApplicationController
   end
 
   def pro
-    user_or_org = if params[:org_id]
-                    org = Organization.find_by(id: params[:org_id])
-                    authorize org, :pro_org_user?
-                    org
-                  else
-                    authorize current_user, :pro_user?
-                    current_user
-                  end
+    @user_or_org = if params[:org_id]
+                     org = Organization.find_by(id: params[:org_id])
+                     authorize org, :pro_org_user?
+                     org
+                   else
+                     authorize current_user, :pro_user?
+                     current_user
+                   end
     @organizations = current_user.member_organizations
-    @dashboard = Dashboard::Pro.new(user_or_org)
   end
 
   private

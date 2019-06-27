@@ -27,7 +27,7 @@ Rails.application.config.assets.precompile += %w[s3_direct_upload.css]
 Rails.application.config.assets.precompile += %w[base.js]
 Rails.application.config.assets.precompile += %w[hello-dev.js]
 Rails.application.config.assets.precompile += %w[s3_direct_upload.js]
-
+Rails.application.config.assets.precompile += %w[classified_listings.css]
 Rails.application.config.assets.precompile += %w[lib/xss.js]
 Rails.application.config.assets.precompile += %w[lib/pulltorefresh.js]
 Rails.application.config.assets.precompile += %w[internal.js]

@@ -4,70 +4,18 @@ RSpec.describe Mention, type: :model do
   let(:user)        { create(:user) }
   let(:article)     { create(:article, user_id: user.id) }
   let(:comment)     { create(:comment, user_id: user.id, commentable_id: article.id) }
-  let(:comment2)    do
-    create(
-      :comment,
-      body_markdown: "Hello @#{user.username}, you are cool.",
-      user_id: user.id,
-      commentable_id: article.id,
-    )
+
+  it "calls on Mentions::CreateAllJob" do
+    described_class.create_all(comment) do
+      expect(Mentions::CreateAllJob).to have_received(:perform_later).with(comment.id, "Comment")
+    end
   end
 
-  before { Notification.send_new_comment_notifications(comment) }
-
-  it "creates mention if there is a user mentioned" do
-    comment.body_markdown = "Hello @#{user.username}, you are cool."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(1)
+  it "creates a valid mention" do
+    expect(create(:mention)).to be_valid
   end
 
-  it "deletes mention if deleted from comment" do
-    comment.body_markdown = "Hello @#{user.username}, you are cool."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(1)
-    comment.body_markdown = "Hello, you are cool."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(0)
-  end
-
-  it "creates one mention even if multiple mentions of same user" do
-    comment.body_markdown = "Hello @#{user.username} @#{user.username} @#{user.username}, you rock."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(1)
-  end
-
-  it "creates multiple mentions for multiple users" do
-    user2 = create(:user)
-    comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(2)
-  end
-
-  it "deletes one of multiple mentions if one of multiple is deleted" do
-    user2 = create(:user)
-    comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(2)
-    comment.body_markdown = "Hello @#{user2.username}, you are cool."
-    comment.save
-    Mention.create_all_without_delay(comment)
-    expect(Mention.all.size).to eq(1)
-  end
-
-  it "creates mention on creation of comment (in addition to update)" do
-    Mention.create_all_without_delay(comment2)
-    expect(Mention.all.size).to eq(1)
-  end
-
-  it "can only be created with valid mentionable" do
-    comment2.update_column(:body_markdown, "")
-    Mention.create_all_without_delay(comment2)
-    expect(Mention.all.size).to eq(0)
+  it "doesn't raise undefined method for NilClass on valid?" do
+    expect(Mention.new.valid?).to eq(false)
   end
 end

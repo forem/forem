@@ -9,7 +9,7 @@ class NotificationsController < ApplicationController
       num = 45
       notified_at_offset = Notification.find(params[:page])&.notified_at
     else
-      num = 10
+      num = 8
     end
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
                        organization_notifications

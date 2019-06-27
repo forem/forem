@@ -1,3 +1,11 @@
+<% if @pinned_stories.any? %>
+  <div class="pinned-articles">
+    <div class="pinned-articles-indicator"><img src="<%= asset_path("pushpin.svg") %>" alt="pin" /> Pinned</div>
+    <% @pinned_stories.each do |story| %>
+      <%= render "articles/single_story", story: story %>
+    <% end %>
+  </div>
+<% end %>
 <% @stories.each_with_index do |story, i| %>
   <%= render "articles/single_story", story: story %>
   <% if i == 0 && @comments.any? %>

@@ -6,8 +6,9 @@ class MarkdownParser
     @content = content
   end
 
-  def finalize
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+  def finalize(link_attributes: {})
+    options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
+    renderer = Redcarpet::Render::HTMLRouge.new(options)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     catch_xss_attempts(@content)
     escaped_content = escape_liquid_tags_in_codeblock(@content)
@@ -52,6 +53,18 @@ class MarkdownParser
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
     allowed_tags = %w[strong i u b em p br code]
+    allowed_attributes = %w[href strong em ref rel src title alt class]
+    ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
+                                            tags: allowed_tags,
+                                            attributes: allowed_attributes
+  end
+
+  def evaluate_inline_limited_markdown
+    return if @content.blank?
+
+    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
+    markdown = Redcarpet::Markdown.new(renderer, REDCARPET_CONFIG)
+    allowed_tags = %w[strong i u b em code]
     allowed_attributes = %w[href strong em ref rel src title alt class]
     ActionController::Base.helpers.sanitize markdown.render(@content).html_safe,
                                             tags: allowed_tags,

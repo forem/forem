@@ -1,0 +1,12 @@
+<div class="ltag-poll" id="poll_<%= poll.id %>" data-poll-id="<%= poll.id %>">
+  <h3><%= poll.prompt_html.html_safe %></h3>
+  <ul class="ltag-pollanswers">
+    <% poll.poll_options.each do |option| %>
+      <li class="ltag-polloption" id="poll_option_list_item_<%= option.id %>" data-option-id="<%= option.id %>">
+        <input type="radio" id="poll_option_<%= option.id %>" name="option" value="poll_option_<%= option.id %>" data-option-id="<%= option.id %>">
+        <label for="d" id="poll_option_label_<%= option.id %>" data-option-id="<%= option.id %>"><%= option.processed_html.html_safe %></label>
+      </li>
+    <% end %>
+    <li class="ltag-polloption-justshowmetheresults" id="showmethemoney-<%= poll.id %>" data-poll-id="<%= poll.id %>"><button>Just show me the results</button>
+  </ul>
+</div>

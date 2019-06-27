@@ -1,7 +1,8 @@
 class ArticlesController < ApplicationController
   include ApplicationHelper
+
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit manage update destroy]
+  before_action :set_article, only: %i[edit manage update destroy stats]
   before_action :raise_banned, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -146,7 +147,7 @@ class ArticlesController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if article_params_json[:archived] && @article.archived #just to get archived working
+        if article_params_json[:archived] && @article.archived # just to get archived working
           render json: @article.to_json(only: [:id], methods: [:current_state_path])
           return
         end
@@ -179,6 +180,12 @@ class ArticlesController < ApplicationController
       format.html { redirect_to "/dashboard", notice: "Article was successfully deleted." }
       format.json { head :no_content }
     end
+  end
+
+  def stats
+    authorize current_user, :pro_user?
+    authorize @article
+    @organization_id = @article.organization_id
   end
 
   private

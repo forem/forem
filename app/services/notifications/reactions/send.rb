@@ -78,9 +78,16 @@ module Notifications
           notification.save!
           notification.id
         else
+          # conflict target and index_predicate specify the index to use
+          conflict_target = %i[notifiable_id notifiable_type]
+          conflict_target << :action if notification.action?
+          conflict_target << :user_id if notification.user_id?
+          conflict_target << :organization_id if notification.organization_id?
+          index_predicate = "action IS#{notification.action? ? ' NOT ' : ' '}NULL"
           import_result = Notification.import! [notification],
                                                on_duplicate_key_update: {
-                                                 conflict_target: %i[notifiable_id notifiable_type user_id organization_id action],
+                                                 conflict_target: conflict_target,
+                                                 index_predicate: index_predicate,
                                                  columns: %i[json_data notified_at read]
                                                }
           import_result.ids.first

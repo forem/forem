@@ -16,13 +16,13 @@ RSpec.describe ClassifiedListing, type: :model do
       expect(cl.errors[:organization_id]).to be_truthy
     end
 
-    it "is valid with user_id" do
+    it "is valid with user_id and without organization_id" do
       cl = build(:classified_listing, user_id: user.id, organization_id: nil)
       expect(cl).to be_valid
     end
 
-    it "is valid with organization_id" do
-      cl = build(:classified_listing, user_id: nil, organization_id: organization.id)
+    it "is valid with user_id and organization_id" do
+      cl = build(:classified_listing, user_id: user.id, organization_id: organization.id)
       expect(cl).to be_valid
     end
   end

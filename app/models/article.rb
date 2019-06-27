@@ -22,8 +22,10 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
   has_many :page_views
 
@@ -41,8 +43,9 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
+  validate :validate_liquid_tag_permissions
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
-  validates :cached_tag_list, length: { maximum: 86 }
+  validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
@@ -443,6 +446,10 @@ class Article < ApplicationRecord
     Rails.logger.error(e)
   end
 
+  def liquid_tags_used
+    MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  end
+
   private
 
   def update_notifications
@@ -500,7 +507,7 @@ class Article < ApplicationRecord
 
     # check tags names aren't too long
     tag_list.each do |tag|
-      errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)") if tag.length > 20
+      errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
     end
   end
 
@@ -516,6 +523,11 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
+  end
+
+  # Admin only beta tags etc.
+  def validate_liquid_tag_permissions
+    errors.add(:body_markdown, "must only use permitted tags") if liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
   def create_slug

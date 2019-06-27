@@ -12,7 +12,7 @@
   <meta property="og:site_name" content="The Practical Dev" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:site" content="@<%= ApplicationConfig["SITE_TWITTER_HANDLE"] %>">
   <meta name="twitter:title" content="Notifications - dev.to">
   <meta name="twitter:description" content="Notifications inbox for dev.to">
 <% end %>
@@ -36,7 +36,7 @@
           <% @organizations.each do |org| %>
             <hr>
             <header>
-              <h4><%= org.name %> <%= "(#{org.notifications.where(read: false).size})" if org.notifications.where(read: false).size.positive? %></h4>
+              <h4><%= org.name %></h4>
             </header>
             <div class="widget-body">
               <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">ALL</a>
@@ -56,7 +56,7 @@
         <% @organizations.each do |org| %>
           <div class="notifications-mobile-filters">
             <hr>
-            <span class="organization-name"><%= org.name %> <%= "(#{org.notifications.where(read: false).size})" if org.notifications.where(read: false).size.positive? %></span>
+            <span class="organization-name">@<%= org.slug %>:</span>
             <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">ALL</a>
             <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">COMMENTS</a>
           </div>

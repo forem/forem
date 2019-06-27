@@ -82,7 +82,7 @@
         width: 27%;
         padding: 9px 0px;
         text-align: center;
-        color: $black;
+        @include themeable(color, theme-secondary-color, $medium-gray);
         margin: 1%;
       }
       .query-filter-button {
@@ -111,7 +111,11 @@
             theme-container-accent-background,
             lighten($bold-blue, 8%)
           );
-          color: white;
+          @include themeable(
+            color,
+            theme-color,
+            white
+          );
         }
       }
     }
@@ -209,6 +213,44 @@
           font-stretch: condensed;
           font-weight: 600;
           cursor: pointer;
+        }
+      }
+    }
+    .pinned-articles {
+      @include themeable(background, theme-container-background, $white);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      padding: 8px 0px;
+      margin: auto;
+      margin-top: 8px;
+      @media screen and (min-width: 750px) {
+        border-radius: 3px;
+        box-sizing: border-box;
+        padding: 8px 8px;
+        padding-right: 9px;
+        width: calc(100% + 2px);
+        max-width: 722px;
+      }
+      .pinned-articles-indicator {
+        text-align: left;
+        font-size: 15px;
+        font-weight: bold;
+        padding-top: 8px;
+        padding-left: 2.8%;
+        @media screen and (min-width: 750px) {
+          padding-left: 22px;
+        }
+        @media screen and (min-width: 950px) {
+          padding-left: 2px;
+        }
+        img {
+          width: 20px;
+          transform: rotate(-8deg);
+          vertical-align: -5px;
+          @include themeable(filter, theme-social-icon-invert, invert(0));
         }
       }
     }

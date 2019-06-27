@@ -4,34 +4,34 @@ class Podcast < ApplicationRecord
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
 
-  validates :main_color_hex, presence: true
+  validates :main_color_hex, :title, :feed_url, :image, presence: true
+  validates :feed_url, uniqueness: true
+  validates :slug,
+            presence: true,
+            uniqueness: true,
+            format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
+            exclusion: { in: ReservedWords.all, message: "slug is reserved" }
+  validate :unique_slug_including_users_and_orgs, if: :slug_changed?
 
   after_save :bust_cache
-  after_create :pull_all_episodes
 
-  def path
-    slug
-  end
-
-  def profile_image_url
-    image_url
-  end
-
-  def name
-    title
-  end
+  alias_attribute :path, :slug
+  alias_attribute :profile_image_url, :image_url
+  alias_attribute :name, :title
 
   private
 
+  def unique_slug_including_users_and_orgs
+    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Organization.find_by(slug: slug) || Page.find_by(slug: slug)
+  end
+
   def bust_cache
-    CacheBuster.new.bust("/" + path)
+    return unless path
+
+    Podcasts::BustCacheJob.perform_later(path)
   end
 
   def pull_all_episodes
     Podcasts::GetEpisodesJob.perform_later(id)
-  end
-
-  def pull_all_episodes_without_delay
-    Podcasts::GetEpisodesJob.perform_now(id)
   end
 end

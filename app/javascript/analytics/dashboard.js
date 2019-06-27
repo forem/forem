@@ -1,4 +1,5 @@
 import Chart from 'chart.js';
+import { callHistoricalAPI, callReferrersAPI } from './client';
 
 function resetActive(activeButton) {
   const buttons = document.getElementsByClassName('timerange-button');
@@ -83,7 +84,7 @@ function drawCharts(data, timeRangeLabel) {
   const readers = parsedData.map(date => date.page_views.total);
 
   drawChart({
-    canvas: document.getElementById('reactionsChart'),
+    canvas: document.getElementById('reactions-chart'),
     title: `Reactions ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -119,7 +120,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('commentsChart'),
+    canvas: document.getElementById('comments-chart'),
     title: `Comments ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -134,7 +135,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('followersChart'),
+    canvas: document.getElementById('followers-chart'),
     title: `New Followers ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -149,7 +150,7 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    canvas: document.getElementById('readersChart'),
+    canvas: document.getElementById('readers-chart'),
     title: `Reads ${timeRangeLabel}`,
     labels,
     datasets: [
@@ -164,63 +165,86 @@ function drawCharts(data, timeRangeLabel) {
   });
 }
 
-function callAnalyticsApi(date, timeRangeLabel, organizationId) {
-  let url = `/api/analytics/historical?start=${
-    date.toISOString().split('T')[0]
-  }`;
+function renderReferrers(data) {
+  const container = document.getElementById('referrers-container');
+  const tableBody = data.domains
+    .filter(referrer => referrer.domain)
+    .map(referrer => {
+      return `
+      <tr>
+        <td>${referrer.domain}</td>
+        <td>${referrer.count}</td>
+      </tr>
+    `;
+    });
 
-  if (organizationId) {
-    url = `${url}&organization_id=${organizationId}`;
+  // add referrers with empty domains if present
+  const emptyDomainReferrer = data.domains.filter(
+    referrer => !referrer.domain,
+  )[0];
+  if (emptyDomainReferrer) {
+    tableBody.push(`
+      <tr>
+        <td>All other external referrers</td>
+        <td>${emptyDomainReferrer.count}</td>
+      </tr>
+    `);
   }
 
-  fetch(url)
-    .then(data => data.json())
-    .then(data => {
-      drawCharts(data, timeRangeLabel);
-      writeCards(data, timeRangeLabel);
-    });
+  container.innerHTML = tableBody.join('');
 }
 
-function drawWeekCharts(organizationId) {
+function callAnalyticsAPI(date, timeRangeLabel, { organizationId, articleId }) {
+  callHistoricalAPI(date, { organizationId, articleId }, data => {
+    writeCards(data, timeRangeLabel);
+    drawCharts(data, timeRangeLabel);
+  });
+
+  callReferrersAPI(date, { organizationId, articleId }, data => {
+    renderReferrers(data);
+  });
+}
+
+function drawWeekCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('week-button'));
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  callAnalyticsApi(oneWeekAgo, 'this Week', organizationId);
+  callAnalyticsAPI(oneWeekAgo, 'this Week', { organizationId, articleId });
 }
 
-function drawMonthCharts(organizationId) {
+function drawMonthCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('month-button'));
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-  callAnalyticsApi(oneMonthAgo, 'this Month', organizationId);
+  callAnalyticsAPI(oneMonthAgo, 'this Month', { organizationId, articleId });
 }
 
-function drawInfinityCharts(organizationId) {
+function drawInfinityCharts({ organizationId, articleId }) {
   resetActive(document.getElementById('infinity-button'));
   // April 1st is when the DEV analytics feature went into place
   const beginningOfTime = new Date('2019-4-1');
-  callAnalyticsApi(beginningOfTime, '', organizationId);
+  callAnalyticsAPI(beginningOfTime, '', { organizationId, articleId });
 }
 
-export default function initCharts({ organizationId }) {
+export default function initCharts({ organizationId, articleId }) {
   const weekButton = document.getElementById('week-button');
   weekButton.addEventListener(
     'click',
-    drawWeekCharts.bind(null, organizationId),
+    drawWeekCharts.bind(null, { organizationId, articleId }),
   );
 
   const monthButton = document.getElementById('month-button');
   monthButton.addEventListener(
     'click',
-    drawMonthCharts.bind(null, organizationId),
+    drawMonthCharts.bind(null, { organizationId, articleId }),
   );
 
   const infinityButton = document.getElementById('infinity-button');
   infinityButton.addEventListener(
     'click',
-    drawInfinityCharts.bind(null, organizationId),
+    drawInfinityCharts.bind(null, { organizationId, articleId }),
   );
 
   // draw week charts by default
-  drawWeekCharts(organizationId);
+  drawWeekCharts({ organizationId, articleId });
 }

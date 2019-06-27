@@ -8,7 +8,11 @@ module ApplicationHelper
   end
 
   def view_class
-    "#{controller_name} #{controller_name}-#{controller.action_name}"
+    if @story_show # custom due to edge cases
+      "stories stories-show"
+    else
+      "#{controller_name} #{controller_name}-#{controller.action_name}"
+    end
   end
 
   def core_pages?

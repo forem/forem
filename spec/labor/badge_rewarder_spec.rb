@@ -141,17 +141,28 @@ RSpec.describe BadgeRewarder do
       expect(user.badge_achievements.size).to eq(1)
       expect(user.badge_achievements.last.rewarding_context_message).to include("<a ")
       expect(user.badge_achievements.last.rewarding_context_message).to include(ApplicationConfig["APP_DOMAIN"])
+      expect(user.badge_achievements.last.rewarding_context_message).to include(article.title)
+      expect(user.badge_achievements.last.rewarding_context_message).to include(article.path)
     end
+
     it "does not award badge if qualifying article by score but not tagged appropriately" do
       article.update_columns(cached_tag_list: "differenttag", score: 101)
       described_class.award_tag_badges
       expect(user.badge_achievements.size).to eq(0)
     end
-    it "does not award badge if tagged appropriately but not high enoughs core" do
-      article.update_columns(cached_tag_list: tag.name, score: 80)
+
+    it "does not award badge if qualifying article by score but not from past week" do
+      article.update_columns(published_at: 8.days.ago, cached_tag_list: tag.name, score: 333)
       described_class.award_tag_badges
       expect(user.badge_achievements.size).to eq(0)
     end
+
+    it "does not award badge if tagged appropriately but not published" do
+      article.update_columns(cached_tag_list: tag.name, score: 101, published: false)
+      described_class.award_tag_badges
+      expect(user.badge_achievements.size).to eq(0)
+    end
+    # rubocop:disable RSpec/ExampleLength
     it "does not award badge to user who has previously won" do
       article.update_columns(cached_tag_list: tag.name, score: 201)
       second_article.update_columns(cached_tag_list: tag.name, score: 150)
@@ -168,5 +179,6 @@ RSpec.describe BadgeRewarder do
       expect(second_user.reload.badge_achievements.size).to eq(1)
       expect(third_user.reload.badge_achievements.size).to eq(1)
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 end

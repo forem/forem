@@ -16,13 +16,14 @@ RSpec.describe Article, type: :model do
   it { is_expected.to validate_uniqueness_of(:feed_source_url).allow_blank }
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_length_of(:title).is_at_most(128) }
-  it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(86) }
+  it { is_expected.to validate_length_of(:cached_tag_list).is_at_most(126) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:organization).optional }
   it { is_expected.to belong_to(:collection).optional }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:reactions) }
   it { is_expected.to have_many(:notifications) }
+  it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
   it { is_expected.to validate_presence_of(:user_id) }
   it { is_expected.not_to allow_value("foo").for(:main_image_background_hex_color) }
 
@@ -180,6 +181,11 @@ RSpec.describe Article, type: :model do
       it "rejects if there are more than 4 tags" do
         five_tags = "one, two, three, four, five"
         expect(build(:article, tags: five_tags).valid?).to be(false)
+      end
+
+      it "rejects if there are tags with length > 30" do
+        tags = "'testing tag length with more than 30 chars', tag"
+        expect(build(:article, tags: tags).valid?).to be(false)
       end
     end
 
@@ -410,6 +416,19 @@ RSpec.describe Article, type: :model do
       article.main_image = "hello"
       expect(article.valid?).to eq(false)
       article.main_image = "https://image.com/image.png"
+      expect(article.valid?).to eq(true)
+    end
+
+    it "does not allow the use of admin-only liquid tags for non-admins" do
+      poll = create(:poll, article_id: article.id)
+      article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
+      expect(article.valid?).to eq(false)
+    end
+
+    it "allows admins" do
+      poll = create(:poll, article_id: article.id)
+      article.user.add_role(:admin)
+      article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
       expect(article.valid?).to eq(true)
     end
   end

@@ -1,4 +1,5 @@
 require "rails_helper"
+include ActionView::Helpers::DateHelper
 
 RSpec.describe "NotificationsIndex", type: :request do
   let(:dev_account) { create(:user) }
@@ -142,7 +143,7 @@ RSpec.describe "NotificationsIndex", type: :request do
 
     context "when a user has a new comment notification" do
       let(:user2)    { create(:user) }
-      let(:article)  { create(:article, user_id: user.id) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
@@ -153,6 +154,10 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "renders the correct message" do
         expect(response.body).to include "commented on"
+      end
+
+      it "does not render incorrect message" do
+        expect(response.body).not_to include "replied to a thread in"
       end
 
       it "does not render the moderation message" do
@@ -175,6 +180,30 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "does not render the reaction as reacted if it was not reacted on" do
         expect(response.body).not_to include "reaction-button reacted"
+      end
+    end
+
+    context "when a user has a new second level comment notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
+      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
+      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: comment.id) }
+      let(:third_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: second_comment.id) }
+
+      before do
+        sign_in user
+        Notification.send_new_comment_notifications_without_delay(comment)
+        Notification.send_new_comment_notifications_without_delay(second_comment)
+        Notification.send_new_comment_notifications_without_delay(third_comment)
+        get "/notifications"
+      end
+
+      it "contextualize comment notification text properly" do
+        expect(response.body).to include "replied to a thread in"
+      end
+
+      it "contextualize comment title properly" do
+        expect(response.body).to include "re: #{comment.title}"
       end
     end
 
@@ -305,6 +334,10 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "does not render the reaction as reacted if it was not reacted on" do
         expect(response.body).not_to include "reaction-button reacted"
+      end
+
+      it "renders the article's published at" do
+        expect(response.body).to include time_ago_in_words(article.published_at)
       end
     end
   end
