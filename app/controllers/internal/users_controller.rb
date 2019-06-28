@@ -23,6 +23,7 @@ class Internal::UsersController < Internal::ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @organizations = @user.organizations
   end
 
   def update
@@ -104,13 +105,13 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def add_org_credits
-    org = Organization.find(@user.organization_id)
+    org = Organization.find(user_params[:organization_id])
     amount = user_params[:add_org_credits].to_i
     Credit.add_to_org(org, amount)
   end
 
   def remove_org_credits
-    org = Organization.find(@user.organization_id)
+    org = Organization.find(user_params[:organization_id])
     amount = user_params[:remove_org_credits].to_i
     Credit.remove_from_org(org, amount)
   end
@@ -120,6 +121,7 @@ class Internal::UsersController < Internal::ApplicationController
       new_note note_for_current_role user_status
       pro merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits ghostify
+      organization_id
     ]
     params.require(:user).permit(allowed_params)
   end
