@@ -85,7 +85,8 @@ class FollowTags extends Component {
               }}
               className="tag"
             >
-              #{tag.name}
+              #
+              {tag.name}
             </button>
           ))}
         </div>
