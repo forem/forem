@@ -8,6 +8,8 @@ import { ItemListTags } from '../src/components/ItemList/ItemListTags';
 
 const STATUS_VIEW_VALID = 'valid';
 const STATUS_VIEW_ARCHIVED = 'archived';
+const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
+const READING_LIST_PATH = '/readinglist';
 
 export class ReadingList extends Component {
   constructor(props) {
@@ -85,11 +87,11 @@ export class ReadingList extends Component {
     if (statusView === STATUS_VIEW_VALID) {
       this.setState({ statusView: STATUS_VIEW_ARCHIVED, page: 0, items: [] });
       this.listSearch(query, selectedTags, STATUS_VIEW_ARCHIVED);
-      window.history.replaceState(null, null, '/readinglist/archive');
+      window.history.replaceState(null, null, READING_LIST_ARCHIVE_PATH);
     } else {
       this.setState({ statusView: STATUS_VIEW_VALID, page: 0, items: [] });
       this.listSearch(query, selectedTags, STATUS_VIEW_VALID);
-      window.history.replaceState(null, null, '/readinglist');
+      window.history.replaceState(null, null, READING_LIST_PATH);
     }
   };
 
@@ -115,7 +117,7 @@ export class ReadingList extends Component {
     });
     setTimeout(() => {
       t.setState({ archiving: false });
-    }, 1800);
+    }, 1500);
   };
 
   loadNextPage = () => {
@@ -155,17 +157,13 @@ export class ReadingList extends Component {
       showLoadMoreButton,
       totalCount,
     } = this.state;
+
     let allItems = items.map(item => (
-      <div className="readinglist-item-wrapper">
-        <a className="readinglist-item" href={item.searchable_reactable_path}>
-          <div className="readinglist-item-title">
-            {item.searchable_reactable_title}
-          </div>
-          <div className="readinglist-item-details">
-            <a
-              className="readinglist-item-user"
-              href={`/${item.reactable_user.username}`}
-            >
+      <div className="item-wrapper">
+        <a className="item" href={item.searchable_reactable_path}>
+          <div className="item-title">{item.searchable_reactable_title}</div>
+          <div className="item-details">
+            <a className="item-user" href={`/${item.reactable_user.username}`}>
               <img
                 src={item.reactable_user.profile_image_90}
                 alt="Profile Pic"
@@ -178,9 +176,9 @@ export class ReadingList extends Component {
               {' '}
 min read・
             </a>
-            <span className="readinglist-item-tag-collection">
+            <span className="item-tags">
               {item.reactable_tags.map(tag => (
-                <a className="readinglist-item-tag" href={`/t/${tag}`}>
+                <a className="item-tag" href={`/t/${tag}`}>
                   #
                   {tag}
                 </a>
@@ -188,8 +186,9 @@ min read・
             </span>
           </div>
         </a>
+
         <button
-          className="readinglist-archive-butt"
+          className="archive-button"
           onClick={e => this.archive(e, item)}
           type="button"
         >
@@ -197,10 +196,11 @@ min read・
         </button>
       </div>
     ));
+
     if (items.length === 0 && itemsLoaded) {
       if (statusView === 'valid') {
         allItems = (
-          <div className="readinglist-empty">
+          <div className="items-empty">
             <h1>
               {selectedTags.length === 0 && query.length === 0
                 ? 'Your Reading List is Lonely'
@@ -222,7 +222,7 @@ min read・
         );
       } else {
         allItems = (
-          <div className="readinglist-empty">
+          <div className="items-empty">
             <h1>
               {selectedTags.length === 0 && query.length === 0
                 ? 'Your Archive List is Lonely'
@@ -235,26 +235,27 @@ min read・
 
     const snackBar = archiving ? (
       <div className="snackbar">
-        {statusView === STATUS_VIEW_VALID ? 'Archiving' : 'Unarchiving'}
-        (async)
+        {statusView === STATUS_VIEW_VALID ? 'Archiving...' : 'Unarchiving...'}
       </div>
     ) : (
       ''
     );
 
     return (
-      <div className="home readinglist-home">
+      <div className="home item-list">
         <div className="side-bar">
-          <div className="widget readinglist-filters">
+          <div className="widget filters">
             <input onKeyUp={this.handleTyping} placeHolder="search your list" />
+
             <ItemListTags
               availableTags={availableTags}
               selectedTags={selectedTags}
               onClick={this.toggleTag}
             />
-            <div className="readinglist-view-toggle">
+
+            <div className="status-view-toggle">
               <a
-                href="/readinglist/archive"
+                href={READING_LIST_ARCHIVE_PATH}
                 onClick={e => this.toggleStatusView(e)}
                 data-no-instant
               >
@@ -265,23 +266,22 @@ min read・
             </div>
           </div>
         </div>
+
         <div className="items-container">
-          <div
-            className={`readinglist-results ${
-              itemsLoaded ? 'readinglist-results--loaded' : ''
-            }`}
-          >
-            <div className="readinglist-results-header">
+          <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
+            <div className="results-header">
               {statusView === STATUS_VIEW_VALID ? 'Reading List' : 'Archive'}
               {` (${totalReadingList > 0 ? totalReadingList : 'empty'})`}
             </div>
             <div>{allItems}</div>
           </div>
+
           <ItemListLoadMoreButton
             show={showLoadMoreButton}
             onClick={this.loadNextPage}
           />
         </div>
+
         {snackBar}
       </div>
     );

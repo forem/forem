@@ -123,15 +123,12 @@ export class History extends Component {
     }
 
     return items.map(item => (
-      <div className="history-item-wrapper">
-        <a className="history-item" href={item.article_path}>
-          <div className="history-item-title">{item.article_title}</div>
+      <div className="item-wrapper">
+        <a className="item" href={item.article_path}>
+          <div className="item-title">{item.article_title}</div>
 
-          <div className="history-item-details">
-            <a
-              className="history-item-user"
-              href={`/${item.article_user.username}`}
-            >
+          <div className="item-details">
+            <a className="item-user" href={`/${item.article_user.username}`}>
               <img src={item.article_user.profile_image_90} alt="Profile Pic" />
               {item.article_user.name}
 ・
@@ -141,9 +138,9 @@ min read・
               {`visited on ${item.readable_visited_at}`}
 ・
             </a>
-            <span className="history-item-tag-collection">
+            <span className="item-tags">
               {item.article_tags.map(tag => (
-                <a className="history-item-tag" href={`/t/${tag}`}>
+                <a className="item-tag" href={`/t/${tag}`}>
                   #
                   {tag}
                 </a>
@@ -167,10 +164,14 @@ min read・
     const allItems = this.renderItems();
 
     return (
-      <div className="home history-home">
+      <div className="home item-list">
         <div className="side-bar">
-          <div className="widget history-filters">
-            <input onKeyUp={this.handleTyping} placeHolder="search your list" />
+          <div className="widget filters">
+            <input
+              onKeyUp={this.handleTyping}
+              placeHolder="search your history"
+            />
+
             <ItemListTags
               availableTags={availableTags}
               selectedTags={selectedTags}
@@ -178,18 +179,16 @@ min read・
             />
           </div>
         </div>
+
         <div className="items-container">
-          <div
-            className={`history-results ${
-              itemsLoaded ? 'history-results--loaded' : ''
-            }`}
-          >
-            <div className="history-results-header">
+          <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
+            <div className="results-header">
               History
               {` (${totalCount})`}
             </div>
             <div>{allItems}</div>
           </div>
+
           <ItemListLoadMoreButton
             show={showLoadMoreButton}
             onClick={this.loadNextPage}
