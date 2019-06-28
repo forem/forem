@@ -3,6 +3,8 @@ import { PropTypes } from 'preact-compat';
 import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
+import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+
 const STATUS_VIEW_VALID = 'valid';
 const STATUS_VIEW_ARCHIVED = 'archived';
 
@@ -253,19 +255,7 @@ min read・
         );
       }
     }
-    const allTags = availableTags.map(tag => (
-      <a
-        className={`readinglist-tag ${
-          selectedTags.indexOf(tag) > -1 ? 'selected' : ''
-        }`}
-        href={`/t/${tag}`}
-        data-no-instant
-        onClick={e => this.toggleTag(e, tag)}
-      >
-        #
-        {tag}
-      </a>
-    ));
+
     const snackBar = archiving ? (
       <div className="snackbar">
         {statusView === STATUS_VIEW_VALID ? 'Archiving' : 'Unarchiving'}
@@ -274,6 +264,7 @@ min read・
     ) : (
       ''
     );
+
     let loadMoreButton = '';
     if (showLoadMoreButton) {
       loadMoreButton = (
@@ -284,12 +275,17 @@ min read・
         </div>
       );
     }
+
     return (
       <div className="home readinglist-home">
         <div className="side-bar">
           <div className="widget readinglist-filters">
             <input onKeyUp={this.handleTyping} placeHolder="search your list" />
-            <div className="readinglist-tags">{allTags}</div>
+            <ItemListTags
+              availableTags={availableTags}
+              selectedTags={selectedTags}
+              onClick={this.toggleTag}
+            />
             <div className="readinglist-view-toggle">
               <a
                 href="/readinglist/archive"

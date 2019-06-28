@@ -3,6 +3,8 @@ import { PropTypes } from 'preact-compat';
 import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
+import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+
 export class History extends Component {
   constructor(props) {
     super(props);
@@ -152,24 +154,6 @@ min read・
     ));
   }
 
-  renderTags() {
-    const { availableTags, selectedTags } = this.state;
-
-    return availableTags.map(tag => (
-      <a
-        className={`history-tag ${
-          selectedTags.indexOf(tag) > -1 ? 'selected' : ''
-        }`}
-        href={`/t/${tag}`}
-        data-no-instant
-        onClick={e => this.toggleTag(e, tag)}
-      >
-        #
-        {tag}
-      </a>
-    ));
-  }
-
   renderNextPageButton() {
     const { showLoadMoreButton } = this.state;
 
@@ -186,10 +170,9 @@ min read・
   }
 
   render() {
-    const { itemsLoaded, totalCount } = this.state;
+    const { itemsLoaded, totalCount, availableTags, selectedTags } = this.state;
 
     const allItems = this.renderItems();
-    const allTags = this.renderTags();
     const nextPageButton = this.renderNextPageButton();
 
     return (
@@ -197,7 +180,11 @@ min read・
         <div className="side-bar">
           <div className="widget history-filters">
             <input onKeyUp={this.handleTyping} placeHolder="search your list" />
-            <div className="history-tags">{allTags}</div>
+            <ItemListTags
+              availableTags={availableTags}
+              selectedTags={selectedTags}
+              onClick={this.toggleTag}
+            />
           </div>
         </div>
         <div

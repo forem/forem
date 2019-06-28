@@ -37,11 +37,11 @@
       @include themeable(color, theme-color, $black);
     }
 
-    .history-tags {
+    .tags {
       padding-bottom: 25px;
     }
 
-    .history-tag {
+    .tag {
       padding: 5px 0px;
       position: relative;
       padding-left: 5px;
@@ -217,14 +217,14 @@
       .history-filters {
         height: 85px;
         min-height: 85px;
-        .history-tags {
+        .tags {
           height: 40px;
           overflow: hidden;
           width: 100%;
           overflow-x: scroll;
           overflow-y: hidden;
           white-space: nowrap;
-          .history-tag {
+          .tag {
             display: inline-block;
             padding: 1px 6px;
             border-radius: 3px;

@@ -15,10 +15,10 @@ exports[`<History /> renders properly 1`] = `
         placeHolder="search your list"
       />
       <div
-        class="history-tags"
+        class="tags"
       >
         <a
-          class="history-tag "
+          class="tag "
           data-no-instant={true}
           href="/t/discuss"
           onClick={[Function]}

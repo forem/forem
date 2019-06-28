@@ -1,7 +1,7 @@
 @import 'variables';
 @import 'mixins';
 .reading-list-container {
-  @media screen and ( min-width: 950px ){
+  @media screen and (min-width: 950px) {
     margin-top: -25px;
   }
   a {
@@ -16,24 +16,36 @@
       width: 100%;
       border: 0px;
       padding: 5px;
-      @include themeable(border, theme-container-border, 1px solid $light-medium-gray);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $light-medium-gray
+      );
       border-radius: 3px;
       font-size: 1em;
       box-sizing: border-box;
       margin-bottom: 4px;
-      @include themeable(background, theme-container-accent-background, lighten($light-gray, 2%));
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($light-gray, 2%)
+      );
       @include themeable(color, theme-color, $black);
     }
-    .readinglist-tags {
+    .tags {
       padding-bottom: 25px;
     }
-    .readinglist-tag {
+    .tag {
       padding: 5px 0px;
       position: relative;
       padding-left: 5px;
       @include themeable(color, theme-color, $black);
       &:hover {
-        @include themeable(background, theme-container-background-hover, $light-gray);
+        @include themeable(
+          background,
+          theme-container-background-hover,
+          $light-gray
+        );
       }
       &.selected {
         background: $purple;
@@ -51,7 +63,7 @@
     margin: 10px auto;
     margin-left: 10px;
     float: left;
-    @media screen and ( min-width: 950px ){
+    @media screen and (min-width: 950px) {
       width: calc(100% - 332px);
       margin-left: 20px;
       margin-top: 0px;
@@ -59,25 +71,33 @@
   }
   .readinglist-results {
     @include themeable(background, theme-container-background, white);
-    @include themeable(border, theme-container-border, 1px solid $light-medium-gray);
+    @include themeable(
+      border,
+      theme-container-border,
+      1px solid $light-medium-gray
+    );
     border-radius: 3px;
     min-height: 350px;
     display: none;
     text-align: left;
     font-size: 14px;
-    @media screen and ( min-width: 950px ){
+    @media screen and (min-width: 950px) {
       font-size: 17px;
     }
-  
+
     &.readinglist-results--loaded {
       display: block;
     }
     .readinglist-results-header {
-      @include themeable(background, theme-container-accent-background, darken($light-gray, 2%));
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        darken($light-gray, 2%)
+      );
       padding: 17px;
       font-size: 1.8em;
       font-weight: bold;
-  }
+    }
     .readinglist-item-wrapper {
       position: relative;
       .readinglist-archive-butt {
@@ -97,10 +117,14 @@
       @include themeable(color, theme-color, $black);
       font-size: 0.8em;
       padding: 17px 17px 25px;
-      @include themeable(border-bottom, theme-container-border, 1px solid $light-medium-gray);
+      @include themeable(
+        border-bottom,
+        theme-container-border,
+        1px solid $light-medium-gray
+      );
       .readinglist-item-title {
         font-weight: bold;
-        font-size:1.7em;
+        font-size: 1.7em;
         margin-bottom: 10px;
       }
       .readinglist-item-details {
@@ -126,9 +150,13 @@
             border-radius: 3px;
           }
         }
-      } 
+      }
       &:hover {
-        @include themeable(background, theme-container-background-hover, $light-gray);
+        @include themeable(
+          background,
+          theme-container-background-hover,
+          $light-gray
+        );
       }
     }
     .readinglist-empty {
@@ -141,7 +169,7 @@
         margin: 0px 8px;
         color: white;
         display: inline-block;
-        span[role="img"] {
+        span[role='img'] {
           margin-left: 8px;
         }
       }
@@ -161,11 +189,7 @@
       text-align: center;
       button {
         background: transparent;
-        @include themeable(
-          border,
-          theme-border,
-          1px solid $light-medium-gray
-        );
+        @include themeable(border, theme-border, 1px solid $light-medium-gray);
         font-size: 17px;
         padding: 14px 5px;
         margin: 40px auto 70px;
@@ -178,7 +202,7 @@
   }
 }
 
-@media screen and ( max-width: 949px ){
+@media screen and (max-width: 949px) {
   .readinglist-home {
     .side-bar {
       display: block;
@@ -190,14 +214,14 @@
       .readinglist-filters {
         height: 85px;
         min-height: 85px;
-        .readinglist-tags {
+        .tags {
           height: 40px;
           overflow: hidden;
           width: 100%;
           overflow-x: scroll;
           overflow-y: hidden;
           white-space: nowrap;
-          .readinglist-tag {
+          .tag {
             display: inline-block;
             padding: 1px 6px;
             border-radius: 3px;
