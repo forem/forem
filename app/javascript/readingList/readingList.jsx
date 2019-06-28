@@ -54,8 +54,8 @@ export class ReadingList extends Component {
           totalCount: content.nbHits,
           index,
           itemsLoaded: true,
+          showLoadMoreButton: content.hits.length === hitsPerPage,
         });
-        this.shouldShowLoadMoreButton();
       });
   }
 
@@ -74,7 +74,7 @@ export class ReadingList extends Component {
     } else {
       newTags.splice(newTags.indexOf(tag), 1);
     }
-    this.setState({ selectedTags: newTags });
+    this.setState({ selectedTags: newTags, page: 0, items: [] });
     this.listSearch(query, newTags, statusView);
   };
 
@@ -82,12 +82,12 @@ export class ReadingList extends Component {
     e.preventDefault();
     const { statusView, query, selectedTags } = this.state;
     if (statusView === STATUS_VIEW_VALID) {
-      this.setState({ statusView: STATUS_VIEW_ARCHIVED });
+      this.setState({ statusView: STATUS_VIEW_ARCHIVED, page: 0, items: [] });
       this.listSearch(query, selectedTags, STATUS_VIEW_ARCHIVED);
       window.history.replaceState(null, null, '/readinglist/archive');
     } else {
-      this.setState({ statusView: 'valid' });
-      this.listSearch(query, selectedTags, 'valid');
+      this.setState({ statusView: STATUS_VIEW_VALID, page: 0, items: [] });
+      this.listSearch(query, selectedTags, STATUS_VIEW_VALID);
       window.history.replaceState(null, null, '/readinglist');
     }
   };
@@ -117,51 +117,27 @@ export class ReadingList extends Component {
     }, 1800);
   };
 
-  shouldShowLoadMoreButton = () => {
-    const { totalCount, items } = this.state;
-    const totalCountLoaded = items.length;
-    this.setState({ showLoadMoreButton: true });
-    if (totalCountLoaded >= totalCount) {
-      this.setState({ showLoadMoreButton: false });
-    }
-  };
-
-  loadNextReadingList = () => {
+  loadNextPage = () => {
     const { statusView, query, selectedTags, page } = this.state;
     const isLoadMore = true;
     this.setState({ page: page + 1 });
     this.listSearch(query, selectedTags, statusView, isLoadMore);
   };
 
-  listSearch(query, tags, statusView, isLoadMore = false) {
-    const t = this;
-    if (!isLoadMore) {
-      this.setState({ page: 0 });
-    }
-    const { index, page, items } = this.state;
-    const filters = { page, hitsPerPage: 64, filters: `status:${statusView}` };
+  listSearch(query, tags, statusView) {
+    const { index, hitsPerPage, page, items } = this.state;
+    const filters = { page, hitsPerPage, filters: `status:${statusView}` };
     if (tags.length > 0) {
       filters.tagFilters = tags;
     }
     index.search(query, filters).then(content => {
-      if (!isLoadMore) {
-        t.setState({
-          items: content.hits,
-          totalCount: content.nbHits,
-          query,
-        });
-      } else {
-        t.setState({
-          items: [...items, ...content.hits],
-          totalCount: content.nbHits,
-          query,
-        });
-      }
-      this.shouldShowLoadMoreButton();
-      t.setState({
-        items: content.hits,
-        totalCount: content.nbHits,
+      const allItems = [...items, ...content.hits];
+
+      this.setState({
         query,
+        items: allItems,
+        totalCount: content.nbHits,
+        showLoadMoreButton: content.hits.length === hitsPerPage,
       });
     });
   }
@@ -269,7 +245,7 @@ min read・
     if (showLoadMoreButton) {
       loadMoreButton = (
         <div className="classifieds-load-more-button">
-          <button onClick={e => this.loadNextReadingList(e)} type="button">
+          <button onClick={e => this.loadNextPage(e)} type="button">
             Load More Reading List
           </button>
         </div>
