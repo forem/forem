@@ -18,7 +18,7 @@
 <% end %>
 
 <div class="home">
-  <div class="reading-list-container" id="reading-list" data-algolia="<%= @secured_algolia_key %>" data-view="<%= @view %>">
+  <div class="reading-list-container" id="reading-list" data-algolia-key="<%= @secured_algolia_key %>" data-view="<%= @view %>">
   </div>
 </div>
 <%= javascript_pack_tag "readingList", defer: true %>

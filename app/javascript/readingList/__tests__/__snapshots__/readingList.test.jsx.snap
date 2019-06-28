@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ReadingList /> renders properly 1`] = `
+<div
+  class="home readinglist-home"
+>
+  <div
+    class="side-bar"
+  >
+    <div
+      class="widget readinglist-filters"
+    >
+      <input
+        onKeyUp={[Function]}
+        placeHolder="search your list"
+      />
+      <div
+        class="readinglist-tags"
+      >
+        <a
+          class="readinglist-tag "
+          data-no-instant={true}
+          href="/t/discuss"
+          onClick={[Function]}
+        >
+          #discuss
+        </a>
+      </div>
+      <div
+        class="readinglist-view-toggle"
+      >
+        <a
+          data-no-instant={true}
+          href="/readinglist/archive"
+          onClick={[Function]}
+        >
+          View Archive
+        </a>
+      </div>
+    </div>
+  </div>
+  <div
+    class="readinglist-result-container"
+  >
+    <div
+      class="readinglist-results "
+    >
+      <div
+        class="readinglist-results-header"
+      >
+        Reading List (0)
+      </div>
+      <div />
+    </div>
+    <div
+      class="loadmore-wrapper"
+    />
+  </div>
+</div>
+`;

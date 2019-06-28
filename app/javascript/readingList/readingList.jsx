@@ -1,27 +1,36 @@
 import { h, Component } from 'preact';
+import { PropTypes } from 'preact-compat';
+import setupAlgoliaIndex from '../src/utils/algolia';
+
+const STATUS_VIEW_VALID = 'valid';
+const STATUS_VIEW_ARCHIVED = 'archived';
 
 export class ReadingList extends Component {
-  state = {
-    readingListItems: [],
-    query: '',
-    index: '',
-    page: 0,
-    totalReadingList: 0,
-    availableTags: [],
-    selectedTags: [],
-    itemsLoaded: false,
-    archiving: false,
-    statusView: document.getElementById('reading-list').dataset.view,
-    showLoadMoreButton: false,
-  };
+  constructor(props) {
+    super(props);
+
+    const { availableTags, statusView } = this.props;
+    this.state = {
+      readingListItems: [],
+      query: '',
+      index: '',
+      page: 0,
+      totalReadingList: 0,
+      availableTags,
+      selectedTags: [],
+      itemsLoaded: false,
+      archiving: false,
+      statusView,
+      showLoadMoreButton: false,
+    };
+  }
 
   componentDidMount() {
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.getElementById('reading-list').dataset.algolia;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    const index = client.initIndex(`SecuredReactions_${env}`);
+    const index = setupAlgoliaIndex({
+      containerId: 'reading-list',
+      indexName: 'SecuredReactions',
+    });
+
     const t = this;
     index
       .search('', {
@@ -38,12 +47,6 @@ export class ReadingList extends Component {
         });
         this.shouldShowLoadMoreButton();
       });
-    const waitingOnUser = setInterval(() => {
-      if (window.currentUser) {
-        t.setState({ availableTags: window.currentUser.followed_tag_names });
-        clearInterval(waitingOnUser);
-      }
-    }, 1);
   }
 
   handleTyping = e => {
@@ -68,9 +71,9 @@ export class ReadingList extends Component {
   toggleStatusView = e => {
     e.preventDefault();
     const { statusView, query, selectedTags } = this.state;
-    if (statusView === 'valid') {
-      this.setState({ statusView: 'archived' });
-      this.listSearch(query, selectedTags, 'archived');
+    if (statusView === STATUS_VIEW_VALID) {
+      this.setState({ statusView: STATUS_VIEW_ARCHIVED });
+      this.listSearch(query, selectedTags, STATUS_VIEW_ARCHIVED);
       window.history.replaceState(null, null, '/readinglist/archive');
     } else {
       this.setState({ statusView: 'valid' });
@@ -257,7 +260,7 @@ min read・
     ));
     const snackBar = archiving ? (
       <div className="snackbar">
-        {statusView === 'valid' ? 'Archiving' : 'Unarchiving'}
+        {statusView === STATUS_VIEW_VALID ? 'Archiving' : 'Unarchiving'}
         (async)
       </div>
     ) : (
@@ -285,7 +288,9 @@ min read・
                 onClick={e => this.toggleStatusView(e)}
                 data-no-instant
               >
-                {statusView === 'valid' ? 'View Archive' : 'View Reading List'}
+                {statusView === STATUS_VIEW_VALID
+                  ? 'View Archive'
+                  : 'View Reading List'}
               </a>
             </div>
           </div>
@@ -309,3 +314,12 @@ min read・
     );
   }
 }
+
+ReadingList.defaultProps = {
+  statusView: STATUS_VIEW_VALID,
+};
+
+ReadingList.propTypes = {
+  availableTags: PropTypes.arrayOf(PropTypes.string).isRequired,
+  statusView: PropTypes.oneOf([STATUS_VIEW_VALID, STATUS_VIEW_ARCHIVED]),
+};
