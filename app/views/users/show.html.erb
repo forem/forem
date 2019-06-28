@@ -43,7 +43,7 @@
           </span>
         </h1>
         <div class="profile-description" itemprop="description">
-          <%= @user.summary_html.present? ? @user.summary_html.html_safe : "404 bio not found" %>
+          <%= @user.summary_html.present? ? @user.summary_html.html_safe : @user.summary || "404 bio not found" %>
         </div>
         <style>
           .profile-details .social .icon-img path {

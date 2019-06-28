@@ -1057,6 +1057,7 @@ ActiveRecord::Schema.define(version: 2019_07_23_094834) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

@@ -58,7 +58,7 @@ export class ListingDashboard extends Component {
         ),
       );
     };
-    
+
     const sortListings = (event) => {
       const sortedListings = listings.sort((a,b) => (a[event.target.value] > b[event.target.value]) ? -1 : 1)
       this.setState({listings: sortedListings});
@@ -69,7 +69,7 @@ export class ListingDashboard extends Component {
       <span
         onClick={(event) => {this.setState( {filter:event.target.textContent} )}}
         className={`rounded-btn ${filter === f ? 'active' : ''}`}
-        role="button" 
+        role="button"
         tabIndex="0">
         {f}
       </span>
@@ -91,7 +91,7 @@ export class ListingDashboard extends Component {
       <span
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
-        role="button" 
+        role="button"
         tabIndex="0"
       >
         {org.name}
@@ -131,7 +131,7 @@ export class ListingDashboard extends Component {
           className={`rounded-btn ${
             selectedListings === 'user' ? 'active' : ''
           }`}
-          role="button" 
+          role="button"
           tabIndex="0"
         >
           Personal

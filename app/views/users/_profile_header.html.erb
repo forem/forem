@@ -24,7 +24,7 @@
         </span>
       </h1>
       <p class="profile-description" itemprop="description">
-        <% if @user.has_attribute?(:summary_html) %>
+        <% if @user.has_attribute?(:summary_html) && @user.summary_html.present? %>
           <%= @user.summary_html.present? ? @user.summary_html.html_safe : "404 bio not found" %>
         <% else %>
           <%= @user.summary.presence || "404 bio not found" %>

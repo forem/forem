@@ -653,6 +653,21 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#summary_html" do
+    it "contains value with markdown if summary present and markdown used" do
+      user.update(summary: "**Hello**")
+      expect(user.summary_html.present?).to be true
+      expect(user.summary_html.include?("<strong")).to be(true)
+    end
+
+    it "contains no value if no value in summary or summary is not blank" do
+      user.update(summary: nil)
+      expect(user.summary_html.present?).to be false
+      user.update(summary: " ")
+      expect(user.summary_html.present?).to be false
+    end
+  end
+
   describe "when agolia auto-indexing/removal is triggered" do
     it "process background auto-indexing when user is saved" do
       expect { user.save }.to have_enqueued_job.with(user, "index!").on_queue("algoliasearch")
