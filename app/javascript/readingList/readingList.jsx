@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { PropTypes } from 'preact-compat';
+import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
 const STATUS_VIEW_VALID = 'valid';
@@ -9,19 +10,29 @@ export class ReadingList extends Component {
   constructor(props) {
     super(props);
 
+    this.handleTyping = debounce(this.handleTyping.bind(this), 300, {
+      leading: true,
+    });
+
     const { availableTags, statusView } = this.props;
     this.state = {
-      readingListItems: [],
       query: '',
-      index: '',
+      index: null,
+
       page: 0,
-      totalReadingList: 0,
+      hitsPerPage: 100,
+      totalCount: 0,
+
+      items: [],
+      itemsLoaded: false,
+
       availableTags,
       selectedTags: [],
-      itemsLoaded: false,
+
+      showLoadMoreButton: false,
+
       archiving: false,
       statusView,
-      showLoadMoreButton: false,
     };
   }
 
@@ -31,17 +42,14 @@ export class ReadingList extends Component {
       indexName: 'SecuredReactions',
     });
 
-    const t = this;
+    // get default result set from Algolia
+    const { hitsPerPage, statusView } = this.state;
     index
-      .search('', {
-        page: t.state.page,
-        hitsPerPage: 64,
-        filters: `status:${t.state.statusView}`,
-      })
+      .search('', { hitsPerPage, filters: `status:${statusView}` })
       .then(content => {
-        t.setState({
-          totalReadingList: content.nbHits,
-          readingListItems: content.hits,
+        this.setState({
+          items: content.hits,
+          totalCount: content.nbHits,
           index,
           itemsLoaded: true,
         });
@@ -84,7 +92,7 @@ export class ReadingList extends Component {
 
   archive = (e, item) => {
     e.preventDefault();
-    const { statusView, readingListItems, totalReadingList } = this.state;
+    const { statusView, items, totalCount } = this.state;
     const t = this;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
@@ -95,12 +103,12 @@ export class ReadingList extends Component {
       body: JSON.stringify({ current_status: statusView }),
       credentials: 'same-origin',
     });
-    const newItems = readingListItems;
+    const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
     t.setState({
       archiving: true,
-      readingListItems: newItems,
-      totalReadingList: totalReadingList - 1,
+      items: newItems,
+      totalCount: totalCount - 1,
     });
     setTimeout(() => {
       t.setState({ archiving: false });
@@ -108,10 +116,10 @@ export class ReadingList extends Component {
   };
 
   shouldShowLoadMoreButton = () => {
-    const { totalReadingList, readingListItems } = this.state;
-    const totalReadingListLoaded = readingListItems.length;
+    const { totalCount, items } = this.state;
+    const totalCountLoaded = items.length;
     this.setState({ showLoadMoreButton: true });
-    if (totalReadingListLoaded >= totalReadingList) {
+    if (totalCountLoaded >= totalCount) {
       this.setState({ showLoadMoreButton: false });
     }
   };
@@ -128,7 +136,7 @@ export class ReadingList extends Component {
     if (!isLoadMore) {
       this.setState({ page: 0 });
     }
-    const { index, page, readingListItems } = this.state;
+    const { index, page, items } = this.state;
     const filters = { page, hitsPerPage: 64, filters: `status:${statusView}` };
     if (tags.length > 0) {
       filters.tagFilters = tags;
@@ -136,21 +144,21 @@ export class ReadingList extends Component {
     index.search(query, filters).then(content => {
       if (!isLoadMore) {
         t.setState({
-          readingListItems: content.hits,
-          totalReadingList: content.nbHits,
+          items: content.hits,
+          totalCount: content.nbHits,
           query,
         });
       } else {
         t.setState({
-          readingListItems: [...readingListItems, ...content.hits],
-          totalReadingList: content.nbHits,
+          items: [...items, ...content.hits],
+          totalCount: content.nbHits,
           query,
         });
       }
       this.shouldShowLoadMoreButton();
       t.setState({
-        readingListItems: content.hits,
-        totalReadingList: content.nbHits,
+        items: content.hits,
+        totalCount: content.nbHits,
         query,
       });
     });
@@ -162,13 +170,13 @@ export class ReadingList extends Component {
       availableTags,
       itemsLoaded,
       query,
-      readingListItems,
+      items,
       selectedTags,
       statusView,
       showLoadMoreButton,
-      totalReadingList,
+      totalCount,
     } = this.state;
-    let allItems = readingListItems.map(item => (
+    let allItems = items.map(item => (
       <div className="readinglist-item-wrapper">
         <a className="readinglist-item" href={item.searchable_reactable_path}>
           <div className="readinglist-item-title">
@@ -210,7 +218,7 @@ min read・
         </button>
       </div>
     ));
-    if (readingListItems.length === 0 && itemsLoaded) {
+    if (items.length === 0 && itemsLoaded) {
       if (statusView === 'valid') {
         allItems = (
           <div className="readinglist-empty">
@@ -302,7 +310,7 @@ min read・
             }`}
           >
             <div className="readinglist-results-header">
-              {statusView === 'valid' ? 'Reading List' : 'Archive'}
+              {statusView === STATUS_VIEW_VALID ? 'Reading List' : 'Archive'}
               {` (${totalReadingList > 0 ? totalReadingList : 'empty'})`}
             </div>
             <div>{allItems}</div>

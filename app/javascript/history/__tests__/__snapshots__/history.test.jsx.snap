@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<History /> renders properly 1`] = `
+<div
+  class="home history-home"
+>
+  <div
+    class="side-bar"
+  >
+    <div
+      class="widget history-filters"
+    >
+      <input
+        onKeyUp={[Function]}
+        placeHolder="search your list"
+      />
+      <div
+        class="history-tags"
+      >
+        <a
+          class="history-tag "
+          data-no-instant={true}
+          href="/t/discuss"
+          onClick={[Function]}
+        >
+          #discuss
+        </a>
+      </div>
+    </div>
+  </div>
+  <div
+    class="history-results "
+  >
+    <div
+      class="history-results-header"
+    >
+      History (0)
+    </div>
+    <div />
+  </div>
+</div>
+`;

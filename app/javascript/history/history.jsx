@@ -7,23 +7,27 @@ export class History extends Component {
   constructor(props) {
     super(props);
 
-    const { availableTags } = this.props;
-    this.state = {
-      query: '',
-      items: [],
-      totalCount: 0,
-      index: null,
-      itemsLoaded: false,
-      hitsPerPage: 100,
-      availableTags,
-      selectedTags: [],
-      page: 0,
-      showNextPageButton: false,
-    };
-
     this.handleTyping = debounce(this.handleTyping.bind(this), 300, {
       leading: true,
     });
+
+    const { availableTags } = this.props;
+    this.state = {
+      query: '',
+      index: null,
+
+      page: 0,
+      hitsPerPage: 100,
+      totalCount: 0,
+
+      items: [],
+      itemsLoaded: false,
+
+      availableTags,
+      selectedTags: [],
+
+      showLoadMoreButton: false,
+    };
   }
 
   componentDidMount() {
@@ -40,7 +44,7 @@ export class History extends Component {
         totalCount: content.nbHits,
         index,
         itemsLoaded: true,
-        showNextPageButton: content.hits.length === hitsPerPage,
+        showLoadMoreButton: content.hits.length === hitsPerPage,
       });
     });
   }
@@ -89,7 +93,7 @@ export class History extends Component {
         query,
         items: allItems,
         totalCount: content.nbHits,
-        showNextPageButton: content.hits.length === hitsPerPage,
+        showLoadMoreButton: content.hits.length === hitsPerPage,
       });
     });
   }
@@ -167,9 +171,9 @@ min read・
   }
 
   renderNextPageButton() {
-    const { showNextPageButton } = this.state;
+    const { showLoadMoreButton } = this.state;
 
-    if (showNextPageButton) {
+    if (showLoadMoreButton) {
       return (
         <div className="history-results-load-more">
           <button onClick={e => this.loadNextPage(e)} type="button">
