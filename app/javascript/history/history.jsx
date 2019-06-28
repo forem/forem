@@ -3,6 +3,7 @@ import { PropTypes } from 'preact-compat';
 import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
+import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
 
 export class History extends Component {
@@ -154,26 +155,16 @@ min read・
     ));
   }
 
-  renderNextPageButton() {
-    const { showLoadMoreButton } = this.state;
-
-    if (showLoadMoreButton) {
-      return (
-        <div className="load-more-wrapper">
-          <button onClick={e => this.loadNextPage(e)} type="button">
-            Load More
-          </button>
-        </div>
-      );
-    }
-    return '';
-  }
-
   render() {
-    const { itemsLoaded, totalCount, availableTags, selectedTags } = this.state;
+    const {
+      itemsLoaded,
+      totalCount,
+      availableTags,
+      selectedTags,
+      showLoadMoreButton,
+    } = this.state;
 
     const allItems = this.renderItems();
-    const loadMoreButton = this.renderNextPageButton();
 
     return (
       <div className="home history-home">
@@ -199,7 +190,10 @@ min read・
             </div>
             <div>{allItems}</div>
           </div>
-          {loadMoreButton}
+          <ItemListLoadMoreButton
+            show={showLoadMoreButton}
+            onClick={this.loadNextPage}
+          />
         </div>
       </div>
     );

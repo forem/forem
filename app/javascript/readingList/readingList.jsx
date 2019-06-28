@@ -3,6 +3,7 @@ import { PropTypes } from 'preact-compat';
 import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
+import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
 
 const STATUS_VIEW_VALID = 'valid';
@@ -241,17 +242,6 @@ min read・
       ''
     );
 
-    let loadMoreButton = '';
-    if (showLoadMoreButton) {
-      loadMoreButton = (
-        <div className="load-more-wrapper">
-          <button onClick={e => this.loadNextPage(e)} type="button">
-            Load More
-          </button>
-        </div>
-      );
-    }
-
     return (
       <div className="home readinglist-home">
         <div className="side-bar">
@@ -287,7 +277,10 @@ min read・
             </div>
             <div>{allItems}</div>
           </div>
-          {loadMoreButton}
+          <ItemListLoadMoreButton
+            show={showLoadMoreButton}
+            onClick={this.loadNextPage}
+          />
         </div>
         {snackBar}
       </div>
