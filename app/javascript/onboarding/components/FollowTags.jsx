@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
@@ -21,19 +22,17 @@ class FollowTags extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({ allTags: data });
-      })
-      .catch(error => {
-        console.log(error);
       });
   }
 
   handleClick(tag) {
-    if (!this.state.selectedTags.includes(tag)) {
-      this.setState(state => ({
-        selectedTags: [...state.selectedTags, tag],
+    let { selectedTags } = this.state;
+    if (!selectedTags.includes(tag)) {
+      this.setState(prevState => ({
+        selectedTags: [...prevState.selectedTags, tag],
       }));
     } else {
-      const selectedTags = [...this.state.selectedTags];
+      selectedTags = [...selectedTags];
       const indexToRemove = selectedTags.indexOf(tag);
       selectedTags.splice(indexToRemove, 1);
       this.setState({
@@ -44,47 +43,61 @@ class FollowTags extends Component {
 
   handleComplete() {
     const csrfToken = getContentOfToken('csrf-token');
-    this.state.selectedTags.forEach(tag => {
-      fetch('/follows', {
-        method: 'POST',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          followable_type: 'Tag',
-          followable_id: tag.id,
-          verb: 'follow',
+    const { selectedTags } = this.state;
+
+    Promise.all(
+      selectedTags.map(tag =>
+        fetch('/follows', {
+          method: 'POST',
+          headers: {
+            'X-CSRF-Token': csrfToken,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            followable_type: 'Tag',
+            followable_id: tag.id,
+            verb: 'follow',
+          }),
+          credentials: 'same-origin',
         }),
-        credentials: 'same-origin',
-      }).catch(error => {
-        console.log(error);
-      });
+      ),
+    ).then(_ => {
+      const { next } = this.props;
+      next();
     });
-    this.props.next();
   }
 
   render() {
+    const { prev } = this.props;
+    const { selectedTags, allTags } = this.state;
     return (
       <div>
         <h2>Follow some tags!</h2>
-        {this.state.allTags.map(tag => (
-          <button
-            onClick={() => this.handleClick(tag)}
-            style={{
-              backgroundColor: tag.bg_color_hex,
-              color: tag.text_color_hex,
-            }}
-            className="tag"
-          >
-            #
-            {tag.name}
-          </button>
-        ))}
-        <Navigation prev={this.props.prev} next={this.handleComplete} />
+        <div className="scroll">
+          {allTags.map(tag => (
+            <button
+              type="button"
+              onClick={() => this.handleClick(tag)}
+              style={{
+                backgroundColor: tag.bg_color_hex,
+                color: tag.text_color_hex,
+                opacity: selectedTags.includes(tag) ? 0.7 : 1,
+              }}
+              className="tag"
+            >
+              #{tag.name}
+            </button>
+          ))}
+        </div>
+        <Navigation prev={prev} next={this.handleComplete} />
       </div>
     );
   }
 }
+
+FollowTags.propTypes = {
+  prev: PropTypes.func.isRequired,
+  next: PropTypes.string.isRequired,
+};
 
 export default FollowTags;

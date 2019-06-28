@@ -21,22 +21,6 @@ class EmailTermsConditionsForm extends Component {
     };
   }
 
-  checkRequirements() {
-    if (!this.state.checked_code_of_conduct) {
-      this.setState({
-        message: 'You must agree to our Code of Conduct before continuing!',
-      });
-      return;
-    } if (!this.state.checked_terms_and_conditions) {
-      this.setState({
-        message:
-          'You must agree to our Terms and Conditions before continuing!',
-      });
-      return;
-    }
-    return true;
-  }
-
   onSubmit() {
     if (!this.checkRequirements()) return;
     const csrfToken = getContentOfToken('csrf-token');
@@ -51,12 +35,34 @@ class EmailTermsConditionsForm extends Component {
       credentials: 'same-origin',
     }).then(response => {
       if (response.ok) {
-        this.props.next();
+        const { next } = this.props;
+        next();
       }
     });
   }
 
-  handleChange() {
+  checkRequirements() {
+    const {
+      checked_code_of_conduct,
+      checked_terms_and_conditions,
+    } = this.state;
+    if (!checked_code_of_conduct) {
+      this.setState({
+        message: 'You must agree to our Code of Conduct before continuing!',
+      });
+      return;
+    }
+    if (!checked_terms_and_conditions) {
+      this.setState({
+        message:
+          'You must agree to our Terms and Conditions before continuing!',
+      });
+      return;
+    }
+    return true;
+  }
+
+  handleChange(event) {
     const { name } = event.target;
     this.setState(currentState => ({
       [name]: !currentState[name],
@@ -64,15 +70,18 @@ class EmailTermsConditionsForm extends Component {
   }
 
   render() {
+    const { message } = this.state;
+    const { prev } = this.props;
     return (
       <div className="checkbox-slide">
         <h2>Some things to check off!</h2>
-        {this.state.message && <span className="warning-message">{this.state.message}</span>}
+        {message && <span className="warning-message">{message}</span>}
         <form>
           <label htmlFor="checked_code_of_conduct">
             <input
               type="checkbox"
               name="checked_code_of_conduct"
+              id="checked_code_of_conduct"
               onChange={this.handleChange}
             />
             You agree to uphold our
@@ -82,6 +91,7 @@ class EmailTermsConditionsForm extends Component {
           <label htmlFor="checked_terms_and_conditions">
             <input
               type="checkbox"
+              id="checked_terms_and_conditions"
               name="checked_terms_and_conditions"
               onChange={this.handleChange}
             />
@@ -111,7 +121,7 @@ class EmailTermsConditionsForm extends Component {
             from your tags?
           </label>
         </form>
-        <Navigation prev={this.props.prev} next={this.onSubmit} />
+        <Navigation prev={prev} next={this.onSubmit} />
       </div>
     );
   }

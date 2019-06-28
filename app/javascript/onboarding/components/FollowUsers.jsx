@@ -1,4 +1,5 @@
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
@@ -26,17 +27,16 @@ class FollowUsers extends Component {
     })
       .then(response => response.json())
       .then(data => {
-        this.setState({ users: data, checkedUsers: data });
-        console.log(data)
-      })
-      .catch(error => {
-        console.log(error);
+        this.setState({ users: data });
       });
   }
 
   handleComplete() {
     const csrfToken = getContentOfToken('csrf-token');
-    this.state.selectedUsers.forEach(user => {
+    const { selectedUsers } = this.state;
+    const { next } = this.props;
+
+    selectedUsers.forEach(user => {
       fetch('/follows', {
         method: 'POST',
         headers: {
@@ -49,21 +49,22 @@ class FollowUsers extends Component {
           verb: 'follow',
         }),
         credentials: 'same-origin',
-      }).catch(error => {
-        console.log(error);
       });
     });
-    this.props.next();
+
+    next();
   }
 
   handleClick(user) {
-    if (!this.state.selectedUsers.includes(user)) {
-      this.setState(state => ({
-        selectedTags: [...state.selectedUsers, user],
+    let { selectedUsers } = this.state;
+
+    if (!selectedUsers.includes(user)) {
+      this.setState(prevState => ({
+        selectedUsers: [...prevState.selectedUsers, user],
       }));
     } else {
-      const selectedUsers = [...this.state.selectedUsers];
-      const indexToRemove = selectedTags.indexOf(user);
+      selectedUsers = [...selectedUsers];
+      const indexToRemove = selectedUsers.indexOf(user);
       selectedUsers.splice(indexToRemove, 1);
       this.setState({
         selectedUsers,
@@ -72,16 +73,37 @@ class FollowUsers extends Component {
   }
 
   render() {
+    const { users, selectedUsers } = this.state;
+    const { prev } = this.props;
     return (
       <div>
         <h2>Follow some users!</h2>
-        {this.state.users.map(user => (
-          <button onClick={() => this.handleClick(user)}>{user.name}</button>
-        ))}
-        <Navigation prev={this.props.prev} next={this.handleComplete} />
+        <div className="scroll">
+          {users.map(user => (
+            <button
+              type="button"
+              style={{
+                backgroundColor: selectedUsers.includes(user)
+                  ? '#ddd'
+                  : 'white',
+              }}
+              onClick={() => this.handleClick(user)}
+              className="user"
+            >
+              <img src={user.profile_image_url} alt="" />
+              {user.name}
+            </button>
+          ))}
+        </div>
+        <Navigation prev={prev} next={this.handleComplete} />
       </div>
     );
   }
 }
+
+FollowUsers.propTypes = {
+  prev: PropTypes.func.isRequired,
+  next: PropTypes.string.isRequired,
+};
 
 export default FollowUsers;

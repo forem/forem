@@ -12,44 +12,46 @@ class BioForm extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      summary: '', // eslint-disable-line no-unused-state
+      summary: '',
     };
   }
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
-
+    const { summary } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: this.state }),
+      body: JSON.stringify({ user: { summary } }),
       credentials: 'same-origin',
     }).then(response => {
       if (response.ok) {
-        this.props.next();
+        const { next } = this.props;
+        next();
       }
     });
   }
 
   handleChange(e) {
-    const { name, value } = e.target;
+    const { value } = e.target;
 
     this.setState({
-      [name]: value,
+      summary: value,
     });
   }
 
   render() {
+    const { prev } = this.props;
     return (
       <div className="about">
         <h1>About You!</h1>
         <form>
           <label htmlFor="summary">
             Tell the community about yourself! Write a quick bio about what you
-            do, what you're interested in, or anything else!
+            do, what you&apos;re interested in, or anything else!
             <textarea
               name="summary"
               onChange={this.handleChange}
@@ -57,7 +59,7 @@ class BioForm extends Component {
             />
           </label>
         </form>
-        <Navigation prev={this.props.prev} next={this.onSubmit} />
+        <Navigation prev={prev} next={this.onSubmit} />
       </div>
     );
   }

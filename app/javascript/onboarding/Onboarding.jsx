@@ -7,7 +7,7 @@ import EmailListTermsConditionsForm from './components/EmailListTermsConditionsF
 import ClosingSlide from './components/ClosingSlide';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
-import BioForm from './components/BioForm'
+import BioForm from './components/BioForm';
 
 export default class Onboarding extends Component {
   constructor(props) {
@@ -36,7 +36,8 @@ export default class Onboarding extends Component {
   }
 
   nextSlide() {
-    const nextSlide = this.state.currentSlide + 1;
+    const { currentSlide } = this.state;
+    const nextSlide = currentSlide + 1;
     if (nextSlide < this.slides.length) {
       this.setState({
         currentSlide: nextSlide,
@@ -45,7 +46,8 @@ export default class Onboarding extends Component {
   }
 
   prevSlide() {
-    const prevSlide = this.state.currentSlide - 1;
+    const { currentSlide } = this.state;
+    const prevSlide = currentSlide - 1;
     if (prevSlide >= 0) {
       this.setState({
         currentSlide: prevSlide,
@@ -54,11 +56,10 @@ export default class Onboarding extends Component {
   }
 
   render() {
+    const { currentSlide } = this.state;
     return (
       <div className="onboarding-body">
-        <div className="onboarding-content">
-          {this.slides[this.state.currentSlide]}
-        </div>
+        <div className="onboarding-content">{this.slides[currentSlide]}</div>
       </div>
     );
   }

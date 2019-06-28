@@ -108,6 +108,9 @@
       border-radius: 3px;
     }
 
+    textarea {
+      height: 120px;
+    }
   }
 
   .checkbox-slide {
@@ -139,6 +142,14 @@
     color: white;
   }
 
+  .scroll {
+    max-height: 200px;
+    overflow: scroll;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
   .tag {
     padding: 4px 10px 6px;
     font-size: 16px;
@@ -154,6 +165,30 @@
       'Segoe UI Symbol';
   }
 
+  .user {
+    height: 50px;
+    width: 200px;
+    display: flex;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol';
+    font-size: 16px;
+    padding: 5px;
+    border-radius: 2px;
+    align-items: center;
+
+    img {
+      height: 30px;
+      border-radius: 50%;
+      padding: 5px;
+      margin-right: 5px;
+    }
+  }
+  .user:active {
+    background-color: red;
+  }
   .badge-image {
     position: absolute;
   }

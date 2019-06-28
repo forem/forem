@@ -127,8 +127,6 @@ class Onboarding extends Component {
     const formData = getFormDataAndAppend([
       { key: 'user', value: JSON.stringify(profileInfo) },
     ]);
-
-    debugger;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
