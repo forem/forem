@@ -310,10 +310,6 @@ class User < ApplicationRecord
     has_role? :warned
   end
 
-  def banished?
-    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
-  end
-
   def admin?
     has_role?(:super_admin)
   end

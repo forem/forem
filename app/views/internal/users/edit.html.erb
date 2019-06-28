@@ -50,9 +50,7 @@
 </div>
 <div class="row">
   <h2>Banish User</h2>
-  <% if @user.banished? %>
-    <p>User has been banished.</p>
-  <% elsif @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago %>
+  <% if @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago %>
     <p>
       <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
     </p>
