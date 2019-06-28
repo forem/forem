@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+
 .reading-list-container {
   @media screen and (min-width: 950px) {
     margin-top: -25px;
@@ -58,7 +59,8 @@
       font-size: 0.8em;
     }
   }
-  .readinglist-result-container {
+
+  .items-container {
     width: calc(100% - 20px);
     margin: 10px auto;
     margin-left: 10px;
@@ -69,6 +71,7 @@
       margin-top: 0px;
     }
   }
+
   .readinglist-results {
     @include themeable(background, theme-container-background, white);
     @include themeable(
@@ -88,6 +91,7 @@
     &.readinglist-results--loaded {
       display: block;
     }
+
     .readinglist-results-header {
       @include themeable(
         background,
@@ -98,6 +102,7 @@
       font-size: 1.8em;
       font-weight: bold;
     }
+
     .readinglist-item-wrapper {
       position: relative;
       .readinglist-archive-butt {
@@ -113,6 +118,7 @@
         @include themeable(border-color, theme-secondary-color, $medium-gray);
       }
     }
+
     .readinglist-item {
       @include themeable(color, theme-color, $black);
       font-size: 0.8em;
@@ -122,11 +128,13 @@
         theme-container-border,
         1px solid $light-medium-gray
       );
+
       .readinglist-item-title {
         font-weight: bold;
         font-size: 1.7em;
         margin-bottom: 10px;
       }
+
       .readinglist-item-details {
         a {
           display: inline-block;
@@ -159,6 +167,7 @@
         );
       }
     }
+
     .readinglist-empty {
       text-align: center;
       padding: 100px 0px;
@@ -175,29 +184,20 @@
       }
     }
   }
-  .loadmore-wrapper {
-    // width: calc(100% - 20px);
-    // margin: 10px auto;
-    // margin-left: 10px;
-    // float: left;
-    // @media screen and ( min-width: 950px ){
-    //   width: calc(100% - 332px);
-    //   margin-left: 20px;
-    //   margin-top: 0px;
-    // }
-    .classifieds-load-more-button {
-      text-align: center;
-      button {
-        background: transparent;
-        @include themeable(border, theme-border, 1px solid $light-medium-gray);
-        font-size: 17px;
-        padding: 14px 5px;
-        margin: 40px auto 70px;
-        width: 320px;
-        max-width: 80%;
-        border-radius: 100px;
-        font-weight: bold;
-      }
+
+  .load-more-wrapper {
+    text-align: center;
+
+    button {
+      background: transparent;
+      @include themeable(border, theme-border, 1px solid $light-medium-gray);
+      font-size: 17px;
+      padding: 14px 5px;
+      margin: 40px auto 70px;
+      width: 320px;
+      max-width: 80%;
+      border-radius: 100px;
+      font-weight: bold;
     }
   }
 }

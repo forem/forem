@@ -22,7 +22,7 @@ export class ReadingList extends Component {
       index: null,
 
       page: 0,
-      hitsPerPage: 100,
+      hitsPerPage: 1,
       totalCount: 0,
 
       items: [],
@@ -244,9 +244,9 @@ min read・
     let loadMoreButton = '';
     if (showLoadMoreButton) {
       loadMoreButton = (
-        <div className="classifieds-load-more-button">
+        <div className="load-more-wrapper">
           <button onClick={e => this.loadNextPage(e)} type="button">
-            Load More Reading List
+            Load More
           </button>
         </div>
       );
@@ -275,7 +275,7 @@ min read・
             </div>
           </div>
         </div>
-        <div className="readinglist-result-container">
+        <div className="items-container">
           <div
             className={`readinglist-results ${
               itemsLoaded ? 'readinglist-results--loaded' : ''
@@ -287,7 +287,7 @@ min read・
             </div>
             <div>{allItems}</div>
           </div>
-          <div className="loadmore-wrapper">{loadMoreButton}</div>
+          {loadMoreButton}
         </div>
         {snackBar}
       </div>

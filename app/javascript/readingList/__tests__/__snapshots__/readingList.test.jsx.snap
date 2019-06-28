@@ -40,7 +40,7 @@ exports[`<ReadingList /> renders properly 1`] = `
     </div>
   </div>
   <div
-    class="readinglist-result-container"
+    class="items-container"
   >
     <div
       class="readinglist-results "

@@ -19,7 +19,7 @@ export class History extends Component {
       index: null,
 
       page: 0,
-      hitsPerPage: 100,
+      hitsPerPage: 1,
       totalCount: 0,
 
       items: [],
@@ -159,7 +159,7 @@ min read・
 
     if (showLoadMoreButton) {
       return (
-        <div className="history-results-load-more">
+        <div className="load-more-wrapper">
           <button onClick={e => this.loadNextPage(e)} type="button">
             Load More
           </button>
@@ -173,7 +173,7 @@ min read・
     const { itemsLoaded, totalCount, availableTags, selectedTags } = this.state;
 
     const allItems = this.renderItems();
-    const nextPageButton = this.renderNextPageButton();
+    const loadMoreButton = this.renderNextPageButton();
 
     return (
       <div className="home history-home">
@@ -187,18 +187,19 @@ min read・
             />
           </div>
         </div>
-        <div
-          className={`history-results ${
-            itemsLoaded ? 'history-results--loaded' : ''
-          }`}
-        >
-          <div className="history-results-header">
-            History 
-            {' '}
-            {`(${totalCount})`}
+        <div className="items-container">
+          <div
+            className={`history-results ${
+              itemsLoaded ? 'history-results--loaded' : ''
+            }`}
+          >
+            <div className="history-results-header">
+              History
+              {` (${totalCount})`}
+            </div>
+            <div>{allItems}</div>
           </div>
-          <div>{allItems}</div>
-          {nextPageButton}
+          {loadMoreButton}
         </div>
       </div>
     );
