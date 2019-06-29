@@ -8,6 +8,7 @@ import {
   onSearchBoxType,
   performInitialSearch,
   search,
+  toggleTag,
 } from '../searchableItemList/searchableItemList';
 import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
@@ -27,6 +28,7 @@ export class History extends Component {
     this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
+    this.toggleTag = toggleTag.bind(this);
   }
 
   componentDidMount() {
@@ -40,21 +42,6 @@ export class History extends Component {
       },
     });
   }
-
-  toggleTag = (event, tag) => {
-    event.preventDefault();
-
-    const { query, selectedTags } = this.state;
-    const newTags = selectedTags;
-    if (newTags.indexOf(tag) === -1) {
-      newTags.push(tag);
-    } else {
-      newTags.splice(newTags.indexOf(tag), 1);
-    }
-
-    this.setState({ selectedTags: newTags, page: 0, items: [] });
-    this.search(query, { tags: newTags });
-  };
 
   renderEmptyItems() {
     const { selectedTags, query } = this.state;

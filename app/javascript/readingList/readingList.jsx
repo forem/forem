@@ -8,6 +8,7 @@ import {
   onSearchBoxType,
   performInitialSearch,
   search,
+  toggleTag,
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from '../src/components/ItemList/ItemListItem';
 import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
@@ -33,6 +34,7 @@ export class ReadingList extends Component {
     this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
+    this.toggleTag = toggleTag.bind(this);
   }
 
   componentDidMount() {
@@ -47,20 +49,6 @@ export class ReadingList extends Component {
       },
     });
   }
-
-  toggleTag = (e, tag) => {
-    e.preventDefault();
-
-    const { query, selectedTags, statusView } = this.state;
-    const newTags = selectedTags;
-    if (newTags.indexOf(tag) === -1) {
-      newTags.push(tag);
-    } else {
-      newTags.splice(newTags.indexOf(tag), 1);
-    }
-    this.setState({ selectedTags: newTags, page: 0, items: [] });
-    this.search(query, { tags: newTags, statusView });
-  };
 
   toggleStatusView = e => {
     e.preventDefault();

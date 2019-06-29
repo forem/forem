@@ -8,7 +8,7 @@ export function defaultState(options) {
     index: null,
 
     page: 0,
-    hitsPerPage: 1,
+    hitsPerPage: 100,
     totalCount: 0,
 
     items: [],
@@ -31,6 +31,21 @@ export function onSearchBoxType(event) {
 
   component.setState({ page: 0, items: [] });
   component.search(query, { tags: selectedTags, statusView });
+}
+
+export function toggleTag(event, tag) {
+  event.preventDefault();
+
+  const component = this;
+  const { query, selectedTags, statusView } = component.state;
+  const newTags = selectedTags;
+  if (newTags.indexOf(tag) === -1) {
+    newTags.push(tag);
+  } else {
+    newTags.splice(newTags.indexOf(tag), 1);
+  }
+  component.setState({ selectedTags: newTags, page: 0, items: [] });
+  component.search(query, { tags: newTags, statusView });
 }
 
 // Perform the initial search
