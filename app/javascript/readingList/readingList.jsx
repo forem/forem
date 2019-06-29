@@ -4,8 +4,9 @@ import debounce from 'lodash.debounce';
 
 import {
   defaultState,
+  loadNextPage,
+  onSearchBoxType,
   performInitialSearch,
-  onSearchBoxTyping,
   search,
 } from '../searchableItemList/searchableItemList';
 import { ItemListItem } from '../src/components/ItemList/ItemListItem';
@@ -26,9 +27,10 @@ export class ReadingList extends Component {
     this.state = defaultState({ availableTags, archiving: false, statusView });
 
     // bind and initialize all shared functions
-    this.onSearchBoxTyping = debounce(onSearchBoxTyping.bind(this), 300, {
+    this.onSearchBoxType = debounce(onSearchBoxType.bind(this), 300, {
       leading: true,
     });
+    this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
   }
@@ -104,12 +106,6 @@ export class ReadingList extends Component {
     setTimeout(() => {
       t.setState({ archiving: false });
     }, 1000);
-  };
-
-  loadNextPage = () => {
-    const { query, selectedTags, page, statusView } = this.state;
-    this.setState({ page: page + 1 });
-    this.search(query, { tags: selectedTags, statusView });
   };
 
   statusViewValid() {
@@ -193,7 +189,7 @@ export class ReadingList extends Component {
         <div className="side-bar">
           <div className="widget filters">
             <input
-              onKeyUp={this.onSearchBoxTyping}
+              onKeyUp={this.onSearchBoxType}
               placeHolder="search your list"
             />
 

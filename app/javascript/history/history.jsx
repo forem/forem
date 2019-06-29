@@ -4,9 +4,10 @@ import debounce from 'lodash.debounce';
 
 import {
   defaultState,
+  loadNextPage,
+  onSearchBoxType,
   performInitialSearch,
   search,
-  onSearchBoxTyping,
 } from '../searchableItemList/searchableItemList';
 import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
@@ -20,9 +21,10 @@ export class History extends Component {
     this.state = defaultState({ availableTags });
 
     // bind and initialize all shared functions
-    this.onSearchBoxTyping = debounce(onSearchBoxTyping.bind(this), 300, {
+    this.onSearchBoxType = debounce(onSearchBoxType.bind(this), 300, {
       leading: true,
     });
+    this.loadNextPage = loadNextPage.bind(this);
     this.performInitialSearch = performInitialSearch.bind(this);
     this.search = search.bind(this);
   }
@@ -52,12 +54,6 @@ export class History extends Component {
 
     this.setState({ selectedTags: newTags, page: 0, items: [] });
     this.search(query, { tags: newTags });
-  };
-
-  loadNextPage = () => {
-    const { query, selectedTags, page } = this.state;
-    this.setState({ page: page + 1 });
-    this.search(query, { selectedTags });
   };
 
   renderEmptyItems() {

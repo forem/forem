@@ -8,7 +8,7 @@ export function defaultState(options) {
     index: null,
 
     page: 0,
-    hitsPerPage: 100,
+    hitsPerPage: 1,
     totalCount: 0,
 
     items: [],
@@ -23,7 +23,7 @@ export function defaultState(options) {
 }
 
 // Starts the search when the user types in the search box
-export function onSearchBoxTyping(event) {
+export function onSearchBoxType(event) {
   const component = this;
 
   const query = event.target.value;
@@ -33,7 +33,7 @@ export function onSearchBoxTyping(event) {
   component.search(query, { tags: selectedTags, statusView });
 }
 
-// Perform the initial search (using Algolia)
+// Perform the initial search
 export function performInitialSearch({
   containerId,
   indexName,
@@ -50,12 +50,14 @@ export function performInitialSearch({
       totalCount: result.nbHits,
       index, // set the index in the component state, to be retrieved later
       itemsLoaded: true,
-      showLoadMoreButton: result.hits.length === hitsPerPage,
+      // show the button if the number of total results is greater
+      // than the number of results for the current page
+      showLoadMoreButton: result.nbHits > hitsPerPage,
     });
   });
 }
 
-// Main search function (using Algolia)
+// Main search function
 export function search(query, { tags, statusView }) {
   const component = this;
 
@@ -78,7 +80,18 @@ export function search(query, { tags, statusView }) {
       query,
       items: allItems,
       totalCount: result.nbHits,
-      showLoadMoreButton: result.hits.length === hitsPerPage,
+      // show the button if the number of items is lower than the number
+      // of available results
+      showLoadMoreButton: allItems.length < result.nbHits,
     });
   });
+}
+
+// Retrieve the results in the next page
+export function loadNextPage() {
+  const component = this;
+
+  const { query, selectedTags, page, statusView } = component.state;
+  component.setState({ page: page + 1 });
+  component.search(query, { tags: selectedTags, statusView });
 }
