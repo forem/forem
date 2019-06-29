@@ -24,7 +24,10 @@
   <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
-      <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
+      <span>
+        Published: <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
+        <%= ", Edited: #{article.readable_edit_date}" if article.edited? %>
+      </span>
       <% article.cached_tag_list_array.each do |tag| %>
         <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
       <% end %>
