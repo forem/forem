@@ -1,8 +1,13 @@
 import { h, Component } from 'preact';
 import { PropTypes } from 'preact-compat';
 import debounce from 'lodash.debounce';
-import setupAlgoliaIndex from '../src/utils/algolia';
 
+import {
+  defaultState,
+  performInitialSearch,
+  search,
+  onSearchBoxTyping,
+} from '../searchableItemList/searchableItemList';
 import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
 import { ItemListItem } from '../src/components/ItemList/ItemListItem';
@@ -11,55 +16,28 @@ export class History extends Component {
   constructor(props) {
     super(props);
 
-    this.handleTyping = debounce(this.handleTyping.bind(this), 300, {
+    const { availableTags } = this.props;
+    this.state = defaultState({ availableTags });
+
+    // bind and initialize all shared functions
+    this.onSearchBoxTyping = debounce(onSearchBoxTyping.bind(this), 300, {
       leading: true,
     });
-
-    const { availableTags } = this.props;
-    this.state = {
-      query: '',
-      index: null,
-
-      page: 0,
-      hitsPerPage: 100,
-      totalCount: 0,
-
-      items: [],
-      itemsLoaded: false,
-
-      availableTags,
-      selectedTags: [],
-
-      showLoadMoreButton: false,
-    };
+    this.performInitialSearch = performInitialSearch.bind(this);
+    this.search = search.bind(this);
   }
 
   componentDidMount() {
-    const index = setupAlgoliaIndex({
+    const { hitsPerPage } = this.state;
+
+    this.performInitialSearch({
       containerId: 'history',
       indexName: 'UserHistory',
-    });
-
-    // get default result set from Algolia
-    const { hitsPerPage } = this.state;
-    index.search('', { hitsPerPage }).then(content => {
-      this.setState({
-        items: content.hits,
-        totalCount: content.nbHits,
-        index,
-        itemsLoaded: true,
-        showLoadMoreButton: content.hits.length === hitsPerPage,
-      });
+      searchOptions: {
+        hitsPerPage,
+      },
     });
   }
-
-  handleTyping = event => {
-    const query = event.target.value;
-    const { selectedTags } = this.state;
-
-    this.setState({ page: 0, items: [] });
-    this.search(query, { tags: selectedTags });
-  };
 
   toggleTag = (event, tag) => {
     event.preventDefault();
@@ -81,26 +59,6 @@ export class History extends Component {
     this.setState({ page: page + 1 });
     this.search(query, { selectedTags });
   };
-
-  search(query, { tags }) {
-    const { index, hitsPerPage, page, items } = this.state;
-    const filters = { hitsPerPage, page };
-
-    if (tags && tags.length > 0) {
-      filters.tagFilters = tags;
-    }
-
-    index.search(query, filters).then(content => {
-      const allItems = [...items, ...content.hits];
-
-      this.setState({
-        query,
-        items: allItems,
-        totalCount: content.nbHits,
-        showLoadMoreButton: content.hits.length === hitsPerPage,
-      });
-    });
-  }
 
   renderEmptyItems() {
     const { selectedTags, query } = this.state;
@@ -135,7 +93,7 @@ export class History extends Component {
         <div className="side-bar">
           <div className="widget filters">
             <input
-              onKeyUp={this.handleTyping}
+              onKeyUp={this.onSearchBoxTyping}
               placeHolder="search your history"
             />
 

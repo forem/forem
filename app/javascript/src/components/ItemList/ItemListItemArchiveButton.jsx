@@ -9,7 +9,7 @@ import { h } from 'preact';
 import { PropTypes } from 'preact-compat';
 
 export const ItemListItemArchiveButton = ({ text, onClick }) => {
-  const onKeyPress = e => {
+  const onKeyUp = e => {
     if (e.key === 'Enter') {
       onClick(e);
     }
@@ -20,7 +20,7 @@ export const ItemListItemArchiveButton = ({ text, onClick }) => {
     <a
       className="archive-button"
       onClick={onClick}
-      onKeyPress={onKeyPress}
+      onKeyUp={onKeyUp}
       tabIndex="0"
       aria-label="archive item"
       role="button"
