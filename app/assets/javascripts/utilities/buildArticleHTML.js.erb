@@ -97,8 +97,9 @@ function buildArticleHTML(article) {
       }
     }
     var readingTimeHTML = '';
-    readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ (article.reading_time < 1 ? '1 min' : article.reading_time + ' min') +' read</a>'
-    
+    if (article.class_name === "Article") {
+      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ (article.reading_time < 1 ? '1 min' : article.reading_time + ' min') +' read</a>'
+    }
     var videoHTML = '';
     if (article.cloudinary_video_url) {
       videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+article.video_duration_in_minutes+'</div></a>'
