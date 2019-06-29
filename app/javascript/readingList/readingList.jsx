@@ -153,22 +153,65 @@ export class ReadingList extends Component {
     });
   }
 
+  statusViewValid() {
+    const { statusView } = this.state;
+    return statusView === STATUS_VIEW_VALID;
+  }
+
+  renderEmptyItems() {
+    const { selectedTags, query } = this.state;
+
+    if (this.statusViewValid()) {
+      return (
+        <div className="items-empty">
+          <h1>
+            {selectedTags.length === 0 && query.length === 0
+              ? 'Your Reading List is Lonely'
+              : 'Nothing with this filter 🤔'}
+          </h1>
+
+          <h3>
+            Hit the
+            <span className="highlight">SAVE</span>
+            or
+            <span className="highlight">
+              Bookmark
+              <span role="img" aria-label="Bookmark">
+                🔖
+              </span>
+            </span>
+            to start your Collection
+          </h3>
+        </div>
+      );
+    }
+
+    return (
+      <div className="items-empty">
+        <h1>
+          {selectedTags.length === 0 && query.length === 0
+            ? 'Your Archive List is Lonely'
+            : 'Nothing with this filter 🤔'}
+        </h1>
+      </div>
+    );
+  }
+
   render() {
     const {
-      archiving,
-      availableTags,
-      itemsLoaded,
-      query,
       items,
-      selectedTags,
-      statusView,
-      showLoadMoreButton,
+      itemsLoaded,
       totalCount,
+      availableTags,
+      selectedTags,
+      showLoadMoreButton,
+      archiving,
     } = this.state;
 
-    const archiveButtonLabel =
-      statusView === STATUS_VIEW_VALID ? 'archive' : 'unarchive';
-    let allItems = items.map(item => {
+    const isStatusViewValid = this.statusViewValid();
+
+    const archiveButtonLabel = isStatusViewValid ? 'archive' : 'unarchive';
+    const itemsToRender = items.map(item => {
       return (
         <ItemListItem item={item}>
           <ItemListItemArchiveButton
@@ -179,46 +222,9 @@ export class ReadingList extends Component {
       );
     });
 
-    if (items.length === 0 && itemsLoaded) {
-      if (statusView === 'valid') {
-        allItems = (
-          <div className="items-empty">
-            <h1>
-              {selectedTags.length === 0 && query.length === 0
-                ? 'Your Reading List is Lonely'
-                : 'Nothing with this filter 🤔'}
-            </h1>
-
-            <h3>
-              Hit the
-              <span className="highlight">SAVE</span>
-              or
-              <span className="highlight">
-                Bookmark
-                <span role="img" aria-label="Bookmark">
-                  🔖
-                </span>
-              </span>
-              to start your Collection
-            </h3>
-          </div>
-        );
-      } else {
-        allItems = (
-          <div className="items-empty">
-            <h1>
-              {selectedTags.length === 0 && query.length === 0
-                ? 'Your Archive List is Lonely'
-                : 'Nothing with this filter 🤔'}
-            </h1>
-          </div>
-        );
-      }
-    }
-
     const snackBar = archiving ? (
       <div className="snackbar">
-        {statusView === STATUS_VIEW_VALID ? 'Archiving...' : 'Unarchiving...'}
+        {isStatusViewValid ? 'Archiving...' : 'Unarchiving...'}
       </div>
     ) : (
       ''
@@ -241,9 +247,7 @@ export class ReadingList extends Component {
                 onClick={e => this.toggleStatusView(e)}
                 data-no-instant
               >
-                {statusView === STATUS_VIEW_VALID
-                  ? 'View Archive'
-                  : 'View Reading List'}
+                {isStatusViewValid ? 'View Archive' : 'View Reading List'}
               </a>
             </div>
           </div>
@@ -252,10 +256,12 @@ export class ReadingList extends Component {
         <div className="items-container">
           <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
             <div className="results-header">
-              {statusView === STATUS_VIEW_VALID ? 'Reading List' : 'Archive'}
+              {isStatusViewValid ? 'Reading List' : 'Archive'}
               {` (${totalCount > 0 ? totalCount : 'empty'})`}
             </div>
-            <div>{allItems}</div>
+            <div>
+              {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
+            </div>
           </div>
 
           <ItemListLoadMoreButton

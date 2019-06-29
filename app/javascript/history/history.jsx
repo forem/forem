@@ -102,7 +102,7 @@ export class History extends Component {
     });
   }
 
-  renderNoItems() {
+  renderEmptyItems() {
     const { selectedTags, query } = this.state;
 
     return (
@@ -153,7 +153,7 @@ export class History extends Component {
               History
               {` (${totalCount > 0 ? totalCount : 'empty'})`}
             </div>
-            {items.length > 0 ? itemsToRender : this.renderNoItems()}
+            {items.length > 0 ? itemsToRender : this.renderEmptyItems()}
           </div>
 
           <ItemListLoadMoreButton
