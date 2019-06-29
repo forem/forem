@@ -50,21 +50,30 @@ export class ReadingList extends Component {
     });
   }
 
-  toggleStatusView = e => {
-    e.preventDefault();
-    const { statusView, query, selectedTags } = this.state;
-    if (statusView === STATUS_VIEW_VALID) {
-      this.setState({ statusView: STATUS_VIEW_ARCHIVED, page: 0, items: [] });
-      this.search(query, {
-        tags: selectedTags,
-        statusView: STATUS_VIEW_ARCHIVED,
-      });
-      window.history.replaceState(null, null, READING_LIST_ARCHIVE_PATH);
-    } else {
-      this.setState({ statusView: STATUS_VIEW_VALID, page: 0, items: [] });
-      this.search(query, { tags: selectedTags, statusView: STATUS_VIEW_VALID });
-      window.history.replaceState(null, null, READING_LIST_PATH);
-    }
+  toggleStatusView = event => {
+    event.preventDefault();
+
+    const { query, selectedTags } = this.state;
+
+    const isStatusViewValid = this.statusViewValid();
+    const newStatusView = isStatusViewValid
+      ? STATUS_VIEW_ARCHIVED
+      : STATUS_VIEW_VALID;
+    const newPath = isStatusViewValid
+      ? READING_LIST_ARCHIVE_PATH
+      : READING_LIST_PATH;
+
+    // empty items so that changing the view will start from scratch
+    this.setState({ statusView: newStatusView, items: [] });
+
+    this.search(query, {
+      page: 0,
+      tags: selectedTags,
+      statusView: newStatusView,
+    });
+
+    // change path in the address bar
+    window.history.replaceState(null, null, newPath);
   };
 
   toggleArchiveStatus = (event, item) => {

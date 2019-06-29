@@ -73,10 +73,14 @@ export function performInitialSearch({
 }
 
 // Main search function
-export function search(query, { tags, statusView }) {
+export function search(query, { page, tags, statusView }) {
   const component = this;
 
-  const { index, hitsPerPage, page, items } = component.state;
+  // allow the page number to come from the calling function
+  // we check `undefined` because page can be 0
+  const newPage = page === undefined ? component.state.page : page;
+
+  const { index, hitsPerPage, items } = component.state;
 
   const filters = { hitsPerPage, page };
   if (tags && tags.length > 0) {
@@ -93,6 +97,7 @@ export function search(query, { tags, statusView }) {
 
     component.setState({
       query,
+      page: newPage,
       items: allItems,
       totalCount: result.nbHits,
       // show the button if the number of items is lower than the number
