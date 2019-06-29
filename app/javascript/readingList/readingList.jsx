@@ -271,7 +271,7 @@ min read・
           <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
             <div className="results-header">
               {statusView === STATUS_VIEW_VALID ? 'Reading List' : 'Archive'}
-              {` (${totalReadingList > 0 ? totalReadingList : 'empty'})`}
+              {` (${totalCount > 0 ? totalCount : 'empty'})`}
             </div>
             <div>{allItems}</div>
           </div>

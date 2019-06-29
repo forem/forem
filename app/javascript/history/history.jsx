@@ -184,7 +184,7 @@ min read・
           <div className={`results ${itemsLoaded ? 'results--loaded' : ''}`}>
             <div className="results-header">
               History
-              {` (${totalCount})`}
+              {` (${totalCount > 0 ? totalCount : 'empty'})`}
             </div>
             <div>{allItems}</div>
           </div>
