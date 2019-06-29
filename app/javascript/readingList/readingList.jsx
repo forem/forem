@@ -29,7 +29,7 @@ export class ReadingList extends Component {
       index: null,
 
       page: 0,
-      hitsPerPage: 1,
+      hitsPerPage: 100,
       totalCount: 0,
 
       items: [],
@@ -69,7 +69,9 @@ export class ReadingList extends Component {
   handleTyping = e => {
     const query = e.target.value;
     const { selectedTags, statusView } = this.state;
-    this.listSearch(query, selectedTags, statusView);
+
+    this.setState({ page: 0, items: [] });
+    this.search(query, { tags: selectedTags, statusView });
   };
 
   toggleTag = (e, tag) => {
@@ -82,7 +84,7 @@ export class ReadingList extends Component {
       newTags.splice(newTags.indexOf(tag), 1);
     }
     this.setState({ selectedTags: newTags, page: 0, items: [] });
-    this.listSearch(query, newTags, statusView);
+    this.search(query, { tags: newTags, statusView });
   };
 
   toggleStatusView = e => {
@@ -90,11 +92,14 @@ export class ReadingList extends Component {
     const { statusView, query, selectedTags } = this.state;
     if (statusView === STATUS_VIEW_VALID) {
       this.setState({ statusView: STATUS_VIEW_ARCHIVED, page: 0, items: [] });
-      this.listSearch(query, selectedTags, STATUS_VIEW_ARCHIVED);
+      this.search(query, {
+        tags: selectedTags,
+        statusView: STATUS_VIEW_ARCHIVED,
+      });
       window.history.replaceState(null, null, READING_LIST_ARCHIVE_PATH);
     } else {
       this.setState({ statusView: STATUS_VIEW_VALID, page: 0, items: [] });
-      this.listSearch(query, selectedTags, STATUS_VIEW_VALID);
+      this.search(query, { tags: selectedTags, statusView: STATUS_VIEW_VALID });
       window.history.replaceState(null, null, READING_LIST_PATH);
     }
   };
@@ -129,18 +134,19 @@ export class ReadingList extends Component {
   };
 
   loadNextPage = () => {
-    const { statusView, query, selectedTags, page } = this.state;
-    const isLoadMore = true;
+    const { query, selectedTags, page, statusView } = this.state;
     this.setState({ page: page + 1 });
-    this.listSearch(query, selectedTags, statusView, isLoadMore);
+    this.search(query, { tags: selectedTags, statusView });
   };
 
-  listSearch(query, tags, statusView) {
+  search(query, { tags, statusView }) {
     const { index, hitsPerPage, page, items } = this.state;
     const filters = { page, hitsPerPage, filters: `status:${statusView}` };
-    if (tags.length > 0) {
+
+    if (tags && tags.length > 0) {
       filters.tagFilters = tags;
     }
+
     index.search(query, filters).then(content => {
       const allItems = [...items, ...content.hits];
 

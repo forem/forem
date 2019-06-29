@@ -21,7 +21,7 @@ export class History extends Component {
       index: null,
 
       page: 0,
-      hitsPerPage: 1,
+      hitsPerPage: 100,
       totalCount: 0,
 
       items: [],
