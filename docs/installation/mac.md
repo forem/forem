@@ -92,8 +92,7 @@ PG::Error: ERROR:  invalid value for parameter "TimeZone": "UTC"
 **_Solution:_** Restart your Postgres.app, or, if you installed PostgreSQL with Homebrew, restart with:
 
 ```shell
-pg_ctl -D /usr/local/var/postgres stop
-pg_ctl -D /usr/local/var/postgres start
+brew services restart postgresql
 ```
 
 If that doesn't work, reboot your Mac.
