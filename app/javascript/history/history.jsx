@@ -5,6 +5,7 @@ import setupAlgoliaIndex from '../src/utils/algolia';
 
 import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+import { ItemListItem } from '../src/components/ItemList/ItemListItem';
 
 export class History extends Component {
   constructor(props) {
@@ -105,55 +106,21 @@ export class History extends Component {
     const { selectedTags, query } = this.state;
 
     return (
-      <div className="history-empty">
-        <h1>
-          {selectedTags.length === 0 && query.length === 0
-            ? 'Your History is Lonely'
-            : 'Nothing with this filter 🤔'}
-        </h1>
+      <div>
+        <div className="items-empty">
+          <h1>
+            {selectedTags.length === 0 && query.length === 0
+              ? 'Your History is Lonely'
+              : 'Nothing with this filter 🤔'}
+          </h1>
+        </div>
       </div>
     );
   }
 
-  renderItems() {
-    const { items, itemsLoaded } = this.state;
-
-    if (items.length === 0 && itemsLoaded) {
-      return this.renderNoItems();
-    }
-
-    return items.map(item => (
-      <div className="item-wrapper">
-        <a className="item" href={item.article_path}>
-          <div className="item-title">{item.article_title}</div>
-
-          <div className="item-details">
-            <a className="item-user" href={`/${item.article_user.username}`}>
-              <img src={item.article_user.profile_image_90} alt="Profile Pic" />
-              {item.article_user.name}
-・
-              {item.article_reading_time}
-              {' '}
-min read・
-              {`visited on ${item.readable_visited_at}`}
-・
-            </a>
-            <span className="item-tags">
-              {item.article_tags.map(tag => (
-                <a className="item-tag" href={`/t/${tag}`}>
-                  #
-                  {tag}
-                </a>
-              ))}
-            </span>
-          </div>
-        </a>
-      </div>
-    ));
-  }
-
   render() {
     const {
+      items,
       itemsLoaded,
       totalCount,
       availableTags,
@@ -161,7 +128,7 @@ min read・
       showLoadMoreButton,
     } = this.state;
 
-    const allItems = this.renderItems();
+    const itemsToRender = items.map(item => <ItemListItem item={item} />);
 
     return (
       <div className="home item-list">
@@ -186,7 +153,7 @@ min read・
               History
               {` (${totalCount > 0 ? totalCount : 'empty'})`}
             </div>
-            <div>{allItems}</div>
+            {items.length > 0 ? itemsToRender : this.renderNoItems()}
           </div>
 
           <ItemListLoadMoreButton

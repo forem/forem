@@ -1,4 +1,4 @@
-// Sidebar tags for item list page
+// Load more button for item list
 import { h } from 'preact';
 import { PropTypes } from 'preact-compat';
 

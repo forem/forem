@@ -3,6 +3,8 @@ import { PropTypes } from 'preact-compat';
 import debounce from 'lodash.debounce';
 import setupAlgoliaIndex from '../src/utils/algolia';
 
+import { ItemListItem } from '../src/components/ItemList/ItemListItem';
+import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
 import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
 import { ItemListTags } from '../src/components/ItemList/ItemListTags';
 
@@ -18,6 +20,8 @@ export class ReadingList extends Component {
     this.handleTyping = debounce(this.handleTyping.bind(this), 300, {
       leading: true,
     });
+
+    // this.archive = this.archive.bind(this);
 
     const { availableTags, statusView } = this.props;
     this.state = {
@@ -95,10 +99,10 @@ export class ReadingList extends Component {
     }
   };
 
-  archive = (e, item) => {
-    e.preventDefault();
+  toggleArchiveStatus = (event, item) => {
+    event.preventDefault();
+
     const { statusView, items, totalCount } = this.state;
-    const t = this;
     window.fetch(`/reading_list_items/${item.id}`, {
       method: 'PUT',
       headers: {
@@ -108,6 +112,8 @@ export class ReadingList extends Component {
       body: JSON.stringify({ current_status: statusView }),
       credentials: 'same-origin',
     });
+
+    const t = this;
     const newItems = items;
     newItems.splice(newItems.indexOf(item), 1);
     t.setState({
@@ -115,9 +121,11 @@ export class ReadingList extends Component {
       items: newItems,
       totalCount: totalCount - 1,
     });
+
+    // hide the snackbar in a few moments
     setTimeout(() => {
       t.setState({ archiving: false });
-    }, 1500);
+    }, 1000);
   };
 
   loadNextPage = () => {
@@ -158,44 +166,18 @@ export class ReadingList extends Component {
       totalCount,
     } = this.state;
 
-    let allItems = items.map(item => (
-      <div className="item-wrapper">
-        <a className="item" href={item.searchable_reactable_path}>
-          <div className="item-title">{item.searchable_reactable_title}</div>
-          <div className="item-details">
-            <a className="item-user" href={`/${item.reactable_user.username}`}>
-              <img
-                src={item.reactable_user.profile_image_90}
-                alt="Profile Pic"
-              />
-              {item.reactable_user.name}
-・
-              {item.reactable_published_date}
-・
-              {item.reading_time}
-              {' '}
-min read・
-            </a>
-            <span className="item-tags">
-              {item.reactable_tags.map(tag => (
-                <a className="item-tag" href={`/t/${tag}`}>
-                  #
-                  {tag}
-                </a>
-              ))}
-            </span>
-          </div>
-        </a>
-
-        <button
-          className="archive-button"
-          onClick={e => this.archive(e, item)}
-          type="button"
-        >
-          {statusView === 'valid' ? 'archive' : 'unarchive'}
-        </button>
-      </div>
-    ));
+    const archiveButtonLabel =
+      statusView === STATUS_VIEW_VALID ? 'archive' : 'unarchive';
+    let allItems = items.map(item => {
+      return (
+        <ItemListItem item={item}>
+          <ItemListItemArchiveButton
+            text={archiveButtonLabel}
+            onClick={e => this.toggleArchiveStatus(e, item)}
+          />
+        </ItemListItem>
+      );
+    });
 
     if (items.length === 0 && itemsLoaded) {
       if (statusView === 'valid') {
@@ -206,6 +188,7 @@ min read・
                 ? 'Your Reading List is Lonely'
                 : 'Nothing with this filter 🤔'}
             </h1>
+
             <h3>
               Hit the
               <span className="highlight">SAVE</span>
@@ -240,7 +223,6 @@ min read・
     ) : (
       ''
     );
-
     return (
       <div className="home item-list">
         <div className="side-bar">
