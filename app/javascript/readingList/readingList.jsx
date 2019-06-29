@@ -111,9 +111,9 @@ export class ReadingList extends Component {
   }
 
   renderEmptyItems() {
-    const { selectedTags, query } = this.state;
+    const { itemsLoaded, selectedTags, query } = this.state;
 
-    if (this.statusViewValid()) {
+    if (itemsLoaded && this.statusViewValid()) {
       return (
         <div className="items-empty">
           <h1>

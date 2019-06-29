@@ -2,17 +2,16 @@
 
 exports[`<History /> renders properly 1`] = `
 <div
-  class="home history-home"
+  class="home item-list"
 >
   <div
     class="side-bar"
   >
     <div
-      class="widget history-filters"
+      class="widget filters"
     >
       <input
-        onKeyUp={[Function]}
-        placeHolder="search your list"
+        placeHolder="search your history"
       />
       <div
         class="tags"
@@ -29,14 +28,26 @@ exports[`<History /> renders properly 1`] = `
     </div>
   </div>
   <div
-    class="history-results "
+    class="items-container"
   >
     <div
-      class="history-results-header"
+      class="results "
     >
-      History (0)
+      <div
+        class="results-header"
+      >
+        History (empty)
+      </div>
+      <div>
+        <div
+          class="items-empty"
+        >
+          <h1>
+            Your History is Lonely
+          </h1>
+        </div>
+      </div>
     </div>
-    <div />
   </div>
 </div>
 `;

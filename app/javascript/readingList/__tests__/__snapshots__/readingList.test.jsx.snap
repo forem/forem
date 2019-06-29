@@ -2,13 +2,13 @@
 
 exports[`<ReadingList /> renders properly 1`] = `
 <div
-  class="home readinglist-home"
+  class="home item-list"
 >
   <div
     class="side-bar"
   >
     <div
-      class="widget readinglist-filters"
+      class="widget filters"
     >
       <input
         onKeyUp={[Function]}
@@ -27,7 +27,7 @@ exports[`<ReadingList /> renders properly 1`] = `
         </a>
       </div>
       <div
-        class="readinglist-view-toggle"
+        class="status-view-toggle"
       >
         <a
           data-no-instant={true}
@@ -43,18 +43,23 @@ exports[`<ReadingList /> renders properly 1`] = `
     class="items-container"
   >
     <div
-      class="readinglist-results "
+      class="results "
     >
       <div
-        class="readinglist-results-header"
+        class="results-header"
       >
-        Reading List (0)
+        Reading List (empty)
       </div>
-      <div />
+      <div>
+        <div
+          class="items-empty"
+        >
+          <h1>
+            Your Archive List is Lonely
+          </h1>
+        </div>
+      </div>
     </div>
-    <div
-      class="loadmore-wrapper"
-    />
   </div>
 </div>
 `;
