@@ -82,4 +82,22 @@ RSpec.describe "ArticlesUpdate", type: :request do
     }
     expect(article.archived).to eq(false)
   end
+
+  it "creates a notification job if published" do
+    article.update_column(:published, false)
+    assert_enqueued_with(job: Notifications::NotifiableActionJob) do
+      put "/articles/#{article.id}", params: {
+        article: { published: true }
+      }
+    end
+  end
+
+  it "removes all published notifications if unpublished" do
+    user2.follow(user)
+    Notification.send_to_followers_without_delay(article, "Published")
+    put "/articles/#{article.id}", params: {
+      article: { body_markdown: article.body_markdown.gsub("published: true", "published: false") }
+    }
+    expect(article.notifications.size).to eq 0
+  end
 end
