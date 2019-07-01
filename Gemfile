@@ -94,7 +94,7 @@ gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 4.19" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.24" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.25" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
