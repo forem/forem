@@ -263,7 +263,7 @@ RSpec.describe "Internal::Users", type: :request do
     it "add the proper amount of credits to a user" do
       put "/internal/users/#{super_admin.id}", params: {
         user: {
-          add_credits: 5,
+          add_credits: 5
         }
       }
       expect(super_admin.reload.credits_count).to eq 5
@@ -274,7 +274,7 @@ RSpec.describe "Internal::Users", type: :request do
       Credit.add_to(super_admin, 10)
       put "/internal/users/#{super_admin.id}", params: {
         user: {
-          remove_credits: 5,
+          remove_credits: 5
         }
       }
       expect(super_admin.reload.credits_count).to eq 5
