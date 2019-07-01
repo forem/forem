@@ -22,7 +22,7 @@ gem "addressable", "~> 2.6" # A replacement for the URI implementation that is p
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.0" # Email analytics for Rails
 gem "airbrake", "~> 9.2" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
-gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
+gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.6" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
