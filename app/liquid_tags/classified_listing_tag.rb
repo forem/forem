@@ -26,7 +26,6 @@ class ClassifiedListingTag < LiquidTagBase
 
     listing = ClassifiedListing.find_by(hash)
     raise StandardError, "Invalid URL or slug. Listing not found." unless listing
-    raise StandardError, "Listing has expired and must be bumped to display as Liquid tag." if listing.bumped_at < (Time.zone.today - 30)
 
     listing
   end
