@@ -9,6 +9,7 @@ RSpec.describe "Internal::Users", type: :request do
   let(:article2) { create(:article, user: user2) }
   let(:badge) { create(:badge, title: "one-year-club") }
   let(:ghost) { create(:user, username: "ghost", github_username: "Ghost") }
+  let(:organization) { create(:organization) }
 
   before do
     sign_in super_admin
@@ -118,7 +119,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
   end
 
-  context "when managing activty and roles" do
+  context "when managing activity and roles" do
     it "adds comment ban role" do
       patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
       expect(user.roles.first.name).to eq("comment_banned")
@@ -228,6 +229,56 @@ RSpec.describe "Internal::Users", type: :request do
       user.follow(user2)
       banish_user
       expect(user.follows.count).to eq(0)
+    end
+  end
+
+  context "when handling credits" do
+    before do
+      create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
+    end
+
+    it "adds the proper amount of credits for organizations" do
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          add_org_credits: 5,
+          organization_id: organization.id
+        }
+      }
+      expect(organization.reload.credits_count).to eq 5
+      expect(organization.reload.unspent_credits_count).to eq 5
+    end
+
+    it "removes the proper amount of credits for organizations" do
+      Credit.add_to_org(organization, 10)
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          remove_org_credits: 5,
+          organization_id: organization.id
+        }
+      }
+      expect(organization.reload.credits_count).to eq 5
+      expect(organization.reload.unspent_credits_count).to eq 5
+    end
+
+    it "add the proper amount of credits to a user" do
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          add_credits: 5
+        }
+      }
+      expect(super_admin.reload.credits_count).to eq 5
+      expect(super_admin.reload.unspent_credits_count).to eq 5
+    end
+
+    it "removes the proper amount of credits from a user" do
+      Credit.add_to(super_admin, 10)
+      put "/internal/users/#{super_admin.id}", params: {
+        user: {
+          remove_credits: 5
+        }
+      }
+      expect(super_admin.reload.credits_count).to eq 5
+      expect(super_admin.reload.unspent_credits_count).to eq 5
     end
   end
 end

@@ -22,7 +22,7 @@ gem "addressable", "~> 2.6" # A replacement for the URI implementation that is p
 gem "administrate", "~> 0.11" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.0" # Email analytics for Rails
 gem "airbrake", "~> 9.2" # Airbrake is an online tool that provides robust exception tracking in any of your Ruby applications
-gem "algoliasearch-rails", "~> 1.21" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
+gem "algoliasearch-rails", "~> 1.23" # Algolia Search is a hosted search engine capable of delivering real-time results from the first keystroke
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.6" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
@@ -53,6 +53,7 @@ gem "gemoji", "~> 3.0.1" # Character information and metadata for standard and c
 gem "gibbon", "~> 3.2" # API wrapper for MailChimp's API
 gem "google-api-client", "~> 0.30" # Client for accessing Google APIs
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
+gem "htmlentities", "~> 4.3", ">= 4.3.4"
 gem "httparty", "~> 0.16" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.5" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.9" # Create JSON structures via a Builder-style DSL
@@ -77,12 +78,12 @@ gem "recaptcha", "~> 5.0", require: "recaptcha/rails" # Helpers for the reCAPTCH
 gem "redcarpet", "~> 3.4" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "reverse_markdown", "~> 1.1" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.3" # A pure-ruby code highlighter
+gem "rouge", "~> 3.5" # A pure-ruby code highlighter
 gem "rubyzip", "~> 1.2" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sail", "~> 1.5" # Sail is a lightweight Rails engine that brings an admin panel for managing configuration settings on a live Rails app
 gem "sass-rails", "~> 5.0" # Sass adapter for the Rails asset pipeline
-gem "scout_apm", "~> 2.4" # Monitors Ruby apps and reports detailed metrics on performance to Scout
+gem "scout_apm", "~> 2.5" # Monitors Ruby apps and reports detailed metrics on performance to Scout
 gem "serviceworker-rails", "~> 0.5" # Integrates ServiceWorker into the Rails asset pipeline
 gem "sitemap_generator", "~> 6.0" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "skylight", "~> 4.1" # Skylight is a smart profiler for Rails, Sinatra, and other Ruby apps
@@ -93,7 +94,7 @@ gem "storext", "~> 3.0" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 4.19" # Ruby library for the Stripe API
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.24" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.25" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 6.2" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.1" # Uglifier minifies JavaScript files
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
@@ -117,7 +118,7 @@ group :development do
   gem "pry", "~> 0.12" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "web-console", "~> 3.7" # Rails Console on the Browser
-  gem "yard", "~> 0.9.19" # YARD is a documentation generation tool for the Ruby programming language
+  gem "yard", "~> 0.9.20" # YARD is a documentation generation tool for the Ruby programming language
   gem "yard-activerecord", "~> 0.0.16" # YARD extension that handles and interprets methods used when developing applications with ActiveRecord
   gem "yard-activesupport-concern", "~> 0.0.1" # YARD extension that brings support for modules making use of ActiveSupport::Concern
 end
@@ -130,7 +131,7 @@ group :development, :test do
   gem "parallel_tests", "~> 2.29" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.7" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 3.8" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.71", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.72", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.4", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.0", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.33", require: false # Code style checking for RSpec files
