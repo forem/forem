@@ -24,7 +24,9 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
       category: "cfp",
       tag_list: %w[x y z],
       organization_id: nil,
-      bumped_at: Date.today - 40,
+      bumped_at: Time.zone.today - 40,
+      created_at: Time.zone.today - 40,
+      updated_at: Time.zone.today - 40,
     )
   end
   let(:org) { create(:organization) }
@@ -63,7 +65,7 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
           </h3>
           <div class="ltag__listing-body">
             <a href="/listings/#{listing.category}/#{listing.slug}">
-              #{listing.processed_html.html_safe}
+              #{listing.processed_html}
             </a>
           </div>
           <div class="ltag__listing-tags">
@@ -79,23 +81,37 @@ RSpec.describe ClassifiedListingTag, type: :liquid_template do
     HTML
   end
 
+  def render_expired_listing
+    <<~HTML
+      <div class="ltag__listing">
+        <div class="ltag__listing-content">
+          <h3>
+            <a href="/listings">
+              This listing has expired.
+            </a>
+          </h3>
+        </div>
+      </div>
+    HTML
+  end
+
   it "raises an error when invalid" do
     expect { generate_new_liquid("/listings/fakecategory/fakeslug") }.
       to raise_error("Invalid URL or slug. Listing not found.")
   end
 
-  it "raises an error when expired" do
-    expect { generate_new_liquid("#{expired_listing.category}/#{expired_listing.slug}") }.
-      to raise_error("Listing has expired and must be bumped to display as Liquid tag.")
+  it "displays expired message when listing is expired" do
+    liquid = generate_new_liquid("#{expired_listing.category}/#{expired_listing.slug}")
+    expect(liquid.render).to eq(render_expired_listing)
   end
 
   it "renders a proper listing tag from user listing" do
     liquid = generate_new_liquid("#{user_listing.category}/#{user_listing.slug}")
-    expect(liquid.render).to eq(correct_link_html(user_listing).rstrip)
+    expect(liquid.render).to eq(correct_link_html(user_listing))
   end
 
   it "renders a proper listing tag from org listing" do
     liquid = generate_new_liquid("#{org_listing.category}/#{org_listing.slug}")
-    expect(liquid.render).to eq(correct_link_html(org_listing).rstrip)
+    expect(liquid.render).to eq(correct_link_html(org_listing))
   end
 end
