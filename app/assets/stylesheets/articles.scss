@@ -727,7 +727,7 @@
     .article-reading-time {
       position: absolute;
       right: 82px;
-      bottom: 12px;
+      bottom: 20px;
       font-size: 13px;
       padding: 6px 0px;
       font-weight: 600;
@@ -738,6 +738,23 @@
         darken($medium-gray, 5%)
       );
     }
+
+    .article-report {
+      position: absolute;
+      right: 82px;
+      bottom: 4px;
+      font-size: 13px;
+      padding: 6px 0px;
+      font-weight: 600;
+      z-index: 8;
+      text-decoration: underline;
+      @include themeable(
+        color,
+        theme-secondary-color,
+        darken($medium-gray, 5%)
+      );
+    }
+
     .article-engagement-count {
       font-size: 13px;
       font-weight: bold;
