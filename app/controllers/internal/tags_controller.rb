@@ -16,10 +16,6 @@ class Internal::TagsController < Internal::ApplicationController
     @tag = Tag.find(params[:id])
   end
 
-  def edit
-    @tag = Tag.find(params[:id])
-  end
-
   def update
     @tag = Tag.find(params[:id])
     @add_user_id = params[:tag][:tag_moderator_id]

@@ -15,9 +15,19 @@ class Podcast < ApplicationRecord
 
   after_save :bust_cache
 
+  scope :reachable, -> { where(reachable: true) }
+
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url
   alias_attribute :name, :title
+
+  def existing_episode(item)
+    episode = PodcastEpisode.where(media_url: item.enclosure.url).
+      or(PodcastEpisode.where(title: item.title)).
+      or(PodcastEpisode.where(guid: item.guid.to_s)).presence
+    episode ||= PodcastEpisode.where(website_url: item.link).presence if unique_website_url?
+    episode.to_a.first
+  end
 
   private
 

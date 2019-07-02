@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ItemListItemArchiveButton /> renders properly 1`] = `
+<a
+  aria-label="archive item"
+  class="archive-button"
+  onKeyUp={[Function]}
+  role="button"
+  tabIndex="0"
+>
+  archive
+</a>
+`;

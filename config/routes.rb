@@ -44,7 +44,7 @@ Rails.application.routes.draw do
         post "save_status"
       end
     end
-    resources :tags, only: %i[index edit update]
+    resources :tags, only: %i[index update show]
     resources :users, only: %i[index show edit update] do
       member do
         post "banish"
@@ -244,6 +244,7 @@ Rails.application.routes.draw do
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
+  get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
   get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")
