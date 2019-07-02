@@ -75,10 +75,22 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /welcome" do
-    it "has proper headline" do
+    it "redirects to the first welcome thread" do
+      user = create(:user, id: 1)
+      latest_welcome_thread = create(:article, user: user, tags: "welcome")
       get "/welcome"
 
-      expect(response.body).to include("You are being <a")
+      expect(response.body).to redirect_to(latest_welcome_thread.path)
+    end
+  end
+
+  describe "GET /challenge" do
+    it "redirects to the first challenge thread" do
+      user = create(:user, id: 1)
+      latest_challenge_thread = create(:article, user: user, tags: "challenge")
+      get "/challenge"
+
+      expect(response.body).to redirect_to(latest_challenge_thread.path)
     end
   end
 
