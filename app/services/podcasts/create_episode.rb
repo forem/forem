@@ -43,7 +43,7 @@ module Podcasts
     rescue StandardError
       # podcast episode must have a media_url
       episode.media_url = item.enclosure.url
-      episode.podcast.update(status_notice: "This podcast may not be playable in the browser") if episode.podcast.status_notice.empty?
+      episode.podcast.update(status_notice: I18n.t(:unplayable, scope: "podcasts.statuses")) if episode.podcast.status_notice.empty?
     end
   end
 end
