@@ -22,7 +22,14 @@
   <% end %>
   <% if @credits.size > 0 %>
     <center>
-      <a href="/listings/new">Create a Listing</a>
+      <p>
+        <a href="/listings/new">Create a Listing</a>
+      </p>
+      <% if @organizations.present? %>
+        <p>
+          <a href="/partnerships">View Partnership Opportunities</a>
+        </p>
+      <% end %>
     </center>
   <% end %>
 </div>

@@ -579,7 +579,10 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.text "sponsorship_blurb_html"
     t.datetime "sponsorship_expires_at"
     t.integer "sponsorship_featured_number", default: 0
+    t.text "sponsorship_instructions", default: ""
+    t.datetime "sponsorship_instructions_updated_at"
     t.string "sponsorship_level"
+    t.string "sponsorship_status", default: "none"
     t.string "sponsorship_tagline"
     t.string "sponsorship_url"
     t.string "state"
@@ -851,6 +854,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.string "short_summary"
     t.string "social_image"
     t.integer "sponsor_organization_id"
+    t.string "sponsorship_status", default: "none"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
@@ -901,6 +905,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
@@ -1018,6 +1023,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

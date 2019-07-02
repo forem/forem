@@ -41,6 +41,7 @@ class Organization < ApplicationRecord
                                      message: "Integer only. No sign allowed.",
                                      allow_blank: true }
   validates :tech_stack, :story, length: { maximum: 640 }
+  validates :sponsorship_status, inclusion: { in: %w[none pending live] }
   validates :cta_button_url,
             url: { allow_blank: true, no_local: true, schemes: %w[https http] }
   validates :cta_button_text, length: { maximum: 20 }
