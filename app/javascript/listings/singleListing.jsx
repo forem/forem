@@ -34,6 +34,7 @@ export const SingleListing = ({
         ・report abuse
       </a>
     );
+
   const locationText = listing.location ? (
     <a href={`/listings/${listing.location}`}>
 ・
