@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_28_123548) do
+ActiveRecord::Schema.define(version: 2019_07_02_194019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -245,6 +245,7 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "last_buffered"
+    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
