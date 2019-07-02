@@ -13,6 +13,27 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     podcast
   end
 
+  context "when unreachable" do
+    let(:un_feed_url) { "http://podcast.example.com/podcast" }
+    let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
+
+    it "sets reachable and status" do
+      stub_request(:get, "http://podcast.example.com/podcast").to_return(status: 200, body: "blah")
+      described_class.new.get_episodes(unpodcast, 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("rss couldn't be parsed")
+    end
+
+    it "sets reachable" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(Errno::ECONNREFUSED)
+      described_class.new.get_episodes(unpodcast, 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("is not reachable")
+    end
+  end
+
   context "when creating" do
     before do
       stub_request(:head, "https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3").to_return(status: 200)

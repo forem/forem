@@ -17,6 +17,26 @@ RSpec.describe "User visits podcast show page", type: :system do
     expect(find("#comment_commentable_id", visible: false).value).to eq(podcast_episode.id.to_s)
   end
 
+  context "when podcast has a status_notice" do
+    let(:podcast) { create(:podcast, status_notice: "This podcast may not be playable in the browser") }
+    let!(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
+
+    it "displays the status_notice" do
+      visit podcast_episode.path.to_s
+      expect(page).to have_text(podcast.status_notice)
+    end
+  end
+
+  context "when podcast has another status_notice (just in case)" do
+    let(:podcast) { create(:podcast, status_notice: "Random status notice") }
+    let!(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
+
+    it "doesn't display status_notice" do
+      visit podcast_episode.path.to_s
+      expect(page).not_to have_text("Random status notice")
+    end
+  end
+
   context "when there're existing comments" do
     let(:user) { create(:user) }
     let(:comment) { create(:comment, user_id: user.id, commentable: podcast_episode) }

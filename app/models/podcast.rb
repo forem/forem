@@ -15,6 +15,8 @@ class Podcast < ApplicationRecord
 
   after_save :bust_cache
 
+  scope :reachable, -> { where(reachable: true) }
+
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url
   alias_attribute :name, :title
