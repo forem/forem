@@ -36,7 +36,7 @@ export const ListingRow = ({ listing }) => {
       </a>
       <span className="dashboard-listing-date">
         {listingDate} 
-        {' '}
+        {' ・ '}
         {listingLocation}
       </span>
       <span className="dashboard-listing-category">
