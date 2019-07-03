@@ -141,9 +141,8 @@ class ArticlesController < ApplicationController
                      else
                        @article.edited_at
                      end
-
     updated = @article.update(article_params_json.merge(edited_at: edited_at_date))
-    Notification.send_to_followers(@article, "Published") if updated && @article.published && @article.saved_changes["published_at"]&.include?(nil)
+    handle_notifications(updated)
 
     respond_to do |format|
       format.html do
@@ -266,6 +265,15 @@ class ArticlesController < ApplicationController
     end
 
     params.require(:article).permit(allowed_params)
+  end
+
+  def handle_notifications(updated)
+    if updated && @article.published && @article.saved_changes["published"] == [false, true]
+      Notification.send_to_followers(@article, "Published")
+    elsif @article.saved_changes["published"] == [true, false]
+      Notification.remove_all_without_delay(notifiable_id: @article.id, notifiable_type: "Article", action: "Published")
+      Notification.remove_all(notifiable_id: @article.id, notifiable_type: "Article", action: "Reaction")
+    end
   end
 
   def redirect_after_creation
