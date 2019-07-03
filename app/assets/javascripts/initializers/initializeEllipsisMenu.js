@@ -58,9 +58,10 @@ function handleFormSubmit(e) {
   var values = getFormValues(form);
   var data = JSON.stringify(values);
 
-  var xhr = new XMLHttpRequest();
   var formData = new FormData(form);
   var method = formData.get('_method') || 'post';
+
+  var xhr = new XMLHttpRequest();
   xhr.open(method.toUpperCase(), form.action);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.send(data);
