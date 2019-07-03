@@ -29,7 +29,6 @@ function callInitalizers(){
   initializeArticleDate();
   initializeArticleReactions();
   initNotifications();
-  initializeSplitTestTracking();
   initializeStylesheetAppend();
   initializeCommentDate();
   initializeCommentDropdown();
@@ -42,10 +41,6 @@ function callInitalizers(){
   initializePWAFunctionality();
   initializeEllipsisMenu();
   initializeArchivedPostFilter();
-
-  if (!initializeLiveArticle.called){
-    initializeLiveArticle();
-  }
 
   initializeDrawerSliders();
 

@@ -19,7 +19,7 @@ class VideosController < ApplicationController
     authorize :video
     @article = ArticleWithVideoCreationService.new(article_params, current_user).create!
 
-    render action: "js_response"
+    redirect_to @article.path + "/edit"
   end
 
   private

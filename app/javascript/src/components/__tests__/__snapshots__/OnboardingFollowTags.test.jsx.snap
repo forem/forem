@@ -19,7 +19,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     >
       <a
         class="onboarding-tag-link"
-        href="#"
+        href="#0"
         onClick={[Function]}
         style="color:"
       >
@@ -27,7 +27,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
       </a>
       <a
         class="onboarding-tag-link-follow"
-        href="#"
+        href="#0"
         id="onboarding-tag-link-follow-discuss"
         onClick={[Function]}
         style="color:"
@@ -42,7 +42,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     >
       <a
         class="onboarding-tag-link"
-        href="#"
+        href="#0"
         onClick={[Function]}
         style="color:"
       >
@@ -50,7 +50,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
       </a>
       <a
         class="onboarding-tag-link-follow"
-        href="#"
+        href="#0"
         id="onboarding-tag-link-follow-javascript"
         onClick={[Function]}
         style="color:"
@@ -65,7 +65,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
     >
       <a
         class="onboarding-tag-link"
-        href="#"
+        href="#0"
         onClick={[Function]}
         style="color:"
       >
@@ -73,7 +73,7 @@ exports[`<OnboardingFollowTags /> renders properly when given a tag 1`] = `
       </a>
       <a
         class="onboarding-tag-link-follow"
-        href="#"
+        href="#0"
         id="onboarding-tag-link-follow-javascript"
         onClick={[Function]}
         style="color:"

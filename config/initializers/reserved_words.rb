@@ -20,6 +20,7 @@ class ReservedWords
     videos
     video_states
     twilio_tokens
+    twitter
     latest
     contact
     merch
@@ -139,6 +140,7 @@ class ReservedWords
     hack
     started
     push_notification_subscriptions
+    notification_subscriptions
     getting-started
     hackers
     podcast
@@ -189,7 +191,6 @@ class ReservedWords
     yes
     social
     rails
-    angular
     script
     work
     1024

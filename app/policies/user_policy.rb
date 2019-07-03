@@ -15,6 +15,10 @@ class UserPolicy < ApplicationPolicy
     current_user?
   end
 
+  def update_twitch_username?
+    current_user?
+  end
+
   def update_language_settings?
     current_user?
   end
@@ -28,19 +32,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def leave_org?
-    true
-  end
-
-  def add_org_admin?
-    user.org_admin && within_the_same_org?
-  end
-
-  def remove_org_admin?
-    user.org_admin && not_self? && within_the_same_org?
-  end
-
-  def remove_from_org?
-    user.org_admin && not_self? && within_the_same_org?
+    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
   def remove_association?
@@ -96,25 +88,20 @@ class UserPolicy < ApplicationPolicy
        feed_url
        gitlab_url
        inbox_guidelines
+       instagram_url
        linkedin_url
        location
        looking_for_work
        looking_for_work_publicly
        mastodon_url
        medium_url
-       mentee_description
-       mentee_form_updated_at
-       mentor_description
-       mentor_form_updated_at
        mostly_work_with
        name
-       offering_mentorship
        inbox_type
        permit_adjacent_sponsors
        password
        password_confirmation
        profile_image
-       seeking_mentorship
        stackoverflow_url
        summary
        text_color_hex
@@ -126,10 +113,6 @@ class UserPolicy < ApplicationPolicy
   end
 
   private
-
-  def within_the_same_org?
-    user.organization == record.organization
-  end
 
   def not_self?
     user != record

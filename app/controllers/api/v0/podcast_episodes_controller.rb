@@ -19,7 +19,9 @@ module Api
             page(@page).
             per(30)
         else
-          @podcast_episodes = PodcastEpisode.order("published_at desc").page(@page).per(30)
+          @podcast_episodes = PodcastEpisode.
+            includes(:podcast).
+            order("published_at desc").page(@page).per(30)
         end
       end
     end

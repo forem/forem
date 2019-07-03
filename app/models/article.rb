@@ -15,12 +15,17 @@ class Article < ApplicationRecord
 
   belongs_to :user
   belongs_to :job_opportunity, optional: true
-  counter_culture :user
   belongs_to :organization, optional: true
   belongs_to :collection, optional: true
+
+  counter_culture :user
+  counter_culture :organization
+
   has_many :comments, as: :commentable, inverse_of: :commentable
-  has_many :buffer_updates
-  has_many :notifications, as: :notifiable, inverse_of: :notifiable
+  has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
+  has_many :buffer_updates, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
   has_many :page_views
 
@@ -38,8 +43,9 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
+  validate :validate_liquid_tag_permissions
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
-  validates :cached_tag_list, length: { maximum: 86 }
+  validates :cached_tag_list, length: { maximum: 126 }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
@@ -61,9 +67,7 @@ class Article < ApplicationRecord
   after_save        :update_main_image_background_hex
   after_save        :detect_human_language
   before_save       :update_cached_user
-  after_update      :update_notifications, if: proc { |article| article.notifications.length.positive? && !article.saved_changes.empty? }
-  # after_save        :send_to_moderator
-  # turned off for now
+  after_update      :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   before_destroy    :before_destroy_actions
 
   serialize :ids_for_suggested_articles
@@ -78,7 +82,7 @@ class Article < ApplicationRecord
                         published.
                           cached_tagged_with("help").
                           order("created_at DESC").
-                          where("published_at > ? AND comments_count < ?", 12.hours.ago, 6)
+                          where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
                       }
 
   scope :limited_column_select, lambda {
@@ -201,17 +205,6 @@ class Article < ApplicationRecord
     boosted_additional_articles Boolean, default: false
     boosted_dev_digest_email Boolean, default: false
     boosted_additional_tags String, default: ""
-  end
-
-  def self.filter_excluded_tags(tag = nil)
-    if tag == "hiring"
-      tagged_with("hiring")
-    elsif tag
-      tagged_with(tag).
-        tagged_with("hiring", exclude: true)
-    else
-      tagged_with("hiring", exclude: true)
-    end
   end
 
   def self.active_threads(tags = ["discuss"], time_ago = nil, number = 10)
@@ -338,7 +331,7 @@ class Article < ApplicationRecord
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed.front_matter["title"]
+      parsed.front_matter["title"].present?
     rescue Psych::SyntaxError
       # if frontmatter is invalid, still render editor with errors instead of 500ing
       true
@@ -453,6 +446,10 @@ class Article < ApplicationRecord
     Rails.logger.error(e)
   end
 
+  def liquid_tags_used
+    MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+  end
+
   private
 
   def update_notifications
@@ -474,21 +471,18 @@ class Article < ApplicationRecord
   end
 
   def evaluate_front_matter(front_matter)
-    token_msg = body_text[0..80] + "..."
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
       ActsAsTaggableOn::Taggable::Cache.included(Article)
-      self.tag_list = []
+      self.tag_list = [] # overwrite any existing tag with those from the front matter
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
-      TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
-        tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
-      end
+      remove_tag_adjustments_from_tag_list
     end
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parsed_date(front_matter["date"]) if published
     self.main_image = front_matter["cover_image"] if front_matter["cover_image"].present?
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] || token_msg
+    self.description = front_matter["description"] || description || "#{body_text[0..80]}..."
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
     self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
@@ -506,15 +500,20 @@ class Article < ApplicationRecord
 
   def validate_tag
     # remove adjusted tags
-    TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name).each do |name|
-      tag_list.remove(name, parser: ActsAsTaggableOn::TagParser)
-      self.tag_list = tag_list
-    end
-    return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.length > 4
+    remove_tag_adjustments_from_tag_list
 
+    # check there are not too many tags
+    return errors.add(:tag_list, "exceed the maximum of 4 tags") if tag_list.size > 4
+
+    # check tags names aren't too long
     tag_list.each do |tag|
-      errors.add(:tag, "\"#{tag}\" is too long (maximum is 20 characters)") if tag.length > 20
+      errors.add(:tag, "\"#{tag}\" is too long (maximum is 30 characters)") if tag.length > 30
     end
+  end
+
+  def remove_tag_adjustments_from_tag_list
+    tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
+    tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove
   end
 
   def validate_video
@@ -524,6 +523,11 @@ class Article < ApplicationRecord
 
   def validate_collection_permission
     errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
+  end
+
+  # Admin only beta tags etc.
+  def validate_liquid_tag_permissions
+    errors.add(:body_markdown, "must only use permitted tags") if liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
   def create_slug

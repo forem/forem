@@ -7,7 +7,7 @@
           <img src="/assets/play-butt.svg" class="ltag__twitter-tweet__play-butt" alt="Play butt">
         </div>
         <div class='ltag__twitter-tweet__video'>
-          <video loop>
+          <video loop controls>
             <source src="<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:url] %>"
               type="<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:content_type] %>">
           </video>

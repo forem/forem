@@ -1,17 +1,16 @@
 class ClassifiedListing < ApplicationRecord
   include AlgoliaSearch
 
-  attr_accessor :post_as_organization, :action
+  attr_accessor :action
 
-  belongs_to :user, optional: true
+  belongs_to :user
   belongs_to :organization, optional: true
-
   before_save :evaluate_markdown
   before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
 
-  validates :user_id, presence: true, unless: :organization_id?
+  validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
 
   validates :title, presence: true,
@@ -23,7 +22,7 @@ class ClassifiedListing < ApplicationRecord
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -73,6 +72,10 @@ class ClassifiedListing < ApplicationRecord
       "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
     }
+  end
+
+  def path
+    "/listings/#{category}/#{slug}"
   end
 
   private

@@ -1,5 +1,6 @@
+<% if articles %>
 <div class="more-articles container">
-  <% ArticleSuggester.new(@article).articles(4).each do |article| %>
+  <% articles.each do |article| %>
     <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>">
       <div class="single-other-article">
         <div class="picture">
@@ -25,3 +26,4 @@
     </a>
   <% end %>
 </div>
+<% end %>

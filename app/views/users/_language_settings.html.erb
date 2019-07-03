@@ -8,8 +8,10 @@
   <div class="checkbox-field">
     <% Languages::LIST.each do |code, name| %>
       <div class="sub-field">
-        <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array.include?(code) %>
-        <%= label_tag "user[preferred_languages][]", name %>
+        <label>
+          <%= check_box_tag "user[preferred_languages][]", code, @user.preferred_languages_array.include?(code) %>
+          <%= name %>
+        </label>
       </div>
     <% end %>
   </div>

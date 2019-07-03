@@ -16,6 +16,7 @@ module Constants
     "infosec.exchange",
     "kirakiratter.com",
     "knzk.me",
+    "linuxrocks.online",
     "lou.lt",
     "mamot.fr",
     "mao.daizhige.org",

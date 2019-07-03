@@ -77,7 +77,7 @@ class RssReader
       published_from_feed: true,
       show_comments: true,
       body_markdown: RssReader::Assembler.call(item, user, feed, feed_source_url),
-      organization_id: user.organization_id.presence,
+      organization_id: nil,
     )
 
     send_slack_notification(article)
@@ -112,8 +112,8 @@ class RssReader
   def send_slack_notification(article)
     return unless Rails.env.production?
 
-    SlackBot.delay.ping(
-      "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
+    SlackBotPingJob.perform_later(
+      message: "New Article Retrieved via RSS: #{article.title}\nhttps://dev.to#{article.path}",
       channel: "activity",
       username: "article_bot",
       icon_emoji: ":robot_face:",

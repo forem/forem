@@ -38,7 +38,7 @@
 
   .wrapper {
     display: grid;
-    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-columns: 25% 15% 15% 15% 15% 15%;
     padding: 2px;
   }
 
@@ -57,6 +57,17 @@
 
   .btn {
     min-width: 100px;
+  }
+
+  .single-internal-listing {
+    border-bottom: 1px solid grey;
+    padding: 10px;
+  }
+
+  .buffering-area-for-single-listing {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    padding: 2px;
   }
 
   .tab {
@@ -112,7 +123,7 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <% controller_names = %w(comments articles users members dogfood tags welcome broadcasts reports pages classified_listings) %>
+        <% controller_names = %w[comments articles users members dogfood tags welcome broadcasts reports pages classified_listings] %>
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>

@@ -1,7 +1,18 @@
 import { h, render, Component } from 'preact';
+import PropTypes from 'prop-types';
 import setupPusher from './pusher';
 
 class UnopenedChannelNotice extends Component {
+  static defaultProps = {
+    unopenedChannels: undefined,
+    pusherKey: undefined,
+  };
+
+  propTypes = {
+    unopenedChannels: PropTypes.Object,
+    pusherKey: PropTypes.Object,
+  };
+
   constructor(props) {
     super(props);
     const { unopenedChannels } = this.props;
@@ -13,12 +24,13 @@ class UnopenedChannelNotice extends Component {
   }
 
   componentDidMount() {
-    setupPusher(this.props.pusherKey, {
+    const { pusherKey } = this.props;
+    setupPusher(pusherKey, {
       channelId: `private-message-notifications-${window.currentUser.id}`,
       messageCreated: this.receiveNewMessage,
     });
     const component = this;
-    document.getElementById('connect-link').onclick = function() {
+    document.getElementById('connect-link').onclick = () => {
       // Hack, should probably be its own component in future
       document.getElementById('connect-number').classList.remove('showing');
       component.setState({ visible: false });
@@ -26,50 +38,52 @@ class UnopenedChannelNotice extends Component {
   }
 
   receiveNewMessage = e => {
-    if (location.pathname.startsWith('/connect')) {
+    if (window.location.pathname.startsWith('/connect')) {
       return;
     }
-    const channels = this.state.unopenedChannels;
+    const { unopenedChannels } = this.state;
     const newObj = { adjusted_slug: e.chat_channel_adjusted_slug };
     if (
-      channels.filter(obj => obj.adjusted_slug === newObj.adjusted_slug)
+      unopenedChannels.filter(obj => obj.adjusted_slug === newObj.adjusted_slug)
         .length === 0 &&
-      newObj.adjusted_slug != `@${window.currentUser.username}`
+      newObj.adjusted_slug !== `@${window.currentUser.username}`
     ) {
-      channels.push(newObj);
+      unopenedChannels.push(newObj);
     }
     this.setState({
-      visible: channels.length > 0 && e.user_id != window.currentUser.id,
-      unopenedChannels: channels,
+      visible:
+        unopenedChannels.length > 0 && e.user_id !== window.currentUser.id,
+      unopenedChannels,
     });
 
     const number = document.getElementById('connect-number');
     number.classList.add('showing');
-    number.innerHTML = channels.length;
+    number.innerHTML = unopenedChannels.length;
     const component = this;
-    if (channels.length === 0) {
+    if (unopenedChannels.length === 0) {
       number.classList.remove('showing');
     } else {
-      document.getElementById('connect-link').href = `/connect/${
-        channels[0].adjusted_slug
-      }`;
+      document.getElementById(
+        'connect-link',
+      ).href = `/connect/${unopenedChannels[0].adjusted_slug}`;
     }
-    setTimeout(function() {
+    setTimeout(() => {
       component.setState({ visible: false });
     }, 7500);
   };
 
-  handleClick = e => {
+  handleClick = () => {
     document.getElementById('connect-number').classList.remove('showing');
     this.setState({ visible: false });
   };
 
   render() {
-    if (this.state.visible) {
-      const channels = this.state.unopenedChannels.map(channel => {
+    const { visible, unopenedChannels } = this.state;
+    if (visible) {
+      const channels = unopenedChannels.map(channel => {
         return (
           <a
-            href={`/connect/${channel.adjusted_slug}`}
+            href={`/connect/${unopenedChannels[0].adjusted_slug}`}
             style={{
               background: '#66e2d5',
               color: 'black',
@@ -87,7 +101,7 @@ class UnopenedChannelNotice extends Component {
       return (
         <a
           onClick={this.handleClick}
-          href={`/connect/${this.state.unopenedChannels[0].adjusted_slug}`}
+          href={`/connect/${unopenedChannels[0].adjusted_slug}`}
           style={{
             position: 'fixed',
             zIndex: '200',
@@ -104,16 +118,29 @@ class UnopenedChannelNotice extends Component {
             padding: '19px 5px 14px',
           }}
         >
-          New Message from 
-          {' '}
-          {channels}
+          New Message from {channels}
         </a>
       );
     }
+
+    return '';
   }
 }
 
-export default function getUnopenedChannels(user, successCb) {
+function manageChannel(json) {
+  const number = document.getElementById('connect-number');
+  if (json.length > 0) {
+    number.classList.add('showing');
+    number.innerHTML = json.length;
+    document.getElementById(
+      'connect-link',
+    ).href = `/connect/${json[0].adjusted_slug}`; // Jump the user directly to the channel where appropriate
+  } else {
+    number.classList.remove('showing');
+  }
+}
+
+export default function getUnopenedChannels() {
   render(
     <UnopenedChannelNotice
       unopenedChannels={[]}
@@ -121,27 +148,12 @@ export default function getUnopenedChannels(user, successCb) {
     />,
     document.getElementById('message-notice'),
   );
-  if (location.pathname.startsWith('/connect')) {
-    return;
-  }
+  if (window.location.pathname.startsWith('/connect')) return;
   fetch('/chat_channels?state=unopened', {
-    method: 'GET',
     credentials: 'same-origin',
   })
     .then(response => response.json())
     .then(json => {
-      const number = document.getElementById('connect-number');
-      if (json.length > 0) {
-        number.classList.add('showing');
-        number.innerHTML = json.length;
-        document.getElementById('connect-link').href = `/connect/${
-          json[0].adjusted_slug
-        }`; // Jump the user directly to the channel where appropriate
-      } else {
-        number.classList.remove('showing');
-      }
-    })
-    .catch(error => {
-      console.log(error);
+      manageChannel(json);
     });
 }

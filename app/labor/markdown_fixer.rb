@@ -5,13 +5,18 @@ class MarkdownFixer
     def fix_all(markdown)
       methods = %i[
         add_quotes_to_title add_quotes_to_description
-        modify_hr_tags convert_new_lines split_tags
+        modify_hr_tags convert_new_lines split_tags underscores_in_usernames
       ]
       methods.reduce(markdown) { |result, method| send(method, result) }
     end
 
     def fix_for_preview(markdown)
-      methods = %i[add_quotes_to_title add_quotes_to_description modify_hr_tags]
+      methods = %i[add_quotes_to_title add_quotes_to_description modify_hr_tags underscores_in_usernames]
+      methods.reduce(markdown) { |result, method| send(method, result) }
+    end
+
+    def fix_for_comment(markdown)
+      methods = %I[modify_hr_tags underscores_in_usernames]
       methods.reduce(markdown) { |result, method| send(method, result) }
     end
 
@@ -39,6 +44,10 @@ class MarkdownFixer
       markdown.gsub(/\ntags:.*\n/) do |tags|
         tags.split(" #").join(",").delete("#").gsub(":,", ": ")
       end
+    end
+
+    def underscores_in_usernames(markdown)
+      markdown.gsub(/(@)(_\w+)(_)/, '\1\\\\\2\\\\\3')
     end
 
     private

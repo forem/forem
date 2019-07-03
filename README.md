@@ -27,6 +27,7 @@
   <a href="https://www.codetriage.com/thepracticaldev/dev.to">
     <img src="https://www.codetriage.com/thepracticaldev/dev.to/badges/users.svg" alt="CodeTriage badge">
   </a>
+  <img src="https://flat.badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot" alt="Dependabot Badge" />
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you. With your help, we can build out DEV to be more stable and better serve our community.
@@ -96,7 +97,7 @@ Some existing code may be poorly written or untested, so we must have more scrut
 #### Create a pull request
 
 - Try to keep the pull requests small. A pull request should try its very best to address only a single concern.
-- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/testing/)
+- Make sure all tests pass and add additional tests for the code you submit. [More info here](https://docs.dev.to/tests/)
 - Document your reasoning behind the changes. Explain why you wrote the code in the way you did. The code should explain what it does.
 - If there's an existing issue related to the pull request, reference to it by adding something like `References/Closes/Fixes/Resolves #305`, where 305 is the issue number. [More info here](https://github.com/blog/1506-closing-issues-via-pull-requests)
 - If you follow the pull request template, you can't go wrong.
@@ -175,7 +176,7 @@ Our docker implementation is incomplete and may not work smoothly. Please kindly
 
 1. Install `docker` and `docker-compose`
 1. `git clone git@github.com:thepracticaldev/dev.to.git`
-1. Set environment variables above as described in the "Basic Installation"
+1. Set environment variables above as described in the ["Standard Installation"](#standard-installation)
 1. run `docker-compose build`
 1. run `docker-compose run web rails db:setup`
 1. run `docker-compose run web yarn install`
@@ -227,6 +228,11 @@ Caveat: `bin/rspec` is not equipped with Spring because it affects Simplecov's r
 - [@aspittel](https://dev.to/aspittel)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@mariocsee](https://dev.to/mariocsee)
+- [@rhymes](https://dev.to/rhymes)
+
+## Vulnerability disclosure
+
+We welcome security research on DEV under the terms of our [vulnerability disclosure policy](https://dev.to/security).
 
 ## License
 

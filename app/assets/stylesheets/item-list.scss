@@ -1,0 +1,250 @@
+@import 'variables';
+@import 'mixins';
+
+.item-list-container {
+  @media screen and (min-width: 950px) {
+    margin-top: -25px;
+  }
+
+  a {
+    display: block;
+  }
+
+  .filters {
+    width: 300px;
+    float: left;
+    min-height: 356px;
+    position: relative;
+
+    input {
+      width: 100%;
+      border: 0px;
+      padding: 5px;
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $light-medium-gray
+      );
+      border-radius: 3px;
+      font-size: 1em;
+      box-sizing: border-box;
+      margin-bottom: 4px;
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($light-gray, 2%)
+      );
+      @include themeable(color, theme-color, $black);
+    }
+
+    .tags {
+      .tag {
+        padding: 5px 0px;
+        position: relative;
+        padding-left: 5px;
+        @include themeable(color, theme-color, $black);
+
+        &:hover {
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            $light-gray
+          );
+        }
+
+        &.selected {
+          background: $purple;
+        }
+      }
+    }
+
+    .status-view-toggle {
+      font-size: 0.8em;
+    }
+  }
+
+  .items-container {
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    margin-left: 10px;
+    float: left;
+
+    @media screen and (min-width: 950px) {
+      width: calc(100% - 332px);
+      margin-left: 20px;
+      margin-top: 0px;
+    }
+
+    .results {
+      @include themeable(background, theme-container-background, white);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $light-medium-gray
+      );
+      border-radius: 3px;
+      min-height: 350px;
+      display: none;
+      text-align: left;
+      font-size: 14px;
+
+      @media screen and (min-width: 950px) {
+        font-size: 17px;
+      }
+
+      &.results--loaded {
+        display: block;
+      }
+
+      .results-header {
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          darken($light-gray, 2%)
+        );
+        padding: 17px;
+        font-size: 1.8em;
+        font-weight: bold;
+      }
+
+      .item-wrapper {
+        position: relative;
+
+        .archive-button {
+          padding-left: 0.8em;
+          padding-right: 0.8em;
+          position: absolute;
+          bottom: 6px;
+          right: 5px;
+          font-size: 11px;
+          font-weight: bold;
+          border-radius: 3px;
+          background: transparent;
+          border: 1px solid $black;
+          @include themeable(color, theme-secondary-color, $medium-gray);
+          @include themeable(border-color, theme-secondary-color, $medium-gray);
+        }
+      }
+
+      .item {
+        @include themeable(color, theme-color, $black);
+        font-size: 0.8em;
+        padding: 17px 17px 25px;
+        @include themeable(
+          border-bottom,
+          theme-container-border,
+          1px solid $light-medium-gray
+        );
+
+        .item-title {
+          font-weight: bold;
+          font-size: 1.7em;
+          margin-bottom: 10px;
+        }
+
+        .item-details {
+          a {
+            display: inline-block;
+            @include themeable(color, theme-secondary-color, $medium-gray);
+
+            &.item-user {
+              margin-right: 5px;
+
+              img {
+                height: 22px;
+                width: 22px;
+                border-radius: 100px;
+                vertical-align: -5px;
+                margin-right: 5px;
+              }
+            }
+
+            .item-tags {
+              display: inline-block;
+            }
+            &.item-tag {
+              margin-left: 1px;
+              padding: 1px 2px;
+              border-radius: 3px;
+            }
+          }
+        }
+        &:hover {
+          @include themeable(
+            background,
+            theme-container-background-hover,
+            $light-gray
+          );
+        }
+      }
+
+      .items-empty {
+        text-align: center;
+        padding: 100px 0px;
+
+        span.highlight {
+          background: $bold-blue;
+          border-radius: 3px;
+          padding: 3px 8px;
+          margin: 0px 8px;
+          color: white;
+          display: inline-block;
+
+          span[role='img'] {
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+
+    .load-more-wrapper {
+      text-align: center;
+
+      button {
+        background: transparent;
+        @include themeable(border, theme-border, 1px solid $light-medium-gray);
+        font-size: 17px;
+        padding: 14px 5px;
+        margin: 40px auto 70px;
+        width: 320px;
+        max-width: 80%;
+        border-radius: 100px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 949px) {
+  .home.item-list {
+    .side-bar {
+      display: block;
+      position: relative;
+      width: calc(100% - 15px);
+      margin: 10px auto;
+      margin-left: 10px;
+      margin-bottom: -15px;
+
+      .filters {
+        height: 85px;
+        min-height: 85px;
+
+        .tags {
+          height: 40px;
+          overflow: hidden;
+          width: 100%;
+          overflow-x: scroll;
+          overflow-y: hidden;
+          white-space: nowrap;
+
+          .tag {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            margin-right: 3px;
+          }
+        }
+      }
+    }
+  }
+}

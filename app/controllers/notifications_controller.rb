@@ -9,7 +9,7 @@ class NotificationsController < ApplicationController
       num = 45
       notified_at_offset = Notification.find(params[:page])&.notified_at
     else
-      num = 10
+      num = 8
     end
     @notifications = if (params[:org_id].present? || params[:filter] == "org") && allowed_user?
                        organization_notifications
@@ -22,9 +22,7 @@ class NotificationsController < ApplicationController
     @last_user_comment = @user.comments.last&.id
     @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
     @notifications = NotificationDecorator.decorate_collection(@notifications.limit(num))
-    org_id = params[:org_id] || current_user.organization_id
-    # in the future this can be an array of numbers, when people can belong to multiple orgs.
-    @total_org_unread = Notification.where(organization_id: org_id, user_id: nil, read: false).count
+    @organizations = @user.member_organizations if @user.organizations
     render partial: "notifications_list" if notified_at_offset
   end
 

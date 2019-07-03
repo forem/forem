@@ -8,7 +8,6 @@ class FlareTag
               showdev
               challenge
               anonymous
-              hiring
               discuss].freeze
 
   def initialize(article, except_tag = nil)

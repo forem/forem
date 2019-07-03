@@ -66,7 +66,7 @@
   </div>
   <div class="field">
     <%= f.label :website_url %>
-    <%= f.url_field :website_url, maxlength: 100, placeholder: "http://yoursite.com" %>
+    <%= f.url_field :website_url, maxlength: 100, placeholder: "https://yoursite.com" %>
   </div>
   <div class="field">
     <%= f.label :summary %>
@@ -146,6 +146,10 @@
   <div class="field">
     <%= f.label :gitlab_url, "GitLab URL" %>
     <%= f.url_field :gitlab_url %>
+  </div>
+  <div class="field">
+    <%= f.label :instagram_url, "Instagram URL" %>
+    <%= f.url_field :instagram_url %>
   </div>
   <div class="field">
     <%= f.label :mastodon_url, "Mastodon URL" %>

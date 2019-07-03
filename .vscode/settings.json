@@ -1,6 +1,7 @@
 {
-    "ruby.lint": {
-        "rubocop": true,
-        "fasterer": false,
-    }
+  "ruby.lint": {
+    "rubocop": true,
+    "fasterer": false
+  },
+  "ruby.intellisense": "rubyLocate"
 }

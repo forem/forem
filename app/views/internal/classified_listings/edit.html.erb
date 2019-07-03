@@ -1,6 +1,6 @@
 <a href="/internal/listings">Back to All Listings</a>
 
-<h1>Edit <a href="/listings/<%= @classified_listing.category %>/<%= @classified_listing.slug %>" target="_blank"><%= @classified_listing.title %></a></h1>
+<h1>Edit <a href="/listings/<%= @classified_listing.category %>/<%= @classified_listing.slug %>" target="_blank">"<%= @classified_listing.title %>"</a></h1>
 
 <%= form_for [:internal, @classified_listing] do |form| %>
   <%= form.label :title %>
@@ -22,13 +22,15 @@
   <%= form.select :category, options_for_select(ClassifiedListing.select_options_for_categories.map(&:last), @classified_listing.category) %>
   <hr>
   <%= form.label :published %>
-  <br>
-  <%= form.check_box :published %>
+  <%= form.check_box :published, checked: @classified_listing.published? %>
   <hr>
   <%= form.submit "Update Listing", class: "btn btn-lg btn-primary" %>
-
   <hr>
 <% end %>
-
+<%= form_for [:internal, @classified_listing] do |f| %>
+  <input type="hidden" name="classified_listing[action]" value="bump" />
+  <%= f.submit "Bump Listing ⏫", class: "btn btn-lg btn-primary" %>
+<% end %>
+<hr>
 <%= link_to "Destroy Listing", url_for(action: :destroy, id: @classified_listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
 <br><br><br>

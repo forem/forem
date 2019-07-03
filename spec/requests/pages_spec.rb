@@ -2,10 +2,19 @@ require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
   describe "GET /:slug" do
-    it "has proper headline" do
-      page = create(:page)
+    it "has proper headline for non-top-level" do
+      page = create(:page, title: "Edna O'Brien96")
       get "/page/#{page.slug}"
-      expect(response.body).to include(page.title)
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+      expect(response.body).to include("/page/#{page.slug}")
+    end
+
+    it "has proper headline for top-level" do
+      page = create(:page, title: "Edna O'Brien96", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+      expect(response.body).not_to include("/page/#{page.slug}")
+      expect(response.body).to include("stories-show")
     end
   end
 
@@ -13,6 +22,13 @@ RSpec.describe "Pages", type: :request do
     it "has proper headline" do
       get "/about"
       expect(response.body).to include("About dev.to")
+    end
+  end
+
+  describe "GET /api" do
+    it "has proper headline" do
+      get "/api"
+      expect(response.body).to include("DEV Articles API")
     end
   end
 
@@ -59,10 +75,22 @@ RSpec.describe "Pages", type: :request do
   end
 
   describe "GET /welcome" do
-    it "has proper headline" do
+    it "redirects to the first welcome thread" do
+      user = create(:user, id: 1)
+      latest_welcome_thread = create(:article, user: user, tags: "welcome")
       get "/welcome"
 
-      expect(response.body).to include("You are being <a")
+      expect(response.body).to redirect_to(latest_welcome_thread.path)
+    end
+  end
+
+  describe "GET /challenge" do
+    it "redirects to the first challenge thread" do
+      user = create(:user, id: 1)
+      latest_challenge_thread = create(:article, user: user, tags: "challenge")
+      get "/challenge"
+
+      expect(response.body).to redirect_to(latest_challenge_thread.path)
     end
   end
 

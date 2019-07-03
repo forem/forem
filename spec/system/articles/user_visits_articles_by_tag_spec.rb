@@ -53,17 +53,9 @@ RSpec.describe "User visits articles by tag", type: :system do
     end
 
     context "when more articles" do
-      before do
+      it "visits ok" do
         create_list(:article, 3, tags: "javascript", user: author, published_at: Time.current)
         visit "/t/javascript"
-      end
-
-      it "shows the sign_in invitation", js: true do
-        within("#substories") do
-          expect(page).to have_content("amazing humans who code")
-          expect(page).to have_link("TWITTER")
-          expect(page).to have_link("GITHUB")
-        end
       end
     end
   end

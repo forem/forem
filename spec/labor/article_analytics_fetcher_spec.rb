@@ -34,7 +34,7 @@ RSpec.describe ArticleAnalyticsFetcher do
 
       it "sends send_milestone_notification for Reaction and View" do
         %w[Reaction View].each do |type|
-          expect(Notification).to have_received(:send_milestone_notification).with(type: type, article: article)
+          expect(Notification).to have_received(:send_milestone_notification).with(type: type, article_id: article.id)
         end
       end
 

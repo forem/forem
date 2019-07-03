@@ -3,10 +3,6 @@ class Internal::UsersController < Internal::ApplicationController
 
   def index
     @users = case params[:state]
-             when "mentors"
-               User.where(offering_mentorship: true).page(params[:page]).per(50)
-             when "mentees"
-               User.where(seeking_mentorship: true).page(params[:page]).per(50)
              when /role\-/
                User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
              else
@@ -26,66 +22,15 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def show
-    @user = if params[:id] == "unmatched_mentee"
-              MentorRelationship.unmatched_mentees.order(Arel.sql("RANDOM()")).first
-            else
-              User.find(params[:id])
-            end
-    @user_mentee_relationships = MentorRelationship.where(mentor_id: @user.id)
-    @user_mentor_relationships = MentorRelationship.where(mentee_id: @user.id)
+    @user = User.find(params[:id])
+    @organizations = @user.organizations
   end
 
   def update
     @user = User.find(params[:id])
-    @new_mentee = user_params[:add_mentee]
-    @new_mentor = user_params[:add_mentor]
-    make_matches
     manage_credits
     add_note if user_params[:new_note]
-    if user_params[:quick_match]
-      redirect_to "/internal/users/unmatched_mentee"
-    else
-      redirect_to "/internal/users/#{params[:id]}"
-    end
-  end
-
-  def manage_credits
-    add_credits if user_params[:add_credits]
-    add_org_credits if user_params[:add_org_credits]
-    remove_org_credits if user_params[:remove_org_credits]
-    remove_credits if user_params[:remove_credits]
-  end
-
-  def add_note
-    Note.create(
-      author_id: current_user.id,
-      noteable_id: @user.id,
-      noteable_type: "User",
-      reason: "misc_note",
-      content: user_params[:new_note],
-    )
-  end
-
-  def add_credits
-    amount = user_params[:add_credits].to_i
-    Credit.add_to(@user, amount)
-  end
-
-  def remove_credits
-    amount = user_params[:remove_credits].to_i
-    Credit.remove_from(@user, amount)
-  end
-
-  def add_org_credits
-    org = Organization.find(@user.organization_id)
-    amount = user_params[:add_org_credits].to_i
-    Credit.add_to_org(org, amount)
-  end
-
-  def remove_org_credits
-    org = Organization.find(@user.organization_id)
-    amount = user_params[:remove_org_credits].to_i
-    Credit.remove_from_org(org, amount)
+    redirect_to "/internal/users/#{params[:id]}"
   end
 
   def user_status
@@ -97,19 +42,6 @@ class Internal::UsersController < Internal::ApplicationController
       flash[:error] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
-  end
-
-  def make_matches
-    return if @new_mentee.blank? && @new_mentor.blank?
-
-    if @new_mentee.present?
-      mentee = User.find(@new_mentee)
-      MentorRelationship.new(mentee_id: mentee.id, mentor_id: @user.id).save!
-    end
-    return if @new_mentor.blank?
-
-    mentor = User.find(@new_mentor)
-    MentorRelationship.new(mentee_id: @user.id, mentor_id: mentor.id).save!
   end
 
   def banish
@@ -145,23 +77,52 @@ class Internal::UsersController < Internal::ApplicationController
 
   private
 
+  def manage_credits
+    add_credits if user_params[:add_credits]
+    add_org_credits if user_params[:add_org_credits]
+    remove_org_credits if user_params[:remove_org_credits]
+    remove_credits if user_params[:remove_credits]
+  end
+
+  def add_note
+    Note.create(
+      author_id: current_user.id,
+      noteable_id: @user.id,
+      noteable_type: "User",
+      reason: "misc_note",
+      content: user_params[:new_note],
+    )
+  end
+
+  def add_credits
+    amount = user_params[:add_credits].to_i
+    Credit.add_to(@user, amount)
+  end
+
+  def remove_credits
+    amount = user_params[:remove_credits].to_i
+    Credit.remove_from(@user, amount)
+  end
+
+  def add_org_credits
+    org = Organization.find(user_params[:organization_id])
+    amount = user_params[:add_org_credits].to_i
+    Credit.add_to_org(org, amount)
+  end
+
+  def remove_org_credits
+    org = Organization.find(user_params[:organization_id])
+    amount = user_params[:remove_org_credits].to_i
+    Credit.remove_from_org(org, amount)
+  end
+
   def user_params
-    params.require(:user).permit(:seeking_mentorship,
-                                 :offering_mentorship,
-                                 :quick_match,
-                                 :new_note,
-                                 :add_mentor,
-                                 :add_mentee,
-                                 :note_for_current_role,
-                                 :mentorship_note,
-                                 :user_status,
-                                 :toggle_mentorship,
-                                 :pro,
-                                 :merge_user_id,
-                                 :add_credits,
-                                 :remove_credits,
-                                 :add_org_credits,
-                                 :remove_org_credits,
-                                 :ghostify)
+    allowed_params = %i[
+      new_note note_for_current_role user_status
+      pro merge_user_id add_credits remove_credits
+      add_org_credits remove_org_credits ghostify
+      organization_id
+    ]
+    params.require(:user).permit(allowed_params)
   end
 end

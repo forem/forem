@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_26_221336) do
+ActiveRecord::Schema.define(version: 2019_06_28_123548) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -672,6 +672,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.string "main_color_hex", null: false
     t.string "overcast_url"
     t.string "pattern_image"
+    t.boolean "reachable", default: true
     t.string "slug", null: false
     t.string "soundcloud_url"
     t.text "status_notice", default: ""
@@ -905,6 +906,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
+    t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
     t.boolean "checked_terms_and_conditions"
     t.integer "comments_count", default: 0, null: false
@@ -981,6 +983,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
+    t.string "onboarding_checklist", default: [], array: true
     t.datetime "onboarding_package_form_submmitted_at"
     t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
@@ -1023,6 +1026,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_221336) do
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
+    t.text "summary_html"
     t.string "tabs_or_spaces"
     t.string "text_color_hex"
     t.string "text_only_name"

@@ -1,60 +1,28 @@
+<% title "Pro Analytics" %>
+
 <div class="dashboard-container pro-container" id="user-dashboard">
-  <a href="/dashboard" class="rounded-btn">Back to Dashboard</a>
-  <% current_active_view = @dashboard.user_or_org.class.name %>
-  <% if current_active_view == "Organization" %>
-    <a class="rounded-btn" href="/dashboard/pro">
-      View Your Pro Dashboard
-    </a>
-  <% elsif current_active_view == "User" && @dashboard.user_or_org.organization_id %>
-    <a class="rounded-btn" href="/dashboard/pro/org/<%= @dashboard.user_or_org.organization_id %>">
-      View <%= @dashboard.user_or_org.organization.name %> Dashboard
+  <a href="/dashboard" class="rounded-btn rounded-btn--transparent">👈 Back to Main Dashboard</a>
+
+  <a class="rounded-btn <%= "active" unless params[:org_id] %>" href="/dashboard/pro">
+    Your Pro Dashboard
+  </a>
+
+  <% @organizations.each do |org| %>
+    <a
+      class="rounded-btn organization <%= "active" if params[:org_id].to_i == org.id %>"
+      href="/dashboard/pro/org/<%= org.id %>"
+      data-organization-id="<%= org.id %>">
+      <%= org.name %> Pro Dashboard
     </a>
   <% end %>
+
   <section class="header-card card">
-    <h1 class="pro-header">Pro Dashboard <%= "for #{@dashboard.user_or_org.name}" if current_active_view == "Organization" %></h1>
-    <p>Welcome to the pro dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
+    <h1 class="pro-header">Pro Dashboard for <%= @user_or_org.name %></h1>
+    <p>Welcome to the Pro Dashboard which shows in-depth user metrics so that authors can make data-driven decisions about the developer ecosystem.</p>
     <p>This dashboard will highlight deep insights especially relevant to developer relations authors and serious bloggers.</p>
   </section>
-  <div class="toggles">
-    <button class="selected" id="week-button">Week</button>
-    <button id="month-button">Month</button>
-    <button id="infinity-button">Infinity</button>
-  </div>
-  <div class="summary-stats">
-    <div class="card" id="readers-card"></div>
-    <div class="card" id="reactions-card"></div>
-    <div class="card" id="comments-card"></div>
-    <div class="card" id="followers-card"></div>
-  </div>
-  <div class="graphs">
-    <div class="row">
-      <div class="card">
-        <h2>Readers Summary</h2>
-        <div class="charts-container">
-          <canvas id="readersChart"></canvas>
-        </div>
-      </div>
-      <div class="card">
-        <h2>New Followers Summary</h2>
-        <div class="charts-container">
-          <canvas id="followersChart"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="card">
-        <h2>Reactions Summary ❤🦄🔖</h2>
-        <div class="charts-container">
-          <canvas id="reactionsChart"></canvas>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Comments Summary 💬</h2>
-        <div class="charts-container">
-          <canvas id="commentsChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-  <%= javascript_pack_tag "proCharts", defer: true %>
+
+  <%= render "shared/stats" %>
 </div>
+
+<%= javascript_pack_tag "analyticsDashboard", defer: true %>

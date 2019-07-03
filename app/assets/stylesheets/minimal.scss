@@ -6,7 +6,6 @@
 @import 'articles';
 @import 'index-comments';
 @import 'article-show';
-@import 'article_form';
 @import 'shared';
 @import 'dashboard';
 @import 'settings';
@@ -32,10 +31,12 @@
 @import 'video-collection';
 @import 'classified_listings';
 @import 'credits';
-@import 'readinglist';
+@import 'item-list';
 
 @import 'ltags/LiquidTags';
 
 @import 'chat';
 
 @import 'email_subscriptions';
+
+@import 'article-form-needed-legacy';

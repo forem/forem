@@ -9,24 +9,34 @@ import {
 } from '../../utils/search';
 import { SearchForm } from './SearchForm';
 
-const GLOBAL_SEARCH_KEY_CODE = 191;
-const GLOBAL_MINIMIZE_KEY_CODE = 48;
-const ENTER_KEY_CODE = 13;
+const GLOBAL_MINIMIZE_KEY = '0';
+const GLOBAL_SEARCH_KEY = '/';
+const ENTER_KEY = 'Enter';
 
 export class Search extends Component {
   static defaultProps = {
     searchBoxId: 'nav-search',
   };
 
+  constructor(props) {
+    super(props);
+    this.enableSearchPageChecker = true;
+  }
+
   componentWillMount() {
+    let searchTerm;
+
+    ({ searchTerm } = this.state);
     this.setState(
       { searchTerm: getInitialSearchTerm(window.location.search) },
-      () => preloadSearchResults({ searchTerm: this.state.searchTerm }),
+      () => preloadSearchResults({ searchTerm }),
     );
+
+    ({ searchTerm } = this.state);
     const searchPageChecker = () => {
       if (
         this.enableSearchPageChecker &&
-        this.state.searchTerm !== '' &&
+        searchTerm !== '' &&
         /^http(s)?:\/\/[^/]+\/search/.exec(window.location.href) === null
       ) {
         this.setState({ searchTerm: '' });
@@ -39,73 +49,81 @@ export class Search extends Component {
   }
 
   componentDidMount() {
-    this.registerGlobalSearchKeyListener();
+    this.registerGlobalKeysListener();
     InstantClick.on('change', this.enableSearchPageListener);
   }
-
-  componentDidUnmount() {
-    document.removeEventListener('keydown', this.globalSearchKeyListener);
-    InstantClick.off('change', this.enableSearchPageListener);
-  }
-
-  enableSearchPageChecker = true;
-
-  globalSearchKeyListener;
 
   enableSearchPageListener = () => {
     this.enableSearchPageChecker = true;
   };
 
-  registerGlobalSearchKeyListener() {
-    const searchBox = document.getElementById(this.props.searchBoxId);
-
-    this.globalSearchKeyListener = event => {
-      const { tagName, classList } = document.activeElement;
-      if (
-        (event.which !== GLOBAL_SEARCH_KEY_CODE && event.which !== GLOBAL_MINIMIZE_KEY_CODE) ||
-        tagName === 'INPUT' ||
-        tagName === 'TEXTAREA' ||
-        classList.contains('input')
-      ) {
-        return;
-      }
-      if (event.which === GLOBAL_SEARCH_KEY_CODE) {
-        document.getElementsByTagName('body')[0].classList.remove('zen-mode')
-        event.preventDefault();
-        searchBox.focus();
-        searchBox.select();  
-      } else if (event.which === GLOBAL_MINIMIZE_KEY_CODE) {
-        event.preventDefault();
-        document.getElementsByTagName('body')[0].classList.toggle('zen-mode')
-      }
-    };
-
-    document.addEventListener('keydown', this.globalSearchKeyListener);
-  }
+  hasKeyModifiers = event => {
+    return event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
+  };
 
   search = event => {
     const {
-      keyCode,
+      key,
       target: { value },
     } = event;
 
     this.enableSearchPageChecker = false;
 
-    if (hasInstantClick() && keyCode === ENTER_KEY_CODE) {
+    if (hasInstantClick() && key === ENTER_KEY) {
       this.setState({ searchTerm: value }, () => {
-        preloadSearchResults({ searchTerm: this.state.searchTerm });
+        const { searchTerm } = this.state;
+        preloadSearchResults({ searchTerm });
       });
     }
   };
 
   submit = event => {
     if (hasInstantClick) {
-      const { searchTerm } = this.state;
-
       event.preventDefault();
+
+      const { searchTerm } = this.state;
       displaySearchResults({ searchTerm });
     }
   };
+
+  componentDidUnmount() {
+    document.removeEventListener('keydown', this.globalKeysListener);
+    InstantClick.off('change', this.enableSearchPageListener);
+  }
+
+  registerGlobalKeysListener() {
+    const { searchBoxId } = this.props;
+    const searchBox = document.getElementById(searchBoxId);
+
+    this.globalKeysListener = event => {
+      const { tagName, classList } = document.activeElement;
+
+      if (
+        (event.key !== GLOBAL_SEARCH_KEY &&
+          event.key !== GLOBAL_MINIMIZE_KEY) ||
+        tagName === 'INPUT' ||
+        tagName === 'TEXTAREA' ||
+        classList.contains('input')
+      ) {
+        return;
+      }
+
+      if (event.key === GLOBAL_SEARCH_KEY) {
+        event.preventDefault();
+        document.getElementsByTagName('body')[0].classList.remove('zen-mode');
+        searchBox.focus();
+        searchBox.select();
+      } else if (
+        event.key === GLOBAL_MINIMIZE_KEY &&
+        !this.hasKeyModifiers(event)
+      ) {
+        event.preventDefault();
+        document.getElementsByTagName('body')[0].classList.toggle('zen-mode');
+      }
+    };
+
+    document.addEventListener('keydown', this.globalKeysListener);
+  }
 
   render({ searchBoxId }, { searchTerm = '' }) {
     return (

@@ -25,6 +25,8 @@ RSpec.describe Comment, type: :model do
     it { is_expected.to belong_to(:commentable) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
     it { is_expected.to have_many(:mentions).dependent(:destroy) }
+    it { is_expected.to have_many(:notifications).dependent(:destroy) }
+    it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
     it { is_expected.to validate_presence_of(:commentable_id) }
 
     it { is_expected.to validate_presence_of(:body_markdown) }
@@ -38,7 +40,7 @@ RSpec.describe Comment, type: :model do
     expect(comment.id_code_generated).to eq(comment.id.to_s(26))
   end
 
-  xit "generates character count before saving" do
+  it "generates character count before saving" do
     expect(comment.markdown_character_count).to eq(comment.body_markdown.size)
   end
 
@@ -75,6 +77,12 @@ RSpec.describe Comment, type: :model do
     comment.body_markdown = "I like the part at 1:52:30 and 1:20"
     comment.save
     expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
+  end
+
+  it "adds rel=nofollow to links" do
+    comment.body_markdown = "this is a comment with a link: http://dev.to"
+    comment.save
+    expect(comment.processed_html.include?('rel="nofollow"')).to eq(true)
   end
 
   it "adds a mention url if user is mentioned like @mention" do
@@ -118,8 +126,7 @@ RSpec.describe Comment, type: :model do
   end
 
   it "shortens long urls" do
-    comment.body_markdown = "Hello https://longurl.com/dsjkdsdsjdsdskhjdsjbhkdshjdshudsdsbhdsbiudsuidsuidsuidsuidsuidsuidsiudsiudsuidsuisduidsuidsiuiuweuiweuiewuiweuiweuiew?sdhiusduisduidsiudsuidsiusdiusdiuewiuewiuewiuweiuweiuweiuewiuweuiweuiewibsdiubdsiubdsisbdiudsbsdiusdbiu" # rubocop:disable Metrics/LineLength
-    comment.save
+    comment.update(body_markdown: "Hello https://longurl.com/#{'x' * 100}?#{'y' * 100}")
     expect(comment.processed_html.include?("...</a>")).to eq(true)
     expect(comment.processed_html.size).to be < 450
   end
@@ -169,9 +176,25 @@ RSpec.describe Comment, type: :model do
       expect(comment.title.length).to be <= 80
     end
 
+    it "is allows title of greater length if passed" do
+      expect(comment.title(5).length).to eq(5)
+    end
+
     it "retains content from #processed_html" do
+      comment.update_column(:processed_html, "Hello this is a post.") # Remove randomness
       text = comment.title.gsub("...", "").delete("\n")
       expect(comment.processed_html).to include CGI.unescapeHTML(text)
+    end
+
+    it "is converted to deleted if the comment is deleted" do
+      comment.update_column(:deleted, true)
+      expect(comment.title).to eq "[deleted]"
+    end
+
+    it "does not contain the wrong encoding" do
+      comment.body_markdown = "It's the best post ever. It's so great."
+      comment.save
+      expect(comment.title).not_to include "&#39;"
     end
   end
 
@@ -211,6 +234,28 @@ RSpec.describe Comment, type: :model do
     it "returns part of the tree" do
       comments = described_class.tree_for(article2, 1)
       expect(comments).to eq(tree_comment => { child => {} })
+    end
+  end
+
+  describe "deleted" do
+    let(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
+
+    it "deletes the comment's notifications" do
+      create(:notification, notifiable: comment, user: user2)
+      create(:notification, notifiable: child_comment, user: user)
+      perform_enqueued_jobs do
+        child_comment.update(deleted: true)
+        expect(child_comment.notifications).to be_empty
+      end
+    end
+
+    it "updates the notifications of the ancestors and descendants" do
+      create(:notification, notifiable: comment, user: user2)
+      create(:notification, notifiable: child_comment, user: user)
+      perform_enqueued_jobs do
+        comment.update(deleted: true)
+        expect(child_comment.notifications.first.json_data["comment"]["ancestors"][0]["title"]).to eq "[deleted]"
+      end
     end
   end
 

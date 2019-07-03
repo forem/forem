@@ -1,0 +1,22 @@
+<h1>General Purpose Fastly Purge</h1>
+<p>For a page that should 404:</p>
+<%= form_tag "/internal/tools/bust_cache" do %>
+  <%= label_tag("Relative Link:") %>
+  <%= text_field_tag :dead_link, nil, placeholder: "/devteam/page" %>
+  <%= submit_tag("Clear Cache") %>
+<% end %>
+<hr>
+<h1>Bust Cache For Specific Content</h1>
+<p>This clears the rails cache & the fastly cache.</p>
+
+<%= form_tag "/internal/tools/bust_cache" do %>
+  <%= label_tag("Article id: ") %>
+  <%= text_field_tag :bust_article, nil, placeholder: "12345" %>
+  <%= submit_tag("Clear Cache") %>
+<% end %>
+<br>
+<%= form_tag "/internal/tools/bust_cache" do %>
+  <%= label_tag("User id: ") %>
+  <%= text_field_tag :bust_user, nil, placeholder: "12345" %>
+  <%= submit_tag("Clear Cache") %>
+<% end %>

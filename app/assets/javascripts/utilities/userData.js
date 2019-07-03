@@ -1,6 +1,10 @@
 function userData() {
-  if (document.getElementsByTagName('body')[0].getAttribute('data-user') === null) {
+  const dataUser = document
+    .getElementsByTagName('body')[0]
+    .getAttribute('data-user');
+
+  if (dataUser === null) {
     return null;
   }
-  return JSON.parse(document.getElementsByTagName('body')[0].getAttribute('data-user'));
+  return JSON.parse(dataUser);
 }

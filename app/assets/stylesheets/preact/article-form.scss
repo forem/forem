@@ -95,53 +95,13 @@
   padding-left: 0px;
   margin: 20px 2px 0px;
   font-size: 16px;
-  cursor: pointer;
-  user-select: none;
-  img {
-    height: 26px;
-    width: 26px;
-    border-radius: 50px;
-    vertical-align: -7px;
-    margin-right: 4px;
-  }
-  button {
-    background: transparent;
-    border-radius: 3px;
-    font-size: 0.8em;
-    font-family: $helvetica-condensed;
-    width: 70px;
-    border-radius: 100px;
-    padding: 1px 0px;
-    margin-left: 10px;
-    border: var(--theme-container-border, 1px solid white);
-    &:focus {
-      outline: 0;
-      border: 1px solid $green;
-    }
-    &.no {
-      background: $light-gray;
-      background: var(--theme-background, $light-gray);
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
-
-    }
-    &.yes {
-      background: darken($green, 18%);
-      color: white;
-    }
+  select {
+    margin-left: 7px;
+    vertical-align: middle;
   }
   @media screen and (min-width: 600px) {
     font-size: 18px;
     padding-left: 10px;
-    img {
-      height: 29px;
-      width: 29px;
-      vertical-align: -8px;
-      margin-right: 8px;
-    }
-    button {
-      width: 120px;
-    }
   }
 }
 
@@ -374,7 +334,7 @@
     display: inline-block;
     padding: 2px 15px;
     border-radius: 3px;
-    width: 100px;
+    width: 110px;
     @media screen and (min-width: 600px) {
       margin-left: -5px;
       display: none;

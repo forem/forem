@@ -19,11 +19,11 @@ class ArticleAnalyticsFetcher
       page_views_obj = pageviews.to_h
       chunk.each do |article|
         article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
-        Notification.send_milestone_notification(type: "Reaction", article: article)
+        Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
         next if article.page_views_count > page_views_obj[article.id].to_i
 
         article.update_columns(page_views_count: page_views_obj[article.id].to_i)
-        Notification.send_milestone_notification(type: "View", article: article)
+        Notification.send_milestone_notification(type: "View", article_id: article.id)
       end
     end
   end

@@ -8,12 +8,12 @@
   margin: auto;
 
   h1 {
-    font-size: calc(16px + 0.3vw);
+    font-size: calc(15px + 0.2vw);
     font-family: $helvetica-condensed;
     font-stretch: condensed;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     text-align: center;
-
+    margin-bottom: 0px;
     @media screen and (min-width: 600px) {
       text-align: left;
     }
@@ -27,29 +27,47 @@
   }
 
   .rounded-btn {
-    font-size: calc(16px + 0.3vw);
+    font-size: calc(15px + 0.2vw);
     font-family: $helvetica-condensed;
     font-stretch: condensed;
     padding: 4px 20px;
     border-radius: 100px;
     margin-right: 5px;
-    display: block;
+    display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    color: $black;
-    background: lighten($light-medium-gray, 5%);
-
+    @include themeable(color, theme-color, $black);
+    @include themeable(
+      background,
+      theme-container-background,
+      lighten($light-medium-gray, 5%)
+    );
     &:hover {
-      background: $light-medium-gray;
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-medium-gray
+      );
     }
 
     &.active {
-      background: $dark-gray;
-      color: white;
+      @include themeable(background, theme-secondary-color, $dark-gray);
+      @include themeable(color, theme-container-background, white);
     }
 
     &.back-nav {
       left: 2vw;
+    }
+    &.rounded-btn--transparent {
+      background: transparent;
+      font-size: calc(15px + 0.2vw);
+      &:hover {
+        @include themeable(
+          background,
+          theme-container-accent-background,
+          lighten($light-medium-gray, 10%)
+        );
+      }
     }
   }
 
@@ -77,7 +95,7 @@
       transition: background-color 250ms ease, opacity 250ms ease;
       font-family: $helvetica-condensed;
       font-stretch: condensed;
-      font-size: 1.1em;
+      font-size: 0.95em;
       text-align: center;
 
       &.active {
@@ -372,7 +390,7 @@
 
         & li.ellipsis-menu-item {
           list-style: none;
-          
+
           & form * {
             background-color: transparent;
           }
@@ -483,13 +501,13 @@
 
     .dashboard-actions {
       padding: 7px 0px 10px;
-
-      .mute-form {
+      
+      form {
         margin: 0;
         padding: 0;
         display: inline;
 
-        input[type='submit'] {
+        input[type='submit'], button {
           height: 30.4px;
           border: 2px solid transparent;
         }
@@ -691,6 +709,7 @@
   padding: 20px;
   margin: 5px;
   @include themeable(background-color, theme-container-background, #fff);
+
   h4 {
     font-size: 0.8em;
     margin: 0px;
@@ -699,6 +718,28 @@
 
   .stat-percentage {
     font-size: 0.8em;
+  }
+
+  table {
+    margin: 1rem auto;
+    text-align: left;
+    width: 50%;
+
+    thead {
+      line-height: 3rem;
+
+      th:last-child {
+        text-align: right;
+      }
+    }
+
+    tbody {
+      line-height: 2rem;
+
+      td:last-child {
+        text-align: right;
+      }
+    }
   }
 }
 
@@ -717,6 +758,19 @@
   padding: 50px 0px 120px;
   margin-bottom: -160px;
   line-height: 1.3em;
+  .manage-page-error {
+    background:$red;
+    color:white;
+    padding:20px 10px;
+    line-height: 1.4em;
+    border-radius: 3px;
+  }
+  .manage-page-success {
+    background:$green;
+    padding:20px 10px;
+    line-height: 1.4em;
+    border-radius: 3px;
+  }
   li {
     margin: 20px auto;
   }

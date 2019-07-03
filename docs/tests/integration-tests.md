@@ -6,7 +6,7 @@ title: Integration Tests
 
 An integration test is when you need to test the interaction of multiple systems or parts of your application.
 
-An integration test may seem similar to an [acceptance test](/tests/acceptance-tests.md). The main difference is that an acceptance test is from the perspective of the end user while an integration test is from the perspective of the developer.
+An integration test may seem similar to an [acceptance test](/tests/acceptance-tests). The main difference is that an acceptance test is from the perspective of the end user while an integration test is from the perspective of the developer.
 
 Integration tests can be found in the directory `spec/requests`.
 

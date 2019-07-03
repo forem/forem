@@ -6,44 +6,58 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/"
       expect(response.body).to include("key links")
     end
-    xit "renders page with min read" do
-      create_list(:article, 10, featured: true)
+
+    it "renders page with min read" do
+      create(:article, featured: true)
       get "/"
       expect(response.body).to include("min read")
     end
+
     it "renders left display_ads when published and approved" do
       org = create(:organization)
       ad = create(:display_ad, published: true, approved: true, organization: org)
       get "/"
       expect(response.body).to include(ad.processed_html)
     end
+
     it "renders right display_ads when published and approved" do
       org = create(:organization)
       ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right", organization: org)
       get "/"
       expect(response.body).to include(ad.processed_html)
     end
+
     it "does not render left display_ads when not approved" do
       org = create(:organization)
       ad = create(:display_ad, published: true, approved: false, organization: org)
       get "/"
       expect(response.body).not_to include(ad.processed_html)
     end
+
     it "does not render right display_ads when not approved" do
       org = create(:organization)
       ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right", organization: org)
       get "/"
       expect(response.body).not_to include(ad.processed_html)
     end
+
     it "has sponsors displayed" do
       org = create(:organization, is_gold_sponsor: true, sponsorship_tagline: "Oh Yeah!!!")
       get "/"
       expect(response.body).to include(org.sponsorship_tagline)
     end
+
     it "does not display non-sponsor org" do
       org = create(:organization, is_gold_sponsor: false, sponsorship_tagline: "Oh Yeah!!!")
       get "/"
       expect(response.body).not_to include(org.sponsorship_tagline)
+    end
+
+    it "shows listings" do
+      user = create(:user)
+      listing = create(:classified_listing, user_id: user.id)
+      get "/"
+      expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
   end
 

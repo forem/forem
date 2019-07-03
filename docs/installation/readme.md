@@ -14,7 +14,7 @@ There are many different ways you can install the **development environment** so
 
 ## Installing locally
 
-You can install DEV to your local machine and we have instructions for [Mac](/installation/mac-os), [Windows](/installation/windows) and [Linux](/installation/linux).
+You can install DEV to your local machine and we have instructions for [Mac](/installation/mac), [Windows](/installation/windows) and [Linux](/installation/linux).
 
 ## Running Docker
 

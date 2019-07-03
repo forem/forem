@@ -23,6 +23,7 @@ const fakeChannels = [
     last_message_at: 'September 21, 2018',
     channel_type: 'group',
     slug: '0',
+    channel_modified_slug: '@0',
     id: 12345,
     messages_count: 124,
   },
@@ -44,6 +45,7 @@ const fakeChannels = [
     last_message_at: 'September 14, 2018',
     channel_type: 'direct',
     slug: '1',
+    channel_modified_slug: '@1',
     id: 12345,
     messages_count: 83,
   },
@@ -65,6 +67,7 @@ const fakeChannels = [
     last_message_at: 'September 29, 2018',
     channel_type: 'group',
     slug: '2',
+    channel_modified_slug: '@2',
     id: 67890,
     messages_count: 56,
   },
@@ -206,7 +209,7 @@ describe('<Channels />', () => {
             .find('.chatchannels__channelslist')
             .childAt(2)
             .text(),
-        ).toEqual(''); // ensure user has no text
+        ).toEqual('group channel 2'); // ensure user has no text
         expect(
           context
             .find('.chatchannels__channelslist')

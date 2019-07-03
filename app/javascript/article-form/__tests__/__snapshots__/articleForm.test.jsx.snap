@@ -46,16 +46,20 @@ exports[`<ArticleForm /> renders properly 1`] = `
         <button
           class="articleform__detailsButton articleform__detailsButton--image"
           onClick={[Function]}
+          type="button"
         >
           <img
+            alt="Upload an image"
             src=""
           />
         </button>
         <button
           class="articleform__detailsButton articleform__detailsButton--moreconfig"
           onClick={[Function]}
+          type="button"
         >
           <img
+            alt="Menu"
             src=""
           />
         </button>
@@ -79,6 +83,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
     <button
       class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
       onClick={[Function]}
+      type="button"
     >
       <img
         alt="upload images"

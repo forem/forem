@@ -10,7 +10,7 @@ RSpec.describe "/internal/reports", type: :request do
   describe "POST /save_status" do
     context "when a valid request is made" do
       before do
-        login_as admin
+        sign_in admin
         valid_save_status_params = { status: "Resolved" }
         valid_save_status_params[:id] = feedback_message.id
         post "/internal/reports/save_status", params:
@@ -44,7 +44,7 @@ RSpec.describe "/internal/reports", type: :request do
 
       before do
         feedback_message
-        login_as admin
+        sign_in admin
         valid_send_email_params["email_to"] = user.email
         post "/internal/reports/send_email", params:
           valid_send_email_params
@@ -77,7 +77,7 @@ RSpec.describe "/internal/reports", type: :request do
       before do
         allow(SlackBot).to receive(:ping).and_return(true)
         feedback_message
-        login_as admin
+        sign_in admin
         note_params["noteable_id"] = feedback_message.id
         note_params["author_id"] = admin.id
         post "/internal/reports/create_note", params: note_params

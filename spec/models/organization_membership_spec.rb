@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe OrganizationMembership, type: :model do
   describe "validations" do
-    subject { create(:organization_membership) }
+    subject { build(:organization_membership) }
 
     it { is_expected.to validate_presence_of(:user_id) }
     it { is_expected.to validate_presence_of(:organization_id) }

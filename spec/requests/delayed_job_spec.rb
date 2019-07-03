@@ -21,7 +21,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
 
     context "when logged in" do
       it "raises 404" do
-        login_as user
+        sign_in user
         expect do
           get "/delayed_job"
         end.to raise_error(ActiveRecord::RecordNotFound)
@@ -29,7 +29,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
     end
 
     context "when logged in as a super admin" do
-      before { login_as super_admin }
+      before { sign_in super_admin }
 
       it "redirects to overview" do
         get "/delayed_job"
@@ -43,7 +43,7 @@ RSpec.describe "Delayed Job web interface", type: :request do
     end
 
     context "when logged in as a tech support member" do
-      before { login_as tech_admin }
+      before { sign_in tech_admin }
 
       it "redirects to overview" do
         get "/delayed_job"

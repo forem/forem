@@ -6,10 +6,21 @@ class DashboardsController < ApplicationController
   def show
     fetch_and_authorize_user
 
+    @current_user_pro = current_user.pro?
+
     target = @user
-    target = @user.organization if @user&.organization && @user&.org_admin && params[:which] == "organization"
-    @articles = target.articles.sorting(params[:sort]).decorate
-    # Updates analytics in background if appropriate:
+    not_authorized if params[:org_id] && !@user.org_admin?(params[:org_id] || @user.any_admin?)
+
+    @organizations = @user.admin_organizations
+
+    if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
+      target = @organizations.find_by(id: params[:org_id])
+      @organization = target
+    end
+
+    @articles = target.articles.includes(:organization).sorting(params[:sort]).decorate
+
+    # Updates analytics in background if appropriate
     ArticleAnalyticsFetcher.new.delay.update_analytics(current_user.id) if @articles && ApplicationConfig["GA_FETCH_RATE"] < 50 # Rate limit concerned, sometimes we throttle down.
   end
 
@@ -37,15 +48,15 @@ class DashboardsController < ApplicationController
   end
 
   def pro
-    user_or_org = if params[:org_id]
-                    org = Organization.find_by(id: params[:org_id])
-                    authorize org, :pro_org_user?
-                    org
-                  else
-                    authorize current_user, :pro_user?
-                    current_user
-                  end
-    @dashboard = Dashboard::Pro.new(user_or_org)
+    @user_or_org = if params[:org_id]
+                     org = Organization.find_by(id: params[:org_id])
+                     authorize org, :pro_org_user?
+                     org
+                   else
+                     authorize current_user, :pro_user?
+                     current_user
+                   end
+    @organizations = current_user.member_organizations
   end
 
   private

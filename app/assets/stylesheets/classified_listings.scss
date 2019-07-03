@@ -60,13 +60,13 @@
       input {
         font-size: 0.8em;
         @include themeable(
-          color, 
-          theme-color, 
+          color,
+          theme-color,
           $black
         );
         @include themeable(
-          background, 
-          theme-container-accent-background, 
+          background,
+          theme-container-accent-background,
           $light-gray
         );
         border-radius: 100px;
@@ -126,19 +126,19 @@
     width: 100%;
     max-width: 580px;
     @include themeable(
-      background, 
+      background,
       theme-container-background,
       white
     );
     box-sizing: border-box;
     @include themeable(
-      border, 
-      theme-border, 
+      border,
+      theme-border,
       1px solid $light-medium-gray
     );
     @include themeable(
-      box-shadow, 
-      theme-container-box-shadow, 
+      box-shadow,
+      theme-container-box-shadow,
       2px 2px 8px darken($light-medium-gray, 5%)
     );
     @media screen and (min-width: 580px) {
@@ -150,8 +150,8 @@
     }
     header {
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
       #f2f7fc
       );
       padding: 25px 22px;
@@ -173,8 +173,8 @@
     h2 {
       font-size: 1.45em;
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
       #32325d
       );
       margin: 0px;
@@ -203,13 +203,13 @@
       border-radius: 3px;
       border: 1px solid $light-medium-gray;
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $light-gray
       );
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         $black
       );
       &[type="checkbox"] {
@@ -223,13 +223,13 @@
       font-size: 17px;
       border-radius: 3px;
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $light-gray
       );
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         $black
       );
       border: 1px solid $light-medium-gray;
@@ -243,12 +243,12 @@
       font-size: 0.8em;
       padding: 8px 0px;
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
     }
-    input[type="submit"] {
+    .cta-main-listing-form {
       border: 0px;
       padding: 12px 0px;
       border-radius: 3px;
@@ -262,9 +262,10 @@
       max-width: 90%;
       margin: 35px auto;
       display: block;
+      text-align: center;
       @include themeable(
-        box-shadow, 
-        theme-container-box-shadow, 
+        box-shadow,
+        theme-container-box-shadow,
         2px 2px 8px darken($light-medium-gray, 5%)
       );
     }
@@ -283,13 +284,16 @@
       .listings-current-credits-inner {
         display: inline-block;
         margin: 20px;
+        select {
+          width: initial;
+        }
       }
       a {
         text-decoration: underline;
         display: inline-block;
         @include themeable(
-          color, 
-          theme-anchor-color, 
+          color,
+          theme-anchor-color,
           $bold-blue
         );
       }
@@ -303,8 +307,8 @@
     p {
       font-size: 0.8em;
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
     }
@@ -314,8 +318,8 @@
     button {
       background: transparent;
       @include themeable(
-        border, 
-        theme-border, 
+        border,
+        theme-border,
         1px solid $light-medium-gray
       );
       font-size: 17px;
@@ -339,14 +343,14 @@
   font-size: 17px;
   border-radius: 3px;
   @include themeable(
-    background, 
-    theme-container-background, 
+    background,
+    theme-container-background,
     white
   );
   margin-top: 10px;
   @include themeable(
-    color, 
-    theme-color, 
+    color,
+    theme-color,
     $black
   );
   border: 1px solid $light-medium-gray;
@@ -354,8 +358,8 @@
 
 .listingform__tagsoptions {
   @include themeable(
-    border, 
-    theme-border, 
+    border,
+    theme-border,
     1px solid $light-medium-gray
   );
   border-bottom-left-radius: 3px;
@@ -389,6 +393,45 @@
   font-weight: bold;
 }
 
+.single-classified-listing-container {
+  width: 90%;
+  z-index: 20;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0px;
+  margin: 12px auto 0px;
+  overflow: hidden;
+  .single-classified-listing-container__inner {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    box-sizing: content-box;
+    padding-right: 17px;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 110px;
+    margin-bottom: 150px;
+    @media screen and (min-width: 950px) {
+      padding-top: calc( 50px + 15vh);
+    }
+    .single-classified-listing-container__spacer {
+      height: 150px;
+      margin-bottom: 150px;
+    }
+  }
+  .single-classified-listing-container__inner::-webkit-scrollbar {
+    // width: 0 !important;
+    display: none;
+  }
+  @media screen and (min-width: 950px) {
+    left: 50%;
+    width: 600px;
+    margin-left: -300px; /* Negative half of width. */
+  }
+}
+
 .single-classified-listing {
   width: 100%;
   display: inline-block;
@@ -401,16 +444,16 @@
   font-size: 0.9em;
   break-inside: avoid;
   @include themeable(
-    background, 
-    theme-container-background, 
+    background,
+    theme-container-background,
     white
   );
   h3 {
     margin: 0px;
     padding: 9px 15px;
     @include themeable(
-      background, 
-      theme-container-accent-background, 
+      background,
+      theme-container-accent-background,
       lighten($light-medium-gray, 8%)
     );
     border-bottom: 1px solid $light-medium-gray;
@@ -435,13 +478,13 @@
     padding: 10px 15px;
     a {
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $dark-medium-gray
       );
       @include themeable(
-        background, 
-        theme-container-accent-background, 
+        background,
+        theme-container-accent-background,
         $light-medium-gray
       );
       display: inline-block;
@@ -455,15 +498,15 @@
   .single-classified-listing-author-info {
     font-size: 0.69em;
     @include themeable(
-      color, 
-      theme-secondary-color, 
+      color,
+      theme-secondary-color,
       $medium-gray
     );
     padding: 0px 15px 4px;
     a {
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
       display: inline-block;
@@ -474,28 +517,263 @@
   }
   &.single-classified-listing--opened {
     z-index: 20;
-    position: fixed;
-    top: 110px;
-    width: 90%;
+    display: inline-block;
+    position: relative;
     left: 0px;
     right: 0px;
     padding-bottom: 12px;
     @media screen and (min-width: 950px) {
-      top: calc( 50px + 15vh);
-      left: 50%;
-      width: 600px;
-      margin-left: -300px; /* Negative half of width. */  
       h3 { font-size: calc(20px + 0.05vw);}
       .single-classified-listing-body {
         font-size: calc(18px + 0.05vw);
-      }  
+      }
     }
-  }  
+  }
 }
+
+form.listings-contact-via-connect {
+  border-radius: 3px;
+  z-index: 20;
+  position: relative;
+  padding: 10px 15px;
+  margin: 12px auto;
+  width: 100%;
+  padding-bottom: 12px;
+  box-shadow: none;
+  max-width: 100%;
+  text-align: right;
+  p {text-align: left}
+  @media screen and (min-width: 950px) {
+    max-width: 600px;
+  }
+  textarea#new-message {
+    height: 100px;
+    margin: 5px auto 10px auto;
+    font-size: 15px;
+    @media screen and (min-width: 950px) {
+      font-size: calc(18px + 0.05vw);
+    }
+  }
+  .submit-button {
+    margin: none 10px;
+    padding: 0.5em;
+    height: 2em;
+    width: 4em;
+    font-size: 1em;
+    line-height: 1em;
+    text-align: center;
+    border-radius: 3px;
+    border: 0px;
+  }
+}
+
 .classified-listings-modal-background {
   z-index: 15;
   position: fixed;
   left: 0; top: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.8);
   user-select: none;
+}
+
+.dashboard-listings-container {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  width: 800px;
+  max-width: 96%;
+  margin: auto;
+
+  .rounded-btn {
+    font-size: calc(15px + 0.2vw);
+    font-family: $helvetica-condensed;
+    font-stretch: condensed;
+    padding: 4px 20px;
+    border-radius: 100px;
+    margin-right: 5px;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 10px;
+    @include themeable(
+      color,
+      theme-color,
+      $black
+    );
+    @include themeable(
+      background,
+      theme-container-background,
+      lighten($light-medium-gray, 5%)
+    );
+    &:hover {
+      @include themeable(
+        background,
+        theme-container-background-hover,
+        $light-medium-gray
+      );
+    }
+
+    &.active {
+      @include themeable(
+        background,
+        theme-secondary-color,
+        $dark-gray
+      );
+      @include themeable(
+        color,
+        theme-container-background,
+        white
+      );
+    }
+  }
+
+  .dashboard-listings-header-wrapper {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    background: $dark-gray;
+    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+    padding: 15px 0px;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .dashboard-listings-header {
+      width: 43%;
+      text-align: center;
+      color: white;
+      margin: 5px auto;
+      font-size: calc(1.1em + 0.1vw);
+      padding: 18px 0px 7px;
+      padding-left: 10px;
+      font-family: $monospace;
+      border: 1px solid $light-gray;
+      display: block;
+      text-align: center;
+      margin: 1.2%;
+      padding: 1.2%;
+      padding-bottom: 30px;
+
+      @media screen and (max-width: 768px) {
+        width: 90%; 
+      }
+      a {
+        font-size: 0.9em;
+        border: 2px solid #2ad7c5;
+        color: #25c2b2;
+        padding: 6px 16px;
+        margin-top: 6px;
+        border-radius: 100px;
+      }
+    }
+  }
+
+  .dashboard-listings-view {
+
+    .dashboard-listing-row {
+      border: var(--theme-container-border, 1px solid #dbdbdb);
+      box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
+      padding: 5px 15px;
+      margin-bottom: 13px;
+      border-radius: 3px;
+      position: relative;
+      background: var(--theme-container-background, #fff);
+
+      .listing-org {
+        @include themeable(
+          background,
+          theme-secondary-color,
+          darken($light-gray, 6%)
+        );
+        @include themeable(color, theme-container-background, #fff);
+        margin-right: 5px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        margin-top: 10px;
+        display: inline-block;
+        font-size: 0.9em;
+      }
+
+      h2 {
+        color: var(--theme-container-color, #0a0a0a);
+        font-weight: 500;
+        margin-bottom: 10px;
+        margin-top: 8px;
+        font-size: 22px;
+        width: 100%;
+        @media screen and (min-width: 800px) {
+          font-size: 34px;
+        }
+      }
+
+      .dashboard-listing-date {
+        font-size: 0.85em;
+        padding: 3px 0px 6px;
+        color: var(--theme-secondary-color, #666666);
+      }
+
+      .dashboard-listing-category {
+        padding: 10px 15px;
+        a {
+          @include themeable(
+            color,
+            theme-secondary-color,
+            $dark-medium-gray
+          );
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-medium-gray
+          );
+          display: inline-block;
+          margin: 2px;
+          padding: 2px 7px;
+          font-size: 0.77em;
+          border-radius: 3px;
+          font-weight: bold;
+        }
+      }
+
+      .dashboard-listing-tags {
+        font-size: 0.85em;
+        padding: 3px 0px 6px;
+        a {
+          color: var(--theme-container-color, #0a0a0a);
+        }
+      }
+
+      .listing-row-actions {
+        padding: 7px 0px 10px;
+
+        .pill {
+          background: $bold-blue;
+          padding: 4px 20px;
+          border-radius: 100px;
+          color: white;
+          margin-right: 5px;
+          font-size: 14px;
+          border: 2px solid transparent;
+          margin-top: 6px;
+          display: inline-block;
+    
+          &.green {
+            background: $green;
+            color: $black;
+          }
+    
+          &.red {
+            background: $red;
+          }
+    
+          &.black {
+            background: $dark-gray;
+          }
+        }
+      }
+
+    }
+
+
+  }
 }

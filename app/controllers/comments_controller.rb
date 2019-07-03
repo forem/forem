@@ -27,8 +27,8 @@ class CommentsController < ApplicationController
       @article = @commentable
       not_found unless @commentable.published
     end
+
     @commentable_type = @commentable.class.name
-    @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}"
   end
@@ -60,6 +60,7 @@ class CommentsController < ApplicationController
       current_user.update(checked_code_of_conduct: true) if params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
 
       Mention.create_all(@comment)
+      NotificationSubscription.create(user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
       Notification.send_new_comment_notifications_without_delay(@comment)
 
       if @comment.invalid?
@@ -143,13 +144,14 @@ class CommentsController < ApplicationController
       processed_html = "<p>😔 There was a error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|
-      format.json { render json: { processed_html: processed_html }, status: 200 }
+      format.json { render json: { processed_html: processed_html }, status: :ok }
     end
   end
 
   def settings
     @comment = Comment.find(params[:id_code].to_i(26))
     authorize @comment
+    @notification_subscription = NotificationSubscription.find_or_initialize_by(user_id: @comment.user_id, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments")
     render :settings
   end
 

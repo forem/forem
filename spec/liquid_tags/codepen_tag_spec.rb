@@ -37,6 +37,13 @@ RSpec.describe CodepenTag, type: :liquid_template do
       end.not_to raise_error
     end
 
+    it "accepts codepen link with an underscore in the username" do
+      codepen_link = "https://codepen.io/t_white96/pen/XKqrJX/"
+      expect do
+        generate_new_liquid(codepen_link)
+      end.not_to raise_error
+    end
+
     it "rejects invalid codepen link" do
       expect do
         generate_new_liquid("invalid_codepen_link")

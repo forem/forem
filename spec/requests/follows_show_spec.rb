@@ -7,7 +7,7 @@ RSpec.describe "Follows #show", type: :request do
   let(:organization) { create(:organization) }
   let(:podcast) { create(:podcast) }
 
-  before { login_as current_user }
+  before { sign_in current_user }
 
   def get_following_status
     %w[User Organization Tag Podcast].map do |type|
@@ -17,7 +17,7 @@ RSpec.describe "Follows #show", type: :request do
   end
 
   it "rejects unless logged-in" do
-    logout
+    sign_out(user)
     get "/follows/#{user.id}"
     expect(response.body).to eq("not-logged-in")
   end

@@ -9,7 +9,7 @@ RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do
   let(:podcast) { create(:podcast, feed_url: "http://softwareengineeringdaily.com/feed/podcast/") }
 
   before do
-    PodcastFeed.new.get_episodes(podcast, 2)
+    Podcasts::Feed.new.get_episodes(podcast, 2)
   end
 
   describe "GET /api/articles" do
@@ -29,8 +29,8 @@ RSpec.describe "ArticlesApi", type: :request, vcr: vcr_option do
     end
 
     it "returns nothing is passed invalid podcast slug" do
-      expect { get "/api/podcast_episodes?username=nothing_#{rand(1_000_000_000_000_000)}" }.
-        to raise_error(ActiveRecord::RecordNotFound)
+      get "/api/podcast_episodes?username=nothing_#{rand(1_000_000_000_000_000)}"
+      expect(response).to have_http_status(:not_found)
     end
   end
 end

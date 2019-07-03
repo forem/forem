@@ -110,7 +110,7 @@ exports[`<ChannelDetails /> as a moderator should render and test snapshot 1`] =
         }
       }
     >
-      All functionality is early beta. Contact us if you need help with anything.
+      Contact yo@dev.to for assistance.
     </div>
   </div>
 </div>
@@ -223,9 +223,7 @@ preact-render-spy (1 nodes)
         @pendinguser2 - pending user 2
       </a>
     </div>
-    <div style="margin-top: 10px;">
-      All functionality is early beta. Contact us if you need help with anything.
-    </div>
+    <div style="margin-top: 10px;">Contact yo@dev.to for assistance.</div>
   </div>
 </div>
 
@@ -281,12 +279,9 @@ preact-render-spy (1 nodes)
         😢😢😢
       </span>
     </h3>
-    <h4>It may not be immediately in the sidebar</h4>
-    <p>
-      Contact the admins at 
-      <a href="mailto:yo@dev.to">yo@dev.to</a>
-       if this was a mistake
-    </p>
+    <h4>
+      This may take a few minutes to be reflected in the sidebar
+    </h4>
   </div>
 </div>
 
@@ -362,8 +357,8 @@ exports[`<ChannelDetails /> as a user should render and test snapshot 1`] = `
       Danger Zone
     </h2>
     <button
-      Click={[Function]}
       data-content="12345"
+      onClick={[Function]}
       type="button"
     >
       Leave Channel

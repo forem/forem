@@ -15,6 +15,7 @@ export default class UserDetails extends Component {
   render() {
     const { user } = this.props;
     const channelId = this.props.activeChannelId;
+    const channel = this.props.activeChannel || {};
     const socialIcons = [];
     if (user.twitter_username) {
       socialIcons.push(
@@ -62,6 +63,29 @@ export default class UserDetails extends Component {
         </div>
       );
     }
+    let blockButton = '';
+    if (channel.channel_type === 'direct' && window.currentUser.id != user.id) {
+      blockButton = (
+        <button
+          onClick={() => {
+            const modal = document.getElementById('userdetails__blockmsg');
+            const otherModal = document.getElementById(
+              'userdetails__reportabuse',
+            );
+            otherModal.style.display = 'none';
+            if (modal.style.display === 'none') {
+              modal.style.display = 'block';
+              window.location.href = `#userdetails__blockmsg`;
+            } else {
+              modal.style.display = 'none';
+              window.location.href = `#`;
+            }
+          }}
+        >
+          Block User
+        </button>
+      );
+    }
     return (
       <div>
         <img
@@ -90,25 +114,7 @@ export default class UserDetails extends Component {
           <div className="value">{user.joined_at}</div>
         </div>
         <div className="userdetails__blockreport">
-          <button
-            onClick={() => {
-              const modal = document.getElementById('userdetails__blockmsg');
-              const otherModal = document.getElementById(
-                'userdetails__reportabuse',
-              );
-              otherModal.style.display = 'none';
-              if (modal.style.display === 'none') {
-                modal.style.display = 'block';
-                window.location.href = `#userdetails__blockmsg`;
-              } else {
-                modal.style.display = 'none';
-                window.location.href = `#`;
-              }
-            }}
-          >
-            Block User
-          </button>
-
+          {blockButton}
           <button
             onClick={() => {
               const modal = document.getElementById('userdetails__reportabuse');

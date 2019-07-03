@@ -4,7 +4,7 @@ RSpec.describe "UsersOnboarding", type: :request do
   let(:user) { create(:user, saw_onboarding: false) }
 
   before do
-    login_as user
+    sign_in user
   end
 
   describe "PATCH /onboarding_update" do

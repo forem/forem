@@ -7,11 +7,21 @@ class OrganizationPolicy < ApplicationPolicy
     user.org_admin?(record)
   end
 
+  def leave_org?
+    part_of_org?
+  end
+
+  def part_of_org?
+    return false if record.blank?
+
+    OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
+  end
+
   def generate_new_secret?
     update?
   end
 
   def pro_org_user?
-    user.has_role?(:pro) && user.organization_id == record.id
+    user.has_role?(:pro) && OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 end

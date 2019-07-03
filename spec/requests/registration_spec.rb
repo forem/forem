@@ -13,7 +13,7 @@ RSpec.describe "Registrations", type: :request do
 
     context "when logged in" do
       it "redirects to /dashboard" do
-        login_as user
+        sign_in user
 
         Timecop.freeze(Time.current) do
           get "/enter"

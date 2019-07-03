@@ -56,11 +56,20 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = latest_published_welcome_thread
+    daily_thread = latest_published_thread("welcome")
     if daily_thread
       redirect_to daily_thread.path
     else
       # fail safe if we haven't made the first welcome thread
+      redirect_to "/notifications"
+    end
+  end
+
+  def challenge
+    daily_thread = latest_published_thread("challenge")
+    if daily_thread
+      redirect_to daily_thread.path
+    else
       redirect_to "/notifications"
     end
   end
@@ -80,7 +89,7 @@ class PagesController < ApplicationController
     @articles = Article.published.tagged_with(%w[shecoded shecodedally theycoded], any: true).
       where(approved: true).where("published_at > ? AND score > ?", 3.weeks.ago, -8).
       order(Arel.sql("RANDOM()")).
-      where.not(id: @top_articles.pluck(:id)).
+      where.not(id: @top_articles).
       includes(:user).decorate
     render layout: false
     set_surrogate_key_header "shecoded_page"
@@ -88,8 +97,8 @@ class PagesController < ApplicationController
 
   private # helpers
 
-  def latest_published_welcome_thread
-    Article.published.where(user_id: ApplicationConfig["DEVTO_USER_ID"]).tagged_with("welcome").last
+  def latest_published_thread(tag_name)
+    Article.published.where(user_id: ApplicationConfig["DEVTO_USER_ID"]).tagged_with(tag_name).last
   end
 
   def members_for_display

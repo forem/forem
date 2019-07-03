@@ -4,7 +4,6 @@ RSpec.describe "User visits a homepage", type: :system do
   let!(:article) { create(:article, reactions_count: 12, featured: true) }
   let!(:article2) { create(:article, reactions_count: 20, featured: true) }
   let!(:bad_article) { create(:article, reactions_count: 0) }
-  let!(:user) { create(:user) }
   let!(:timestamp) { "2019-03-04T10:00:00Z" }
 
   context "when no options specified" do
@@ -19,7 +18,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_selector(".big-article", visible: true)
       end
 
-      it "shows the main article readable date" do
+      it "shows the main article readable date", js: true do
         expect(page).to have_selector(".big-article time", text: "Mar 4")
       end
 
@@ -43,7 +42,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).not_to have_text(bad_article.title)
       end
 
-      it "shows all articles dates" do
+      it "shows all articles dates", js: true do
         expect(page).to have_selector(".single-article time", text: "Mar 4", count: 2)
       end
 
@@ -58,21 +57,6 @@ RSpec.describe "User visits a homepage", type: :system do
     before do
       articles = create_list(:article, 3, reactions_count: 30, featured: true)
       articles.each { |a| a.update_column(:score, 31) }
-    end
-
-    context "when unauthorized" do
-      before { visit "/" }
-
-      include_examples "shows the sign_in invitation"
-    end
-
-    context "when signed in" do
-      before do
-        sign_in user
-        visit "/"
-      end
-
-      include_examples "no sign_in invitation"
     end
 
     describe "meta tags" do

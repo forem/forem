@@ -123,6 +123,12 @@ Pay attention to the username and password you setup during installation of Post
 
 ### Possible error messages
 
-1. There is a possibility that you might encounter a _statement timeout_ when seeding the database for the first time. Please comment out the variable `statement_timeout` from the file `config/database.yml` if it happens.
+1. There is a possibility that you might encounter a _statement timeout_ when seeding the database for the first time. Please increase the value of `statement_timeout` to `9999999` in `config/database.yml`.
+
+2. If the installation process failed with the following error `ERROR: Error installing pg`. Please consider installing the following package `libpq-dev` :
+
+```bash
+sudo apt-get install libpq-dev
+```
 
 > If you encountered any errors that you subsequently resolved, **please consider updating this section** with your errors and their solutions.

@@ -17,11 +17,6 @@ exports[`<Article /> should load article 1`] = `
       >
         /princesscarolyn/your-approval-means-nothing-to-me-42640
       </span>
-      <img
-        alt="External Link Icon"
-        class="external-link-img"
-        src=""
-      />
     </a>
   </div>
   <div

@@ -25,10 +25,10 @@ class Reaction < ApplicationRecord
   before_destroy :remove_algolia
 
   algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_index: false, auto_remove: false do
-    attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status,
+    attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status, :reading_time,
               :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags, :reactable_published_date
     searchableAttributes %i[searchable_reactable_title searchable_reactable_text
-                            searchable_reactable_text searchable_reactable_tags reactable_user]
+                            searchable_reactable_tags reactable_user]
     tags do
       reactable_tags
     end
@@ -103,6 +103,10 @@ class Reaction < ApplicationRecord
 
   def update_reactable_without_delay
     Reactions::UpdateReactableJob.perform_now(id)
+  end
+
+  def reading_time
+    reactable.reading_time if category == "readinglist"
   end
 
   def remove_from_index

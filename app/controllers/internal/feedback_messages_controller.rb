@@ -9,18 +9,8 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
       includes(:reporter, :notes).
       order("feedback_messages.created_at DESC").
       page(params[:page] || 1).per(5)
-    @email_messages = EmailMessage.find_for_reports(@feedback_messages.pluck(:id))
+    @email_messages = EmailMessage.find_for_reports(@feedback_messages)
     @vomits = get_vomits
-  end
-
-  def get_vomits
-    if params[:status] == "Open" || params[:status].blank?
-      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
-    elsif params[:status] == "Resolved"
-      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
-    else
-      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
-    end
   end
 
   def save_status
@@ -69,6 +59,16 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   private
+
+  def get_vomits
+    if params[:status] == "Open" || params[:status].blank?
+      Reaction.where(category: "vomit", status: "valid").includes(:user, :reactable).order("updated_at DESC")
+    elsif params[:status] == "Resolved"
+      Reaction.where(category: "vomit", status: "confirmed").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    else
+      Reaction.where(category: "vomit", status: "invalid").includes(:user, :reactable).order("updated_at DESC").limit(10)
+    end
+  end
 
   def send_slack_message(params)
     SlackBot.ping(

@@ -23,13 +23,15 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     end
 
     it "creates a correct notification" do
-      notification = described_class.call(reaction_data(article_reaction), user)
+      result = described_class.call(reaction_data(article_reaction), user)
+      notification = Notification.find(result.notification_id)
       expect(notification.user_id).to eq(user.id)
       expect(notification.notifiable).to eq(article)
     end
 
     it "creates a notification with the correct json" do
-      notification = described_class.call(reaction_data(article_reaction), user)
+      result = described_class.call(reaction_data(article_reaction), user)
+      notification = Notification.find(result.notification_id)
       expect(notification.json_data["user"]["id"]).to eq(user2.id)
       expect(notification.json_data["user"]["name"]).to eq(user2.name)
       expect(notification.json_data["reaction"]["reactable_id"]).to eq(article.id)
@@ -49,13 +51,15 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     end
 
     it "creates a correct notification" do
-      notification = described_class.call(reaction_data(article_reaction), user)
+      result = described_class.call(reaction_data(article_reaction), user)
+      notification = Notification.find(result.notification_id)
       expect(notification.notifiable).to eq(article)
       expect(notification.notified_at).not_to be_nil
     end
 
     it "creates a notification with the correct json" do
-      notification = described_class.call(reaction_data(article_reaction), user)
+      result = described_class.call(reaction_data(article_reaction), user)
+      notification = Notification.find(result.notification_id)
       expect(notification.json_data["user"]["id"]).to eq(user2.id)
       expect(notification.json_data["user"]["name"]).to eq(user2.name)
       expect(notification.json_data["reaction"]["reactable_id"]).to eq(article.id)
@@ -77,7 +81,8 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       end
 
       it "returns the same notification" do
-        notification = described_class.call(reaction_data(article_reaction), user)
+        result = described_class.call(reaction_data(article_reaction), user)
+        notification = Notification.find(result.notification_id)
         expect(notification.id).to eq(old_notification.id)
       end
 
@@ -120,6 +125,12 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       described_class.call(reaction_data(destroyed_reaction), user)
       expect(Notification.where(id: notification.id)).not_to be_any
     end
+
+    it "returns deleted action" do
+      notification
+      result = described_class.call(reaction_data(destroyed_reaction), user)
+      expect(result.action).to eq(:deleted)
+    end
   end
 
   context "when a reaction is destroyed but it has siblings" do
@@ -144,6 +155,12 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       expect(notification.json_data["user"]["username"]).to eq(user3.username)
       expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }).to eq([user3.id])
     end
+
+    it "returns saved action" do
+      result = described_class.call(reaction_data(destroyed_reaction), user)
+      expect(result.action).to eq(:saved)
+      expect(result.notification_id).to eq(notification.id)
+    end
   end
 
   context "when a receiver is an organization" do
@@ -156,7 +173,8 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
     end
 
     it "creates a correct notification" do
-      notification = described_class.call(reaction_data(article_reaction), organization)
+      result = described_class.call(reaction_data(article_reaction), organization)
+      notification = Notification.find(result.notification_id)
       expect(notification.organization_id).to eq(organization.id)
       expect(notification.user_id).to be_nil
       expect(notification.notifiable).to eq(article)

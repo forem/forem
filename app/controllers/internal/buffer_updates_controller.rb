@@ -1,16 +1,23 @@
 class Internal::BufferUpdatesController < Internal::ApplicationController
   def create
-    article = Article.find(params[:article_id])
+    article_id = params[:article_id]
+    article = Article.find(article_id) if article_id.present?
     fb_post = params[:fb_post]
     tweet = params[:tweet]
-    if params[:social_channel] == "main_twitter"
-      Bufferizer.new(article, tweet).main_teet!
+    listing_id = params[:listing_id]
+    listing = ClassifiedListing.find(params[:listing_id]) if listing_id.present?
+    case params[:social_channel]
+    when "main_twitter"
+      Bufferizer.new("article", article, tweet).main_tweet!
       render body: nil
-    elsif params[:social_channel] == "satellite_twitter"
-      Bufferizer.new(article, tweet).satellite_tweet!
+    when "satellite_twitter"
+      Bufferizer.new("article", article, tweet).satellite_tweet!
       render body: nil
-    elsif params[:social_channel] == "facebook"
-      Bufferizer.new(article, fb_post).facebook_post!
+    when "facebook"
+      Bufferizer.new("article", article, fb_post).facebook_post!
+      render body: nil
+    when "listings_twitter"
+      Bufferizer.new("listing", listing, tweet).listings_tweet!
       render body: nil
     end
   end

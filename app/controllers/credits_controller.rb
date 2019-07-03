@@ -3,29 +3,41 @@ class CreditsController < ApplicationController
 
   def index
     @credits = current_user.credits.where(spent: false)
-    @org_credits = current_user.organization.credits.where(spent: false) if current_user.org_admin
+    @organizations = current_user.admin_organizations
   end
 
   def new
     @credit = Credit.new
-    @purchaser = params[:purchaser] == "organization" ? current_user.organization : current_user
+    @purchaser = if params[:organization_id].present? && current_user.org_admin?(params[:organization_id])
+                   Organization.find_by(id: params[:organization_id])
+                 else
+                   current_user
+                 end
+    @organizations = current_user.admin_organizations
     @customer = Stripe::Customer.retrieve(current_user.stripe_id_code) if current_user.stripe_id_code
   end
 
   def create
-    @number_to_purchase = params[:credit][:number_to_purchase].to_i
-    make_payment
-    credit_objects = []
-    @number_to_purchase.times do
-      if params[:user_type] == "organization"
-        raise unless current_user.org_admin
+    not_authorized if params[:organization_id].present? && !current_user.org_admin?(params[:organization_id])
 
-        credit_objects << Credit.new(organization_id: current_user.organization_id, cost: cost_per_credit / 100.0)
+    @number_to_purchase = params[:credit][:number_to_purchase].to_i
+
+    return unless make_payment
+
+    credit_objects = Array.new(@number_to_purchase) do
+      if params[:organization_id].present?
+        @purchaser = Organization.find(params[:organization_id])
+        Credit.new(organization_id: params[:organization_id], cost: cost_per_credit / 100.0)
       else
-        credit_objects << Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
+        @purchaser = current_user
+        Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
       end
     end
     Credit.import credit_objects
+    @purchaser.credits_count = @purchaser.credits.size
+    @purchaser.spent_credits_count = @purchaser.credits.where(spent: true).size
+    @purchaser.unspent_credits_count = @purchaser.credits.where(spent: false).size
+    @purchaser.save
     redirect_to "/credits", notice: "#{@number_to_purchase} new credits purchased!"
   end
 
@@ -34,9 +46,11 @@ class CreditsController < ApplicationController
     find_or_create_card
     update_user_stripe_info
     create_charge
+    true
   rescue Stripe::CardError => e
     flash[:error] = e.message
     redirect_to "/credits/purchase"
+    false
   end
 
   def find_or_create_customer

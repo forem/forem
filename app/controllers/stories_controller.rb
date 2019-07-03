@@ -3,7 +3,7 @@ class StoriesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[index search show]
 
   def index
-    return handle_user_or_organization_or_podcast_index if params[:username]
+    return handle_user_or_organization_or_podcast_or_page_index if params[:username]
     return handle_tag_index if params[:tag]
 
     handle_base_index
@@ -23,7 +23,7 @@ class StoriesController < ApplicationController
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     else
-      @podcast = Podcast.find_by(slug: params[:username]) || not_found
+      @podcast = Podcast.reachable.find_by(slug: params[:username]) || not_found
       @episode = PodcastEpisode.find_by(slug: params[:slug]) || not_found
       handle_podcast_show
     end
@@ -63,13 +63,16 @@ class StoriesController < ApplicationController
     not_found
   end
 
-  def handle_user_or_organization_or_podcast_index
-    @podcast = Podcast.find_by(slug: params[:username].downcase)
+  def handle_user_or_organization_or_podcast_or_page_index
+    @podcast = Podcast.reachable.find_by(slug: params[:username].downcase)
     @organization = Organization.find_by(slug: params[:username].downcase)
+    @page = Page.find_by(slug: params[:username].downcase, is_top_level_path: true)
     if @podcast
       handle_podcast_index
     elsif @organization
       handle_organization_index
+    elsif @page
+      handle_page_display
     else
       handle_user_index
     end
@@ -98,6 +101,12 @@ class StoriesController < ApplicationController
     render template: "articles/tag_index"
   end
 
+  def handle_page_display
+    @story_show = true
+    set_surrogate_key_header "show-page-#{params[:username]}"
+    render template: "pages/show"
+  end
+
   def handle_base_index
     @home_page = true
     @page = (params[:page] || 1).to_i
@@ -121,6 +130,7 @@ class StoriesController < ApplicationController
       end
     end
     assign_podcasts
+    assign_classified_listings
     @article_index = true
     set_surrogate_key_header "main_app_home_page"
     response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
@@ -154,8 +164,12 @@ class StoriesController < ApplicationController
       return
     end
     assign_user_comments
+    @pinned_stories = Article.published.where(id: @user.profile_pins.pluck(:pinnable_id)).
+      limited_column_select.
+      order("published_at DESC").decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
+      where.not(id: @pinned_stories.pluck(:id)).
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 5))
     @article_index = true
     @list_of = "articles"
@@ -249,6 +263,10 @@ class StoriesController < ApplicationController
       order("published_at desc").
       where("published_at > ?", num_hours.hours.ago).
       select(:slug, :title, :podcast_id)
+  end
+
+  def assign_classified_listings
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
   end
 
   def article_finder(num_articles)

@@ -8,7 +8,11 @@ module ApplicationHelper
   end
 
   def view_class
-    "#{controller_name} #{controller_name}-#{controller.action_name}"
+    if @story_show # custom due to edge cases
+      "stories stories-show"
+    else
+      "#{controller_name} #{controller_name}-#{controller.action_name}"
+    end
   end
 
   def core_pages?
@@ -148,10 +152,6 @@ module ApplicationHelper
   def sanitized_sidebar(text)
     ActionController::Base.helpers.sanitize simple_format(text),
                                             tags: %w[p b i em strike strong u br]
-  end
-
-  def track_split_version(url, version)
-    "trackOutboundLink('#{url}','#{version}'); return false;"
   end
 
   def follow_button(followable, style = "full")

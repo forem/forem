@@ -7,6 +7,8 @@ class Comment < ApplicationRecord
   belongs_to :user
   counter_culture :user
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :destroy
+  has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
+  has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
   validates :body_markdown, presence: true, length: { in: 1..25_000 },
                             uniqueness: { scope: %i[user_id
@@ -29,6 +31,7 @@ class Comment < ApplicationRecord
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_update   :remove_notifications, if: :deleted
+  after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown && commentable }
   validate :permissions, if: :commentable
 
@@ -122,12 +125,10 @@ class Comment < ApplicationRecord
   end
 
   def self.rooted_on(commentable_id, commentable_type)
-    includes(:user, :commentable).
+    includes(:user).
       select(:id, :user_id, :commentable_type, :commentable_id,
              :deleted, :created_at, :processed_html, :ancestry, :updated_at, :score).
-      where(commentable_id: commentable_id,
-            ancestry: nil,
-            commentable_type: commentable_type)
+      where(commentable_id: commentable_id, ancestry: nil, commentable_type: commentable_type)
   end
 
   def self.tree_for(commentable, limit = 0)
@@ -164,8 +165,11 @@ class Comment < ApplicationRecord
     end.join
   end
 
-  def title
-    ActionController::Base.helpers.truncate(ActionController::Base.helpers.strip_tags(processed_html), length: 60)
+  def title(length = 80)
+    return "[deleted]" if deleted
+
+    text = ActionController::Base.helpers.strip_tags(processed_html).strip
+    HTMLEntities.new.decode ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
   end
 
   def video
@@ -192,6 +196,14 @@ class Comment < ApplicationRecord
     Notification.update_notifications(self)
   end
 
+  def update_descendant_notifications
+    return unless has_children?
+
+    Comment.where(id: descendant_ids).find_each do |comment|
+      Notification.update_notifications(comment)
+    end
+  end
+
   def send_to_moderator
     return if user && user.comments_count > 10
 
@@ -199,9 +211,9 @@ class Comment < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownFixer.modify_hr_tags(body_markdown)
+    fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
     parsed_markdown = MarkdownParser.new(fixed_body_markdown)
-    self.processed_html = parsed_markdown.finalize
+    self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present!
     shorten_urls!
   end
@@ -253,6 +265,7 @@ class Comment < ApplicationRecord
 
   def before_destroy_actions
     commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
+    ancestors.update_all(updated_at: Time.current)
     remove_notifications
     bust_cache_without_delay
     remove_algolia_index

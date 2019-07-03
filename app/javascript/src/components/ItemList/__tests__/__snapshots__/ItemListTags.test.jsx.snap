@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ItemListTags /> renders properly with some shared tags 1`] = `
+<div
+  class="tags"
+>
+  <a
+    class="tag "
+    data-no-instant={true}
+    href="/t/discuss"
+    onClick={[Function]}
+  >
+    #discuss
+  </a>
+  <a
+    class="tag selected"
+    data-no-instant={true}
+    href="/t/javascript"
+    onClick={[Function]}
+  >
+    #javascript
+  </a>
+</div>
+`;
+
+exports[`<ItemListTags /> renders properly with two different sets of tags 1`] = `
+<div
+  class="tags"
+>
+  <a
+    class="tag "
+    data-no-instant={true}
+    href="/t/discuss"
+    onClick={[Function]}
+  >
+    #discuss
+  </a>
+</div>
+`;

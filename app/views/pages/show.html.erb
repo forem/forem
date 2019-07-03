@@ -1,7 +1,6 @@
 <% title @page.title %>
-
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to<%= request.path %>" />
+  <link rel="canonical" href="https://dev.to<%= @page.path %>" />
   <meta name="description" content="<%= @page.title %> — <%= community_qualified_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
@@ -36,3 +35,4 @@
 <% else %>
   <%= @page.processed_html.html_safe %>
 <% end %>
+<div id="IS_CENTERED_PAGE"></div>

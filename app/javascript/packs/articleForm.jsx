@@ -25,10 +25,14 @@ function loadForm() {
     window.csrfToken = csrfToken;
 
     const root = document.getElementById('article-form');
-    const { article, organization, version } = root.dataset;
+    const { article, organizations, version } = root.dataset;
 
     render(
-      <ArticleForm article={article} organization={organization} version={version} />,
+      <ArticleForm
+        article={article}
+        organizations={organizations}
+        version={version}
+      />,
       root,
       root.firstElementChild,
     );

@@ -31,12 +31,10 @@ class Internal::PagesController < Internal::ApplicationController
     redirect_to "/internal/pages"
   end
 
+  private
+
   def page_params
-    params.require(:page).permit(:title,
-                                 :slug,
-                                 :body_markdown,
-                                 :body_html,
-                                 :description,
-                                 :template)
+    allowed_params = %i[title slug body_markdown body_html description template is_top_level_path]
+    params.require(:page).permit(allowed_params)
   end
 end

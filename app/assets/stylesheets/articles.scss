@@ -82,7 +82,7 @@
         width: 27%;
         padding: 9px 0px;
         text-align: center;
-        color: $black;
+        @include themeable(color, theme-secondary-color, $medium-gray);
         margin: 1%;
       }
       .query-filter-button {
@@ -111,7 +111,11 @@
             theme-container-accent-background,
             lighten($bold-blue, 8%)
           );
-          color: white;
+          @include themeable(
+            color,
+            theme-color,
+            white
+          );
         }
       }
     }
@@ -209,6 +213,44 @@
           font-stretch: condensed;
           font-weight: 600;
           cursor: pointer;
+        }
+      }
+    }
+    .pinned-articles {
+      @include themeable(background, theme-container-background, $white);
+      @include themeable(
+        border,
+        theme-container-border,
+        1px solid $outline-color
+      );
+      padding: 8px 0px;
+      margin: auto;
+      margin-top: 8px;
+      @media screen and (min-width: 750px) {
+        border-radius: 3px;
+        box-sizing: border-box;
+        padding: 8px 8px;
+        padding-right: 9px;
+        width: calc(100% + 2px);
+        max-width: 722px;
+      }
+      .pinned-articles-indicator {
+        text-align: left;
+        font-size: 15px;
+        font-weight: bold;
+        padding-top: 8px;
+        padding-left: 2.8%;
+        @media screen and (min-width: 750px) {
+          padding-left: 22px;
+        }
+        @media screen and (min-width: 950px) {
+          padding-left: 2px;
+        }
+        img {
+          width: 20px;
+          transform: rotate(-8deg);
+          vertical-align: -5px;
+          @include themeable(filter, theme-social-icon-invert, invert(0));
         }
       }
     }
@@ -1200,6 +1242,32 @@
             cursor: default;
           }
         }
+        .widget-listing-live-count {
+          @include themeable(background, theme-secondary-color, $green);
+          @include themeable(color, theme-opposite-color, white);
+          border-radius: 3px;
+          display: inline-block;
+          font-size: 0.8em;
+          padding: 1px 5px 0px;
+          line-height: 1.4em;
+        }
+        &.widget-header-listings {
+          @include themeable(background, theme-container-accent-background, $light-gray);
+          padding: 10px 12px;
+          margin: -10px -12px;
+        }
+        .widget-minimize-button {
+          position: absolute;
+          right: 8px;
+          top: 15px;
+          background: transparent;
+          padding: 0px 5px 1px;
+          border-radius: 3px;
+          font-size: 1.2em;
+          line-height: 0.6em;
+          @include themeable(border, theme-secondary-color-border, 1px solid $light-medium-gray);
+          @include themeable(color, theme-secondary-color, darken($light-medium-gray, 10%));
+        }
       }
       .widget-body {
         margin-top: 9px;
@@ -1211,6 +1279,11 @@
           height: calc(100vh - 300px);
           max-height: 390px;
           overflow-y: scroll;
+        }
+        &.widget-body-listings {
+          .cta-button {
+            margin-top: 15px;
+          }
         }
         &.signup-cta-widget-body {
           ul {
@@ -1285,6 +1358,37 @@
             opacity: 0.86;
           }
         }
+        .widget-listing-link {
+          display: block;
+          padding: 6px 12px 4px;
+          font-size: 0.92em;
+          width: 100%;
+          margin-left: -12px;
+          @include themeable(color, theme-color, $black);
+          @include themeable(border-bottom, theme-subtle-border, 1px solid $light-medium-gray);
+          &:first-child {
+            @include themeable(border-top, theme-subtle-border, 1px solid $light-medium-gray);
+          }
+          .widget-listing-link-title {
+            display: block;
+            font-weight: 600;
+          }
+          .widget-listing-link-category {
+            display: inline-block;
+            @include themeable(border, theme-container-border, 1px solid darken($light-medium-gray, 10%));
+            @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
+
+            padding: 0px 5px;
+            font-size: 0.77em;
+            border-radius: 3px;
+            margin-bottom: 3px;
+            line-height: 1.3em;
+          }
+          &:hover {
+            background: $lightest-gray;
+            @include themeable(background, theme-container-background-hover, $lightest-gray);
+          }
+        }
         .widget-accent {
           background: $purple;
           color: $bold-blue;
@@ -1305,7 +1409,7 @@
           }
         }
         .widget-events-single-link {
-          color: #000000;
+          color: $black;
           font-weight: 500;
         }
         .widget-user-pic {
@@ -1564,7 +1668,7 @@
 }
 
 .feed-cta {
-  background: lighten($purple, 3%) !important;
+  background: lighten($purple, 6%) !important;
   border: 1px solid darken($bold-blue, 5%) !important;
   box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
   .cta-container {
@@ -1575,28 +1679,45 @@
     text-align: center;
     margin-right: 9px;
     padding-right: 9px;
-    font-size: 1.3em;
+    font-size: 1.5em;
   }
-
+  h3 {
+    text-align: center;
+    margin-right: 9px;
+    padding-right: 9px;
+    font-size: 17px !important;
+  }
   .button-container {
     margin-top: 40px;
     text-align: center;
     margin-right: 9px;
     padding-right: 9px;
   }
+  img.rainbowdevimage {
+    width: 190px;
+    height: 190px;
+    margin: 18px auto 35px;
+    border-radius: 22px;
+    display: block;
+    transform: rotate(6deg);
+  }
   .cta-button {
     text-align: center;
     margin: 5px;
-    width: 95px;
-    padding: 3px 8px;
-    font-size: 1.15em;
+    padding: 12px 5px;
+    min-width: 230px;
+    font-size: 1.1em;
     display: inline-block;
     height: auto;
     text-align: center;
     font-weight: bold;
-    border-radius: 3px;
-    border: 2px solid $black;
-    background-color: rgb(102, 226, 213);
+    border-radius: 100px;
+    background-color: $bold-blue;
+    color: white !important;
+  }
+  .feed-cta-sub {
+    margin-top: 20px;
+    font-size: 15px;
   }
 }
 

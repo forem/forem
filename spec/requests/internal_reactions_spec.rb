@@ -8,7 +8,7 @@ RSpec.describe "/internal/reactions", type: :request do
   describe "PUT /internal/reactions as admin" do
     before do
       user.add_role(:trusted)
-      login_as admin
+      sign_in admin
     end
 
     let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id) }
@@ -31,7 +31,7 @@ RSpec.describe "/internal/reactions", type: :request do
   describe "PUT /internal/reactions as non-admin" do
     before do
       user.add_role(:trusted)
-      login_as user
+      sign_in user
     end
 
     let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable_id: article.id) }

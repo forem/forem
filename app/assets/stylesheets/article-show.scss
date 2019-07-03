@@ -4,8 +4,8 @@
 
 .stories-show {
   @include themeable(
-    background, 
-    theme-background, 
+    background,
+    theme-background,
     $lightest-gray
   );
 }
@@ -94,21 +94,21 @@ article {
   width: 880px;
   max-width: 100%;
   @include themeable(
-    background, 
-    theme-container-background, 
+    background,
+    theme-container-background,
     white
   );
   margin: 66px auto 20px;
   text-align: left;
   @include themeable(
-    box-shadow, 
-    theme-container-box-shadow, 
+    box-shadow,
+    theme-container-box-shadow,
     $bold-shadow
   );
   @media screen and (min-width: 880px) {
     @include themeable(
-      border, 
-      theme-container-border, 
+      border,
+      theme-container-border,
       1px solid darken(
         $light-medium-gray, 2%
       )
@@ -147,8 +147,8 @@ article {
 
     .org-branded-title-link {
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         lighten($black, 4%)
       );
       .org-branded-title {
@@ -226,8 +226,8 @@ article {
       padding: 0 3px 16px;
       font-weight: 500;
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
       font-size: 13.5px;
@@ -249,14 +249,15 @@ article {
 
       a {
         @include themeable(
-          color, 
-          theme-secondary-color, 
+          color,
+          theme-secondary-color,
           $medium-gray
         );
         text-decoration: none;
       }
 
-      .icon-img {
+      .icon-img,
+      .reader-image-tiny {
         opacity: 0.5;
         width: 18px;
         height: 18px;
@@ -278,6 +279,9 @@ article {
       }
 
       .action-space {
+        padding: 5px 0 0 0;
+        display: inline-flex;
+
         a {
           display: inline-block;
           background: $green;
@@ -397,8 +401,8 @@ article {
     font-size: 21px;
     line-height: 32px;
     @include themeable(
-      background, 
-      theme-container-background, 
+      background,
+      theme-container-background,
       #fff
     );
     position: relative;
@@ -473,7 +477,13 @@ article {
     hr {
       width: calc(25% + 12px);
       opacity: 0.1;
-      border: 1px solid black;
+      border-width: 1px;
+      border-style: solid;
+      @include themeable(
+        border-color,
+        theme-color,
+        $black
+      );
       margin: 1.3em auto 1.5em;
     }
 
@@ -526,8 +536,8 @@ article {
       font-size: 0.8em;
       line-height: 1.4em;
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         darken($medium-gray, 8%)
       );
       display: block;
@@ -607,10 +617,10 @@ article {
 
     code {
       margin: auto;
-      background: $lightest-gray;
+      @include themeable(background, theme-code-background, $lightest-gray);
       padding: 0.1em 0.3em 0;
       border-radius: 2px;
-      color: #333842;
+      @include themeable(color, theme-code-color, #333842);
       font-size: 0.84em;
       vertical-align: 0;
       max-width: 100%;
@@ -714,8 +724,8 @@ article {
         border: 1px solid $light-medium-gray;
         padding: 5px 1vw;
         @include themeable(
-          background, 
-          theme-background, 
+          background,
+          theme-background,
           $lightest-gray
         );
         text-align: left;
@@ -741,16 +751,16 @@ article {
     overflow: hidden;
     padding: 0px 0px 5px;
     @include themeable(
-      background, 
-      theme-container-background, 
+      background,
+      theme-container-background,
       white
     );
     font-family: $helvetica;
 
     a {
       @include themeable(
-        color, 
-        theme-color, 
+        color,
+        theme-color,
         $black
       );
     }
@@ -820,7 +830,7 @@ article {
 
         a {
           @include themeable(
-            color, 
+            color,
             theme-secondary-color,
             $medium-gray
           );
@@ -836,8 +846,8 @@ article {
             opacity: 0.7;
             background: transparent;
             @include themeable(
-              background, 
-              theme-secondary-color, 
+              background,
+              theme-secondary-color,
               transparent
             );
           }
@@ -848,28 +858,28 @@ article {
 
   .article-actions {
     text-align: center;
-    padding: 9px 0 16px;
+    padding: 5px 0 12px;
     position: fixed;
     bottom: 0;
     z-index: 22;
     background: white;
     border: 1px solid darken($light-medium-gray, 2%);
     @include themeable(
-      border, 
-      theme-container-border, 
+      border,
+      theme-container-border,
       1px solid darken(
         $light-medium-gray, 2%
       )
     );
     @include themeable(
-      box-shadow, 
-      theme-container-box-shadow, 
+      box-shadow,
+      theme-container-box-shadow,
       $bold-shadow
     );
     width: 100%;
     @include themeable(
-      background, 
-      theme-background, 
+      background,
+      theme-background,
       $tan
     );
     .dropdown-content {
@@ -879,7 +889,7 @@ article {
         position: relative;
         width: calc(100% - 24px);
         margin-left: 12px;
-
+        cursor: pointer;
         #article-copy-link-input {
           border-radius: 3px;
           border: 1px dashed black;
@@ -894,14 +904,17 @@ article {
           flex: 1 0 24px;
           max-width: 24px;
           margin-left: 5px;
+          @include themeable(filter, theme-social-icon-invert, invert(0));
         }
-
+        input {
+          cursor: pointer;
+        }
         #article-copy-link-announcer {
           flex: 1 0 100%;
           color: $bold-blue;
           position: absolute;
-          bottom: -18px;
-          padding-left: 4px;
+          bottom: -8px;
+          padding-left: 0px;
           font-size: 12px;
           text-align: left;
 
@@ -946,9 +959,8 @@ article {
         transition-delay: 0.1s;
 
         &.user-animated {
-          animation: wide-reaction-animation 0.25s !important;
           img {
-            animation: image-reaction-animation 0.25s !important;
+            animation: image-reaction-animation 0.3s !important;
           }
         }
         &:focus-visible {
@@ -969,6 +981,9 @@ article {
       .dropdown-content {
         left: 80px !important;
         bottom: 0px !important;
+        @media screen and (min-width: 1365px) {
+          bottom: -155px !important;
+        }
         a {
           background: transparent !important;
           padding-left: 10px !important;
@@ -1002,16 +1017,15 @@ article {
         left: 150px !important;
       }
       button {
-        padding: 11px 0px !important;
+        padding: 12px 0px !important;
       }
     }
     button {
       background: transparent;
       margin: 0px calc(0.22vw + 2px);
-      padding: 3px calc(0.88vw + 6px);
+      padding: 2px calc(0.88vw + 6px);
       padding-right: calc(0.88vw + 10px);
       border: 0px;
-      // background: linear-gradient(60deg, #f4d2d2, #ffffff);
       font-weight: bold;
       font-stretch: condensed;
 
@@ -1023,8 +1037,8 @@ article {
         border-radius: 100px;
         transition: box-shadow 0.18s;
         @include themeable(
-          background, 
-          theme-container-accent-background, 
+          background,
+          theme-reaction-background,
           darken($light-gray, 3%)
         );
         @media screen and (min-width: 500px) {
@@ -1057,8 +1071,8 @@ article {
         margin-left: 5px;
         vertical-align: 10px;
         @include themeable(
-          color, 
-          theme-secondary-color, 
+          color,
+          theme-secondary-color,
           $medium-gray
         );
         font-size: 13px;
@@ -1098,27 +1112,26 @@ article {
           filter: none;
           opacity: 1;
           box-shadow: 0px 0px 0px 2px #ffc0d3;
-          background: linear-gradient(60deg, #ffc0d3, #ff90b3);
+          background: linear-gradient(111deg, #ffb4cb, #ff80a8);
         }
 
         &.unicorn-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #d0e3ff;
-            background: linear-gradient(60deg, #d0e3ff, #adccff);
+            background: linear-gradient(111deg, #c5d9f8, #90bbff);
           }
         }
 
         &.readinglist-reaction-button {
           img {
             box-shadow: 0px 0px 0px 2px #cfc9f3;
-            background: linear-gradient(60deg, #cfc9f3, #b0a7f0);
+            background: linear-gradient(111deg, #cac3f3, #958aee);
           }
         }
 
         &.user-animated {
-          animation: reaction 0.25s;
           img {
-            animation: image-reaction-animation 0.25s !important;
+            animation: image-reaction-animation 0.3s !important;
           }
         }
       }
@@ -1144,14 +1157,23 @@ article {
       img {
         background: transparent !important;
       }
+      &:hover {
+        img {
+          box-shadow: none !important;
+        }
+      }
       .dropdown-content {
         display: none;
         position: fixed;
-        bottom: 60px;
+        bottom: 55px;
         right: 0;
         left: 0;
         z-index: 100;
-        background: $tan;
+        @include themeable(
+          background, 
+          theme-top-bar-background, 
+          $tan
+        );
         font-size: 1em;
         text-align: left;
         min-width: 300px;
@@ -1176,7 +1198,7 @@ article {
         }
 
         .dropdown-link-row {
-          input {
+          input[type="text"] {
             border: 1px dashed black;
             padding: 4px 6px;
             font-size: 1em;
@@ -1186,15 +1208,124 @@ article {
             margin-left: 15px;
           }
 
+          input[type="checkbox"] {
+            float: right;
+            cursor: pointer;
+            @media screen and (min-width: 400px) {
+              margin: 5px;
+            }
+            @media screen and (min-width: 500px) {
+              margin: 3px;
+            }
+            @media screen and (min-width: 1365px) {
+              margin: 1px;
+            }
+          }
+
           a {
             font-weight: bold;
-            color: $black;
+            @include themeable(
+              color, 
+              theme-color, 
+              $black
+            );
             padding: 12px 18px;
             width: calc(100% - 36px);
             display: block;
-
+            font-size: 0.8em;
             &:hover {
-              background: $light-gray;
+              @include themeable(
+                background, 
+                theme-top-bar-background-hover, 
+                $light-gray
+              );
+              }
+          }
+
+          &.notification-subscriptions-area-row {
+            padding: 0px;
+            @include themeable(
+              border-bottom, 
+              theme-container-border, 
+              1px solid $medium-gray
+            );
+          }
+          .notification-subscriptions-area-header {
+            padding: 12px 6px;
+            padding-left: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            margin-top: -5px;
+            @media screen and (min-width: 500px) {
+              border-top-right-radius: 3px;
+              border-top-left-radius: 3px;
+            }
+            @include themeable-important(
+              background, 
+              theme-container-background, 
+              darken($tan, 3%)
+            );
+            @include themeable-important(
+              border-bottom, 
+              theme-subtle-border, 
+              1px solid $light-medium-gray
+            );
+            button.notification-subscription-label {
+              display: inline-block;
+              width: 90px !important;
+              margin-left: 5px !important;
+              text-align: center !important;
+              float: right !important;
+              padding: 4px 0px !important;
+              @include themeable-important(
+                border, 
+                theme-border, 
+                1px solid $light-medium-gray
+              );
+              border-radius: 100px;
+              &.selected {
+                visibility: hidden !important;
+              }
+            }
+          }
+          button.notification-subscription-label {
+            width: 100% !important;
+            opacity: 1.0 !important;
+            text-align: left;
+            font-size: 0.8em;
+            box-sizing: border-box !important;
+            padding: 13px 4px !important;
+            padding-left: 13px !important;
+            margin: auto !important;
+            cursor: pointer !important;
+            @include themeable-important(
+              color, 
+              theme-color, 
+              $black
+            );
+            &:hover {
+              @include themeable-important(
+                background, 
+                theme-top-bar-background-hover, 
+                $light-gray
+              );
+            }
+            .selected-emoji {
+              visibility: hidden;
+              margin-left: 4px;
+              font-size: 1.2em;
+              vertical-align: -0.1em;
+            }
+            &.selected {
+              .selected-emoji {
+                display: inline-block;
+                visibility: visible;
+              }
+              @include themeable-important(
+                color, 
+                theme-color, 
+                $black
+              );
             }
           }
         }
@@ -1205,8 +1336,8 @@ article {
       display: none;
       position: relative;
       @include themeable(
-        color, 
-        theme-secondary-color, 
+        color,
+        theme-secondary-color,
         $medium-gray
       );
       font-weight: bold;
@@ -1255,21 +1386,21 @@ article {
         vertical-align: calc(6px - 0.07vw);
       }
       @media screen and (min-width: 1365px) {
-        padding: 6px 0 6px !important;
+        padding: 7px 0px !important;
         img {
           height: 17px;
           width: 17px;
         }
       }
       @media screen and (min-width: 1439px) {
-        padding: 7px 0 7px !important;
+        padding: 8px 0px !important;
         img {
           height: 20px;
           width: 20px;
         }
       }
       @media screen and (min-width: 1530px) {
-        padding: 9px 0 9px !important;
+        padding: 20px 0px 12px !important;
         img {
           height: 23px;
           width: 23px;
@@ -1291,7 +1422,7 @@ article {
 .dev-ios-native-body {
   .container {
     .article-actions {
-      padding: 8px 0 0;
+      padding: 4px 0 0;
       border-bottom: 1px solid $tan;
       border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
@@ -1374,7 +1505,7 @@ article {
 
   a {
     @include themeable(
-      color, 
+      color,
       theme-color,
       $black
     );
@@ -1480,43 +1611,11 @@ article {
   }
 }
 
-@keyframes reaction {
-  0% {
-  }
-
-  50% {
-    padding-top: 6px;
-    padding-bottom: 4px;
-    padding-left: calc(1.1vw + 10px);
-    padding-right: calc(1.1vw + 10px);
-    margin: 0 0;
-    margin-top: -4px;
-    margin-bottom: -1px;
-  }
-
-  100% {
-  }
-}
-
-@keyframes wide-reaction-animation {
-  0% {
-  }
-
-  50% {
-    margin-left: -8px;
-    margin-right: -5px;
-    width: calc(100% + 5px);
-  }
-
-  100% {
-  }
-}
-
 @keyframes image-reaction-animation {
   0% {
   }
-  50% {
-    transform: rotate(10deg);
+  30% {
+    transform: rotate(-15deg);
   }
   100% {
   }

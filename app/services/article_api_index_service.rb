@@ -36,7 +36,7 @@ class ArticleApiIndexService
 
     if (user = User.find_by(username: username))
       user.articles.published.
-        includes(:user).
+        includes(:organization).
         order("published_at DESC").
         page(page).
         per(num)

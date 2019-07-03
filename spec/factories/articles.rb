@@ -42,4 +42,10 @@ FactoryBot.define do
       article.save
     end
   end
+
+  trait :with_notification_subscription do
+    after(:create) do |article|
+      create(:notification_subscription, user_id: article.user_id, notifiable: article)
+    end
+  end
 end

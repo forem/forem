@@ -85,13 +85,21 @@
     min-width: calc(280px);
   }
   &.chat__channels--placeholder{
+    .chat__channelstogglebutt--placeholderunexpanded {
+      display: none;
+    }
     @media screen and ( max-width: 599px ){
       width: 45px;
+      min-width: 45px;
       input{
         display: none;
       }
       .chat__channelstogglebutt{
-        visibility: hidden;
+        display: none;
+      }
+      .chat__channelstogglebutt--placeholderunexpanded {
+        display: block;
+        width: 100%;
       }
     }
   }
@@ -113,16 +121,25 @@
   border: 1px solid $light-medium-gray;
   box-sizing: border-box;
   padding: 8px;
-  margin-left: 2px;
   font-size: 14px;
   -webkit-appearance: none;
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
   @media screen and ( min-width: 1000px ){
     width: calc(100% - 13px);
   }
 }
 
 .chat__channeltypefilter{
-  padding: 4px 0px 4px;
+  padding: 4px 0px 0px;
   width: calc(100% - 13px);
 }
 
@@ -130,23 +147,36 @@
   background: transparent;
   border: 0px;
   font-size: 15px;
-  padding: 9px 15px 4px;
-  font-family: $monospace;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  display: inline-block;
-  border-bottom: 1px solid $light-medium-gray;
+  font-weight: bold;
+  padding: 5px 15px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid darken($light-medium-gray, 5%);
+  @media screen and ( min-width: 1300px ){
+    width: 33%;
+    display: inline-block;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+  }
 }
 
 .chat__channeltypefilterbutton--active {
-  background: lighten($green, 18%);
+  @include themeable(
+    color, 
+    theme-anchor-color, 
+    darken($sky-blue, 5%)
+  );
+  @media screen and ( min-width: 1300px ){
+    border: 1px solid darken($light-medium-gray, 5%);
+  }
 }
 
 .chat__channeltypefilterbutton--inactive {
   @include themeable(
     color, 
-    theme-container-color, 
-    black
+    theme-secondary-color, 
+    lighten($medium-gray, 5%),
   );
 }
 
@@ -191,15 +221,22 @@
 }
 
 .chat__videocall{
-  height: 480px;
-  width: 640px;
+  height: calc(75vw - 60px);
+  width: calc(100% - 60px);
   position:fixed;
   background: $black;
-  border-radius: 12px;
-  left: 250px;
-  top: 200px;
+  left: 0px;
+  top: 0px;
   text-align: center;
   cursor: grab;
+  border-radius: 12px;
+  z-index: 10000;
+  @media screen and ( min-width: 640px ){
+    width: 640px;
+    height: 480px;
+    left: 250px;
+    top: 150px;
+  }
   &:active{
     cursor: grabbing;
   }
@@ -258,7 +295,12 @@
   bottom: 0;
   top: 0;
   padding: 80px 7%;
-  background: white;
+  z-index:10;
+  @include themeable(
+    background, 
+    theme-background, 
+    white
+  );
 }
 
 .chatNonChatView_exitbutton{
@@ -266,9 +308,14 @@
   left: 4%;
   top: 60px;
   font-size:25px;
-  background: white;
+  background: transparent;
   border:0px;
   font-size:1.8em;
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
 }
 
 .chatNonChatView_contentblock{
@@ -304,6 +351,30 @@
   position: absolute;
   left: 3px;
   top: 3px;
+}
+
+.chat__videocallcontrolbutton {
+  border:  0px;
+  font-size: 14px;
+  color: $light-medium-gray;
+  padding:3px 0px 4px;
+  border-radius:6px;
+  background: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: 125px;
+  &.chat__videocallcontrolbutton--videoonoff {
+    left: 140px;
+  }
+}
+
+.chat__videocalltrackdiv--audio {
+  display: none;
+}
+
+.chat__videocalltrackdiv--video {
+  display: inline;
 }
 
 .activechatchannel {
@@ -361,12 +432,26 @@
     theme-container-accent-background, 
     $light-gray
   );
+  position: relative;
   a {
     @include themeable(
       color, 
       theme-color, 
       $black
     );
+  }
+
+  img {
+    height: 17px;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    @include themeable(
+      filter, 
+      theme-social-icon-invert, 
+      invert(0)
+    );  
   }
 }
 
@@ -437,6 +522,7 @@
   border-left: 2px solid $outline-color;
   padding: 13px;
   min-width: 45%;
+  -webkit-overflow-scrolling: touch;
   // margin-left: -50%;
   @include themeable(
     background, 
@@ -477,7 +563,7 @@
 
 .activechatchannel__activecontentexitbutton{
   border:  0px;
-  font-size: 36px;
+  font-size: 30px;
   @include themeable(
     color, 
     theme-container-color, 
@@ -487,7 +573,7 @@
   background: transparent;
   position: absolute;
   left: 6px;
-  top:-5px;
+  top:-3px;
 }
 
 .activechatchannel__activeArticle{
@@ -498,11 +584,11 @@
 
 .activechatchannel__activeArticleDetails{
   position: absolute;
-  top: -25px;
+  top: -26px;
   right: 2px;
-  left: 42px;
+  left: 35px;
   font-family: $monospace;
-  font-size:0.85em;
+  font-size:0.8em;
   a{
     @include themeable(
       color, 
@@ -512,7 +598,7 @@
   }
   .activechatchannel__activeArticleDetailsPath{
     display: inline-block;
-    max-width: calc(100% - 20px);
+    max-width: calc(100% - 15px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -599,7 +685,7 @@
   bottom:0;
   left:0px;
   right:0px;
-  padding: 19px;
+  padding: 17px;
   @include themeable(
     background, 
     theme-container-accent-background, 
@@ -644,15 +730,28 @@
   padding-left: 30px;
   padding-bottom: 3px;
   min-height: 30px;
-  margin-top:-2px;
+  margin-top:-9px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 0.9em;
 }
 
 .activecontent__githubrepofiles{
   border-bottom: 1px solid $light-medium-gray;
   font-size:0.8em;
+  overflow: auto;
+  &.activecontent__githubrepofiles--root {
+    height: 280px;
+    max-height: 40vh;
+  }
+}
+
+.activecontent__githubreporeadme {
+  font-size: 0.8em;
+  img {
+    max-width: 100%;
+  }
 }
 
 .activecontent__githubrepofilerow{
@@ -731,6 +830,12 @@
 
 .chatchanneltab--new {
   background: lighten($yellow, 10%);
+  color: $black;
+}
+
+.chatchanneltab--video {
+  background: lighten($green, 10%);
+  animation: small-pulser 0.5s linear infinite;
 }
 
 .chatchanneltabindicator{
@@ -779,6 +884,7 @@
   overflow: scroll;
   padding-bottom: 9vw;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 .chatchannels__channelslistheader{
@@ -987,23 +1093,42 @@
 
 .messagecomposer__input {
   border-radius: 3px;
-  border: 1px solid $outline-color;
   font-size: 14px;
-  margin: 10px;
+  margin: 6px 2px 6px 6px;
   padding: 5px;
   resize: none;
   flex-grow: 1;
+  @include themeable(
+    background, 
+    theme-container-background, 
+    white
+  );
+  @include themeable(
+    border, 
+    theme-border, 
+    1px solid $outline-color
+  );
+  @include themeable(
+    color, 
+    theme-color, 
+    $black
+  );
 }
 
 .messagecomposer__submit {
-  margin: 10px 10px 10px 0;
+  margin: 6px 6px 6px 0;
   border-radius: 3px;
   background: $dark-purple;
   font-weight: 600px;
   font-family: $helvetica-condensed;
-  width: 80px;
   color: white;
   font-size: 18px;
+  @media screen and ( min-width: 500px ){
+    width: 80px;
+  }
+  @media screen and ( min-width: 1500px ){
+    width: 100px;
+  }
 }
 
 .messagelist__sentinel {
@@ -1052,6 +1177,13 @@
     opacity: 0.8;
     box-shadow: 2px 2px 0px $green;
     padding: 18px;
+  }
+}
+
+@keyframes small-pulser {
+  50% {
+    opacity: 0.6;
+    box-shadow: 2px 2px 0px $green;
   }
 }
 

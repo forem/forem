@@ -5,11 +5,87 @@ RSpec.describe Notification, type: :model do
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
   let(:organization)    { create(:organization) }
-  let(:article)         { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
+  let(:article)         { create(:article, :with_notification_subscription, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
   let(:follow_instance) { user.follow(user2) }
   let(:badge_achievement) { create(:badge_achievement) }
 
   it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[organization_id notifiable_id notifiable_type action]) }
+
+  describe "when trying to create duplicate notifications" do
+    # Duplicate notifications are not allowed even when validations are skipped
+    it "doesn't allow to create a duplicate notification via import" do
+      create(:notification, user: user, notifiable: article, action: "Reaction")
+      duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction")
+      expect do
+        Notification.import([duplicate_notification],
+                            on_duplicate_key_update: {
+                              conflict_target: %i[notifiable_id notifiable_type user_id action],
+                              index_predicate: "action IS NOT NULL",
+                              columns: %i[json_data notified_at read]
+                            })
+      end.not_to change(Notification, :count)
+    end
+
+    it "updates when trying to create a duplicate notification via import" do
+      notification = create(:notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 1 })
+      duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 2 })
+      Notification.import([duplicate_notification],
+                          on_duplicate_key_update: {
+                            conflict_target: %i[notifiable_id notifiable_type user_id action],
+                            index_predicate: "action IS NOT NULL",
+                            columns: %i[json_data notified_at read]
+                          })
+      notification.reload
+      expect(notification.json_data["user_id"]).to eq(2)
+    end
+
+    it "doesn't allow to create a duplicate organization notification via import" do
+      create(:notification, organization: organization, notifiable: article, action: "Reaction")
+      duplicate_notification = build(:notification, organization: organization, notifiable: article, action: "Reaction")
+      expect do
+        Notification.import([duplicate_notification],
+                            on_duplicate_key_update: {
+                              conflict_target: %i[notifiable_id notifiable_type organization_id action],
+                              index_predicate: "action IS NOT NULL",
+                              columns: %i[json_data notified_at read]
+                            })
+      end.not_to change(Notification, :count)
+    end
+
+    describe "when notifiable is a Comment" do
+      let!(:comment) { create(:comment, commentable: article) }
+
+      # rubocop:disable RSpec/ExampleLength
+      it "doesn't allow to create a duplicate user notification via import when action is nil" do
+        notification_attributes = { user: user, notifiable: comment, action: nil }
+        create(:notification, notification_attributes)
+        duplicate_notification = build(:notification, notification_attributes)
+        expect do
+          Notification.import([duplicate_notification],
+                              on_duplicate_key_update: {
+                                conflict_target: %i[notifiable_id notifiable_type user_id],
+                                index_predicate: "action IS NULL",
+                                columns: %i[json_data notified_at read]
+                              })
+        end.not_to change(Notification, :count)
+      end
+
+      it "doesn't allow to create a duplicate org notification via import when action is nil" do
+        notification_attributes = { organization: organization, notifiable: comment, action: nil }
+        create(:notification, notification_attributes)
+        duplicate_notification = build(:notification, notification_attributes)
+        expect do
+          Notification.import([duplicate_notification],
+                              on_duplicate_key_update: {
+                                conflict_target: %i[notifiable_id notifiable_type organization_id],
+                                index_predicate: "action IS NULL",
+                                columns: %i[json_data notified_at read]
+                              })
+        end.not_to change(Notification, :count)
+      end
+      # rubocop:enable RSpec/ExampleLength
+    end
+  end
 
   describe "when trying to #send_new_follower_notification after following a tag" do
     let(:tag) { create(:tag) }
@@ -111,7 +187,7 @@ RSpec.describe Notification, type: :model do
 
       it "sends a notification to the organization" do
         org = create(:organization)
-        user.update(organization: org)
+        create(:organization_membership, user: user, organization: org)
         article.update(organization: org)
         comment = create(:comment, user: user2, commentable: article)
         Notification.send_new_comment_notifications_without_delay(comment)
@@ -124,6 +200,7 @@ RSpec.describe Notification, type: :model do
 
       before do
         article.update(receive_notifications: false)
+        article.notification_subscriptions.delete_all
       end
 
       it "does not send a notification to the author of the article" do
@@ -163,14 +240,18 @@ RSpec.describe Notification, type: :model do
       it "sends a notification to the author of a comment" do
         comment = create(:comment, user: user2, commentable: article)
         reaction = create(:reaction, reactable: comment, user: user)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-        expect(user2.notifications.count).to eq 1
+        perform_enqueued_jobs do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+          expect(user2.notifications.count).to eq 1
+        end
       end
 
       it "sends a notification to the author of an article" do
         reaction = create(:reaction, reactable: article, user: user2)
-        Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-        expect(user.notifications.count).to eq 1
+        perform_enqueued_jobs do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+          expect(user.notifications.count).to eq 1
+        end
       end
     end
 
@@ -227,7 +308,7 @@ RSpec.describe Notification, type: :model do
       let(:org) { create(:organization) }
 
       before do
-        user.update(organization: org, org_admin: true)
+        create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         article.update(organization: org)
       end
 
@@ -239,34 +320,38 @@ RSpec.describe Notification, type: :model do
     end
 
     it "creates positive reaction notification" do
-      reaction = Reaction.create!(
+      reaction = article.reactions.create!(
         user_id: user2.id,
-        reactable_id: article.id,
-        reactable_type: "Article",
         category: "like",
       )
-      notification = Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      expect(notification).to be_valid
+      perform_enqueued_jobs do
+        expect do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        end.to change(Notification, :count).by(1)
+      end
     end
 
     it "does not create negative notification" do
       user2.add_role(:trusted)
-      reaction = Reaction.create!(
+      reaction = article.reactions.create!(
         user_id: user2.id,
-        reactable_id: article.id,
-        reactable_type: "Article",
         category: "vomit",
       )
-      notification = Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      expect(notification).to eq nil
+      perform_enqueued_jobs do
+        expect do
+          Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        end.not_to change(Notification, :count)
+      end
     end
 
     it "destroys the notification properly" do
       reaction = create(:reaction, user: user2, reactable: article, category: "like")
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      reaction.destroy!
-      Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
-      expect(Notification.count).to eq 0
+      perform_enqueued_jobs do
+        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        reaction.destroy!
+        Notification.send_reaction_notification(reaction, reaction.reactable.user)
+        expect(Notification.count).to eq 0
+      end
     end
   end
 
@@ -274,7 +359,7 @@ RSpec.describe Notification, type: :model do
     context "when the notifiable is an article from a user" do
       before do
         user2.follow(user)
-        run_background_jobs_immediately { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to the author's followers" do
@@ -288,7 +373,7 @@ RSpec.describe Notification, type: :model do
       before do
         user2.follow(user)
         user3.follow(organization)
-        run_background_jobs_immediately { Notification.send_to_followers(article, "Published") }
+        perform_enqueued_jobs { Notification.send_to_followers(article, "Published") }
       end
 
       it "sends a notification to author's followers" do
@@ -301,74 +386,8 @@ RSpec.describe Notification, type: :model do
     end
   end
 
-  describe "#send_milestone_notification" do
-    # milestones = [64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144]
-    let(:view_milestone_hash) { { type: "View", article: article } }
-    let(:reaction_milestone_hash) { { type: "Reaction", article: article } }
-
-    context "when a user has never received a milestone notification" do
-      it "sends the appropriate level view milestone notification" do
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        expect(user.notifications.first.action).to include "2048"
-      end
-
-      it "sends the appropriate level reaction milestone notification" do
-        Notification.send_milestone_notification_without_delay(reaction_milestone_hash)
-        expect(user.notifications.first.action).to include "64"
-      end
-    end
-
-    context "when a user has received a milestone notification before" do
-      def mock_previous_view_milestone_notification
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        article.update_column(:page_views_count, 9001)
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-      end
-
-      def mock_previous_reaction_milestone_notification
-        Notification.send_milestone_notification_without_delay(reaction_milestone_hash)
-        article.update_column(:positive_reactions_count, 150)
-        Notification.send_milestone_notification_without_delay(reaction_milestone_hash)
-      end
-
-      it "sends the appropriate level view milestone notification" do
-        mock_previous_view_milestone_notification
-        expect(user.notifications.second.action).to include "8192"
-      end
-
-      it "sends the appropriate level reaction milestone notification" do
-        mock_previous_reaction_milestone_notification
-        expect(user.notifications.last.action).to include "128"
-      end
-
-      it "adds an additional view milestone notification" do
-        mock_previous_view_milestone_notification
-        expect(user.notifications.count).to eq 2
-      end
-
-      it "does not the same view milestone notification if called again" do
-        mock_previous_view_milestone_notification
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        expect(user.notifications.count).to eq 2
-      end
-
-      it "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
-        mock_previous_view_milestone_notification
-        article.update_column(:page_views_count, rand(9002..16_383))
-        Notification.send_milestone_notification_without_delay(view_milestone_hash)
-        expect(user.notifications.count).to eq 2
-      end
-    end
-  end
-
   describe "#update_notifications" do
-    context "when there are no notifications to begin with" do
-      it "returns nil" do
-        expect(Notification.update_notifications_without_delay(article, "Published")).to be nil
-      end
-    end
-
-    context "when there are notifications to update" do
+    context "when there are article notifications to update" do
       before do
         user2.follow(user)
         Notification.send_to_followers_without_delay(article, "Published")
@@ -377,16 +396,22 @@ RSpec.describe Notification, type: :model do
       it "updates the notification with the new article title" do
         new_title = "hehehe hohoho!"
         article.update_column(:title, new_title)
-        Notification.update_notifications_without_delay(article.reload, "Published")
-        first_notification_article_title = Notification.first.json_data["article"]["title"]
-        expect(first_notification_article_title).to eq new_title
+        article.reload
+        perform_enqueued_jobs do
+          Notification.update_notifications(article, "Published")
+          first_notification_article_title = Notification.first.json_data["article"]["title"]
+          expect(first_notification_article_title).to eq new_title
+        end
       end
 
       it "adds organization data when the article now belongs to an org" do
         article.update_column(:organization_id, organization.id)
-        Notification.update_notifications_without_delay(article.reload, "Published")
-        first_notification_organization_id = Notification.first.json_data["organization"]["id"]
-        expect(first_notification_organization_id).to eq organization.id
+        article.reload
+        perform_enqueued_jobs do
+          Notification.update_notifications(article.reload, "Published")
+          first_notification_organization_id = Notification.first.json_data["organization"]["id"]
+          expect(first_notification_organization_id).to eq organization.id
+        end
       end
     end
   end
@@ -429,6 +454,24 @@ RSpec.describe Notification, type: :model do
       expect do
         Notification.send_new_badge_notification_without_delay(badge_achievement)
       end.to change(Notification, :count).by(1)
+    end
+  end
+
+  describe "#remove_each" do
+    let(:mention) { create(:mention, user_id: user.id, mentionable_id: comment.id, mentionable_type: "Comment") }
+    let(:comment) { create(:comment, user_id: user.id, commentable_id: article.id) }
+    let(:notifiable_collection) { [mention] }
+
+    before do
+      create(:notification, user_id: mention.user_id, notifiable_id: mention.id, notifiable_type: "Mention")
+    end
+
+    it "removes each mention related notifiable" do
+      perform_enqueued_jobs do
+        expect do
+          Notification.remove_each(notifiable_collection)
+        end.to change(Notification, :count).by(-1)
+      end
     end
   end
 end

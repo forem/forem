@@ -20,7 +20,7 @@ export function getArticle() {}
 
 export function submitArticle(payload, clearStorage, errorCb, failureCb) {
   const method = payload.id ? 'PUT' : 'POST';
-  const url = payload.id ? `/api/articles/${payload.id}` : '/api/articles';
+  const url = payload.id ? `/articles/${payload.id}` : '/articles';
   fetch(url, {
     method,
     headers: {

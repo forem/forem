@@ -13,123 +13,52 @@ const Channels = ({
   incomingVideoCallChannelIds,
 }) => {
   const channels = chatChannels.map(channel => {
-    if (!channel) {
-      return;
-    }
-    const isActive = parseInt(activeChannelId, 10) === channel.id;
-    let lastOpened = channel.last_opened_at;
-    if (!lastOpened) {
-      if (channel.channel_users[window.currentUser.username]) {
-        lastOpened =
-          channel.channel_users[window.currentUser.username].last_opened_at;
-      } else {
-        lastOpened = new Date();
-      }
-    }
+    const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
+    const lastOpened = channel.last_opened_at;
     const isUnopened =
-      new Date(channel.last_message_at) > new Date(lastOpened) &&
-      channel.messages_count > 0;
-
+      new Date(channel.channel_last_message_at) > new Date(lastOpened) &&
+      channel.channel_messages_count > 0;
+    let newMessagesIndicator = isUnopened ? 'new' : 'old';
+    if (incomingVideoCallChannelIds.indexOf(channel.chat_channel_id) > -1) {
+      newMessagesIndicator = 'video';
+    }
     const otherClassname = isActive
       ? 'chatchanneltab--active'
       : 'chatchanneltab--inactive';
-    const name =
-      channel.channel_type === 'direct'
-        ? `@${channel.slug
-            .replace(`${window.currentUser.username}/`, '')
-            .replace(`/${window.currentUser.username}`, '')}`
-        : channel.channel_name;
-    const newMessagesIndicatorClass = isUnopened ? 'new' : 'old';
-    const modififedSlug =
-      channel.channel_type === 'direct' ? name : channel.slug;
-    const indicatorPic =
-      channel.channel_type === 'direct' ? (
-        <img
-          alt={channel.channel_name}
-          src={channel.channel_users[name.replace('@', '')].profile_image}
-          className="chatchanneltabindicatordirectimage"
-        />
-      ) : (
-        <img
-          alt={channel.channel_name}
-          src={GroupImage}
-          className="group-img"
-        />
-      );
-    let channelColor = 'transparent';
-    if (channel.channel_type === 'direct' && isActive) {
-      channelColor = channel.channel_users[name.replace('@', '')].darker_color;
-    } else if (isActive) {
-      channelColor = '#4e57ef';
-    }
-
-    let content = '';
-    const contentInner = (
-      <span
-        data-channel-slug={modififedSlug}
-        className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicatorClass}`}
-        data-channel-id={channel.id}
-      >
-        {indicatorPic}
-      </span>
-    );
-    if (expanded) {
-      content = (
-        <span>
-          {contentInner}
-          {name}
-        </span>
-      );
-    } else if (channel.channel_type === 'direct') {
-      content = contentInner;
-    } else {
-      content = name;
-    }
-    let callIndicator = '';
-    if (
-      incomingVideoCallChannelIds &&
-      incomingVideoCallChannelIds.includes(channel.id)
-    ) {
-      callIndicator = (
-        <span
-          role="img"
-          aria-label="emoji"
-          className="chatchanneltabindicator chatchanneltabindicator--phone"
-        >
-          📞
-        </span>
-      );
-    }
     return (
       <button
         type="button"
         key={channel.id}
         className="chatchanneltabbutton"
         onClick={handleSwitchChannel}
-        data-channel-id={channel.id}
-        data-channel-slug={modififedSlug}
+        data-channel-id={channel.chat_channel_id}
+        data-channel-slug={channel.channel_modified_slug}
       >
         <span
-          className={`chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicatorClass}`}
-          data-channel-id={channel.id}
-          data-channel-slug={modififedSlug}
+          className={`chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`}
+          data-channel-id={channel.chat_channel_id}
+          data-channel-slug={channel.channel_modified_slug}
           style={{
-            border: `1px solid ${channelColor}`,
-            boxShadow: `3px 3px 0px ${channelColor}`,
+            border: `1px solid ${channel.channel_color}`,
+            boxShadow: `3px 3px 0px ${channel.channel_color}`,
           }}
         >
-          {callIndicator}
-          {content}
+          <span
+            data-channel-slug={channel.channel_modified_slug}
+            className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`}
+            data-channel-id={channel.chat_channel_id}
+          >
+            <img
+              src={channel.channel_image}
+              alt="pic"
+              className="chatchanneltabindicatordirectimage"
+            />
+          </span>
+          {channel.channel_name}
         </span>
       </button>
     );
   });
-  let channelsListFooter = '';
-  if (channels.length === 30) {
-    channelsListFooter = (
-      <div className="chatchannels__channelslistfooter">...</div>
-    );
-  }
   let topNotice = '';
   if (
     expanded &&
@@ -141,12 +70,16 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>
-        {' '}
+        </span>{' '}
         Welcome to
-        <b> DEV Connect</b>
-! You may message anyone you mutually follow.
+        <b> DEV Connect</b>! You may message anyone you mutually follow.
       </div>
+    );
+  }
+  let channelsListFooter = '';
+  if (channels.length === 30) {
+    channelsListFooter = (
+      <div className="chatchannels__channelslistfooter">...</div>
     );
   }
   let configFooter = '';
