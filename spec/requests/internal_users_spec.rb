@@ -52,6 +52,12 @@ RSpec.describe "internal/users", type: :request do
       delete "/internal/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }
       expect { identity.reload }.to raise_error ActiveRecord::RecordNotFound
     end
+
+    it "updates their social account's username to nil" do
+      identity = user.identities.first
+      delete "/internal/users/#{user.id}/remove_identity", params: { user: { identity_id: identity.id } }
+      expect(user.reload.github_username).to eq nil
+    end
   end
 
   describe "POST internal/users/:id/recover_identity" do
@@ -61,6 +67,14 @@ RSpec.describe "internal/users", type: :request do
       identity.delete
       post "/internal/users/#{user.id}/recover_identity", params: { user: { backup_data_id: backup.id } }
       expect(identity).to eq Identity.first
+    end
+
+    it "deletes the backup data" do
+      identity = user.identities.first
+      backup = BackupData.backup!(identity)
+      identity.delete
+      post "/internal/users/#{user.id}/recover_identity", params: { user: { backup_data_id: backup.id } }
+      expect { backup.reload }.to raise_error ActiveRecord::RecordNotFound
     end
   end
 end
