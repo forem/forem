@@ -1,0 +1,122 @@
+<% title "Sponsors" %>
+
+<style>
+  <% cache "partnership-org-section-credits-#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 10.hours do %>
+    <%= Rails.application.assets["partnerships.css"].to_s.html_safe %>
+  <% end %>
+</style>
+
+<div class="partnerships-container">
+  <h1>Partner With <img src="<%= asset_path "rainbowdev.svg" %>" /> </h1>
+  <h3>🚀 Reach</h3>
+  <p>
+    DEV reaches over 3.5 million unique visitors per month with highly technical content. That includes signed up members (<%= number_with_delimiter User.count %>) and yet-to-sign-up visitors from the open web.
+  </p>
+  <h3>❤️ Community</h3>
+  <p>
+    DEV is truly a leading community for software development and is leading the way to a more inclusive industry where everyone is welcome.
+  </p>
+  <h3>💎 Quality</h3>
+  <p>
+    DEV does not overwhelm members with popup messages, irrelevent ads or anything else that sours the user experience. We treat each visitor with care.
+  <h3>🤓 Expertise</h3>
+  <p>
+    DEV has experts on staff to help you craft your message to the community centered around and create positive mutual outcomes.
+  </p>
+
+  <div class="partnership-options">
+    <div class="partnership-option-card">
+      <h2>Bronze Sponsorship</h2>
+      <ul>
+        <li>
+          👀 Recognition on sponsors page (logo only)
+        </li>
+        <li>
+          🙌 Placement in monthly sponsor-awareness thread (name only)
+        </li>
+        <li>
+          🎉 Placement in home-page "sponsor awareness box" (rotation)
+        </li>
+      </ul>
+      <a class="partnership-option-cta" href="/partnerships/bronze-sponsor">Full Details</a>
+    </div>
+    <div class="partnership-option-card">
+      <h2>Silver Sponsorship</h2>
+      <ul>
+        <li>
+          👀 Recognition on sponsors page (logo + short blurb)
+        </li>
+        <li>
+          🙌 Placement in monthly sponsor-awareness thread (logo + short blurb)
+        </li>
+        <li>
+          🎉 Placement in home-page "sponsor awareness box" (rotation)
+        </li>
+      </ul>
+      <a class="partnership-option-cta" href="/partnerships/silver-sponsor">Full Details</a>
+    </div>
+    <div class="partnership-option-card">
+      <h2>Gold Sponsorship</h2>
+      <ul>
+        <li>
+          👀 Recognition on sponsors page (logo + full writeup)
+        </li>
+        <li>
+          🙌 Full-time home page brand placement + tagline + link
+        </li>
+        <li>
+          🎉 Shoutout + article placement in weekly newsletter
+        </li>
+      </ul>
+      <a class="partnership-option-cta" href="/partnerships/gold-sponsor">Full Details</a>
+    </div>
+    <div class="partnership-option-card">
+      <h2>Tag Sponsorship</h2>
+      <ul>
+        <li>
+          👀 Full Writeup on tag sidebar
+        </li>
+        <li>
+          🙌 Recognition in tags overview page
+        </li>
+        <li>
+          🎉 Recognition on organization profile
+        </li>
+      </ul>
+      <a class="partnership-option-cta" href="/partnerships/tag-sponsor">Full Details</a>
+    </div>
+    <div class="partnership-option-card">
+      <h2>Media Sponsorship</h2>
+      <ul>
+        <li>
+          👀 Sponsor custom productions such as video and podcasts
+        </li>
+        <li>
+          🙌 Pre-purchase for agile placement in new things
+        </li>
+        <li>
+          🎉 Creative copy written by DEV team
+        </li>
+      </ul>
+      <a class="partnership-option-cta" href="/partnerships/media-sponsor">Full Details</a>
+    </div>
+    <div class="partnership-option-card">
+      <h2>Editorial Consultation</h2>
+      <ul>
+        <li>
+          👀 Weekly editorial notes and suggestions to help your devrels make the most of DEV
+        </li>
+        <li>
+          🙌 First notice of new on-site opportunities and events
+        </li>
+        <li>
+          🎉 Premium support
+        </li>
+      </ul>
+      <a class="partnership-option-cta" href="/partnerships/editorial-consult">Full Details</a>
+    </div>
+  </div>
+  <div style="text-align: center;">
+    <h2>Questions about anything?<br /><br />Email <a href="mailto:partners@dev.to">partners@dev.to</a></h1>
+  </div>
+</div>
