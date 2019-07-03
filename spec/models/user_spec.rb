@@ -263,7 +263,7 @@ RSpec.describe User, type: :model do
     end
 
     it "accepts valid instagram url" do
-      %w[jess je_ss].each do |username|
+      %w[jess je_ss je_ss.tt A.z.E.r.T.y].each do |username|
         user.instagram_url = "https://instagram.com/#{username}"
         expect(user).to be_valid
       end
