@@ -51,6 +51,8 @@ Rails.application.routes.draw do
         post "full_delete"
         patch "user_status"
         post "merge"
+        delete "remove_identity"
+        post "recover_identity"
       end
     end
     resources :welcome, only: %i[index create]
@@ -148,6 +150,7 @@ Rails.application.routes.draw do
   resources :poll_votes, only: %i[show create]
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
+  resources :partnerships, only: %i[index create]
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/credits/purchase" => "credits#new"
@@ -169,6 +172,8 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
+  get "/partnerships/:option" => "partnerships#show"
+
 
   post "/pusher/auth" => "pusher#auth"
 
@@ -241,6 +246,7 @@ Rails.application.routes.draw do
   get "/live" => "pages#live"
   get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
+  get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
   get "/shecoded" => "pages#shecoded"
   get "/💸", to: redirect("t/hiring")

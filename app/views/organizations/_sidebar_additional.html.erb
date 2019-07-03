@@ -1,6 +1,11 @@
 <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
+    <% if @organization.sponsorship_status == "live" %>
+      <div class="sidebar-sponsorship-level" style="background:<%= @organization.decorate.sponsorship_color_hex %>">
+        <%= @organization.sponsorship_level.capitalize %> Community Sponsor ❤️
+      </div>
+    <% end %>
     <% if @organization.users.present? %>
       <div class="widget">
         <div class="widget-suggested-follows-container">

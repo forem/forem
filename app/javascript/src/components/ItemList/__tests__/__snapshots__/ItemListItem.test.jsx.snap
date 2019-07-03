@@ -1,0 +1,83 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ItemListItem /> renders properly with a history item 1`] = `
+<div
+  class="item-wrapper"
+>
+  <a
+    class="item"
+    href="/article"
+  >
+    <div
+      class="item-title"
+    >
+      Title
+    </div>
+    <div
+      class="item-details"
+    >
+      <a
+        class="item-user"
+        href="/bob"
+      >
+        <img
+          alt="Profile Pic"
+          src="https://dummyimage.com/90x90"
+        />
+        Bob・visited on Jun 29・1 min read min read・
+      </a>
+      <span
+        class="item-tags"
+      >
+        <a
+          class="item-tag"
+          href="/t/discuss"
+        >
+          #discuss
+        </a>
+      </span>
+    </div>
+  </a>
+</div>
+`;
+
+exports[`<ItemListItem /> renders properly with a readinglist item 1`] = `
+<div
+  class="item-wrapper"
+>
+  <a
+    class="item"
+    href="/article"
+  >
+    <div
+      class="item-title"
+    >
+      Title
+    </div>
+    <div
+      class="item-details"
+    >
+      <a
+        class="item-user"
+        href="/bob"
+      >
+        <img
+          alt="Profile Pic"
+          src="https://dummyimage.com/90x90"
+        />
+        Bob・Jun 29・1 min read min read・
+      </a>
+      <span
+        class="item-tags"
+      >
+        <a
+          class="item-tag"
+          href="/t/discuss"
+        >
+          #discuss
+        </a>
+      </span>
+    </div>
+  </a>
+</div>
+`;
