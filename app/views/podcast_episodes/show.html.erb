@@ -72,7 +72,8 @@
       </div>
     </div>
   </div>
-  <% if !@episode.podcast.status_notice.empty? %>
+  <%# temp, until podcast_episode statuses are introduced %>
+  <% if @episode.podcast.status_notice.to_s.include?("may not be playable") %>
     <center>
       <h1 style="color: #e05252;">
         <%= @episode.podcast.status_notice %>

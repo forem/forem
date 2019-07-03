@@ -44,6 +44,7 @@ class User < ApplicationRecord
   has_many    :classified_listings
   has_many    :poll_votes
   has_many    :poll_skips
+  has_many    :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData"
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -93,7 +94,7 @@ class User < ApplicationRecord
             format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
   validates :instagram_url,
             allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(www.instagram.com|instagram.com)\/[a-z\d_]{1,30}\Z/
+            format: /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\Z/
   validates :twitch_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
@@ -308,10 +309,6 @@ class User < ApplicationRecord
 
   def warned
     has_role? :warned
-  end
-
-  def banished?
-    user.notes.where(reason: "banned", content: "spam account").any? && user.banned && user.comments.none? && user.articles.none?
   end
 
   def admin?

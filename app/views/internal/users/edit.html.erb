@@ -40,6 +40,54 @@
 </div>
 <%= render "notes" %>
 <div class="row">
+  <h2>Remove Identity</h2>
+  <p>Removing a social account identity can solve certain sign in issues, for example:</p>
+  <ul>
+    <li>
+      They created an account on dev.to, but deleted their original social account and recreated it with the same Twitter/GitHub username.
+      This will be true if their Twitter/GitHub account's UID does not match their identity's UID. You can use the following third party tools to check:
+      <ul>
+        <li>
+          <a href="https://tweeterid.com/?username=<%= @user.twitter_username %>" target="_blank" rel="noopener nofollow">Tweeter ID for Twitter (username is in URL for reference)</a>
+        </li>
+        <li>
+          <a href="https://caius.github.io/github_id/#<%= @user.github_username %>" target="_blank" rel="noopener nofollow">Caius's GitHub ID Lookup Tool</a>
+        </li>
+      </ul>
+      Steps to check:
+      <ol>
+        <li>Click one of the links to check their social account's UID.</li>
+        <li>Confirm whether or not it matches with the identity's UID.</li>
+        <li>If it doesn't match, delete the respective identity.</li>
+        <li>Ask the user to reauthorize their social account via https://dev.to/settings/account</li>
+      </ol>
+    </li>
+    <% @user.identities.each do |identity| %>
+      <%= form_for(@user, url: remove_identity_internal_user_path(@user), html: { method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)" }) do |f| %>
+        <%= f.hidden_field :identity_id, value: identity.id %>
+        <p><b><%= identity.provider.capitalize %> UID: <%= identity.uid %> - Username: <%= identity.auth_data_dump["info"]["nickname"] %></b></p>
+        <%= f.submit "Delete #{identity.provider.capitalize} Identity" %>
+      <% end %>
+    <% end %>
+    <h3>This should be done only do this if you are certain the user is having the specific problem(s) listed above.</h3>
+    <hr>
+    <h2>Recover a deleted identity:</h2>
+    <% if @user.backup_data %>
+      <ul>
+        <% @user.backup_data.where(instance_type: "Identity").each do |data| %>
+          <li>
+            <%= "#{data.json_data['provider'].capitalize} #{data.instance_type} - UID: #{data.json_data['uid']}" %>
+            <%= form_for(@user, url: recover_identity_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Please confirm you want to recover the #{data.json_data['provider'].capitalize} identity.')" }) do |f| %>
+              <%= f.hidden_field :backup_data_id, value: data.id %>
+              <%= f.submit "Recover #{data.json_data['provider'].capitalize} Identity" %>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </ul>
+</div>
+<div class="row">
   <h2>Merge User</h2>
   <p>To merge a duplicate account, make sure you are currently on the page of the user you want to KEEP. Below, add the user id of the account to merge information from, and delete.</p>
   <%= form_for(@user, url: merge_internal_user_path(@user), html: { method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Merging will delete all the other users content and combine it with this user')" }) do |f| %>
@@ -50,9 +98,7 @@
 </div>
 <div class="row">
   <h2>Banish User</h2>
-  <% if @user.banished? %>
-    <p>User has been banished.</p>
-  <% elsif @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago %>
+  <% if @user.comments.where("created_at < ?", 100.days.ago).empty? && @user.created_at < 100.days.ago %>
     <p>
       <em>This is extremely destructive. Banishing will delete all the user's existing content and change their username to @spam_###.</em>
     </p>

@@ -52,11 +52,20 @@ class PagesController < ApplicationController
   end
 
   def welcome
-    daily_thread = latest_published_welcome_thread
+    daily_thread = latest_published_thread("welcome")
     if daily_thread
       redirect_to daily_thread.path
     else
       # fail safe if we haven't made the first welcome thread
+      redirect_to "/notifications"
+    end
+  end
+
+  def challenge
+    daily_thread = latest_published_thread("challenge")
+    if daily_thread
+      redirect_to daily_thread.path
+    else
       redirect_to "/notifications"
     end
   end
@@ -84,8 +93,8 @@ class PagesController < ApplicationController
 
   private # helpers
 
-  def latest_published_welcome_thread
-    Article.published.where(user_id: ApplicationConfig["DEVTO_USER_ID"]).tagged_with("welcome").last
+  def latest_published_thread(tag_name)
+    Article.published.where(user_id: ApplicationConfig["DEVTO_USER_ID"]).tagged_with(tag_name).last
   end
 
   def members_for_display

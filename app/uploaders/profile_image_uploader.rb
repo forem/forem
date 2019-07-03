@@ -14,6 +14,10 @@ class ProfileImageUploader < CarrierWave::Uploader::Base
     %w[jpg jpeg jpe gif png ico bmp dng]
   end
 
+  def size_range
+    1..2.megabytes
+  end
+
   protected
 
   def secure_token
