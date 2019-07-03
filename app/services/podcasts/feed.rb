@@ -17,6 +17,8 @@ module Podcasts
       feed.items.size
     rescue Net::OpenTimeout, Errno::ECONNREFUSED => _e
       set_unreachable(podcast, :unreachable)
+    rescue OpenSSL::SSL::SSLError => _e
+      set_unreachable(podcast, :ssl_failed)
     rescue RSS::NotWellFormedError => _e
       set_unreachable(podcast, :unparsable)
     end
