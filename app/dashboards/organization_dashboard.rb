@@ -37,7 +37,9 @@ class OrganizationDashboard < Administrate::BaseDashboard
     cta_body_markdown: Field::Text,
     sponsorship_url: Field::Text,
     sponsorship_tagline: Field::Text,
-    is_gold_sponsor: Field::Boolean,
+    sponsorship_status: Field::Text,
+    sponsorship_level: Field::Text,
+    sponsorship_instructions: Field::Text,
     sponsorship_blurb_html: Field::Text,
     sponsorship_featured_number: Field::Number
   }.freeze
@@ -89,7 +91,8 @@ class OrganizationDashboard < Administrate::BaseDashboard
     sponsorship_url
     sponsorship_tagline
     sponsorship_blurb_html
-    is_gold_sponsor
+    sponsorship_level
+    sponsorship_status
     sponsorship_featured_number
   ].freeze
 

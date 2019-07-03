@@ -586,7 +586,12 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
     t.text "sponsorship_blurb_html"
+    t.datetime "sponsorship_expires_at"
     t.integer "sponsorship_featured_number", default: 0
+    t.text "sponsorship_instructions", default: ""
+    t.datetime "sponsorship_instructions_updated_at"
+    t.string "sponsorship_level"
+    t.string "sponsorship_status", default: "none"
     t.string "sponsorship_tagline"
     t.string "sponsorship_url"
     t.string "state"
@@ -858,6 +863,8 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
+    t.integer "sponsor_organization_id"
+    t.string "sponsorship_status", default: "none"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
