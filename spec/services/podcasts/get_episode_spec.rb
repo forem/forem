@@ -3,17 +3,16 @@ require "rails_helper"
 RSpec.describe Podcasts::GetEpisode do
   let(:podcast) { create(:podcast) }
   let(:episode) { create(:podcast_episode, podcast: podcast) }
-  let(:enclosure) { instance_double("RSS::Rss::Channel::Item::Enclosure", url: "https://audio.simplecast.com/2330f132.mp3") }
   let(:item) do
-    instance_double("RSS::Rss::Channel::Item", pubDate: "2019-06-19",
-                                               enclosure: enclosure,
-                                               description: "yet another podcast",
-                                               title: "lightalloy's podcast",
-                                               guid: "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>",
-                                               itunes_subtitle: "hello",
-                                               content_encoded: nil,
-                                               itunes_summary: "world",
-                                               link: "https://litealloy.ru")
+    build(:podcast_episode_rss_item, pubDate: "2019-06-19",
+                                     enclosure_url: "https://audio.simplecast.com/2330f132.mp3",
+                                     description: "yet another podcast",
+                                     title: "lightalloy's podcast",
+                                     guid: "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>",
+                                     itunes_subtitle: "hello",
+                                     content_encoded: nil,
+                                     itunes_summary: "world",
+                                     link: "https://litealloy.ru")
   end
 
   it "calls UpdateEpisode when an episode exists" do

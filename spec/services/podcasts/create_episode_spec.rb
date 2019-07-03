@@ -6,7 +6,7 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
   let!(:podcast) { create(:podcast) }
 
   context "when item has an https media_url" do
-    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/developertea.rss", false).items.first }
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
     let!(:item) { Podcasts::Episodes::RssItemData.from_item(rss_item) }
 
     before do
@@ -36,7 +36,7 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
   end
 
   context "when item has an http media url" do
-    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/awayfromthekeyboard.rss", false).items.first }
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/awayfromthekeyboard.rss", false).items.first }
     let!(:item) { Podcasts::Episodes::RssItemData.from_item(rss_item) }
     let(:https_url) { "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3" }
 

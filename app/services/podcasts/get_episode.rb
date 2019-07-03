@@ -6,12 +6,13 @@ module Podcasts
     end
 
     def call(item)
-      episode = podcast.existing_episode(item)
+      item_data = item.is_a?(Episodes::RssItemData) ? item : Podcasts::Episodes::RssItemData.from_item(item)
+      episode = podcast.existing_episode(item_data)
       if episode
-        update.call(episode, item)
+        update.call(episode, item_data)
       else
-        item_data = Podcasts::Episodes::RssItemData.from_item(item).to_h
-        PodcastEpisodes::CreateJob.perform_later(podcast.id, item_data)
+        # item_data = Podcasts::Episodes::RssItemData.from_item(item).to_h
+        PodcastEpisodes::CreateJob.perform_later(podcast.id, item_data.to_h)
       end
     end
 
