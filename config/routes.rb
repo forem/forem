@@ -51,6 +51,8 @@ Rails.application.routes.draw do
         post "full_delete"
         patch "user_status"
         post "merge"
+        delete "remove_identity"
+        post "recover_identity"
       end
     end
     resources :welcome, only: %i[index create]
