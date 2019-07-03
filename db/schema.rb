@@ -908,7 +908,7 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.string "bg_color_hex"
     t.text "cached_chat_channel_memberships"
     t.boolean "checked_code_of_conduct", default: false
-    t.boolean "checked_terms_and_conditions"
+    t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
     t.string "config_font", default: "default"
     t.string "config_theme", default: "default"
