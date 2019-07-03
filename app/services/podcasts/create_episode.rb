@@ -2,7 +2,7 @@ module Podcasts
   class CreateEpisode
     def initialize(podcast_id, item)
       @podcast_id = podcast_id
-      @item = item.is_a?(Episodes::RssItemData) ? item : Episodes::RssItemData.new(item)
+      @item = item.is_a?(EpisodeRssItem) ? item : EpisodeRssItem.new(item)
     end
 
     def self.call(*args)

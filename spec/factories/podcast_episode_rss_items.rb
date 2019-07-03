@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :podcast_episode_rss_item, class: "Podcasts::Episodes::RssItemData" do
+  factory :podcast_episode_rss_item, class: "Podcasts::EpisodeRssItem" do
     title { Faker::Book.title }
     itunes_subtitle { Faker::Hipster.words(3) }
     itunes_summary { Faker::Hipster.words(3) }
