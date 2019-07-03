@@ -75,6 +75,32 @@ class Internal::UsersController < Internal::ApplicationController
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
+  def remove_identity
+    identity = Identity.find(user_params[:identity_id])
+    @user = identity.user
+    begin
+      BackupData.backup!(identity)
+      identity.delete
+      @user.update("#{identity.provider}_username" => nil)
+      flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def recover_identity
+    backup = BackupData.find(user_params[:backup_data_id])
+    @user = backup.instance_user
+    begin
+      identity = backup.recover!
+      flash[:success] = "The #{identity.provider} identity was successfully recovered, and the backup was removed."
+    rescue StandardError => e
+      flash[:error] = e.message
+    end
+    redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
   private
 
   def manage_credits
@@ -121,7 +147,7 @@ class Internal::UsersController < Internal::ApplicationController
       new_note note_for_current_role user_status
       pro merge_user_id add_credits remove_credits
       add_org_credits remove_org_credits ghostify
-      organization_id
+      organization_id identity_id backup_data_id
     ]
     params.require(:user).permit(allowed_params)
   end
