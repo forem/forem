@@ -34,6 +34,19 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
     end
   end
 
+  context "when ssl certificate is not valid" do
+    let(:un_feed_url) { "http://podcast.example.com/podcast" }
+    let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
+
+    it "sets ssl_failed" do
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast").and_raise(OpenSSL::SSL::SSLError)
+      described_class.new.get_episodes(unpodcast, 2)
+      unpodcast.reload
+      expect(unpodcast.reachable).to be false
+      expect(unpodcast.status_notice).to include("SSL certificate verify failed")
+    end
+  end
+
   context "when creating" do
     before do
       stub_request(:head, "https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3").to_return(status: 200)
