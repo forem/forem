@@ -5,6 +5,9 @@ class Credit < ApplicationRecord
   belongs_to :organization, optional: true
   belongs_to :purchase, polymorphic: true, optional: true
 
+  scope :spent, -> { where(spent: true) }
+  scope :unspent, -> { where(spent: false) }
+
   counter_culture :user,
                   column_name: proc { |model| "#{model.spent ? 'spent' : 'unspent'}_credits_count" },
                   column_names: {

@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_04_082551) do
+ActiveRecord::Schema.define(version: 2019_07_04_091636) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -318,6 +318,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_082551) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
+    t.index ["spent"], name: "index_credits_on_spent"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|

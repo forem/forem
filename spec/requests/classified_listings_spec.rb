@@ -122,6 +122,11 @@ RSpec.describe "ClassifiedListings", type: :request do
         post "/listings", params: valid_listing_params
         expect(ClassifiedListing.first.organization_id).to eq org_id
       end
+
+      it "assigns the spent credits to the listing" do
+        post "/listings", params: valid_listing_params
+        expect(user.credits.spent.last.purchase_type).to eq("ClassifiedListing")
+      end
     end
   end
 end

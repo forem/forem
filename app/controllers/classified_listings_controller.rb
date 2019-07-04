@@ -19,22 +19,24 @@ class ClassifiedListingsController < ApplicationController
   def new
     @classified_listing = ClassifiedListing.new
     @organizations = current_user.organizations
-    @credits = current_user.credits.where(spent: false)
+    @credits = current_user.credits.unspent
   end
 
   def edit
     authorize @classified_listing
     @organizations = current_user.organizations
-    @credits = current_user.credits.where(spent: false)
+    @credits = current_user.credits.spent
   end
 
   def create
     @classified_listing = ClassifiedListing.new(listing_params)
     @classified_listing.user_id = current_user.id
     @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
+
     @org = Organization.find_by(id: @classified_listing.organization_id)
-    available_org_credits = @org.credits.where(spent: false) if @org
-    available_individual_credits = current_user.credits.where(spent: false)
+
+    available_org_credits = @org.credits.unspent if @org
+    available_individual_credits = current_user.credits.unspent
 
     if @org && available_org_credits.size >= @number_of_credits_needed
       create_listing(available_org_credits)
@@ -50,9 +52,12 @@ class ClassifiedListingsController < ApplicationController
     @classified_listing.published = true
     # this will 500 for now if they don't belong in the org
     authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
+
     if @classified_listing.save
       clear_listings_cache
-      credits.limit(@number_of_credits_needed).update_all(spent: true)
+      credits.limit(@number_of_credits_needed).update_all(
+        spent: true, purchase_type: "ClassifiedListing", purchase_id: @classified_listing.id,
+      )
       @classified_listing.index!
       redirect_to "/listings"
     else
@@ -65,13 +70,16 @@ class ClassifiedListingsController < ApplicationController
 
   def update
     authorize @classified_listing
-    available_credits = current_user.credits.where(spent: false)
+    available_credits = current_user.credits.unspent
     number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category) # Bumping
+    # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
       bump_listing
       if available_credits.size >= number_of_credits_needed
         @classified_listing.save
-        available_credits.limit(number_of_credits_needed).update_all(spent: true)
+        available_credits.limit(number_of_credits_needed).update_all(
+          spent: true, purchase_type: "ClassifiedListing", purchase_id: @classified_listing.id,
+        )
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
