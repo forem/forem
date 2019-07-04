@@ -125,7 +125,9 @@ RSpec.describe "ClassifiedListings", type: :request do
 
       it "assigns the spent credits to the listing" do
         post "/listings", params: valid_listing_params
-        expect(user.credits.spent.last.purchase_type).to eq("ClassifiedListing")
+        spent_credit = user.credits.spent.last
+        expect(spent_credit.purchase_type).to eq("ClassifiedListing")
+        expect(spent_credit.spent_at).not_to be_nil
       end
     end
   end

@@ -2,7 +2,9 @@ class CreditsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @credits = current_user.credits.where(spent: false)
+    @user_unspent_credits_count = current_user.credits.unspent.size
+    @user_ledger_items = Credits::Ledger.call(current_user)
+
     @organizations = current_user.admin_organizations
   end
 
@@ -35,10 +37,10 @@ class CreditsController < ApplicationController
     end
     Credit.import credit_objects
     @purchaser.credits_count = @purchaser.credits.size
-    @purchaser.spent_credits_count = @purchaser.credits.where(spent: true).size
-    @purchaser.unspent_credits_count = @purchaser.credits.where(spent: false).size
+    @purchaser.spent_credits_count = @purchaser.credits.spent.size
+    @purchaser.unspent_credits_count = @purchaser.credits.unspent.size
     @purchaser.save
-    redirect_to "/credits", notice: "#{@number_to_purchase} new credits purchased!"
+    redirect_to credits_path, notice: "#{@number_to_purchase} new credits purchased!"
   end
 
   def make_payment
@@ -49,7 +51,7 @@ class CreditsController < ApplicationController
     true
   rescue Stripe::CardError => e
     flash[:error] = e.message
-    redirect_to "/credits/purchase"
+    redirect_to purchase_credits_path
     false
   end
 
