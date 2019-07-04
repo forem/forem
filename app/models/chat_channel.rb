@@ -1,6 +1,6 @@
 class ChatChannel < ApplicationRecord
   include AlgoliaSearch
-  attr_accessor :current_user
+  attr_accessor :current_user, :usernames_string
 
   has_many :messages
   has_many :chat_channel_memberships, dependent: :destroy
