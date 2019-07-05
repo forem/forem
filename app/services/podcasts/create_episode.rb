@@ -21,7 +21,7 @@ module Podcasts
       get_media_url(ep)
       begin
         ep.published_at = item.pubDate.to_date
-      rescue StandardError => e
+      rescue ArgumentError, NoMethodError => e
         Rails.logger.error("not a valid date: #{e}")
       end
       ep.body = item.body

@@ -33,6 +33,13 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(episode).to be_persisted
       expect(episode.published_at).to eq(nil)
     end
+
+    it "rescues an exception when pubDate is nil" do
+      allow(item).to receive(:pubDate).and_return(nil)
+      episode = described_class.call(podcast.id, item)
+      expect(episode).to be_persisted
+      expect(episode.published_at).to eq(nil)
+    end
   end
 
   context "when item has an http media url" do
