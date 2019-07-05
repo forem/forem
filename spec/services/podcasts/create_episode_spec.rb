@@ -27,6 +27,12 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(episode.guid).to include("53b17a1e-271b-40e3-a084-a67b4fcba562")
     end
 
+    it "sets correct availability statuses" do
+      episode = described_class.call(podcast.id, item)
+      expect(episode.https?).to be true
+      expect(episode.reachable).to be true
+    end
+
     it "rescues an exception when pubDate is invalid" do
       allow(item).to receive(:pubDate).and_return("not a date, haha")
       episode = described_class.call(podcast.id, item)
@@ -51,12 +57,17 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       stub_request(:head, https_url).to_return(status: 200)
       episode = described_class.call(podcast.id, item)
       expect(episode.media_url).to eq(https_url)
+      expect(episode.https?).to be true
+      expect(episode.reachable).to be true
     end
 
     it "keeps an http media url when https version is not available" do
       stub_request(:head, https_url).to_return(status: 404)
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
       episode = described_class.call(podcast.id, item)
       expect(episode.media_url).to eq(item.enclosure_url)
+      expect(episode.https?).to be false
+      expect(episode.reachable).to be true
     end
 
     # enable when the logic will not rely solely on exception
