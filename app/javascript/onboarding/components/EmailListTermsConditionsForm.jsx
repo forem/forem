@@ -73,54 +73,53 @@ class EmailTermsConditionsForm extends Component {
     const { message } = this.state;
     const { prev } = this.props;
     return (
-      <div className="checkbox-slide">
-        <h2>Some things to check off!</h2>
-        {message && <span className="warning-message">{message}</span>}
-        <form>
-          <label htmlFor="checked_code_of_conduct">
-            <input
-              type="checkbox"
-              name="checked_code_of_conduct"
-              id="checked_code_of_conduct"
-              onChange={this.handleChange}
-            />
-            You agree to uphold our
-            {' '}
-            <a href="/code-of-conduct">Code of Conduct</a>
-          </label>
-          <label htmlFor="checked_terms_and_conditions">
-            <input
-              type="checkbox"
-              id="checked_terms_and_conditions"
-              name="checked_terms_and_conditions"
-              onChange={this.handleChange}
-            />
-            You agree to our 
-            {' '}
-            <a href="/terms">Terms and Conditions</a>
-          </label>
-          <h3>Email Preferences</h3>
-          <label htmlFor="email_membership_newsletter">
-            <input
-              type="checkbox"
-              name="email_membership_newsletter"
-              checked
-              onChange={this.handleChange}
-            />
-            Do you want to receive our weekly newsletter emails?
-          </label>
+      <div className="onboarding-main">
+        <div className="onboarding-content checkbox-slide">
+          <h2>Some things to check off!</h2>
+          {message && <span className="warning-message">{message}</span>}
+          <form>
+            <label htmlFor="checked_code_of_conduct">
+              <input
+                type="checkbox"
+                name="checked_code_of_conduct"
+                id="checked_code_of_conduct"
+                onChange={this.handleChange}
+              />
+              You agree to uphold our{' '}
+              <a href="/code-of-conduct">Code of Conduct</a>
+            </label>
+            <label htmlFor="checked_terms_and_conditions">
+              <input
+                type="checkbox"
+                id="checked_terms_and_conditions"
+                name="checked_terms_and_conditions"
+                onChange={this.handleChange}
+              />
+              You agree to our <a href="/terms">Terms and Conditions</a>
+            </label>
+            <h3>Email Preferences</h3>
+            <label htmlFor="email_membership_newsletter">
+              <input
+                type="checkbox"
+                name="email_membership_newsletter"
+                checked
+                onChange={this.handleChange}
+              />
+              Do you want to receive our weekly newsletter emails?
+            </label>
 
-          <label htmlFor="email_digest_periodic">
-            <input
-              type="checkbox"
-              name="email_membership_newsletter"
-              checked
-              onChange={this.handleChange}
-            />
-            Do you want to receive a periodic digest with some of the top posts
-            from your tags?
-          </label>
-        </form>
+            <label htmlFor="email_digest_periodic">
+              <input
+                type="checkbox"
+                name="email_membership_newsletter"
+                checked
+                onChange={this.handleChange}
+              />
+              Do you want to receive a periodic digest with some of the top
+              posts from your tags?
+            </label>
+          </form>
+        </div>
         <Navigation prev={prev} next={this.onSubmit} />
       </div>
     );

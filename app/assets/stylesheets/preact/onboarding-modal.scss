@@ -31,11 +31,11 @@
     top: -10px;
     padding-top: 5px;
   }
-  .onboarding-content {
+  .onboarding-main {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: 800px;
-    height: 350px;
+    height: 400px;
     background-color: white;
     border: 8px solid #6b55c9;
     padding: 30px;
@@ -45,6 +45,20 @@
     box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3), 8px 0px 13px rgba(0, 0, 0, 0.21);
     // box-shadow: var(--theme-container-box-shadow, 1px 1px 0px #c2c2c2);
     align-items: center;
+    justify-content: center;
+  }
+
+  .onboarding-content {
+    flex: 1 0 auto;
+    h1 {
+      margin-top: 5px;
+    }
+  }
+
+  .onboarding-navigation {
+    align-self: flex-end;
+    flex-shrink: 0;
+    width: 100%;
   }
 
   .background-image {
@@ -193,7 +207,7 @@
     position: absolute;
   }
   @media screen and (max-width: 800px) {
-    .onboarding-content {
+    .onboarding-main {
       width: 100%;
       height: 100%;
       background-image: url('/assets/mobile-onboarding-background.png');
@@ -201,6 +215,14 @@
       background-position: center; /* Center the image */
       background-repeat: no-repeat; /* Do not repeat the image */
       border: none;
+    }
+
+    .onboarding-content {
+      flex: 0 0 auto;
+
+      h1, h2 {
+        margin-top: initial;
+      }
     }
 
     span {
@@ -212,7 +234,7 @@
     }
   }
   @media screen and (max-width: 400px) {
-    .onboarding-content {
+    .onboarding-main {
       font-size: 16px;
     }
 

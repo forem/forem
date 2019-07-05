@@ -71,24 +71,25 @@ class FollowTags extends Component {
     const { prev } = this.props;
     const { selectedTags, allTags } = this.state;
     return (
-      <div>
-        <h2>Follow some tags!</h2>
-        <div className="scroll">
-          {allTags.map(tag => (
-            <button
-              type="button"
-              onClick={() => this.handleClick(tag)}
-              style={{
-                backgroundColor: tag.bg_color_hex,
-                color: tag.text_color_hex,
-                opacity: selectedTags.includes(tag) ? 0.7 : 1,
-              }}
-              className="tag"
-            >
-              #
-              {tag.name}
-            </button>
-          ))}
+      <div className="onboarding-main">
+        <div className="onboarding-content">
+          <h2>Follow some tags!</h2>
+          <div className="scroll">
+            {allTags.map(tag => (
+              <button
+                type="button"
+                onClick={() => this.handleClick(tag)}
+                style={{
+                  backgroundColor: tag.bg_color_hex,
+                  color: tag.text_color_hex,
+                  opacity: selectedTags.includes(tag) ? 0.7 : 1,
+                }}
+                className="tag"
+              >
+                #{tag.name}
+              </button>
+            ))}
+          </div>
         </div>
         <Navigation prev={prev} next={this.handleComplete} />
       </div>

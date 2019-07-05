@@ -76,24 +76,26 @@ class FollowUsers extends Component {
     const { users, selectedUsers } = this.state;
     const { prev } = this.props;
     return (
-      <div>
-        <h2>Follow some users!</h2>
-        <div className="scroll">
-          {users.map(user => (
-            <button
-              type="button"
-              style={{
-                backgroundColor: selectedUsers.includes(user)
-                  ? '#ddd'
-                  : 'white',
-              }}
-              onClick={() => this.handleClick(user)}
-              className="user"
-            >
-              <img src={user.profile_image_url} alt="" />
-              {user.name}
-            </button>
-          ))}
+      <div className="onboarding-main">
+        <div className="onboarding-content">
+          <h2>Follow some users!</h2>
+          <div className="scroll">
+            {users.map(user => (
+              <button
+                type="button"
+                style={{
+                  backgroundColor: selectedUsers.includes(user)
+                    ? '#ddd'
+                    : 'white',
+                }}
+                onClick={() => this.handleClick(user)}
+                className="user"
+              >
+                <img src={user.profile_image_url} alt="" />
+                {user.name}
+              </button>
+            ))}
+          </div>
         </div>
         <Navigation prev={prev} next={this.handleComplete} />
       </div>

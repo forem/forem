@@ -56,42 +56,44 @@ class PersonalInfoForm extends Component {
   render() {
     const { prev } = this.props;
     return (
-      <div className="about">
-        <h1>About You!</h1>
-        <form>
-          <label htmlFor="location">
-            Where are you located?
-            <input
-              type="text"
-              name="location"
-              id="location"
-              onChange={this.handleChange}
-              maxLength="60"
-            />
-          </label>
+      <div className="onboarding-main">
+        <div className="onboarding-content about">
+          <h1>About You!</h1>
+          <form>
+            <label htmlFor="location">
+              Where are you located?
+              <input
+                type="text"
+                name="location"
+                id="location"
+                onChange={this.handleChange}
+                maxLength="60"
+              />
+            </label>
 
-          <label htmlFor="employment_title">
-            What is your title?
-            <input
-              type="text"
-              name="employment_title"
-              id="employment_title"
-              onChange={this.handleChange}
-              maxLength="60"
-            />
-          </label>
+            <label htmlFor="employment_title">
+              What is your title?
+              <input
+                type="text"
+                name="employment_title"
+                id="employment_title"
+                onChange={this.handleChange}
+                maxLength="60"
+              />
+            </label>
 
-          <label htmlFor="employer_name">
-            Where do you work?
-            <input
-              type="text"
-              name="employer_name"
-              id="employer_name"
-              onChange={this.handleChange}
-              maxLength="60"
-            />
-          </label>
-        </form>
+            <label htmlFor="employer_name">
+              Where do you work?
+              <input
+                type="text"
+                name="employer_name"
+                id="employer_name"
+                onChange={this.handleChange}
+                maxLength="60"
+              />
+            </label>
+          </form>
+        </div>
         <Navigation prev={prev} next={this.onSubmit} />
       </div>
     );

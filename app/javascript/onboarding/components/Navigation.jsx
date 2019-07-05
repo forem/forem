@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 const Navigation = ({ next, prev, hideNext, hidePrev }) => (
-  <div>
+  <nav className="onboarding-navigation">
     {!hidePrev && (
       <button onClick={prev} className="back-button" type="button">
         BACK
@@ -13,7 +13,7 @@ const Navigation = ({ next, prev, hideNext, hidePrev }) => (
         Continue
       </button>
     )}
-  </div>
+  </nav>
 );
 
 Navigation.propTypes = {
