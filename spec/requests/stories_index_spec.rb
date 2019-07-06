@@ -42,13 +42,13 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "has sponsors displayed" do
-      org = create(:organization, is_gold_sponsor: true, sponsorship_tagline: "Oh Yeah!!!")
+      org = create(:organization, sponsorship_level: "gold", sponsorship_tagline: "Oh Yeah!!!", sponsorship_status: "live")
       get "/"
       expect(response.body).to include(org.sponsorship_tagline)
     end
 
     it "does not display non-sponsor org" do
-      org = create(:organization, is_gold_sponsor: false, sponsorship_tagline: "Oh Yeah!!!")
+      org = create(:organization, sponsorship_level: nil, sponsorship_tagline: "Oh Yeah!!!")
       get "/"
       expect(response.body).not_to include(org.sponsorship_tagline)
     end
@@ -100,6 +100,22 @@ RSpec.describe "StoriesIndex", type: :request do
       tag2 = create(:tag, alias_for: tag.name)
       get "/t/#{tag2.name}"
       expect(response.body).to redirect_to "/t/#{tag.name}"
+    end
+
+    it "does not render sponsor if not live" do
+      organization = create(:organization, sponsorship_tagline: "Oh Yeah!!!")
+      tag = create(:tag, sponsor_organization_id: organization.id)
+      get "/t/#{tag.name}"
+      expect(response.body).not_to include("is sponsored by")
+      expect(response.body).not_to include(organization.sponsorship_tagline)
+    end
+
+    it "renders sponsor" do
+      organization = create(:organization, sponsorship_tagline: "Oh Yeah!!!!!!")
+      tag = create(:tag, sponsor_organization_id: organization.id, sponsorship_status: "live")
+      get "/t/#{tag.name}"
+      expect(response.body).to include("is sponsored by")
+      expect(response.body).to include(organization.sponsorship_tagline)
     end
   end
 end

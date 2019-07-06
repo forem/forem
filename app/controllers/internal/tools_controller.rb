@@ -29,6 +29,7 @@ class Internal::ToolsController < Internal::ApplicationController
 
   def bust_link(link)
     cb = CacheBuster.new
+    link.sub!("https://dev.to", "") if link.starts_with?("https://dev.to")
     cb.bust(link)
     cb.bust(link + "/")
     cb.bust(link + "?i=i")

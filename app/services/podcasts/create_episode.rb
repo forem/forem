@@ -2,7 +2,7 @@ module Podcasts
   class CreateEpisode
     def initialize(podcast_id, item)
       @podcast_id = podcast_id
-      @item = item
+      @item = item.is_a?(EpisodeRssItem) ? item : EpisodeRssItem.new(item)
     end
 
     def self.call(*args)
@@ -24,7 +24,7 @@ module Podcasts
       rescue StandardError => e
         Rails.logger.error("not a valid date: #{e}")
       end
-      ep.body = item.content_encoded || item.itunes_summary || item.description
+      ep.body = item.body
       ep.save!
       ep
     end
@@ -35,15 +35,15 @@ module Podcasts
 
     # checking url when it is https is useless, the url is set to the enclosure url anyway
     def get_media_url(episode)
-      episode.media_url = if HTTParty.head(item.enclosure.url.gsub(/http:/, "https:")).code == 200
-                            item.enclosure.url.gsub(/http:/, "https:")
+      episode.media_url = if HTTParty.head(item.enclosure_url.gsub(/http:/, "https:")).code == 200
+                            item.enclosure_url.gsub(/http:/, "https:")
                           else
-                            item.enclosure.url
+                            item.enclosure_url
                           end
     rescue StandardError
       # podcast episode must have a media_url
-      episode.media_url = item.enclosure.url
-      episode.podcast.update(status_notice: "This podcast may not be playable in the browser") if episode.podcast.status_notice.empty?
+      episode.media_url = item.enclosure_url
+      episode.podcast.update(status_notice: I18n.t(:unplayable, scope: "podcasts.statuses")) if episode.podcast.status_notice.empty?
     end
   end
 end
