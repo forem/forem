@@ -1,6 +1,7 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
 import linkState from 'linkstate';
+import postscribe from 'postscribe';
 import ImageUploadIcon from 'images/image-upload.svg';
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
@@ -78,6 +79,16 @@ export default class ArticleForm extends Component {
     //   highlightFormatting: true,
     // });
     // myCodeMirror.setSize('100%', '100%');
+  }
+
+  componentDidUpdate() {
+    const { previewResponse } = this.state;
+    if (previewResponse) {
+      const els = document.getElementsByClassName('ltag_gist-liquid-tag');
+      for (let i = 0; i < els.length; i += 1) {
+        postscribe(els[i], els[i].firstElementChild.outerHTML);
+      }
+    }
   }
 
   checkContentChanges = previousContent =>
