@@ -74,6 +74,7 @@ class UserPolicy < ApplicationPolicy
        editor_version
        email_unread_notifications
        mobile_comment_notifications
+       post_reaction_notifications
        employer_name
        employer_url
        employment_title

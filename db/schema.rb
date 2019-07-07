@@ -970,6 +970,7 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.string "medium_url"
     t.datetime "membership_started_at"
     t.boolean "mobile_comment_notifications", default: true
+    t.boolean "post_reaction_notifications", default: true
     t.integer "monthly_dues", default: 0
     t.string "mostly_work_with"
     t.string "name"

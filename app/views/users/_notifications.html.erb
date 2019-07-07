@@ -1,5 +1,12 @@
-<h3>Email Notification Settings</h3>
 <%= form_for(@user) do |f| %>
+  <h3>Notifications</h3>
+  <div class="checkbox-field">
+    <div class="sub-field">
+      <%= f.check_box :post_reaction_notifications %>
+      <%= f.label :post_reaction_notifications, "Notify me when someone reacts to my posts" %>
+    </div>
+  </div>
+  <h3>Email Notification Settings</h3>
   <div class="checkbox-field">
     <div class="sub-field">
       <%= f.check_box :email_newsletter %>
