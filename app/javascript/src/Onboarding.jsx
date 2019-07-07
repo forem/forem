@@ -357,6 +357,18 @@ class Onboarding extends Component {
     }
   }
 
+  renderCloseButton() {
+    return (
+      <button
+        type="button"
+        className="close-button"
+        onClick={this.closeOnboarding}
+      >
+        <img src={cancelSvg} alt="cancel button" />
+      </button>
+    );
+  }
+
   renderBackButton() {
     const { pageNumber } = this.state;
     if (pageNumber > 1) {
@@ -366,9 +378,7 @@ class Onboarding extends Component {
           type="button"
           onClick={this.handleBackButton}
         >
-          {' '}
           BACK
-          {' '}
         </button>
       );
     }
@@ -432,15 +442,7 @@ class Onboarding extends Component {
 
     return (
       <div className="global-modal" style={{ display: 'none' }}>
-        <div className="global-modal-bg">
-          <button
-            type="button"
-            className="close-button"
-            onClick={this.closeOnboarding}
-          >
-            <img src={cancelSvg} alt="cancel button" />
-          </button>
-        </div>
+        <div className="global-modal-bg">{this.renderCloseButton()}</div>
         <div className="global-modal-inner">
           <div className="modal-header">
             <div className="triangle-isosceles">
