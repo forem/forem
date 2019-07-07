@@ -358,10 +358,11 @@ class Onboarding extends Component {
   }
 
   renderCloseButton() {
+    const btnClassName = 'close-button';
     return (
       <button
+        className={btnClassName}
         type="button"
-        className="close-button"
         onClick={this.closeOnboarding}
       >
         <img src={cancelSvg} alt="cancel button" />
