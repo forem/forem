@@ -1,4 +1,4 @@
-import { h, render, Component } from 'preact';
+import { h, Component } from 'preact';
 import OnboardingWelcome from './components/OnboardingWelcome';
 import OnboardingFollowTags from './components/OnboardingFollowTags';
 import OnboardingFollowUsers from './components/OnboardingFollowUsers';
@@ -40,7 +40,6 @@ class Onboarding extends Component {
       followRequestSent: false,
       articles: [],
       savedArticles: [],
-      saveRequestSent: false,
       profileInfo: {},
     };
   }
@@ -135,10 +134,6 @@ class Onboarding extends Component {
       },
       body: formData,
       credentials: 'same-origin',
-    }).then(response => {
-      if (response.ok) {
-        this.setState({ saveRequestSent: true });
-      }
     });
   }
 
@@ -395,25 +390,26 @@ class Onboarding extends Component {
   }
 
   renderPageIndicators() {
+    const { pageNumber } = this.state;
     return (
       <div className="pageindicators">
         <div
           className={
-            this.state.pageNumber === 2
+            pageNumber === 2
               ? 'pageindicator pageindicator--active'
               : 'pageindicator'
           }
         />
         <div
           className={
-            this.state.pageNumber === 3
+            pageNumber === 3
               ? 'pageindicator pageindicator--active'
               : 'pageindicator'
           }
         />
         <div
           className={
-            this.state.pageNumber === 4
+            pageNumber === 4
               ? 'pageindicator pageindicator--active'
               : 'pageindicator'
           }
@@ -437,46 +433,45 @@ class Onboarding extends Component {
 
   render() {
     const { showOnboarding } = this.state;
-    if (showOnboarding) {
-      return (
-        <div className="global-modal" style="display:none">
-          <div className="global-modal-bg">
-            <button className="close-button" onClick={this.closeOnboarding}>
-              <img src={cancelSvg} alt="cancel button" />
-            </button>
+    if (!showOnboarding) return null;
+
+    return (
+      <div className="global-modal" style={{ display: 'none' }}>
+        <div className="global-modal-bg">
+          <button
+            className="close-button"
+            type="button"
+            onClick={this.closeOnboarding}
+          >
+            <img src={cancelSvg} alt="cancel button" />
+          </button>
+        </div>
+        <div className="global-modal-inner">
+          <div className="modal-header">
+            <div className="triangle-isosceles">
+              {this.renderSloanMessage()}
+            </div>
           </div>
-          <div className="global-modal-inner">
-            <div className="modal-header">
-              <div className="triangle-isosceles">
-                {this.renderSloanMessage()}
-              </div>
+          <div className="modal-body">
+            <div id="sloan-mascot-onboarding-area" className="sloan-bar wiggle">
+              <img
+                src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+                className="sloan-img"
+                alt="Sloan, the sloth mascot"
+              />
             </div>
-            <div className="modal-body">
-              <div
-                id="sloan-mascot-onboarding-area"
-                className="sloan-bar wiggle"
-              >
-                <img
-                  src="https://res.cloudinary.com/practicaldev/image/fetch/s--iiubRINO--/c_imagga_scale,f_auto,fl_progressive,q_auto,w_300/https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
-                  className="sloan-img"
-                  alt="Sloan, the sloth mascot"
-                />
-              </div>
-              <div className="body-message">{this.toggleOnboardingSlide()}</div>
+            <div className="body-message">{this.toggleOnboardingSlide()}</div>
+          </div>
+          <div className="modal-footer">
+            <div className="modal-footer-left">{this.renderBackButton()}</div>
+            <div className="modal-footer-center">
+              {this.renderPageIndicators()}
             </div>
-            <div className="modal-footer">
-              <div className="modal-footer-left">{this.renderBackButton()}</div>
-              <div className="modal-footer-center">
-                {this.renderPageIndicators()}
-              </div>
-              <div className="modal-footer-right">
-                {this.renderNextButton()}
-              </div>
-            </div>
+            <div className="modal-footer-right">{this.renderNextButton()}</div>
           </div>
         </div>
-      );
-    }
+      </div>
+    );
   }
 }
 

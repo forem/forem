@@ -29,5 +29,6 @@ module.exports = {
     filterXSS: false,
     Pusher: false,
     algoliasearch: false,
+    ga: false,
   },
 };
