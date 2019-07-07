@@ -392,29 +392,23 @@ class Onboarding extends Component {
 
   renderPageIndicators() {
     const { pageNumber } = this.state;
+    const firstIndicatorClassName =
+      pageNumber === 2
+        ? 'pageindicator pageindicator--active'
+        : 'pageindicator';
+    const secondIndicatorClassName =
+      pageNumber === 3
+        ? 'pageindicator pageindicator--active'
+        : 'pageindicator';
+    const thirdIndicatorClassName =
+      pageNumber === 4
+        ? 'pageindicator pageindicator--active'
+        : 'pageindicator';
     return (
       <div className="pageindicators">
-        <div
-          className={
-            pageNumber === 2
-              ? 'pageindicator pageindicator--active'
-              : 'pageindicator'
-          }
-        />
-        <div
-          className={
-            pageNumber === 3
-              ? 'pageindicator pageindicator--active'
-              : 'pageindicator'
-          }
-        />
-        <div
-          className={
-            pageNumber === 4
-              ? 'pageindicator pageindicator--active'
-              : 'pageindicator'
-          }
-        />
+        <div className={firstIndicatorClassName} />
+        <div className={secondIndicatorClassName} />
+        <div className={thirdIndicatorClassName} />
       </div>
     );
   }
