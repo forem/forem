@@ -38,16 +38,28 @@ RSpec.describe "UserProfiles", type: :request do
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
     end
+    context "organizationd" do
+      it "renders organization page if org" do
+        get organization.path
+        expect(response.body).to include CGI.escapeHTML(organization.name)
+      end
 
-    it "renders organization page if org" do
-      get organization.path
-      expect(response.body).to include CGI.escapeHTML(organization.name)
-    end
+      it "renders organization users on sidebar" do
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        get organization.path
+        expect(response.body).to include user.profile_image_url
+      end
 
-    it "renders organization users on sidebar" do
-      create(:organization_membership, user_id: user.id, organization_id: organization.id)
-      get organization.path
-      expect(response.body).to include user.profile_image_url
+      it "renders no sponsors if not sponsor" do
+        get organization.path
+        expect(response.body).not_to include "Gold Community Sponsor"
+      end
+
+      it "renders sponsor if it is sponsored" do
+        organization.update_columns(sponsorship_level: "gold", sponsorship_status: "live")
+        get organization.reload.path
+        expect(response.body).to include "Gold Community Sponsor"
+      end
     end
   end
 

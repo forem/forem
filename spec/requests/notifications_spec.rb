@@ -204,7 +204,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "contextualize comment title properly" do
-        expect(response.body).to include "re: #{comment.title}"
+        expect(response.body).to include CGI.escapeHTML("re: #{comment.title}")
       end
     end
 

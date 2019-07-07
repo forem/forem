@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_28_123548) do
+ActiveRecord::Schema.define(version: 2019_07_03_003817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -142,6 +142,15 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "backup_data", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "instance_id", null: false
+    t.string "instance_type", null: false
+    t.bigint "instance_user_id"
+    t.jsonb "json_data", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "badge_achievements", force: :cascade do |t|
@@ -577,7 +586,12 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
     t.text "sponsorship_blurb_html"
+    t.datetime "sponsorship_expires_at"
     t.integer "sponsorship_featured_number", default: 0
+    t.text "sponsorship_instructions", default: ""
+    t.datetime "sponsorship_instructions_updated_at"
+    t.string "sponsorship_level"
+    t.string "sponsorship_status", default: "none"
     t.string "sponsorship_tagline"
     t.string "sponsorship_url"
     t.string "state"
@@ -849,6 +863,8 @@ ActiveRecord::Schema.define(version: 2019_06_28_123548) do
     t.text "rules_markdown"
     t.string "short_summary"
     t.string "social_image"
+    t.integer "sponsor_organization_id"
+    t.string "sponsorship_status", default: "none"
     t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
