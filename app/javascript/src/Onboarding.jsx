@@ -58,6 +58,7 @@ class Onboarding extends Component {
           document.body.getAttribute('data-user'),
         ).followed_tag_names;
         function checkFollowingStatus(followedTags, jsonTags) {
+          if (!followedTags || !followedTags.length) return jsonTags;
           const newJSON = jsonTags;
           jsonTags.map((tag, index) => {
             if (followedTags.includes(tag.name)) {
