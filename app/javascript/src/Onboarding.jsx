@@ -440,8 +440,8 @@ class Onboarding extends Component {
       <div className="global-modal" style={{ display: 'none' }}>
         <div className="global-modal-bg">
           <button
-            className="close-button"
             type="button"
+            className="close-button"
             onClick={this.closeOnboarding}
           >
             <img src={cancelSvg} alt="cancel button" />
