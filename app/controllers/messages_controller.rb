@@ -13,7 +13,7 @@ class MessagesController < ApplicationController
     end
     if @message.save
       begin
-        @message.delay.send_push
+        @message.send_push
         success = true
       rescue Pusher::Error => e
         logger.info "PUSHER ERROR: #{e.message}"
