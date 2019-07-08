@@ -56,7 +56,7 @@ export default class ArticleForm extends Component {
   }
 
   componentDidMount() {
-    const { version } = this.state
+    const { version } = this.state;
     const previousContent = JSON.parse(
       localStorage.getItem(`editor-${version}-${window.location.href}`),
     );
@@ -84,9 +84,25 @@ export default class ArticleForm extends Component {
   componentDidUpdate() {
     const { previewResponse } = this.state;
     if (previewResponse) {
+      // gist liquid tag
       const els = document.getElementsByClassName('ltag_gist-liquid-tag');
       for (let i = 0; i < els.length; i += 1) {
         postscribe(els[i], els[i].firstElementChild.outerHTML);
+      }
+
+      // runkit
+      const targets = document.getElementsByClassName('runkit-element');
+      for (let i = 0; i < targets.length; i += 1) {
+        if (targets[i].children.length > 0) {
+          const preamble = targets[i].children[0].textContent;
+          const content = targets[i].children[1].textContent;
+          targets[i].innerHTML = '';
+          const notebook = window.RunKit.createNotebook({
+            element: targets[i],
+            source: content,
+            preamble,
+          });
+        }
       }
     }
   }
@@ -98,7 +114,7 @@ export default class ArticleForm extends Component {
     this.state.tagList !== previousContent.tagList;
 
   localStoreContent = () => {
-    const { version, title, tagList, mainImage, bodyMarkdown } = this.state
+    const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
     localStorage.setItem(
       `editor-${version}-${this.url}`,
       JSON.stringify({
@@ -157,19 +173,19 @@ export default class ArticleForm extends Component {
         helpShowing: false,
         previewResponse: response,
         errors: null,
-      });  
+      });
     } else {
       this.setState({
         errors: response,
         submitting: false,
-      });  
+      });
     }
   };
 
   handleOrgIdChange = e => {
     const organizationId = e.target.selectedOptions[0].value;
-    this.setState({ organizationId })
-  }
+    this.setState({ organizationId });
+  };
 
   failedPreview = response => {
     console.log(response);
@@ -190,7 +206,7 @@ export default class ArticleForm extends Component {
   };
 
   removeLocalStorage = () => {
-    const {version} = this.state
+    const { version } = this.state;
     localStorage.removeItem(`editor-${version}-${this.url}`);
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
@@ -215,11 +231,9 @@ export default class ArticleForm extends Component {
     if (e.keyCode === 13) {
       e.preventDefault();
     }
-  }
+  };
 
-  handleBodyKeyDown = e => {
-
-  }
+  handleBodyKeyDown = e => {};
 
   onClearChanges = e => {
     e.preventDefault();
@@ -286,14 +300,19 @@ export default class ArticleForm extends Component {
       organizationId,
       mainImage,
       errors,
-      version
+      version,
     } = this.state;
-    const notice = submitting ? <Notice published={published} version={version} /> : '';
-    const imageArea = (mainImage && !previewShowing && version === 'v2') ? (
-      <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
+    const notice = submitting ? (
+      <Notice published={published} version={version} />
     ) : (
       ''
     );
+    const imageArea =
+      mainImage && !previewShowing && version === 'v2' ? (
+        <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
+      ) : (
+        ''
+      );
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -314,15 +333,16 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    const orgArea = (organizations && organizations.length > 0) ? (
-      <OrgSettings
-        organizations={organizations}
-        organizationId={organizationId}
-        onToggle={this.handleOrgIdChange}
-      />
-    ) : (
-      ''
-    );
+    const orgArea =
+      organizations && organizations.length > 0 ? (
+        <OrgSettings
+          organizations={organizations}
+          organizationId={organizationId}
+          onToggle={this.handleOrgIdChange}
+        />
+      ) : (
+        ''
+      );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
@@ -339,29 +359,39 @@ export default class ArticleForm extends Component {
         </div>
       );
     } else if (helpShowing) {
-      editorView = <BodyPreview previewResponse={{processed_html: helpHTML}} version="help" />;
+      editorView = (
+        <BodyPreview
+          previewResponse={{ processed_html: helpHTML }}
+          version="help"
+        />
+      );
     } else {
       let controls = '';
       let moreConfigBottomButton = '';
       if (version === 'v2') {
         moreConfigBottomButton = (
           <button
-            type='button'
+            type="button"
             className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
             onClick={this.toggleMoreConfig}
           >
-            <img src={ThreeDotsIcon} alt='menu dots' />
+            <img src={ThreeDotsIcon} alt="menu dots" />
           </button>
-        )
+        );
         controls = (
-          <div className={title.length > 128 ? 'articleform__titleTooLong' : ''}>
+          <div
+            className={title.length > 128 ? 'articleform__titleTooLong' : ''}
+          >
             <Title
               defaultValue={title}
               onKeyDown={this.handleTitleKeyDown}
               onChange={linkState(this, 'title')}
             />
             <div className="articleform__detailfields">
-              <Tags defaultValue={tagList} onInput={linkState(this, 'tagList')} />
+              <Tags
+                defaultValue={tagList}
+                onInput={linkState(this, 'tagList')}
+              />
               <button
                 className="articleform__detailsButton articleform__detailsButton--image"
                 onClick={this.toggleImageManagement}
@@ -378,7 +408,7 @@ export default class ArticleForm extends Component {
               </button>
             </div>
           </div>
-        )
+        );
       }
       editorView = (
         <div>
