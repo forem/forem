@@ -43,16 +43,28 @@
         Sign In/Up
       </div>
     </a>
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" data-no-instant>
-      <div class="option">
-        Via Twitter
-      </div>
-    </a>
-    <a href="/users/auth/github?state=navbar_basic" data-no-instant id="second-last-nav-link">
-      <div class="option">
-        Via GitHub
-      </div>
-    </a>
+    <%= link_to(
+          user_twitter_omniauth_authorize_path(
+            callback_url: user_twitter_omniauth_callback_url(host: "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"),
+          ),
+          method: :post,
+          data: { "no-instant": true },
+        ) do %>
+        <div class="option">
+          Via Twitter
+        </div>
+    <% end %>
+
+    <%= link_to(
+          user_github_omniauth_authorize_path(state: :navbar_basic),
+          method: :post,
+          data: { "no-instant": true },
+        ) do %>
+        <div class="option">
+          Via GitHub
+        </div>
+    <% end %>
+
     <a href="/p/information" id="last-nav-link">
       <div class="option">
         All about dev.to
