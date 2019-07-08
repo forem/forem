@@ -39,8 +39,8 @@
           <%= f.text_field "tag_list", value: @classified_listing.cached_tag_list, placeholder: "8 tags max, comma separated, no spaces or special characters" %>
         </div>
         <div class="field">
-          <%= form.label "location", "Location" %>
-          <%= form.text_field "location", maxlength: 64, placeholder: "64 characters max, plain text" %>
+          <%= f.label "location", "Location" %>
+          <%= f.text_field "location", maxlength: 64, placeholder: "64 characters max, plain text" %>
         </div>
         <div class="field">
           <%= f.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>
