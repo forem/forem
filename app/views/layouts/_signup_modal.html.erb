@@ -17,12 +17,26 @@
     <p>
       We're a place where coders share, stay up-to-date and grow their careers.
     </p>
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
+    <%= link_to(
+          user_twitter_omniauth_authorize_path(
+            callback_url: user_twitter_omniauth_callback_url(host: "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"),
+          ),
+          method: :post,
+          class: "sign-up-link cta",
+          data: { "no-instant": true },
+        ) do %>
       <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
-    </a>
-    <a href="/users/auth/github?state=signup-modal" class="sign-up-link cta" data-no-instant>
+    <% end %>
+
+    <%= link_to(
+          user_github_omniauth_authorize_path(state: "signup-modal"),
+          ),
+          method: :post,
+          class: "sign-up-link cta",
+          data: { "no-instant": true },
+        ) do %>
       <img src="<%= asset_path("github-logo.svg") %>" class="icon-img" alt="GitHub logo" /> Auth With GitHub
-    </a>
+    <% end %>
     <p>
       <em>We strive for transparency and don't collect excess data.</em>
     </p>
