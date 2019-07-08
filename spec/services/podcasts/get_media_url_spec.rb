@@ -34,7 +34,7 @@ RSpec.describe Podcasts::GetMediaUrl do
   # http, https unreachable, http reachable
   it "http, https unreachable, http reachable" do
     httparty_result = double
-    allow(httparty_result).to receive(code).and_return(200)
+    allow(httparty_result).to receive(:code).and_return(200)
     allow(HTTParty).to receive(:head).with(http_url).and_return(httparty_result)
     allow(HTTParty).to receive(:head).with(https_url).and_raise(Errno::ECONNREFUSED)
     result = described_class.call(http_url)
