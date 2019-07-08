@@ -107,8 +107,8 @@ export default class ArticleForm extends Component {
   componentDidUpdate() {
     const { previewResponse } = this.state;
     if (previewResponse) {
-      this.handleGistPreview();
-      this.handleRunkitPreview();
+      this.constructor.handleGistPreview();
+      this.constructor.handleRunkitPreview();
     }
   }
 
