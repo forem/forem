@@ -5,15 +5,15 @@ RSpec.describe Credit, type: :model do
   let(:organization) { create(:organization) }
   let(:random_number) { rand(100) }
 
-  xit "counts credits for user" do
-    # See https://github.com/magnusvk/counter_culture/issues/259
+  it "counts credits for user" do
     create_list(:credit, random_number, user: user)
+    Credit.counter_culture_fix_counts
     expect(user.reload.credits_count).to eq(random_number)
   end
 
-  xit "counts credits for organization" do
-    # See https://github.com/magnusvk/counter_culture/issues/259
+  it "counts credits for organization" do
     create_list(:credit, random_number, organization: organization)
+    Credit.counter_culture_fix_counts
     expect(organization.reload.credits_count).to eq(random_number)
   end
 
