@@ -7,7 +7,11 @@ class ClassifiedListingsController < ApplicationController
 
   def index
     @displayed_classified_listing = ClassifiedListing.find_by!(slug: params[:slug]) if params[:slug]
-    mod_page if params[:view] == "moderate"
+
+    if params[:view] == "moderate"
+      return redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
+    end
+
     @classified_listings = if params[:category].blank?
                              ClassifiedListing.where(published: true).
                                order("bumped_at DESC").
@@ -33,19 +37,23 @@ class ClassifiedListingsController < ApplicationController
 
   def create
     @classified_listing = ClassifiedListing.new(listing_params)
+
+    # this will 500 for now if they don't belong in the org
+    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
+
     @classified_listing.user_id = current_user.id
-    @number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category)
+    cost = ClassifiedListing.cost_by_category(@classified_listing.category)
 
-    @org = Organization.find_by(id: @classified_listing.organization_id)
+    org = Organization.find_by(id: @classified_listing.organization_id)
 
-    available_org_credits = @org.credits.unspent if @org
+    available_org_credits = org.credits.unspent if org
     available_user_credits = current_user.credits.unspent
 
     # we use the org's credits if available, otherwise we default to the user's
-    if @org && available_org_credits.size >= @number_of_credits_needed
-      create_listing(@org, @number_of_credits_needed)
-    elsif available_user_credits.size >= @number_of_credits_needed
-      create_listing(current_user, @number_of_credits_needed)
+    if org && available_org_credits.size >= cost
+      create_listing(org, cost)
+    elsif available_user_credits.size >= cost
+      create_listing(current_user, cost)
     else
       redirect_to credits_path, notice: "Not enough available credits"
     end
@@ -74,6 +82,7 @@ class ClassifiedListingsController < ApplicationController
     elsif listing_params[:body_markdown].present? && @classified_listing.bumped_at > 24.hours.ago
       update_listing_details
     end
+
     clear_listings_cache
     redirect_to "/listings"
   end
@@ -93,21 +102,30 @@ class ClassifiedListingsController < ApplicationController
   private
 
   def create_listing(purchaser, cost)
-    # this will 500 for now if they don't belong in the org
-    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
-
-    @classified_listing.bumped_at = Time.current
-    @classified_listing.published = true
-
-    if @classified_listing.save
-      clear_listings_cache
-
+    successful_transaction = false
+    ActiveRecord::Base.transaction do
+      # substract credits
       Credits::Buyer.call(
         purchaser: purchaser,
         purchase: @classified_listing,
         cost: cost,
       )
 
+      # save the listing
+      @classified_listing.bumped_at = Time.current
+      @classified_listing.published = true
+      unless @classified_listing.save
+        # since we can't raise active record errors in this transaction
+        # due to the fact that we need to display them in the :new view,
+        # we manually rollback the transaction if there are validation errors
+        raise ActiveRecord::Rollback
+      end
+
+      successful_transaction = true
+    end
+
+    if successful_transaction
+      clear_listings_cache
       @classified_listing.index!
       redirect_to classified_listings_path
     else
@@ -116,10 +134,6 @@ class ClassifiedListingsController < ApplicationController
       @organizations = current_user.organizations
       render :new
     end
-  end
-
-  def mod_page
-    redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
   end
 
   def set_classified_listing
