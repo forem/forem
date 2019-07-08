@@ -74,12 +74,26 @@
     <h1>Great to have you</h1>
   <% end %>
   <div class="links">
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link" data-no-instant>
+    <%= link_to(
+          user_twitter_omniauth_authorize_path(
+            callback_url: user_twitter_omniauth_callback_url(host: "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"),
+          ),
+          method: :post,
+          class: "sign-up-link",
+          data: { "no-instant": true },
+        ) do %>
       <%= inline_svg("twitter-logo.svg", class: "icon-img", aria: true, title: "twitter logo") %> Sign In with Twitter
-    </a>
-    <a href="/users/auth/github?state=join-club-page_basic" class="sign-up-link" data-no-instant>
-      <%= inline_svg("github-logo.svg", class: "icon-img", aria: true, title: "github logo") %> Sign In with GitHub
-    </a>
+    <% end %>
+
+    <%= link_to(
+          user_github_omniauth_authorize_path(state: "join-club-page_basic"),
+          method: :post,
+          class: "sign-up-link",
+          data: { "no-instant": true },
+        ) do %>
+        <%= inline_svg("github-logo.svg", class: "icon-img", aria: true, title: "github logo") %> Sign In with GitHub
+    <% end %>
+
     <p><em>We require social login to prevent abuse.</em></p>
   </div>
   <p>Open Source 😇</p>
