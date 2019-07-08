@@ -66,10 +66,10 @@ class PartnershipsController < ApplicationController
     elsif @level == "silver"
       500
     elsif @level == "tag"
-      500
+      300
     elsif @level == "bronze"
       100
-    elsif @level == "editorial"
+    elsif @level == "devrel"
       500
     elsif @level == "media"
       params[:sponsorship_amount].to_i
