@@ -29,7 +29,7 @@ RSpec.describe Credits::Ledger do
       item = items.first
       expect(item.purchase.is_a?(ClassifiedListing)).to be(true)
       expect(item.cost).to eq(3)
-      expect(item.purchased_at).to eq(now)
+      expect(item.purchased_at.utc).to eq(now.utc)
     end
   end
 
