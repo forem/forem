@@ -24,7 +24,7 @@ class StoriesController < ApplicationController
       handle_possible_redirect
     else
       @podcast = Podcast.reachable.find_by(slug: params[:username]) || not_found
-      @episode = PodcastEpisode.find_by(slug: params[:slug]) || not_found
+      @episode = PodcastEpisode.reachable.find_by(slug: params[:slug]) || not_found
       handle_podcast_show
     end
   end
