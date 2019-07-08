@@ -95,7 +95,7 @@
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
-    "marked": "^0.6.3",
+    "marked": "^0.7.0",
     "preact": "^8.4.2",
     "preact-compat": "^3.19.0",
     "preact-textarea-autosize": "^4.0.7",
