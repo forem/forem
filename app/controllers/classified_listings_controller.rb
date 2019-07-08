@@ -61,19 +61,20 @@ class ClassifiedListingsController < ApplicationController
 
   def update
     authorize @classified_listing
-    available_credits = current_user.credits.unspent
-    number_of_credits_needed = ClassifiedListing.cost_by_category(@classified_listing.category) # Bumping
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     if listing_params[:action] == "bump"
-      bump_listing
-      if available_credits.size >= number_of_credits_needed
-        @classified_listing.save
-        Credits::Buyer.call(
-          purchaser: current_user,
-          purchase: @classified_listing,
-          cost: number_of_credits_needed,
-        )
+      cost = ClassifiedListing.cost_by_category(@classified_listing.category)
+      if current_user.credits.unspent.size >= cost
+        ActiveRecord::Base.transaction do
+          Credits::Buyer.call(
+            purchaser: current_user,
+            purchase: @classified_listing,
+            cost: cost,
+          )
+
+          raise ActiveRecord::Rollback unless bump_listing
+        end
       end
     elsif listing_params[:action] == "unpublish"
       unpublish_listing
@@ -114,12 +115,11 @@ class ClassifiedListingsController < ApplicationController
       # save the listing
       @classified_listing.bumped_at = Time.current
       @classified_listing.published = true
-      unless @classified_listing.save
-        # since we can't raise active record errors in this transaction
-        # due to the fact that we need to display them in the :new view,
-        # we manually rollback the transaction if there are validation errors
-        raise ActiveRecord::Rollback
-      end
+
+      # since we can't raise active record errors in this transaction
+      # due to the fact that we need to display them in the :new view,
+      # we manually rollback the transaction if there are validation errors
+      raise ActiveRecord::Rollback unless @classified_listing.save
 
       successful_transaction = true
     end

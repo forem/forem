@@ -95,7 +95,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect do
           post "/listings", params: invalid_params
         end.to change(ClassifiedListing, :count).by(0).
-          and change { user.credits.spent.size }.by(0)
+          and change(user.credits.spent, :size).by(0)
       end
     end
 
@@ -153,7 +153,50 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect do
           post "/listings", params: listing_params
         end.to change(ClassifiedListing, :count).by(0).
-          and change { user.credits.spent }.by(0)
+          and change(user.credits.spent, :size).by(0)
+      end
+    end
+  end
+
+  describe "PUT /listings/:id" do
+    let(:listing) { create(:classified_listing, user: user) }
+
+    before do
+      sign_in user
+    end
+
+    context "when the bump action is called" do
+      let(:params) { { classified_listing: { action: "bump" } } }
+
+      it "does not bump the listing if the use has not enough credits" do
+        previous_bumped_at = listing.bumped_at
+        put "/listings/#{listing.id}", params: params
+        expect(listing.reload.bumped_at).to eq(previous_bumped_at)
+      end
+
+      it "does not subtract spent credits if the user has not enough credits" do
+        expect do
+          put "/listings/#{listing.id}", params: params
+        end.to change(user.credits.spent, :size).by(0)
+      end
+
+      it "does not bump the listing or subtract credits if the purchase does not go through" do
+        previous_bumped_at = listing.bumped_at
+        allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
+        expect do
+          put "/listings/#{listing.id}", params: params
+        end.to change(user.credits.spent, :size).by(0)
+        expect(listing.reload.bumped_at).to eq(previous_bumped_at)
+      end
+
+      it "bumps the listing and subtract credits" do
+        cost = ClassifiedListing.cost_by_category(listing.category)
+        create_list(:credit, cost, user: user)
+        previous_bumped_at = listing.bumped_at
+        expect do
+          put "/listings/#{listing.id}", params: params
+        end.to change(user.credits.spent, :size).by(cost)
+        expect(listing.reload.bumped_at >= previous_bumped_at).to eq(true)
       end
     end
   end
