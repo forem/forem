@@ -6,5 +6,12 @@ FactoryBot.define do
     provider { "github" }
     token { rand(100_000) }
     secret { rand(100_000) }
+    auth_data_dump do
+      {
+        "info" => {
+          "nickname" => "something"
+        }
+      }
+    end
   end
 end

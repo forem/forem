@@ -11,7 +11,7 @@ module Podcasts
 
     def call
       update_published_at unless episode.published_at?
-      update_media_url if !episode.media_url.include?("https") && item.enclosure.url.include?("https")
+      update_media_url if !episode.media_url.include?("https") && item.enclosure_url.include?("https")
     end
 
     private
@@ -26,7 +26,7 @@ module Podcasts
     end
 
     def update_media_url
-      episode.update!(media_url: item.enclosure.url)
+      episode.update!(media_url: item.enclosure_url)
     rescue StandardError
       message = "something went wrong with #{episode.podcast_title}, #{episode.title} -- #{episode.media_url}"
       Rails.logger.error(message)
