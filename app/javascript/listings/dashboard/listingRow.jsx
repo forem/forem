@@ -10,7 +10,7 @@ export const ListingRow = ({ listing }) => {
     </a>
   ));
 
-  const listingLocation = listing.location ? listing.location : '';
+  const listingLocation = listing.location ? (` ・ ${listing.location}`) : '';
 
   const listingDate = listing.bumped_at
     ? new Date(listing.bumped_at.toString()).toLocaleDateString('default', {
@@ -36,7 +36,6 @@ export const ListingRow = ({ listing }) => {
       </a>
       <span className="dashboard-listing-date">
         {listingDate} 
-        {' ・ '}
         {listingLocation}
       </span>
       <span className="dashboard-listing-category">
