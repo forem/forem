@@ -19,6 +19,29 @@ import OrgSettings from './elements/orgSettings';
 import Errors from './elements/errors';
 
 export default class ArticleForm extends Component {
+  static handleGistPreview() {
+    const els = document.getElementsByClassName('ltag_gist-liquid-tag');
+    for (let i = 0; i < els.length; i += 1) {
+      postscribe(els[i], els[i].firstElementChild.outerHTML);
+    }
+  }
+
+  static handleRunkitPreview() {
+    const targets = document.getElementsByClassName('runkit-element');
+    for (let i = 0; i < targets.length; i += 1) {
+      if (targets[i].children.length > 0) {
+        const preamble = targets[i].children[0].textContent;
+        const content = targets[i].children[1].textContent;
+        targets[i].innerHTML = '';
+        window.RunKit.createNotebook({
+          element: targets[i],
+          source: content,
+          preamble,
+        });
+      }
+    }
+  }
+
   constructor(props) {
     super(props);
     this.article = JSON.parse(this.props.article);
@@ -84,26 +107,8 @@ export default class ArticleForm extends Component {
   componentDidUpdate() {
     const { previewResponse } = this.state;
     if (previewResponse) {
-      // gist liquid tag
-      const els = document.getElementsByClassName('ltag_gist-liquid-tag');
-      for (let i = 0; i < els.length; i += 1) {
-        postscribe(els[i], els[i].firstElementChild.outerHTML);
-      }
-
-      // runkit
-      const targets = document.getElementsByClassName('runkit-element');
-      for (let i = 0; i < targets.length; i += 1) {
-        if (targets[i].children.length > 0) {
-          const preamble = targets[i].children[0].textContent;
-          const content = targets[i].children[1].textContent;
-          targets[i].innerHTML = '';
-          const notebook = window.RunKit.createNotebook({
-            element: targets[i],
-            source: content,
-            preamble,
-          });
-        }
-      }
+      this.handleGistPreview();
+      this.handleRunkitPreview();
     }
   }
 
@@ -233,7 +238,7 @@ export default class ArticleForm extends Component {
     }
   };
 
-  handleBodyKeyDown = e => {};
+  handleBodyKeyDown = _e => {};
 
   onClearChanges = e => {
     e.preventDefault();
