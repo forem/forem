@@ -17,13 +17,20 @@ RSpec.describe "User visits podcast show page", type: :system do
     expect(find("#comment_commentable_id", visible: false).value).to eq(podcast_episode.id.to_s)
   end
 
-  context "when podcast has a status_notice" do
-    let(:podcast) { create(:podcast, status_notice: "This podcast may not be playable in the browser") }
-    let!(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-
+  context "when episode may not be playable" do
     it "displays the status_notice" do
+      podcast = create(:podcast, status_notice: "This podcast may not be playable in the browser")
+      podcast_episode = create(:podcast_episode, podcast_id: podcast.id)
       visit podcast_episode.path.to_s
-      expect(page).to have_text(podcast.status_notice)
+      expect(page).to have_text(I18n.t("podcasts.statuses.unplayable"))
+      expect(page).to have_text("Click here to download")
+    end
+
+    it "displays status when episode is not reachable by https" do
+      podcast_episode = create(:podcast_episode, https: false)
+      visit podcast_episode.path.to_s
+      expect(page).to have_text(I18n.t("podcasts.statuses.unplayable"))
+      expect(page).to have_text("Click here to download")
     end
   end
 
@@ -34,6 +41,8 @@ RSpec.describe "User visits podcast show page", type: :system do
     it "doesn't display status_notice" do
       visit podcast_episode.path.to_s
       expect(page).not_to have_text("Random status notice")
+      expect(page).not_to have_text(I18n.t("podcasts.statuses.unplayable"))
+      expect(page).not_to have_text("Click here to download")
     end
   end
 
