@@ -141,7 +141,7 @@ class StoriesController < ApplicationController
     @podcast_index = true
     @article_index = true
     @list_of = "podcast-episodes"
-    @podcast_episodes = @podcast.podcast_episodes.order("published_at DESC").limit(30)
+    @podcast_episodes = @podcast.podcast_episodes.reachable.order("published_at DESC").limit(30)
     set_surrogate_key_header "podcast_episodes"
     render template: "podcast_episodes/index"
   end
