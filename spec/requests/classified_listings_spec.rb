@@ -171,7 +171,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "does not bump the listing if the use has not enough credits" do
         previous_bumped_at = listing.bumped_at
         put "/listings/#{listing.id}", params: params
-        expect(listing.reload.bumped_at).to eq(previous_bumped_at)
+        expect(listing.reload.bumped_at.to_i).to eq(previous_bumped_at.to_i)
       end
 
       it "does not subtract spent credits if the user has not enough credits" do
@@ -186,7 +186,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         expect do
           put "/listings/#{listing.id}", params: params
         end.to change(user.credits.spent, :size).by(0)
-        expect(listing.reload.bumped_at).to eq(previous_bumped_at)
+        expect(listing.reload.bumped_at.to_i).to eq(previous_bumped_at.to_i)
       end
 
       it "bumps the listing and subtract credits" do
