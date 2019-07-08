@@ -13,12 +13,12 @@ module Credits
     def call
       # build the ledger for the user
       ledger = {
-        ["User", user.id] => build_ledger_for(user.credits)
+        [User.name, user.id] => build_ledger_for(user.credits)
       }
 
       # build the ledger for the organizations the user is an admin at
       user.admin_organizations.find_each do |org|
-        ledger[["Organization", org.id]] = build_ledger_for(org.credits)
+        ledger[[Organization.name, org.id]] = build_ledger_for(org.credits)
       end
 
       ledger
