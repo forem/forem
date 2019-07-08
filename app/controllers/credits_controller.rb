@@ -3,7 +3,7 @@ class CreditsController < ApplicationController
 
   def index
     @user_unspent_credits_count = current_user.credits.unspent.size
-    @user_ledger_items = Credits::Ledger.call(current_user)
+    @ledger = Credits::Ledger.call(current_user)
 
     @organizations = current_user.admin_organizations
   end

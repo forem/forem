@@ -12,7 +12,7 @@
     <a href="<%= purchase_credits_path %>" data-no-instant>Purchase additional credits</a>
 
     <% if @user_unspent_credits_count.positive? %>
-      <%= render "ledger", items: @user_ledger_items %>
+      <%= render "ledger", items: @ledger[["User", current_user.id]] %>
     <% end %>
   </div>
 
@@ -27,7 +27,7 @@
         </a>
 
         <% if org.unspent_credits_count.positive? %>
-          <%= render "ledger", credits: org.credits.unspent %>
+          <%= render "ledger", items: @ledger[["Organization", org.id]] %>
         <% end %>
       </div>
     <% end %>
