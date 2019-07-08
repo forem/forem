@@ -28,7 +28,7 @@ class ClassifiedListingsController < ApplicationController
   def edit
     authorize @classified_listing
     @organizations = current_user.organizations
-    @credits = current_user.credits.spent
+    @credits = current_user.credits.unspent
   end
 
   def create
