@@ -30,7 +30,7 @@
         <td class="cost"><%= item.cost %></td>
         <td>
           <% if item.purchased_at %>
-            <time datetime="<%= item.purchased_at.iso8601 %>"><%= item.purchased_at.to_s(:long) %></time>
+            <time datetime="<%= item.purchased_at.iso8601 %>"><%= item.purchased_at.iso8601 %></time>
           <% end %>
         </td>
       </tr>
