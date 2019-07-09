@@ -1,5 +1,5 @@
 class ProfilePinsController < ApplicationController
-  before_action :authenticate_user!, only: %i[create]
+  before_action :authenticate_user!, only: %i[create update]
 
   def create
     @profile_pin = ProfilePin.new
@@ -7,7 +7,7 @@ class ProfilePinsController < ApplicationController
     @profile_pin.profile_type = "User"
     @profile_pin.pinnable_id = profile_pin_params[:pinnable_id].to_i
     @profile_pin.pinnable_type = "Article"
-    if @profile_pin.save!
+    if @profile_pin.save
       flash[:pins_success] = "📌 Pinned! (pinned posts display chronologically, 5 max)"
     else
       flash[:pins_error] = "You can only have five pins"
@@ -17,7 +17,7 @@ class ProfilePinsController < ApplicationController
 
   def update
     # for removing pinnable
-    ProfilePin.find(params[:id]).destroy
+    current_user.profile_pins.where(id: params[:id]).first&.destroy
     flash[:pins_success] = "🗑 Pin removed"
     redirect_back(fallback_location: "/dashboard")
   end
