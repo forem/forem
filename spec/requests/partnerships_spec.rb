@@ -102,7 +102,7 @@ RSpec.describe "Pages", type: :request do
       end
       it "subscribes to editorial subscription" do
         post "/partnerships", params: {
-          sponsorship_level: "editorial",
+          sponsorship_level: "devrel",
           organization_id: organization.id
         }
         expect(organization.reload.credits.where(spent: false).size).to eq(1500)
@@ -123,7 +123,7 @@ RSpec.describe "Pages", type: :request do
           sponsorship_amount: 900,
           tag_name: tag.name
         }
-        expect(organization.reload.credits.where(spent: false).size).to eq(1500)
+        expect(organization.reload.credits.where(spent: false).size).to eq(1700)
         expect(tag.reload.sponsor_organization_id).to eq(organization.id)
       end
       it "updates sponsorship instructions if new instructions" do
