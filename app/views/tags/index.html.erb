@@ -33,6 +33,9 @@
       <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
         <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
           <h2>#<%= tag.name %></h2>
+          <% if tag.sponsor_organization && tag.sponsorship_status == "live" %>
+            <h4>Sponsored by <%= tag.sponsor_organization.name %> ❤️</h4>
+          <% end %>
         </a>
       </div>
     <% end %>
