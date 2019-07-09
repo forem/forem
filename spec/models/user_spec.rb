@@ -526,27 +526,32 @@ RSpec.describe User, type: :model do
   end
 
   it "creates proper body class with defaults" do
-    expect(user.decorate.config_body_class).to eq("default default-article-body")
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with sans serif config" do
     user.config_font = "sans_serif"
-    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body")
+    expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with night theme" do
     user.config_theme = "night_theme"
-    expect(user.decorate.config_body_class).to eq("night-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with pink theme" do
     user.config_theme = "pink_theme"
-    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?}")
   end
 
   it "creates proper body class with minimal light theme" do
     user.config_theme = "minimal_light_theme"
-    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body")
+    expect(user.decorate.config_body_class).to eq("minimal-light-theme default-article-body pro-status-#{user.pro?}")
+  end
+
+  it "creates proper body class with pro user" do
+    user.add_role(:pro)
+    expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?}")
   end
 
   it "inserts into mailchimp" do
