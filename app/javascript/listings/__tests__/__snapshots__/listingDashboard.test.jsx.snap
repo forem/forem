@@ -39,6 +39,15 @@ preact-render-spy (1 nodes)
       </a>
     </div>
   </div>
+  <div>
+    <select
+      onChange={[Function setSorting]}
+      value="bumped_at"
+    >
+      <option value="created_at">Recently Created</option>
+      <option value="bumped_at">Recently Bumped</option>
+    </select>
+  </div>
   <div class="dashboard-listings-view">
     <div class="dashboard-listing-row">
       <a href="cfp/asdfasdf-2ea8">
