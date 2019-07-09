@@ -33,38 +33,37 @@ RSpec.describe "Pages", type: :request do
         sign_in user
       end
 
-      describe "shared basic functionality" do
-        it "gets bronze sponsorship page" do
-          get "/partnerships/bronze-sponsor"
-          expect(response.body).to include("Bronze Sponsorship")
-        end
-        it "asks user to create org if not created" do
-          get "/partnerships/bronze-sponsor"
-          expect(response.body).to include("Create an Organization")
-        end
-        it "asks user to purchase credits if not purchased" do
-          organization = create(:organization)
-          OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
-          get "/partnerships/bronze-sponsor"
-          expect(response.body).to include("Purchase Credits")
-        end
-        it "includes sponsorship form if organization has credits" do
-          organization = create(:organization)
-          OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
-          Credit.add_to_org(organization, 100)
-          get "/partnerships/bronze-sponsor"
-          expect(response.body).to include("This subscription will renew every month")
-        end
+      it "gets bronze sponsorship page" do
+        get "/partnerships/bronze-sponsor"
+        expect(response.body).to include("Bronze Sponsorship")
+      end
+
+      it "asks user to create org if not created" do
+        get "/partnerships/bronze-sponsor"
+        expect(response.body).to include("Create an Organization")
+      end
+
+      it "asks user to purchase credits if not purchased" do
+        organization = create(:organization)
+        OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
+        get "/partnerships/bronze-sponsor"
+        expect(response.body).to include("Purchase Credits")
+      end
+
+      it "includes sponsorship form if organization has credits" do
+        organization = create(:organization)
+        OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
+        Credit.add_to_org(organization, 100)
+        get "/partnerships/bronze-sponsor"
+        expect(response.body).to include("This subscription will renew every month")
       end
     end
 
     context "when user is not logged in" do
-      describe "shared basic functionality" do
-        it "gets bronze sponsorship page" do
-          get "/partnerships/bronze-sponsor"
-          expect(response.body).to include("Bronze Sponsorship")
-          expect(response.body).to include("Sign in to get started")
-        end
+      it "gets bronze sponsorship page" do
+        get "/partnerships/bronze-sponsor"
+        expect(response.body).to include("Bronze Sponsorship")
+        expect(response.body).to include("Sign in to get started")
       end
     end
   end

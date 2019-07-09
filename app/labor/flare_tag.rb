@@ -1,5 +1,6 @@
 class FlareTag
   FLARES = %w[explainlikeimfive
+              jokes
               ama
               techtalks
               help

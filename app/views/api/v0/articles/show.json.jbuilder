@@ -21,6 +21,7 @@ json.published_at       @article.published_at&.utc&.iso8601
 json.last_comment_at    @article.last_comment_at&.utc&.iso8601
 
 json.body_html @article.processed_html
+json.body_markdown @article.body_markdown
 json.ltag_style(@article.liquid_tags_used.map { |ltag| Rails.application.assets["ltags/#{ltag}.css"].to_s.html_safe })
 json.ltag_script(@article.liquid_tags_used.map { |ltag| ltag.script.html_safe })
 

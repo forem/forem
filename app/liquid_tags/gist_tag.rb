@@ -15,17 +15,6 @@ class GistTag < LiquidTagBase
     )
   end
 
-  def self.special_script
-    <<~JAVASCRIPT
-      if (postscribe) {
-        var els = document.getElementsByClassName("ltag_gist-liquid-tag")
-        for (i = 0; i < els.length; i++) {
-            postscribe(els[i], els[i].firstElementChild.outerHTML);
-        }
-      }
-    JAVASCRIPT
-  end
-
   private
 
   def build_uri(link)
