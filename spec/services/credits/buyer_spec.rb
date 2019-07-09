@@ -32,7 +32,7 @@ RSpec.describe Credits::Buyer do
       end.to change(user.credits.spent, :count)
     end
 
-    it "does not spend credits for the organization" do
+    it "spends credits for the organization" do
       create_list(:credit, 2, organization: org)
       expect do
         res = described_class.call(purchaser: org, purchase: listing, cost: 2)
