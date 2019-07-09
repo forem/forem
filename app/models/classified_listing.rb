@@ -18,7 +18,7 @@ class ClassifiedListing < ApplicationRecord
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
                             length: { maximum: 400 }
-  validates :location, length: { maximum: 64 }
+  validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
