@@ -132,6 +132,7 @@ class User < ApplicationRecord
             length: { maximum: 500 }
   validates :inbox_type, inclusion: { in: %w[open private] }
   validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
+  validates :feed_referential_link, inclusion: [true, false]
   validate  :conditionally_validate_summary
   validate  :validate_mastodon_url
   validate  :validate_feed_url, if: :feed_url_changed?

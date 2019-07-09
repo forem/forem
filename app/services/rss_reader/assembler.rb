@@ -56,7 +56,7 @@ class RssReader
 
     def thorough_parsing(content, feed_url)
       html_doc = Nokogiri::HTML(content)
-      find_and_replace_possible_links!(html_doc)
+      find_and_replace_possible_links!(html_doc) if @user.feed_referential_link
       if feed_url.include?("medium.com")
         parse_and_translate_gist_iframe!(html_doc)
         parse_and_translate_youtube_iframe!(html_doc)

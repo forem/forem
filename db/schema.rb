@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_04_105143) do
+ActiveRecord::Schema.define(version: 2019_07_09_192214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -963,6 +963,7 @@ ActiveRecord::Schema.define(version: 2019_07_04_105143) do
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
+    t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
