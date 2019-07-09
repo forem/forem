@@ -38,7 +38,8 @@ RSpec.describe "UserProfiles", type: :request do
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
     end
-    context "organizationd" do
+
+    context "when organization" do
       it "renders organization page if org" do
         get organization.path
         expect(response.body).to include CGI.escapeHTML(organization.name)

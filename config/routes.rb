@@ -174,7 +174,6 @@ Rails.application.routes.draw do
   get "/live/:username" => "twitch_live_streams#show"
   get "/partnerships/:option" => "partnerships#show"
 
-
   post "/pusher/auth" => "pusher#auth"
 
   get "/social_previews/article/:id" => "social_previews#article", as: :article_social_preview
