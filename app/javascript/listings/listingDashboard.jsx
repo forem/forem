@@ -44,10 +44,6 @@ export class ListingDashboard extends Component {
           );
     };
     
-    // FILTERING OPTIONS
-    // - valid
-    // - expired
-
     const sortListings = (event) => {
       const sortedListings = listings.sort((a,b) => (a[event.target.value] > b[event.target.value]) ? -1 : 1)
       this.setState({listings: sortedListings});
