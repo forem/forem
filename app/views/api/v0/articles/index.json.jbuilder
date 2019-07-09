@@ -1,18 +1,19 @@
 json.array! @articles do |article|
-  json.type_of            "article"
-  json.id                 article.id
-  json.title              article.title
-  json.description        article.description
-  json.cover_image        cloud_cover_url(article.main_image)
-  json.published_at       article.published_at
-  json.tag_list           article.cached_tag_list_array
-  json.slug               article.slug
-  json.path               article.path
-  json.url                article.url
-  json.canonical_url      article.processed_canonical_url
-  json.comments_count     article.comments_count
+  json.type_of                  "article"
+  json.id                       article.id
+  json.body_markdown_digest     article.body_markdown_digest
+  json.title                    article.title
+  json.description              article.description
+  json.cover_image              cloud_cover_url(article.main_image)
+  json.published_at             article.published_at
+  json.tag_list                 article.cached_tag_list_array
+  json.slug                     article.slug
+  json.path                     article.path
+  json.url                      article.url
+  json.canonical_url            article.processed_canonical_url
+  json.comments_count           article.comments_count
   json.positive_reactions_count article.positive_reactions_count
-  json.published_timestamp article.published_timestamp
+  json.published_timestamp      article.published_timestamp
 
   json.user do
     json.name             article.user.name

@@ -1,3 +1,5 @@
+require "digest"
+
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
@@ -62,6 +64,7 @@ class Article < ApplicationRecord
   before_save       :set_caches
   before_save       :fetch_video_duration
   before_save       :clean_data
+  before_save       :compute_digest
   after_save        :async_score_calc, if: :published
   after_save        :bust_cache
   after_save        :update_main_image_background_hex
@@ -625,5 +628,9 @@ class Article < ApplicationRecord
 
   def async_bust
     Articles::BustCacheJob.perform_later(id)
+  end
+
+  def compute_digest
+    self.body_markdown_digest = Digest::SHA1.hexdigest body_markdown
   end
 end

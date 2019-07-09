@@ -544,5 +544,21 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "body_markdown_digest" do
+    let(:article) { build(:article) }
+
+    it "returns the empty sha1sum when article is new" do
+      article.save
+      expect(article.body_markdown_digest).to eq("da39a3ee5e6b4b0d3255bfef95601890afd80709")
+    end
+
+    it "returns the sha1sum of the article body_markdown" do
+      body = "Hey hey Ho Ho"
+      article.body_markdown = body
+      article.save
+      expect(article.body_markdown_digest).to eq("2d6a066ef31b3328048bdd25ec896665a6bea972")
+    end
+  end
+
   include_examples "#sync_reactions_count", :article
 end

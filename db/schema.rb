@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_192214) do
+ActiveRecord::Schema.define(version: 2019_07_09_225714) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.boolean "automatically_renew", default: false
     t.text "body_html"
     t.text "body_markdown"
+    t.string "body_markdown_digest", limit: 40, null: false
     t.jsonb "boost_states", default: {}, null: false
     t.text "cached_organization"
     t.string "cached_tag_list"

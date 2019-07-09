@@ -74,6 +74,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get "/api/articles?tag=#{tag.name}"
       expect(JSON.parse(response.body).size).to eq(0)
     end
+
+    it "returns body_markdown_digest in response" do
+      create(:article)
+      create(:article, featured: true)
+      get "/api/articles"
+      expect(JSON.parse(response.body)[0]["body_markdown_digest"]).to eq("da39a3ee5e6b4b0d3255bfef95601890afd80709")
+    end
   end
 
   describe "GET /api/articles/:id" do
@@ -83,10 +90,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
       get "/api/articles/#{article.id}"
       expect(json_response["title"]).to eq(article.title)
     end
-    
+
     it "contains article markdown content" do
       get "/api/articles/#{article.id}"
       expect(json_response["body_markdown"]).to eq(article.body_markdown)
+    end
+
+    it "contains article body_markdown_digest" do
+      get "/api/articles/#{article.id}"
+      expect(json_response["body_markdown_digest"]).to eq(article.body_markdown_digest)
     end
 
     it "fails with an unpublished article" do
