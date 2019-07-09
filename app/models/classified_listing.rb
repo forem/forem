@@ -9,6 +9,7 @@ class ClassifiedListing < ApplicationRecord
   before_create :create_slug
   before_validation :modify_inputs
   acts_as_taggable_on :tags
+  has_many :credits, as: :purchase, inverse_of: :purchase, dependent: :nullify
 
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
@@ -71,7 +72,7 @@ class ClassifiedListing < ApplicationRecord
       "forsale" => { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
       "events" => { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
       "misc" => { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
-    }
+    }.with_indifferent_access
   end
 
   def path

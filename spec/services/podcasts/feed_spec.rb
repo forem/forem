@@ -55,12 +55,16 @@ RSpec.describe Podcasts::Feed, vcr: vcr_option do
 
     it "fetches podcast episodes" do
       expect do
-        described_class.new.get_episodes(podcast, 2)
+        perform_enqueued_jobs do
+          described_class.new.get_episodes(podcast, 2)
+        end
       end.to change(PodcastEpisode, :count).by(2)
     end
 
     it "fetches correct podcasts" do
-      described_class.new.get_episodes(podcast, 2)
+      perform_enqueued_jobs do
+        described_class.new.get_episodes(podcast, 2)
+      end
       episodes = podcast.podcast_episodes
       expect(episodes.pluck(:title).sort).to eq(["Analyse Asia with Bernard Leong", "IFTTT Architecture with Nicky Leach"])
       expect(episodes.pluck(:media_url).sort).to eq(%w[https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3 https://traffic.libsyn.com/sedaily/IFTTT.mp3])
