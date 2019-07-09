@@ -49,7 +49,7 @@ module Credits
       listings_purchases = purchases.select { |row| row.purchase_type == "ClassifiedListing" }
       listings = ClassifiedListing.where(id: listings_purchases.map(&:purchase_id))
       listings_purchases.each do |purchase|
-        listing = listings.select { |l| l.id == purchase.purchase_id }.first
+        listing = listings.detect { |l| l.id == purchase.purchase_id }
         items << Item.new(
           purchase: listing,
           cost: purchase.cost.to_i,
