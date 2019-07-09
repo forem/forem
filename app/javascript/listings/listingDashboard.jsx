@@ -8,6 +8,7 @@ export class ListingDashboard extends Component {
     orgs: [],
     userCredits: 0,
     selectedListings: 'user',
+    sorting: 'bumped_at',
   };
 
   componentDidMount() {
@@ -30,6 +31,7 @@ export class ListingDashboard extends Component {
       userCredits,
       orgs,
       selectedListings,
+      sorting,
     } = this.state;
 
     const showListings = (selected, userListings, organizationListings) => {
@@ -43,6 +45,29 @@ export class ListingDashboard extends Component {
             ),
           );
     };
+    
+    // FILTERING OPTIONS
+    // - valid
+    // - expired
+
+    const setSorting = (event) => {
+      this.setState({sorting: event.target.value });
+      sortListings();
+    }
+
+    const sortingDropdown = (
+      <div>
+        <select onChange={setSorting} value={sorting}>
+          <option value="created_at">Recently Created</option>
+          <option value="bumped_at">Recently Bumped</option>
+        </select>
+      </div>
+    );
+
+    const sortListings = () => {
+      const sortedListings = listings.sort((a,b) => (a.sorting > b.sorting) ? 1 : -1)
+      this.setState({listings: sortedListings});
+    }
 
     const orgButtons = orgs.map(org => (
       <span
@@ -114,6 +139,7 @@ export class ListingDashboard extends Component {
             </a>
           </div>
         </div>
+        {sortingDropdown}
         <div className="dashboard-listings-view">
           {showListings(selectedListings, listings, orgListings)}
         </div>
