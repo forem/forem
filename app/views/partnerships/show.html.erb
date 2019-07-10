@@ -22,7 +22,7 @@
     <%= render "devrel_consult_copy" %>
   <% end %>
   <% if user_signed_in? %>
-    <%= render "form", level: params[:option].split("-")[0] %>
+    <%= render "form", level: params[:option].split("-")[0], organizations: @organizations %>
   <% else %>
     <div class="partner-credits-explainer">
       <a href="/enter">Sign in to get started</a>
