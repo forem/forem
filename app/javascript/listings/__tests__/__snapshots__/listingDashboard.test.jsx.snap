@@ -39,6 +39,17 @@ preact-render-spy (1 nodes)
       </a>
     </div>
   </div>
+  <div class="dashboard-listings-sorting">
+    <select onChange={[Function sortListings]}>
+      <option
+        value="created_at"
+        selected="selected"
+      >
+        Recently Created
+      </option>
+      <option value="bumped_at">Recently Bumped</option>
+    </select>
+  </div>
   <div class="dashboard-listings-view">
     <div class="dashboard-listing-row">
       <a href="cfp/asdfasdf-2ea8">
