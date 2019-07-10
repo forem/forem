@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe Sponsorship, type: :model do
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to belong_to(:organization) }
+  it { is_expected.to belong_to(:organization).inverse_of(:sponsorships) }
+  it { is_expected.to belong_to(:sponsorable).optional }
   it { is_expected.to validate_presence_of(:user) }
   it { is_expected.to validate_presence_of(:organization) }
   it { is_expected.to validate_inclusion_of(:level).in_array(%w[gold silver bronze tag media devrel]) }
