@@ -87,7 +87,7 @@ class PartnershipsController < ApplicationController
 
   def slackbot_ping(text)
     SlackBot.ping(
-      message: text,
+      text,
       channel: "incoming-partners",
       username: "media_sponsor",
       icon_emoji: ":partyparrot:",
