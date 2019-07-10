@@ -23,13 +23,12 @@ class PartnershipsController < ApplicationController
       @tag = Tag.find_by(name: params[:tag_name])
       @tag.sponsor_organization_id = @organization.id
       slackbot_ping("@#{current_user.username} bought a ##{@tag.name} sponsorship for @#{@organization.username}")
-      if @available_org_credits.size >= @number_of_credits_needed
-        @tag.save!
-        spend_credits
-        redirect_back(fallback_location: "/partnerships")
-      else
-        raise "Not enough credits"
-      end
+
+      raise "Not enough credits" unless @available_org_credits.size >= @number_of_credits_needed
+
+      @tag.save!
+      spend_credits
+      redirect_back(fallback_location: "/partnerships")
     elsif @level == "media"
       # For now. Just ping slack.
       slackbot_ping("📹 @#{current_user.username} bought #{@number_of_credits_needed} media credits for @#{@organization.username}")
@@ -37,14 +36,8 @@ class PartnershipsController < ApplicationController
         spend_credits
         redirect_back(fallback_location: "/partnerships")
       end
-    elsif @level == "editorial"
-      SlackBot.ping(
-        message: "@#{current_user.username} bought #{@number_of_credits_needed} credits for @#{@organization.username}",
-        channel: "incoming-partners",
-        username: "media_sponsor",
-        icon_emoji: ":partyparrot:",
-      )
-      slackbot_ping("✍ @#{current_user.username} bought an editorial partnership for @#{@organization.username}")
+    elsif @level == "devrel"
+      slackbot_ping("✍ @#{current_user.username} bought a devrel partnership for @#{@organization.username}")
       if @available_org_credits.size >= @number_of_credits_needed
         spend_credits
         redirect_back(fallback_location: "/partnerships")
@@ -54,13 +47,12 @@ class PartnershipsController < ApplicationController
       @organization.sponsorship_status = "pending"
       @organization.sponsorship_expires_at = (@organization.sponsorship_expires_at || Time.current) + 1.month
       slackbot_ping("@#{current_user.username} bought a #{@level} sponsorship for @#{@organization.username}")
-      if @available_org_credits.size >= @number_of_credits_needed
-        @organization.save!
-        spend_credits
-        redirect_back(fallback_location: "/partnerships")
-      else
-        raise "Not enough credits"
-      end
+
+      raise "Not enough credits" unless @available_org_credits.size >= @number_of_credits_needed
+
+      @organization.save!
+      spend_credits
+      redirect_back(fallback_location: "/partnerships")
     end
   end
 
@@ -70,12 +62,12 @@ class PartnershipsController < ApplicationController
     if @level == "gold"
       6000
     elsif @level == "silver"
-      300
-    elsif @level == "tag"
       500
+    elsif @level == "tag"
+      300
     elsif @level == "bronze"
-      50
-    elsif @level == "editorial"
+      100
+    elsif @level == "devrel"
       500
     elsif @level == "media"
       params[:sponsorship_amount].to_i
@@ -95,7 +87,7 @@ class PartnershipsController < ApplicationController
 
   def slackbot_ping(text)
     SlackBot.ping(
-      message: text,
+      text,
       channel: "incoming-partners",
       username: "media_sponsor",
       icon_emoji: ":partyparrot:",

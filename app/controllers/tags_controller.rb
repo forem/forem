@@ -6,7 +6,7 @@ class TagsController < ApplicationController
   def index
     skip_authorization
     @tags_index = true
-    @tags = Tag.all.order("hotness_score DESC").first(100)
+    @tags = Tag.includes(:sponsor_organization).order("hotness_score DESC").limit(100)
   end
 
   def edit

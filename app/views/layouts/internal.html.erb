@@ -42,6 +42,16 @@
     padding: 2px;
   }
 
+  .wrapper-3 {
+    display: grid;
+    grid-template-columns: 25% 40% 25%%;
+    padding: 2px;
+  }
+
+  .wrapper-3 div {
+    padding: 8px;
+  }
+
   .grid-item {
     word-wrap: break-word;
   }
@@ -123,7 +133,7 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <% controller_names = %w[comments articles users members dogfood tags welcome broadcasts reports pages classified_listings tools] %>
+        <% controller_names = %w[comments articles users tags welcome broadcasts reports pages classified_listings tools chat_channels] %>
         <% controller_names.each do |name| %>
           <li class="<%= "active" if controller_name == name %>"><a href="/internal/<%= name %>"><%= name %></a></li>
         <% end %>

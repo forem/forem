@@ -49,7 +49,9 @@ RSpec.describe "Comments", type: :request do
                        commentable_type: "Article",
                        user_id: user.id)
         get child.path
-        expect(CGI.unescapeHTML(response.body)).to include("TOP OF THREAD", child.processed_html, comment.title(150))
+        expect(response.body).to include("TOP OF THREAD")
+        expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
+        expect(response.body).to include(child.processed_html)
       end
     end
 

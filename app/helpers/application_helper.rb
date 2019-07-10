@@ -37,6 +37,7 @@ module ApplicationHelper
       classified_listings
       credits
       partnerships
+      pro_accounts
     ].include?(controller_name)
   end
 
@@ -197,16 +198,16 @@ module ApplicationHelper
 
   def sponsorship_credits_price(level)
     if level == "bronze"
-      50
+      100
     elsif level == "silver"
-      300
+      500
     elsif level == "gold"
       4000
     elsif level == "tag"
-      500
+      300
     elsif level == "media"
       25
-    elsif level == "editorial"
+    elsif level == "devrel"
       500
     end
   end
