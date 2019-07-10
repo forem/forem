@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_192214) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "last_buffered"
+    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
