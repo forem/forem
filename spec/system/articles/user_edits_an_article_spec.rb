@@ -21,6 +21,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("PREVIEW")
     expect(page).to have_text("Yooo")
+    expect(find(".active").text).to have_text("EDIT")
   end
 
   it "user updates their post" do
