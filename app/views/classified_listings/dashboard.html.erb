@@ -1,12 +1,12 @@
 
 <div id="classifieds-listings-dashboard" data-listings="<%= @classified_listings.to_json(
-        only: %i[title tag_list bumped_at updated_at category id user_id slug organization_id location],
+        only: %i[title tag_list created_at bumped_at updated_at category id user_id slug organization_id location],
         include: {
           author: { only: %i[username name], methods: %i[username profile_image_90] },
         },
       )%>" data-usercredits="<%= @user_credits %>"
       data-orglistings="<%= @org_listings.to_json(
-        only: %i[title tag_list bumped_at updated_at category id user_id slug organization_id location],
+        only: %i[title tag_list created_at bumped_at updated_at category id user_id slug organization_id location],
         include: {
           author: { only: %i[username name], methods: %i[username profile_image_90] },
         },
