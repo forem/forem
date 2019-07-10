@@ -47,4 +47,37 @@ RSpec.describe Sponsorship, type: :model do
       expect(sponsorship).not_to be_valid
     end
   end
+
+  describe "validations" do
+    let(:org) { create(:organization) }
+
+    it "forbids an org to have multiple 'expiring' sponsorships" do
+      create(:sponsorship, level: :gold, organization: org)
+      bronze_sponsorship = build(:sponsorship, level: :gold, organization: org)
+      expect(bronze_sponsorship).not_to be_valid
+    end
+
+    context "when tag sponsorships" do
+      it "allows an org to have multiple tag sponsorships on different tags" do
+        create(:sponsorship, level: :tag, organization: org, sponsorable: create(:tag, name: "python"))
+        tag_sponsorship = build(:sponsorship, level: :tag, organization: org, sponsorable: create(:tag, name: "ruby"))
+        expect(tag_sponsorship).to be_valid
+      end
+
+      it "forbids an org to have multiple tag sponsorships on the same tag" do
+        tag = create(:tag, name: "python")
+        create(:sponsorship, level: :tag, organization: org, sponsorable: tag)
+        tag_sponsorship = build(:sponsorship, level: :tag, organization: org, sponsorable: tag)
+        expect(tag_sponsorship).not_to be_valid
+      end
+
+      it "forbids different orgs to have a sponsorship on the same tag" do
+        tag = create(:tag, name: "python")
+        other_org = create(:organization)
+        create(:sponsorship, level: :tag, organization: org, sponsorable: tag)
+        tag_sponsorship = build(:sponsorship, level: :tag, organization: other_org, sponsorable: tag)
+        expect(tag_sponsorship).not_to be_valid
+      end
+    end
+  end
 end

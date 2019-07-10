@@ -19,6 +19,18 @@ class Sponsorship < ApplicationRecord
   validates :level, inclusion: { in: LEVELS }
   validates :status, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
+  validates :level,
+            uniqueness: {
+              scope: :organization,
+              message: "You can have only one sponsorship of #{LEVELS_WITH_EXPIRATION}"
+            },
+            if: proc { LEVELS_WITH_EXPIRATION.include?(level) }
+  validates :level,
+            uniqueness: {
+              scope: [:sponsorable],
+              message: proc { "The tag is already sponsored" }
+            },
+            if: proc { level.to_s == "tag" }
 
   scope :gold, -> { where(level: :gold) }
   scope :silver, -> { where(level: :silver) }
