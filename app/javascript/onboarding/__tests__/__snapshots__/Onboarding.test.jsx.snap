@@ -4,8 +4,8 @@ exports[`<Onboarding /> BioForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div class="about">
+  <div class="onboarding-main">
+    <div class="onboarding-content about">
       <h1>About You!</h1>
       <form>
         <label htmlFor="summary">
@@ -18,23 +18,23 @@ preact-render-spy (1 nodes)
           </textarea>
         </label>
       </form>
-      <div>
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          BACK
-        </button>
-        <button
-          onClick={[Function bound onSubmit]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound prevSlide]}
+        class="back-button"
+        type="button"
+      >
+        BACK
+      </button>
+      <button
+        onClick={[Function bound onSubmit]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -44,8 +44,8 @@ exports[`<Onboarding /> CloseSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div>
+  <div class="onboarding-main">
+    <div class="onboarding-content">
       <h1>
         Congrats 
         <span
@@ -74,16 +74,16 @@ preact-render-spy (1 nodes)
            your profile
         </li>
       </ul>
-      <div>
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          BACK
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound prevSlide]}
+        class="back-button"
+        type="button"
+      >
+        BACK
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -93,8 +93,8 @@ exports[`<Onboarding /> EmailTermsConditionsForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div class="checkbox-slide">
+  <div class="onboarding-main">
+    <div class="onboarding-content checkbox-slide">
       <h2>Some things to check off!</h2>
       <form>
         <label htmlFor="checked_code_of_conduct">
@@ -102,6 +102,7 @@ preact-render-spy (1 nodes)
             type="checkbox"
             name="checked_code_of_conduct"
             id="checked_code_of_conduct"
+            checked={false}
             onChange={[Function bound handleChange]}
            />
           You agree to uphold our 
@@ -112,6 +113,7 @@ preact-render-spy (1 nodes)
             type="checkbox"
             id="checked_terms_and_conditions"
             name="checked_terms_and_conditions"
+            checked={false}
             onChange={[Function bound handleChange]}
            />
           You agree to our 
@@ -137,23 +139,23 @@ preact-render-spy (1 nodes)
           Do you want to receive a periodic digest with some of the top posts from your tags?
         </label>
       </form>
-      <div>
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          BACK
-        </button>
-        <button
-          onClick={[Function bound onSubmit]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound prevSlide]}
+        class="back-button"
+        type="button"
+      >
+        BACK
+      </button>
+      <button
+        onClick={[Function bound onSubmit]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -163,11 +165,12 @@ exports[`<Onboarding /> FollowTags renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div>
+  <div class="onboarding-main">
+    <div class="onboarding-content">
       <h2>Follow some tags!</h2>
       <div class="scroll">
         <button
+          type="button"
           onClick={[Function onClick]}
           style="background-color: #000000; color: #ffffff; opacity: 1;"
           class="tag"
@@ -175,6 +178,7 @@ preact-render-spy (1 nodes)
           #discuss
         </button>
         <button
+          type="button"
           onClick={[Function onClick]}
           style="background-color: #f7df1e; color: #000000; opacity: 1;"
           class="tag"
@@ -182,6 +186,7 @@ preact-render-spy (1 nodes)
           #javascript
         </button>
         <button
+          type="button"
           onClick={[Function onClick]}
           style="background-color: #2a2566; color: #ffffff; opacity: 1;"
           class="tag"
@@ -189,23 +194,23 @@ preact-render-spy (1 nodes)
           #career
         </button>
       </div>
-      <div>
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          BACK
-        </button>
-        <button
-          onClick={[Function bound handleComplete]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound prevSlide]}
+        class="back-button"
+        type="button"
+      >
+        BACK
+      </button>
+      <button
+        onClick={[Function bound handleComplete]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -215,11 +220,12 @@ exports[`<Onboarding /> FollowUsers renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div>
+  <div class="onboarding-main">
+    <div class="onboarding-content">
       <h2>Follow some users!</h2>
       <div class="scroll">
         <button
+          type="button"
           style="background-color: white;"
           onClick={[Function onClick]}
           class="user"
@@ -231,6 +237,7 @@ preact-render-spy (1 nodes)
           Ben Halpern
         </button>
         <button
+          type="button"
           style="background-color: white;"
           onClick={[Function onClick]}
           class="user"
@@ -242,6 +249,7 @@ preact-render-spy (1 nodes)
           Krusty the Clown
         </button>
         <button
+          type="button"
           style="background-color: white;"
           onClick={[Function onClick]}
           class="user"
@@ -253,23 +261,23 @@ preact-render-spy (1 nodes)
           dev.to staff
         </button>
       </div>
-      <div>
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          BACK
-        </button>
-        <button
-          onClick={[Function bound handleComplete]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound prevSlide]}
+        class="back-button"
+        type="button"
+      >
+        BACK
+      </button>
+      <button
+        onClick={[Function bound handleComplete]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -279,8 +287,8 @@ exports[`<Onboarding /> PersonalInformationForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div class="about">
+  <div class="onboarding-main">
+    <div class="onboarding-content about">
       <h1>About You!</h1>
       <form>
         <label htmlFor="location">
@@ -314,23 +322,23 @@ preact-render-spy (1 nodes)
            />
         </label>
       </form>
-      <div>
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          BACK
-        </button>
-        <button
-          onClick={[Function bound onSubmit]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound prevSlide]}
+        class="back-button"
+        type="button"
+      >
+        BACK
+      </button>
+      <button
+        onClick={[Function bound onSubmit]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
   </div>
 </div>
 
@@ -340,8 +348,8 @@ exports[`<Onboarding /> WelcomeSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div class="onboarding-body">
-  <div class="onboarding-content">
-    <div>
+  <div class="onboarding-main">
+    <div class="onboarding-content">
       <h1>
         <span>Welcome to the </span>
         <img
@@ -357,16 +365,16 @@ preact-render-spy (1 nodes)
       <p>
         A couple quick questions for you before you get started...
       </p>
-      <div>
-        <button
-          onClick={[Function bound nextSlide]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
     </div>
+    <nav class="onboarding-navigation">
+      <button
+        onClick={[Function bound nextSlide]}
+        class="next-button"
+        type="button"
+      >
+        Continue
+      </button>
+    </nav>
   </div>
 </div>
 

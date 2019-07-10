@@ -90,7 +90,8 @@ class EmailTermsConditionsForm extends Component {
                 checked={checked_code_of_conduct}
                 onChange={this.handleChange}
               />
-              You agree to uphold our{' '}
+              You agree to uphold our
+              {' '}
               <a href="/code-of-conduct">Code of Conduct</a>
             </label>
             <label htmlFor="checked_terms_and_conditions">
@@ -101,7 +102,9 @@ class EmailTermsConditionsForm extends Component {
                 checked={checked_terms_and_conditions}
                 onChange={this.handleChange}
               />
-              You agree to our <a href="/terms">Terms and Conditions</a>
+              You agree to our 
+              {' '}
+              <a href="/terms">Terms and Conditions</a>
             </label>
             <h3>Email Preferences</h3>
             <label htmlFor="email_membership_newsletter">
