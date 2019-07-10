@@ -1,5 +1,6 @@
 class Sponsorship < ApplicationRecord
   LEVELS = %w[gold silver bronze tag media devrel].freeze
+  LEVELS_WITH_EXPIRATION = %w[gold silver bronze].freeze
   STATUSES = %w[none pending live].freeze
   # media has no fixed amount of credits
   CREDITS = {
@@ -18,4 +19,11 @@ class Sponsorship < ApplicationRecord
   validates :level, inclusion: { in: LEVELS }
   validates :status, inclusion: { in: STATUSES }
   validates :url, url: { allow_blank: true, no_local: true, schemes: %w[http https] }
+
+  scope :gold, -> { where(level: :gold) }
+  scope :silver, -> { where(level: :silver) }
+  scope :bronze, -> { where(level: :bronze) }
+  scope :tag, -> { where(level: :tag) }
+  scope :media, -> { where(level: :media) }
+  scope :devrel, -> { where(level: :devrel) }
 end

@@ -13,79 +13,77 @@ class PartnershipsController < ApplicationController
   end
 
   def create
-    @level = params[:sponsorship_level]
-    @number_of_credits_needed = credits_for_level
-    @organization = Organization.find(params[:organization_id])
-    update_sponsorship_instructions
+    @organization = Organization.find(sponsorship_params[:organization_id])
     authorize @organization, :admin_of_org?
-    @available_org_credits = @organization.credits.where(spent: false)
-    if @level == "tag"
-      @tag = Tag.find_by(name: params[:tag_name])
-      @tag.sponsor_organization_id = @organization.id
-      slackbot_ping("@#{current_user.username} bought a ##{@tag.name} sponsorship for @#{@organization.username}")
 
-      raise "Not enough credits" unless @available_org_credits.size >= @number_of_credits_needed
-
-      @tag.save!
-      spend_credits
-      redirect_back(fallback_location: "/partnerships")
-    elsif @level == "media"
-      # For now. Just ping slack.
-      slackbot_ping("📹 @#{current_user.username} bought #{@number_of_credits_needed} media credits for @#{@organization.username}")
-      if @available_org_credits.size >= @number_of_credits_needed
-        spend_credits
-        redirect_back(fallback_location: "/partnerships")
-      end
-    elsif @level == "devrel"
-      slackbot_ping("✍ @#{current_user.username} bought a devrel partnership for @#{@organization.username}")
-      if @available_org_credits.size >= @number_of_credits_needed
-        spend_credits
-        redirect_back(fallback_location: "/partnerships")
-      end
-    else
-      @organization.sponsorship_level = @level
-      @organization.sponsorship_status = "pending"
-      @organization.sponsorship_expires_at = (@organization.sponsorship_expires_at || Time.current) + 1.month
-      slackbot_ping("@#{current_user.username} bought a #{@level} sponsorship for @#{@organization.username}")
-
-      raise "Not enough credits" unless @available_org_credits.size >= @number_of_credits_needed
-
-      @organization.save!
-      spend_credits
-      redirect_back(fallback_location: "/partnerships")
+    @level = sponsorship_params[:sponsorship_level]
+    @number_of_credits_needed = Sponsorship::CREDITS[@level]
+    if @level == "media" && @number_of_credits_needed.nil?
+      @number_of_credits_needed = sponsorship_params[:sponsorship_amount].to_i
     end
+    @available_org_credits = @organization.credits.unspent
+
+    # NOTE: this should probably be a redirect with a notice
+    raise "Not enough credits" unless @available_org_credits.size >= @number_of_credits_needed
+
+    tag_sponsorship = @level == "tag"
+    @tag = Tag.find_by!(name: sponsorship_params[:tag_name]) if tag_sponsorship
+
+    sponsorable = tag_sponsorship ? @tag : nil
+    purchase_sponsorship(
+      organization: @organization,
+      level: @level,
+      cost: @number_of_credits_needed,
+      sponsorable: sponsorable,
+    )
+
+    slackbot_ping(tag_sponsorship)
+
+    redirect_back(fallback_location: "/partnerships")
   end
 
   private
 
-  def credits_for_level
-    if @level == "gold"
-      6000
-    elsif @level == "silver"
-      500
-    elsif @level == "tag"
-      300
-    elsif @level == "bronze"
-      100
-    elsif @level == "devrel"
-      500
-    elsif @level == "media"
-      params[:sponsorship_amount].to_i
-    else
-      raise "Invalid level"
+  def sponsorship_params
+    allowed_params = %i[organization_id sponsorship_level sponsorship_amount tag_name sponsorship_instructions]
+    params.permit(allowed_params)
+  end
+
+  # NOTE: this should probably end up in a service object at some point
+  def purchase_sponsorship(organization:, level:, cost:, sponsorable: nil)
+    expires_at = Sponsorship::LEVELS_WITH_EXPIRATION.include?(level) ? 1.month.from_now : nil
+    create_params = {
+      user: current_user,
+      level: level,
+      status: :pending,
+      expires_at: expires_at
+    }
+    create_params[:sponsorable] = sponsorable if sponsorable
+
+    if sponsorship_params[:sponsorship_instructions]
+      create_params[:instructions] = sponsorship_params[:sponsorship_instructions]
+      # NOTE: why are we storing the updated_at of the instructions?
+      create_params[:instructions_updated_at] = Time.current
+    end
+
+    ActiveRecord::Base.transaction do
+      sponsorship = organization.sponsorships.create!(create_params)
+
+      Credits::Buyer.call(
+        purchaser: organization,
+        purchase: sponsorship,
+        cost: cost,
+      )
     end
   end
 
-  def update_sponsorship_instructions
-    @organization.sponsorship_instructions = @organization.sponsorship_instructions + "\n---\n#{Time.current}\n---\n" + params[:sponsorship_instructions].to_s
-    @organization.sponsorship_instructions_updated_at = Time.current
-  end
+  def slackbot_ping(tag_sponsorship)
+    text = if tag_sponsorship
+             "@#{current_user.username} bought a ##{@tag.name} sponsorship for @#{@organization.username}"
+           else
+             "@#{current_user.username} bought a #{@level} sponsorship for @#{@organization.username}"
+           end
 
-  def spend_credits
-    @available_org_credits.limit(@number_of_credits_needed).update_all(spent: true)
-  end
-
-  def slackbot_ping(text)
     SlackBot.ping(
       text,
       channel: "incoming-partners",
