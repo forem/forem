@@ -70,7 +70,11 @@ class EmailTermsConditionsForm extends Component {
   }
 
   render() {
-    const { message } = this.state;
+    const {
+      message,
+      checked_code_of_conduct,
+      checked_terms_and_conditions,
+    } = this.state;
     const { prev } = this.props;
     return (
       <div className="onboarding-main">
@@ -83,6 +87,7 @@ class EmailTermsConditionsForm extends Component {
                 type="checkbox"
                 name="checked_code_of_conduct"
                 id="checked_code_of_conduct"
+                checked={checked_code_of_conduct}
                 onChange={this.handleChange}
               />
               You agree to uphold our{' '}
@@ -93,6 +98,7 @@ class EmailTermsConditionsForm extends Component {
                 type="checkbox"
                 id="checked_terms_and_conditions"
                 name="checked_terms_and_conditions"
+                checked={checked_terms_and_conditions}
                 onChange={this.handleChange}
               />
               You agree to our <a href="/terms">Terms and Conditions</a>
