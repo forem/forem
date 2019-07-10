@@ -77,8 +77,11 @@
                 🎉 You are Subscribed as the sponsor of #<%= tag.name %>.
               </div>
             <% end %>
+            <% if Tag.where(sponsor_organization_id: org.id).any? %>
+              <h4>Sponsor another tag:</h4>
+            <% end %>
             <%= select_tag "tag_name", options_for_select(Tag.where(sponsor_organization_id: nil, supported: true).pluck(:name)) %>
-            <button>Sponsor Tag</button>
+            <button>Sponsor Tag for 300 credits</button>
             <p style="font-size: 0.88em;">
               <em>
                 This subscription will renew every month with credits in your account. If there are no credits, 50 credits will be purchased at the appropriate price. You can cancel this automatic sponsorship subscription at any time.
