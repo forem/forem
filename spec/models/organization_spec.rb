@@ -4,6 +4,8 @@ RSpec.describe Organization, type: :model do
   let(:user)         { create(:user) }
   let(:organization) { create(:organization) }
 
+  it { is_expected.to have_many(:sponsorships) }
+
   describe "#name" do
     it "rejects names with over 50 characters" do
       organization.name = Faker::Lorem.characters(51)
