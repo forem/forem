@@ -1,0 +1,35 @@
+<% title "Pro Account" %>
+
+<style>
+  <% cache "partnership-org-section-credits-#{ApplicationConfig['DEPLOYMENT_SIGNATURE']}", expires_in: 10.hours do %>
+    <%= Rails.application.assets["partnerships.css"].to_s.html_safe %>
+  <% end %>
+</style>
+
+<div class="partnerships-container">
+  <h1><img src="<%= asset_path "rainbowdev.svg" %>" /> Like a Pro</h1>
+  <p>
+    <strong><em>Pro is coming soon. This page is a work in progress. Since we're open source and transparently working on this, no sense in keeping it private eh?</em></strong>
+  </p>
+  <p>
+    <strong><em>The copy on this page is a total draft. No judgment yet pls. 😄</em></strong>
+  </p>
+  <h3>🚀 Access the Bleeding Edge</h3>
+  <p>A pro membership gives you access to <em>bleeding edge</em> features that may some day scale to general availability. However, we would rather launch great new features to a core dedicated userbase that is most interested than to delay until things are scalable to the whole community.
+  <p><strong>Current Bleeding Edge Features</strong></p>
+  <ul>
+    <li>Pro Analytics: Deeper insights into the performance of your posts, traffic sources, etc.</li>
+    <li>Searchable Pro History: Instant access to a repository of your entire reading history—for your own heightened reference.</li>
+  </ul>
+  <h3>👋 Access the Exclusive Areas</h3>
+  <p>A pro membership gives you access to small pro groups that don't necessarily scale. Your pro membership immediately gives you access to <em>Editorial Groups</em> in DEV Connect. These are chat channels dedicated to peer-to-peer review of technical blog posts to help you make the most of your DEV presence.
+  <h3>🤝 Access the Trust-based features</h3>
+  <p>While pro memberships will not give you preferential treatment in the feed algorithm (that would be a no-no), you will get skin-in-the-game based access to trust-based features where we can place your posts more quickly and effectively in areas where spam would otherwise inhibit us.
+  <h3>🙌 Always Improving</h3>
+  <p>Because this will be the landing destination for experimental and low scale features, you will always have the best and most interesting DEV features. We also plan to connect for exclusive deals on new and upcoming features on other platforms.
+
+  <div class="partner-credits-explainer">
+    <h1>$25/mo</h1>
+    <h2 style="text-align: center">(or 5 credits/mo)</h2>
+  </div>
+</div>
