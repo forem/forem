@@ -38,4 +38,7 @@ class Sponsorship < ApplicationRecord
   scope :tag, -> { where(level: :tag) }
   scope :media, -> { where(level: :media) }
   scope :devrel, -> { where(level: :devrel) }
+
+  scope :live, -> { where(status: :live) }
+  scope :pending, -> { where(status: :pending) }
 end

@@ -57,8 +57,8 @@ RSpec.describe "UserProfiles", type: :request do
       end
 
       it "renders sponsor if it is sponsored" do
-        organization.update_columns(sponsorship_level: "gold", sponsorship_status: "live")
-        get organization.reload.path
+        create(:sponsorship, level: :gold, status: :live, organization: organization)
+        get organization.path
         expect(response.body).to include "Gold Community Sponsor"
       end
     end
