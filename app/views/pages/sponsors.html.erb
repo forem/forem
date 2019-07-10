@@ -4,7 +4,6 @@
   <link rel="canonical" href="https://dev.to/sponsors" />
   <meta name="description" content="dev.to | Sponsors">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
-
 <% end %>
 
 <div class="blank-space"></div>
@@ -36,12 +35,11 @@
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
     </h4>
     <div id="gold-sponsors">
-      <% Organization.where(sponsorship_level: "gold").order("sponsorship_featured_number ASC").each do |organization| %>
-        <a href="<%= organization.sponsorship_url %>"><img src="<%= cloudinary(organization.nav_image_url, 250) %>"></a>
+      <% Sponsorship.gold.includes(:organization).order(sponsorship_featured_number: :asc).find_each do |sponsorship| %>
+        <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
-          <%= organization.sponsorship_blurb_html.html_safe %>
+          <%= sponsorship.blurb_html.html_safe %>
         </p>
-
         <hr />
       <% end %>
     </div>
@@ -52,10 +50,10 @@
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="silver badge">
     </h4>
     <div id="silver-sponsors">
-      <% Organization.where(sponsorship_level: "silver").order("sponsorship_featured_number ASC").each do |organization| %>
-        <a href="<%= organization.sponsorship_url %>"><img src="<%= cloudinary(organization.nav_image_url, 250) %>"></a>
+      <% Sponsorship.silver.includes(:organization).order(sponsorship_featured_number: :asc).find_each do |sponsorship| %>
+        <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
-          <%= organization.sponsorship_blurb_html.html_safe %>
+          <%= sponsorship.blurb_html.html_safe %>
         </p>
         <hr />
       <% end %>
@@ -67,15 +65,15 @@
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="bronze badge">
     </h4>
     <div id="bronze-sponsors">
-      <% Organization.where(sponsorship_level: "bronze").order("sponsorship_featured_number ASC").each do |organization| %>
-        <a href="<%= organization.sponsorship_url %>"><img src="<%= cloudinary(organization.nav_image_url, 250) %>"></a>
+      <% Sponsorship.bronze.includes(:organization).order(sponsorship_featured_number: :asc).find_each do |sponsorship| %>
+        <a href="<%= sponsorship.url %>"><img src="<%= cloudinary(sponsorship.organization.nav_image_url, 250) %>"></a>
         <p>
-          <%= organization.sponsorship_blurb_html.html_safe %>
+          <%= sponsorship.blurb_html.html_safe %>
         </p>
         <hr />
       <% end %>
     </div>
 
-    <h5> Interested in sponsoring dev.to? Email <a href="mailto:peter@dev.to">peter@dev.to</a></h5>
+    <h5>Interested in sponsoring dev.to? Email <a href="mailto:peter@dev.to">peter@dev.to</a></h5>
   </div>
 </div>

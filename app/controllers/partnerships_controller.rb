@@ -10,6 +10,8 @@ class PartnershipsController < ApplicationController
 
   def show
     skip_authorization
+
+    @organizations = current_user&.admin_organizations
   end
 
   def create

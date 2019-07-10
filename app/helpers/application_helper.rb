@@ -195,20 +195,4 @@ module ApplicationHelper
   def community_qualified_name
     "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
   end
-
-  def sponsorship_credits_price(level)
-    if level == "bronze"
-      100
-    elsif level == "silver"
-      500
-    elsif level == "gold"
-      4000
-    elsif level == "tag"
-      300
-    elsif level == "media"
-      25
-    elsif level == "devrel"
-      500
-    end
-  end
 end
