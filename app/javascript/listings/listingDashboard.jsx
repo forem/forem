@@ -4,6 +4,7 @@ import { ListingRow } from './dashboard/listingRow';
 export class ListingDashboard extends Component {
   state = {
     listings: [],
+    listingsMirror: [],
     orgListings: [],
     orgs: [],
     userCredits: 0,
@@ -17,15 +18,17 @@ export class ListingDashboard extends Component {
     let orgs = [];
     let orgListings = [];
     listings = JSON.parse(container.dataset.listings);
+    const listingsMirror = listings;
     orgs = JSON.parse(container.dataset.orgs);
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
-    t.setState({ listings, orgListings, orgs, userCredits });
+    t.setState({ listings, listingsMirror, orgListings, orgs, userCredits });
   }
 
   render() {
     const {
       listings,
+      listingsMirror,
       orgListings,
       userCredits,
       orgs,
@@ -43,6 +46,31 @@ export class ListingDashboard extends Component {
             ),
           );
     };
+
+    const filterListings = (condition) => {
+      let filteredListings;
+      if (condition === "Expired") {
+        filteredListings = listings.filter(listing => listing.published === false)
+      } else {
+        filteredListings = listingsMirror
+      }
+      this.setState({listings: filteredListings})
+    };
+
+    const filterButtons = (
+      <div className="listings-dashboard-filter-buttons">
+        <span
+          onClick={(event) => {filterListings(event.target.textContent)}}
+          className="filter-active">
+          All
+        </span>
+        <span
+          onClick={(event) => {filterListings(event.target.textContent)}}
+          className="filter-expired">
+          Expired
+        </span>
+      </div>
+    );
 
     const orgButtons = orgs.map(org => (
       <span
@@ -114,6 +142,7 @@ export class ListingDashboard extends Component {
             </a>
           </div>
         </div>
+        {filterButtons}
         <div className="dashboard-listings-view">
           {showListings(selectedListings, listings, orgListings)}
         </div>
