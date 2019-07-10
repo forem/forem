@@ -41,16 +41,25 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).not_to include(ad.processed_html)
     end
 
-    it "has sponsors displayed" do
-      org = create(:organization, sponsorship_level: "gold", sponsorship_tagline: "Oh Yeah!!!", sponsorship_status: "live")
+    it "has gold sponsors displayed" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: "gold", tagline: "Oh Yeah!!!", status: "live", organization: org)
       get "/"
-      expect(response.body).to include(org.sponsorship_tagline)
+      expect(response.body).to include(sponsorship.tagline)
     end
 
-    it "does not display non-sponsor org" do
-      org = create(:organization, sponsorship_level: nil, sponsorship_tagline: "Oh Yeah!!!")
+    it "does not display silver sponsors" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: "silver", tagline: "Oh Yeah!!!", status: "live", organization: org)
       get "/"
-      expect(response.body).not_to include(org.sponsorship_tagline)
+      expect(response.body).not_to include(sponsorship.tagline)
+    end
+
+    it "does not display non live gold sponsorships" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: "gold", tagline: "Oh Yeah!!!", status: "pending", organization: org)
+      get "/"
+      expect(response.body).not_to include(sponsorship.tagline)
     end
 
     it "shows listings" do
@@ -77,14 +86,14 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET tag index" do
+    let(:tag) { create(:tag) }
+
     it "renders page with proper header" do
-      tag = create(:tag)
       get "/t/#{tag.name}"
       expect(response.body).to include(tag.name)
     end
 
     it "renders page with top/week etc." do
-      tag = create(:tag)
       get "/t/#{tag.name}/top/week"
       expect(response.body).to include(tag.name)
       get "/t/#{tag.name}/top/month"
@@ -96,26 +105,27 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders tag after alias change" do
-      tag = create(:tag)
       tag2 = create(:tag, alias_for: tag.name)
       get "/t/#{tag2.name}"
       expect(response.body).to redirect_to "/t/#{tag.name}"
     end
 
     it "does not render sponsor if not live" do
-      organization = create(:organization, sponsorship_tagline: "Oh Yeah!!!")
-      tag = create(:tag, sponsor_organization_id: organization.id)
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag)
+
       get "/t/#{tag.name}"
       expect(response.body).not_to include("is sponsored by")
-      expect(response.body).not_to include(organization.sponsorship_tagline)
+      expect(response.body).not_to include(sponsorship.tagline)
     end
 
-    it "renders sponsor" do
-      organization = create(:organization, sponsorship_tagline: "Oh Yeah!!!!!!")
-      tag = create(:tag, sponsor_organization_id: organization.id, sponsorship_status: "live")
+    it "renders live sponsor" do
+      org = create(:organization)
+      sponsorship = create(:sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "live", organization: org, sponsorable: tag)
+
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
-      expect(response.body).to include(organization.sponsorship_tagline)
+      expect(response.body).to include(sponsorship.tagline)
     end
   end
 end
