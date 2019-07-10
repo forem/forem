@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :reactions, only: [:update]
+    resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
         post "send_email"
@@ -144,19 +145,20 @@ Rails.application.routes.draw do
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
   resources :classified_listings, path: :listings, only: %i[index new create edit update delete dashboard]
-  resources :credits, only: %i[index new create]
+  resources :credits, only: %i[index new create] do
+    get "purchase", on: :collection, to: "credits#new"
+  end
   resources :buffer_updates, only: [:create]
   resources :reading_list_items, only: [:update]
   resources :poll_votes, only: %i[show create]
   resources :poll_skips, only: [:create]
   resources :profile_pins, only: %i[create update]
-  resources :partnerships, only: %i[index create]
+  resources :partnerships, only: %i[index create show], param: :option
 
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
-  get "/credits/purchase" => "credits#new"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
-  get "/listings/:category/:slug" => "classified_listings#index"
+  get "/listings/:category/:slug" => "classified_listings#index", as: :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       constraints: { view: /moderate/ }
   get "/notifications/:filter" => "notifications#index"
@@ -172,8 +174,7 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   get "/live/:username" => "twitch_live_streams#show"
-  get "/partnerships/:option" => "partnerships#show"
-
+  get "/pro" => "pro_accounts#index"
 
   post "/pusher/auth" => "pusher#auth"
 

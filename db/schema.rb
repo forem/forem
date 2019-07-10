@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_03_003817) do
+ActiveRecord::Schema.define(version: 2019_07_10_081915) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -254,6 +254,7 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "last_buffered"
+    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
@@ -311,10 +312,14 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
     t.float "cost", default: 0.0
     t.datetime "created_at", null: false
     t.bigint "organization_id"
+    t.bigint "purchase_id"
+    t.string "purchase_type"
     t.boolean "spent", default: false
-    t.string "spent_on"
+    t.datetime "spent_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["purchase_id", "purchase_type"], name: "index_credits_on_purchase_id_and_purchase_type"
+    t.index ["spent"], name: "index_credits_on_spent"
   end
 
   create_table "delayed_jobs", id: :serial, force: :cascade do |t|
@@ -815,6 +820,29 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
     t.index ["google_result_path"], name: "index_search_keywords_on_google_result_path"
   end
 
+  create_table "sponsorships", force: :cascade do |t|
+    t.text "blurb_html"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.integer "featured_number", default: 0, null: false
+    t.text "instructions"
+    t.datetime "instructions_updated_at"
+    t.string "level", null: false
+    t.bigint "organization_id"
+    t.bigint "sponsorable_id"
+    t.string "sponsorable_type"
+    t.string "status", default: "none", null: false
+    t.string "tagline"
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.bigint "user_id"
+    t.index ["level"], name: "index_sponsorships_on_level"
+    t.index ["organization_id"], name: "index_sponsorships_on_organization_id"
+    t.index ["sponsorable_id", "sponsorable_type"], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
+    t.index ["status"], name: "index_sponsorships_on_status"
+    t.index ["user_id"], name: "index_sponsorships_on_user_id"
+  end
+
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
     t.integer "article_id"
@@ -959,6 +987,7 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
     t.boolean "feed_admin_publish_permission", default: true
     t.datetime "feed_fetched_at", default: "2017-01-01 05:00:00"
     t.boolean "feed_mark_canonical", default: false
+    t.boolean "feed_referential_link", default: true, null: false
     t.string "feed_url"
     t.integer "following_orgs_count", default: 0, null: false
     t.integer "following_tags_count", default: 0, null: false
@@ -1073,4 +1102,6 @@ ActiveRecord::Schema.define(version: 2019_07_03_003817) do
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "push_notification_subscriptions", "users"
+  add_foreign_key "sponsorships", "organizations"
+  add_foreign_key "sponsorships", "users"
 end

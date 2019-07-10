@@ -47,6 +47,14 @@
         If you check this box, the post will automatically mark the feed source as the canonical URL.
       </div>
     </div>
+
+    <div class="sub-field">
+      <%= f.check_box :feed_referential_link %>
+      <%= f.label :feed_referential_link, "Replace self-referential links with DEV-specific links" %>
+      <div class="field-explainer">
+        If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on DEV if available. This is primarily meant for folks migrating their entire blog onto DEV.
+      </div>
+    </div>
   </div>
   <div class="field">
     <label></label>
