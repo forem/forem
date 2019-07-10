@@ -18,12 +18,13 @@ class ClassifiedListing < ApplicationRecord
                     length: { maximum: 128 }
   validates :body_markdown, presence: true,
                             length: { maximum: 400 }
+  validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
   validate :validate_category
 
   algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect
+    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location
     attribute :author do
       { username: author.username,
         name: author.name,
@@ -36,7 +37,7 @@ class ClassifiedListing < ApplicationRecord
     end
     attributesForFaceting [:category]
     customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list slug]
+    searchableAttributes %w[title processed_html tag_list slug location]
   end
 
   def self.cost_by_category(category = "education")

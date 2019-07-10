@@ -251,6 +251,7 @@ listings_categories.each_with_index do |category, index|
       user: user,
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
+      location: Faker::Address.city,
       category: category,
       contact_via_connect: true,
       published: true,
