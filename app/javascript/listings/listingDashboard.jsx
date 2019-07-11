@@ -4,7 +4,6 @@ import { ListingRow } from './dashboard/listingRow';
 export class ListingDashboard extends Component {
   state = {
     listings: [],
-    listingsMirror: [],
     orgListings: [],
     orgs: [],
     userCredits: 0,
@@ -19,17 +18,15 @@ export class ListingDashboard extends Component {
     let orgs = [];
     let orgListings = [];
     listings = JSON.parse(container.dataset.listings);
-    const listingsMirror = listings;
     orgs = JSON.parse(container.dataset.orgs);
     orgListings = JSON.parse(container.dataset.orglistings);
     const userCredits = container.dataset.usercredits;
-    t.setState({ listings, listingsMirror, orgListings, orgs, userCredits });
+    t.setState({ listings, orgListings, orgs, userCredits });
   }
 
   render() {
     const {
       listings,
-      listingsMirror,
       orgListings,
       userCredits,
       orgs,
@@ -37,7 +34,7 @@ export class ListingDashboard extends Component {
       filter,
     } = this.state;
 
-    const showListings = (selected, userListings, organizationListings, listingsCopy, selectedFilter) => {
+    const showListings = (selected, userListings, organizationListings, selectedFilter) => {
       let displayedListings;
       if (selected === 'user') {
         displayedListings = userListings;
@@ -165,7 +162,7 @@ export class ListingDashboard extends Component {
         </div>
         {filterButtons}
         <div className="dashboard-listings-view">
-          {showListings(selectedListings, listings, orgListings, listingsMirror, filter)}
+          {showListings(selectedListings, listings, orgListings, filter)}
         </div>
       </div>
     );
