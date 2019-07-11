@@ -32,7 +32,7 @@ export const ListingRow = ({ listing }) => {
     <div className={`dashboard-listing-row ${listing.published ? '' : 'expired'}`}>
       {orgName(listing)}
       <a href={`${`${listing.category}/${listing.slug}`}`}>
-        <h2>{listing.title}</h2>
+        <h2>{listing.title + (listing.published ? '' : " (expired)")}</h2>
       </a>
       <span className="dashboard-listing-date">
         {listingDate} 
