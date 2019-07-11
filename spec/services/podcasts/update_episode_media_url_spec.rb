@@ -1,40 +1,45 @@
 require "rails_helper"
 
-RSpec.describe Podcasts::UpdateEpisode, type: :service do
+RSpec.describe Podcasts::UpdateEpisodeMediaUrl, type: :service do
   let(:podcast) { create(:podcast) }
 
-  let(:item) do
-    build(:podcast_episode_rss_item, enclosure_url: "https://example.com/1.mp3")
-  end
+  it "updates media_url from http to https" do
+    http_url = "http://example.com/1.mp3"
+    https_url = "https://example.com/1.mp3"
+    stub_request(:head, https_url).to_return(status: 200)
 
-  it "updates published_at if it's nil" do
-    episode = create(:podcast_episode, podcast: podcast, published_at: nil)
-    described_class.call(episode, item)
-    episode.reload
-    expect(episode.published_at).to be_truthy
-  end
-
-  it "updates media_url if the item url contains https" do
     episode = create(:podcast_episode, podcast: podcast, media_url: "http://example.com/1.mp3")
-    described_class.call(episode, item)
+    described_class.call(episode, http_url)
     episode.reload
-    expect(episode.media_url).to eq("https://example.com/1.mp3")
+    expect(episode.media_url).to eq(https_url)
+    expect(episode.reachable).to be true
+    expect(episode.https).to be true
   end
 
-  it "catches expception when pubDate is invalid" do
-    invalid_item = build(:podcast_episode_rss_item, pubDate: "I'm not a date")
+  it "keeps http when https and http are not reachable" do
+    http_url = "http://example.com/1.mp3"
+    https_url = "https://example.com/1.mp3"
+    allow(HTTParty).to receive(:head).with(http_url).and_raise(Errno::ECONNREFUSED)
+    allow(HTTParty).to receive(:head).with(https_url).and_raise(Errno::ECONNREFUSED)
 
-    episode = create(:podcast_episode, podcast: podcast, published_at: nil)
-    described_class.call(episode, invalid_item)
-    expect(episode.published_at).to be_nil
+    episode = create(:podcast_episode, podcast: podcast, media_url: http_url)
+    described_class.call(episode, http_url)
+    episode.reload
+    expect(episode.media_url).to eq(http_url)
+    expect(episode.reachable).to be false
+    expect(episode.https).to be false
   end
 
   it "does fine when there's nothing to update" do
+    url = "https://audio.simplecast.com/100.mp3"
+    stub_request(:head, url).to_return(status: 200)
     published_at = Time.current - 1.day
-    episode = create(:podcast_episode, podcast: podcast, media_url: "https://audio.simplecast.com/100.mp3", published_at: published_at)
-    described_class.call(episode, item)
+    episode = create(:podcast_episode, podcast: podcast, media_url: url, published_at: published_at)
+    described_class.call(episode, url)
     episode.reload
-    expect(episode.media_url).to eq("https://audio.simplecast.com/100.mp3")
-    expect(episode.published_at.strftime("%Y-%m-%d")).to eq(published_at.strftime("%Y-%m-%d"))
+    expect(episode.media_url).to eq(url)
+    expect(episode.reachable).to be true
+    expect(episode.https).to be true
+    # expect(episode.published_at.strftime("%Y-%m-%d")).to eq(published_at.strftime("%Y-%m-%d"))
   end
 end

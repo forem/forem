@@ -10,8 +10,6 @@ module Podcasts
     end
 
     def call
-      # update_published_at unless episode.published_at?
-      # if !episode.media_url.include?("https") && item.enclosure_url.include?("https")
       result = GetMediaUrl.call(enclosure_url)
       episode.reachable = result.reachable
       episode.media_url = result.url
@@ -22,12 +20,5 @@ module Podcasts
     private
 
     attr_reader :episode, :enclosure_url
-
-    # def update_published_at
-    #   episode.published_at = item.pubDate.to_date
-    #   episode.save
-    # rescue StandardError => e
-    #   Rails.logger.error("not a valid date: #{e}")
-    # end
   end
 end
